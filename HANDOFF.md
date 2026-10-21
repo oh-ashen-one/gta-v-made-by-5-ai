@@ -13,7 +13,7 @@
 - Engine (decided by the builder under owner delegation): **Godot 4.7.1 stable**, Forward+, native macOS export. Rationale and rejected alternatives: `waves/01/READINESS.md`.
 - Deliverable (in progress): `game/` — a playable third-person Singapore-inspired slice with an authored district, shooting, car theft, left-hand traffic, police response, a flyable helicopter and the "Harbour Relay" mission.
 - Build: `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip` (build output is git-ignored; rebuild locally).
-- Checks: `godot --headless --path game -- --test` → 32/32 PASS at the handoff commit (20 structural, 12 behavioural regression checks).
+- Checks: `godot --headless --path game -- --test` → 33/33 PASS at the handoff commit (20 structural, 13 behavioural regression checks).
 - Evidence: `game/captures/` (automated playthrough PNGs, fixed-view district frames, `capture_log.json`), `docs/REQUIREMENTS_LEDGER.md`, `docs/asset-manifest.csv`, `docs/LOOK_DEV.md` (the wave-1 look sheet every later wave inherits), `waves/01/HANDOFF.md` (the filled wave handoff template) and `NEXT_GOAL.md`.
 - Owner visual update: GTA VI fidelity in Singapore; primary art direction is `docs/concepts/*.png` (generated concepts of **our** game), secondary evidence is `docs/visual-references.json`.
 - Owner asset routing: Tripo browser for smaller/bulk objects, Customuse MCP for major assets, no Meshy. Existing Tripo credits authorized.

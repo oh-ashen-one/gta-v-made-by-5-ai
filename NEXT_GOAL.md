@@ -6,7 +6,7 @@
 - **How to run:**
   - `godot --path game` (editor/play from source), or
   - `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip` (packaged build), or
-  - `godot --headless --path game -- --test` (32 automated checks — 20 structural and 12 behavioural regression checks; expect `32/32 checks passed`).
+  - `godot --headless --path game -- --test` (33 automated checks — 20 structural and 13 behavioural regression checks; expect `33/33 checks passed`).
   - Provider art (18 models) is not in the git history: `bash game/tools/fetch_provider_assets.sh` re-fetches the raw sources, `blender --background --python game/tools/cleanup_provider_assets.py` rebuilds the processed game assets, and `godot --headless --editor --path game --quit` imports them.
 - **Shared brief and fixed constraints:** END_GOAL.md is the destination and outranks this goal. The engine is **locked**: Godot 4.7.1 stable, Forward+, native macOS export — do not migrate engines. No local AI inference. No secrets in the repository. No `main` merge without the owner. Tripo (browser) for small/bulk/secondary props, Customuse (MCP) for hero assets, **Meshy excluded**; existing Tripo credits are authorised, new purchases are not.
 - **Visual bar:** GTA VI in Singapore, highest attainable fidelity. The primary art direction is the generated concept board in `docs/concepts/` (on-foot, driving, helicopter). `docs/visual-references.json` is secondary location/fidelity evidence only. A concept board is **not** evidence that our build matches it — runtime pixels are.
@@ -66,18 +66,18 @@ A same-model independent critic (no Opus/Fable access exists in the wave-1 CLI, 
 | No frame-time capture, stress route or soak harness (PERF-02/03/04, QA-020) | the capture harness writes PNGs only | extend `capture_director.gd` to record frame times and percentiles over a fixed stress route, and run a 30-minute soak plus three mission completions |
 | No explicit transition table existed (SYSTEM-01) | it is written down now, but nothing enforces it | `docs/TRANSITION_TABLE.md` is the reference; add a headless invariant test for every row |
 | The generated character and officer are unrigged (ART-05) | a skinned mesh with no skeleton cannot animate | automatic weights in Blender, then drive the bones procedurally in `Skeleton3D` |
-| The player avatar is still procedural boxes while the generated character sits unused | — | swap the avatar for the rigged generated character and keep the procedural rig only as a fallback |
+| The player avatar is still the procedural figure while the generated character is used only as a static vendor/officer | the generated model has no skeleton, so it cannot be the animated avatar yet | rig the generated character, then swap the avatar for it and keep the procedural rig only as a fallback |
 
 ## Known bugs / blockers
 
-- **Provider surfaces (partly resolved):** wave 1 had neither Tripo browser control nor the Customuse MCP; the manager executed the jobs instead. Four of eighteen requests are delivered and integrated, the rest are pending. Keep `ASSET_REQUESTS.json` current; do not fabricate assets or substitute direct HTTP calls to Tripo, and do not buy further Customuse credits (balance 53).
+- **Provider surfaces (resolved for wave 1, not for the CLI):** wave 1 had neither Tripo browser control nor the Customuse MCP; the manager executed all eighteen jobs instead (8 Customuse hero models, 10 Tripo props). Every request is marked `delivered` in `ASSET_REQUESTS.json` and every raw export was cleaned in Blender and integrated. Do not fabricate assets or substitute direct HTTP calls to Tripo, and do not buy further Customuse credits (balance 53).
 - **Provider assets are not committed.** Their terms are not MIT, so `game/assets/providers/` is git-ignored. A fresh clone must re-fetch them with `bash game/tools/fetch_provider_assets.sh` and re-run the Blender cleanup; `docs/asset-manifest.csv` holds the public URLs and SHA256 values. A wave that needs the assets on another machine must carry that step explicitly.
 - **Triangle budgets are enforced in Blender, not in the engine.** The Tripo table arrived at 1.87 M triangles and was reduced to 4 000; the hero vehicles and buildings were capped at 30–45 k. Keep that discipline: a raw export imported unchanged will stall the frame budget (PERF-02).
 - **No real-time physics:** vehicles and the helicopter use a hand-written kinematic arcade model rather than a physics engine. It is reliable at district speeds but has no suspension, no real collision impulse and no deformation.
 - **Traffic can deadlock** at junctions and AI cars can damage parked cars (wave 1 patched parked-car damage so it no longer disables them, but AI/AI contact still applies damage).
 - **Populated city is light:** ~34 pedestrians and 14 traffic vehicles for a 640 × 640 m district — density is far below END_GOAL WORLD-07 targets and must be profiled before raising the numbers.
 - **Interior coverage:** only the safe room, hawker hall and delivery point are modelled interiors; the shop/workshop/mission-room set required by WORLD-05 does not exist yet.
-- **Camera/settings:** no sensitivity/invert/reduced-shake options UI (PLAYER-02/UI-03 are Partial).
+- **Camera/settings:** the settings panel exists (F3: mouse sensitivity, invert-Y, reduced shake, HUD visibility), but there is no remapping, no colour-blind mode and no full menu shell — PLAYER-02 and UI-03 stay Partial.
 - **Missing engine cache:** a fresh clone must run one editor import (`godot --headless --editor --path game --quit`) before the class-name cache exists, otherwise `class_name` types fail to resolve.
 
 ## Verification
@@ -88,7 +88,7 @@ A same-model independent critic (no Opus/Fable access exists in the wave-1 CLI, 
 
 ## Handoff
 
-- Update `docs/REQUIREMENTS_LEDGER.md`, `docs/asset-manifest.csv` (provenance for every imported asset) and `HANDOFF.md`; push the task branch; write the next goal for DeepSeek / Devin.
+- Update `docs/REQUIREMENTS_LEDGER.md`, `docs/asset-manifest.csv` (provenance for every imported asset) and `HANDOFF.md`; push the task branch; the next goal is this file, addressed to **Astra through Codex**.
 - If the wave-2 result is still short of the north star, say so plainly: the verdict is "playable experimental build with unmet requirements" until the hard gates in VERIFY-05 and the major blockers in VERIFY-06 are cleared.
 
 ## Incoming model's reassessment

@@ -218,7 +218,9 @@ func _pilot_input(delta: float) -> void:
 	_yaw_input = lerpf(_yaw_input, yaw_in, clampf(delta * 6.0, 0.0, 1.0))
 	_pitch_input = lerpf(_pitch_input, pitch_in, clampf(delta * 5.0, 0.0, 1.0))
 	_lift_input = lerpf(_lift_input, lift_in, clampf(delta * 6.0, 0.0, 1.0))
-	rotation.y -= _yaw_input * 1.5 * delta
+	# a node that faces -Z turns left when its yaw increases: pressing left
+	# has to yaw left, or the aircraft flies away from the target
+	rotation.y += _yaw_input * 1.5 * delta
 	# arcade stabilisation: pitch the body with input, self-level when released
 	var target_pitch := -_pitch_input * 0.35
 	_body.rotation.x = lerp_angle(_body.rotation.x, target_pitch, clampf(delta * 4.0, 0.0, 1.0))

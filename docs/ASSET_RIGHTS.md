@@ -12,20 +12,27 @@ This is the ASSET-03/ASSET-04 rights review for the eighteen generated models us
 ## Check performed
 
 1. **Input review.** Every prompt asked for an original, unbranded object (no logos, no real livery, no real insignia, no real police uniform). The prompts are recorded in the manager's provenance files and in `ASSET_REQUESTS.json`.
-2. **Output inspection.** The three hero models that were rendered for review (sedan, helicopter, civilian character) were inspected visually: no manufacturer badges, no liveries, no readable trademarks, no insignia. The remaining fifteen were not individually rendered in wave 1 — the successor should render and inspect them before any public release.
+2. **Output inspection — partial, and three assets are known to carry marks.** Only the hero models that were rendered for review were inspected visually. **Sedan (W1-HERO-001)** and **helicopter (W1-HERO-004)**: no manufacturer badges, no liveries, no readable trademarks, no insignia. **Civilian character (W1-HERO-005)**: a **visible sneaker/logo mark** was seen in the raw preview, so this asset is **not** cleared. **Van (W1-HERO-003)** and **coupe (W1-HERO-002)**: the previews showed **badge/mark artifacts**, so these are **not** cleared either. The **remaining thirteen outputs were never rendered in wave 1** and are therefore **UNVERIFIED** — a prompt that asks for no logos is not output verification.
 3. **No extracted third-party content.** Nothing in the asset set is extracted from a game, film, brand or other existing work.
 4. **Modification.** All eighteen were modified in Blender for the game (real-world scale, ground at Y=0, part separation, triangle budgets); the rights check covers the modified outputs as well as the raw ones.
 5. **Attribution.** The Customuse terms state no attribution requirement. The project's own convention is to credit the provider in `docs/asset-manifest.csv` and in this document rather than to bake credits into the game.
 
 ## Decision
 
-- **The provider outputs may be redistributed in this public repository and included in a distributed build**, subject to the third-party-infringement condition, which the input and output review found satisfied. The repository's MIT licence covers **only the original code in this repository**; the provider outputs keep their own provenance and are not MIT-licensed, and the manifest says so per asset.
-- The wave-1 commit keeps the processed binaries **out of the git history** for one reason only: their size (≈264 MB of processed GLBs plus textures) would bloat every subsequent wave's diffs. The assets are not rights-blocked — they are reproducible. `game/tools/fetch_provider_assets.sh` fetches the eight Customuse sources directly from their public URLs with SHA256 verification, and lists the ten Tripo exports with their studio links and checksums for the owner's browser route; `game/tools/cleanup_provider_assets.py` rebuilds the processed game assets from the raw files.
-- **If the owner wants the binaries in the repository or in a public release, that is now permitted on rights grounds** and needs only a decision about repository size (or a GitHub release asset, which is the lighter option). Until then, a fresh clone reproduces the exact same assets from the recorded sources.
-- The one item that stays blocked is a **published binary release of the game itself**, which the owner has not authorised.
+- **Terms: cleared.** The provider terms reviewed above permit lawful personal and commercial use of the outputs and impose no attribution requirement. That is a statement about the *terms*, not about the outputs.
+- **Output clearance: 2 of 18 verified, 3 of 18 known to carry marks, 13 of 18 unverified.** Only the sedan and the helicopter were inspected and found free of marks. The character, the van and the coupe were inspected and found to carry marks. The other thirteen were never rendered. Until each asset is rendered and inspected, **the set as a whole is not cleared for public redistribution**, and this repository therefore keeps the processed binaries out of the history (see below) and marks them UNVERIFIED in the manifest.
+- The wave-1 commit keeps the processed binaries **out of the git history** for two reasons: their size (≈264 MB of processed GLBs plus textures would bloat every subsequent wave's diffs) and the **unverified mark clearance** described above. `game/tools/fetch_provider_assets.sh` fetches the eight Customuse sources directly from their public URLs with SHA256 verification, and lists the ten Tripo exports with their studio links and checksums **for the owner's browser route**; `game/tools/cleanup_provider_assets.py` rebuilds the processed game assets from the raw files. See "Reproducibility" below for what is automatic and what is a manual browser step.
+- The item that stays blocked is a **published binary release of the game itself**, which the owner has not authorised — and a public redistribution of the provider binaries additionally needs the mark inspection finished.
+
+## Reproducibility, honestly bounded
+
+- **Automatic:** the eight Customuse hero sources are fetched by URL with SHA256 verification, and the Blender cleanup rebuilds every processed game asset from the raw files.
+- **Manual browser step:** the ten Tripo props are **not** fetched automatically. `game/tools/fetch_provider_assets.sh` records each studio link and checksum and prints the steps, but the actual export has to be performed through the owner's Tripo browser session. A fresh clone therefore reproduces the Customuse half automatically and the Tripo half only with a documented manual browser step.
+- The manager carries the ignored processed provider folder across to the successor's checkout at handoff, so wave 2 does not have to redo the browser export to keep building.
 
 ## Open items for the successor
 
-- Render and inspect the fifteen provider outputs that wave 1 did not visually review, and record the result here.
+- **Render and inspect the thirteen provider outputs that wave 1 never rendered**, and record the result here.
+- **Strip or replace the marks on the character, the van and the coupe** (a sneaker/logo mark on W1-HERO-005; badge artifacts on W1-HERO-002 and W1-HERO-003), then re-inspect and update this record.
+- **Tripo job labels:** the commercial-use conditions for the ten Tripo props rest on the linked Tripo commercial-use page and the owner's account; the per-job labels (in particular any "personal use only" flag) were not checked individually. Check them before any public release.
 - The generated character and officer are unrigged; rigging them does not change the rights position.
-- If any Tripo job was flagged "personal use only" in the studio, that asset must not ship in a commercial build — re-check the job labels in `tripo-wave01.json` before a public release.

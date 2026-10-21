@@ -282,7 +282,9 @@ func _player_control(delta: float) -> void:
 		_forward = move_toward(_forward, 0.0, (DRAG + absf(_forward) * 0.25) * delta * 6.0)
 	_steer = lerpf(_steer, steer_input, clampf(delta * 9.0, 0.0, 1.0))
 	var turn := _steer * TURN_SPEED * clampf(absf(_forward) / 8.0, 0.0, 1.0) * signf(_forward if absf(_forward) > 0.05 else 1.0)
-	rotation.y -= turn * delta
+	# A node that faces -Z turns left when its yaw increases, so the sign here
+	# has to be positive: pressing left has to steer left, not right.
+	rotation.y += turn * delta
 	var dir := -global_transform.basis.z
 	velocity.x = dir.x * _forward
 	velocity.z = dir.z * _forward

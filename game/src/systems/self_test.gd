@@ -105,6 +105,33 @@ func _behaviour_checks(main: Node) -> void:
 	_check("health regenerates once the player is out of fire", Game.health > 40.0, " (%.1f)" % Game.health)
 	Game.health = Game.MAX_HEALTH
 
+	# 8. steering must not be inverted: pressing left has to turn the vehicle left
+	if player and traffic and traffic.cars.size() > 2:
+		var steer_car: Car = traffic.cars[2]
+		player.global_position = steer_car.global_position + Vector3(1.6, 0.2, 0.0)
+		player.current_vehicle = null
+		Game.set_mode(Game.MODE_FOOT)
+		await get_tree().process_frame
+		Input.action_press("interact")
+		await get_tree().process_frame
+		await get_tree().process_frame
+		Input.action_release("interact")
+		await get_tree().process_frame
+		if Game.mode == Game.MODE_CAR:
+			steer_car.rotation.y = 0.0
+			var nose_before := -steer_car.global_transform.basis.z
+			Input.action_press("move_forward")
+			Input.action_press("move_left")
+			for i in 40:
+				await get_tree().process_frame
+			Input.action_release("move_forward")
+			Input.action_release("move_left")
+			var nose_after := -steer_car.global_transform.basis.z
+			# a vehicle facing -Z turns left by moving its nose towards -X
+			_check("pressing left steers the vehicle left", nose_after.x < nose_before.x - 0.05, " (nose x %.2f -> %.2f)" % [nose_before.x, nose_after.x])
+			player.respawn_at(player.global_position, player.rotation.y)
+			Game.set_mode(Game.MODE_FOOT)
+
 
 func _can_walk(player: Node) -> bool:
 	# walk on open road, not inside the safe room, so the check measures the
