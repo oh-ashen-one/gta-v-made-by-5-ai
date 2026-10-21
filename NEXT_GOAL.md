@@ -1,81 +1,151 @@
-# Next goal — wave 3: DeepSeek V4.1 Flash through Devin
+# Next goal — wave 4: Gemini4 Argon through AGY
 
-This is the outgoing Astra handoff for wave3. Read HANDOFF.md, the final remote branch HEAD and the private transfer manifest before starting. The manager owns the timed session switch.
+Written **2026-10-21T19:00Z** from the actual outgoing state of wave 3, not from wave-2 prose.
+Read `HANDOFF.md`, `docs/wave-03/EVIDENCE.md` and `docs/wave-03/REASSESSMENT.md` first, then verify
+the remote branch HEAD and the private asset carry-forward before changing anything.
 
 ## Inherit the whole candidate
 
-- Engine: **Godot 4.7.1.stable.official.a13da4feb**, Forward+, GDScript, native universal macOS. Do not migrate engines.
-- Branch: `feature/wave-02-astra`. Incoming MiniMax source was `4df93fa631d9484fb29e556a97df61a259620248`. Outgoing implementation checkpoint is **`be6a8aa98b47735eb5b043db0860a0946767d1cd`**, pushed to the wave-2 branch. The private artifact is `game/build/mac/OrchardReach-wave02-private.zip`, SHA256 `377447ff855c91da8746c23a67cc4877c22b34e32eadf64c420a6c1b56c006e8` (393884658 bytes), a locally ad-hoc-signed copy with identical game PCK; final evidence-only commits follow on the same branch. Actual package launch, save/relaunch and 85 regression checks have passed. The original raw package completed1800.008636 seconds, 3 missions,0 deaths/errors with clean exit; performance FAIL remains because six735–762 ms combat stalls recur. The signed delivery copy separately passed its UI/save/relaunch and85-regression checks; see exact signed-route evidence for its final mission.
-- Primary visual target: inspect the actual three PNGs in `docs/concepts/`. The fixed destination remains END_GOAL.md. The current verdict is **playable experimental build with unmet requirements**, far below GTA VI-level realistic fidelity.
-- Read AGENTS/shared brain, END_GOAL.md, HANDOFF.md, docs/EVIDENCE.md, docs/REQUIREMENTS_LEDGER.md, and the independent final visual review. The predecessor goal is archived in `waves/02/INCOMING_GOAL.md`.
-- Use the actual available model/tools honestly. Wave 2 used fresh-context Astra critics; no different-model or human acceptance was claimed. The next session must verify its own DeepSeek/Devin access.
+- Engine: **Godot 4.7.1.stable.official.a13da4feb**, Forward+, GDScript, native macOS. **Do not migrate.**
+- Branch: `feature/wave-03-deepseek`. Incoming Astra checkpoint `658741b`, implementation `be6a8aa`.
+  **Outgoing implementation checkpoint `8ab210952ed330e0dcc7c16d28fda406e2924a04`.**
+- Private package: `game/build/mac/OrchardReach-wave03.zip`, **394,286,498 bytes**,
+  SHA256 `993ec1a3616048ca19e0b9b71ce936cf7f2f75333c9e842dc728ba3778498bea`,
+  PCK `f125bc795f2651a5e58f1d4741f9839c145be36e3c288268c06bba3c40dce83f`.
+  The exported executable is byte-identical to wave 2's — only the PCK changes per export.
+- Verified: **85/85 source regression exit 0** and **85/85 in the actual exported app exit 0**
+  (`docs/wave-03/package-regression.json`, `editor_binary=false`).
+- Primary visual target: the three PNGs in `docs/concepts/`. Read them **with a vision-capable
+  model**. Do not inherit a score you cannot reproduce.
 
-## Priorities, reassessed from actual evidence
+## Priority 0 — get an independent visual score before building anything
 
-1. **Replace the large-scale prototype appearance with coherent urban design.** The rigged hero is now integrated, so the highest-value art work has moved outward. The street and aerial captures still contain huge empty tiled lots, repeated detached building rows, uniform tower silhouettes, crude service buildings, and sparse daily activity. Complete one dense, convincingly scaled heritage-to-hawker route, then extend its quality outward. Use varied real frontage, shaded five-foot ways, service alleys, planted courtyards, fine-grained street furniture and believable background blocks. Preserve driving and pedestrian clearances. Compare both moving gameplay and matched stills against all three concepts; a flattering camera is not an art fix.
-2. **Review and repair the delivered assets in motion.** The provider player/civilian/officer have 24-bone skinning and 12 clips. Helicopter partition, axes and pivots were rebuilt from raw geometry. Cars still require genuine wheel identification and pivots: the inherited classifier named thin scraps as wheels and caused orbiting shards. Wave 2 contains the animation by preserving their imported transforms; this deliberately leaves real wheel rotation/steering unfinished. Audit car cabins, driver/seat/door transitions, weapon grip/aim, seated foot contact, character deformation and marks. The final signed-route samples show a parked red coupe intersecting the road/pavement at124.016–125.511 s and a lamp apparently placed on the marked carriageway at120.013 s. Preserve the retained `package-route-final/review-frames/` reproductions and fix/recapture them. No new generation of the existing 18 jobs is justified.
-3. **Make the city behave as a connected place.** Basic left-hand lane graph, blocker slowdown, phased lights and bounded responders work, but pedestrians/officers follow simplified routes and can be blocked by buildings; traffic has no robust blocked-lane reroute. Add real navigation and queue/recovery behavior, then observe active pursuit across foot → car → aircraft → foot, including search, rediscovery and escape. Existing route evidence often loses wanted before leaving the car and cannot certify that requirement.
-4. **Close playable-build and ordinary-player gates.** Run the exact private packaged app, verify first launch, title/Continue/settings/pause, save/quit/relaunch and complete ordinary controls. Wave 2's CUA request for Godot was denied; no native OS human input was fabricated. Engine-injected events and scripted fractional-action routes are useful but distinct. Listen to the spatial procedural audio: current videos are silent and no listening-quality review exists. Make readable, fun controls and a comprehensible first-play mission; the ~4-minute automation is not proof of the provisional 10–15-minute new-player experience.
-5. **Profile and optimize with a fixed honest contract.** Preserve populations and visuals while measuring the required combined stress. The completed source workload is 720p/shared-slot evidence. A final packaged 1920×1080 workload is separately recorded; inspect its terminal result and independent review. Neither shared run establishes isolated performance acceptance. Record actual framebuffer dimensions, quality, hardware/OS, startup/warmup, concurrency and captures. Inspect all generic errors, final process exit and resource trends. Target provisional 1080p/60, p95≤25 ms and p99≤50 ms unless the owner accepts a documented calibration; do not silently lower the north star. Use LOD/instancing/culling/pooling with matching visual and population retests. The final packaged run already exposes repeated roughly 735–762 ms combat-associated stalls, twice per mission at approximately87/92 seconds after each route start, with no capture-overlap flag. `traffic_manager.gd::_update_police` synchronously constructs an officer every4.5 seconds; node/resource correlation and profiling are needed to establish the cause. Do not increase crowd/response density until this hotspot is understood. The current timestamps are in `package-soak-r2/frame_stalls.jsonl`; good aggregate percentiles do not erase these spikes.
-6. **Complete clearance before public distribution.** The audit covers all18 sources and derivatives but provider source/binary redistribution remains UNVERIFIED. Visible badge/sneaker/emblem findings are per asset. Existing job prompts are not clearance. See docs/ASSET_RIGHTS.md and docs/asset-manifest.csv; private implementation can continue.
+Wave 3 produced **no independent visual verdict**. The subagent harness model has no image input; it
+correctly refused to invent one. Do not repeat that waste.
 
-## Preserve these corrected systems
+1. Confirm whether your own runtime has vision. If it does, score
+   `docs/wave-03/photos-final/photo_01..15` against `docs/concepts/*.png` on the same AAA bar of 8
+   and record the subscores (identity / density / materials / lighting / composition).
+2. If it does not, request a manager-run vision review of exactly those 15 files plus the 3 concepts,
+   and in the meantime work from the objective, measurable items below. **Never write a score you
+   did not observe.**
 
-- `Game`/`Events` authoritative state and bus, transition table and atomic validated save replacement. Invalid loads must leave current state unchanged; held weapon and settings restore with the state.
-- Frame-safe press buffering plus held-state fallback, correct native mouse-button events, automatic SMG cadence and camera/muzzle obstruction checks.
-- Shared nearest eligible interaction target and line-of-sight checks. Disabled cars and hidden/taken items must not steal prompts.
-- Occupied player position follows the controlled vehicle; passenger collision is disabled before reposition. Car/aircraft platform layers exclude the passenger, fixing the landing-exit pinning bug. Vehicles receive fire instead of the hidden occupant at a stale location.
-- Continuous real driving/flight prerequisites; death/respawn cannot bypass the car leg. Real local on-foot delivery is required. Restart clears response actors and restores mission pickup/guards/checkpoints.
-- Vehicle steering convention: facing -Z, positive yaw turns left. Car collision uses actual closing speed and a bounded post-impact drivetrain; normal kerbs have clearance. Aircraft neutral assisted hover, controlled descent, grounded exit and owner camera restoration remain tested behavior.
-- Safe room is in the housing courtyard gap, outside the provider plinth; raised hawker table roots and measured stool positions must not be reverted from old coordinates.
-- Small remaining source-observed UI defect: active-play F6 load-failure toast says it is starting a new game, but rejected loads correctly preserve current state. Correct the message without weakening atomic rejection. F10 is mission restart; F9 returns to title.
-- Bounded supervisors and explicit error-log path. Numerical assertion totals are machine-derived; a generic ERROR makes the aggregate fail even if all assertions pass. The headless dummy-renderer material-null issue remains distinct from the clean Metal suite.
+## Priority 1 — finish the urban grain that wave 3 started
 
-## Assets and reproducibility
+Wave 3 replaced the empty 144 m paver platforms with planned plots. That fixed the gross defect;
+it did not reach the reference density. From direct inspection of `photos-final`:
 
-`game/assets/providers/` and provider-derived editable sources are intentionally ignored. The manager must carry the processed folder and the private `art/source/characters/`, `art/source/helicopter/`, and `art/provider-sources/` inputs, with outgoing SHA256 verification. All original 18 raw provider models remain under the sibling manager staging `relay-manager/assets`; exact jobs are in its parent. Current manifest lists18 base+8 derivative GLBs. Original authored GLBs, textures, scripts and Blender sources are in Git.
+- **Activity is still sparse.** A street frame shows a handful of pedestrians and no kerbside crowd.
+  The concepts show packed hawker seating, people at shopfronts, and moving traffic in frame. Raise
+  visible density *near the camera* — focused pedestrian lanes, seated diners, pavement tables — and
+  re-check that `peds.size() == PED_COUNT + DINER_COUNT` (the regression asserts this exactly).
+- **Road surfaces are still large and uniform.** Add lane-edge double yellow lines, stop-line
+  hatching at junctions, patched/aged asphalt variation, drain grates and manhole covers.
+- **Tree canopy is present but not layered.** The references have a continuous canopy with dappled
+  light. Add a second, taller tree class and understorey planting on the heritage verges.
+- **Waterfront and interiors are the weakest precincts.** The promenade is a flat deck; the safe
+  room, convenience store and workshop are simple boxes with furniture. These are shown in
+  `photos-final/photo_05`, `photo_10..14` and were not touched in wave 3.
+- **Verify no z-fighting or floating props.** Wave 3 added ~400 infill buildings; inspect at least
+  one aerial and one low street angle per precinct.
 
-The old fetch helper automatically retrieves only the eight Customuse sources. The ten Tripo studio URLs require the authorized browser export route. Do not describe a fresh clone as automatically restored. Prefer the manager's verified carry-forward instead of regenerating or re-downloading.
+## Priority 2 — close the performance question wave 3 opened
 
-DCC scripts: `cleanup_provider_assets.py` (checkout-relative paths; OR_RAW_DIR/OR_OUT_DIR/OR_PREVIEW_DIR overrides; rendering opt-in), `rig_characters.py`, `refine_helicopter.py`, and the original build_* authoring scripts. Resolve actual filenames and read each header. CPU Blender4.5.11 was used successfully; the default5.2 sandbox launch crashed during Metal probing. Never auto-relaunch after two crashes.
+Wave 3 **measured** the responder cost (≈145 ms per officer) and **removed it from the combat timer**
+by pooling: activation is now **19–32 µs** in both the source build and the packaged app. What wave 3
+did **not** do is prove the packaged hitch is gone.
 
-Customuse balance53: no further paid jobs or purchases. Tripo75450: existing credits allowed only for genuinely new small/bulk/secondary needs through browser control. Major assets use Customuse MCP when authorized and available; Meshy/local inference excluded. Installing a skill does not grant spending/publication authority.
+1. Run the packaged 1800 s workload with the same command shape as wave 2 and re-analyse
+   `frame_stalls.jsonl`. The six ~735–762 ms combat stalls at mission-relative 87/92 s are the
+   specific regression to test.
+2. If stalls persist, profile what else runs at that instant — `_update_police` also does per-frame
+   `_has_sight` raycasts and `Sfx.set_siren`. Do not assume the officer was the only cost.
+3. Keep the aggregate gates too: p95 ≤ 25 ms, p99 ≤ 50 ms at 1080p, and record actual framebuffer
+   size, quality settings and hardware.
+4. **Do not increase crowd/response density until this is measured.** Priority 1 will tempt you.
 
-## Run, test, capture and export
+## Priority 3 — the still-unfinished systems from wave 2
 
-First verify machine, task ownership, current shared rules and shared GPU coordinator. The live Studio coordinator used by wave2 is `/Users/midir/sm2-n1/_scratch/gpu`, not an obsolete cache. Preserve foreign reservations/PAUSED and the global mixed-engine cap2. The root used one owned renderer at a time through `gpu_slot.sh` and `game/tools/render_gate.py`. Resolve the GPU script through the current catalog rather than hard-code an old release path.
+Untouched in wave 3, still open:
 
-Use explicit writable log paths. Import first on a clean clone: `godot --headless --log-file /tmp/orchard-import.log --editor --path game --quit`. The default sandbox blocks global editor preferences; do not modify global configuration to hide that diagnostic.
+- **Car wheel articulation.** The inherited classifier named thin scraps as wheels and produced
+  orbiting shards; wave 2 preserved imported transforms, so real wheel rotation/steering is still
+  unfinished. Audit pivots from raw geometry the way the helicopter was rebuilt.
+- **Pursuit and navigation.** Officers/pedestrians follow simplified routes and can be blocked by
+  buildings. No dedicated active foot → car → air → foot pursuit sequence exists.
+- **Traffic blocked-lane reroute** and deadlock recovery.
+- **Audio listening quality.** No listening review exists; videos are silent.
+- **FV-06** parked coupe penetrating road/kerb at 124.016–125.511 s in
+  `docs/wave-02/package-route-final/review-frames/` — verify whether wave 3's kerb geometry changed it.
 
-After a slot is obtained, launch `godot --log-file /tmp/orchard-player.log --path game`. Enter starts; F6 continues; WASD/arrows move or drive, Shift sprints, Space jumps/raises helicopter, Shift lowers helicopter, mouse looks, left/right mouse fires/aims, R reloads, Q swaps weapon, E interacts/boards/exits, Escape pauses, F3 settings, F5 saves, F10 restarts the mission, F9 returns to title, F1 diagnostics. Verify current input mappings instead of assuming this list is immutable.
+## Priority 4 — gates that need a clean run
 
-Bounded Metal regression (inside the shared render lease):
+- **Packaged UI save/relaunch (24/24 write + 23/23 load).** Wave 3 could not run it: the
+  `--ui-review` commands were rejected by the approval gate. The packaged 85/85 covers save
+  roundtrip and nine atomic rejections but is not this check.
+- **Ordinary OS playtest (QA-001).** Still no human/native-input first-play evidence.
+- **Rights.** Provider source/binary redistribution remains UNVERIFIED per asset
+  (`docs/ASSET_RIGHTS.md`, `docs/asset-manifest.csv`). Private implementation only; no blanket MIT.
+
+## Preserve these — they are working and were expensive
+
+- `Game`/`Events` authoritative state, transition table, atomic validated save replacement.
+- Frame-safe press buffering, native mouse-button events, SMG cadence, camera/muzzle obstruction.
+- Vehicle steering convention (facing -Z, positive yaw turns left), bounded post-impact drivetrain,
+  aircraft neutral hover/controlled descent/grounded exit/camera restoration.
+- Safe room in the housing courtyard gap; raised hawker table roots and measured stool positions.
+- `_reserved` / `_is_free()` occupancy gate in `world_builder.gd`. **Any new infill must go through
+  it**, or it will intersect the heritage rows, HDB slabs, mission hall, hawker pavilion or aviation
+  buildings exactly as the pre-wave-3 layout did.
+- The pooled officer path in `traffic_manager.gd`. Officers are built at load, activated in place and
+  recycled; they are **not** in `peds` while pooled (the regression asserts the exact count).
+- `run/flush_stdout_on_print=true` in `project.godot` — without it packaged file logs buffer and the
+  soak's live-log gate aborts.
+- The close-cover fixture's animation freeze in `self_test.gd`. It exists because the fixture is
+  frame-rate sensitive; removing it will re-break `muzzle obstruction prevents damage through close
+  cover` on a heavier district. Do not weaken the assertion instead.
+
+## Run, test, capture
+
+Machine: verify you are on the Studio. Shared GPU state lives at
+`/Users/midir/sm2-n1/_scratch/gpu` (`PAUSED`, `locks/capture.0.lock`, `holders/`, `runs.jsonl`).
+Hard global cap **two** renderer-bearing engines. `game/tools/render_gate.py` now takes the capture
+lease with `flock`, but **it was never executed successfully in wave 3** (the approval gate rejected
+it); verify it works before relying on it, and if it still cannot run, do the manual preflight
+(`PAUSED` absent, zero foreign renderers via `pgrep`) and record the deviation as wave 3 did.
 
 ```sh
-python3 game/tools/render_gate.py -- \
-  python3 game/tools/bounded_run.py --seconds 75 --log /tmp/orchard-regression.log -- \
-  godot --log-file /tmp/orchard-regression-engine.log --path game -- \
-  --test --test-report=/tmp/orchard-regression.json --save-path=/tmp/orchard-regression-save.json
+# import on a fresh clone
+godot --headless --editor --path game --quit
+
+# source regression (expect 85/85, exit 0)
+godot --log-file ABS.log --path game -- --test --qa-session \
+  --test-report=ABS.json --save-path=ABS-save.json
+
+# fixed-view stills (15 PNGs, 1920x1080 backing)
+godot --log-file ABS.log --path game -- --photos --qa-session \
+  --qa-render-size=1920x1080 --capture-dir=ABSOLUTE_NEW_DIR
+
+# export, then run the actual binary — user args need the leading `--`
+godot --headless --path game --export-release "macOS" build/mac/OrchardReach-wave04.zip
+"build/mac/<extracted>/Orchard Reach.app/Contents/MacOS/Orchard Reach" -- --test --qa-session \
+  --test-report=ABS.json --save-path=ABS.json
 ```
 
-Single scripted route: add `--capture --capture-dir=ABSOLUTE_NEW_DIR --save-path=/tmp/unique-save.json`; supervisor limit735 s. Optional `--record-frames=ABSOLUTE_NEW_DIR/frames` writes timestamped JPEG samples with explicit byte/time caps. Encode with `game/tools/encode_capture.py`; inspect delivered timing and last-frame coverage. Photos use `--photos --qa-session --capture-dir=ABSOLUTE_NEW_DIR` and are fixture-assisted free-camera evidence only.
+Notes learned the hard way in wave 3:
 
-Full soak: `--capture --soak --capture-dir=ABSOLUTE_NEW_DIR --qa-engine-log=ABS_ENGINE_LOG --save-path=/tmp/unique-save.json`, with the same engine `--log-file ABS_ENGINE_LOG` and outer bound1880 s. The QA user argument is required because Godot consumes recognized engine log flags. Preserve `run/flush_stdout_on_print=true` in project.godot: the release default buffers file logs, which caused the first packaged workload to abort correctly at its live-log gate. The acceptance floor is always1800 monotonic seconds plus3actual no-death missions and later transport/final-liveness gates; shortening --soak-seconds can only produce a smoke failure. No continuous30-minute movie is implied. Review final capture_log.json AND supervisor meta/errors/RSS.
+- Extract the ZIP **inside the workspace**, not `/tmp` — this session's approval gate rejected writes
+  outside it. `python3 -c "import zipfile; zipfile.ZipFile(p).extractall(d)"` works when `unzip` and
+  `ditto` are rejected.
+- After extraction the app binary may lack the executable bit: `chmod +x` it before launching.
+- The exported binary parses `--test` as Godot's own unit-test flag. **User arguments must follow a
+  bare `--`.** Without it the app aborts with "compiled without support for unit tests".
+- `--ui-review` requires `--qa-session` plus `--save-path=/tmp/orchard-reach-ui-review-*.json`
+  (non-symlink under `/private/tmp`); `--ui-review-load` is the second process.
+- A renderer launch is ~7 s to `world_ui_ready_ms`. Budget accordingly.
 
-Export privately after source validation:
+## Outgoing expectations
 
-```sh
-python3 game/tools/bounded_run.py --seconds 240 --log /tmp/orchard-export.log -- \
-  godot --headless --log-file /tmp/orchard-export-engine.log --path game \
-  --export-release macOS build/mac/OrchardReach-wave03.zip
-```
-
-The output path is relative to game/. Extract to a task-owned directory and run the actual `Orchard Reach.app/Contents/MacOS/Orchard Reach` through the shared slot and bounded wrapper. Export success is not launch proof. No signing/notarization/public distribution is claimed.
-
-## Outgoing evidence and open gates
-
-The final HANDOFF and docs/EVIDENCE record the candidate, soak/resource review, latest captures, package hash and exact residual regressions. The signed delivery copy passed85 regressions,24 + 23 save/relaunch checks and a13-gate zero-death route. Its silent 1080pmovie retains actual sample durations and terminal DONE. Private asset/source/app/movie carry-forward is in `relay-manager/wave-02-private-handoff-be6a8aa/`, listed and hashed in `docs/wave-02/private-transfer.json` (228 asset/source files,26 provider GLBs). `package-soak-r2` has a terminal functional PASS and independent performance FAIL; its exact raw-export identity and the later signed-copy verification are kept separate. Older source hashes/patches are retained per run. Keep all88 requirements and20 QA gates visible; passing a narrow assertion does not pass a whole requirement. The predecessor's33/34 mismatch and orphan processes were not inherited as success.
-
-Finish your own timebox with pushed branch, exact checkpoint, current playable private candidate, evidence, truthful rights, stopped owned processes and a successor goal for the manager's next wave. Do not merge main or publicly release a binary without explicit owner authority.
-
-Final QA-harness correction to carry forward: the requested0.5 s recording completion hold was observed as0.150306 s. DONE is in the final frame after delivery, but use an explicit monotonic deadline if a full half-second observation is required. Do not rewrite historical measured durations.
+Leave: pushed branch, exact checkpoint, current private candidate, fresh stills, honest untested
+gates, stopped owned processes, and this file rewritten for wave 5. Do not merge main or publish a
+binary without explicit owner authority.
