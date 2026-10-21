@@ -44,6 +44,8 @@
 
 - `game/src/core/game_state.gd` as the single authority for health, mode, wanted level, mission stage and save/load; `game/src/core/events.gd` as the only cross-system bus (SYSTEM-01).
 - The `Game` / `Events` autoload contract and the `ASSET_REQUESTS.json` request schema.
+- The frame-safe input path in `Player._consume_press()`: the player reacts to the **held** state of an action once per press, not to `Input.is_action_just_pressed()`. A press injected after the player's turn in a frame is otherwise lost, which silently broke the scripted playthrough. Do not go back to `is_action_just_pressed` for the polled actions (fire, reload, weapon swap, interact).
+- Nearest-target interaction: vehicles and mission interactables compete on distance, each with its own reach (`INTERACT_RANGE` 5 m, `PICKUP_RANGE` 7.5 m).
 - The transition table and its invariants in `docs/TRANSITION_TABLE.md`.
 - The rights position in `docs/ASSET_RIGHTS.md`: provider terms permit redistribution, and every asset is reproducible from `game/tools/fetch_provider_assets.sh`.
 - The left-hand-traffic lane graph (`traffic_manager.gd`, 25 junctions, left-lane offset) and the arcade vehicle model — both work and are cheap to keep.
