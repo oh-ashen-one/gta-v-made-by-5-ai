@@ -1,0 +1,8 @@
+{
+  "pid": 95470,
+  "exit_code": 2,
+  "timeout": false,
+  "elapsed_sec": 104.69,
+  "child_reaped": true,
+  "note": "Car entry failed after first LOS implementation; root subsequently fixed target RID exclusion copy behavior. Current regression proves normal car entry and blocked-door behavior."
+}

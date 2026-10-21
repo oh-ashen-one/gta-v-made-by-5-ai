@@ -9,7 +9,7 @@ var mission: Mission
 
 var _objective_label: Label
 var _prompt_label: Label
-var _health_bar: ProgressBar
+var _health_bar: Control
 var _health_label: Label
 var _ammo_label: Label
 var _weapon_label: Label
@@ -25,6 +25,7 @@ var _settings_panel: Control
 var _settings_values: Label
 var _settings_rows: Array = []
 var _marker: Vector3 = Vector3.ZERO
+var _gameplay_controls: Array[CanvasItem] = []
 
 const NOTIFICATION_LIFETIME := 4.0
 
@@ -34,82 +35,72 @@ func setup(w: WorldBuilder, p: Player, m: Mission) -> void:
 	mission = m
 	layer = 10
 	_build()
-	Events.objective_changed.connect(func(text): _objective_label.text = text)
+	Events.objective_changed.connect(func(text): _objective_label.text = String(text).replace("Harbour Relay — ", ""))
 	Events.interaction_prompt.connect(func(text): _prompt_label.text = text)
 	Events.health_changed.connect(_on_health)
 	Events.ammo_changed.connect(_on_ammo)
 	Events.wanted_changed.connect(_on_wanted)
 	Events.notify.connect(_on_notify)
+	Events.settings_changed.connect(func(_settings: Dictionary):
+		refresh_settings()
+		set_gameplay_visible(bool(Game.settings.get("hud_visible",true))))
 	if mission:
-		_objective_label.text = mission.current_objective()
+		_objective_label.text = mission.current_objective().replace("Harbour Relay — ", "")
 
 func _build() -> void:
 	var root := Control.new()
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
-
-	_objective_label = _mk_label(root, Vector2(24, 18), 22, Color(0.97, 0.95, 0.88))
-	_objective_label.size = Vector2(760, 60)
-	_objective_label.text = "Objective: —"
-
-	_prompt_label = _mk_label(root, Vector2(640, 620), 20, Color(1.0, 0.92, 0.6))
-	_prompt_label.size = Vector2(600, 30)
-	_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-
-	_health_bar = ProgressBar.new()
-	_health_bar.position = Vector2(24, 96)
-	_health_bar.size = Vector2(240, 18)
-	_health_bar.max_value = 100.0
-	_health_bar.value = 100.0
-	_health_bar.show_percentage = false
+	_panel(root,Vector2(24,24),Vector2(620,78),Color(.025,.055,.058,.88))
+	var tag := _mk_label(root,Vector2(40,34),11,Color(.57,.78,.70))
+	tag.text="HARBOUR RELAY"
+	_objective_label=_mk_label(root,Vector2(40,53),18,Color(.96,.94,.86))
+	_objective_label.size=Vector2(586,44)
+	_objective_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	_prompt_label=_mk_label(root,Vector2(300,626),18,Color(1,.88,.58))
+	_prompt_label.size=Vector2(680,32)
+	_prompt_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	_health_bar=Control.new()
+	_health_bar.position=Vector2(24,665);_health_bar.size=Vector2(206,6)
+	_health_bar.draw.connect(func():
+		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(206,6)),Color(.02,.04,.04,.85))
+		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(206*Game.health_ratio(),6)),Color(.43,.76,.63)))
 	root.add_child(_health_bar)
-	var hp_frame := ColorRect.new()
-	hp_frame.position = Vector2(24, 96)
-	hp_frame.size = Vector2(240, 18)
-	hp_frame.color = Color(0.1, 0.1, 0.1, 0.45)
-	root.add_child(hp_frame)
-	_health_bar.position = Vector2(24, 96)
+	_health_label=_mk_label(root,Vector2(24,678),12,Color(.88,.93,.88));_health_label.text="HEALTH 100"
+	_ammo_label=_mk_label(root,Vector2(1110,30),26,Color(.97,.95,.88));_ammo_label.text="12 / 96"
+	_weapon_label=_mk_label(root,Vector2(1112,64),12,Color(.65,.74,.74));_weapon_label.text="PISTOL"
+	_wanted_label=_mk_label(root,Vector2(815,110),16,Color(.97,.68,.36));_wanted_label.size=Vector2(430,45)
+	_wanted_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
+	_stats_label=_mk_label(root,Vector2(1000,660),18,Color(.94,.95,.92));_stats_label.size=Vector2(245,40)
+	_stats_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
+	_debug_label=_mk_label(root,Vector2(24,120),14,Color(.7,.8,.85));_debug_label.visible=false
+	_notifications=VBoxContainer.new();_notifications.position=Vector2(755,550);_notifications.size=Vector2(490,90)
+	_notifications.alignment=BoxContainer.ALIGNMENT_END;root.add_child(_notifications)
+	_crosshair=Control.new();_crosshair.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_crosshair.mouse_filter=Control.MOUSE_FILTER_IGNORE;_crosshair.draw.connect(_draw_crosshair);root.add_child(_crosshair)
+	_minimap=Control.new();_minimap.position=Vector2(24,442);_minimap.size=Vector2(206,206)
+	_minimap.clip_contents=true;_minimap.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	_minimap.draw.connect(_draw_minimap);root.add_child(_minimap)
+	for child in root.get_children():
+		if child is CanvasItem: _gameplay_controls.append(child)
+	_build_pause_panel(root);_build_title_panel(root);_build_settings_panel(root)
 
-	_health_label = _mk_label(root, Vector2(24, 112), 16, Color(0.95, 0.93, 0.88))
-	_health_label.text = "HEALTH 100"
+func _panel(parent: Control, pos: Vector2, size: Vector2, color: Color) -> Panel:
+	var panel:=Panel.new();panel.position=pos;panel.size=size;panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	var style:=StyleBoxFlat.new();style.bg_color=color
+	style.corner_radius_top_left=6;style.corner_radius_top_right=6;style.corner_radius_bottom_left=6;style.corner_radius_bottom_right=6
+	panel.add_theme_stylebox_override("panel",style);parent.add_child(panel);return panel
 
-	_ammo_label = _mk_label(root, Vector2(1000, 96), 22, Color(0.95, 0.93, 0.88))
-	_ammo_label.text = "12 / 96"
-	_weapon_label = _mk_label(root, Vector2(1000, 122), 15, Color(0.78, 0.80, 0.86))
-	_weapon_label.text = "PISTOL"
-
-	_wanted_label = _mk_label(root, Vector2(1000, 24), 22, Color(0.95, 0.72, 0.35))
-	_wanted_label.text = ""
-
-	_stats_label = _mk_label(root, Vector2(24, 640), 17, Color(0.88, 0.90, 0.94))
-	_stats_label.text = ""
-
-	_debug_label = _mk_label(root, Vector2(24, 140), 15, Color(0.75, 0.85, 0.95))
-	_debug_label.visible = false
-
-	_notifications = VBoxContainer.new()
-	_notifications.position = Vector2(760, 560)
-	_notifications.size = Vector2(480, 120)
-	_notifications.alignment = BoxContainer.ALIGNMENT_END
-	root.add_child(_notifications)
-
-	_crosshair = Control.new()
-	_crosshair.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_crosshair.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_crosshair.draw.connect(_draw_crosshair)
-	root.add_child(_crosshair)
-
-	_minimap = Control.new()
-	_minimap.position = Vector2(1010, 400)
-	_minimap.size = Vector2(240, 240)
-	_minimap.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_minimap.draw.connect(_draw_minimap)
-	root.add_child(_minimap)
-
-	_build_pause_panel(root)
-	_build_title_panel(root)
-	_build_settings_panel(root)
+func _button(parent: Control, text: String, pos: Vector2, callback: Callable) -> Button:
+	var button:=Button.new();button.text=text;button.position=pos;button.size=Vector2(300,45)
+	button.add_theme_font_size_override("font_size",17)
+	var normal:=StyleBoxFlat.new();normal.bg_color=Color(.09,.15,.15,.94)
+	normal.content_margin_left=18;normal.corner_radius_top_left=4;normal.corner_radius_bottom_left=4
+	var hover:=normal.duplicate() as StyleBoxFlat;hover.bg_color=Color(.23,.36,.32,.98)
+	button.add_theme_stylebox_override("normal",normal);button.add_theme_stylebox_override("hover",hover)
+	button.add_theme_stylebox_override("pressed",hover);button.pressed.connect(callback);parent.add_child(button)
+	return button
 
 func _mk_label(parent: Control, pos: Vector2, size_px: int, color: Color) -> Label:
 	var l := Label.new()
@@ -117,60 +108,37 @@ func _mk_label(parent: Control, pos: Vector2, size_px: int, color: Color) -> Lab
 	l.add_theme_font_size_override("font_size", size_px)
 	l.add_theme_color_override("font_color", color)
 	l.add_theme_color_override("font_outline_color", Color(0.05, 0.05, 0.06, 0.85))
-	l.add_theme_constant_override("outline_size", 4)
+	l.add_theme_constant_override("outline_size", 1)
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(l)
 	return l
 
 func _build_pause_panel(root: Control) -> void:
-	_pause_panel = Control.new()
-	_pause_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_pause_panel.visible = false
-	root.add_child(_pause_panel)
-	var dim := ColorRect.new()
-	dim.color = Color(0.03, 0.04, 0.06, 0.72)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_pause_panel.add_child(dim)
-	var title := _mk_label(_pause_panel, Vector2(520, 180), 40, Color(0.97, 0.95, 0.9))
-	title.text = "PAUSED"
-	var opts := [
-		"[ESC] Resume",
-		"[F5] Save progress",
-		"[F6] Load last save",
-		"[F7] Restart mission checkpoint",
-		"[F8] Toggle HUD (accessibility)",
-		"[F9] Quit to title",
-	]
-	for i in opts.size():
-		var l := _mk_label(_pause_panel, Vector2(520, 250 + i * 34), 20, Color(0.9, 0.92, 0.96))
-		l.text = opts[i]
-	var ctrl := _mk_label(_pause_panel, Vector2(520, 480), 16, Color(0.72, 0.76, 0.84))
-	ctrl.text = "WASD move  •  Shift sprint  •  Space jump  •  Mouse look  •  LMB fire  •  RMB aim  •  R reload  •  Q swap  •  E enter/exit  •  F1 debug"
+	_pause_panel=Control.new();_pause_panel.set_anchors_preset(Control.PRESET_FULL_RECT);_pause_panel.visible=false;root.add_child(_pause_panel)
+	_panel(_pause_panel,Vector2.ZERO,Vector2(1280,720),Color(.015,.035,.038,.9))
+	var title:=_mk_label(_pause_panel,Vector2(96,110),42,Color(.97,.94,.86));title.text="Take a breath."
+	_button(_pause_panel,"Resume   ·   Esc",Vector2(96,210),func():get_tree().current_scene._toggle_pause())
+	_button(_pause_panel,"Save progress   ·   F5",Vector2(96,265),func():
+		if Game.save_game(): Events.toast("Progress saved.","good"))
+	_button(_pause_panel,"Restart Harbour Relay   ·   F10",Vector2(96,320),func():mission.restart();get_tree().current_scene._toggle_pause())
+	_button(_pause_panel,"Settings   ·   F3",Vector2(96,375),func():get_tree().current_scene._toggle_settings())
+	_button(_pause_panel,"Quit game",Vector2(96,430),func():get_tree().current_scene._quit_game())
+	var controls:=_mk_label(_pause_panel,Vector2(650,210),18,Color(.78,.85,.82))
+	controls.text="ON FOOT\nWASD move   /   Shift sprint   /   Space jump\nMouse look   /   Right mouse aim   /   Left mouse fire\nR reload   /   Q change weapon   /   E interact\n\nDRIVING\nW/S accelerate and reverse   /   A/D steer\nSpace brake   /   E exit when safe\n\nFLIGHT\nSpace climb   /   Shift descend   /   W/S forward/back\nA/D turn   /   E exit after landing"
 
 func _build_title_panel(root: Control) -> void:
-	_title_panel = Control.new()
-	_title_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_title_panel.visible = true
-	root.add_child(_title_panel)
-	var dim := ColorRect.new()
-	dim.color = Color(0.05, 0.07, 0.10, 0.85)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_title_panel.add_child(dim)
-	var t := _mk_label(_title_panel, Vector2(420, 220), 52, Color(0.98, 0.95, 0.86))
-	t.text = "ORCHARD REACH"
-	var s := _mk_label(_title_panel, Vector2(460, 285), 20, Color(0.82, 0.85, 0.9))
-	s.text = "A Singapore-inspired open-world slice — wave 1 build"
-	var lines := [
-		"[ENTER] New game",
-		"[F6] Continue from save",
-		"",
-		"WASD move • Shift sprint • Space jump • Mouse look",
-		"LMB fire • RMB aim • R reload • Q swap weapon",
-		"E enter/exit vehicle • Esc pause",
-	]
-	for i in lines.size():
-		var l := _mk_label(_title_panel, Vector2(470, 340 + i * 32), 19, Color(0.88, 0.90, 0.95))
-		l.text = lines[i]
+	_title_panel=Control.new();_title_panel.set_anchors_preset(Control.PRESET_FULL_RECT);_title_panel.visible=true;root.add_child(_title_panel)
+	_panel(_title_panel,Vector2.ZERO,Vector2(1280,720),Color(.015,.04,.045,.92))
+	var small:=_mk_label(_title_panel,Vector2(96,105),13,Color(.65,.81,.71));small.text="THE HARBOUR DISTRICT"
+	var title:=_mk_label(_title_panel,Vector2(91,142),64,Color(.98,.94,.84));title.text="ORCHARD REACH"
+	var sub:=_mk_label(_title_panel,Vector2(96,230),18,Color(.72,.8,.78));sub.text="A city to cross. A package to deliver."
+	_button(_title_panel,"New game   ·   Enter",Vector2(96,310),func():get_tree().current_scene._new_game())
+	_button(_title_panel,"Continue   ·   F6",Vector2(96,365),func():get_tree().current_scene._continue_game())
+	_button(_title_panel,"Settings   ·   F3",Vector2(96,420),func():get_tree().current_scene._toggle_settings())
+	_button(_title_panel,"Quit game",Vector2(96,475),func():get_tree().current_scene._quit_game())
+	var controls:=_mk_label(_title_panel,Vector2(720,320),17,Color(.78,.85,.80))
+	controls.text="WALK THE ARCADES\nWASD move · Mouse look · Shift sprint\n\nTAKE THE WHEEL\nE enter/exit · W/S throttle · A/D steer\n\nTAKE TO THE AIR\nSpace climb · Shift descend · E land and exit"
+	var footer:=_mk_label(_title_panel,Vector2(96,650),13,Color(.48,.62,.58));footer.text="Original fictional Singapore-inspired district"
 
 func _build_settings_panel(root: Control) -> void:
 	_settings_panel = Control.new()
@@ -218,7 +186,7 @@ func set_paused(paused: bool) -> void:
 	_pause_panel.visible = paused
 
 func _on_health(value: float, max_value: float) -> void:
-	_health_bar.value = value
+	_health_bar.queue_redraw()
 	_health_label.text = "HEALTH %d" % int(round(value))
 
 func _on_ammo(mag: int, reserve: int) -> void:
@@ -236,10 +204,12 @@ func _update_wanted_label() -> void:
 	var state := ""
 	if level > 0:
 		state = "  ·  SEARCHING %ds" % int(ceil(Game.search_timer)) if not Game.player_seen else "  ·  SPOTTED"
-	_wanted_label.text = "WANTED  " + stars + state
+	_wanted_label.text = "ALERT %s%s" % ["I".repeat(level),state] if level>0 else ""
 
 func _on_notify(text: String, kind: String) -> void:
-	var l := _mk_label(_notifications, Vector2.ZERO, 18, Color(0.95, 0.95, 0.9) if kind != "bad" else Color(1.0, 0.55, 0.45))
+	if text=="Civilian fleeing!": return
+	if _notifications.get_child_count()>=3: _notifications.get_child(0).queue_free()
+	var l := _mk_label(_notifications, Vector2.ZERO, 15, Color(0.95, 0.95, 0.9) if kind != "bad" else Color(1.0, 0.55, 0.45))
 	l.text = text
 	l.custom_minimum_size = Vector2(460, 24)
 	l.size = Vector2(460, 24)
@@ -258,7 +228,7 @@ func _process(_delta: float) -> void:
 	elif Game.mode == Game.MODE_HELI and player.current_vehicle:
 		speed = player.current_vehicle.velocity.length() * 3.6
 		alt = player.current_vehicle.global_position.y
-	_stats_label.text = "SPEED %d km/h" % int(speed)
+	_stats_label.text = "%d km/h" % int(speed) if Game.mode!=Game.MODE_FOOT else ""
 	if Game.mode == Game.MODE_HELI:
 		_stats_label.text += "   ALT %d m" % int(alt)
 	_update_wanted_label()
@@ -273,6 +243,7 @@ func _count_group(name: String) -> int:
 	return get_tree().get_nodes_in_group(name).size()
 
 func _draw_crosshair() -> void:
+	if player==null or not player.aiming or Game.mode!=Game.MODE_FOOT: return
 	var c := _crosshair.size * 0.5
 	var col := Color(0.98, 0.96, 0.90, 0.9)
 	_crosshair.draw_line(c + Vector2(-9, 0), c + Vector2(-3, 0), col, 2.0)
@@ -287,7 +258,7 @@ func _draw_minimap() -> void:
 	var rect := Rect2(Vector2.ZERO, _minimap.size)
 	_minimap.draw_rect(rect, Color(0.06, 0.08, 0.10, 0.72), true)
 	var centre: Vector3 = player.controlled_actor().global_position
-	var scale := 0.16
+	var scale := 0.38
 	var to_map := func(p: Vector3) -> Vector2:
 		return Vector2((p.x - centre.x) * scale, (p.z - centre.z) * scale) + _minimap.size * 0.5
 	# roads
@@ -319,11 +290,17 @@ func _draw_minimap() -> void:
 			_minimap.draw_circle(to_map.call(p.global_position), 3.5, Color(0.95, 0.35, 0.30, 0.95))
 	# player arrow
 	var c := _minimap.size * 0.5
-	_minimap.draw_colored_polygon(PackedVector2Array([
-		c + Vector2(0, -7), c + Vector2(5, 6), c + Vector2(0, 3), c + Vector2(-5, 6)]), Color(0.98, 0.94, 0.80, 0.98))
+	var arrow:=PackedVector2Array()
+	for point in [Vector2(0,-7),Vector2(5,6),Vector2(0,3),Vector2(-5,6)]:
+		arrow.append(c+point.rotated(-player.controlled_actor().rotation.y))
+	_minimap.draw_colored_polygon(arrow,Color(.98,.94,.80,.98))
 	_minimap.draw_rect(rect, Color(0.8, 0.8, 0.85, 0.35), false, 2.0)
 
 func set_marker(pos: Vector3) -> void:
 	_marker = pos
 	if mission:
 		mission.set_meta("marker", pos)
+
+func set_gameplay_visible(show: bool) -> void:
+	for item in _gameplay_controls:
+		if is_instance_valid(item) and item != _debug_label: item.visible = show

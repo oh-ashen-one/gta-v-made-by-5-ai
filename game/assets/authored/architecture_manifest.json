@@ -1,0 +1,46 @@
+[
+  {
+    "file": "skyline_0.glb",
+    "author": "GPT-6 Astra wave2 original geometry",
+    "triangles": 26280,
+    "footprint": [
+      34,
+      32
+    ],
+    "height": 118,
+    "rights": "MIT original authored mesh"
+  },
+  {
+    "file": "skyline_1.glb",
+    "author": "GPT-6 Astra wave2 original geometry",
+    "triangles": 22788,
+    "footprint": [
+      30,
+      42
+    ],
+    "height": 98,
+    "rights": "MIT original authored mesh"
+  },
+  {
+    "file": "skyline_2.glb",
+    "author": "GPT-6 Astra wave2 original geometry",
+    "triangles": 15900,
+    "footprint": [
+      40,
+      30
+    ],
+    "height": 78,
+    "rights": "MIT original authored mesh"
+  },
+  {
+    "file": "skyline_3.glb",
+    "author": "GPT-6 Astra wave2 original geometry",
+    "triangles": 29316,
+    "footprint": [
+      32,
+      32
+    ],
+    "height": 136,
+    "rights": "MIT original authored mesh"
+  }
+]

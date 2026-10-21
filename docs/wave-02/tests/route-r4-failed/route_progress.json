@@ -1,0 +1,306 @@
+{
+	"elapsed_seconds": 246.937614,
+	"finished": true,
+	"gates": [
+		{
+			"name": "market reached on foot",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": -2.75541639328003,
+				"health": 100.0,
+				"mode": 0,
+				"position": [
+					-86.4749069213867,
+					0.380839109420776,
+					-91.6022033691406
+				],
+				"seconds": 78.89,
+				"stage": 0,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "combat damaged and killed a mission combatant",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": -2.16897130012512,
+				"health": 83.5,
+				"mode": 0,
+				"position": [
+					-90.7521820068359,
+					0.380097597837448,
+					-86.8602294921875
+				],
+				"seconds": 86.08,
+				"stage": 0,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "package collected through interaction",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": -1.37519121170044,
+				"health": 83.5,
+				"mode": 0,
+				"position": [
+					-87.029899597168,
+					0.380839705467224,
+					-87.597785949707
+				],
+				"seconds": 87.3,
+				"stage": 2,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "usable parked car found",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": -1.37519121170044,
+				"health": 83.5,
+				"mode": 0,
+				"position": [
+					-87.029899597168,
+					0.380839705467224,
+					-87.597785949707
+				],
+				"seconds": 87.3,
+				"stage": 2,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "car entered",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": 0.0,
+				"health": 100.0,
+				"mode": 1,
+				"position": [
+					-152.0,
+					0.160126969218254,
+					-40.0
+				],
+				"seconds": 99.59,
+				"stage": 3,
+				"vehicle_health": 100.0,
+				"wanted": 2
+			}
+		},
+		{
+			"name": "uninterrupted driving leg reached aviation compound",
+			"passed": true,
+			"state": {
+				"car_distance_m": 634.742630497785,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": -1.57357311248779,
+				"health": 100.0,
+				"mode": 1,
+				"position": [
+					249.384857177734,
+					0.0609426982700825,
+					160.230422973633
+				],
+				"seconds": 139.24,
+				"stage": 4,
+				"vehicle_health": 100.0,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "car exit restored walking",
+			"passed": true,
+			"state": {
+				"car_distance_m": 634.742630497785,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": 2.20295310020447,
+				"health": 100.0,
+				"mode": 0,
+				"position": [
+					258.469268798828,
+					0.0350845940411091,
+					162.155487060547
+				],
+				"seconds": 140.57,
+				"stage": 4,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "helicopter remains usable",
+			"passed": true,
+			"state": {
+				"car_distance_m": 634.742630497785,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": 2.20295310020447,
+				"health": 100.0,
+				"mode": 0,
+				"position": [
+					258.469268798828,
+					0.0350845940411091,
+					162.155487060547
+				],
+				"seconds": 140.57,
+				"stage": 4,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "helicopter boarded",
+			"passed": true,
+			"state": {
+				"car_distance_m": 634.742630497785,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": 0.0,
+				"health": 100.0,
+				"mode": 2,
+				"position": [
+					270.0,
+					-0.139882773160934,
+					104.0
+				],
+				"seconds": 151.67,
+				"stage": 5,
+				"vehicle_health": 100.0,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "flight reached waterfront pad airspace",
+			"passed": true,
+			"state": {
+				"car_distance_m": 634.742630497785,
+				"deaths": 0,
+				"flight_distance_m": 612.765151727945,
+				"heading": 0.661121070384979,
+				"health": 100.0,
+				"mode": 2,
+				"position": [
+					0.967007160186768,
+					109.209739685059,
+					-328.79541015625
+				],
+				"seconds": 181.43,
+				"stage": 5,
+				"vehicle_health": 100.0,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "helicopter landed intact on destination pad",
+			"passed": true,
+			"state": {
+				"car_distance_m": 634.742630497785,
+				"deaths": 0,
+				"flight_distance_m": 722.186154242605,
+				"heading": 0.743854463100433,
+				"health": 100.0,
+				"mode": 2,
+				"position": [
+					0.401198327541351,
+					0.000189058482646942,
+					-329.576293945312
+				],
+				"seconds": 201.27,
+				"stage": 6,
+				"vehicle_health": 100.0,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "landing exit restored walking",
+			"passed": true,
+			"state": {
+				"car_distance_m": 634.742630497785,
+				"deaths": 0,
+				"flight_distance_m": 722.186154242605,
+				"heading": -0.152596682310104,
+				"health": 100.0,
+				"mode": 0,
+				"position": [
+					2.46161603927612,
+					0.274100542068481,
+					-331.472259521484
+				],
+				"seconds": 201.6,
+				"stage": 7,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "mission completed through delivery interaction",
+			"passed": false,
+			"state": {
+				"car_distance_m": 634.742630497785,
+				"deaths": 0,
+				"flight_distance_m": 722.186154242605,
+				"heading": 0.743854463100433,
+				"health": 100.0,
+				"mode": 2,
+				"position": [
+					2.46150898933411,
+					1.50949168205261,
+					-331.472259521484
+				],
+				"seconds": 246.92,
+				"stage": 7,
+				"vehicle_health": 100.0,
+				"wanted": 0
+			}
+		}
+	],
+	"latest": {
+		"car_distance_m": 634.742630497785,
+		"deaths": 0,
+		"flight_distance_m": 722.186154242605,
+		"heading": 0.743854463100433,
+		"health": 100.0,
+		"mode": 2,
+		"position": [
+			2.46150898933411,
+			1.50949168205261,
+			-331.472259521484
+		],
+		"seconds": 246.94,
+		"stage": 7,
+		"vehicle_health": 100.0,
+		"wanted": 0
+	},
+	"recent_log": [
+		"151.35s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.3",
+		"151.67s PASS helicopter boarded",
+		"181.43s PASS flight reached waterfront pad airspace",
+		"201.27s PASS helicopter landed intact on destination pad",
+		"201.60s PASS landing exit restored walking",
+		"246.60s walk end at (2.0, 0.0, -331.0); target=(96.0, 0.0, -322.0) distance=94.0",
+		"246.92s FAIL mission completed through delivery interaction",
+		"246.92s ABORT mission completed through delivery interaction"
+	]
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "asset": "game/assets/authored/packaging_atlas.png",
+  "created_utc": "2026-10-21T12:34:25Z",
+  "purpose": "Original flat packaging-label atlas for existing 3D convenience-store cans and cartons.",
+  "generation": {
+    "mode": "built-in image_gen tool",
+    "tool": "image_gen.imagegen",
+    "source_file": "/Users/midir/.codex/generated_images/01a15e72-782f-7a82-85f8-9a758946b81a/exec-85bbbf87-3795-4162-a18c-cd6f982f1e69.png",
+    "request_count": 1,
+    "external_reference_images": [],
+    "prompt": "Use case: product-mockup\nAsset type: flat square albedo UV texture atlas for 3D convenience-store can and carton fronts; this is print artwork, absolutely not a product photograph or mockup.\nPrimary request: one square image containing an exact uniform 4 by 4 grid of 16 different complete fictional Singapore-inspired everyday pantry and drink package labels. Every cell occupies exactly one quarter of the canvas width and height. Cells meet edge to edge, without any gutters or outer margins. Each cell has its own flat full-bleed background and packaging artwork filling that cell. No drawn grid lines.\nStyle: convincing refined everyday grocery print design with rich varied restrained cream, dark teal, ochre, deep red and leafy green inks; legible elegant generic English product titles, small supporting English ingredient/category text, small nutrition tables and original generic food illustrations. Original varied visual identities based entirely on product names, no brand names or manufacturer.\nExact labels row-major, left to right:\nRow 1: \"ROAST COFFEE\", \"JASMINE TEA\", \"COCONUT WATER\", \"CALAMANSI JUICE\".\nRow 2: \"FRAGRANT RICE\", \"RICE NOODLES\", \"GINGER BISCUITS\", \"CHILLI CRISPS\".\nRow 3: \"SOY DRINK\", \"BARLEY WATER\", \"CURRY SPICE\", \"PANDAN WAFERS\".\nRow 4: \"MANGO NECTAR\", \"RED BEAN SOUP\", \"SESAME CRACKERS\", \"LYCHEE DRINK\".\nEach title is prominent, correctly spelled, English only, fully within its cell. Add little truthful-looking generic food drawings such as beans, tea leaves, rice stalks, coconut halves, citrus slices, noodles and bowls. Typography and print details should be dense enough to read as stocked grocery labels from normal game camera distance, with a few small bars and nutrition panels. Preserve a clear large title and different color composition in each square.\nConstraints: orthographic flat printed artwork; equal square cells; no objects in a scene, no packaging edges or container silhouettes, no perspective, no drop shadows, no lighting, no embossing, no bevels, no rounded cell corners, no border, no white gaps. No existing brands, no manufacturer marks, no trademark symbols, no external logos, no certification marks, no watermarks, no price stickers. Output one square atlas at high resolution."
+  },
+  "image": {
+    "width": 1254,
+    "height": 1254,
+    "grid_columns": 4,
+    "grid_rows": 4,
+    "sha256": "beba2ac98b349407376e782f9d6627c50b78c3c4b037270d379b8fc77920e982"
+  },
+  "cells_row_major": [
+    "ROAST COFFEE",
+    "JASMINE TEA",
+    "COCONUT WATER",
+    "CALAMANSI JUICE",
+    "FRAGRANT RICE",
+    "RICE NOODLES",
+    "GINGER BISCUITS",
+    "CHILLI CRISPS",
+    "SOY DRINK",
+    "BARLEY WATER",
+    "CURRY SPICE",
+    "PANDAN WAFERS",
+    "MANGO NECTAR",
+    "RED BEAN SOUP",
+    "SESAME CRACKERS",
+    "LYCHEE DRINK"
+  ],
+  "uv_notes": {
+    "origin": "top left in image coordinates",
+    "cell_width": 0.25,
+    "cell_height": 0.25,
+    "recommended_cell_edge_inset": 0.003,
+    "warning": "1254 px does not divide evenly by 4; use normalized UV quarters and small inset to reduce adjacent-cell mip bleed. Inspect actual runtime material orientation."
+  },
+  "inspection": {
+    "inspected_by": "Astra same-model packaging lane",
+    "observations": [
+      "All 16 requested large English titles are present and readable.",
+      "Grid is 4 by 4 with full-bleed equal-looking label cells and no gutters.",
+      "No visible existing brand names, external logos, manufacturer names or certification marks were identified.",
+      "Illustrative food, crockery, leaves, splashes and nutrition tables are present. No 3D package mockup was generated."
+    ],
+    "limitations": [
+      "Small supporting and nutrition-panel text may contain minor generated glyph defects.",
+      "Nutrition numbers and composition claims are fictional visual decoration, not factual nutrition guidance.",
+      "No formal trademark or redistribution clearance has been performed.",
+      "No in-game UV mapping, material orientation, mip filtering or rendered shelf review was performed by this asset-only lane."
+    ]
+  },
+  "provenance": {
+    "original_intent": true,
+    "existing_brand_reference_used": false,
+    "status": "Generated original-intent artwork; visible-output inspection only. Public redistribution clearance has not been certified."
+  }
+}

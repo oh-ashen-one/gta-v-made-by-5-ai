@@ -1,0 +1,17 @@
+# Gameplay critic R1 — REWORK
+
+Reviewer: fresh-context GPT-6 Astra, same model as builders; independent author, **not cross-model acceptance**. Read END_GOAL, source and raw regression/route JSON; no builder self-evaluation used. Reviewed live working tree at `9937fc99a45c845b6c7a24d1a55b1f1fa3b3af04`; probe metadata records exact source hashes. No renderer launched. Rendered gameplay/feel remains **NOT TESTED**.
+
+The three highest-priority fixes:
+
+1. **P1 — Broken title/control lifecycle (PLAYER-05, QA-001/019).** `game/src/main.gd:88`, `:96`, `:118`, `:152`: initial title leaves simulation running; title input returns before advertised F6 Continue; F9 pauses simulation but Enter never unpauses or resets the advertised “New game.” Native-key probe measured **1.338 m movement behind title**, then normal W movement **1.607 m**, then **0 m after F9 → Enter**, with `started=true, paused=true`. Centralize title/start/continue/pause transitions and verify each through native events. Esc can recover the frozen state, but the visible flow is broken.
+
+2. **P1 — Malformed saves partly overwrite live state (SAVE-02, QA-019).** `game/src/core/game_state.gd:260–283` mutates globals before validating arrays/enums. Fixture `{"version":1,"health":12,"player_position":[]}` produced an index-out-of-bounds script error at line 268, returned false, and changed health **73 → 12**. Unknown `carried_weapon` also reaches unchecked dictionary lookup. Validate the entire payload before applying anything; use atomic writes and a truthful failure/new-game flow. Current save also omits settings (SAVE-01).
+
+3. **P1 — Interactions ignore walls and valid target state (PLAYER-04).** `game/src/actors/player.gd:408–425` selects solely by distance, enabling entry/pickup across intervening geometry. `_update_prompt():467–479` uses different selection/ranges and still advertises hidden/taken pickups. Share one eligibility/nearest-target/line-of-sight query between prompt and action; test blocked entry and competing pickup/car targets.
+
+The headless route is meaningful mechanical evidence: **641.1 m driving, 603.8 m aircraft travel, intact grounded landing, walking delivery, zero deaths**. Source uses action-driven vehicle motion, with no observed teleport/death bypass. However, `capture_director.gd:259–279,340–355` writes yaw/pitch directly; `:387,443–460` supplies fractional analog strengths unavailable from ordinary WASD. Therefore “controls_only” does **not** prove native mouse/keyboard handling or player learnability. The route omits reboarding/return to the original pad, and wanted has already cleared before car exit/boarding: QA-009/012/018 remain incomplete. Vehicle cameras have no mouse-look path (`car.gd:163–171`; `helicopter.gd:153–161`).
+
+The 57/57 regression file predates **11 changed source files**. Its pursuit-decay check calls `Game.decay_heat()` directly (`self_test.gd:153–156`), so it cannot prove sight loss/search/rediscovery. Police spawning also picks a random radius without visibility rejection (`traffic_manager.gd:240–255`). Retest the identified candidate with native shell/interaction/save failures, continuous rendered route, reboard/return, and active cross-mode pursuit.
+
+Evidence: [probe result](tests/critic-r1/probe.json), [raw log](tests/critic-r1/probe.stdout.log), [source hashes/process result](tests/critic-r1/probe.meta.json), [reproduction script](tests/critic-r1/probe.gd). Probe exited/reaped in 6.13 s; wrapper correctly returned 2 for the malformed-save script error; owner save untouched.

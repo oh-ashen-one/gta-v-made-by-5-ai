@@ -1,0 +1,101 @@
+Info: Saved as "skyline_0.blend"
+INFO Draco mesh compression is available, use library at /Users/midir/Applications/Blender-4.5.11.app/Contents/Resources/4.5/scripts/addons_core/io_scene_gltf2/libextern_draco.dylib
+08:03:02 | INFO: Starting glTF 2.0 export
+08:03:02 | INFO: Extracting primitive: warm_mineral_stone
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: shadow_recess
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: champagne_aluminium
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_3
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_0
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_1
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: interior_shade
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_4
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_2
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: roof_garden
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Finished glTF 2.0 export in 0.021728038787841797 s
+
+Info: Saved as "skyline_1.blend"
+08:03:02 | INFO: Starting glTF 2.0 export
+08:03:02 | INFO: Extracting primitive: warm_mineral_stone
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: shadow_recess
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: champagne_aluminium
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_0
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_1
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_3
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_4
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_2
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: interior_shade
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: roof_garden
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Finished glTF 2.0 export in 0.024275779724121094 s
+
+Info: Saved as "skyline_2.blend"
+08:03:02 | INFO: Starting glTF 2.0 export
+08:03:02 | INFO: Extracting primitive: warm_mineral_stone
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: shadow_recess
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: champagne_aluminium
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_0
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_3
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_4
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_1
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: interior_shade
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_2
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: roof_garden
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Finished glTF 2.0 export in 0.01495671272277832 s
+
+Info: Saved as "skyline_3.blend"
+08:03:02 | INFO: Starting glTF 2.0 export
+08:03:02 | INFO: Extracting primitive: warm_mineral_stone
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: shadow_recess
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: champagne_aluminium
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_2
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_0
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_1
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_3
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: interior_shade
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: glass_4
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Extracting primitive: roof_garden
+08:03:02 | INFO: Primitives created: 1
+08:03:02 | INFO: Finished glTF 2.0 export in 0.018834829330444336 s
+
+[{"file": "skyline_0.glb", "author": "GPT-6 Astra wave2 original geometry", "triangles": 26280, "footprint": [34, 32], "height": 118, "rights": "MIT original authored mesh"}, {"file": "skyline_1.glb", "author": "GPT-6 Astra wave2 original geometry", "triangles": 22788, "footprint": [30, 42], "height": 98, "rights": "MIT original authored mesh"}, {"file": "skyline_2.glb", "author": "GPT-6 Astra wave2 original geometry", "triangles": 15900, "footprint": [40, 30], "height": 78, "rights": "MIT original authored mesh"}, {"file": "skyline_3.glb", "author": "GPT-6 Astra wave2 original geometry", "triangles": 29316, "footprint": [32, 32], "height": 136, "rights": "MIT original authored mesh"}]
+Blender 4.5.11 LTS (hash 4db51e9d1e1e built 2026-06-23 01:45:40)
+
+Blender quit

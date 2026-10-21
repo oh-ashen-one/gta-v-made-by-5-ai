@@ -43,6 +43,10 @@ func _ready() -> void:
 	add_to_group("vehicles")
 	collision_layer = 8
 	collision_mask = 1 | 2 | 4 | 8
+	# Road vehicles stand on world geometry, never on their own passenger
+	# or a pedestrian as a moving platform.
+	platform_floor_layers = 1
+	platform_wall_layers = 0
 	floor_max_angle = deg_to_rad(45.0)
 	_build()
 
@@ -236,10 +240,24 @@ func _physics_process(delta: float) -> void:
 		velocity.y -= 24.0 * delta
 	else:
 		velocity.y = -0.6
+	_step_low_kerb(delta)
 	var before := velocity
 	move_and_slide()
 	_check_impact(before)
 	_spin_wheels(delta)
+
+## Kinematic wheel contact: lift over a low kerb only when the complete car
+## collision hull fits in the raised position and along its intended motion.
+## This same bounded 0.24m step applies to human and AI driving.
+func _step_low_kerb(delta: float) -> void:
+	if not is_on_floor(): return
+	var horizontal_motion := Vector3(velocity.x, 0.0, velocity.z) * delta
+	if horizontal_motion.length() < 0.01: return
+	if not test_move(global_transform, horizontal_motion): return
+	var raised := global_transform
+	raised.origin.y += 0.24
+	if not test_move(global_transform, Vector3.UP * 0.24) and not test_move(raised, horizontal_motion):
+		global_position.y += 0.24
 
 func _check_impact(before: Vector3) -> void:
 	if get_slide_collision_count() == 0:
@@ -366,6 +384,12 @@ func interact(player: Node) -> void:
 	has_ai = false
 	if player is Player:
 		(player as Player).busy = true        # guard the transition (PLAYER-03)
+	# Disable the passenger immediately, before moving it into the vehicle.
+	# Waiting for the next player physics tick lets this body cache the
+	# passenger as a floor/platform during the transition.
+	if player is CollisionObject3D:
+		(player as CollisionObject3D).collision_layer = 0
+		(player as CollisionObject3D).collision_mask = 0
 	player.current_vehicle = self
 	player.visible = false
 	player.global_position = global_position
@@ -428,23 +452,38 @@ func set_ai_driver(driver: Node) -> void:
 func _clear_exit_position() -> Vector3:
 	var right := global_transform.basis.x
 	var forward := -global_transform.basis.z
-	var space := get_world_3d().direct_space_state
 	var offsets: Array[Vector3] = [
-		right * 1.9, right * -1.9, forward * 2.4, forward * -2.4, right * 2.6 + forward * 1.2,
+		right * 1.9, right * -1.9, forward * 2.9, forward * -2.9,
+		right * 2.8 + forward * 1.2, right * -2.8 + forward * 1.2,
 	]
+	return find_safe_exit(self, offsets)
+
+## A vehicle exit uses the player's actual capsule dimensions, supported by
+## a walkable surface. If every candidate is blocked, ownership stays seated.
+## This avoids the previous fallback that placed the player inside a wall.
+static func find_safe_exit(vehicle: CharacterBody3D, offsets: Array[Vector3]) -> Vector3:
+	var space := vehicle.get_world_3d().direct_space_state
+	var capsule := CapsuleShape3D.new()
+	capsule.radius = 0.36
+	capsule.height = 1.75
 	for offset in offsets:
-		var candidate: Vector3 = global_position + offset + Vector3(0.0, 0.4, 0.0)
-		candidate.y = maxf(candidate.y, 0.4)
-		if space == null:
-			return candidate
-		var params := PhysicsRayQueryParameters3D.create(
-			global_position + Vector3(0.0, 0.6, 0.0), candidate + Vector3(0.0, 0.6, 0.0))
-		params.collision_mask = 1
-		if space.intersect_ray(params).is_empty():
-			return candidate
-	# nothing beside the car is clear: the player still gets out, standing clear
-	# of the bodywork by a small offset, and the game never traps them in it
-	return global_position + right * 1.4 + Vector3(0.0, 0.6, 0.0)
+		var candidate := vehicle.global_position + offset
+		var floor_query := PhysicsRayQueryParameters3D.create(candidate + Vector3.UP * 2.5, candidate - Vector3.UP * 4.0)
+		floor_query.collision_mask = 1
+		var floor_hit := space.intersect_ray(floor_query)
+		if floor_hit.is_empty() or floor_hit["normal"].y < 0.65: continue
+		candidate.y = float(floor_hit["position"].y) + 0.08
+		var query := PhysicsShapeQueryParameters3D.new()
+		query.shape = capsule
+		query.transform = Transform3D(Basis.IDENTITY, candidate + Vector3.UP * 0.9)
+		query.collision_mask = 1 | 4 | 8
+		query.exclude = [vehicle.get_rid()]
+		if not space.intersect_shape(query, 1).is_empty(): continue
+		var path_query := PhysicsRayQueryParameters3D.create(vehicle.global_position + Vector3.UP * 0.9, candidate + Vector3.UP * 0.9)
+		path_query.collision_mask = 1 | 8
+		path_query.exclude = [vehicle.get_rid()]
+		if space.intersect_ray(path_query).is_empty(): return candidate
+	return Vector3.ZERO
 
 func busy() -> bool:
 	return driver_is_player
@@ -462,3 +501,6 @@ func take_damage(amount: float, _from_position: Vector3, _by_player: bool = fals
 		_forward = 0.0
 		if driver_is_player:
 			Events.notify.emit("Vehicle disabled. [E] to get clear.", "warn")
+
+func is_disabled() -> bool:
+	return disabled

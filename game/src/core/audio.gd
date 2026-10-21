@@ -13,8 +13,19 @@ var _engine_player: AudioStreamPlayer
 var _rotor_player: AudioStreamPlayer
 var _siren_player: AudioStreamPlayer
 var _rng := RandomNumberGenerator.new()
+var _spatial_shots: Array[AudioStreamPlayer3D] = []
+var _spatial_index := 0
+var _actor_loops: Dictionary = {}
+var _spatial_timer := 0.0
+var _bird_timer := 6.0
+var _ambient_started := false
+var _ambience_players: Array[AudioStreamPlayer3D] = []
+var _audio_shutdown := false
+var _headless_audio := false
+
 
 func _ready() -> void:
+	_headless_audio = DisplayServer.get_name() == "headless"
 	_rng.seed = 90210
 	_bank["gunshot"] = _gunshot()
 	_bank["footstep"] = _footstep()
@@ -32,7 +43,24 @@ func _ready() -> void:
 	_engine_player = _loop_player(_bank["engine"])
 	_rotor_player = _loop_player(_bank["rotor"])
 	_siren_player = _loop_player(_bank["siren"])
-	_siren_player.volume_db = -12.0
+	# Legacy control methods remain compatible; actual vehicle sounds now live
+	# on their actors, so passing traffic and a distant aircraft attenuate.
+	_engine_player.volume_db = -80.0
+	_rotor_player.volume_db = -80.0
+	_siren_player.volume_db = -80.0
+	_bank["city"] = _ambience_loop(0)
+	_bank["market"] = _ambience_loop(1)
+	_bank["water"] = _ambience_loop(2)
+	_bank["bird"] = _bird()
+	for i in 24:
+		var p := AudioStreamPlayer3D.new()
+		p.max_distance = 130.0
+		p.unit_size = 7.0
+		p.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
+		add_child(p)
+		_spatial_shots.append(p)
+	Events.shot_fired.connect(func(origin: Vector3, _direction: Vector3, id: String):
+		if id == "npc_pistol": play_at("gunshot", origin, -7.0, .9))
 
 func _loop_player(stream: AudioStream) -> AudioStreamPlayer:
 	var p := AudioStreamPlayer.new()
@@ -42,6 +70,8 @@ func _loop_player(stream: AudioStream) -> AudioStreamPlayer:
 
 # --------------------------------------------------------------------- public
 func play(sound_id: String, volume_db: float = 0.0, pitch: float = 1.0) -> void:
+	if _headless_audio:
+		return
 	if not _bank.has(sound_id):
 		return
 	var p := _one_shots[_one_shot_index]
@@ -52,6 +82,8 @@ func play(sound_id: String, volume_db: float = 0.0, pitch: float = 1.0) -> void:
 	p.play()
 
 func start_engine() -> void:
+	if _headless_audio:
+		return
 	if not _engine_player.playing:
 		_engine_player.play()
 
@@ -62,6 +94,8 @@ func set_engine_pitch(ratio: float) -> void:
 	_engine_player.pitch_scale = clampf(0.65 + ratio * 1.4, 0.5, 2.4)
 
 func start_rotor() -> void:
+	if _headless_audio:
+		return
 	if not _rotor_player.playing:
 		_rotor_player.play()
 
@@ -72,11 +106,133 @@ func set_rotor_pitch(ratio: float) -> void:
 	_rotor_player.pitch_scale = clampf(0.7 + ratio * 0.8, 0.5, 1.8)
 
 func set_siren(on: bool, pitch: float = 1.0) -> void:
+	if _headless_audio:
+		return
 	if on and not _siren_player.playing:
 		_siren_player.play()
 	elif not on and _siren_player.playing:
 		_siren_player.stop()
 	_siren_player.pitch_scale = pitch
+
+# -------------------------------------------------------- spatial soundscape
+func play_at(sound_id: String, position: Vector3, volume_db: float = 0.0, pitch: float = 1.0) -> void:
+	if _headless_audio:
+		return
+	if _audio_shutdown or not _bank.has(sound_id) or _spatial_shots.is_empty():
+		return
+	var p := _spatial_shots[_spatial_index]
+	_spatial_index = (_spatial_index + 1) % _spatial_shots.size()
+	p.global_position = position
+	p.stream = _bank[sound_id]
+	p.volume_db = volume_db
+	p.pitch_scale = pitch
+	p.play()
+
+func _spatial_loop(owner_node: Node3D, stream_id: String, volume: float, distance: float) -> AudioStreamPlayer3D:
+	var p := AudioStreamPlayer3D.new()
+	p.stream = _bank[stream_id]
+	p.volume_db = volume
+	p.max_distance = distance
+	p.unit_size = 10.0
+	owner_node.add_child(p)
+	p.play()
+	return p
+
+func _process(delta: float) -> void:
+	if _headless_audio:
+		return
+	if _audio_shutdown:
+		return
+	for p in _spatial_shots:
+		p.stream_paused = Game.simulation_paused
+	for p in _ambience_players:
+		if is_instance_valid(p): p.stream_paused = Game.simulation_paused
+	for record in _actor_loops.values():
+		if is_instance_valid(record["engine"]): record["engine"].stream_paused = Game.simulation_paused
+		if record.has("siren") and is_instance_valid(record["siren"]): record["siren"].stream_paused = Game.simulation_paused
+	if Game.simulation_paused:
+		return
+	_spatial_timer -= delta
+	if _spatial_timer > 0.0:
+		return
+	_spatial_timer = .25
+	var listener := Game.player_position
+	for v in get_tree().get_nodes_in_group("vehicles"):
+		if not is_instance_valid(v): continue
+		var id: int = v.get_instance_id()
+		var helicopter := v is Helicopter
+		var active: bool = v.pilot_is_player if helicopter else (v.has_ai or v.driver_is_player)
+		active = active and not v.disabled and listener.distance_to(v.global_position)<(240.0 if helicopter else 105.0)
+		if not active:
+			if _actor_loops.has(id):
+				var old: Dictionary = _actor_loops[id]
+				for sound in old.values():
+					if is_instance_valid(sound): sound.queue_free()
+				_actor_loops.erase(id)
+			continue
+		if not _actor_loops.has(id):
+			var engine := _spatial_loop(v,"rotor" if helicopter else "engine",-7.0 if helicopter else -17.0,240.0 if helicopter else 110.0)
+			_actor_loops[id] = {"engine":engine}
+			if not helicopter and v.kind=="police":
+				_actor_loops[id]["siren"] = _spatial_loop(v,"siren",-12.0,160.0)
+		var record: Dictionary = _actor_loops[id]
+		record["engine"].pitch_scale = .75+clampf(v.velocity.length()/30.0,0,1)*1.0
+		if record.has("siren"):
+			record["siren"].volume_db = -13.0 if Game.wanted_level>0 else -80.0
+	# Prune references after streamed/destroyed vehicles; audio is actor-owned.
+	for id in _actor_loops.keys():
+		if not is_instance_valid(_actor_loops[id]["engine"]): _actor_loops.erase(id)
+	if not _ambient_started and get_tree().current_scene.get("world") != null:
+		_ambient_started=true
+		for spec in [[Vector3(-80,3,-80),"market",-24.0,80.0],[Vector3(0,2,-350),"water",-21.0,180.0],[Vector3(-160,4,-160),"city",-28.0,260.0],[Vector3(160,4,160),"city",-28.0,260.0]]:
+			var anchor:=Node3D.new();add_child(anchor);anchor.global_position=spec[0]
+			_ambience_players.append(_spatial_loop(anchor,spec[1],spec[2],spec[3]))
+	_bird_timer-=.25
+	if _bird_timer<=0:
+		_bird_timer=_rng.randf_range(7,13)
+		play_at("bird",listener+Vector3(_rng.randf_range(-18,18),10,_rng.randf_range(-18,18)),-24.0,_rng.randf_range(.85,1.15))
+
+func shutdown_audio() -> void:
+	_audio_shutdown=true
+	_stop_audio_recursive(self)
+	for record in _actor_loops.values():
+		for p in record.values():
+			if is_instance_valid(p): p.stop(); p.stream=null
+	_actor_loops.clear()
+
+func _stop_audio_recursive(node: Node) -> void:
+	for child in node.get_children():
+		if child is AudioStreamPlayer or child is AudioStreamPlayer3D:
+			child.stop(); child.stream=null
+		_stop_audio_recursive(child)
+
+func _ambience_loop(kind: int) -> AudioStreamWAV:
+	var n:=MIX_RATE*6
+	var s:=PackedFloat32Array();s.resize(n)
+	var low:=0.0
+	for i in n:
+		var t:=float(i)/MIX_RATE
+		low=low*.985+_rng.randf_range(-1,1)*.015
+		var wave:=.6+.4*sin(TAU*t/6.0)
+		match kind:
+			0: s[i]=low*.65+sin(TAU*43.0*t)*.018
+			1: s[i]=low*.5+sin(TAU*90.0*t)*.012+sin(TAU*180.0*t)*.008
+			_: s[i]=low*wave*.85
+	# Crossfade the tail to the head so the loop seam is continuous.
+	var fade:=int(MIX_RATE*.2)
+	for i in fade:
+		var weight:=float(i)/fade
+		s[n-fade+i]=lerpf(s[n-fade+i],s[i],weight)
+	return _wav(s,true)
+
+func _bird() -> AudioStreamWAV:
+	var n:=int(MIX_RATE*.38)
+	var s:=PackedFloat32Array();s.resize(n)
+	for i in n:
+		var t:=float(i)/MIX_RATE
+		var envelope:=pow(sin(PI*float(i)/n),2.0)
+		s[i]=sin(TAU*(1900*t+1100*t*t+sin(t*30)*8))*envelope*.18
+	return _wav(s)
 
 # ------------------------------------------------------------------ synthesis
 func _wav(samples: PackedFloat32Array, loop: bool = false) -> AudioStreamWAV:

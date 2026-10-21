@@ -1,0 +1,2333 @@
+diff --git a/game/assets/authored/shaders/tropical_sky.gdshader b/game/assets/authored/shaders/tropical_sky.gdshader
+index 57197df..1578059 100644
+--- a/game/assets/authored/shaders/tropical_sky.gdshader
++++ b/game/assets/authored/shaders/tropical_sky.gdshader
+@@ -2,7 +2,7 @@ shader_type sky;
+ // Original static tropical-afternoon sky. No photographed skyline/backdrop.
+ uniform vec3 zenith : source_color = vec3(0.16, 0.34, 0.57);
+ uniform vec3 horizon : source_color = vec3(0.72, 0.76, 0.76);
+-uniform vec3 sun_direction = vec3(0.55, 0.47, 0.69);
++uniform vec3 sun_direction = vec3(-0.55, 0.47, -0.69);
+ float hash3(vec3 p) { return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453); }
+ float noise3(vec3 p) {
+  vec3 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
+diff --git a/game/project.godot b/game/project.godot
+index 7636c8c..cb7e705 100644
+--- a/game/project.godot
++++ b/game/project.godot
+@@ -7,7 +7,7 @@ config_version=5
+ [application]
+ 
+ config/name="Orchard Reach"
+-config/description="Original third-person open-world action slice set in a Singapore-inspired district. Wave 1 build."
++config/description="Original third-person open-world action slice set in a Singapore-inspired district."
+ run/main_scene="res://main.tscn"
+ config/features=PackedStringArray("4.7", "Forward Plus")
+ boot_splash/show_image=false
+@@ -24,7 +24,8 @@ renderer/rendering_method="forward_plus"
+ environment/defaults/default_clear_color=Color(0.42, 0.55, 0.72, 1)
+ textures/default_filters/anisotropic_filtering_level=2
+ textures/vram_compression/import_etc2_astc=true
+-anti_aliasing/quality/msaa_3d=1
++anti_aliasing/quality/msaa_3d=2
++anti_aliasing/quality/use_taa=true
+ 
+ [physics]
+ 
+diff --git a/game/src/actors/car.gd b/game/src/actors/car.gd
+index 8aa1af3..a757b3d 100644
+--- a/game/src/actors/car.gd
++++ b/game/src/actors/car.gd
+@@ -236,11 +236,25 @@ func _physics_process(delta: float) -> void:
+ 		velocity.y -= 24.0 * delta
+ 	else:
+ 		velocity.y = -0.6
++	_step_low_kerb(delta)
+ 	var before := velocity
+ 	move_and_slide()
+ 	_check_impact(before)
+ 	_spin_wheels(delta)
+ 
++## Kinematic wheel contact: lift over a low kerb only when the complete car
++## collision hull fits in the raised position and along its intended motion.
++## This same bounded 0.24m step applies to human and AI driving.
++func _step_low_kerb(delta: float) -> void:
++	if not is_on_floor(): return
++	var horizontal_motion := Vector3(velocity.x, 0.0, velocity.z) * delta
++	if horizontal_motion.length() < 0.01: return
++	if not test_move(global_transform, horizontal_motion): return
++	var raised := global_transform
++	raised.origin.y += 0.24
++	if not test_move(global_transform, Vector3.UP * 0.24) and not test_move(raised, horizontal_motion):
++		global_position.y += 0.24
++
+ func _check_impact(before: Vector3) -> void:
+ 	if get_slide_collision_count() == 0:
+ 		return
+@@ -428,23 +442,38 @@ func set_ai_driver(driver: Node) -> void:
+ func _clear_exit_position() -> Vector3:
+ 	var right := global_transform.basis.x
+ 	var forward := -global_transform.basis.z
+-	var space := get_world_3d().direct_space_state
+ 	var offsets: Array[Vector3] = [
+-		right * 1.9, right * -1.9, forward * 2.4, forward * -2.4, right * 2.6 + forward * 1.2,
++		right * 1.9, right * -1.9, forward * 2.9, forward * -2.9,
++		right * 2.8 + forward * 1.2, right * -2.8 + forward * 1.2,
+ 	]
++	return find_safe_exit(self, offsets)
++
++## A vehicle exit uses the player's actual capsule dimensions, supported by
++## a walkable surface. If every candidate is blocked, ownership stays seated.
++## This avoids the previous fallback that placed the player inside a wall.
++static func find_safe_exit(vehicle: CharacterBody3D, offsets: Array[Vector3]) -> Vector3:
++	var space := vehicle.get_world_3d().direct_space_state
++	var capsule := CapsuleShape3D.new()
++	capsule.radius = 0.36
++	capsule.height = 1.75
+ 	for offset in offsets:
+-		var candidate: Vector3 = global_position + offset + Vector3(0.0, 0.4, 0.0)
+-		candidate.y = maxf(candidate.y, 0.4)
+-		if space == null:
+-			return candidate
+-		var params := PhysicsRayQueryParameters3D.create(
+-			global_position + Vector3(0.0, 0.6, 0.0), candidate + Vector3(0.0, 0.6, 0.0))
+-		params.collision_mask = 1
+-		if space.intersect_ray(params).is_empty():
+-			return candidate
+-	# nothing beside the car is clear: the player still gets out, standing clear
+-	# of the bodywork by a small offset, and the game never traps them in it
+-	return global_position + right * 1.4 + Vector3(0.0, 0.6, 0.0)
++		var candidate := vehicle.global_position + offset
++		var floor_query := PhysicsRayQueryParameters3D.create(candidate + Vector3.UP * 2.5, candidate - Vector3.UP * 4.0)
++		floor_query.collision_mask = 1
++		var floor_hit := space.intersect_ray(floor_query)
++		if floor_hit.is_empty() or floor_hit["normal"].y < 0.65: continue
++		candidate.y = float(floor_hit["position"].y) + 0.08
++		var query := PhysicsShapeQueryParameters3D.new()
++		query.shape = capsule
++		query.transform = Transform3D(Basis.IDENTITY, candidate + Vector3.UP * 0.9)
++		query.collision_mask = 1 | 4 | 8
++		query.exclude = [vehicle.get_rid()]
++		if not space.intersect_shape(query, 1).is_empty(): continue
++		var path_query := PhysicsRayQueryParameters3D.create(vehicle.global_position + Vector3.UP * 0.9, candidate + Vector3.UP * 0.9)
++		path_query.collision_mask = 1 | 8
++		path_query.exclude = [vehicle.get_rid()]
++		if space.intersect_ray(path_query).is_empty(): return candidate
++	return Vector3.ZERO
+ 
+ func busy() -> bool:
+ 	return driver_is_player
+@@ -462,3 +491,6 @@ func take_damage(amount: float, _from_position: Vector3, _by_player: bool = fals
+ 		_forward = 0.0
+ 		if driver_is_player:
+ 			Events.notify.emit("Vehicle disabled. [E] to get clear.", "warn")
++
++func is_disabled() -> bool:
++	return disabled
+diff --git a/game/src/actors/character_visual.gd b/game/src/actors/character_visual.gd
+index 54e0bed..4b1841f 100644
+--- a/game/src/actors/character_visual.gd
++++ b/game/src/actors/character_visual.gd
+@@ -5,7 +5,7 @@ extends Node3D
+ ## health, facing, weapon damage and vehicle transitions.
+ 
+ const PROVIDER_DIR := "res://assets/providers/"
+-const LOOP_CLIPS := ["idle", "walk", "run", "aim", "aim_walk", "aim_run", "jump"]
++const LOOP_CLIPS := ["idle", "walk", "run", "aim", "aim_walk", "aim_run", "jump", "seated", "drive"]
+ const WARDROBE := [
+ 	Color(1.0, 1.0, 1.0), Color(1.20, 1.34, 1.12),
+ 	Color(1.26, 1.10, 1.02), Color(0.94, 1.14, 1.36),
+@@ -18,6 +18,8 @@ var animator: AnimationPlayer
+ var weapon_socket: BoneAttachment3D
+ var asset_role := "player"
+ var loaded := false
++var ignore_simulation_pause := false # Explicitly enabled only by pose-review fixtures.
++var _manual_pause := false
+ var _clips: Dictionary = {}
+ var _current := ""
+ var _one_shot := false
+@@ -26,12 +28,19 @@ var _last_speed := 0.0
+ var _last_aim := false
+ var _last_grounded := true
+ var _last_reload := false
++var _weapon_node: Node3D
++var _aim_pitch := 0.0
++var _weapon_kind := "pistol"
++var _phase_offset := 0.0
++var _seated := false
++var _driving_pose := false
+ 
+ static func available(role: String = "player") -> bool:
+ 	return ResourceLoader.exists(PROVIDER_DIR + role + "_rigged.glb")
+ 
+ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
+ 	asset_role = role
++	_phase_offset = fmod(float(get_instance_id() % 997) / 997.0 + float(wardrobe_variant) * 0.137, 1.0)
+ 	if not available(role):
+ 		push_warning("Rigged character missing: " + role + "_rigged.glb")
+ 		return false
+@@ -74,6 +83,9 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
+ 	_last_reload = reloading
+ 	if not loaded or _dead or _one_shot:
+ 		return
++	if _seated:
++		_play("drive" if _driving_pose else "seated", 0.22)
++		return
+ 	var clip := "idle"
+ 	var rate := 1.0
+ 	if not grounded:
+@@ -90,6 +102,11 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
+ 		clip = "aim"
+ 	_play(clip, 0.16, rate)
+ 
++func set_seated(seated: bool, driving: bool = false) -> void:
++	_seated = seated
++	_driving_pose = driving
++	set_motion(_last_speed, _last_aim, _last_grounded, _last_reload)
++
+ func play_hit() -> void:
+ 	if not loaded or _dead:
+ 		return
+@@ -106,24 +123,55 @@ func play_death() -> void:
+ func reset_alive() -> void:
+ 	_dead = false
+ 	_one_shot = false
++	_seated = false
++	_driving_pose = false
+ 	_current = ""
+ 	if loaded:
+ 		_play("idle", 0.0)
+ 
+-func attach_weapon(weapon: Node3D) -> void:
++func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
+ 	if weapon_socket == null or weapon == null:
+ 		return
+ 	if weapon.get_parent() != null:
+ 		weapon.reparent(weapon_socket, false)
+ 	else:
+ 		weapon_socket.add_child(weapon)
+-	# Bone local Y follows the fingers. Provider guns face Godot -Z.
+-	weapon.position = Vector3(0.0, 0.085, -0.018)
++	_weapon_node = weapon
++	_weapon_kind = weapon_kind
++	# *_held.glb derivatives face -Z and place their origin at the grip.
++	# At rest the muzzle hangs along the fingers; aiming stabilizes the barrel
++	# on the body's forward axis while its grip follows the animated wrist.
++	weapon.position = Vector3(0.0, 0.055, -0.012)
+ 	weapon.rotation = Vector3(PI * 0.5, 0.0, 0.0)
++	process_priority = 10
++
++func set_aim_pitch(value: float) -> void:
++	_aim_pitch = clampf(value, -1.1, 0.85)
++
++func weapon_muzzle_position() -> Vector3:
++	if _weapon_node == null or not is_instance_valid(_weapon_node):
++		return global_position + Vector3(0.0, 1.3, -0.4)
++	var forward_offset := 0.44 if _weapon_kind == "smg" else 0.15
++	return _weapon_node.to_global(Vector3(0.0, 0.045, -forward_offset))
++
++func _process(_delta: float) -> void:
++	_update_animation_activity()
++	if _weapon_node == null or not is_instance_valid(_weapon_node):
++		return
++	if _last_aim or _last_reload:
++		_weapon_node.global_basis = global_transform.basis.orthonormalized() * Basis(Vector3.RIGHT, _aim_pitch)
++	else:
++		_weapon_node.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+ 
+ func set_paused(paused: bool) -> void:
++	_manual_pause = paused
++	_update_animation_activity()
++
++func _update_animation_activity() -> void:
+ 	if animator != null:
+-		animator.active = not paused
++		var should_run := not (_manual_pause or (Game.simulation_paused and not ignore_simulation_pause))
++		if animator.active != should_run:
++			animator.active = should_run
+ 
+ func _play(clip: String, crossfade: float, rate: float = 1.0) -> void:
+ 	if not _clips.has(clip):
+@@ -135,6 +183,8 @@ func _play(clip: String, crossfade: float, rate: float = 1.0) -> void:
+ 		return
+ 	_current = clip
+ 	animator.play(_clips[clip], crossfade)
++	if asset_role != "player" and clip in LOOP_CLIPS:
++		animator.seek(_phase_offset * animator.get_animation(_clips[clip]).length, true)
+ 
+ func _on_animation_finished(_animation: StringName) -> void:
+ 	if _dead:
+diff --git a/game/src/actors/helicopter.gd b/game/src/actors/helicopter.gd
+index 5c6c535..564cc22 100644
+--- a/game/src/actors/helicopter.gd
++++ b/game/src/actors/helicopter.gd
+@@ -173,6 +173,7 @@ func _try_provider_asset() -> void:
+ 	if root == null:
+ 		return
+ 	_provider_root = root
++	_body.visible = false
+ 	for part in _procedural_visuals:
+ 		part.visible = false
+ 	var main_rotor := AssetLibrary.find_named(root, "main_rotor")
+@@ -186,6 +187,9 @@ func _physics_process(delta: float) -> void:
+ 	if Game.simulation_paused:
+ 		return
+ 	_impact_cooldown = maxf(0.0, _impact_cooldown - delta)
++	if _provider_root != null:
++		_provider_root.rotation.x = _body.rotation.x
++		_provider_root.rotation.z = _body.rotation.z
+ 	var rotor_speed := 22.0 if pilot_is_player else 6.0
+ 	if _rotor:
+ 		_rotor.rotate_y(delta * rotor_speed)
+@@ -277,10 +281,14 @@ func exit_vehicle(player: Node) -> void:
+ 	if not is_on_floor():
+ 		Events.notify.emit("Land before exiting.", "warn")
+ 		return
+-	pilot_is_player = false
+ 	var side := global_transform.basis.x
+-	var exit_pos := global_position + side * 2.4 + Vector3(0.0, 0.6, 0.0)
+-	exit_pos.y = maxf(exit_pos.y, 0.6)
++	var forward := -global_transform.basis.z
++	var offsets: Array[Vector3] = [side * 2.8, -side * 2.8, forward * 4.0, -forward * 4.0]
++	var exit_pos := Car.find_safe_exit(self, offsets)
++	if exit_pos == Vector3.ZERO:
++		Events.notify.emit("No clear landing-side exit. Reposition the helicopter.", "warn")
++		return
++	pilot_is_player = false
+ 	player.global_position = exit_pos
+ 	player.visible = true
+ 	player.current_vehicle = null
+diff --git a/game/src/actors/npc.gd b/game/src/actors/npc.gd
+index 84fa2e4..9509753 100644
+--- a/game/src/actors/npc.gd
++++ b/game/src/actors/npc.gd
+@@ -21,6 +21,7 @@ var idle_time := 0.0
+ var panic_time := 0.0
+ var fire_timer := 0.0
+ var body_root: Node3D
++var character_visual: CharacterVisual
+ var _leg_l: Node3D
+ var _leg_r: Node3D
+ var _arm_l: Node3D
+@@ -94,6 +95,18 @@ func _build() -> void:
+ 		gun.position = Vector3(-0.30, 1.12, -0.24)
+ 		body_root.add_child(gun)
+ 
++	character_visual = CharacterVisual.new()
++	body_root.add_child(character_visual)
++	var role := "officer" if is_police else "civilian"
++	if character_visual.configure(role, get_instance_id() % 24):
++		for child in body_root.get_children():
++			if child is Node3D and child != character_visual:
++				child.visible = false
++		if is_hostile or is_police:
++			var gun := AssetLibrary.instantiate("pistol_held.glb", body_root)
++			if gun != null:
++				character_visual.attach_weapon(gun,"pistol")
++
+ func _limb(hip: Vector3, size: Vector3, cloth: Material) -> Node3D:
+ 	var pivot := Node3D.new()
+ 	pivot.position = hip
+@@ -252,6 +265,9 @@ func _move_towards(target: Vector3, speed: float, delta: float) -> void:
+ 	rotation.y = lerp_angle(rotation.y, yaw, clampf(delta * 6.0, 0.0, 1.0))
+ 
+ func _animate(delta: float, speed: float) -> void:
++	if character_visual != null and character_visual.loaded:
++		character_visual.set_motion(speed, (is_police or is_hostile) and state == State.PURSUE, is_on_floor())
++		return
+ 	var stride: float = clampf(speed / 2.2, 0.0, 1.4)
+ 	_walk_phase += delta * (5.0 + speed * 3.0)
+ 	var swing: float = sin(_walk_phase) * stride * 0.6
+@@ -271,6 +287,8 @@ func take_damage(amount: float, from_position: Vector3, by_player: bool = true)
+ 	if state == State.DEAD:
+ 		return
+ 	health -= amount
++	if character_visual != null and character_visual.loaded and health > 0:
++		character_visual.play_hit()
+ 	if by_player:
+ 		Game.add_heat(4.0 if not is_police else 8.0)
+ 	_panic(from_position)
+@@ -295,8 +313,11 @@ func _panic(from_position: Vector3) -> void:
+ func _die(by_player: bool) -> void:
+ 	state = State.DEAD
+ 	velocity = Vector3.ZERO
+-	body_root.rotation_degrees = Vector3(82.0, rotation.y, 0.0)
+-	body_root.position = Vector3(0.0, 0.35, 0.0)
++	if character_visual != null and character_visual.loaded:
++		character_visual.play_death()
++	else:
++		body_root.rotation_degrees = Vector3(82.0, rotation.y, 0.0)
++		body_root.position = Vector3(0.0, 0.35, 0.0)
+ 	collision_layer = 0
+ 	Events.actor_died.emit(self, by_player)
+ 	if is_police:
+diff --git a/game/src/actors/player.gd b/game/src/actors/player.gd
+index 2ea76cc..24ee0c6 100644
+--- a/game/src/actors/player.gd
++++ b/game/src/actors/player.gd
+@@ -35,7 +35,9 @@ var _muzzle_flash: MeshInstance3D
+ var _weapon_mesh: MeshInstance3D
+ var _weapon_model: Node3D = null
+ var _body_root: Node3D
++var _visual: CharacterVisual
+ var _press_armed: Dictionary = {}
++var _press_queue: Dictionary = {}
+ var _leg_l: Node3D
+ var _leg_r: Node3D
+ var _arm_l: Node3D
+@@ -119,6 +121,14 @@ func _build_body() -> void:
+ 	_muzzle_flash.visible = false
+ 	_body_root.add_child(_muzzle_flash)
+ 
++	_visual = CharacterVisual.new()
++	_body_root.add_child(_visual)
++	if _visual.configure("player"):
++		for child in _body_root.get_children():
++			if child is Node3D and child != _visual and child != _muzzle_flash:
++				child.visible = false
++		_update_weapon_mesh()
++
+ func _limb(hip: Vector3, size: Vector3, cloth: Material, foot: Material) -> Node3D:
+ 	var pivot := Node3D.new()
+ 	pivot.position = hip
+@@ -141,6 +151,8 @@ func _limb(hip: Vector3, size: Vector3, cloth: Material, foot: Material) -> Node
+ 
+ func _update_weapon_mesh() -> void:
+ 	var file := "smg_clean.glb" if Game.carried_weapon == "smg" else "pistol_clean.glb"
++	if _visual != null and _visual.loaded:
++		file = "smg_held.glb" if Game.carried_weapon == "smg" else "pistol_held.glb"
+ 	if _weapon_model != null and is_instance_valid(_weapon_model):
+ 		_weapon_model.queue_free()
+ 		_weapon_model = null
+@@ -148,6 +160,8 @@ func _update_weapon_mesh() -> void:
+ 		_weapon_model = AssetLibrary.instantiate(file, _body_root)
+ 		if _weapon_model != null:
+ 			_weapon_model.position = Vector3(-0.30, 1.18, -0.28)
++			if _visual != null and _visual.loaded:
++				_visual.attach_weapon(_weapon_model, Game.carried_weapon)
+ 			_weapon_mesh.visible = false
+ 			return
+ 	_weapon_mesh.visible = true
+@@ -184,6 +198,12 @@ func _unhandled_input(event: InputEvent) -> void:
+ 		if bool(Game.settings.get("invert_y", false)):
+ 			dy = -dy
+ 		pitch = clampf(pitch - dy, -1.25, 0.85)
++	# Preserve rapid native press/release events even when a slow frame ends
++	# after both. Scripted action_press still uses the held-state fallback.
++	if not (event is InputEventKey and event.echo):
++		for action in ["fire", "reload", "weapon_next", "interact"]:
++			if event.is_action_pressed(action):
++				_press_queue[action] = true
+ 	# NOTE: fire/reload/weapon/interact are polled in _process so that scripted
+ 	# input (Input.action_press) reaches the same code path as a human press.
+ 
+@@ -263,6 +283,15 @@ func _physics_process(delta: float) -> void:
+ 	Game.player_rotation = yaw
+ 
+ func _animate(delta: float, speed: float, sprinting: bool) -> void:
++	if _visual != null and _visual.loaded:
++		_visual.set_motion(speed, aiming, is_on_floor(), _reloading)
++		_visual.set_aim_pitch(pitch)
++		_walk_phase += delta * speed * 1.9
++		var contact := int(_walk_phase / PI)
++		if contact != _last_stride_phase and speed > .5 and is_on_floor():
++			_last_stride_phase = contact
++			Sfx.play_at("footstep", global_position, -18.0, _rng.randf_range(.9, 1.1))
++		return
+ 	var stride: float = clampf(speed / 5.0, 0.0, 1.6)
+ 	_walk_phase += delta * (6.0 + speed * 1.4)
+ 	var swing: float = sin(_walk_phase) * stride * 0.7
+@@ -286,7 +315,7 @@ func _animate(delta: float, speed: float, sprinting: bool) -> void:
+ 	if stride_phase != _last_stride_phase:
+ 		_last_stride_phase = stride_phase
+ 		if stride > 0.25:
+-			Sfx.play("footstep", -18.0, _rng.randf_range(0.9, 1.15))
++			Sfx.play_at("footstep", global_position, -18.0, _rng.randf_range(0.9, 1.15))
+ 
+ func _fire() -> void:
+ 	if current_vehicle != null or busy:
+@@ -303,6 +332,8 @@ func _fire() -> void:
+ 	_fire_cooldown = 0.16 if Game.carried_weapon == "pistol" else 0.085
+ 	_muzzle_flash.visible = true
+ 	_muzzle_flash.position = _weapon_mesh.position + Vector3(0.0, 0.02, -0.35 if Game.carried_weapon == "smg" else -0.22)
++	if _visual != null and _visual.loaded:
++		_muzzle_flash.global_position = _visual.weapon_muzzle_position()
+ 	var cam_basis := camera.global_transform.basis
+ 	var origin := camera.global_position
+ 	var dir := -cam_basis.z
+@@ -311,6 +342,17 @@ func _fire() -> void:
+ 	params.exclude = [get_rid()]
+ 	var hit := get_world_3d().direct_space_state.intersect_ray(params)
+ 	var point := origin + dir * 120.0
++	# The camera chooses the aim point, but the muzzle must have a clear
++	# path to it. This prevents shooting through close walls/vehicle cover.
++	if not hit.is_empty():
++		point = hit["position"]
++	var muzzle := _muzzle_flash.global_position
++	var muzzle_params := PhysicsRayQueryParameters3D.create(muzzle, point)
++	muzzle_params.collision_mask = 1 | 4 | 8
++	muzzle_params.exclude = [get_rid()]
++	var muzzle_hit := get_world_3d().direct_space_state.intersect_ray(muzzle_params)
++	if not muzzle_hit.is_empty():
++		hit = muzzle_hit
+ 	var hit_something := false
+ 	if not hit.is_empty():
+ 		point = hit["position"]
+@@ -323,7 +365,7 @@ func _fire() -> void:
+ 			hit_something = true
+ 		_spawn_impact(point, -dir)
+ 	Events.shot_fired.emit(origin, dir, Game.carried_weapon)
+-	Sfx.play("gunshot", -4.0, 1.0 if Game.carried_weapon == "pistol" else 0.88)
++	Sfx.play_at("gunshot", _muzzle_flash.global_position, -4.0, 1.0 if Game.carried_weapon == "pistol" else 0.88)
+ 	crosshair_hit.emit(point, hit_something)
+ 	# make noise: gunfire draws witnesses and police (LAW-02)
+ 	Game.add_heat(2.0)
+@@ -361,35 +403,49 @@ func _try_interact() -> void:
+ 		if current_vehicle.has_method("exit_vehicle"):
+ 			current_vehicle.exit_vehicle(self)
+ 		return
+-	# The closest interactable wins, whatever it is: a parcel lying at the
+-	# player's feet must not be stolen by a car parked a little further away.
+-	var best: Node = null
+-	var best_d := INF
+-	for v in get_tree().get_nodes_in_group("vehicles"):
+-		if v == current_vehicle:
+-			continue
+-		var d := global_position.distance_to(v.global_position)
+-		if d < best_d and d < INTERACT_RANGE:
+-			best_d = d
+-			best = v
+-	for obj in get_tree().get_nodes_in_group("interactables"):
+-		var d2 := global_position.distance_to(obj.global_position)
+-		# small props are picked up from a slightly wider reach than a vehicle
+-		if d2 < best_d and d2 < PICKUP_RANGE and obj.has_method("interact"):
+-			best_d = d2
+-			best = obj
+-	if best and best.has_method("interact"):
+-		print("[interact] %s at %.2f m" % [best.name, best_d])
++	var best := _interaction_target()
++	if best != null:
+ 		best.interact(self)
+-		return
+-	print("[interact] nothing in reach")
++
++func _interaction_target() -> Node3D:
++	var best: Node3D = null
++	var nearest := INF
++	for group in ["vehicles", "interactables"]:
++		for candidate in get_tree().get_nodes_in_group(group):
++			if not candidate is Node3D or not candidate.visible:
++				continue
++			if candidate == current_vehicle:
++				continue
++			if candidate.has_method("is_disabled") and candidate.is_disabled():
++				continue
++			if candidate.has_method("can_interact") and not candidate.can_interact():
++				continue
++			var distance: float = global_position.distance_to(candidate.global_position)
++			var reach := INTERACT_RANGE if group=="vehicles" else PICKUP_RANGE
++			if distance >= nearest or distance >= reach:
++				continue
++			if not _interaction_visible(candidate):
++				continue
++			nearest=distance
++			best=candidate
++	return best
++
++func _interaction_visible(target: Node3D) -> bool:
++	var ray := PhysicsRayQueryParameters3D.create(global_position+Vector3(0,1.25,0),target.global_position+Vector3(0,.65,0))
++	ray.collision_mask=1|8
++	var excluded: Array[RID] = [get_rid()]
++	if target is CollisionObject3D:
++		excluded.append(target.get_rid())
++	ray.exclude=excluded
++	return get_world_3d().direct_space_state.intersect_ray(ray).is_empty()
+ 
+ func _process(_delta: float) -> void:
+ 	if Game.simulation_paused:
+ 		return
+ 	if current_vehicle == null and not busy:
+ 		aiming = Input.is_action_pressed("aim")
+-	if _consume_press("fire"):
++	var fire_pressed := _consume_press("fire")
++	if fire_pressed or (Game.carried_weapon == "smg" and Input.is_action_pressed("fire")):
+ 		_fire()
+ 	if _consume_press("reload"):
+ 		_start_reload()
+@@ -409,6 +465,10 @@ func _process(_delta: float) -> void:
+ ## firing once per press re-arms on release keeps one code path for humans and
+ ## for scripts, and cannot miss a press that is still held.
+ func _consume_press(action: String) -> bool:
++	if _press_queue.get(action, false):
++		_press_queue.erase(action)
++		_press_armed[action] = false
++		return true
+ 	if not Input.is_action_pressed(action):
+ 		_press_armed[action] = true
+ 		return false
+@@ -421,15 +481,15 @@ func _update_prompt() -> void:
+ 	if current_vehicle != null:
+ 		Events.interaction_prompt.emit("[E] Exit vehicle")
+ 		return
++	var target := _interaction_target()
+ 	var prompt := ""
+-	for v in get_tree().get_nodes_in_group("vehicles"):
+-		if v.global_position.distance_to(global_position) < INTERACT_RANGE:
+-			prompt = "[E] Enter vehicle"
+-			break
+-	for obj in get_tree().get_nodes_in_group("interactables"):
+-		if obj.global_position.distance_to(global_position) < INTERACT_RANGE:
+-			prompt = String(obj.get("prompt_text")) if obj.get("prompt_text") else "[E] Interact"
+-			break
++	if target != null:
++		if target is Helicopter:
++			prompt="[E] Board helicopter"
++		elif target is Car:
++			prompt="[E] Take %s"%target.kind.capitalize()
++		else:
++			prompt=String(target.get("prompt_text")) if target.get("prompt_text") else "[E] Interact"
+ 	Events.interaction_prompt.emit(prompt)
+ 
+ func take_damage(amount: float, from_position: Vector3, _by_player: bool = false) -> void:
+@@ -437,6 +497,8 @@ func take_damage(amount: float, from_position: Vector3, _by_player: bool = false
+ 		return
+ 	Game.damage_player(amount)
+ 	_damage_flash = 0.3
++	if _visual != null and _visual.loaded and Game.health > 0:
++		_visual.play_hit()
+ 
+ func _on_health_changed(value: float, _max_value: float) -> void:
+ 	alive = value > 0.0
+@@ -457,6 +519,8 @@ func respawn_at(pos: Vector3, rot: float) -> void:
+ 	velocity = Vector3.ZERO
+ 	visible = true
+ 	alive = true
++	if _visual != null and _visual.loaded:
++		_visual.reset_alive()
+ 	busy = false
+ 	camera.current = true
+ 	Game.set_mode(Game.MODE_FOOT)
+@@ -475,3 +539,16 @@ func controlled_actor() -> Node3D:
+ 	if current_vehicle != null and is_instance_valid(current_vehicle):
+ 		return current_vehicle as Node3D
+ 	return self
++
++func reset_action_state() -> void:
++	_fire_cooldown=0.0
++	_reload_timer=0.0
++	_reloading=false
++	aiming=false
++	busy=false
++	_press_queue.clear()
++	_press_armed.clear()
++	Game.carried_weapon="pistol"
++	_update_weapon_mesh()
++	if _visual!=null and _visual.loaded: _visual.reset_alive()
++	Events.ammo_changed.emit(Game.current_mag(),Game.current_reserve())
+diff --git a/game/src/core/audio.gd b/game/src/core/audio.gd
+index 7da7f5f..9a05443 100644
+--- a/game/src/core/audio.gd
++++ b/game/src/core/audio.gd
+@@ -13,8 +13,19 @@ var _engine_player: AudioStreamPlayer
+ var _rotor_player: AudioStreamPlayer
+ var _siren_player: AudioStreamPlayer
+ var _rng := RandomNumberGenerator.new()
++var _spatial_shots: Array[AudioStreamPlayer3D] = []
++var _spatial_index := 0
++var _actor_loops: Dictionary = {}
++var _spatial_timer := 0.0
++var _bird_timer := 6.0
++var _ambient_started := false
++var _ambience_players: Array[AudioStreamPlayer3D] = []
++var _audio_shutdown := false
++var _headless_audio := false
++
+ 
+ func _ready() -> void:
++	_headless_audio = DisplayServer.get_name() == "headless"
+ 	_rng.seed = 90210
+ 	_bank["gunshot"] = _gunshot()
+ 	_bank["footstep"] = _footstep()
+@@ -32,7 +43,24 @@ func _ready() -> void:
+ 	_engine_player = _loop_player(_bank["engine"])
+ 	_rotor_player = _loop_player(_bank["rotor"])
+ 	_siren_player = _loop_player(_bank["siren"])
+-	_siren_player.volume_db = -12.0
++	# Legacy control methods remain compatible; actual vehicle sounds now live
++	# on their actors, so passing traffic and a distant aircraft attenuate.
++	_engine_player.volume_db = -80.0
++	_rotor_player.volume_db = -80.0
++	_siren_player.volume_db = -80.0
++	_bank["city"] = _ambience_loop(0)
++	_bank["market"] = _ambience_loop(1)
++	_bank["water"] = _ambience_loop(2)
++	_bank["bird"] = _bird()
++	for i in 24:
++		var p := AudioStreamPlayer3D.new()
++		p.max_distance = 130.0
++		p.unit_size = 7.0
++		p.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
++		add_child(p)
++		_spatial_shots.append(p)
++	Events.shot_fired.connect(func(origin: Vector3, _direction: Vector3, id: String):
++		if id == "npc_pistol": play_at("gunshot", origin, -7.0, .9))
+ 
+ func _loop_player(stream: AudioStream) -> AudioStreamPlayer:
+ 	var p := AudioStreamPlayer.new()
+@@ -42,6 +70,8 @@ func _loop_player(stream: AudioStream) -> AudioStreamPlayer:
+ 
+ # --------------------------------------------------------------------- public
+ func play(sound_id: String, volume_db: float = 0.0, pitch: float = 1.0) -> void:
++	if _headless_audio:
++		return
+ 	if not _bank.has(sound_id):
+ 		return
+ 	var p := _one_shots[_one_shot_index]
+@@ -52,6 +82,8 @@ func play(sound_id: String, volume_db: float = 0.0, pitch: float = 1.0) -> void:
+ 	p.play()
+ 
+ func start_engine() -> void:
++	if _headless_audio:
++		return
+ 	if not _engine_player.playing:
+ 		_engine_player.play()
+ 
+@@ -62,6 +94,8 @@ func set_engine_pitch(ratio: float) -> void:
+ 	_engine_player.pitch_scale = clampf(0.65 + ratio * 1.4, 0.5, 2.4)
+ 
+ func start_rotor() -> void:
++	if _headless_audio:
++		return
+ 	if not _rotor_player.playing:
+ 		_rotor_player.play()
+ 
+@@ -72,12 +106,134 @@ func set_rotor_pitch(ratio: float) -> void:
+ 	_rotor_player.pitch_scale = clampf(0.7 + ratio * 0.8, 0.5, 1.8)
+ 
+ func set_siren(on: bool, pitch: float = 1.0) -> void:
++	if _headless_audio:
++		return
+ 	if on and not _siren_player.playing:
+ 		_siren_player.play()
+ 	elif not on and _siren_player.playing:
+ 		_siren_player.stop()
+ 	_siren_player.pitch_scale = pitch
+ 
++# -------------------------------------------------------- spatial soundscape
++func play_at(sound_id: String, position: Vector3, volume_db: float = 0.0, pitch: float = 1.0) -> void:
++	if _headless_audio:
++		return
++	if _audio_shutdown or not _bank.has(sound_id) or _spatial_shots.is_empty():
++		return
++	var p := _spatial_shots[_spatial_index]
++	_spatial_index = (_spatial_index + 1) % _spatial_shots.size()
++	p.global_position = position
++	p.stream = _bank[sound_id]
++	p.volume_db = volume_db
++	p.pitch_scale = pitch
++	p.play()
++
++func _spatial_loop(owner_node: Node3D, stream_id: String, volume: float, distance: float) -> AudioStreamPlayer3D:
++	var p := AudioStreamPlayer3D.new()
++	p.stream = _bank[stream_id]
++	p.volume_db = volume
++	p.max_distance = distance
++	p.unit_size = 10.0
++	owner_node.add_child(p)
++	p.play()
++	return p
++
++func _process(delta: float) -> void:
++	if _headless_audio:
++		return
++	if _audio_shutdown:
++		return
++	for p in _spatial_shots:
++		p.stream_paused = Game.simulation_paused
++	for p in _ambience_players:
++		if is_instance_valid(p): p.stream_paused = Game.simulation_paused
++	for record in _actor_loops.values():
++		if is_instance_valid(record["engine"]): record["engine"].stream_paused = Game.simulation_paused
++		if record.has("siren") and is_instance_valid(record["siren"]): record["siren"].stream_paused = Game.simulation_paused
++	if Game.simulation_paused:
++		return
++	_spatial_timer -= delta
++	if _spatial_timer > 0.0:
++		return
++	_spatial_timer = .25
++	var listener := Game.player_position
++	for v in get_tree().get_nodes_in_group("vehicles"):
++		if not is_instance_valid(v): continue
++		var id: int = v.get_instance_id()
++		var helicopter := v is Helicopter
++		var active: bool = v.pilot_is_player if helicopter else (v.has_ai or v.driver_is_player)
++		active = active and not v.disabled and listener.distance_to(v.global_position)<(240.0 if helicopter else 105.0)
++		if not active:
++			if _actor_loops.has(id):
++				var old: Dictionary = _actor_loops[id]
++				for sound in old.values():
++					if is_instance_valid(sound): sound.queue_free()
++				_actor_loops.erase(id)
++			continue
++		if not _actor_loops.has(id):
++			var engine := _spatial_loop(v,"rotor" if helicopter else "engine",-7.0 if helicopter else -17.0,240.0 if helicopter else 110.0)
++			_actor_loops[id] = {"engine":engine}
++			if not helicopter and v.kind=="police":
++				_actor_loops[id]["siren"] = _spatial_loop(v,"siren",-12.0,160.0)
++		var record: Dictionary = _actor_loops[id]
++		record["engine"].pitch_scale = .75+clampf(v.velocity.length()/30.0,0,1)*1.0
++		if record.has("siren"):
++			record["siren"].volume_db = -13.0 if Game.wanted_level>0 else -80.0
++	# Prune references after streamed/destroyed vehicles; audio is actor-owned.
++	for id in _actor_loops.keys():
++		if not is_instance_valid(_actor_loops[id]["engine"]): _actor_loops.erase(id)
++	if not _ambient_started and get_tree().current_scene.get("world") != null:
++		_ambient_started=true
++		for spec in [[Vector3(-80,3,-80),"market",-24.0,80.0],[Vector3(0,2,-350),"water",-21.0,180.0],[Vector3(-160,4,-160),"city",-28.0,260.0],[Vector3(160,4,160),"city",-28.0,260.0]]:
++			var anchor:=Node3D.new();add_child(anchor);anchor.global_position=spec[0]
++			_ambience_players.append(_spatial_loop(anchor,spec[1],spec[2],spec[3]))
++	_bird_timer-=.25
++	if _bird_timer<=0:
++		_bird_timer=_rng.randf_range(7,13)
++		play_at("bird",listener+Vector3(_rng.randf_range(-18,18),10,_rng.randf_range(-18,18)),-24.0,_rng.randf_range(.85,1.15))
++
++func shutdown_audio() -> void:
++	_audio_shutdown=true
++	_stop_audio_recursive(self)
++	for record in _actor_loops.values():
++		for p in record.values():
++			if is_instance_valid(p): p.stop(); p.stream=null
++	_actor_loops.clear()
++
++func _stop_audio_recursive(node: Node) -> void:
++	for child in node.get_children():
++		if child is AudioStreamPlayer or child is AudioStreamPlayer3D:
++			child.stop(); child.stream=null
++		_stop_audio_recursive(child)
++
++func _ambience_loop(kind: int) -> AudioStreamWAV:
++	var n:=MIX_RATE*6
++	var s:=PackedFloat32Array();s.resize(n)
++	var low:=0.0
++	for i in n:
++		var t:=float(i)/MIX_RATE
++		low=low*.985+_rng.randf_range(-1,1)*.015
++		var wave:=.6+.4*sin(TAU*t/6.0)
++		match kind:
++			0: s[i]=low*.65+sin(TAU*43.0*t)*.018
++			1: s[i]=low*.5+sin(TAU*90.0*t)*.012+sin(TAU*180.0*t)*.008
++			_: s[i]=low*wave*.85
++	# Crossfade the tail to the head so the loop seam is continuous.
++	var fade:=int(MIX_RATE*.2)
++	for i in fade:
++		var weight:=float(i)/fade
++		s[n-fade+i]=lerpf(s[n-fade+i],s[i],weight)
++	return _wav(s,true)
++
++func _bird() -> AudioStreamWAV:
++	var n:=int(MIX_RATE*.38)
++	var s:=PackedFloat32Array();s.resize(n)
++	for i in n:
++		var t:=float(i)/MIX_RATE
++		var envelope:=pow(sin(PI*float(i)/n),2.0)
++		s[i]=sin(TAU*(1900*t+1100*t*t+sin(t*30)*8))*envelope*.18
++	return _wav(s)
++
+ # ------------------------------------------------------------------ synthesis
+ func _wav(samples: PackedFloat32Array, loop: bool = false) -> AudioStreamWAV:
+ 	var stream := AudioStreamWAV.new()
+diff --git a/game/src/core/game_state.gd b/game/src/core/game_state.gd
+index 5f25bb5..64db4dd 100644
+--- a/game/src/core/game_state.gd
++++ b/game/src/core/game_state.gd
+@@ -45,6 +45,7 @@ var settings := {
+ }
+ 
+ func _ready() -> void:
++	seed(seed_value)
+ 	_setup_input_map()
+ 	Events.mode_changed.connect(_on_mode_changed)
+ 	Events.health_changed.connect(_on_health_changed)
+@@ -249,12 +250,17 @@ func load_game(path: String = SAVE_PATH) -> bool:
+ 	var f := FileAccess.open(path, FileAccess.READ)
+ 	if f == null:
+ 		return false
++	if f.get_length() > 1048576:
++		f.close()
++		return false
+ 	var text := f.get_as_text()
+ 	f.close()
+ 	var parsed = JSON.parse_string(text)
+ 	if typeof(parsed) != TYPE_DICTIONARY:
+ 		return false
+-	if int(parsed.get("version", 0)) != SAVE_VERSION:
++	# Validate the complete input before changing any global or scene state.
++	# A well-formed JSON document is not necessarily a valid save.
++	if not _validate_save_data(parsed):
+ 		return false
+ 	health = float(parsed.get("health", MAX_HEALTH))
+ 	_since_damage = 0.0
+@@ -293,6 +299,53 @@ func load_game(path: String = SAVE_PATH) -> bool:
+ 		mission.restore_stage(mission_stage)
+ 	return true
+ 
++func _number_in_range(value: Variant, low: float, high: float) -> bool:
++	if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
++		return false
++	var number := float(value)
++	return is_finite(number) and number >= low and number <= high
++
++func _integer_in_range(value: Variant, low: int, high: int) -> bool:
++	return _number_in_range(value, low, high) and float(value) == floorf(float(value))
++
++func _valid_saved_vector(value: Variant) -> bool:
++	if typeof(value) != TYPE_ARRAY or value.size() != 3:
++		return false
++	for coordinate in value:
++		if not _number_in_range(coordinate, -1000000.0, 1000000.0):
++			return false
++	return true
++
++func _validate_save_data(data: Dictionary) -> bool:
++	if not _integer_in_range(data.get("version"), SAVE_VERSION, SAVE_VERSION): return false
++	if not _number_in_range(data.get("health"), 0.01, MAX_HEALTH): return false
++	if not _integer_in_range(data.get("wanted_level"), 0, 3): return false
++	if not _number_in_range(data.get("wanted_heat"), 0.0, 1000000000.0): return false
++	if not _integer_in_range(data.get("mission_stage"), 0, 8): return false
++	if not _integer_in_range(data.get("checkpoint_index"), 0, 3): return false
++	if not _integer_in_range(data.get("seed"), 0, 2147483647): return false
++	if not _number_in_range(data.get("elapsed"), 0.0, 1000000000.0): return false
++	if not _valid_saved_vector(data.get("player_position")): return false
++	if not _valid_saved_vector(data.get("last_safe_position")): return false
++	if not _number_in_range(data.get("player_rotation"), -1000000.0, 1000000.0): return false
++	if not _number_in_range(data.get("last_safe_rotation"), -1000000.0, 1000000.0): return false
++	if not _integer_in_range(data.get("mode", MODE_FOOT), MODE_FOOT, MODE_HELI): return false
++	if typeof(data.get("carried_weapon")) != TYPE_STRING or not ammo.has(data["carried_weapon"]): return false
++	if typeof(data.get("ammo")) != TYPE_DICTIONARY: return false
++	var saved_ammo: Dictionary = data["ammo"]
++	for weapon_id in ["pistol", "smg"]:
++		if typeof(saved_ammo.get(weapon_id)) != TYPE_DICTIONARY: return false
++		var slot: Dictionary = saved_ammo[weapon_id]
++		if not _integer_in_range(slot.get("mag"), 0, _mag_size(weapon_id)): return false
++		if not _integer_in_range(slot.get("reserve"), 0, 1000000): return false
++	var heat := float(data["wanted_heat"])
++	var heat_level := 3 if heat >= 100.0 else (2 if heat >= 45.0 else (1 if heat >= 12.0 else 0))
++	if int(data["wanted_level"]) != heat_level: return false
++	var saved_stage := int(data["mission_stage"])
++	var expected_checkpoint := 0 if saved_stage == 0 else (1 if saved_stage <= 3 else (2 if saved_stage <= 5 else 3))
++	if int(data["checkpoint_index"]) != expected_checkpoint: return false
++	return true
++
+ func has_save() -> bool:
+ 	return FileAccess.file_exists(SAVE_PATH)
+ 
+diff --git a/game/src/main.gd b/game/src/main.gd
+index 0a39913..f497e79 100644
+--- a/game/src/main.gd
++++ b/game/src/main.gd
+@@ -8,6 +8,7 @@ var traffic: TrafficManager
+ var mission: Mission
+ var hud: HUD
+ var started := false
++var _settings_return_to_pause := false
+ var _capture_director: Node = null
+ 
+ func _ready() -> void:
+@@ -51,6 +52,12 @@ func _ready() -> void:
+ 	add_child(heli)
+ 	heli.global_position = world.locations["helipad_primary"] + Vector3(0.0, 0.6, 0.0)
+ 
++	if "--character-review" in args:
++		var review: Node = load("res://src/systems/character_review.gd").new()
++		add_child(review)
++		review.setup(self)
++		return
++
+ 	if "--test" in args:
+ 		var tester := SelfTest.new()
+ 		add_child(tester)
+@@ -79,17 +86,28 @@ func _ready() -> void:
+ 		started = true
+ 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+ 	else:
++		Game.simulation_paused = true
+ 		hud.show_title(true)
+ 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+ 
+ func _unhandled_input(event: InputEvent) -> void:
++	if event is InputEventKey and event.pressed and hud.settings_visible():
++		if event.keycode in [KEY_1,KEY_2,KEY_3,KEY_4,KEY_5]:
++			_apply_setting_key(event.keycode)
++			return
+ 	if event.is_action_pressed("pause"):
++		if hud.settings_visible():
++			_toggle_settings()
++			return
+ 		if not started:
+ 			return
+ 		_toggle_pause()
+ 	if not started:
+-		if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER:
+-			_start_game()
++		if event is InputEventKey and event.pressed:
++			match event.keycode:
++				KEY_ENTER: _new_game()
++				KEY_F6: _continue_game()
++				KEY_F3: _toggle_settings()
+ 		return
+ 	if event is InputEventKey and event.pressed:
+ 		match event.keycode:
+@@ -107,7 +125,8 @@ func _unhandled_input(event: InputEvent) -> void:
+ 				if mission:
+ 					mission.restart()
+ 			KEY_F8:
+-				hud.visible = not hud.visible
++				Game.settings["hud_visible"] = not bool(Game.settings["hud_visible"])
++				hud.set_gameplay_visible(bool(Game.settings["hud_visible"]))
+ 			KEY_F9:
+ 				started = false
+ 				Game.simulation_paused = true
+@@ -115,7 +134,7 @@ func _unhandled_input(event: InputEvent) -> void:
+ 				hud.set_paused(false)
+ 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+ 			KEY_F3:
+-				hud.toggle_settings()
++				_toggle_settings()
+ 			KEY_1:
+ 				Game.settings["mouse_sensitivity"] = clampf(float(Game.settings["mouse_sensitivity"]) - 0.1, 0.2, 3.0)
+ 				hud.refresh_settings()
+@@ -130,7 +149,7 @@ func _unhandled_input(event: InputEvent) -> void:
+ 				hud.refresh_settings()
+ 			KEY_5:
+ 				Game.settings["hud_visible"] = not bool(Game.settings["hud_visible"])
+-				hud.visible = bool(Game.settings["hud_visible"])
++				hud.set_gameplay_visible(bool(Game.settings["hud_visible"]))
+ 				hud.refresh_settings()
+ 	if event.is_action_pressed("debug_panel"):
+ 		_toggle_debug()
+@@ -145,6 +164,43 @@ func _toggle_pause() -> void:
+ 
+ func _start_game() -> void:
+ 	started = true
++	Game.simulation_paused = false
+ 	hud.show_title(false)
++	hud.set_paused(false)
+ 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+ 	Events.toast("Harbour Relay: check the objective.", "info")
++
++func _new_game() -> void:
++	mission.restart()
++	Game.death_count = 0
++	_start_game()
++
++func _continue_game() -> void:
++	if Game.load_game():
++		_start_game()
++		Events.toast("Progress restored.","good")
++	else:
++		Events.toast("No compatible save. Start a new game to begin.","warn")
++
++func _quit_game() -> void:
++	Sfx.shutdown_audio()
++	get_tree().quit()
++
++func _toggle_settings() -> void:
++	var closing := hud.settings_visible()
++	if not closing:
++		_settings_return_to_pause = Game.simulation_paused and started
++	hud.toggle_settings()
++	Game.simulation_paused = hud.settings_visible() or not started or (closing and _settings_return_to_pause)
++	hud.set_paused(closing and _settings_return_to_pause)
++	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Game.simulation_paused else Input.MOUSE_MODE_CAPTURED
++
++func _apply_setting_key(key: int) -> void:
++	match key:
++		KEY_1: Game.settings["mouse_sensitivity"]=clampf(float(Game.settings["mouse_sensitivity"])-.1,.2,3)
++		KEY_2: Game.settings["mouse_sensitivity"]=clampf(float(Game.settings["mouse_sensitivity"])+.1,.2,3)
++		KEY_3: Game.settings["invert_y"]=not bool(Game.settings["invert_y"])
++		KEY_4: Game.settings["reduced_shake"]=not bool(Game.settings["reduced_shake"])
++		KEY_5: Game.settings["hud_visible"]=not bool(Game.settings["hud_visible"])
++	hud.set_gameplay_visible(bool(Game.settings["hud_visible"]))
++	hud.refresh_settings()
+diff --git a/game/src/systems/capture_director.gd b/game/src/systems/capture_director.gd
+index 2cfcf58..a587915 100644
+--- a/game/src/systems/capture_director.gd
++++ b/game/src/systems/capture_director.gd
+@@ -24,7 +24,24 @@ var _frames_ms: Array[float] = []
+ var _samples: Array[Dictionary] = []
+ var _gates: Array[Dictionary] = []
+ var _combat_kills := 0
++var _boarding_target: Node3D
+ var _headless := false
++var _inclusive_frames_ms: Array[float] = []
++var _readback_since_frame := false
++var _record_dir := ""
++var _record_log: FileAccess
++var _record_index := 0
++var _record_bytes := 0
++var _record_requested_samples := 0
++var _record_dropped_samples := 0
++var _record_next_us := 0
++var _record_pending := false
++var _record_capped := false
++var _record_cap_reason := ""
++var _record_cost_ms: Array[float] = []
++const RECORD_INTERVAL_US := 100000 # Requested 10Hz; timestamps are authoritative.
++const RECORD_MAX_FRAMES := 7200
++const RECORD_MAX_BYTES := 1024 * 1024 * 1024
+ 
+ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager) -> void:
+ 	main = m
+@@ -35,11 +52,20 @@ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager)
+ 	for arg in OS.get_cmdline_user_args():
+ 		if arg.begins_with("--capture-dir="):
+ 			out_dir = arg.trim_prefix("--capture-dir=")
++		elif arg.begins_with("--record-frames="):
++			_record_dir = arg.trim_prefix("--record-frames=")
+ 	DirAccess.make_dir_recursive_absolute(out_dir)
+ 	_initial_deaths = Game.death_count
+ 	_started_us = Time.get_ticks_usec()
+ 	_last_frame_us = _started_us
+ 	_headless = DisplayServer.get_name() == "headless"
++	if not _record_dir.is_empty() and not _headless:
++		DirAccess.make_dir_recursive_absolute(_record_dir)
++		_record_log = FileAccess.open(_record_dir.path_join("frames.jsonl"), FileAccess.WRITE)
++		_record_next_us = _started_us
++		if _record_log == null:
++			_record_capped = true
++			_record_cap_reason = "Could not open frames.jsonl"
+ 	Events.actor_died.connect(func(actor: Node, by_player: bool):
+ 		if by_player and actor is NPC and actor.is_hostile:
+ 			_combat_kills += 1)
+@@ -50,9 +76,22 @@ func _process(_delta: float) -> void:
+ 		return
+ 	var now := Time.get_ticks_usec()
+ 	var elapsed := float(now - _started_us) / 1000000.0
+-	if not _capture_in_progress and _last_frame_us > 0:
+-		_frames_ms.append(float(now - _last_frame_us) / 1000.0)
++	if _last_frame_us > 0:
++		var frame_ms := float(now - _last_frame_us) / 1000.0
++		_inclusive_frames_ms.append(frame_ms)
++		if not _capture_in_progress and not _readback_since_frame and not _record_pending:
++			_frames_ms.append(frame_ms)
+ 	_last_frame_us = now
++	_readback_since_frame = false
++	if _record_log and not _record_capped and now >= _record_next_us:
++		var due := 1 + int((now - _record_next_us) / RECORD_INTERVAL_US)
++		_record_requested_samples += due
++		_record_dropped_samples += due - 1
++		_record_next_us += due * RECORD_INTERVAL_US
++		if _record_pending:
++			_record_dropped_samples += 1
++		else:
++			_record_frame()
+ 	if int(elapsed) != _last_sample_second:
+ 		_last_sample_second = int(elapsed)
+ 		_samples.append(_snapshot(elapsed))
+@@ -98,12 +137,53 @@ func _shot(label: String) -> void:
+ 		var path := "%s/%02d_%s.png" % [out_dir, _shots, label]
+ 		img.save_png(path)
+ 		_log("screenshot " + path)
+-	_last_frame_us = Time.get_ticks_usec()
++	_readback_since_frame = true
+ 	_capture_in_progress = false
+ 
++## Continuous viewport evidence. Every file carries its actual wall-clock
++## timestamp; an encoder must preserve those durations instead of assuming a
++## perfect 10fps source. Recording is bounded independently of the route.
++func _record_frame() -> void:
++	_record_pending = true
++	await RenderingServer.frame_post_draw
++	if _finished or _record_log == null:
++		_record_pending = false
++		return
++	var timestamp_us := Time.get_ticks_usec()
++	var capture_started := timestamp_us
++	var img := get_viewport().get_texture().get_image()
++	if img == null:
++		_record_dropped_samples += 1
++		_record_pending = false
++		return
++	var filename := "frame_%06d.jpg" % _record_index
++	var path := _record_dir.path_join(filename)
++	var error := img.save_jpg(path, 0.8)
++	var capture_cost := float(Time.get_ticks_usec() - capture_started) / 1000.0
++	_record_cost_ms.append(capture_cost)
++	_readback_since_frame = true
++	if error != OK:
++		_record_capped = true
++		_record_cap_reason = "JPEG write failed (%d)" % error
++	else:
++		var written := FileAccess.open(path, FileAccess.READ)
++		var byte_count := written.get_length() if written else 0
++		if written: written.close()
++		_record_bytes += byte_count
++		_record_log.store_line(JSON.stringify({"sequence": _record_index, "file": filename,
++			"timestamp_us": timestamp_us, "seconds": float(timestamp_us - _started_us) / 1000000.0,
++			"width": img.get_width(), "height": img.get_height(), "readback_encode_ms": capture_cost,
++			"state": _snapshot(float(timestamp_us - _started_us) / 1000000.0)}))
++		_record_index += 1
++		if _record_index % 10 == 0: _record_log.flush()
++		if _record_index >= RECORD_MAX_FRAMES or _record_bytes >= RECORD_MAX_BYTES:
++			_record_capped = true
++			_record_cap_reason = "Recording frame/byte safety cap reached"
++	_record_pending = false
++
+ func _run() -> void:
+ 	await get_tree().create_timer(0.75).timeout
+-	_log("Route start; seed=%d; headless=%s; controls-only=true" % [Game.seed_value, _headless])
++	_log("Route start; seed=%d; headless=%s; scripted-input-automation=true" % [Game.seed_value, _headless])
+ 	await _shot("safe_room")
+ 	if world.locations.has("safe_room_exit"):
+ 		await _walk_to(world.locations["safe_room_exit"], 2.0, 25.0)
+@@ -125,6 +205,7 @@ func _run() -> void:
+ 
+ 	var car := _nearest_parked_car()
+ 	if not _gate("usable parked car found", car != null): return
++	_boarding_target = car
+ 	await _nav_to(car.global_position, 2.6, 80.0)
+ 	await _interact_until(Game.MODE_CAR)
+ 	if not _gate("car entered", Game.mode == Game.MODE_CAR and player.current_vehicle is Car): return
+@@ -140,6 +221,7 @@ func _run() -> void:
+ 
+ 	var heli := main.get_node_or_null("Helicopter") as Helicopter
+ 	if not _gate("helicopter remains usable", heli != null and not heli.disabled): return
++	_boarding_target = heli
+ 	await _walk_to(heli.global_position + Vector3(3.0, 0.0, 0.0), 1.4, 40.0)
+ 	await _interact_until(Game.MODE_HELI)
+ 	if not _gate("helicopter boarded", Game.mode == Game.MODE_HELI and mission.stage == Mission.Stage.FLY): return
+@@ -169,6 +251,33 @@ func _interact_until(target_mode: int) -> void:
+ 	for attempt in 3:
+ 		if _finished or Game.mode == target_mode: return
+ 		await _tap("interact")
++		if Game.mode == target_mode: return
++		_log("interaction attempt %d: %s" % [attempt, _interaction_diagnostic()])
++		if Game.mode == Game.MODE_FOOT and target_mode != Game.MODE_FOOT and is_instance_valid(_boarding_target):
++			# Walk to an actual door side if another object occluded the first
++			# approach. LOS stays enforced by normal interaction code.
++			var side := 1.0 if attempt % 2 == 0 else -1.0
++			var reach := 3.0 if _boarding_target is Helicopter else 1.9
++			await _walk_to(_boarding_target.global_position + _boarding_target.global_transform.basis.x * side * reach, 0.7, 10.0)
++
++func _interaction_diagnostic() -> String:
++	var chosen: Node = player._interaction_target() if player.has_method("_interaction_target") else null
++	var description := "mode=%d chosen=%s" % [Game.mode, chosen.name if chosen else "none"]
++	if not is_instance_valid(_boarding_target): return description
++	description += " requested=%s at=%s distance=%.2f" % [_boarding_target.name, _boarding_target.global_position, player.global_position.distance_to(_boarding_target.global_position)]
++	var ray := PhysicsRayQueryParameters3D.create(player.global_position + Vector3.UP * 1.25, _boarding_target.global_position + Vector3.UP * 0.65)
++	ray.collision_mask = 1 | 8
++	var excluded: Array[RID] = [player.get_rid()]
++	if _boarding_target is CollisionObject3D: excluded.append(_boarding_target.get_rid())
++	ray.exclude = excluded
++	var hit := player.get_world_3d().direct_space_state.intersect_ray(ray)
++	if not hit.is_empty():
++		var body: CollisionObject3D = hit["collider"]
++		var shape_owner: Node3D = body.shape_owner_get_owner(body.shape_find_owner(hit["shape"]))
++		description += " occluded_by=%s hit=%s shape_position=%s" % [body.name, hit["position"], shape_owner.global_position]
++	else:
++		description += " LOS=clear"
++	return description
+ 
+ func _release_all() -> void:
+ 	for action in ACTIONS:
+@@ -282,7 +391,8 @@ func _drive_route(target: Vector3, timeout: float) -> void:
+ 	for index in _grid_path(_nearest_node(player.current_vehicle.global_position), _nearest_node(target)):
+ 		if _finished or _elapsed() >= deadline: return
+ 		await _drive_to(world.traffic_nodes[index], 7.0, minf(35.0, deadline - _elapsed()))
+-	await _drive_to(target, 30.0, maxf(1.0, deadline - _elapsed()))
++		if mission.stage == Mission.Stage.TO_HELI: return
++	await _drive_to(target, 48.0, maxf(1.0, deadline - _elapsed()))
+ 
+ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
+ 	var deadline := _elapsed() + timeout
+@@ -291,6 +401,7 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
+ 	while _elapsed() < deadline and not _finished and player.current_vehicle is Car:
+ 		await get_tree().physics_frame
+ 		var car := player.current_vehicle as Car
++		if mission.stage == Mission.Stage.TO_HELI: break
+ 		var offset := target - car.global_position
+ 		offset.y = 0.0
+ 		if offset.length() < stop_distance: break
+@@ -355,16 +466,16 @@ func _fly_to(target: Vector3, timeout: float) -> void:
+ 		var offset := target - heli.global_position
+ 		offset.y = 0.0
+ 		if offset.length() < 6.0 and Vector2(heli.velocity.x, heli.velocity.z).length() < 2.0: break
+-		_steer_aircraft(heli, offset)
++		_steer_aircraft(heli, offset, 98.0)
+ 		Input.action_release("jump")
+ 		Input.action_release("sprint")
+-		if heli.global_position.y < 64.0:
+-			Input.action_press("jump", clampf((68.0 - heli.global_position.y) / 10.0, 0.0, 1.0))
+-		elif heli.global_position.y > 70.0:
++		if heli.global_position.y < 108.0:
++			Input.action_press("jump", clampf((112.0 - heli.global_position.y) / 10.0, 0.0, 1.0))
++		elif heli.global_position.y > 114.0:
+ 			Input.action_press("sprint", 0.3)
+ 	_release_all()
+ 
+-func _steer_aircraft(heli: Helicopter, offset: Vector3) -> void:
++func _steer_aircraft(heli: Helicopter, offset: Vector3, minimum_altitude: float = 0.5) -> void:
+ 	var direction := offset.normalized()
+ 	var forward := -heli.global_transform.basis.z
+ 	var angle := atan2(forward.z * direction.x - forward.x * direction.z, forward.dot(direction))
+@@ -375,7 +486,7 @@ func _steer_aircraft(heli: Helicopter, offset: Vector3) -> void:
+ 	Input.action_release("move_forward")
+ 	Input.action_release("move_back")
+ 	# Climb clear of the district before translating; align before accelerating.
+-	if absf(angle) < 0.8 and heli.global_position.y > 15.0 and offset.length() > 2.0:
++	if absf(angle) < 0.8 and heli.global_position.y > minimum_altitude and offset.length() > 2.0:
+ 		Input.action_press("move_forward", clampf(offset.length() / 65.0, 0.0, 0.8) * maxf(0.0, cos(angle)))
+ 
+ func _land(target: Vector3, timeout: float) -> void:
+@@ -410,30 +521,59 @@ func _percentile(sorted: Array[float], percentile: float) -> float:
+ 	if sorted.is_empty(): return 0.0
+ 	return sorted[clampi(int(ceil(percentile * sorted.size())) - 1, 0, sorted.size() - 1)]
+ 
++func _frame_metrics(values: Array[float]) -> Dictionary:
++	var sorted := values.duplicate()
++	sorted.sort()
++	var total := 0.0
++	for value in sorted: total += value
++	return {"count": sorted.size(), "mean_ms": total / maxf(1.0, sorted.size()),
++		"p50_ms": _percentile(sorted, 0.50), "p95_ms": _percentile(sorted, 0.95),
++		"p99_ms": _percentile(sorted, 0.99), "max_ms": sorted[-1] if not sorted.is_empty() else 0.0}
++
+ func _finish(success: bool) -> void:
+ 	if _finished: return
+ 	_finished = true
+ 	_release_all()
+-	var sorted := _frames_ms.duplicate()
+-	sorted.sort()
+-	var frame_sum := 0.0
+-	for value in sorted: frame_sum += value
++	if _record_log:
++		_record_log.flush()
++		_record_log.close()
++		_record_log = null
++	var recording := {"requested": not _record_dir.is_empty(), "enabled": not _headless and not _record_dir.is_empty(), "directory": _record_dir,
++		"requested_hz": 10, "frames_written": _record_index, "bytes_written": _record_bytes,
++		"scheduled_samples": _record_requested_samples, "missed_samples": _record_dropped_samples,
++		"capped": _record_capped, "cap_reason": _record_cap_reason,
++		"max_frames": RECORD_MAX_FRAMES, "max_bytes": RECORD_MAX_BYTES,
++		"max_duration_seconds": ROUTE_TIMEOUT, "timestamps": "frames.jsonl monotonic seconds from route setup",
++		"readback_encode_cost_ms": _frame_metrics(_record_cost_ms)}
++	if not _record_dir.is_empty():
++		var record_summary := FileAccess.open(_record_dir.path_join("recording.json"), FileAccess.WRITE)
++		if record_summary:
++			record_summary.store_string(JSON.stringify(recording, "\t"))
++			record_summary.close()
+ 	var output := FileAccess.open("%s/capture_log.json" % out_dir, FileAccess.WRITE)
+ 	if output:
+ 		output.store_string(JSON.stringify({"schema": 2, "success": success, "failure_reason": _failure,
+ 			"uninterrupted": success and Game.death_count == _initial_deaths, "controls_only": true,
++			"automation_kind": "scripted input actions, direct mouse-look yaw/pitch, fractional action strengths",
++			"native_human_run": false, "no_teleports_or_state_bypasses": true,
+ 			"headless": _headless, "rendered_performance_valid": not _headless,
+ 			"finished_utc": Time.get_datetime_string_from_system(true), "elapsed_seconds": _elapsed(),
+ 			"engine": Engine.get_version_info()["string"], "seed": Game.seed_value,
+ 			"health": Game.health, "wanted_level": Game.wanted_level, "mission_stage": mission.stage,
+ 			"mode": Game.mode, "deaths": Game.death_count - _initial_deaths, "combat_kills": _combat_kills,
+ 			"peds": traffic.count_peds(), "traffic_cars": traffic.count_traffic(), "screenshots": _shots,
+-			"frame_times": {"count": sorted.size(), "mean_ms": frame_sum / maxf(1.0, sorted.size()),
+-				"p50_ms": _percentile(sorted, 0.50), "p95_ms": _percentile(sorted, 0.95),
+-				"p99_ms": _percentile(sorted, 0.99), "max_ms": sorted[-1] if not sorted.is_empty() else 0.0,
+-				"screenshot_readback_excluded": true, "source": "monotonic process-frame intervals"},
++			"frame_times": _frame_metrics(_frames_ms),
++			"frame_time_method": "Monotonic process-frame intervals; excludes intervals touched by screenshot/recording readback.",
++			"frame_times_including_capture_overhead": _frame_metrics(_inclusive_frames_ms),
++			"recording": recording,
+ 			"gates": _gates, "samples": _samples, "log": log_lines}, "\t"))
+ 		output.close()
+ 	_write_checkpoint()
+ 	print("[capture] terminal success=%s deaths=%d seconds=%.1f" % [success, Game.death_count - _initial_deaths, _elapsed()])
+-	get_tree().quit(0 if success else 2)
++	Game.simulation_paused = true
++	Sfx.shutdown_audio()
++	_quit_after_audio(0 if success else 2)
++
++func _quit_after_audio(exit_code: int) -> void:
++	await get_tree().create_timer(0.15, true, false, true).timeout
++	get_tree().quit(exit_code)
+diff --git a/game/src/systems/delivery_point.gd b/game/src/systems/delivery_point.gd
+index f775040..e9cd9c0 100644
+--- a/game/src/systems/delivery_point.gd
++++ b/game/src/systems/delivery_point.gd
+@@ -40,3 +40,6 @@ func _ready() -> void:
+ func interact(_player: Node) -> void:
+ 	if mission and mission.has_method("delivery_completed"):
+ 		mission.delivery_completed()
++
++func can_interact() -> bool:
++	return mission != null and mission.stage == Mission.Stage.DELIVER
+diff --git a/game/src/systems/mission.gd b/game/src/systems/mission.gd
+index d62b10c..d1c1e9b 100644
+--- a/game/src/systems/mission.gd
++++ b/game/src/systems/mission.gd
+@@ -120,37 +120,54 @@ func _set_stage(new_stage: int, side_effects: bool = true) -> void:
+ 	match stage:
+ 		Stage.TO_PACKAGE:
+ 			_objective = "Harbour Relay — collect the package at the hawker centre."
+-			Events.objective_marker_changed.emit(world.locations["package"])
++			_mark_objective(world.locations["package"])
+ 		Stage.PACKAGE:
+-			_objective = "Package secured. Take a car — the marked one is by the market."
+-			Events.objective_marker_changed.emit(world.locations["marked_car"])
++			_objective = "Package secured. Find a car near the market."
++			_mark_objective(world.locations["marked_car"])
+ 		Stage.TO_CAR:
+-			_objective = "Take a car. Police will notice a stolen vehicle."
+-			Events.objective_marker_changed.emit(world.locations["marked_car"])
++			_objective = "Take the marked car, or another usable car. Police will notice."
++			_mark_objective(_nearest_usable_car_position())
+ 		Stage.TO_AIRFIELD:
+ 			_objective = "Drive to the aviation compound, north-east of the district."
+-			Events.objective_marker_changed.emit(world.locations["helipad_primary"])
++			_mark_objective(world.locations["helipad_primary"])
+ 		Stage.TO_HELI:
+ 			_objective = "Board the helicopter on the pad."
+-			Events.objective_marker_changed.emit(world.locations["helipad_primary"])
++			_mark_objective(world.locations["helipad_primary"])
+ 		Stage.FLY:
+ 			_objective = "Fly to the waterfront landing pad and set down."
+-			Events.objective_marker_changed.emit(world.locations["helipad_secondary"])
++			_mark_objective(world.locations["helipad_secondary"])
+ 		Stage.LAND:
+ 			_objective = "Exit the helicopter and continue on foot."
+-			Events.objective_marker_changed.emit(world.locations["helipad_secondary"])
++			_mark_objective(world.locations["helipad_secondary"])
+ 		Stage.DELIVER:
+ 			_objective = "Deliver the package at the waterfront drop point."
+-			Events.objective_marker_changed.emit(world.locations["delivery"])
++			_mark_objective(world.locations["delivery"])
+ 		Stage.DONE:
+ 			_objective = "Harbour Relay complete. Free roam continues."
+-			Events.objective_marker_changed.emit(Vector3.ZERO)
++			_mark_objective(Vector3.ZERO)
+ 			if side_effects:
+ 				Events.mission_finished.emit(true)
+ 				Game.save_game()
+ 	Events.objective_changed.emit(_objective)
+ 	Events.mission_stage_changed.emit(stage)
+ 
++func _mark_objective(position: Vector3) -> void:
++	# Persist before emitting so HUD creation after Mission.setup still sees
++	# the initial package marker rather than a lost startup signal at (0,0,0).
++	set_meta("marker", position)
++	Events.objective_marker_changed.emit(position)
++
++func _nearest_usable_car_position() -> Vector3:
++	var nearest := INF
++	var position: Vector3 = world.locations["marked_car"]
++	for vehicle in get_tree().get_nodes_in_group("vehicles"):
++		if not vehicle is Car or vehicle.disabled or vehicle.driver_is_player or vehicle.has_ai: continue
++		var distance: float = player.global_position.distance_to(vehicle.global_position)
++		if distance < nearest:
++			nearest = distance
++			position = vehicle.global_position
++	return position
++
+ ## Saves restore the matching pickup/flag/objective state. Since vehicles are
+ ## not serialized, a mid-drive/mid-flight save returns to its honest checkpoint.
+ func restore_stage(stage_index: int) -> void:
+diff --git a/game/src/systems/package_pickup.gd b/game/src/systems/package_pickup.gd
+index 202c024..35857a3 100644
+--- a/game/src/systems/package_pickup.gd
++++ b/game/src/systems/package_pickup.gd
+@@ -52,3 +52,6 @@ func interact(_player: Node) -> void:
+ 	Sfx.play("pickup", -4.0, 1.0)
+ 	if mission and mission.has_method("package_collected"):
+ 		mission.package_collected()
++
++func can_interact() -> bool:
++	return not _taken and mission != null and mission.stage == Mission.Stage.TO_PACKAGE
+diff --git a/game/src/systems/photo_capture.gd b/game/src/systems/photo_capture.gd
+index 9270ed9..6d2d9cd 100644
+--- a/game/src/systems/photo_capture.gd
++++ b/game/src/systems/photo_capture.gd
+@@ -35,6 +35,7 @@ func _run() -> void:
+ 		{"name": "street_arcade", "pos": Vector3(-32, 2.0, -149), "look": Vector3(-130, 3.0, -146), "fov": 62.0},
+ 		{"name": "airfield", "pos": Vector3(215.0, 3.0, 215.0), "look": Vector3(245.0, 3.0, 240.0), "fov": 66.0},
+ 	]
++	views.append_array(InteriorDetail.inspection_views(world.locations["safe_room"]-Vector3(0,.2,0)))
+ 	var cam := Camera3D.new()
+ 	cam.current = true
+ 	cam.far = 2000.0
+diff --git a/game/src/systems/self_test.gd b/game/src/systems/self_test.gd
+index b988b5a..64e207d 100644
+--- a/game/src/systems/self_test.gd
++++ b/game/src/systems/self_test.gd
+@@ -39,15 +39,30 @@ func run(main: Node) -> void:
+ 	_check("helicopter present", heli != null)
+ 	_check("hud present", main.get_node_or_null("HUD") != null)
+ 	if not player or not world or not traffic or not mission or not heli:
+-		_report()
++		await _report()
+ 		return
+ 	_check("district contains 3D geometry", _count_meshes(world) > 400)
+ 	_check("junction graph has 25 connected reference nodes", world.traffic_nodes.size() == 25)
+ 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
+ 	_check("civilian traffic populated", traffic.cars.size() >= 8)
+ 	_check("pedestrians populated", traffic.peds.size() >= 20)
++	_check("ambient population stays within the authored 132 budget", traffic.peds.size() == TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT and traffic.peds.size() == 132)
++	var diners := 0
++	var away_from_junction := 0
++	for index in traffic.peds.size():
++		var pedestrian := traffic.peds[index]
++		if pedestrian.has_meta("ambient_role") and pedestrian.has_method("take_damage"):
++			diners += 1
++		if index < TrafficManager.FOCUSED_PED_COUNT:
++			var nearest := INF
++			for junction in world.traffic_nodes:
++				nearest = minf(nearest, pedestrian.global_position.distance_to(junction))
++			if nearest > 14.0: away_from_junction += 1
++	_check("market diners are reactive damageable NPCs", diners == 16)
++	_check("busy district walkers spawn along segments not junction piles", away_from_junction >= 34)
+ 	_check("gameplay camera belongs to player", player.camera.current)
+ 	_check("mission publishes initial objective", mission.stage == Mission.Stage.TO_PACKAGE and not mission.current_objective().is_empty())
++	_check("initial objective marker survives HUD setup order", mission.get_meta("marker", Vector3.ZERO).distance_to(world.locations["package"]) < 0.01)
+ 	_check("mission registered for save and checkpoint restoration", mission.is_in_group("mission"))
+ 	_check("package is a real interactable", mission.package_node.is_in_group("interactables"))
+ 	_check("road graph includes the fifth row", traffic._neighbours(24).size() == 2 and 19 in traffic._neighbours(24) and 23 in traffic._neighbours(24))
+@@ -69,6 +84,8 @@ func run(main: Node) -> void:
+ 	mouse_press.pressed = true
+ 	Input.parse_input_event(mouse_press)
+ 	Input.flush_buffered_events()
++	await get_tree().process_frame
++	await get_tree().process_frame
+ 	print("DIAGNOSTIC fire action held=%s paused=%s mag=%d event_matches=%s" % [Input.is_action_pressed("fire"), Game.simulation_paused, Game.current_mag(), mouse_press.is_action("fire")])
+ 	await _ticks(3)
+ 	mouse_press = InputEventMouseButton.new()
+@@ -83,6 +100,8 @@ func run(main: Node) -> void:
+ 	var road_hit := player.get_world_3d().direct_space_state.intersect_ray(road_ray)
+ 	_check("mission avenue has no static trunk obstruction", road_hit.is_empty())
+ 
++	await _weapon_input_checks(main, player)
++
+ 	# Isolate control probes on open road. These are disclosed fixture moves.
+ 	var car := traffic.cars[0] as Car
+ 	car.has_ai = false
+@@ -129,6 +148,7 @@ func run(main: Node) -> void:
+ 	_check("normal exit returns control and camera", Game.mode == Game.MODE_FOOT and player.current_vehicle == null and player.camera.current)
+ 	await _ticks(2)
+ 	_check("on-foot collision restored", player.collision_layer == 2 and player.collision_mask != 0)
++	await _blocked_exit_checks(main, player, car)
+ 
+ 	car.interact(player)
+ 	await _ticks(2)
+@@ -186,6 +206,7 @@ func run(main: Node) -> void:
+ 	_check("controlled descent lands without disabling aircraft", heli.is_landed() and not heli.disabled, "position=%s velocity=%s health=%.1f floor=%s" % [heli.global_position, heli.velocity, heli.health, heli.is_on_floor()])
+ 	heli.exit_vehicle(player)
+ 	_check("landed helicopter exits to walking", player.current_vehicle == null and Game.mode == Game.MODE_FOOT)
++	await _waterfront_exit_check(player, heli)
+ 
+ 	# Mission gates prevent the exact wave-one death/on-foot drive bypass.
+ 	mission.restart()
+@@ -225,8 +246,206 @@ func run(main: Node) -> void:
+ 	var loaded := Game.load_game(TEST_SAVE)
+ 	_check("save roundtrip restores health and mission checkpoint", saved and loaded and is_equal_approx(Game.health, 55.0) and mission.stage == Mission.Stage.TO_HELI)
+ 	_check("save restoration updates package and objective", not mission.package_node.visible and mission.car_taken and mission.current_objective().contains("helicopter"))
++	_negative_save_checks(player, mission)
+ 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
+-	_report()
++	await _report()
++
++func _waterfront_exit_check(player: Player, heli: Helicopter) -> void:
++	# Reproduce the actual route4 landing pose where the pilot could exit but
++	# could not subsequently walk. This is an explicit regression fixture.
++	heli.force_exit()
++	heli.global_position = Vector3(0.401198, 0.000189, -329.576294)
++	heli.rotation = Vector3(0.0, 0.743854, 0.0)
++	heli.velocity = Vector3.ZERO
++	player.respawn_at(heli.global_position + heli.global_transform.basis.x * 3.0 + Vector3.UP * 0.5, 0.0)
++	await _ticks(5)
++	heli.interact(player)
++	await _ticks(3)
++	await _tap("interact")
++	var start := player.global_position
++	player.yaw = -PI * 0.5
++	Input.action_press("move_forward")
++	Input.action_press("sprint")
++	await _ticks(60)
++	Input.action_release("move_forward")
++	Input.action_release("sprint")
++	var moved := player.global_position.distance_to(start)
++	_check("waterfront helicopter exit permits actual on-foot movement", Game.mode == Game.MODE_FOOT and moved > 3.0, "moved=%.3f from=%s to=%s velocity=%s" % [moved, start, player.global_position, player.velocity])
++	if moved <= 3.0:
++		for index in player.get_slide_collision_count():
++			var contact := player.get_slide_collision(index)
++			var body: CollisionObject3D = contact.get_collider()
++			var shape: Node3D = body.shape_owner_get_owner(body.shape_find_owner(contact.get_collider_shape_index()))
++			print("EXIT_DIAGNOSTIC body=%s shape=%s position=%s normal=%s" % [body.name, shape.name, shape.global_position, contact.get_normal()])
++		var old_margin := player.safe_margin
++		var old_stop := player.floor_stop_on_slope
++		for probe in ["margin", "floor_stop", "both"]:
++			player.safe_margin = 0.03 if probe != "floor_stop" else old_margin
++			player.floor_stop_on_slope = false if probe != "margin" else old_stop
++			player.global_position = start + Vector3.UP * 0.1
++			player.velocity = Vector3.ZERO
++			await _ticks(15)
++			var probe_start := player.global_position
++			Input.action_press("move_forward")
++			Input.action_press("sprint")
++			await _ticks(60)
++			Input.action_release("move_forward")
++			Input.action_release("sprint")
++			print("EXIT_PROPERTY_PROBE setting=%s moved=%.3f pos=%s floor=%s wall=%s ceiling=%s" % [probe, player.global_position.distance_to(probe_start), player.global_position, player.is_on_floor(), player.is_on_wall(), player.is_on_ceiling()])
++		player.safe_margin = old_margin
++		player.floor_stop_on_slope = old_stop
++
++func _blocked_exit_checks(main: Node, player: Player, car: Car) -> void:
++	car.interact(player)
++	await _ticks(2)
++	var enclosure := StaticBody3D.new()
++	enclosure.collision_layer = 1
++	enclosure.collision_mask = 0
++	main.add_child(enclosure)
++	enclosure.global_transform = car.global_transform
++	var walls := [
++		[Vector3(1.45, 1.8, 0.0), Vector3(0.35, 4.0, 6.0)],
++		[Vector3(-1.45, 1.8, 0.0), Vector3(0.35, 4.0, 6.0)],
++		[Vector3(0.0, 1.8, 2.75), Vector3(3.2, 4.0, 0.35)],
++		[Vector3(0.0, 1.8, -2.75), Vector3(3.2, 4.0, 0.35)],
++	]
++	for specification in walls:
++		var shape := CollisionShape3D.new()
++		var box := BoxShape3D.new()
++		box.size = specification[1]
++		shape.shape = box
++		shape.position = specification[0]
++		enclosure.add_child(shape)
++	await _ticks(3)
++	await _tap("interact")
++	_check("blocked car exit preserves seated control without wall clipping", Game.mode == Game.MODE_CAR and player.current_vehicle == car and car.driver_is_player)
++	enclosure.queue_free()
++	await _ticks(3)
++	await _tap("interact")
++	_check("clearing blocked exit restores normal exit", Game.mode == Game.MODE_FOOT and player.current_vehicle == null and not car.driver_is_player)
++
++func _state_fingerprint(player: Player, mission: Mission) -> Dictionary:
++	return {"health": Game.health, "wanted_level": Game.wanted_level, "wanted_heat": Game.wanted_heat,
++		"mission_stage": Game.mission_stage, "checkpoint": Game.checkpoint_index, "seed": Game.seed_value,
++		"elapsed": Game.elapsed_seconds, "position": Game.player_position, "rotation": Game.player_rotation,
++		"weapon": Game.carried_weapon, "ammo": Game.ammo.duplicate(true), "mode": Game.mode,
++		"safe_position": Game.last_safe_position, "safe_rotation": Game.last_safe_rotation,
++		"actor_position": player.global_position, "actor_yaw": player.yaw,
++		"scene_stage": mission.stage, "objective": mission.current_objective(), "package_visible": mission.package_node.visible}
++
++func _negative_save_checks(player: Player, mission: Mission) -> void:
++	Game.save_game(TEST_SAVE)
++	var valid: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_SAVE))
++	var cases: Array[Dictionary] = []
++	var bad := valid.duplicate(true)
++	bad["player_position"] = [1.0, 2.0]
++	cases.append({"name": "truncated position vector", "data": bad})
++	bad = valid.duplicate(true)
++	bad["carried_weapon"] = "unknown_weapon"
++	cases.append({"name": "unknown equipped weapon", "data": bad})
++	bad = valid.duplicate(true)
++	bad["ammo"]["pistol"]["mag"] = 400
++	cases.append({"name": "out-of-range magazine", "data": bad})
++	bad = valid.duplicate(true)
++	bad["health"] = "healthy"
++	cases.append({"name": "wrong health type", "data": bad})
++	bad = valid.duplicate(true)
++	bad["checkpoint_index"] = 99
++	cases.append({"name": "invalid checkpoint index", "data": bad})
++	bad = valid.duplicate(true)
++	bad["wanted_level"] = 3
++	bad["wanted_heat"] = 0.0
++	cases.append({"name": "inconsistent pursuit state", "data": bad})
++	bad = valid.duplicate(true)
++	bad["last_safe_position"] = {"x": 0, "y": 0, "z": 0}
++	cases.append({"name": "wrong safe-position type", "data": bad})
++	var before := _state_fingerprint(player, mission)
++	for test_case in cases:
++		var file := FileAccess.open(TEST_SAVE, FileAccess.WRITE)
++		file.store_string(JSON.stringify(test_case["data"]))
++		file.close()
++		var accepted := Game.load_game(TEST_SAVE)
++		_check("save rejects %s atomically" % test_case["name"], not accepted and _state_fingerprint(player, mission) == before)
++
++func _weapon_input_checks(main: Node, player: Player) -> void:
++	# Both mouse transitions occur before the next process frame. A queued
++	# native press must survive even though the held state is already false.
++	await _ticks(15)
++	var before := Game.current_mag()
++	var press := InputEventMouseButton.new()
++	press.button_index = MOUSE_BUTTON_LEFT
++	press.pressed = true
++	Input.parse_input_event(press)
++	Input.flush_buffered_events()
++	var release := InputEventMouseButton.new()
++	release.button_index = MOUSE_BUTTON_LEFT
++	release.pressed = false
++	Input.parse_input_event(release)
++	Input.flush_buffered_events()
++	await get_tree().process_frame
++	await get_tree().process_frame
++	await _ticks(2)
++	_check("rapid native press and release is not dropped", Game.current_mag() == before - 1)
++
++	# A disclosed floating test bay isolates the close-cover geometry from
++	# changing district props/traffic. This bay exists only in --test.
++	var bay := StaticBody3D.new()
++	bay.collision_layer = 1
++	bay.collision_mask = 0
++	main.add_child(bay)
++	bay.global_position = Vector3(0.0, 20.0, -246.0)
++	var floor_shape := CollisionShape3D.new()
++	var box := BoxShape3D.new()
++	box.size = Vector3(20.0, 0.4, 40.0)
++	floor_shape.shape = box
++	bay.add_child(floor_shape)
++	player.respawn_at(Vector3(0.0, 20.35, -240.0), 0.0)
++	var target := NPC.new()
++	main.add_child(target)
++	target.global_position = Vector3(0.0, 20.35, -252.0)
++	target.state = NPC.State.IDLE
++	target.idle_time = 100.0
++	Input.action_press("aim")
++	for frame in 20:
++		await _ticks(1)
++		var aim_vector := target.global_position + Vector3.UP * 1.15 - player.camera.global_position
++		player.yaw = atan2(-aim_vector.x, -aim_vector.z)
++		player.pitch = atan2(aim_vector.y, Vector2(aim_vector.x, aim_vector.z).length())
++	var aim_point := target.global_position + Vector3.UP * 1.15
++	var muzzle := player._muzzle_flash.global_position
++	if player._visual != null and player._visual.loaded:
++		muzzle = player._visual.weapon_muzzle_position()
++	var cover := StaticBody3D.new()
++	cover.collision_layer = 1
++	cover.collision_mask = 0
++	main.add_child(cover)
++	cover.global_position = muzzle + (aim_point - muzzle).normalized() * 1.0
++	var cover_shape := CollisionShape3D.new()
++	var sphere := SphereShape3D.new()
++	sphere.radius = 0.18
++	cover_shape.shape = sphere
++	cover.add_child(cover_shape)
++	await _ticks(3)
++	var camera_ray := PhysicsRayQueryParameters3D.create(player.camera.global_position, aim_point)
++	camera_ray.collision_mask = 1 | 4
++	camera_ray.exclude = [player.get_rid()]
++	var camera_hit := player.get_world_3d().direct_space_state.intersect_ray(camera_ray)
++	_check("close-cover fixture leaves camera sightline on target", not camera_hit.is_empty() and camera_hit["collider"] == target)
++	var target_health := target.health
++	await _tap("fire")
++	_check("muzzle obstruction prevents damage through close cover", is_equal_approx(target.health, target_health))
++	cover.queue_free()
++	await _ticks(15)
++	await _tap("fire")
++	_check("clearing muzzle obstruction permits target damage", target.health < target_health)
++	Input.action_release("aim")
++	target.queue_free()
++	bay.queue_free()
++	player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
++	player.pitch = -0.12
++	Game.wanted_heat = 0.0
++	Game.set_wanted(0)
++	await _ticks(3)
+ 
+ func _ticks(count: int) -> void:
+ 	for tick in count:
+@@ -234,8 +453,12 @@ func _ticks(count: int) -> void:
+ 
+ func _tap(action: String) -> void:
+ 	Input.action_press(action)
++	await get_tree().process_frame
++	await get_tree().process_frame
+ 	await _ticks(3)
+ 	Input.action_release(action)
++	await get_tree().process_frame
++	await get_tree().process_frame
+ 	await _ticks(3)
+ 
+ func _check(check_name: String, condition: bool, detail: String = "") -> void:
+@@ -258,7 +481,7 @@ func _watchdog() -> void:
+ 	if _reported:
+ 		return
+ 	_check("suite finished before watchdog deadline", false, "40-second in-engine watchdog expired")
+-	_report(true)
++	await _report(true)
+ 
+ func _report(timed_out: bool = false) -> void:
+ 	if _reported:
+@@ -268,6 +491,9 @@ func _report(timed_out: bool = false) -> void:
+ 		_watchdog_timer.stop()
+ 	for action in InputMap.get_actions():
+ 		Input.action_release(action)
++	Game.simulation_paused = true
++	Sfx.shutdown_audio()
++	await get_tree().create_timer(0.15, true, false, true).timeout
+ 	var data := {
+ 		"suite": "wave2-regressions", "engine": Engine.get_version_info()["string"],
+ 		"finished_utc": Time.get_datetime_string_from_system(true),
+diff --git a/game/src/systems/traffic_manager.gd b/game/src/systems/traffic_manager.gd
+index 16263c3..949a273 100644
+--- a/game/src/systems/traffic_manager.gd
++++ b/game/src/systems/traffic_manager.gd
+@@ -4,7 +4,9 @@ extends Node3D
+ ## pedestrians, parked cars, and police response (TRAFFIC-01/02, LAW-02/03).
+ 
+ const LANE_OFFSET := 4.0        # lane centre is 4 m to the LEFT of the road centre
+-const PED_COUNT := 34
++const PED_COUNT := 116
++const FOCUSED_PED_COUNT := 42
++const DINER_COUNT := 16
+ const TRAFFIC_COUNT := 14
+ const POLICE_SPAWN_DISTANCE := 55.0
+ 
+@@ -112,16 +114,56 @@ func _lane_point(from: Vector3, to: Vector3) -> Vector3:
+ 	return to + left * LANE_OFFSET - dir * 8.0
+ 
+ func _spawn_peds() -> void:
+-	for i in PED_COUNT:
++	if _ped_lanes.is_empty(): return
++	# A denser, continuous walking perimeter around the heritage/market block.
++	# Spawn along path segments, so people do not all appear on junction nodes.
++	var focused_lanes: Array = [
++		[Vector3(-150.0, 0.25, -145.0), Vector3(-150.0, 0.25, -15.0)],
++		[Vector3(-10.0, 0.25, -145.0), Vector3(-10.0, 0.25, -15.0)],
++		[Vector3(-145.0, 0.25, -150.0), Vector3(-15.0, 0.25, -150.0)],
++		[Vector3(-145.0, 0.25, -10.0), Vector3(-15.0, 0.25, -10.0)],
++	]
++	for index in PED_COUNT:
+ 		var ped := NPC.new()
+ 		add_child(ped)
+-		var lane_id := _rng.randi_range(0, maxi(1, _ped_lanes.size() - 1))
+-		ped.assign_lane(_ped_lanes, lane_id)
+-		var lane: Array = _ped_lanes[lane_id]
+-		if not lane.is_empty():
+-			var p: Vector3 = lane[_rng.randi_range(0, lane.size() - 1)]
+-			ped.global_position = p + Vector3(_rng.randf_range(-1.5, 1.5), 0.0, _rng.randf_range(-1.5, 1.5))
++		var path: Array
++		if index < FOCUSED_PED_COUNT:
++			path = focused_lanes[index % focused_lanes.size()]
++		else:
++			path = _ped_lanes[_rng.randi_range(0, _ped_lanes.size() - 1)]
++		_spawn_on_segment(ped, path)
+ 		peds.append(ped)
++	# Damageable/reactive diners and queueing customers. Keep the package and
++	# combat aisle (local z=-8 and north of it) clear for actual mission play.
++	var centre: Vector3 = world.locations["hawker"]
++	for index in DINER_COUNT:
++		var diner := NPC.new()
++		add_child(diner)
++		var column := index % 8
++		var row := 1 + (index / 8) * 2
++		var side := 1.0 if index % 2 == 0 else -1.0
++		var position := centre + Vector3(-28.0 + column * 8.0 + side * 2.0, 0.25, -6.0 + row * 7.0 + 1.4)
++		diner.global_position = position
++		diner.rotation.y = -PI * 0.5 * side
++		diner.state = NPC.State.IDLE
++		diner.idle_time = _rng.randf_range(25.0, 60.0)
++		diner.set_meta("ambient_role", "diner" if index % 3 != 0 else "stall_queue")
++		diner.set_meta("activity_home", position)
++		peds.append(diner)
++
++func _spawn_on_segment(ped: NPC, path: Array) -> void:
++	ped.lane = path
++	if path.size() < 2:
++		return
++	var segment := _rng.randi_range(0, path.size() - 2)
++	var from: Vector3 = path[segment]
++	var to: Vector3 = path[segment + 1]
++	var sideways := Vector3.UP.cross((to - from).normalized())
++	ped.global_position = from.lerp(to, _rng.randf_range(0.08, 0.92)) + sideways * _rng.randf_range(-0.65, 0.65)
++	ped.lane_dir = 1 if _rng.randf() > 0.5 else -1
++	ped.lane_index = segment + (1 if ped.lane_dir > 0 else 0)
++	var facing: Vector3 = path[ped.lane_index] - ped.global_position
++	ped.rotation.y = atan2(-facing.x, -facing.z)
+ 
+ # --------------------------------------------------------------------- update
+ func _process(delta: float) -> void:
+diff --git a/game/src/ui/hud.gd b/game/src/ui/hud.gd
+index 14d1ce3..9614bd6 100644
+--- a/game/src/ui/hud.gd
++++ b/game/src/ui/hud.gd
+@@ -9,7 +9,7 @@ var mission: Mission
+ 
+ var _objective_label: Label
+ var _prompt_label: Label
+-var _health_bar: ProgressBar
++var _health_bar: Control
+ var _health_label: Label
+ var _ammo_label: Label
+ var _weapon_label: Label
+@@ -25,6 +25,7 @@ var _settings_panel: Control
+ var _settings_values: Label
+ var _settings_rows: Array = []
+ var _marker: Vector3 = Vector3.ZERO
++var _gameplay_controls: Array[CanvasItem] = []
+ 
+ const NOTIFICATION_LIFETIME := 4.0
+ 
+@@ -34,82 +35,69 @@ func setup(w: WorldBuilder, p: Player, m: Mission) -> void:
+ 	mission = m
+ 	layer = 10
+ 	_build()
+-	Events.objective_changed.connect(func(text): _objective_label.text = text)
++	Events.objective_changed.connect(func(text): _objective_label.text = String(text).replace("Harbour Relay — ", ""))
+ 	Events.interaction_prompt.connect(func(text): _prompt_label.text = text)
+ 	Events.health_changed.connect(_on_health)
+ 	Events.ammo_changed.connect(_on_ammo)
+ 	Events.wanted_changed.connect(_on_wanted)
+ 	Events.notify.connect(_on_notify)
+ 	if mission:
+-		_objective_label.text = mission.current_objective()
++		_objective_label.text = mission.current_objective().replace("Harbour Relay — ", "")
+ 
+ func _build() -> void:
+ 	var root := Control.new()
+ 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+ 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ 	add_child(root)
+-
+-	_objective_label = _mk_label(root, Vector2(24, 18), 22, Color(0.97, 0.95, 0.88))
+-	_objective_label.size = Vector2(760, 60)
+-	_objective_label.text = "Objective: —"
+-
+-	_prompt_label = _mk_label(root, Vector2(640, 620), 20, Color(1.0, 0.92, 0.6))
+-	_prompt_label.size = Vector2(600, 30)
+-	_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+-
+-	_health_bar = ProgressBar.new()
+-	_health_bar.position = Vector2(24, 96)
+-	_health_bar.size = Vector2(240, 18)
+-	_health_bar.max_value = 100.0
+-	_health_bar.value = 100.0
+-	_health_bar.show_percentage = false
++	_panel(root,Vector2(24,24),Vector2(620,78),Color(.025,.055,.058,.88))
++	var tag := _mk_label(root,Vector2(40,34),11,Color(.57,.78,.70))
++	tag.text="HARBOUR RELAY"
++	_objective_label=_mk_label(root,Vector2(40,53),18,Color(.96,.94,.86))
++	_objective_label.size=Vector2(586,44)
++	_objective_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
++	_prompt_label=_mk_label(root,Vector2(300,626),18,Color(1,.88,.58))
++	_prompt_label.size=Vector2(680,32)
++	_prompt_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
++	_health_bar=Control.new()
++	_health_bar.position=Vector2(24,665);_health_bar.size=Vector2(206,6)
++	_health_bar.draw.connect(func():
++		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(206,6)),Color(.02,.04,.04,.85))
++		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(206*Game.health_ratio(),6)),Color(.43,.76,.63)))
+ 	root.add_child(_health_bar)
+-	var hp_frame := ColorRect.new()
+-	hp_frame.position = Vector2(24, 96)
+-	hp_frame.size = Vector2(240, 18)
+-	hp_frame.color = Color(0.1, 0.1, 0.1, 0.45)
+-	root.add_child(hp_frame)
+-	_health_bar.position = Vector2(24, 96)
+-
+-	_health_label = _mk_label(root, Vector2(24, 112), 16, Color(0.95, 0.93, 0.88))
+-	_health_label.text = "HEALTH 100"
+-
+-	_ammo_label = _mk_label(root, Vector2(1000, 96), 22, Color(0.95, 0.93, 0.88))
+-	_ammo_label.text = "12 / 96"
+-	_weapon_label = _mk_label(root, Vector2(1000, 122), 15, Color(0.78, 0.80, 0.86))
+-	_weapon_label.text = "PISTOL"
+-
+-	_wanted_label = _mk_label(root, Vector2(1000, 24), 22, Color(0.95, 0.72, 0.35))
+-	_wanted_label.text = ""
+-
+-	_stats_label = _mk_label(root, Vector2(24, 640), 17, Color(0.88, 0.90, 0.94))
+-	_stats_label.text = ""
+-
+-	_debug_label = _mk_label(root, Vector2(24, 140), 15, Color(0.75, 0.85, 0.95))
+-	_debug_label.visible = false
+-
+-	_notifications = VBoxContainer.new()
+-	_notifications.position = Vector2(760, 560)
+-	_notifications.size = Vector2(480, 120)
+-	_notifications.alignment = BoxContainer.ALIGNMENT_END
+-	root.add_child(_notifications)
+-
+-	_crosshair = Control.new()
+-	_crosshair.set_anchors_preset(Control.PRESET_FULL_RECT)
+-	_crosshair.mouse_filter = Control.MOUSE_FILTER_IGNORE
+-	_crosshair.draw.connect(_draw_crosshair)
+-	root.add_child(_crosshair)
+-
+-	_minimap = Control.new()
+-	_minimap.position = Vector2(1010, 400)
+-	_minimap.size = Vector2(240, 240)
+-	_minimap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+-	_minimap.draw.connect(_draw_minimap)
+-	root.add_child(_minimap)
+-
+-	_build_pause_panel(root)
+-	_build_title_panel(root)
+-	_build_settings_panel(root)
++	_health_label=_mk_label(root,Vector2(24,678),12,Color(.88,.93,.88));_health_label.text="HEALTH 100"
++	_ammo_label=_mk_label(root,Vector2(1110,30),26,Color(.97,.95,.88));_ammo_label.text="12 / 96"
++	_weapon_label=_mk_label(root,Vector2(1112,64),12,Color(.65,.74,.74));_weapon_label.text="PISTOL"
++	_wanted_label=_mk_label(root,Vector2(815,110),16,Color(.97,.68,.36));_wanted_label.size=Vector2(430,45)
++	_wanted_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
++	_stats_label=_mk_label(root,Vector2(1000,660),18,Color(.94,.95,.92));_stats_label.size=Vector2(245,40)
++	_stats_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
++	_debug_label=_mk_label(root,Vector2(24,120),14,Color(.7,.8,.85));_debug_label.visible=false
++	_notifications=VBoxContainer.new();_notifications.position=Vector2(755,550);_notifications.size=Vector2(490,90)
++	_notifications.alignment=BoxContainer.ALIGNMENT_END;root.add_child(_notifications)
++	_crosshair=Control.new();_crosshair.set_anchors_preset(Control.PRESET_FULL_RECT)
++	_crosshair.mouse_filter=Control.MOUSE_FILTER_IGNORE;_crosshair.draw.connect(_draw_crosshair);root.add_child(_crosshair)
++	_minimap=Control.new();_minimap.position=Vector2(24,442);_minimap.size=Vector2(206,206)
++	_minimap.clip_contents=true;_minimap.mouse_filter=Control.MOUSE_FILTER_IGNORE
++	_minimap.draw.connect(_draw_minimap);root.add_child(_minimap)
++	for child in root.get_children():
++		if child is CanvasItem: _gameplay_controls.append(child)
++	_build_pause_panel(root);_build_title_panel(root);_build_settings_panel(root)
++
++func _panel(parent: Control, pos: Vector2, size: Vector2, color: Color) -> Panel:
++	var panel:=Panel.new();panel.position=pos;panel.size=size;panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
++	var style:=StyleBoxFlat.new();style.bg_color=color
++	style.corner_radius_top_left=6;style.corner_radius_top_right=6;style.corner_radius_bottom_left=6;style.corner_radius_bottom_right=6
++	panel.add_theme_stylebox_override("panel",style);parent.add_child(panel);return panel
++
++func _button(parent: Control, text: String, pos: Vector2, callback: Callable) -> Button:
++	var button:=Button.new();button.text=text;button.position=pos;button.size=Vector2(300,45)
++	button.add_theme_font_size_override("font_size",17)
++	var normal:=StyleBoxFlat.new();normal.bg_color=Color(.09,.15,.15,.94)
++	normal.content_margin_left=18;normal.corner_radius_top_left=4;normal.corner_radius_bottom_left=4
++	var hover:=normal.duplicate() as StyleBoxFlat;hover.bg_color=Color(.23,.36,.32,.98)
++	button.add_theme_stylebox_override("normal",normal);button.add_theme_stylebox_override("hover",hover)
++	button.add_theme_stylebox_override("pressed",hover);button.pressed.connect(callback);parent.add_child(button)
++	return button
+ 
+ func _mk_label(parent: Control, pos: Vector2, size_px: int, color: Color) -> Label:
+ 	var l := Label.new()
+@@ -117,60 +105,37 @@ func _mk_label(parent: Control, pos: Vector2, size_px: int, color: Color) -> Lab
+ 	l.add_theme_font_size_override("font_size", size_px)
+ 	l.add_theme_color_override("font_color", color)
+ 	l.add_theme_color_override("font_outline_color", Color(0.05, 0.05, 0.06, 0.85))
+-	l.add_theme_constant_override("outline_size", 4)
++	l.add_theme_constant_override("outline_size", 1)
+ 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ 	parent.add_child(l)
+ 	return l
+ 
+ func _build_pause_panel(root: Control) -> void:
+-	_pause_panel = Control.new()
+-	_pause_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+-	_pause_panel.visible = false
+-	root.add_child(_pause_panel)
+-	var dim := ColorRect.new()
+-	dim.color = Color(0.03, 0.04, 0.06, 0.72)
+-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+-	_pause_panel.add_child(dim)
+-	var title := _mk_label(_pause_panel, Vector2(520, 180), 40, Color(0.97, 0.95, 0.9))
+-	title.text = "PAUSED"
+-	var opts := [
+-		"[ESC] Resume",
+-		"[F5] Save progress",
+-		"[F6] Load last save",
+-		"[F7] Restart mission checkpoint",
+-		"[F8] Toggle HUD (accessibility)",
+-		"[F9] Quit to title",
+-	]
+-	for i in opts.size():
+-		var l := _mk_label(_pause_panel, Vector2(520, 250 + i * 34), 20, Color(0.9, 0.92, 0.96))
+-		l.text = opts[i]
+-	var ctrl := _mk_label(_pause_panel, Vector2(520, 480), 16, Color(0.72, 0.76, 0.84))
+-	ctrl.text = "WASD move  •  Shift sprint  •  Space jump  •  Mouse look  •  LMB fire  •  RMB aim  •  R reload  •  Q swap  •  E enter/exit  •  F1 debug"
++	_pause_panel=Control.new();_pause_panel.set_anchors_preset(Control.PRESET_FULL_RECT);_pause_panel.visible=false;root.add_child(_pause_panel)
++	_panel(_pause_panel,Vector2.ZERO,Vector2(1280,720),Color(.015,.035,.038,.9))
++	var title:=_mk_label(_pause_panel,Vector2(96,110),42,Color(.97,.94,.86));title.text="Take a breath."
++	_button(_pause_panel,"Resume   ·   Esc",Vector2(96,210),func():get_tree().current_scene._toggle_pause())
++	_button(_pause_panel,"Save progress   ·   F5",Vector2(96,265),func():
++		if Game.save_game(): Events.toast("Progress saved.","good"))
++	_button(_pause_panel,"Restart Harbour Relay   ·   F10",Vector2(96,320),func():mission.restart();get_tree().current_scene._toggle_pause())
++	_button(_pause_panel,"Settings   ·   F3",Vector2(96,375),func():get_tree().current_scene._toggle_settings())
++	_button(_pause_panel,"Quit game",Vector2(96,430),func():get_tree().current_scene._quit_game())
++	var controls:=_mk_label(_pause_panel,Vector2(650,210),18,Color(.78,.85,.82))
++	controls.text="ON FOOT\nWASD move   /   Shift sprint   /   Space jump\nMouse look   /   Right mouse aim   /   Left mouse fire\nR reload   /   Q change weapon   /   E interact\n\nDRIVING\nW/S accelerate and reverse   /   A/D steer\nSpace brake   /   E exit when safe\n\nFLIGHT\nSpace climb   /   Shift descend   /   W/S forward/back\nA/D turn   /   E exit after landing"
+ 
+ func _build_title_panel(root: Control) -> void:
+-	_title_panel = Control.new()
+-	_title_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+-	_title_panel.visible = true
+-	root.add_child(_title_panel)
+-	var dim := ColorRect.new()
+-	dim.color = Color(0.05, 0.07, 0.10, 0.85)
+-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+-	_title_panel.add_child(dim)
+-	var t := _mk_label(_title_panel, Vector2(420, 220), 52, Color(0.98, 0.95, 0.86))
+-	t.text = "ORCHARD REACH"
+-	var s := _mk_label(_title_panel, Vector2(460, 285), 20, Color(0.82, 0.85, 0.9))
+-	s.text = "A Singapore-inspired open-world slice — wave 1 build"
+-	var lines := [
+-		"[ENTER] New game",
+-		"[F6] Continue from save",
+-		"",
+-		"WASD move • Shift sprint • Space jump • Mouse look",
+-		"LMB fire • RMB aim • R reload • Q swap weapon",
+-		"E enter/exit vehicle • Esc pause",
+-	]
+-	for i in lines.size():
+-		var l := _mk_label(_title_panel, Vector2(470, 340 + i * 32), 19, Color(0.88, 0.90, 0.95))
+-		l.text = lines[i]
++	_title_panel=Control.new();_title_panel.set_anchors_preset(Control.PRESET_FULL_RECT);_title_panel.visible=true;root.add_child(_title_panel)
++	_panel(_title_panel,Vector2.ZERO,Vector2(1280,720),Color(.015,.04,.045,.92))
++	var small:=_mk_label(_title_panel,Vector2(96,105),13,Color(.65,.81,.71));small.text="THE HARBOUR DISTRICT"
++	var title:=_mk_label(_title_panel,Vector2(91,142),64,Color(.98,.94,.84));title.text="ORCHARD REACH"
++	var sub:=_mk_label(_title_panel,Vector2(96,230),18,Color(.72,.8,.78));sub.text="A city to cross. A package to deliver."
++	_button(_title_panel,"New game   ·   Enter",Vector2(96,310),func():get_tree().current_scene._new_game())
++	_button(_title_panel,"Continue   ·   F6",Vector2(96,365),func():get_tree().current_scene._continue_game())
++	_button(_title_panel,"Settings   ·   F3",Vector2(96,420),func():get_tree().current_scene._toggle_settings())
++	_button(_title_panel,"Quit game",Vector2(96,475),func():get_tree().current_scene._quit_game())
++	var controls:=_mk_label(_title_panel,Vector2(720,320),17,Color(.78,.85,.80))
++	controls.text="WALK THE ARCADES\nWASD move · Mouse look · Shift sprint\n\nTAKE THE WHEEL\nE enter/exit · W/S throttle · A/D steer\n\nTAKE TO THE AIR\nSpace climb · Shift descend · E land and exit"
++	var footer:=_mk_label(_title_panel,Vector2(96,650),13,Color(.48,.62,.58));footer.text="Original fictional Singapore-inspired district"
+ 
+ func _build_settings_panel(root: Control) -> void:
+ 	_settings_panel = Control.new()
+@@ -218,7 +183,7 @@ func set_paused(paused: bool) -> void:
+ 	_pause_panel.visible = paused
+ 
+ func _on_health(value: float, max_value: float) -> void:
+-	_health_bar.value = value
++	_health_bar.queue_redraw()
+ 	_health_label.text = "HEALTH %d" % int(round(value))
+ 
+ func _on_ammo(mag: int, reserve: int) -> void:
+@@ -236,10 +201,12 @@ func _update_wanted_label() -> void:
+ 	var state := ""
+ 	if level > 0:
+ 		state = "  ·  SEARCHING %ds" % int(ceil(Game.search_timer)) if not Game.player_seen else "  ·  SPOTTED"
+-	_wanted_label.text = "WANTED  " + stars + state
++	_wanted_label.text = "ALERT %s%s" % ["I".repeat(level),state] if level>0 else ""
+ 
+ func _on_notify(text: String, kind: String) -> void:
+-	var l := _mk_label(_notifications, Vector2.ZERO, 18, Color(0.95, 0.95, 0.9) if kind != "bad" else Color(1.0, 0.55, 0.45))
++	if text=="Civilian fleeing!": return
++	if _notifications.get_child_count()>=3: _notifications.get_child(0).queue_free()
++	var l := _mk_label(_notifications, Vector2.ZERO, 15, Color(0.95, 0.95, 0.9) if kind != "bad" else Color(1.0, 0.55, 0.45))
+ 	l.text = text
+ 	l.custom_minimum_size = Vector2(460, 24)
+ 	l.size = Vector2(460, 24)
+@@ -258,7 +225,7 @@ func _process(_delta: float) -> void:
+ 	elif Game.mode == Game.MODE_HELI and player.current_vehicle:
+ 		speed = player.current_vehicle.velocity.length() * 3.6
+ 		alt = player.current_vehicle.global_position.y
+-	_stats_label.text = "SPEED %d km/h" % int(speed)
++	_stats_label.text = "%d km/h" % int(speed) if Game.mode!=Game.MODE_FOOT else ""
+ 	if Game.mode == Game.MODE_HELI:
+ 		_stats_label.text += "   ALT %d m" % int(alt)
+ 	_update_wanted_label()
+@@ -273,6 +240,7 @@ func _count_group(name: String) -> int:
+ 	return get_tree().get_nodes_in_group(name).size()
+ 
+ func _draw_crosshair() -> void:
++	if player==null or not player.aiming or Game.mode!=Game.MODE_FOOT: return
+ 	var c := _crosshair.size * 0.5
+ 	var col := Color(0.98, 0.96, 0.90, 0.9)
+ 	_crosshair.draw_line(c + Vector2(-9, 0), c + Vector2(-3, 0), col, 2.0)
+@@ -287,7 +255,7 @@ func _draw_minimap() -> void:
+ 	var rect := Rect2(Vector2.ZERO, _minimap.size)
+ 	_minimap.draw_rect(rect, Color(0.06, 0.08, 0.10, 0.72), true)
+ 	var centre: Vector3 = player.controlled_actor().global_position
+-	var scale := 0.16
++	var scale := 0.38
+ 	var to_map := func(p: Vector3) -> Vector2:
+ 		return Vector2((p.x - centre.x) * scale, (p.z - centre.z) * scale) + _minimap.size * 0.5
+ 	# roads
+@@ -319,11 +287,17 @@ func _draw_minimap() -> void:
+ 			_minimap.draw_circle(to_map.call(p.global_position), 3.5, Color(0.95, 0.35, 0.30, 0.95))
+ 	# player arrow
+ 	var c := _minimap.size * 0.5
+-	_minimap.draw_colored_polygon(PackedVector2Array([
+-		c + Vector2(0, -7), c + Vector2(5, 6), c + Vector2(0, 3), c + Vector2(-5, 6)]), Color(0.98, 0.94, 0.80, 0.98))
++	var arrow:=PackedVector2Array()
++	for point in [Vector2(0,-7),Vector2(5,6),Vector2(0,3),Vector2(-5,6)]:
++		arrow.append(c+point.rotated(-player.controlled_actor().rotation.y))
++	_minimap.draw_colored_polygon(arrow,Color(.98,.94,.80,.98))
+ 	_minimap.draw_rect(rect, Color(0.8, 0.8, 0.85, 0.35), false, 2.0)
+ 
+ func set_marker(pos: Vector3) -> void:
+ 	_marker = pos
+ 	if mission:
+ 		mission.set_meta("marker", pos)
++
++func set_gameplay_visible(show: bool) -> void:
++	for item in _gameplay_controls:
++		if is_instance_valid(item) and item != _debug_label: item.visible = show
+diff --git a/game/src/world/world_builder.gd b/game/src/world/world_builder.gd
+index b0e1ff7..7b10c3b 100644
+--- a/game/src/world/world_builder.gd
++++ b/game/src/world/world_builder.gd
+@@ -52,6 +52,9 @@ func build(seed_value: int = 20261021) -> void:
+ 	_junctions()
+ 	_street_furniture()
+ 	_build_grid()
++	var interior_data: Dictionary = InteriorDetail.build(_world_root, locations["safe_room"] - Vector3(0,.2,0))
++	locations["convenience_shop"] = interior_data["convenience_shop"]
++	locations["workshop"] = interior_data["workshop"]
+ 	_waterfront_edge()
+ 	_background_city()
+ 	_build_lane_graph()
+@@ -88,7 +91,7 @@ func _environment() -> void:
+ 	add_child(we)
+ 
+ 	var sun := DirectionalLight3D.new()
+-	sun.rotation_degrees = Vector3(-28.0, -38.0, 0.0)
++	sun.rotation_degrees = Vector3(-28.0, -142.0, 0.0)
+ 	sun.light_energy = 1.25
+ 	sun.light_color = Color(1.0, 0.82, 0.62)
+ 	sun.shadow_enabled = true
+@@ -328,8 +331,6 @@ func _safe_room(pos: Vector3) -> void:
+ 	_box(Vector3(0.5, 0.4, 3.4), pos + Vector3(-7.0, 3.5, 0.0), Palette.mat_textured(Palette.METAL, "metal", Vector3(1.0, 1.0, 2.0), 0.5, 0.5))
+ 	_solid_box(Vector3(14.0, 0.3, 10.0), pos + Vector3(0.0, 3.5, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
+ 	_solid_box(Vector3(0.4, 3.4, 10.0), pos + Vector3(7.0, 1.7, 0.0), Palette.mat(Palette.PLASTER, 0.9))
+-	_box(Vector3(2.6, 0.9, 1.2), pos + Vector3(-3.0, 0.6, -3.0), Palette.mat(Palette.METAL, 0.6, 0.4))
+-	_box(Vector3(2.2, 1.2, 0.8), pos + Vector3(3.5, 0.7, -3.4), Palette.mat(Palette.PLASTER_2, 0.9))
+ 	var lamp := OmniLight3D.new()
+ 	lamp.position = pos + Vector3(0.0, 3.1, 0.0)
+ 	lamp.light_energy = 1.6
+@@ -356,6 +357,10 @@ func _safe_room(pos: Vector3) -> void:
+ ## Hawker hub: roofed open-sided shared dining with stalls, tables, fans, lights.
+ func _hawker_block(centre: Vector3) -> void:
+ 	_shophouse_row(centre+Vector3(-63.6,0,-60),Vector3(1,0,0),12)
++	# Bring the public hall to the street edge: a sheltered civic frontage,
++	# with its garden/service court behind it rather than a forty-metre void.
++	centre += Vector3(-30,0,0)
++	locations["hawker"] = centre
+ 	# pavilion slab
+ 	_solid_box(Vector3(70.0, 0.25, 54.0), centre + Vector3(0.0, 0.12, 0.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.92))
+ 	# Original DCC-authored pitched terracotta pavilion with exposed trusses.
+@@ -364,44 +369,34 @@ func _hawker_block(centre: Vector3) -> void:
+ 	for i: int in 6:
+ 		var sp := centre + Vector3(-27.0 + i * 11.0, 0.0, -20.0)
+ 		var used_counter := false
+-		if AssetLibrary.has_asset("hawker_counter_clean.glb"):
+-			var counter := AssetLibrary.instantiate("hawker_counter_clean.glb", _world_root)
++		if AssetLibrary.has_asset("hawker_counter_refined.glb"):
++			var counter := AssetLibrary.instantiate("hawker_counter_refined.glb", _world_root)
+ 			if counter != null:
+-				counter.position = sp + Vector3(-1.4, 0.0, 0.6)
+-				counter.scale = Vector3(1.6, 1.0, 1.0)
++				counter.position = sp + Vector3(0.0, 0.0, 0.6)
++				counter.scale = Vector3(2.0, 1.1, 1.2)
+ 				counter.rotation.y = PI
+ 				used_counter = true
+ 		if not used_counter:
+ 			_solid_box(Vector3(8.0, 1.05, 3.2), sp + Vector3(0.0, 0.52, 0.0), Palette.mat(Palette.PLASTER, 0.85))
+-		_box(Vector3(8.4, 0.18, 3.6), sp + Vector3(0.0, 1.12, 0.0), Palette.mat(Palette.METAL, 0.4, 0.6))
+-		_box(Vector3(8.0, 2.1, 0.12), sp + Vector3(0.0, 2.1, 1.5), Palette.mat(Palette.FRONTAGES[i % Palette.FRONTAGES.size()], 0.85))
+-		var canopy := MeshInstance3D.new()
+-		var cm := BoxMesh.new()
+-		cm.size = Vector3(8.6, 0.1, 2.2)
+-		canopy.mesh = cm
+-		canopy.material_override = Palette.mat(Palette.FRONTAGES[(i + 2) % Palette.FRONTAGES.size()], 0.9)
+-		canopy.position = sp + Vector3(0.0, 3.1, 2.1)
+-		canopy.rotation_degrees = Vector3(18.0, 0.0, 0.0)
+-		_world_root.add_child(canopy)
+ 		if AssetLibrary.has_asset("player_clean.glb"):
+ 			var vendor := AssetLibrary.instantiate("player_clean.glb", _world_root)
+ 			if vendor != null:
+ 				vendor.position = sp + Vector3(0.6, 0.0, -1.5)
+ 				vendor.rotation.y = PI
+ 				AssetLibrary.tint(vendor, Palette.FRONTAGES[(i + 1) % Palette.FRONTAGES.size()])
+-		var sign := _label3d(Palette.SIGN_TEXT[(i + 2) % Palette.SIGN_TEXT.size()], sp + Vector3(0.0, 3.6, 1.3))
++		var sign := _label3d(["RICE & CURRY","SOUP NOODLES","KAYA TOAST","TEA & COFFEE","FRESH JUICE","GRILLED SATAY"][i], sp + Vector3(0.0, 3.1, 1.3))
+ 		sign.font_size = 40
+ 		sign.pixel_size = 0.012
+ 	# shared dining: tables, stools, bins, tray return
+-	for i: int in 8:
+-		for j: int in 5:
+-			var tp := centre + Vector3(-28.0 + i * 8.0, 0.0, -6.0 + j * 7.0)
++	for i: int in 12:
++		for j: int in 8:
++			var tp := centre + Vector3(-27.5 + i * 5.0, 0.0, -11.0 + j * 4.5)
+ 			var provider_table := false
+-			if AssetLibrary.has_asset("hawker_table_clean.glb"):
+-				var table := AssetLibrary.instantiate("hawker_table_clean.glb", _world_root)
++			if AssetLibrary.has_asset("hawker_table_refined.glb"):
++				var table := AssetLibrary.instantiate("hawker_table_refined.glb", _world_root)
+ 				if table != null:
+ 					table.position = tp
+-					table.scale = Vector3.ONE * 1.45
++					table.scale = Vector3.ONE
+ 					provider_table = true
+ 			if not provider_table:
+ 				_cyl(Vector3(2.0, 0.12, 2.0), tp + Vector3(0.0, 0.85, 0.0), Palette.mat(Palette.PLASTER_2, 0.8))
+@@ -542,26 +537,22 @@ func _waterfront_edge() -> void:
+ 		_street_lamp(Vector3(-320.0 + i * 128.0, 0.0, PROMENADE_Z + 8.0))
+ 
+ func _background_city() -> void:
+-	# distant, non-reachable silhouettes — dimensional, not a flat backdrop
++	# Dimensional original facades replace blank skyline prisms. This ring is
++	# background scenery; the road network and mission remain in the core.
+ 	var rng := RandomNumberGenerator.new()
+ 	rng.seed = 991
+-	for i: int in 70:
++	for i in 64:
+ 		var side := i % 4
+-		var pos := Vector3.ZERO
++		var p := Vector3.ZERO
+ 		match side:
+-			0: pos = Vector3(rng.randf_range(-700.0, 700.0), 0.0, -420.0 - rng.randf_range(0.0, 160.0))
+-			1: pos = Vector3(-430.0 - rng.randf_range(0.0, 140.0), 0.0, rng.randf_range(-400.0, 400.0))
+-			2: pos = Vector3(430.0 + rng.randf_range(0.0, 140.0), 0.0, rng.randf_range(-400.0, 400.0))
+-			_: pos = Vector3(rng.randf_range(-700.0, 700.0), 0.0, 400.0 + rng.randf_range(0.0, 160.0))
+-		var h := rng.randf_range(18.0, 95.0)
+-		var shade := Color(0.42, 0.44, 0.48).lerp(Color(0.30, 0.33, 0.38), rng.randf())
+-		var mesh := MeshInstance3D.new()
+-		var bm := BoxMesh.new()
+-		bm.size = Vector3(rng.randf_range(14.0, 34.0), h, rng.randf_range(14.0, 34.0))
+-		mesh.mesh = bm
+-		mesh.material_override = Palette.mat(shade, 0.9)
+-		mesh.position = pos + Vector3(0.0, h * 0.5, 0.0)
+-		_world_root.add_child(mesh)
++			0: p=Vector3(-620+(i/4)*82,0,-560-rng.randf_range(0,120))
++			1: p=Vector3(-440-rng.randf_range(0,90),0,-410+(i/4)*54)
++			2: p=Vector3(440+rng.randf_range(0,90),0,-410+(i/4)*54)
++			_: p=Vector3(-620+(i/4)*82,0,435+rng.randf_range(0,90))
++		var scale_y := rng.randf_range(.55,1.20)
++		_authored("skyline_%d.glb"%posmod(i,4),p,rng.randf_range(-.08,.08),Vector3(1,scale_y,1))
++		if side==0:
++			_box(Vector3(75,2,95),p+Vector3(0,-1,0),Palette.mat_textured(Palette.CONCRETE,"concrete",Vector3.ONE,.9))
+ 
+ # ------------------------------------------------------------------ traffic
+ func _build_lane_graph() -> void:
+@@ -677,14 +668,13 @@ func _landscape() -> void:
+ 					for k in 2:
+ 						_tree(centre + Vector3(-40+j*40,.22,-17+k*34), .78+_rng.randf()*.22)
+ 			if kit == "hawker":
+-				for side in [-1.0,1.0]:
+-					_box(Vector3(20,.08,112), centre+Vector3(side*56,.2,0),turf)
+-					for j in 4:
+-						_tree(centre+Vector3(side*56,.24,-47+j*31),.85)
+-						_authored("fern.glb",centre+Vector3(side*53,.25,-47+j*31),j*.7,Vector3.ONE*1.3)
+-				_box(Vector3(72,.08,17),centre+Vector3(0,.2,51),turf)
++				_box(Vector3(38,.08,72),centre+Vector3(49,.2,-12),turf)
++				for j in 3:
++					for k in 2:
++						_tree(centre+Vector3(35+k*27,.24,-39+j*32),.9)
+ 				for j in 4:
+-					_tree(centre+Vector3(-27+j*18,.25,51),.75)
++					_tree(centre+Vector3(-67,.24,-47+j*31),.78)
++					_authored("fern.glb",centre+Vector3(40,.25,-40+j*20),j*.7,Vector3.ONE)
+ 	# Tree-lined verges are deliberately outside the carriageway and crossings.
+ 	for road in [-160.0,0.0,160.0]:
+ 		for block in [-240.0,-80.0,80.0,240.0]:
+@@ -720,9 +710,9 @@ func _junctions() -> void:
+ 			# signal heads on the corners
+ 			for sx: float in [-1.0, 1.0]:
+ 				for sz: float in [-1.0, 1.0]:
+-					_traffic_light(Vector3(x + sx * (ROAD_HALF + 1.4), 0.0, z + sz * (ROAD_HALF + 1.4)))
++					_traffic_light(Vector3(x + sx * (ROAD_HALF + 1.4), 0.0, z + sz * (ROAD_HALF + 1.4)), 0 if sx*sz>0 else 1)
+ 
+-func _traffic_light(pos: Vector3) -> void:
++func _traffic_light(pos: Vector3, axis: int = 0) -> void:
+ 	_cyl(Vector3(0.16, 3.4, 0.16), pos + Vector3(0.0, 1.7, 0.0), Palette.mat_textured(Palette.METAL_DARK, "metal", Vector3(1.0, 2.0, 1.0), 0.5, 0.6))
+ 	var head := MeshInstance3D.new()
+ 	var bm := BoxMesh.new()
+@@ -738,6 +728,9 @@ func _traffic_light(pos: Vector3) -> void:
+ 		sm.radius = 0.11
+ 		sm.height = 0.22
+ 		lamp.mesh = sm
++		lamp.add_to_group("traffic_lamps")
++		lamp.set_meta("signal_axis",axis)
++		lamp.set_meta("lamp_index",i)
+ 		lamp.material_override = Palette.emissive(lamps[i], 0.6 if i != 2 else 2.4)
+ 		lamp.position = pos + Vector3(0.0, 3.7 - i * 0.3, 0.16)
+ 		_world_root.add_child(lamp)

@@ -1,0 +1,10 @@
+{
+  "pid": 91704,
+  "exit_code": 0,
+  "timeout": false,
+  "elapsed_sec": 336.73,
+  "child_reaped": true,
+  "headless": true,
+  "rendered_performance_valid": false,
+  "note": "Startup source before live recording/kerb-step/cruise-height edits; actual controls-only uninterrupted mission completed with three combatant kills and zero deaths."
+}

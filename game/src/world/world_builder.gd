@@ -52,6 +52,9 @@ func build(seed_value: int = 20261021) -> void:
 	_junctions()
 	_street_furniture()
 	_build_grid()
+	var interior_data: Dictionary = InteriorDetail.build(_world_root, locations["safe_room"] - Vector3(0,.2,0))
+	locations["convenience_shop"] = interior_data["convenience_shop"]
+	locations["workshop"] = interior_data["workshop"]
 	_waterfront_edge()
 	_background_city()
 	_build_lane_graph()
@@ -88,7 +91,7 @@ func _environment() -> void:
 	add_child(we)
 
 	var sun := DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-28.0, -38.0, 0.0)
+	sun.rotation_degrees = Vector3(-28.0, -142.0, 0.0)
 	sun.light_energy = 1.25
 	sun.light_color = Color(1.0, 0.82, 0.62)
 	sun.shadow_enabled = true
@@ -328,8 +331,6 @@ func _safe_room(pos: Vector3) -> void:
 	_box(Vector3(0.5, 0.4, 3.4), pos + Vector3(-7.0, 3.5, 0.0), Palette.mat_textured(Palette.METAL, "metal", Vector3(1.0, 1.0, 2.0), 0.5, 0.5))
 	_solid_box(Vector3(14.0, 0.3, 10.0), pos + Vector3(0.0, 3.5, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
 	_solid_box(Vector3(0.4, 3.4, 10.0), pos + Vector3(7.0, 1.7, 0.0), Palette.mat(Palette.PLASTER, 0.9))
-	_box(Vector3(2.6, 0.9, 1.2), pos + Vector3(-3.0, 0.6, -3.0), Palette.mat(Palette.METAL, 0.6, 0.4))
-	_box(Vector3(2.2, 1.2, 0.8), pos + Vector3(3.5, 0.7, -3.4), Palette.mat(Palette.PLASTER_2, 0.9))
 	var lamp := OmniLight3D.new()
 	lamp.position = pos + Vector3(0.0, 3.1, 0.0)
 	lamp.light_energy = 1.6
@@ -356,6 +357,10 @@ func _safe_room(pos: Vector3) -> void:
 ## Hawker hub: roofed open-sided shared dining with stalls, tables, fans, lights.
 func _hawker_block(centre: Vector3) -> void:
 	_shophouse_row(centre+Vector3(-63.6,0,-60),Vector3(1,0,0),12)
+	# Bring the public hall to the street edge: a sheltered civic frontage,
+	# with its garden/service court behind it rather than a forty-metre void.
+	centre += Vector3(-30,0,0)
+	locations["hawker"] = centre
 	# pavilion slab
 	_solid_box(Vector3(70.0, 0.25, 54.0), centre + Vector3(0.0, 0.12, 0.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.92))
 	# Original DCC-authored pitched terracotta pavilion with exposed trusses.
@@ -364,44 +369,34 @@ func _hawker_block(centre: Vector3) -> void:
 	for i: int in 6:
 		var sp := centre + Vector3(-27.0 + i * 11.0, 0.0, -20.0)
 		var used_counter := false
-		if AssetLibrary.has_asset("hawker_counter_clean.glb"):
-			var counter := AssetLibrary.instantiate("hawker_counter_clean.glb", _world_root)
+		if AssetLibrary.has_asset("hawker_counter_refined.glb"):
+			var counter := AssetLibrary.instantiate("hawker_counter_refined.glb", _world_root)
 			if counter != null:
-				counter.position = sp + Vector3(-1.4, 0.0, 0.6)
-				counter.scale = Vector3(1.6, 1.0, 1.0)
+				counter.position = sp + Vector3(0.0, 0.0, 0.6)
+				counter.scale = Vector3(2.0, 1.1, 1.2)
 				counter.rotation.y = PI
 				used_counter = true
 		if not used_counter:
 			_solid_box(Vector3(8.0, 1.05, 3.2), sp + Vector3(0.0, 0.52, 0.0), Palette.mat(Palette.PLASTER, 0.85))
-		_box(Vector3(8.4, 0.18, 3.6), sp + Vector3(0.0, 1.12, 0.0), Palette.mat(Palette.METAL, 0.4, 0.6))
-		_box(Vector3(8.0, 2.1, 0.12), sp + Vector3(0.0, 2.1, 1.5), Palette.mat(Palette.FRONTAGES[i % Palette.FRONTAGES.size()], 0.85))
-		var canopy := MeshInstance3D.new()
-		var cm := BoxMesh.new()
-		cm.size = Vector3(8.6, 0.1, 2.2)
-		canopy.mesh = cm
-		canopy.material_override = Palette.mat(Palette.FRONTAGES[(i + 2) % Palette.FRONTAGES.size()], 0.9)
-		canopy.position = sp + Vector3(0.0, 3.1, 2.1)
-		canopy.rotation_degrees = Vector3(18.0, 0.0, 0.0)
-		_world_root.add_child(canopy)
 		if AssetLibrary.has_asset("player_clean.glb"):
 			var vendor := AssetLibrary.instantiate("player_clean.glb", _world_root)
 			if vendor != null:
 				vendor.position = sp + Vector3(0.6, 0.0, -1.5)
 				vendor.rotation.y = PI
 				AssetLibrary.tint(vendor, Palette.FRONTAGES[(i + 1) % Palette.FRONTAGES.size()])
-		var sign := _label3d(Palette.SIGN_TEXT[(i + 2) % Palette.SIGN_TEXT.size()], sp + Vector3(0.0, 3.6, 1.3))
+		var sign := _label3d(["RICE & CURRY","SOUP NOODLES","KAYA TOAST","TEA & COFFEE","FRESH JUICE","GRILLED SATAY"][i], sp + Vector3(0.0, 3.1, 1.3))
 		sign.font_size = 40
 		sign.pixel_size = 0.012
 	# shared dining: tables, stools, bins, tray return
-	for i: int in 8:
-		for j: int in 5:
-			var tp := centre + Vector3(-28.0 + i * 8.0, 0.0, -6.0 + j * 7.0)
+	for i: int in 12:
+		for j: int in 8:
+			var tp := centre + Vector3(-27.5 + i * 5.0, 0.0, -11.0 + j * 4.5)
 			var provider_table := false
-			if AssetLibrary.has_asset("hawker_table_clean.glb"):
-				var table := AssetLibrary.instantiate("hawker_table_clean.glb", _world_root)
+			if AssetLibrary.has_asset("hawker_table_refined.glb"):
+				var table := AssetLibrary.instantiate("hawker_table_refined.glb", _world_root)
 				if table != null:
 					table.position = tp
-					table.scale = Vector3.ONE * 1.45
+					table.scale = Vector3.ONE
 					provider_table = true
 			if not provider_table:
 				_cyl(Vector3(2.0, 0.12, 2.0), tp + Vector3(0.0, 0.85, 0.0), Palette.mat(Palette.PLASTER_2, 0.8))
@@ -542,26 +537,22 @@ func _waterfront_edge() -> void:
 		_street_lamp(Vector3(-320.0 + i * 128.0, 0.0, PROMENADE_Z + 8.0))
 
 func _background_city() -> void:
-	# distant, non-reachable silhouettes — dimensional, not a flat backdrop
+	# Dimensional original facades replace blank skyline prisms. This ring is
+	# background scenery; the road network and mission remain in the core.
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 991
-	for i: int in 70:
+	for i in 64:
 		var side := i % 4
-		var pos := Vector3.ZERO
+		var p := Vector3.ZERO
 		match side:
-			0: pos = Vector3(rng.randf_range(-700.0, 700.0), 0.0, -420.0 - rng.randf_range(0.0, 160.0))
-			1: pos = Vector3(-430.0 - rng.randf_range(0.0, 140.0), 0.0, rng.randf_range(-400.0, 400.0))
-			2: pos = Vector3(430.0 + rng.randf_range(0.0, 140.0), 0.0, rng.randf_range(-400.0, 400.0))
-			_: pos = Vector3(rng.randf_range(-700.0, 700.0), 0.0, 400.0 + rng.randf_range(0.0, 160.0))
-		var h := rng.randf_range(18.0, 95.0)
-		var shade := Color(0.42, 0.44, 0.48).lerp(Color(0.30, 0.33, 0.38), rng.randf())
-		var mesh := MeshInstance3D.new()
-		var bm := BoxMesh.new()
-		bm.size = Vector3(rng.randf_range(14.0, 34.0), h, rng.randf_range(14.0, 34.0))
-		mesh.mesh = bm
-		mesh.material_override = Palette.mat(shade, 0.9)
-		mesh.position = pos + Vector3(0.0, h * 0.5, 0.0)
-		_world_root.add_child(mesh)
+			0: p=Vector3(-620+(i/4)*82,0,-560-rng.randf_range(0,120))
+			1: p=Vector3(-440-rng.randf_range(0,90),0,-410+(i/4)*54)
+			2: p=Vector3(440+rng.randf_range(0,90),0,-410+(i/4)*54)
+			_: p=Vector3(-620+(i/4)*82,0,435+rng.randf_range(0,90))
+		var scale_y := rng.randf_range(.55,1.20)
+		_authored("skyline_%d.glb"%posmod(i,4),p,rng.randf_range(-.08,.08),Vector3(1,scale_y,1))
+		if side==0:
+			_box(Vector3(75,2,95),p+Vector3(0,-1,0),Palette.mat_textured(Palette.CONCRETE,"concrete",Vector3.ONE,.9))
 
 # ------------------------------------------------------------------ traffic
 func _build_lane_graph() -> void:
@@ -677,14 +668,13 @@ func _landscape() -> void:
 					for k in 2:
 						_tree(centre + Vector3(-40+j*40,.22,-17+k*34), .78+_rng.randf()*.22)
 			if kit == "hawker":
-				for side in [-1.0,1.0]:
-					_box(Vector3(20,.08,112), centre+Vector3(side*56,.2,0),turf)
-					for j in 4:
-						_tree(centre+Vector3(side*56,.24,-47+j*31),.85)
-						_authored("fern.glb",centre+Vector3(side*53,.25,-47+j*31),j*.7,Vector3.ONE*1.3)
-				_box(Vector3(72,.08,17),centre+Vector3(0,.2,51),turf)
+				_box(Vector3(38,.08,72),centre+Vector3(49,.2,-12),turf)
+				for j in 3:
+					for k in 2:
+						_tree(centre+Vector3(35+k*27,.24,-39+j*32),.9)
 				for j in 4:
-					_tree(centre+Vector3(-27+j*18,.25,51),.75)
+					_tree(centre+Vector3(-67,.24,-47+j*31),.78)
+					_authored("fern.glb",centre+Vector3(40,.25,-40+j*20),j*.7,Vector3.ONE)
 	# Tree-lined verges are deliberately outside the carriageway and crossings.
 	for road in [-160.0,0.0,160.0]:
 		for block in [-240.0,-80.0,80.0,240.0]:
@@ -720,9 +710,9 @@ func _junctions() -> void:
 			# signal heads on the corners
 			for sx: float in [-1.0, 1.0]:
 				for sz: float in [-1.0, 1.0]:
-					_traffic_light(Vector3(x + sx * (ROAD_HALF + 1.4), 0.0, z + sz * (ROAD_HALF + 1.4)))
+					_traffic_light(Vector3(x + sx * (ROAD_HALF + 1.4), 0.0, z + sz * (ROAD_HALF + 1.4)), 0 if sx*sz>0 else 1)
 
-func _traffic_light(pos: Vector3) -> void:
+func _traffic_light(pos: Vector3, axis: int = 0) -> void:
 	_cyl(Vector3(0.16, 3.4, 0.16), pos + Vector3(0.0, 1.7, 0.0), Palette.mat_textured(Palette.METAL_DARK, "metal", Vector3(1.0, 2.0, 1.0), 0.5, 0.6))
 	var head := MeshInstance3D.new()
 	var bm := BoxMesh.new()
@@ -738,6 +728,9 @@ func _traffic_light(pos: Vector3) -> void:
 		sm.radius = 0.11
 		sm.height = 0.22
 		lamp.mesh = sm
+		lamp.add_to_group("traffic_lamps")
+		lamp.set_meta("signal_axis",axis)
+		lamp.set_meta("lamp_index",i)
 		lamp.material_override = Palette.emissive(lamps[i], 0.6 if i != 2 else 2.4)
 		lamp.position = pos + Vector3(0.0, 3.7 - i * 0.3, 0.16)
 		_world_root.add_child(lamp)

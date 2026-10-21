@@ -1,0 +1,138 @@
+{
+	"elapsed_seconds": 100.235604,
+	"finished": true,
+	"gates": [
+		{
+			"name": "market reached on foot",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": -2.75541973114014,
+				"health": 100.0,
+				"mode": 0,
+				"position": [
+					-86.4749450683594,
+					0.380839347839355,
+					-91.6023406982422
+				],
+				"seconds": 78.89,
+				"stage": 0,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "combat damaged and killed a mission combatant",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": -2.76850414276123,
+				"health": 83.5,
+				"mode": 0,
+				"position": [
+					-90.4652709960938,
+					0.379493087530136,
+					-87.2063674926758
+				],
+				"seconds": 86.12,
+				"stage": 0,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "package collected through interaction",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": -1.42661845684052,
+				"health": 83.5,
+				"mode": 0,
+				"position": [
+					-87.0969390869141,
+					0.380833923816681,
+					-87.6955413818359
+				],
+				"seconds": 87.28,
+				"stage": 2,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "usable parked car found",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": -1.42661845684052,
+				"health": 83.5,
+				"mode": 0,
+				"position": [
+					-87.0969390869141,
+					0.380833923816681,
+					-87.6955413818359
+				],
+				"seconds": 87.28,
+				"stage": 2,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "car entered",
+			"passed": false,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"flight_distance_m": 0.0,
+				"heading": 2.20438122749329,
+				"health": 100.0,
+				"mode": 0,
+				"position": [
+					-150.35221862793,
+					0.135839760303497,
+					-41.2105407714844
+				],
+				"seconds": 100.23,
+				"stage": 2,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		}
+	],
+	"latest": {
+		"car_distance_m": 0.0,
+		"deaths": 0,
+		"flight_distance_m": 0.0,
+		"heading": 2.20438122749329,
+		"health": 100.0,
+		"mode": 0,
+		"position": [
+			-150.35221862793,
+			0.135839760303497,
+			-41.2105407714844
+		],
+		"seconds": 100.24,
+		"stage": 2,
+		"vehicle_health": null,
+		"wanted": 1
+	},
+	"recent_log": [
+		"86.12s combat target health=-32.0 state=3",
+		"86.12s PASS combat damaged and killed a mission combatant",
+		"86.95s walk end at (-87.0, 0.0, -88.0); target=(-85.0, 0.0, -88.0) distance=2.5",
+		"87.28s PASS package collected through interaction",
+		"87.28s PASS usable parked car found",
+		"99.23s walk end at (-150.0, 0.0, -41.0); target=(-152.0, 0.0, -40.0) distance=2.5",
+		"100.23s FAIL car entered",
+		"100.23s ABORT car entered"
+	]
+}

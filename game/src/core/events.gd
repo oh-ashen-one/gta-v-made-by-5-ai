@@ -17,6 +17,7 @@ signal vehicle_entered(vehicle: Node)
 signal vehicle_exited(vehicle: Node)
 signal checkpoint_reached(index: int)
 signal mission_finished(success: bool)
+signal settings_changed(settings: Dictionary)
 
 func toast(text: String, kind: String = "info") -> void:
 	notify.emit(text, kind)

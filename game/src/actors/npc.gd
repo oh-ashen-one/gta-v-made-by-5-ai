@@ -21,6 +21,7 @@ var idle_time := 0.0
 var panic_time := 0.0
 var fire_timer := 0.0
 var body_root: Node3D
+var character_visual: CharacterVisual
 var _leg_l: Node3D
 var _leg_r: Node3D
 var _arm_l: Node3D
@@ -93,6 +94,18 @@ func _build() -> void:
 		gun.material_override = Palette.mat(Color(0.09, 0.09, 0.10), 0.35, 0.85)
 		gun.position = Vector3(-0.30, 1.12, -0.24)
 		body_root.add_child(gun)
+
+	character_visual = CharacterVisual.new()
+	body_root.add_child(character_visual)
+	var role := "officer" if is_police else "civilian"
+	if character_visual.configure(role, get_instance_id() % 24):
+		for child in body_root.get_children():
+			if child is Node3D and child != character_visual:
+				child.visible = false
+		if is_hostile or is_police:
+			var gun := AssetLibrary.instantiate("pistol_held.glb", body_root)
+			if gun != null:
+				character_visual.attach_weapon(gun,"pistol")
 
 func _limb(hip: Vector3, size: Vector3, cloth: Material) -> Node3D:
 	var pivot := Node3D.new()
@@ -230,9 +243,10 @@ func _shoot_at(player: Node) -> void:
 	# Cars and aircraft are cover for their occupants. The ray stops on the
 	# bodywork and damages it; it cannot hit a hidden player at the entry spot.
 	params.collision_mask = 1 | 2 | 8
-	params.exclude = [get_rid()]
+	var excluded: Array[RID] = [get_rid()]
 	if target != player:
-		params.exclude.append(player.get_rid())
+		excluded.append(player.get_rid())
+	params.exclude = excluded
 	var hit := get_world_3d().direct_space_state.intersect_ray(params)
 	if not hit.is_empty():
 		var collider = hit["collider"]
@@ -252,6 +266,9 @@ func _move_towards(target: Vector3, speed: float, delta: float) -> void:
 	rotation.y = lerp_angle(rotation.y, yaw, clampf(delta * 6.0, 0.0, 1.0))
 
 func _animate(delta: float, speed: float) -> void:
+	if character_visual != null and character_visual.loaded:
+		character_visual.set_motion(speed, (is_police or is_hostile) and state == State.PURSUE, is_on_floor())
+		return
 	var stride: float = clampf(speed / 2.2, 0.0, 1.4)
 	_walk_phase += delta * (5.0 + speed * 3.0)
 	var swing: float = sin(_walk_phase) * stride * 0.6
@@ -271,6 +288,8 @@ func take_damage(amount: float, from_position: Vector3, by_player: bool = true) 
 	if state == State.DEAD:
 		return
 	health -= amount
+	if character_visual != null and character_visual.loaded and health > 0:
+		character_visual.play_hit()
 	if by_player:
 		Game.add_heat(4.0 if not is_police else 8.0)
 	_panic(from_position)
@@ -280,6 +299,8 @@ func take_damage(amount: float, from_position: Vector3, by_player: bool = true) 
 func _panic(from_position: Vector3) -> void:
 	if state == State.DEAD:
 		return
+	if character_visual != null and character_visual.loaded:
+		character_visual.set_seated(false)
 	var away := global_position - from_position
 	away.y = 0.0
 	if away.length() < 0.2:
@@ -295,8 +316,11 @@ func _panic(from_position: Vector3) -> void:
 func _die(by_player: bool) -> void:
 	state = State.DEAD
 	velocity = Vector3.ZERO
-	body_root.rotation_degrees = Vector3(82.0, rotation.y, 0.0)
-	body_root.position = Vector3(0.0, 0.35, 0.0)
+	if character_visual != null and character_visual.loaded:
+		character_visual.play_death()
+	else:
+		body_root.rotation_degrees = Vector3(82.0, rotation.y, 0.0)
+		body_root.position = Vector3(0.0, 0.35, 0.0)
 	collision_layer = 0
 	Events.actor_died.emit(self, by_player)
 	if is_police:

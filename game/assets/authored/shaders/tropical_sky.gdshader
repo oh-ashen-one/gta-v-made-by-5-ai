@@ -2,7 +2,7 @@ shader_type sky;
 // Original static tropical-afternoon sky. No photographed skyline/backdrop.
 uniform vec3 zenith : source_color = vec3(0.16, 0.34, 0.57);
 uniform vec3 horizon : source_color = vec3(0.72, 0.76, 0.76);
-uniform vec3 sun_direction = vec3(0.55, 0.47, 0.69);
+uniform vec3 sun_direction = vec3(-0.55, 0.47, -0.69);
 float hash3(vec3 p) { return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453); }
 float noise3(vec3 p) {
  vec3 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);

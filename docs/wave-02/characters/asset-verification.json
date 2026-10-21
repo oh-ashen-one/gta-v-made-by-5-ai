@@ -1,0 +1,221 @@
+{
+  "time_utc": "2026-10-21T12:19:11.172083+00:00",
+  "scope": "CPU asset verification; rendered/gameplay acceptance is separate",
+  "assets": [
+    {
+      "asset": "player_rigged.glb",
+      "sha256": "bfcd5d74c867c0fb62756e7145ef7dcb582f18643f5f25f48e85a6edcfe4602f",
+      "bytes": 11663516,
+      "joints": 24,
+      "clips_seconds": {
+        "idle": 2.433333396911621,
+        "walk": 1.0666667222976685,
+        "run": 0.7666666507720947,
+        "aim": 2.433333396911621,
+        "aim_walk": 1.0666667222976685,
+        "aim_run": 0.7666666507720947,
+        "reload": 1.4333332777023315,
+        "hit": 0.4000000059604645,
+        "jump": 0.8333333134651184,
+        "fall": 0.9333333373069763,
+        "seated": 2.433333396911621,
+        "drive": 2.433333396911621
+      },
+      "materials": [
+        "CharacterSkinAndDetails",
+        "CharacterClothing",
+        "OriginalUnbrandedCharcoalTextile",
+        "OriginalPlainRubberSole"
+      ],
+      "errors": []
+    },
+    {
+      "asset": "officer_rigged.glb",
+      "sha256": "e545c1cd4a91b49c17d0dea69e37965fad036b265914bd8d29b6490fefd12b33",
+      "bytes": 10968576,
+      "joints": 24,
+      "clips_seconds": {
+        "idle": 2.433333396911621,
+        "walk": 1.0666667222976685,
+        "run": 0.7666666507720947,
+        "aim": 2.433333396911621,
+        "aim_walk": 1.0666667222976685,
+        "aim_run": 0.7666666507720947,
+        "reload": 1.4333332777023315,
+        "hit": 0.4000000059604645,
+        "jump": 0.8333333134651184,
+        "fall": 0.9333333373069763,
+        "seated": 2.433333396911621,
+        "drive": 2.433333396911621
+      },
+      "materials": [
+        "CharacterSkinAndDetails",
+        "CharacterClothing"
+      ],
+      "errors": []
+    },
+    {
+      "asset": "civilian_rigged.glb",
+      "sha256": "ece93fcf6bc7e37ced947d74b4e392df25084c83c2209fe5ae974847dde4c444",
+      "bytes": 9919412,
+      "joints": 24,
+      "clips_seconds": {
+        "idle": 2.433333396911621,
+        "walk": 1.0666667222976685,
+        "run": 0.7666666507720947,
+        "aim": 2.433333396911621,
+        "aim_walk": 1.0666667222976685,
+        "aim_run": 0.7666666507720947,
+        "reload": 1.4333332777023315,
+        "hit": 0.4000000059604645,
+        "jump": 0.8333333134651184,
+        "fall": 0.9333333373069763,
+        "seated": 2.433333396911621,
+        "drive": 2.433333396911621
+      },
+      "materials": [
+        "CharacterSkinAndDetails",
+        "CharacterClothing",
+        "OriginalUnbrandedCharcoalTextile",
+        "OriginalPlainRubberSole"
+      ],
+      "errors": []
+    }
+  ],
+  "pose_diagnostics": {
+    "player": {
+      "walk_contact": {
+        "p99_edge_stretch": 1.2544302940368652,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": 0.0
+      },
+      "walk_swing": {
+        "p99_edge_stretch": 1.0635905265808105,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": -1.257285475730896e-08
+      },
+      "run_swing": {
+        "p99_edge_stretch": 1.161158561706543,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": -1.862645149230957e-09
+      },
+      "aim": {
+        "p99_edge_stretch": 1.5410233736038208,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": -4.102889583634806e-09
+      },
+      "hit": {
+        "p99_edge_stretch": 1.1183569431304932,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": 7.450580596923828e-09
+      },
+      "fall": {
+        "p99_edge_stretch": 1.1493293046951294,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": 2.9802322387695312e-08
+      },
+      "seated": {
+        "p99_edge_stretch": 1.78838050365448,
+        "edges_extended_over_10cm": 84,
+        "lowest_z_m": -0.047321874648332596
+      },
+      "drive": {
+        "p99_edge_stretch": 1.9525803327560425,
+        "edges_extended_over_10cm": 84,
+        "lowest_z_m": -0.047321874648332596
+      }
+    },
+    "officer": {
+      "walk_contact": {
+        "p99_edge_stretch": 1.1684635877609253,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": 7.031485438346863e-08
+      },
+      "walk_swing": {
+        "p99_edge_stretch": 1.0635660886764526,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": 4.563480615615845e-08
+      },
+      "run_swing": {
+        "p99_edge_stretch": 1.1723383665084839,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": 2.9802322387695312e-08
+      },
+      "aim": {
+        "p99_edge_stretch": 1.4430081844329834,
+        "edges_extended_over_10cm": 32,
+        "lowest_z_m": 1.0575204711926744e-08
+      },
+      "hit": {
+        "p99_edge_stretch": 1.1091158390045166,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": -1.1641532182693481e-08
+      },
+      "fall": {
+        "p99_edge_stretch": 1.121576189994812,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": -1.4901161193847656e-08
+      },
+      "seated": {
+        "p99_edge_stretch": 1.4895589351654053,
+        "edges_extended_over_10cm": 67,
+        "lowest_z_m": -0.04293067008256912
+      },
+      "drive": {
+        "p99_edge_stretch": 1.6255133152008057,
+        "edges_extended_over_10cm": 97,
+        "lowest_z_m": -0.04293067008256912
+      }
+    },
+    "civilian": {
+      "walk_contact": {
+        "p99_edge_stretch": 1.2042232751846313,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": 3.259629011154175e-08
+      },
+      "walk_swing": {
+        "p99_edge_stretch": 1.0617148876190186,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": 1.7229467630386353e-08
+      },
+      "run_swing": {
+        "p99_edge_stretch": 1.1469027996063232,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": 3.585591912269592e-08
+      },
+      "aim": {
+        "p99_edge_stretch": 1.4771050214767456,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": -0.00024264749663416296
+      },
+      "hit": {
+        "p99_edge_stretch": 1.1060831546783447,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": -5.21540641784668e-08
+      },
+      "fall": {
+        "p99_edge_stretch": 1.132116675376892,
+        "edges_extended_over_10cm": 0,
+        "lowest_z_m": -1.4901161193847656e-08
+      },
+      "seated": {
+        "p99_edge_stretch": 1.7321479320526123,
+        "edges_extended_over_10cm": 100,
+        "lowest_z_m": -0.04797082021832466
+      },
+      "drive": {
+        "p99_edge_stretch": 1.878920316696167,
+        "edges_extended_over_10cm": 100,
+        "lowest_z_m": -0.04797082021832466
+      }
+    }
+  },
+  "source_sha256": {
+    "player_clean.glb": "9e4a8c61796a715b336b8cc8747b2563d4f73c312eff28825af647d88fa6fb5d",
+    "officer_clean.glb": "354607e2e9474fe58d203b850204fe150247801a98efcc2e3e409e184e69b8bc"
+  },
+  "held_weapon_sha256": {
+    "pistol_held.glb": "d710ddf885e5aff265d0c0093dabe7a485884496ea1ecb6f929f3d83b7ebea8f",
+    "smg_held.glb": "5d345fbf85ffd7f86067c0c1eac014eb21f5c3c67b0c10ae1e6de20db5d45899"
+  }
+}

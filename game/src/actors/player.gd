@@ -35,7 +35,9 @@ var _muzzle_flash: MeshInstance3D
 var _weapon_mesh: MeshInstance3D
 var _weapon_model: Node3D = null
 var _body_root: Node3D
+var _visual: CharacterVisual
 var _press_armed: Dictionary = {}
+var _press_queue: Dictionary = {}
 var _leg_l: Node3D
 var _leg_r: Node3D
 var _arm_l: Node3D
@@ -119,6 +121,14 @@ func _build_body() -> void:
 	_muzzle_flash.visible = false
 	_body_root.add_child(_muzzle_flash)
 
+	_visual = CharacterVisual.new()
+	_body_root.add_child(_visual)
+	if _visual.configure("player"):
+		for child in _body_root.get_children():
+			if child is Node3D and child != _visual and child != _muzzle_flash:
+				child.visible = false
+		_update_weapon_mesh()
+
 func _limb(hip: Vector3, size: Vector3, cloth: Material, foot: Material) -> Node3D:
 	var pivot := Node3D.new()
 	pivot.position = hip
@@ -141,6 +151,8 @@ func _limb(hip: Vector3, size: Vector3, cloth: Material, foot: Material) -> Node
 
 func _update_weapon_mesh() -> void:
 	var file := "smg_clean.glb" if Game.carried_weapon == "smg" else "pistol_clean.glb"
+	if _visual != null and _visual.loaded:
+		file = "smg_held.glb" if Game.carried_weapon == "smg" else "pistol_held.glb"
 	if _weapon_model != null and is_instance_valid(_weapon_model):
 		_weapon_model.queue_free()
 		_weapon_model = null
@@ -148,6 +160,8 @@ func _update_weapon_mesh() -> void:
 		_weapon_model = AssetLibrary.instantiate(file, _body_root)
 		if _weapon_model != null:
 			_weapon_model.position = Vector3(-0.30, 1.18, -0.28)
+			if _visual != null and _visual.loaded:
+				_visual.attach_weapon(_weapon_model, Game.carried_weapon)
 			_weapon_mesh.visible = false
 			return
 	_weapon_mesh.visible = true
@@ -184,10 +198,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		if bool(Game.settings.get("invert_y", false)):
 			dy = -dy
 		pitch = clampf(pitch - dy, -1.25, 0.85)
+	# Preserve rapid native press/release events even when a slow frame ends
+	# after both. Scripted action_press still uses the held-state fallback.
+	if not (event is InputEventKey and event.echo):
+		for action in ["fire", "reload", "weapon_next", "interact"]:
+			if event.is_action_pressed(action):
+				_press_queue[action] = true
 	# NOTE: fire/reload/weapon/interact are polled in _process so that scripted
 	# input (Input.action_press) reaches the same code path as a human press.
 
 func _physics_process(delta: float) -> void:
+	if has_meta("_qa_motion_probe"):
+		set_meta("_qa_motion_state", {"busy": busy, "vehicle": current_vehicle.name if current_vehicle else "none",
+			"paused": Game.simulation_paused, "mode": Game.mode, "forward": Input.get_action_strength("move_forward"),
+			"back": Input.get_action_strength("move_back"), "sprint": Input.get_action_strength("sprint"), "before": velocity})
 	if Game.simulation_paused:
 		velocity = Vector3.ZERO
 		return
@@ -244,7 +268,11 @@ func _physics_process(delta: float) -> void:
 		velocity.y = -0.5
 		if Input.is_action_just_pressed("jump"):
 			velocity.y = JUMP_VELOCITY
+	if has_meta("_qa_motion_probe"):
+		get_meta("_qa_motion_state")["requested"] = velocity
 	move_and_slide()
+	if has_meta("_qa_motion_probe"):
+		get_meta("_qa_motion_state")["resolved"] = velocity
 
 	# face movement direction (or camera direction when aiming/firing)
 	var face_dir := Vector3.ZERO
@@ -263,6 +291,15 @@ func _physics_process(delta: float) -> void:
 	Game.player_rotation = yaw
 
 func _animate(delta: float, speed: float, sprinting: bool) -> void:
+	if _visual != null and _visual.loaded:
+		_visual.set_motion(speed, aiming, is_on_floor(), _reloading)
+		_visual.set_aim_pitch(pitch)
+		_walk_phase += delta * speed * 1.9
+		var contact := int(_walk_phase / PI)
+		if contact != _last_stride_phase and speed > .5 and is_on_floor():
+			_last_stride_phase = contact
+			Sfx.play_at("footstep", global_position, -18.0, _rng.randf_range(.9, 1.1))
+		return
 	var stride: float = clampf(speed / 5.0, 0.0, 1.6)
 	_walk_phase += delta * (6.0 + speed * 1.4)
 	var swing: float = sin(_walk_phase) * stride * 0.7
@@ -286,7 +323,7 @@ func _animate(delta: float, speed: float, sprinting: bool) -> void:
 	if stride_phase != _last_stride_phase:
 		_last_stride_phase = stride_phase
 		if stride > 0.25:
-			Sfx.play("footstep", -18.0, _rng.randf_range(0.9, 1.15))
+			Sfx.play_at("footstep", global_position, -18.0, _rng.randf_range(0.9, 1.15))
 
 func _fire() -> void:
 	if current_vehicle != null or busy:
@@ -303,6 +340,8 @@ func _fire() -> void:
 	_fire_cooldown = 0.16 if Game.carried_weapon == "pistol" else 0.085
 	_muzzle_flash.visible = true
 	_muzzle_flash.position = _weapon_mesh.position + Vector3(0.0, 0.02, -0.35 if Game.carried_weapon == "smg" else -0.22)
+	if _visual != null and _visual.loaded:
+		_muzzle_flash.global_position = _visual.weapon_muzzle_position()
 	var cam_basis := camera.global_transform.basis
 	var origin := camera.global_position
 	var dir := -cam_basis.z
@@ -311,6 +350,17 @@ func _fire() -> void:
 	params.exclude = [get_rid()]
 	var hit := get_world_3d().direct_space_state.intersect_ray(params)
 	var point := origin + dir * 120.0
+	# The camera chooses the aim point, but the muzzle must have a clear
+	# path to it. This prevents shooting through close walls/vehicle cover.
+	if not hit.is_empty():
+		point = hit["position"]
+	var muzzle := _muzzle_flash.global_position
+	var muzzle_params := PhysicsRayQueryParameters3D.create(muzzle, point)
+	muzzle_params.collision_mask = 1 | 4 | 8
+	muzzle_params.exclude = [get_rid()]
+	var muzzle_hit := get_world_3d().direct_space_state.intersect_ray(muzzle_params)
+	if not muzzle_hit.is_empty():
+		hit = muzzle_hit
 	var hit_something := false
 	if not hit.is_empty():
 		point = hit["position"]
@@ -323,7 +373,7 @@ func _fire() -> void:
 			hit_something = true
 		_spawn_impact(point, -dir)
 	Events.shot_fired.emit(origin, dir, Game.carried_weapon)
-	Sfx.play("gunshot", -4.0, 1.0 if Game.carried_weapon == "pistol" else 0.88)
+	Sfx.play_at("gunshot", _muzzle_flash.global_position, -4.0, 1.0 if Game.carried_weapon == "pistol" else 0.88)
 	crosshair_hit.emit(point, hit_something)
 	# make noise: gunfire draws witnesses and police (LAW-02)
 	Game.add_heat(2.0)
@@ -361,35 +411,49 @@ func _try_interact() -> void:
 		if current_vehicle.has_method("exit_vehicle"):
 			current_vehicle.exit_vehicle(self)
 		return
-	# The closest interactable wins, whatever it is: a parcel lying at the
-	# player's feet must not be stolen by a car parked a little further away.
-	var best: Node = null
-	var best_d := INF
-	for v in get_tree().get_nodes_in_group("vehicles"):
-		if v == current_vehicle:
-			continue
-		var d := global_position.distance_to(v.global_position)
-		if d < best_d and d < INTERACT_RANGE:
-			best_d = d
-			best = v
-	for obj in get_tree().get_nodes_in_group("interactables"):
-		var d2 := global_position.distance_to(obj.global_position)
-		# small props are picked up from a slightly wider reach than a vehicle
-		if d2 < best_d and d2 < PICKUP_RANGE and obj.has_method("interact"):
-			best_d = d2
-			best = obj
-	if best and best.has_method("interact"):
-		print("[interact] %s at %.2f m" % [best.name, best_d])
+	var best := _interaction_target()
+	if best != null:
 		best.interact(self)
-		return
-	print("[interact] nothing in reach")
+
+func _interaction_target() -> Node3D:
+	var best: Node3D = null
+	var nearest := INF
+	for group in ["vehicles", "interactables"]:
+		for candidate in get_tree().get_nodes_in_group(group):
+			if not candidate is Node3D or not candidate.visible:
+				continue
+			if candidate == current_vehicle:
+				continue
+			if candidate.has_method("is_disabled") and candidate.is_disabled():
+				continue
+			if candidate.has_method("can_interact") and not candidate.can_interact():
+				continue
+			var distance: float = global_position.distance_to(candidate.global_position)
+			var reach := INTERACT_RANGE if group=="vehicles" else PICKUP_RANGE
+			if distance >= nearest or distance >= reach:
+				continue
+			if not _interaction_visible(candidate):
+				continue
+			nearest=distance
+			best=candidate
+	return best
+
+func _interaction_visible(target: Node3D) -> bool:
+	var ray := PhysicsRayQueryParameters3D.create(global_position+Vector3(0,1.25,0),target.global_position+Vector3(0,.65,0))
+	ray.collision_mask=1|8
+	var excluded: Array[RID] = [get_rid()]
+	if target is CollisionObject3D:
+		excluded.append(target.get_rid())
+	ray.exclude=excluded
+	return get_world_3d().direct_space_state.intersect_ray(ray).is_empty()
 
 func _process(_delta: float) -> void:
 	if Game.simulation_paused:
 		return
 	if current_vehicle == null and not busy:
 		aiming = Input.is_action_pressed("aim")
-	if _consume_press("fire"):
+	var fire_pressed := _consume_press("fire")
+	if fire_pressed or (Game.carried_weapon == "smg" and Input.is_action_pressed("fire")):
 		_fire()
 	if _consume_press("reload"):
 		_start_reload()
@@ -409,6 +473,10 @@ func _process(_delta: float) -> void:
 ## firing once per press re-arms on release keeps one code path for humans and
 ## for scripts, and cannot miss a press that is still held.
 func _consume_press(action: String) -> bool:
+	if _press_queue.get(action, false):
+		_press_queue.erase(action)
+		_press_armed[action] = false
+		return true
 	if not Input.is_action_pressed(action):
 		_press_armed[action] = true
 		return false
@@ -421,15 +489,15 @@ func _update_prompt() -> void:
 	if current_vehicle != null:
 		Events.interaction_prompt.emit("[E] Exit vehicle")
 		return
+	var target := _interaction_target()
 	var prompt := ""
-	for v in get_tree().get_nodes_in_group("vehicles"):
-		if v.global_position.distance_to(global_position) < INTERACT_RANGE:
-			prompt = "[E] Enter vehicle"
-			break
-	for obj in get_tree().get_nodes_in_group("interactables"):
-		if obj.global_position.distance_to(global_position) < INTERACT_RANGE:
-			prompt = String(obj.get("prompt_text")) if obj.get("prompt_text") else "[E] Interact"
-			break
+	if target != null:
+		if target is Helicopter:
+			prompt="[E] Board helicopter"
+		elif target is Car:
+			prompt="[E] Take %s"%target.kind.capitalize()
+		else:
+			prompt=String(target.get("prompt_text")) if target.get("prompt_text") else "[E] Interact"
 	Events.interaction_prompt.emit(prompt)
 
 func take_damage(amount: float, from_position: Vector3, _by_player: bool = false) -> void:
@@ -437,6 +505,8 @@ func take_damage(amount: float, from_position: Vector3, _by_player: bool = false
 		return
 	Game.damage_player(amount)
 	_damage_flash = 0.3
+	if _visual != null and _visual.loaded and Game.health > 0:
+		_visual.play_hit()
 
 func _on_health_changed(value: float, _max_value: float) -> void:
 	alive = value > 0.0
@@ -457,6 +527,8 @@ func respawn_at(pos: Vector3, rot: float) -> void:
 	velocity = Vector3.ZERO
 	visible = true
 	alive = true
+	if _visual != null and _visual.loaded:
+		_visual.reset_alive()
 	busy = false
 	camera.current = true
 	Game.set_mode(Game.MODE_FOOT)
@@ -475,3 +547,16 @@ func controlled_actor() -> Node3D:
 	if current_vehicle != null and is_instance_valid(current_vehicle):
 		return current_vehicle as Node3D
 	return self
+
+func reset_action_state() -> void:
+	_fire_cooldown=0.0
+	_reload_timer=0.0
+	_reloading=false
+	aiming=false
+	busy=false
+	_press_queue.clear()
+	_press_armed.clear()
+	Game.carried_weapon="pistol"
+	_update_weapon_mesh()
+	if _visual!=null and _visual.loaded: _visual.reset_alive()
+	Events.ammo_changed.emit(Game.current_mag(),Game.current_reserve())

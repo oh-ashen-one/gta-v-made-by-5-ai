@@ -1,0 +1,17 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+SCRIPT ERROR: Parse Error: Identifier "InteriorDetail" not declared in the current scope.
+          at: GDScript::reload (res://src/world/world_builder.gd:55)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "interior_data" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://src/world/world_builder.gd:55)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://src/main.gd:0)
+ERROR: Failed to load script "res://src/main.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+[wave1] main ready, args=[]
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+          at: _ready (res://src/main.gd:19)
+          GDScript backtrace (most recent call first):
+              [0] _ready (res://src/main.gd:19)

@@ -5,7 +5,7 @@ extends Node3D
 ## health, facing, weapon damage and vehicle transitions.
 
 const PROVIDER_DIR := "res://assets/providers/"
-const LOOP_CLIPS := ["idle", "walk", "run", "aim", "aim_walk", "aim_run", "jump"]
+const LOOP_CLIPS := ["idle", "walk", "run", "aim", "aim_walk", "aim_run", "jump", "seated", "drive"]
 const WARDROBE := [
 	Color(1.0, 1.0, 1.0), Color(1.20, 1.34, 1.12),
 	Color(1.26, 1.10, 1.02), Color(0.94, 1.14, 1.36),
@@ -18,6 +18,8 @@ var animator: AnimationPlayer
 var weapon_socket: BoneAttachment3D
 var asset_role := "player"
 var loaded := false
+var ignore_simulation_pause := false # Explicitly enabled only by pose-review fixtures.
+var _manual_pause := false
 var _clips: Dictionary = {}
 var _current := ""
 var _one_shot := false
@@ -26,12 +28,19 @@ var _last_speed := 0.0
 var _last_aim := false
 var _last_grounded := true
 var _last_reload := false
+var _weapon_node: Node3D
+var _aim_pitch := 0.0
+var _weapon_kind := "pistol"
+var _phase_offset := 0.0
+var _seated := false
+var _driving_pose := false
 
 static func available(role: String = "player") -> bool:
 	return ResourceLoader.exists(PROVIDER_DIR + role + "_rigged.glb")
 
 func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	asset_role = role
+	_phase_offset = fmod(float(get_instance_id() % 997) / 997.0 + float(wardrobe_variant) * 0.137, 1.0)
 	if not available(role):
 		push_warning("Rigged character missing: " + role + "_rigged.glb")
 		return false
@@ -74,6 +83,9 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 	_last_reload = reloading
 	if not loaded or _dead or _one_shot:
 		return
+	if _seated:
+		_play("drive" if _driving_pose else "seated", 0.22)
+		return
 	var clip := "idle"
 	var rate := 1.0
 	if not grounded:
@@ -89,6 +101,11 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 	elif aiming:
 		clip = "aim"
 	_play(clip, 0.16, rate)
+
+func set_seated(seated: bool, driving: bool = false) -> void:
+	_seated = seated
+	_driving_pose = driving
+	set_motion(_last_speed, _last_aim, _last_grounded, _last_reload)
 
 func play_hit() -> void:
 	if not loaded or _dead:
@@ -106,24 +123,55 @@ func play_death() -> void:
 func reset_alive() -> void:
 	_dead = false
 	_one_shot = false
+	_seated = false
+	_driving_pose = false
 	_current = ""
 	if loaded:
 		_play("idle", 0.0)
 
-func attach_weapon(weapon: Node3D) -> void:
+func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 	if weapon_socket == null or weapon == null:
 		return
 	if weapon.get_parent() != null:
 		weapon.reparent(weapon_socket, false)
 	else:
 		weapon_socket.add_child(weapon)
-	# Bone local Y follows the fingers. Provider guns face Godot -Z.
-	weapon.position = Vector3(0.0, 0.085, -0.018)
+	_weapon_node = weapon
+	_weapon_kind = weapon_kind
+	# *_held.glb derivatives face -Z and place their origin at the grip.
+	# At rest the muzzle hangs along the fingers; aiming stabilizes the barrel
+	# on the body's forward axis while its grip follows the animated wrist.
+	weapon.position = Vector3(0.0, 0.055, -0.012)
 	weapon.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+	process_priority = 10
+
+func set_aim_pitch(value: float) -> void:
+	_aim_pitch = clampf(value, -1.1, 0.85)
+
+func weapon_muzzle_position() -> Vector3:
+	if _weapon_node == null or not is_instance_valid(_weapon_node):
+		return global_position + Vector3(0.0, 1.3, -0.4)
+	var forward_offset := 0.44 if _weapon_kind == "smg" else 0.15
+	return _weapon_node.to_global(Vector3(0.0, 0.045, -forward_offset))
+
+func _process(_delta: float) -> void:
+	_update_animation_activity()
+	if _weapon_node == null or not is_instance_valid(_weapon_node):
+		return
+	if _last_aim or _last_reload:
+		_weapon_node.global_basis = global_transform.basis.orthonormalized() * Basis(Vector3.RIGHT, _aim_pitch)
+	else:
+		_weapon_node.rotation = Vector3(PI * 0.5, 0.0, 0.0)
 
 func set_paused(paused: bool) -> void:
+	_manual_pause = paused
+	_update_animation_activity()
+
+func _update_animation_activity() -> void:
 	if animator != null:
-		animator.active = not paused
+		var should_run := not (_manual_pause or (Game.simulation_paused and not ignore_simulation_pause))
+		if animator.active != should_run:
+			animator.active = should_run
 
 func _play(clip: String, crossfade: float, rate: float = 1.0) -> void:
 	if not _clips.has(clip):
@@ -135,6 +183,8 @@ func _play(clip: String, crossfade: float, rate: float = 1.0) -> void:
 		return
 	_current = clip
 	animator.play(_clips[clip], crossfade)
+	if asset_role != "player" and clip in LOOP_CLIPS:
+		animator.seek(_phase_offset * animator.get_animation(_clips[clip]).length, true)
 
 func _on_animation_finished(_animation: StringName) -> void:
 	if _dead:

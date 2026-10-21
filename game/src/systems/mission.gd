@@ -120,36 +120,53 @@ func _set_stage(new_stage: int, side_effects: bool = true) -> void:
 	match stage:
 		Stage.TO_PACKAGE:
 			_objective = "Harbour Relay — collect the package at the hawker centre."
-			Events.objective_marker_changed.emit(world.locations["package"])
+			_mark_objective(world.locations["package"])
 		Stage.PACKAGE:
-			_objective = "Package secured. Take a car — the marked one is by the market."
-			Events.objective_marker_changed.emit(world.locations["marked_car"])
+			_objective = "Package secured. Find a car near the market."
+			_mark_objective(world.locations["marked_car"])
 		Stage.TO_CAR:
-			_objective = "Take a car. Police will notice a stolen vehicle."
-			Events.objective_marker_changed.emit(world.locations["marked_car"])
+			_objective = "Take the marked car, or another usable car. Police will notice."
+			_mark_objective(_nearest_usable_car_position())
 		Stage.TO_AIRFIELD:
 			_objective = "Drive to the aviation compound, north-east of the district."
-			Events.objective_marker_changed.emit(world.locations["helipad_primary"])
+			_mark_objective(world.locations["helipad_primary"])
 		Stage.TO_HELI:
 			_objective = "Board the helicopter on the pad."
-			Events.objective_marker_changed.emit(world.locations["helipad_primary"])
+			_mark_objective(world.locations["helipad_primary"])
 		Stage.FLY:
 			_objective = "Fly to the waterfront landing pad and set down."
-			Events.objective_marker_changed.emit(world.locations["helipad_secondary"])
+			_mark_objective(world.locations["helipad_secondary"])
 		Stage.LAND:
 			_objective = "Exit the helicopter and continue on foot."
-			Events.objective_marker_changed.emit(world.locations["helipad_secondary"])
+			_mark_objective(world.locations["helipad_secondary"])
 		Stage.DELIVER:
 			_objective = "Deliver the package at the waterfront drop point."
-			Events.objective_marker_changed.emit(world.locations["delivery"])
+			_mark_objective(world.locations["delivery"])
 		Stage.DONE:
 			_objective = "Harbour Relay complete. Free roam continues."
-			Events.objective_marker_changed.emit(Vector3.ZERO)
+			_mark_objective(Vector3.ZERO)
 			if side_effects:
 				Events.mission_finished.emit(true)
 				Game.save_game()
 	Events.objective_changed.emit(_objective)
 	Events.mission_stage_changed.emit(stage)
+
+func _mark_objective(position: Vector3) -> void:
+	# Persist before emitting so HUD creation after Mission.setup still sees
+	# the initial package marker rather than a lost startup signal at (0,0,0).
+	set_meta("marker", position)
+	Events.objective_marker_changed.emit(position)
+
+func _nearest_usable_car_position() -> Vector3:
+	var nearest := INF
+	var position: Vector3 = world.locations["marked_car"]
+	for vehicle in get_tree().get_nodes_in_group("vehicles"):
+		if not vehicle is Car or vehicle.disabled or vehicle.driver_is_player or vehicle.has_ai: continue
+		var distance: float = player.global_position.distance_to(vehicle.global_position)
+		if distance < nearest:
+			nearest = distance
+			position = vehicle.global_position
+	return position
 
 ## Saves restore the matching pickup/flag/objective state. Since vehicles are
 ## not serialized, a mid-drive/mid-flight save returns to its honest checkpoint.
@@ -240,6 +257,7 @@ func restart() -> void:
 	Game.checkpoint_index = 0
 	Game.mark_safe_position(player.global_position, player.yaw)
 	Game.ammo = {"pistol": {"mag": 12, "reserve": 96}, "smg": {"mag": 30, "reserve": 180}}
+	player.reset_action_state()
 	traffic.wanted_reset()
 	_reset_helicopter()
 	package_taken = false

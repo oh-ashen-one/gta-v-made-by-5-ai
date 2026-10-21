@@ -1,0 +1,387 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "world builder present",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "player spawned",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "traffic manager present",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission running",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "helicopter present",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "hud present",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "district contains 3D geometry",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "junction graph has 25 connected reference nodes",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "pedestrian paths present",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "civilian traffic populated",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "pedestrians populated",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "gameplay camera belongs to player",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission publishes initial objective",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission registered for save and checkpoint restoration",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "package is a real interactable",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "road graph includes the fifth row",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "traffic target is near destination on the left lane",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "east-west signal excludes north-south movement",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "junction changeover clears both approaches",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "north-south signal excludes east-west movement",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "fire maps to a mouse button rather than a keyboard code",
+      "passed": true
+    },
+    {
+      "detail": "mag 12 -> 11",
+      "name": "real mouse-button event fires the equipped weapon",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission avenue has no static trunk obstruction",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rapid native press and release is not dropped",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "close-cover fixture leaves camera sightline on target",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "muzzle obstruction prevents damage through close cover",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "clearing muzzle obstruction permits target damage",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "input interaction enters a car",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "occupied player collision is disabled",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "driving input moves the car",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "occupant follows the moving car",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "authoritative position follows controlled vehicle",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "left driving input turns left",
+      "passed": true
+    },
+    {
+      "detail": "100.00 -> 96.97",
+      "name": "NPC weapon ray damages occupied car",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "car body protects its occupant from that ray",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "normal exit returns control and camera",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "on-foot collision restored",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "death is counted for honest golden-path evidence",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "death in car releases both control owners",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "death restores visible player and gameplay camera",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "walking still works after vehicle death",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "wanted escalation decays when unobserved",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "health regenerates out of fire",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "helicopter control is exclusive",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "lift input gains altitude",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "neutral lift stabilizes hover",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "airborne helicopter rejects exit",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "pause freezes aircraft",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "pause freezes pursuit heat",
+      "passed": true
+    },
+    {
+      "detail": "position=(270.0, -0.139075, 104.0) velocity=(0.0, 0.0, 0.0) health=100.0 floor=true",
+      "name": "controlled descent lands without disabling aircraft",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "landed helicopter exits to walking",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "package input pickup advances and hides pickup",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "taking car starts the authored driving leg",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "on-foot arrival cannot bypass driving leg",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "death restores package checkpoint and requires new drive",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "restoration rebuilds flags and objective",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "delivery cannot be triggered remotely",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "restart resets pickup checkpoint and prerequisites",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "restart retains exactly three mission guards",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "save roundtrip restores health and mission checkpoint",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "save restoration updates package and objective",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "save rejects truncated position vector atomically",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "save rejects unknown equipped weapon atomically",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "save rejects out-of-range magazine atomically",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "save rejects wrong health type atomically",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "save rejects invalid checkpoint index atomically",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "save rejects inconsistent pursuit state atomically",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "save rejects wrong safe-position type atomically",
+      "passed": true
+    }
+  ],
+  "duration_ms": 11521,
+  "engine": "4.7.1-stable (official)",
+  "failed": 0,
+  "finished_utc": "2026-10-21T12:17:15",
+  "fixture_repositioning": true,
+  "golden_path": false,
+  "passed": 68,
+  "suite": "wave2-regressions",
+  "timed_out": false,
+  "total": 68,
+  "checkpoint_base": "9937fc99a45c845b6c7a24d1a55b1f1fa3b3af04",
+  "source_files_sha256": {
+    "game/src/main.gd": "5995e62d1e7980810383f8e46492b1935863057ac3166b2adc6a024ebd80d2f2",
+    "game/src/ui/hud.gd": "71288e7702b6a08c566ad499e5bf224c5da5187b6f0c0905d71bc13a0d3943c6",
+    "game/src/core/audio.gd": "4a5aaebd00ce6636053a13c380f8c7902f6d503fd056f52a4dd68a8b4f5c385e",
+    "game/src/core/game_state.gd": "d16e8347388607d465b6c90fa812bc1eb57c006d4ac48e3550f3018f00fd8475",
+    "game/src/core/events.gd": "1e4d2801932844b2f0b2d9a57dbb392efa483ff99e6806f79655e7b4281ed512",
+    "game/src/world/palette.gd": "47f8cafc91d3047375d7b59c8bc9bc5b719a13150593497798545ad5cfffb77f",
+    "game/src/world/world_builder.gd": "1d1b3be1f108293783288f7996c35078743c26dfbeee69f7a3976e85e5ca5d0d",
+    "game/src/actors/car.gd": "a7e798e8f6e079a5f311600bec8b46e30207b29c8db3aea7d722c8311a638bc6",
+    "game/src/actors/player.gd": "f6e8081bff4b3649a357b36599a168c0f3e277d0c6a6b22133d43f1d8836ab00",
+    "game/src/actors/asset_library.gd": "be51c15da326ac326a1dae58c129aed650781f01275d4f725d9a568121ee0aff",
+    "game/src/actors/npc.gd": "11afe48a79faf02b5dfe4e7d7b87ec0afbebf36bfdb38eff7d171533019ccfc3",
+    "game/src/actors/character_visual.gd": "2e5423b94421062fbff87bafc2ddec459da9efcefaffbf583a1067805a082d38",
+    "game/src/actors/helicopter.gd": "eeab26971cb01ea2ee36d16621d16ee153241b94889b5c1f7833633f4e00a3b7",
+    "game/src/systems/photo_capture.gd": "537331574836b7e4a5871dcd1ced0b9ba74810224769dc0b7d27d328f04b3ab9",
+    "game/src/systems/asset_review.gd": "855d188c2fed21f4e68071d8739a2dc4e47e22078e8aca9906ba32d3564d0f6f",
+    "game/src/systems/mission.gd": "8f9fa77c1fd98e5f532a73395ecc01a61205bf084ba41cb49cc332090995edff",
+    "game/src/systems/self_test.gd": "6b55f4f1743659567ce46823f0fe5337f668f811f8869e9f2b834c966ac75712",
+    "game/src/systems/character_review.gd": "9915a9502ba9b39f52eca4badf16fe682819af0182bb2bec6a18a5fa35b225f3",
+    "game/src/systems/capture_director.gd": "16125f1b7bcee573d9ed04cab473d8f838a286bae0115614dbbc4ec854a0c737",
+    "game/src/systems/delivery_point.gd": "da997d696592ae6d9898d1f365e593a0585c5756e21b95e78e86cb8fa6635fc6",
+    "game/src/systems/package_pickup.gd": "a607a1df985b938c9a9bb203b61f32e7ef538e0b8694a57ffbd7b5089433ef1c",
+    "game/src/systems/traffic_manager.gd": "02947b4bc1262a7a101415a5359bcad6d842e47fcb80201781b24390fd175f26"
+  },
+  "process_result": {
+    "pid": 95262,
+    "exit_code": 0,
+    "timeout": false,
+    "elapsed_sec": 15.93,
+    "child_reaped": true
+  },
+  "candidate_note": "Integrated rig, muzzle cover, atomic full-schema save validation,132pedestrian candidate. Headless dummy-audio backend reports7exit resource refs; process was reaped. No rendered-performance claim."
+}

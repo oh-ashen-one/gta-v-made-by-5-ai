@@ -1,0 +1,25 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+[wave1] main ready, args=["--capture", "--capture-dir=/tmp/wave2-route3"]
+[capture] 0.61s Route start; seed=20261021; headless=true; controls-only=true
+[capture] 2.55s walk end at (-302.0, 0.0, -46.0); target=(-304.0, 0.0, -46.0) distance=2.0
+[capture] 9.12s walk end at (-318.0, 0.0, -7.0); target=(-320.0, 0.0, 0.0) distance=7.0
+[capture] 31.60s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=6.9
+[capture] 54.60s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 78.89s walk end at (-86.0, 0.0, -92.0); target=(-85.0, 0.0, -88.0) distance=3.9
+[capture] 78.89s PASS market reached on foot
+[capture] 81.11s combat target health=-32.0 state=3
+[capture] 82.78s combat target health=-32.0 state=3
+[capture] 86.12s combat target health=-32.0 state=3
+[capture] 86.12s PASS combat damaged and killed a mission combatant
+[capture] 86.95s walk end at (-87.0, 0.0, -88.0); target=(-85.0, 0.0, -88.0) distance=2.5
+[capture] 87.28s PASS package collected through interaction
+[capture] 87.28s PASS usable parked car found
+[capture] 99.23s walk end at (-150.0, 0.0, -41.0); target=(-152.0, 0.0, -40.0) distance=2.5
+[capture] 100.23s FAIL car entered
+[capture] 100.23s ABORT car entered
+[capture] terminal success=false deaths=0 seconds=100.2
+WARNING: 10 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

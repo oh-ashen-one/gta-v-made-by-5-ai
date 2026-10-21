@@ -1,0 +1,23 @@
+{
+	"after_f9": {
+		"paused": true,
+		"started": false
+	},
+	"after_title_enter": {
+		"paused": true,
+		"started": true
+	},
+	"enter_started": true,
+	"initial_title": {
+		"paused": false,
+		"started": false
+	},
+	"malformed_save": {
+		"health_after": 12.0,
+		"health_before": 73.0,
+		"return_value": false
+	},
+	"movement_after_title_enter_m": 0.0,
+	"movement_behind_title_m": 1.33845007419586,
+	"native_w_movement_m": 1.60711288452148
+}

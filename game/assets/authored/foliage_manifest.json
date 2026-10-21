@@ -2,11 +2,11 @@
   {
     "asset": "rain_tree",
     "dimensions_blender_xyz_m": [
-      21.718,
-      21.486,
-      13.738
+      20.784,
+      21.498,
+      14.379
     ],
-    "triangles": 21184,
+    "triangles": 31804,
     "objects": 2,
     "source": "game/tools/build_foliage.py",
     "seed": 21021

@@ -52,3 +52,6 @@ func interact(_player: Node) -> void:
 	Sfx.play("pickup", -4.0, 1.0)
 	if mission and mission.has_method("package_collected"):
 		mission.package_collected()
+
+func can_interact() -> bool:
+	return not _taken and mission != null and mission.stage == Mission.Stage.TO_PACKAGE

@@ -1,0 +1,72 @@
+{
+	"after_f9": {
+		"paused": true,
+		"started": false
+	},
+	"after_title_enter": {
+		"paused": false,
+		"started": true
+	},
+	"clear_native_entry": true,
+	"clear_target_is_car": true,
+	"disabled_car": {
+		"entry_rejected": true,
+		"prompt": "[E] Take Sedan",
+		"target_selected": true
+	},
+	"enter_started": true,
+	"hidden_package_skipped": true,
+	"initial_title": {
+		"paused": true,
+		"started": false
+	},
+	"malformed_saves": {
+		"bad_ammo": {
+			"accepted": false,
+			"state_unchanged": true
+		},
+		"empty_position": {
+			"accepted": false,
+			"state_unchanged": true
+		},
+		"inconsistent_stage": {
+			"accepted": false,
+			"state_unchanged": true
+		},
+		"negative_health": {
+			"accepted": false,
+			"state_unchanged": true
+		},
+		"unknown_weapon": {
+			"accepted": false,
+			"state_unchanged": true
+		}
+	},
+	"movement_after_title_enter_m": 1.36316168308258,
+	"movement_behind_title_m": 0.0,
+	"native_w_movement_m": 1.36488008499146,
+	"nearest_package_selected": true,
+	"pause_after_settings": {
+		"panel": true,
+		"paused": false,
+		"settings": false
+	},
+	"pause_before_settings": {
+		"panel": true,
+		"paused": true
+	},
+	"title_f6": {
+		"notices": [
+			"No compatible save. Start a new game to begin."
+		],
+		"paused": true,
+		"started": false
+	},
+	"valid_save": {
+		"health": 73.0,
+		"loaded": true,
+		"saved": true
+	},
+	"wall_blocks_native_entry": true,
+	"wall_blocks_target": true
+}

@@ -40,3 +40,6 @@ func _ready() -> void:
 func interact(_player: Node) -> void:
 	if mission and mission.has_method("delivery_completed"):
 		mission.delivery_completed()
+
+func can_interact() -> bool:
+	return mission != null and mission.stage == Mission.Stage.DELIVER

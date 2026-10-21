@@ -4,7 +4,9 @@ extends Node3D
 ## pedestrians, parked cars, and police response (TRAFFIC-01/02, LAW-02/03).
 
 const LANE_OFFSET := 4.0        # lane centre is 4 m to the LEFT of the road centre
-const PED_COUNT := 34
+const PED_COUNT := 116
+const FOCUSED_PED_COUNT := 42
+const DINER_COUNT := 16
 const TRAFFIC_COUNT := 14
 const POLICE_SPAWN_DISTANCE := 55.0
 
@@ -18,6 +20,9 @@ var _player: Node = null
 var _police_timer := 0.0
 var _rng := RandomNumberGenerator.new()
 var _signal_clock := 0.0
+var _signal_visual_phase := -1
+var _signal_materials: Array[Material] = []
+var _signal_unlit: Material
 
 func setup(w: WorldBuilder, player: Node) -> void:
 	world = w
@@ -28,6 +33,7 @@ func setup(w: WorldBuilder, player: Node) -> void:
 	_spawn_parked()
 	_spawn_traffic()
 	_spawn_peds()
+	_update_signal_lamps(true)
 
 # ------------------------------------------------------------------- spawning
 func _spawn_parked() -> void:
@@ -112,22 +118,66 @@ func _lane_point(from: Vector3, to: Vector3) -> Vector3:
 	return to + left * LANE_OFFSET - dir * 8.0
 
 func _spawn_peds() -> void:
-	for i in PED_COUNT:
+	if _ped_lanes.is_empty(): return
+	# A denser, continuous walking perimeter around the heritage/market block.
+	# Spawn along path segments, so people do not all appear on junction nodes.
+	var focused_lanes: Array = [
+		[Vector3(-150.0, 0.25, -145.0), Vector3(-150.0, 0.25, -15.0)],
+		[Vector3(-10.0, 0.25, -145.0), Vector3(-10.0, 0.25, -15.0)],
+		[Vector3(-145.0, 0.25, -150.0), Vector3(-15.0, 0.25, -150.0)],
+		[Vector3(-145.0, 0.25, -10.0), Vector3(-15.0, 0.25, -10.0)],
+	]
+	for index in PED_COUNT:
 		var ped := NPC.new()
 		add_child(ped)
-		var lane_id := _rng.randi_range(0, maxi(1, _ped_lanes.size() - 1))
-		ped.assign_lane(_ped_lanes, lane_id)
-		var lane: Array = _ped_lanes[lane_id]
-		if not lane.is_empty():
-			var p: Vector3 = lane[_rng.randi_range(0, lane.size() - 1)]
-			ped.global_position = p + Vector3(_rng.randf_range(-1.5, 1.5), 0.0, _rng.randf_range(-1.5, 1.5))
+		var path: Array
+		if index < FOCUSED_PED_COUNT:
+			path = focused_lanes[index % focused_lanes.size()]
+		else:
+			path = _ped_lanes[_rng.randi_range(0, _ped_lanes.size() - 1)]
+		_spawn_on_segment(ped, path)
 		peds.append(ped)
+	# Damageable/reactive diners and queueing customers. Keep the package and
+	# combat aisle (local z=-8 and north of it) clear for actual mission play.
+	var centre: Vector3 = world.locations["hawker"]
+	for index in DINER_COUNT:
+		var diner := NPC.new()
+		add_child(diner)
+		var column := (index * 2 + index / 6) % 12
+		var row := 3 + (index / 6) % 4
+		var side := 1.0 if index % 2 == 0 else -1.0
+		var position := centre + Vector3(-27.5 + column * 5.0 + side * 1.25, 0.25, -11.0 + row * 4.5)
+		diner.global_position = position
+		diner.rotation.y = -PI * 0.5 * side
+		diner.state = NPC.State.IDLE
+		diner.idle_time = 3600.0
+		diner.set_meta("ambient_role", "diner" if index % 3 != 0 else "stall_queue")
+		diner.set_meta("activity_home", position)
+		if diner.character_visual != null and diner.character_visual.loaded:
+			diner.character_visual.set_seated(index % 3 != 0)
+
+		peds.append(diner)
+
+func _spawn_on_segment(ped: NPC, path: Array) -> void:
+	ped.lane = path
+	if path.size() < 2:
+		return
+	var segment := _rng.randi_range(0, path.size() - 2)
+	var from: Vector3 = path[segment]
+	var to: Vector3 = path[segment + 1]
+	var sideways := Vector3.UP.cross((to - from).normalized())
+	ped.global_position = from.lerp(to, _rng.randf_range(0.08, 0.92)) + sideways * _rng.randf_range(-0.65, 0.65)
+	ped.lane_dir = 1 if _rng.randf() > 0.5 else -1
+	ped.lane_index = segment + (1 if ped.lane_dir > 0 else 0)
+	var facing: Vector3 = path[ped.lane_index] - ped.global_position
+	ped.rotation.y = atan2(-facing.x, -facing.z)
 
 # --------------------------------------------------------------------- update
 func _process(delta: float) -> void:
 	if Game.simulation_paused:
 		return
 	_signal_clock = fmod(_signal_clock + delta, 28.0)
+	_update_signal_lamps()
 	for car in cars:
 		if not is_instance_valid(car) or car.disabled or not car.has_ai:
 			continue
@@ -273,11 +323,31 @@ func _update_police(delta: float) -> void:
 		pc.ai_target = actor.global_position
 		police_cars.append(pc)
 
-## Twenty-eight-second cycle: 12 seconds for each axis with two seconds of
-## clearance between them. This is simulation behavior, not a visual claim.
+## Twenty-eight-second cycle: ten seconds green and two amber for each
+## axis, with two all-red clearance seconds between the approaches.
 func signal_allows(direction: Vector3) -> bool:
 	var east_west := absf(direction.x) > absf(direction.z)
-	return _signal_clock < 12.0 if east_west else (_signal_clock >= 14.0 and _signal_clock < 26.0)
+	return _signal_clock < 10.0 if east_west else (_signal_clock >= 14.0 and _signal_clock < 24.0)
+
+func _update_signal_lamps(force: bool = false) -> void:
+	var phase := 0 if _signal_clock < 10.0 else (1 if _signal_clock < 12.0 else (2 if _signal_clock < 14.0 else (3 if _signal_clock < 24.0 else (4 if _signal_clock < 26.0 else 5))))
+	if not force and phase == _signal_visual_phase: return
+	_signal_visual_phase = phase
+	if _signal_materials.is_empty():
+		_signal_materials.append(Palette.emissive(Color(1.0, 0.07, 0.025), 3.0))
+		_signal_materials.append(Palette.emissive(Color(1.0, 0.57, 0.025), 3.0))
+		_signal_materials.append(Palette.emissive(Color(0.025, 1.0, 0.12), 3.0))
+		_signal_unlit = Palette.mat(Color(0.025, 0.035, 0.03), 0.35, 0.15)
+	for lamp in get_tree().get_nodes_in_group("traffic_lamps"):
+		if not lamp is MeshInstance3D: continue
+		var axis := int(lamp.get_meta("signal_axis", 0))
+		var lens := int(lamp.get_meta("lamp_index", 0))
+		var active_lens := 0
+		if axis == 0:
+			active_lens = 2 if phase == 0 else (1 if phase == 1 else 0)
+		else:
+			active_lens = 2 if phase == 3 else (1 if phase == 4 else 0)
+		lamp.material_override = _signal_materials[active_lens] if lens == active_lens else _signal_unlit
 
 ## Can the police at `from` see the player? Distance plus a world ray test.
 func _has_sight(from: Vector3) -> bool:

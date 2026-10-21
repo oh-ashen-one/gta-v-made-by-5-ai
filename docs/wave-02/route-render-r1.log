@@ -1,0 +1,47 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--capture", "--capture-dir=../docs/wave-02/route-render-r1", "--record-frames=../docs/wave-02/route-render-r1/frames"]
+[capture] 8.79s Route start; seed=20261021; headless=false; scripted-input-automation=true
+[capture] 8.88s screenshot ../docs/wave-02/route-render-r1/01_safe_room.png
+[capture] 10.74s walk end at (-302.0, 0.0, -46.0); target=(-304.0, 0.0, -46.0) distance=2.0
+[capture] 17.30s walk end at (-318.0, 0.0, -7.0); target=(-320.0, 0.0, 0.0) distance=7.0
+[capture] 39.79s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=6.9
+[capture] 62.79s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 81.49s walk end at (-116.0, 0.0, -92.0); target=(-115.0, 0.0, -88.0) distance=3.9
+[capture] 81.49s PASS market reached on foot
+[capture] 81.71s screenshot ../docs/wave-02/route-render-r1/02_hawker_market.png
+[capture] 84.04s combat target health=-32.0 state=3
+[capture] 85.71s combat target health=-32.0 state=3
+[capture] 88.57s combat target health=-32.0 state=3
+[capture] 88.57s PASS combat damaged and killed a mission combatant
+[capture] 88.78s screenshot ../docs/wave-02/route-render-r1/03_combat.png
+[capture] 89.36s walk end at (-117.0, 0.0, -88.0); target=(-115.0, 0.0, -88.0) distance=2.5
+[capture] 89.68s PASS package collected through interaction
+[capture] 89.87s screenshot ../docs/wave-02/route-render-r1/04_package_taken.png
+[capture] 89.87s PASS usable parked car found
+[capture] 98.57s walk end at (-150.0, 0.0, -42.0); target=(-152.0, 0.0, -40.0) distance=2.6
+[capture] 98.90s PASS car entered
+[capture] 99.08s screenshot ../docs/wave-02/route-render-r1/05_car_entered.png
+[capture] 108.88s drive waypoint target=(-160.0, 0.0, 0.0) distance=7.0
+[capture] 117.84s drive waypoint target=(-160.0, 0.0, 160.0) distance=6.9
+[capture] 127.16s drive waypoint target=(0.0, 0.0, 160.0) distance=7.0
+[capture] 136.13s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0
+[capture] 141.35s drive waypoint target=(320.0, 0.0, 160.0) distance=72.0
+[capture] 141.35s PASS uninterrupted driving leg reached aviation compound
+[capture] 141.52s screenshot ../docs/wave-02/route-render-r1/06_driving.png
+[capture] 142.70s PASS car exit restored walking
+[capture] 142.87s screenshot ../docs/wave-02/route-render-r1/07_exited_car.png
+[capture] 142.87s PASS helicopter remains usable
+[capture] 153.30s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.3
+[capture] 153.66s PASS helicopter boarded
+[capture] 153.76s screenshot ../docs/wave-02/route-render-r1/08_helicopter_boarding.png
+[capture] 183.41s PASS flight reached waterfront pad airspace
+[capture] 183.51s screenshot ../docs/wave-02/route-render-r1/09_aerial_view.png
+[capture] 203.25s PASS helicopter landed intact on destination pad
+[capture] 203.58s PASS landing exit restored walking
+[capture] 203.67s screenshot ../docs/wave-02/route-render-r1/10_landed.png
+[capture] 217.45s walk end at (93.0, 0.0, -322.0); target=(96.0, 0.0, -322.0) distance=2.9
+[capture] 217.77s PASS mission completed through delivery interaction
+[capture] 217.92s screenshot ../docs/wave-02/route-render-r1/11_delivery.png
+[capture] terminal success=true deaths=0 seconds=217.9

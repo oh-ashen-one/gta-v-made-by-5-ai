@@ -32,6 +32,10 @@ func _ready() -> void:
 	add_to_group("helicopters")
 	collision_layer = 8
 	collision_mask = 1 | 2 | 4 | 8
+	# Road vehicles stand on world geometry, never on their own passenger
+	# or a pedestrian as a moving platform.
+	platform_floor_layers = 1
+	platform_wall_layers = 0
 	_build()
 
 func _build() -> void:
@@ -173,6 +177,7 @@ func _try_provider_asset() -> void:
 	if root == null:
 		return
 	_provider_root = root
+	_body.visible = false
 	for part in _procedural_visuals:
 		part.visible = false
 	var main_rotor := AssetLibrary.find_named(root, "main_rotor")
@@ -186,6 +191,9 @@ func _physics_process(delta: float) -> void:
 	if Game.simulation_paused:
 		return
 	_impact_cooldown = maxf(0.0, _impact_cooldown - delta)
+	if _provider_root != null:
+		_provider_root.rotation.x = _body.rotation.x
+		_provider_root.rotation.z = _body.rotation.z
 	var rotor_speed := 22.0 if pilot_is_player else 6.0
 	if _rotor:
 		_rotor.rotate_y(delta * rotor_speed)
@@ -260,6 +268,12 @@ func interact(player: Node) -> void:
 		exit_vehicle(player)
 		return
 	pilot_is_player = true
+	# Disable the passenger immediately, before moving it into the vehicle.
+	# Waiting for the next player physics tick lets this body cache the
+	# passenger as a floor/platform during the transition.
+	if player is CollisionObject3D:
+		(player as CollisionObject3D).collision_layer = 0
+		(player as CollisionObject3D).collision_mask = 0
 	player.current_vehicle = self
 	player.busy = true
 	player.visible = false
@@ -277,10 +291,14 @@ func exit_vehicle(player: Node) -> void:
 	if not is_on_floor():
 		Events.notify.emit("Land before exiting.", "warn")
 		return
-	pilot_is_player = false
 	var side := global_transform.basis.x
-	var exit_pos := global_position + side * 2.4 + Vector3(0.0, 0.6, 0.0)
-	exit_pos.y = maxf(exit_pos.y, 0.6)
+	var forward := -global_transform.basis.z
+	var offsets: Array[Vector3] = [side * 2.8, -side * 2.8, forward * 4.0, -forward * 4.0]
+	var exit_pos := Car.find_safe_exit(self, offsets)
+	if exit_pos == Vector3.ZERO:
+		Events.notify.emit("No clear landing-side exit. Reposition the helicopter.", "warn")
+		return
+	pilot_is_player = false
 	player.global_position = exit_pos
 	player.visible = true
 	player.current_vehicle = null

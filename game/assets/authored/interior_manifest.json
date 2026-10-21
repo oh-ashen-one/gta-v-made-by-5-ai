@@ -1,0 +1,38 @@
+[
+  {
+    "asset": "interior_safe_furnishings",
+    "authoring_objects": 99,
+    "triangles": 23804,
+    "dimensions_blender_xyz": [
+      10.599999904632568,
+      8.367499828338623,
+      2.8600001335144043
+    ],
+    "source": "game/tools/build_interiors.py",
+    "rights": "Original authored geometry and plain English fictional signage"
+  },
+  {
+    "asset": "interior_convenience_shop",
+    "authoring_objects": 478,
+    "triangles": 61740,
+    "dimensions_blender_xyz": [
+      14.600000381469727,
+      11.349999904632568,
+      4.3249999061226845
+    ],
+    "source": "game/tools/build_interiors.py",
+    "rights": "Original authored geometry and plain English fictional signage"
+  },
+  {
+    "asset": "interior_workshop",
+    "authoring_objects": 367,
+    "triangles": 63500,
+    "dimensions_blender_xyz": [
+      20.600000381469727,
+      13.349999904632568,
+      4.975000001490116
+    ],
+    "source": "game/tools/build_interiors.py",
+    "rights": "Original authored geometry and plain English fictional signage"
+  }
+]

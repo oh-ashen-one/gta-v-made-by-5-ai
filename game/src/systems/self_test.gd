@@ -39,15 +39,30 @@ func run(main: Node) -> void:
 	_check("helicopter present", heli != null)
 	_check("hud present", main.get_node_or_null("HUD") != null)
 	if not player or not world or not traffic or not mission or not heli:
-		_report()
+		await _report()
 		return
 	_check("district contains 3D geometry", _count_meshes(world) > 400)
 	_check("junction graph has 25 connected reference nodes", world.traffic_nodes.size() == 25)
 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
 	_check("civilian traffic populated", traffic.cars.size() >= 8)
 	_check("pedestrians populated", traffic.peds.size() >= 20)
+	_check("ambient population stays within the authored 132 budget", traffic.peds.size() == TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT and traffic.peds.size() == 132)
+	var diners := 0
+	var away_from_junction := 0
+	for index in traffic.peds.size():
+		var pedestrian := traffic.peds[index]
+		if pedestrian.has_meta("ambient_role") and pedestrian.has_method("take_damage"):
+			diners += 1
+		if index < TrafficManager.FOCUSED_PED_COUNT:
+			var nearest := INF
+			for junction in world.traffic_nodes:
+				nearest = minf(nearest, pedestrian.global_position.distance_to(junction))
+			if nearest > 14.0: away_from_junction += 1
+	_check("market diners are reactive damageable NPCs", diners == 16)
+	_check("busy district walkers spawn along segments not junction piles", away_from_junction >= 34)
 	_check("gameplay camera belongs to player", player.camera.current)
 	_check("mission publishes initial objective", mission.stage == Mission.Stage.TO_PACKAGE and not mission.current_objective().is_empty())
+	_check("initial objective marker survives HUD setup order", mission.get_meta("marker", Vector3.ZERO).distance_to(world.locations["package"]) < 0.01)
 	_check("mission registered for save and checkpoint restoration", mission.is_in_group("mission"))
 	_check("package is a real interactable", mission.package_node.is_in_group("interactables"))
 	_check("road graph includes the fifth row", traffic._neighbours(24).size() == 2 and 19 in traffic._neighbours(24) and 23 in traffic._neighbours(24))
@@ -60,7 +75,24 @@ func run(main: Node) -> void:
 	_check("junction changeover clears both approaches", not traffic.signal_allows(Vector3.RIGHT) and not traffic.signal_allows(Vector3.FORWARD))
 	traffic._signal_clock = 20.0
 	_check("north-south signal excludes east-west movement", traffic.signal_allows(Vector3.FORWARD) and not traffic.signal_allows(Vector3.RIGHT))
+	var ew_green: MeshInstance3D
+	var ns_green: MeshInstance3D
+	for lamp in get_tree().get_nodes_in_group("traffic_lamps"):
+		if int(lamp.get_meta("lamp_index", -1)) == 2:
+			if int(lamp.get_meta("signal_axis", 0)) == 0: ew_green = lamp
+			else: ns_green = lamp
+	traffic._signal_clock = 6.0
+	traffic._update_signal_lamps(true)
+	var ew_material: StandardMaterial3D = ew_green.material_override if ew_green else null
+	var ns_material: StandardMaterial3D = ns_green.material_override if ns_green else null
+	_check("visible signal lamps agree with east-west right of way", ew_material != null and ns_material != null and ew_material.emission_enabled and not ns_material.emission_enabled)
+	traffic._signal_clock = 20.0
+	traffic._update_signal_lamps(true)
+	ew_material = ew_green.material_override if ew_green else null
+	ns_material = ns_green.material_override if ns_green else null
+	_check("visible signal lamps switch with north-south right of way", ew_material != null and ns_material != null and not ew_material.emission_enabled and ns_material.emission_enabled)
 	traffic._signal_clock = saved_signal_clock
+	traffic._update_signal_lamps(true)
 	var mouse_events := InputMap.action_get_events("fire")
 	_check("fire maps to a mouse button rather than a keyboard code", not mouse_events.is_empty() and mouse_events[0] is InputEventMouseButton)
 	var ammunition_before := Game.current_mag()
@@ -69,6 +101,8 @@ func run(main: Node) -> void:
 	mouse_press.pressed = true
 	Input.parse_input_event(mouse_press)
 	Input.flush_buffered_events()
+	await get_tree().process_frame
+	await get_tree().process_frame
 	print("DIAGNOSTIC fire action held=%s paused=%s mag=%d event_matches=%s" % [Input.is_action_pressed("fire"), Game.simulation_paused, Game.current_mag(), mouse_press.is_action("fire")])
 	await _ticks(3)
 	mouse_press = InputEventMouseButton.new()
@@ -82,6 +116,8 @@ func run(main: Node) -> void:
 	road_ray.collision_mask = 1
 	var road_hit := player.get_world_3d().direct_space_state.intersect_ray(road_ray)
 	_check("mission avenue has no static trunk obstruction", road_hit.is_empty())
+
+	await _weapon_input_checks(main, player)
 
 	# Isolate control probes on open road. These are disclosed fixture moves.
 	var car := traffic.cars[0] as Car
@@ -129,6 +165,7 @@ func run(main: Node) -> void:
 	_check("normal exit returns control and camera", Game.mode == Game.MODE_FOOT and player.current_vehicle == null and player.camera.current)
 	await _ticks(2)
 	_check("on-foot collision restored", player.collision_layer == 2 and player.collision_mask != 0)
+	await _blocked_exit_checks(main, player, car)
 
 	car.interact(player)
 	await _ticks(2)
@@ -186,6 +223,7 @@ func run(main: Node) -> void:
 	_check("controlled descent lands without disabling aircraft", heli.is_landed() and not heli.disabled, "position=%s velocity=%s health=%.1f floor=%s" % [heli.global_position, heli.velocity, heli.health, heli.is_on_floor()])
 	heli.exit_vehicle(player)
 	_check("landed helicopter exits to walking", player.current_vehicle == null and Game.mode == Game.MODE_FOOT)
+	await _waterfront_exit_check(player, heli)
 
 	# Mission gates prevent the exact wave-one death/on-foot drive bypass.
 	mission.restart()
@@ -219,14 +257,253 @@ func run(main: Node) -> void:
 	mission.restore_stage(Mission.Stage.TO_HELI)
 	Game.checkpoint_index = 2
 	Game.mark_safe_position(world.locations["helipad_primary"] + Vector3(3.6, 0.6, 0.0), 0.0)
+	Game.settings = {"mouse_sensitivity": 1.7, "invert_y": true, "reduced_shake": true, "hud_visible": false}
 	var saved := Game.save_game(TEST_SAVE)
+	Game.settings = {"mouse_sensitivity": 1.0, "invert_y": false, "reduced_shake": false, "hud_visible": true}
 	Game.health = 100.0
 	mission.restart()
 	var loaded := Game.load_game(TEST_SAVE)
 	_check("save roundtrip restores health and mission checkpoint", saved and loaded and is_equal_approx(Game.health, 55.0) and mission.stage == Mission.Stage.TO_HELI)
 	_check("save restoration updates package and objective", not mission.package_node.visible and mission.car_taken and mission.current_objective().contains("helicopter"))
+	_check("save restores sensitivity and accessibility settings", is_equal_approx(Game.settings["mouse_sensitivity"], 1.7) and Game.settings["invert_y"] and Game.settings["reduced_shake"] and not Game.settings["hud_visible"])
+	var previous_file := FileAccess.get_file_as_string(TEST_SAVE)
+	var real_weapon := Game.carried_weapon
+	Game.carried_weapon = "invalid_live_weapon"
+	var invalid_saved := Game.save_game(TEST_SAVE)
+	Game.carried_weapon = real_weapon
+	_check("invalid live state cannot replace the last complete save", not invalid_saved and FileAccess.get_file_as_string(TEST_SAVE) == previous_file)
+	Game.health = 65.0
+	var replaced := Game.save_game(TEST_SAVE)
+	Game.health = 100.0
+	var reloaded := Game.load_game(TEST_SAVE)
+	_check("atomic replacement updates an existing save", replaced and reloaded and is_equal_approx(Game.health, 65.0))
+	_check("successful save leaves no temporary checkpoint file", not FileAccess.file_exists(TEST_SAVE + ".tmp-%d" % OS.get_process_id()))
+	_negative_save_checks(player, mission)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
-	_report()
+	await _report()
+
+func _waterfront_exit_check(player: Player, heli: Helicopter) -> void:
+	# Reproduce the actual route4 landing pose where the pilot could exit but
+	# could not subsequently walk. This is an explicit regression fixture.
+	heli.force_exit()
+	heli.global_position = Vector3(0.401198, 0.000189, -329.576294)
+	heli.rotation = Vector3(0.0, 0.743854, 0.0)
+	heli.velocity = Vector3.ZERO
+	player.respawn_at(heli.global_position + heli.global_transform.basis.x * 3.0 + Vector3.UP * 0.5, 0.0)
+	await _ticks(5)
+	heli.interact(player)
+	await _ticks(3)
+	await _tap("interact")
+	var start := player.global_position
+	player.set_meta("_qa_motion_probe", true)
+	player.yaw = -PI * 0.5
+	Input.action_press("move_forward")
+	Input.action_press("sprint")
+	await _ticks(60)
+	Input.action_release("move_forward")
+	Input.action_release("sprint")
+	var moved := player.global_position.distance_to(start)
+	_check("waterfront helicopter exit permits actual on-foot movement", Game.mode == Game.MODE_FOOT and moved > 3.0, "moved=%.3f from=%s to=%s velocity=%s" % [moved, start, player.global_position, player.velocity])
+	if moved <= 3.0:
+		print("EXIT_MOTION_STATE ", player.get_meta("_qa_motion_state"))
+		print("EXIT_HELI_STATE pos=%s rotation=%s pilot=%s" % [heli.global_position, heli.rotation, heli.pilot_is_player])
+		for index in player.get_slide_collision_count():
+			var contact := player.get_slide_collision(index)
+			var body: CollisionObject3D = contact.get_collider()
+			var shape: Node3D = body.shape_owner_get_owner(body.shape_find_owner(contact.get_collider_shape_index()))
+			print("EXIT_DIAGNOSTIC body=%s shape=%s position=%s normal=%s" % [body.name, shape.name, shape.global_position, contact.get_normal()])
+		var old_margin := player.safe_margin
+		var old_stop := player.floor_stop_on_slope
+		for probe in ["margin", "floor_stop", "both"]:
+			player.safe_margin = 0.03 if probe != "floor_stop" else old_margin
+			player.floor_stop_on_slope = false if probe != "margin" else old_stop
+			player.global_position = start + Vector3.UP * 0.1
+			player.velocity = Vector3.ZERO
+			await _ticks(15)
+			var probe_start := player.global_position
+			Input.action_press("move_forward")
+			Input.action_press("sprint")
+			await _ticks(60)
+			Input.action_release("move_forward")
+			Input.action_release("sprint")
+			print("EXIT_PROPERTY_PROBE setting=%s moved=%.3f pos=%s floor=%s wall=%s ceiling=%s" % [probe, player.global_position.distance_to(probe_start), player.global_position, player.is_on_floor(), player.is_on_wall(), player.is_on_ceiling()])
+		player.safe_margin = old_margin
+		player.floor_stop_on_slope = old_stop
+		var old_heli_layer := heli.collision_layer
+		var old_heli_mask := heli.collision_mask
+		heli.collision_layer = 0
+		heli.collision_mask = 0
+		player.global_position = start + Vector3.UP * 0.1
+		player.velocity = Vector3.ZERO
+		await _ticks(15)
+		var no_vehicle_start := player.global_position
+		Input.action_press("move_forward")
+		Input.action_press("sprint")
+		await _ticks(60)
+		Input.action_release("move_forward")
+		Input.action_release("sprint")
+		print("EXIT_COLLISION_PROBE no_helicopter moved=%.3f pos=%s state=%s" % [player.global_position.distance_to(no_vehicle_start), player.global_position, player.get_meta("_qa_motion_state")])
+		heli.collision_layer = old_heli_layer
+		heli.collision_mask = old_heli_mask
+	player.remove_meta("_qa_motion_probe")
+
+func _blocked_exit_checks(main: Node, player: Player, car: Car) -> void:
+	car.interact(player)
+	await _ticks(2)
+	var enclosure := StaticBody3D.new()
+	enclosure.collision_layer = 1
+	enclosure.collision_mask = 0
+	main.add_child(enclosure)
+	enclosure.global_transform = car.global_transform
+	var walls := [
+		[Vector3(1.45, 1.8, 0.0), Vector3(0.35, 4.0, 6.0)],
+		[Vector3(-1.45, 1.8, 0.0), Vector3(0.35, 4.0, 6.0)],
+		[Vector3(0.0, 1.8, 2.75), Vector3(3.2, 4.0, 0.35)],
+		[Vector3(0.0, 1.8, -2.75), Vector3(3.2, 4.0, 0.35)],
+	]
+	for specification in walls:
+		var shape := CollisionShape3D.new()
+		var box := BoxShape3D.new()
+		box.size = specification[1]
+		shape.shape = box
+		shape.position = specification[0]
+		enclosure.add_child(shape)
+	await _ticks(3)
+	await _tap("interact")
+	_check("blocked car exit preserves seated control without wall clipping", Game.mode == Game.MODE_CAR and player.current_vehicle == car and car.driver_is_player)
+	enclosure.queue_free()
+	await _ticks(3)
+	await _tap("interact")
+	_check("clearing blocked exit restores normal exit", Game.mode == Game.MODE_FOOT and player.current_vehicle == null and not car.driver_is_player)
+
+func _state_fingerprint(player: Player, mission: Mission) -> Dictionary:
+	return {"health": Game.health, "wanted_level": Game.wanted_level, "wanted_heat": Game.wanted_heat,
+		"mission_stage": Game.mission_stage, "checkpoint": Game.checkpoint_index, "seed": Game.seed_value,
+		"elapsed": Game.elapsed_seconds, "position": Game.player_position, "rotation": Game.player_rotation,
+		"weapon": Game.carried_weapon, "ammo": Game.ammo.duplicate(true), "mode": Game.mode,
+		"safe_position": Game.last_safe_position, "safe_rotation": Game.last_safe_rotation,
+		"actor_position": player.global_position, "actor_yaw": player.yaw, "settings": Game.settings.duplicate(true),
+		"scene_stage": mission.stage, "objective": mission.current_objective(), "package_visible": mission.package_node.visible}
+
+func _negative_save_checks(player: Player, mission: Mission) -> void:
+	Game.save_game(TEST_SAVE)
+	var valid: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_SAVE))
+	var cases: Array[Dictionary] = []
+	var bad := valid.duplicate(true)
+	bad["player_position"] = [1.0, 2.0]
+	cases.append({"name": "truncated position vector", "data": bad})
+	bad = valid.duplicate(true)
+	bad["carried_weapon"] = "unknown_weapon"
+	cases.append({"name": "unknown equipped weapon", "data": bad})
+	bad = valid.duplicate(true)
+	bad["ammo"]["pistol"]["mag"] = 400
+	cases.append({"name": "out-of-range magazine", "data": bad})
+	bad = valid.duplicate(true)
+	bad["health"] = "healthy"
+	cases.append({"name": "wrong health type", "data": bad})
+	bad = valid.duplicate(true)
+	bad["checkpoint_index"] = 99
+	cases.append({"name": "invalid checkpoint index", "data": bad})
+	bad = valid.duplicate(true)
+	bad["wanted_level"] = 3
+	bad["wanted_heat"] = 0.0
+	cases.append({"name": "inconsistent pursuit state", "data": bad})
+	bad = valid.duplicate(true)
+	bad["last_safe_position"] = {"x": 0, "y": 0, "z": 0}
+	cases.append({"name": "wrong safe-position type", "data": bad})
+	bad = valid.duplicate(true)
+	bad["settings"]["mouse_sensitivity"] = 100.0
+	cases.append({"name": "out-of-range mouse sensitivity", "data": bad})
+	bad = valid.duplicate(true)
+	bad["settings"]["invert_y"] = "true"
+	cases.append({"name": "wrong accessibility-setting type", "data": bad})
+	var before := _state_fingerprint(player, mission)
+	for test_case in cases:
+		var file := FileAccess.open(TEST_SAVE, FileAccess.WRITE)
+		file.store_string(JSON.stringify(test_case["data"]))
+		file.close()
+		var accepted := Game.load_game(TEST_SAVE)
+		_check("save rejects %s atomically" % test_case["name"], not accepted and _state_fingerprint(player, mission) == before)
+
+func _weapon_input_checks(main: Node, player: Player) -> void:
+	# Both mouse transitions occur before the next process frame. A queued
+	# native press must survive even though the held state is already false.
+	await _ticks(15)
+	var before := Game.current_mag()
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	Input.parse_input_event(press)
+	Input.flush_buffered_events()
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	Input.parse_input_event(release)
+	Input.flush_buffered_events()
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await _ticks(2)
+	_check("rapid native press and release is not dropped", Game.current_mag() == before - 1)
+
+	# A disclosed floating test bay isolates the close-cover geometry from
+	# changing district props/traffic. This bay exists only in --test.
+	var bay := StaticBody3D.new()
+	bay.collision_layer = 1
+	bay.collision_mask = 0
+	main.add_child(bay)
+	bay.global_position = Vector3(0.0, 20.0, -246.0)
+	var floor_shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(20.0, 0.4, 40.0)
+	floor_shape.shape = box
+	bay.add_child(floor_shape)
+	player.respawn_at(Vector3(0.0, 20.35, -240.0), 0.0)
+	var target := NPC.new()
+	main.add_child(target)
+	target.global_position = Vector3(0.0, 20.35, -252.0)
+	target.state = NPC.State.IDLE
+	target.idle_time = 100.0
+	Input.action_press("aim")
+	for frame in 20:
+		await _ticks(1)
+		var aim_vector := target.global_position + Vector3.UP * 1.15 - player.camera.global_position
+		player.yaw = atan2(-aim_vector.x, -aim_vector.z)
+		player.pitch = atan2(aim_vector.y, Vector2(aim_vector.x, aim_vector.z).length())
+	var aim_point := target.global_position + Vector3.UP * 1.15
+	var muzzle := player._muzzle_flash.global_position
+	if player._visual != null and player._visual.loaded:
+		muzzle = player._visual.weapon_muzzle_position()
+	var cover := StaticBody3D.new()
+	cover.collision_layer = 1
+	cover.collision_mask = 0
+	main.add_child(cover)
+	cover.global_position = muzzle + (aim_point - muzzle).normalized() * 1.0
+	var cover_shape := CollisionShape3D.new()
+	var sphere := SphereShape3D.new()
+	sphere.radius = 0.18
+	cover_shape.shape = sphere
+	cover.add_child(cover_shape)
+	await _ticks(3)
+	var camera_ray := PhysicsRayQueryParameters3D.create(player.camera.global_position, aim_point)
+	camera_ray.collision_mask = 1 | 4
+	camera_ray.exclude = [player.get_rid()]
+	var camera_hit := player.get_world_3d().direct_space_state.intersect_ray(camera_ray)
+	_check("close-cover fixture leaves camera sightline on target", not camera_hit.is_empty() and camera_hit["collider"] == target)
+	var target_health := target.health
+	await _tap("fire")
+	_check("muzzle obstruction prevents damage through close cover", is_equal_approx(target.health, target_health))
+	cover.queue_free()
+	await _ticks(15)
+	await _tap("fire")
+	_check("clearing muzzle obstruction permits target damage", target.health < target_health)
+	Input.action_release("aim")
+	target.queue_free()
+	bay.queue_free()
+	player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
+	player.pitch = -0.12
+	Game.wanted_heat = 0.0
+	Game.set_wanted(0)
+	await _ticks(3)
 
 func _ticks(count: int) -> void:
 	for tick in count:
@@ -234,8 +511,12 @@ func _ticks(count: int) -> void:
 
 func _tap(action: String) -> void:
 	Input.action_press(action)
+	await get_tree().process_frame
+	await get_tree().process_frame
 	await _ticks(3)
 	Input.action_release(action)
+	await get_tree().process_frame
+	await get_tree().process_frame
 	await _ticks(3)
 
 func _check(check_name: String, condition: bool, detail: String = "") -> void:
@@ -258,7 +539,7 @@ func _watchdog() -> void:
 	if _reported:
 		return
 	_check("suite finished before watchdog deadline", false, "40-second in-engine watchdog expired")
-	_report(true)
+	await _report(true)
 
 func _report(timed_out: bool = false) -> void:
 	if _reported:
@@ -268,6 +549,9 @@ func _report(timed_out: bool = false) -> void:
 		_watchdog_timer.stop()
 	for action in InputMap.get_actions():
 		Input.action_release(action)
+	Game.simulation_paused = true
+	Sfx.shutdown_audio()
+	await get_tree().create_timer(0.15, true, false, true).timeout
 	var data := {
 		"suite": "wave2-regressions", "engine": Engine.get_version_info()["string"],
 		"finished_utc": Time.get_datetime_string_from_system(true),

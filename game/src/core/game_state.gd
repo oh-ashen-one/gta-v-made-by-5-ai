@@ -12,6 +12,7 @@ const REGEN_DELAY := 5.0   # seconds out of fire before health comes back
 const REGEN_RATE := 9.0     # health per second while regenerating
 const SAVE_PATH := "user://orchard_reach_save.json"
 const SAVE_VERSION := 1
+var _save_path: String = SAVE_PATH
 
 var mode: int = MODE_FOOT
 var health: float = MAX_HEALTH
@@ -45,6 +46,13 @@ var settings := {
 }
 
 func _ready() -> void:
+	seed(seed_value)
+	var args := OS.get_cmdline_user_args()
+	var qa_session := "--test" in args or "--capture" in args or "--qa-session" in args
+	if qa_session:
+		for arg in args:
+			if arg.begins_with("--save-path=") and not arg.trim_prefix("--save-path=").is_empty():
+				_save_path = arg.trim_prefix("--save-path=")
 	_setup_input_map()
 	Events.mode_changed.connect(_on_mode_changed)
 	Events.health_changed.connect(_on_health_changed)
@@ -218,10 +226,12 @@ func mark_safe_position(pos: Vector3, rot: float) -> void:
 	last_safe_rotation = rot
 
 # ------------------------------------------------------------------ save/load
-func save_game(path: String = SAVE_PATH) -> bool:
+func save_game(path: String = "") -> bool:
+	if path.is_empty(): path = _save_path
 	var data := {
 		"version": SAVE_VERSION,
 		"mode": mode,
+		"settings": settings.duplicate(true),
 		"health": health,
 		"wanted_level": wanted_level,
 		"mission_stage": mission_stage,
@@ -236,25 +246,49 @@ func save_game(path: String = SAVE_PATH) -> bool:
 		"last_safe_position": [last_safe_position.x, last_safe_position.y, last_safe_position.z],
 		"last_safe_rotation": last_safe_rotation,
 	}
-	var f := FileAccess.open(path, FileAccess.WRITE)
-	if f == null:
+	if not _validate_save_data(data):
 		return false
-	f.store_string(JSON.stringify(data, "\t"))
-	f.close()
-	return true
+	var destination := ProjectSettings.globalize_path(path)
+	var directory := destination.get_base_dir()
+	if DirAccess.make_dir_recursive_absolute(directory) != OK:
+		return false
+	# Same-directory rename publishes a complete checkpoint. Until then the
+	# previous save remains intact; no reader can observe a truncated JSON.
+	var temporary := destination + ".tmp-%d" % OS.get_process_id()
+	var file := FileAccess.open(temporary, FileAccess.WRITE)
+	if file == null:
+		return false
+	var payload := JSON.stringify(data, "\t")
+	file.store_string(payload)
+	file.flush()
+	var written := file.get_error() == OK and file.get_length() == payload.to_utf8_buffer().size()
+	file.close()
+	if not written:
+		DirAccess.remove_absolute(temporary)
+		return false
+	var replaced := DirAccess.rename_absolute(temporary, destination) == OK
+	if not replaced:
+		DirAccess.remove_absolute(temporary)
+	return replaced
 
-func load_game(path: String = SAVE_PATH) -> bool:
+func load_game(path: String = "") -> bool:
+	if path.is_empty(): path = _save_path
 	if not FileAccess.file_exists(path):
 		return false
 	var f := FileAccess.open(path, FileAccess.READ)
 	if f == null:
+		return false
+	if f.get_length() > 1048576:
+		f.close()
 		return false
 	var text := f.get_as_text()
 	f.close()
 	var parsed = JSON.parse_string(text)
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return false
-	if int(parsed.get("version", 0)) != SAVE_VERSION:
+	# Validate the complete input before changing any global or scene state.
+	# A well-formed JSON document is not necessarily a valid save.
+	if not _validate_save_data(parsed):
 		return false
 	health = float(parsed.get("health", MAX_HEALTH))
 	_since_damage = 0.0
@@ -277,9 +311,14 @@ func load_game(path: String = SAVE_PATH) -> bool:
 			if ammo.has(key) and typeof(saved_ammo[key]) == TYPE_DICTIONARY:
 				ammo[key]["mag"] = int(saved_ammo[key].get("mag", ammo[key]["mag"]))
 				ammo[key]["reserve"] = int(saved_ammo[key].get("reserve", ammo[key]["reserve"]))
+	if data_has_settings(parsed):
+		var restored_settings: Dictionary = parsed["settings"]
+		for key in ["mouse_sensitivity", "invert_y", "reduced_shake", "hud_visible"]:
+			settings[key] = restored_settings[key]
 	Events.health_changed.emit(health, MAX_HEALTH)
 	Events.wanted_changed.emit(wanted_level)
 	Events.ammo_changed.emit(current_mag(), current_reserve())
+	Events.settings_changed.emit(settings.duplicate(true))
 	# Apply the restored state to the world: a save that stores values nobody
 	# reads is not a save (B7).
 	var body := get_tree().get_first_node_in_group("player")
@@ -293,8 +332,64 @@ func load_game(path: String = SAVE_PATH) -> bool:
 		mission.restore_stage(mission_stage)
 	return true
 
+func _number_in_range(value: Variant, low: float, high: float) -> bool:
+	if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
+		return false
+	var number := float(value)
+	return is_finite(number) and number >= low and number <= high
+
+func _integer_in_range(value: Variant, low: int, high: int) -> bool:
+	return _number_in_range(value, low, high) and float(value) == floorf(float(value))
+
+func _valid_saved_vector(value: Variant) -> bool:
+	if typeof(value) != TYPE_ARRAY or value.size() != 3:
+		return false
+	for coordinate in value:
+		if not _number_in_range(coordinate, -1000000.0, 1000000.0):
+			return false
+	return true
+
+func _validate_save_data(data: Dictionary) -> bool:
+	if not _integer_in_range(data.get("version"), SAVE_VERSION, SAVE_VERSION): return false
+	if not _number_in_range(data.get("health"), 0.01, MAX_HEALTH): return false
+	if not _integer_in_range(data.get("wanted_level"), 0, 3): return false
+	if not _number_in_range(data.get("wanted_heat"), 0.0, 1000000000.0): return false
+	if not _integer_in_range(data.get("mission_stage"), 0, 8): return false
+	if not _integer_in_range(data.get("checkpoint_index"), 0, 3): return false
+	if not _integer_in_range(data.get("seed"), 0, 2147483647): return false
+	if not _number_in_range(data.get("elapsed"), 0.0, 1000000000.0): return false
+	if not _valid_saved_vector(data.get("player_position")): return false
+	if not _valid_saved_vector(data.get("last_safe_position")): return false
+	if not _number_in_range(data.get("player_rotation"), -1000000.0, 1000000.0): return false
+	if not _number_in_range(data.get("last_safe_rotation"), -1000000.0, 1000000.0): return false
+	if not _integer_in_range(data.get("mode", MODE_FOOT), MODE_FOOT, MODE_HELI): return false
+	if typeof(data.get("carried_weapon")) != TYPE_STRING or not ammo.has(data["carried_weapon"]): return false
+	if typeof(data.get("ammo")) != TYPE_DICTIONARY: return false
+	var saved_ammo: Dictionary = data["ammo"]
+	for weapon_id in ["pistol", "smg"]:
+		if typeof(saved_ammo.get(weapon_id)) != TYPE_DICTIONARY: return false
+		var slot: Dictionary = saved_ammo[weapon_id]
+		if not _integer_in_range(slot.get("mag"), 0, _mag_size(weapon_id)): return false
+		if not _integer_in_range(slot.get("reserve"), 0, 1000000): return false
+	var heat := float(data["wanted_heat"])
+	var heat_level := 3 if heat >= 100.0 else (2 if heat >= 45.0 else (1 if heat >= 12.0 else 0))
+	if int(data["wanted_level"]) != heat_level: return false
+	var saved_stage := int(data["mission_stage"])
+	var expected_checkpoint := 0 if saved_stage == 0 else (1 if saved_stage <= 3 else (2 if saved_stage <= 5 else 3))
+	if int(data["checkpoint_index"]) != expected_checkpoint: return false
+	if data.has("settings"):
+		if not data_has_settings(data): return false
+		var saved_settings: Dictionary = data["settings"]
+		if not _number_in_range(saved_settings.get("mouse_sensitivity"), 0.2, 3.0): return false
+		for key in ["invert_y", "reduced_shake", "hud_visible"]:
+			if typeof(saved_settings.get(key)) != TYPE_BOOL: return false
+	return true
+
+func data_has_settings(data: Dictionary) -> bool:
+	return data.has("settings") and typeof(data["settings"]) == TYPE_DICTIONARY
+
 func has_save() -> bool:
-	return FileAccess.file_exists(SAVE_PATH)
+	return FileAccess.file_exists(_save_path)
 
 # --------------------------------------------------------------------- slots
 func _on_mode_changed(_m: int) -> void:

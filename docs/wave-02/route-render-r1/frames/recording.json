@@ -1,0 +1,24 @@
+{
+	"bytes_written": 196911246,
+	"cap_reason": "",
+	"capped": false,
+	"directory": "../docs/wave-02/route-render-r1/frames",
+	"enabled": true,
+	"frames_written": 2073,
+	"max_bytes": 1073741824,
+	"max_duration_seconds": 720.0,
+	"max_frames": 7200,
+	"missed_samples": 105,
+	"readback_encode_cost_ms": {
+		"count": 2073,
+		"max_ms": 53.553,
+		"mean_ms": 11.4981461649783,
+		"p50_ms": 10.261,
+		"p95_ms": 16.71,
+		"p99_ms": 17.964
+	},
+	"requested": true,
+	"requested_hz": 10,
+	"scheduled_samples": 2178,
+	"timestamps": "frames.jsonl monotonic seconds from route setup"
+}

@@ -20,9 +20,13 @@ import math
 import bpy
 from mathutils import Vector
 
-RAW_DIR = "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/relay-manager/assets"
-OUT_DIR = "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/gta-v-made-by-5-ai/.claude/worktrees/minimax-wave-01-build/game/assets/providers"
-PREVIEW_DIR = "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/gta-v-made-by-5-ai/.claude/worktrees/minimax-wave-01-build/game/assets/providers/previews"
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+# Explicit sources, never a hard-coded predecessor checkout. Existing outputs
+# are retained unless OR_FORCE=1. Preview rendering is opt-in and needs a slot.
+RAW_DIR = os.environ.get("OR_RAW_DIR", str(PROJECT_ROOT / "assets/raw"))
+OUT_DIR = os.environ.get("OR_OUT_DIR", str(PROJECT_ROOT / "game/assets/providers"))
+PREVIEW_DIR = os.environ.get("OR_PREVIEW_DIR", str(PROJECT_ROOT / "docs/asset-previews"))
 
 # id -> (target length/height, longest axis in glTF space, rules)
 ASSETS = {
@@ -478,7 +482,7 @@ def main():
             export_skins=True,
         )
         preview = os.path.join(PREVIEW_DIR, asset_id + "_preview.png")
-        if os.environ.get("OR_SKIP_PREVIEWS") != "1":
+        if os.environ.get("OR_RENDER_PREVIEWS") == "1":
             try:
                 render_preview(preview, height)
                 print("preview", preview)

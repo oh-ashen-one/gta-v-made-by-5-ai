@@ -35,6 +35,7 @@ func _run() -> void:
 		{"name": "street_arcade", "pos": Vector3(-32, 2.0, -149), "look": Vector3(-130, 3.0, -146), "fov": 62.0},
 		{"name": "airfield", "pos": Vector3(215.0, 3.0, 215.0), "look": Vector3(245.0, 3.0, 240.0), "fov": 66.0},
 	]
+	views.append_array(InteriorDetail.inspection_views(world.locations["safe_room"]-Vector3(0,.2,0)))
 	var cam := Camera3D.new()
 	cam.current = true
 	cam.far = 2000.0

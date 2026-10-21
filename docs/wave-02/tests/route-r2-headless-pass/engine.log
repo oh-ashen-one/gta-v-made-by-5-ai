@@ -1,0 +1,44 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+[wave1] main ready, args=["--capture", "--capture-dir=/tmp/wave2-route2"]
+[capture] 0.61s Route start; seed=20261021; headless=true; controls-only=true
+[capture] 2.55s walk end at (-302.0, 0.0, -46.0); target=(-304.0, 0.0, -46.0) distance=2.0
+[capture] 9.13s walk end at (-318.0, 0.0, -7.0); target=(-320.0, 0.0, 0.0) distance=7.0
+[capture] 31.61s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=6.9
+[capture] 54.61s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 78.89s walk end at (-86.0, 0.0, -92.0); target=(-85.0, 0.0, -88.0) distance=3.9
+[capture] 78.89s PASS market reached on foot
+[capture] 80.55s combat target health=-32.0 state=3
+[capture] 82.20s combat target health=-32.0 state=3
+[capture] 84.95s combat target health=-32.0 state=3
+[capture] 84.95s PASS combat damaged and killed a mission combatant
+[capture] 85.78s walk end at (-87.0, 0.0, -88.0); target=(-85.0, 0.0, -88.0) distance=2.4
+[interact] MissionPackage at 2.37 m
+[capture] 86.10s PASS package collected through interaction
+[capture] 86.10s PASS usable parked car found
+[capture] 98.06s walk end at (-150.0, 0.0, -42.0); target=(-152.0, 0.0, -40.0) distance=2.6
+[interact] @CharacterBody3D@9071 at 2.47 m
+[capture] 98.38s PASS car entered
+[capture] 107.62s drive waypoint target=(-160.0, 0.0, 0.0) distance=7.0
+[capture] 116.64s drive waypoint target=(-160.0, 0.0, 160.0) distance=6.9
+ERROR: Parameter "material" is null.
+   at: material_get_instance_shader_parameters (servers/rendering/dummy/storage/material_storage.cpp:264)
+[capture] 125.99s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9
+[capture] 135.03s drive waypoint target=(160.0, 0.0, 160.0) distance=6.9
+[capture] 144.08s drive waypoint target=(320.0, 0.0, 160.0) distance=6.9
+[capture] 259.06s drive waypoint target=(270.0, 0.0, 104.0) distance=53.7
+[capture] 259.06s PASS uninterrupted driving leg reached aviation compound
+[capture] 260.40s PASS car exit restored walking
+[capture] 260.40s PASS helicopter remains usable
+[capture] 268.92s walk end at (274.0, 0.0, 104.0); target=(273.0, 0.0, 104.0) distance=1.3
+[interact] Helicopter at 4.20 m
+[capture] 269.24s PASS helicopter boarded
+[capture] 292.09s PASS flight reached waterfront pad airspace
+[capture] 304.61s PASS helicopter landed intact on destination pad
+[capture] 304.93s PASS landing exit restored walking
+[capture] 334.71s walk end at (93.0, 0.0, -322.0); target=(96.0, 0.0, -322.0) distance=3.0
+[interact] DeliveryPoint at 2.91 m
+[capture] 335.04s PASS mission completed through delivery interaction
+[capture] terminal success=true deaths=0 seconds=335.0

@@ -1,0 +1,118 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+[wave1] main ready, args=["--test", "--test-report=/tmp/wave2-mission-test15.json"]
+=== Orchard Reach wave-2 bounded regression suite ===
+PASS world builder present 
+PASS player spawned 
+PASS traffic manager present 
+PASS mission running 
+PASS helicopter present 
+PASS hud present 
+PASS district contains 3D geometry 
+PASS junction graph has 25 connected reference nodes 
+PASS pedestrian paths present 
+PASS civilian traffic populated 
+PASS pedestrians populated 
+PASS ambient population stays within the authored 132 budget 
+PASS market diners are reactive damageable NPCs 
+PASS busy district walkers spawn along segments not junction piles 
+PASS gameplay camera belongs to player 
+PASS mission publishes initial objective 
+PASS initial objective marker survives HUD setup order 
+PASS mission registered for save and checkpoint restoration 
+PASS package is a real interactable 
+PASS road graph includes the fifth row 
+PASS traffic target is near destination on the left lane 
+PASS east-west signal excludes north-south movement 
+PASS junction changeover clears both approaches 
+PASS north-south signal excludes east-west movement 
+PASS fire maps to a mouse button rather than a keyboard code 
+DIAGNOSTIC fire action held=true paused=false mag=11 event_matches=true
+PASS real mouse-button event fires the equipped weapon mag 12 -> 11
+PASS mission avenue has no static trunk obstruction 
+PASS rapid native press and release is not dropped 
+PASS close-cover fixture leaves camera sightline on target 
+PASS muzzle obstruction prevents damage through close cover 
+PASS clearing muzzle obstruction permits target damage 
+PASS input interaction enters a car 
+PASS occupied player collision is disabled 
+PASS driving input moves the car 
+PASS occupant follows the moving car 
+PASS authoritative position follows controlled vehicle 
+PASS left driving input turns left 
+PASS NPC weapon ray damages occupied car 100.00 -> 96.97
+PASS car body protects its occupant from that ray 
+PASS normal exit returns control and camera 
+PASS on-foot collision restored 
+PASS blocked car exit preserves seated control without wall clipping 
+PASS clearing blocked exit restores normal exit 
+PASS death is counted for honest golden-path evidence 
+PASS death in car releases both control owners 
+PASS death restores visible player and gameplay camera 
+PASS walking still works after vehicle death 
+PASS wanted escalation decays when unobserved 
+PASS health regenerates out of fire 
+PASS helicopter control is exclusive 
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+PASS lift input gains altitude 
+PASS neutral lift stabilizes hover 
+PASS airborne helicopter rejects exit 
+PASS pause freezes aircraft 
+PASS pause freezes pursuit heat 
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+PASS controlled descent lands without disabling aircraft position=(270.0, -0.139075, 104.0) velocity=(0.0, 0.0, 0.0) health=100.0 floor=true
+PASS landed helicopter exits to walking 
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+FAIL waterfront helicopter exit permits actual on-foot movement moved=0.066 from=(2.461618, 0.290038, -331.4723) to=(2.525676, 0.274485, -331.4723) velocity=(0.0, 0.0, 0.0)
+EXIT_MOTION_STATE { "busy": false, "vehicle": "none", "paused": false, "mode": 0, "forward": 1.0, "back": 0.0, "sprint": 1.0, "before": (0.233333, 0.0, 0.0), "requested": (0.45866, -0.5, 0.0), "resolved": (0.0, 0.0, 0.0) }
+EXIT_HELI_STATE pos=(2.53132, 1.749549, -331.4772) rotation=(0.0, 0.743854, 0.0) pilot=false
+EXIT_DIAGNOSTIC body=@StaticBody3D@7922 shape=@CollisionShape3D@7924 position=(0.0, 0.15, -338.0) normal=(0.0, 1.0, 0.0)
+EXIT_DIAGNOSTIC body=@StaticBody3D@7922 shape=@CollisionShape3D@7924 position=(0.0, 0.15, -338.0) normal=(0.0, 1.0, 0.0)
+EXIT_DIAGNOSTIC body=@StaticBody3D@7922 shape=@CollisionShape3D@7924 position=(0.0, 0.15, -338.0) normal=(0.0, 1.0, 0.0)
+EXIT_PROPERTY_PROBE setting=margin moved=0.025 pos=(2.481315, 0.256119, -331.4723) floor=true wall=false ceiling=true
+EXIT_PROPERTY_PROBE setting=floor_stop moved=0.026 pos=(2.487213, 0.274486, -331.4723) floor=true wall=false ceiling=true
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+EXIT_PROPERTY_PROBE setting=both moved=0.025 pos=(2.486666, 0.256116, -331.4723) floor=true wall=false ceiling=true
+EXIT_COLLISION_PROBE no_helicopter moved=4.003 pos=(6.464636, 0.267551, -331.4723) state={ "busy": false, "vehicle": "none", "paused": false, "mode": 0, "forward": 1.0, "back": 0.0, "sprint": 1.0, "before": (5.933366, 0.0, 0.0), "requested": (5.963103, -0.5, 0.0), "resolved": (5.963103, 0.0, 0.0) }
+PASS package input pickup advances and hides pickup 
+PASS taking car starts the authored driving leg 
+ERROR: Parameter "material" is null.
+   at: material_get_instance_shader_parameters (servers/rendering/dummy/storage/material_storage.cpp:264)
+PASS on-foot arrival cannot bypass driving leg 
+PASS death restores package checkpoint and requires new drive 
+PASS restoration rebuilds flags and objective 
+PASS delivery cannot be triggered remotely 
+PASS restart resets pickup checkpoint and prerequisites 
+PASS restart retains exactly three mission guards 
+PASS save roundtrip restores health and mission checkpoint 
+PASS save restoration updates package and objective 
+PASS save rejects truncated position vector atomically 
+PASS save rejects unknown equipped weapon atomically 
+PASS save rejects out-of-range magazine atomically 
+PASS save rejects wrong health type atomically 
+PASS save rejects invalid checkpoint index atomically 
+PASS save rejects inconsistent pursuit state atomically 
+PASS save rejects wrong safe-position type atomically 
+74/75 checks passed, 1 failed; report=/tmp/wave2-mission-test15.json

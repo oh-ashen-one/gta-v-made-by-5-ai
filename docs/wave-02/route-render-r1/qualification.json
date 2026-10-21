@@ -1,0 +1,18 @@
+{
+  "verdict": "PASS for this scripted rendered route only; not human acceptance",
+  "native_human_run": false,
+  "automation": "Input.action_press/release with direct yaw/pitch aiming and fractional action strengths",
+  "process_exit": 0,
+  "process_elapsed_seconds": 223.57,
+  "gameplay_elapsed_seconds": 217.919123,
+  "deaths": 0,
+  "performance_acceptance_valid": false,
+  "performance_caveats": [
+    "Shared capture slot, not exclusive performance lock",
+    "10Hz requested viewport JPEG readback/encode overhead",
+    "Initial route interval overlapped a headless route until 2026-10-21T12:45:03Z",
+    "1280x720 baseline, not a certified1080pcontract",
+    "Raw rendered_performance_valid flag means rendered intervals existed, not acceptance; superseded by this qualification"
+  ],
+  "video": "Silent timestamp-preserving sample sequence; no action edits"
+}
