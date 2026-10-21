@@ -1,0 +1,76 @@
+{
+	"completed_runs": 0,
+	"elapsed_seconds": 30.00377,
+	"finished": true,
+	"fixture_checks": [],
+	"frame_stall_overflow": 0,
+	"frame_stalls_recorded": 3,
+	"free_roam_distance_m": {
+		"car": 0.0,
+		"foot": 0.0,
+		"helicopter": 0.0
+	},
+	"gates": [],
+	"latest": {
+		"car_distance_m": 0.0,
+		"deaths": 0,
+		"engine_monitors": {
+			"draw_calls": 2285.0,
+			"fps": 85.0,
+			"node_count": 17697.0,
+			"object_count": 32133.0,
+			"orphan_node_count": 0.0,
+			"render_buffer_memory_bytes": 221324002.0,
+			"render_texture_memory_bytes": 1924332288.0,
+			"render_video_memory_bytes": 2411446272.0,
+			"resource_count": 474.0,
+			"static_memory_bytes": 0.0,
+			"static_memory_peak_bytes": 0.0
+		},
+		"flight_distance_m": 0.0,
+		"heading": 0.00973035674542189,
+		"health": 100.0,
+		"mode": 0,
+		"msaa_3d": 2,
+		"phase": "mission",
+		"position": [
+			-318.996063232422,
+			0.0313437543809414,
+			-56.8285522460938
+		],
+		"render_texture_pixels": [
+			1920,
+			1080
+		],
+		"run": 1,
+		"seconds": 30.0,
+		"stage": 0,
+		"taa": true,
+		"vehicle_health": null,
+		"wanted": 0
+	},
+	"reboard_cycle_verified": false,
+	"recent_log": [
+		"0.99s Route start; seed=20261021; headless=false; scripted-input-automation=true",
+		"1.12s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak/01_safe_room.png",
+		"2.97s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0",
+		"21.65s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9",
+		"30.00s ABORT Soak runtime error-log gate is unavailable or contains unhandled errors."
+	],
+	"runtime_log_scan": {
+		"checked": false,
+		"classified_nonfatal": [],
+		"fatal_errors": [],
+		"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak/engine.log",
+		"reason": "QA engine log is empty or unreadable."
+	},
+	"terminal_liveness": {
+		"aircraft_cycle_verified": false,
+		"current_horizontal_speed_mps": 6.79999351501465,
+		"final_observation_seconds": 0.0,
+		"foot_distance_last_60_seconds_m": 0.0,
+		"healthy_on_foot": true,
+		"reboard_cycle_verified": false,
+		"seconds_since_foot_motion": 1030.003785
+	}
+}

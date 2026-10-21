@@ -1,0 +1,379 @@
+diff --git a/game/src/actors/car.gd b/game/src/actors/car.gd
+index 2cf8beb..343cf8c 100644
+--- a/game/src/actors/car.gd
++++ b/game/src/actors/car.gd
+@@ -293,8 +293,9 @@ func _check_impact(before: Vector3) -> void:
+ func _spin_wheels(delta: float) -> void:
+ 	var roll := _forward * delta * 2.4
+ 	if _provider_root != null:
+-		for w in _provider_wheels:
+-			AssetLibrary.spin_part(w, self, Vector3.RIGHT, roll)
++		# The inherited classifier named displaced body strips as wheel_*.
++		# Keep their imported transforms: spinning them creates orbiting shards.
++		# Proper wheel partition/pivots/steering remain an explicit ART-06 gap.
+ 		return
+ 	for w in _wheels:
+ 		if w is MeshInstance3D:
+diff --git a/game/src/main.gd b/game/src/main.gd
+index f233f32..ea41a3a 100644
+--- a/game/src/main.gd
++++ b/game/src/main.gd
+@@ -14,6 +14,20 @@ var _capture_director: Node = null
+ func _ready() -> void:
+ 	print("[wave1] main ready, args=", OS.get_cmdline_user_args())
+ 	var args := OS.get_cmdline_user_args()
++	# QA-only fixed backing resolution; the actual viewport is also measured.
++	# Window API: https://docs.godotengine.org/en/stable/classes/class_window.html
++	if "--qa-session" in args or "--capture" in args or "--test" in args:
++		for arg in args:
++			if arg.begins_with("--qa-render-size="):
++				var dimensions := arg.trim_prefix("--qa-render-size=").split("x")
++				if dimensions.size() == 2 and dimensions[0].is_valid_int() and dimensions[1].is_valid_int():
++					var target := Vector2i(int(dimensions[0]),int(dimensions[1]))
++					if target.x >= 640 and target.x <= 2560 and target.y >= 360 and target.y <= 1440:
++						get_window().content_scale_mode=Window.CONTENT_SCALE_MODE_VIEWPORT
++						get_window().content_scale_aspect=Window.CONTENT_SCALE_ASPECT_KEEP
++						get_window().content_scale_size=target
++						get_window().content_scale_factor=1.0
++						print("[qa-render-size] requested_backing=",target)
+ 	if "--asset-review" in args:
+ 		add_child(load("res://src/systems/asset_review.gd").new())
+ 		return
+@@ -51,6 +65,7 @@ func _ready() -> void:
+ 	heli.name = "Helicopter"
+ 	add_child(heli)
+ 	heli.global_position = world.locations["helipad_primary"] + Vector3(0.0, 0.6, 0.0)
++	print("[launch] world_ui_ready_ms=",Time.get_ticks_msec()," executable=",OS.get_executable_path()," editor_binary=",OS.has_feature("editor"))
+ 
+ 	if "--character-review" in args:
+ 		var review: Node = load("res://src/systems/character_review.gd").new()
+diff --git a/game/src/systems/capture_director.gd b/game/src/systems/capture_director.gd
+index 85a20d5..0ff6353 100644
+--- a/game/src/systems/capture_director.gd
++++ b/game/src/systems/capture_director.gd
+@@ -21,6 +21,12 @@ var _finished := false
+ var _capture_in_progress := false
+ var _failure := ""
+ var _frames_ms: Array[float] = []
++var _frame_stalls: Array[Dictionary] = []
++var _frame_stall_overflow := 0
++var _frame_stall_log: FileAccess
++var _frame_stall_log_opened := false
++const FRAME_STALL_THRESHOLD_MS := 100.0
++const FRAME_STALL_MAX_EVENTS := 1000
+ var _samples: Array[Dictionary] = []
+ var _gates: Array[Dictionary] = []
+ var _combat_kills := 0
+@@ -72,6 +78,7 @@ var _record_pending := false
+ var _record_capped := false
+ var _record_cap_reason := ""
+ var _record_cost_ms: Array[float] = []
++var _completion_recording_hold: Dictionary = {"requested": false, "elapsed_seconds": 0.0, "frames_written": 0}
+ const RECORD_INTERVAL_US := 100000 # Requested 10Hz; timestamps are authoritative.
+ const RECORD_MAX_FRAMES := 7200
+ const RECORD_MAX_BYTES := 1024 * 1024 * 1024
+@@ -93,6 +100,8 @@ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager)
+ 		elif arg.begins_with("--record-frames="):
+ 			_record_dir = arg.trim_prefix("--record-frames=")
+ 	DirAccess.make_dir_recursive_absolute(out_dir)
++	_frame_stall_log = FileAccess.open(out_dir.path_join("frame_stalls.jsonl"), FileAccess.WRITE)
++	_frame_stall_log_opened = _frame_stall_log != null
+ 	_engine_log_path = _resolve_engine_log_path()
+ 	_initialize_monitors()
+ 	_initial_deaths = Game.death_count
+@@ -118,9 +127,22 @@ func _process(_delta: float) -> void:
+ 	var elapsed := float(now - _started_us) / 1000000.0
+ 	if _last_frame_us > 0:
+ 		var frame_ms := float(now - _last_frame_us) / 1000.0
++		var capture_overhead := _capture_in_progress or _readback_since_frame or _record_pending
+ 		_inclusive_frames_ms.append(frame_ms)
+-		if not _capture_in_progress and not _readback_since_frame and not _record_pending:
++		if not capture_overhead:
+ 			_frames_ms.append(frame_ms)
++		if frame_ms > FRAME_STALL_THRESHOLD_MS:
++			if _frame_stalls.size() < FRAME_STALL_MAX_EVENTS:
++				var stall := {"started_seconds": float(_last_frame_us - _started_us) / 1000000.0,
++					"ended_seconds": elapsed, "interval_ms": frame_ms, "phase": _phase, "run": _run_index,
++					"capture_overhead": capture_overhead, "screenshot_pending": _capture_in_progress,
++					"readback_since_frame": _readback_since_frame, "recording_pending": _record_pending}
++				_frame_stalls.append(stall)
++				if _frame_stall_log:
++					_frame_stall_log.store_line(JSON.stringify(stall))
++					_frame_stall_log.flush()
++			else:
++				_frame_stall_overflow += 1
+ 	_last_frame_us = now
+ 	_readback_since_frame = false
+ 	if _record_log and not _record_capped and elapsed >= RECORD_MAX_SECONDS:
+@@ -229,6 +251,9 @@ func _shot(label: String) -> void:
+ 		return
+ 	_capture_in_progress = true
+ 	await RenderingServer.frame_post_draw
++	if _finished:
++		_capture_in_progress = false
++		return
+ 	var img := get_viewport().get_texture().get_image()
+ 	if img != null:
+ 		_shots += 1
+@@ -367,6 +392,21 @@ func _route_succeeded() -> void:
+ 		"flight_distance_m": mission.flight_distance, "gates": _gates.slice(_run_gate_start)})
+ 	_log("Verified mission completions: %d" % _completed_runs.size())
+ 	if not _soak_enabled:
++		if _record_log and not _record_capped:
++			_release_all()
++			var hold_started := _elapsed()
++			var first_hold_frame := _record_index
++			_completion_recording_hold = {"requested": true, "started_seconds": hold_started,
++				"elapsed_seconds": 0.0, "frames_written": 0}
++			_log("Holding completed mission visible for 0.5 seconds of continuous recording.")
++			await get_tree().create_timer(0.5, true, false, true).timeout
++			if _finished: return
++			_completion_recording_hold = {"requested": true, "started_seconds": hold_started,
++				"ended_seconds": _elapsed(), "elapsed_seconds": _elapsed() - hold_started,
++				"frames_written": _record_index - first_hold_frame}
++			if mission.stage != Mission.Stage.DONE or Game.death_count != _initial_deaths:
++				_abort("Completed mission did not remain valid during the terminal recording hold.")
++				return
+ 		_finish(true)
+ 		return
+ 	if _completed_runs.size() < SOAK_REQUIRED_RUNS:
+@@ -939,6 +979,7 @@ func _write_checkpoint() -> void:
+ 	if output:
+ 		output.store_string(JSON.stringify({"elapsed_seconds": _elapsed(), "finished": _finished,
+ 			"latest": _snapshot(_elapsed()), "gates": _gates, "completed_runs": _completed_runs.size(),
++			"frame_stalls_recorded": _frame_stalls.size(), "frame_stall_overflow": _frame_stall_overflow,
+ 			"fixture_checks": _fixture_checks, "free_roam_distance_m": _free_distance, "reboard_cycle_verified": _reboard_cycle_verified,
+ 			"terminal_liveness": _terminal_liveness(), "runtime_log_scan": _runtime_log_scan, "recent_log": log_lines.slice(maxi(0, log_lines.size() - 8))}, "\t"))
+ 		output.close()
+@@ -960,6 +1001,10 @@ func _finish(success: bool) -> void:
+ 	if _finished: return
+ 	_finished = true
+ 	_release_all()
++	if _frame_stall_log:
++		_frame_stall_log.flush()
++		_frame_stall_log.close()
++		_frame_stall_log = null
+ 	if _record_log:
+ 		_record_log.flush()
+ 		_record_log.close()
+@@ -970,6 +1015,7 @@ func _finish(success: bool) -> void:
+ 		"capped": _record_capped, "cap_reason": _record_cap_reason,
+ 		"max_frames": RECORD_MAX_FRAMES, "max_bytes": RECORD_MAX_BYTES,
+ 		"max_duration_seconds": RECORD_MAX_SECONDS, "timestamps": "frames.jsonl monotonic seconds from route setup",
++		"completion_hold": _completion_recording_hold,
+ 		"readback_encode_cost_ms": _frame_metrics(_record_cost_ms)}
+ 	if not _record_dir.is_empty():
+ 		var record_summary := FileAccess.open(_record_dir.path_join("recording.json"), FileAccess.WRITE)
+@@ -1005,6 +1051,12 @@ func _finish(success: bool) -> void:
+ 			"frame_times": _frame_metrics(_frames_ms),
+ 			"frame_time_method": "Monotonic process-frame intervals; excludes intervals touched by screenshot/recording readback.",
+ 			"frame_times_including_capture_overhead": _frame_metrics(_inclusive_frames_ms),
++			"frame_stalls": {"threshold_ms_exclusive": FRAME_STALL_THRESHOLD_MS,
++				"max_events": FRAME_STALL_MAX_EVENTS, "overflow_count": _frame_stall_overflow,
++				"total_count": _frame_stalls.size() + _frame_stall_overflow,
++				"event_log_path": out_dir.path_join("frame_stalls.jsonl"), "event_log_opened": _frame_stall_log_opened,
++				"time_basis": "Monotonic seconds from capture setup; phase/run identify the interval end. Capture-overhead flags indicate readback overlap, not proven causation.",
++				"events": _frame_stalls},
+ 			"recording": recording,
+ 			"gates": _gates, "samples": _samples, "log": log_lines}, "\t"))
+ 		output.close()
+diff --git a/game/src/systems/photo_capture.gd b/game/src/systems/photo_capture.gd
+index 6d2d9cd..7412465 100644
+--- a/game/src/systems/photo_capture.gd
++++ b/game/src/systems/photo_capture.gd
+@@ -10,6 +10,8 @@ var world: WorldBuilder
+ var out_dir := "captures"
+ var _shots := 0
+ var _log: Array[String] = []
++var _view_records: Array[Dictionary] = []
++var _active_view: Dictionary = {}
+ 
+ func setup(m: Node, w: WorldBuilder, dir: String) -> void:
+ 	main = m
+@@ -29,18 +31,21 @@ func _run() -> void:
+ 		{"name": "street_wide", "pos": Vector3(-20.0, 3.2, -12.0), "look": Vector3(-120.0, 8.0, -30.0), "fov": 70.0},
+ 		{"name": "hawker_interior", "pos": Vector3(-80.0, 2.6, -70.0), "look": Vector3(-90.0, 1.8, -96.0), "fov": 66.0},
+ 		{"name": "housing_void_deck", "pos": Vector3(-214.0, 2.2, -104.0), "look": Vector3(-262.0, 12.0, -112.0), "fov": 68.0},
+-		{"name": "waterfront", "pos": Vector3(60.0, 6.0, -300.0), "look": Vector3(-40.0, 10.0, -60.0), "fov": 70.0},
++		{"name": "waterfront", "pos": Vector3(84.0, 3.2, -344.0), "look": Vector3(50.0, 10.0, -240.0), "fov": 70.0},
+ 		{"name": "aerial_district", "pos": Vector3(250.0, 95.0, 250.0), "look": Vector3(-40.0, 0.0, -60.0), "fov": 62.0},
+ 		{"name": "aerial_waterfront", "pos": Vector3(40.0, 70.0, -250.0), "look": Vector3(-20.0, 0.0, 40.0), "fov": 64.0},
+ 		{"name": "street_arcade", "pos": Vector3(-32, 2.0, -149), "look": Vector3(-130, 3.0, -146), "fov": 62.0},
+-		{"name": "airfield", "pos": Vector3(215.0, 3.0, 215.0), "look": Vector3(245.0, 3.0, 240.0), "fov": 66.0},
++		{"name": "airfield", "pos": world.locations["helipad_primary"]+Vector3(-20,3,24), "look": world.locations["helipad_primary"]+Vector3(0,1.8,0), "fov": 66.0},
+ 	]
+ 	views.append_array(InteriorDetail.inspection_views(world.locations["safe_room"]-Vector3(0,.2,0)))
++	views.append({"name":"shoreline_reverse","pos":Vector3(96,3,-337),"look":Vector3(0,42,-780),"fov":64.0})
+ 	var cam := Camera3D.new()
+ 	cam.current = true
+ 	cam.far = 2000.0
+ 	add_child(cam)
+ 	for view in views:
++		_active_view=view
++		cam.make_current()
+ 		cam.global_position = view["pos"]
+ 		cam.fov = float(view["fov"])
+ 		cam.look_at(view["look"], Vector3.UP)
+@@ -53,6 +58,8 @@ func _shot(view_name: String) -> void:
+ 	var img := get_viewport().get_texture().get_image()
+ 	if img == null:
+ 		return
++	var native_size := img.get_size()
++	_view_records.append({"name":view_name,"camera_position":str(_active_view["pos"]),"camera_look":str(_active_view["look"]),"fov":_active_view["fov"],"render_pixels":[native_size.x,native_size.y],"saved_pixels":[1280,720]})
+ 	img.resize(1280, 720, Image.INTERPOLATE_BILINEAR)
+ 	_shots += 1
+ 	var path := "%s/photo_%02d_%s.png" % [out_dir, _shots, view_name]
+@@ -62,7 +69,10 @@ func _shot(view_name: String) -> void:
+ func _write_log() -> void:
+ 	var f := FileAccess.open("%s/photo_log.json" % out_dir, FileAccess.WRITE)
+ 	if f:
+-		f.store_string(JSON.stringify({"views": _log, "note": "fixed-view captures from an authored camera; fixture-assisted, not player-reachable proof"}, "\t"))
++		f.store_string(JSON.stringify({"views": _log, "view_records":_view_records, "note": "fixed-view captures from an authored camera; fixture-assisted, not player-reachable proof"}, "\t"))
+ 		f.close()
+ 	_log_line("done")
++	Game.simulation_paused = true
++	Sfx.shutdown_audio()
++	await get_tree().create_timer(.15,true,false,true).timeout
+ 	get_tree().quit(0)
+diff --git a/game/src/ui/hud.gd b/game/src/ui/hud.gd
+index c27477d..2579c28 100644
+--- a/game/src/ui/hud.gd
++++ b/game/src/ui/hud.gd
+@@ -26,6 +26,7 @@ var _settings_values: Label
+ var _settings_rows: Array = []
+ var _marker: Vector3 = Vector3.ZERO
+ var _gameplay_controls: Array[CanvasItem] = []
++var _layout_root: Control
+ 
+ const NOTIFICATION_LIFETIME := 4.0
+ 
+@@ -49,9 +50,12 @@ func setup(w: WorldBuilder, p: Player, m: Mission) -> void:
+ 
+ func _build() -> void:
+ 	var root := Control.new()
+-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
++	_layout_root = root
++	root.size = Vector2(1280,720)
+ 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ 	add_child(root)
++	_fit_layout()
++	get_viewport().size_changed.connect(_fit_layout)
+ 	_panel(root,Vector2(24,24),Vector2(620,78),Color(.025,.055,.058,.88))
+ 	var tag := _mk_label(root,Vector2(40,34),11,Color(.57,.78,.70))
+ 	tag.text="HARBOUR RELAY"
+@@ -87,6 +91,10 @@ func _build() -> void:
+ 		if child is CanvasItem: _gameplay_controls.append(child)
+ 	_build_pause_panel(root);_build_title_panel(root);_build_settings_panel(root)
+ 
++func _fit_layout() -> void:
++	if _layout_root != null:
++		_layout_root.scale = get_viewport().get_visible_rect().size / Vector2(1280,720)
++
+ func _panel(parent: Control, pos: Vector2, size: Vector2, color: Color) -> Panel:
+ 	var panel:=Panel.new();panel.position=pos;panel.size=size;panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
+ 	var style:=StyleBoxFlat.new();style.bg_color=color
+diff --git a/game/src/world/palette.gd b/game/src/world/palette.gd
+index e9fe15d..8bc1d67 100644
+--- a/game/src/world/palette.gd
++++ b/game/src/world/palette.gd
+@@ -60,7 +60,7 @@ static func tex(kind: String) -> NoiseTexture2D:
+ 	return t
+ 
+ static func mat_textured(color: Color, kind: String, _uv_scale: Vector3, rough: float = 0.9, metal: float = 0.0) -> StandardMaterial3D:
+-	# All surfaces use measured world-space mapping: one tile is four metres.
++	# World-space mapping: pavers represent a two-metre tile; other maps four metres.
+ 	# The previous per-box UV stretch and shared cache produced kilometre-long stripes.
+ 	var key := "%s|%s|%.2f|%.2f" % [kind, color.to_html(), rough, metal]
+ 	if _mat_cache.has(key):
+@@ -72,15 +72,18 @@ static func mat_textured(color: Color, kind: String, _uv_scale: Vector3, rough:
+ 		m.albedo_texture = load(path + "_albedo.png")
+ 		m.normal_enabled = true
+ 		m.normal_texture = load(path + "_normal.png")
+-		m.normal_scale = 0.3
++		m.normal_scale = 0.07 if kind == "asphalt" else 0.3
+ 		m.roughness_texture = load(path + "_roughness.png")
+ 	else:
+ 		m.albedo_texture = tex(kind)
+ 	m.uv1_triplanar = true
+ 	m.uv1_world_triplanar = true
+-	m.uv1_scale = Vector3.ONE * 0.25
++	m.uv1_scale = Vector3.ONE * (0.5 if kind == "pavers" else 0.25)
+ 	m.uv1_triplanar_sharpness = 8.0
+ 	m.roughness = rough
++	if kind == "asphalt":
++		m.roughness_texture = null
++		m.roughness = 0.96
+ 	m.metallic = metal
+ 	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+ 	_mat_cache[key] = m
+diff --git a/game/src/world/world_builder.gd b/game/src/world/world_builder.gd
+index 48b7381..73b49a6 100644
+--- a/game/src/world/world_builder.gd
++++ b/game/src/world/world_builder.gd
+@@ -551,20 +551,61 @@ func _waterfront_edge() -> void:
+ 		_street_lamp(Vector3(-320.0 + i * 128.0, 0.0, PROMENADE_Z + 8.0))
+ 
+ func _background_city() -> void:
+-	# Dimensional original facades replace blank skyline prisms. This ring is
+-	# background scenery; the road network and mission remain in the core.
++	# Existing side/back context remains dimensional, with its existing shadows.
+ 	var rng := RandomNumberGenerator.new()
+ 	rng.seed = 991
+ 	for i in 64:
+ 		var side := i % 4
++		if side == 0: continue
+ 		var p := Vector3.ZERO
+ 		match side:
+-			0: p=Vector3(-620+(i/4)*82,0,-710-rng.randf_range(0,140))
+ 			1: p=Vector3(-440-rng.randf_range(0,90),0,-410+(i/4)*54)
+ 			2: p=Vector3(440+rng.randf_range(0,90),0,-410+(i/4)*54)
+ 			_: p=Vector3(-620+(i/4)*82,0,435+rng.randf_range(0,90))
+-		var scale_y := rng.randf_range(.55,1.20)
+-		_authored("skyline_%d.glb"%posmod(i,4),p,rng.randf_range(-.08,.08),Vector3(1,scale_y,1))
++		_authored("skyline_%d.glb"%posmod(i,4),p,rng.randf_range(-.08,.08),Vector3(1,rng.randf_range(.55,1.20),1))
++	# Three staggered clusters on the existing far shore. Lower near-water
++	# blocks and taller rear blocks overlap in depth instead of isolated plinths.
++	# This is inaccessible context, not additional playable city area.
++	var groups: Array = [[],[],[],[]]
++	for row in 3:
++		for cluster in 3:
++			for col in 8:
++				var variant: int = 2 if row == 0 and col % 3 != 0 else (row+cluster+col)%4
++				var x: float = -720+cluster*490+col*54+rng.randf_range(-7,7)+row*13
++				var z: float = -711-row*130+rng.randf_range(-18,18)
++				var height_scale: float = rng.randf_range(.48,.73) if row == 0 else rng.randf_range(.70,1.22)+row*.08
++				var width_scale: float = rng.randf_range(.90,1.18)
++				var basis := Basis(Vector3.UP,rng.randf_range(-.07,.07)).scaled(Vector3(width_scale,height_scale,width_scale))
++				groups[variant].append(Transform3D(basis,Vector3(x,0,z)))
++	for variant in 4:
++		_batch_background("res://assets/authored/skyline_%d.glb"%variant,groups[variant])
++
++func _batch_background(path: String, transforms: Array) -> void:
++	var packed: PackedScene = load(path)
++	var source: Node = packed.instantiate()
++	var parts: Array[Dictionary] = []
++	_background_mesh_parts(source,Transform3D.IDENTITY,parts)
++	for part in parts:
++		var mm := MultiMesh.new()
++		mm.transform_format=MultiMesh.TRANSFORM_3D
++		mm.mesh=part["mesh"]
++		mm.instance_count=transforms.size()
++		for i in transforms.size():
++			mm.set_instance_transform(i,transforms[i]*part["transform"])
++		var instance := MultiMeshInstance3D.new()
++		instance.multimesh=mm
++		instance.material_override=part["override"]
++		instance.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
++		_world_root.add_child(instance)
++	source.free()
++
++func _background_mesh_parts(node: Node, parent_transform: Transform3D, result: Array[Dictionary]) -> void:
++	var local := parent_transform
++	if node is Node3D: local=parent_transform*node.transform
++	if node is MeshInstance3D and node.mesh != null:
++		result.append({"mesh":node.mesh,"transform":local,"override":node.material_override})
++	for child in node.get_children():
++		_background_mesh_parts(child,local,result)
+ 
+ 
+ func _perimeter() -> void:

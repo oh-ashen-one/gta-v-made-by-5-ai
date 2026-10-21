@@ -1,0 +1,3 @@
+{"capture_overhead":false,"ended_seconds":0.362729,"interval_ms":362.729,"phase":"mission","readback_since_frame":false,"recording_pending":false,"run":1,"screenshot_pending":false,"started_seconds":0.0}
+{"capture_overhead":false,"ended_seconds":0.56533,"interval_ms":202.601,"phase":"mission","readback_since_frame":false,"recording_pending":false,"run":1,"screenshot_pending":false,"started_seconds":0.362729}
+{"capture_overhead":true,"ended_seconds":1.169517,"interval_ms":179.465,"phase":"mission","readback_since_frame":true,"recording_pending":false,"run":1,"screenshot_pending":false,"started_seconds":0.990052}

@@ -1,0 +1,972 @@
+{
+  "analysis_utc": "2026-10-21T14:38:39.188572+00:00",
+  "evidence": {
+    "docs/wave-02/package-soak/capture_log.json": "3e0602d22d57ad3b0cf878bf3151eefd855b1a056384f16e3a214dff91302630",
+    "docs/wave-02/package-soak-process.log.meta.json": "7d5aa0dbd4051e2950a4273c4fbbbdda08200930f0f4b662a824bf38d28537af",
+    "docs/wave-02/package-soak-process.log.resources.jsonl": "efbac0e44ae1c4b8521e926ea35cd8640a5116b25cb42befacc252a4523c3e00",
+    "docs/wave-02/package-soak/frame_stalls.jsonl": "07f6ec2f2762cfd0714d8098d81d1a3c25c7c652fca7c81ec04b889a2b6bfdda"
+  },
+  "source_check": {
+    "checkpoint": "df911c6b146a772174bcb838d42cffe18fd6d19f",
+    "launch_source_hash_mismatches": [],
+    "launch_asset_hash_mismatches": []
+  },
+  "terminal": {
+    "success": false,
+    "failure_reason": "Soak runtime error-log gate is unavailable or contains unhandled errors.",
+    "elapsed_seconds": 30.002667,
+    "finished_utc": "2026-10-21T14:37:16",
+    "engine": "4.7.1-stable (official)",
+    "headless": false,
+    "rendered_timing_baseline": true,
+    "performance_acceptance_valid": false,
+    "memory_leak_acceptance_valid": false,
+    "deaths": 0,
+    "health": 100.0,
+    "mission_stage": 0,
+    "mode": 0,
+    "combat_kills": 0,
+    "screenshots": 1,
+    "terminal_liveness": {
+      "aircraft_cycle_verified": false,
+      "current_horizontal_speed_mps": 6.79999351501465,
+      "final_observation_seconds": 0.0,
+      "foot_distance_last_60_seconds_m": 0.0,
+      "healthy_on_foot": true,
+      "reboard_cycle_verified": false,
+      "seconds_since_foot_motion": 1030.002394
+    },
+    "runtime_log_scan": {
+      "checked": false,
+      "classified_nonfatal": [],
+      "fatal_errors": [],
+      "path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak/engine.log",
+      "reason": "QA engine log is empty or unreadable."
+    },
+    "free_roam_distance_m": {
+      "car": 0.0,
+      "foot": 0.0,
+      "helicopter": 0.0
+    },
+    "fixture_assisted_checks": [],
+    "recording": {
+      "bytes_written": 0,
+      "cap_reason": "",
+      "capped": false,
+      "completion_hold": {
+        "elapsed_seconds": 0.0,
+        "frames_written": 0,
+        "requested": false
+      },
+      "directory": "",
+      "enabled": false,
+      "frames_written": 0,
+      "max_bytes": 1073741824,
+      "max_duration_seconds": 720.0,
+      "max_frames": 7200,
+      "missed_samples": 0,
+      "readback_encode_cost_ms": {
+        "count": 0,
+        "max_ms": 0.0,
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "p99_ms": 0.0
+      },
+      "requested": false,
+      "requested_hz": 10,
+      "scheduled_samples": 0,
+      "timestamps": "frames.jsonl monotonic seconds from route setup"
+    },
+    "unavailable_engine_monitors": []
+  },
+  "process_terminal": {
+    "pid": 24941,
+    "started_utc": "2026-10-21T14:36:40.352245+00:00",
+    "finished_utc": "2026-10-21T14:37:16.378270+00:00",
+    "engine_exit_code": 2,
+    "exit_code": 2,
+    "timeout": false,
+    "elapsed_sec": 36.44,
+    "child_reaped": true,
+    "fatal_errors": [],
+    "all_error_lines": [],
+    "sampling_errors": [],
+    "resource_samples": 8,
+    "rss_samples_available": true,
+    "rss_peak_kib_sampled": 890720,
+    "child_peak_rss_bytes": 976044032
+  },
+  "missions": [],
+  "timing": {
+    "frame_times": {
+      "count": 2479,
+      "max_ms": 362.729,
+      "mean_ms": 12.0299770068576,
+      "p50_ms": 11.591,
+      "p95_ms": 19.185,
+      "p99_ms": 19.617
+    },
+    "frame_times_including_capture_overhead": {
+      "count": 2480,
+      "max_ms": 362.729,
+      "mean_ms": 12.0974911290323,
+      "p50_ms": 11.591,
+      "p95_ms": 19.185,
+      "p99_ms": 19.622
+    },
+    "frame_time_method": "Monotonic process-frame intervals; excludes intervals touched by screenshot/recording readback.",
+    "performance_caveats": [
+      "Runtime timing baseline; exclusive machine/CPU/GPU conditions are not asserted by this script.",
+      "JPEG/screenshot readback adds work; inclusive and unaffected interval summaries are separate.",
+      "Human gameplay and target-frame-rate acceptance require their own review."
+    ]
+  },
+  "samples": {
+    "count": 31,
+    "first": 0.36,
+    "last": 30.0,
+    "gaps_above_1p5_seconds": [],
+    "render_texture_pixels": [
+      [
+        1920,
+        1080
+      ]
+    ],
+    "msaa_enums": [
+      2
+    ],
+    "taa_values": [
+      true
+    ]
+  },
+  "process_samples": {
+    "count": 8,
+    "first_process_seconds": 0.42,
+    "last_process_seconds": 35.531,
+    "pids": [
+      24941
+    ],
+    "max_interval_seconds": 5.0169999999999995,
+    "capture_start_utc_midpoint": "2026-10-21T14:36:46.497333+00:00",
+    "alignment_qualification": "Game finished_utc is second resolution; phase assignment uses midpoint and is approximate within about 0.5 seconds. Snapshot phases add up to one-second boundary uncertainty."
+  },
+  "engine_all": {
+    "draw_calls": {
+      "samples": 31,
+      "first": 0.0,
+      "last": 2285.0,
+      "min": 0.0,
+      "max": 3086.0,
+      "mean": 1576.967741935484,
+      "median": 1375.0,
+      "p95": 2375.0,
+      "p99": 3086.0,
+      "ols_per_minute": 2802.400031266019
+    },
+    "fps": {
+      "samples": 31,
+      "first": 1.0,
+      "last": 85.0,
+      "min": 1.0,
+      "max": 85.0,
+      "mean": 78.54838709677419,
+      "median": 85.0,
+      "p95": 85.0,
+      "p99": 85.0,
+      "ols_per_minute": 68.22454714982157
+    },
+    "node_count": {
+      "samples": 31,
+      "first": 17698.0,
+      "last": 17697.0,
+      "min": 17697.0,
+      "max": 17698.0,
+      "mean": 17697.09677419355,
+      "median": 17697.0,
+      "p95": 17698.0,
+      "p99": 17698.0,
+      "ols_per_minute": -1.0105302807822978
+    },
+    "object_count": {
+      "samples": 31,
+      "first": 32121.0,
+      "last": 32132.0,
+      "min": 32121.0,
+      "max": 32132.0,
+      "mean": 32129.548387096773,
+      "median": 32130.0,
+      "p95": 32131.0,
+      "p99": 32132.0,
+      "ols_per_minute": 8.125627437280555
+    },
+    "orphan_node_count": {
+      "samples": 31,
+      "first": 0.0,
+      "last": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "mean": 0.0,
+      "median": 0.0,
+      "p95": 0.0,
+      "p99": 0.0,
+      "ols_per_minute": 0.0
+    },
+    "render_buffer_memory_bytes": {
+      "samples": 31,
+      "first": 0.0,
+      "last": 221324002.0,
+      "min": 0.0,
+      "max": 221324002.0,
+      "mean": 212060862.58064517,
+      "median": 218213842.0,
+      "p95": 221324002.0,
+      "p99": 221324002.0,
+      "ols_per_minute": 85515120.94731016
+    },
+    "render_texture_memory_bytes": {
+      "samples": 31,
+      "first": 0.0,
+      "last": 1924332288.0,
+      "min": 0.0,
+      "max": 1924332288.0,
+      "mean": 1862257052.903226,
+      "median": 1924332288.0,
+      "p95": 1924332288.0,
+      "p99": 1924332288.0,
+      "ols_per_minute": 686598147.6142567
+    },
+    "render_video_memory_bytes": {
+      "samples": 31,
+      "first": 0.0,
+      "last": 2411446272.0,
+      "min": 0.0,
+      "max": 2411446272.0,
+      "mean": 2331375549.935484,
+      "median": 2408103936.0,
+      "p95": 2411446272.0,
+      "p99": 2411446272.0,
+      "ols_per_minute": 867434986.3006225
+    },
+    "resource_count": {
+      "samples": 31,
+      "first": 474.0,
+      "last": 474.0,
+      "min": 474.0,
+      "max": 474.0,
+      "mean": 474.0,
+      "median": 474.0,
+      "p95": 474.0,
+      "p99": 474.0,
+      "ols_per_minute": 0.0
+    },
+    "static_memory_bytes": {
+      "samples": 31,
+      "first": 0.0,
+      "last": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "mean": 0.0,
+      "median": 0.0,
+      "p95": 0.0,
+      "p99": 0.0,
+      "ols_per_minute": 0.0
+    },
+    "static_memory_peak_bytes": {
+      "samples": 31,
+      "first": 0.0,
+      "last": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "mean": 0.0,
+      "median": 0.0,
+      "p95": 0.0,
+      "p99": 0.0,
+      "ols_per_minute": 0.0
+    }
+  },
+  "process_all": {
+    "rss_mib": {
+      "samples": 8,
+      "first": 0.65625,
+      "last": 869.84375,
+      "min": 0.65625,
+      "max": 869.84375,
+      "mean": 752.0546875,
+      "median": 863.6171875,
+      "p95": 869.84375,
+      "p99": 869.84375,
+      "ols_per_minute": 900.9548217856842
+    },
+    "cpu_percent": {
+      "samples": 8,
+      "first": 0.0,
+      "last": 133.9,
+      "min": 0.0,
+      "max": 134.5,
+      "mean": 108.725,
+      "median": 125.25,
+      "p95": 134.5,
+      "p99": 134.5,
+      "ols_per_minute": 159.03167884060665
+    }
+  },
+  "windows": [
+    {
+      "capture_window_seconds": [
+        0,
+        30
+      ],
+      "engine": {
+        "draw_calls": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 2296.0,
+          "min": 0.0,
+          "max": 3086.0,
+          "mean": 1553.3666666666666,
+          "median": 1374.5,
+          "p95": 2375.0,
+          "p99": 3086.0,
+          "ols_per_minute": 2798.8843037974807
+        },
+        "fps": {
+          "samples": 30,
+          "first": 1.0,
+          "last": 85.0,
+          "min": 1.0,
+          "max": 85.0,
+          "mean": 78.33333333333333,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": 72.62278261921769
+        },
+        "node_count": {
+          "samples": 30,
+          "first": 17698.0,
+          "last": 17697.0,
+          "min": 17697.0,
+          "max": 17698.0,
+          "mean": 17697.1,
+          "median": 17697.0,
+          "p95": 17698.0,
+          "p99": 17698.0,
+          "ols_per_minute": -1.0751714904675365
+        },
+        "object_count": {
+          "samples": 30,
+          "first": 32121.0,
+          "last": 32131.0,
+          "min": 32121.0,
+          "max": 32131.0,
+          "mean": 32129.466666666667,
+          "median": 32130.0,
+          "p95": 32131.0,
+          "p99": 32131.0,
+          "ols_per_minute": 7.9497007455467825
+        },
+        "orphan_node_count": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 221324002.0,
+          "min": 0.0,
+          "max": 221324002.0,
+          "mean": 211752091.26666668,
+          "median": 218213842.0,
+          "p95": 221324002.0,
+          "p99": 221324002.0,
+          "ols_per_minute": 90538943.12315
+        },
+        "render_texture_memory_bytes": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 1924332288.0,
+          "min": 0.0,
+          "max": 1924332288.0,
+          "mean": 1860187878.4,
+          "median": 1924332288.0,
+          "p95": 1924332288.0,
+          "p99": 1924332288.0,
+          "ols_per_minute": 732046973.4418329
+        },
+        "render_video_memory_bytes": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 2411446272.0,
+          "min": 0.0,
+          "max": 2411446272.0,
+          "mean": 2328706525.866667,
+          "median": 2408103936.0,
+          "p95": 2411446272.0,
+          "p99": 2411446272.0,
+          "ols_per_minute": 924169852.291018
+        },
+        "resource_count": {
+          "samples": 30,
+          "first": 474.0,
+          "last": 474.0,
+          "min": 474.0,
+          "max": 474.0,
+          "mean": 474.0,
+          "median": 474.0,
+          "p95": 474.0,
+          "p99": 474.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_bytes": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_peak_bytes": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 6,
+          "first": 863.234375,
+          "last": 869.84375,
+          "min": 863.234375,
+          "max": 869.84375,
+          "mean": 865.6770833333334,
+          "median": 863.8359375,
+          "p95": 869.84375,
+          "p99": 869.84375,
+          "ols_per_minute": 17.79262667815098
+        },
+        "cpu_percent": {
+          "samples": 6,
+          "first": 125.5,
+          "last": 133.9,
+          "min": 124.3,
+          "max": 134.5,
+          "mean": 128.55,
+          "median": 126.8,
+          "p95": 134.5,
+          "p99": 134.5,
+          "ols_per_minute": 22.794786558508267
+        }
+      }
+    },
+    {
+      "capture_window_seconds": [
+        30,
+        120
+      ],
+      "engine": {
+        "draw_calls": {
+          "samples": 1,
+          "first": 2285.0,
+          "last": 2285.0,
+          "min": 2285.0,
+          "max": 2285.0,
+          "mean": 2285.0,
+          "median": 2285.0,
+          "p95": 2285.0,
+          "p99": 2285.0,
+          "ols_per_minute": null
+        },
+        "fps": {
+          "samples": 1,
+          "first": 85.0,
+          "last": 85.0,
+          "min": 85.0,
+          "max": 85.0,
+          "mean": 85.0,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": null
+        },
+        "node_count": {
+          "samples": 1,
+          "first": 17697.0,
+          "last": 17697.0,
+          "min": 17697.0,
+          "max": 17697.0,
+          "mean": 17697.0,
+          "median": 17697.0,
+          "p95": 17697.0,
+          "p99": 17697.0,
+          "ols_per_minute": null
+        },
+        "object_count": {
+          "samples": 1,
+          "first": 32132.0,
+          "last": 32132.0,
+          "min": 32132.0,
+          "max": 32132.0,
+          "mean": 32132.0,
+          "median": 32132.0,
+          "p95": 32132.0,
+          "p99": 32132.0,
+          "ols_per_minute": null
+        },
+        "orphan_node_count": {
+          "samples": 1,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": null
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 1,
+          "first": 221324002.0,
+          "last": 221324002.0,
+          "min": 221324002.0,
+          "max": 221324002.0,
+          "mean": 221324002.0,
+          "median": 221324002.0,
+          "p95": 221324002.0,
+          "p99": 221324002.0,
+          "ols_per_minute": null
+        },
+        "render_texture_memory_bytes": {
+          "samples": 1,
+          "first": 1924332288.0,
+          "last": 1924332288.0,
+          "min": 1924332288.0,
+          "max": 1924332288.0,
+          "mean": 1924332288.0,
+          "median": 1924332288.0,
+          "p95": 1924332288.0,
+          "p99": 1924332288.0,
+          "ols_per_minute": null
+        },
+        "render_video_memory_bytes": {
+          "samples": 1,
+          "first": 2411446272.0,
+          "last": 2411446272.0,
+          "min": 2411446272.0,
+          "max": 2411446272.0,
+          "mean": 2411446272.0,
+          "median": 2411446272.0,
+          "p95": 2411446272.0,
+          "p99": 2411446272.0,
+          "ols_per_minute": null
+        },
+        "resource_count": {
+          "samples": 1,
+          "first": 474.0,
+          "last": 474.0,
+          "min": 474.0,
+          "max": 474.0,
+          "mean": 474.0,
+          "median": 474.0,
+          "p95": 474.0,
+          "p99": 474.0,
+          "ols_per_minute": null
+        },
+        "static_memory_bytes": {
+          "samples": 1,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": null
+        },
+        "static_memory_peak_bytes": {
+          "samples": 1,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": null
+        }
+      },
+      "process": null
+    },
+    {
+      "capture_window_seconds": [
+        120,
+        300
+      ],
+      "engine": null,
+      "process": null
+    },
+    {
+      "capture_window_seconds": [
+        300,
+        600
+      ],
+      "engine": null,
+      "process": null
+    },
+    {
+      "capture_window_seconds": [
+        600,
+        900
+      ],
+      "engine": null,
+      "process": null
+    },
+    {
+      "capture_window_seconds": [
+        900,
+        1200
+      ],
+      "engine": null,
+      "process": null
+    },
+    {
+      "capture_window_seconds": [
+        1200,
+        1500
+      ],
+      "engine": null,
+      "process": null
+    },
+    {
+      "capture_window_seconds": [
+        1500,
+        1800.1
+      ],
+      "engine": null,
+      "process": null
+    }
+  ],
+  "phases": [
+    {
+      "name": "mission_1",
+      "first_sample_seconds": 0.36,
+      "last_sample_seconds": 30.0,
+      "next_phase_first_sample_seconds": 30.102667,
+      "engine": {
+        "draw_calls": {
+          "samples": 31,
+          "first": 0.0,
+          "last": 2285.0,
+          "min": 0.0,
+          "max": 3086.0,
+          "mean": 1576.967741935484,
+          "median": 1375.0,
+          "p95": 2375.0,
+          "p99": 3086.0,
+          "ols_per_minute": 2802.400031266019
+        },
+        "fps": {
+          "samples": 31,
+          "first": 1.0,
+          "last": 85.0,
+          "min": 1.0,
+          "max": 85.0,
+          "mean": 78.54838709677419,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": 68.22454714982157
+        },
+        "node_count": {
+          "samples": 31,
+          "first": 17698.0,
+          "last": 17697.0,
+          "min": 17697.0,
+          "max": 17698.0,
+          "mean": 17697.09677419355,
+          "median": 17697.0,
+          "p95": 17698.0,
+          "p99": 17698.0,
+          "ols_per_minute": -1.0105302807822978
+        },
+        "object_count": {
+          "samples": 31,
+          "first": 32121.0,
+          "last": 32132.0,
+          "min": 32121.0,
+          "max": 32132.0,
+          "mean": 32129.548387096773,
+          "median": 32130.0,
+          "p95": 32131.0,
+          "p99": 32132.0,
+          "ols_per_minute": 8.125627437280555
+        },
+        "orphan_node_count": {
+          "samples": 31,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 31,
+          "first": 0.0,
+          "last": 221324002.0,
+          "min": 0.0,
+          "max": 221324002.0,
+          "mean": 212060862.58064517,
+          "median": 218213842.0,
+          "p95": 221324002.0,
+          "p99": 221324002.0,
+          "ols_per_minute": 85515120.94731016
+        },
+        "render_texture_memory_bytes": {
+          "samples": 31,
+          "first": 0.0,
+          "last": 1924332288.0,
+          "min": 0.0,
+          "max": 1924332288.0,
+          "mean": 1862257052.903226,
+          "median": 1924332288.0,
+          "p95": 1924332288.0,
+          "p99": 1924332288.0,
+          "ols_per_minute": 686598147.6142567
+        },
+        "render_video_memory_bytes": {
+          "samples": 31,
+          "first": 0.0,
+          "last": 2411446272.0,
+          "min": 0.0,
+          "max": 2411446272.0,
+          "mean": 2331375549.935484,
+          "median": 2408103936.0,
+          "p95": 2411446272.0,
+          "p99": 2411446272.0,
+          "ols_per_minute": 867434986.3006225
+        },
+        "resource_count": {
+          "samples": 31,
+          "first": 474.0,
+          "last": 474.0,
+          "min": 474.0,
+          "max": 474.0,
+          "mean": 474.0,
+          "median": 474.0,
+          "p95": 474.0,
+          "p99": 474.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_bytes": {
+          "samples": 31,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_peak_bytes": {
+          "samples": 31,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 6,
+          "first": 863.234375,
+          "last": 869.84375,
+          "min": 863.234375,
+          "max": 869.84375,
+          "mean": 865.6770833333334,
+          "median": 863.8359375,
+          "p95": 869.84375,
+          "p99": 869.84375,
+          "ols_per_minute": 17.79262667815098
+        },
+        "cpu_percent": {
+          "samples": 6,
+          "first": 125.5,
+          "last": 133.9,
+          "min": 124.3,
+          "max": 134.5,
+          "mean": 128.55,
+          "median": 126.8,
+          "p95": 134.5,
+          "p99": 134.5,
+          "ols_per_minute": 22.794786558508267
+        }
+      }
+    }
+  ],
+  "matched_gates": {},
+  "log": [
+    "0.99s Route start; seed=20261021; headless=false; scripted-input-automation=true",
+    "1.12s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak/01_safe_room.png",
+    "2.97s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0",
+    "21.65s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9",
+    "30.00s ABORT Soak runtime error-log gate is unavailable or contains unhandled errors."
+  ],
+  "free_roam_events": [],
+  "build_identity": {
+    "checkpoint": "df911c6",
+    "private_only": true,
+    "archive": "game/build/mac/OrchardReach-wave02-final.zip",
+    "archive_sha256": "a54307ade3ecb08f41e55857d6f89aa29c6845a9273363f826f02ebdd0358012",
+    "archive_bytes": 394323045,
+    "executable": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/game/build/mac/final/Orchard Reach.app/Contents/MacOS/Orchard Reach",
+    "bundle_files": {
+      "Orchard Reach.app/Contents/Info.plist": {
+        "sha256": "861e675bc8e821a04b3d0db2e315559badb81d4a3aa864c1d6c89fed3938115d",
+        "bytes": 1788
+      },
+      "Orchard Reach.app/Contents/PkgInfo": {
+        "sha256": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+        "bytes": 9
+      },
+      "Orchard Reach.app/Contents/MacOS/Orchard Reach": {
+        "sha256": "233633697eb0f31f0d26344eba344fb53c5700b2c308c7e84d0877ddd82271e2",
+        "bytes": 169949840
+      },
+      "Orchard Reach.app/Contents/Resources/Orchard Reach.pck": {
+        "sha256": "30ffa64d4c732e49ccdc04827cf9279978dbef11800adc26dacdf855a32f0f0d",
+        "bytes": 342656516
+      },
+      "Orchard Reach.app/Contents/Resources/icon.icns": {
+        "sha256": "779ff524928785811d6d4c61f47a26491160b1092db9b610e85fcdfd9b2d2b2a",
+        "bytes": 67500
+      },
+      "Orchard Reach.app/Contents/Resources/PrivacyInfo.xcprivacy": {
+        "sha256": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+        "bytes": 229
+      }
+    },
+    "launch_verified": false,
+    "public_redistribution": "UNVERIFIED; no public release authorized"
+  },
+  "frame_stalls": {
+    "event_log_opened": true,
+    "event_log_path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak/frame_stalls.jsonl",
+    "events": [
+      {
+        "capture_overhead": false,
+        "ended_seconds": 0.362729,
+        "interval_ms": 362.729,
+        "phase": "mission",
+        "readback_since_frame": false,
+        "recording_pending": false,
+        "run": 1,
+        "screenshot_pending": false,
+        "started_seconds": 0.0
+      },
+      {
+        "capture_overhead": false,
+        "ended_seconds": 0.56533,
+        "interval_ms": 202.601,
+        "phase": "mission",
+        "readback_since_frame": false,
+        "recording_pending": false,
+        "run": 1,
+        "screenshot_pending": false,
+        "started_seconds": 0.362729
+      },
+      {
+        "capture_overhead": true,
+        "ended_seconds": 1.169517,
+        "interval_ms": 179.465,
+        "phase": "mission",
+        "readback_since_frame": true,
+        "recording_pending": false,
+        "run": 1,
+        "screenshot_pending": false,
+        "started_seconds": 0.990052
+      }
+    ],
+    "max_events": 1000,
+    "overflow_count": 0,
+    "threshold_ms_exclusive": 100.0,
+    "time_basis": "Monotonic seconds from capture setup; phase/run identify the interval end. Capture-overhead flags indicate readback overlap, not proven causation.",
+    "total_count": 3
+  },
+  "frame_stalls_jsonl": [
+    {
+      "capture_overhead": false,
+      "ended_seconds": 0.362729,
+      "interval_ms": 362.729,
+      "phase": "mission",
+      "readback_since_frame": false,
+      "recording_pending": false,
+      "run": 1,
+      "screenshot_pending": false,
+      "started_seconds": 0.0
+    },
+    {
+      "capture_overhead": false,
+      "ended_seconds": 0.56533,
+      "interval_ms": 202.601,
+      "phase": "mission",
+      "readback_since_frame": false,
+      "recording_pending": false,
+      "run": 1,
+      "screenshot_pending": false,
+      "started_seconds": 0.362729
+    },
+    {
+      "capture_overhead": true,
+      "ended_seconds": 1.169517,
+      "interval_ms": 179.465,
+      "phase": "mission",
+      "readback_since_frame": true,
+      "recording_pending": false,
+      "run": 1,
+      "screenshot_pending": false,
+      "started_seconds": 0.990052
+    }
+  ],
+  "always_zero_counters": [
+    "orphan_node_count",
+    "static_memory_bytes",
+    "static_memory_peak_bytes"
+  ],
+  "unusable_memory_counters": [
+    "static_memory_bytes",
+    "static_memory_peak_bytes"
+  ]
+}

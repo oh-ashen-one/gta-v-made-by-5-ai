@@ -1,0 +1,1426 @@
+{
+	"automation_kind": "scripted input actions, direct mouse-look yaw/pitch, fractional action strengths",
+	"combat_kills": 0,
+	"completed_mission_runs": [],
+	"configured_soak_timeout_seconds": 1800.0,
+	"continuous_30_minute_video_claim": false,
+	"controls_only": false,
+	"deaths": 0,
+	"elapsed_seconds": 30.002667,
+	"engine": "4.7.1-stable (official)",
+	"engine_monitor_summary": {
+		"draw_calls": {
+			"first": 0.0,
+			"last": 2285.0,
+			"max": 3086.0,
+			"min": 0.0,
+			"samples": 31
+		},
+		"fps": {
+			"first": 1.0,
+			"last": 85.0,
+			"max": 85.0,
+			"min": 1.0,
+			"samples": 31
+		},
+		"node_count": {
+			"first": 17698.0,
+			"last": 17697.0,
+			"max": 17698.0,
+			"min": 17697.0,
+			"samples": 31
+		},
+		"object_count": {
+			"first": 32121.0,
+			"last": 32132.0,
+			"max": 32132.0,
+			"min": 32121.0,
+			"samples": 31
+		},
+		"orphan_node_count": {
+			"first": 0.0,
+			"last": 0.0,
+			"max": 0.0,
+			"min": 0.0,
+			"samples": 31
+		},
+		"render_buffer_memory_bytes": {
+			"first": 0.0,
+			"last": 221324002.0,
+			"max": 221324002.0,
+			"min": 0.0,
+			"samples": 31
+		},
+		"render_texture_memory_bytes": {
+			"first": 0.0,
+			"last": 1924332288.0,
+			"max": 1924332288.0,
+			"min": 0.0,
+			"samples": 31
+		},
+		"render_video_memory_bytes": {
+			"first": 0.0,
+			"last": 2411446272.0,
+			"max": 2411446272.0,
+			"min": 0.0,
+			"samples": 31
+		},
+		"resource_count": {
+			"first": 474.0,
+			"last": 474.0,
+			"max": 474.0,
+			"min": 474.0,
+			"samples": 31
+		},
+		"static_memory_bytes": {
+			"first": 0.0,
+			"last": 0.0,
+			"max": 0.0,
+			"min": 0.0,
+			"samples": 31
+		},
+		"static_memory_peak_bytes": {
+			"first": 0.0,
+			"last": 0.0,
+			"max": 0.0,
+			"min": 0.0,
+			"samples": 31
+		}
+	},
+	"evidence_coverage": "1Hz state/resource samples, per-gate screenshots and five-minute soak stills; optional JPEG sequence is independently capped at720s.",
+	"failure_reason": "Soak runtime error-log gate is unavailable or contains unhandled errors.",
+	"finished_utc": "2026-10-21T14:37:16",
+	"fixture_assisted_checks": [],
+	"fixture_teleports_count_as_completion": false,
+	"frame_stalls": {
+		"event_log_opened": true,
+		"event_log_path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak/frame_stalls.jsonl",
+		"events": [
+			{
+				"capture_overhead": false,
+				"ended_seconds": 0.362729,
+				"interval_ms": 362.729,
+				"phase": "mission",
+				"readback_since_frame": false,
+				"recording_pending": false,
+				"run": 1,
+				"screenshot_pending": false,
+				"started_seconds": 0.0
+			},
+			{
+				"capture_overhead": false,
+				"ended_seconds": 0.56533,
+				"interval_ms": 202.601,
+				"phase": "mission",
+				"readback_since_frame": false,
+				"recording_pending": false,
+				"run": 1,
+				"screenshot_pending": false,
+				"started_seconds": 0.362729
+			},
+			{
+				"capture_overhead": true,
+				"ended_seconds": 1.169517,
+				"interval_ms": 179.465,
+				"phase": "mission",
+				"readback_since_frame": true,
+				"recording_pending": false,
+				"run": 1,
+				"screenshot_pending": false,
+				"started_seconds": 0.990052
+			}
+		],
+		"max_events": 1000,
+		"overflow_count": 0,
+		"threshold_ms_exclusive": 100.0,
+		"time_basis": "Monotonic seconds from capture setup; phase/run identify the interval end. Capture-overhead flags indicate readback overlap, not proven causation.",
+		"total_count": 3
+	},
+	"frame_time_method": "Monotonic process-frame intervals; excludes intervals touched by screenshot/recording readback.",
+	"frame_times": {
+		"count": 2479,
+		"max_ms": 362.729,
+		"mean_ms": 12.0299770068576,
+		"p50_ms": 11.591,
+		"p95_ms": 19.185,
+		"p99_ms": 19.617
+	},
+	"frame_times_including_capture_overhead": {
+		"count": 2480,
+		"max_ms": 362.729,
+		"mean_ms": 12.0974911290323,
+		"p50_ms": 11.591,
+		"p95_ms": 19.185,
+		"p99_ms": 19.622
+	},
+	"free_roam_distance_m": {
+		"car": 0.0,
+		"foot": 0.0,
+		"helicopter": 0.0
+	},
+	"free_roam_events": [],
+	"gates": [],
+	"headless": false,
+	"health": 100.0,
+	"log": [
+		"0.99s Route start; seed=20261021; headless=false; scripted-input-automation=true",
+		"1.12s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak/01_safe_room.png",
+		"2.97s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0",
+		"21.65s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9",
+		"30.00s ABORT Soak runtime error-log gate is unavailable or contains unhandled errors."
+	],
+	"memory_leak_acceptance_valid": false,
+	"memory_qualification": "Resource trends require review; process exit alone is not a leak verdict.",
+	"mission_continuity_breaks": [],
+	"mission_input_driver_controls_only": true,
+	"mission_input_driver_writes_transforms_or_health": false,
+	"mission_stage": 0,
+	"mode": 0,
+	"native_human_run": false,
+	"no_teleports_or_state_bypasses": false,
+	"peds": 161,
+	"performance_acceptance_valid": false,
+	"performance_caveats": [
+		"Runtime timing baseline; exclusive machine/CPU/GPU conditions are not asserted by this script.",
+		"JPEG/screenshot readback adds work; inclusive and unaffected interval summaries are separate.",
+		"Human gameplay and target-frame-rate acceptance require their own review."
+	],
+	"recording": {
+		"bytes_written": 0,
+		"cap_reason": "",
+		"capped": false,
+		"completion_hold": {
+			"elapsed_seconds": 0.0,
+			"frames_written": 0,
+			"requested": false
+		},
+		"directory": "",
+		"enabled": false,
+		"frames_written": 0,
+		"max_bytes": 1073741824,
+		"max_duration_seconds": 720.0,
+		"max_frames": 7200,
+		"missed_samples": 0,
+		"readback_encode_cost_ms": {
+			"count": 0,
+			"max_ms": 0.0,
+			"mean_ms": 0.0,
+			"p50_ms": 0.0,
+			"p95_ms": 0.0,
+			"p99_ms": 0.0
+		},
+		"requested": false,
+		"requested_hz": 10,
+		"scheduled_samples": 0,
+		"timestamps": "frames.jsonl monotonic seconds from route setup"
+	},
+	"rendered_timing_baseline": true,
+	"required_mission_completions": 3,
+	"requires_clean_supervisor_exit": true,
+	"run_mode": "soak",
+	"runtime_log_scan": {
+		"checked": false,
+		"classified_nonfatal": [],
+		"fatal_errors": [],
+		"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak/engine.log",
+		"reason": "QA engine log is empty or unreadable."
+	},
+	"samples": [
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 0.0,
+				"fps": 1.0,
+				"node_count": 17698.0,
+				"object_count": 32121.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 0.0,
+				"render_texture_memory_bytes": 0.0,
+				"render_video_memory_bytes": 0.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": -3.14159250259399,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-240.0,
+				0.820000052452087,
+				-70.0
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 0.36,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 3086.0,
+				"fps": 1.0,
+				"node_count": 17698.0,
+				"object_count": 32129.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 217695322.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2407546880.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 1.90021622180939,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-240.101760864258,
+				0.635775089263916,
+				-70.0
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 1.17,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 665.0,
+				"fps": 54.0,
+				"node_count": 17698.0,
+				"object_count": 32130.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213682.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 1.57079839706421,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-244.102951049805,
+				0.635827481746674,
+				-70.0
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 2.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 570.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32129.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213682.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 1.74540781974792,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-250.105773925781,
+				0.43583345413208,
+				-70.2391586303711
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 3.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1215.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32128.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213682.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.37377142906189,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-254.011688232422,
+				0.43583932518959,
+				-68.4153747558594
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 4.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1187.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32128.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213682.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.37632584571838,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-258.6318359375,
+				0.435839354991913,
+				-63.898754119873
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 5.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1214.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32129.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213682.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.40558099746704,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-263.312225341797,
+				0.135829001665115,
+				-63.0081596374512
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 6.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1215.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32129.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213682.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.44667959213257,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-267.844390869141,
+				0.135829046368599,
+				-63.0081787109375
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 7.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1231.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32130.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213682.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.48877024650574,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-272.171691894531,
+				0.135829046368599,
+				-63.0082740783691
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 8.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1274.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32129.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213682.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.53137707710266,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-276.275177001953,
+				0.13582906126976,
+				-63.0083503723145
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 9.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1325.0,
+				"fps": 84.0,
+				"node_count": 17697.0,
+				"object_count": 32130.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213682.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.57404255867004,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-280.144470214844,
+				0.135829105973244,
+				-63.0084075927734
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 10.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1353.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32129.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.61629414558411,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-283.772338867188,
+				0.135829150676727,
+				-63.0084457397461
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 11.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1412.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32129.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.6519079208374,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-287.157135009766,
+				0.135845169425011,
+				-61.8388862609863
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 12.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1402.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32130.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.65980386734009,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-290.369384765625,
+				0.135845154523849,
+				-56.6970329284668
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 13.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1382.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32130.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.66098380088806,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-293.526550292969,
+				0.135845139622688,
+				-50.7792167663574
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 14.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1413.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32129.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.68676328659058,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-297.276611328125,
+				0.135845169425011,
+				-46.569953918457
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 15.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1408.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32129.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.69164037704468,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-300.352447509766,
+				0.135845169425011,
+				-40.6932067871094
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 16.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1375.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32129.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.69243812561035,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-303.323455810547,
+				0.135845169425011,
+				-34.5999183654785
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 17.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1374.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32130.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.69258880615234,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-306.278625488281,
+				0.135845154523849,
+				-28.4782733917236
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 18.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1350.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32130.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.6926109790802,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-309.230438232422,
+				0.135845139622688,
+				-22.3528060913086
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 19.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1302.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32130.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.69262075424194,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-312.18212890625,
+				0.0512675903737545,
+				-16.226806640625
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 20.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 1274.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32130.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 218213842.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2408103936.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 2.69360113143921,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-315.146575927734,
+				0.0358332768082619,
+				-10.0992155075073
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 21.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 2375.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32130.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 221324002.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2411446272.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 0.0398481972515583,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-317.791687011719,
+				0.0283664166927338,
+				-5.34410667419434
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 22.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 2359.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32131.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 221324002.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2411446272.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 0.0104287574067712,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-318.44970703125,
+				0.0357441082596779,
+				-9.69043064117432
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 23.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 2322.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32131.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 221324002.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2411446272.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 0.00982405431568623,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-318.589324951172,
+				0.0321472808718681,
+				-16.1864528656006
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 24.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 2286.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32131.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 221324002.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2411446272.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 0.00974367745220661,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-318.664886474609,
+				0.0356974974274635,
+				-22.9487495422363
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 25.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 2311.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32131.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 221324002.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2411446272.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 0.00973204802721739,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-318.732330322266,
+				0.0358156636357307,
+				-29.7438297271729
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 26.01,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 2303.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32131.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 221324002.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2411446272.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 0.00973165594041348,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-318.797393798828,
+				0.0357593148946762,
+				-36.4296073913574
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 27.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 2322.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32131.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 221324002.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2411446272.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 0.00973194744437933,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-318.863555908203,
+				0.0356347262859344,
+				-43.2292137145996
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 28.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 2296.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32131.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 221324002.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2411446272.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 0.00973179377615452,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-318.929748535156,
+				0.0275859162211418,
+				-50.028881072998
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 29.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": 2285.0,
+				"fps": 85.0,
+				"node_count": 17697.0,
+				"object_count": 32132.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": 221324002.0,
+				"render_texture_memory_bytes": 1924332288.0,
+				"render_video_memory_bytes": 2411446272.0,
+				"resource_count": 474.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 0.00973035674542189,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"position": [
+				-318.996063232422,
+				0.0313437543809414,
+				-56.8285522460938
+			],
+			"render_texture_pixels": [
+				1920,
+				1080
+			],
+			"run": 1,
+			"seconds": 30.0,
+			"stage": 0,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		}
+	],
+	"schema": 2,
+	"screenshots": 1,
+	"seed": 20261021,
+	"soak_duration_contract_seconds": 1800.0,
+	"success": false,
+	"terminal_liveness": {
+		"aircraft_cycle_verified": false,
+		"current_horizontal_speed_mps": 6.79999351501465,
+		"final_observation_seconds": 0.0,
+		"foot_distance_last_60_seconds_m": 0.0,
+		"healthy_on_foot": true,
+		"reboard_cycle_verified": false,
+		"seconds_since_foot_motion": 1030.002394
+	},
+	"traffic_cars": 14,
+	"unavailable_engine_monitors": [],
+	"uninterrupted": false,
+	"wanted_level": 0
+}

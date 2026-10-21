@@ -1,0 +1,4482 @@
+{
+  "analysis_utc": "2026-10-21T14:28:18.081946+00:00",
+  "evidence": {
+    "docs/wave-02/soak-1800-r2/capture_log.json": "3749bfca0f2d3811cc71b4955579c792d3d31698f641a5d9ff5a8c71ede3396a",
+    "docs/wave-02/soak-1800-r2-process.log.meta.json": "6c1bdbac71750bf25baa34fe3023cf00653304637bbc2854e48a94690c94d237",
+    "docs/wave-02/soak-1800-r2-process.log.resources.jsonl": "78c8184f752c2f421621a9ab4baf7868f8a718b86a4116cb0ef49205f8061063"
+  },
+  "source_check": {
+    "checkpoint": "03d9b8700bab986ed191a0bcd39ee8a13cde7ac0",
+    "launch_source_hash_mismatches": [],
+    "launch_asset_hash_mismatches": []
+  },
+  "terminal": {
+    "success": true,
+    "failure_reason": "",
+    "elapsed_seconds": 1800.007973,
+    "finished_utc": "2026-10-21T14:27:49",
+    "engine": "4.7.1-stable (official)",
+    "headless": false,
+    "rendered_timing_baseline": true,
+    "performance_acceptance_valid": false,
+    "memory_leak_acceptance_valid": false,
+    "deaths": 0,
+    "health": 100.0,
+    "mission_stage": 8,
+    "mode": 0,
+    "combat_kills": 9,
+    "screenshots": 39,
+    "terminal_liveness": {
+      "aircraft_cycle_verified": true,
+      "current_horizontal_speed_mps": 3.59464120864868,
+      "final_observation_seconds": 179.984968,
+      "foot_distance_last_60_seconds_m": 256.209415907098,
+      "healthy_on_foot": true,
+      "reboard_cycle_verified": true,
+      "seconds_since_foot_motion": 0.00169899999991685
+    },
+    "runtime_log_scan": {
+      "checked": true,
+      "classified_nonfatal": [],
+      "fatal_errors": [],
+      "path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/soak-1800-r2/engine.log",
+      "seconds": 1800.001855
+    },
+    "free_roam_distance_m": {
+      "car": 3100.03550736821,
+      "foot": 4325.19160506366,
+      "helicopter": 2181.61748916795
+    },
+    "fixture_assisted_checks": [
+      {
+        "name": "pause freezes player and live traffic",
+        "passed": true,
+        "phase": "fixture_assisted",
+        "seconds": 698.910125
+      },
+      {
+        "name": "completed-run checkpoint writes through atomic save path",
+        "passed": true,
+        "phase": "fixture_assisted",
+        "seconds": 698.911081
+      },
+      {
+        "name": "malformed checkpoint is rejected without state mutation",
+        "passed": true,
+        "phase": "fixture_assisted",
+        "seconds": 698.911497
+      },
+      {
+        "name": "walking to airfield cannot satisfy drive stage",
+        "passed": true,
+        "phase": "fixture_assisted",
+        "seconds": 698.957404
+      }
+    ],
+    "recording": {
+      "bytes_written": 0,
+      "cap_reason": "",
+      "capped": false,
+      "directory": "",
+      "enabled": false,
+      "frames_written": 0,
+      "max_bytes": 1073741824,
+      "max_duration_seconds": 720.0,
+      "max_frames": 7200,
+      "missed_samples": 0,
+      "readback_encode_cost_ms": {
+        "count": 0,
+        "max_ms": 0.0,
+        "mean_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "p99_ms": 0.0
+      },
+      "requested": false,
+      "requested_hz": 10,
+      "scheduled_samples": 0,
+      "timestamps": "frames.jsonl monotonic seconds from route setup"
+    },
+    "unavailable_engine_monitors": []
+  },
+  "process_terminal": {
+    "pid": 14160,
+    "started_utc": "2026-10-21T13:57:43.924195+00:00",
+    "finished_utc": "2026-10-21T14:27:50.504656+00:00",
+    "engine_exit_code": 0,
+    "exit_code": 0,
+    "timeout": false,
+    "elapsed_sec": 1806.76,
+    "child_reaped": true,
+    "fatal_errors": [],
+    "all_error_lines": [],
+    "sampling_errors": [],
+    "resource_samples": 361,
+    "rss_samples_available": true,
+    "rss_peak_kib_sampled": 1260896,
+    "child_peak_rss_bytes": 1298644992
+  },
+  "missions": [
+    {
+      "car_distance_m": 642.352882272913,
+      "combat_kills": 3,
+      "duration_seconds": 226.981407,
+      "finished_seconds": 226.981412,
+      "flight_distance_m": 727.800713904668,
+      "run": 1,
+      "started_seconds": 6e-06,
+      "uninterrupted": true
+    },
+    {
+      "car_distance_m": 625.889650374651,
+      "combat_kills": 3,
+      "duration_seconds": 224.323017,
+      "finished_seconds": 451.316901,
+      "flight_distance_m": 727.800245676655,
+      "run": 2,
+      "started_seconds": 226.993884,
+      "uninterrupted": true
+    },
+    {
+      "car_distance_m": 824.069172191346,
+      "combat_kills": 3,
+      "duration_seconds": 247.36041,
+      "finished_seconds": 698.689569,
+      "flight_distance_m": 727.802479997743,
+      "run": 3,
+      "started_seconds": 451.32916,
+      "uninterrupted": true
+    }
+  ],
+  "timing": {
+    "frame_times": {
+      "count": 136556,
+      "max_ms": 763.326,
+      "mean_ms": 13.1228099094876,
+      "p50_ms": 12.716,
+      "p95_ms": 19.129,
+      "p99_ms": 25.436
+    },
+    "frame_times_including_capture_overhead": {
+      "count": 136605,
+      "max_ms": 763.326,
+      "mean_ms": 13.1766792137915,
+      "p50_ms": 12.719,
+      "p95_ms": 19.134,
+      "p99_ms": 25.49
+    },
+    "frame_time_method": "Monotonic process-frame intervals; excludes intervals touched by screenshot/recording readback.",
+    "performance_caveats": [
+      "Runtime timing baseline; exclusive machine/CPU/GPU conditions are not asserted by this script.",
+      "JPEG/screenshot readback adds work; inclusive and unaffected interval summaries are separate.",
+      "Human gameplay and target-frame-rate acceptance require their own review."
+    ]
+  },
+  "samples": {
+    "count": 1801,
+    "first": 0.4,
+    "last": 1800.0,
+    "gaps_above_1p5_seconds": [
+      {
+        "before": 91.0,
+        "after": 92.7,
+        "gap_seconds": 1.7
+      },
+      {
+        "before": 542.01,
+        "after": 543.61,
+        "gap_seconds": 1.6
+      }
+    ],
+    "render_texture_pixels": [
+      [
+        1280,
+        720
+      ]
+    ],
+    "msaa_enums": [
+      2
+    ],
+    "taa_values": [
+      true
+    ]
+  },
+  "process_samples": {
+    "count": 361,
+    "first_process_seconds": 0.197,
+    "last_process_seconds": 1805.281,
+    "pids": [
+      14160
+    ],
+    "max_interval_seconds": 5.018000000000029,
+    "capture_start_utc_midpoint": "2026-10-21T13:57:49.492027+00:00",
+    "alignment_qualification": "Game finished_utc is second resolution; phase assignment uses midpoint and is approximate within about 0.5 seconds. Snapshot phases add up to one-second boundary uncertainty."
+  },
+  "engine_all": {
+    "draw_calls": {
+      "samples": 1801,
+      "first": 0.0,
+      "last": 7773.0,
+      "min": 0.0,
+      "max": 8380.0,
+      "mean": 3719.4525263742366,
+      "median": 3236.0,
+      "p95": 7765.0,
+      "p99": 7868.0,
+      "ols_per_minute": 13.96349225658241
+    },
+    "fps": {
+      "samples": 1801,
+      "first": 1.0,
+      "last": 85.0,
+      "min": 1.0,
+      "max": 86.0,
+      "mean": 75.81843420322043,
+      "median": 85.0,
+      "p95": 85.0,
+      "p99": 85.0,
+      "ols_per_minute": -0.14006285481232078
+    },
+    "node_count": {
+      "samples": 1801,
+      "first": 17834.0,
+      "last": 17835.0,
+      "min": 17833.0,
+      "max": 17993.0,
+      "mean": 17842.61188228762,
+      "median": 17834.0,
+      "p95": 17936.0,
+      "p99": 17970.0,
+      "ols_per_minute": -1.011679910942045
+    },
+    "object_count": {
+      "samples": 1801,
+      "first": 32320.0,
+      "last": 32399.0,
+      "min": 32320.0,
+      "max": 32707.0,
+      "mean": 32395.11327040533,
+      "median": 32383.0,
+      "p95": 32561.0,
+      "p99": 32672.0,
+      "ols_per_minute": -0.4057842208288459
+    },
+    "orphan_node_count": {
+      "samples": 1801,
+      "first": 0.0,
+      "last": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "mean": 0.0,
+      "median": 0.0,
+      "p95": 0.0,
+      "p99": 0.0,
+      "ols_per_minute": 0.0
+    },
+    "render_buffer_memory_bytes": {
+      "samples": 1801,
+      "first": 0.0,
+      "last": 276549426.0,
+      "min": 0.0,
+      "max": 285587716.0,
+      "mean": 274237434.69294834,
+      "median": 276031066.0,
+      "p95": 281760672.0,
+      "p99": 284112712.0,
+      "ols_per_minute": 379519.38559112157
+    },
+    "render_texture_memory_bytes": {
+      "samples": 1801,
+      "first": 0.0,
+      "last": 161069824.0,
+      "min": 0.0,
+      "max": 1771879168.0,
+      "mean": 483978350.8717379,
+      "median": 161069824.0,
+      "p95": 1771289344.0,
+      "p99": 1771879168.0,
+      "ols_per_minute": -48377253.95789993
+    },
+    "render_video_memory_bytes": {
+      "samples": 1801,
+      "first": 0.0,
+      "last": 2306310144.0,
+      "min": 0.0,
+      "max": 2585280512.0,
+      "mean": 2322736691.4558578,
+      "median": 2305753088.0,
+      "p95": 2578595840.0,
+      "p99": 2582396928.0,
+      "ols_per_minute": -1957653.437841074
+    },
+    "resource_count": {
+      "samples": 1801,
+      "first": 475.0,
+      "last": 475.0,
+      "min": 475.0,
+      "max": 495.0,
+      "mean": 476.58800666296503,
+      "median": 475.0,
+      "p95": 495.0,
+      "p99": 495.0,
+      "ols_per_minute": -0.20623131394624555
+    },
+    "static_memory_bytes": {
+      "samples": 1801,
+      "first": 239122537.0,
+      "last": 322266514.0,
+      "min": 239122537.0,
+      "max": 322266514.0,
+      "mean": 314930988.74125487,
+      "median": 317011694.0,
+      "p95": 321896246.0,
+      "p99": 322173862.0,
+      "ols_per_minute": 715220.642559622
+    },
+    "static_memory_peak_bytes": {
+      "samples": 1801,
+      "first": 353618498.0,
+      "last": 470355724.0,
+      "min": 353618498.0,
+      "max": 470355724.0,
+      "mean": 462978129.76957244,
+      "median": 470355724.0,
+      "p95": 470355724.0,
+      "p99": 470355724.0,
+      "ols_per_minute": 1315743.1420479636
+    }
+  },
+  "process_all": {
+    "rss_mib": {
+      "samples": 361,
+      "first": 0.625,
+      "last": 1231.34375,
+      "min": 0.625,
+      "max": 1231.34375,
+      "mean": 1201.4223078254847,
+      "median": 1220.25,
+      "p95": 1230.90625,
+      "p99": 1231.234375,
+      "ols_per_minute": 4.5146455965955505
+    },
+    "cpu_percent": {
+      "samples": 361,
+      "first": 0.0,
+      "last": 119.4,
+      "min": 0.0,
+      "max": 190.3,
+      "mean": 149.34626038781164,
+      "median": 145.7,
+      "p95": 183.0,
+      "p99": 187.8,
+      "ols_per_minute": 0.09475530641945529
+    }
+  },
+  "windows": [
+    {
+      "capture_window_seconds": [
+        0,
+        30
+      ],
+      "engine": {
+        "draw_calls": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 2276.0,
+          "min": 0.0,
+          "max": 3073.0,
+          "mean": 1544.3333333333333,
+          "median": 1364.0,
+          "p95": 2315.0,
+          "p99": 3073.0,
+          "ols_per_minute": 2672.170987295085
+        },
+        "fps": {
+          "samples": 30,
+          "first": 1.0,
+          "last": 85.0,
+          "min": 1.0,
+          "max": 85.0,
+          "mean": 77.53333333333333,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": 80.85507677733335
+        },
+        "node_count": {
+          "samples": 30,
+          "first": 17834.0,
+          "last": 17833.0,
+          "min": 17833.0,
+          "max": 17834.0,
+          "mean": 17833.1,
+          "median": 17833.0,
+          "p95": 17834.0,
+          "p99": 17834.0,
+          "ols_per_minute": -1.0781145769713825
+        },
+        "object_count": {
+          "samples": 30,
+          "first": 32320.0,
+          "last": 32330.0,
+          "min": 32320.0,
+          "max": 32331.0,
+          "mean": 32328.466666666667,
+          "median": 32329.0,
+          "p95": 32331.0,
+          "p99": 32331.0,
+          "ols_per_minute": 9.115400632164782
+        },
+        "orphan_node_count": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 208352482.0,
+          "min": 0.0,
+          "max": 208352482.0,
+          "mean": 199212955.26666668,
+          "median": 205242322.0,
+          "p95": 208352482.0,
+          "p99": 208352482.0,
+          "ols_per_minute": 85321556.74188314
+        },
+        "render_texture_memory_bytes": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 1771289344.0,
+          "min": 0.0,
+          "max": 1771289344.0,
+          "mean": 1712246365.8666666,
+          "median": 1771289344.0,
+          "p95": 1771289344.0,
+          "p99": 1771289344.0,
+          "ols_per_minute": 671419168.4257784
+        },
+        "render_video_memory_bytes": {
+          "samples": 30,
+          "first": 0.0,
+          "last": 2229501952.0,
+          "min": 0.0,
+          "max": 2229501952.0,
+          "mean": 2152827016.5333333,
+          "median": 2226159616.0,
+          "p95": 2229501952.0,
+          "p99": 2229501952.0,
+          "ols_per_minute": 851925070.1909014
+        },
+        "resource_count": {
+          "samples": 30,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 475.0,
+          "mean": 475.0,
+          "median": 475.0,
+          "p95": 475.0,
+          "p99": 475.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_bytes": {
+          "samples": 30,
+          "first": 239122537.0,
+          "last": 282274574.0,
+          "min": 239122537.0,
+          "max": 282274574.0,
+          "mean": 277953094.6333333,
+          "median": 278279324.0,
+          "p95": 282234786.0,
+          "p99": 282274574.0,
+          "ols_per_minute": 24929640.436883494
+        },
+        "static_memory_peak_bytes": {
+          "samples": 30,
+          "first": 353618498.0,
+          "last": 353618498.0,
+          "min": 353618498.0,
+          "max": 353618498.0,
+          "mean": 353618498.0,
+          "median": 353618498.0,
+          "p95": 353618498.0,
+          "p99": 353618498.0,
+          "ols_per_minute": 0.0
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 6,
+          "first": 900.765625,
+          "last": 906.328125,
+          "min": 900.765625,
+          "max": 906.328125,
+          "mean": 902.7395833333334,
+          "median": 901.2265625,
+          "p95": 906.328125,
+          "p99": 906.328125,
+          "ols_per_minute": 15.066620394575809
+        },
+        "cpu_percent": {
+          "samples": 6,
+          "first": 128.9,
+          "last": 134.6,
+          "min": 128.9,
+          "max": 134.6,
+          "mean": 131.41666666666666,
+          "median": 130.89999999999998,
+          "p95": 134.6,
+          "p99": 134.6,
+          "ols_per_minute": 12.626751048327058
+        }
+      }
+    },
+    {
+      "capture_window_seconds": [
+        30,
+        120
+      ],
+      "engine": {
+        "draw_calls": {
+          "samples": 90,
+          "first": 2241.0,
+          "last": 3990.0,
+          "min": 1364.0,
+          "max": 6956.0,
+          "mean": 4423.488888888889,
+          "median": 4706.0,
+          "p95": 6790.0,
+          "p99": 6956.0,
+          "ols_per_minute": -20.20122983729897
+        },
+        "fps": {
+          "samples": 90,
+          "first": 85.0,
+          "last": 85.0,
+          "min": 16.0,
+          "max": 86.0,
+          "mean": 72.23333333333333,
+          "median": 72.0,
+          "p95": 85.0,
+          "p99": 86.0,
+          "ols_per_minute": 1.7368711332284787
+        },
+        "node_count": {
+          "samples": 90,
+          "first": 17833.0,
+          "last": 17967.0,
+          "min": 17833.0,
+          "max": 17967.0,
+          "mean": 17859.533333333333,
+          "median": 17835.0,
+          "p95": 17967.0,
+          "p99": 17967.0,
+          "ols_per_minute": 78.84000334814853
+        },
+        "object_count": {
+          "samples": 90,
+          "first": 32330.0,
+          "last": 32646.0,
+          "min": 32330.0,
+          "max": 32646.0,
+          "mean": 32395.78888888889,
+          "median": 32342.0,
+          "p95": 32645.0,
+          "p99": 32646.0,
+          "ols_per_minute": 182.55470570255181
+        },
+        "orphan_node_count": {
+          "samples": 90,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 90,
+          "first": 208352482.0,
+          "last": 281793884.0,
+          "min": 208352482.0,
+          "max": 281793884.0,
+          "mean": 264683359.93333334,
+          "median": 274070914.0,
+          "p95": 281793884.0,
+          "p99": 281793884.0,
+          "ols_per_minute": 43133017.83136526
+        },
+        "render_texture_memory_bytes": {
+          "samples": 90,
+          "first": 1771289344.0,
+          "last": 1771879168.0,
+          "min": 1503410944.0,
+          "max": 1771879168.0,
+          "mean": 1756584157.8666666,
+          "median": 1771289344.0,
+          "p95": 1771879168.0,
+          "p99": 1771879168.0,
+          "ols_per_minute": -20151991.59830423
+        },
+        "render_video_memory_bytes": {
+          "samples": 90,
+          "first": 2229501952.0,
+          "last": 2578595840.0,
+          "min": 2229501952.0,
+          "max": 2578595840.0,
+          "mean": 2371732366.2222223,
+          "median": 2301591552.0,
+          "p95": 2578595840.0,
+          "p99": 2578595840.0,
+          "ols_per_minute": 272967083.76556873
+        },
+        "resource_count": {
+          "samples": 90,
+          "first": 475.0,
+          "last": 495.0,
+          "min": 475.0,
+          "max": 495.0,
+          "mean": 481.44444444444446,
+          "median": 475.0,
+          "p95": 495.0,
+          "p99": 495.0,
+          "ols_per_minute": 17.400608112219118
+        },
+        "static_memory_bytes": {
+          "samples": 90,
+          "first": 282315402.0,
+          "last": 306769398.0,
+          "min": 282304846.0,
+          "max": 306799450.0,
+          "mean": 299653563.64444447,
+          "median": 302700552.0,
+          "p95": 306769398.0,
+          "p99": 306799450.0,
+          "ols_per_minute": 15079662.907195367
+        },
+        "static_memory_peak_bytes": {
+          "samples": 90,
+          "first": 353618498.0,
+          "last": 460889575.0,
+          "min": 353618498.0,
+          "max": 460889575.0,
+          "mean": 392891624.9,
+          "median": 353618498.0,
+          "p95": 460889575.0,
+          "p99": 460889575.0,
+          "ols_per_minute": 99595564.30444509
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 18,
+          "first": 906.390625,
+          "last": 1195.765625,
+          "min": 906.390625,
+          "max": 1195.90625,
+          "mean": 1034.513888888889,
+          "median": 945.5,
+          "p95": 1195.90625,
+          "p99": 1195.90625,
+          "ols_per_minute": 260.52603628093254
+        },
+        "cpu_percent": {
+          "samples": 18,
+          "first": 129.6,
+          "last": 160.5,
+          "min": 127.5,
+          "max": 184.3,
+          "mean": 165.10555555555555,
+          "median": 173.4,
+          "p95": 184.3,
+          "p99": 184.3,
+          "ols_per_minute": 12.087049743914529
+        }
+      }
+    },
+    {
+      "capture_window_seconds": [
+        120,
+        300
+      ],
+      "engine": {
+        "draw_calls": {
+          "samples": 180,
+          "first": 3840.0,
+          "last": 6724.0,
+          "min": 629.0,
+          "max": 8199.0,
+          "mean": 3381.5333333333333,
+          "median": 2331.5,
+          "p95": 6901.0,
+          "p99": 8150.0,
+          "ols_per_minute": -99.08603721938948
+        },
+        "fps": {
+          "samples": 180,
+          "first": 85.0,
+          "last": 57.0,
+          "min": 52.0,
+          "max": 85.0,
+          "mean": 78.08333333333333,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": -2.5201176152487452
+        },
+        "node_count": {
+          "samples": 180,
+          "first": 17965.0,
+          "last": 17835.0,
+          "min": 17833.0,
+          "max": 17965.0,
+          "mean": 17840.466666666667,
+          "median": 17834.0,
+          "p95": 17936.0,
+          "p99": 17963.0,
+          "ols_per_minute": -12.852356769805148
+        },
+        "object_count": {
+          "samples": 180,
+          "first": 32639.0,
+          "last": 32362.0,
+          "min": 32345.0,
+          "max": 32639.0,
+          "mean": 32366.416666666668,
+          "median": 32352.0,
+          "p95": 32561.0,
+          "p99": 32632.0,
+          "ols_per_minute": -25.200688041067448
+        },
+        "orphan_node_count": {
+          "samples": 180,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 180,
+          "first": 281793884.0,
+          "last": 274070914.0,
+          "min": 272515834.0,
+          "max": 281793884.0,
+          "mean": 274136299.3333333,
+          "median": 274070914.0,
+          "p95": 281760672.0,
+          "p99": 281793884.0,
+          "ols_per_minute": -1131492.5019069412
+        },
+        "render_texture_memory_bytes": {
+          "samples": 180,
+          "first": 1771879168.0,
+          "last": 1234942720.0,
+          "min": 1234942720.0,
+          "max": 1771879168.0,
+          "mean": 1264772522.6666667,
+          "median": 1234942720.0,
+          "p95": 1771879168.0,
+          "p99": 1771879168.0,
+          "ols_per_minute": -56350076.11638202
+        },
+        "render_video_memory_bytes": {
+          "samples": 180,
+          "first": 2578595840.0,
+          "last": 2302312448.0,
+          "min": 2300641280.0,
+          "max": 2578595840.0,
+          "mean": 2317271586.133333,
+          "median": 2302312448.0,
+          "p95": 2578595840.0,
+          "p99": 2578595840.0,
+          "ols_per_minute": -29342030.66192355
+        },
+        "resource_count": {
+          "samples": 180,
+          "first": 495.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 495.0,
+          "mean": 476.1111111111111,
+          "median": 475.0,
+          "p95": 495.0,
+          "p99": 495.0,
+          "ols_per_minute": -2.0989476995378795
+        },
+        "static_memory_bytes": {
+          "samples": 180,
+          "first": 306771578.0,
+          "last": 309261590.0,
+          "min": 306219526.0,
+          "max": 309299406.0,
+          "mean": 308296479.6666667,
+          "median": 308328818.0,
+          "p95": 309195798.0,
+          "p99": 309261862.0,
+          "ols_per_minute": 744953.8208224551
+        },
+        "static_memory_peak_bytes": {
+          "samples": 180,
+          "first": 460889575.0,
+          "last": 460889575.0,
+          "min": 460889575.0,
+          "max": 460889575.0,
+          "mean": 460889575.0,
+          "median": 460889575.0,
+          "p95": 460889575.0,
+          "p99": 460889575.0,
+          "ols_per_minute": 0.0
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 35,
+          "first": 1196.515625,
+          "last": 1203.53125,
+          "min": 1196.515625,
+          "max": 1203.53125,
+          "mean": 1200.0584821428572,
+          "median": 1200.03125,
+          "p95": 1203.515625,
+          "p99": 1203.53125,
+          "ols_per_minute": 1.9071672631400953
+        },
+        "cpu_percent": {
+          "samples": 35,
+          "first": 140.7,
+          "last": 174.3,
+          "min": 113.4,
+          "max": 185.0,
+          "mean": 144.92,
+          "median": 132.6,
+          "p95": 182.7,
+          "p99": 185.0,
+          "ols_per_minute": 0.43016257344601516
+        }
+      }
+    },
+    {
+      "capture_window_seconds": [
+        300,
+        600
+      ],
+      "engine": {
+        "draw_calls": {
+          "samples": 300,
+          "first": 6680.0,
+          "last": 6009.0,
+          "min": 354.0,
+          "max": 8243.0,
+          "mean": 3710.89,
+          "median": 3418.0,
+          "p95": 6757.0,
+          "p99": 8054.0,
+          "ols_per_minute": 27.69952349948341
+        },
+        "fps": {
+          "samples": 300,
+          "first": 59.0,
+          "last": 65.0,
+          "min": 18.0,
+          "max": 86.0,
+          "mean": 75.63,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 86.0,
+          "ols_per_minute": 0.009582003822678748
+        },
+        "node_count": {
+          "samples": 300,
+          "first": 17836.0,
+          "last": 17834.0,
+          "min": 17833.0,
+          "max": 17993.0,
+          "mean": 17871.72333333333,
+          "median": 17835.0,
+          "p95": 17989.0,
+          "p99": 17991.0,
+          "ols_per_minute": -19.898565655614277
+        },
+        "object_count": {
+          "samples": 300,
+          "first": 32366.0,
+          "last": 32377.0,
+          "min": 32359.0,
+          "max": 32707.0,
+          "mean": 32447.133333333335,
+          "median": 32374.0,
+          "p95": 32688.0,
+          "p99": 32697.0,
+          "ols_per_minute": -39.103052857230324
+        },
+        "orphan_node_count": {
+          "samples": 300,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 300,
+          "first": 274070914.0,
+          "last": 275512706.0,
+          "min": 273957626.0,
+          "max": 285587716.0,
+          "mean": 277260773.96,
+          "median": 275512706.0,
+          "p95": 284112712.0,
+          "p99": 284145924.0,
+          "ols_per_minute": -989915.5888588942
+        },
+        "render_texture_memory_bytes": {
+          "samples": 300,
+          "first": 1234942720.0,
+          "last": 161069824.0,
+          "min": 161069824.0,
+          "max": 1234942720.0,
+          "mean": 803603773.44,
+          "median": 698006272.0,
+          "p95": 1234942720.0,
+          "p99": 1234942720.0,
+          "ols_per_minute": -221133763.43059632
+        },
+        "render_video_memory_bytes": {
+          "samples": 300,
+          "first": 2302312448.0,
+          "last": 2305196032.0,
+          "min": 2302312448.0,
+          "max": 2585280512.0,
+          "mean": 2396057654.613333,
+          "median": 2305196032.0,
+          "p95": 2582396928.0,
+          "p99": 2582396928.0,
+          "ols_per_minute": -43015364.023271635
+        },
+        "resource_count": {
+          "samples": 300,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 495.0,
+          "mean": 481.93333333333334,
+          "median": 475.0,
+          "p95": 495.0,
+          "p99": 495.0,
+          "ols_per_minute": -3.198678636131941
+        },
+        "static_memory_bytes": {
+          "samples": 300,
+          "first": 309267002.0,
+          "last": 313884871.0,
+          "min": 309235902.0,
+          "max": 314431631.0,
+          "mean": 312287331.7366667,
+          "median": 312234681.0,
+          "p95": 314062803.0,
+          "p99": 314425751.0,
+          "ols_per_minute": 732046.055118956
+        },
+        "static_memory_peak_bytes": {
+          "samples": 300,
+          "first": 460889575.0,
+          "last": 470355724.0,
+          "min": 460889575.0,
+          "max": 470355724.0,
+          "mean": 466658208.3666667,
+          "median": 466018343.0,
+          "p95": 470355724.0,
+          "p99": 470355724.0,
+          "ols_per_minute": 1115639.089995025
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 60,
+          "first": 1203.5625,
+          "last": 1216.171875,
+          "min": 1203.5625,
+          "max": 1216.203125,
+          "mean": 1212.325,
+          "median": 1213.5625,
+          "p95": 1216.171875,
+          "p99": 1216.203125,
+          "ols_per_minute": 2.0991063040080613
+        },
+        "cpu_percent": {
+          "samples": 60,
+          "first": 171.3,
+          "last": 139.9,
+          "min": 116.1,
+          "max": 182.8,
+          "mean": 149.80333333333334,
+          "median": 145.35,
+          "p95": 180.4,
+          "p99": 182.8,
+          "ols_per_minute": 1.5668892966307242
+        }
+      }
+    },
+    {
+      "capture_window_seconds": [
+        600,
+        900
+      ],
+      "engine": {
+        "draw_calls": {
+          "samples": 300,
+          "first": 5811.0,
+          "last": 4853.0,
+          "min": 245.0,
+          "max": 8267.0,
+          "mean": 3815.4133333333334,
+          "median": 3450.0,
+          "p95": 7539.0,
+          "p99": 7927.0,
+          "ols_per_minute": -96.19399966211232
+        },
+        "fps": {
+          "samples": 300,
+          "first": 69.0,
+          "last": 67.0,
+          "min": 46.0,
+          "max": 86.0,
+          "mean": 77.28333333333333,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 86.0,
+          "ols_per_minute": 0.500014997036595
+        },
+        "node_count": {
+          "samples": 300,
+          "first": 17834.0,
+          "last": 17834.0,
+          "min": 17833.0,
+          "max": 17866.0,
+          "mean": 17834.383333333335,
+          "median": 17834.0,
+          "p95": 17837.0,
+          "p99": 17839.0,
+          "ols_per_minute": -0.11126735913422932
+        },
+        "object_count": {
+          "samples": 300,
+          "first": 32377.0,
+          "last": 32382.0,
+          "min": 32370.0,
+          "max": 32470.0,
+          "mean": 32381.75,
+          "median": 32380.0,
+          "p95": 32396.0,
+          "p99": 32404.0,
+          "ols_per_minute": 1.723422415724576
+        },
+        "orphan_node_count": {
+          "samples": 300,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 300,
+          "first": 275512706.0,
+          "last": 276031066.0,
+          "min": 275512706.0,
+          "max": 276064278.0,
+          "mean": 275782363.9066667,
+          "median": 276031066.0,
+          "p95": 276031066.0,
+          "p99": 276031066.0,
+          "ols_per_minute": 155290.74036302083
+        },
+        "render_texture_memory_bytes": {
+          "samples": 300,
+          "first": 161069824.0,
+          "last": 161069824.0,
+          "min": 161069824.0,
+          "max": 161069824.0,
+          "mean": 161069824.0,
+          "median": 161069824.0,
+          "p95": 161069824.0,
+          "p99": 161069824.0,
+          "ols_per_minute": 0.0
+        },
+        "render_video_memory_bytes": {
+          "samples": 300,
+          "first": 2305196032.0,
+          "last": 2305753088.0,
+          "min": 2305196032.0,
+          "max": 2305753088.0,
+          "mean": 2305485701.12,
+          "median": 2305753088.0,
+          "p95": 2305753088.0,
+          "p99": 2305753088.0,
+          "ols_per_minute": 166852.3852634405
+        },
+        "resource_count": {
+          "samples": 300,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 475.0,
+          "mean": 475.0,
+          "median": 475.0,
+          "p95": 475.0,
+          "p99": 475.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_bytes": {
+          "samples": 300,
+          "first": 313877171.0,
+          "last": 317068482.0,
+          "min": 313819287.0,
+          "max": 317194142.0,
+          "mean": 314820448.00333333,
+          "median": 314417691.0,
+          "p95": 316418927.0,
+          "p99": 317120558.0,
+          "ols_per_minute": 621510.3927948362
+        },
+        "static_memory_peak_bytes": {
+          "samples": 300,
+          "first": 470355724.0,
+          "last": 470355724.0,
+          "min": 470355724.0,
+          "max": 470355724.0,
+          "mean": 470355724.0,
+          "median": 470355724.0,
+          "p95": 470355724.0,
+          "p99": 470355724.0,
+          "ols_per_minute": 0.0
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 60,
+          "first": 1217.21875,
+          "last": 1220.25,
+          "min": 1217.21875,
+          "max": 1220.25,
+          "mean": 1217.7846354166666,
+          "median": 1217.7265625,
+          "p95": 1218.03125,
+          "p99": 1220.25,
+          "ols_per_minute": 0.302319135581391
+        },
+        "cpu_percent": {
+          "samples": 60,
+          "first": 159.8,
+          "last": 171.3,
+          "min": 112.8,
+          "max": 186.5,
+          "mean": 151.92833333333334,
+          "median": 152.55,
+          "p95": 182.0,
+          "p99": 186.5,
+          "ols_per_minute": -0.8038485376036439
+        }
+      }
+    },
+    {
+      "capture_window_seconds": [
+        900,
+        1200
+      ],
+      "engine": {
+        "draw_calls": {
+          "samples": 300,
+          "first": 4402.0,
+          "last": 7559.0,
+          "min": 399.0,
+          "max": 7617.0,
+          "mean": 3281.9166666666665,
+          "median": 2622.0,
+          "p95": 6931.0,
+          "p99": 7431.0,
+          "ols_per_minute": -177.62735676756608
+        },
+        "fps": {
+          "samples": 300,
+          "first": 73.0,
+          "last": 50.0,
+          "min": 50.0,
+          "max": 86.0,
+          "mean": 79.63333333333334,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": 1.0407884416268909
+        },
+        "node_count": {
+          "samples": 300,
+          "first": 17834.0,
+          "last": 17833.0,
+          "min": 17833.0,
+          "max": 17865.0,
+          "mean": 17834.47,
+          "median": 17834.0,
+          "p95": 17837.0,
+          "p99": 17839.0,
+          "ols_per_minute": -0.20545610772886447
+        },
+        "object_count": {
+          "samples": 300,
+          "first": 32382.0,
+          "last": 32380.0,
+          "min": 32378.0,
+          "max": 32470.0,
+          "mean": 32385.123333333333,
+          "median": 32383.0,
+          "p95": 32395.0,
+          "p99": 32404.0,
+          "ols_per_minute": -0.48743670204032064
+        },
+        "orphan_node_count": {
+          "samples": 300,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 300,
+          "first": 276031066.0,
+          "last": 276031066.0,
+          "min": 276031066.0,
+          "max": 276064278.0,
+          "mean": 276031287.41333336,
+          "median": 276031066.0,
+          "p95": 276031066.0,
+          "p99": 276031066.0,
+          "ols_per_minute": -85.90390897566525
+        },
+        "render_texture_memory_bytes": {
+          "samples": 300,
+          "first": 161069824.0,
+          "last": 161069824.0,
+          "min": 161069824.0,
+          "max": 161069824.0,
+          "mean": 161069824.0,
+          "median": 161069824.0,
+          "p95": 161069824.0,
+          "p99": 161069824.0,
+          "ols_per_minute": 0.0
+        },
+        "render_video_memory_bytes": {
+          "samples": 300,
+          "first": 2305753088.0,
+          "last": 2305753088.0,
+          "min": 2305753088.0,
+          "max": 2305753088.0,
+          "mean": 2305753088.0,
+          "median": 2305753088.0,
+          "p95": 2305753088.0,
+          "p99": 2305753088.0,
+          "ols_per_minute": 0.0
+        },
+        "resource_count": {
+          "samples": 300,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 475.0,
+          "mean": 475.0,
+          "median": 475.0,
+          "p95": 475.0,
+          "p99": 475.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_bytes": {
+          "samples": 300,
+          "first": 317052742.0,
+          "last": 320231990.0,
+          "min": 316985926.0,
+          "max": 320232326.0,
+          "mean": 317514417.4266667,
+          "median": 317481042.0,
+          "p95": 317811886.0,
+          "p99": 320035742.0,
+          "ols_per_minute": 233897.70051150586
+        },
+        "static_memory_peak_bytes": {
+          "samples": 300,
+          "first": 470355724.0,
+          "last": 470355724.0,
+          "min": 470355724.0,
+          "max": 470355724.0,
+          "mean": 470355724.0,
+          "median": 470355724.0,
+          "p95": 470355724.0,
+          "p99": 470355724.0,
+          "ols_per_minute": 0.0
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 60,
+          "first": 1226.46875,
+          "last": 1227.015625,
+          "min": 1226.46875,
+          "max": 1227.328125,
+          "mean": 1226.9010416666667,
+          "median": 1226.9453125,
+          "p95": 1227.28125,
+          "p99": 1227.328125,
+          "ols_per_minute": 0.17934267449045882
+        },
+        "cpu_percent": {
+          "samples": 60,
+          "first": 164.3,
+          "last": 149.4,
+          "min": 113.5,
+          "max": 182.1,
+          "mean": 147.63833333333332,
+          "median": 140.9,
+          "p95": 180.1,
+          "p99": 182.1,
+          "ols_per_minute": -1.04453161512198
+        }
+      }
+    },
+    {
+      "capture_window_seconds": [
+        1200,
+        1500
+      ],
+      "engine": {
+        "draw_calls": {
+          "samples": 300,
+          "first": 7512.0,
+          "last": 7251.0,
+          "min": 270.0,
+          "max": 8380.0,
+          "mean": 3899.41,
+          "median": 3542.5,
+          "p95": 7460.0,
+          "p99": 7976.0,
+          "ols_per_minute": -279.4157012678813
+        },
+        "fps": {
+          "samples": 300,
+          "first": 51.0,
+          "last": 52.0,
+          "min": 43.0,
+          "max": 86.0,
+          "mean": 75.46,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": 2.115283100129597
+        },
+        "node_count": {
+          "samples": 300,
+          "first": 17833.0,
+          "last": 17833.0,
+          "min": 17833.0,
+          "max": 17864.0,
+          "mean": 17834.203333333335,
+          "median": 17834.0,
+          "p95": 17836.0,
+          "p99": 17837.0,
+          "ols_per_minute": 0.04387774870552159
+        },
+        "object_count": {
+          "samples": 300,
+          "first": 32381.0,
+          "last": 32384.0,
+          "min": 32379.0,
+          "max": 32468.0,
+          "mean": 32385.92,
+          "median": 32384.0,
+          "p95": 32395.0,
+          "p99": 32400.0,
+          "ols_per_minute": 1.333002771668769
+        },
+        "orphan_node_count": {
+          "samples": 300,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 300,
+          "first": 276031066.0,
+          "last": 276031066.0,
+          "min": 276031066.0,
+          "max": 276064278.0,
+          "mean": 276031287.41333336,
+          "median": 276031066.0,
+          "p95": 276031066.0,
+          "p99": 276031066.0,
+          "ols_per_minute": -23.906293423739086
+        },
+        "render_texture_memory_bytes": {
+          "samples": 300,
+          "first": 161069824.0,
+          "last": 161069824.0,
+          "min": 161069824.0,
+          "max": 161069824.0,
+          "mean": 161069824.0,
+          "median": 161069824.0,
+          "p95": 161069824.0,
+          "p99": 161069824.0,
+          "ols_per_minute": 0.0
+        },
+        "render_video_memory_bytes": {
+          "samples": 300,
+          "first": 2305753088.0,
+          "last": 2305753088.0,
+          "min": 2305753088.0,
+          "max": 2305753088.0,
+          "mean": 2305753088.0,
+          "median": 2305753088.0,
+          "p95": 2305753088.0,
+          "p99": 2305753088.0,
+          "ols_per_minute": 0.0
+        },
+        "resource_count": {
+          "samples": 300,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 475.0,
+          "mean": 475.0,
+          "median": 475.0,
+          "p95": 475.0,
+          "p99": 475.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_bytes": {
+          "samples": 300,
+          "first": 320241746.0,
+          "last": 321123790.0,
+          "min": 320179302.0,
+          "max": 321181614.0,
+          "mean": 320596140.1333333,
+          "median": 320646418.0,
+          "p95": 320976622.0,
+          "p99": 321124318.0,
+          "ols_per_minute": 167818.06699574742
+        },
+        "static_memory_peak_bytes": {
+          "samples": 300,
+          "first": 470355724.0,
+          "last": 470355724.0,
+          "min": 470355724.0,
+          "max": 470355724.0,
+          "mean": 470355724.0,
+          "median": 470355724.0,
+          "p95": 470355724.0,
+          "p99": 470355724.0,
+          "ols_per_minute": 0.0
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 60,
+          "first": 1227.015625,
+          "last": 1228.421875,
+          "min": 1227.015625,
+          "max": 1228.421875,
+          "mean": 1227.6614583333333,
+          "median": 1227.703125,
+          "p95": 1228.375,
+          "p99": 1228.421875,
+          "ols_per_minute": 0.3054508606991084
+        },
+        "cpu_percent": {
+          "samples": 60,
+          "first": 184.8,
+          "last": 181.7,
+          "min": 111.8,
+          "max": 184.8,
+          "mean": 148.83333333333334,
+          "median": 144.05,
+          "p95": 181.7,
+          "p99": 184.8,
+          "ols_per_minute": -3.0066582220486415
+        }
+      }
+    },
+    {
+      "capture_window_seconds": [
+        1500,
+        1800.1
+      ],
+      "engine": {
+        "draw_calls": {
+          "samples": 301,
+          "first": 7206.0,
+          "last": 7773.0,
+          "min": 422.0,
+          "max": 7814.0,
+          "mean": 4097.425249169435,
+          "median": 3559.0,
+          "p95": 7785.0,
+          "p99": 7798.0,
+          "ols_per_minute": -14.509509114349894
+        },
+        "fps": {
+          "samples": 301,
+          "first": 54.0,
+          "last": 85.0,
+          "min": 43.0,
+          "max": 86.0,
+          "mean": 70.64784053156146,
+          "median": 75.0,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": -2.965549679627278
+        },
+        "node_count": {
+          "samples": 301,
+          "first": 17833.0,
+          "last": 17835.0,
+          "min": 17833.0,
+          "max": 17867.0,
+          "mean": 17835.46511627907,
+          "median": 17835.0,
+          "p95": 17837.0,
+          "p99": 17840.0,
+          "ols_per_minute": -0.3783698035911901
+        },
+        "object_count": {
+          "samples": 301,
+          "first": 32384.0,
+          "last": 32399.0,
+          "min": 32383.0,
+          "max": 32484.0,
+          "mean": 32399.30564784053,
+          "median": 32398.0,
+          "p95": 32406.0,
+          "p99": 32418.0,
+          "ols_per_minute": -0.5787529728615252
+        },
+        "orphan_node_count": {
+          "samples": 301,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 301,
+          "first": 276031066.0,
+          "last": 276549426.0,
+          "min": 276031066.0,
+          "max": 276582638.0,
+          "mean": 276503259.6079734,
+          "median": 276549426.0,
+          "p95": 276549426.0,
+          "p99": 276549426.0,
+          "ols_per_minute": 50371.8930715625
+        },
+        "render_texture_memory_bytes": {
+          "samples": 301,
+          "first": 161069824.0,
+          "last": 161069824.0,
+          "min": 161069824.0,
+          "max": 161069824.0,
+          "mean": 161069824.0,
+          "median": 161069824.0,
+          "p95": 161069824.0,
+          "p99": 161069824.0,
+          "ols_per_minute": 0.0
+        },
+        "render_video_memory_bytes": {
+          "samples": 301,
+          "first": 2305753088.0,
+          "last": 2306310144.0,
+          "min": 2305753088.0,
+          "max": 2306310144.0,
+          "mean": 2306260175.5215945,
+          "median": 2306310144.0,
+          "p95": 2306310144.0,
+          "p99": 2306310144.0,
+          "ols_per_minute": 54401.700145548515
+        },
+        "resource_count": {
+          "samples": 301,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 475.0,
+          "mean": 475.0,
+          "median": 475.0,
+          "p95": 475.0,
+          "p99": 475.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_bytes": {
+          "samples": 301,
+          "first": 321127246.0,
+          "last": 322266514.0,
+          "min": 321106102.0,
+          "max": 322266514.0,
+          "mean": 321675845.9335548,
+          "median": 321723318.0,
+          "p95": 322190406.0,
+          "p99": 322247546.0,
+          "ols_per_minute": 215532.48881289177
+        },
+        "static_memory_peak_bytes": {
+          "samples": 301,
+          "first": 470355724.0,
+          "last": 470355724.0,
+          "min": 470355724.0,
+          "max": 470355724.0,
+          "mean": 470355724.0,
+          "median": 470355724.0,
+          "p95": 470355724.0,
+          "p99": 470355724.0,
+          "ols_per_minute": 0.0
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 60,
+          "first": 1228.46875,
+          "last": 1231.34375,
+          "min": 1228.46875,
+          "max": 1231.34375,
+          "mean": 1230.0854166666666,
+          "median": 1230.65625,
+          "p95": 1231.234375,
+          "p99": 1231.34375,
+          "ols_per_minute": 0.6754376602513217
+        },
+        "cpu_percent": {
+          "samples": 60,
+          "first": 178.8,
+          "last": 119.4,
+          "min": 113.7,
+          "max": 190.3,
+          "mean": 151.48333333333332,
+          "median": 143.7,
+          "p95": 187.8,
+          "p99": 190.3,
+          "ols_per_minute": -0.2681882931807358
+        }
+      }
+    }
+  ],
+  "phases": [
+    {
+      "name": "mission_1",
+      "first_sample_seconds": 0.4,
+      "last_sample_seconds": 226.01,
+      "next_phase_first_sample_seconds": 227.04,
+      "engine": {
+        "draw_calls": {
+          "samples": 227,
+          "first": 0.0,
+          "last": 1431.0,
+          "min": 0.0,
+          "max": 8199.0,
+          "mean": 3538.7577092511015,
+          "median": 3116.0,
+          "p95": 6811.0,
+          "p99": 7960.0,
+          "ols_per_minute": -146.9189218497567
+        },
+        "fps": {
+          "samples": 227,
+          "first": 1.0,
+          "last": 85.0,
+          "min": 1.0,
+          "max": 86.0,
+          "mean": 76.29515418502203,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": 2.420614164218381
+        },
+        "node_count": {
+          "samples": 227,
+          "first": 17834.0,
+          "last": 17833.0,
+          "min": 17833.0,
+          "max": 17967.0,
+          "mean": 17849.281938325992,
+          "median": 17834.0,
+          "p95": 17941.0,
+          "p99": 17967.0,
+          "ols_per_minute": 0.4575743853204479
+        },
+        "object_count": {
+          "samples": 227,
+          "first": 32320.0,
+          "last": 32347.0,
+          "min": 32320.0,
+          "max": 32646.0,
+          "mean": 32376.79295154185,
+          "median": 32349.0,
+          "p95": 32579.0,
+          "p99": 32646.0,
+          "ols_per_minute": 7.260253412947607
+        },
+        "orphan_node_count": {
+          "samples": 227,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 227,
+          "first": 0.0,
+          "last": 274070914.0,
+          "min": 0.0,
+          "max": 281793884.0,
+          "mean": 260795341.36563876,
+          "median": 274070914.0,
+          "p95": 281760672.0,
+          "p99": 281793884.0,
+          "ols_per_minute": 18561056.078656934
+        },
+        "render_texture_memory_bytes": {
+          "samples": 227,
+          "first": 0.0,
+          "last": 1234942720.0,
+          "min": 0.0,
+          "max": 1771879168.0,
+          "mean": 1528494276.229075,
+          "median": 1771289344.0,
+          "p95": 1771879168.0,
+          "p99": 1771879168.0,
+          "ols_per_minute": -194004992.83433968
+        },
+        "render_video_memory_bytes": {
+          "samples": 227,
+          "first": 0.0,
+          "last": 2302312448.0,
+          "min": 0.0,
+          "max": 2578595840.0,
+          "mean": 2322251054.2378855,
+          "median": 2302312448.0,
+          "p95": 2578595840.0,
+          "p99": 2578595840.0,
+          "ols_per_minute": 33323731.46114726
+        },
+        "resource_count": {
+          "samples": 227,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 495.0,
+          "mean": 478.43612334801765,
+          "median": 475.0,
+          "p95": 495.0,
+          "p99": 495.0,
+          "ols_per_minute": -0.14760575941502407
+        },
+        "static_memory_bytes": {
+          "samples": 227,
+          "first": 239122537.0,
+          "last": 308346814.0,
+          "min": 239122537.0,
+          "max": 308369494.0,
+          "mean": 300661933.37885463,
+          "median": 305930854.0,
+          "p95": 308338526.0,
+          "p99": 308365558.0,
+          "ols_per_minute": 8293557.749353982
+        },
+        "static_memory_peak_bytes": {
+          "samples": 227,
+          "first": 353618498.0,
+          "last": 460889575.0,
+          "min": 353618498.0,
+          "max": 460889575.0,
+          "mean": 419753240.99559474,
+          "median": 460889575.0,
+          "p95": 460889575.0,
+          "p99": 460889575.0,
+          "ols_per_minute": 40229668.0251765
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 45,
+          "first": 900.765625,
+          "last": 1200.03125,
+          "min": 900.765625,
+          "max": 1200.09375,
+          "mean": 1093.7434027777779,
+          "median": 1195.765625,
+          "p95": 1200.03125,
+          "p99": 1200.09375,
+          "ols_per_minute": 106.63775418712387
+        },
+        "cpu_percent": {
+          "samples": 45,
+          "first": 128.9,
+          "last": 130.4,
+          "min": 115.4,
+          "max": 184.3,
+          "mean": 150.78666666666666,
+          "median": 145.3,
+          "p95": 183.0,
+          "p99": 184.3,
+          "ols_per_minute": -3.54424979326724
+        }
+      }
+    },
+    {
+      "name": "mission_2",
+      "first_sample_seconds": 227.04,
+      "last_sample_seconds": 451.0,
+      "next_phase_first_sample_seconds": 452.04,
+      "engine": {
+        "draw_calls": {
+          "samples": 225,
+          "first": 1451.0,
+          "last": 1487.0,
+          "min": 354.0,
+          "max": 8243.0,
+          "mean": 3545.737777777778,
+          "median": 2932.0,
+          "p95": 6901.0,
+          "p99": 8103.0,
+          "ols_per_minute": -158.4578616415824
+        },
+        "fps": {
+          "samples": 225,
+          "first": 85.0,
+          "last": 85.0,
+          "min": 30.0,
+          "max": 86.0,
+          "mean": 76.28888888888889,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 86.0,
+          "ols_per_minute": 0.9500375802138411
+        },
+        "node_count": {
+          "samples": 225,
+          "first": 17835.0,
+          "last": 17833.0,
+          "min": 17833.0,
+          "max": 17993.0,
+          "mean": 17879.555555555555,
+          "median": 17835.0,
+          "p95": 17989.0,
+          "p99": 17991.0,
+          "ols_per_minute": 17.824207654947728
+        },
+        "object_count": {
+          "samples": 225,
+          "first": 32356.0,
+          "last": 32360.0,
+          "min": 32351.0,
+          "max": 32707.0,
+          "mean": 32457.18666666667,
+          "median": 32364.0,
+          "p95": 32689.0,
+          "p99": 32699.0,
+          "ols_per_minute": 40.24284708967853
+        },
+        "orphan_node_count": {
+          "samples": 225,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 225,
+          "first": 275645074.0,
+          "last": 275512706.0,
+          "min": 272515834.0,
+          "max": 285587716.0,
+          "mean": 277113689.72444445,
+          "median": 275512706.0,
+          "p95": 284112712.0,
+          "p99": 284145924.0,
+          "ols_per_minute": 1938269.3440000033
+        },
+        "render_texture_memory_bytes": {
+          "samples": 225,
+          "first": 1234942720.0,
+          "last": 698006272.0,
+          "min": 698006272.0,
+          "max": 1234942720.0,
+          "mean": 1116816701.44,
+          "median": 1234942720.0,
+          "p95": 1234942720.0,
+          "p99": 1234942720.0,
+          "ols_per_minute": -140108696.0080824
+        },
+        "render_video_memory_bytes": {
+          "samples": 225,
+          "first": 2303983616.0,
+          "last": 2305196032.0,
+          "min": 2300641280.0,
+          "max": 2585280512.0,
+          "mean": 2407244831.8577776,
+          "median": 2305196032.0,
+          "p95": 2582396928.0,
+          "p99": 2582396928.0,
+          "ols_per_minute": 35649230.75156971
+        },
+        "resource_count": {
+          "samples": 225,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 495.0,
+          "mean": 482.73333333333335,
+          "median": 475.0,
+          "p95": 495.0,
+          "p99": 495.0,
+          "ols_per_minute": 2.415227057485268
+        },
+        "static_memory_bytes": {
+          "samples": 225,
+          "first": 308360274.0,
+          "last": 312228803.0,
+          "min": 308319646.0,
+          "max": 314149767.0,
+          "mean": 310709619.6933333,
+          "median": 310696710.0,
+          "p95": 313721179.0,
+          "p99": 314103271.0,
+          "ols_per_minute": 1395472.2989456358
+        },
+        "static_memory_peak_bytes": {
+          "samples": 225,
+          "first": 460889575.0,
+          "last": 466018343.0,
+          "min": 460889575.0,
+          "max": 466018343.0,
+          "mean": 464034588.3511111,
+          "median": 466018343.0,
+          "p95": 466018343.0,
+          "p99": 466018343.0,
+          "ols_per_minute": 1946466.5178447913
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 45,
+          "first": 1200.328125,
+          "last": 1213.546875,
+          "min": 1200.328125,
+          "max": 1213.5625,
+          "mean": 1207.4677083333333,
+          "median": 1208.140625,
+          "p95": 1213.5625,
+          "p99": 1213.5625,
+          "ols_per_minute": 4.466633250492659
+        },
+        "cpu_percent": {
+          "samples": 45,
+          "first": 113.4,
+          "last": 128.1,
+          "min": 113.4,
+          "max": 185.0,
+          "mean": 146.58444444444444,
+          "median": 141.3,
+          "p95": 181.1,
+          "p99": 185.0,
+          "ols_per_minute": -1.5535940973255296
+        }
+      }
+    },
+    {
+      "name": "mission_3",
+      "first_sample_seconds": 452.04,
+      "last_sample_seconds": 698.0,
+      "next_phase_first_sample_seconds": 699.16,
+      "engine": {
+        "draw_calls": {
+          "samples": 247,
+          "first": 3052.0,
+          "last": 1471.0,
+          "min": 640.0,
+          "max": 8267.0,
+          "mean": 3601.2186234817814,
+          "median": 3254.0,
+          "p95": 6770.0,
+          "p99": 7927.0,
+          "ols_per_minute": -117.1754487909058
+        },
+        "fps": {
+          "samples": 247,
+          "first": 85.0,
+          "last": 85.0,
+          "min": 18.0,
+          "max": 86.0,
+          "mean": 76.34412955465586,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": 1.0860191004952933
+        },
+        "node_count": {
+          "samples": 247,
+          "first": 17837.0,
+          "last": 17833.0,
+          "min": 17833.0,
+          "max": 17910.0,
+          "mean": 17838.303643724696,
+          "median": 17834.0,
+          "p95": 17863.0,
+          "p99": 17910.0,
+          "ols_per_minute": -0.8885493037896068
+        },
+        "object_count": {
+          "samples": 247,
+          "first": 32379.0,
+          "last": 32371.0,
+          "min": 32364.0,
+          "max": 32513.0,
+          "mean": 32382.388663967613,
+          "median": 32375.0,
+          "p95": 32450.0,
+          "p99": 32512.0,
+          "ols_per_minute": 0.45590044944444247
+        },
+        "orphan_node_count": {
+          "samples": 247,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 247,
+          "first": 273957626.0,
+          "last": 275512706.0,
+          "min": 273957626.0,
+          "max": 280475852.0,
+          "mean": 275487013.5060729,
+          "median": 275512706.0,
+          "p95": 278655356.0,
+          "p99": 280475852.0,
+          "ols_per_minute": 262986.34828592953
+        },
+        "render_texture_memory_bytes": {
+          "samples": 247,
+          "first": 698006272.0,
+          "last": 161069824.0,
+          "min": 161069824.0,
+          "max": 698006272.0,
+          "mean": 388235244.3076923,
+          "median": 161069824.0,
+          "p95": 698006272.0,
+          "p99": 698006272.0,
+          "ols_per_minute": -189979621.22281963
+        },
+        "render_video_memory_bytes": {
+          "samples": 247,
+          "first": 2303524864.0,
+          "last": 2305196032.0,
+          "min": 2303524864.0,
+          "max": 2578726912.0,
+          "mean": 2321458445.4736843,
+          "median": 2305196032.0,
+          "p95": 2576891904.0,
+          "p99": 2578726912.0,
+          "ols_per_minute": -4331097.628677319
+        },
+        "resource_count": {
+          "samples": 247,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 495.0,
+          "mean": 476.37651821862346,
+          "median": 475.0,
+          "p95": 495.0,
+          "p99": 495.0,
+          "ols_per_minute": -0.40887950920707655
+        },
+        "static_memory_bytes": {
+          "samples": 247,
+          "first": 312255663.0,
+          "last": 314065755.0,
+          "min": 312156639.0,
+          "max": 314431631.0,
+          "mean": 313397074.82186234,
+          "median": 313834447.0,
+          "p95": 314091927.0,
+          "p99": 314426307.0,
+          "ols_per_minute": 540392.0603942072
+        },
+        "static_memory_peak_bytes": {
+          "samples": 247,
+          "first": 466018343.0,
+          "last": 470355724.0,
+          "min": 466018343.0,
+          "max": 470355724.0,
+          "mean": 468825246.08097166,
+          "median": 470355724.0,
+          "p95": 470355724.0,
+          "p99": 470355724.0,
+          "ols_per_minute": 1443297.8257930218
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 49,
+          "first": 1213.625,
+          "last": 1217.484375,
+          "min": 1213.625,
+          "max": 1217.484375,
+          "mean": 1215.752232142857,
+          "median": 1216.15625,
+          "p95": 1217.46875,
+          "p99": 1217.484375,
+          "ols_per_minute": 1.2741106799535353
+        },
+        "cpu_percent": {
+          "samples": 49,
+          "first": 131.9,
+          "last": 125.1,
+          "min": 117.4,
+          "max": 182.8,
+          "mean": 150.05510204081634,
+          "median": 139.9,
+          "p95": 182.0,
+          "p99": 182.8,
+          "ols_per_minute": -2.161920436821592
+        }
+      }
+    },
+    {
+      "name": "free_roam",
+      "first_sample_seconds": 699.16,
+      "last_sample_seconds": 1620.0,
+      "next_phase_first_sample_seconds": 1621.01,
+      "engine": {
+        "draw_calls": {
+          "samples": 922,
+          "first": 1501.0,
+          "last": 4256.0,
+          "min": 245.0,
+          "max": 8380.0,
+          "mean": 3725.896963123644,
+          "median": 3278.0,
+          "p95": 7294.0,
+          "p99": 7752.0,
+          "ols_per_minute": -25.209827777719312
+        },
+        "fps": {
+          "samples": 922,
+          "first": 85.0,
+          "last": 76.0,
+          "min": 43.0,
+          "max": 86.0,
+          "mean": 77.43383947939263,
+          "median": 85.0,
+          "p95": 85.0,
+          "p99": 86.0,
+          "ols_per_minute": 0.06696198528713711
+        },
+        "node_count": {
+          "samples": 922,
+          "first": 17836.0,
+          "last": 17835.0,
+          "min": 17833.0,
+          "max": 17867.0,
+          "mean": 17834.59436008677,
+          "median": 17834.0,
+          "p95": 17837.0,
+          "p99": 17840.0,
+          "ols_per_minute": 0.05394389364678239
+        },
+        "object_count": {
+          "samples": 922,
+          "first": 32388.0,
+          "last": 32399.0,
+          "min": 32374.0,
+          "max": 32484.0,
+          "mean": 32387.252711496745,
+          "median": 32384.0,
+          "p95": 32402.0,
+          "p99": 32414.0,
+          "ols_per_minute": 0.8203732533855161
+        },
+        "orphan_node_count": {
+          "samples": 922,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 922,
+          "first": 275512706.0,
+          "last": 276549426.0,
+          "min": 275512706.0,
+          "max": 276582638.0,
+          "mean": 276058902.59002167,
+          "median": 276031066.0,
+          "p95": 276549426.0,
+          "p99": 276549426.0,
+          "ols_per_minute": 27952.913903278175
+        },
+        "render_texture_memory_bytes": {
+          "samples": 922,
+          "first": 161069824.0,
+          "last": 161069824.0,
+          "min": 161069824.0,
+          "max": 161069824.0,
+          "mean": 161069824.0,
+          "median": 161069824.0,
+          "p95": 161069824.0,
+          "p99": 161069824.0,
+          "ols_per_minute": 0.0
+        },
+        "render_video_memory_bytes": {
+          "samples": 922,
+          "first": 2305196032.0,
+          "last": 2306310144.0,
+          "min": 2305196032.0,
+          "max": 2306310144.0,
+          "mean": 2305782692.9284163,
+          "median": 2305753088.0,
+          "p95": 2306310144.0,
+          "p99": 2306310144.0,
+          "ols_per_minute": 30011.948926136032
+        },
+        "resource_count": {
+          "samples": 922,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 475.0,
+          "mean": 475.0,
+          "median": 475.0,
+          "p95": 475.0,
+          "p99": 475.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_bytes": {
+          "samples": 922,
+          "first": 314224203.0,
+          "last": 321584518.0,
+          "min": 314144383.0,
+          "max": 321880966.0,
+          "mean": 318524117.5986985,
+          "median": 317763212.0,
+          "p95": 321356274.0,
+          "p99": 321586434.0,
+          "ols_per_minute": 506517.08000339527
+        },
+        "static_memory_peak_bytes": {
+          "samples": 922,
+          "first": 470355724.0,
+          "last": 470355724.0,
+          "min": 470355724.0,
+          "max": 470355724.0,
+          "mean": 470355724.0,
+          "median": 470355724.0,
+          "p95": 470355724.0,
+          "p99": 470355724.0,
+          "ols_per_minute": 0.0
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 184,
+          "first": 1217.578125,
+          "last": 1229.25,
+          "min": 1217.578125,
+          "max": 1229.25,
+          "mean": 1225.4712126358695,
+          "median": 1227.1171875,
+          "p95": 1228.9375,
+          "p99": 1229.203125,
+          "ols_per_minute": 0.7402022407037028
+        },
+        "cpu_percent": {
+          "samples": 184,
+          "first": 165.4,
+          "last": 180.1,
+          "min": 111.8,
+          "max": 186.5,
+          "mean": 149.92228260869564,
+          "median": 147.89999999999998,
+          "p95": 181.5,
+          "p99": 184.8,
+          "ols_per_minute": -0.5862479196700969
+        }
+      }
+    },
+    {
+      "name": "final_observation",
+      "first_sample_seconds": 1621.01,
+      "last_sample_seconds": 1800.0,
+      "next_phase_first_sample_seconds": 1800.107973,
+      "engine": {
+        "draw_calls": {
+          "samples": 180,
+          "first": 5563.0,
+          "last": 7773.0,
+          "min": 746.0,
+          "max": 7814.0,
+          "mean": 4293.705555555555,
+          "median": 5359.0,
+          "p95": 7786.0,
+          "p99": 7808.0,
+          "ols_per_minute": -115.90395292184624
+        },
+        "fps": {
+          "samples": 180,
+          "first": 73.0,
+          "last": 85.0,
+          "min": 43.0,
+          "max": 85.0,
+          "mean": 65.63333333333334,
+          "median": 66.5,
+          "p95": 85.0,
+          "p99": 85.0,
+          "ols_per_minute": -0.024744161747308837
+        },
+        "node_count": {
+          "samples": 180,
+          "first": 17835.0,
+          "last": 17835.0,
+          "min": 17835.0,
+          "max": 17835.0,
+          "mean": 17835.0,
+          "median": 17835.0,
+          "p95": 17835.0,
+          "p99": 17835.0,
+          "ols_per_minute": 0.0
+        },
+        "object_count": {
+          "samples": 180,
+          "first": 32397.0,
+          "last": 32399.0,
+          "min": 32397.0,
+          "max": 32400.0,
+          "mean": 32398.35,
+          "median": 32398.0,
+          "p95": 32399.0,
+          "p99": 32400.0,
+          "ols_per_minute": -0.005735496165793097
+        },
+        "orphan_node_count": {
+          "samples": 180,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0,
+          "p99": 0.0,
+          "ols_per_minute": 0.0
+        },
+        "render_buffer_memory_bytes": {
+          "samples": 180,
+          "first": 276549426.0,
+          "last": 276549426.0,
+          "min": 276549426.0,
+          "max": 276549426.0,
+          "mean": 276549426.0,
+          "median": 276549426.0,
+          "p95": 276549426.0,
+          "p99": 276549426.0,
+          "ols_per_minute": 0.0
+        },
+        "render_texture_memory_bytes": {
+          "samples": 180,
+          "first": 161069824.0,
+          "last": 161069824.0,
+          "min": 161069824.0,
+          "max": 161069824.0,
+          "mean": 161069824.0,
+          "median": 161069824.0,
+          "p95": 161069824.0,
+          "p99": 161069824.0,
+          "ols_per_minute": 0.0
+        },
+        "render_video_memory_bytes": {
+          "samples": 180,
+          "first": 2306310144.0,
+          "last": 2306310144.0,
+          "min": 2306310144.0,
+          "max": 2306310144.0,
+          "mean": 2306310144.0,
+          "median": 2306310144.0,
+          "p95": 2306310144.0,
+          "p99": 2306310144.0,
+          "ols_per_minute": 0.0
+        },
+        "resource_count": {
+          "samples": 180,
+          "first": 475.0,
+          "last": 475.0,
+          "min": 475.0,
+          "max": 475.0,
+          "mean": 475.0,
+          "median": 475.0,
+          "p95": 475.0,
+          "p99": 475.0,
+          "ols_per_minute": 0.0
+        },
+        "static_memory_bytes": {
+          "samples": 180,
+          "first": 321645458.0,
+          "last": 322266514.0,
+          "min": 321483614.0,
+          "max": 322266514.0,
+          "mean": 321902630.6,
+          "median": 321900442.0,
+          "p95": 322216014.0,
+          "p99": 322257482.0,
+          "ols_per_minute": 188936.57911951435
+        },
+        "static_memory_peak_bytes": {
+          "samples": 180,
+          "first": 470355724.0,
+          "last": 470355724.0,
+          "min": 470355724.0,
+          "max": 470355724.0,
+          "mean": 470355724.0,
+          "median": 470355724.0,
+          "p95": 470355724.0,
+          "p99": 470355724.0,
+          "ols_per_minute": 0.0
+        }
+      },
+      "process": {
+        "rss_mib": {
+          "samples": 36,
+          "first": 1229.265625,
+          "last": 1231.34375,
+          "min": 1229.265625,
+          "max": 1231.34375,
+          "mean": 1230.892361111111,
+          "median": 1230.9140625,
+          "p95": 1231.296875,
+          "p99": 1231.34375,
+          "ols_per_minute": 0.33398883548017116
+        },
+        "cpu_percent": {
+          "samples": 36,
+          "first": 125.0,
+          "last": 119.4,
+          "min": 115.7,
+          "max": 190.3,
+          "mean": 152.6027777777778,
+          "median": 148.39999999999998,
+          "p95": 189.4,
+          "p99": 190.3,
+          "ols_per_minute": -0.817517807382603
+        }
+      }
+    }
+  ],
+  "matched_gates": {
+    "market reached on foot": [
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 6229.0,
+          "fps": 65.0,
+          "node_count": 17835.0,
+          "object_count": 32343.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 274070914.0,
+          "render_texture_memory_bytes": 1771289344.0,
+          "render_video_memory_bytes": 2301591552.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 303069162.0,
+          "static_memory_peak_bytes": 353618498.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -2.75514268875122,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -116.476013183594,
+          0.380839109420776,
+          -91.6021118164062
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 85.87,
+        "stage": 0,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 6069.0,
+          "fps": 65.0,
+          "node_count": 17835.0,
+          "object_count": 32362.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 274070914.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2302312448.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 309297478.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -2.75513076782227,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -116.475997924805,
+          0.380839109420776,
+          -91.6019287109375
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 312.48,
+        "stage": 0,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 6051.0,
+          "fps": 63.0,
+          "node_count": 17835.0,
+          "object_count": 32374.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 698006272.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 312652455.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -2.75513768196106,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -116.475967407227,
+          0.380839109420776,
+          -91.601936340332
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 536.77,
+        "stage": 0,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      }
+    ],
+    "combat damaged and killed a mission combatant": [
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1364.0,
+          "fps": 72.0,
+          "node_count": 17860.0,
+          "object_count": 32412.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 277218268.0,
+          "render_texture_memory_bytes": 1771879168.0,
+          "render_video_memory_bytes": 2573877248.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 304542286.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": 1.6458728313446,
+        "health": 83.5,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -119.674095153809,
+          0.380941659212112,
+          -86.4385528564453
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 92.94,
+        "stage": 0,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 1
+      },
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1311.0,
+          "fps": 41.0,
+          "node_count": 17860.0,
+          "object_count": 32422.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 277218268.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2574008320.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 309661538.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": 1.67453682422638,
+        "health": 83.5,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -120.041816711426,
+          0.380941659212112,
+          -86.5557556152344
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 319.49,
+        "stage": 0,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 1
+      },
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1645.0,
+          "fps": 63.0,
+          "node_count": 17860.0,
+          "object_count": 32435.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 278660060.0,
+          "render_texture_memory_bytes": 698006272.0,
+          "render_video_memory_bytes": 2576891904.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 313996907.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": 1.85782563686371,
+        "health": 83.5,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -120.007415771484,
+          0.380941659212112,
+          -86.5338821411133
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 543.84,
+        "stage": 0,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 1
+      }
+    ],
+    "package collected through interaction": [
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 4113.0,
+          "fps": 16.0,
+          "node_count": 17862.0,
+          "object_count": 32418.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 278111364.0,
+          "render_texture_memory_bytes": 1771879168.0,
+          "render_video_memory_bytes": 2574794752.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 304685674.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.24825406074524,
+        "health": 83.5,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -116.966163635254,
+          0.380833685398102,
+          -87.3431549072266
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 94.14,
+        "stage": 2,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 1
+      },
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 4168.0,
+          "fps": 37.0,
+          "node_count": 17862.0,
+          "object_count": 32429.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 278111364.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2574925824.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 309779522.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.2917503118515,
+        "health": 83.5,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -117.028854370117,
+          0.380833774805069,
+          -87.4188385009766
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 320.73,
+        "stage": 2,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 1
+      },
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 4124.0,
+          "fps": 18.0,
+          "node_count": 17862.0,
+          "object_count": 32441.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 278655356.0,
+          "render_texture_memory_bytes": 698006272.0,
+          "render_video_memory_bytes": 2576891904.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 314090751.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.28604686260223,
+        "health": 83.5,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -116.997772216797,
+          0.373274683952332,
+          -87.4151077270508
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 545.11,
+        "stage": 2,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 1
+      }
+    ],
+    "usable parked car found": [
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 4113.0,
+          "fps": 16.0,
+          "node_count": 17862.0,
+          "object_count": 32417.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 278111364.0,
+          "render_texture_memory_bytes": 1771879168.0,
+          "render_video_memory_bytes": 2574794752.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 307453134.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.24825406074524,
+        "health": 83.5,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -116.966163635254,
+          0.380833685398102,
+          -87.3431549072266
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 94.33,
+        "stage": 2,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 1
+      },
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 4168.0,
+          "fps": 37.0,
+          "node_count": 17862.0,
+          "object_count": 32428.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 278111364.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2574925824.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 312547582.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.2917503118515,
+        "health": 83.5,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -117.028854370117,
+          0.380833774805069,
+          -87.4188385009766
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 320.92,
+        "stage": 2,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 1
+      },
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 4124.0,
+          "fps": 18.0,
+          "node_count": 17862.0,
+          "object_count": 32440.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 278655356.0,
+          "render_texture_memory_bytes": 698006272.0,
+          "render_video_memory_bytes": 2576891904.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 316858195.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.28604686260223,
+        "health": 83.5,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -116.997772216797,
+          0.373274683952332,
+          -87.4151077270508
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 545.3,
+        "stage": 2,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 1
+      }
+    ],
+    "car entered": [
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 4037.0,
+          "fps": 85.0,
+          "node_count": 17912.0,
+          "object_count": 32501.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 281727460.0,
+          "render_texture_memory_bytes": 1771879168.0,
+          "render_video_memory_bytes": 2578464768.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 305323238.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": 0.0,
+        "health": 94.5,
+        "mode": 1,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -156.926864624023,
+          0.0601410679519176,
+          -31.3381462097168
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 105.62,
+        "stage": 3,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 2
+      },
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 3798.0,
+          "fps": 80.0,
+          "node_count": 17939.0,
+          "object_count": 32581.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 281760672.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2578595840.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 310691982.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": 0.0,
+        "health": 100.0,
+        "mode": 1,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -168.0,
+          0.160126969218254,
+          -40.0
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 333.67,
+        "stage": 3,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 2
+      },
+      {
+        "passed": true,
+        "car_distance_m": 0.0,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1539.0,
+          "fps": 85.0,
+          "node_count": 17863.0,
+          "object_count": 32449.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275545918.0,
+          "render_texture_memory_bytes": 161069824.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 314040035.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": 0.0,
+        "health": 100.0,
+        "mode": 1,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          -152.0,
+          0.160126969218254,
+          -200.0
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 565.9,
+        "stage": 3,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 1
+      }
+    ],
+    "uninterrupted driving leg reached aviation compound": [
+      {
+        "passed": true,
+        "car_distance_m": 642.352882272913,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 2232.0,
+          "fps": 85.0,
+          "node_count": 17837.0,
+          "object_count": 32363.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 274070914.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2302312448.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 307605190.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.56173169612885,
+        "health": 100.0,
+        "mode": 1,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          246.184814453125,
+          0.0609438233077526,
+          159.029495239258
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 148.65,
+        "stage": 4,
+        "taa": true,
+        "vehicle_health": 86.9800128936767,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 625.889650374651,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 2143.0,
+          "fps": 85.0,
+          "node_count": 17966.0,
+          "object_count": 32658.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 281793884.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2578595840.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 311756994.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.66012442111969,
+        "health": 100.0,
+        "mode": 1,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          255.483383178711,
+          0.0609437711536884,
+          162.200149536133
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 371.75,
+        "stage": 4,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 2
+      },
+      {
+        "passed": true,
+        "car_distance_m": 824.069172191346,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 2140.0,
+          "fps": 85.0,
+          "node_count": 17836.0,
+          "object_count": 32385.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 161069824.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 313819583.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.56529891490936,
+        "health": 100.0,
+        "mode": 1,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          255.237442016602,
+          0.0560605078935623,
+          162.131210327148
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 619.98,
+        "stage": 4,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 0
+      }
+    ],
+    "car exit restored walking": [
+      {
+        "passed": true,
+        "car_distance_m": 642.352882272913,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1196.0,
+          "fps": 68.0,
+          "node_count": 17835.0,
+          "object_count": 32354.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 274070914.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2302312448.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 307614986.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.56240630149841,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          255.251739501953,
+          0.0352799072861671,
+          160.852416992188
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 149.99,
+        "stage": 4,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 625.889650374651,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1151.0,
+          "fps": 67.0,
+          "node_count": 17990.0,
+          "object_count": 32694.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 282704132.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2579513344.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 311971494.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.63354325294495,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          264.473327636719,
+          0.0350663028657436,
+          165.361907958984
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 373.1,
+        "stage": 4,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 2
+      },
+      {
+        "passed": true,
+        "car_distance_m": 824.069172191346,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1176.0,
+          "fps": 82.0,
+          "node_count": 17834.0,
+          "object_count": 32376.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 161069824.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 313823471.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.475142121315,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          259.132476806641,
+          0.0351249724626541,
+          164.375961303711
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 621.29,
+        "stage": 4,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      }
+    ],
+    "helicopter remains usable": [
+      {
+        "passed": true,
+        "car_distance_m": 642.352882272913,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1196.0,
+          "fps": 68.0,
+          "node_count": 17835.0,
+          "object_count": 32352.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 274070914.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2302312448.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 310379982.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.56240630149841,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          255.251739501953,
+          0.0352799072861671,
+          160.852416992188
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 150.15,
+        "stage": 4,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 625.889650374651,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1151.0,
+          "fps": 67.0,
+          "node_count": 17990.0,
+          "object_count": 32692.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 282704132.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2579513344.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 314735674.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.63354325294495,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          264.473327636719,
+          0.0350663028657436,
+          165.361907958984
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 373.27,
+        "stage": 4,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 2
+      },
+      {
+        "passed": true,
+        "car_distance_m": 824.069172191346,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1176.0,
+          "fps": 82.0,
+          "node_count": 17834.0,
+          "object_count": 32374.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 161069824.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 316589107.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": -1.475142121315,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          259.132476806641,
+          0.0351249724626541,
+          164.375961303711
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 621.46,
+        "stage": 4,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      }
+    ],
+    "helicopter boarded": [
+      {
+        "passed": true,
+        "car_distance_m": 642.352882272913,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 5364.0,
+          "fps": 82.0,
+          "node_count": 17837.0,
+          "object_count": 32363.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 274070914.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2302312448.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 308237346.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": 0.0,
+        "health": 100.0,
+        "mode": 2,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          270.0,
+          0.160364598035812,
+          104.0
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 162.57,
+        "stage": 5,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 625.889650374651,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 5386.0,
+          "fps": 85.0,
+          "node_count": 17993.0,
+          "object_count": 32709.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 284145924.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2582396928.0,
+          "resource_count": 495.0,
+          "static_memory_bytes": 314052059.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": 0.0,
+        "health": 100.0,
+        "mode": 2,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          270.0,
+          0.160364598035812,
+          104.0
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 386.9,
+        "stage": 5,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 2
+      },
+      {
+        "passed": true,
+        "car_distance_m": 824.069172191346,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 5380.0,
+          "fps": 77.0,
+          "node_count": 17837.0,
+          "object_count": 32389.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 161069824.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 314028555.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 0.0,
+        "heading": 0.0,
+        "health": 100.0,
+        "mode": 2,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          270.0,
+          0.160364598035812,
+          104.0
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 634.26,
+        "stage": 5,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 0
+      }
+    ],
+    "flight reached waterfront pad airspace": [
+      {
+        "passed": true,
+        "car_distance_m": 642.352882272913,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 924.0,
+          "fps": 85.0,
+          "node_count": 17834.0,
+          "object_count": 32349.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 274070914.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2302312448.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 308223238.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 618.356727063656,
+        "heading": 0.664124548435211,
+        "health": 100.0,
+        "mode": 2,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          0.974729359149933,
+          109.237632751465,
+          -335.793182373047
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 192.51,
+        "stage": 5,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 625.889650374651,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 948.0,
+          "fps": 85.0,
+          "node_count": 17834.0,
+          "object_count": 32364.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 698006272.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 312115519.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 618.356528904289,
+        "heading": 0.664288997650146,
+        "health": 100.0,
+        "mode": 2,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          0.975020289421082,
+          109.237632751465,
+          -335.793212890625
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 416.85,
+        "stage": 5,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 824.069172191346,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 940.0,
+          "fps": 85.0,
+          "node_count": 17834.0,
+          "object_count": 32375.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 161069824.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 313944099.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 618.356341321021,
+        "heading": 0.663994133472443,
+        "health": 100.0,
+        "mode": 2,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          0.974441349506378,
+          109.237632751465,
+          -335.792724609375
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 664.2,
+        "stage": 5,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 0
+      }
+    ],
+    "helicopter landed intact on destination pad": [
+      {
+        "passed": true,
+        "car_distance_m": 642.352882272913,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 774.0,
+          "fps": 85.0,
+          "node_count": 17834.0,
+          "object_count": 32351.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 274070914.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2302312448.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 308285122.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 727.800713904668,
+        "heading": 0.74703186750412,
+        "health": 100.0,
+        "mode": 2,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          0.404899269342422,
+          0.000241290312260389,
+          -336.574981689453
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 212.36,
+        "stage": 6,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 625.889650374651,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 774.0,
+          "fps": 85.0,
+          "node_count": 17834.0,
+          "object_count": 32364.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 698006272.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 312176635.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 727.800245676655,
+        "heading": 0.747030913829803,
+        "health": 100.0,
+        "mode": 2,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          0.405079126358032,
+          0.000241290312260389,
+          -336.575012207031
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 436.7,
+        "stage": 6,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 824.069172191346,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 766.0,
+          "fps": 85.0,
+          "node_count": 17834.0,
+          "object_count": 32375.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 161069824.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 314009003.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 727.802479997743,
+        "heading": 0.747030377388,
+        "health": 100.0,
+        "mode": 2,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          0.404730618000031,
+          0.000241290312260389,
+          -336.574676513672
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 684.07,
+        "stage": 6,
+        "taa": true,
+        "vehicle_health": 100.0,
+        "wanted": 0
+      }
+    ],
+    "landing exit restored walking": [
+      {
+        "passed": true,
+        "car_distance_m": 642.352882272913,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 354.0,
+          "fps": 85.0,
+          "node_count": 17834.0,
+          "object_count": 32353.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 274070914.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2302312448.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 308309218.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 727.800713904668,
+        "heading": 0.74703186750412,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          2.45928049087524,
+          0.2746941447258,
+          -338.477478027344
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 212.69,
+        "stage": 7,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 625.889650374651,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 354.0,
+          "fps": 85.0,
+          "node_count": 17834.0,
+          "object_count": 32365.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 698006272.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 312192055.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 727.800245676655,
+        "heading": 0.747030913829803,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          2.45945906639099,
+          0.2746941447258,
+          -338.477508544922
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 437.02,
+        "stage": 7,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 824.069172191346,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 354.0,
+          "fps": 85.0,
+          "node_count": 17834.0,
+          "object_count": 32376.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 161069824.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 314021919.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 727.802479997743,
+        "heading": 0.747030377388,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          2.45910906791687,
+          0.274401158094406,
+          -338.477172851562
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 684.39,
+        "stage": 7,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      }
+    ],
+    "mission completed through delivery interaction": [
+      {
+        "passed": true,
+        "car_distance_m": 642.352882272913,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1451.0,
+          "fps": 85.0,
+          "node_count": 17833.0,
+          "object_count": 32347.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 274070914.0,
+          "render_texture_memory_bytes": 1234942720.0,
+          "render_video_memory_bytes": 2302312448.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 308344522.0,
+          "static_memory_peak_bytes": 460889575.0
+        },
+        "flight_distance_m": 727.800713904668,
+        "heading": -1.58654093742371,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          93.5465469360352,
+          0.275747567415237,
+          -337.03857421875
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 1,
+        "seconds": 226.81,
+        "stage": 8,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 625.889650374651,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1487.0,
+          "fps": 85.0,
+          "node_count": 17833.0,
+          "object_count": 32360.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 698006272.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 312230451.0,
+          "static_memory_peak_bytes": 466018343.0
+        },
+        "flight_distance_m": 727.800245676655,
+        "heading": -1.58656656742096,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          93.5466918945312,
+          0.260864853858948,
+          -337.038726806641
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 2,
+        "seconds": 451.15,
+        "stage": 8,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      },
+      {
+        "passed": true,
+        "car_distance_m": 824.069172191346,
+        "deaths": 0,
+        "engine_monitors": {
+          "draw_calls": 1495.0,
+          "fps": 85.0,
+          "node_count": 17833.0,
+          "object_count": 32371.0,
+          "orphan_node_count": 0.0,
+          "render_buffer_memory_bytes": 275512706.0,
+          "render_texture_memory_bytes": 161069824.0,
+          "render_video_memory_bytes": 2305196032.0,
+          "resource_count": 475.0,
+          "static_memory_bytes": 314057999.0,
+          "static_memory_peak_bytes": 470355724.0
+        },
+        "flight_distance_m": 727.802479997743,
+        "heading": -1.58655750751495,
+        "health": 100.0,
+        "mode": 0,
+        "msaa_3d": 2,
+        "phase": "mission",
+        "position": [
+          93.5464401245117,
+          0.27583909034729,
+          -337.038848876953
+        ],
+        "render_texture_pixels": [
+          1280,
+          720
+        ],
+        "run": 3,
+        "seconds": 698.52,
+        "stage": 8,
+        "taa": true,
+        "vehicle_health": null,
+        "wanted": 0
+      }
+    ]
+  },
+  "log": [
+    "1.03s Route start; seed=20261021; headless=false; scripted-input-automation=true",
+    "1.11s screenshot ../docs/wave-02/soak-1800-r2/01_safe_room.png",
+    "3.01s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0",
+    "21.69s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9",
+    "44.21s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=7.0",
+    "67.20s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9",
+    "85.87s walk end at (-116.0, 0.0, -92.0); target=(-115.0, 0.0, -88.0) distance=3.9",
+    "85.87s PASS market reached on foot",
+    "86.08s screenshot ../docs/wave-02/soak-1800-r2/02_hawker_market.png",
+    "88.41s combat target health=-32.0 state=3",
+    "90.11s combat target health=-32.0 state=3",
+    "92.94s combat target health=-32.0 state=3",
+    "92.94s PASS combat damaged and killed a mission combatant",
+    "93.17s screenshot ../docs/wave-02/soak-1800-r2/03_combat.png",
+    "93.79s walk end at (-117.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=2.4",
+    "94.14s PASS package collected through interaction",
+    "94.33s screenshot ../docs/wave-02/soak-1800-r2/04_package_taken.png",
+    "94.33s PASS usable parked car found",
+    "102.98s walk end at (-151.0, 0.0, -42.0); target=(-152.0, 0.0, -40.0) distance=2.5",
+    "103.30s interaction attempt 0: mode=0 chosen=none requested=@CharacterBody3D@9916 at=(-156.9269, 0.060141, -31.33815) distance=11.99 LOS=clear",
+    "105.32s walk end at (-155.0, 0.0, -32.0); target=(-155.0, 0.0, -31.0) distance=0.6",
+    "105.62s PASS car entered",
+    "105.77s screenshot ../docs/wave-02/soak-1800-r2/05_car_entered.png",
+    "116.18s drive waypoint target=(-160.0, 0.0, 0.0) distance=7.0",
+    "125.19s drive waypoint target=(-160.0, 0.0, 160.0) distance=7.0",
+    "134.51s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9",
+    "143.56s drive waypoint target=(160.0, 0.0, 160.0) distance=6.9",
+    "148.65s drive waypoint target=(320.0, 0.0, 160.0) distance=73.8",
+    "148.65s PASS uninterrupted driving leg reached aviation compound",
+    "148.82s screenshot ../docs/wave-02/soak-1800-r2/06_driving.png",
+    "149.99s PASS car exit restored walking",
+    "150.15s screenshot ../docs/wave-02/soak-1800-r2/07_exited_car.png",
+    "150.15s PASS helicopter remains usable",
+    "162.25s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.4",
+    "162.57s PASS helicopter boarded",
+    "162.68s screenshot ../docs/wave-02/soak-1800-r2/08_helicopter_boarding.png",
+    "192.51s PASS flight reached waterfront pad airspace",
+    "192.62s screenshot ../docs/wave-02/soak-1800-r2/09_aerial_view.png",
+    "212.36s PASS helicopter landed intact on destination pad",
+    "212.69s PASS landing exit restored walking",
+    "212.79s screenshot ../docs/wave-02/soak-1800-r2/10_landed.png",
+    "226.48s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9",
+    "226.81s PASS mission completed through delivery interaction",
+    "226.98s screenshot ../docs/wave-02/soak-1800-r2/11_delivery.png",
+    "226.98s Verified mission completions: 1",
+    "226.98s Restarting through the real Mission.restart for next independent mission attempt.",
+    "227.59s Route start; seed=20261021; headless=false; scripted-input-automation=true",
+    "227.68s screenshot ../docs/wave-02/soak-1800-r2/12_safe_room.png",
+    "229.58s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0",
+    "248.24s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9",
+    "270.75s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=6.9",
+    "293.75s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9",
+    "300.19s screenshot ../docs/wave-02/soak-1800-r2/13_soak_mission_0300.png",
+    "312.48s walk end at (-116.0, 0.0, -92.0); target=(-115.0, 0.0, -88.0) distance=3.9",
+    "312.48s PASS market reached on foot",
+    "312.71s screenshot ../docs/wave-02/soak-1800-r2/14_hawker_market.png",
+    "315.04s combat target health=-32.0 state=3",
+    "316.71s combat target health=-32.0 state=3",
+    "319.49s combat target health=-32.0 state=3",
+    "319.49s PASS combat damaged and killed a mission combatant",
+    "319.72s screenshot ../docs/wave-02/soak-1800-r2/15_combat.png",
+    "320.42s walk end at (-117.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=2.5",
+    "320.73s PASS package collected through interaction",
+    "320.92s screenshot ../docs/wave-02/soak-1800-r2/16_package_taken.png",
+    "320.92s PASS usable parked car found",
+    "333.36s walk end at (-169.0, 0.0, -42.0); target=(-168.0, 0.0, -40.0) distance=2.6",
+    "333.67s PASS car entered",
+    "333.85s screenshot ../docs/wave-02/soak-1800-r2/17_car_entered.png",
+    "338.39s drive waypoint target=(-160.0, 0.0, 0.0) distance=6.9",
+    "347.79s drive waypoint target=(-160.0, 0.0, 160.0) distance=6.9",
+    "357.08s drive waypoint target=(0.0, 0.0, 160.0) distance=7.0",
+    "366.11s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0",
+    "371.75s drive waypoint target=(320.0, 0.0, 160.0) distance=64.6",
+    "371.75s PASS uninterrupted driving leg reached aviation compound",
+    "371.92s screenshot ../docs/wave-02/soak-1800-r2/18_driving.png",
+    "373.10s PASS car exit restored walking",
+    "373.27s screenshot ../docs/wave-02/soak-1800-r2/19_exited_car.png",
+    "373.27s PASS helicopter remains usable",
+    "386.57s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.3",
+    "386.90s PASS helicopter boarded",
+    "387.02s screenshot ../docs/wave-02/soak-1800-r2/20_helicopter_boarding.png",
+    "416.85s PASS flight reached waterfront pad airspace",
+    "416.96s screenshot ../docs/wave-02/soak-1800-r2/21_aerial_view.png",
+    "436.70s PASS helicopter landed intact on destination pad",
+    "437.02s PASS landing exit restored walking",
+    "437.13s screenshot ../docs/wave-02/soak-1800-r2/22_landed.png",
+    "450.82s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9",
+    "451.15s PASS mission completed through delivery interaction",
+    "451.32s screenshot ../docs/wave-02/soak-1800-r2/23_delivery.png",
+    "451.32s Verified mission completions: 2",
+    "451.32s Restarting through the real Mission.restart for next independent mission attempt.",
+    "451.93s Route start; seed=20261021; headless=false; scripted-input-automation=true",
+    "452.01s screenshot ../docs/wave-02/soak-1800-r2/24_safe_room.png",
+    "453.89s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0",
+    "472.57s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9",
+    "495.09s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=6.9",
+    "518.08s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9",
+    "536.77s walk end at (-116.0, 0.0, -92.0); target=(-115.0, 0.0, -88.0) distance=3.9",
+    "536.77s PASS market reached on foot",
+    "536.99s screenshot ../docs/wave-02/soak-1800-r2/25_hawker_market.png",
+    "539.28s combat target health=-32.0 state=3",
+    "540.97s combat target health=-32.0 state=3",
+    "543.84s combat target health=-32.0 state=3",
+    "543.84s PASS combat damaged and killed a mission combatant",
+    "544.07s screenshot ../docs/wave-02/soak-1800-r2/26_combat.png",
+    "544.76s walk end at (-117.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=2.4",
+    "545.11s PASS package collected through interaction",
+    "545.30s screenshot ../docs/wave-02/soak-1800-r2/27_package_taken.png",
+    "545.30s PASS usable parked car found",
+    "557.01s walk end at (-156.0, 0.0, -154.0); target=(-160.0, 0.0, -160.0) distance=7.0",
+    "565.57s walk end at (-150.0, 0.0, -199.0); target=(-152.0, 0.0, -200.0) distance=2.6",
+    "565.90s PASS car entered",
+    "566.09s screenshot ../docs/wave-02/soak-1800-r2/28_car_entered.png",
+    "577.85s drive waypoint target=(-160.0, 0.0, -160.0) distance=6.9",
+    "586.86s drive waypoint target=(-160.0, 0.0, 0.0) distance=6.9",
+    "595.87s drive waypoint target=(-160.0, 0.0, 160.0) distance=6.9",
+    "600.17s screenshot ../docs/wave-02/soak-1800-r2/29_soak_mission_0600.png",
+    "605.25s drive waypoint target=(0.0, 0.0, 160.0) distance=7.0",
+    "614.29s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0",
+    "619.98s drive waypoint target=(320.0, 0.0, 160.0) distance=64.8",
+    "619.98s PASS uninterrupted driving leg reached aviation compound",
+    "620.13s screenshot ../docs/wave-02/soak-1800-r2/30_driving.png",
+    "621.29s PASS car exit restored walking",
+    "621.46s screenshot ../docs/wave-02/soak-1800-r2/31_exited_car.png",
+    "621.46s PASS helicopter remains usable",
+    "633.94s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.3",
+    "634.26s PASS helicopter boarded",
+    "634.37s screenshot ../docs/wave-02/soak-1800-r2/32_helicopter_boarding.png",
+    "664.20s PASS flight reached waterfront pad airspace",
+    "664.31s screenshot ../docs/wave-02/soak-1800-r2/33_aerial_view.png",
+    "684.07s PASS helicopter landed intact on destination pad",
+    "684.39s PASS landing exit restored walking",
+    "684.50s screenshot ../docs/wave-02/soak-1800-r2/34_landed.png",
+    "698.19s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9",
+    "698.52s PASS mission completed through delivery interaction",
+    "698.69s screenshot ../docs/wave-02/soak-1800-r2/35_delivery.png",
+    "698.69s Verified mission completions: 3",
+    "698.69s Beginning explicit fixture-assisted negative cases. Three completion records are already sealed.",
+    "698.91s FIXTURE PASS pause freezes player and live traffic (excluded from mission completion count)",
+    "698.91s FIXTURE PASS completed-run checkpoint writes through atomic save path (excluded from mission completion count)",
+    "698.91s FIXTURE PASS malformed checkpoint is rejected without state mutation (excluded from mission completion count)",
+    "698.96s FIXTURE PASS walking to airfield cannot satisfy drive stage (excluded from mission completion count)",
+    "699.11s screenshot ../docs/wave-02/soak-1800-r2/36_fixture_phase_finished.png",
+    "699.11s Fixture phase complete; starting genuine mixed free roam from the restored completion location.",
+    "699.11s Free-roam foot leg to (0.0, 0.0, -320.0)",
+    "712.41s walk end at (7.0, 0.0, -321.0); target=(0.0, 0.0, -320.0) distance=6.9",
+    "712.73s walk end at (6.0, 0.0, -321.0); target=(0.0, 0.0, -320.0) distance=6.5",
+    "735.92s walk end at (0.0, 0.0, -167.0); target=(0.0, 0.0, -160.0) distance=6.9",
+    "743.64s walk end at (12.0, 0.0, -199.0); target=(9.0, 0.0, -200.0) distance=2.5",
+    "743.96s Free-roam driving leg to (160.0, 0.0, 160.0)",
+    "752.63s drive waypoint target=(0.0, 0.0, -160.0) distance=6.9",
+    "761.62s drive waypoint target=(0.0, 0.0, 0.0) distance=7.0",
+    "770.68s drive waypoint target=(0.0, 0.0, 160.0) distance=7.0",
+    "780.07s drive waypoint target=(160.0, 0.0, 160.0) distance=6.9",
+    "780.08s drive waypoint target=(160.0, 0.0, 160.0) distance=6.8",
+    "781.77s Free-roam same-car return/exit/reboard/exit cycle=true",
+    "782.08s walk end at (155.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=4.8",
+    "807.11s walk end at (160.0, 0.0, 7.0); target=(160.0, 0.0, 0.0) distance=6.9",
+    "830.62s walk end at (160.0, 0.0, -153.0); target=(160.0, 0.0, -160.0) distance=7.0",
+    "854.15s walk end at (160.0, 0.0, -313.0); target=(160.0, 0.0, -320.0) distance=7.0",
+    "877.14s walk end at (7.0, 0.0, -320.0); target=(0.0, 0.0, -320.0) distance=6.9",
+    "882.11s walk end at (3.0, 0.0, -338.0); target=(3.0, 0.0, -339.0) distance=1.1",
+    "882.43s Free-roam aircraft leg to (270.0, 0.0, 104.0)",
+    "900.14s screenshot ../docs/wave-02/soak-1800-r2/37_soak_free_roam_0900.png",
+    "932.79s Free-roam foot leg to (160.0, 0.0, 160.0)",
+    "943.38s walk end at (315.0, 0.0, 155.0); target=(320.0, 0.0, 160.0) distance=6.9",
+    "967.88s walk end at (167.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.9",
+    "967.89s walk end at (167.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.8",
+    "972.08s walk end at (157.0, 0.0, 155.0); target=(155.0, 0.0, 157.0) distance=2.5",
+    "972.41s Free-roam driving leg to (-320.0, 0.0, -320.0)",
+    "972.41s drive waypoint target=(160.0, 0.0, 160.0) distance=5.6",
+    "981.80s drive waypoint target=(160.0, 0.0, 0.0) distance=7.0",
+    "990.82s drive waypoint target=(160.0, 0.0, -160.0) distance=7.0",
+    "999.85s drive waypoint target=(160.0, 0.0, -320.0) distance=6.9",
+    "1009.17s drive waypoint target=(0.0, 0.0, -320.0) distance=7.0",
+    "1018.23s drive waypoint target=(-160.0, 0.0, -320.0) distance=6.9",
+    "1027.21s drive waypoint target=(-320.0, 0.0, -320.0) distance=7.0",
+    "1027.24s drive waypoint target=(-320.0, 0.0, -320.0) distance=6.9",
+    "1028.93s Free-roam same-car return/exit/reboard/exit cycle=true",
+    "1029.24s walk end at (-315.0, 0.0, -322.0); target=(-320.0, 0.0, -320.0) distance=5.0",
+    "1054.31s walk end at (-320.0, 0.0, -167.0); target=(-320.0, 0.0, -160.0) distance=7.0",
+    "1077.85s walk end at (-320.0, 0.0, -7.0); target=(-320.0, 0.0, 0.0) distance=6.9",
+    "1101.37s walk end at (-320.0, 0.0, 153.0); target=(-320.0, 0.0, 160.0) distance=6.9",
+    "1124.38s walk end at (-167.0, 0.0, 160.0); target=(-160.0, 0.0, 160.0) distance=6.9",
+    "1147.91s walk end at (-7.0, 0.0, 160.0); target=(0.0, 0.0, 160.0) distance=6.9",
+    "1171.44s walk end at (153.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.9",
+    "1197.05s walk end at (313.0, 0.0, 161.0); target=(320.0, 0.0, 160.0) distance=6.9",
+    "1200.20s screenshot ../docs/wave-02/soak-1800-r2/38_soak_free_roam_1200.png",
+    "1209.23s walk end at (274.0, 0.0, 109.0); target=(267.0, 0.0, 106.0) distance=7.2",
+    "1209.55s interaction attempt 0: mode=0 chosen=none requested=Helicopter at=(269.5899, 0.160463, 103.5631) distance=6.37 LOS=clear",
+    "1210.89s walk end at (268.0, 0.0, 106.0); target=(267.0, 0.0, 106.0) distance=0.7",
+    "1211.22s Free-roam aircraft leg to (0.0, 0.0, -337.0)",
+    "1261.62s Free-roam foot leg to (-160.0, 0.0, -320.0)",
+    "1264.44s walk end at (2.0, 0.0, -326.0); target=(0.0, 0.0, -320.0) distance=6.9",
+    "1287.66s walk end at (-153.0, 0.0, -320.0); target=(-160.0, 0.0, -320.0) distance=6.9",
+    "1287.67s walk end at (-153.0, 0.0, -320.0); target=(-160.0, 0.0, -320.0) distance=6.8",
+    "1287.98s walk end at (-154.0, 0.0, -320.0); target=(-160.0, 0.0, -320.0) distance=6.3",
+    "1311.02s walk end at (-160.0, 0.0, -167.0); target=(-160.0, 0.0, -160.0) distance=6.9",
+    "1318.64s walk end at (-166.0, 0.0, -200.0); target=(-168.0, 0.0, -200.0) distance=2.4",
+    "1318.97s Free-roam driving leg to (0.0, 0.0, 160.0)",
+    "1323.65s drive waypoint target=(-160.0, 0.0, -160.0) distance=6.9",
+    "1332.63s drive waypoint target=(-160.0, 0.0, 0.0) distance=6.9",
+    "1341.64s drive waypoint target=(-160.0, 0.0, 160.0) distance=6.9",
+    "1350.96s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9",
+    "1350.98s drive waypoint target=(0.0, 0.0, 160.0) distance=6.8",
+    "1352.66s Free-roam same-car return/exit/reboard/exit cycle=true",
+    "1352.97s walk end at (-5.0, 0.0, 160.0); target=(0.0, 0.0, 160.0) distance=4.8",
+    "1379.85s walk end at (0.0, 0.0, 7.0); target=(0.0, 0.0, 0.0) distance=7.0",
+    "1403.40s walk end at (0.0, 0.0, -153.0); target=(0.0, 0.0, -160.0) distance=7.0",
+    "1426.93s walk end at (0.0, 0.0, -313.0); target=(0.0, 0.0, -320.0) distance=6.9",
+    "1432.46s walk end at (3.0, 0.0, -338.0); target=(3.0, 0.0, -339.0) distance=1.1",
+    "1432.78s Free-roam aircraft leg to (270.0, 0.0, 104.0)",
+    "1483.13s Free-roam foot leg to (160.0, 0.0, 160.0)",
+    "1493.73s walk end at (315.0, 0.0, 155.0); target=(320.0, 0.0, 160.0) distance=6.9",
+    "1500.18s screenshot ../docs/wave-02/soak-1800-r2/39_soak_free_roam_1500.png",
+    "1518.26s walk end at (167.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.9",
+    "1518.28s walk end at (167.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.8",
+    "1526.57s walk end at (169.0, 0.0, 121.0); target=(167.0, 0.0, 120.0) distance=2.5",
+    "1526.90s Free-roam driving leg to (-320.0, 0.0, -320.0)",
+    "1552.19s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0",
+    "1562.14s drive waypoint target=(160.0, 0.0, 0.0) distance=7.0",
+    "1571.23s drive waypoint target=(160.0, 0.0, -160.0) distance=6.9",
+    "1580.27s drive waypoint target=(160.0, 0.0, -320.0) distance=6.9",
+    "1589.60s drive waypoint target=(0.0, 0.0, -320.0) distance=7.0",
+    "1598.64s drive waypoint target=(-160.0, 0.0, -320.0) distance=7.0",
+    "1607.75s drive waypoint target=(-320.0, 0.0, -320.0) distance=7.0",
+    "1607.76s drive waypoint target=(-320.0, 0.0, -320.0) distance=6.9",
+    "1609.45s Free-roam same-car return/exit/reboard/exit cycle=true",
+    "1609.76s walk end at (-316.0, 0.0, -324.0); target=(-320.0, 0.0, -320.0) distance=5.7",
+    "1620.02s walk end at (-320.0, 0.0, -271.0); target=(-320.0, 0.0, -160.0) distance=111.3",
+    "1620.02s Reserved final recovery: return to healthy on-foot control, then demonstrate movement until the deadline.",
+    "1622.61s walk end at (-306.0, 0.0, -267.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1624.37s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1626.07s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1627.75s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1629.44s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1631.13s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1632.83s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1634.51s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1636.18s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1637.85s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1639.53s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1641.21s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1642.91s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1644.58s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1646.27s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1647.95s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1649.63s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1651.31s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1652.99s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1654.66s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1656.35s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1658.02s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1659.72s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1661.39s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1663.08s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1664.74s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1666.44s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1668.11s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1669.81s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1671.47s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1673.16s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1674.82s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1676.51s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1678.19s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1679.87s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1681.53s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1683.21s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1684.90s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1686.61s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1688.30s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1690.00s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1691.70s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1693.40s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1695.10s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1696.80s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1698.49s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1700.20s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1701.88s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1703.58s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1705.25s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1706.94s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1708.61s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1710.29s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1711.97s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1713.66s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1715.32s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1717.02s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1718.70s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1720.39s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1722.08s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1723.76s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1725.45s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1727.14s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1728.80s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1730.48s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1732.17s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1733.84s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1735.53s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1737.22s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1738.90s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1740.56s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1742.23s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1743.93s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1745.60s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1747.28s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1748.96s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1750.64s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1752.33s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1754.03s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1755.71s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1757.40s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1759.07s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1760.74s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1762.42s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1764.11s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1765.78s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1767.47s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1769.15s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1770.83s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1772.52s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1774.20s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1775.86s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1777.54s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1779.21s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1780.89s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1782.59s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1784.31s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.7",
+    "1785.98s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1787.67s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1789.34s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.8",
+    "1791.00s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1792.68s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1794.37s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1796.05s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7",
+    "1797.73s walk end at (-305.0, 0.0, -269.0); target=(-304.0, 0.0, -267.0) distance=1.8",
+    "1799.41s walk end at (-309.0, 0.0, -274.0); target=(-310.0, 0.0, -275.0) distance=1.7"
+  ],
+  "free_roam_events": [
+    {
+      "event": "car_destination_reached",
+      "passed": true,
+      "seconds": 780.079331
+    },
+    {
+      "event": "car_exit_same_car_reboard_exit",
+      "passed": true,
+      "seconds": 781.769627
+    },
+    {
+      "event": "aircraft_flight_landing_exit",
+      "passed": true,
+      "seconds": 932.479377
+    },
+    {
+      "event": "car_destination_reached",
+      "passed": true,
+      "seconds": 1027.237164
+    },
+    {
+      "event": "car_exit_same_car_reboard_exit",
+      "passed": true,
+      "seconds": 1028.92898
+    },
+    {
+      "event": "aircraft_flight_landing_exit",
+      "passed": true,
+      "seconds": 1261.314101
+    },
+    {
+      "event": "car_destination_reached",
+      "passed": true,
+      "seconds": 1350.977693
+    },
+    {
+      "event": "car_exit_same_car_reboard_exit",
+      "passed": true,
+      "seconds": 1352.655836
+    },
+    {
+      "event": "aircraft_flight_landing_exit",
+      "passed": true,
+      "seconds": 1482.82584
+    },
+    {
+      "event": "car_destination_reached",
+      "passed": true,
+      "seconds": 1607.762647
+    },
+    {
+      "event": "car_exit_same_car_reboard_exit",
+      "passed": true,
+      "seconds": 1609.453232
+    }
+  ]
+}

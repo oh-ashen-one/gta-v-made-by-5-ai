@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-10-21T14:30:21.299440+00:00",
+  "review_type": "builder evidence reconciliation; not independent quality or leak acceptance",
+  "raw_report": "docs/wave-02/soak-1800-r2/capture_log.json",
+  "raw_report_sha256": "3749bfca0f2d3811cc71b4955579c792d3d31698f641a5d9ff5a8c71ede3396a",
+  "process_metadata": "docs/wave-02/soak-1800-r2-process.log.meta.json",
+  "process_metadata_sha256": "6c1bdbac71750bf25baa34fe3023cf00653304637bbc2854e48a94690c94d237",
+  "tested_checkpoint": "03d9b8700bab986ed191a0bcd39ee8a13cde7ac0",
+  "tested_capture_source_sha256": "ada822ea62b711139d4956f97cc6efc411198054cfc56f103283d0aeef0d3d37",
+  "result": {
+    "script_success": true,
+    "failure_reason": "",
+    "elapsed_seconds": 1800.007973,
+    "process_elapsed_seconds": 1806.76,
+    "native_exit": 0,
+    "wrapper_exit": 0,
+    "child_reaped": true,
+    "process_fatal_errors": [],
+    "runtime_log_scan": {
+      "checked": true,
+      "classified_nonfatal": [],
+      "fatal_errors": [],
+      "path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/soak-1800-r2/engine.log",
+      "seconds": 1800.001855
+    },
+    "actual_render_pixels": [
+      [
+        1280,
+        720
+      ]
+    ],
+    "deaths": 0,
+    "health": 100.0,
+    "mission_runs": [
+      {
+        "run": 1,
+        "duration_seconds": 226.981407,
+        "uninterrupted": true,
+        "combat_kills": 3,
+        "car_distance_m": 642.352882272913,
+        "flight_distance_m": 727.800713904668
+      },
+      {
+        "run": 2,
+        "duration_seconds": 224.323017,
+        "uninterrupted": true,
+        "combat_kills": 3,
+        "car_distance_m": 625.889650374651,
+        "flight_distance_m": 727.800245676655
+      },
+      {
+        "run": 3,
+        "duration_seconds": 247.36041,
+        "uninterrupted": true,
+        "combat_kills": 3,
+        "car_distance_m": 824.069172191346,
+        "flight_distance_m": 727.802479997743
+      }
+    ],
+    "fixtures": [
+      {
+        "name": "pause freezes player and live traffic",
+        "passed": true,
+        "phase": "fixture_assisted",
+        "seconds": 698.910125
+      },
+      {
+        "name": "completed-run checkpoint writes through atomic save path",
+        "passed": true,
+        "phase": "fixture_assisted",
+        "seconds": 698.911081
+      },
+      {
+        "name": "malformed checkpoint is rejected without state mutation",
+        "passed": true,
+        "phase": "fixture_assisted",
+        "seconds": 698.911497
+      },
+      {
+        "name": "walking to airfield cannot satisfy drive stage",
+        "passed": true,
+        "phase": "fixture_assisted",
+        "seconds": 698.957404
+      }
+    ],
+    "terminal_liveness": {
+      "aircraft_cycle_verified": true,
+      "current_horizontal_speed_mps": 3.59464120864868,
+      "final_observation_seconds": 179.984968,
+      "foot_distance_last_60_seconds_m": 256.209415907098,
+      "healthy_on_foot": true,
+      "reboard_cycle_verified": true,
+      "seconds_since_foot_motion": 0.00169899999991685
+    },
+    "free_roam_distance_m": {
+      "car": 3100.03550736821,
+      "foot": 4325.19160506366,
+      "helicopter": 2181.61748916795
+    }
+  },
+  "performance_baseline": {
+    "frame_times": {
+      "count": 136556,
+      "max_ms": 763.326,
+      "mean_ms": 13.1228099094876,
+      "p50_ms": 12.716,
+      "p95_ms": 19.129,
+      "p99_ms": 25.436
+    },
+    "frame_times_including_capture_overhead": {
+      "count": 136605,
+      "max_ms": 763.326,
+      "mean_ms": 13.1766792137915,
+      "p50_ms": 12.719,
+      "p95_ms": 19.134,
+      "p99_ms": 25.49
+    },
+    "engine_monitor_summary": {
+      "draw_calls": {
+        "first": 0.0,
+        "last": 7773.0,
+        "max": 8380.0,
+        "min": 0.0,
+        "samples": 1801
+      },
+      "fps": {
+        "first": 1.0,
+        "last": 85.0,
+        "max": 86.0,
+        "min": 1.0,
+        "samples": 1801
+      },
+      "node_count": {
+        "first": 17834.0,
+        "last": 17835.0,
+        "max": 17993.0,
+        "min": 17833.0,
+        "samples": 1801
+      },
+      "object_count": {
+        "first": 32320.0,
+        "last": 32399.0,
+        "max": 32707.0,
+        "min": 32320.0,
+        "samples": 1801
+      },
+      "orphan_node_count": {
+        "first": 0.0,
+        "last": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "samples": 1801
+      },
+      "render_buffer_memory_bytes": {
+        "first": 0.0,
+        "last": 276549426.0,
+        "max": 285587716.0,
+        "min": 0.0,
+        "samples": 1801
+      },
+      "render_texture_memory_bytes": {
+        "first": 0.0,
+        "last": 161069824.0,
+        "max": 1771879168.0,
+        "min": 0.0,
+        "samples": 1801
+      },
+      "render_video_memory_bytes": {
+        "first": 0.0,
+        "last": 2306310144.0,
+        "max": 2585280512.0,
+        "min": 0.0,
+        "samples": 1801
+      },
+      "resource_count": {
+        "first": 475.0,
+        "last": 475.0,
+        "max": 495.0,
+        "min": 475.0,
+        "samples": 1801
+      },
+      "static_memory_bytes": {
+        "first": 239122537.0,
+        "last": 322266514.0,
+        "max": 322266514.0,
+        "min": 239122537.0,
+        "samples": 1801
+      },
+      "static_memory_peak_bytes": {
+        "first": 353618498.0,
+        "last": 470355724.0,
+        "max": 470355724.0,
+        "min": 353618498.0,
+        "samples": 1801
+      }
+    },
+    "rss_sample_count": 361,
+    "rss_peak_kib_sampled": 1260896,
+    "child_peak_rss_bytes": 1298644992,
+    "performance_acceptance_valid": false,
+    "memory_leak_acceptance_valid": false
+  },
+  "qualifications": [
+    "Actual rendering was 1280x720 for all 1801 state samples. This is a stability run, not an accepted 1080p performance test.",
+    "Three completions used scripted input actions plus direct yaw/pitch and fractional action strengths. No native human playtest claim.",
+    "Negative cases intentionally used fixture state/position changes after the three completion records; fixtures are excluded from mission counts.",
+    "No continuous 30-minute video exists. Evidence comprises 1Hz states/resources, gates, stills and supervisor RSS samples.",
+    "Raw report records 39 screenshots while 40 PNGs exist. The 1800s periodic still resumed after terminal serialization; raw evidence retained unchanged. A post-await terminal guard was added after this run.",
+    "Timing includes per-gate and five-minute screenshot work. The maximum 763.326ms stall cannot be localized from this old aggregate-only report; bounded timestamped stall logging was added after this run.",
+    "Object/node/resource/RSS/static-memory trends require independent review. Zero orphan nodes and clean process exit do not certify absence of leaks.",
+    "This packet applies only to the tested startup source hashes and patch, not subsequent instrumentation, art, packaging or rendering changes."
+  ]
+}

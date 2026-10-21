@@ -1,0 +1,271 @@
+{
+	"captures": [
+		{
+			"label": "01_title",
+			"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-ui/01_title.png",
+			"pause_visible": false,
+			"paused": true,
+			"physics_frame": 30,
+			"process_frame": 8,
+			"raster_height": 1080,
+			"raster_width": 1920,
+			"settings_visible": false,
+			"ticks_msec": 16797,
+			"title_visible": true
+		},
+		{
+			"label": "02_start",
+			"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-ui/02_start.png",
+			"pause_visible": false,
+			"paused": false,
+			"physics_frame": 60,
+			"process_frame": 43,
+			"raster_height": 1080,
+			"raster_width": 1920,
+			"settings_visible": false,
+			"ticks_msec": 17368,
+			"title_visible": false
+		},
+		{
+			"label": "03_pause",
+			"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-ui/03_pause.png",
+			"pause_visible": true,
+			"paused": true,
+			"physics_frame": 91,
+			"process_frame": 76,
+			"raster_height": 1080,
+			"raster_width": 1920,
+			"settings_visible": false,
+			"ticks_msec": 17808,
+			"title_visible": false
+		},
+		{
+			"label": "04_settings",
+			"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-ui/04_settings.png",
+			"pause_visible": false,
+			"paused": true,
+			"physics_frame": 121,
+			"process_frame": 116,
+			"raster_height": 1080,
+			"raster_width": 1920,
+			"settings_visible": true,
+			"ticks_msec": 18339,
+			"title_visible": false
+		},
+		{
+			"label": "05_return_to_pause",
+			"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-ui/05_return_to_pause.png",
+			"pause_visible": true,
+			"paused": true,
+			"physics_frame": 151,
+			"process_frame": 153,
+			"raster_height": 1080,
+			"raster_width": 1920,
+			"settings_visible": false,
+			"ticks_msec": 18818,
+			"title_visible": false
+		},
+		{
+			"label": "06_saved_fixture",
+			"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-ui/06_saved_fixture.png",
+			"pause_visible": false,
+			"paused": false,
+			"physics_frame": 182,
+			"process_frame": 181,
+			"raster_height": 1080,
+			"raster_width": 1920,
+			"settings_visible": false,
+			"ticks_msec": 20088,
+			"title_visible": false
+		}
+	],
+	"checks": [
+		{
+			"details": {},
+			"label": "capture_directory",
+			"passed": true
+		},
+		{
+			"details": {
+				"explicit_path": "/tmp/orchard-reach-ui-review-wave02-final.json",
+				"requires": "--qa-session and a non-symlink /tmp/orchard-reach-ui-review-*.json task save"
+			},
+			"label": "qa_save_guard",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "rendered_display",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "title_ready",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "capture_01_title",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "new_game_started",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "capture_02_start",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "pause_open",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "capture_03_pause",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "settings_open",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "capture_04_settings",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "settings_return_to_pause",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "capture_05_return_to_pause",
+			"passed": true
+		},
+		{
+			"details": {
+				"actual": 83.0
+			},
+			"label": "writer_health",
+			"passed": true
+		},
+		{
+			"details": {
+				"hud_visible": true,
+				"invert_y": true,
+				"mouse_sensitivity": 1.3,
+				"reduced_shake": true
+			},
+			"label": "writer_settings",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "writer_weapon_ammo",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "writer_mission",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "writer_player_ready",
+			"passed": true
+		},
+		{
+			"details": {
+				"representation": "rigged_provider",
+				"scene": "res://assets/providers/smg_held.glb"
+			},
+			"label": "writer_held_smg",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "save_game_returned_true",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "saved_json_valid",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "saved_fixture_values",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "save_digest_available",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "capture_06_saved_fixture",
+			"passed": true
+		}
+	],
+	"completed_ticks_msec": 20088,
+	"display_server": "macOS",
+	"editor_feature": false,
+	"engine_version": {
+		"build": "official",
+		"hash": "a13da4feb8d8aefc283c3763d33a2f170a18d541",
+		"hex": 263937,
+		"major": 4,
+		"minor": 7,
+		"patch": 1,
+		"status": "stable",
+		"string": "4.7.1-stable (official)",
+		"timestamp": 0
+	},
+	"evidence_kind": "fixture-assisted UI and cross-process save roundtrip; not OS-input or human acceptance",
+	"executable": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/game/build/mac/final/Orchard Reach.app/Contents/MacOS/Orchard Reach",
+	"exit_code_requested": 0,
+	"fixture_label": "orchard-reach-package-roundtrip-v1",
+	"native_quit_requested": true,
+	"passed": true,
+	"passed_checks": [
+		"capture_directory",
+		"qa_save_guard",
+		"rendered_display",
+		"title_ready",
+		"capture_01_title",
+		"new_game_started",
+		"capture_02_start",
+		"pause_open",
+		"capture_03_pause",
+		"settings_open",
+		"capture_04_settings",
+		"settings_return_to_pause",
+		"capture_05_return_to_pause",
+		"writer_health",
+		"writer_settings",
+		"writer_weapon_ammo",
+		"writer_mission",
+		"writer_player_ready",
+		"writer_held_smg",
+		"save_game_returned_true",
+		"saved_json_valid",
+		"saved_fixture_values",
+		"save_digest_available",
+		"capture_06_saved_fixture"
+	],
+	"phase": "write",
+	"probe_elapsed_msec": 11398,
+	"process_id": 24629,
+	"save_path": "/tmp/orchard-reach-ui-review-wave02-final.json",
+	"save_sha256": "fea66f759a5dccde2772bfd0d371fdaaae96dba91f8e22adadb06b2a2883047b",
+	"startup_ready_ticks_msec": 8690,
+	"timeout_seconds": 45.0,
+	"writer_process_id": null
+}

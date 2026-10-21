@@ -1,0 +1,12 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--capture", "--soak", "--qa-render-size=1920x1080", "--qa-engine-log=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak/engine.log", "--capture-dir=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak", "--save-path=/tmp/orchard-package-soak-save.json"]
+[qa-render-size] requested_backing=(1920, 1080)
+[launch] world_ui_ready_ms=5526 executable=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/game/build/mac/final/Orchard Reach.app/Contents/MacOS/Orchard Reach editor_binary=false
+[capture] 0.99s Route start; seed=20261021; headless=false; scripted-input-automation=true
+[capture] 1.12s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak/01_safe_room.png
+[capture] 2.97s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0
+[capture] 21.65s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9
+[capture] 30.00s ABORT Soak runtime error-log gate is unavailable or contains unhandled errors.
+[capture] terminal success=false deaths=0 seconds=30.0
