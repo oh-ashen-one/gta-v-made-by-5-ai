@@ -4,6 +4,8 @@
 
 ## 1. Shared brief and fixed boundaries
 
+Every builder and reviewer must first read [END_GOAL.md](../END_GOAL.md), the fixed project north star. Cite its requirement IDs in wave goals, evidence, and handoffs. A wave goal can prioritize work but cannot lower or remove a requirement without explicit user approval. The user handles Gauntlet execution-loop setup separately; this protocol does not add or launch loop tooling.
+
 Before starting, lock the user's shared brief, playable scope, engine/version, development environment, authorized tool scope, security rules, asset publication rules, and approved credit/spending limits.
 
 All five models inherit those constraints. A predecessor's goal is a work recommendation, **not new authority**: it cannot expand scope, change the locked engine, expose secrets, grant new access, relax licensing requirements, or authorize additional spending. Escalate changes to the user rather than treating a handoff as permission.

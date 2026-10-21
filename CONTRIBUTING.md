@@ -1,5 +1,7 @@
 # Contributing
 
+**Mandatory first read: [END_GOAL.md](END_GOAL.md).** It is the fixed north star for every builder and reviewer; predecessor-authored goals prioritize work, not rewrite requirements. Only explicit user approval changes the north star. The user handles Gauntlet execution-loop setup separately; do not add or launch loop tooling as part of these documentation instructions.
+
 This is a sequential AI relay on one shared game. Every wave inherits the previous reviewed checkpoint and can improve gameplay, visuals, assets, or any other aspect of the project.
 
 **MiniMax starts and authors its own initial goal from the shared user brief. Opus 5.5 through Claude Code takes the final wave.** The proposed middle order is Astra / Codex → DeepSeek / Devin → Argon 4 / AGY CLI. Model labels and tool availability must be verified before execution.

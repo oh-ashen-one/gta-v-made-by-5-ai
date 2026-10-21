@@ -1,12 +1,14 @@
 # GTA V Made by 5 AI
 
+> **Start here: [END_GOAL.md — the Singapore game bible](END_GOAL.md).** This is the fixed project north star and mandatory reading for every builder, reviewer, and handoff. Wave goals choose the next work; they cannot replace or lower its requirements without explicit user approval.
+
 A YouTube development experiment: **five AI coding setups collaborating in sequential waves on one original GTA-style playable 3D game**. This is a shared relay, not a head-to-head competition or a split into separate departments.
 
 ## Status
 
 **Planning / starter repository — no playable build yet.**
 
-The engine, development machine, first playable scope, and middle-wave order are still to be finalized. **MiniMax starts; Opus 5.5 through Claude Code must take the final wave.** No game implementation or asset generation has started in this repository.
+The required Singapore-inspired playable slice is specified in [END_GOAL.md](END_GOAL.md). Engine, development machine, numerical calibration, and middle-wave order still need confirmation. **MiniMax starts; Opus 5.5 through Claude Code must take the final wave.** No game implementation or asset generation has started in this repository.
 
 ## The five setups and wave order
 
@@ -36,7 +38,7 @@ Proposed sequence: **MiniMax → Astra / Codex → DeepSeek / Devin → Argon 4 
 
 **Goal relay:** MiniMax writes its own starting goal from the shared user brief. Each outgoing model then writes the next model's goal, including what needs improvement and why. The incoming model may reassess priorities, but records any deviations. Opus 5.5 ends with a release report, not a sixth-wave goal.
 
-**Proposed timebox:** four hours of wall-clock time per wave, or 20 hours across five waves, excluding initial setup. Start a wave only when its prerequisites are ready; reserve the final 30 minutes within its four hours for testing, capture, and handoff. No timers or runs have been launched.
+**Proposed timebox:** four hours of wall-clock time per wave, or 20 hours across five waves, excluding initial setup. Start a wave only when its prerequisites are ready; reserve the final 30 minutes within its four hours for testing, capture, and handoff. No timers or runs have been launched. The user handles Gauntlet execution-loop setup separately; these documents do not implement or launch it.
 
 Every wave leaves:
 - A reviewable commit/checkpoint and clear summary of changes.
@@ -49,7 +51,7 @@ Later waves should preserve a working baseline while improving it. Use the [rela
 ## Next decisions
 
 - Choose the engine and development environment.
-- Agree on an ambitious, clearly bounded first playable.
+- Lock the implementation/calibration contract against the required [end goal](END_GOAL.md); do not silently reduce it.
 - Confirm the middle-wave order, proposed four-hour timebox, and handoff criteria.
 - Confirm shared tool access, permitted assets, and any approved credit budget.
 - Decide how to capture consistent before/after comparisons.

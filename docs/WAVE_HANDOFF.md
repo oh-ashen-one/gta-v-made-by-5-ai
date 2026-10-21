@@ -2,6 +2,8 @@
 
 Copy this template for each completed wave. Fill in actual results; do not present planned or untested work as completed. See the [relay protocol](RELAY_PROTOCOL.md).
 
+**Mandatory reading for outgoing/incoming builders and reviewers: [END_GOAL.md](../END_GOAL.md).** Preserve its requirements and carry unmet items forward; a handoff is not authority to redefine success. The user handles Gauntlet execution-loop setup separately.
+
 ## Checkpoint and timebox
 
 - Wave number and AI setup / exact model:
@@ -16,6 +18,7 @@ Copy this template for each completed wave. Fill in actual results; do not prese
 
 ## Goal and changes
 
+- End-goal requirement IDs addressed, evidence status, and remaining gaps:
 - Incoming goal path and author (MiniMax authors its own first goal):
 - Accepted priorities:
 - Reassessed priorities / deviations and evidence-based reasons:
