@@ -85,7 +85,7 @@ func _ready() -> void:
 		get_tree().quit(1 if tester.failures > 0 else 0)
 		return
 
-	if "--photos" in args:
+	if "--photos" in args or "--gameplay-photos" in args:
 		var photo_dir := "captures"
 		for arg in args:
 			if arg.begins_with("--capture-dir="):

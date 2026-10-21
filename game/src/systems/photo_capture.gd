@@ -18,7 +18,10 @@ func setup(m: Node, w: WorldBuilder, dir: String) -> void:
 	world = w
 	out_dir = dir
 	DirAccess.make_dir_recursive_absolute(out_dir)
-	_run()
+	if "--gameplay-photos" in OS.get_cmdline_user_args():
+		_run_gameplay()
+	else:
+		_run()
 
 func _log_line(text: String) -> void:
 	_log.append(text)
@@ -26,6 +29,10 @@ func _log_line(text: String) -> void:
 
 func _run() -> void:
 	await get_tree().create_timer(0.8).timeout
+	# Fixed-view stills are look evidence, not gameplay evidence: hide the HUD so
+	# the frame shows the district rather than the objective card.
+	if main != null and main.get("hud") != null:
+		main.hud.set_gameplay_visible(false)
 	var views := [
 		# Wave 3: the two former vantage points sat inside a shophouse module and
 		# inside the hawker hall, so "street" evidence was actually an interior
@@ -56,13 +63,47 @@ func _run() -> void:
 		await _shot(String(view["name"]))
 	_write_log()
 
+## Normal third-person gameplay frames: the real player avatar, the real HUD,
+## live traffic and pedestrians. The manager asked for gameplay evidence rather
+## than free-camera postcards, because a postcard cannot show whether the street
+## is actually populated or playable.
+func _run_gameplay() -> void:
+	await get_tree().create_timer(0.8).timeout
+	Game.simulation_paused = false
+	if main.has_method("_start_game"):
+		main._start_game()
+	var player: Node3D = main.player
+	player.visible = true
+	var spots := [
+		{"name": "heritage_arcade", "pos": Vector3(-150.0, 0.45, -148.0), "yaw": deg_to_rad(-90.0)},
+		{"name": "heritage_road", "pos": Vector3(-34.0, 0.45, -156.0), "yaw": deg_to_rad(-90.0)},
+		# Stand north of the pavilion looking south into it, so the hall reads as
+		# a place rather than a stall counter filling the frame.
+		{"name": "hawker_approach", "pos": Vector3(-100.0, 0.45, -122.0), "yaw": deg_to_rad(180.0)},
+		{"name": "junction_traffic", "pos": Vector3(-12.0, 0.45, -52.0), "yaw": deg_to_rad(90.0)},
+		{"name": "waterfront_promenade", "pos": Vector3(60.0, 0.45, -330.0), "yaw": deg_to_rad(90.0)},
+	]
+	for spot in spots:
+		_active_view = spot
+		player.respawn_at(spot["pos"], spot["yaw"])
+		# Let the AI settle and traffic roll into frame before the shutter.
+		await get_tree().create_timer(2.4).timeout
+		# respawn_at publishes a checkpoint toast; it is not part of the look.
+		if main.get("hud") != null:
+			main.hud.clear_notifications()
+		if player.camera != null:
+			player.camera.current = true
+		await get_tree().create_timer(0.5).timeout
+		await _shot("gameplay_" + String(spot["name"]))
+	_write_log()
+
 func _shot(view_name: String) -> void:
 	await RenderingServer.frame_post_draw
 	var img := get_viewport().get_texture().get_image()
 	if img == null:
 		return
 	var native_size := img.get_size()
-	_view_records.append({"name":view_name,"camera_position":str(_active_view["pos"]),"camera_look":str(_active_view["look"]),"fov":_active_view["fov"],"render_pixels":[native_size.x,native_size.y],"saved_pixels":[1280,720]})
+	_view_records.append({"name":view_name,"camera_position":str(_active_view.get("pos","")),"camera_look":str(_active_view.get("look","")),"fov":_active_view.get("fov",0),"render_pixels":[native_size.x,native_size.y],"saved_pixels":[1280,720]})
 	img.resize(1280, 720, Image.INTERPOLATE_BILINEAR)
 	_shots += 1
 	var path := "%s/photo_%02d_%s.png" % [out_dir, _shots, view_name]

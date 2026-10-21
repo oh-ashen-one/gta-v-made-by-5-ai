@@ -109,34 +109,45 @@ Untouched in wave 3, still open:
 
 Machine: verify you are on the Studio. Shared GPU state lives at
 `/Users/midir/sm2-n1/_scratch/gpu` (`PAUSED`, `locks/capture.0.lock`, `holders/`, `runs.jsonl`).
-Hard global cap **two** renderer-bearing engines. `game/tools/render_gate.py` now takes the capture
-lease with `flock`, but **it was never executed successfully in wave 3** (the approval gate rejected
-it); verify it works before relying on it, and if it still cannot run, do the manual preflight
-(`PAUSED` absent, zero foreign renderers via `pgrep`) and record the deviation as wave 3 did.
+Hard global cap **two** renderer-bearing engines.
+
+**Every renderer launch must go through `game/tools/render_gate.py`**, which takes the capture lease
+with `flock`, refuses to launch when `PAUSED` exists, refuses when two renderers are already live and
+refuses while an engine is stuck exiting. Wave 3 rewrote it to actually hold the lease; its first
+successful execution is still owed (see below).
+
+**If a guarded command is rejected by the approval gate, report the exact command and the reason and
+leave that check pending. Do not substitute a direct `godot` launch, a different wrapper or any other
+route around the guard.** Wave 3 did that once and it was corrected by the manager; do not repeat it.
 
 ```sh
 # import on a fresh clone
 godot --headless --editor --path game --quit
 
-# source regression (expect 85/85, exit 0)
-godot --log-file ABS.log --path game -- --test --qa-session \
-  --test-report=ABS.json --save-path=ABS-save.json
+# source regression (expect 85/85, exit 0) — inside the shared lease
+python3 game/tools/render_gate.py -- \
+  python3 game/tools/bounded_run.py --seconds 90 --log ABS/regression.log -- \
+  godot --log-file ABS/engine.log --path game -- --test --qa-session \
+  --test-report=ABS/regression.json --save-path=ABS/regression-save.json
 
-# fixed-view stills (15 PNGs, 1920x1080 backing)
-godot --log-file ABS.log --path game -- --photos --qa-session \
+# fixed-view stills (15 PNGs, 1920x1080 backing) — inside the shared lease
+python3 game/tools/render_gate.py -- \
+  python3 game/tools/bounded_run.py --seconds 150 --log ABS/photos.log -- \
+  godot --log-file ABS/engine.log --path game -- --photos --qa-session \
   --qa-render-size=1920x1080 --capture-dir=ABSOLUTE_NEW_DIR
 
-# export, then run the actual binary — user args need the leading `--`
+# export (headless, no lease needed), then run the actual binary through the lease
 godot --headless --path game --export-release "macOS" build/mac/OrchardReach-wave04.zip
-"build/mac/<extracted>/Orchard Reach.app/Contents/MacOS/Orchard Reach" -- --test --qa-session \
-  --test-report=ABS.json --save-path=ABS.json
+python3 game/tools/render_gate.py -- \
+  python3 game/tools/bounded_run.py --seconds 120 --log ABS/package.log -- \
+  "build/mac/<extracted>/Orchard Reach.app/Contents/MacOS/Orchard Reach" -- \
+  --test --qa-session --test-report=ABS/pkg.json --save-path=ABS/pkg-save.json
 ```
 
 Notes learned the hard way in wave 3:
 
-- Extract the ZIP **inside the workspace**, not `/tmp` — this session's approval gate rejected writes
-  outside it. `python3 -c "import zipfile; zipfile.ZipFile(p).extractall(d)"` works when `unzip` and
-  `ditto` are rejected.
+- Extract the ZIP **inside the workspace**. `python3 -c "import zipfile; zipfile.ZipFile(p).extractall(d)"`
+  works when `unzip`/`ditto` are unavailable.
 - After extraction the app binary may lack the executable bit: `chmod +x` it before launching.
 - The exported binary parses `--test` as Godot's own unit-test flag. **User arguments must follow a
   bare `--`.** Without it the app aborts with "compiled without support for unit tests".

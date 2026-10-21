@@ -1,0 +1,95 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--test", "--qa-session", "--test-report=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek/docs/wave-03/regression-r4.json", "--save-path=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek/docs/wave-03/regression-r4-save.json"]
+[profile] officer_pool_build_us=707849 size=5
+[launch] world_ui_ready_ms=7167 executable=/Applications/Godot.app/Contents/MacOS/Godot editor_binary=true
+=== Orchard Reach wave-2 bounded regression suite ===
+PASS world builder present 
+PASS player spawned 
+PASS traffic manager present 
+PASS mission running 
+PASS helicopter present 
+PASS hud present 
+PASS district contains 3D geometry 
+PASS junction graph has 25 connected reference nodes 
+PASS pedestrian paths present 
+PASS civilian traffic populated 
+PASS pedestrians populated 
+PASS ambient population matches configured budget of 185 unique actors 
+PASS market diners are reactive damageable NPCs 
+PASS busy district walkers spawn along segments not junction piles 
+PASS gameplay camera belongs to player 
+PASS mission publishes initial objective 
+PASS initial objective marker survives HUD setup order 
+PASS mission registered for save and checkpoint restoration 
+PASS package is a real interactable 
+PASS road graph includes the fifth row 
+PASS traffic target is near destination on the left lane 
+PASS east-west signal excludes north-south movement 
+PASS junction changeover clears both approaches 
+PASS north-south signal excludes east-west movement 
+PASS visible signal lamps agree with east-west right of way 
+PASS visible signal lamps switch with north-south right of way 
+PASS fire maps to a mouse button rather than a keyboard code 
+DIAGNOSTIC fire action held=true paused=false mag=11 event_matches=true
+PASS real mouse-button event fires the equipped weapon mag 12 -> 11
+FAIL mission avenue has no static trunk obstruction 
+PASS rapid native press and release is not dropped 
+PASS close-cover fixture leaves camera sightline on target 
+PASS muzzle obstruction prevents damage through close cover 
+[profile] officer_activation_us=25 pooled=true live=0
+PASS clearing muzzle obstruction permits target damage 
+PASS input interaction enters a car 
+PASS occupied player collision is disabled 
+PASS driving input moves the car 
+PASS occupant follows the moving car 
+PASS authoritative position follows controlled vehicle 
+PASS left driving input turns left 
+PASS NPC weapon ray damages occupied car 100.00 -> 96.97
+PASS car body protects its occupant from that ray 
+PASS normal exit returns control and camera 
+PASS on-foot collision restored 
+PASS blocked car exit preserves seated control without wall clipping 
+PASS clearing blocked exit restores normal exit 
+PASS death is counted for honest golden-path evidence 
+PASS death in car releases both control owners 
+PASS death restores visible player and gameplay camera 
+PASS walking still works after vehicle death 
+PASS wanted escalation decays when unobserved 
+PASS health regenerates out of fire 
+PASS helicopter control is exclusive 
+PASS lift input gains altitude 
+PASS neutral lift stabilizes hover 
+PASS airborne helicopter rejects exit 
+PASS pause freezes aircraft 
+PASS pause freezes pursuit heat 
+PASS controlled descent lands without disabling aircraft position=(270.0, 0.16092, 104.0) velocity=(0.0, 0.0, 0.0) health=100.0 floor=true
+PASS landed helicopter exits to walking 
+PASS waterfront helicopter exit permits actual on-foot movement moved=4.003 from=(2.461618, 0.275156, -331.4723) to=(6.464641, 0.275936, -331.4723) velocity=(5.963103, 0.0, 0.0)
+PASS package input pickup advances and hides pickup 
+FAIL taking car starts the authored driving leg 
+FAIL on-foot arrival cannot bypass driving leg 
+PASS death restores package checkpoint and requires new drive 
+PASS restoration rebuilds flags and objective 
+PASS delivery cannot be triggered remotely 
+PASS restart resets pickup checkpoint and prerequisites 
+PASS restart retains exactly three mission guards 
+PASS save roundtrip restores health and mission checkpoint 
+PASS save restoration updates package and objective 
+PASS save restores sensitivity and accessibility settings 
+PASS invalid live state cannot replace the last complete save 
+PASS atomic replacement updates an existing save 
+PASS successful save leaves no temporary checkpoint file 
+PASS successful load publishes one state-restored event 
+PASS saved SMG restores held model and clears transient actions 
+PASS save rejects truncated position vector atomically 
+PASS save rejects unknown equipped weapon atomically 
+PASS save rejects out-of-range magazine atomically 
+PASS save rejects wrong health type atomically 
+PASS save rejects invalid checkpoint index atomically 
+PASS save rejects inconsistent pursuit state atomically 
+PASS save rejects wrong safe-position type atomically 
+PASS save rejects out-of-range mouse sensitivity atomically 
+PASS save rejects wrong accessibility-setting type atomically 
+82/85 checks passed, 3 failed; report=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek/docs/wave-03/regression-r4.json

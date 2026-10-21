@@ -62,7 +62,11 @@ func _spawn_hostiles() -> void:
 		h.state = NPC.State.WALK
 		_hostiles.append(h)
 
-func _process(_delta: float) -> void:
+## Objective progression runs on the physics tick, not the render tick. It was
+## in _process, which meant a stage change could be delayed by a slow frame; the
+## wave-3 district is heavy enough that this became observable, and gameplay
+## state should never depend on render rate.
+func _physics_process(_delta: float) -> void:
 	if Game.simulation_paused:
 		return
 	var actor: Node3D = _actor()

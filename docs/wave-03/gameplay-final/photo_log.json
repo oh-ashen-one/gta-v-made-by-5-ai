@@ -1,0 +1,82 @@
+{
+	"note": "fixed-view captures from an authored camera; fixture-assisted, not player-reachable proof",
+	"view_records": [
+		{
+			"camera_look": "",
+			"camera_position": "(-150.0, 0.45, -148.0)",
+			"fov": 0,
+			"name": "gameplay_heritage_arcade",
+			"render_pixels": [
+				1920,
+				1080
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "",
+			"camera_position": "(-34.0, 0.45, -156.0)",
+			"fov": 0,
+			"name": "gameplay_heritage_road",
+			"render_pixels": [
+				1920,
+				1080
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "",
+			"camera_position": "(-100.0, 0.45, -122.0)",
+			"fov": 0,
+			"name": "gameplay_hawker_approach",
+			"render_pixels": [
+				1920,
+				1080
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "",
+			"camera_position": "(-12.0, 0.45, -52.0)",
+			"fov": 0,
+			"name": "gameplay_junction_traffic",
+			"render_pixels": [
+				1920,
+				1080
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "",
+			"camera_position": "(60.0, 0.45, -330.0)",
+			"fov": 0,
+			"name": "gameplay_waterfront_promenade",
+			"render_pixels": [
+				1920,
+				1080
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		}
+	],
+	"views": [
+		"saved /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek/docs/wave-03/gameplay-final/photo_01_gameplay_heritage_arcade.png",
+		"saved /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek/docs/wave-03/gameplay-final/photo_02_gameplay_heritage_road.png",
+		"saved /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek/docs/wave-03/gameplay-final/photo_03_gameplay_hawker_approach.png",
+		"saved /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek/docs/wave-03/gameplay-final/photo_04_gameplay_junction_traffic.png",
+		"saved /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek/docs/wave-03/gameplay-final/photo_05_gameplay_waterfront_promenade.png"
+	]
+}

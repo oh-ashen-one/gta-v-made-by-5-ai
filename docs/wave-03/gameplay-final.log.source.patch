@@ -1,0 +1,357 @@
+diff --git a/game/src/main.gd b/game/src/main.gd
+index c11bfb5..734c3fd 100644
+--- a/game/src/main.gd
++++ b/game/src/main.gd
+@@ -85,7 +85,7 @@ func _ready() -> void:
+ 		get_tree().quit(1 if tester.failures > 0 else 0)
+ 		return
+ 
+-	if "--photos" in args:
++	if "--photos" in args or "--gameplay-photos" in args:
+ 		var photo_dir := "captures"
+ 		for arg in args:
+ 			if arg.begins_with("--capture-dir="):
+diff --git a/game/src/systems/mission.gd b/game/src/systems/mission.gd
+index cff9419..a99821d 100644
+--- a/game/src/systems/mission.gd
++++ b/game/src/systems/mission.gd
+@@ -62,7 +62,11 @@ func _spawn_hostiles() -> void:
+ 		h.state = NPC.State.WALK
+ 		_hostiles.append(h)
+ 
+-func _process(_delta: float) -> void:
++## Objective progression runs on the physics tick, not the render tick. It was
++## in _process, which meant a stage change could be delayed by a slow frame; the
++## wave-3 district is heavy enough that this became observable, and gameplay
++## state should never depend on render rate.
++func _physics_process(_delta: float) -> void:
+ 	if Game.simulation_paused:
+ 		return
+ 	var actor: Node3D = _actor()
+diff --git a/game/src/systems/photo_capture.gd b/game/src/systems/photo_capture.gd
+index 7995756..576b74e 100644
+--- a/game/src/systems/photo_capture.gd
++++ b/game/src/systems/photo_capture.gd
+@@ -18,7 +18,10 @@ func setup(m: Node, w: WorldBuilder, dir: String) -> void:
+ 	world = w
+ 	out_dir = dir
+ 	DirAccess.make_dir_recursive_absolute(out_dir)
+-	_run()
++	if "--gameplay-photos" in OS.get_cmdline_user_args():
++		_run_gameplay()
++	else:
++		_run()
+ 
+ func _log_line(text: String) -> void:
+ 	_log.append(text)
+@@ -26,6 +29,10 @@ func _log_line(text: String) -> void:
+ 
+ func _run() -> void:
+ 	await get_tree().create_timer(0.8).timeout
++	# Fixed-view stills are look evidence, not gameplay evidence: hide the HUD so
++	# the frame shows the district rather than the objective card.
++	if main != null and main.get("hud") != null:
++		main.hud.set_gameplay_visible(false)
+ 	var views := [
+ 		# Wave 3: the two former vantage points sat inside a shophouse module and
+ 		# inside the hawker hall, so "street" evidence was actually an interior
+@@ -56,13 +63,47 @@ func _run() -> void:
+ 		await _shot(String(view["name"]))
+ 	_write_log()
+ 
++## Normal third-person gameplay frames: the real player avatar, the real HUD,
++## live traffic and pedestrians. The manager asked for gameplay evidence rather
++## than free-camera postcards, because a postcard cannot show whether the street
++## is actually populated or playable.
++func _run_gameplay() -> void:
++	await get_tree().create_timer(0.8).timeout
++	Game.simulation_paused = false
++	if main.has_method("_start_game"):
++		main._start_game()
++	var player: Node3D = main.player
++	player.visible = true
++	var spots := [
++		{"name": "heritage_arcade", "pos": Vector3(-150.0, 0.45, -148.0), "yaw": deg_to_rad(-90.0)},
++		{"name": "heritage_road", "pos": Vector3(-34.0, 0.45, -156.0), "yaw": deg_to_rad(-90.0)},
++		# Stand north of the pavilion looking south into it, so the hall reads as
++		# a place rather than a stall counter filling the frame.
++		{"name": "hawker_approach", "pos": Vector3(-100.0, 0.45, -122.0), "yaw": deg_to_rad(180.0)},
++		{"name": "junction_traffic", "pos": Vector3(-12.0, 0.45, -52.0), "yaw": deg_to_rad(90.0)},
++		{"name": "waterfront_promenade", "pos": Vector3(60.0, 0.45, -330.0), "yaw": deg_to_rad(90.0)},
++	]
++	for spot in spots:
++		_active_view = spot
++		player.respawn_at(spot["pos"], spot["yaw"])
++		# Let the AI settle and traffic roll into frame before the shutter.
++		await get_tree().create_timer(2.4).timeout
++		# respawn_at publishes a checkpoint toast; it is not part of the look.
++		if main.get("hud") != null:
++			main.hud.clear_notifications()
++		if player.camera != null:
++			player.camera.current = true
++		await get_tree().create_timer(0.5).timeout
++		await _shot("gameplay_" + String(spot["name"]))
++	_write_log()
++
+ func _shot(view_name: String) -> void:
+ 	await RenderingServer.frame_post_draw
+ 	var img := get_viewport().get_texture().get_image()
+ 	if img == null:
+ 		return
+ 	var native_size := img.get_size()
+-	_view_records.append({"name":view_name,"camera_position":str(_active_view["pos"]),"camera_look":str(_active_view["look"]),"fov":_active_view["fov"],"render_pixels":[native_size.x,native_size.y],"saved_pixels":[1280,720]})
++	_view_records.append({"name":view_name,"camera_position":str(_active_view.get("pos","")),"camera_look":str(_active_view.get("look","")),"fov":_active_view.get("fov",0),"render_pixels":[native_size.x,native_size.y],"saved_pixels":[1280,720]})
+ 	img.resize(1280, 720, Image.INTERPOLATE_BILINEAR)
+ 	_shots += 1
+ 	var path := "%s/photo_%02d_%s.png" % [out_dir, _shots, view_name]
+diff --git a/game/src/systems/traffic_manager.gd b/game/src/systems/traffic_manager.gd
+index c39bbbc..62e4958 100644
+--- a/game/src/systems/traffic_manager.gd
++++ b/game/src/systems/traffic_manager.gd
+@@ -7,7 +7,7 @@ const LANE_OFFSET := 4.0        # lane centre is 4 m to the LEFT of the road cen
+ const PED_COUNT := 140
+ const FOCUSED_PED_COUNT := 58
+ const DINER_COUNT := 45
+-const TRAFFIC_COUNT := 14
++const TRAFFIC_COUNT := 26
+ const POLICE_SPAWN_DISTANCE := 55.0
+ 
+ var world: WorldBuilder
+@@ -117,13 +117,17 @@ func _spawn_parked() -> void:
+ 		i += 1
+ 
+ func _spawn_traffic() -> void:
++	# The manager's review called the heritage street "an almost-empty endless
++	# road". 26 cars spread uniformly over a 640 m grid still leaves the street
++	# the player actually walks empty, so two in five are seeded on edges near
++	# the heritage/market blocks.
+ 	for i in TRAFFIC_COUNT:
+-		var car := _spawn_ai_car(["sedan", "coupe", "van"][i % 3])
++		var car := _spawn_ai_car(["sedan", "coupe", "van"][i % 3], i % 5 < 2)
+ 		if car:
+ 			cars.append(car)
+ 
+-func _spawn_ai_car(kind: String) -> Car:
+-	var edge := _random_edge()
++func _spawn_ai_car(kind: String, near_heritage: bool = false) -> Car:
++	var edge := _random_edge_near(Vector3(-100.0, 0.0, -100.0), 230.0) if near_heritage else _random_edge()
+ 	if edge.is_empty():
+ 		return null
+ 	var car := Car.new()
+@@ -148,6 +152,21 @@ func _random_edge() -> Dictionary:
+ 	var nxt: int = neighbours[_rng.randi_range(0, neighbours.size() - 1)]
+ 	return {"from": nodes[idx], "to": nodes[nxt]}
+ 
++## Same as _random_edge but restricted to edges whose midpoint lies within
++## `radius` of `centre`. Falls back to any edge when none qualify.
++func _random_edge_near(centre: Vector3, radius: float) -> Dictionary:
++	if nodes.size() < 2:
++		return {}
++	var candidates: Array[Dictionary] = []
++	for idx in nodes.size():
++		for nxt in _neighbours(idx):
++			var midpoint: Vector3 = (nodes[idx] + nodes[nxt]) * 0.5
++			if midpoint.distance_to(centre) <= radius:
++				candidates.append({"from": nodes[idx], "to": nodes[nxt]})
++	if candidates.is_empty():
++		return _random_edge()
++	return candidates[_rng.randi_range(0, candidates.size() - 1)]
++
+ func _neighbours(idx: int) -> Array[int]:
+ 	var result: Array[int] = []
+ 	var cols := 5
+diff --git a/game/src/world/palette.gd b/game/src/world/palette.gd
+index e9e8a94..e77707b 100644
+--- a/game/src/world/palette.gd
++++ b/game/src/world/palette.gd
+@@ -136,13 +136,13 @@ static func _facade_image(kind: String) -> ImageTexture:
+ 					if (fx + fy) % 4 == 0:
+ 						img.fill_rect(Rect2i(8 + fx * 31, 19 + fy * 18, 20, 2), Color(0.55, 0.55, 0.52))
+ 		"shopback":
+-			img.fill(Color(0.80, 0.76, 0.68))
++			img.fill(Color(0.72, 0.69, 0.62))
+ 			for fy in 6:
+ 				for fx in 6:
+-					var col := Color(0.26, 0.30, 0.30) if (fx + fy) % 3 != 0 else Color(0.92, 0.84, 0.66)
++					var col := Color(0.26, 0.30, 0.30) if (fx + fy) % 3 != 0 else Color(0.62, 0.57, 0.46)
+ 					img.fill_rect(Rect2i(12 + fx * 40, 14 + fy * 40, 24, 22), col)
+ 			for fx in 5:
+-				img.fill_rect(Rect2i(30 + fx * 50, 0, 3, 256), Color(0.66, 0.63, 0.57))
++				img.fill_rect(Rect2i(30 + fx * 50, 0, 3, 256), Color(0.60, 0.57, 0.52))
+ 		"workshop":
+ 			img.fill(Color(0.55, 0.57, 0.58))
+ 			for fx in 32:
+@@ -177,8 +177,8 @@ const PLASTER := Color(0.85, 0.81, 0.73)
+ const PLASTER_2 := Color(0.78, 0.74, 0.66)
+ const CONCRETE := Color(0.55, 0.54, 0.51)
+ const CONCRETE_LIGHT := Color(0.62, 0.60, 0.56)
+-const ASPHALT := Color(0.215, 0.215, 0.225)
+-const ASPHALT_EDGE := Color(0.26, 0.26, 0.27)
++const ASPHALT := Color(0.255, 0.255, 0.265)
++const ASPHALT_EDGE := Color(0.30, 0.30, 0.31)
+ const PAINT_LINE := Color(0.85, 0.83, 0.72)
+ const GLASS := Color(0.44, 0.56, 0.62)
+ const METAL := Color(0.35, 0.36, 0.38)
+@@ -203,6 +203,17 @@ const FRONTAGES := [
+ 	Color(0.46, 0.62, 0.76),   # strait blue
+ ]
+ 
++## Public-housing paint schemes. Real estates are repainted in batches, so a
++## district shows several schemes, not one. Used to break the clone-HDB grid.
++const HDB_TINTS := [
++	Color(0.94, 0.93, 0.89),   # off-white
++	Color(0.86, 0.88, 0.90),   # pale blue-grey
++	Color(0.95, 0.90, 0.78),   # cream
++	Color(0.88, 0.82, 0.76),   # warm sand
++	Color(0.82, 0.87, 0.84),   # pale mint
++	Color(0.92, 0.86, 0.84),   # dusty rose
++]
++
+ const SIGN_TEXT := [
+ 	"Kopitiam", "Hardware", "Barber", "Money Changer", "Bakery", "Repair Shop",
+ 	"Phone Repair", "Sari Textiles", "Rice Shop", "Clinic", "Laundry", "Stationery",
+diff --git a/game/src/world/world_builder.gd b/game/src/world/world_builder.gd
+index 6dffa42..0e65835 100644
+--- a/game/src/world/world_builder.gd
++++ b/game/src/world/world_builder.gd
+@@ -79,9 +79,12 @@ func _environment() -> void:
+ 	env.sky = sky
+ 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+ 	env.ambient_light_color = Color(0.54, 0.58, 0.70)
+-	env.ambient_light_energy = 0.58
++	env.ambient_light_energy = 0.44
+ 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
+-	env.tonemap_exposure = 1.02
++	# The manager's review of the aerial found "washed-out whites/pinks". The
++	# previous 1.02 exposure plus 0.58 ambient plus 0.42 glow stacked into the
++	# highlight shoulder on pale HDB facades. Pull all three back.
++	env.tonemap_exposure = 0.92
+ 	# Warm tropical dusk haze. The approved concepts are late-afternoon: a low
+ 	# sun, long shadows and gold bounce, not an overcast midday wash. The first
+ 	# wave-3 pass used 0.0011 and smothered the district in peach dust; this is
+@@ -96,12 +99,12 @@ func _environment() -> void:
+ 	env.ssao_intensity = 2.0
+ 	env.ssao_light_affect = 0.45
+ 	env.glow_enabled = true
+-	env.glow_intensity = 0.42
+-	env.glow_bloom = 0.14
+-	env.glow_hdr_threshold = 1.02
++	env.glow_intensity = 0.28
++	env.glow_bloom = 0.10
++	env.glow_hdr_threshold = 1.12
+ 	env.adjustment_enabled = true
+-	env.adjustment_contrast = 1.07
+-	env.adjustment_saturation = 1.12
++	env.adjustment_contrast = 1.10
++	env.adjustment_saturation = 1.04
+ 	var we := WorldEnvironment.new()
+ 	we.environment = env
+ 	add_child(we)
+@@ -186,6 +189,39 @@ func _roads() -> void:
+ 	for z in Z_LINES:
+ 		for side: float in [-1.0, 1.0]:
+ 			_box(Vector3(760.0, 0.20, 0.30), Vector3(0.0, 0.10, z + side * (ROAD_HALF + 0.15)), kerb)
++	_medians()
++
++## Planted central medians. The manager's review of the street still called the
++## carriageway "an almost-empty endless road": a 760 m unbroken ribbon of asphalt
++## with nothing in the middle. Singapore arterial roads carry planted medians, and
++## they also break the vanishing point. Segments stop short of every junction so
++## turning traffic and the authored drive are unaffected.
++func _medians() -> void:
++	var median_kerb := Palette.mat_textured(Color(0.70, 0.68, 0.63), "concrete", Vector3.ONE, 0.88)
++	var median_turf := Palette.mat_textured(Color(0.24, 0.33, 0.16), "soil", Vector3.ONE, 0.95)
++	var span := 160.0 - 2.0 * (ROAD_HALF + 6.0)   # clear of both junction mouths
++	for x in X_LINES:
++		for k in range(0, 4):
++			var cz := -240.0 + k * 160.0
++			var centre := Vector3(x, 0.0, cz)
++			_box(Vector3(1.6, 0.26, span), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
++			_box(Vector3(1.2, 0.30, span - 1.0), centre + Vector3(0.0, 0.30, 0.0), median_turf)
++			# low clipped shrubs only: median trees sit on the road centreline and
++			# would put a real trunk collider on the mission avenue centreline
++			var count := int(span / 9.0)
++			for i in count:
++				var zz: float = cz - span * 0.5 + 4.5 + i * 9.0
++				_sphere(Vector3(1.0, 0.75, 1.0), Vector3(x, 0.52, zz), Palette.mat(Palette.FOLIAGE_LIGHT, 0.95))
++	for z in Z_LINES:
++		for k in range(0, 4):
++			var cx := -240.0 + k * 160.0
++			var centre := Vector3(cx, 0.0, z)
++			_box(Vector3(span, 0.26, 1.6), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
++			_box(Vector3(span - 1.0, 0.30, 1.2), centre + Vector3(0.0, 0.30, 0.0), median_turf)
++			var count := int(span / 9.0)
++			for i in count:
++				var xx: float = cx - span * 0.5 + 4.5 + i * 9.0
++				_sphere(Vector3(1.0, 0.75, 1.0), Vector3(xx, 0.52, z), Palette.mat(Palette.FOLIAGE_LIGHT, 0.95))
+ 
+ # ------------------------------------------------------------------- blocks
+ func _build_grid() -> void:
+@@ -267,16 +303,22 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
+ 		sign.font_size=48
+ 		sign.pixel_size=.009
+ 		sign.outline_size=2
+-		# A lit shop interior behind the arcade opening. Without it the five-foot
+-		# way reads as a black tunnel whenever the sun is on the other side.
+-		# Kept below the tonemap shoulder so it glows instead of clipping white.
+-		var shop_tone := Color(0.52, 0.34, 0.18).lerp(Color(0.60, 0.42, 0.22), float(i % 3) / 3.0)
+-		var glow := _box(Vector3(6.6, 2.1, 0.12), pos + front_dir * 4.02 + Vector3(0, 1.55, 0), Palette.emissive(shop_tone, 0.20))
+-		glow.rotation.y = yaw
++		# A recessed shop interior. The manager's review called the previous
++		# full-width emissive panel a "solid glowing storefront"; a lightbox is
++		# not a shop. This builds a dark room with a lit ceiling strip, so the
++		# arcade reads as depth with a warm source rather than a flat white card.
++		var back_wall := _box(Vector3(6.6, 2.4, 0.12), pos + front_dir * 2.55 + Vector3(0, 1.35, 0), Palette.mat(Color(0.15, 0.12, 0.10), 0.92))
++		back_wall.rotation.y = yaw
++		var ceiling_strip := _box(Vector3(5.6, 0.16, 0.5), pos + front_dir * 3.3 + Vector3(0, 2.52, 0), Palette.emissive(Color(1.0, 0.74, 0.44), 1.15))
++		ceiling_strip.rotation.y = yaw
+ 		# Vertical mullions break the opening into bays instead of one blank panel.
+ 		for m in 3:
+-			var mullion := _box(Vector3(0.10, 2.1, 0.14), pos + front_dir * 4.0 + Vector3(0, 1.55, 0) + dir * (-2.2 + m * 2.2), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
++			var mullion := _box(Vector3(0.10, 2.4, 0.14), pos + front_dir * 4.0 + Vector3(0, 1.35, 0) + dir * (-2.2 + m * 2.2), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
+ 			mullion.rotation.y = yaw
++		# Counter line at the shop mouth, so the opening has a readable scale.
++		if i % 2 == 0:
++			var counter := _box(Vector3(5.4, 0.95, 0.55), pos + front_dir * 3.55 + Vector3(0, 0.48, 0), Palette.mat(Color(0.34, 0.24, 0.16), 0.85))
++			counter.rotation.y = yaw
+ 		# Canvas awning over every other shopfront, in the heritage palette.
+ 		if i % 2 == 0:
+ 			var awning := _box(Vector3(7.4, 0.12, 1.9), pos + front_dir * 6.1 + Vector3(0, 3.15, 0), Palette.mat(Palette.FRONTAGES[(i + 3) % Palette.FRONTAGES.size()].darkened(0.18), 0.85))
+@@ -311,9 +353,13 @@ func _hdb_block(centre: Vector3) -> void:
+ 		{"pos": Vector3(38.0, 0.0, -34.0), "rot": 0.0, "h": 52.0},
+ 		{"pos": Vector3(-30.0, 0.0, 40.0), "rot": 90.0, "h": 46.0},
+ 	]
++	# Per-block variation. The manager's review called the housing "clone HDB
++	# grids": every slab was the same provider mesh at the same albedo. Each
++	# block now gets its own height offset, footprint scale and paint tint.
++	var block_key := int(absf(centre.x) * 0.25 + absf(centre.z) * 0.5) % 6
+ 	for s in slabs:
+ 		var pos: Vector3 = centre + s["pos"]
+-		var h: float = s["h"]
++		var h: float = s["h"] + float(block_key - 2) * 4.0
+ 		var rot: float = s["rot"]
+ 		var size := Vector3(22.0, h, 13.0)
+ 		if rot == 90.0:
+@@ -328,6 +374,7 @@ func _hdb_block(centre: Vector3) -> void:
+ 				slab.scale = Vector3.ONE * (h / unit_h)
+ 				if rot == 90.0:
+ 					slab.rotation.y = PI * 0.5
++				AssetLibrary.tint(slab, Palette.HDB_TINTS[block_key])
+ 				_asset_collision(slab)
+ 				used_provider = true
+ 		if not used_provider:
+@@ -885,6 +932,14 @@ func _perimeter() -> void:
+ 	_box(Vector3(1680,.08,16),Vector3(0,.05,-657),Palette.mat_textured(Palette.ASPHALT,"asphalt",Vector3.ONE,.85))
+ 	for i in 34:
+ 		_tree(Vector3(-790+i*48,.1,-640),.8)
++	# A treed far shoreline. The manager's aerial review called the horizon
++	# "abrupt"; the bay previously ended where open water met a flat plane.
++	# This band gives the far shore a real edge with canopy and low roofs.
++	for i in 44:
++		_tree(Vector3(-800.0 + i * 37.0, 0.15, -652.0), 0.95 + float(i % 4) * 0.12)
++	for i in 16:
++		_box(Vector3(26.0, 7.0 + float(i % 3) * 3.0, 14.0), Vector3(-760.0 + i * 100.0, 3.5, -712.0),
++			Palette.mat_textured(Color(0.52, 0.50, 0.47), "concrete", Vector3.ONE, 0.92))
+ 	# The authored district has visible physical edges. Aircraft can fly over
+ 	# the same geometry; ordinary walking/driving meets real railings.
+ 	for i in 50:

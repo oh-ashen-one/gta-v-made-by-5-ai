@@ -7,7 +7,7 @@ const LANE_OFFSET := 4.0        # lane centre is 4 m to the LEFT of the road cen
 const PED_COUNT := 140
 const FOCUSED_PED_COUNT := 58
 const DINER_COUNT := 45
-const TRAFFIC_COUNT := 14
+const TRAFFIC_COUNT := 26
 const POLICE_SPAWN_DISTANCE := 55.0
 
 var world: WorldBuilder
@@ -117,13 +117,17 @@ func _spawn_parked() -> void:
 		i += 1
 
 func _spawn_traffic() -> void:
+	# The manager's review called the heritage street "an almost-empty endless
+	# road". 26 cars spread uniformly over a 640 m grid still leaves the street
+	# the player actually walks empty, so two in five are seeded on edges near
+	# the heritage/market blocks.
 	for i in TRAFFIC_COUNT:
-		var car := _spawn_ai_car(["sedan", "coupe", "van"][i % 3])
+		var car := _spawn_ai_car(["sedan", "coupe", "van"][i % 3], i % 5 < 2)
 		if car:
 			cars.append(car)
 
-func _spawn_ai_car(kind: String) -> Car:
-	var edge := _random_edge()
+func _spawn_ai_car(kind: String, near_heritage: bool = false) -> Car:
+	var edge := _random_edge_near(Vector3(-100.0, 0.0, -100.0), 230.0) if near_heritage else _random_edge()
 	if edge.is_empty():
 		return null
 	var car := Car.new()
@@ -147,6 +151,21 @@ func _random_edge() -> Dictionary:
 		return {}
 	var nxt: int = neighbours[_rng.randi_range(0, neighbours.size() - 1)]
 	return {"from": nodes[idx], "to": nodes[nxt]}
+
+## Same as _random_edge but restricted to edges whose midpoint lies within
+## `radius` of `centre`. Falls back to any edge when none qualify.
+func _random_edge_near(centre: Vector3, radius: float) -> Dictionary:
+	if nodes.size() < 2:
+		return {}
+	var candidates: Array[Dictionary] = []
+	for idx in nodes.size():
+		for nxt in _neighbours(idx):
+			var midpoint: Vector3 = (nodes[idx] + nodes[nxt]) * 0.5
+			if midpoint.distance_to(centre) <= radius:
+				candidates.append({"from": nodes[idx], "to": nodes[nxt]})
+	if candidates.is_empty():
+		return _random_edge()
+	return candidates[_rng.randi_range(0, candidates.size() - 1)]
 
 func _neighbours(idx: int) -> Array[int]:
 	var result: Array[int] = []

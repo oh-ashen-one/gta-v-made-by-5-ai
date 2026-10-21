@@ -79,9 +79,12 @@ func _environment() -> void:
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.54, 0.58, 0.70)
-	env.ambient_light_energy = 0.58
+	env.ambient_light_energy = 0.44
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	env.tonemap_exposure = 1.02
+	# The manager's review of the aerial found "washed-out whites/pinks". The
+	# previous 1.02 exposure plus 0.58 ambient plus 0.42 glow stacked into the
+	# highlight shoulder on pale HDB facades. Pull all three back.
+	env.tonemap_exposure = 0.92
 	# Warm tropical dusk haze. The approved concepts are late-afternoon: a low
 	# sun, long shadows and gold bounce, not an overcast midday wash. The first
 	# wave-3 pass used 0.0011 and smothered the district in peach dust; this is
@@ -96,12 +99,12 @@ func _environment() -> void:
 	env.ssao_intensity = 2.0
 	env.ssao_light_affect = 0.45
 	env.glow_enabled = true
-	env.glow_intensity = 0.42
-	env.glow_bloom = 0.14
-	env.glow_hdr_threshold = 1.02
+	env.glow_intensity = 0.28
+	env.glow_bloom = 0.10
+	env.glow_hdr_threshold = 1.12
 	env.adjustment_enabled = true
-	env.adjustment_contrast = 1.07
-	env.adjustment_saturation = 1.12
+	env.adjustment_contrast = 1.10
+	env.adjustment_saturation = 1.04
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
@@ -186,6 +189,39 @@ func _roads() -> void:
 	for z in Z_LINES:
 		for side: float in [-1.0, 1.0]:
 			_box(Vector3(760.0, 0.20, 0.30), Vector3(0.0, 0.10, z + side * (ROAD_HALF + 0.15)), kerb)
+	_medians()
+
+## Planted central medians. The manager's review of the street still called the
+## carriageway "an almost-empty endless road": a 760 m unbroken ribbon of asphalt
+## with nothing in the middle. Singapore arterial roads carry planted medians, and
+## they also break the vanishing point. Segments stop short of every junction so
+## turning traffic and the authored drive are unaffected.
+func _medians() -> void:
+	var median_kerb := Palette.mat_textured(Color(0.70, 0.68, 0.63), "concrete", Vector3.ONE, 0.88)
+	var median_turf := Palette.mat_textured(Color(0.24, 0.33, 0.16), "soil", Vector3.ONE, 0.95)
+	var span := 160.0 - 2.0 * (ROAD_HALF + 6.0)   # clear of both junction mouths
+	for x in X_LINES:
+		for k in range(0, 4):
+			var cz := -240.0 + k * 160.0
+			var centre := Vector3(x, 0.0, cz)
+			_box(Vector3(1.6, 0.26, span), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
+			_box(Vector3(1.2, 0.30, span - 1.0), centre + Vector3(0.0, 0.30, 0.0), median_turf)
+			# low clipped shrubs only: median trees sit on the road centreline and
+			# would put a real trunk collider on the mission avenue centreline
+			var count := int(span / 9.0)
+			for i in count:
+				var zz: float = cz - span * 0.5 + 4.5 + i * 9.0
+				_sphere(Vector3(1.0, 0.75, 1.0), Vector3(x, 0.52, zz), Palette.mat(Palette.FOLIAGE_LIGHT, 0.95))
+	for z in Z_LINES:
+		for k in range(0, 4):
+			var cx := -240.0 + k * 160.0
+			var centre := Vector3(cx, 0.0, z)
+			_box(Vector3(span, 0.26, 1.6), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
+			_box(Vector3(span - 1.0, 0.30, 1.2), centre + Vector3(0.0, 0.30, 0.0), median_turf)
+			var count := int(span / 9.0)
+			for i in count:
+				var xx: float = cx - span * 0.5 + 4.5 + i * 9.0
+				_sphere(Vector3(1.0, 0.75, 1.0), Vector3(xx, 0.52, z), Palette.mat(Palette.FOLIAGE_LIGHT, 0.95))
 
 # ------------------------------------------------------------------- blocks
 func _build_grid() -> void:
@@ -267,16 +303,22 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		sign.font_size=48
 		sign.pixel_size=.009
 		sign.outline_size=2
-		# A lit shop interior behind the arcade opening. Without it the five-foot
-		# way reads as a black tunnel whenever the sun is on the other side.
-		# Kept below the tonemap shoulder so it glows instead of clipping white.
-		var shop_tone := Color(0.52, 0.34, 0.18).lerp(Color(0.60, 0.42, 0.22), float(i % 3) / 3.0)
-		var glow := _box(Vector3(6.6, 2.1, 0.12), pos + front_dir * 4.02 + Vector3(0, 1.55, 0), Palette.emissive(shop_tone, 0.20))
-		glow.rotation.y = yaw
+		# A recessed shop interior. The manager's review called the previous
+		# full-width emissive panel a "solid glowing storefront"; a lightbox is
+		# not a shop. This builds a dark room with a lit ceiling strip, so the
+		# arcade reads as depth with a warm source rather than a flat white card.
+		var back_wall := _box(Vector3(6.6, 2.4, 0.12), pos + front_dir * 2.55 + Vector3(0, 1.35, 0), Palette.mat(Color(0.15, 0.12, 0.10), 0.92))
+		back_wall.rotation.y = yaw
+		var ceiling_strip := _box(Vector3(5.6, 0.16, 0.5), pos + front_dir * 3.3 + Vector3(0, 2.52, 0), Palette.emissive(Color(1.0, 0.74, 0.44), 1.15))
+		ceiling_strip.rotation.y = yaw
 		# Vertical mullions break the opening into bays instead of one blank panel.
 		for m in 3:
-			var mullion := _box(Vector3(0.10, 2.1, 0.14), pos + front_dir * 4.0 + Vector3(0, 1.55, 0) + dir * (-2.2 + m * 2.2), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
+			var mullion := _box(Vector3(0.10, 2.4, 0.14), pos + front_dir * 4.0 + Vector3(0, 1.35, 0) + dir * (-2.2 + m * 2.2), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
 			mullion.rotation.y = yaw
+		# Counter line at the shop mouth, so the opening has a readable scale.
+		if i % 2 == 0:
+			var counter := _box(Vector3(5.4, 0.95, 0.55), pos + front_dir * 3.55 + Vector3(0, 0.48, 0), Palette.mat(Color(0.34, 0.24, 0.16), 0.85))
+			counter.rotation.y = yaw
 		# Canvas awning over every other shopfront, in the heritage palette.
 		if i % 2 == 0:
 			var awning := _box(Vector3(7.4, 0.12, 1.9), pos + front_dir * 6.1 + Vector3(0, 3.15, 0), Palette.mat(Palette.FRONTAGES[(i + 3) % Palette.FRONTAGES.size()].darkened(0.18), 0.85))
@@ -311,9 +353,13 @@ func _hdb_block(centre: Vector3) -> void:
 		{"pos": Vector3(38.0, 0.0, -34.0), "rot": 0.0, "h": 52.0},
 		{"pos": Vector3(-30.0, 0.0, 40.0), "rot": 90.0, "h": 46.0},
 	]
+	# Per-block variation. The manager's review called the housing "clone HDB
+	# grids": every slab was the same provider mesh at the same albedo. Each
+	# block now gets its own height offset, footprint scale and paint tint.
+	var block_key := int(absf(centre.x) * 0.25 + absf(centre.z) * 0.5) % 6
 	for s in slabs:
 		var pos: Vector3 = centre + s["pos"]
-		var h: float = s["h"]
+		var h: float = s["h"] + float(block_key - 2) * 4.0
 		var rot: float = s["rot"]
 		var size := Vector3(22.0, h, 13.0)
 		if rot == 90.0:
@@ -328,6 +374,7 @@ func _hdb_block(centre: Vector3) -> void:
 				slab.scale = Vector3.ONE * (h / unit_h)
 				if rot == 90.0:
 					slab.rotation.y = PI * 0.5
+				AssetLibrary.tint(slab, Palette.HDB_TINTS[block_key])
 				_asset_collision(slab)
 				used_provider = true
 		if not used_provider:
@@ -784,9 +831,12 @@ func _infill_building(size: Vector3, pos: Vector3, kind: String) -> void:
 	bs.size = size
 	shape.shape = bs
 	body.add_child(shape)
-	_box(size + Vector3(0.7, 0.55, 0.7), pos + Vector3(0.0, size.y + 0.2, 0.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "concrete", Vector3.ONE, 0.9))
+	# A darker roof deck than the walls: from above, a district of bright parapets
+	# read as flat pale parcels. Real roofs are weathered grey with equipment.
+	_box(size + Vector3(0.7, 0.55, 0.7), pos + Vector3(0.0, size.y + 0.2, 0.0), Palette.mat(Color(0.40, 0.39, 0.37), 0.95))
 	if size.y > 9.0:
 		_cyl(Vector3(1.8, 2.0, 1.8), pos + Vector3(size.x * 0.22, size.y + 1.4, -size.z * 0.2), Palette.mat(Palette.METAL, 0.7, 0.3))
+		_box(Vector3(3.0, 0.9, 2.4), pos + Vector3(-size.x * 0.25, size.y + 0.7, size.z * 0.22), Palette.mat(Color(0.52, 0.52, 0.50), 0.9))
 
 # ------------------------------------------------------------- water + skyline
 func _waterfront_edge() -> void:
@@ -885,6 +935,14 @@ func _perimeter() -> void:
 	_box(Vector3(1680,.08,16),Vector3(0,.05,-657),Palette.mat_textured(Palette.ASPHALT,"asphalt",Vector3.ONE,.85))
 	for i in 34:
 		_tree(Vector3(-790+i*48,.1,-640),.8)
+	# A treed far shoreline. The manager's aerial review called the horizon
+	# "abrupt"; the bay previously ended where open water met a flat plane.
+	# This band gives the far shore a real edge with canopy and low roofs.
+	for i in 44:
+		_tree(Vector3(-800.0 + i * 37.0, 0.15, -652.0), 0.95 + float(i % 4) * 0.12)
+	for i in 16:
+		_box(Vector3(26.0, 7.0 + float(i % 3) * 3.0, 14.0), Vector3(-760.0 + i * 100.0, 3.5, -712.0),
+			Palette.mat_textured(Color(0.52, 0.50, 0.47), "concrete", Vector3.ONE, 0.92))
 	# The authored district has visible physical edges. Aircraft can fly over
 	# the same geometry; ordinary walking/driving meets real railings.
 	for i in 50:

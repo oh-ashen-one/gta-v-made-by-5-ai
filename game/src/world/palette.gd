@@ -136,13 +136,13 @@ static func _facade_image(kind: String) -> ImageTexture:
 					if (fx + fy) % 4 == 0:
 						img.fill_rect(Rect2i(8 + fx * 31, 19 + fy * 18, 20, 2), Color(0.55, 0.55, 0.52))
 		"shopback":
-			img.fill(Color(0.80, 0.76, 0.68))
+			img.fill(Color(0.72, 0.69, 0.62))
 			for fy in 6:
 				for fx in 6:
-					var col := Color(0.26, 0.30, 0.30) if (fx + fy) % 3 != 0 else Color(0.92, 0.84, 0.66)
+					var col := Color(0.26, 0.30, 0.30) if (fx + fy) % 3 != 0 else Color(0.62, 0.57, 0.46)
 					img.fill_rect(Rect2i(12 + fx * 40, 14 + fy * 40, 24, 22), col)
 			for fx in 5:
-				img.fill_rect(Rect2i(30 + fx * 50, 0, 3, 256), Color(0.66, 0.63, 0.57))
+				img.fill_rect(Rect2i(30 + fx * 50, 0, 3, 256), Color(0.60, 0.57, 0.52))
 		"workshop":
 			img.fill(Color(0.55, 0.57, 0.58))
 			for fx in 32:
@@ -177,8 +177,8 @@ const PLASTER := Color(0.85, 0.81, 0.73)
 const PLASTER_2 := Color(0.78, 0.74, 0.66)
 const CONCRETE := Color(0.55, 0.54, 0.51)
 const CONCRETE_LIGHT := Color(0.62, 0.60, 0.56)
-const ASPHALT := Color(0.215, 0.215, 0.225)
-const ASPHALT_EDGE := Color(0.26, 0.26, 0.27)
+const ASPHALT := Color(0.255, 0.255, 0.265)
+const ASPHALT_EDGE := Color(0.30, 0.30, 0.31)
 const PAINT_LINE := Color(0.85, 0.83, 0.72)
 const GLASS := Color(0.44, 0.56, 0.62)
 const METAL := Color(0.35, 0.36, 0.38)
@@ -201,6 +201,17 @@ const FRONTAGES := [
 	Color(0.66, 0.61, 0.79),   # lilac
 	Color(0.80, 0.56, 0.42),   # terracotta
 	Color(0.46, 0.62, 0.76),   # strait blue
+]
+
+## Public-housing paint schemes. Real estates are repainted in batches, so a
+## district shows several schemes, not one. Used to break the clone-HDB grid.
+const HDB_TINTS := [
+	Color(0.94, 0.93, 0.89),   # off-white
+	Color(0.86, 0.88, 0.90),   # pale blue-grey
+	Color(0.95, 0.90, 0.78),   # cream
+	Color(0.88, 0.82, 0.76),   # warm sand
+	Color(0.82, 0.87, 0.84),   # pale mint
+	Color(0.92, 0.86, 0.84),   # dusty rose
 ]
 
 const SIGN_TEXT := [

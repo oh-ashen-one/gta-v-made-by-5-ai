@@ -2,9 +2,9 @@ shader_type sky;
 // Original static tropical late-afternoon sky. No photographed skyline/backdrop.
 // Matched to the approved concepts: warm gold horizon, deeper blue zenith,
 // cloud undersides lit from a low sun.
-uniform vec3 zenith : source_color = vec3(0.15, 0.33, 0.58);
-uniform vec3 horizon : source_color = vec3(0.96, 0.80, 0.62);
-uniform vec3 ground_haze : source_color = vec3(0.62, 0.60, 0.55);
+uniform vec3 zenith : source_color = vec3(0.13, 0.30, 0.55);
+uniform vec3 horizon : source_color = vec3(0.86, 0.75, 0.62);
+uniform vec3 ground_haze : source_color = vec3(0.58, 0.57, 0.53);
 uniform vec3 sun_direction = vec3(0.85, 0.28, 0.45);
 float hash3(vec3 p) { return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453); }
 float noise3(vec3 p) {
