@@ -235,6 +235,8 @@ func _on_notify(text: String, kind: String) -> void:
 func _process(_delta: float) -> void:
 	if player == null:
 		return
+	# Gameplay messages must not draw over modal controls or settings values.
+	_notifications.visible = bool(Game.settings.get("hud_visible",true)) and not Game.simulation_paused and not _title_panel.visible and not _settings_panel.visible
 	var speed := 0.0
 	var alt := 0.0
 	if Game.mode == Game.MODE_CAR and player.current_vehicle:
