@@ -107,7 +107,33 @@ Use these primary references to understand form and life; they do not grant perm
 
 **ART-08 — No final placeholders.** Grayboxes, mannequins, debug labels, missing materials, close-range flat stand-ins, temporary audio, and untextured primitives may appear in development, but must be tracked and replaced before acceptance. Review side streets, interiors, rooftops, and reverse angles—not only the recording route. Closed modeled buildings are legitimate scope; roofless single-plane cardboard visible from the air is not.
 
-### 3.1 Visual reference board — mandatory for every builder and critic
+### 3.1 Generated concepts of OUR game — primary visual targets
+
+**Owner clarification, 2026-10-21:** reference images must show what this original game should look like in Singapore. The following three images were generated specifically for this project with the built-in image-generation tool. They are the primary working art-direction targets. Existing GTA VI screenshots and Singapore photos in §3.2 are secondary source comparisons, not substitutes for these concepts.
+
+**These are AI-generated concept images, not captures of the current game, not proof of implementation, and not evidence of achievable frame rates.** Match their composition, modeled detail, light, material language, populated streets and Singapore identity in actual playable builds. Keep the required mechanics and bounded map scope. Do not turn implied distant scenery into a new obligation to build an entire city. Generated signs, brands, traffic details and small geometrical artifacts are not production specifications; implementation still uses original assets/signage, correct left-hand traffic, robust collision and coherent vehicle anatomy.
+
+#### CONCEPT-01 — On-foot street and hawker hub
+
+![Generated concept of our Singapore game: third-person on-foot street and hawker hub](docs/concepts/singapore-on-foot.png)
+
+Primary comparison: a human-scale third-person route, modeled shophouse arcades on one side, an inhabited hawker hall on the other, detailed kerbs/drains, broad rain trees, residential blocks and distant waterfront towers. Match the warm light, dimensional surfaces, depth and density without obstructing player movement.
+
+#### CONCEPT-02 — Driving through the same district
+
+![Generated concept of our Singapore game: third-person driving beside the canal](docs/concepts/singapore-driving.png)
+
+Primary comparison: a detailed player-controlled sedan in a plausible chase-camera view, left-hand traffic, street life, canal railings, a bridge and consistent building/material vocabulary. Vehicle cabin, wheels, paint, lights and road interaction must survive close play; a still image cannot certify controls or physics.
+
+#### CONCEPT-03 — Helicopter flight above the connected world
+
+![Generated concept of our Singapore game: helicopter over the connected district](docs/concepts/singapore-helicopter.png)
+
+Primary comparison: a recognizable modeled helicopter over the same shophouse/hawker/HDB-inspired district, complete roofs and back walls, connected roads and waterways, a visible landing pad, and coherent skyline layering. Landing and returning to on-foot play remain required.
+
+**Generation record:** [exact prompts and method](docs/concepts/prompts.json). All three use a shared late-afternoon palette and the on-foot concept as the supporting visual reference for the driving/flight images. Their generated geometry is art direction, not an exact map blueprint. Critics compare current build captures at these three gameplay-camera scales and carry visible mismatches into the next wave. Do not claim a one-to-one fidelity match from a successful build or a textual verdict.
+
+### 3.2 Secondary source references — fidelity and location evidence
 
 **Owner direction: “GTA 6, but in Singapore. Highest quality possible, one-to-one remake.”** The quality-match target is explicit: pursue the fidelity of the GTA VI images while building the original Singapore setting and connected experience specified here. The reference images are source material, **not screenshots of this project**. The bounded district and required gameplay remain the scope; do not silently expand to the full content or geography of GTA VI.
 

@@ -26,7 +26,7 @@ Model names are planned selections, not claims of verified product availability.
 
 ## One shared toolbox
 
-**Owner update, 2026-10-21:** GTA VI-level visual fidelity in Singapore is the target; see the illustrated reference board in END_GOAL.md. Only Tripo browser control for smaller/bulk assets and Customuse MCP for major assets are approved generation routes. Meshy is excluded. Existing Tripo credits are authorized. Builders make routine decisions autonomously; the manager handles timed handoffs. The update supersedes earlier planning notes below.
+**Owner update, 2026-10-21:** GTA VI-level visual fidelity in Singapore is the target; see the three generated concepts of our game in END_GOAL.md §3.1 (on foot, driving, helicopter); external reference imagery is secondary. Only Tripo browser control for smaller/bulk assets and Customuse MCP for major assets are approved generation routes. Meshy is excluded. Existing Tripo credits are authorized. Builders make routine decisions autonomously; the manager handles timed handoffs. The update supersedes earlier planning notes below.
 
 Every wave uses **Tripo through browser control** and **Customuse through MCP** according to the split above, with Blender/DCC tools for asset processing. No model is limited to a particular asset tool or department.
 
