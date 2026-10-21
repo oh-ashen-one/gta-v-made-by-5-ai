@@ -4,8 +4,8 @@ extends Node3D
 ## pedestrians, parked cars, and police response (TRAFFIC-01/02, LAW-02/03).
 
 const LANE_OFFSET := 4.0        # lane centre is 4 m to the LEFT of the road centre
-const PED_COUNT := 116
-const FOCUSED_PED_COUNT := 42
+const PED_COUNT := 140
+const FOCUSED_PED_COUNT := 58
 const DINER_COUNT := 45
 const TRAFFIC_COUNT := 14
 const POLICE_SPAWN_DISTANCE := 55.0
@@ -23,6 +23,14 @@ var _signal_clock := 0.0
 var _signal_visual_phase := -1
 var _signal_materials: Array[Material] = []
 var _signal_unlit: Material
+## Pre-built police officers held off-stage. Wave 2 constructed a fresh skinned
+## NPC inside the 4.5 s responder timer, which the packaged workload measured as
+## repeated ~735-762 ms combat stalls (package-soak-r2/frame_stalls.jsonl).
+## Pooling moves that cost to load time and keeps activation O(1).
+var _officer_pool: Array[NPC] = []
+const OFFICER_POOL_SIZE := 5
+var _officer_pool_ready := false
+var _officer_activation_us: Array[int] = []
 
 func setup(w: WorldBuilder, player: Node) -> void:
 	world = w
@@ -33,7 +41,58 @@ func setup(w: WorldBuilder, player: Node) -> void:
 	_spawn_parked()
 	_spawn_traffic()
 	_spawn_peds()
+	_warm_officer_pool()
 	_update_signal_lamps(true)
+
+## Build the officer responders during world load, then keep them inert and
+## out of `peds` until a responder is actually requested.
+func _warm_officer_pool() -> void:
+	var started := Time.get_ticks_usec()
+	for i in OFFICER_POOL_SIZE:
+		var officer := NPC.new()
+		officer.is_police = true
+		officer.state = NPC.State.IDLE
+		officer.visible = false
+		officer.set_physics_process(false)
+		officer.set_process(false)
+		add_child(officer)
+		officer.global_position = Vector3(0.0, -80.0 - i * 3.0, 0.0)
+		_officer_pool.append(officer)
+	_officer_pool_ready = true
+	print("[profile] officer_pool_build_us=", Time.get_ticks_usec() - started, " size=", _officer_pool.size())
+
+## Activate one pooled officer at `pos`. Returns null when the pool is empty, so
+## the caller falls back to construction rather than silently spawning nothing.
+func _take_officer(pos: Vector3) -> NPC:
+	var officer: NPC = null
+	while not _officer_pool.is_empty():
+		var candidate: NPC = _officer_pool.pop_back()
+		if is_instance_valid(candidate):
+			officer = candidate
+			break
+	if officer == null:
+		return null
+	officer.global_position = pos
+	officer.state = NPC.State.PURSUE
+	officer.idle_time = 0.0
+	officer.panic_time = 0.0
+	officer.visible = true
+	officer.set_physics_process(true)
+	officer.set_process(true)
+	if officer.character_visual != null:
+		officer.character_visual.reset_alive()
+	return officer
+
+## Return a responder to the pool instead of freeing and rebuilding it.
+func _recycle_officer(officer: NPC) -> void:
+	if not is_instance_valid(officer):
+		return
+	officer.state = NPC.State.IDLE
+	officer.visible = false
+	officer.set_physics_process(false)
+	officer.set_process(false)
+	officer.global_position = Vector3(0.0, -80.0 - _officer_pool.size() * 3.0, 0.0)
+	_officer_pool.append(officer)
 
 # ------------------------------------------------------------------- spawning
 func _spawn_parked() -> void:
@@ -261,9 +320,11 @@ func _update_police(delta: float) -> void:
 			if is_instance_valid(pc):
 				pc.queue_free()
 		police_cars.clear()
-		for officer in peds:
+		for index in range(peds.size() - 1, -1, -1):
+			var officer := peds[index]
 			if is_instance_valid(officer) and officer.is_police:
-				officer.queue_free()
+				peds.remove_at(index)
+				_recycle_officer(officer)
 	if wanted > 0 and _player != null:
 		for pc in police_cars:
 			if is_instance_valid(pc) and _has_sight(pc.global_position):
@@ -294,14 +355,21 @@ func _update_police(delta: float) -> void:
 			live_officers += 1
 	if Game.mode == Game.MODE_FOOT and _police_timer <= 0.0 and live_officers < mini(2 + wanted, 5):
 		_police_timer = 4.5
-		var officer := NPC.new()
-		officer.is_police = true
-		add_child(officer)
 		var angle := _rng.randf_range(0.0, TAU)
 		var pos: Vector3 = _player.controlled_actor().global_position + Vector3(cos(angle), 0.0, sin(angle)) * _rng.randf_range(28.0, 45.0)
 		pos.y = 0.4
-		officer.global_position = pos
-		officer.state = NPC.State.PURSUE
+		var activation_started := Time.get_ticks_usec()
+		var officer := _take_officer(pos)
+		if officer == null:
+			# Pool exhausted (more responders than the cap allows): build once.
+			officer = NPC.new()
+			officer.is_police = true
+			add_child(officer)
+			officer.global_position = pos
+			officer.state = NPC.State.PURSUE
+		var activation_us := Time.get_ticks_usec() - activation_started
+		_officer_activation_us.append(activation_us)
+		print("[profile] officer_activation_us=", activation_us, " pooled=", activation_us < 20000, " live=", live_officers)
 		peds.append(officer)
 	Sfx.set_siren(wanted > 0 and not police_cars.is_empty(), 1.0 + 0.1 * float(wanted))
 	# vehicle pursuit: one active pursuit car, respawned when it is wrecked
@@ -368,8 +436,8 @@ func wanted_reset() -> void:
 	for index in range(peds.size() - 1, -1, -1):
 		var pedestrian := peds[index]
 		if is_instance_valid(pedestrian) and pedestrian.is_police:
-			pedestrian.queue_free()
 			peds.remove_at(index)
+			_recycle_officer(pedestrian)
 	Game.player_seen = false
 	Game.search_timer = 0.0
 	_police_timer = 0.0

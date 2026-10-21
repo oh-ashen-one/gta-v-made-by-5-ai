@@ -144,7 +144,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				if Game.load_game():
 					Events.toast("Progress loaded.", "info")
 				else:
-					Events.toast("Save unreadable or incompatible - starting a new game.", "bad")
+					# A rejected load must leave the current run untouched, so the
+					# message must not claim a new game was started (wave-2 F6).
+					Events.toast("Save unreadable or incompatible - progress unchanged.", "bad")
 			KEY_F7:
 				player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
 			KEY_F10:

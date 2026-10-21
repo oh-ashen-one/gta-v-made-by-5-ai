@@ -35,6 +35,10 @@ var _rng := RandomNumberGenerator.new()
 var _world_root: Node3D
 var _collision_root: StaticBody3D
 var _asset_collision_cache: Dictionary = {}
+## Footprints already occupied by authored structures. Block infill consults
+## this so new plots never intersect the heritage rows, HDB slabs, mission hall
+## or aviation buildings they are meant to surround.
+var _reserved: Array[Rect2] = []
 
 func build(seed_value: int = 20261021) -> void:
 	_rng.seed = seed_value
@@ -53,6 +57,7 @@ func build(seed_value: int = 20261021) -> void:
 	_junctions()
 	_street_furniture()
 	_build_grid()
+	_block_plots()
 	var interior_data: Dictionary = InteriorDetail.build(_world_root, locations["safe_room"] - Vector3(0,.2,0))
 	locations["convenience_shop"] = interior_data["convenience_shop"]
 	locations["workshop"] = interior_data["workshop"]
@@ -73,40 +78,64 @@ func _environment() -> void:
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(.65,.74,.87)
-	env.ambient_light_energy = 0.42
+	env.ambient_light_color = Color(0.58, 0.59, 0.64)
+	env.ambient_light_energy = 0.56
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	env.tonemap_exposure = 0.95
+	env.tonemap_exposure = 1.02
+	# Warm tropical dusk haze. The approved concepts are late-afternoon: a low
+	# sun, long shadows and gold bounce, not an overcast midday wash. The first
+	# wave-3 pass used 0.0011 and smothered the district in peach dust; this is
+	# light aerial perspective only.
 	env.fog_enabled = true
-	env.fog_light_color = Color(0.56, 0.65, 0.73)
-	env.fog_density = 0.00025
-	env.fog_sky_affect = 0.2
+	env.fog_light_color = Color(0.84, 0.75, 0.64)
+	env.fog_density = 0.00032
+	env.fog_sky_affect = 0.22
+	env.fog_aerial_perspective = 0.12
 	env.ssao_enabled = true
-	env.ssao_radius = 1.6
-	env.ssao_intensity = 1.7
-	env.ssao_light_affect = 0.35
+	env.ssao_radius = 2.1
+	env.ssao_intensity = 2.0
+	env.ssao_light_affect = 0.45
 	env.glow_enabled = true
-	env.glow_intensity = 0.16
-	env.glow_bloom = 0.05
+	env.glow_intensity = 0.42
+	env.glow_bloom = 0.14
+	env.glow_hdr_threshold = 1.02
+	env.adjustment_enabled = true
+	env.adjustment_contrast = 1.07
+	env.adjustment_saturation = 1.12
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
 
 	var sun := DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-28.0, -142.0, 0.0)
-	sun.light_energy = 1.25
-	sun.light_color = Color(1.0, 0.82, 0.62)
+	# Low western sun, ~16 deg elevation, so the street gets long raking light
+	# and readable shade under the five-foot ways (ART-07).
+	sun.rotation_degrees = Vector3(-16.3, 62.0, 0.0)
+	sun.light_energy = 2.55
+	sun.light_color = Color(1.0, 0.74, 0.47)
 	sun.shadow_enabled = true
-	sun.directional_shadow_max_distance = 220.0
-	sun.shadow_bias = 0.03
+	sun.directional_shadow_max_distance = 260.0
+	sun.shadow_bias = 0.025
+	sun.shadow_normal_bias = 1.4
+	sun.shadow_blur = 1.15
 	add_child(sun)
 
 	var fill := DirectionalLight3D.new()
-	fill.rotation_degrees = Vector3(-25.0, -140.0, 0.0)
-	fill.light_energy = 0.08
-	fill.light_color = Color(0.72, 0.80, 0.95)
+	# Sky fill from the opposite side keeps shadowed frontage readable instead
+	# of crushing it to black.
+	fill.rotation_degrees = Vector3(-24.0, -128.0, 0.0)
+	fill.light_energy = 0.26
+	fill.light_color = Color(0.62, 0.72, 0.92)
 	fill.shadow_enabled = false
 	add_child(fill)
+
+	var bounce := DirectionalLight3D.new()
+	# Warm ground bounce, aimed upward: shaded five-foot ways and arcades pick
+	# up pavement light instead of reading as flat blue-grey walls.
+	bounce.rotation_degrees = Vector3(58.0, 40.0, 0.0)
+	bounce.light_energy = 0.34
+	bounce.light_color = Color(1.0, 0.72, 0.46)
+	bounce.shadow_enabled = false
+	add_child(bounce)
 
 # -------------------------------------------------------------- ground/roads
 func _ground() -> void:
@@ -148,6 +177,15 @@ func _roads() -> void:
 	for cx in [-240.0, -80.0, 80.0, 240.0]:
 		for cz in [-240.0, -80.0, 80.0, 240.0]:
 			_solid_box(Vector3(BLOCK, 0.16, BLOCK), Vector3(cx, 0.08, cz), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.92))
+	# Kerb stones define the carriageway edge; without them the road and the
+	# pavement merged into one grey field at street level.
+	var kerb := Palette.mat_textured(Color(0.72, 0.70, 0.65), "concrete", Vector3.ONE, 0.88)
+	for x in X_LINES:
+		for side: float in [-1.0, 1.0]:
+			_box(Vector3(0.30, 0.20, 760.0), Vector3(x + side * (ROAD_HALF + 0.15), 0.10, 0.0), kerb)
+	for z in Z_LINES:
+		for side: float in [-1.0, 1.0]:
+			_box(Vector3(760.0, 0.20, 0.30), Vector3(0.0, 0.10, z + side * (ROAD_HALF + 0.15)), kerb)
 
 # ------------------------------------------------------------------- blocks
 func _build_grid() -> void:
@@ -190,15 +228,8 @@ func _shophouse_block(centre: Vector3) -> void:
 	_shophouse_row(centre + Vector3(BLOCK / 2.0 - 8.0, 0.0, BLOCK / 2.0 - 8.0), Vector3(-1, 0, 0), 13)
 	_shophouse_row(centre+Vector3(60,0,-42.4),Vector3(0,0,1),8)
 	_shophouse_row(centre+Vector3(-60,0,42.4),Vector3(0,0,-1),8)
-	# low rear service buildings + a service lane
-	for i: int in 3:
-		var p := centre + Vector3(-40.0 + i * 40.0, 0.0, 30.0)
-		_solid_box(Vector3(18.0, 6.0, 10.0), p + Vector3(0.0, 3.0, 0.0), Palette.mat(Palette.PLASTER_2, 0.9))
-		_box(Vector3(19.0, 0.4, 11.0), p + Vector3(0.0, 6.2, 0.0), Palette.mat(Palette.METAL, 0.6, 0.6))
-	for i: int in 6:
-		var t := centre + Vector3(-50.0 + i * 20.0, 0.0, 46.0)
-		_tree(t + Vector3(0.0, 0.0, 0.0), 1.0)
-	# rear service lane clutter
+	# The interior is planned by _block_plots(): rear service yards, back
+	# extensions, courtyards and parking courts fill the former empty platform.
 	if AssetLibrary.has_asset("service_clutter_clean.glb"):
 		for i: int in 3:
 			var clutter := AssetLibrary.instantiate("service_clutter_clean.glb", _world_root)
@@ -236,6 +267,17 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		sign.font_size=48
 		sign.pixel_size=.009
 		sign.outline_size=2
+		# A lit shop interior behind the arcade opening. Without it the five-foot
+		# way reads as a black tunnel whenever the sun is on the other side.
+		# Kept below the tonemap shoulder so it glows instead of clipping white.
+		var shop_tone := Color(0.86, 0.62, 0.36).lerp(Color(0.90, 0.72, 0.46), float(i % 3) / 3.0)
+		var glow := _box(Vector3(6.6, 2.1, 0.12), pos + front_dir * 4.02 + Vector3(0, 1.55, 0), Palette.emissive(shop_tone, 0.38))
+		glow.rotation.y = yaw
+		# Canvas awning over every other shopfront, in the heritage palette.
+		if i % 2 == 0:
+			var awning := _box(Vector3(7.4, 0.12, 1.9), pos + front_dir * 6.1 + Vector3(0, 3.15, 0), Palette.mat(Palette.FRONTAGES[(i + 3) % Palette.FRONTAGES.size()].darkened(0.18), 0.85))
+			awning.rotation.y = yaw
+			awning.rotation.x = deg_to_rad(-12.0)
 		# Warm lanterns have modeled holders and small visible emitters.
 		for side in [-1.0,1.0]:
 			var lp: Vector3 = pos+front_dir*5.65+dir*side*4.2+Vector3(0,2.7,0)
@@ -255,6 +297,8 @@ func _collision_box(size: Vector3, pos: Vector3, yaw: float=0) -> void:
 	body.collision_layer=1; body.collision_mask=0
 	var shape:=CollisionShape3D.new(); var box:=BoxShape3D.new(); box.size=size; shape.shape=box
 	body.add_child(shape); _world_root.add_child(body)
+	if size.y > 2.5:
+		_reserve(size, pos)
 
 ## Public housing: tall slab blocks, void-deck ground floor, courtyard, carpark.
 func _hdb_block(centre: Vector3) -> void:
@@ -444,7 +488,9 @@ func _waterfront_block(centre: Vector3) -> void:
 	for i: int in 2:
 		var pos := centre + Vector3(-34.0 + i * 68.0, 0.0, -30.0)
 		var h := 70.0 + i * 18.0
-		_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), Palette.mat(Palette.GLASS, 0.12, 0.6))
+		# Curtain-wall grid instead of a bare glass box: the skyline is the
+		# backdrop for every street view and was reading as flat blue slabs.
+		_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), Palette.facade("office"))
 		for f in int(h / 4.0):
 			_box(Vector3(26.6, 0.35, 26.6), pos + Vector3(0.0, 4.0 + f * 4.0, 0.0), Palette.mat(Palette.METAL, 0.4, 0.7))
 		_box(Vector3(28.0, 0.7, 28.0), pos + Vector3(0.0, h + 0.35, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.8))
@@ -522,10 +568,221 @@ func _helipad(pos: Vector3, radius: float) -> void:
 func _mixed_block(centre: Vector3) -> void:
 	_shophouse_row(centre + Vector3(-BLOCK / 2.0 + 8.0, 0.0, -BLOCK / 2.0 + 8.0), Vector3(1, 0, 0), 13)
 	_shophouse_row(centre + Vector3(-BLOCK / 2.0 + 8.0, 0.0, BLOCK / 2.0 - 8.0), Vector3(1, 0, 0), 13)
-	for i in 5:
-		_tree(centre + Vector3(-40.0 + i * 20.0, 0.0, 0.0), 1.0)
-	_solid_box(Vector3(20.0, 4.0, 14.0), centre + Vector3(20.0, 2.0, 30.0), Palette.mat(Palette.PLASTER_2, 0.9))
-	_box(Vector3(21.0, 0.35, 15.0), centre + Vector3(20.0, 4.2, 30.0), Palette.mat(Palette.METAL, 0.6, 0.4))
+
+# ------------------------------------------------------- block interior grain
+## Wave 2 left each 144 m block as one flat paver platform with buildings only
+## on its edge, which is what read as "giant empty paved lots". Each block is
+## now subdivided by a cross of service lanes into four 46 m plots, and every
+## plot gets a real use: courtyard, garden, workshop yard, parking court or a
+## mid-block building. Authored structures register footprints in `_reserved`,
+## so infill only lands where nothing else already stands.
+func _reserve(size: Vector3, pos: Vector3) -> void:
+	_reserved.append(Rect2(pos.x - size.x * 0.5, pos.z - size.z * 0.5, size.x, size.z))
+
+func _is_free(rect: Rect2) -> bool:
+	for other in _reserved:
+		if rect.intersects(other, true):
+			return false
+	return true
+
+func _block_plots() -> void:
+	var apron := Palette.mat_textured(Color(0.36, 0.35, 0.33), "concrete", Vector3.ONE, 0.94)
+	for col in 4:
+		for row in 4:
+			var centre := Vector3(-240.0 + col * 160.0, 0.16, -240.0 + row * 160.0)
+			var kit := _kit_for(col, row)
+			# Cross service lanes are painted everywhere; they are the block's
+			# back-of-house spine and stop the interior reading as one field.
+			var tarmac := Palette.mat_textured(Palette.ASPHALT_EDGE, "asphalt", Vector3.ONE, 0.95)
+			_box(Vector3(120.0, 0.07, 6.0), centre + Vector3(0.0, 0.035, 0.0), tarmac)
+			_box(Vector3(6.0, 0.07, 120.0), centre + Vector3(0.0, 0.035, 0.0), tarmac)
+			_box(Vector3(120.0, 0.05, 0.16), centre + Vector3(0.0, 0.075, -3.1), Palette.mat(Palette.PAINT_LINE, 0.8))
+			_box(Vector3(0.16, 0.05, 120.0), centre + Vector3(-3.1, 0.075, 0.0), Palette.mat(Palette.PAINT_LINE, 0.8))
+			# A service apron rings the plots between them and the frontage.
+			_box(Vector3(118.0, 0.05, 118.0), centre + Vector3(0.0, 0.025, 0.0), apron)
+			if kit in ["hawker", "aviation"]:
+				if kit == "hawker":
+					# The pavilion occupies the west two-thirds; the east strip is
+					# planned explicitly so the busiest precinct is not left as a
+					# paved field. Offsets stay clear of the pedestrian lanes at
+					# x=-10 and z=-10/-150 and of the mission package aisle.
+					for spec in [[Vector3(40, 0, -45), 1], [Vector3(40, 0, 0), 0], [Vector3(40, 0, 45), 3]]:
+						var offset: Vector3 = spec[0]
+						var hp: Vector3 = centre + offset
+						match int(spec[1]):
+							0: _plot_courtyard(hp, Rect2())
+							1: _plot_garden(hp, Rect2())
+							3: _plot_parking(hp, Rect2())
+				continue
+			for i in 2:
+				for j in 2:
+					var p := centre + Vector3(-26.0 + i * 52.0, 0.0, -26.0 + j * 52.0)
+					var rect := Rect2(p.x - 23.0, p.z - 23.0, 46.0, 46.0)
+					var pick := (col * 5 + row * 11 + i * 3 + j * 7) % 5
+					if kit == "hdb":
+						pick = [1, 3, 0, 4][pick % 4]
+					elif kit == "shophouse":
+						pick = [0, 2, 4, 2][pick % 4]
+					elif kit == "waterfront":
+						pick = [0, 4, 1, 3][pick % 4]
+					match pick:
+						0: _plot_courtyard(p, rect)
+						1: _plot_garden(p, rect)
+						2: _plot_workshop(p, rect)
+						3: _plot_parking(p, rect)
+						_: _plot_backblock(p, rect)
+
+## Low rear extensions along plot edges. Real blocks are built up to their
+## boundaries; a 46 m open court surrounded by nothing is what still read as a
+## paved lot after the first pass.
+func _plot_edge_buildings(p: Vector3, skip: Array = []) -> void:
+	# Three segments per edge with varied heights and small gaps, so a plot
+	# boundary reads as a row of back extensions rather than one blank wall.
+	var edges := [
+		{"edge": 0, "axis": "x", "off": -20.0, "depth": 5.4},
+		{"edge": 1, "axis": "x", "off": 20.0, "depth": 5.4},
+		{"edge": 2, "axis": "z", "off": -20.0, "depth": 5.4},
+		{"edge": 3, "axis": "z", "off": 20.0, "depth": 5.4},
+	]
+	var heights := [[4.6, 6.1, 3.8], [5.4, 4.2, 6.4], [3.9, 5.8, 4.9], [6.2, 4.4, 5.2]]
+	for e in edges:
+		if int(e["edge"]) in skip:
+			continue
+		var axis := String(e["axis"])
+		var off: float = e["off"]
+		var depth: float = e["depth"]
+		for seg in 3:
+			var h: float = heights[int(e["edge"])][seg]
+			var along := -15.0 + seg * 15.0
+			var size: Vector3
+			var pos: Vector3
+			if axis == "x":
+				size = Vector3(14.0, h, depth)
+				pos = p + Vector3(along, 0.0, off)
+			else:
+				size = Vector3(depth, h, 14.0)
+				pos = p + Vector3(off, 0.0, along)
+			if not _is_free(Rect2(pos.x - size.x * 0.5, pos.z - size.z * 0.5, size.x, size.z)):
+				continue
+			_infill_building(size, pos, "shopback")
+			_reserve(size, pos + Vector3(0.0, size.y * 0.5, 0.0))
+
+func _plot_courtyard(p: Vector3, rect: Rect2) -> void:
+	_box(Vector3(46.0, 0.06, 46.0), p + Vector3(0.0, 0.03, 0.0), Palette.mat_textured(Color(0.47, 0.45, 0.41), "pavers", Vector3.ONE, 0.9))
+	_plot_edge_buildings(p)
+	# low planted beds at the corners, a communal table and string-light poles
+	for sx: float in [-1.0, 1.0]:
+		for sz: float in [-1.0, 1.0]:
+			var bed := p + Vector3(sx * 11.0, 0.0, sz * 11.0)
+			_box(Vector3(8.0, 0.45, 8.0), bed + Vector3(0.0, 0.22, 0.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "concrete", Vector3.ONE, 0.9))
+			_sphere(Vector3(6.8, 1.4, 6.8), bed + Vector3(0.0, 0.9, 0.0), Palette.mat(Palette.FOLIAGE, 0.95))
+	if not _is_free(Rect2(p.x - 4.0, p.z - 4.0, 8.0, 8.0)):
+		return
+	_cyl(Vector3(2.6, 0.14, 2.6), p + Vector3(0.0, 0.85, 0.0), Palette.mat(Palette.PLASTER_2, 0.8))
+	_cyl(Vector3(0.35, 0.85, 0.35), p + Vector3(0.0, 0.42, 0.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
+	for s in 5:
+		var ang := TAU * s / 5.0
+		_cyl(Vector3(0.55, 0.5, 0.55), p + Vector3(cos(ang) * 2.0, 0.25, sin(ang) * 2.0), Palette.mat(Palette.PLASTER, 0.85))
+	for s in 4:
+		var ang2 := TAU * s / 4.0 + 0.4
+		_cyl(Vector3(0.14, 5.2, 0.14), p + Vector3(cos(ang2) * 9.0, 2.6, sin(ang2) * 9.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
+	for s in 10:
+		var t := float(s) / 9.0
+		_sphere(Vector3(0.26, 0.26, 0.26), p + Vector3(-9.0 + t * 18.0, 5.05 - sin(t * PI) * 0.5, 9.0), Palette.emissive(Palette.SHOP_WARM, 2.2))
+
+func _plot_garden(p: Vector3, rect: Rect2) -> void:
+	_box(Vector3(46.0, 0.06, 46.0), p + Vector3(0.0, 0.03, 0.0), Palette.mat_textured(Color(0.26, 0.34, 0.17), "soil", Vector3.ONE, 0.95))
+	_box(Vector3(46.0, 0.05, 3.4), p + Vector3(0.0, 0.06, 0.0), Palette.mat_textured(Color(0.52, 0.50, 0.46), "pavers", Vector3.ONE, 0.9))
+	_box(Vector3(3.4, 0.05, 46.0), p + Vector3(0.0, 0.06, 0.0), Palette.mat_textured(Color(0.52, 0.50, 0.46), "pavers", Vector3.ONE, 0.9))
+	_plot_edge_buildings(p, [0, 1])
+	for k in 4:
+		var off := Vector3(-14.0 + (k % 2) * 28.0, 0.0, -14.0 + (k / 2) * 28.0)
+		if _is_free(Rect2(p.x + off.x - 3.0, p.z + off.z - 3.0, 6.0, 6.0)):
+			_tree(p + off, 0.95 + _rng.randf() * 0.3)
+	for k in 6:
+		var a := TAU * k / 6.0
+		_authored("fern.glb", p + Vector3(cos(a) * 9.0, 0.09, sin(a) * 9.0), a, Vector3.ONE * 0.8)
+	_box(Vector3(1.8, 0.12, 0.5), p + Vector3(6.0, 0.55, -6.0), Palette.mat_textured(Palette.PLASTER, "plaster", Vector3.ONE, 0.85))
+
+func _plot_workshop(p: Vector3, rect: Rect2) -> void:
+	_box(Vector3(46.0, 0.06, 46.0), p + Vector3(0.0, 0.03, 0.0), Palette.mat_textured(Color(0.24, 0.24, 0.25), "asphalt", Vector3.ONE, 0.95))
+	var sheds := [
+		{"size": Vector3(30.0, 7.2, 15.0), "off": Vector3(-4.0, 0.0, -12.0), "kind": "workshop"},
+		{"size": Vector3(14.0, 5.4, 12.0), "off": Vector3(13.0, 0.0, 6.0), "kind": "shopback"},
+	]
+	for shed in sheds:
+		var size: Vector3 = shed["size"]
+		var pos: Vector3 = p + shed["off"]
+		var rect2 := Rect2(pos.x - size.x * 0.5, pos.z - size.z * 0.5, size.x, size.z)
+		if not _is_free(rect2):
+			continue
+		_infill_building(size, pos, String(shed["kind"]))
+		_reserve(size, pos + Vector3(0.0, size.y * 0.5, 0.0))
+	# service yard clutter: pallets, drums, a parked van bay
+	if AssetLibrary.has_asset("service_clutter_clean.glb"):
+		for k in 2:
+			var clutter := AssetLibrary.instantiate("service_clutter_clean.glb", _world_root)
+			if clutter != null:
+				clutter.position = p + Vector3(-14.0 + k * 6.0, 0.0, 10.0)
+				clutter.rotation.y = _rng.randf_range(-0.6, 0.6)
+	for k in 3:
+		_cyl(Vector3(0.7, 0.9, 0.7), p + Vector3(8.0 + k * 1.1, 0.45, 8.0), Palette.mat(Color(0.30, 0.42, 0.34), 0.7, 0.3))
+	_box(Vector3(5.0, 0.12, 5.0), p + Vector3(-14.0, 0.4, 9.0), Palette.mat_textured(Palette.METAL_DARK, "metal", Vector3.ONE, 0.6, 0.4))
+
+func _plot_parking(p: Vector3, rect: Rect2) -> void:
+	_box(Vector3(46.0, 0.06, 46.0), p + Vector3(0.0, 0.03, 0.0), Palette.mat_textured(Color(0.18, 0.18, 0.19), "asphalt", Vector3.ONE, 0.96))
+	_plot_edge_buildings(p, [0])
+	var paint := Palette.mat(Palette.PAINT_LINE, 0.8)
+	# two rows of perpendicular bays with a drive aisle between them
+	for side: float in [-1.0, 1.0]:
+		var row_z := side * 14.0
+		for bay in 6:
+			var bx := -15.0 + bay * 6.0
+			_box(Vector3(0.14, 0.03, 5.0), p + Vector3(bx, 0.075, row_z), paint)
+		_box(Vector3(36.0, 0.03, 0.14), p + Vector3(0.0, 0.075, row_z - 2.5), paint)
+		if _is_free(Rect2(p.x - 14.0, p.z + row_z - 2.4, 30.0, 5.0)):
+			for bay2 in 2:
+				var spot := p + Vector3(-9.0 + bay2 * 15.0 + _rng.randf_range(-0.6, 0.6), 0.14, row_z)
+				parked_spots.append({"pos": spot, "heading": 0.0 if side > 0 else PI, "kind": ["sedan", "coupe", "van"][(int(absf(p.x)) + bay2) % 3]})
+	_box(Vector3(0.5, 2.6, 0.5), p + Vector3(19.0, 1.3, -19.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
+	_box(Vector3(1.4, 0.7, 0.5), p + Vector3(19.0, 2.9, -19.0), Palette.mat(Color(0.14, 0.20, 0.36), 0.7))
+
+func _plot_backblock(p: Vector3, rect: Rect2) -> void:
+	_box(Vector3(46.0, 0.06, 46.0), p + Vector3(0.0, 0.03, 0.0), Palette.mat_textured(Color(0.44, 0.42, 0.38), "pavers", Vector3.ONE, 0.92))
+	_plot_edge_buildings(p, [1])
+	var size := Vector3(34.0, 11.0 + float(int(absf(p.x) + absf(p.z)) % 4) * 3.0, 22.0)
+	var pos := p + Vector3(0.0, 0.0, -4.0)
+	if not _is_free(Rect2(pos.x - size.x * 0.5, pos.z - size.z * 0.5, size.x, size.z)):
+		return
+	_infill_building(size, pos, "shopback" if size.y < 17.0 else "hdb")
+	_reserve(size, pos + Vector3(0.0, size.y * 0.5, 0.0))
+	# ground-floor awning and a service door, so the block has a frontage
+	_box(Vector3(35.0, 0.16, 2.6), pos + Vector3(0.0, 3.3, size.z * 0.5 + 1.3), Palette.mat_textured(Palette.METAL, "metal", Vector3(2.0, 1.0, 1.0), 0.55, 0.4))
+	_box(Vector3(2.2, 2.6, 0.14), pos + Vector3(-6.0, 1.3, size.z * 0.5 + 0.05), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
+	for k in 3:
+		_cyl(Vector3(0.12, 3.3, 0.12), pos + Vector3(-11.0 + k * 11.0, 1.65, size.z * 0.5 + 2.5), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
+
+## One textured mid-block building: real collision, parapet, roof clutter.
+func _infill_building(size: Vector3, pos: Vector3, kind: String) -> void:
+	var body := StaticBody3D.new()
+	body.position = pos + Vector3(0.0, size.y * 0.5, 0.0)
+	body.collision_layer = 1
+	body.collision_mask = 0
+	_world_root.add_child(body)
+	var mesh := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = size
+	mesh.mesh = bm
+	mesh.material_override = Palette.facade(kind)
+	body.add_child(mesh)
+	var shape := CollisionShape3D.new()
+	var bs := BoxShape3D.new()
+	bs.size = size
+	shape.shape = bs
+	body.add_child(shape)
+	_box(size + Vector3(0.7, 0.55, 0.7), pos + Vector3(0.0, size.y + 0.2, 0.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "concrete", Vector3.ONE, 0.9))
+	if size.y > 9.0:
+		_cyl(Vector3(1.8, 2.0, 1.8), pos + Vector3(size.x * 0.22, size.y + 1.4, -size.z * 0.2), Palette.mat(Palette.METAL, 0.7, 0.3))
 
 # ------------------------------------------------------------- water + skyline
 func _waterfront_edge() -> void:
@@ -578,9 +835,10 @@ func _background_city() -> void:
 				var basis := Basis(Vector3.UP,rng.randf_range(-.07,.07)).scaled(Vector3(width_scale,height_scale,width_scale))
 				groups[variant].append(Transform3D(basis,Vector3(x,0,z)))
 	for variant in 4:
-		_batch_background("res://assets/authored/skyline_%d.glb"%variant,groups[variant])
+		var tints := [Color(0.86, 0.84, 0.80), Color(0.60, 0.68, 0.76), Color(0.94, 0.88, 0.78), Color(0.72, 0.76, 0.80)]
+		_batch_background("res://assets/authored/skyline_%d.glb"%variant,groups[variant],tints[variant])
 
-func _batch_background(path: String, transforms: Array) -> void:
+func _batch_background(path: String, transforms: Array, tint: Color = Color.WHITE) -> void:
 	var packed: PackedScene = load(path)
 	var source: Node = packed.instantiate()
 	var parts: Array[Dictionary] = []
@@ -594,7 +852,14 @@ func _batch_background(path: String, transforms: Array) -> void:
 			mm.set_instance_transform(i,transforms[i]*part["transform"])
 		var instance := MultiMeshInstance3D.new()
 		instance.multimesh=mm
-		instance.material_override=part["override"]
+		# One duplicated material per skyline variant: the far shore needs
+		# variety, and four extra materials cost nothing next to 2000 instances.
+		var override: Material = part["override"]
+		if override is StandardMaterial3D:
+			var dup := (override as StandardMaterial3D).duplicate() as StandardMaterial3D
+			dup.albedo_color = dup.albedo_color.lerp(tint, 0.55)
+			override = dup
+		instance.material_override=override
 		instance.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		_world_root.add_child(instance)
 	source.free()
@@ -653,28 +918,39 @@ func _build_lane_graph() -> void:
 			for x in X_LINES:
 				pts2.append(Vector3(x, 0.25, z + side * SIDEWALK))
 			ped_lanes.append(pts2)
-	# parked cars along the kerbs of the shophouse streets
+	# Parked cars along both kerb families. Wave 2 only lined the north-south
+	# streets, so the east-west frontages read as permanently empty.
 	var i := 0
 	for x in X_LINES:
 		for side: float in [-1.0, 1.0]:
-			for j: int in 4:
+			for j: int in 5:
 				var px: float = x + side * (SIDEWALK - 2.0)
-				var pz := -240.0 + j * 160.0 + 40.0
+				var pz := -240.0 + j * 120.0 + 40.0
 				if absf(pz) > 300.0:
 					continue
 				parked_spots.append({"pos": Vector3(px, 0.3, pz), "heading": 0.0, "kind": ["sedan", "coupe", "van"][i % 3]})
+				i += 1
+	for z in Z_LINES:
+		for side: float in [-1.0, 1.0]:
+			for j: int in 5:
+				var pz2: float = z + side * (SIDEWALK - 2.0)
+				var px2 := -240.0 + j * 120.0 + 60.0
+				if absf(px2) > 300.0:
+					continue
+				parked_spots.append({"pos": Vector3(px2, 0.3, pz2), "heading": PI * 0.5, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
 
 # ------------------------------------------------------------------- props
 func _scatter_props() -> void:
 	for x in X_LINES:
 		for z in Z_LINES:
+			# Wave 2 offset the second lamp only in Z, which left it on the
+			# centreline of the north-south carriageway (FV-07: "lamp on the
+			# marked carriageway"). Both lamps now sit on opposite junction
+			# corners, clear of both roads.
 			for k: int in 2:
-				# keep lamps and bollards out of the 16 m carriageway (ROAD_HALF = 8)
-				var off := Vector3(-10.5 + k * 21.0, 0.0, 0.0)
-				if k == 1:
-					off = Vector3(0.0, 0.0, -10.5 + 21.0)
-				_street_lamp(Vector3(x, 0.0, z) + off)
+				var sx: float = -1.0 if k == 0 else 1.0
+				_street_lamp(Vector3(x, 0.0, z) + Vector3(sx * 10.5, 0.0, -10.5))
 	# Tree locations are authored in _landscape. The inherited random scatter
 	# put trees in live lanes; real trunk collision made that defect observable.
 
@@ -733,29 +1009,9 @@ func _authored(file: String, pos: Vector3, yaw: float = 0.0, asset_scale: Vector
 
 func _landscape() -> void:
 	var turf := Palette.mat_textured(Color(0.24, 0.32, 0.16), "soil", Vector3.ONE, 0.95)
-	var pale := Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9)
-	for col in 4:
-		for row in 4:
-			var centre := Vector3(-240.0 + col * 160.0, 0.0, -240.0 + row * 160.0)
-			var kit := _kit_for(col, row)
-			# The interior of each block has gardens, service lanes and paths.
-			# Preserve the authored mission hall and aviation apron.
-			if kit in ["shophouse", "mixed", "waterfront"]:
-				_box(Vector3(104, 0.06, 62), centre + Vector3(0, .19, 0), turf)
-				_box(Vector3(110, .08, 4), centre + Vector3(0,.21,0), pale)
-				_box(Vector3(4, .08, 90), centre + Vector3(0,.21,0), pale)
-				for j in 3:
-					for k in 2:
-						_tree(centre + Vector3(-40+j*40,.22,-17+k*34), .78+_rng.randf()*.22)
-			if kit == "hawker":
-				_box(Vector3(38,.08,72),centre+Vector3(49,.2,-12),turf)
-				for j in 3:
-					for k in 2:
-						_tree(centre+Vector3(35+k*27,.24,-39+j*32),.9)
-				for j in 4:
-					_tree(centre+Vector3(-67,.24,-47+j*31),.78)
-					_authored("fern.glb",centre+Vector3(40,.25,-40+j*20),j*.7,Vector3.ONE)
-	# Tree-lined verges are deliberately outside the carriageway and crossings.
+	# Block interiors are now planned by _block_plots(); painting another turf
+	# slab over them would z-fight and re-create the flat field this wave
+	# removed. Only street verges and the promenade planting live here.
 	for road in [-160.0,0.0,160.0]:
 		for block in [-240.0,-80.0,80.0,240.0]:
 			for side in [-1.0,1.0]:
@@ -913,6 +1169,8 @@ func _solid_box(size: Vector3, pos: Vector3, material: Material, yaw: float = 0.
 	bs.size = size
 	shape.shape = bs
 	body.add_child(shape)
+	if size.y > 2.5:
+		_reserve(size, pos)
 	return mesh
 
 func _box(size: Vector3, pos: Vector3, material: Material) -> MeshInstance3D:

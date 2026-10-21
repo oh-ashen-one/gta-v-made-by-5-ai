@@ -27,8 +27,11 @@ func _log_line(text: String) -> void:
 func _run() -> void:
 	await get_tree().create_timer(0.8).timeout
 	var views := [
-		{"name": "street_heritage", "pos": Vector3(-150.0, 2.4, -52.0), "look": Vector3(-40.0, 6.0, -70.0), "fov": 62.0},
-		{"name": "street_wide", "pos": Vector3(-20.0, 3.2, -12.0), "look": Vector3(-120.0, 8.0, -30.0), "fov": 70.0},
+		# Wave 3: the two former vantage points sat inside a shophouse module and
+		# inside the hawker hall, so "street" evidence was actually an interior
+		# wall. They now stand on the public carriageway and five-foot way.
+		{"name": "street_heritage", "pos": Vector3(-150.0, 2.6, -157.0), "look": Vector3(-40.0, 5.0, -155.0), "fov": 64.0},
+		{"name": "street_wide", "pos": Vector3(8.0, 5.5, -158.0), "look": Vector3(-150.0, 8.0, -160.0), "fov": 75.0},
 		{"name": "hawker_interior", "pos": Vector3(-80.0, 2.6, -70.0), "look": Vector3(-90.0, 1.8, -96.0), "fov": 66.0},
 		{"name": "housing_void_deck", "pos": Vector3(-214.0, 2.2, -104.0), "look": Vector3(-262.0, 12.0, -112.0), "fov": 68.0},
 		{"name": "waterfront", "pos": Vector3(84.0, 3.2, -344.0), "look": Vector3(50.0, 10.0, -240.0), "fov": 70.0},
