@@ -1,0 +1,11 @@
+# Godot engine cache and generated data
+game/.godot/
+game/.import/
+game/build/
+game/captures/*.tmp
+
+# macOS
+.DS_Store
+
+# Local editor / OS noise
+*.swp

@@ -1,0 +1,118 @@
+extends Node3D
+## Wave 1 bootstrap: builds the district, spawns the player, traffic, NPCs and
+## the mission, and wires the shell (title, pause, HUD, debug diagnostics).
+
+var world: WorldBuilder
+var player: Player
+var traffic: TrafficManager
+var mission: Mission
+var hud: HUD
+var started := false
+var _capture_director: Node = null
+
+func _ready() -> void:
+	print("[wave1] main ready, args=", OS.get_cmdline_user_args())
+	var args := OS.get_cmdline_user_args()
+	world = WorldBuilder.new()
+	world.name = "World"
+	add_child(world)
+	world.build(Game.seed_value)
+
+	player = Player.new()
+	player.name = "Player"
+	add_child(player)
+	player.global_position = world.locations["safe_room"] + Vector3(0.0, 0.4, 0.0)
+	player.yaw = deg_to_rad(180.0)
+	player.rotation.y = player.yaw
+	Game.mark_safe_position(player.global_position, player.yaw)
+
+	traffic = TrafficManager.new()
+	traffic.name = "Traffic"
+	add_child(traffic)
+	traffic.setup(world, player)
+
+	mission = Mission.new()
+	mission.name = "Mission"
+	add_child(mission)
+	mission.setup(world, player, traffic)
+
+	hud = HUD.new()
+	hud.name = "HUD"
+	add_child(hud)
+	hud.setup(world, player, mission)
+	Events.objective_marker_changed.connect(hud.set_marker)
+
+	# helicopter at the aviation compound, parked on the primary pad
+	var heli := Helicopter.new()
+	heli.name = "Helicopter"
+	add_child(heli)
+	heli.global_position = world.locations["helipad_primary"] + Vector3(0.0, 0.6, 0.0)
+
+	if "--test" in args:
+		var tester := SelfTest.new()
+		add_child(tester)
+		await tester.run(self)
+		await get_tree().create_timer(0.2).timeout
+		get_tree().quit(1 if tester.failures > 0 else 0)
+		return
+
+	if "--capture" in args:
+		_capture_director = load("res://src/systems/capture_director.gd").new()
+		add_child(_capture_director)
+		_capture_director.setup(self, player, world, mission, traffic)
+		hud.show_title(false)
+		started = true
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		hud.show_title(true)
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause"):
+		if not started:
+			return
+		_toggle_pause()
+	if not started:
+		if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER:
+			_start_game()
+		return
+	if event is InputEventKey and event.pressed:
+		match event.keycode:
+			KEY_F5:
+				if Game.save_game():
+					Events.toast("Progress saved.", "info")
+			KEY_F6:
+				if Game.load_game():
+					Events.toast("Progress loaded.", "info")
+			KEY_F7:
+				player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
+			KEY_F8:
+				hud.visible = not hud.visible
+			KEY_F9:
+				started = false
+				Game.simulation_paused = true
+				hud.show_title(true)
+				hud.set_paused(false)
+				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			KEY_F1:
+				for node in get_tree().get_nodes_in_group("npcs"):
+					pass
+				_toggle_debug()
+	if event.is_action_pressed("debug_panel"):
+		_toggle_debug()
+
+func _toggle_debug() -> void:
+	for l in hud.get_children():
+		pass
+	hud.set_meta("debug", not hud.get_meta("debug", false))
+
+func _toggle_pause() -> void:
+	Game.simulation_paused = not Game.simulation_paused
+	hud.set_paused(Game.simulation_paused)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Game.simulation_paused else Input.MOUSE_MODE_CAPTURED
+
+func _start_game() -> void:
+	started = true
+	hud.show_title(false)
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Events.toast("Harbour Relay: check the objective.", "info")
