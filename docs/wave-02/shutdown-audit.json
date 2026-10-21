@@ -48,5 +48,11 @@
       "finished_utc": "2026-10-21T15:27:44.312174+00:00"
     }
   },
-  "required_final_processes_all_exit0_reaped": true
+  "required_final_processes_all_exit0_reaped": true,
+  "final_checked_utc": "2026-10-21T15:34:31.938860+00:00",
+  "final_engine_processes_observed": [],
+  "shared_holders": [],
+  "shared_queue": [],
+  "shared_pause_present": false,
+  "no_gpu_locks_or_foreign_processes_modified": true
 }

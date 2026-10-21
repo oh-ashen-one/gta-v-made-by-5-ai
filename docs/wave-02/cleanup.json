@@ -1,0 +1,45 @@
+{
+  "finished_utc": "2026-10-21T15:33:54.305343+00:00",
+  "after_verified_push": "3585927",
+  "removed": [
+    {
+      "path": "game/.godot",
+      "files": 388,
+      "bytes": 347682513
+    },
+    {
+      "path": "game/build/mac/candidate1",
+      "files": 6,
+      "bytes": 512589922
+    },
+    {
+      "path": "game/build/mac/private-signed",
+      "files": 6,
+      "bytes": 512743602
+    },
+    {
+      "path": "game/build/mac/private-signed-r2",
+      "files": 6,
+      "bytes": 512743602
+    },
+    {
+      "path": "game/build/mac/private-signed-r3",
+      "files": 6,
+      "bytes": 512743602
+    },
+    {
+      "path": "docs/wave-02/route-render-r1/frames/*.jpg",
+      "files": 2073,
+      "bytes": 196911246
+    },
+    {
+      "path": "docs/wave-02/package-route-final/frames/*.jpg",
+      "files": 2275,
+      "bytes": 452811386
+    }
+  ],
+  "errors": [],
+  "bytes_removed": 3048225873,
+  "preserved": "All source/private authoring assets, manager transfer, all ZIPs, verified playable signed app, encoded movies, logs/timing manifests and26selectedverbatimreviewJPEGs. No foreign checkout/process/cache touched.",
+  "source_run_note": "game/.godot removed; fresh source use requires documented headless editor import before play."
+}

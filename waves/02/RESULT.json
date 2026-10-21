@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "state": "handoff_ready_with_unmet_requirements",
+  "prepared_utc": "2026-10-21T15:35:41.778288+00:00",
+  "wave": 2,
+  "model": "GPT-6 Astra through Codex; same-model independent reviewers",
+  "branch": "feature/wave-02-astra",
+  "incoming_checkpoint": "4df93fa631d9484fb29e556a97df61a259620248",
+  "implementation_checkpoint": "be6a8aa98b47735eb5b043db0860a0946767d1cd",
+  "fixed_start_utc": "2026-10-21T11:38:01Z",
+  "fixed_deadline_utc": "2026-10-21T15:38:01Z",
+  "final_phase_started_by_utc": "2026-10-21T14:32:00Z",
+  "engine": "Godot4.7.1.stable.official.a13da4feb",
+  "signed_archive_sha256": "377447ff855c91da8746c23a67cc4877c22b34e32eadf64c420a6c1b56c006e8",
+  "private_transfer": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/relay-manager/wave-02-private-handoff-be6a8aa",
+  "signed_regressions": "85/85,clean exit/reaped",
+  "signed_ui": "24/24 writer +23/23 freshContinue,clean exits/reaped",
+  "signed_route": "13/13gates,3kills,0deaths,232.267402s,clean exit/reaped",
+  "raw_package_soak": "1800.008636s,3missions,0deaths/errors,clean exit/reaped; same PCK as signed delivery",
+  "performance": "FAIL: six recurring735.564\u2013762.244ms combat stalls; shared measurement qualifications retained",
+  "visual": "REWORK3.7/10; GTA VI-level target unmet",
+  "leak_acceptance": "UNVERIFIED",
+  "rights": "UNVERIFIED public source/binary redistribution; no public release",
+  "no_paid_customuse_or_tripo_jobs": true,
+  "no_main_merge": true,
+  "shutdown_audit": {
+    "checked_utc": "2026-10-21T15:29:19.784994+00:00",
+    "engine_processes_observed": [],
+    "owned_drivers_observed": [],
+    "source_runtime_frozen_at": "be6a8aa98b47735eb5b043db0860a0946767d1cd",
+    "manager_clock_untouched": true,
+    "required_final_processes": {
+      "package-soak-r2-process": {
+        "pid": 27400,
+        "exit_code": 0,
+        "engine_exit_code": 0,
+        "child_reaped": true,
+        "finished_utc": "2026-10-21T15:15:46.060087+00:00"
+      },
+      "signed-ui-write": {
+        "pid": 33907,
+        "exit_code": 0,
+        "engine_exit_code": 0,
+        "child_reaped": true,
+        "finished_utc": "2026-10-21T15:16:44.256607+00:00"
+      },
+      "signed-ui-load": {
+        "pid": 34074,
+        "exit_code": 0,
+        "engine_exit_code": 0,
+        "child_reaped": true,
+        "finished_utc": "2026-10-21T15:17:23.875377+00:00"
+      },
+      "signed-regressions": {
+        "pid": 34189,
+        "exit_code": 0,
+        "engine_exit_code": 0,
+        "child_reaped": true,
+        "finished_utc": "2026-10-21T15:18:20.373332+00:00"
+      },
+      "package-route-final-process": {
+        "pid": 34412,
+        "exit_code": 0,
+        "engine_exit_code": 0,
+        "child_reaped": true,
+        "finished_utc": "2026-10-21T15:23:06.792640+00:00"
+      },
+      "package-route-final-encode-r2": {
+        "pid": 35999,
+        "exit_code": 0,
+        "engine_exit_code": 0,
+        "child_reaped": true,
+        "finished_utc": "2026-10-21T15:27:44.312174+00:00"
+      }
+    },
+    "required_final_processes_all_exit0_reaped": true,
+    "final_checked_utc": "2026-10-21T15:34:31.938860+00:00",
+    "final_engine_processes_observed": [],
+    "shared_holders": [],
+    "shared_queue": [],
+    "shared_pause_present": false,
+    "no_gpu_locks_or_foreign_processes_modified": true
+  },
+  "successor": "DeepSeekV4.1Flash through Devin",
+  "next_goal": "NEXT_GOAL.md"
+}
