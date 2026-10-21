@@ -108,9 +108,8 @@ func _run() -> void:
 		await _shot("helicopter_boarding")
 		await _fly_to(world.locations["helipad_secondary"], 170.0)
 		await _shot("aerial_view")
-		await _land()
+		await _land_and_exit()
 		await _shot("landed")
-		await _interact_until(Game.MODE_FOOT, "exit helicopter")
 		_log("mode after exiting helicopter: %d" % Game.mode)
 
 	# --- 6. walk to the delivery point --------------------------------------
@@ -379,15 +378,32 @@ func _fly_to(target: Vector3, timeout: float) -> void:
 		else:
 			_release("jump")
 		_press("move_forward")
+	# the climb must not stay held: a stuck "jump" keeps the aircraft climbing
+	# long after the flight is over and the landing can never happen
 	_release("jump")
+	_release("move_forward")
+
+## Descend onto the pad and step out. The helicopter only lets the pilot out
+## when it is on the ground, so the script keeps steering towards the pad
+## while it sinks and reports what the aircraft is doing.
+func _land_and_exit() -> void:
+	for attempt in 3:
+		await _land()
+		var heli := player.current_vehicle
+		if heli == null:
+			return
+		_log("helicopter: pos=%s y=%.1f landed=%s on_floor=%s disabled=%s" % [str(heli.global_position.round()), heli.global_position.y, heli.is_landed(), heli.is_on_floor(), heli.is_disabled()])
+		await _interact_once()
+		if Game.mode == Game.MODE_FOOT:
+			return
+	_log("the pilot could not leave the helicopter after %d landing attempts" % 3)
 
 func _land() -> void:
 	var heli := player.current_vehicle
 	if heli == null:
 		return
-	_release("move_forward")
-	_release("move_left")
-	_release("move_right")
+	_release("jump")  # a held climb would cancel the descent
+	var pad: Vector3 = world.locations["helipad_secondary"]
 	var elapsed := 0.0
 	while elapsed < 90.0:
 		await get_tree().process_frame
@@ -398,5 +414,24 @@ func _land() -> void:
 		if heli.is_landed():
 			break
 		_press("sprint")  # descend
+		# keep the aircraft over the pad while it sinks
+		var to_pad: Vector3 = pad - heli.global_position
+		to_pad.y = 0.0
+		if to_pad.length() > 5.0:
+			to_pad = to_pad.normalized()
+			var fwd: Vector3 = -heli.global_transform.basis.z
+			var cross_y: float = fwd.z * to_pad.x - fwd.x * to_pad.z
+			_release("move_left")
+			_release("move_right")
+			if cross_y > 0.05:
+				_press("move_left")
+			elif cross_y < -0.05:
+				_press("move_right")
+			if heli.global_position.y < 12.0 and to_pad.length() > 12.0:
+				_press("move_forward")
+			else:
+				_release("move_forward")
+		else:
+			_release("move_forward")
 		await get_tree().process_frame
 	_release("sprint")

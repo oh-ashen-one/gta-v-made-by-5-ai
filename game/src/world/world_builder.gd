@@ -386,6 +386,9 @@ func _hawker_block(centre: Vector3) -> void:
 			var cp := centre + Vector3(-30.0 + i * 10.0, 0.0, -22.0 + j * 11.0)
 			_cyl(Vector3(0.5, 5.2, 0.5), cp + Vector3(0.0, 2.6, 0.0), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_solid_box(Vector3(72.0, 0.5, 56.0), centre + Vector3(0.0, 5.4, 0.0), Palette.mat(Palette.METAL_DARK, 0.7, 0.3))
+	# a pale ceiling under the roof: without it the underside of the canopy
+	# reads as a black void from street level
+	_box(Vector3(71.0, 0.12, 55.0), centre + Vector3(0.0, 5.02, 0.0), Palette.mat(Palette.PLASTER_2, 0.9))
 	_box(Vector3(74.0, 0.2, 12.0), centre + Vector3(0.0, 5.9, -18.0), Palette.mat(Palette.ROOF_TILE, 0.8))
 	# stalls: counters, canopies, signboards
 	for i: int in 6:

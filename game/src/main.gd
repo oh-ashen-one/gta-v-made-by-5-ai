@@ -64,6 +64,9 @@ func _ready() -> void:
 		var shooter: Node = load("res://src/systems/photo_capture.gd").new()
 		add_child(shooter)
 		shooter.setup(self, world, photo_dir)
+		# the frames are evidence of the district, not of the title screen
+		hud.show_title(false)
+		started = true
 		return
 
 	if "--capture" in args:
