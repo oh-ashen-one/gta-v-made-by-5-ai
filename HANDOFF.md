@@ -2,7 +2,7 @@
 
 - Owner: current Codex manager chat; delegated builder is MiniMax M3.1 Flash through Claude Code.
 - Starting checkpoint: 44431f5 (planning repository, no playable build).
-- Task branch: `codex/minimax-wave-01` (remote). Builder worktree branch: `feature/wave-01-orchard-reach` → pushed to `codex/minimax-wave-01`.
+- Task branch: `feature/wave-01-orchard-reach` (remote `origin/feature/wave-01-orchard-reach`). The manager's documentation branch `codex/minimax-wave-01` is left at its own state and is never modified by this task.
 - State: **wave 1 implementation is IN PROGRESS.** The four-hour clock started at **2026-10-21 07:35:00 UTC** and the hard end is **11:35:00 UTC**; handoff preparation starts no later than **11:05:00 UTC**. Do not read this file as a completed wave — it is rewritten with final evidence at the deadline.
 - Builder branch pushed to **`origin/feature/wave-01-orchard-reach`** (the manager reference branch `codex/minimax-wave-01` at `f9b1233` is not modified by this task).
 - Fixed wave window: 2026-10-21 07:35–11:35 UTC; final handoff preparation from 11:05 UTC.
@@ -13,7 +13,7 @@
 - Engine (decided by the builder under owner delegation): **Godot 4.7.1 stable**, Forward+, native macOS export. Rationale and rejected alternatives: `waves/01/READINESS.md`.
 - Deliverable (in progress): `game/` — a playable third-person Singapore-inspired slice with an authored district, shooting, car theft, left-hand traffic, police response, a flyable helicopter and the "Harbour Relay" mission.
 - Build: `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip` (build output is git-ignored; rebuild locally).
-- Checks: `godot --headless --path game -- --test` → 20/20 PASS at the handoff commit.
+- Checks: `godot --headless --path game -- --test` → 32/32 PASS at the handoff commit (20 structural, 12 behavioural regression checks).
 - Evidence: `game/captures/` (automated playthrough PNGs, fixed-view district frames, `capture_log.json`), `docs/REQUIREMENTS_LEDGER.md`, `docs/asset-manifest.csv`, `docs/LOOK_DEV.md` (the wave-1 look sheet every later wave inherits), `waves/01/HANDOFF.md` (the filled wave handoff template) and `NEXT_GOAL.md`.
 - Owner visual update: GTA VI fidelity in Singapore; primary art direction is `docs/concepts/*.png` (generated concepts of **our** game), secondary evidence is `docs/visual-references.json`.
 - Owner asset routing: Tripo browser for smaller/bulk objects, Customuse MCP for major assets, no Meshy. Existing Tripo credits authorized.

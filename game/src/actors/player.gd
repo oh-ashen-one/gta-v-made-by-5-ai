@@ -35,6 +35,7 @@ var _muzzle_flash: MeshInstance3D
 var _weapon_mesh: MeshInstance3D
 var _weapon_model: Node3D = null
 var _body_root: Node3D
+var _press_armed: Dictionary = {}
 var _leg_l: Node3D
 var _leg_r: Node3D
 var _arm_l: Node3D
@@ -347,42 +348,61 @@ func _try_interact() -> void:
 		if current_vehicle.has_method("exit_vehicle"):
 			current_vehicle.exit_vehicle(self)
 		return
+	# The closest interactable wins, whatever it is: a parcel lying at the
+	# player's feet must not be stolen by a car parked a little further away.
 	var best: Node = null
-	var best_d := INTERACT_RANGE
+	var best_d := INF
 	for v in get_tree().get_nodes_in_group("vehicles"):
 		if v == current_vehicle:
 			continue
 		var d := global_position.distance_to(v.global_position)
-		if d < best_d:
+		if d < best_d and d < INTERACT_RANGE:
 			best_d = d
 			best = v
-	if best and best.has_method("interact"):
-		best.interact(self)
-		return
-	# mission interactables
 	for obj in get_tree().get_nodes_in_group("interactables"):
 		var d2 := global_position.distance_to(obj.global_position)
 		# small props are picked up from a slightly wider reach than a vehicle
-		if d2 < PICKUP_RANGE and obj.has_method("interact"):
-			obj.interact(self)
-			return
+		if d2 < best_d and d2 < PICKUP_RANGE and obj.has_method("interact"):
+			best_d = d2
+			best = obj
+	if best and best.has_method("interact"):
+		print("[interact] %s at %.2f m" % [best.name, best_d])
+		best.interact(self)
+		return
+	print("[interact] nothing in reach")
 
 func _process(_delta: float) -> void:
 	if Game.simulation_paused:
 		return
 	if current_vehicle == null and not busy:
 		aiming = Input.is_action_pressed("aim")
-	if true:
-		if Input.is_action_just_pressed("fire"):
-			_fire()
-		if Input.is_action_just_pressed("reload"):
-			_start_reload()
-		if Input.is_action_just_pressed("weapon_next"):
-			Game.switch_weapon("smg" if Game.carried_weapon == "pistol" else "pistol")
-			_update_weapon_mesh()
-		if Input.is_action_just_pressed("interact"):
-			_try_interact()
+	if _consume_press("fire"):
+		_fire()
+	if _consume_press("reload"):
+		_start_reload()
+	if _consume_press("weapon_next"):
+		Game.switch_weapon("smg" if Game.carried_weapon == "pistol" else "pistol")
+		_update_weapon_mesh()
+	if _consume_press("interact"):
+		_try_interact()
 	_update_prompt()
+
+## Rising-edge detection on the *held* state of an action.
+##
+## `Input.is_action_just_pressed()` is tied to the frame in which the press was
+## parsed, so a press injected after this node's turn in the frame is invisible
+## to it until the next press. A scripted playtest (and a player on a slow
+## frame) would then lose the input entirely. Watching the held state and
+## firing once per press re-arms on release keeps one code path for humans and
+## for scripts, and cannot miss a press that is still held.
+func _consume_press(action: String) -> bool:
+	if not Input.is_action_pressed(action):
+		_press_armed[action] = true
+		return false
+	if _press_armed.get(action, true):
+		_press_armed[action] = false
+		return true
+	return false
 
 func _update_prompt() -> void:
 	if current_vehicle != null:

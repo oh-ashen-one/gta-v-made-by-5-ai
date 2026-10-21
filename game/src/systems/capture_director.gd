@@ -65,7 +65,11 @@ func _run() -> void:
 	# --- 3. take the package (real interactable) ----------------------------
 	# the fight scatters the player, so walk back into reach before pressing
 	await _approach(world.locations["package"], "package")
-	await _interact()
+	_log("candidates at the package: %s" % _describe_nearby())
+	for attempt in 4:
+		await _interact_once()
+		if mission.stage > 0:
+			break
 	await _shot("package_taken")
 	_log("mission stage after package: %d" % mission.stage)
 	_log("player position at pickup: %s (package %s)" % [str(player.global_position.round()), str(world.locations["package"].round())])
@@ -74,7 +78,7 @@ func _run() -> void:
 	var car := _nearest_car()
 	if car:
 		await _nav_to(car.global_position, 2.2, 180.0)
-		await _interact()
+		await _interact_until(Game.MODE_CAR, "car")
 		_log("mode after entering car: %d (car mode=%d)" % [Game.mode, Game.MODE_CAR])
 		await _shot("car_entered")
 		await _drive_route(world.locations["helipad_primary"], 200.0)
@@ -82,7 +86,7 @@ func _run() -> void:
 		# park and get out
 		_release("move_forward")
 		await get_tree().create_timer(1.5).timeout
-		await _interact()
+		await _interact_until(Game.MODE_FOOT, "exit car")
 		_log("mode after exiting car: %d" % Game.mode)
 		await _shot("exited_car")
 
@@ -90,7 +94,7 @@ func _run() -> void:
 	var heli := main.get_node_or_null("Helicopter")
 	if heli:
 		await _nav_to(heli.global_position, 2.6, 180.0)
-		await _interact()
+		await _interact_until(Game.MODE_HELI, "helicopter")
 		await get_tree().create_timer(0.4).timeout
 		_log("mode after boarding helicopter: %d (heli mode=%d)" % [Game.mode, Game.MODE_HELI])
 		await _shot("helicopter_boarding")
@@ -98,13 +102,16 @@ func _run() -> void:
 		await _shot("aerial_view")
 		await _land()
 		await _shot("landed")
-		await _interact()
+		await _interact_until(Game.MODE_FOOT, "exit helicopter")
 		_log("mode after exiting helicopter: %d" % Game.mode)
 
 	# --- 6. walk to the delivery point --------------------------------------
 	await _nav_to(world.locations["delivery"], 2.2, 240.0)
 	await _approach(world.locations["delivery"], "delivery")
-	await _interact()
+	for attempt in 4:
+		await _interact_once()
+		if mission.stage == Mission.Stage.DONE:
+			break
 	await _shot("delivery")
 	_log("final mission stage: %d (done=%d)" % [mission.stage, Mission.Stage.DONE])
 	_write_log()
@@ -127,17 +134,39 @@ func _write_log() -> void:
 	get_tree().quit(0)
 
 # ------------------------------------------------------------------ helpers
-## Press the interact action with retries: a scripted press has to be seen by
-## the polled input path, so it is repeated over a short window.
-func _interact() -> void:
-	for attempt in 4:
-		_press("interact")
-		await get_tree().create_timer(0.18).timeout
-		_release("interact")
-		await get_tree().create_timer(0.18).timeout
-
 func _press(action: String) -> void:
 	Input.action_press(action)
+
+## A single interact press. Repeated presses toggle a vehicle on and off, so
+## an object that must be *taken* is pressed once at a time.
+func _interact_once() -> void:
+	_press("interact")
+	await get_tree().create_timer(0.25).timeout
+	_release("interact")
+	await get_tree().create_timer(0.2).timeout
+
+## Press until the game reaches the wanted mode. One press per attempt, so a
+## vehicle is never entered and left again by the same script.
+func _interact_until(mode: int, label: String) -> void:
+	for attempt in 4:
+		if Game.mode == mode:
+			return
+		await _interact_once()
+	_log("interact for %s finished in mode %d (wanted %d)" % [label, Game.mode, mode])
+
+## Log what the player could actually reach, so a failed pickup is explainable
+## from the capture log rather than guessed at.
+func _describe_nearby() -> String:
+	var parts: Array[String] = []
+	for v in get_tree().get_nodes_in_group("vehicles"):
+		var d := player.global_position.distance_to(v.global_position)
+		if d < 12.0:
+			parts.append("vehicle %s at %.1f" % [v.name, d])
+	for obj in get_tree().get_nodes_in_group("interactables"):
+		var d2 := player.global_position.distance_to(obj.global_position)
+		if d2 < 12.0:
+			parts.append("%s at %.1f" % [obj.name, d2])
+	return ", ".join(parts) if not parts.is_empty() else "nothing within 12 m"
 
 ## Walk straight at a target until it is within reach. The grid route is for
 ## long trips across the district; a pickup is a short final approach, so it
