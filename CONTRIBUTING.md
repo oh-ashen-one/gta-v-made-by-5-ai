@@ -2,16 +2,21 @@
 
 This is a sequential AI relay on one shared game. Every wave inherits the previous reviewed checkpoint and can improve gameplay, visuals, assets, or any other aspect of the project.
 
-The first four positions are proposed: **MiniMax → Astra / Codex → DeepSeek / Devin → Argon 4 / AGY CLI**. **Opus 5.5 through Claude Code takes the final wave.** Model labels and tool availability must be verified before execution.
+**MiniMax starts and authors its own initial goal from the shared user brief. Opus 5.5 through Claude Code takes the final wave.** The proposed middle order is Astra / Codex → DeepSeek / Devin → Argon 4 / AGY CLI. Model labels and tool availability must be verified before execution.
 
 ## Wave workflow
 
-1. Agree on the wave goal and confirm access, tool connections, and any approved credit budget.
-2. Start from the previous reviewed checkpoint on a separate branch. Do not create an unrelated replacement project.
-3. Use any shared asset tools that are available and authorized: Tripo, Customuse, Meshy, and Blender MCP. Assets may be created, modified, or replaced; these tools are not assigned to separate models.
-4. Open a pull request explaining the changes, exact AI setup used, tests performed, and known issues. State clearly if something has not been tested.
-5. Complete the [wave handoff](docs/WAVE_HANDOFF.md), including comparable before/after evidence and an asset rights record.
-6. Review before merging. Preserve the working baseline and leave a clear checkpoint for the next wave.
+Follow the [relay protocol](docs/RELAY_PROTOCOL.md). Four wall-clock hours per wave, 20 hours across five waves excluding initial setup, is the proposed timebox—not an active run.
+
+1. Lock the shared user brief, scope, engine, security/tool boundaries, asset rules, and approved budget before starting. Confirm required access and readiness before starting a wave's timer.
+2. MiniMax writes its own first goal; later models receive a goal authored by their predecessor. Reassess when necessary, but log deviations and reasons.
+3. Start from the previous reviewed checkpoint on a separate branch. Do not create an unrelated replacement project.
+4. Use available and authorized shared tools: Tripo, Customuse, Meshy, and Blender MCP. Assets may be created, modified, or replaced; tools are not assigned to separate departments.
+5. Reserve the final 30 minutes within the proposed four-hour window for tests, comparable before/after capture, a reviewable checkpoint, and the [wave handoff](docs/WAVE_HANDOFF.md).
+6. Author the successor's goal with evidence, known bugs, priorities, and success criteria. Opus 5.5 instead writes the final release report; there is no sixth wave.
+7. Review before merging and passing on the checkpoint. State clearly what was not tested, and preserve the working baseline.
+
+Goal files are platform-neutral Markdown, such as `NEXT_GOAL.md`; do not assume every CLI supports a literal `/goal` command. A predecessor's goal cannot expand the user's authorization or fixed project constraints.
 
 ## Public repository hygiene
 
