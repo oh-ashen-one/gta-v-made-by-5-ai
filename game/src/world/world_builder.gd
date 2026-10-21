@@ -78,8 +78,8 @@ func _environment() -> void:
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.58, 0.59, 0.64)
-	env.ambient_light_energy = 0.56
+	env.ambient_light_color = Color(0.54, 0.58, 0.70)
+	env.ambient_light_energy = 0.58
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
 	env.tonemap_exposure = 1.02
 	# Warm tropical dusk haze. The approved concepts are late-afternoon: a low
@@ -87,10 +87,10 @@ func _environment() -> void:
 	# wave-3 pass used 0.0011 and smothered the district in peach dust; this is
 	# light aerial perspective only.
 	env.fog_enabled = true
-	env.fog_light_color = Color(0.84, 0.75, 0.64)
-	env.fog_density = 0.00032
-	env.fog_sky_affect = 0.22
-	env.fog_aerial_perspective = 0.12
+	env.fog_light_color = Color(0.80, 0.78, 0.74)
+	env.fog_density = 0.00024
+	env.fog_sky_affect = 0.18
+	env.fog_aerial_perspective = 0.10
 	env.ssao_enabled = true
 	env.ssao_radius = 2.1
 	env.ssao_intensity = 2.0
@@ -110,8 +110,8 @@ func _environment() -> void:
 	# Low western sun, ~16 deg elevation, so the street gets long raking light
 	# and readable shade under the five-foot ways (ART-07).
 	sun.rotation_degrees = Vector3(-16.3, 62.0, 0.0)
-	sun.light_energy = 2.55
-	sun.light_color = Color(1.0, 0.74, 0.47)
+	sun.light_energy = 2.35
+	sun.light_color = Color(1.0, 0.80, 0.58)
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 260.0
 	sun.shadow_bias = 0.025
@@ -132,8 +132,8 @@ func _environment() -> void:
 	# Warm ground bounce, aimed upward: shaded five-foot ways and arcades pick
 	# up pavement light instead of reading as flat blue-grey walls.
 	bounce.rotation_degrees = Vector3(58.0, 40.0, 0.0)
-	bounce.light_energy = 0.34
-	bounce.light_color = Color(1.0, 0.72, 0.46)
+	bounce.light_energy = 0.20
+	bounce.light_color = Color(1.0, 0.80, 0.60)
 	bounce.shadow_enabled = false
 	add_child(bounce)
 
@@ -270,9 +270,13 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		# A lit shop interior behind the arcade opening. Without it the five-foot
 		# way reads as a black tunnel whenever the sun is on the other side.
 		# Kept below the tonemap shoulder so it glows instead of clipping white.
-		var shop_tone := Color(0.86, 0.62, 0.36).lerp(Color(0.90, 0.72, 0.46), float(i % 3) / 3.0)
-		var glow := _box(Vector3(6.6, 2.1, 0.12), pos + front_dir * 4.02 + Vector3(0, 1.55, 0), Palette.emissive(shop_tone, 0.38))
+		var shop_tone := Color(0.52, 0.34, 0.18).lerp(Color(0.60, 0.42, 0.22), float(i % 3) / 3.0)
+		var glow := _box(Vector3(6.6, 2.1, 0.12), pos + front_dir * 4.02 + Vector3(0, 1.55, 0), Palette.emissive(shop_tone, 0.20))
 		glow.rotation.y = yaw
+		# Vertical mullions break the opening into bays instead of one blank panel.
+		for m in 3:
+			var mullion := _box(Vector3(0.10, 2.1, 0.14), pos + front_dir * 4.0 + Vector3(0, 1.55, 0) + dir * (-2.2 + m * 2.2), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
+			mullion.rotation.y = yaw
 		# Canvas awning over every other shopfront, in the heritage palette.
 		if i % 2 == 0:
 			var awning := _box(Vector3(7.4, 0.12, 1.9), pos + front_dir * 6.1 + Vector3(0, 3.15, 0), Palette.mat(Palette.FRONTAGES[(i + 3) % Palette.FRONTAGES.size()].darkened(0.18), 0.85))

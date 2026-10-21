@@ -191,15 +191,16 @@ const SKIN := Color(0.72, 0.55, 0.44)
 const WATER := Color(0.16, 0.31, 0.36)
 
 ## Muted pastel shophouse frontages, kept in one family so the street reads as
-## one place rather than an asset collage (ART-01 / ART-04).
+## one place rather than an asset collage (ART-01 / ART-04). Wave 3 widens the
+## hue range: the first pass plus a warm sun turned the whole street peach.
 const FRONTAGES := [
-	Color(0.62, 0.71, 0.68),
-	Color(0.78, 0.66, 0.62),
-	Color(0.80, 0.70, 0.47),
-	Color(0.67, 0.72, 0.60),
-	Color(0.72, 0.68, 0.76),
-	Color(0.74, 0.62, 0.55),
-	Color(0.60, 0.67, 0.72),
+	Color(0.50, 0.70, 0.66),   # Peranakan teal
+	Color(0.84, 0.60, 0.55),   # dusty rose
+	Color(0.86, 0.73, 0.42),   # ochre
+	Color(0.57, 0.70, 0.48),   # sage
+	Color(0.66, 0.61, 0.79),   # lilac
+	Color(0.80, 0.56, 0.42),   # terracotta
+	Color(0.46, 0.62, 0.76),   # strait blue
 ]
 
 const SIGN_TEXT := [

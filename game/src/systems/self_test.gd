@@ -488,6 +488,13 @@ func _weapon_input_checks(main: Node, player: Player) -> void:
 		player.yaw = atan2(-aim_vector.x, -aim_vector.z)
 		player.pitch = atan2(aim_vector.y, Vector2(aim_vector.x, aim_vector.z).length())
 	var aim_point := target.global_position + Vector3.UP * 1.15
+	# Freeze the character animation for this fixture only. The cover is placed
+	# relative to the muzzle and then several frames elapse before the shot;
+	# with a heavier district those frames are longer and the aim pose drifted
+	# far enough to move the muzzle off the 0.18 m cover between measurement and
+	# fire. Freezing isolates the geometry under test without weakening it.
+	if player._visual != null:
+		player._visual.set_paused(true)
 	var muzzle := player._muzzle_flash.global_position
 	if player._visual != null and player._visual.loaded:
 		muzzle = player._visual.weapon_muzzle_position()
@@ -514,6 +521,8 @@ func _weapon_input_checks(main: Node, player: Player) -> void:
 	await _ticks(15)
 	await _tap("fire")
 	_check("clearing muzzle obstruction permits target damage", target.health < target_health)
+	if player._visual != null:
+		player._visual.set_paused(false)
 	Input.action_release("aim")
 	target.queue_free()
 	bay.queue_free()
