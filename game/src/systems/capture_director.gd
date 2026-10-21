@@ -63,9 +63,12 @@ func _run() -> void:
 	await _shot("combat")
 
 	# --- 3. take the package (real interactable) ----------------------------
+	# the fight scatters the player, so walk back into reach before pressing
+	await _approach(world.locations["package"], "package")
 	await _interact()
 	await _shot("package_taken")
 	_log("mission stage after package: %d" % mission.stage)
+	_log("player position at pickup: %s (package %s)" % [str(player.global_position.round()), str(world.locations["package"].round())])
 
 	# --- 4. steal a car and drive to the aviation compound -------------------
 	var car := _nearest_car()
@@ -100,6 +103,7 @@ func _run() -> void:
 
 	# --- 6. walk to the delivery point --------------------------------------
 	await _nav_to(world.locations["delivery"], 2.2, 240.0)
+	await _approach(world.locations["delivery"], "delivery")
 	await _interact()
 	await _shot("delivery")
 	_log("final mission stage: %d (done=%d)" % [mission.stage, Mission.Stage.DONE])
@@ -135,6 +139,17 @@ func _interact() -> void:
 func _press(action: String) -> void:
 	Input.action_press(action)
 
+## Walk straight at a target until it is within reach. The grid route is for
+## long trips across the district; a pickup is a short final approach, so it
+## is done directly and repeated if an obstacle blocked the way.
+func _approach(target: Vector3, label: String) -> void:
+	for attempt in 4:
+		var d := player.global_position.distance_to(target)
+		if d < 2.5:
+			return
+		_log("%s approach %d: distance %.1f from %s" % [label, attempt, d, str(target.round())])
+		await _walk_to(target, 1.5, 60.0)
+	_log("%s approach finished at %s (distance %.1f)" % [label, str(player.global_position.round()), player.global_position.distance_to(target)])
 func _release(action: String) -> void:
 	Input.action_release(action)
 

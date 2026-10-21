@@ -6,7 +6,7 @@
 - **How to run:**
   - `godot --path game` (editor/play from source), or
   - `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip` (packaged build), or
-  - `godot --headless --path game -- --test` (30 automated checks — 20 structural and 10 behavioural regression checks; expect `30/30 checks passed`).
+  - `godot --headless --path game -- --test` (32 automated checks — 20 structural and 12 behavioural regression checks; expect `32/32 checks passed`).
   - Provider art (18 models) is not in the git history: `bash game/tools/fetch_provider_assets.sh` re-fetches the raw sources, `blender --background --python game/tools/cleanup_provider_assets.py` rebuilds the processed game assets, and `godot --headless --editor --path game --quit` imports them.
 - **Shared brief and fixed constraints:** END_GOAL.md is the destination and outranks this goal. The engine is **locked**: Godot 4.7.1 stable, Forward+, native macOS export — do not migrate engines. No local AI inference. No secrets in the repository. No `main` merge without the owner. Tripo (browser) for small/bulk/secondary props, Customuse (MCP) for hero assets, **Meshy excluded**; existing Tripo credits are authorised, new purchases are not.
 - **Visual bar:** GTA VI in Singapore, highest attainable fidelity. The primary art direction is the generated concept board in `docs/concepts/` (on-foot, driving, helicopter). `docs/visual-references.json` is secondary location/fidelity evidence only. A concept board is **not** evidence that our build matches it — runtime pixels are.

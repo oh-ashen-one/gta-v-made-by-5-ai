@@ -3,7 +3,7 @@
 Status vocabulary follows END_GOAL §15 (VERIFY-01): `Pass`, `Fail`, `Implemented — not verified`, `Not started`, `Blocked`, `NOT TESTED`.
 Nothing here is claimed as verified unless a runtime artefact is linked. The wave-1 build is a **playable experimental slice**, not an accepted north star.
 
-- **Build under test:** `game/` (Godot 4.7.1 stable, Forward+, macOS export), branch `feature/wave-01-orchard-reach` (pushed to `origin/codex/minimax-wave-01`).
+- **Build under test:** `game/` (Godot 4.7.1 stable, Forward+, macOS export), branch `feature/wave-01-orchard-reach` (pushed to `origin/feature/wave-01-orchard-reach`).
 - **Reference machine:** Apple M3 Ultra, 256 GB RAM, macOS 27.0.1.
 - **Automated evidence:** `godot --headless --path game -- --test` (headless checks) and the automated playthrough capture packet in `game/captures/` plus `game/captures/capture_log.json`.
 
@@ -24,11 +24,11 @@ Nothing here is claimed as verified unless a runtime artefact is linked. The wav
 | ID | Status | Evidence / gap |
 | --- | --- | --- |
 | ART-01 | Partial | One palette module (`palette.gd`) shared by every surface; consistency plausible but not independently reviewed |
-| ART-02 Partial | Real world-space 3D geometry with collision throughout. Provider hero assets (sedan, helicopter, shophouse module, character) were generated in wave 1 through Customuse and are now integrated where staged (see `docs/asset-manifest.csv`); the character is still unrigged, and the coupe, van, props and Tripo set are still outstanding |
+| ART-02 Partial | Real world-space 3D geometry with collision throughout. All eighteen provider outputs (8 Customuse hero assets, 10 Tripo props) were cleaned in Blender and integrated where they fit — see `docs/asset-manifest.csv`; the character is still unrigged, and the hero assets are untextured against the concept board |
 | ART-03 | Partial | Arcades, columns, awnings, shutters, roof ridges, kerbs modelled; module count far below the 6–8 kit target |
 | ART-04 | Partial | Material separation by family (plaster, tile, concrete, glass, metal, foliage); no texture maps, so material response is flat |
 | ART-05 | Fail (partial rig) | Procedural limb swing, aim and reload poses; no skinning, no blending, no foot planting, no NPC rig variety |
-| ART-06 Partial | The generated sedan (with separated, spinning wheels) and the generated helicopter (with separated, spinning main and tail rotors) are integrated when staged; the coupe and van remain procedural. Cabin detail — glazing, seats, dash, right-hand steering wheel — comes from the generated model |
+| ART-06 Partial | The generated sedan, coupe, van and delivery helicopter (with separated, spinning wheels and main/tail rotors) and the generated shophouse module are integrated; the generated figure is used for the player and the vendors. Cabin detail — glazing, seats, dash, right-hand steering wheel — comes from the generated model |
 | ART-07 | Partial | One warm late-afternoon preset with sun, sky fill, fog, glow; no contact-shadow tuning pass |
 | ART-08 | Fail | Debug-free but visibly placeholder geometry; **this is the largest known gap** |
 
@@ -99,9 +99,9 @@ Nothing here is claimed as verified unless a runtime artefact is linked. The wav
 | --- | --- | --- |
 | TECH-01 | Pass (decision recorded) | Godot 4.7.1 stable chosen and locked in `waves/01/READINESS.md` with rejected alternatives |
 | TECH-02 | Pass (packaged build produced) | A universal macOS `.app`/`.zip` is exported from the macOS preset (`game/build/mac/OrchardReach.zip`, about 132 MB after the provider textures were reduced to 1K; it was 644 MB before that step). The build output is git-ignored and rebuilt locally. **Launching the packaged `.app` itself was not exercised in wave 1** - NOT TESTED |
-| ASSET-01 Partial | Tripo and Customuse were **not exposed in this CLI**, so requests were published in `ASSET_REQUESTS.json` and the manager executed four Customuse jobs; the results were cleaned in Blender (`game/tools/cleanup_provider_assets.py`) and integrated. Remaining Tripo props are still pending |
-| ASSET-02 | Fail (for now) | No external assets imported; procedural geometry only; no scale/UV/collision pipeline exercised on imported files |
-| ASSET-03 Pass | `docs/asset-manifest.csv` records every asset, including the four provider exports with provider terms, source URLs, SHA256 and the fact that they are **not** MIT-licensed and are not committed to the public repository |
+| ASSET-01 Partial | Tripo and Customuse were **not exposed in this CLI**, so all eighteen requests were published in `ASSET_REQUESTS.json` and executed by the manager through the connected browser/MCP surfaces (8 Customuse hero assets, 10 Tripo props). Every raw export was cleaned in Blender (`game/tools/cleanup_provider_assets.py`: scale, ground, pivot, part separation, wheel/rotor naming, decimate budgets) and integrated where it fits. **No further generation was paid for in wave 1** |
+| ASSET-02 | Partial | The provider GLBs are imported and cleaned, so the scale/pivot/part/collision pipeline is exercised; the character is still unrigged, textures are 1K reductions of the provider maps, and no LOD or material bake was produced |
+| ASSET-03 Pass | `docs/asset-manifest.csv` records all eighteen provider assets with provider terms, source URLs, SHA256 and the fact that they are **not** MIT-licensed and are not committed to the public repository; `docs/ASSET_RIGHTS.md` records the rights check that permits redistribution |
 | ASSET-04 | Pass | No GTA assets, no third-party models, no credentials; all wave-1 content is generated geometry and original text |
 | ASSET-05 | Partial | `.gitignore` excludes engine caches, the build output and the provider binaries (size, not rights - see `docs/ASSET_RIGHTS.md`); `game/tools/fetch_provider_assets.sh` plus `game/tools/cleanup_provider_assets.py` reproduce the asset set on any machine, and the capture PNGs are committed as evidence |
 | PERF-01 | Partial | Reference machine recorded (Apple M3 Ultra, 256 GB, macOS 27.0.1, Forward+, 1280x720, MSAA 2x); per-run frame metrics **not yet captured** |

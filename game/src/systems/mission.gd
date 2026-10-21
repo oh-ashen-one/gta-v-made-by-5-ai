@@ -45,9 +45,9 @@ func _spawn_delivery() -> void:
 
 func _spawn_hostiles() -> void:
 	var base: Vector3 = world.locations["package"]
-	# the guards hold the stall line, so the aisle in front of the counters stays
-	# walkable and the encounter reads as "guarding the market", not "blocking it"
-	var posts := [Vector3(-12.0, 0.0, -8.0), Vector3(12.0, 0.0, -8.0), Vector3(0.0, 0.0, -14.0)]
+	# the guards hold the stall line: they stand in front of the counters but
+	# never in the centre aisle, so the player can walk in and take the package
+	var posts := [Vector3(-16.0, 0.0, -9.0), Vector3(16.0, 0.0, -9.0), Vector3(6.0, 0.0, -12.0)]
 	for i in posts.size():
 		var h := NPC.new()
 		h.is_hostile = true
