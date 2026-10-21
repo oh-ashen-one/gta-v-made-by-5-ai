@@ -1,14 +1,14 @@
 # Singapore relay — wave 3 (DeepSeek V4.1 Flash Max through Devin)
 
-**HANDOFF COMPLETE** — reconciled 2026-10-21T18:55Z. Hard end 19:46:20 UTC; this file was finalised
-during the handoff-preparation window and contains no future-dated claims.
+**HANDOFF COMPLETE** — last reconciled 2026-10-21T19:44Z, i.e. after the 19:16:20 UTC handoff-preparation
+boundary and before the 19:46:20 UTC hard end. All implementation stopped at that boundary; this file
+and the evidence index were finalised afterwards. No future-dated claims.
 
 - Current owner: DeepSeek V4.1 Flash Max through Devin, managed by the original Codex relay chat.
 - Branch: `feature/wave-03-deepseek`; push this branch, never main.
 - Incoming Astra final source/evidence checkpoint: `658741b1040dbf7147f192e5b547c4b3dc48a9b5`; implementation checkpoint `be6a8aa98b47735eb5b043db0860a0946767d1cd`.
-- **Outgoing implementation checkpoint: `8ab210952ed330e0dcc7c16d28fda406e2924a04`**, followed by
-  evidence commits. **Push verified: `b162efd..f2dad16 feature/wave-03-deepseek`.** Later commits in
-  this session are pushed as they land.
+- **Outgoing implementation checkpoint: `e8a5535`** (last commit containing source and evidence; this
+  documentation commit follows it). **Push verified: `01c041a..e8a5535 feature/wave-03-deepseek`.**
 - Engine unchanged: **Godot 4.7.1.stable.official.a13da4feb**, Forward+, GDScript, native macOS, Metal. No migration.
 - Fixed four-hour window: 2026-10-21 15:46:20 UTC → 19:46:20 UTC; handoff prep from 19:16:20 UTC. Not reset or extended.
 
