@@ -236,6 +236,9 @@ func _physics_process(delta: float) -> void:
 		_forward = move_toward(_forward, 0.0, ACCEL * delta)
 		velocity.x = 0.0
 		velocity.z = 0.0
+		if is_zero_approx(_forward) and is_on_floor():
+			velocity = Vector3.ZERO
+			return
 	if not is_on_floor():
 		velocity.y -= 24.0 * delta
 	else:

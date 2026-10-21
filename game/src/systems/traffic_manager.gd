@@ -31,6 +31,8 @@ var _officer_pool: Array[NPC] = []
 const OFFICER_POOL_SIZE := 5
 var _officer_pool_ready := false
 var _officer_activation_us: Array[int] = []
+var _police_car_pool: Array[Car] = []
+const POLICE_CAR_POOL_SIZE := 2
 
 func setup(w: WorldBuilder, player: Node) -> void:
 	world = w
@@ -53,13 +55,27 @@ func _warm_officer_pool() -> void:
 		officer.is_police = true
 		officer.state = NPC.State.IDLE
 		officer.visible = false
+		officer.collision_layer = 0
+		officer.collision_mask = 0
 		officer.set_physics_process(false)
 		officer.set_process(false)
 		add_child(officer)
 		officer.global_position = Vector3(0.0, -80.0 - i * 3.0, 0.0)
 		_officer_pool.append(officer)
+	for i in POLICE_CAR_POOL_SIZE:
+		var pc := Car.new()
+		pc.kind = "police"
+		pc.visible = false
+		pc.has_ai = false
+		pc.collision_layer = 0
+		pc.collision_mask = 0
+		pc.set_physics_process(false)
+		pc.set_process(false)
+		add_child(pc)
+		pc.global_position = Vector3(12.0, -90.0 - i * 5.0, 0.0)
+		_police_car_pool.append(pc)
 	_officer_pool_ready = true
-	print("[profile] officer_pool_build_us=", Time.get_ticks_usec() - started, " size=", _officer_pool.size())
+	print("[profile] officer_pool_build_us=", Time.get_ticks_usec() - started, " size=", _officer_pool.size(), " police_cars=", _police_car_pool.size())
 
 ## Activate one pooled officer at `pos`. Returns null when the pool is empty, so
 ## the caller falls back to construction rather than silently spawning nothing.
@@ -73,9 +89,12 @@ func _take_officer(pos: Vector3) -> NPC:
 	if officer == null:
 		return null
 	officer.global_position = pos
+	officer.health = 100.0
 	officer.state = NPC.State.PURSUE
 	officer.idle_time = 0.0
 	officer.panic_time = 0.0
+	officer.collision_layer = 4
+	officer.collision_mask = 1 | 4
 	officer.visible = true
 	officer.set_physics_process(true)
 	officer.set_process(true)
@@ -89,10 +108,55 @@ func _recycle_officer(officer: NPC) -> void:
 		return
 	officer.state = NPC.State.IDLE
 	officer.visible = false
+	officer.collision_layer = 0
+	officer.collision_mask = 0
 	officer.set_physics_process(false)
 	officer.set_process(false)
 	officer.global_position = Vector3(0.0, -80.0 - _officer_pool.size() * 3.0, 0.0)
 	_officer_pool.append(officer)
+
+func _take_police_car(pos: Vector3, target: Vector3) -> Car:
+	var pc: Car = null
+	while not _police_car_pool.is_empty():
+		var candidate: Car = _police_car_pool.pop_back()
+		if is_instance_valid(candidate):
+			pc = candidate
+			break
+	if pc == null:
+		pc = Car.new()
+		pc.kind = "police"
+		add_child(pc)
+	pc.disabled = false
+	pc.health = 100.0
+	pc._forward = 0.0
+	pc.velocity = Vector3.ZERO
+	pc.global_position = pos
+	pc.collision_layer = 8
+	pc.collision_mask = 1 | 2 | 4 | 8
+	pc.visible = true
+	pc.has_ai = true
+	pc.max_speed = 23.0
+	pc.ai_target = target
+	pc.set_physics_process(true)
+	pc.set_process(true)
+	return pc
+
+func _recycle_police_car(pc: Car) -> void:
+	if not is_instance_valid(pc):
+		return
+	if pc.driver_is_player:
+		return
+	pc.has_ai = false
+	pc._forward = 0.0
+	pc.velocity = Vector3.ZERO
+	pc.visible = false
+	pc.collision_layer = 0
+	pc.collision_mask = 0
+	pc.set_physics_process(false)
+	pc.set_process(false)
+	pc.global_position = Vector3(12.0, -90.0 - _police_car_pool.size() * 5.0, 0.0)
+	if not _police_car_pool.has(pc):
+		_police_car_pool.append(pc)
 
 # ------------------------------------------------------------------- spawning
 func _spawn_parked() -> void:
@@ -103,6 +167,8 @@ func _spawn_parked() -> void:
 			kind = "van"
 		var car := Car.new()
 		car.kind = kind
+		if bool(spot.get("courtyard_only", false)):
+			car.set_meta("courtyard_only", true)
 		add_child(car)
 		car.global_position = spot["pos"]
 		car.rotation.y = float(spot.get("heading", 0.0))
@@ -113,6 +179,10 @@ func _spawn_parked() -> void:
 			add_child(npc)
 			npc.global_position = car.global_position
 			npc.visible = false          # seated in the car, not standing in it
+			npc.collision_layer = 0
+			npc.collision_mask = 0
+			npc.set_physics_process(false)
+			npc.set_process(false)
 			car.set_ai_driver(npc)
 		i += 1
 
@@ -326,8 +396,8 @@ func _update_police(delta: float) -> void:
 		if not is_instance_valid(responder):
 			police_cars.remove_at(index)
 		elif responder.disabled or (_player and responder.global_position.distance_to(_player.controlled_actor().global_position) > 200.0):
-			responder.queue_free()
 			police_cars.remove_at(index)
+			_recycle_police_car(responder)
 	for index in range(peds.size() - 1, -1, -1):
 		if not is_instance_valid(peds[index]):
 			peds.remove_at(index)
@@ -337,7 +407,7 @@ func _update_police(delta: float) -> void:
 		# responders stand down and are cleaned up when the search ends (LAW-05)
 		for pc in police_cars:
 			if is_instance_valid(pc):
-				pc.queue_free()
+				_recycle_police_car(pc)
 		police_cars.clear()
 		for index in range(peds.size() - 1, -1, -1):
 			var officer := peds[index]
@@ -397,17 +467,11 @@ func _update_police(delta: float) -> void:
 	# an airborne helicopter. Escaping line of sight can actually end a search.
 	if Game.mode == Game.MODE_CAR and police_cars.size() < mini(wanted, 2) and _police_timer <= 0.0:
 		_police_timer = 8.0
-		var pc := Car.new()
-		pc.kind = "police"
-		add_child(pc)
 		var actor: Node3D = _player.controlled_actor()
 		var nearest := _nearest_node(actor.global_position)
 		var candidates := _neighbours(nearest)
 		var spawn_node := nodes[candidates[_rng.randi_range(0, candidates.size() - 1)]] if not candidates.is_empty() else nodes[nearest]
-		pc.global_position = spawn_node + Vector3(4.0, 0.4, 4.0)
-		pc.has_ai = true
-		pc.max_speed = 23.0
-		pc.ai_target = actor.global_position
+		var pc := _take_police_car(spawn_node + Vector3(4.0, 0.4, 4.0), actor.global_position)
 		police_cars.append(pc)
 
 ## Twenty-eight-second cycle: ten seconds green and two amber for each
@@ -463,7 +527,7 @@ func wanted_reset() -> void:
 	Sfx.set_siren(false, 1.0)
 	for pc in police_cars:
 		if is_instance_valid(pc):
-			pc.queue_free()
+			_recycle_police_car(pc)
 	police_cars.clear()
 
 func count_peds() -> int:

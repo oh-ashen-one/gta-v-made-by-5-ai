@@ -1,0 +1,27 @@
+[
+  {
+    "file": "marina_bay_sands.glb",
+    "triangles": 4564,
+    "rights": "MIT original authored mesh"
+  },
+  {
+    "file": "supertree_grove.glb",
+    "triangles": 16512,
+    "rights": "MIT original authored mesh"
+  },
+  {
+    "file": "artscience_museum.glb",
+    "triangles": 1200,
+    "rights": "MIT original authored mesh"
+  },
+  {
+    "file": "merlion_landmark.glb",
+    "triangles": 1132,
+    "rights": "MIT original authored mesh"
+  },
+  {
+    "file": "singapore_flyer.glb",
+    "triangles": 5536,
+    "rights": "MIT original authored mesh"
+  }
+]

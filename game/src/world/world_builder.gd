@@ -57,10 +57,13 @@ func build(seed_value: int = 20261021) -> void:
 	_junctions()
 	_street_furniture()
 	_build_grid()
-	_block_plots()
 	var interior_data: Dictionary = InteriorDetail.build(_world_root, locations["safe_room"] - Vector3(0,.2,0))
 	locations["convenience_shop"] = interior_data["convenience_shop"]
 	locations["workshop"] = interior_data["workshop"]
+	_reserve(Vector3(28.0, 8.0, 32.0), InteriorDetail.SHOP + Vector3(0.0, 0.0, 6.0))
+	_reserve(Vector3(34.0, 8.0, 32.0), InteriorDetail.WORKSHOP + Vector3(0.0, 0.0, 5.0))
+	_reserve(Vector3(38.0, 8.0, 22.0), locations["safe_room"] + Vector3(-6.0, 0.0, 0.0))
+	_block_plots()
 	_waterfront_edge()
 	_background_city()
 	_perimeter()
@@ -183,12 +186,17 @@ func _roads() -> void:
 	# Kerb stones define the carriageway edge; without them the road and the
 	# pavement merged into one grey field at street level.
 	var kerb := Palette.mat_textured(Color(0.72, 0.70, 0.65), "concrete", Vector3.ONE, 0.88)
+	var yellow_line := Palette.mat(Color(0.92, 0.72, 0.16), 0.72)
 	for x in X_LINES:
 		for side: float in [-1.0, 1.0]:
 			_box(Vector3(0.30, 0.20, 760.0), Vector3(x + side * (ROAD_HALF + 0.15), 0.10, 0.0), kerb)
+			_box(Vector3(0.12, 0.02, 740.0), Vector3(x + side * (ROAD_HALF - 0.35), 0.075, 0.0), yellow_line)
+			_box(Vector3(0.12, 0.02, 740.0), Vector3(x + side * (ROAD_HALF - 0.58), 0.075, 0.0), yellow_line)
 	for z in Z_LINES:
 		for side: float in [-1.0, 1.0]:
 			_box(Vector3(760.0, 0.20, 0.30), Vector3(0.0, 0.10, z + side * (ROAD_HALF + 0.15)), kerb)
+			_box(Vector3(740.0, 0.02, 0.12), Vector3(0.0, 0.075, z + side * (ROAD_HALF - 0.35)), yellow_line)
+			_box(Vector3(740.0, 0.02, 0.12), Vector3(0.0, 0.075, z + side * (ROAD_HALF - 0.58)), yellow_line)
 	_medians()
 
 ## Planted central medians. The manager's review of the street still called the
@@ -259,6 +267,23 @@ func _kit_for(col: int, row: int) -> String:
 
 ## Heritage shophouses: narrow frontages, five-foot-way arcades, pitched roofs.
 func _shophouse_block(centre: Vector3) -> void:
+	# Northern waterfront blocks (row 0) host the Supertree Groves on their
+	# bayfront side while keeping heritage shophouse frontage along the -160 street.
+	if centre.z < -200.0:
+		_shophouse_row(centre + Vector3(BLOCK / 2.0 - 8.0, 0.0, BLOCK / 2.0 - 8.0), Vector3(-1, 0, 0), 13)
+		if centre.x > 0.0:
+			var grove_pos := Vector3(80.0, 0.16, -242.0)
+			_authored("supertree_grove.glb", grove_pos, 0.0, Vector3.ONE)
+			for tree_off in [Vector3(0.0, 0.0, 0.0), Vector3(-24.0, 0.0, 8.0), Vector3(24.0, 0.0, 6.0), Vector3(-16.0, 0.0, -18.0), Vector3(17.0, 0.0, -19.0)]:
+				_collision_box(Vector3(7.5, 10.0, 7.5), grove_pos + tree_off + Vector3(0.0, 5.0, 0.0))
+			_reserve(Vector3(112.0, 50.0, 96.0), grove_pos)
+			locations["supertree_grove"] = grove_pos
+		else:
+			var west_grove := Vector3(-228.0, 0.16, -236.0)
+			_authored("supertree_grove.glb", west_grove, deg_to_rad(18.0), Vector3(0.86, 0.94, 0.86))
+			_collision_box(Vector3(7.0, 10.0, 7.0), west_grove + Vector3(0.0, 5.0, 0.0))
+			_reserve(Vector3(100.0, 48.0, 90.0), west_grove)
+		return
 	# two street-facing rows plus a rear service lane
 	_shophouse_row(centre + Vector3(-BLOCK / 2.0 + 8.0, 0.0, -BLOCK / 2.0 + 8.0), Vector3(1, 0, 0), 13)
 	_shophouse_row(centre + Vector3(BLOCK / 2.0 - 8.0, 0.0, BLOCK / 2.0 - 8.0), Vector3(-1, 0, 0), 13)
@@ -388,6 +413,7 @@ func _hdb_block(centre: Vector3) -> void:
 					slab.rotation.y = PI * 0.5
 				AssetLibrary.tint(slab, Palette.HDB_TINTS[block_key])
 				_asset_collision(slab)
+				_reserve(size + Vector3(16.0, 0.0, 16.0), pos)
 				used_provider = true
 		if not used_provider:
 			_solid_box(size, pos + Vector3(0.0, 3.6 + h * 0.5, 0.0), Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(5.0, 7.0, 3.0), 0.85))
@@ -415,6 +441,9 @@ func _hdb_block(centre: Vector3) -> void:
 			_box(size + Vector3(0.0, 0.6, 0.0), pos + Vector3(0.0, 3.6 + h + 0.3, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
 			_cyl(Vector3(2.0, 2.4, 2.0), pos + Vector3(size.x * 0.25, 3.6 + h + 1.8, 0.0), Palette.mat(Palette.METAL, 0.7, 0.3))
 	# planted courtyard with a community table
+	_reserve(Vector3(106.0, 10.0, 44.0), centre + Vector3(-16.0, 0.0, -30.0))
+	_reserve(Vector3(52.0, 6.0, 44.0), centre + Vector3(0.0, 0.0, 4.0))
+	_reserve(Vector3(34.0, 14.0, 28.0), centre + Vector3(34.0, 0.0, 50.0))
 	_solid_box(Vector3(40.0, 0.3, 34.0), centre + Vector3(0.0, 0.15, 2.0), Palette.mat(Color(0.32, 0.40, 0.26), 0.95))
 	for i: int in 8:
 		if centre.x < -200 and centre.z > -100 and centre.z < 0 and i == 2:
@@ -435,14 +464,20 @@ func _hdb_block(centre: Vector3) -> void:
 
 func _safe_room(pos: Vector3) -> void:
 	_solid_box(Vector3(14.0, 0.2, 10.0), pos + Vector3(0.0, 0.1, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
-	for side: float in [-1.0, 1.0]:
-		_solid_box(Vector3(14.0, 3.4, 0.4), pos + Vector3(0.0, 1.7, side * 5.0), Palette.mat(Palette.PLASTER, 0.9))
+	# South wall (+Z) is full height; North wall (-Z) and East wall (+X) have a
+	# panoramic verandah window on the north-east corner so the starting camera
+	# immediately looks out onto the HDB void deck, tropical canopy, Supertree
+	# Grove and Marina Bay Sands while preserving the notice board on the west half.
+	_solid_box(Vector3(14.0, 3.4, 0.4), pos + Vector3(0.0, 1.7, 5.0), Palette.mat(Palette.PLASTER, 0.9))
+	_solid_box(Vector3(8.8, 3.4, 0.4), pos + Vector3(-2.6, 1.7, -5.0), Palette.mat(Palette.PLASTER, 0.9))
+	_solid_box(Vector3(5.2, 0.95, 0.4), pos + Vector3(4.4, 0.48, -5.0), Palette.mat(Palette.PLASTER, 0.9))
 	# doorway on the -X side, facing the street, so the room can be entered and left
 	_solid_box(Vector3(0.4, 3.4, 2.5), pos + Vector3(-7.0, 1.7, -3.75), Palette.mat(Palette.PLASTER, 0.9))
 	_solid_box(Vector3(0.4, 3.4, 2.5), pos + Vector3(-7.0, 1.7, 3.75), Palette.mat(Palette.PLASTER, 0.9))
 	_box(Vector3(0.5, 0.4, 3.4), pos + Vector3(-7.0, 3.5, 0.0), Palette.mat_textured(Palette.METAL, "metal", Vector3(1.0, 1.0, 2.0), 0.5, 0.5))
 	_solid_box(Vector3(14.0, 0.3, 10.0), pos + Vector3(0.0, 3.5, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
-	_solid_box(Vector3(0.4, 3.4, 10.0), pos + Vector3(7.0, 1.7, 0.0), Palette.mat(Palette.PLASTER, 0.9))
+	_solid_box(Vector3(0.4, 3.4, 5.2), pos + Vector3(7.0, 1.7, 2.4), Palette.mat(Palette.PLASTER, 0.9))
+	_solid_box(Vector3(0.4, 0.95, 4.8), pos + Vector3(7.0, 0.48, -2.6), Palette.mat(Palette.PLASTER, 0.9))
 	var lamp := OmniLight3D.new()
 	lamp.position = pos + Vector3(0.0, 3.1, 0.0)
 	lamp.light_energy = 1.6
@@ -546,22 +581,32 @@ func _hawker_block(centre: Vector3) -> void:
 	# walked to and picked up without climbing over the counter
 	locations["package"] = centre + Vector3(-5.0, 0.25, -8.0)
 
-## Modern waterfront edge: towers, promenade, skyline.
+## Modern waterfront edge: Singapore's iconic waterfront landmarks (WORLD-03).
 func _waterfront_block(centre: Vector3) -> void:
-	for i: int in 2:
-		var pos := centre + Vector3(-34.0 + i * 68.0, 0.0, -30.0)
-		var h := 70.0 + i * 18.0
-		# Curtain-wall grid instead of a bare glass box: the skyline is the
-		# backdrop for every street view and was reading as flat blue slabs.
-		_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), Palette.facade("office"))
-		for f in int(h / 4.0):
-			_box(Vector3(26.6, 0.35, 26.6), pos + Vector3(0.0, 4.0 + f * 4.0, 0.0), Palette.mat(Palette.METAL, 0.4, 0.7))
-		_box(Vector3(28.0, 0.7, 28.0), pos + Vector3(0.0, h + 0.35, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.8))
-	# low podium with a skywalk
-	_solid_box(Vector3(60.0, 5.0, 16.0), centre + Vector3(0.0, 2.5, 24.0), Palette.mat(Palette.CONCRETE, 0.8))
-	_box(Vector3(24.0, 0.4, 3.0), centre + Vector3(0.0, 5.3, 14.0), Palette.mat(Palette.METAL, 0.4, 0.6))
-	for i: int in 6:
-		_tree(centre + Vector3(-40.0 + i * 16.0, 0.0, 40.0), 1.0)
+	if centre.x < 0.0:
+		# Marina Bay Sands (3 splayed/tapered towers + cantilevered boat SkyPark)
+		var mbs_pos := Vector3(-82.0, 0.16, -256.0)
+		_authored("marina_bay_sands.glb", mbs_pos, 0.0, Vector3(0.92, 1.0, 0.92))
+		_collision_box(Vector3(96.0, 12.0, 36.0), mbs_pos + Vector3(0.0, 6.0, 0.0))
+		_reserve(Vector3(128.0, 112.0, 124.0), centre)
+		locations["marina_bay_sands"] = mbs_pos
+		# Lotus-shaped ArtScience Museum on the bayfront apron in front of MBS
+		var asm_pos := Vector3(-42.0, 0.16, -308.0)
+		_authored("artscience_museum.glb", asm_pos, 0.0, Vector3(0.95, 0.95, 0.95))
+		_collision_box(Vector3(24.0, 8.0, 24.0), asm_pos + Vector3(0.0, 4.0, 0.0))
+		_reserve(Vector3(36.0, 32.0, 36.0), asm_pos)
+		locations["artscience_museum"] = asm_pos
+		for i: int in 6:
+			_tree(centre + Vector3(-48.0 + i * 18.0, 0.0, 44.0), 1.05)
+	else:
+		# Singapore Flyer giant observation wheel on the eastern waterfront
+		var flyer_pos := Vector3(236.0, 0.16, -256.0)
+		_authored("singapore_flyer.glb", flyer_pos, deg_to_rad(-18.0), Vector3.ONE)
+		_collision_box(Vector3(44.0, 9.0, 28.0), flyer_pos + Vector3(0.0, 4.5, 0.0), deg_to_rad(-18.0))
+		_reserve(Vector3(124.0, 114.0, 116.0), centre)
+		locations["singapore_flyer"] = flyer_pos
+		for i: int in 6:
+			_tree(centre + Vector3(-44.0 + i * 18.0, 0.0, 42.0), 1.0)
 
 ## Aviation compound: hangar, helipads, perimeter fence.
 func _aviation_block(centre: Vector3) -> void:
@@ -806,7 +851,7 @@ func _plot_parking(p: Vector3, rect: Rect2) -> void:
 		if _is_free(Rect2(p.x - 14.0, p.z + row_z - 2.4, 30.0, 5.0)):
 			for bay2 in 2:
 				var spot := p + Vector3(-9.0 + bay2 * 15.0 + _rng.randf_range(-0.6, 0.6), 0.14, row_z)
-				parked_spots.append({"pos": spot, "heading": 0.0 if side > 0 else PI, "kind": ["sedan", "coupe", "van"][(int(absf(p.x)) + bay2) % 3]})
+				parked_spots.append({"pos": spot, "heading": 0.0 if side > 0 else PI, "kind": ["sedan", "coupe", "van"][(int(absf(p.x)) + bay2) % 3], "courtyard_only": true})
 	_box(Vector3(0.5, 2.6, 0.5), p + Vector3(19.0, 1.3, -19.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
 	_box(Vector3(1.4, 0.7, 0.5), p + Vector3(19.0, 2.9, -19.0), Palette.mat(Color(0.14, 0.20, 0.36), 0.7))
 
@@ -868,6 +913,12 @@ func _waterfront_edge() -> void:
 		_cyl(Vector3(0.12, 1.1, 0.12), Vector3(-340.0 + i * 15.0, 0.85, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_box(Vector3(700.0, 0.08, 0.08), Vector3(0.0, 1.35, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_helipad(Vector3(locations["helipad_secondary"].x, 0.0, locations["helipad_secondary"].z), 11.0)
+	# The Merlion pier jutting into the bay between the waterfront helipad and delivery zone
+	var merlion_pos := Vector3(45.0, 0.30, -345.0)
+	_solid_box(Vector3(14.0, 0.32, 14.0), Vector3(45.0, 0.15, -347.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9))
+	_authored("merlion_landmark.glb", merlion_pos, 0.0, Vector3.ONE)
+	_collision_box(Vector3(8.5, 3.5, 8.5), merlion_pos + Vector3(0.0, 1.75, 0.0))
+	locations["merlion"] = merlion_pos
 	for i: int in 8:
 		_tree(Vector3(-300.0 + i * 85.0, 0.0, PROMENADE_Z + 6.0), 1.0)
 	for i: int in 6:
@@ -969,6 +1020,8 @@ func _perimeter() -> void:
 	# Waterfront rails have deliberate pad-side pedestrian access, but stop a
 	# normal sprint from falling into the bay.
 	for i in 46:
+		if i in [25, 26]:
+			continue
 		var p:=Vector3(-337.5+i*15,.3,-348.5)
 		_authored("boundary_railing.glb",p,0,Vector3(1,.55,1))
 		_collision_box(Vector3(15,1.35,.25),p+Vector3(0,.68,0))
@@ -997,21 +1050,15 @@ func _build_lane_graph() -> void:
 	var i := 0
 	for x in X_LINES:
 		for side: float in [-1.0, 1.0]:
-			for j: int in 5:
-				var px: float = x + side * (SIDEWALK - 2.0)
-				var pz := -240.0 + j * 120.0 + 40.0
-				if absf(pz) > 300.0:
-					continue
-				parked_spots.append({"pos": Vector3(px, 0.3, pz), "heading": 0.0, "kind": ["sedan", "coupe", "van"][i % 3]})
+			var heading := 0.0 if side < 0.0 else PI
+			for pz: float in [-218.0, -118.0, -64.0, 56.0, 182.0]:
+				parked_spots.append({"pos": Vector3(x + side * (SIDEWALK - 2.0), 0.3, pz), "heading": heading, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
 	for z in Z_LINES:
 		for side: float in [-1.0, 1.0]:
-			for j: int in 5:
-				var pz2: float = z + side * (SIDEWALK - 2.0)
-				var px2 := -240.0 + j * 120.0 + 60.0
-				if absf(px2) > 300.0:
-					continue
-				parked_spots.append({"pos": Vector3(px2, 0.3, pz2), "heading": PI * 0.5, "kind": ["sedan", "coupe", "van"][i % 3]})
+			var heading2 := -PI * 0.5 if side < 0.0 else PI * 0.5
+			for px2: float in [-220.0, -104.0, 56.0, 216.0]:
+				parked_spots.append({"pos": Vector3(px2, 0.3, z + side * (SIDEWALK - 2.0)), "heading": heading2, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
 
 # ------------------------------------------------------------------- props
@@ -1151,17 +1198,6 @@ func _street_furniture() -> void:
 	var dark := Palette.mat_textured(Palette.METAL_DARK, "metal", Vector3(1.0, 1.0, 1.0), 0.6, 0.4)
 	for x in X_LINES:
 		for z in Z_LINES:
-			# overhead utility cables across the carriageway
-			for k: int in 3:
-				var cable_z := z - 30.0 + k * 22.0
-				var cable := MeshInstance3D.new()
-				var cb := BoxMesh.new()
-				cb.size = Vector3(22.0, 0.05, 0.05)
-				cable.mesh = cb
-				cable.material_override = dark
-				cable.position = Vector3(x, 7.4, cable_z)
-				cable.rotation_degrees = Vector3(0.0, 0.0, 1.5)
-				_world_root.add_child(cable)
 			# kerbside fittings
 			for side: float in [-1.0, 1.0]:
 				var kerb := Vector3(x + side * (SIDEWALK - 1.0), 0.0, z + 34.0)

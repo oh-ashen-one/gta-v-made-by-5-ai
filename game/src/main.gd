@@ -40,7 +40,7 @@ func _ready() -> void:
 	player.name = "Player"
 	add_child(player)
 	player.global_position = world.locations["safe_room"] + Vector3(0.0, 0.4, 0.0)
-	player.yaw = deg_to_rad(180.0)
+	player.yaw = deg_to_rad(-52.0)
 	player.rotation.y = player.yaw
 	Game.mark_safe_position(player.global_position, player.yaw)
 

@@ -131,6 +131,10 @@ func assign_lane(lanes: Array, lane_id: int) -> void:
 
 func become_displaced_pedestrian(pos: Vector3) -> void:
 	global_position = pos
+	collision_layer = 4
+	collision_mask = 1 | 4
+	set_physics_process(true)
+	set_process(true)
 	state = State.FLEE
 	panic_time = 6.0
 	health = maxf(health, 60.0)

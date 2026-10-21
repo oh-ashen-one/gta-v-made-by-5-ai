@@ -279,7 +279,24 @@ def workshop():
         torus("HangingSpannerRing",(x,2.48,-5.53),.09,.023,"steel",True)
         box("SpannerJaw",(x,1.78,-5.52),(.12,.09,.06),"steel",.02)
     for i in range(5):bottle("WorkshopOil",-2.5+i*.32,1.0,-4.6,["red","gold","blue"][i%3])
-    shelving("WorkshopPartsRack",-7.7,-3.8,3.0,1.85,.8)
+    shelving("WorkshopPartsRack",-7.7,-3.8,3.0,1.85,.8,stock=False)
+    for tier,y in enumerate([.17,.63,1.09,1.55]):
+        for j in range(6):
+            xx=-7.7-1.2+j*.48
+            if tier==0:
+                cylinder("WorkshopOilDrum",(xx,y+.21,-3.8),.14,.36,["blue","darksteel","red"][j%3],16)
+                cylinder("WorkshopDrumCap",(xx,y+.40,-3.8),.035,.025,"steel",10)
+            elif tier==1:
+                box("CarBattery",(xx,y+.15,-3.8),(.28,.22,.20),"darksteel",.018)
+                box("BatteryTop",(xx,y+.27,-3.8),(.26,.025,.18),["red","blue"][j%2],.006)
+                for dx in [-.08,.08]:cylinder("BatteryPost",(xx+dx,y+.295,-3.8),.016,.03,"steel",8)
+            elif tier==2:
+                cylinder("BrakeRotor",(xx,y+.065,-3.8),.15,.04,"steel",18)
+                cylinder("RotorHub",(xx,y+.10,-3.8),.08,.05,"darksteel",14)
+                cylinder("OilFilterCan",(xx+.12,y+.12,-3.66),.055,.16,["gold","blue","red"][j%3],12)
+            else:
+                box("PartsBin",(xx,y+.13,-3.8),(.32,.19,.42),["blue","red","gold"][j%3],.016)
+                box("PartsBinLabel",(xx,y+.13,-3.585),(.18,.07,.012),"white",.003)
     cabinet("WorkshopLockers",7.5,-5.2,3.0,2.25)
     box("ToolChest",(5.1,.7,-3.2),(1.5,1.1,.74),"red",.06)
     for j in range(5):

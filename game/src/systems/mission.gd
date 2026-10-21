@@ -166,6 +166,7 @@ func _nearest_usable_car_position() -> Vector3:
 	var position: Vector3 = world.locations["marked_car"]
 	for vehicle in get_tree().get_nodes_in_group("vehicles"):
 		if not vehicle is Car or vehicle.disabled or vehicle.driver_is_player or vehicle.has_ai: continue
+		if vehicle.get_meta("courtyard_only", false): continue
 		var distance: float = player.global_position.distance_to(vehicle.global_position)
 		if distance < nearest:
 			nearest = distance
@@ -253,7 +254,7 @@ func restart() -> void:
 			h.queue_free()
 	_hostiles.clear()
 	_spawn_hostiles()
-	player.respawn_at(world.locations["safe_room"] + Vector3(0.0, 0.4, 0.0), PI)
+	player.respawn_at(world.locations["safe_room"] + Vector3(0.0, 0.4, 0.0), deg_to_rad(-52.0))
 	Game.health = Game.MAX_HEALTH
 	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
 	Game.wanted_heat = 0.0

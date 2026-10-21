@@ -25,8 +25,8 @@
   },
   {
     "asset": "interior_workshop",
-    "authoring_objects": 367,
-    "triangles": 63500,
+    "authoring_objects": 355,
+    "triangles": 62476,
     "dimensions_blender_xyz": [
       20.600000381469727,
       13.349999904632568,

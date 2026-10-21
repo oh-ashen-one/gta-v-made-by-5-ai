@@ -70,7 +70,18 @@ Free roam remains available before and after the mission. The mission proves int
 4. **Modern waterfront/commercial edge:** contemporary towers, promenade or canal edge, bridge/crossing, a more open road, and a skyline viewpoint. Low-rise streets should reveal the taller skyline across water.
 5. **Fictional aviation/service compound:** connected to the road network, accessible on foot, with plausible boarding space and a usable landing pad.
 
-**WORLD-03 — Recognition through urban form.** The setting must read without a title card through several independent cues: shophouse massing/arcades, public-housing/void-deck language, hawker layout, broad-canopy tropical planting, sheltered pedestrian infrastructure, left-hand road design, and waterfront skyline. Add block numbers, drains, kerbs, service doors, condensers, transit-inspired entrances, bus shelters, and local road vocabulary purposefully. Use English-first useful signage and context-appropriate reviewed translations, never decorative generated gibberish. No copied landmark is required to carry the setting.
+**WORLD-03 — Recognition through urban form.** The setting must read without a title card through several independent cues: shophouse massing/arcades, public-housing/void-deck language, hawker layout, broad-canopy tropical planting, sheltered pedestrian infrastructure, left-hand road design, and waterfront skyline. Add block numbers, drains, kerbs, service doors, condensers, transit-inspired entrances, bus shelters, and local road vocabulary purposefully. Use English-first useful signage and context-appropriate reviewed translations, never decorative generated gibberish. The owner clarified on 2026-10-21 that the most recognizable Singapore waterfront landmarks are required as well as these everyday urban cues.
+
+
+**WORLD-03 opening-view acceptance — immediate Singapore identity (owner clarification, 2026-10-21).** From the normal starting camera and the first minute of walking/driving, the setting must be unmistakably Singapore without a title card, explanatory caption, or place-name label doing the work. Compose the opening route around recognizable Singapore landmarks plus everyday streetscape: shophouses and sheltered five-foot ways, HDB-style housing and void decks, an inhabited hawker centre, tropical canopy/planting, and left-hand traffic with appropriate street details. At least one primary landmark should be clearly readable from an early natural public viewpoint, with Marina Bay Sands and the Supertree Grove established along the opening waterfront sightlines. Validate actual normal-gameplay opening frames and a short continuous traversal, rather than only a favorable aerial/free-camera still. A generic skyscraper city with a few labels does not pass this requirement.
+
+**WORLD-03 landmark clarification — owner-required Singapore skyline (2026-10-21).** The actual rendered game must visibly include:
+
+- **Marina Bay Sands:** the recognizable three-tower composition supporting the long, boat-shaped rooftop SkyPark. The owner's “three things” building and “boat on top” refer to this same landmark.
+- **Gardens by the Bay / Supertree Grove:** a recognizable cluster of tall branching, planted structures with broad canopy crowns. The owner's “electric tree forest” refers to this landmark; its lighting should read appropriately under the chosen game time of day.
+- **Supporting waterfront landmarks:** the Merlion, the lotus-shaped ArtScience Museum, and the Singapore Flyer observation wheel, with distinctive silhouettes and plausible visual relationships to the bay.
+
+Integrate these into the game's original district and waterfront composition, with the main two readable from ground-level viewpoints and the helicopter route. Record which structures are reachable, have collision, or are distant scenery under WORLD-01/WORLD-06. Preserve the approved quality target and the fixed relay timeboxes. Use actual reference views to validate silhouette, proportions, placement and materials. Original modeled geometry and Blender/engine authoring are allowed; external generation remains subject to the existing Tripo-browser/Customuse-MCP routing and credit limits. Update the requirements ledger and outgoing NEXT_GOAL with each landmark's implemented/verified/missing state. Acceptance evidence must include actual in-game street/waterfront and aerial captures; concept art or a label on a generic tower does not demonstrate implementation.
 
 **WORLD-04 — Useful connected networks.** Target three connected driving loops, alternative routes between major destinations, several intersections, rear lanes, sidewalks, crossings, and pedestrian shortcuts. Test actual driving times and camera visibility. Main roads accommodate traffic; tighter streets slow it intentionally. Aerial views show the same physical layout, not a separate background map.
 
@@ -107,7 +118,33 @@ Use these primary references to understand form and life; they do not grant perm
 
 **ART-08 — No final placeholders.** Grayboxes, mannequins, debug labels, missing materials, close-range flat stand-ins, temporary audio, and untextured primitives may appear in development, but must be tracked and replaced before acceptance. Review side streets, interiors, rooftops, and reverse angles—not only the recording route. Closed modeled buildings are legitimate scope; roofless single-plane cardboard visible from the air is not.
 
-### 3.1 Visual reference board — mandatory for every builder and critic
+### 3.1 Generated concepts of OUR game — primary visual targets
+
+**Owner clarification, 2026-10-21:** reference images must show what this original game should look like in Singapore. The following three images were generated specifically for this project with the built-in image-generation tool. They are the primary working art-direction targets. Existing GTA VI screenshots and Singapore photos in §3.2 are secondary source comparisons, not substitutes for these concepts.
+
+**These are AI-generated concept images, not captures of the current game, not proof of implementation, and not evidence of achievable frame rates.** Match their composition, modeled detail, light, material language, populated streets and Singapore identity in actual playable builds. Keep the required mechanics and bounded map scope. Do not turn implied distant scenery into a new obligation to build an entire city. Generated signs, brands, traffic details and small geometrical artifacts are not production specifications; implementation still uses original assets/signage, correct left-hand traffic, robust collision and coherent vehicle anatomy.
+
+#### CONCEPT-01 — On-foot street and hawker hub
+
+![Generated concept of our Singapore game: third-person on-foot street and hawker hub](docs/concepts/singapore-on-foot.png)
+
+Primary comparison: a human-scale third-person route, modeled shophouse arcades on one side, an inhabited hawker hall on the other, detailed kerbs/drains, broad rain trees, residential blocks and distant waterfront towers. Match the warm light, dimensional surfaces, depth and density without obstructing player movement.
+
+#### CONCEPT-02 — Driving through the same district
+
+![Generated concept of our Singapore game: third-person driving beside the canal](docs/concepts/singapore-driving.png)
+
+Primary comparison: a detailed player-controlled sedan in a plausible chase-camera view, left-hand traffic, street life, canal railings, a bridge and consistent building/material vocabulary. Vehicle cabin, wheels, paint, lights and road interaction must survive close play; a still image cannot certify controls or physics.
+
+#### CONCEPT-03 — Helicopter flight above the connected world
+
+![Generated concept of our Singapore game: helicopter over the connected district](docs/concepts/singapore-helicopter.png)
+
+Primary comparison: a recognizable modeled helicopter over the same shophouse/hawker/HDB-inspired district, complete roofs and back walls, connected roads and waterways, a visible landing pad, and coherent skyline layering. Landing and returning to on-foot play remain required.
+
+**Generation record:** [exact prompts and method](docs/concepts/prompts.json). All three use a shared late-afternoon palette and the on-foot concept as the supporting visual reference for the driving/flight images. Their generated geometry is art direction, not an exact map blueprint. Critics compare current build captures at these three gameplay-camera scales and carry visible mismatches into the next wave. Do not claim a one-to-one fidelity match from a successful build or a textual verdict.
+
+### 3.2 Secondary source references — fidelity and location evidence
 
 **Owner direction: “GTA 6, but in Singapore. Highest quality possible, one-to-one remake.”** The quality-match target is explicit: pursue the fidelity of the GTA VI images while building the original Singapore setting and connected experience specified here. The reference images are source material, **not screenshots of this project**. The bounded district and required gameplay remain the scope; do not silently expand to the full content or geography of GTA VI.
 

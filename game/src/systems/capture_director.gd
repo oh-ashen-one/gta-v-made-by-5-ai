@@ -824,6 +824,7 @@ func _nearest_parked_car() -> Car:
 	var distance := INF
 	for vehicle in get_tree().get_nodes_in_group("vehicles"):
 		if not vehicle is Car or vehicle.disabled or vehicle.has_ai or vehicle.driver_is_player: continue
+		if vehicle.get_meta("courtyard_only", false): continue
 		var candidate := _ground_distance(player.global_position, vehicle.global_position)
 		if candidate < distance:
 			distance = candidate
@@ -851,7 +852,16 @@ func _shoot_at(hostile: NPC) -> void:
 func _drive_route(target: Vector3, timeout: float) -> void:
 	if not player.current_vehicle is Car: return
 	var deadline := _elapsed() + timeout
-	for index in _grid_path(_nearest_node(player.current_vehicle.global_position), _nearest_node(target)):
+	var route := _grid_path(_nearest_node(player.current_vehicle.global_position), _nearest_node(target))
+	if route.size() >= 2:
+		var car_pos := player.current_vehicle.global_position
+		var p0 := world.traffic_nodes[route[0]]
+		var p1 := world.traffic_nodes[route[1]]
+		var to_p0 := Vector2(p0.x - car_pos.x, p0.z - car_pos.z)
+		var seg := Vector2(p1.x - p0.x, p1.z - p0.z)
+		if to_p0.length() > 4.0 and seg.length() > 4.0 and to_p0.normalized().dot(seg.normalized()) < -0.35:
+			route.remove_at(0)
+	for index in route:
 		if _finished or _interrupt_free_action() or _elapsed() >= deadline: return
 		await _drive_to(world.traffic_nodes[index], 7.0, minf(35.0, deadline - _elapsed()))
 		if mission.stage == Mission.Stage.TO_HELI: return
