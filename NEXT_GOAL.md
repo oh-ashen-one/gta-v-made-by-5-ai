@@ -7,7 +7,7 @@
   - `godot --path game` (editor/play from source), or
   - `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip` (packaged build), or
   - `godot --headless --path game -- --test` (33 automated checks — 20 structural and 13 behavioural regression checks; expect `33/33 checks passed`).
-  - Provider art (18 models) is not in the git history: `bash game/tools/fetch_provider_assets.sh` re-fetches the raw sources, `blender --background --python game/tools/cleanup_provider_assets.py` rebuilds the processed game assets, and `godot --headless --editor --path game --quit` imports them.
+  - Provider art (18 models) is not in the git history: `bash game/tools/fetch_provider_assets.sh` re-fetches the **eight Customuse** sources automatically (SHA256-verified) and prints the **ten Tripo** studio links and checksums for a **manual browser export** — the Tripo half is not an automatic fresh-clone recovery. `blender --background --python game/tools/cleanup_provider_assets.py` rebuilds the processed game assets, and `godot --headless --editor --path game --quit` imports them. The manager also carries the ignored processed provider folder into this checkout, so the assets are present here even without a re-fetch.
 - **Shared brief and fixed constraints:** END_GOAL.md is the destination and outranks this goal. The engine is **locked**: Godot 4.7.1 stable, Forward+, native macOS export — do not migrate engines. No local AI inference. No secrets in the repository. No `main` merge without the owner. Tripo (browser) for small/bulk/secondary props, Customuse (MCP) for hero assets, **Meshy excluded**; existing Tripo credits are authorised, new purchases are not.
 - **Visual bar:** GTA VI in Singapore, highest attainable fidelity. The primary art direction is the generated concept board in `docs/concepts/` (on-foot, driving, helicopter). `docs/visual-references.json` is secondary location/fidelity evidence only. A concept board is **not** evidence that our build matches it — runtime pixels are.
 
@@ -40,14 +40,21 @@
    - Evidence: wave 1's critic pass was performed by subagents of the *same* MiniMax model (this CLI's profile exposes no Opus/Fable despite the alias names). VERIFY-02 independence is therefore only Partial.
    - Suggested approach: run the wave-2 review from the Codex chat with a genuinely different model, blind A/B on our captures versus the concept board, and record the reviewer identity honestly.
 
+6. **Finish the asset clearance before anything is published.**
+   - Evidence: `docs/ASSET_RIGHTS.md` — the terms are fine, but only the sedan and the helicopter were rendered and inspected. The character shows a visible sneaker mark, the van and the coupe show badge artifacts, and **thirteen outputs were never rendered**. The Tripo per-job labels (any "personal use only" flag) were not checked.
+   - Suggested approach: render each remaining output (the processed GLBs are in the provider folder the manager carries over), inspect every one for marks and insignia, strip or replace the three known-marked assets, check the Tripo job labels, and record the result per asset in `docs/asset-manifest.csv` and `docs/ASSET_RIGHTS.md`.
+   - Observable success: every row of the asset-rights table has a per-asset verdict, and the "public redistribution confirmed?" column is a fact rather than a plan. Until then, keep the provider binaries out of the public repository and out of any release asset.
+
 ## Preserve
 
 - `game/src/core/game_state.gd` as the single authority for health, mode, wanted level, mission stage and save/load; `game/src/core/events.gd` as the only cross-system bus (SYSTEM-01).
 - The `Game` / `Events` autoload contract and the `ASSET_REQUESTS.json` request schema.
 - The frame-safe input path in `Player._consume_press()`: the player reacts to the **held** state of an action once per press, not to `Input.is_action_just_pressed()`. A press injected after the player's turn in a frame is otherwise lost, which silently broke the scripted playthrough. Do not go back to `is_action_just_pressed` for the polled actions (fire, reload, weapon swap, interact).
 - Nearest-target interaction: vehicles and mission interactables compete on distance, each with its own reach (`INTERACT_RANGE` 5 m, `PICKUP_RANGE` 7.5 m).
+- The vehicle yaw convention: a node that faces -Z turns **left** when its yaw **increases**. The car and the helicopter both got this sign wrong for the whole of wave 1 (pressing left steered right), which is fixed and covered by a check. Do not reintroduce `rotation.y -= turn` in the vehicle controllers.
+- Health regeneration: 9 health per second after five seconds out of fire, reset by any hit.
 - The transition table and its invariants in `docs/TRANSITION_TABLE.md`.
-- The rights position in `docs/ASSET_RIGHTS.md`: provider terms permit redistribution, and every asset is reproducible from `game/tools/fetch_provider_assets.sh`.
+- The rights position in `docs/ASSET_RIGHTS.md`: the **terms** permit use and redistribution, but the **output clearance is per asset and still incomplete** — only the sedan and the helicopter were rendered and found free of marks, the character shows a sneaker mark, the van and the coupe show badge artifacts, and thirteen outputs were never rendered. Do not publish the provider binaries until they have been rendered, inspected and the marks stripped. The eight Customuse sources re-fetch automatically with `game/tools/fetch_provider_assets.sh`; the ten Tripo exports need a **manual browser step** (the script records the links and checksums), and the manager carries the processed provider folder into this checkout.
 - The left-hand-traffic lane graph (`traffic_manager.gd`, 25 junctions, left-lane offset) and the arcade vehicle model — both work and are cheap to keep.
 - The mission "Harbour Relay" spine: safe room → hawker package → theft → drive → police → helicopter → landing → delivery, and its checkpoint semantics.
 - Existing capture packet, ledger and asset manifest formats.

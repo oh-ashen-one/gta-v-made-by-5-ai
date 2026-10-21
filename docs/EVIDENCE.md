@@ -8,7 +8,7 @@ Everything in this document was produced by the wave-1 builder on the reference 
 godot --headless --path game -- --test
 ```
 
-33 checks, all PASS at the handoff commit: 20 structural (world built, mesh count, junction graph, pedestrian lanes, player + camera, traffic and pedestrian population, mission running, helicopter present, HUD present, save/load round trip, mission package interactable, vehicle counts, NPC counts) and 13 behavioural regression checks added after the independent review:
+34 checks, all PASS at the handoff commit: 20 structural (world built, mesh count, junction graph, pedestrian lanes, player + camera, traffic and pedestrian population, mission running, helicopter present, HUD present, save/load round trip, mission package interactable, vehicle counts, NPC counts) and 14 behavioural regression checks added after the independent review:
 
 | Behavioural check | What it proves |
 | --- | --- |
@@ -25,6 +25,7 @@ godot --headless --path game -- --test
 | the mission package can be picked up | the pickup interactable works through the real input path |
 | picking up the package advances the mission (stage 2) | the mission stage machine advances on a real pickup, not a scripted flag |
 | health regenerates once the player is out of fire | a firefight is survivable and a chase can be broken (COMBAT-04) |
+| pressing left steers the vehicle left | the car and the helicopter were steering the wrong way (the yaw sign was inverted), so a scripted drive or flight could not reach a target at all |
 
 ## 2. Capture packet — `game/captures/`
 
