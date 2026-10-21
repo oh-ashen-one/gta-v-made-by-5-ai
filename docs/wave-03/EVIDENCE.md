@@ -1,6 +1,6 @@
 # Wave 3 evidence — DeepSeek V4.1 Flash Max through Devin
 
-**Last reconciled: 2026-10-21T17:48Z** from actual terminal output, rendered PNGs, the packaged
+**Last reconciled: 2026-10-21T19:03Z** from actual terminal output, rendered PNGs, the packaged
 executable and source. (An earlier revision of this file carried a timestamp of 18:50Z, which was a
 clock error on my part and was in the future; it has been replaced with observed times only.)
 
@@ -21,6 +21,8 @@ have not been lowered.** No independent numeric score exists for this wave (see 
 | --- | --- | --- | --- |
 | R5 | Source regression, rendered, Metal | **85/85, exit 0**, 14.0 s | `regression-r5.json`, `regression-r5.log`, `regression-r5-gpu.json` |
 | PR5 | Same suite in the **actual exported app** | **85/85, exit 0**, `editor_binary=false` | `packaged-final.json`, `packaged-final.log`, `packaged-final-gpu.json` |
+| UIW | Packaged `--ui-review` write phase | **24/24 passed**, exit 0, 12.1 s | `ui-review-final/ui-review-write.json`, `ui-write.log`, `ui-write-gpu.json` |
+| UIL | Packaged `--ui-review --ui-review-load`, **fresh process** | **23/23 passed**, exit 0, 10.7 s | `ui-review-final/ui-review-load.json`, `ui-load-r2.log`, `ui-load-r2-gpu.json` |
 | G2 | Third-person gameplay capture, avatar + HUD + live traffic | 5 frames, 1920×1080 backing | `gameplay-final/` |
 | P10 | Fixed-view stills, 1920×1080 backing | 15 frames | `photos-ship/` |
 | X5 | Private export | exit 0 | `game/build/mac/OrchardReach-wave03-final.zip`, **394,290,107 bytes**, SHA256 `733c40b106c05830f0d2778b5e5196706885a88b9e6273a2c4eb50e47651fe64`; PCK `504e7d05085558c5834368347fd67d0cb4c92d85de6895982fdb9baa565d03a5` |
@@ -36,12 +38,22 @@ them**; the coordinator itself stamps `perf_valid: false`.
 
 | Gate | State |
 | --- | --- |
-| Packaged 1800 s workload + stall analysis | **NOT TESTED.** The responder cost is measured and moved, not proven absent from the packaged hitch profile. |
-| Packaged `--ui-review` save/relaunch (24/24 + 23/23) | **NOT TESTED.** The packaged 85/85 covers save roundtrip and nine atomic rejections, which is not the same check. |
+| Packaged 1800 s workload + stall analysis | **NOT TESTED.** Not feasible inside the remaining window. The responder cost is measured and moved, not proven absent from the packaged hitch profile. |
 | Independent visual score | **NOT PRODUCED.** The subagent harness model has no image input and returned no judgement rather than inventing one. |
 | Car wheel articulation, pursuit/navigation recovery, blocked-lane reroute, audio listening | Unchanged from wave 2. |
-| Ordinary OS-input playtest (QA-001) | Still absent. |
+| Ordinary OS-input playtest (QA-001) | Still absent. The UI write/load phases are fixture-assisted, not OS input. |
 | Rights clearance | Provider redistribution UNVERIFIED per asset. Private implementation only. |
+
+**UI write/load detail (measured):** writer PID `96051`, loader PID `97198` — distinct processes, both
+the exported app. Both report save SHA256 `94c6c3ce9a48ca32fe753858a1b9755c0b59c7cdb058bbca02012d3fe17a3da0`,
+so the bytes are unchanged across the roundtrip. Captures in this run are **1280×720**, not the
+1920×1080 of wave 2's UI run; the raster is reported per capture and is not claimed otherwise.
+
+**Rejected neighbour, preserved:** `ui-load.log` is a **90 s timeout (exit 124)**. Cause was my own
+invocation: `main.gd` gates the review on `--ui-review`, and the load phase additionally needs
+`--ui-review-load`, so passing only the latter left the app idling on the title screen. Re-run with
+both flags passes 23/23. This is a harness-usage error on my part, not a product defect, and it is
+kept rather than deleted.
 
 ## What changed in this window
 

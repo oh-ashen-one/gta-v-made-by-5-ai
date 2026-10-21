@@ -1,0 +1,23 @@
+diff --git a/game/src/world/world_builder.gd b/game/src/world/world_builder.gd
+index 4af293d..036ac53 100644
+--- a/game/src/world/world_builder.gd
++++ b/game/src/world/world_builder.gd
+@@ -324,6 +324,18 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
+ 			var awning := _box(Vector3(7.4, 0.12, 1.9), pos + front_dir * 6.1 + Vector3(0, 3.15, 0), Palette.mat(Palette.FRONTAGES[(i + 3) % Palette.FRONTAGES.size()].darkened(0.18), 0.85))
+ 			awning.rotation.y = yaw
+ 			awning.rotation.x = deg_to_rad(-12.0)
++		# Street-level clutter. The manager's review called the pavements sparse;
++		# bare five-foot ways read as a model, not a working street. Kept sparse
++		# per shop so the node and draw-call cost stays bounded.
++		if i % 4 == 0:
++			var crate := _box(Vector3(0.95, 0.52, 0.72), pos + front_dir * 5.9 + dir * 3.1 + Vector3(0, 0.26, 0), Palette.mat(Color(0.54, 0.37, 0.21), 0.9))
++			crate.rotation.y = yaw
++			var crate2 := _box(Vector3(0.82, 0.44, 0.62), pos + front_dir * 5.9 + dir * 3.1 + Vector3(0, 0.73, 0), Palette.mat(Color(0.45, 0.30, 0.17), 0.9))
++			crate2.rotation.y = yaw
++		if i % 6 == 2:
++			var aboard := _box(Vector3(0.95, 1.25, 0.09), pos + front_dir * 5.5 + dir * -2.7 + Vector3(0, 0.62, 0), Palette.mat(Color(0.13, 0.12, 0.11), 0.9))
++			aboard.rotation.y = yaw
++			aboard.rotation.x = deg_to_rad(-9.0)
+ 		# Warm lanterns have modeled holders and small visible emitters.
+ 		for side in [-1.0,1.0]:
+ 			var lp: Vector3 = pos+front_dir*5.65+dir*side*4.2+Vector3(0,2.7,0)

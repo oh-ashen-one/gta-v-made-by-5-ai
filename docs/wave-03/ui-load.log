@@ -1,0 +1,6 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--ui-review-load", "--qa-session", "--capture-dir=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek/docs/wave-03/ui-review-final", "--save-path=/tmp/orchard-reach-ui-review-wave3.json"]
+[profile] officer_pool_build_us=707145 size=5
+[launch] world_ui_ready_ms=6814 executable=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek/package-wave03/Orchard Reach.app/Contents/MacOS/Orchard Reach editor_binary=false

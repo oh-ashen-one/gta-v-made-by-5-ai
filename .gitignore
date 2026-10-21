@@ -22,6 +22,11 @@ __pycache__/
 art/source/characters/
 art/provider-sources/
 
+# Extracted private playable builds. Derived binaries built from provider assets
+# must stay out of source Git; they are test/run artefacts only.
+/package-wave03/
+/package-wave04/
+
 # Temporary continuous capture frames; encoded evidence and timing manifest remain
 docs/wave-02/*/frames/*.jpg
 docs/wave-02/*/frames/*.jpeg
