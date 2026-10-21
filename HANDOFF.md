@@ -95,22 +95,23 @@ was asleep. I did not attempt to defeat it.
 State at handoff time, verified with `git status -sb`:
 
 ```
-## feature/wave-03-deepseek...origin/feature/wave-03-deepseek [ahead 3]
+## feature/wave-03-deepseek...origin/feature/wave-03-deepseek [ahead 4]
 ```
 
-The three local commits that must reach origin are:
+The four local commits that must reach origin are:
 
 | Commit | Subject |
 | --- | --- |
 | `b7146a5` | wave3: golden-hour district, planned block interiors, pooled police responders |
 | `8ab2109` | wave3: deterministic close-cover fixture, dimmer shopfronts, final render pass |
-| (this one) | wave3: evidence, reassessment, honest handoff and wave-4 goal |
+| `1fd38b5` | wave3: evidence, reassessment, honest handoff and wave-4 goal |
+| `9ce762e` | wave3: record the unpushed-commit blocker and exact recovery command |
 
 **Recovery (one command, no rebase, no force):**
 
 ```sh
 cd /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek
-git status -sb          # confirm "ahead 3" and no uncommitted work
+git status -sb          # confirm "ahead 4" and no uncommitted work
 git push origin feature/wave-03-deepseek
 ```
 
