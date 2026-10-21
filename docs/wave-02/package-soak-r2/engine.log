@@ -1,0 +1,319 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--capture", "--soak", "--qa-render-size=1920x1080", "--qa-engine-log=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/engine.log", "--capture-dir=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2", "--save-path=/tmp/orchard-package-soak-r2-save.json"]
+[qa-render-size] requested_backing=(1920, 1080)
+[launch] world_ui_ready_ms=5639 executable=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/game/build/mac/final-r3/Orchard Reach.app/Contents/MacOS/Orchard Reach editor_binary=false
+[capture] 0.97s Route start; seed=20261021; headless=false; scripted-input-automation=true
+[capture] 1.11s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/01_safe_room.png
+[capture] 2.95s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0
+[capture] 21.63s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9
+[capture] 44.15s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=7.0
+[capture] 67.13s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 85.82s walk end at (-116.0, 0.0, -92.0); target=(-115.0, 0.0, -88.0) distance=3.9
+[capture] 85.82s PASS market reached on foot
+[capture] 86.27s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/02_hawker_market.png
+[capture] 88.59s combat target health=-32.0 state=3
+[capture] 90.25s combat target health=-32.0 state=3
+[capture] 93.05s combat target health=-32.0 state=3
+[capture] 93.05s PASS combat damaged and killed a mission combatant
+[capture] 93.50s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/03_combat.png
+[capture] 94.12s walk end at (-117.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=2.5
+[capture] 94.46s PASS package collected through interaction
+[capture] 94.88s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/04_package_taken.png
+[capture] 94.88s PASS usable parked car found
+[capture] 103.50s walk end at (-150.0, 0.0, -42.0); target=(-152.0, 0.0, -40.0) distance=2.6
+[capture] 103.82s interaction attempt 0: mode=0 chosen=none requested=@CharacterBody3D@9941 at=(-156.9199, 0.060942, -31.38151) distance=12.04 LOS=clear
+[capture] 105.83s walk end at (-155.0, 0.0, -32.0); target=(-155.0, 0.0, -31.0) distance=0.7
+[capture] 106.14s PASS car entered
+[capture] 106.43s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/05_car_entered.png
+[capture] 118.57s drive waypoint target=(-160.0, 0.0, 0.0) distance=6.9
+[capture] 127.52s drive waypoint target=(-160.0, 0.0, 160.0) distance=7.0
+[capture] 136.81s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9
+[capture] 145.83s drive waypoint target=(160.0, 0.0, 160.0) distance=6.9
+[capture] 151.07s drive waypoint target=(320.0, 0.0, 160.0) distance=70.7
+[capture] 151.07s PASS uninterrupted driving leg reached aviation compound
+[capture] 151.43s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/06_driving.png
+[capture] 152.62s PASS car exit restored walking
+[capture] 152.94s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/07_exited_car.png
+[capture] 152.94s PASS helicopter remains usable
+[capture] 165.90s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.4
+[capture] 166.22s PASS helicopter boarded
+[capture] 166.45s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/08_helicopter_boarding.png
+[capture] 196.24s PASS flight reached waterfront pad airspace
+[capture] 196.45s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/09_aerial_view.png
+[capture] 216.15s PASS helicopter landed intact on destination pad
+[capture] 216.48s PASS landing exit restored walking
+[capture] 216.70s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/10_landed.png
+[capture] 230.38s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 230.71s PASS mission completed through delivery interaction
+[capture] 231.08s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/11_delivery.png
+[capture] 231.08s Verified mission completions: 1
+[capture] 231.08s Restarting through the real Mission.restart for next independent mission attempt.
+[capture] 231.69s Route start; seed=20261021; headless=false; scripted-input-automation=true
+[capture] 231.83s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/12_safe_room.png
+[capture] 233.66s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0
+[capture] 252.34s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9
+[capture] 274.85s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=6.9
+[capture] 297.85s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 300.37s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/13_soak_mission_0300.png
+[capture] 316.84s walk end at (-116.0, 0.0, -92.0); target=(-115.0, 0.0, -88.0) distance=3.9
+[capture] 316.84s PASS market reached on foot
+[capture] 317.29s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/14_hawker_market.png
+[capture] 319.60s combat target health=-32.0 state=3
+[capture] 321.25s combat target health=-32.0 state=3
+[capture] 324.67s combat target health=-32.0 state=3
+[capture] 324.67s PASS combat damaged and killed a mission combatant
+[capture] 325.10s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/15_combat.png
+[capture] 325.74s walk end at (-117.0, 0.0, -88.0); target=(-115.0, 0.0, -88.0) distance=2.4
+[capture] 326.06s PASS package collected through interaction
+[capture] 326.46s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/16_package_taken.png
+[capture] 326.46s PASS usable parked car found
+[capture] 337.05s walk end at (-167.0, 0.0, -42.0); target=(-168.0, 0.0, -40.0) distance=2.6
+[capture] 337.37s PASS car entered
+[capture] 337.75s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/17_car_entered.png
+[capture] 342.30s drive waypoint target=(-160.0, 0.0, 0.0) distance=6.9
+[capture] 351.41s drive waypoint target=(-160.0, 0.0, 160.0) distance=6.9
+[capture] 360.68s drive waypoint target=(0.0, 0.0, 160.0) distance=7.0
+[capture] 369.73s drive waypoint target=(160.0, 0.0, 160.0) distance=6.9
+[capture] 374.94s drive waypoint target=(320.0, 0.0, 160.0) distance=72.7
+[capture] 374.94s PASS uninterrupted driving leg reached aviation compound
+[capture] 375.22s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/18_driving.png
+[capture] 376.38s PASS car exit restored walking
+[capture] 376.69s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/19_exited_car.png
+[capture] 376.69s PASS helicopter remains usable
+[capture] 387.72s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.3
+[capture] 388.04s PASS helicopter boarded
+[capture] 388.27s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/20_helicopter_boarding.png
+[capture] 418.05s PASS flight reached waterfront pad airspace
+[capture] 418.27s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/21_aerial_view.png
+[capture] 437.97s PASS helicopter landed intact on destination pad
+[capture] 438.30s PASS landing exit restored walking
+[capture] 438.52s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/22_landed.png
+[capture] 452.20s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 452.53s PASS mission completed through delivery interaction
+[capture] 452.90s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/23_delivery.png
+[capture] 452.90s Verified mission completions: 2
+[capture] 452.90s Restarting through the real Mission.restart for next independent mission attempt.
+[capture] 453.51s Route start; seed=20261021; headless=false; scripted-input-automation=true
+[capture] 453.65s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/24_safe_room.png
+[capture] 455.49s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0
+[capture] 474.17s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9
+[capture] 496.68s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=6.9
+[capture] 519.66s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 538.38s walk end at (-116.0, 0.0, -92.0); target=(-115.0, 0.0, -88.0) distance=3.9
+[capture] 538.38s PASS market reached on foot
+[capture] 538.84s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/25_hawker_market.png
+[capture] 541.16s combat target health=-32.0 state=3
+[capture] 542.82s combat target health=-32.0 state=3
+[capture] 545.66s combat target health=-32.0 state=3
+[capture] 545.66s PASS combat damaged and killed a mission combatant
+[capture] 546.12s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/26_combat.png
+[capture] 546.69s walk end at (-117.0, 0.0, -88.0); target=(-115.0, 0.0, -88.0) distance=2.5
+[capture] 547.02s PASS package collected through interaction
+[capture] 547.42s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/27_package_taken.png
+[capture] 547.42s PASS usable parked car found
+[capture] 559.04s walk end at (-156.0, 0.0, -154.0); target=(-160.0, 0.0, -160.0) distance=7.0
+[capture] 567.61s walk end at (-150.0, 0.0, -199.0); target=(-152.0, 0.0, -200.0) distance=2.6
+[capture] 567.94s PASS car entered
+[capture] 568.28s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/28_car_entered.png
+[capture] 578.90s drive waypoint target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 592.00s drive waypoint target=(-160.0, 0.0, 0.0) distance=7.0
+[capture] 600.40s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/29_soak_mission_0600.png
+[capture] 601.31s drive waypoint target=(-160.0, 0.0, 160.0) distance=7.0
+[capture] 610.58s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9
+[capture] 619.58s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0
+[capture] 626.06s drive waypoint target=(320.0, 0.0, 160.0) distance=50.7
+[capture] 626.06s PASS uninterrupted driving leg reached aviation compound
+[capture] 626.40s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/30_driving.png
+[capture] 627.59s PASS car exit restored walking
+[capture] 627.91s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/31_exited_car.png
+[capture] 627.91s PASS helicopter remains usable
+[capture] 640.93s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.4
+[capture] 641.25s PASS helicopter boarded
+[capture] 641.48s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/32_helicopter_boarding.png
+[capture] 671.28s PASS flight reached waterfront pad airspace
+[capture] 671.49s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/33_aerial_view.png
+[capture] 691.21s PASS helicopter landed intact on destination pad
+[capture] 691.54s PASS landing exit restored walking
+[capture] 691.77s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/34_landed.png
+[capture] 705.45s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 705.77s PASS mission completed through delivery interaction
+[capture] 706.14s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/35_delivery.png
+[capture] 706.14s Verified mission completions: 3
+[capture] 706.14s Beginning explicit fixture-assisted negative cases. Three completion records are already sealed.
+[capture] 706.15s FIXTURE PASS pause freezes player and live traffic (excluded from mission completion count)
+[capture] 706.15s FIXTURE PASS completed-run checkpoint writes through atomic save path (excluded from mission completion count)
+[capture] 706.15s FIXTURE PASS malformed checkpoint is rejected without state mutation (excluded from mission completion count)
+[capture] 706.20s FIXTURE PASS walking to airfield cannot satisfy drive stage (excluded from mission completion count)
+[capture] 706.56s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/36_fixture_phase_finished.png
+[capture] 706.56s Fixture phase complete; starting genuine mixed free roam from the restored completion location.
+[capture] 706.56s Free-roam foot leg to (0.0, 0.0, -320.0)
+[capture] 719.87s walk end at (7.0, 0.0, -321.0); target=(0.0, 0.0, -320.0) distance=6.9
+[capture] 720.18s walk end at (6.0, 0.0, -321.0); target=(0.0, 0.0, -320.0) distance=6.5
+[capture] 743.36s walk end at (0.0, 0.0, -167.0); target=(0.0, 0.0, -160.0) distance=6.9
+[capture] 751.12s walk end at (12.0, 0.0, -199.0); target=(9.0, 0.0, -200.0) distance=2.5
+[capture] 751.44s Free-roam driving leg to (160.0, 0.0, 160.0)
+[capture] 760.04s drive waypoint target=(0.0, 0.0, -160.0) distance=7.0
+[capture] 769.05s drive waypoint target=(0.0, 0.0, 0.0) distance=6.9
+[capture] 778.12s drive waypoint target=(0.0, 0.0, 160.0) distance=7.0
+[capture] 787.51s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0
+[capture] 787.52s drive waypoint target=(160.0, 0.0, 160.0) distance=6.9
+[capture] 789.21s Free-roam same-car return/exit/reboard/exit cycle=true
+[capture] 789.52s walk end at (155.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=4.7
+[capture] 814.54s walk end at (160.0, 0.0, 7.0); target=(160.0, 0.0, 0.0) distance=6.9
+[capture] 838.05s walk end at (160.0, 0.0, -153.0); target=(160.0, 0.0, -160.0) distance=7.0
+[capture] 861.59s walk end at (160.0, 0.0, -313.0); target=(160.0, 0.0, -320.0) distance=7.0
+[capture] 884.60s walk end at (7.0, 0.0, -320.0); target=(0.0, 0.0, -320.0) distance=6.9
+[capture] 889.56s walk end at (3.0, 0.0, -338.0); target=(3.0, 0.0, -339.0) distance=1.1
+[capture] 889.89s Free-roam aircraft leg to (270.0, 0.0, 104.0)
+[capture] 900.34s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/37_soak_free_roam_0900.png
+[capture] 940.44s Free-roam foot leg to (160.0, 0.0, 160.0)
+[capture] 951.04s walk end at (315.0, 0.0, 155.0); target=(320.0, 0.0, 160.0) distance=6.9
+[capture] 973.65s walk end at (167.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.9
+[capture] 973.67s walk end at (167.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.8
+[capture] 977.84s walk end at (157.0, 0.0, 155.0); target=(155.0, 0.0, 157.0) distance=2.5
+[capture] 978.16s Free-roam driving leg to (-320.0, 0.0, -320.0)
+[capture] 978.17s drive waypoint target=(160.0, 0.0, 160.0) distance=5.5
+[capture] 987.55s drive waypoint target=(160.0, 0.0, 0.0) distance=7.0
+[capture] 996.59s drive waypoint target=(160.0, 0.0, -160.0) distance=6.9
+[capture] 1005.61s drive waypoint target=(160.0, 0.0, -320.0) distance=7.0
+[capture] 1014.93s drive waypoint target=(0.0, 0.0, -320.0) distance=6.9
+[capture] 1023.97s drive waypoint target=(-160.0, 0.0, -320.0) distance=6.9
+[capture] 1032.96s drive waypoint target=(-320.0, 0.0, -320.0) distance=7.0
+[capture] 1032.97s drive waypoint target=(-320.0, 0.0, -320.0) distance=6.9
+[capture] 1034.66s Free-roam same-car return/exit/reboard/exit cycle=true
+[capture] 1034.98s walk end at (-315.0, 0.0, -321.0); target=(-320.0, 0.0, -320.0) distance=4.8
+[capture] 1060.01s walk end at (-320.0, 0.0, -167.0); target=(-320.0, 0.0, -160.0) distance=6.9
+[capture] 1083.54s walk end at (-320.0, 0.0, -7.0); target=(-320.0, 0.0, 0.0) distance=6.9
+[capture] 1107.06s walk end at (-320.0, 0.0, 153.0); target=(-320.0, 0.0, 160.0) distance=7.0
+[capture] 1130.07s walk end at (-167.0, 0.0, 160.0); target=(-160.0, 0.0, 160.0) distance=6.9
+[capture] 1153.59s walk end at (-7.0, 0.0, 160.0); target=(0.0, 0.0, 160.0) distance=6.9
+[capture] 1177.12s walk end at (153.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.9
+[capture] 1200.30s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/38_soak_free_roam_1200.png
+[capture] 1204.60s walk end at (313.0, 0.0, 160.0); target=(320.0, 0.0, 160.0) distance=6.9
+[capture] 1214.97s walk end at (280.0, 0.0, 116.0); target=(267.0, 0.0, 106.0) distance=15.8
+[capture] 1215.29s interaction attempt 0: mode=0 chosen=none requested=Helicopter at=(269.5899, 0.160463, 103.5631) distance=15.52 LOS=clear
+[capture] 1217.98s walk end at (268.0, 0.0, 106.0); target=(267.0, 0.0, 106.0) distance=0.7
+[capture] 1218.30s Free-roam aircraft leg to (0.0, 0.0, -337.0)
+[capture] 1268.71s Free-roam foot leg to (-160.0, 0.0, -320.0)
+[capture] 1271.52s walk end at (2.0, 0.0, -326.0); target=(0.0, 0.0, -320.0) distance=6.9
+[capture] 1294.74s walk end at (-153.0, 0.0, -320.0); target=(-160.0, 0.0, -320.0) distance=6.9
+[capture] 1294.75s walk end at (-153.0, 0.0, -320.0); target=(-160.0, 0.0, -320.0) distance=6.8
+[capture] 1295.06s walk end at (-154.0, 0.0, -320.0); target=(-160.0, 0.0, -320.0) distance=6.3
+[capture] 1318.08s walk end at (-160.0, 0.0, -167.0); target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 1325.73s walk end at (-166.0, 0.0, -200.0); target=(-168.0, 0.0, -200.0) distance=2.5
+[capture] 1326.06s Free-roam driving leg to (0.0, 0.0, 160.0)
+[capture] 1330.72s drive waypoint target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 1344.07s drive waypoint target=(-160.0, 0.0, 0.0) distance=7.0
+[capture] 1353.07s drive waypoint target=(-160.0, 0.0, 160.0) distance=7.0
+[capture] 1362.37s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9
+[capture] 1362.39s drive waypoint target=(0.0, 0.0, 160.0) distance=6.8
+[capture] 1364.08s Free-roam same-car return/exit/reboard/exit cycle=true
+[capture] 1364.39s walk end at (-5.0, 0.0, 163.0); target=(0.0, 0.0, 160.0) distance=5.6
+[capture] 1391.62s walk end at (0.0, 0.0, 7.0); target=(0.0, 0.0, 0.0) distance=6.9
+[capture] 1415.14s walk end at (0.0, 0.0, -153.0); target=(0.0, 0.0, -160.0) distance=7.0
+[capture] 1438.67s walk end at (0.0, 0.0, -313.0); target=(0.0, 0.0, -320.0) distance=7.0
+[capture] 1444.22s walk end at (3.0, 0.0, -338.0); target=(3.0, 0.0, -339.0) distance=1.1
+[capture] 1444.54s Free-roam aircraft leg to (270.0, 0.0, 104.0)
+[capture] 1494.89s Free-roam foot leg to (160.0, 0.0, 160.0)
+[capture] 1500.40s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-soak-r2/39_soak_free_roam_1500.png
+[capture] 1505.73s walk end at (315.0, 0.0, 155.0); target=(320.0, 0.0, 160.0) distance=6.9
+[capture] 1528.39s walk end at (167.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.9
+[capture] 1528.40s walk end at (167.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.8
+[capture] 1536.72s walk end at (169.0, 0.0, 121.0); target=(167.0, 0.0, 120.0) distance=2.5
+[capture] 1537.03s Free-roam driving leg to (-320.0, 0.0, -320.0)
+[capture] 1562.49s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0
+[capture] 1572.49s drive waypoint target=(160.0, 0.0, 0.0) distance=7.0
+[capture] 1581.51s drive waypoint target=(160.0, 0.0, -160.0) distance=6.9
+[capture] 1590.49s drive waypoint target=(160.0, 0.0, -320.0) distance=7.0
+[capture] 1599.81s drive waypoint target=(0.0, 0.0, -320.0) distance=6.9
+[capture] 1608.84s drive waypoint target=(-160.0, 0.0, -320.0) distance=6.9
+[capture] 1617.89s drive waypoint target=(-320.0, 0.0, -320.0) distance=7.0
+[capture] 1617.91s drive waypoint target=(-320.0, 0.0, -320.0) distance=6.9
+[capture] 1619.61s Free-roam same-car return/exit/reboard/exit cycle=true
+[capture] 1619.92s walk end at (-315.0, 0.0, -323.0); target=(-320.0, 0.0, -320.0) distance=5.9
+[capture] 1620.02s walk end at (-315.0, 0.0, -323.0); target=(-320.0, 0.0, -160.0) distance=163.5
+[capture] 1620.02s Reserved final recovery: return to healthy on-foot control, then demonstrate movement until the deadline.
+[capture] 1622.67s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1624.89s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1627.11s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1629.33s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1631.56s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1633.75s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1635.96s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1638.16s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1640.41s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1642.59s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1644.81s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1647.00s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1649.22s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1651.43s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1653.63s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1655.83s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1658.05s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1660.27s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1662.48s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1664.68s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1666.90s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1669.09s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1671.33s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1673.53s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1675.76s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1677.96s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1680.18s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1682.38s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1684.61s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1686.80s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1689.01s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1691.21s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1693.45s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1695.64s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1697.86s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1700.06s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1702.29s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1704.50s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1706.73s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1708.93s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1711.16s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1713.36s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1715.59s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1717.80s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1720.02s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1722.23s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1724.45s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1726.64s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1728.89s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1731.07s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1733.32s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1735.50s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1737.73s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1739.93s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1742.16s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1744.35s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1746.60s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1748.77s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1751.00s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1753.21s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1755.43s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1757.63s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1759.84s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1762.06s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1764.30s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1766.53s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1768.77s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1770.98s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1773.19s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1775.39s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1777.61s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1779.81s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1782.04s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1784.23s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1786.46s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1788.66s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.8
+[capture] 1790.87s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.7
+[capture] 1793.10s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1795.32s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] 1797.52s walk end at (-309.0, 0.0, -326.0); target=(-310.0, 0.0, -327.0) distance=1.7
+[capture] 1799.74s walk end at (-301.0, 0.0, -320.0); target=(-299.0, 0.0, -319.0) distance=1.8
+[capture] terminal success=true deaths=0 seconds=1800.1

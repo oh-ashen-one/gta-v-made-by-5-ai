@@ -1,0 +1,23 @@
+{
+  "implementation_checkpoint": "be6a8aa98b47735eb5b043db0860a0946767d1cd",
+  "archive": "game/build/mac/OrchardReach-wave02-private.zip",
+  "archive_sha256": "377447ff855c91da8746c23a67cc4877c22b34e32eadf64c420a6c1b56c006e8",
+  "archive_bytes": 393884658,
+  "extracted_app": "/private/tmp/orchard-wave02-delivery-be6a8aa/Orchard Reach.app",
+  "executable": "/private/tmp/orchard-wave02-delivery-be6a8aa/Orchard Reach.app/Contents/MacOS/Orchard Reach",
+  "archive_roundtrip_files_match": true,
+  "strict_signature_verification_exit": 0,
+  "signing": "local ad-hoc; no notarization or Finder/Gatekeeper certification",
+  "game_pck_identical_to_30min_tested_raw_export": true,
+  "ui_evidence": [
+    "signed-ui/ui-review-write.json",
+    "signed-ui/ui-review-load.json"
+  ],
+  "regression_evidence": "signed-regressions.json:85/85,native/wrapper0,reaped20.72s",
+  "route_evidence": "package-route-final/capture_log.json:13/13 gates,3kills,0deaths,232.267402s,clean exit/reaped238.87s",
+  "public_redistribution": "UNVERIFIED; no public release authorized",
+  "video": "package-route-final/scripted-route.mp4",
+  "video_sha256": "b74adb3f695d1d08c3a370f323ef4d5ac92d4f4e673698e7a3a1626b05805d3d",
+  "private_transfer_manifest": "private-transfer.json",
+  "private_high_quality_video_manifest": "private-transfer.json"
+}

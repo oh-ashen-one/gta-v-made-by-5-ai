@@ -1,0 +1,239 @@
+{
+	"captures": [
+		{
+			"label": "11_relaunch_title",
+			"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/signed-ui/11_relaunch_title.png",
+			"pause_visible": false,
+			"paused": true,
+			"physics_frame": 30,
+			"process_frame": 12,
+			"raster_height": 1080,
+			"raster_width": 1920,
+			"settings_visible": false,
+			"ticks_msec": 6207,
+			"title_visible": true
+		},
+		{
+			"label": "12_continue_fixture",
+			"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/signed-ui/12_continue_fixture.png",
+			"pause_visible": false,
+			"paused": false,
+			"physics_frame": 60,
+			"process_frame": 39,
+			"raster_height": 1080,
+			"raster_width": 1920,
+			"settings_visible": false,
+			"ticks_msec": 7453,
+			"title_visible": false
+		},
+		{
+			"label": "13_loaded_settings",
+			"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/signed-ui/13_loaded_settings.png",
+			"pause_visible": false,
+			"paused": true,
+			"physics_frame": 91,
+			"process_frame": 74,
+			"raster_height": 1080,
+			"raster_width": 1920,
+			"settings_visible": true,
+			"ticks_msec": 7921,
+			"title_visible": false
+		},
+		{
+			"label": "14_return_to_game",
+			"path": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/signed-ui/14_return_to_game.png",
+			"pause_visible": false,
+			"paused": false,
+			"physics_frame": 121,
+			"process_frame": 107,
+			"raster_height": 1080,
+			"raster_width": 1920,
+			"settings_visible": false,
+			"ticks_msec": 8493,
+			"title_visible": false
+		}
+	],
+	"checks": [
+		{
+			"details": {},
+			"label": "capture_directory",
+			"passed": true
+		},
+		{
+			"details": {
+				"explicit_path": "/tmp/orchard-reach-ui-review-wave02-signed.json",
+				"requires": "--qa-session and a non-symlink /tmp/orchard-reach-ui-review-*.json task save"
+			},
+			"label": "qa_save_guard",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "rendered_display",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "title_ready",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "capture_11_relaunch_title",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "prior_writer_report",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "fresh_process_same_executable",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "saved_json_valid",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "writer_save_digest_matches",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "continue_started",
+			"passed": true
+		},
+		{
+			"details": {
+				"actual": 83.0
+			},
+			"label": "loaded_health",
+			"passed": true
+		},
+		{
+			"details": {
+				"hud_visible": true,
+				"invert_y": true,
+				"mouse_sensitivity": 1.3,
+				"reduced_shake": true
+			},
+			"label": "loaded_settings",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "loaded_weapon_ammo",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "loaded_mission",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "loaded_player_ready",
+			"passed": true
+		},
+		{
+			"details": {
+				"representation": "rigged_provider",
+				"scene": "res://assets/providers/smg_held.glb"
+			},
+			"label": "loaded_held_smg",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "loaded_player_position",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "capture_12_continue_fixture",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "loaded_settings_open",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "capture_13_loaded_settings",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "loaded_settings_return_to_game",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "capture_14_return_to_game",
+			"passed": true
+		},
+		{
+			"details": {},
+			"label": "load_did_not_rewrite_save",
+			"passed": true
+		}
+	],
+	"completed_ticks_msec": 8494,
+	"display_server": "macOS",
+	"editor_feature": false,
+	"engine_version": {
+		"build": "official",
+		"hash": "a13da4feb8d8aefc283c3763d33a2f170a18d541",
+		"hex": 263937,
+		"major": 4,
+		"minor": 7,
+		"patch": 1,
+		"status": "stable",
+		"string": "4.7.1-stable (official)",
+		"timestamp": 0
+	},
+	"evidence_kind": "fixture-assisted UI and cross-process save roundtrip; not OS-input or human acceptance",
+	"executable": "/private/tmp/orchard-wave02-delivery-be6a8aa/Orchard Reach.app/Contents/MacOS/Orchard Reach",
+	"exit_code_requested": 0,
+	"fixture_label": "orchard-reach-package-roundtrip-v1",
+	"native_quit_requested": true,
+	"passed": true,
+	"passed_checks": [
+		"capture_directory",
+		"qa_save_guard",
+		"rendered_display",
+		"title_ready",
+		"capture_11_relaunch_title",
+		"prior_writer_report",
+		"fresh_process_same_executable",
+		"saved_json_valid",
+		"writer_save_digest_matches",
+		"continue_started",
+		"loaded_health",
+		"loaded_settings",
+		"loaded_weapon_ammo",
+		"loaded_mission",
+		"loaded_player_ready",
+		"loaded_held_smg",
+		"loaded_player_position",
+		"capture_12_continue_fixture",
+		"loaded_settings_open",
+		"capture_13_loaded_settings",
+		"loaded_settings_return_to_game",
+		"capture_14_return_to_game",
+		"load_did_not_rewrite_save"
+	],
+	"phase": "load",
+	"probe_elapsed_msec": 2852,
+	"process_id": 34074,
+	"save_path": "/tmp/orchard-reach-ui-review-wave02-signed.json",
+	"save_sha256": "add89cabbfd970a75d0682d9c2de04c0eb0c95c583f2f67cf5a54deb56df3ee2",
+	"startup_ready_ticks_msec": 5642,
+	"timeout_seconds": 45.0,
+	"writer_process_id": 33907.0
+}

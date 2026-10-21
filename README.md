@@ -6,7 +6,7 @@ A YouTube development experiment: **five AI coding setups collaborating in seque
 
 ## Status
 
-**Relay underway on task branches. Wave 2 is an experimental playable candidate with unmet requirements; no visually accepted or public release exists.**
+**Relay underway on task branches. Wave 2 delivers a privately packaged experimental candidate with unmet requirements; no visually accepted or public release exists.**
 
 The current build lives in [`game/`](game/): **Godot 4.7.1 stable** (Forward+, GDScript, native macOS export) with an authored Singapore-inspired district, third-person control, two firearms, car theft and arcade driving, left-hand traffic, police response, a flyable helicopter, a roofed hawker hub, a void-deck housing neighbourhood, a waterfront edge and the authored mission "Harbour Relay".
 
@@ -27,7 +27,7 @@ The owner has authorized the five-wave relay. Each wave must verify its actual m
 | Wave | Setup | Status / planning note |
 | --- | --- | --- |
 | 1 | MiniMax | Incoming checkpoint `4df93fa631d9484fb29e556a97df61a259620248`; see waves/01. |
-| 2 | GPT-6 Astra through Codex | Active on `feature/wave-02-astra`, fixed 2026-10-21 11:38:01–15:38:01 UTC window. |
+| 2 | GPT-6 Astra through Codex | Completed implementation on `feature/wave-02-astra`; fixed 2026-10-21 11:38:01–15:38:01 UTC window. See HANDOFF.md for final evidence and private archive. |
 | 3 | DeepSeek V4.1 Flash through Devin | Owner-designated successor; manager starts the next session. See NEXT_GOAL.md. Actual availability must be verified by that session. |
 | 4 | Argon 4 via AGY CLI | Proposed fourth wave; user-reported setup. |
 | 5 — final | Opus 5.5 through Claude Code | Required final wave; user-selected model name, not verified availability. |

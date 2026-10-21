@@ -1,0 +1,53 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--capture", "--qa-render-size=1920x1080", "--capture-dir=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final", "--record-frames=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/frames", "--save-path=/tmp/orchard-signed-route-save.json"]
+[qa-render-size] requested_backing=(1920, 1080)
+[launch] world_ui_ready_ms=5661 executable=/private/tmp/orchard-wave02-delivery-be6a8aa/Orchard Reach.app/Contents/MacOS/Orchard Reach editor_binary=false
+[capture] 1.06s Route start; seed=20261021; headless=false; scripted-input-automation=true
+[capture] 1.19s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/01_safe_room.png
+[capture] 3.05s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0
+[capture] 21.71s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9
+[capture] 44.23s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=7.0
+[capture] 67.24s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 85.91s walk end at (-116.0, 0.0, -92.0); target=(-115.0, 0.0, -88.0) distance=3.9
+[capture] 85.91s PASS market reached on foot
+[capture] 86.36s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/02_hawker_market.png
+[capture] 88.75s combat target health=-32.0 state=3
+[capture] 90.41s combat target health=-32.0 state=3
+[capture] 93.25s combat target health=-32.0 state=3
+[capture] 93.25s PASS combat damaged and killed a mission combatant
+[capture] 93.72s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/03_combat.png
+[capture] 94.36s walk end at (-117.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=2.4
+[capture] 94.68s PASS package collected through interaction
+[capture] 95.10s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/04_package_taken.png
+[capture] 95.10s PASS usable parked car found
+[capture] 103.74s walk end at (-151.0, 0.0, -42.0); target=(-152.0, 0.0, -40.0) distance=2.5
+[capture] 104.06s interaction attempt 0: mode=0 chosen=none requested=@CharacterBody3D@9941 at=(-154.7102, 0.060141, -36.81395) distance=6.23 LOS=clear
+[capture] 105.15s walk end at (-153.0, 0.0, -37.0); target=(-153.0, 0.0, -37.0) distance=0.7
+[capture] 105.47s PASS car entered
+[capture] 105.79s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/05_car_entered.png
+[capture] 118.85s drive waypoint target=(-160.0, 0.0, 0.0) distance=6.9
+[capture] 128.28s drive waypoint target=(-160.0, 0.0, 160.0) distance=7.0
+[capture] 137.58s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9
+[capture] 146.59s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0
+[capture] 152.02s drive waypoint target=(320.0, 0.0, 160.0) distance=67.9
+[capture] 152.02s PASS uninterrupted driving leg reached aviation compound
+[capture] 152.38s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/06_driving.png
+[capture] 153.56s PASS car exit restored walking
+[capture] 153.87s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/07_exited_car.png
+[capture] 153.87s PASS helicopter remains usable
+[capture] 166.89s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.4
+[capture] 167.23s PASS helicopter boarded
+[capture] 167.47s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/08_helicopter_boarding.png
+[capture] 197.26s PASS flight reached waterfront pad airspace
+[capture] 197.49s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/09_aerial_view.png
+[capture] 217.18s PASS helicopter landed intact on destination pad
+[capture] 217.50s PASS landing exit restored walking
+[capture] 217.74s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/10_landed.png
+[capture] 231.40s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 231.74s PASS mission completed through delivery interaction
+[capture] 232.12s screenshot /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/11_delivery.png
+[capture] 232.12s Verified mission completions: 1
+[capture] 232.12s Holding completed mission visible for 0.5 seconds of continuous recording.
+[capture] terminal success=true deaths=0 seconds=232.3

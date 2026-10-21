@@ -1,0 +1,52 @@
+{
+  "checked_utc": "2026-10-21T15:29:19.784994+00:00",
+  "engine_processes_observed": [],
+  "owned_drivers_observed": [],
+  "source_runtime_frozen_at": "be6a8aa98b47735eb5b043db0860a0946767d1cd",
+  "manager_clock_untouched": true,
+  "required_final_processes": {
+    "package-soak-r2-process": {
+      "pid": 27400,
+      "exit_code": 0,
+      "engine_exit_code": 0,
+      "child_reaped": true,
+      "finished_utc": "2026-10-21T15:15:46.060087+00:00"
+    },
+    "signed-ui-write": {
+      "pid": 33907,
+      "exit_code": 0,
+      "engine_exit_code": 0,
+      "child_reaped": true,
+      "finished_utc": "2026-10-21T15:16:44.256607+00:00"
+    },
+    "signed-ui-load": {
+      "pid": 34074,
+      "exit_code": 0,
+      "engine_exit_code": 0,
+      "child_reaped": true,
+      "finished_utc": "2026-10-21T15:17:23.875377+00:00"
+    },
+    "signed-regressions": {
+      "pid": 34189,
+      "exit_code": 0,
+      "engine_exit_code": 0,
+      "child_reaped": true,
+      "finished_utc": "2026-10-21T15:18:20.373332+00:00"
+    },
+    "package-route-final-process": {
+      "pid": 34412,
+      "exit_code": 0,
+      "engine_exit_code": 0,
+      "child_reaped": true,
+      "finished_utc": "2026-10-21T15:23:06.792640+00:00"
+    },
+    "package-route-final-encode-r2": {
+      "pid": 35999,
+      "exit_code": 0,
+      "engine_exit_code": 0,
+      "child_reaped": true,
+      "finished_utc": "2026-10-21T15:27:44.312174+00:00"
+    }
+  },
+  "required_final_processes_all_exit0_reaped": true
+}

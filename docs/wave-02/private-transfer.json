@@ -1,0 +1,943 @@
+{
+  "created_utc": "2026-10-21T15:24:15.628130+00:00",
+  "implementation_checkpoint": "be6a8aa98b47735eb5b043db0860a0946767d1cd",
+  "evidence_head_at_preparation": "eac884a1c9cfe1e595733bf93ea206e5cebf054d",
+  "branch": "feature/wave-02-astra",
+  "private_only": true,
+  "asset_folders": [
+    "game/assets/providers",
+    "art/source/characters",
+    "art/source/helicopter",
+    "art/provider-sources"
+  ],
+  "files": {
+    "art/provider-sources/.gitignore": {
+      "sha256": "ab7ffc709900ee046ead3122f9dcc5aab38e654453890d0293058198cd38c76c",
+      "bytes": 83
+    },
+    "art/provider-sources/hawker_counter_refined.blend": {
+      "sha256": "69d5fbc328a52dfc96bcad8b0f6c511831c80c9c504721931eb0a9d879010741",
+      "bytes": 9215903
+    },
+    "art/provider-sources/hawker_table_refined.blend": {
+      "sha256": "90d1d8af326bfa89a4d17ad98d0f45637f6a33b66c5c83e426d60be8e0736753",
+      "bytes": 7822668
+    },
+    "art/source/characters/.gitignore": {
+      "sha256": "1ac204631440cfaf26ad22c91a2b8e5e299389fdb83fd5a2dcda901784790ece",
+      "bytes": 114
+    },
+    "art/source/characters/README.md": {
+      "sha256": "303c6f6fc64374f6ca60a78c846ce9f7c369d51f7ba0e169c8ec54ec06421304",
+      "bytes": 732
+    },
+    "art/source/characters/civilian_rigged.blend": {
+      "sha256": "bd5143b1724720c2a5c10be67309d9f60004b7e0962e53b42991c9f691c4ae56",
+      "bytes": 19018213
+    },
+    "art/source/characters/officer_rigged.blend": {
+      "sha256": "f4ddc9b36eac5f913f244edb51257f002ae3607f83bda3443f39594d80efb187",
+      "bytes": 21121492
+    },
+    "art/source/characters/player_rigged.blend": {
+      "sha256": "ec35cdd7f7ab4a3c87cf399b6fb6f9e59e24ce62db8d5c573228ff9683e49178",
+      "bytes": 23647339
+    },
+    "art/source/helicopter/.gitignore": {
+      "sha256": "28d2d4e7a778d821d0bc02acf18a1ef24693371adaafa14a68f5d678f7a48a8c",
+      "bytes": 70
+    },
+    "art/source/helicopter/README.md": {
+      "sha256": "cae74f6090cdabacdd9eee6a8c91d572f9f233fb00e920fef5d2841877976dd1",
+      "bytes": 304
+    },
+    "art/source/helicopter/helicopter_refined.blend": {
+      "sha256": "899812937d4975fcded89c5315d1780e6f4426e95ef57872118ac20ce6446013",
+      "bytes": 14051095
+    },
+    "game/assets/providers/ac_unit_clean.glb": {
+      "sha256": "bee0a57c2de96a5719fdecae0e69fffa7baefe66c5069e0e883c4f90a8e4a6a2",
+      "bytes": 7130864
+    },
+    "game/assets/providers/ac_unit_clean.glb.import": {
+      "sha256": "bc683cebbfa547d26dea8d43205c9f1d761753b3b71fcc605344b2b3067e309a",
+      "bytes": 1171
+    },
+    "game/assets/providers/ac_unit_clean_air+conditioner+unit+3d+model_basecolor.jpg": {
+      "sha256": "a0df7917d64df2b753246a893fee21aa870d313ea379a569921bfaee25d972d5",
+      "bytes": 256966
+    },
+    "game/assets/providers/ac_unit_clean_air+conditioner+unit+3d+model_basecolor.jpg.import": {
+      "sha256": "d036a129b38fab57723e69cbafb8aa63d2a06ae9577110ff4fb0702db2ada6d6",
+      "bytes": 1145
+    },
+    "game/assets/providers/ac_unit_clean_air+conditioner+unit+3d+model_normal.png": {
+      "sha256": "e5fc4a1a76bd2cedefd334a14c062bd739d1396f4fdc1f0e174ba7c0adb4f58b",
+      "bytes": 437169
+    },
+    "game/assets/providers/ac_unit_clean_air+conditioner+unit+3d+model_normal.png.import": {
+      "sha256": "2b64910ee709ab2a1cc424f35b80968b0c69f9ad5983af01db8d4f48eafa348c",
+      "bytes": 1137
+    },
+    "game/assets/providers/ac_unit_clean_air+conditioner+unit+3d+model_rm.jpg": {
+      "sha256": "cc40075b0390964c2456ddd11509d64eb8243955c73c9bd7a0f1e1e2d3b5fac4",
+      "bytes": 117702
+    },
+    "game/assets/providers/ac_unit_clean_air+conditioner+unit+3d+model_rm.jpg.import": {
+      "sha256": "758104b72c1d8ffec994fff81249a173cee4ef15b90cd3a5aaecd84203d63a9c",
+      "bytes": 1125
+    },
+    "game/assets/providers/airfield_clutter_clean.glb": {
+      "sha256": "8fa1c35b1f836c9c47ff7bc7fb4ab7ebddaaffc13f257e5ec7b20e95171e12aa",
+      "bytes": 12773748
+    },
+    "game/assets/providers/airfield_clutter_clean.glb.import": {
+      "sha256": "fd24b84f1604cecf4b22b3c8aa4d2855c8ee247e4b64dafd6b25537707aab6ed",
+      "bytes": 1198
+    },
+    "game/assets/providers/airfield_clutter_clean_weathered+cargo+crates+3d+model_basecolor.jpg": {
+      "sha256": "400935a1bb813543107cf21f1cdf341829532b8e21b97227e18f66bf25a58d58",
+      "bytes": 362489
+    },
+    "game/assets/providers/airfield_clutter_clean_weathered+cargo+crates+3d+model_basecolor.jpg.import": {
+      "sha256": "2731d9934e43a4e629334c82ece7a33ad666e77517401a62fdcf04c5fb0daf02",
+      "bytes": 1179
+    },
+    "game/assets/providers/airfield_clutter_clean_weathered+cargo+crates+3d+model_normal.png": {
+      "sha256": "d5e4d3bffe0b813ccbaae2aa4d142942ea84e8d21e829e090ed1f8095402bff4",
+      "bytes": 776701
+    },
+    "game/assets/providers/airfield_clutter_clean_weathered+cargo+crates+3d+model_normal.png.import": {
+      "sha256": "28736309eb6178f3bfffb61d7a3e4962fb580eb34de4d74a4f345b0780763aba",
+      "bytes": 1169
+    },
+    "game/assets/providers/airfield_clutter_clean_weathered+cargo+crates+3d+model_rm.jpg": {
+      "sha256": "e8e972b92ff0ce09074380d0b0f8c0ce0c4cdf758ec8f937b8cf357f4671f4c2",
+      "bytes": 309260
+    },
+    "game/assets/providers/airfield_clutter_clean_weathered+cargo+crates+3d+model_rm.jpg.import": {
+      "sha256": "0686361eaaf4d9b2ab5b0535e6e2139653c415f0e2b7c25ccd9eb0e92644101b",
+      "bytes": 1157
+    },
+    "game/assets/providers/civilian_rig_report.json": {
+      "sha256": "66beaaac3b5cb864820eec4e154a18aab7b565abbbaca9585ce4360653cdc1d1",
+      "bytes": 2121
+    },
+    "game/assets/providers/civilian_rigged.glb": {
+      "sha256": "ece93fcf6bc7e37ced947d74b4e392df25084c83c2209fe5ae974847dde4c444",
+      "bytes": 9919412
+    },
+    "game/assets/providers/civilian_rigged.glb.import": {
+      "sha256": "2775a370f710f323cfdb37805fd252f793216d43ee233a6e7c02d9bbcd50eec0",
+      "bytes": 1177
+    },
+    "game/assets/providers/civilian_rigged_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg": {
+      "sha256": "de660d06af20d799549112a8e6de7675c2b3403aea9a4a3c08eb509c0e3cb1d0",
+      "bytes": 3232802
+    },
+    "game/assets/providers/civilian_rigged_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg.import": {
+      "sha256": "a44a26b6fae1607a9faf55c3d0ecb2e69c68c43106dea6e8df8bf3a6d35d7751",
+      "bytes": 1160
+    },
+    "game/assets/providers/civilian_rigged_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png": {
+      "sha256": "9c5be4e35a54a7b3f988e39347319bcf0fb37d66ae6a9b1930ac757949316f75",
+      "bytes": 2404498
+    },
+    "game/assets/providers/civilian_rigged_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png.import": {
+      "sha256": "ac72916cbe5f05bb1cf6b5d526842b4d9c5f6a03c57d807e5dfbd4441742e1a5",
+      "bytes": 1170
+    },
+    "game/assets/providers/civilian_rigged_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg": {
+      "sha256": "c0f6071f165736a9464317761b397e88fe087c6bacaeb3c9a9f5e2520746ef13",
+      "bytes": 2529412
+    },
+    "game/assets/providers/civilian_rigged_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg.import": {
+      "sha256": "333f06b7cbb9ab40c19af40b7a0b4901d1eb3505150db0bc4b804a8b55f51bb3",
+      "bytes": 1155
+    },
+    "game/assets/providers/civilian_rigged_OrchardOriginalCharcoalWeave.png": {
+      "sha256": "6fc89d4edcd0a83bdfc8ec8339c439348a58dd4fc4c45c84941ceacddffd8a09",
+      "bytes": 90117
+    },
+    "game/assets/providers/civilian_rigged_OrchardOriginalCharcoalWeave.png.import": {
+      "sha256": "db931599a650e68a9a15d857cac2dfd1ac34fc5e9ef25c5988ce43eab7214de7",
+      "bytes": 1119
+    },
+    "game/assets/providers/coupe_clean.glb": {
+      "sha256": "0560279f049c313d251ee681c8b436af40411f27cfdeddac5765ed179625509f",
+      "bytes": 30134092
+    },
+    "game/assets/providers/coupe_clean.glb.import": {
+      "sha256": "16f4608ed00532d0ae8f15e7700fbbd51151703e7bfc80832b753c62385edec5",
+      "bytes": 1165
+    },
+    "game/assets/providers/coupe_clean_texture_pbr_20250901.png": {
+      "sha256": "cdc06ff1c2f018d1acac84b4ac5696cd03b2218de418e6ab2f5918fa7032f380",
+      "bytes": 1249951
+    },
+    "game/assets/providers/coupe_clean_texture_pbr_20250901.png.import": {
+      "sha256": "a97dd9730e015cc354b26dc75ee6abb928cc86750357ebe29bcb8d2197ec278e",
+      "bytes": 1083
+    },
+    "game/assets/providers/coupe_clean_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png": {
+      "sha256": "cc5789c0e2fee90ccc6fc7df24e23ce8591ceda4fc25f35cc8a0f425eb7c3a42",
+      "bytes": 1102043
+    },
+    "game/assets/providers/coupe_clean_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png.import": {
+      "sha256": "0abd8e59f988776668d0b01077710d05c19f5b0440457063e45a453a20912ae3",
+      "bytes": 1203
+    },
+    "game/assets/providers/coupe_clean_texture_pbr_20250901_normal.png": {
+      "sha256": "e4a6cfb796c9f59de98493d003271ad34e6e56fe0ad50147cac7c6b82fe4acd7",
+      "bytes": 493295
+    },
+    "game/assets/providers/coupe_clean_texture_pbr_20250901_normal.png.import": {
+      "sha256": "f91bcd23fa9ae6b128fe87ae6d24528cb23f77574aea2e78dde3c03988e52439",
+      "bytes": 1104
+    },
+    "game/assets/providers/food_trolley_clean.glb": {
+      "sha256": "242f7c5af79be5c7aba112ae855e4f46be6eb7129ff91abd9bc4b3793f8d0ff4",
+      "bytes": 7551672
+    },
+    "game/assets/providers/food_trolley_clean.glb.import": {
+      "sha256": "f597955e921af782be3b8dc3636dd7d97dadb62af4a91db4b85231b0b392e748",
+      "bytes": 1186
+    },
+    "game/assets/providers/food_trolley_clean_stainless+food+cart+3d+model_basecolor.jpg": {
+      "sha256": "87499ecabe8b0da7bb632d3b15cdc20caf8fbf17e3049d484918494c9e134fdf",
+      "bytes": 203532
+    },
+    "game/assets/providers/food_trolley_clean_stainless+food+cart+3d+model_basecolor.jpg.import": {
+      "sha256": "6e28b6234f4e7aba6f5232a16f1263b90b3bc4dc52bc463a2a9a82d20904f83f",
+      "bytes": 1156
+    },
+    "game/assets/providers/food_trolley_clean_stainless+food+cart+3d+model_normal.png": {
+      "sha256": "58783b583521124dbfdb6e2f4dd03a53bde7d4800e292cc7c66c9933706b6c8b",
+      "bytes": 361155
+    },
+    "game/assets/providers/food_trolley_clean_stainless+food+cart+3d+model_normal.png.import": {
+      "sha256": "716878b5184c4c2489c7f2f5e2a084c7d98c19d214456616f0012388d609de7c",
+      "bytes": 1149
+    },
+    "game/assets/providers/food_trolley_clean_stainless+food+cart+3d+model_rm.jpg": {
+      "sha256": "17d17700f3cbd4a5278ebef7bd5a8870ce3d558e43650060bf1efe70185b11c3",
+      "bytes": 252939
+    },
+    "game/assets/providers/food_trolley_clean_stainless+food+cart+3d+model_rm.jpg.import": {
+      "sha256": "8d701d5a056504faadffc71004e0461206f089229ad9403946c6d136f3277893",
+      "bytes": 1137
+    },
+    "game/assets/providers/hawker_counter_clean.glb": {
+      "sha256": "19d050c87e10e326d9bcc1b3f6bf04cc3b51e34ea2448aabe2e5cc2e864679fd",
+      "bytes": 7841208
+    },
+    "game/assets/providers/hawker_counter_clean.glb.import": {
+      "sha256": "ed8698b9caea0eb899e609a83a5eebf14a0278662748a7646c2040c444a2db94",
+      "bytes": 1191
+    },
+    "game/assets/providers/hawker_counter_clean_hawker+stall+3d+model_basecolor.jpg": {
+      "sha256": "d0550e6e5b76b15f54d5a7f9186f6873cf59a1708ef92881211d5f3458c933bf",
+      "bytes": 289528
+    },
+    "game/assets/providers/hawker_counter_clean_hawker+stall+3d+model_basecolor.jpg.import": {
+      "sha256": "aabb2d03ebd52085bfc86fbebea974966de5474ed3fb9ce0adf06b005315c3f3",
+      "bytes": 1142
+    },
+    "game/assets/providers/hawker_counter_clean_hawker+stall+3d+model_normal.png": {
+      "sha256": "8d0eac00025da7f96dc309722914b66fb167bedd79adfaa53c4cda3ae2dde5f3",
+      "bytes": 399010
+    },
+    "game/assets/providers/hawker_counter_clean_hawker+stall+3d+model_normal.png.import": {
+      "sha256": "59aca62d3f019fa8c0c2e5ee950b71310f6efa103260cb4f3e46ef0b5b839194",
+      "bytes": 1134
+    },
+    "game/assets/providers/hawker_counter_clean_hawker+stall+3d+model_rm.jpg": {
+      "sha256": "4abde1f6aecf5264e5415ac18d30555247c37f20a0db225d7f5afccd8062e13d",
+      "bytes": 187778
+    },
+    "game/assets/providers/hawker_counter_clean_hawker+stall+3d+model_rm.jpg.import": {
+      "sha256": "908a4016640c9d13bfd92e31bcd421d4ec3a4617003c3a6e35f6d20e4f5b8427",
+      "bytes": 1121
+    },
+    "game/assets/providers/hawker_counter_refined.glb": {
+      "sha256": "ca3063e96c28d3e7350b3beee098679851c799fe3cb136f19c789bb42ee6a2a6",
+      "bytes": 3410500
+    },
+    "game/assets/providers/hawker_counter_refined.glb.import": {
+      "sha256": "c71b899333e14f943a97ae3d2ea09fe82342705bd5ccef381a46be62d9031aa9",
+      "bytes": 1198
+    },
+    "game/assets/providers/hawker_counter_refined_hawker+stall+3d+model_basecolor.jpg": {
+      "sha256": "1e6e66a58dc19c007bb3f3e852cb997bf622aae2aedd4e71e786f45bc7c14a4b",
+      "bytes": 2848972
+    },
+    "game/assets/providers/hawker_counter_refined_hawker+stall+3d+model_basecolor.jpg.import": {
+      "sha256": "bed021c98a995e07ceb82567af8f662f2004491d5d30e766054ac716be63efdc",
+      "bytes": 1148
+    },
+    "game/assets/providers/hawker_table_clean.glb": {
+      "sha256": "b3600a3601a7fad3d3df94175e0c1060cb4346ced4a962ed3037983bce3bfc9b",
+      "bytes": 6688184
+    },
+    "game/assets/providers/hawker_table_clean.glb.import": {
+      "sha256": "5b12d887d746ef27ef63ece6c7abe3baa4ec57d33d8cc02ae5e2ceb0c26779f6",
+      "bytes": 1186
+    },
+    "game/assets/providers/hawker_table_clean_round+table+3d+model_basecolor.jpg": {
+      "sha256": "8081cd13a8ca2fc046e6cf337caef775fcfb9c49492c2c45e77cfb1af16e990d",
+      "bytes": 205050
+    },
+    "game/assets/providers/hawker_table_clean_round+table+3d+model_basecolor.jpg.import": {
+      "sha256": "d9f19cebc362acf9ec0b307541c26845f6cd3637be57921bb89da3a5c467335e",
+      "bytes": 1133
+    },
+    "game/assets/providers/hawker_table_clean_round+table+3d+model_normal.png": {
+      "sha256": "8bf1bd9f843885acc28c6a8a1dce0fe59eb262a6cd90e0ac41d30d613b7ae561",
+      "bytes": 504033
+    },
+    "game/assets/providers/hawker_table_clean_round+table+3d+model_normal.png.import": {
+      "sha256": "d89566e5a7fc761b528ffb59aa0a035b32ae814f840f92e7669d82540f6e7546",
+      "bytes": 1125
+    },
+    "game/assets/providers/hawker_table_clean_round+table+3d+model_rm.jpg": {
+      "sha256": "2327e3fbc94988b4a84454a8a4ce70dcf463c2b7b511793af9172f43150d5887",
+      "bytes": 117996
+    },
+    "game/assets/providers/hawker_table_clean_round+table+3d+model_rm.jpg.import": {
+      "sha256": "b84f38511ca529390d49f2d8c657ebaf0034e99f24069bcd9301c1582fd89c19",
+      "bytes": 1113
+    },
+    "game/assets/providers/hawker_table_refined.glb": {
+      "sha256": "a83a2fdd84840b41183415a959c298ec6473ca06592ead1da115c66160b197e9",
+      "bytes": 2690924
+    },
+    "game/assets/providers/hawker_table_refined.glb.import": {
+      "sha256": "9dda2bbe225d44924a966e7b745a60deac9f5ab9aeac939898ac93001ee9b1b6",
+      "bytes": 1192
+    },
+    "game/assets/providers/hawker_table_refined_round+table+3d+model_basecolor.jpg": {
+      "sha256": "7ba04d3a90e57916871f2d7386d2ad085416fd3a5384c08e7ab6ee79f5af745c",
+      "bytes": 2329159
+    },
+    "game/assets/providers/hawker_table_refined_round+table+3d+model_basecolor.jpg.import": {
+      "sha256": "e0b532668211a3f77dad3cd64983623cef2c98e4926179a0d9836770cb71283b",
+      "bytes": 1140
+    },
+    "game/assets/providers/hdb_slab_clean.glb": {
+      "sha256": "2dbdd82b0d97ef2b150ce75a83086bbc7058acf0ec7bfce6aecb9c9876d673d4",
+      "bytes": 46240708
+    },
+    "game/assets/providers/hdb_slab_clean.glb.import": {
+      "sha256": "8413042230f0adc1dff5b2cea7ec110a913ecfb27c014c1fe3f8fe8d1bd10852",
+      "bytes": 1174
+    },
+    "game/assets/providers/hdb_slab_clean_texture_pbr_20250901.png": {
+      "sha256": "f52af986d61e5b4e2fded24e7c1dd37700b5bc279e1ddb35c427be45371f2586",
+      "bytes": 1615540
+    },
+    "game/assets/providers/hdb_slab_clean_texture_pbr_20250901.png.import": {
+      "sha256": "f4fe89e44e4f70571c69311e860035e9ef34895aee113df89e7ccd3b9ec73a1e",
+      "bytes": 1092
+    },
+    "game/assets/providers/hdb_slab_clean_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png": {
+      "sha256": "4c2dd6f90a69e76750d5afacc69a80edd3dcc038c16d78469818b44f093ced0a",
+      "bytes": 1112562
+    },
+    "game/assets/providers/hdb_slab_clean_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png.import": {
+      "sha256": "b6141194ee3cb6298a686d7f06326aa7706104c6e4a825478bf3b4213f5ed343",
+      "bytes": 1211
+    },
+    "game/assets/providers/hdb_slab_clean_texture_pbr_20250901_normal.png": {
+      "sha256": "3899b9bdafe13d43458441b7b6e61e8ba9f163a061678e67af74e70258d655b0",
+      "bytes": 1029122
+    },
+    "game/assets/providers/hdb_slab_clean_texture_pbr_20250901_normal.png.import": {
+      "sha256": "62c47210d0f57b8ca146a14d34efda29974f5090e4ac36734e85342d6b41b6b4",
+      "bytes": 1113
+    },
+    "game/assets/providers/helicopter_clean.glb": {
+      "sha256": "7b3c3143bbae61d35d5928852b72d8cfe38825e62e7be92f7e09cc5db062df55",
+      "bytes": 10692856
+    },
+    "game/assets/providers/helicopter_clean.glb.import": {
+      "sha256": "60fec41c4cac03631cc633cf07f52a1e774204c2aa1762e50e6b6acc00803563",
+      "bytes": 1178
+    },
+    "game/assets/providers/helicopter_clean_Color_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg": {
+      "sha256": "ac3f046d61fc0eb35eced8dbb841f121f4266ba1494d9ebf78f3d9fa7b222bfe",
+      "bytes": 342140
+    },
+    "game/assets/providers/helicopter_clean_Color_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg.import": {
+      "sha256": "b4ecc38f97e42c0a11a17b4cc107caf844b44e83f4c1fa7c3ada4e692f2f58f6",
+      "bytes": 1164
+    },
+    "game/assets/providers/helicopter_clean_NormalGL_6982c251-8629-479f-b267-fea6cc6d8c2c.png": {
+      "sha256": "9666cf1bbd43270026a2978c3986ca4d4bd45ae0ef76f7ec7b0de5716f8877b6",
+      "bytes": 394879
+    },
+    "game/assets/providers/helicopter_clean_NormalGL_6982c251-8629-479f-b267-fea6cc6d8c2c.png.import": {
+      "sha256": "056fb61b255a659eb0997c707958278fdffa1e649ac5fc88229e0354981e3f5f",
+      "bytes": 1173
+    },
+    "game/assets/providers/helicopter_clean_ORM_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg": {
+      "sha256": "e299cc0126ad14226060b2330ea5eb8fabc407c3e529bc0e92e2825bc0397b42",
+      "bytes": 265221
+    },
+    "game/assets/providers/helicopter_clean_ORM_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg.import": {
+      "sha256": "b4d97d51a50fe99a7e2318cba93bf6acb79d0697d17540be3eeb6f0a3d820f1b",
+      "bytes": 1158
+    },
+    "game/assets/providers/helicopter_refined.glb": {
+      "sha256": "bd149a128315833f988f98ded1e8a7710c0f5b31e0b52b4afcf392cf79911380",
+      "bytes": 10693576
+    },
+    "game/assets/providers/helicopter_refined.glb.import": {
+      "sha256": "87ccdc9f7767225c9ef6ccfa62e2608ab19509dc8df63daa762b5a58bf93d8bf",
+      "bytes": 1185
+    },
+    "game/assets/providers/helicopter_refined_Color_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg": {
+      "sha256": "3fd6d1f28341494941e999c8dc7494f2eb3dbc2b21a29e23af5816a8fa237919",
+      "bytes": 3508338
+    },
+    "game/assets/providers/helicopter_refined_Color_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg.import": {
+      "sha256": "1fa5a49232fa75b245c26f9015dff5e3ff3c55be87f6852fda3992f3dcba1d6e",
+      "bytes": 1170
+    },
+    "game/assets/providers/helicopter_refined_NormalGL_6982c251-8629-479f-b267-fea6cc6d8c2c.png": {
+      "sha256": "d6eaac9f73ec9d72491262186b3e15f4fa2cf2552a1b3320595f7545e0282839",
+      "bytes": 1778696
+    },
+    "game/assets/providers/helicopter_refined_NormalGL_6982c251-8629-479f-b267-fea6cc6d8c2c.png.import": {
+      "sha256": "6356214147ee18b067a92478b544a2f89de8cc16025f84afb37caab4bbf4d1a8",
+      "bytes": 1179
+    },
+    "game/assets/providers/helicopter_refined_ORM_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg": {
+      "sha256": "888ebc5b35c68428999bd3b87359ac6c05c5e5055f4a9844a566fe581e1514d1",
+      "bytes": 2915138
+    },
+    "game/assets/providers/helicopter_refined_ORM_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg.import": {
+      "sha256": "eab4b125a6234976e3a341066cf18cb97830e98b4f4c8d53d8998890e26348c7",
+      "bytes": 1164
+    },
+    "game/assets/providers/helicopter_refined_report.json": {
+      "sha256": "28b1065c49b0900d7fd3a2333b886dbe174a95a01a34a4c399480e3ff0cbe4aa",
+      "bytes": 2631
+    },
+    "game/assets/providers/officer_clean.glb": {
+      "sha256": "354607e2e9474fe58d203b850204fe150247801a98efcc2e3e409e184e69b8bc",
+      "bytes": 9861184
+    },
+    "game/assets/providers/officer_clean.glb.import": {
+      "sha256": "903e94884e9e8defdd2494a46e9781c96d63c9345c5e9f836037e53dd946de93",
+      "bytes": 1171
+    },
+    "game/assets/providers/officer_clean_Color_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg": {
+      "sha256": "4bdad298a567d2502c83a897b450f1e33ea1850ce020a3fb154f9c81fb6c6e3b",
+      "bytes": 301759
+    },
+    "game/assets/providers/officer_clean_Color_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg.import": {
+      "sha256": "c269e35118f270549155132eb6334ec8df94bd02292ff330fbc79c4505c63e28",
+      "bytes": 1155
+    },
+    "game/assets/providers/officer_clean_NormalGL_b351e7bc-2305-42e4-bc74-b35a2256b75f.png": {
+      "sha256": "d81a72bbc60714f9ba14769a5dadc567c998ba55e2d7ad5460f3691ba3084584",
+      "bytes": 491349
+    },
+    "game/assets/providers/officer_clean_NormalGL_b351e7bc-2305-42e4-bc74-b35a2256b75f.png.import": {
+      "sha256": "c869725ae4f44750afca0f99878a684305facad19b8fd182ab5c4438edc6c865",
+      "bytes": 1163
+    },
+    "game/assets/providers/officer_clean_ORM_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg": {
+      "sha256": "d85168e5d3a4dbcb10729aa837de0f7cc6442280bf22b72fe9e41e1518bbc04a",
+      "bytes": 308462
+    },
+    "game/assets/providers/officer_clean_ORM_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg.import": {
+      "sha256": "1c9521414661ece5639701bd93b9fa45c90183d62c46a6d292b0e61c87d91024",
+      "bytes": 1149
+    },
+    "game/assets/providers/officer_rig_report.json": {
+      "sha256": "501d6442a81041b4266f103860c1ba10a38f45bf62606c9dfaa53f0f8687f74f",
+      "bytes": 2106
+    },
+    "game/assets/providers/officer_rigged.glb": {
+      "sha256": "e545c1cd4a91b49c17d0dea69e37965fad036b265914bd8d29b6490fefd12b33",
+      "bytes": 10968576
+    },
+    "game/assets/providers/officer_rigged.glb.import": {
+      "sha256": "2c7b62f09dba6bbbbb8bf7daa86f42e863493974bbf401f3dd38125299c7b814",
+      "bytes": 1174
+    },
+    "game/assets/providers/officer_rigged_Color_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg": {
+      "sha256": "598a75dbf12e74a4aae7804bffda8699f6ad72077625da8e4ec9e4289665a144",
+      "bytes": 3043010
+    },
+    "game/assets/providers/officer_rigged_Color_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg.import": {
+      "sha256": "980f61632278eeafa5de7d6e17c97a614a53bb4b16dbb46a41927b8aaf03688d",
+      "bytes": 1157
+    },
+    "game/assets/providers/officer_rigged_NormalGL_b351e7bc-2305-42e4-bc74-b35a2256b75f.png": {
+      "sha256": "9a071014c4a4db17e886bd6eaef5fc187f265add5b301a8505e8ffcfb4aa5d41",
+      "bytes": 2119794
+    },
+    "game/assets/providers/officer_rigged_NormalGL_b351e7bc-2305-42e4-bc74-b35a2256b75f.png.import": {
+      "sha256": "88be457175469b6c72351d3e24adcf0af2a59230eb96b423bb013e82b294ac9c",
+      "bytes": 1167
+    },
+    "game/assets/providers/officer_rigged_ORM_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg": {
+      "sha256": "a2f128d1843ed541b072a8ab2b6b73de7b2c9d5f1c5f7af71e728120b904b9cd",
+      "bytes": 3089175
+    },
+    "game/assets/providers/officer_rigged_ORM_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg.import": {
+      "sha256": "069f3be14f0f31f7fcafb35b8e6aef2ea9775b25057b1b43ecb3a7d2839e7a4b",
+      "bytes": 1152
+    },
+    "game/assets/providers/pistol_clean.glb": {
+      "sha256": "7acfa673b1496f6322405337b5e49238f44d50388963b6f0160599537e000004",
+      "bytes": 10215220
+    },
+    "game/assets/providers/pistol_clean.glb.import": {
+      "sha256": "f5d17aafab770f0f92cbd53f6e5ac737caab38b3d99a65a191bacae1abd01630",
+      "bytes": 1167
+    },
+    "game/assets/providers/pistol_clean_pistol+3d+model_basecolor.jpg": {
+      "sha256": "95793fcc8dde7e221faed8607db1578e832c6762eb05b79f6ace5310bc33d207",
+      "bytes": 248299
+    },
+    "game/assets/providers/pistol_clean_pistol+3d+model_basecolor.jpg.import": {
+      "sha256": "6169af7e7509777194c1368e96b0df760e5e311c98b4fd5a9ed6c0cac830462a",
+      "bytes": 1100
+    },
+    "game/assets/providers/pistol_clean_pistol+3d+model_normal.png": {
+      "sha256": "02ea5bddfd93b429ed23969f4469a5cda6d92e902785bf5e365ddb9f9b79b251",
+      "bytes": 849338
+    },
+    "game/assets/providers/pistol_clean_pistol+3d+model_normal.png.import": {
+      "sha256": "1407f27a8613b2c57de50166265e6a907c09c40a99dfbb9a6df617ba672bf2bb",
+      "bytes": 1092
+    },
+    "game/assets/providers/pistol_clean_pistol+3d+model_rm.jpg": {
+      "sha256": "d9920e8b5fbb6a58c76e4319cd5b12ab44b031d2cce0fa33ecf4c8dcc0387d45",
+      "bytes": 120558
+    },
+    "game/assets/providers/pistol_clean_pistol+3d+model_rm.jpg.import": {
+      "sha256": "e8918fe870eba0792d2b12ebb123126cb4f98cf2f8054fe943d657d64b1bd2a3",
+      "bytes": 1079
+    },
+    "game/assets/providers/pistol_held.glb": {
+      "sha256": "d710ddf885e5aff265d0c0093dabe7a485884496ea1ecb6f929f3d83b7ebea8f",
+      "bytes": 10215192
+    },
+    "game/assets/providers/pistol_held.glb.import": {
+      "sha256": "db1167152121224a56a7f265d7e9cafaa065d3c6136577db6912d59a943ffe11",
+      "bytes": 1165
+    },
+    "game/assets/providers/pistol_held_pistol+3d+model_basecolor.jpg": {
+      "sha256": "dc25d593837a1e88ad2702e6fe72549bee73cb7c5899917b50c5d62c8263e2d2",
+      "bytes": 3375659
+    },
+    "game/assets/providers/pistol_held_pistol+3d+model_basecolor.jpg.import": {
+      "sha256": "d22b5b3bf60f91f91f6eecde4e0ae48910dd7f6d08c616b4cd89667f8f97b9ed",
+      "bytes": 1098
+    },
+    "game/assets/providers/pistol_held_pistol+3d+model_normal.png": {
+      "sha256": "ccd57cac50773b810efd7c3684c2de57305d522309cc51f1347d17b5d1b41767",
+      "bytes": 5246049
+    },
+    "game/assets/providers/pistol_held_pistol+3d+model_normal.png.import": {
+      "sha256": "d4840388c1934f09787565b180ae4dfce85f0d8be2692bd2c99aa615e0c0b45e",
+      "bytes": 1089
+    },
+    "game/assets/providers/pistol_held_pistol+3d+model_rm.jpg": {
+      "sha256": "8049561fcea62b54e16fdf4e3810fca7e6ad4daafc5bfbf183e99bcd44eef007",
+      "bytes": 1479112
+    },
+    "game/assets/providers/pistol_held_pistol+3d+model_rm.jpg.import": {
+      "sha256": "ce7b0a8d6783cda1287844d875d6b41a1cd40a2c5e6e02f12b4c63e9c3e7971a",
+      "bytes": 1076
+    },
+    "game/assets/providers/planter_clean.glb": {
+      "sha256": "cdbb9886073c6ba21f2c96a083bdfd97e52293610b3fd387bbc455a67dca1b50",
+      "bytes": 8360296
+    },
+    "game/assets/providers/planter_clean.glb.import": {
+      "sha256": "9a132541e0e19685a49b4acf2fb6f38cd7b8eb43255f7ec8e65b12ae319bf409",
+      "bytes": 1171
+    },
+    "game/assets/providers/planter_clean_tropical+plant+3d+model_basecolor.jpg": {
+      "sha256": "44bd87ca07d953f6899a19599fc069cc616052efa0a85ff79adfcf6bdccdfbb5",
+      "bytes": 265778
+    },
+    "game/assets/providers/planter_clean_tropical+plant+3d+model_basecolor.jpg.import": {
+      "sha256": "2818fd1d0a64ccb093c8eba550bdf7d720281bee2a61a41646610c97e47f39bb",
+      "bytes": 1128
+    },
+    "game/assets/providers/planter_clean_tropical+plant+3d+model_normal.png": {
+      "sha256": "4037b1111d03da16ce9008a6edc4445c1ff7cba1b992af3bbac373f179950a86",
+      "bytes": 508292
+    },
+    "game/assets/providers/planter_clean_tropical+plant+3d+model_normal.png.import": {
+      "sha256": "8f50e8d25169069e1e4916afd6422702efc92725b3f55a5125a0fe1d906d1453",
+      "bytes": 1119
+    },
+    "game/assets/providers/planter_clean_tropical+plant+3d+model_rm.jpg": {
+      "sha256": "e9ec9ed2a1133be41224fef58a349e8a4419faf0e91a2819f2b0d7dfb025bd46",
+      "bytes": 136944
+    },
+    "game/assets/providers/planter_clean_tropical+plant+3d+model_rm.jpg.import": {
+      "sha256": "99f10320649c2435f2b7907bb8657db35ccda1281cc6957f3c93e5bcb4b34ea1",
+      "bytes": 1107
+    },
+    "game/assets/providers/player_clean.glb": {
+      "sha256": "9e4a8c61796a715b336b8cc8747b2563d4f73c312eff28825af647d88fa6fb5d",
+      "bytes": 10230688
+    },
+    "game/assets/providers/player_clean.glb.import": {
+      "sha256": "24d4a576fba5ed81a6087dac483014b717c15b1db2509bb04f2405289ad90d12",
+      "bytes": 1168
+    },
+    "game/assets/providers/player_clean_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg": {
+      "sha256": "586f26c798059e2eadbdd73a9210f9d305ee90001611119492e015c680e117c0",
+      "bytes": 304725
+    },
+    "game/assets/providers/player_clean_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg.import": {
+      "sha256": "ec2af52b88d7f20d4189bb006a6c274cb8eff93de8f66c41175330504b6a0faf",
+      "bytes": 1152
+    },
+    "game/assets/providers/player_clean_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png": {
+      "sha256": "fbb5dce06ee235d1025a84612a7d9ecd85b8c2cfb5ff6166cc919032a0bef572",
+      "bytes": 530847
+    },
+    "game/assets/providers/player_clean_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png.import": {
+      "sha256": "7916b455860def0ec539363babcb68c8d3e6440bac1b14923ca165d71a94f5cc",
+      "bytes": 1161
+    },
+    "game/assets/providers/player_clean_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg": {
+      "sha256": "57410d97cfe544ee3772b8f6ead1f9df83dce90f514728f0deeee8980d8d4b4d",
+      "bytes": 231757
+    },
+    "game/assets/providers/player_clean_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg.import": {
+      "sha256": "9e6a541577236253c6723684d636ca5b83e6f1b021366956abd753d3c352d11f",
+      "bytes": 1146
+    },
+    "game/assets/providers/player_rig_report.json": {
+      "sha256": "84ed27e6500d03f86112c55dd264d93f706fe400fe80aebef5ac89de54811917",
+      "bytes": 2093
+    },
+    "game/assets/providers/player_rigged.glb": {
+      "sha256": "bfcd5d74c867c0fb62756e7145ef7dcb582f18643f5f25f48e85a6edcfe4602f",
+      "bytes": 11663516
+    },
+    "game/assets/providers/player_rigged.glb.import": {
+      "sha256": "c01e24c86d09df6ed8ef41175b71044ea40a438266f61d1c05970b36f393e6b6",
+      "bytes": 1170
+    },
+    "game/assets/providers/player_rigged_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg": {
+      "sha256": "de660d06af20d799549112a8e6de7675c2b3403aea9a4a3c08eb509c0e3cb1d0",
+      "bytes": 3232802
+    },
+    "game/assets/providers/player_rigged_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg.import": {
+      "sha256": "9cd163106a7714f068c8c5f1f2d58e16ad67aee318599cfa8d38495c5102a550",
+      "bytes": 1154
+    },
+    "game/assets/providers/player_rigged_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png": {
+      "sha256": "9c5be4e35a54a7b3f988e39347319bcf0fb37d66ae6a9b1930ac757949316f75",
+      "bytes": 2404498
+    },
+    "game/assets/providers/player_rigged_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png.import": {
+      "sha256": "34741c29aa08c763cfb33fbcd614cc3b6a6ca690a2c7d586a388e5bc83583b10",
+      "bytes": 1164
+    },
+    "game/assets/providers/player_rigged_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg": {
+      "sha256": "c0f6071f165736a9464317761b397e88fe087c6bacaeb3c9a9f5e2520746ef13",
+      "bytes": 2529412
+    },
+    "game/assets/providers/player_rigged_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg.import": {
+      "sha256": "09c50b6cdb122d8832fb6535e8cd9d3c1034e91afe137f8fee0b98c858d46f9c",
+      "bytes": 1149
+    },
+    "game/assets/providers/player_rigged_OrchardOriginalCharcoalWeave.png": {
+      "sha256": "6fc89d4edcd0a83bdfc8ec8339c439348a58dd4fc4c45c84941ceacddffd8a09",
+      "bytes": 90117
+    },
+    "game/assets/providers/player_rigged_OrchardOriginalCharcoalWeave.png.import": {
+      "sha256": "b806d2055953347162ca684c738cdf5a812eb8bbac207e6d6f5db4806514b867",
+      "bytes": 1113
+    },
+    "game/assets/providers/previews/W1-HERO-001_preview.png": {
+      "sha256": "cd49063d4deeeb4216142cb9dec484bc6630297b83f83f1af568761d313a5874",
+      "bytes": 244727
+    },
+    "game/assets/providers/previews/W1-HERO-001_preview.png.import": {
+      "sha256": "3dae98236ce2a86bfc8bb5681d072813e2016947abcd1722aa7b8b9830785cdf",
+      "bytes": 986
+    },
+    "game/assets/providers/previews/W1-HERO-004_preview.png": {
+      "sha256": "e785d36cbf0ad2758ecea0a28801c26b267fbea64975cbf938ecd667d22c018c",
+      "bytes": 215537
+    },
+    "game/assets/providers/previews/W1-HERO-004_preview.png.import": {
+      "sha256": "d80ffc0819df348d28fff2d9d90803edd9a6a15d6c13a2683635a3d0537deea4",
+      "bytes": 987
+    },
+    "game/assets/providers/previews/W1-HERO-005_preview.png": {
+      "sha256": "a88ce0c2db4ceccaf6d80079e3cc01f32780bdb0d15025c21d4eb588a7ab528d",
+      "bytes": 163234
+    },
+    "game/assets/providers/previews/W1-HERO-005_preview.png.import": {
+      "sha256": "94c198e412c69fc65bb2692dac2fc96258b347fda3dca5c6d91265f83d0c56df",
+      "bytes": 986
+    },
+    "game/assets/providers/previews/W1-HERO-007_preview.png": {
+      "sha256": "de51fdde82af3b6d8b889d9b8a3c7d5aefbf90c0ac72d3417579c530b691ff17",
+      "bytes": 218955
+    },
+    "game/assets/providers/previews/W1-HERO-007_preview.png.import": {
+      "sha256": "d58d5b70966e2e1640e47493408b4d1ded15bb92e62782fe23268fd49e0a4b1e",
+      "bytes": 987
+    },
+    "game/assets/providers/refined_props_manifest.json": {
+      "sha256": "9147455fdb0fec461b73972e09954246d2125c808db8146d7af1c471e2715b35",
+      "bytes": 4602
+    },
+    "game/assets/providers/sedan_clean.glb": {
+      "sha256": "a1d663aaa5c50827f86f4f183e1a387c9cf3e053cbe1abdcf30924b2ca9a7a88",
+      "bytes": 11251928
+    },
+    "game/assets/providers/sedan_clean.glb.import": {
+      "sha256": "149badcc9787bc8dd04a2a081a03e611fd99d774775e8d0e2e097461bd08fd8c",
+      "bytes": 1164
+    },
+    "game/assets/providers/sedan_clean_Color_c00e82b4-f67d-42f8-8980-663ac27d866f.jpg": {
+      "sha256": "9ac40fc5b6935576f83726b40f88ee8e01c1706b60c048ac0d2de5eecb05e2c9",
+      "bytes": 348707
+    },
+    "game/assets/providers/sedan_clean_Color_c00e82b4-f67d-42f8-8980-663ac27d866f.jpg.import": {
+      "sha256": "d9cfedd09465855d9543031a4a87094cdfb2b35cb26ed42c2515088a232a2c08",
+      "bytes": 1148
+    },
+    "game/assets/providers/sedan_clean_NormalGL_c00e82b4-f67d-42f8-8980-663ac27d866f.png": {
+      "sha256": "9d4437dcf0c16bc62fb276bb59d41d4d9ef758295be340a4d90795b111c3fdf8",
+      "bytes": 437239
+    },
+    "game/assets/providers/sedan_clean_NormalGL_c00e82b4-f67d-42f8-8980-663ac27d866f.png.import": {
+      "sha256": "38dc892a2ab855ed86706b3e3d46a96a6e335555372c92f311bfa1974b8832c4",
+      "bytes": 1158
+    },
+    "game/assets/providers/sedan_clean_ORM_c00e82b4-f67d-42f8-8980-663ac27d866f.jpg": {
+      "sha256": "e528c070b96f7025f4269556617b556fbcf0c7ede6f2ce8ad1d4a700412fac74",
+      "bytes": 303017
+    },
+    "game/assets/providers/sedan_clean_ORM_c00e82b4-f67d-42f8-8980-663ac27d866f.jpg.import": {
+      "sha256": "af2c33291c421fa659534f7427c4b684e1372f187615c2188915c1c6e12a27e6",
+      "bytes": 1143
+    },
+    "game/assets/providers/service_clutter_clean.glb": {
+      "sha256": "4566b40c3da2c88ba2a0b9dea5dc5769e6487e3560b50c1689157140865f89d3",
+      "bytes": 8466696
+    },
+    "game/assets/providers/service_clutter_clean.glb.import": {
+      "sha256": "c178ab971c4012c7209ed2ddae25156357054be7c4190fbcc3e8e3681ae5c338",
+      "bytes": 1195
+    },
+    "game/assets/providers/service_clutter_clean_trash+bins+3d+model_basecolor.jpg": {
+      "sha256": "a14ea0ec1dc4e882e360235a3520d8b9652107cad7ab73e227ce24ec5dec918e",
+      "bytes": 274008
+    },
+    "game/assets/providers/service_clutter_clean_trash+bins+3d+model_basecolor.jpg.import": {
+      "sha256": "f22d8f79093ba2dc2aefed85d636da8f03ec7f759376d59f904649f41246e517",
+      "bytes": 1140
+    },
+    "game/assets/providers/service_clutter_clean_trash+bins+3d+model_normal.png": {
+      "sha256": "200d43586dfa77fa6d49288ed31ffdc535f95153c4741e94e5f46efeb200d433",
+      "bytes": 559538
+    },
+    "game/assets/providers/service_clutter_clean_trash+bins+3d+model_normal.png.import": {
+      "sha256": "cf2348ccdfc56cc10a7ee2fd28cabd557a1830c47b8d968bfb2068144e73fb26",
+      "bytes": 1131
+    },
+    "game/assets/providers/service_clutter_clean_trash+bins+3d+model_rm.jpg": {
+      "sha256": "c14d2404bc166b5731241c134b37327315363ccd7f3791bfffa254d2698d0ea0",
+      "bytes": 107503
+    },
+    "game/assets/providers/service_clutter_clean_trash+bins+3d+model_rm.jpg.import": {
+      "sha256": "07b5aad4e0f4bbec68f34d10dae34edb5d0dcb7ff1bac86d6a9d3277020bba20",
+      "bytes": 1119
+    },
+    "game/assets/providers/shophouse_clean.glb": {
+      "sha256": "24f278f57303c70bce256da2220c37ba3233565e1adab7c8e29afdfdcb3b5e53",
+      "bytes": 10238948
+    },
+    "game/assets/providers/shophouse_clean.glb.import": {
+      "sha256": "147ad3d8ed9ff4fc80d87c6d707ac957219d0c00459ef751a0969f71599e0dbc",
+      "bytes": 1177
+    },
+    "game/assets/providers/shophouse_clean_Color_bd941274-9ef3-419c-befe-da22efed2b85.jpg": {
+      "sha256": "e7ee5c44a924e07a8f6f7287eac8937915839f5682a6e8ee71cb3b7ac7c19621",
+      "bytes": 360638
+    },
+    "game/assets/providers/shophouse_clean_Color_bd941274-9ef3-419c-befe-da22efed2b85.jpg.import": {
+      "sha256": "38d0c09c5e27202f9c1b2c8c51ff8ba63808f4924eb5ff2e580a5b02de41a2d4",
+      "bytes": 1161
+    },
+    "game/assets/providers/shophouse_clean_NormalGL_bd941274-9ef3-419c-befe-da22efed2b85.png": {
+      "sha256": "fd4f7647994ff18173bba61b0a92ed31d64e7870a9d510219aea65a8111b6baa",
+      "bytes": 417584
+    },
+    "game/assets/providers/shophouse_clean_NormalGL_bd941274-9ef3-419c-befe-da22efed2b85.png.import": {
+      "sha256": "296b55dc871c0ec370ed0445ab4a886af641e2d0fee9884bb8bb197d76c64a90",
+      "bytes": 1170
+    },
+    "game/assets/providers/shophouse_clean_ORM_bd941274-9ef3-419c-befe-da22efed2b85.jpg": {
+      "sha256": "17b0fbc74c1ea54a170a4f618d9704849b5ab0fdfc73f72e5629f82fbe4b777a",
+      "bytes": 153075
+    },
+    "game/assets/providers/shophouse_clean_ORM_bd941274-9ef3-419c-befe-da22efed2b85.jpg.import": {
+      "sha256": "5893130b054177a1a141fdd46fa7cb1777b7ccfa42c072fed8b89a374eab4956",
+      "bytes": 1154
+    },
+    "game/assets/providers/smg_clean.glb": {
+      "sha256": "a5c8c7c03b3f3328c1ec9d838a45aa6545f1acfc4df9b11715853beafd6def39",
+      "bytes": 11492184
+    },
+    "game/assets/providers/smg_clean.glb.import": {
+      "sha256": "1fee4c97c2de619d7d5c9edf2400097c6621818b1f360c60c3d8c127855ae531",
+      "bytes": 1159
+    },
+    "game/assets/providers/smg_clean_compact+automatic+gun+3d+model_basecolor.jpg": {
+      "sha256": "1cf35f6f2cea50fd184d598eb71a5c9b8bd2abd21eb2a029a68e3df45cb0f1a8",
+      "bytes": 287682
+    },
+    "game/assets/providers/smg_clean_compact+automatic+gun+3d+model_basecolor.jpg.import": {
+      "sha256": "00751eb379549ca022f3ca6ace5b586b6878cf235107c6aa0bebd009b1a2df04",
+      "bytes": 1136
+    },
+    "game/assets/providers/smg_clean_compact+automatic+gun+3d+model_normal.png": {
+      "sha256": "93efd6195c5c9396c85e8735b7a4fed37473361cdc824949235323ba5fdef9e4",
+      "bytes": 950201
+    },
+    "game/assets/providers/smg_clean_compact+automatic+gun+3d+model_normal.png.import": {
+      "sha256": "577e781d08ff356ba692a7ee8fcd9802352e6d522af946430e1f18f99952bdf4",
+      "bytes": 1127
+    },
+    "game/assets/providers/smg_clean_compact+automatic+gun+3d+model_rm.jpg": {
+      "sha256": "84132f973ddaa68c28e0c89e5691cf2426eb11fc6744c77e78cd963503363131",
+      "bytes": 131126
+    },
+    "game/assets/providers/smg_clean_compact+automatic+gun+3d+model_rm.jpg.import": {
+      "sha256": "279c2647faede6d4ee3abb2384dc632f34a863b87aee3e7bd485cabde376131b",
+      "bytes": 1115
+    },
+    "game/assets/providers/smg_held.glb": {
+      "sha256": "5d345fbf85ffd7f86067c0c1eac014eb21f5c3c67b0c10ae1e6de20db5d45899",
+      "bytes": 11492148
+    },
+    "game/assets/providers/smg_held.glb.import": {
+      "sha256": "1cee701174fad3de363ee0d74153f45383a644ca6c37066480224d8e6081d9a6",
+      "bytes": 1156
+    },
+    "game/assets/providers/smg_held_compact+automatic+gun+3d+model_basecolor.jpg": {
+      "sha256": "e0c8ec5fa3ba1818c88b7b3061f7f7379c938afe77abb064192cf2d6de0cd5a8",
+      "bytes": 3538528
+    },
+    "game/assets/providers/smg_held_compact+automatic+gun+3d+model_basecolor.jpg.import": {
+      "sha256": "7bc857e570be95d5e477a2b836e7248460ea66aa8188f4c125a8d446f57bf418",
+      "bytes": 1133
+    },
+    "game/assets/providers/smg_held_compact+automatic+gun+3d+model_normal.png": {
+      "sha256": "8969603cf9d8479b3a7b56109dfae0a3cd2ddd5cec7c2e61a550e939397fae9a",
+      "bytes": 6251383
+    },
+    "game/assets/providers/smg_held_compact+automatic+gun+3d+model_normal.png.import": {
+      "sha256": "bdacd0312687f5723aa33f2b3bd1fb82c2e5e2782a803d51e9d4f099efee558b",
+      "bytes": 1125
+    },
+    "game/assets/providers/smg_held_compact+automatic+gun+3d+model_rm.jpg": {
+      "sha256": "f7bd9f97fc1679dff1ff3ad6780b013598eb564726c472173c2f33011e040334",
+      "bytes": 1588157
+    },
+    "game/assets/providers/smg_held_compact+automatic+gun+3d+model_rm.jpg.import": {
+      "sha256": "8291b68db3cde679983894965957e014de33712dde3b35d008c9fb061d9f9eed",
+      "bytes": 1113
+    },
+    "game/assets/providers/street_lamp_clean.glb": {
+      "sha256": "f1f7f9a6ba495eec188aada828e9167a8f48b1c32837dcfe5fea5f16075692a3",
+      "bytes": 13100320
+    },
+    "game/assets/providers/street_lamp_clean.glb.import": {
+      "sha256": "f362c283626c385baf6c37adaa4b0f49e385b07d43a5e3ff5d9fa6d5e76f1100",
+      "bytes": 1183
+    },
+    "game/assets/providers/street_lamp_clean_street+lamp+3d+model_basecolor.jpg": {
+      "sha256": "dded4892c8b83b7d7eec2297a2cce46e90b23771f1e56cac07bfce00694abb02",
+      "bytes": 296824
+    },
+    "game/assets/providers/street_lamp_clean_street+lamp+3d+model_basecolor.jpg.import": {
+      "sha256": "ed98da233ec8244617a72c43a1e2e037260cc9e7ea9834058df5cc31ae77604a",
+      "bytes": 1131
+    },
+    "game/assets/providers/street_lamp_clean_street+lamp+3d+model_normal.png": {
+      "sha256": "2eaefcf820b80563e1649b9d03b5308321903e1f9e4576af91fd4874973b0a7b",
+      "bytes": 1156144
+    },
+    "game/assets/providers/street_lamp_clean_street+lamp+3d+model_normal.png.import": {
+      "sha256": "b3e926da245cf6cbad13d25548d43f55335c73cf5bf058fa27a68b11bf118d79",
+      "bytes": 1122
+    },
+    "game/assets/providers/street_lamp_clean_street+lamp+3d+model_rm.jpg": {
+      "sha256": "613bd26011381a1bf2d3569c8c994223780c6592b0452fc9f82321dfe354052e",
+      "bytes": 145639
+    },
+    "game/assets/providers/street_lamp_clean_street+lamp+3d+model_rm.jpg.import": {
+      "sha256": "bfe59fc6ded67c86017c0054e69991132a5191003a9fa3c7a8512914fa9eccf1",
+      "bytes": 1110
+    },
+    "game/assets/providers/van_clean.glb": {
+      "sha256": "9183aff3ec40e4f960584b6096624d0f1c80909c572fb4bc8a6eedc0a742255d",
+      "bytes": 41318768
+    },
+    "game/assets/providers/van_clean.glb.import": {
+      "sha256": "f4b7cfe9f0ca67c8142bd1afae579466247f03a18e96209489fad1d28ea3f60b",
+      "bytes": 1159
+    },
+    "game/assets/providers/van_clean_texture_pbr_20250901.png": {
+      "sha256": "87c134307042206b8fdc20d75b90f0dd5f29bfb1f77d879f61cef2c403113cc0",
+      "bytes": 1407000
+    },
+    "game/assets/providers/van_clean_texture_pbr_20250901.png.import": {
+      "sha256": "bcd46d7384d2c008beaace52b59ed959c0c1a30da02e0e9e5c7957a30fbb3d6c",
+      "bytes": 1077
+    },
+    "game/assets/providers/van_clean_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png": {
+      "sha256": "bdac4bc6cf2d7d91f8b62e4412d34e0886195d709f1498880ff19b3626f4b429",
+      "bytes": 1164418
+    },
+    "game/assets/providers/van_clean_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png.import": {
+      "sha256": "28cc76ee54e342a4e7a5d71e98b16b2d9b35bad3b949f026f43adffd6fd973db",
+      "bytes": 1197
+    },
+    "game/assets/providers/van_clean_texture_pbr_20250901_normal.png": {
+      "sha256": "e58af9295cb87863580e739fe6e524035e3ce47e05549e5281288f11d7990fcf",
+      "bytes": 819049
+    },
+    "game/assets/providers/van_clean_texture_pbr_20250901_normal.png.import": {
+      "sha256": "9fb27b7b383fd7944b7d433d2c19bcedefed3f61b97ebbf7a2a608f811ab805b",
+      "bytes": 1098
+    }
+  },
+  "file_count": 228,
+  "provider_glb_count": 26,
+  "archive": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/relay-manager/wave-02-private-handoff-be6a8aa/OrchardReach-wave02-private-assets.tar",
+  "archive_sha256": "93b6971b78ab5eec6311a6d50f521f71128505f718b2e473080442769237592f",
+  "archive_bytes": 516321280,
+  "app_archive": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/relay-manager/wave-02-private-handoff-be6a8aa/OrchardReach-wave02-private.zip",
+  "app_archive_sha256": "377447ff855c91da8746c23a67cc4877c22b34e32eadf64c420a6c1b56c006e8",
+  "app_archive_bytes": 393884658,
+  "all_tar_members_rehashed": true,
+  "rights": "UNVERIFIED public source and packaged-binary redistribution; private owner-authorized implementation only",
+  "raw_sources": "Existing18 originals remain in sibling relay-manager/assets; do not regenerate",
+  "documentation": "Pull final origin/feature/wave-02-astra and read HANDOFF.md, NEXT_GOAL.md and docs/EVIDENCE.md",
+  "route_video": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/relay-manager/wave-02-private-handoff-be6a8aa/OrchardReach-wave02-route-1080p.mp4",
+  "route_video_sha256": "36bd71e19d4ea1c88cd954f559c4fcd070c615b53ae8e0c390540b1ad33c02ba",
+  "route_video_bytes": 107844981,
+  "route_video_qualification": "Silent 1080p VFR movie, original timestamped JPEG samples, CRF24, no cuts; not human OS-input footage."
+}

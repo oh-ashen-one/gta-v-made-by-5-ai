@@ -38,5 +38,16 @@
     "package-ui-r2/ui-review-load.json"
   ],
   "regression_evidence": "package-regressions.json",
-  "stability_status": "IN PROGRESS: package-soak-r2, started2026-10-21T14:45:37Z; no terminal result yet"
+  "stability_status": "PASS functional1800.008636s/3missions/0deaths/clean exit; performance FAIL for repeatcombatstalls; raw export identity only",
+  "architectures_verified": [
+    "x86_64",
+    "arm64"
+  ],
+  "signing_qualification": "Export preset codesign=0; executable retains upstream Godot template signature; no project signing/notarization or distribution certification performed.",
+  "strict_codesign_verification": {
+    "exit_code": 1,
+    "result": "invalid signature (code or signature have been modified), architecture arm64",
+    "qualified_launch": "Actual native executable launches passed; Finder/Gatekeeper launch not tested."
+  },
+  "stability_evidence": "package-soak-r2/capture_log.json and package-soak-resource-review.md"
 }

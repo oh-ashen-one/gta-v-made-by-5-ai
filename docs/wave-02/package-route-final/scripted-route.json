@@ -1,0 +1,103 @@
+{
+  "source": "actual Godot viewport readbacks",
+  "editing": "No cuts; frame durations follow monotonic capture timestamps",
+  "audio": "silent; no audio recorded",
+  "encoding": {
+    "codec": "libx264",
+    "preset": "fast",
+    "crf": 26,
+    "threads": 4,
+    "resolution": "source dimensions, no resize"
+  },
+  "first_source_second": 0.486232,
+  "last_source_second": 232.214037,
+  "sample_count": 2275,
+  "expected_duration_seconds": 231.727805,
+  "sha256": "b74adb3f695d1d08c3a370f323ef4d5ac92d4f4e673698e7a3a1626b05805d3d",
+  "probe": {
+    "streams": [
+      {
+        "index": 0,
+        "codec_name": "h264",
+        "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+        "profile": "High",
+        "codec_type": "video",
+        "codec_tag_string": "avc1",
+        "codec_tag": "0x31637661",
+        "mime_codec_string": "avc1.64003d",
+        "width": 1920,
+        "height": 1080,
+        "coded_width": 1920,
+        "coded_height": 1080,
+        "has_b_frames": 2,
+        "sample_aspect_ratio": "1:1",
+        "display_aspect_ratio": "16:9",
+        "pix_fmt": "yuvj420p",
+        "level": 61,
+        "color_range": "pc",
+        "color_space": "bt470bg",
+        "chroma_location": "left",
+        "field_order": "progressive",
+        "is_avc": "true",
+        "nal_length_size": "4",
+        "id": "0x1",
+        "r_frame_rate": "2000/1",
+        "avg_frame_rate": "1138000/115979",
+        "time_base": "1/16000",
+        "start_pts": 0,
+        "start_time": "0.000000",
+        "duration_ts": 3707680,
+        "duration": "231.730000",
+        "bit_rate": "2850235",
+        "bits_per_raw_sample": "8",
+        "nb_frames": "2276",
+        "extradata_size": 50,
+        "disposition": {
+          "default": 1,
+          "dub": 0,
+          "original": 0,
+          "comment": 0,
+          "lyrics": 0,
+          "karaoke": 0,
+          "forced": 0,
+          "hearing_impaired": 0,
+          "visual_impaired": 0,
+          "clean_effects": 0,
+          "attached_pic": 0,
+          "timed_thumbnails": 0,
+          "non_diegetic": 0,
+          "captions": 0,
+          "descriptions": 0,
+          "metadata": 0,
+          "dependent": 0,
+          "still_image": 0,
+          "multilayer": 0
+        },
+        "tags": {
+          "language": "und",
+          "handler_name": "VideoHandler",
+          "encoder": "Lavc62.28.102 libx264"
+        }
+      }
+    ],
+    "format": {
+      "filename": "docs/wave-02/package-route-final/scripted-route.mp4",
+      "nb_streams": 1,
+      "nb_programs": 0,
+      "nb_stream_groups": 0,
+      "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+      "format_long_name": "QuickTime / MOV",
+      "start_time": "0.000000",
+      "duration": "231.730000",
+      "size": "82607137",
+      "bit_rate": "2851840",
+      "probe_score": 100,
+      "tags": {
+        "major_brand": "isom",
+        "minor_version": "512",
+        "compatible_brands": "isomiso2avc1mp41",
+        "encoder": "Lavf62.12.102"
+      }
+    }
+  }
+}

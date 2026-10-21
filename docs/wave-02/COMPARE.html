@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orchard Reach · Wave 2 evidence comparison</title>
+<style>
+:root{color-scheme:dark;font:16px/1.5 system-ui;background:#101918;color:#e8eee9}*{box-sizing:border-box}body{margin:0;padding:28px;max-width:1800px;margin:auto}h1{font-size:30px;line-height:1.2;margin:0 0 8px}p{max-width:100ch;color:#bdcbc2}nav{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0}button,a{color:#a9e5cc}button{background:#233c34;border:1px solid #547468;border-radius:7px;padding:11px 18px;font:inherit;cursor:pointer}button[aria-pressed=true]{background:#bad9c3;color:#11251a}button:focus-visible,a:focus-visible{outline:3px solid #ffd78e;outline-offset:3px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}figure{margin:0;background:#1a2724;border:1px solid #36463d;border-radius:9px;overflow:hidden}figcaption{padding:14px}strong{display:block;margin-bottom:4px}img{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#080e0c}small{color:#a9bab0;overflow-wrap:anywhere}.note{background:#293328;border-left:4px solid #d6bc77;padding:14px 18px;margin:24px 0}footer{border-top:1px solid #35463c;padding-top:18px;margin-top:28px;font-size:14px}@media(max-width:1000px){.grid{grid-template-columns:1fr}body{padding:18px}img{max-height:65vh}}
+</style>
+<h1>Orchard Reach · Wave 2</h1>
+<p>Compare the actual owner-approved concepts, inherited wave-one captures, and the current packaged game. Images are original evidence files; click to open the full image. Concept art is the target, not a runtime claim.</p>
+<nav aria-label="Comparison scene"><button data-view="foot" aria-pressed="true">On foot</button><button data-view="drive" aria-pressed="false">Driving</button><button data-view="air" aria-pressed="false">Flight</button></nav>
+<div class="grid">
+<figure><a id="conceptLink"><img id="concept" alt="Owner-approved Singapore concept"></a><figcaption><strong>Owner-approved target</strong><small id="conceptPath"></small></figcaption></figure>
+<figure><a id="beforeLink"><img id="before" alt="Inherited wave-one runtime capture"></a><figcaption><strong>Wave 1 runtime</strong><small id="beforePath"></small></figcaption></figure>
+<figure><a id="afterLink"><img id="after" alt="Wave-two packaged runtime capture"></a><figcaption><strong>Wave 2 packaged runtime</strong><small id="afterPath"></small></figcaption></figure>
+</div>
+<div class="note"><strong>Visual verdict: REWORK · 3.7 / 10</strong>Real characters, corrected materials, a denser skyline and functional vehicle travel are visible. The large fidelity gap, empty paving, repeated buildings, sparse daily activity, true wheel articulation and foliage quality remain. These views have different authored/gameplay cameras; they are not a controlled pixel-difference experiment.</div>
+<p>Current implementation: <code>be6a8aa98b47735eb5b043db0860a0946767d1cd</code>. Current images below come from the actual exported macOS app at measured 1920×1080. They are discrete samples of scripted input automation; ordinary-player feel and human acceptance remain unverified. Follow the <a href="../EVIDENCE.md">evidence index</a> for terminal workload results and <a href="critic-final-visual.md">independent visual critique</a> for bounded findings.</p>
+<footer>Private implementation/evidence. Provider source and packaged-binary redistribution remain UNVERIFIED; no public game release is authorized. Original PNGs are retained without cosmetic edits. The three targets are in <a href="../concepts/">docs/concepts</a>.</footer>
+<script>
+const scenes={
+ foot:{concept:'../concepts/singapore-on-foot.png',before:'../../game/captures/02_hawker_market.png',after:'package-soak-r2/02_hawker_market.png'},
+ drive:{concept:'../concepts/singapore-driving.png',before:'../../game/captures/06_driving.png',after:'package-soak-r2/06_driving.png'},
+ air:{concept:'../concepts/singapore-helicopter.png',before:'../../game/captures/09_aerial_view.png',after:'package-soak-r2/09_aerial_view.png'}
+};
+function show(key){for(const [id,path] of Object.entries(scenes[key])){document.getElementById(id).src=path;document.getElementById(id+'Link').href=path;document.getElementById(id+'Path').textContent=path}for(const b of document.querySelectorAll('button[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===key))}
+for(const b of document.querySelectorAll('button[data-view]'))b.addEventListener('click',()=>show(b.dataset.view));show('foot');
+</script></html>

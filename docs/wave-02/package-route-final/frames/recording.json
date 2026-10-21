@@ -1,0 +1,31 @@
+{
+	"bytes_written": 452811386,
+	"cap_reason": "",
+	"capped": false,
+	"completion_hold": {
+		"elapsed_seconds": 0.150306,
+		"ended_seconds": 232.265746,
+		"frames_written": 2,
+		"requested": true,
+		"started_seconds": 232.11544
+	},
+	"directory": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/package-route-final/frames",
+	"enabled": true,
+	"frames_written": 2275,
+	"max_bytes": 1073741824,
+	"max_duration_seconds": 720.0,
+	"max_frames": 7200,
+	"missed_samples": 48,
+	"readback_encode_cost_ms": {
+		"count": 2275,
+		"max_ms": 79.833,
+		"mean_ms": 18.3025503296703,
+		"p50_ms": 17.034,
+		"p95_ms": 24.642,
+		"p99_ms": 26.162
+	},
+	"requested": true,
+	"requested_hz": 10,
+	"scheduled_samples": 2323,
+	"timestamps": "frames.jsonl monotonic seconds from route setup"
+}
