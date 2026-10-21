@@ -3,7 +3,7 @@
 - Owner: current Codex manager chat; delegated builder is MiniMax M3.1 Flash through Claude Code.
 - Starting checkpoint: 44431f5 (planning repository, no playable build).
 - Task branch: `feature/wave-01-orchard-reach` (remote `origin/feature/wave-01-orchard-reach`). The manager's documentation branch `codex/minimax-wave-01` is left at its own state and is never modified by this task.
-- State: **wave 1 implementation is IN PROGRESS.** The four-hour clock started at **2026-10-21 07:35:00 UTC** and the hard end is **11:35:00 UTC**; handoff preparation starts no later than **11:05:00 UTC**. Do not read this file as a completed wave — it is rewritten with final evidence at the deadline.
+- State: **wave 1 implementation is FINISHED and handed off.** The four-hour clock started at **2026-10-21 07:35:00 UTC** and the hard end is **11:35:00 UTC**; the handoff was prepared inside the reserved 11:05–11:35 window. The build is a **playable experimental slice with unmet requirements**, not a north-star acceptance — the verdict, the gaps and the successor's priorities are in `NEXT_GOAL.md` and `docs/REQUIREMENTS_LEDGER.md`.
 - Builder branch pushed to **`origin/feature/wave-01-orchard-reach`** (the manager reference branch `codex/minimax-wave-01` at `f9b1233` is not modified by this task).
 - Fixed wave window: 2026-10-21 07:35–11:35 UTC; final handoff preparation from 11:05 UTC.
 - Builder worktree: `.claude/worktrees/minimax-wave-01-build`, branch `feature/wave-01-orchard-reach`.
@@ -12,7 +12,7 @@
 - Model access: MiniMax subscription connection verified through Claude Code before dispatch. No API key belongs in this repository.
 - Engine (decided by the builder under owner delegation): **Godot 4.7.1 stable**, Forward+, native macOS export. Rationale and rejected alternatives: `waves/01/READINESS.md`.
 - Deliverable (in progress): `game/` — a playable third-person Singapore-inspired slice with an authored district, shooting, car theft, left-hand traffic, police response, a flyable helicopter and the "Harbour Relay" mission.
-- Build: `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip` (build output is git-ignored; rebuild locally).
+- Build: `godot --headless --path game --export-release "macOS" build/mac/OrchardReach.zip` (the export path is relative to the project folder; the build output is git-ignored, so rebuild locally).
 - Checks: `godot --headless --path game -- --test` → 33/33 PASS at the handoff commit (20 structural, 13 behavioural regression checks).
 - Evidence: `game/captures/` (automated playthrough PNGs, fixed-view district frames, `capture_log.json`), `docs/REQUIREMENTS_LEDGER.md`, `docs/asset-manifest.csv`, `docs/LOOK_DEV.md` (the wave-1 look sheet every later wave inherits), `waves/01/HANDOFF.md` (the filled wave handoff template) and `NEXT_GOAL.md`.
 - Owner visual update: GTA VI fidelity in Singapore; primary art direction is `docs/concepts/*.png` (generated concepts of **our** game), secondary evidence is `docs/visual-references.json`.
@@ -23,4 +23,4 @@
 - Critic reality: in this profile every subagent is served by the same MiniMax subscription, even when addressed as a Claude alias. **No Opus/Fable access exists here.** The in-wave critic pass is an independent-context, same-model review and is labelled as such.
 - Publication: task branch pushes authorized; main merge and public build release not authorized.
 - Scope: original Singapore-inspired game from END_GOAL.md; no local AI inference, no unapproved asset generation charges.
-- Next: the builder continues the build/critic/fix loop until the real 11:35 UTC deadline; the manager launches **Astra through Codex** from the checkpoint pushed at that point, using `NEXT_GOAL.md`.
+- Next: the manager launches **Astra through Codex** from the checkpoint pushed on `origin/feature/wave-01-orchard-reach`, using `NEXT_GOAL.md`. The task-owned engine and the shared GPU slot are released; no process of this task is left running.

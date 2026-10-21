@@ -10,7 +10,7 @@ Copy of the [wave handoff template](../../../docs/WAVE_HANDOFF.md), filled with 
 - **Engine and version:** **Godot 4.7.1.stable** (official build), Forward+ renderer, GDScript, native macOS export. Chosen by the builder under owner delegation; rationale and rejected alternatives in `waves/01/READINESS.md`.
 - **Runnable build or exact open/run/play instructions:**
   - From source: `godot --path game` (opens the game; press ENTER on the title screen).
-  - Packaged build: `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip` (the `.zip` is git-ignored; rebuild locally).
+  - Packaged build: `godot --headless --path game --export-release "macOS" build/mac/OrchardReach.zip` (the export path is relative to the project folder; the `.zip` is git-ignored, so rebuild locally).
   - Automated checks: `godot --headless --path game -- --test` → prints PASS/FAIL per check and exits non-zero on failure.
   - A fresh clone must first run `godot --headless --editor --path game --quit` once to build the `class_name` cache, and `bash game/tools/fetch_provider_assets.sh` + `blender --background --python game/tools/cleanup_provider_assets.py` to restore the provider art.
 - **Readiness checks completed:** engine inventory and versions, macOS export templates, Xcode/Metal availability, shared GPU slot state, critic capability, reference availability, provider-surface availability — all recorded in `waves/01/READINESS.md`.

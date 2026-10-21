@@ -48,10 +48,12 @@ godot --headless --path game -- --test
 
 **What the packet is and is not.** The playthrough drives the real systems through the real input actions: it is an automated playtest, not an uncut human run, so QA-018 stays Partial. The fixed-view frames are shot from an authored camera and are labelled as such.
 
+**Outcome of the final run** (`capture_log.json`, 2026-10-21): the mission reached **stage 8 (DONE)** — the package was picked up from the hawker hall after the market firefight, a car was stolen, the helicopter was boarded, flown to the waterfront pad, landed (`landed=true on_floor=true`), the pilot stepped out on foot and the delivery completed. Final state: health 100, wanted level 0, 34 pedestrians and 14 traffic vehicles alive. Two legs are honest caveats: the player was **killed by the police response during the car leg** and respawned at the checkpoint, so the drive to the aviation compound was completed on foot rather than by car; and the scripted player does not use the "marked car" objective.
+
 ## 3. Packaged build
 
 ```
-godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip
+godot --headless --path game --export-release "macOS" build/mac/OrchardReach.zip
 ```
 
 A universal macOS `.app`/`.zip` is produced (about 132 MB after the provider textures were reduced to 1K — it was 644 MB before that step, which is a useful number for the successor's budget). The build output is git-ignored; rebuild it locally. Launching the packaged `.app` itself was not exercised in wave 1 — that is a NOT TESTED item for the successor.
