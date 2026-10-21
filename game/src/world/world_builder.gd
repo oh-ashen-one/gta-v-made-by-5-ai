@@ -115,7 +115,7 @@ func _ground() -> void:
 	var box := BoxMesh.new()
 	box.size = Vector3(1500.0, 4.0, 1500.0)
 	mesh.mesh = box
-	mesh.material_override = Palette.mat_textured(Palette.CONCRETE_LIGHT, "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
+	mesh.material_override = Palette.mat_textured(Color(0.42, 0.41, 0.38), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
 	mesh.position = Vector3(0.0, -2.0, 0.0)
 	ground.add_child(mesh)
 	var shape := CollisionShape3D.new()
@@ -464,7 +464,7 @@ func _hawker_block(centre: Vector3) -> void:
 		_world_root.add_child(bulb)
 	# mission package in the open aisle in front of the stalls, so it can be
 	# walked to and picked up without climbing over the counter
-	locations["package"] = centre + Vector3(-5.0, 0.25, -16.0)
+	locations["package"] = centre + Vector3(-5.0, 0.25, -8.0)
 
 ## Modern waterfront edge: towers, promenade, skyline.
 func _waterfront_block(centre: Vector3) -> void:

@@ -15,6 +15,7 @@ const MOUSE_SENS := 0.0022
 const AIM_DISTANCE := 2.2
 const HIP_DISTANCE := 4.6
 const INTERACT_RANGE := 5.0
+const PICKUP_RANGE := 7.5
 
 var camera: Camera3D
 var arm: SpringArm3D
@@ -361,7 +362,8 @@ func _try_interact() -> void:
 	# mission interactables
 	for obj in get_tree().get_nodes_in_group("interactables"):
 		var d2 := global_position.distance_to(obj.global_position)
-		if d2 < INTERACT_RANGE and obj.has_method("interact"):
+		# small props are picked up from a slightly wider reach than a vehicle
+		if d2 < PICKUP_RANGE and obj.has_method("interact"):
 			obj.interact(self)
 			return
 

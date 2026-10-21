@@ -98,13 +98,13 @@ Nothing here is claimed as verified unless a runtime artefact is linked. The wav
 | ID | Status | Evidence / gap |
 | --- | --- | --- |
 | TECH-01 | Pass (decision recorded) | Godot 4.7.1 stable chosen and locked in `waves/01/READINESS.md` with rejected alternatives |
-| TECH-02 | Pass (packaged build produced) | `game/build/mac/OrchardReach.zip` exported from the macOS preset; the build was exported, **launching the packaged .app is still to be re-verified after the final build** |
+| TECH-02 | Pass (packaged build produced) | A universal macOS `.app`/`.zip` is exported from the macOS preset (`game/build/mac/OrchardReach.zip`, about 132 MB after the provider textures were reduced to 1K; it was 644 MB before that step). The build output is git-ignored and rebuilt locally. **Launching the packaged `.app` itself was not exercised in wave 1** - NOT TESTED |
 | ASSET-01 Partial | Tripo and Customuse were **not exposed in this CLI**, so requests were published in `ASSET_REQUESTS.json` and the manager executed four Customuse jobs; the results were cleaned in Blender (`game/tools/cleanup_provider_assets.py`) and integrated. Remaining Tripo props are still pending |
 | ASSET-02 | Fail (for now) | No external assets imported; procedural geometry only; no scale/UV/collision pipeline exercised on imported files |
 | ASSET-03 Pass | `docs/asset-manifest.csv` records every asset, including the four provider exports with provider terms, source URLs, SHA256 and the fact that they are **not** MIT-licensed and are not committed to the public repository |
 | ASSET-04 | Pass | No GTA assets, no third-party models, no credentials; all wave-1 content is generated geometry and original text |
-| ASSET-05 | Partial | `.gitignore` excludes engine caches and build output; capture PNGs are committed as evidence |
-| PERF-01 | Partial | Reference machine recorded; per-run frame metrics **not yet captured** |
+| ASSET-05 | Partial | `.gitignore` excludes engine caches, the build output and the provider binaries (size, not rights - see `docs/ASSET_RIGHTS.md`); `game/tools/fetch_provider_assets.sh` plus `game/tools/cleanup_provider_assets.py` reproduce the asset set on any machine, and the capture PNGs are committed as evidence |
+| PERF-01 | Partial | Reference machine recorded (Apple M3 Ultra, 256 GB, macOS 27.0.1, Forward+, 1280x720, MSAA 2x); per-run frame metrics **not yet captured** |
 | PERF-02 | Not started | 1080p60 / p95 ≤ 25 ms contract is declared but not measured |
 | PERF-03 | Not started | No stress-route profiling |
 | PERF-04 | Not started | No 30-minute soak, no three consecutive mission runs |
