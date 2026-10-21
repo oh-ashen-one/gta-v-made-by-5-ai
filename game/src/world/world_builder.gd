@@ -551,20 +551,61 @@ func _waterfront_edge() -> void:
 		_street_lamp(Vector3(-320.0 + i * 128.0, 0.0, PROMENADE_Z + 8.0))
 
 func _background_city() -> void:
-	# Dimensional original facades replace blank skyline prisms. This ring is
-	# background scenery; the road network and mission remain in the core.
+	# Existing side/back context remains dimensional, with its existing shadows.
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 991
 	for i in 64:
 		var side := i % 4
+		if side == 0: continue
 		var p := Vector3.ZERO
 		match side:
-			0: p=Vector3(-620+(i/4)*82,0,-710-rng.randf_range(0,140))
 			1: p=Vector3(-440-rng.randf_range(0,90),0,-410+(i/4)*54)
 			2: p=Vector3(440+rng.randf_range(0,90),0,-410+(i/4)*54)
 			_: p=Vector3(-620+(i/4)*82,0,435+rng.randf_range(0,90))
-		var scale_y := rng.randf_range(.55,1.20)
-		_authored("skyline_%d.glb"%posmod(i,4),p,rng.randf_range(-.08,.08),Vector3(1,scale_y,1))
+		_authored("skyline_%d.glb"%posmod(i,4),p,rng.randf_range(-.08,.08),Vector3(1,rng.randf_range(.55,1.20),1))
+	# Three staggered clusters on the existing far shore. Lower near-water
+	# blocks and taller rear blocks overlap in depth instead of isolated plinths.
+	# This is inaccessible context, not additional playable city area.
+	var groups: Array = [[],[],[],[]]
+	for row in 3:
+		for cluster in 3:
+			for col in 8:
+				var variant: int = 2 if row == 0 and col % 3 != 0 else (row+cluster+col)%4
+				var x: float = -720+cluster*490+col*54+rng.randf_range(-7,7)+row*13
+				var z: float = -711-row*130+rng.randf_range(-18,18)
+				var height_scale: float = rng.randf_range(.48,.73) if row == 0 else rng.randf_range(.70,1.22)+row*.08
+				var width_scale: float = rng.randf_range(.90,1.18)
+				var basis := Basis(Vector3.UP,rng.randf_range(-.07,.07)).scaled(Vector3(width_scale,height_scale,width_scale))
+				groups[variant].append(Transform3D(basis,Vector3(x,0,z)))
+	for variant in 4:
+		_batch_background("res://assets/authored/skyline_%d.glb"%variant,groups[variant])
+
+func _batch_background(path: String, transforms: Array) -> void:
+	var packed: PackedScene = load(path)
+	var source: Node = packed.instantiate()
+	var parts: Array[Dictionary] = []
+	_background_mesh_parts(source,Transform3D.IDENTITY,parts)
+	for part in parts:
+		var mm := MultiMesh.new()
+		mm.transform_format=MultiMesh.TRANSFORM_3D
+		mm.mesh=part["mesh"]
+		mm.instance_count=transforms.size()
+		for i in transforms.size():
+			mm.set_instance_transform(i,transforms[i]*part["transform"])
+		var instance := MultiMeshInstance3D.new()
+		instance.multimesh=mm
+		instance.material_override=part["override"]
+		instance.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_world_root.add_child(instance)
+	source.free()
+
+func _background_mesh_parts(node: Node, parent_transform: Transform3D, result: Array[Dictionary]) -> void:
+	var local := parent_transform
+	if node is Node3D: local=parent_transform*node.transform
+	if node is MeshInstance3D and node.mesh != null:
+		result.append({"mesh":node.mesh,"transform":local,"override":node.material_override})
+	for child in node.get_children():
+		_background_mesh_parts(child,local,result)
 
 
 func _perimeter() -> void:

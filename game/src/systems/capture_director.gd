@@ -21,6 +21,12 @@ var _finished := false
 var _capture_in_progress := false
 var _failure := ""
 var _frames_ms: Array[float] = []
+var _frame_stalls: Array[Dictionary] = []
+var _frame_stall_overflow := 0
+var _frame_stall_log: FileAccess
+var _frame_stall_log_opened := false
+const FRAME_STALL_THRESHOLD_MS := 100.0
+const FRAME_STALL_MAX_EVENTS := 1000
 var _samples: Array[Dictionary] = []
 var _gates: Array[Dictionary] = []
 var _combat_kills := 0
@@ -72,6 +78,7 @@ var _record_pending := false
 var _record_capped := false
 var _record_cap_reason := ""
 var _record_cost_ms: Array[float] = []
+var _completion_recording_hold: Dictionary = {"requested": false, "elapsed_seconds": 0.0, "frames_written": 0}
 const RECORD_INTERVAL_US := 100000 # Requested 10Hz; timestamps are authoritative.
 const RECORD_MAX_FRAMES := 7200
 const RECORD_MAX_BYTES := 1024 * 1024 * 1024
@@ -93,6 +100,8 @@ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager) 
 		elif arg.begins_with("--record-frames="):
 			_record_dir = arg.trim_prefix("--record-frames=")
 	DirAccess.make_dir_recursive_absolute(out_dir)
+	_frame_stall_log = FileAccess.open(out_dir.path_join("frame_stalls.jsonl"), FileAccess.WRITE)
+	_frame_stall_log_opened = _frame_stall_log != null
 	_engine_log_path = _resolve_engine_log_path()
 	_initialize_monitors()
 	_initial_deaths = Game.death_count
@@ -118,9 +127,22 @@ func _process(_delta: float) -> void:
 	var elapsed := float(now - _started_us) / 1000000.0
 	if _last_frame_us > 0:
 		var frame_ms := float(now - _last_frame_us) / 1000.0
+		var capture_overhead := _capture_in_progress or _readback_since_frame or _record_pending
 		_inclusive_frames_ms.append(frame_ms)
-		if not _capture_in_progress and not _readback_since_frame and not _record_pending:
+		if not capture_overhead:
 			_frames_ms.append(frame_ms)
+		if frame_ms > FRAME_STALL_THRESHOLD_MS:
+			if _frame_stalls.size() < FRAME_STALL_MAX_EVENTS:
+				var stall := {"started_seconds": float(_last_frame_us - _started_us) / 1000000.0,
+					"ended_seconds": elapsed, "interval_ms": frame_ms, "phase": _phase, "run": _run_index,
+					"capture_overhead": capture_overhead, "screenshot_pending": _capture_in_progress,
+					"readback_since_frame": _readback_since_frame, "recording_pending": _record_pending}
+				_frame_stalls.append(stall)
+				if _frame_stall_log:
+					_frame_stall_log.store_line(JSON.stringify(stall))
+					_frame_stall_log.flush()
+			else:
+				_frame_stall_overflow += 1
 	_last_frame_us = now
 	_readback_since_frame = false
 	if _record_log and not _record_capped and elapsed >= RECORD_MAX_SECONDS:
@@ -229,6 +251,9 @@ func _shot(label: String) -> void:
 		return
 	_capture_in_progress = true
 	await RenderingServer.frame_post_draw
+	if _finished:
+		_capture_in_progress = false
+		return
 	var img := get_viewport().get_texture().get_image()
 	if img != null:
 		_shots += 1
@@ -367,6 +392,21 @@ func _route_succeeded() -> void:
 		"flight_distance_m": mission.flight_distance, "gates": _gates.slice(_run_gate_start)})
 	_log("Verified mission completions: %d" % _completed_runs.size())
 	if not _soak_enabled:
+		if _record_log and not _record_capped:
+			_release_all()
+			var hold_started := _elapsed()
+			var first_hold_frame := _record_index
+			_completion_recording_hold = {"requested": true, "started_seconds": hold_started,
+				"elapsed_seconds": 0.0, "frames_written": 0}
+			_log("Holding completed mission visible for 0.5 seconds of continuous recording.")
+			await get_tree().create_timer(0.5, true, false, true).timeout
+			if _finished: return
+			_completion_recording_hold = {"requested": true, "started_seconds": hold_started,
+				"ended_seconds": _elapsed(), "elapsed_seconds": _elapsed() - hold_started,
+				"frames_written": _record_index - first_hold_frame}
+			if mission.stage != Mission.Stage.DONE or Game.death_count != _initial_deaths:
+				_abort("Completed mission did not remain valid during the terminal recording hold.")
+				return
 		_finish(true)
 		return
 	if _completed_runs.size() < SOAK_REQUIRED_RUNS:
@@ -939,6 +979,7 @@ func _write_checkpoint() -> void:
 	if output:
 		output.store_string(JSON.stringify({"elapsed_seconds": _elapsed(), "finished": _finished,
 			"latest": _snapshot(_elapsed()), "gates": _gates, "completed_runs": _completed_runs.size(),
+			"frame_stalls_recorded": _frame_stalls.size(), "frame_stall_overflow": _frame_stall_overflow,
 			"fixture_checks": _fixture_checks, "free_roam_distance_m": _free_distance, "reboard_cycle_verified": _reboard_cycle_verified,
 			"terminal_liveness": _terminal_liveness(), "runtime_log_scan": _runtime_log_scan, "recent_log": log_lines.slice(maxi(0, log_lines.size() - 8))}, "\t"))
 		output.close()
@@ -960,6 +1001,10 @@ func _finish(success: bool) -> void:
 	if _finished: return
 	_finished = true
 	_release_all()
+	if _frame_stall_log:
+		_frame_stall_log.flush()
+		_frame_stall_log.close()
+		_frame_stall_log = null
 	if _record_log:
 		_record_log.flush()
 		_record_log.close()
@@ -970,6 +1015,7 @@ func _finish(success: bool) -> void:
 		"capped": _record_capped, "cap_reason": _record_cap_reason,
 		"max_frames": RECORD_MAX_FRAMES, "max_bytes": RECORD_MAX_BYTES,
 		"max_duration_seconds": RECORD_MAX_SECONDS, "timestamps": "frames.jsonl monotonic seconds from route setup",
+		"completion_hold": _completion_recording_hold,
 		"readback_encode_cost_ms": _frame_metrics(_record_cost_ms)}
 	if not _record_dir.is_empty():
 		var record_summary := FileAccess.open(_record_dir.path_join("recording.json"), FileAccess.WRITE)
@@ -1005,6 +1051,12 @@ func _finish(success: bool) -> void:
 			"frame_times": _frame_metrics(_frames_ms),
 			"frame_time_method": "Monotonic process-frame intervals; excludes intervals touched by screenshot/recording readback.",
 			"frame_times_including_capture_overhead": _frame_metrics(_inclusive_frames_ms),
+			"frame_stalls": {"threshold_ms_exclusive": FRAME_STALL_THRESHOLD_MS,
+				"max_events": FRAME_STALL_MAX_EVENTS, "overflow_count": _frame_stall_overflow,
+				"total_count": _frame_stalls.size() + _frame_stall_overflow,
+				"event_log_path": out_dir.path_join("frame_stalls.jsonl"), "event_log_opened": _frame_stall_log_opened,
+				"time_basis": "Monotonic seconds from capture setup; phase/run identify the interval end. Capture-overhead flags indicate readback overlap, not proven causation.",
+				"events": _frame_stalls},
 			"recording": recording,
 			"gates": _gates, "samples": _samples, "log": log_lines}, "\t"))
 		output.close()

@@ -12,11 +12,12 @@ source_hashes={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest
 try:checkpoint=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
 except Exception:checkpoint='unknown'
 asset_hashes={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for folder in ['authored','providers'] for f in (root/'game'/'assets'/folder).glob('*.glb')}
+runtime_art_hashes={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for folder in ['authored','providers'] for f in (root/'game'/'assets'/folder).rglob('*') if f.is_file() and f.suffix.lower() in {'.glb','.png','.jpg','.jpeg','.gdshader','.tres','.tscn'}}
 try:
  patch=subprocess.check_output(['git','diff','HEAD','--','game/src','game/project.godot','game/assets/authored/shaders'],cwd=root,text=True)
  Path(a.log+'.source.patch').write_text(patch)
 except Exception:pass
-meta={'supervisor_pid':os.getpid(),'started_utc':utc(),'checkpoint':checkpoint,'source_hashes':source_hashes,'asset_hashes':asset_hashes,'command':cmd}
+meta={'supervisor_pid':os.getpid(),'started_utc':utc(),'checkpoint':checkpoint,'source_hashes':source_hashes,'asset_hashes':asset_hashes,'runtime_art_hashes':runtime_art_hashes,'command':cmd}
 samples=[];sampling_errors=[];stop=threading.Event();requested_stop=threading.Event()
 def sample_process(pid):
  with open(a.log+'.resources.jsonl','w') as out:

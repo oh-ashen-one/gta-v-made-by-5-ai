@@ -14,6 +14,20 @@ var _capture_director: Node = null
 func _ready() -> void:
 	print("[wave1] main ready, args=", OS.get_cmdline_user_args())
 	var args := OS.get_cmdline_user_args()
+	# QA-only fixed backing resolution; the actual viewport is also measured.
+	# Window API: https://docs.godotengine.org/en/stable/classes/class_window.html
+	if "--qa-session" in args or "--capture" in args or "--test" in args:
+		for arg in args:
+			if arg.begins_with("--qa-render-size="):
+				var dimensions := arg.trim_prefix("--qa-render-size=").split("x")
+				if dimensions.size() == 2 and dimensions[0].is_valid_int() and dimensions[1].is_valid_int():
+					var target := Vector2i(int(dimensions[0]),int(dimensions[1]))
+					if target.x >= 640 and target.x <= 2560 and target.y >= 360 and target.y <= 1440:
+						get_window().content_scale_mode=Window.CONTENT_SCALE_MODE_VIEWPORT
+						get_window().content_scale_aspect=Window.CONTENT_SCALE_ASPECT_KEEP
+						get_window().content_scale_size=target
+						get_window().content_scale_factor=1.0
+						print("[qa-render-size] requested_backing=",target)
 	if "--asset-review" in args:
 		add_child(load("res://src/systems/asset_review.gd").new())
 		return
@@ -51,6 +65,7 @@ func _ready() -> void:
 	heli.name = "Helicopter"
 	add_child(heli)
 	heli.global_position = world.locations["helipad_primary"] + Vector3(0.0, 0.6, 0.0)
+	print("[launch] world_ui_ready_ms=",Time.get_ticks_msec()," executable=",OS.get_executable_path()," editor_binary=",OS.has_feature("editor"))
 
 	if "--character-review" in args:
 		var review: Node = load("res://src/systems/character_review.gd").new()

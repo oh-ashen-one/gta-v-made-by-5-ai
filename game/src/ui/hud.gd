@@ -26,6 +26,7 @@ var _settings_values: Label
 var _settings_rows: Array = []
 var _marker: Vector3 = Vector3.ZERO
 var _gameplay_controls: Array[CanvasItem] = []
+var _layout_root: Control
 
 const NOTIFICATION_LIFETIME := 4.0
 
@@ -49,9 +50,12 @@ func setup(w: WorldBuilder, p: Player, m: Mission) -> void:
 
 func _build() -> void:
 	var root := Control.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_layout_root = root
+	root.size = Vector2(1280,720)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
+	_fit_layout()
+	get_viewport().size_changed.connect(_fit_layout)
 	_panel(root,Vector2(24,24),Vector2(620,78),Color(.025,.055,.058,.88))
 	var tag := _mk_label(root,Vector2(40,34),11,Color(.57,.78,.70))
 	tag.text="HARBOUR RELAY"
@@ -86,6 +90,10 @@ func _build() -> void:
 	for child in root.get_children():
 		if child is CanvasItem: _gameplay_controls.append(child)
 	_build_pause_panel(root);_build_title_panel(root);_build_settings_panel(root)
+
+func _fit_layout() -> void:
+	if _layout_root != null:
+		_layout_root.scale = get_viewport().get_visible_rect().size / Vector2(1280,720)
 
 func _panel(parent: Control, pos: Vector2, size: Vector2, color: Color) -> Panel:
 	var panel:=Panel.new();panel.position=pos;panel.size=size;panel.mouse_filter=Control.MOUSE_FILTER_IGNORE

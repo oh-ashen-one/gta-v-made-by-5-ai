@@ -60,7 +60,7 @@ static func tex(kind: String) -> NoiseTexture2D:
 	return t
 
 static func mat_textured(color: Color, kind: String, _uv_scale: Vector3, rough: float = 0.9, metal: float = 0.0) -> StandardMaterial3D:
-	# All surfaces use measured world-space mapping: one tile is four metres.
+	# World-space mapping: pavers represent a two-metre tile; other maps four metres.
 	# The previous per-box UV stretch and shared cache produced kilometre-long stripes.
 	var key := "%s|%s|%.2f|%.2f" % [kind, color.to_html(), rough, metal]
 	if _mat_cache.has(key):
@@ -72,15 +72,18 @@ static func mat_textured(color: Color, kind: String, _uv_scale: Vector3, rough: 
 		m.albedo_texture = load(path + "_albedo.png")
 		m.normal_enabled = true
 		m.normal_texture = load(path + "_normal.png")
-		m.normal_scale = 0.3
+		m.normal_scale = 0.07 if kind == "asphalt" else 0.3
 		m.roughness_texture = load(path + "_roughness.png")
 	else:
 		m.albedo_texture = tex(kind)
 	m.uv1_triplanar = true
 	m.uv1_world_triplanar = true
-	m.uv1_scale = Vector3.ONE * 0.25
+	m.uv1_scale = Vector3.ONE * (0.5 if kind == "pavers" else 0.25)
 	m.uv1_triplanar_sharpness = 8.0
 	m.roughness = rough
+	if kind == "asphalt":
+		m.roughness_texture = null
+		m.roughness = 0.96
 	m.metallic = metal
 	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
 	_mat_cache[key] = m

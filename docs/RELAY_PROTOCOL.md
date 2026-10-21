@@ -1,6 +1,6 @@
 # Sequential relay protocol
 
-**Planning only.** No agent run, timer, asset generation, or spending is launched by this document.
+**Owner update, 2026-10-21:** the five-model relay is authorized and wave 2 is running under its fixed clock (11:38:01–15:38:01 UTC; final validation/handoff by15:08:01). Godot4.7.1 is locked. Customuse MCP is the major-asset route; Tripo browser control is the small/bulk/secondary route; **Meshy is excluded**. All18 existing provider jobs are already delivered and must not be regenerated. No further Customuse jobs or purchases; existing Tripo credits only for authorized new needs. Current AGENTS/shared brain and END_GOAL override the historical planning statements below. The active checkpoint, actual access and terminal results are in HANDOFF.md; this protocol itself starts no process or expenditure.
 
 ## 1. Shared brief and fixed boundaries
 

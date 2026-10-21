@@ -293,8 +293,9 @@ func _check_impact(before: Vector3) -> void:
 func _spin_wheels(delta: float) -> void:
 	var roll := _forward * delta * 2.4
 	if _provider_root != null:
-		for w in _provider_wheels:
-			AssetLibrary.spin_part(w, self, Vector3.RIGHT, roll)
+		# The inherited classifier named displaced body strips as wheel_*.
+		# Keep their imported transforms: spinning them creates orbiting shards.
+		# Proper wheel partition/pivots/steering remain an explicit ART-06 gap.
 		return
 	for w in _wheels:
 		if w is MeshInstance3D:
