@@ -56,6 +56,16 @@ func _ready() -> void:
 		get_tree().quit(1 if tester.failures > 0 else 0)
 		return
 
+	if "--photos" in args:
+		var photo_dir := "captures"
+		for arg in args:
+			if arg.begins_with("--capture-dir="):
+				photo_dir = arg.split("=")[1]
+		var shooter: Node = load("res://src/systems/photo_capture.gd").new()
+		add_child(shooter)
+		shooter.setup(self, world, photo_dir)
+		return
+
 	if "--capture" in args:
 		_capture_director = load("res://src/systems/capture_director.gd").new()
 		add_child(_capture_director)
@@ -84,8 +94,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_F6:
 				if Game.load_game():
 					Events.toast("Progress loaded.", "info")
+				else:
+					Events.toast("Save unreadable or incompatible - starting a new game.", "bad")
 			KEY_F7:
 				player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
+			KEY_F10:
+				if mission:
+					mission.restart()
 			KEY_F8:
 				hud.visible = not hud.visible
 			KEY_F9:
@@ -94,16 +109,28 @@ func _unhandled_input(event: InputEvent) -> void:
 				hud.show_title(true)
 				hud.set_paused(false)
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			KEY_F1:
-				for node in get_tree().get_nodes_in_group("npcs"):
-					pass
-				_toggle_debug()
+			KEY_F3:
+				hud.toggle_settings()
+			KEY_1:
+				Game.settings["mouse_sensitivity"] = clampf(float(Game.settings["mouse_sensitivity"]) - 0.1, 0.2, 3.0)
+				hud.refresh_settings()
+			KEY_2:
+				Game.settings["mouse_sensitivity"] = clampf(float(Game.settings["mouse_sensitivity"]) + 0.1, 0.2, 3.0)
+				hud.refresh_settings()
+			KEY_3:
+				Game.settings["invert_y"] = not bool(Game.settings["invert_y"])
+				hud.refresh_settings()
+			KEY_4:
+				Game.settings["reduced_shake"] = not bool(Game.settings["reduced_shake"])
+				hud.refresh_settings()
+			KEY_5:
+				Game.settings["hud_visible"] = not bool(Game.settings["hud_visible"])
+				hud.visible = bool(Game.settings["hud_visible"])
+				hud.refresh_settings()
 	if event.is_action_pressed("debug_panel"):
 		_toggle_debug()
 
 func _toggle_debug() -> void:
-	for l in hud.get_children():
-		pass
 	hud.set_meta("debug", not hud.get_meta("debug", false))
 
 func _toggle_pause() -> void:

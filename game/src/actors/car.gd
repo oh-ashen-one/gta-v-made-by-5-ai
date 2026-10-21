@@ -32,6 +32,11 @@ var _camera: Camera3D
 var _arm: SpringArm3D
 var _body_mesh: MeshInstance3D
 var _driver: Node = null
+var _provider_root: Node3D = null
+var _impact_cooldown := 0.0
+var driver_player: Node = null
+var _provider_wheels: Array[Node3D] = []
+var _procedural_visuals: Array[Node3D] = []
 
 func _ready() -> void:
 	add_to_group("vehicles")
@@ -148,6 +153,12 @@ func _build() -> void:
 	shape.position = Vector3(0.0, dims.y * 0.5, 0.0)
 	add_child(shape)
 
+	for child in get_children():
+		if child is MeshInstance3D:
+			_procedural_visuals.append(child)
+	# Provider vehicle art when available; the procedural build is the fallback.
+	_try_provider_asset(dims)
+
 	_arm = SpringArm3D.new()
 	_arm.spring_length = 7.2
 	_arm.collision_mask = 1
@@ -158,6 +169,36 @@ func _build() -> void:
 	_camera.fov = 72.0
 	_arm.add_child(_camera)
 
+## Swap in the generated sedan for the civilian and response variants.
+func _try_provider_asset(dims: Vector3) -> void:
+	var asset_file := ""
+	match kind:
+		"sedan":
+			asset_file = "sedan_clean.glb"
+		"coupe":
+			asset_file = "coupe_clean.glb"
+		"van":
+			asset_file = "van_clean.glb"
+		"police":
+			asset_file = "sedan_clean.glb"
+	if asset_file == "" or not AssetLibrary.has_asset(asset_file):
+		return
+	var root := AssetLibrary.instantiate(asset_file, self)
+	if root == null:
+		return
+	_provider_root = root
+	# The cleaned export already faces -Z (engine forward) after the Blender
+	# assembly rotation, so no extra rotation is applied here.
+	root.position = Vector3.ZERO
+	if kind == "police":
+		AssetLibrary.tint(root, Color(0.85, 0.88, 0.95))
+	for part in _procedural_visuals:
+		part.visible = false
+	for wheel_name in ["wheel_FL", "wheel_FR", "wheel_RL", "wheel_RR"]:
+		var node := AssetLibrary.find_named(root, wheel_name)
+		if node is Node3D:
+			_provider_wheels.append(node)
+
 func _body_color() -> Color:
 	match kind:
 		"coupe": return Color(0.62, 0.14, 0.16)
@@ -166,6 +207,9 @@ func _body_color() -> Color:
 		_: return Color(0.30, 0.36, 0.42)
 
 func _physics_process(delta: float) -> void:
+	_impact_cooldown = maxf(0.0, _impact_cooldown - delta)
+	if Game.simulation_paused:
+		return
 	if disabled:
 		velocity = Vector3.ZERO
 		move_and_slide()
@@ -187,17 +231,26 @@ func _physics_process(delta: float) -> void:
 	_check_impact(before)
 	_spin_wheels(delta)
 
-func _check_impact(before: Vector3) -> void:
+func _check_impact(_before: Vector3) -> void:
 	if get_slide_collision_count() == 0:
 		return
-	# Only horizontal impact speed damages a vehicle: settling onto the road
-	# must never wear a parked car out.
-	if not driver_is_player and not has_ai:
-		return  # a parked car absorbs contact but is never worn out or announced
-	var speed: float = Vector2(before.x, before.z).length()
-	if speed < 5.5:
+	if _impact_cooldown > 0.0:
 		return
-	var dmg: float = clampf((speed - 5.5) * 3.0, 0.0, 45.0)
+	# A parked car absorbs contact without being worn out or announced.
+	if not driver_is_player and not has_ai:
+		return
+	# Damage comes from the closing speed along the contact normal, once per
+	# contact: a car scraping a wall must not lose health every frame (B2).
+	var worst := 0.0
+	for i in get_slide_collision_count():
+		var collision := get_slide_collision(i)
+		var normal := collision.get_normal()
+		var approach := -velocity.dot(normal)
+		worst = maxf(worst, approach)
+	if worst < 3.0:
+		return
+	_impact_cooldown = 0.6
+	var dmg: float = clampf((worst - 3.0) * 3.0, 0.0, 45.0)
 	health = maxf(0.0, health - dmg)
 	damaged.emit(dmg)
 	if health <= 0.0 and not disabled:
@@ -207,6 +260,10 @@ func _check_impact(before: Vector3) -> void:
 
 func _spin_wheels(delta: float) -> void:
 	var roll := _forward * delta * 2.4
+	if _provider_root != null:
+		for w in _provider_wheels:
+			AssetLibrary.spin_part(w, self, Vector3.RIGHT, roll)
+		return
 	for w in _wheels:
 		if w is MeshInstance3D:
 			w.rotate_x(roll)
@@ -239,6 +296,8 @@ func _ai_control(delta: float) -> void:
 	var speed_limit := max_speed
 	if dist < 12.0:
 		speed_limit = maxf(6.0, dist * 1.4)
+	if blocker_ahead():
+		speed_limit = minf(speed_limit, 2.5)
 	_forward = move_toward(_forward, speed_limit, accel * delta)
 	var dir := -global_transform.basis.z
 	velocity.x = dir.x * _forward
@@ -248,6 +307,28 @@ func _process(_delta: float) -> void:
 	if driver_is_player:
 		Sfx.set_engine_pitch(clampf(absf(_forward) / max_speed, 0.0, 1.0))
 
+## True when another vehicle or the player blocks the path ahead (TRAFFIC-02).
+func blocker_ahead() -> bool:
+	var fwd := -global_transform.basis.z
+	var origin := global_position + Vector3(0.0, 0.8, 0.0)
+	for other in get_tree().get_nodes_in_group("vehicles"):
+		if other == self:
+			continue
+		var d: Vector3 = other.global_position - global_position
+		var dist := d.length()
+		if dist < 0.5 or dist > 16.0:
+			continue
+		var dir := d.normalized()
+		if dir.dot(fwd) > 0.82:
+			return true
+	for actor in get_tree().get_nodes_in_group("actors"):
+		if actor == self:
+			continue
+		var d2: Vector3 = actor.global_position - global_position
+		if d2.length() < 7.0 and d2.normalized().dot(fwd) > 0.85:
+			return true
+	return false
+
 func speed_kmh() -> float:
 	return absf(_forward) * 3.6
 
@@ -255,12 +336,20 @@ func forward_speed() -> float:
 	return _forward
 
 func interact(player: Node) -> void:
-	if disabled or busy():
+	if disabled or driver_is_player:
+		return
+	if player is Player and (player as Player).busy:
 		return
 	if occupied_by_npc:
 		displace_driver()
+	else:
+		# taking a vehicle that was moving is still an incident
+		Game.add_heat(5.0)
+	driver_player = player
 	driver_is_player = true
 	has_ai = false
+	if player is Player:
+		(player as Player).busy = true        # guard the transition (PLAYER-03)
 	player.current_vehicle = self
 	player.visible = false
 	player.global_position = global_position
@@ -268,6 +357,7 @@ func interact(player: Node) -> void:
 	_camera.current = true
 	Game.set_mode(Game.MODE_CAR)
 	Sfx.start_engine()
+	player.busy = false            # the transition is complete
 	Events.vehicle_entered.emit(self)
 	Events.notify.emit("Vehicle entered. [E] to exit.", "info")
 
@@ -277,6 +367,11 @@ func force_exit() -> void:
 		_forward = 0.0
 		velocity.x = 0.0
 		velocity.z = 0.0
+		if driver_player is Player:
+			(driver_player as Player).current_vehicle = null
+			(driver_player as Player).busy = false
+			(driver_player as Player).visible = true
+	driver_player = null
 
 func exit_vehicle(player: Node) -> void:
 	if not driver_is_player:
@@ -285,13 +380,15 @@ func exit_vehicle(player: Node) -> void:
 	_forward = 0.0
 	velocity.x = 0.0
 	velocity.z = 0.0
-	var side := global_transform.basis.x
-	var exit_pos := global_position + side * 1.8 + Vector3(0.0, 0.4, 0.0)
-	exit_pos.y = maxf(exit_pos.y, 0.4)
+	var exit_pos := _clear_exit_position()
+	if exit_pos == Vector3.ZERO:
+		Events.notify.emit("No clear space to step out.", "warn")
+		return
 	player.global_position = exit_pos
 	player.visible = true
 	player.current_vehicle = null
 	player.camera.current = true
+	player.busy = false
 	Game.set_mode(Game.MODE_FOOT)
 	Sfx.stop_engine()
 	Events.vehicle_exited.emit(self)
@@ -309,6 +406,28 @@ func displace_driver() -> void:
 func set_ai_driver(driver: Node) -> void:
 	_driver = driver
 	occupied_by_npc = true
+
+## A clear spot beside the car, or zero when both sides are blocked.
+func _clear_exit_position() -> Vector3:
+	var right := global_transform.basis.x
+	var forward := -global_transform.basis.z
+	var space := get_world_3d().direct_space_state
+	var offsets: Array[Vector3] = [
+		right * 1.9, right * -1.9, forward * 2.4, forward * -2.4, right * 2.6 + forward * 1.2,
+	]
+	for offset in offsets:
+		var candidate: Vector3 = global_position + offset + Vector3(0.0, 0.4, 0.0)
+		candidate.y = maxf(candidate.y, 0.4)
+		if space == null:
+			return candidate
+		var params := PhysicsRayQueryParameters3D.create(
+			global_position + Vector3(0.0, 0.6, 0.0), candidate + Vector3(0.0, 0.6, 0.0))
+		params.collision_mask = 1
+		if space.intersect_ray(params).is_empty():
+			return candidate
+	# nothing beside the car is clear: the player still gets out, standing clear
+	# of the bodywork by a small offset, and the game never traps them in it
+	return global_position + right * 1.4 + Vector3(0.0, 0.6, 0.0)
 
 func busy() -> bool:
 	return driver_is_player

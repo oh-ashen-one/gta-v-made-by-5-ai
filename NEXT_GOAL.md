@@ -12,10 +12,10 @@
 
 ## What I want you to improve, in priority order
 
-1. **Replace the placeholder art with real assets — the single biggest gap.**
-   - Evidence: every mesh in wave 1 is procedural placeholder geometry (`game/src/world/world_builder.gd`, `game/src/actors/*.gd`); `docs/REQUIREMENTS_LEDGER.md` marks ART-02, ART-05, ART-06 and ART-08 as **Fail/Partial**.
-   - The wave-1 builder had **no** Tripo browser control and **no** Customuse MCP inside its CLI. Requests are published in **`ASSET_REQUESTS.json`** (18 entries: hero vehicles, helicopter, characters, building kits, hawker stall, and bulk props). If you have those surfaces, execute the requests and bring the results back; if not, keep the requests accurate and route them to the manager.
-   - Observable success: the sedan, coupe, van, helicopter, player character and shophouse module exist as imported GLBs with real materials, correct scale, collision and (for characters) a usable skeleton; the district stops reading as an untextured greybox.
+1. **Finish the art replacement — the biggest gap, now half closed.**
+   - Evidence: wave 1 shipped with procedural geometry everywhere; `docs/REQUIREMENTS_LEDGER.md` marks ART-02, ART-05, ART-06 and ART-08 as **Fail/Partial**. During the wave the manager executed four Customuse jobs and staged eight generated models; the builder cleaned them in Blender (`game/tools/cleanup_provider_assets.py`: real-world scale, ground at Y=0, loose-part separation, wheel/rotor naming, triangle budgets) and integrated the sedan, coupe, van, helicopter, shophouse module, HDB slab, hawker table, character and officer.
+   - **Still open:** (a) the generated character and officer are **unrigged** — no skin, no animation; they are used only as static figures (hawker vendors, airfield ground staff). Rigging them (automatic weights in Blender, procedural walk/aim in `Skeleton3D`) is the single highest-value remaining art task, because the player avatar is on screen constantly. (b) The remaining Tripo props in `ASSET_REQUESTS.json` are still pending — the delivered Tripo table needed decimation from 1.87 M to 4 000 triangles, so **every raw generator export must be budgeted before it enters the runtime**. (c) The hawker stall (W1-HERO-009) was not generated: Customuse charges exceeded the estimate and the balance is down to 53 — do **not** submit further Customuse jobs without new owner authorisation.
+   - Observable success: the player avatar is the generated character, rigged and animated; the remaining props are integrated at their triangle budgets; the district no longer reads as an untextured greybox.
 
 2. **Raise the visual fidelity of the district itself.**
    - Evidence: capture packet `game/captures/` shows flat, low-detail surfaces; materials are noise-textured but unmapped; no detail props, decals, signage graphics or surface variation per unit.
@@ -48,9 +48,26 @@
 - Existing capture packet, ledger and asset manifest formats.
 - The reference board as the *primary* art target and the concept-first comparison method.
 
+## Structural gaps the wave-1 independent review identified
+
+A same-model independent critic (no Opus/Fable access exists in the wave-1 CLI, so this is **not** a different-vendor review) probed the build with headless runtime tests and found the following. The critical and high items were fixed inside wave 1 and are now regression-tested; the structural items are the ones that need new machinery rather than a patch:
+
+| Gap | Why a patch will not fix it | Suggested direction |
+| --- | --- | --- |
+| No traffic signals, junction priority, queueing or pedestrian-crossing response (TRAFFIC-01, TRAFFIC-02) | the world *draws* signal heads but nothing drives them; cars follow a waypoint with a lane offset | build a junction object with a phase table and lane-level occupancy; make AI cars negotiate the junction instead of aiming at a point |
+| Pedestrians and officers cannot route around geometry (NPC-01, NPC-03) | they follow 20 straight kerb polylines; an officer walks straight at the player | a navigation mesh (`NavigationServer3D`) or an `AStar3D` polygon map over the district, baked at build time |
+| Pursuit model is a single heat float (LAW-01, LAW-04) | it cannot express search phase, last known position, rediscovery or spatial escape | per-responder perception with a pursuit state machine; the wave-1 search phase is a first step |
+| No spatial audio, and the shot ray starts at the camera while the muzzle flash sits on the arm (COMBAT-02, COMBAT-05, AUDIO-01) | the sound bank is a master-bus pool | `AudioStreamPlayer3D` with attenuation for footsteps, engines, rotors and gunfire; align the muzzle transform with the camera ray |
+| No frame-time capture, stress route or soak harness (PERF-02/03/04, QA-020) | the capture harness writes PNGs only | extend `capture_director.gd` to record frame times and percentiles over a fixed stress route, and run a 30-minute soak plus three mission completions |
+| No explicit transition table existed (SYSTEM-01) | it is written down now, but nothing enforces it | `docs/TRANSITION_TABLE.md` is the reference; add a headless invariant test for every row |
+| The generated character and officer are unrigged (ART-05) | a skinned mesh with no skeleton cannot animate | automatic weights in Blender, then drive the bones procedurally in `Skeleton3D` |
+| The player avatar is still procedural boxes while the generated character sits unused | — | swap the avatar for the rigged generated character and keep the procedural rig only as a fallback |
+
 ## Known bugs / blockers
 
-- **Provider surfaces (blocker for task 1):** wave 1 had neither Tripo browser control nor the Customuse MCP. Keep `ASSET_REQUESTS.json` current; do not fabricate assets or substitute direct HTTP calls to Tripo.
+- **Provider surfaces (partly resolved):** wave 1 had neither Tripo browser control nor the Customuse MCP; the manager executed the jobs instead. Four of eighteen requests are delivered and integrated, the rest are pending. Keep `ASSET_REQUESTS.json` current; do not fabricate assets or substitute direct HTTP calls to Tripo, and do not buy further Customuse credits (balance 53).
+- **Provider assets are not committed.** Their terms are not MIT, so `game/assets/providers/` is git-ignored. A fresh clone must re-fetch them with `bash game/tools/fetch_provider_assets.sh` and re-run the Blender cleanup; `docs/asset-manifest.csv` holds the public URLs and SHA256 values. A wave that needs the assets on another machine must carry that step explicitly.
+- **Triangle budgets are enforced in Blender, not in the engine.** The Tripo table arrived at 1.87 M triangles and was reduced to 4 000; the hero vehicles and buildings were capped at 30–45 k. Keep that discipline: a raw export imported unchanged will stall the frame budget (PERF-02).
 - **No real-time physics:** vehicles and the helicopter use a hand-written kinematic arcade model rather than a physics engine. It is reliable at district speeds but has no suspension, no real collision impulse and no deformation.
 - **Traffic can deadlock** at junctions and AI cars can damage parked cars (wave 1 patched parked-car damage so it no longer disables them, but AI/AI contact still applies damage).
 - **Populated city is light:** ~34 pedestrians and 14 traffic vehicles for a 640 × 640 m district — density is far below END_GOAL WORLD-07 targets and must be profiled before raising the numbers.

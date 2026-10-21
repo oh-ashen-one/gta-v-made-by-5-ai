@@ -56,20 +56,25 @@ func _spawn_hostiles() -> void:
 		_hostiles.append(h)
 
 func _process(_delta: float) -> void:
+	if Game.simulation_paused:
+		return
+	var actor: Node3D = _actor()
 	match stage:
 		Stage.TO_PACKAGE:
-			if package_node and player.global_position.distance_to(package_node.global_position) < 3.0:
-				Events.objective_changed.emit(_objective)
+			pass
 		Stage.TO_CAR:
-			if Game.mode == Game.MODE_CAR:
+			if Game.mode == Game.MODE_CAR and not car_taken:
 				car_taken = true
 				Game.add_heat(14.0)
 				_set_stage(Stage.TO_AIRFIELD)
 		Stage.TO_AIRFIELD:
-			if player.global_position.distance_to(world.locations["helipad_primary"]) < 40.0:
+			if actor.global_position.distance_to(world.locations["helipad_primary"]) < 60.0:
 				_set_stage(Stage.TO_HELI)
 		Stage.TO_HELI:
 			if Game.mode == Game.MODE_HELI:
+				Game.mark_safe_position(world.locations["helipad_primary"], 0.0)
+				Game.checkpoint_index = 2
+				Events.checkpoint_reached.emit(2)
 				_set_stage(Stage.FLY)
 		Stage.FLY:
 			if Game.mode == Game.MODE_HELI:
@@ -78,7 +83,7 @@ func _process(_delta: float) -> void:
 					landed = true
 					_set_stage(Stage.LAND)
 		Stage.LAND:
-			if Game.mode == Game.MODE_FOOT and player.global_position.distance_to(world.locations["helipad_secondary"]) < 30.0:
+			if Game.mode == Game.MODE_FOOT and actor.global_position.distance_to(world.locations["helipad_secondary"]) < 40.0:
 				_set_stage(Stage.DELIVER)
 		Stage.DELIVER:
 			if delivery_node and player.global_position.distance_to(delivery_node.global_position) < 3.5:
@@ -121,6 +126,13 @@ func _set_stage(new_stage: int) -> void:
 	Events.objective_changed.emit(_objective)
 	Events.mission_stage_changed.emit(stage)
 
+## Restore a saved stage without replaying its side effects.
+func restore_stage(stage_index: int) -> void:
+	stage = clampi(stage_index, 0, Stage.DONE)
+	Game.mission_stage = stage
+	Events.objective_changed.emit(_objective)
+	Events.mission_stage_changed.emit(stage)
+
 func package_collected() -> void:
 	if stage == Stage.TO_PACKAGE:
 		_set_stage(Stage.PACKAGE)
@@ -134,8 +146,29 @@ func delivery_completed() -> void:
 	if stage == Stage.DELIVER:
 		_set_stage(Stage.DONE)
 
+## The body the player controls right now (vehicle when driving or flying).
+func _actor() -> Node3D:
+	if player and player.current_vehicle != null and is_instance_valid(player.current_vehicle):
+		return player.current_vehicle as Node3D
+	return player
+
 func current_objective() -> String:
 	return _objective
+
+## Clean restart (MISSION-04): actors, pickups and stage state reset.
+func restart() -> void:
+	if package_node and package_node.has_method("reset"):
+		package_node.reset()
+	for h in _hostiles:
+		if is_instance_valid(h):
+			h.queue_free()
+	_hostiles.clear()
+	_spawn_hostiles()
+	package_taken = false
+	car_taken = false
+	landed = false
+	_set_stage(Stage.TO_PACKAGE)
+	Events.notify.emit("Mission restarted.", "info")
 
 func fail(reason: String) -> void:
 	Events.toast(reason, "bad")

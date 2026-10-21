@@ -32,6 +32,7 @@ var _walk_phase := 0.0
 var _damage_flash := 0.0
 var _muzzle_flash: MeshInstance3D
 var _weapon_mesh: MeshInstance3D
+var _weapon_model: Node3D = null
 var _body_root: Node3D
 var _leg_l: Node3D
 var _leg_r: Node3D
@@ -137,6 +138,17 @@ func _limb(hip: Vector3, size: Vector3, cloth: Material, foot: Material) -> Node
 	return pivot
 
 func _update_weapon_mesh() -> void:
+	var file := "smg_clean.glb" if Game.carried_weapon == "smg" else "pistol_clean.glb"
+	if _weapon_model != null and is_instance_valid(_weapon_model):
+		_weapon_model.queue_free()
+		_weapon_model = null
+	if AssetLibrary.has_asset(file):
+		_weapon_model = AssetLibrary.instantiate(file, _body_root)
+		if _weapon_model != null:
+			_weapon_model.position = Vector3(-0.30, 1.18, -0.28)
+			_weapon_mesh.visible = false
+			return
+	_weapon_mesh.visible = true
 	var bm := BoxMesh.new()
 	if Game.carried_weapon == "smg":
 		bm.size = Vector3(0.09, 0.13, 0.62)
@@ -148,9 +160,10 @@ func _update_weapon_mesh() -> void:
 func _build_camera() -> void:
 	arm = SpringArm3D.new()
 	arm.spring_length = HIP_DISTANCE
+	arm.add_excluded_object(self)
 	arm.collision_mask = 1
 	arm.margin = 0.25
-	arm.position = Vector3(0.0, 1.5, 0.0)
+	arm.position = Vector3(0.85, 1.62, 0.0)   # over-the-shoulder framing
 	arm.rotation_degrees = Vector3(-8.0, 0.0, 0.0)
 	add_child(arm)
 	camera = Camera3D.new()
@@ -163,19 +176,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		var mm := event as InputEventMouseMotion
-		yaw -= mm.relative.x * MOUSE_SENS
-		pitch = clampf(pitch - mm.relative.y * MOUSE_SENS, -1.25, 0.85)
-	if event.is_action_pressed("fire"):
-		_fire()
-	if event.is_action_pressed("reload"):
-		_start_reload()
-	if event.is_action_pressed("weapon_next"):
-		Game.switch_weapon("smg" if Game.carried_weapon == "pistol" else "pistol")
-		_update_weapon_mesh()
-	if event.is_action_pressed("interact"):
-		_try_interact()
+		var sens: float = MOUSE_SENS * float(Game.settings.get("mouse_sensitivity", 1.0))
+		yaw -= mm.relative.x * sens
+		var dy: float = mm.relative.y * sens
+		if bool(Game.settings.get("invert_y", false)):
+			dy = -dy
+		pitch = clampf(pitch - dy, -1.25, 0.85)
+	# NOTE: fire/reload/weapon/interact are polled in _process so that scripted
+	# input (Input.action_press) reaches the same code path as a human press.
 
 func _physics_process(delta: float) -> void:
+	if Game.simulation_paused:
+		velocity = Vector3.ZERO
+		return
 	if current_vehicle != null or busy:
 		velocity = Vector3.ZERO
 		return
@@ -230,7 +243,8 @@ func _physics_process(delta: float) -> void:
 	arm.rotation.y = yaw
 	arm.rotation.x = pitch
 	_animate(delta, horizontal.length(), sprinting)
-	Game.player_position = global_position
+	var actor := controlled_actor()
+	Game.player_position = actor.global_position
 	Game.player_rotation = yaw
 
 func _animate(delta: float, speed: float, sprinting: bool) -> void:
@@ -352,8 +366,20 @@ func _try_interact() -> void:
 			return
 
 func _process(_delta: float) -> void:
+	if Game.simulation_paused:
+		return
 	if current_vehicle == null and not busy:
 		aiming = Input.is_action_pressed("aim")
+	if true:
+		if Input.is_action_just_pressed("fire"):
+			_fire()
+		if Input.is_action_just_pressed("reload"):
+			_start_reload()
+		if Input.is_action_just_pressed("weapon_next"):
+			Game.switch_weapon("smg" if Game.carried_weapon == "pistol" else "pistol")
+			_update_weapon_mesh()
+		if Input.is_action_just_pressed("interact"):
+			_try_interact()
 	_update_prompt()
 
 func _update_prompt() -> void:
@@ -383,14 +409,19 @@ func _on_health_changed(value: float, _max_value: float) -> void:
 		visible = false
 
 func respawn_at(pos: Vector3, rot: float) -> void:
+	var vehicle := current_vehicle
+	if vehicle != null and is_instance_valid(vehicle):
+		if vehicle.has_method("force_exit"):
+			vehicle.force_exit()
+	current_vehicle = null
 	global_position = pos
 	yaw = rot
 	rotation.y = rot
 	velocity = Vector3.ZERO
 	visible = true
 	alive = true
-	if current_vehicle != null and current_vehicle.has_method("force_exit"):
-		current_vehicle.force_exit()
+	busy = false
+	camera.current = true
 	Game.set_mode(Game.MODE_FOOT)
 	Events.notify.emit("Restored at checkpoint.", "info")
 
@@ -398,3 +429,12 @@ func die() -> void:
 	alive = false
 	visible = false
 	Game.damage_player(Game.MAX_HEALTH)
+
+
+## The body the player is actually controlling: the vehicle when driving or
+## flying, otherwise the player itself. Every system that needs "where is the
+## player" must use this, never the raw node position (B5).
+func controlled_actor() -> Node3D:
+	if current_vehicle != null and is_instance_valid(current_vehicle):
+		return current_vehicle as Node3D
+	return self

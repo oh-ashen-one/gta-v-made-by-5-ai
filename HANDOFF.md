@@ -3,22 +3,23 @@
 - Owner: current Codex manager chat; delegated builder is MiniMax M3.1 Flash through Claude Code.
 - Starting checkpoint: 44431f5 (planning repository, no playable build).
 - Task branch: `codex/minimax-wave-01` (remote). Builder worktree branch: `feature/wave-01-orchard-reach` → pushed to `codex/minimax-wave-01`.
-- State: wave 1 implementation complete and handed off; the four-hour clock ran **07:35:00 → 11:35:00 UTC 2026-10-21** (hard end).
+- State: **wave 1 implementation is IN PROGRESS.** The four-hour clock started at **2026-10-21 07:35:00 UTC** and the hard end is **11:35:00 UTC**; handoff preparation starts no later than **11:05:00 UTC**. Do not read this file as a completed wave — it is rewritten with final evidence at the deadline.
+- Builder branch pushed to **`origin/feature/wave-01-orchard-reach`** (the manager reference branch `codex/minimax-wave-01` at `f9b1233` is not modified by this task).
 - Fixed wave window: 2026-10-21 07:35–11:35 UTC; final handoff preparation from 11:05 UTC.
 - Builder worktree: `.claude/worktrees/minimax-wave-01-build`, branch `feature/wave-01-orchard-reach`.
 - This root checkout is the manager documentation branch; the builder owns its separate worktree.
 - Timebox: four hours total, final 30 minutes included for verification and handoff.
 - Model access: MiniMax subscription connection verified through Claude Code before dispatch. No API key belongs in this repository.
 - Engine (decided by the builder under owner delegation): **Godot 4.7.1 stable**, Forward+, native macOS export. Rationale and rejected alternatives: `waves/01/READINESS.md`.
-- Deliverable: `game/` — a playable third-person Singapore-ins slice with an authored district, shooting, car theft, left-hand traffic, police response, a flyable helicopter and the "Harbour Relay" mission.
+- Deliverable (in progress): `game/` — a playable third-person Singapore-inspired slice with an authored district, shooting, car theft, left-hand traffic, police response, a flyable helicopter and the "Harbour Relay" mission.
 - Build: `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip` (build output is git-ignored; rebuild locally).
 - Checks: `godot --headless --path game -- --test` → 20/20 PASS at the handoff commit.
-- Evidence: `game/captures/` (automated playthrough PNGs + `capture_log.json`), `docs/REQUIREMENTS_LEDGER.md`, `docs/asset-manifest.csv`.
+- Evidence: `game/captures/` (automated playthrough PNGs, fixed-view district frames, `capture_log.json`), `docs/REQUIREMENTS_LEDGER.md`, `docs/asset-manifest.csv`, `docs/LOOK_DEV.md` (the wave-1 look sheet every later wave inherits), `waves/01/HANDOFF.md` (the filled wave handoff template) and `NEXT_GOAL.md`.
 - Owner visual update: GTA VI fidelity in Singapore; primary art direction is `docs/concepts/*.png` (generated concepts of **our** game), secondary evidence is `docs/visual-references.json`.
 - Owner asset routing: Tripo browser for smaller/bulk objects, Customuse MCP for major assets, no Meshy. Existing Tripo credits authorized.
-- **Asset surfaces unavailable in the builder CLI**: no Tripo browser control, no Customuse MCP. Requests published in `ASSET_REQUESTS.json` for the manager to execute; the manager returns assets for wave 2.
+- **Asset surfaces unavailable in the builder CLI**: no Tripo browser control and no Customuse MCP. The manager executed the requests **during this wave**: 8 Customuse hero models and 9 Tripo props were delivered, cleaned in Blender (`game/tools/cleanup_provider_assets.py`) and integrated into the build. `ASSET_REQUESTS.json` records 17 of 18 requests as delivered; only the hawker stall counter is outstanding (being produced through the Tripo small-prop route). Provider art is **not** committed (provider terms, not MIT): it is staged in `game/assets/providers/`, git-ignored, and re-fetchable with `game/tools/fetch_provider_assets.sh`.
 - Engine/process ownership: this task ran **one** engine instance under the shared GPU slot lock (`gpu_slot.sh capture --label wave1-orchard-reach`); no other session's process was touched; the engine was stopped at the end of the wave.
 - Critic reality: in this profile every subagent is served by the same MiniMax subscription, even when addressed as a Claude alias. **No Opus/Fable access exists here.** The in-wave critic pass is an independent-context, same-model review and is labelled as such.
 - Publication: task branch pushes authorized; main merge and public build release not authorized.
 - Scope: original Singapore-inspired game from END_GOAL.md; no local AI inference, no unapproved asset generation charges.
-- Next: manager launches **Astra through Codex** from the pushed checkpoint using `NEXT_GOAL.md`.
+- Next: the builder continues the build/critic/fix loop until the real 11:35 UTC deadline; the manager launches **Astra through Codex** from the checkpoint pushed at that point, using `NEXT_GOAL.md`.

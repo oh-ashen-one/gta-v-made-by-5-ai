@@ -20,6 +20,16 @@ func _ready() -> void:
 	band.material_override = Palette.emissive(Color(0.35, 0.9, 0.7), 1.4)
 	band.position = Vector3(0.0, 0.85, 0.0)
 	add_child(band)
+	var beam := MeshInstance3D.new()
+	var beam_mesh := CylinderMesh.new()
+	beam_mesh.top_radius = 0.10
+	beam_mesh.bottom_radius = 0.22
+	beam_mesh.height = 3.4
+	beam_mesh.radial_segments = 10
+	beam.mesh = beam_mesh
+	beam.material_override = Palette.emissive(Color(0.35, 0.95, 0.75), 1.4)
+	beam.position = Vector3(0.0, 1.7, 0.0)
+	add_child(beam)
 	var lamp := OmniLight3D.new()
 	lamp.light_color = Color(0.4, 1.0, 0.8)
 	lamp.light_energy = 1.4

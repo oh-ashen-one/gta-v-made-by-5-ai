@@ -21,6 +21,9 @@ var _minimap: Control
 var _pause_panel: Control
 var _title_panel: Control
 var _debug_label: Label
+var _settings_panel: Control
+var _settings_values: Label
+var _settings_rows: Array = []
 var _marker: Vector3 = Vector3.ZERO
 
 const NOTIFICATION_LIFETIME := 4.0
@@ -106,6 +109,7 @@ func _build() -> void:
 
 	_build_pause_panel(root)
 	_build_title_panel(root)
+	_build_settings_panel(root)
 
 func _mk_label(parent: Control, pos: Vector2, size_px: int, color: Color) -> Label:
 	var l := Label.new()
@@ -168,6 +172,45 @@ func _build_title_panel(root: Control) -> void:
 		var l := _mk_label(_title_panel, Vector2(470, 340 + i * 32), 19, Color(0.88, 0.90, 0.95))
 		l.text = lines[i]
 
+func _build_settings_panel(root: Control) -> void:
+	_settings_panel = Control.new()
+	_settings_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_settings_panel.visible = false
+	root.add_child(_settings_panel)
+	var dim := ColorRect.new()
+	dim.color = Color(0.03, 0.04, 0.06, 0.7)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_settings_panel.add_child(dim)
+	var t := _mk_label(_settings_panel, Vector2(500, 190), 32, Color(0.97, 0.95, 0.9))
+	t.text = "SETTINGS"
+	_settings_rows = [
+		"[1/2] Mouse sensitivity",
+		"[3] Invert look Y",
+		"[4] Reduced camera shake",
+		"[5] HUD visible",
+	]
+	for i in _settings_rows.size():
+		var l := _mk_label(_settings_panel, Vector2(500, 250 + i * 30), 18, Color(0.9, 0.92, 0.96))
+		l.text = _settings_rows[i]
+	_settings_values = _mk_label(_settings_panel, Vector2(800, 250), 18, Color(0.95, 0.85, 0.55))
+	_settings_values.size = Vector2(320, 140)
+
+func refresh_settings() -> void:
+	if _settings_values == null:
+		return
+	_settings_values.text = "sensitivity %.2f\ninvert Y %s\nreduced shake %s\nHUD %s" % [
+		float(Game.settings.get("mouse_sensitivity", 1.0)),
+		"ON" if bool(Game.settings.get("invert_y", false)) else "OFF",
+		"ON" if bool(Game.settings.get("reduced_shake", false)) else "OFF",
+		"ON" if bool(Game.settings.get("hud_visible", true)) else "OFF"]
+
+func toggle_settings() -> void:
+	_settings_panel.visible = not _settings_panel.visible
+	refresh_settings()
+
+func settings_visible() -> bool:
+	return _settings_panel != null and _settings_panel.visible
+
 func show_title(show: bool) -> void:
 	_title_panel.visible = show
 
@@ -183,10 +226,17 @@ func _on_ammo(mag: int, reserve: int) -> void:
 	_weapon_label.text = Game.carried_weapon.to_upper()
 
 func _on_wanted(level: int) -> void:
+	_update_wanted_label()
+
+func _update_wanted_label() -> void:
+	var level := Game.wanted_level
 	var stars := ""
 	for i in level:
 		stars += "★ "
-	_wanted_label.text = "WANTED  " + stars
+	var state := ""
+	if level > 0:
+		state = "  ·  SEARCHING %ds" % int(ceil(Game.search_timer)) if not Game.player_seen else "  ·  SPOTTED"
+	_wanted_label.text = "WANTED  " + stars + state
 
 func _on_notify(text: String, kind: String) -> void:
 	var l := _mk_label(_notifications, Vector2.ZERO, 18, Color(0.95, 0.95, 0.9) if kind != "bad" else Color(1.0, 0.55, 0.45))
@@ -211,6 +261,7 @@ func _process(_delta: float) -> void:
 	_stats_label.text = "SPEED %d km/h" % int(speed)
 	if Game.mode == Game.MODE_HELI:
 		_stats_label.text += "   ALT %d m" % int(alt)
+	_update_wanted_label()
 	_crosshair.queue_redraw()
 	_minimap.queue_redraw()
 	if _debug_label.visible:
@@ -235,7 +286,7 @@ func _draw_minimap() -> void:
 		return
 	var rect := Rect2(Vector2.ZERO, _minimap.size)
 	_minimap.draw_rect(rect, Color(0.06, 0.08, 0.10, 0.72), true)
-	var centre := player.global_position
+	var centre: Vector3 = player.controlled_actor().global_position
 	var scale := 0.16
 	var to_map := func(p: Vector3) -> Vector2:
 		return Vector2((p.x - centre.x) * scale, (p.z - centre.z) * scale) + _minimap.size * 0.5
@@ -248,6 +299,12 @@ func _draw_minimap() -> void:
 		var q0: Vector2 = to_map.call(Vector3(-340.0, 0, z))
 		var q1: Vector2 = to_map.call(Vector3(340.0, 0, z))
 		_minimap.draw_line(q0, q1, Color(0.35, 0.37, 0.40, 0.9), 3.0)
+	# block footprints
+	for bx in [-240.0, -80.0, 80.0, 240.0]:
+		for bz in [-240.0, -80.0, 80.0, 240.0]:
+			var centre_p := Vector3(bx, 0.0, bz)
+			var c0: Vector2 = to_map.call(centre_p - Vector3(72.0, 0.0, 72.0))
+			_minimap.draw_rect(Rect2(c0, Vector2(144.0 * scale, 144.0 * scale)), Color(0.20, 0.21, 0.23, 0.9), true)
 	# water
 	var wrect := Rect2(to_map.call(Vector3(-360, 0, -350.0)), Vector2(720.0 * scale, 30.0 * scale))
 	_minimap.draw_rect(wrect, Color(0.16, 0.31, 0.36, 0.85), true)

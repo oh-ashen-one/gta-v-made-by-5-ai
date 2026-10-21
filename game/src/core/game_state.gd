@@ -30,6 +30,15 @@ var last_safe_position: Vector3 = Vector3.ZERO
 var last_safe_rotation: float = 0.0
 var simulation_paused: bool = false
 var in_mission: bool = false
+var search_timer: float = 0.0          # seconds of active search left (LAW-04)
+var player_seen: bool = false          # police currently have eyes on the player
+var last_seen_position: Vector3 = Vector3.ZERO
+var settings := {
+	"mouse_sensitivity": 1.0,
+	"invert_y": false,
+	"reduced_shake": false,
+	"hud_visible": true,
+}
 
 func _ready() -> void:
 	_setup_input_map()
@@ -40,6 +49,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not simulation_paused:
 		elapsed_seconds += delta
+	# Pursuit decay only happens while nobody is looking (LAW-04: fair escape).
+	if wanted_level > 0 and not player_seen:
+		search_timer = maxf(0.0, search_timer - delta)
+		decay_heat(delta * 1.4)
+		if wanted_level == 0:
+			Events.notify.emit("You lost the search.", "good")
 
 # ---------------------------------------------------------------- input setup
 func _setup_input_map() -> void:
@@ -181,6 +196,9 @@ func save_game() -> bool:
 		"player_rotation": player_rotation,
 		"ammo": ammo,
 		"carried_weapon": carried_weapon,
+		"wanted_heat": wanted_heat,
+		"last_safe_position": [last_safe_position.x, last_safe_position.y, last_safe_position.z],
+		"last_safe_rotation": last_safe_rotation,
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f == null:
@@ -212,6 +230,10 @@ func load_game() -> bool:
 	player_position = Vector3(float(p[0]), float(p[1]), float(p[2]))
 	player_rotation = float(parsed.get("player_rotation", 0.0))
 	carried_weapon = String(parsed.get("carried_weapon", "pistol"))
+	wanted_heat = float(parsed.get("wanted_heat", 0.0))
+	var safe: Array = parsed.get("last_safe_position", [0, 0, 0])
+	last_safe_position = Vector3(float(safe[0]), float(safe[1]), float(safe[2]))
+	last_safe_rotation = float(parsed.get("last_safe_rotation", 0.0))
 	var saved_ammo = parsed.get("ammo", {})
 	if typeof(saved_ammo) == TYPE_DICTIONARY:
 		for key in saved_ammo.keys():
@@ -221,6 +243,15 @@ func load_game() -> bool:
 	Events.health_changed.emit(health, MAX_HEALTH)
 	Events.wanted_changed.emit(wanted_level)
 	Events.ammo_changed.emit(current_mag(), current_reserve())
+	# Apply the restored state to the world: a save that stores values nobody
+	# reads is not a save (B7).
+	var body := get_tree().get_first_node_in_group("player")
+	if body and body.has_method("respawn_at"):
+		body.respawn_at(player_position, player_rotation)
+	mark_safe_position(player_position, player_rotation)
+	var mission := get_tree().get_first_node_in_group("mission")
+	if mission and mission.has_method("restore_stage"):
+		mission.restore_stage(mission_stage)
 	return true
 
 func has_save() -> bool:

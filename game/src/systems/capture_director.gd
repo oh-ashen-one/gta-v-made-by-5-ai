@@ -46,14 +46,14 @@ func _run() -> void:
 	_log("start: player at %s" % str(player.global_position))
 	await _shot("safe_room")
 
-	# --- 1. walk through the shophouse streets to the hawker centre ---------
-	await _nav_to(world.locations["package"], 3.0, 240.0)
+	# --- 1. walk out of the safe room, then through the streets -------------
+	if world.locations.has("safe_room_exit"):
+		await _walk_to(world.locations["safe_room_exit"], 2.5, 40.0)
+	await _nav_to(world.locations["package"], 1.8, 240.0)
 	await _shot("hawker_market")
 
 	# --- 2. take the package (real interactable) ----------------------------
-	_press("interact")
-	await get_tree().create_timer(0.4).timeout
-	_release("interact")
+	await _interact()
 	await _shot("package_taken")
 	_log("mission stage after package: %d" % mission.stage)
 
@@ -66,11 +66,8 @@ func _run() -> void:
 	# --- 4. steal a car and drive to the aviation compound -------------------
 	var car := _nearest_car()
 	if car:
-		await _nav_to(car.global_position, 3.5, 180.0)
-		_press("interact")
-		await get_tree().create_timer(0.4).timeout
-		_release("interact")
-		await get_tree().create_timer(0.4).timeout
+		await _nav_to(car.global_position, 2.2, 180.0)
+		await _interact()
 		_log("mode after entering car: %d (car mode=%d)" % [Game.mode, Game.MODE_CAR])
 		await _shot("car_entered")
 		await _drive_route(world.locations["helipad_primary"], 200.0)
@@ -78,38 +75,28 @@ func _run() -> void:
 		# park and get out
 		_release("move_forward")
 		await get_tree().create_timer(1.5).timeout
-		_press("interact")
-		await get_tree().create_timer(0.4).timeout
-		_release("interact")
-		await get_tree().create_timer(0.4).timeout
+		await _interact()
 		_log("mode after exiting car: %d" % Game.mode)
 		await _shot("exited_car")
 
 	# --- 5. board the helicopter -------------------------------------------
 	var heli := main.get_node_or_null("Helicopter")
 	if heli:
-		await _nav_to(heli.global_position, 4.0, 180.0)
-		_press("interact")
+		await _nav_to(heli.global_position, 2.6, 180.0)
+		await _interact()
 		await get_tree().create_timer(0.4).timeout
-		_release("interact")
-		await get_tree().create_timer(0.6).timeout
 		_log("mode after boarding helicopter: %d (heli mode=%d)" % [Game.mode, Game.MODE_HELI])
 		await _shot("helicopter_boarding")
 		await _fly_to(world.locations["helipad_secondary"], 170.0)
 		await _shot("aerial_view")
 		await _land()
 		await _shot("landed")
-		_press("interact")
-		await get_tree().create_timer(0.4).timeout
-		_release("interact")
-		await get_tree().create_timer(0.4).timeout
+		await _interact()
 		_log("mode after exiting helicopter: %d" % Game.mode)
 
 	# --- 6. walk to the delivery point --------------------------------------
-	await _nav_to(world.locations["delivery"], 3.0, 240.0)
-	_press("interact")
-	await get_tree().create_timer(0.5).timeout
-	_release("interact")
+	await _nav_to(world.locations["delivery"], 2.2, 240.0)
+	await _interact()
 	await _shot("delivery")
 	_log("final mission stage: %d (done=%d)" % [mission.stage, Mission.Stage.DONE])
 	_write_log()
@@ -132,6 +119,15 @@ func _write_log() -> void:
 	get_tree().quit(0)
 
 # ------------------------------------------------------------------ helpers
+## Press the interact action with retries: a scripted press has to be seen by
+## the polled input path, so it is repeated over a short window.
+func _interact() -> void:
+	for attempt in 4:
+		_press("interact")
+		await get_tree().create_timer(0.18).timeout
+		_release("interact")
+		await get_tree().create_timer(0.18).timeout
+
 func _press(action: String) -> void:
 	Input.action_press(action)
 
@@ -215,6 +211,10 @@ func _walk_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 				stuck_time = 0.0
 				sidestep = 1.4
 				sidestep_dir = 1.0 if randf() > 0.5 else -1.0
+				# hop: kerbs and low ledges should not stop the walk
+				_press("jump")
+				await get_tree().process_frame
+				_release("jump")
 		else:
 			stuck_time = 0.0
 		last_pos = player.global_position

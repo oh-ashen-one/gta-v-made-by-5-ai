@@ -1,5 +1,5 @@
 class_name TrafficManager
-extends Node
+extends Node3D
 ## Population and traffic simulation: lane graph, left-hand traffic, civilian
 ## pedestrians, parked cars, and police response (TRAFFIC-01/02, LAW-02/03).
 
@@ -46,6 +46,7 @@ func _spawn_parked() -> void:
 			npc.is_hostile = false
 			add_child(npc)
 			npc.global_position = car.global_position
+			npc.visible = false          # seated in the car, not standing in it
 			car.set_ai_driver(npc)
 		i += 1
 
@@ -121,6 +122,8 @@ func _spawn_peds() -> void:
 
 # --------------------------------------------------------------------- update
 func _process(delta: float) -> void:
+	if Game.simulation_paused:
+		return
 	for car in cars:
 		if not is_instance_valid(car) or car.disabled:
 			continue
@@ -139,7 +142,12 @@ func _process(delta: float) -> void:
 		if not is_instance_valid(pc) or pc.disabled:
 			continue
 		if _player:
-			pc.ai_target = _player.global_position + Vector3(0.0, 0.0, 0.0)
+			# With eyes on the player they converge; otherwise they sweep the
+			# last known position (LAW-04 search phase).
+			if Game.player_seen:
+				pc.ai_target = _player.global_position
+			else:
+				pc.ai_target = Game.last_seen_position
 	_update_police(delta)
 
 func _pick_next_edge(car: Car) -> Vector3:
@@ -174,6 +182,31 @@ func _nearest_node(p: Vector3) -> int:
 func _update_police(delta: float) -> void:
 	_police_timer -= delta
 	var wanted := Game.wanted_level
+	Game.player_seen = false
+	if wanted <= 0:
+		# responders stand down and are cleaned up when the search ends (LAW-05)
+		for pc in police_cars:
+			if is_instance_valid(pc):
+				pc.queue_free()
+		police_cars.clear()
+		for officer in peds:
+			if is_instance_valid(officer) and officer.is_police:
+				officer.queue_free()
+	if wanted > 0 and _player != null:
+		for pc in police_cars:
+			if is_instance_valid(pc) and _has_sight(pc.global_position):
+				Game.player_seen = true
+				Game.last_seen_position = _player.global_position
+				Game.search_timer = 14.0
+				break
+		if not Game.player_seen:
+			for officer in peds:
+				if is_instance_valid(officer) and officer.is_police and officer.state != NPC.State.DEAD:
+					if officer.global_position.distance_to(_player.global_position) < 45.0 and _has_sight(officer.global_position):
+						Game.player_seen = true
+						Game.last_seen_position = _player.global_position
+						Game.search_timer = 14.0
+						break
 	if wanted <= 0:
 		for pc in police_cars:
 			if is_instance_valid(pc) and pc.has_ai:
@@ -195,8 +228,18 @@ func _update_police(delta: float) -> void:
 		officer.state = NPC.State.PURSUE
 		peds.append(officer)
 	Sfx.set_siren(wanted > 0 and not police_cars.is_empty(), 1.0 + 0.1 * float(wanted))
-	# vehicle pursuit
-	if Game.mode != Game.MODE_FOOT and police_cars.is_empty():
+	# vehicle pursuit: one active pursuit car, respawned when it is wrecked
+	# or has fallen far behind (B13)
+	var need_pursuit := false
+	if Game.mode != Game.MODE_FOOT:
+		for pc in police_cars:
+			if not is_instance_valid(pc) or pc.disabled:
+				need_pursuit = true
+			elif _player and pc.global_position.distance_to(_player.global_position) > 180.0:
+				need_pursuit = true
+		if police_cars.is_empty():
+			need_pursuit = true
+	if need_pursuit:
 		var pc := Car.new()
 		pc.kind = "police"
 		add_child(pc)
@@ -207,6 +250,21 @@ func _update_police(delta: float) -> void:
 		pc.has_ai = true
 		pc.max_speed = 30.0
 		police_cars.append(pc)
+
+## Can the police at `from` see the player? Distance plus a world ray test.
+func _has_sight(from: Vector3) -> bool:
+	if _player == null:
+		return false
+	var to_player: Vector3 = _player.global_position + Vector3(0.0, 1.2, 0.0) - (from + Vector3(0.0, 1.2, 0.0))
+	if to_player.length() > 80.0:
+		return false
+	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+	if space == null:
+		return true
+	var params := PhysicsRayQueryParameters3D.create(from + Vector3(0.0, 1.2, 0.0), from + Vector3(0.0, 1.2, 0.0) + to_player)
+	params.collision_mask = 1
+	var hit: Dictionary = space.intersect_ray(params)
+	return hit.is_empty()
 
 func wanted_reset() -> void:
 	for pc in police_cars:

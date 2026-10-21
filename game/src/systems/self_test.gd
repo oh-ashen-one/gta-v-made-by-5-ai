@@ -14,7 +14,85 @@ func run(main: Node) -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	_run_checks(main)
+	await _behaviour_checks(main)
 	_report()
+
+## Behavioural regression checks added after the wave-1 independent review
+## found a death-in-vehicle softlock, a scripted-input path that never reached
+## the game, traffic that destroyed itself and a wanted level that never fell.
+func _behaviour_checks(main: Node) -> void:
+	print("--- behavioural checks ---")
+	var player = main.get_node_or_null("Player")
+	var traffic = main.get_node_or_null("Traffic")
+
+	# 1. control ownership: entering and then dying in a car must not leave the
+	#    player bound to the vehicle
+	if player and traffic and traffic.cars.size() > 0:
+		var car: Car = traffic.cars[0]
+		car.interact(player)
+		await get_tree().process_frame
+		_check("vehicle entry takes control", Game.mode == Game.MODE_CAR)
+		_check("player is bound to the vehicle", player.current_vehicle == car)
+		player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
+		await get_tree().process_frame
+		_check("death in a vehicle releases control", player.current_vehicle == null)
+		_check("death in a vehicle returns to foot", Game.mode == Game.MODE_FOOT)
+		_check("gameplay camera returns to the player", player.camera.current)
+		var can_move: bool = await _can_walk(player)
+		_check("the player can still walk after a vehicle death", can_move)
+
+	# 2. scripted input must reach the same code path as a human press
+	if player and traffic and traffic.cars.size() > 0:
+		var car2: Car = traffic.cars[1]
+		player.global_position = car2.global_position + Vector3(1.6, 0.2, 0.0)
+		player.current_vehicle = null
+		Game.set_mode(Game.MODE_FOOT)
+		await get_tree().process_frame
+		Input.action_press("interact")
+		await get_tree().process_frame
+		await get_tree().process_frame
+		Input.action_release("interact")
+		_check("a scripted interact press takes the vehicle", Game.mode == Game.MODE_CAR)
+		player.respawn_at(player.global_position, player.rotation.y)
+
+	# 3. traffic longevity: AI cars must survive ordinary street contact
+	if traffic:
+		var disabled := 0
+		for c in traffic.cars:
+			if is_instance_valid(c) and c.disabled:
+				disabled += 1
+		_check("no civilian traffic car is wrecked by street contact", disabled == 0, " (%d disabled of %d)" % [disabled, traffic.cars.size()])
+
+	# 4. wanted lifecycle: heat must fall when nobody is looking
+	Game.wanted_heat = 46.0
+	Game.set_wanted(2)
+	for i in 10:
+		Game.decay_heat(2.0)
+	_check("the wanted level falls as heat decays", Game.wanted_level < 2, " (now %d)" % Game.wanted_level)
+	Game.wanted_level = 0
+	Game.wanted_heat = 0.0
+	Game.set_wanted(0)
+
+	# 5. pause must pause
+	Game.simulation_paused = true
+	var before: Vector3 = player.global_position
+	for i in 30:
+		await get_tree().process_frame
+	_check("the world is frozen while paused", player.global_position.distance_to(before) < 0.01)
+	Game.simulation_paused = false
+
+
+func _can_walk(player: Node) -> bool:
+	# walk on open road, not inside the safe room, so the check measures the
+	# control path rather than a wall
+	player.global_position = Vector3(0.0, 0.4, -300.0)
+	await get_tree().process_frame
+	var start: Vector3 = player.global_position
+	Input.action_press("move_forward")
+	for i in 20:
+		await get_tree().process_frame
+	Input.action_release("move_forward")
+	return player.global_position.distance_to(start) > 0.2
 
 func _check(name: String, condition: bool, detail: String = "") -> void:
 	var verdict := "PASS" if condition else "FAIL"

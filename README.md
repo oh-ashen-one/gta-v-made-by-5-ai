@@ -6,9 +6,15 @@ A YouTube development experiment: **five AI coding setups collaborating in seque
 
 ## Status
 
-**Relay underway on task branches — no accepted playable build yet.**
+**Relay underway on task branches — wave 1 ships a playable native 3D slice; no accepted build yet.**
 
-The required Singapore-inspired playable slice is specified in [END_GOAL.md](END_GOAL.md). Engine, development machine, numerical calibration, and middle-wave order still need confirmation. **MiniMax starts; Opus 5.5 through Claude Code must take the final wave.** Implementation has started on the MiniMax wave branch. This is not a claim of a verified playable or visually accepted build.
+The wave-1 build lives in [`game/`](game/): **Godot 4.7.1 stable** (Forward+, GDScript, native macOS export) with an authored Singapore-inspired district, third-person control, two firearms, car theft and arcade driving, left-hand traffic, police response, a flyable helicopter, a roofed hawker hub, a void-deck housing neighbourhood, a waterfront edge and the authored mission "Harbour Relay".
+
+- Run it: `godot --path game`
+- Package it: `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip`
+- Check it: `godot --headless --path game -- --test`
+
+The required Singapore-inspired playable slice is specified in [END_GOAL.md](END_GOAL.md); the engine is locked to Godot 4.7.1 (rationale in [`waves/01/READINESS.md`](waves/01/READINESS.md)), the development machine is the Mac Studio, and the numerical calibration is in progress. **MiniMax starts; Opus 5.5 through Claude Code must take the final wave.** Where each requirement stands is recorded in [`docs/REQUIREMENTS_LEDGER.md`](docs/REQUIREMENTS_LEDGER.md) — art fidelity, audio depth, traffic behaviour under pressure and every performance measurement are still open, and the generated hero art is integrated but not committed (provider terms, not MIT; see [`docs/asset-manifest.csv`](docs/asset-manifest.csv)). This is a playable experimental build, not a claim of a visually accepted one.
 
 ## The five setups and wave order
 

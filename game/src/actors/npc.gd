@@ -120,8 +120,16 @@ func become_displaced_pedestrian(pos: Vector3) -> void:
 	state = State.FLEE
 	panic_time = 6.0
 	health = maxf(health, 60.0)
+	visible = true
+	var away := global_position - pos
+	away.y = 0.0
+	if away.length() < 0.2:
+		away = Vector3(randf_range(-1, 1), 0.0, randf_range(-1, 1))
+	_flee_dir = away.normalized()
 
 func _physics_process(delta: float) -> void:
+	if Game.simulation_paused:
+		return
 	if state == State.DEAD:
 		velocity.x = 0.0
 		velocity.z = 0.0
@@ -179,7 +187,10 @@ func _pursue(delta: float) -> void:
 	if player == null:
 		state = State.WALK
 		return
-	var to_player: Vector3 = player.global_position - global_position
+	var target_position: Vector3 = player.global_position
+	if player.has_method("controlled_actor"):
+		target_position = player.controlled_actor().global_position
+	var to_player: Vector3 = target_position - global_position
 	to_player.y = 0.0
 	var dist := to_player.length()
 	if dist > 42.0:
@@ -187,7 +198,7 @@ func _pursue(delta: float) -> void:
 		return
 	if is_police and Game.wanted_level > 0:
 		if dist > 9.0:
-			_move_towards(player.global_position, PURSUE_SPEED, delta)
+			_move_towards(target_position, PURSUE_SPEED, delta)
 		else:
 			velocity.x = 0.0
 			velocity.z = 0.0
@@ -197,7 +208,7 @@ func _pursue(delta: float) -> void:
 				_shoot_at(player)
 	elif is_hostile:
 		if dist > 7.0:
-			_move_towards(player.global_position, PURSUE_SPEED, delta)
+			_move_towards(target_position, PURSUE_SPEED, delta)
 		else:
 			fire_timer -= delta
 			if fire_timer <= 0.0:

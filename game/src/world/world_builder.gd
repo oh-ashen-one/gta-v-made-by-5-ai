@@ -193,6 +193,13 @@ func _shophouse_block(centre: Vector3) -> void:
 	for i: int in 6:
 		var t := centre + Vector3(-50.0 + i * 20.0, 0.0, 46.0)
 		_tree(t + Vector3(0.0, 0.0, 0.0), 1.0)
+	# rear service lane clutter
+	if AssetLibrary.has_asset("service_clutter_clean.glb"):
+		for i: int in 3:
+			var clutter := AssetLibrary.instantiate("service_clutter_clean.glb", _world_root)
+			if clutter != null:
+				clutter.position = centre + Vector3(-44.0 + i * 9.0, 0.0, 30.0)
+				clutter.rotation.y = randf_range(-0.6, 0.6)
 
 func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 	var unit_w := 10.6
@@ -201,9 +208,19 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		var frontage: Color = Palette.FRONTAGES[i % Palette.FRONTAGES.size()]
 		var height := 9.5 + float(i % 3) * 1.6
 		var depth := 13.0
-		# body
-		_solid_box(Vector3(unit_w - 0.35, height, depth), pos + Vector3(0.0, height * 0.5, 0.0),
-			Palette.mat_textured(frontage, "plaster", Vector3(3.0, 2.0, 3.0), 0.88))
+		# body — the generated shophouse module when it has been staged,
+		# otherwise the procedural kit
+		var used_provider := false
+		if AssetLibrary.has_asset("shophouse_clean.glb"):
+			var module := AssetLibrary.instantiate("shophouse_clean.glb", _world_root)
+			if module != null:
+				module.position = pos
+				module.rotation.y = 0.0
+				AssetLibrary.tint(module, frontage)
+				used_provider = true
+		if not used_provider:
+			_solid_box(Vector3(unit_w - 0.35, height, depth), pos + Vector3(0.0, height * 0.5, 0.0),
+				Palette.mat_textured(frontage, "plaster", Vector3(3.0, 2.0, 3.0), 0.88))
 		# five-foot-way arcade: columns + covered walkway (recessed threshold)
 		var arcade_dir := Vector3(0.0, 0.0, 1.0) if dir.x != 0.0 else Vector3(1.0, 0.0, 0.0)
 		var along := Vector3(0.0, 0.0, 1.0) if dir.x != 0.0 else Vector3(1.0, 0.0, 0.0)
@@ -224,16 +241,17 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 				Palette.mat(Palette.GLASS, 0.25, 0.2))
 			_box(Vector3(1.8, 0.14, 0.22), pos + wx + Vector3(0.0, 5.7, 0.0) - arcade_dir * (depth * 0.5 + 0.08),
 				Palette.mat(Palette.PLASTER, 0.9))
-		# pitched tile roof
-		var roof := MeshInstance3D.new()
-		var prism := PrismMesh.new()
-		prism.size = Vector3(unit_w - 0.2, 2.6, depth + 0.6)
-		roof.mesh = prism
-		roof.material_override = Palette.mat_textured(Palette.ROOF_TILE if i % 2 == 0 else Palette.ROOF_TILE_2, "tile", Vector3(2.0, 2.0, 3.0), 0.8)
-		roof.position = pos + Vector3(0.0, height + 1.3, 0.0)
-		if dir.z != 0.0:
-			roof.rotation_degrees = Vector3(0.0, 90.0, 0.0)
-		_world_root.add_child(roof)
+		# pitched tile roof (skipped when the generated module carries its own)
+		if not used_provider:
+			var roof := MeshInstance3D.new()
+			var prism := PrismMesh.new()
+			prism.size = Vector3(unit_w - 0.2, 2.6, depth + 0.6)
+			roof.mesh = prism
+			roof.material_override = Palette.mat_textured(Palette.ROOF_TILE if i % 2 == 0 else Palette.ROOF_TILE_2, "tile", Vector3(2.0, 2.0, 3.0), 0.8)
+			roof.position = pos + Vector3(0.0, height + 1.3, 0.0)
+			if dir.z != 0.0:
+				roof.rotation_degrees = Vector3(0.0, 90.0, 0.0)
+			_world_root.add_child(roof)
 		# awning + signage
 		var awning := MeshInstance3D.new()
 		var am := BoxMesh.new()
@@ -270,17 +288,30 @@ func _hdb_block(centre: Vector3) -> void:
 		var size := Vector3(22.0, h, 13.0)
 		if rot == 90.0:
 			size = Vector3(13.0, h, 22.0)
-		_solid_box(size, pos + Vector3(0.0, 3.6 + h * 0.5, 0.0), Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(5.0, 7.0, 3.0), 0.85))
-		# void-deck: open ground floor with columns
-		for cx: int in 3:
-			for cz: int in 3:
-				_solid_box(Vector3(0.7, 3.6, 0.7), pos + Vector3(-size.x * 0.4 + cx * size.x * 0.4, 1.8, -size.z * 0.4 + cz * size.z * 0.4),
-					Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
-		# lift lobby + sheltered link
-		_solid_box(Vector3(4.2, 3.0, 5.0), pos + Vector3(0.0, 1.5, size.z * 0.5 + 2.0), Palette.mat(Palette.PLASTER_2, 0.9))
-		_box(Vector3(4.4, 0.25, 3.0), pos + Vector3(0.0, 3.2, size.z * 0.5 + 2.6), Palette.mat(Palette.METAL, 0.6, 0.4))
-		# window bands
-		var floors := int(h / 3.4)
+		var used_provider := false
+		if AssetLibrary.has_asset("hdb_slab_clean.glb"):
+			var slab := AssetLibrary.instantiate("hdb_slab_clean.glb", _world_root)
+			if slab != null:
+				# the cleaned module is 42 m tall; scale it to this slab
+				var unit_h := 42.0
+				slab.position = pos + Vector3(0.0, 0.0, 0.0)
+				slab.scale = Vector3.ONE * (h / unit_h)
+				if rot == 90.0:
+					slab.rotation.y = PI * 0.5
+				used_provider = true
+		if not used_provider:
+			_solid_box(size, pos + Vector3(0.0, 3.6 + h * 0.5, 0.0), Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(5.0, 7.0, 3.0), 0.85))
+		# void-deck: open ground floor with columns (skipped for the generated slab)
+		if not used_provider:
+			for cx: int in 3:
+				for cz: int in 3:
+					_solid_box(Vector3(0.7, 3.6, 0.7), pos + Vector3(-size.x * 0.4 + cx * size.x * 0.4, 1.8, -size.z * 0.4 + cz * size.z * 0.4),
+						Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
+			# lift lobby + sheltered link
+			_solid_box(Vector3(4.2, 3.0, 5.0), pos + Vector3(0.0, 1.5, size.z * 0.5 + 2.0), Palette.mat(Palette.PLASTER_2, 0.9))
+			_box(Vector3(4.4, 0.25, 3.0), pos + Vector3(0.0, 3.2, size.z * 0.5 + 2.6), Palette.mat(Palette.METAL, 0.6, 0.4))
+		# window bands (the generated slab carries its own facade)
+		var floors := int(h / 3.4) if not used_provider else 0
 		for f in floors:
 			var wy := 6.4 + f * 3.4
 			for w: int in 5:
@@ -290,8 +321,9 @@ func _hdb_block(centre: Vector3) -> void:
 					win_pos = pos + Vector3(size.x * 0.5 + 0.06, wy, off)
 				_box(Vector3(1.5, 1.3, 0.12), win_pos, Palette.mat(Palette.GLASS, 0.25, 0.25))
 		# roof parapet + tank
-		_box(size + Vector3(0.0, 0.6, 0.0), pos + Vector3(0.0, 3.6 + h + 0.3, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
-		_cyl(Vector3(2.0, 2.4, 2.0), pos + Vector3(size.x * 0.25, 3.6 + h + 1.8, 0.0), Palette.mat(Palette.METAL, 0.7, 0.3))
+		if not used_provider:
+			_box(size + Vector3(0.0, 0.6, 0.0), pos + Vector3(0.0, 3.6 + h + 0.3, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
+			_cyl(Vector3(2.0, 2.4, 2.0), pos + Vector3(size.x * 0.25, 3.6 + h + 1.8, 0.0), Palette.mat(Palette.METAL, 0.7, 0.3))
 	# planted courtyard with a community table
 	_solid_box(Vector3(40.0, 0.3, 34.0), centre + Vector3(0.0, 0.15, 2.0), Palette.mat(Color(0.32, 0.40, 0.26), 0.95))
 	for i: int in 8:
@@ -314,8 +346,8 @@ func _safe_room(pos: Vector3) -> void:
 	for side: float in [-1.0, 1.0]:
 		_solid_box(Vector3(14.0, 3.4, 0.4), pos + Vector3(0.0, 1.7, side * 5.0), Palette.mat(Palette.PLASTER, 0.9))
 	# doorway on the -X side, facing the street, so the room can be entered and left
-	_solid_box(Vector3(0.4, 3.4, 3.5), pos + Vector3(-7.0, 1.7, -3.25), Palette.mat(Palette.PLASTER, 0.9))
-	_solid_box(Vector3(0.4, 3.4, 3.5), pos + Vector3(-7.0, 1.7, 3.25), Palette.mat(Palette.PLASTER, 0.9))
+	_solid_box(Vector3(0.4, 3.4, 2.5), pos + Vector3(-7.0, 1.7, -3.75), Palette.mat(Palette.PLASTER, 0.9))
+	_solid_box(Vector3(0.4, 3.4, 2.5), pos + Vector3(-7.0, 1.7, 3.75), Palette.mat(Palette.PLASTER, 0.9))
 	_box(Vector3(0.5, 0.4, 3.4), pos + Vector3(-7.0, 3.5, 0.0), Palette.mat_textured(Palette.METAL, "metal", Vector3(1.0, 1.0, 2.0), 0.5, 0.5))
 	_solid_box(Vector3(14.0, 0.3, 10.0), pos + Vector3(0.0, 3.5, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
 	_solid_box(Vector3(0.4, 3.4, 10.0), pos + Vector3(7.0, 1.7, 0.0), Palette.mat(Palette.PLASTER, 0.9))
@@ -327,7 +359,22 @@ func _safe_room(pos: Vector3) -> void:
 	lamp.light_color = Color(1.0, 0.86, 0.66)
 	lamp.omni_range = 12.0
 	_world_root.add_child(lamp)
+	# visible ceiling fixture so the light has a source
+	_box(Vector3(1.2, 0.16, 0.5), pos + Vector3(0.0, 3.38, 0.0), Palette.mat_textured(Palette.METAL, "metal", Vector3(1.0, 1.0, 1.0), 0.5, 0.5))
+	_box(Vector3(1.0, 0.06, 0.34), pos + Vector3(0.0, 3.28, 0.0), Palette.emissive(Color(1.0, 0.92, 0.78), 2.6))
+	# daylight spilling in through the doorway
+	var door_light := SpotLight3D.new()
+	door_light.position = pos + Vector3(-6.4, 2.6, 0.0)
+	door_light.rotation_degrees = Vector3(-14.0, 90.0, 0.0)
+	door_light.light_energy = 4.0
+	door_light.light_color = Color(1.0, 0.92, 0.80)
+	door_light.spot_range = 16.0
+	door_light.spot_angle = 55.0
+	door_light.spot_attenuation = 1.2
+	door_light.shadow_enabled = true
+	_world_root.add_child(door_light)
 	locations["safe_room"] = pos + Vector3(0.0, 0.2, 0.0)
+	locations["safe_room_exit"] = pos + Vector3(-12.0, 0.2, 0.0)
 
 ## Hawker hub: roofed open-sided shared dining with stalls, tables, fans, lights.
 func _hawker_block(centre: Vector3) -> void:
@@ -343,7 +390,16 @@ func _hawker_block(centre: Vector3) -> void:
 	# stalls: counters, canopies, signboards
 	for i: int in 6:
 		var sp := centre + Vector3(-27.0 + i * 11.0, 0.0, -20.0)
-		_solid_box(Vector3(8.0, 1.05, 3.2), sp + Vector3(0.0, 0.52, 0.0), Palette.mat(Palette.PLASTER, 0.85))
+		var used_counter := false
+		if AssetLibrary.has_asset("hawker_counter_clean.glb"):
+			var counter := AssetLibrary.instantiate("hawker_counter_clean.glb", _world_root)
+			if counter != null:
+				counter.position = sp + Vector3(-1.4, 0.0, 0.6)
+				counter.scale = Vector3(1.6, 1.0, 1.0)
+				counter.rotation.y = PI
+				used_counter = true
+		if not used_counter:
+			_solid_box(Vector3(8.0, 1.05, 3.2), sp + Vector3(0.0, 0.52, 0.0), Palette.mat(Palette.PLASTER, 0.85))
 		_box(Vector3(8.4, 0.18, 3.6), sp + Vector3(0.0, 1.12, 0.0), Palette.mat(Palette.METAL, 0.4, 0.6))
 		_box(Vector3(8.0, 2.1, 0.12), sp + Vector3(0.0, 2.1, 1.5), Palette.mat(Palette.FRONTAGES[i % Palette.FRONTAGES.size()], 0.85))
 		var canopy := MeshInstance3D.new()
@@ -354,6 +410,12 @@ func _hawker_block(centre: Vector3) -> void:
 		canopy.position = sp + Vector3(0.0, 3.1, 2.1)
 		canopy.rotation_degrees = Vector3(18.0, 0.0, 0.0)
 		_world_root.add_child(canopy)
+		if AssetLibrary.has_asset("player_clean.glb"):
+			var vendor := AssetLibrary.instantiate("player_clean.glb", _world_root)
+			if vendor != null:
+				vendor.position = sp + Vector3(0.6, 0.0, -1.5)
+				vendor.rotation.y = PI
+				AssetLibrary.tint(vendor, Palette.FRONTAGES[(i + 1) % Palette.FRONTAGES.size()])
 		var sign := _label3d(Palette.SIGN_TEXT[(i + 2) % Palette.SIGN_TEXT.size()], sp + Vector3(0.0, 3.6, 1.3))
 		sign.font_size = 40
 		sign.pixel_size = 0.012
@@ -361,8 +423,15 @@ func _hawker_block(centre: Vector3) -> void:
 	for i: int in 4:
 		for j: int in 3:
 			var tp := centre + Vector3(-24.0 + i * 16.0, 0.0, 6.0 + j * 12.0)
-			_cyl(Vector3(2.0, 0.12, 2.0), tp + Vector3(0.0, 0.85, 0.0), Palette.mat(Palette.PLASTER_2, 0.8))
-			_cyl(Vector3(0.3, 0.85, 0.3), tp + Vector3(0.0, 0.42, 0.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
+			var provider_table := false
+			if AssetLibrary.has_asset("hawker_table_clean.glb"):
+				var table := AssetLibrary.instantiate("hawker_table_clean.glb", _world_root)
+				if table != null:
+					table.position = tp
+					provider_table = true
+			if not provider_table:
+				_cyl(Vector3(2.0, 0.12, 2.0), tp + Vector3(0.0, 0.85, 0.0), Palette.mat(Palette.PLASTER_2, 0.8))
+				_cyl(Vector3(0.3, 0.85, 0.3), tp + Vector3(0.0, 0.42, 0.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
 			for s in 4:
 				var ang := TAU * s / 4.0 + 0.6
 				_cyl(Vector3(0.55, 0.5, 0.55), tp + Vector3(cos(ang) * 1.5, 0.25, sin(ang) * 1.5), Palette.mat(Palette.PLASTER, 0.85))
@@ -374,6 +443,14 @@ func _hawker_block(centre: Vector3) -> void:
 		var fp := centre + Vector3(-24.0 + i * 16.0, 0.0, 12.0)
 		_cyl(Vector3(0.3, 0.6, 0.3), fp + Vector3(0.0, 4.9, 0.0), Palette.mat(Palette.METAL, 0.5, 0.5))
 		_box(Vector3(2.6, 0.06, 0.3), fp + Vector3(0.0, 4.55, 0.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
+	# warm practical lighting under the hawker roof
+	for i: int in 6:
+		var practical := OmniLight3D.new()
+		practical.position = centre + Vector3(-30.0 + i * 12.0, 4.4, 6.0)
+		practical.light_energy = 1.5
+		practical.light_color = Color(1.0, 0.84, 0.62)
+		practical.omni_range = 16.0
+		_world_root.add_child(practical)
 	# string lights
 	for i: int in 10:
 		var lp := centre + Vector3(-30.0 + i * 7.0, 0.0, -26.0)
@@ -385,8 +462,9 @@ func _hawker_block(centre: Vector3) -> void:
 		bulb.material_override = Palette.emissive(Palette.SHOP_WARM, 2.0)
 		bulb.position = lp + Vector3(0.0, 4.6, 0.0)
 		_world_root.add_child(bulb)
-	# mission package on a stall counter
-	locations["package"] = centre + Vector3(-27.0 + 2 * 11.0, 1.4, -20.0)
+	# mission package in the open aisle in front of the stalls, so it can be
+	# walked to and picked up without climbing over the counter
+	locations["package"] = centre + Vector3(-5.0, 0.25, -14.0)
 
 ## Modern waterfront edge: towers, promenade, skyline.
 func _waterfront_block(centre: Vector3) -> void:
@@ -405,6 +483,13 @@ func _waterfront_block(centre: Vector3) -> void:
 
 ## Aviation compound: hangar, helipads, perimeter fence.
 func _aviation_block(centre: Vector3) -> void:
+	# ground staff (static figures from the generated officer set)
+	if AssetLibrary.has_asset("officer_clean.glb"):
+		for i: int in 2:
+			var guard := AssetLibrary.instantiate("officer_clean.glb", _world_root)
+			if guard != null:
+				guard.position = centre + Vector3(18.0 + i * 6.0, 0.0, 10.0 + i * 3.0)
+				guard.rotation.y = -1.1
 	# hangar
 	_solid_box(Vector3(38.0, 12.0, 24.0), centre + Vector3(-30.0, 6.0, -20.0), Palette.mat(Palette.METAL, 0.6, 0.4))
 	var hangar_roof := MeshInstance3D.new()
@@ -421,6 +506,12 @@ func _aviation_block(centre: Vector3) -> void:
 	# helipad (primary)
 	_helipad(centre + Vector3(30.0, 0.0, 24.0), 16.0)
 	locations["helipad_primary"] = centre + Vector3(30.0, 0.3, 24.0)
+	if AssetLibrary.has_asset("airfield_clutter_clean.glb"):
+		for i: int in 3:
+			var crate := AssetLibrary.instantiate("airfield_clutter_clean.glb", _world_root)
+			if crate != null:
+				crate.position = centre + Vector3(-10.0 + i * 5.0, 0.0, -34.0 + i * 4.0)
+				crate.rotation.y = randf_range(-0.5, 0.5)
 	# fence line + windsock
 	for i: int in 10:
 		_cyl(Vector3(0.18, 2.6, 0.18), centre + Vector3(-60.0 + i * 13.0, 1.3, 56.0), Palette.mat(Palette.METAL, 0.6, 0.4))
@@ -539,9 +630,10 @@ func _scatter_props() -> void:
 	for x in X_LINES:
 		for z in Z_LINES:
 			for k: int in 2:
-				var off := Vector3(-6.0 + k * 12.0, 0.0, 0.0)
+				# keep lamps and bollards out of the 16 m carriageway (ROAD_HALF = 8)
+				var off := Vector3(-10.5 + k * 21.0, 0.0, 0.0)
 				if k == 1:
-					off = Vector3(0.0, 0.0, -6.0 + 12.0)
+					off = Vector3(0.0, 0.0, -10.5 + 21.0)
 				_street_lamp(Vector3(x, 0.0, z) + off)
 	for i: int in 40:
 		var pos := Vector3(_rng.randf_range(-310.0, 310.0), 0.0, _rng.randf_range(-310.0, 310.0))
@@ -558,8 +650,15 @@ func _inside_block(pos: Vector3) -> bool:
 	return false
 
 func _street_lamp(pos: Vector3) -> void:
-	_cyl(Vector3(0.16, 6.0, 0.16), pos + Vector3(0.0, 3.0, 0.0), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
-	_box(Vector3(1.2, 0.14, 0.3), pos + Vector3(0.0, 6.0, 0.0), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
+	var used_provider := false
+	if AssetLibrary.has_asset("street_lamp_clean.glb"):
+		var lamp_model := AssetLibrary.instantiate("street_lamp_clean.glb", _world_root)
+		if lamp_model != null:
+			lamp_model.position = pos
+			used_provider = true
+	if not used_provider:
+		_cyl(Vector3(0.16, 6.0, 0.16), pos + Vector3(0.0, 3.0, 0.0), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
+		_box(Vector3(1.2, 0.14, 0.3), pos + Vector3(0.0, 6.0, 0.0), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
 	var bulb := MeshInstance3D.new()
 	var sm := SphereMesh.new()
 	sm.radius = 0.22
@@ -663,16 +762,29 @@ func _street_furniture() -> void:
 					leg.material_override = dark
 					leg.position = bench.position + Vector3(lx, -0.3, 0.0)
 					_world_root.add_child(leg)
-				var planter := MeshInstance3D.new()
-				var pb := BoxMesh.new()
-				pb.size = Vector3(1.2, 0.6, 1.2)
-				planter.mesh = pb
-				planter.material_override = Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(1.0, 1.0, 1.0), 0.9)
-				planter.position = kerb + Vector3(1.6, 0.3, 3.2)
-				_world_root.add_child(planter)
-				_sphere(Vector3(1.1, 0.9, 1.1), planter.position + Vector3(0.0, 0.7, 0.0), Palette.mat(Palette.FOLIAGE, 0.95))
+				var planter_pos := kerb + Vector3(1.6, 0.0, 3.2)
+				var used_planter := false
+				if AssetLibrary.has_asset("planter_clean.glb"):
+					var planter := AssetLibrary.instantiate("planter_clean.glb", _world_root)
+					if planter != null:
+						planter.position = planter_pos
+						used_planter = true
+				if not used_planter:
+					var planter_box := MeshInstance3D.new()
+					var pb := BoxMesh.new()
+					pb.size = Vector3(1.2, 0.6, 1.2)
+					planter_box.mesh = pb
+					planter_box.material_override = Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(1.0, 1.0, 1.0), 0.9)
+					planter_box.position = planter_pos + Vector3(0.0, 0.3, 0.0)
+					_world_root.add_child(planter_box)
+				_sphere(Vector3(1.1, 0.9, 1.1), planter_pos + Vector3(0.0, 0.8, 0.0), Palette.mat(Palette.FOLIAGE, 0.95))
 				# wall-mounted air-con condensers on the flanking facades
 				for k: int in 2:
+					if AssetLibrary.has_asset("ac_unit_clean.glb"):
+						var ac_model := AssetLibrary.instantiate("ac_unit_clean.glb", _world_root)
+						if ac_model != null:
+							ac_model.position = kerb + Vector3(-2.0 + k * 2.6, 4.2, -0.8)
+							continue
 					var ac := MeshInstance3D.new()
 					var ab := BoxMesh.new()
 					ab.size = Vector3(0.85, 0.6, 0.4)

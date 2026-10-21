@@ -20,6 +20,10 @@ var _body: Node3D
 var _camera: Camera3D
 var _arm: SpringArm3D
 var _landed := false
+var _provider_root: Node3D = null
+var _provider_main_rotor: Node3D = null
+var _provider_tail_rotor: Node3D = null
+var _procedural_visuals: Array[Node3D] = []
 var _last_good_position := Vector3.ZERO
 
 func _ready() -> void:
@@ -155,11 +159,38 @@ func _build() -> void:
 	_camera.fov = 75.0
 	_arm.add_child(_camera)
 
+	for child in get_children():
+		if child is MeshInstance3D:
+			_procedural_visuals.append(child)
+	_try_provider_asset()
+
+## Swap in the generated helicopter when it has been cleaned and staged.
+func _try_provider_asset() -> void:
+	if not AssetLibrary.has_asset("helicopter_clean.glb"):
+		return
+	var root := AssetLibrary.instantiate("helicopter_clean.glb", self)
+	if root == null:
+		return
+	_provider_root = root
+	for part in _procedural_visuals:
+		part.visible = false
+	var main_rotor := AssetLibrary.find_named(root, "main_rotor")
+	if main_rotor is Node3D:
+		_provider_main_rotor = main_rotor
+	var tail_rotor := AssetLibrary.find_named(root, "tail_rotor")
+	if tail_rotor is Node3D:
+		_provider_tail_rotor = tail_rotor
+
 func _physics_process(delta: float) -> void:
+	var rotor_speed := 22.0 if pilot_is_player else 6.0
 	if _rotor:
-		_rotor.rotate_y(delta * (22.0 if pilot_is_player else 6.0))
+		_rotor.rotate_y(delta * rotor_speed)
 	if _tail_rotor:
 		_tail_rotor.rotate_x(delta * (34.0 if pilot_is_player else 8.0))
+	if _provider_main_rotor != null:
+		AssetLibrary.spin_part(_provider_main_rotor, self, Vector3.UP, delta * rotor_speed * 1.6)
+	if _provider_tail_rotor != null:
+		AssetLibrary.spin_part(_provider_tail_rotor, self, Vector3.RIGHT, delta * rotor_speed * 2.4)
 	if pilot_is_player and not disabled:
 		_pilot_input(delta)
 	else:
@@ -220,11 +251,13 @@ func interact(player: Node) -> void:
 		return
 	pilot_is_player = true
 	player.current_vehicle = self
+	player.busy = true
 	player.visible = false
 	player.global_position = global_position
 	_camera.current = true
 	Game.set_mode(Game.MODE_HELI)
 	Sfx.start_rotor()
+	player.busy = false            # the transition is complete
 	Events.vehicle_entered.emit(self)
 	Events.notify.emit("Helicopter: [Space] climb, [Shift] descend, [W/S] forward/back, [A/D] yaw, [E] exit when landed.", "info")
 
@@ -242,6 +275,7 @@ func exit_vehicle(player: Node) -> void:
 	player.visible = true
 	player.current_vehicle = null
 	player.camera.current = true
+	player.busy = false
 	Game.set_mode(Game.MODE_FOOT)
 	Sfx.stop_rotor()
 	Events.vehicle_exited.emit(self)

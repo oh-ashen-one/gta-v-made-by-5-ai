@@ -22,7 +22,8 @@
       "dimensions": "length 4.4 m, width 1.8 m, height 1.45 m",
       "required_export": "GLB with named nodes for wheel_FL, wheel_FR, wheel_RL, wheel_RR, door_FL, door_FR, steering_wheel, seat_driver, seat_rear_left, seat_rear_right, headlight_L, headlight_R, taillight_L, taillight_R",
       "intended_game_path": "game/assets/vehicles/sedan.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender (4.4 m, ground at Y=0, nose -Z) with separated spinning wheels; in engine as the sedan and police body"
     },
     {
       "id": "W1-HERO-002",
@@ -32,7 +33,8 @@
       "dimensions": "length 4.3 m, width 1.9 m, height 1.25 m",
       "required_export": "GLB with named nodes for wheel_FL, wheel_FR, wheel_RL, wheel_RR, door_L, door_R, steering_wheel, seat_driver, seat_passenger",
       "intended_game_path": "game/assets/vehicles/coupe.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender with separated spinning wheels; in engine as the coupe"
     },
     {
       "id": "W1-HERO-003",
@@ -42,7 +44,8 @@
       "dimensions": "length 5.2 m, width 2.0 m, height 2.2 m",
       "required_export": "GLB with named nodes for wheels, sliding_door, roller_shutter, steering_wheel, seat_driver",
       "intended_game_path": "game/assets/vehicles/van.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender with separated spinning wheels; in engine as the delivery van"
     },
     {
       "id": "W1-HERO-004",
@@ -52,7 +55,8 @@
       "dimensions": "fuselage length 6.5 m, height 3.4 m, main rotor diameter 9.5 m",
       "required_export": "GLB with named nodes for main_rotor, tail_rotor, rotor_head, pilot_seat, door_L, door_R, skid_L, skid_R, tail_fin",
       "intended_game_path": "game/assets/vehicles/helicopter.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender with separated main and tail rotors; in engine as the helicopter"
     },
     {
       "id": "W1-HERO-005",
@@ -62,7 +66,8 @@
       "dimensions": "height 1.75 m",
       "required_export": "GLB with a humanoid skeleton (mixamo-compatible or Godot-compatible bone naming), named bones for hips, spine, chest, neck, head, shoulder/upperarm/lowerarm/hand L+R, thigh/shin/foot L+R, plus a separate prop attachment socket on the right hand",
       "intended_game_path": "game/assets/characters/player.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Customuse, delivered and integrated as a static figure (hawker vendors); still unrigged - rigging and a walk cycle are the open task"
     },
     {
       "id": "W1-HERO-006",
@@ -72,7 +77,8 @@
       "dimensions": "height 1.78 m",
       "required_export": "GLB with humanoid skeleton, bone names matching the civilian rig, hand socket for a pistol",
       "intended_game_path": "game/assets/characters/police_officer.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Customuse, delivered and integrated as a static figure (airfield ground staff); still unrigged"
     },
     {
       "id": "W1-HERO-007",
@@ -82,7 +88,8 @@
       "dimensions": "module width 9 m, depth 13 m, height 11.5 m including roof",
       "required_export": "GLB, pivot at ground level, separate nodes for facade, columns, shutters, awning, sign_band, roof",
       "intended_game_path": "game/assets/buildings/shophouse_module.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender to a 20k triangle budget and instanced along the heritage streets"
     },
     {
       "id": "W1-HERO-008",
@@ -92,7 +99,8 @@
       "dimensions": "22 m x 13 m footprint, 42 m height",
       "required_export": "GLB with separate nodes for slab_body, ground_columns, lift_lobby, roof_tank, parapet, link_bridge",
       "intended_game_path": "game/assets/buildings/hdb_slab.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender to a 40k triangle budget and used as the housing slab body"
     },
     {
       "id": "W1-HERO-009",
@@ -112,7 +120,8 @@
       "dimensions": "table 1.6 m diameter, stools 0.45 m",
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/hawker_table.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Tripo, delivered, cleaned in Blender (1.87 M -> 4 000 triangles) and integrated as the hawker communal table"
     },
     {
       "id": "W1-PROP-011",
@@ -122,7 +131,8 @@
       "dimensions": "1.4 m x 0.8 m x 2.0 m",
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/food_trolley.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Tripo, delivered, cleaned in Blender and staged for the hawker aisle"
     },
     {
       "id": "W1-PROP-012",
@@ -132,7 +142,8 @@
       "dimensions": "0.8 m x 0.35 m x 0.6 m",
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/ac_unit.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the wall-mounted air-con condensers"
     },
     {
       "id": "W1-PROP-013",
@@ -142,7 +153,8 @@
       "dimensions": "height 6 m",
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/street_lamp.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the street lamps"
     },
     {
       "id": "W1-PROP-014",
@@ -152,7 +164,8 @@
       "dimensions": "bins 0.6 m cube, crates 0.6 x 0.4 x 0.3 m",
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/service_lane_clutter.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated in the rear service lanes"
     },
     {
       "id": "W1-PROP-015",
@@ -162,7 +175,8 @@
       "dimensions": "0.9 m high",
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/planter.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the kerbside planters"
     },
     {
       "id": "W1-PROP-016",
@@ -172,7 +186,8 @@
       "dimensions": "length 0.19 m",
       "required_export": "GLB, pivot at the grip, one-handed scale",
       "intended_game_path": "game/assets/weapons/pistol.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the player's pistol"
     },
     {
       "id": "W1-PROP-017",
@@ -182,7 +197,8 @@
       "dimensions": "length 0.62 m collapsed",
       "required_export": "GLB, pivot at the grip",
       "intended_game_path": "game/assets/weapons/smg.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the player's compact automatic"
     },
     {
       "id": "W1-PROP-018",
@@ -192,7 +208,9 @@
       "dimensions": "crates 1.2 m cube, dock 2 m high",
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/airfield_clutter.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the airfield clutter"
     }
-  ]
+  ],
+  "status_summary": "17 of 18 requests were delivered during wave 1 and integrated into the build (8 Customuse hero models, 9 Tripo props). Only the hawker stall counter (W1-HERO-009) is outstanding: Customuse charges exceeded the estimate, so it is being produced through the owner's Tripo small-prop route instead. No further Customuse credits may be spent without new owner authorisation."
 }

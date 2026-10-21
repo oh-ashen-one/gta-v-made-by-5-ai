@@ -2,6 +2,9 @@
 game/.godot/
 game/.import/
 game/build/
+# Provider-generated assets: their terms are not MIT, so they are staged
+# locally and re-fetched with game/tools/fetch_provider_assets.sh
+game/assets/providers/
 game/captures/*.tmp
 
 # macOS
