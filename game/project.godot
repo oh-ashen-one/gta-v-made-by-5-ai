@@ -35,3 +35,4 @@ common/physics_ticks_per_second=60
 
 Events="*res://src/core/events.gd"
 Game="*res://src/core/game_state.gd"
+Sfx="*res://src/core/audio.gd"

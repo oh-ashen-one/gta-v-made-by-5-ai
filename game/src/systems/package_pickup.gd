@@ -34,5 +34,6 @@ func interact(_player: Node) -> void:
 	_taken = true
 	visible = false
 	Events.toast("Package secured.", "good")
+	Sfx.play("pickup", -4.0, 1.0)
 	if mission and mission.has_method("package_collected"):
 		mission.package_collected()

@@ -194,6 +194,7 @@ func _update_police(delta: float) -> void:
 		officer.global_position = pos
 		officer.state = NPC.State.PURSUE
 		peds.append(officer)
+	Sfx.set_siren(wanted > 0 and not police_cars.is_empty(), 1.0 + 0.1 * float(wanted))
 	# vehicle pursuit
 	if Game.mode != Game.MODE_FOOT and police_cars.is_empty():
 		var pc := Car.new()

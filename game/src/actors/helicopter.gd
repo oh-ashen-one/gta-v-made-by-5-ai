@@ -201,6 +201,10 @@ func _pilot_input(delta: float) -> void:
 	if is_on_floor() and _lift_input <= 0.0:
 		velocity.y = minf(velocity.y, 0.0)
 
+func _process(_delta: float) -> void:
+	if pilot_is_player:
+		Sfx.set_rotor_pitch(clampf(velocity.length() / 30.0, 0.0, 1.0))
+
 func is_landed() -> bool:
 	return _landed
 
@@ -220,6 +224,7 @@ func interact(player: Node) -> void:
 	player.global_position = global_position
 	_camera.current = true
 	Game.set_mode(Game.MODE_HELI)
+	Sfx.start_rotor()
 	Events.vehicle_entered.emit(self)
 	Events.notify.emit("Helicopter: [Space] climb, [Shift] descend, [W/S] forward/back, [A/D] yaw, [E] exit when landed.", "info")
 
@@ -238,6 +243,7 @@ func exit_vehicle(player: Node) -> void:
 	player.current_vehicle = null
 	player.camera.current = true
 	Game.set_mode(Game.MODE_FOOT)
+	Sfx.stop_rotor()
 	Events.vehicle_exited.emit(self)
 	Events.notify.emit("Landed and on foot.", "info")
 

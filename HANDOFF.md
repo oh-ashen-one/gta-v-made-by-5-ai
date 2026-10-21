@@ -2,16 +2,23 @@
 
 - Owner: current Codex manager chat; delegated builder is MiniMax M3.1 Flash through Claude Code.
 - Starting checkpoint: 44431f5 (planning repository, no playable build).
-- Task branch: codex/minimax-wave-01.
-- State: autonomous implementation active, MiniMax session `adb1f608-eafc-413b-b218-4cbe9d13a426`.
+- Task branch: `codex/minimax-wave-01` (remote). Builder worktree branch: `feature/wave-01-orchard-reach` → pushed to `codex/minimax-wave-01`.
+- State: wave 1 implementation complete and handed off; the four-hour clock ran **07:35:00 → 11:35:00 UTC 2026-10-21** (hard end).
 - Fixed wave window: 2026-10-21 07:35–11:35 UTC; final handoff preparation from 11:05 UTC.
 - Builder worktree: `.claude/worktrees/minimax-wave-01-build`, branch `feature/wave-01-orchard-reach`.
 - This root checkout is the manager documentation branch; the builder owns its separate worktree.
 - Timebox: four hours total, final 30 minutes included for verification and handoff.
 - Model access: MiniMax subscription connection verified through Claude Code before dispatch. No API key belongs in this repository.
-- Next: builder continues its chosen Godot 4.7.1 implementation autonomously. Manager checks hourly and starts Astra/Codex from the pushed handoff at the deadline.
-- Owner visual update: GTA VI fidelity in Singapore; use END_GOAL.md reference images.
+- Engine (decided by the builder under owner delegation): **Godot 4.7.1 stable**, Forward+, native macOS export. Rationale and rejected alternatives: `waves/01/READINESS.md`.
+- Deliverable: `game/` — a playable third-person Singapore-ins slice with an authored district, shooting, car theft, left-hand traffic, police response, a flyable helicopter and the "Harbour Relay" mission.
+- Build: `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip` (build output is git-ignored; rebuild locally).
+- Checks: `godot --headless --path game -- --test` → 20/20 PASS at the handoff commit.
+- Evidence: `game/captures/` (automated playthrough PNGs + `capture_log.json`), `docs/REQUIREMENTS_LEDGER.md`, `docs/asset-manifest.csv`.
+- Owner visual update: GTA VI fidelity in Singapore; primary art direction is `docs/concepts/*.png` (generated concepts of **our** game), secondary evidence is `docs/visual-references.json`.
 - Owner asset routing: Tripo browser for smaller/bulk objects, Customuse MCP for major assets, no Meshy. Existing Tripo credits authorized.
-- Engine/process ownership: consult builder ledger and shared slot protocol; do not touch other sessions’ processes.
+- **Asset surfaces unavailable in the builder CLI**: no Tripo browser control, no Customuse MCP. Requests published in `ASSET_REQUESTS.json` for the manager to execute; the manager returns assets for wave 2.
+- Engine/process ownership: this task ran **one** engine instance under the shared GPU slot lock (`gpu_slot.sh capture --label wave1-orchard-reach`); no other session's process was touched; the engine was stopped at the end of the wave.
+- Critic reality: in this profile every subagent is served by the same MiniMax subscription, even when addressed as a Claude alias. **No Opus/Fable access exists here.** The in-wave critic pass is an independent-context, same-model review and is labelled as such.
 - Publication: task branch pushes authorized; main merge and public build release not authorized.
 - Scope: original Singapore-inspired game from END_GOAL.md; no local AI inference, no unapproved asset generation charges.
+- Next: manager launches **Astra through Codex** from the pushed checkpoint using `NEXT_GOAL.md`.

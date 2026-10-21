@@ -1,0 +1,18 @@
+asset_or_path,provider_or_source,created_date,license_or_terms,attribution_required,public_source_redistribution,packaged_build_redistribution,included_or_excluded,notes
+game/src/world/world_builder.gd,original procedural geometry (wave-1 code by MiniMax M3.1 Flash),2026-10-21,MIT (this repository),no,yes,yes,included,All buildings/roads/props are generated at runtime from this script - no external mesh files
+game/src/world/palette.gd,original procedural materials and FastNoiseLite surface textures,2026-10-21,MIT (this repository),no,yes,yes,included,Textures are generated in-engine; no image files are redistributed
+game/src/actors/player.gd,original procedural character mesh,2026-10-21,MIT (this repository),no,yes,yes,included,PLACEHOLDER art - not the GTA VI fidelity bar
+game/src/actors/npc.gd,original procedural civilian/police meshes,2026-10-21,MIT (this repository),no,yes,yes,included,PLACEHOLDER art
+game/src/actors/car.gd,original procedural vehicle meshes,2026-10-21,MIT (this repository),no,yes,yes,included,PLACEHOLDER art - hero vehicle assets requested via ASSET_REQUESTS.json
+game/src/actors/helicopter.gd,original procedural helicopter mesh,2026-10-21,MIT (this repository),no,yes,yes,included,PLACEHOLDER art - hero asset requested via ASSET_REQUESTS.json
+game/src/core/events.gd + game/src/core/game_state.gd,original code,2026-10-21,MIT (this repository),no,yes,yes,included,
+game/src/systems/*.gd,original code,2026-10-21,MIT (this repository),no,yes,yes,included,Mission/traffic/capture/self-test systems
+game/src/ui/hud.gd,original code and original signage text,2026-10-21,MIT (this repository),no,yes,yes,included,Shop names are original English words chosen by the builder
+game/captures/*.png,original runtime capture from this build,2026-10-21,MIT (this repository),no,yes,yes,included,Evidence for END_GOAL VERIFY-03
+docs/concepts/singapore-on-foot.png,generated concept art produced for this project (owner/manager),2026-10-21,project-owned concept art,no,yes,yes,included,Primary art direction target - committed by the manager on the wave branch
+docs/concepts/singapore-driving.png,generated concept art produced for this project (owner/manager),2026-10-21,project-owned concept art,no,yes,yes,included,Primary art direction target
+docs/concepts/singapore-helicopter.png,generated concept art produced for this project (owner/manager),2026-10-21,project-owned concept art,no,yes,yes,included,Primary art direction target
+docs/concepts/prompts.json,generated with the concept images,2026-10-21,project-owned,no,yes,yes,included,
+docs/visual-references.json,external reference list (URLs only; Rockstar and Singapore photography),2026-10-21,external third-party material - links only,yes (credit recorded per entry),no (no third-party image files are stored),no,links only,Secondary fidelity/location evidence; no external image is copied into the repository or the build
+GTA V / GTA VI game footage,external,not used,not applicable,not applicable,no,no,excluded,Not downloaded; superseded by the generated concepts board
+Tripo / Customuse / Meshy generated assets,not yet generated - requests in ASSET_REQUESTS.json,not applicable,provider terms TBD,pending,pending,pending,pending,No asset was generated in wave 1; provenance must be recorded here before any of these files enter the repository or a build

@@ -49,6 +49,8 @@ func build(seed_value: int = 20261021) -> void:
 	_environment()
 	_ground()
 	_roads()
+	_junctions()
+	_street_furniture()
 	_build_grid()
 	_waterfront_edge()
 	_background_city()
@@ -113,7 +115,7 @@ func _ground() -> void:
 	var box := BoxMesh.new()
 	box.size = Vector3(1500.0, 4.0, 1500.0)
 	mesh.mesh = box
-	mesh.material_override = Palette.mat(Palette.CONCRETE_LIGHT, 0.95)
+	mesh.material_override = Palette.mat_textured(Palette.CONCRETE_LIGHT, "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
 	mesh.position = Vector3(0.0, -2.0, 0.0)
 	ground.add_child(mesh)
 	var shape := CollisionShape3D.new()
@@ -124,7 +126,7 @@ func _ground() -> void:
 	ground.add_child(shape)
 
 func _roads() -> void:
-	var asphalt := Palette.mat(Palette.ASPHALT, 0.9)
+	var asphalt := Palette.mat_textured(Palette.ASPHALT, "asphalt", Vector3(8.0, 1.0, 120.0), 0.9)
 	var paint := Palette.mat(Palette.PAINT_LINE, 0.75)
 	for x in X_LINES:
 		var strip := _solid_box(Vector3(ROAD_HALF * 2.0, 0.06, 760.0), Vector3(x, 0.03, 0.0), asphalt)
@@ -142,7 +144,7 @@ func _roads() -> void:
 	# kerbs + sidewalk bands around each block
 	for cx in [-240.0, -80.0, 80.0, 240.0]:
 		for cz in [-240.0, -80.0, 80.0, 240.0]:
-			_solid_box(Vector3(BLOCK, 0.16, BLOCK), Vector3(cx, 0.08, cz), Palette.mat(Palette.CONCRETE, 0.92))
+			_solid_box(Vector3(BLOCK, 0.16, BLOCK), Vector3(cx, 0.08, cz), Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(24.0, 1.0, 24.0), 0.92))
 
 # ------------------------------------------------------------------- blocks
 func _build_grid() -> void:
@@ -184,11 +186,11 @@ func _shophouse_block(centre: Vector3) -> void:
 	_shophouse_row(centre + Vector3(-BLOCK / 2.0 + 8.0, 0.0, -BLOCK / 2.0 + 8.0), Vector3(1, 0, 0), 13)
 	_shophouse_row(centre + Vector3(BLOCK / 2.0 - 8.0, 0.0, BLOCK / 2.0 - 8.0), Vector3(-1, 0, 0), 13)
 	# low rear service buildings + a service lane
-	for i in 3:
+	for i: int in 3:
 		var p := centre + Vector3(-40.0 + i * 40.0, 0.0, 30.0)
 		_solid_box(Vector3(18.0, 6.0, 10.0), p + Vector3(0.0, 3.0, 0.0), Palette.mat(Palette.PLASTER_2, 0.9))
 		_box(Vector3(19.0, 0.4, 11.0), p + Vector3(0.0, 6.2, 0.0), Palette.mat(Palette.METAL, 0.6, 0.6))
-	for i in 6:
+	for i: int in 6:
 		var t := centre + Vector3(-50.0 + i * 20.0, 0.0, 46.0)
 		_tree(t + Vector3(0.0, 0.0, 0.0), 1.0)
 
@@ -201,7 +203,7 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		var depth := 13.0
 		# body
 		_solid_box(Vector3(unit_w - 0.35, height, depth), pos + Vector3(0.0, height * 0.5, 0.0),
-			Palette.mat(frontage, 0.88))
+			Palette.mat_textured(frontage, "plaster", Vector3(3.0, 2.0, 3.0), 0.88))
 		# five-foot-way arcade: columns + covered walkway (recessed threshold)
 		var arcade_dir := Vector3(0.0, 0.0, 1.0) if dir.x != 0.0 else Vector3(1.0, 0.0, 0.0)
 		var along := Vector3(0.0, 0.0, 1.0) if dir.x != 0.0 else Vector3(1.0, 0.0, 0.0)
@@ -216,7 +218,7 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		_box(Vector3(unit_w - 3.4, 1.7, 0.06), front + Vector3(0.0, 1.5, 0.05), Palette.emissive(Palette.SHOP_WARM, 1.1))
 		_box(Vector3(unit_w - 1.2, 0.5, 0.1), front + Vector3(0.0, 3.3, 0.0), Palette.mat(Palette.METAL, 0.5, 0.5))
 		# upper windows
-		for w in 3:
+		for w: int in 3:
 			var wx := along * (-unit_w * 0.3 + w * unit_w * 0.3)
 			_box(Vector3(1.5, 1.4, 0.1), pos + wx + Vector3(0.0, 6.6, 0.0) - arcade_dir * (depth * 0.5 + 0.06),
 				Palette.mat(Palette.GLASS, 0.25, 0.2))
@@ -227,7 +229,7 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		var prism := PrismMesh.new()
 		prism.size = Vector3(unit_w - 0.2, 2.6, depth + 0.6)
 		roof.mesh = prism
-		roof.material_override = Palette.mat(Palette.ROOF_TILE if i % 2 == 0 else Palette.ROOF_TILE_2, 0.8)
+		roof.material_override = Palette.mat_textured(Palette.ROOF_TILE if i % 2 == 0 else Palette.ROOF_TILE_2, "tile", Vector3(2.0, 2.0, 3.0), 0.8)
 		roof.position = pos + Vector3(0.0, height + 1.3, 0.0)
 		if dir.z != 0.0:
 			roof.rotation_degrees = Vector3(0.0, 90.0, 0.0)
@@ -268,10 +270,10 @@ func _hdb_block(centre: Vector3) -> void:
 		var size := Vector3(22.0, h, 13.0)
 		if rot == 90.0:
 			size = Vector3(13.0, h, 22.0)
-		_solid_box(size, pos + Vector3(0.0, 3.6 + h * 0.5, 0.0), Palette.mat(Palette.CONCRETE, 0.85))
+		_solid_box(size, pos + Vector3(0.0, 3.6 + h * 0.5, 0.0), Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(5.0, 7.0, 3.0), 0.85))
 		# void-deck: open ground floor with columns
-		for cx in 3:
-			for cz in 3:
+		for cx: int in 3:
+			for cz: int in 3:
 				_solid_box(Vector3(0.7, 3.6, 0.7), pos + Vector3(-size.x * 0.4 + cx * size.x * 0.4, 1.8, -size.z * 0.4 + cz * size.z * 0.4),
 					Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
 		# lift lobby + sheltered link
@@ -281,7 +283,7 @@ func _hdb_block(centre: Vector3) -> void:
 		var floors := int(h / 3.4)
 		for f in floors:
 			var wy := 6.4 + f * 3.4
-			for w in 5:
+			for w: int in 5:
 				var off := -size.x * 0.36 + w * size.x * 0.18
 				var win_pos := pos + Vector3(off, wy, size.z * 0.5 + 0.06)
 				if rot == 90.0:
@@ -292,15 +294,15 @@ func _hdb_block(centre: Vector3) -> void:
 		_cyl(Vector3(2.0, 2.4, 2.0), pos + Vector3(size.x * 0.25, 3.6 + h + 1.8, 0.0), Palette.mat(Palette.METAL, 0.7, 0.3))
 	# planted courtyard with a community table
 	_solid_box(Vector3(40.0, 0.3, 34.0), centre + Vector3(0.0, 0.15, 2.0), Palette.mat(Color(0.32, 0.40, 0.26), 0.95))
-	for i in 8:
+	for i: int in 8:
 		var ang := TAU * i / 8.0
 		_tree(centre + Vector3(cos(ang) * 15.0, 0.0, 2.0 + sin(ang) * 12.0), 1.1)
 	_box(Vector3(5.0, 0.16, 2.0), centre + Vector3(0.0, 0.9, 2.0), Palette.mat(Palette.PLASTER, 0.85))
-	for i in 3:
+	for i: int in 3:
 		_box(Vector3(0.2, 0.85, 0.2), centre + Vector3(-1.8 + i * 1.8, 0.45, 2.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
 	# driveable multi-level carpark ramp
 	_solid_box(Vector3(26.0, 0.4, 12.0), centre + Vector3(34.0, 0.2, 52.0), Palette.mat(Palette.CONCRETE, 0.9))
-	for i in 4:
+	for i: int in 4:
 		_solid_box(Vector3(26.0, 0.4, 3.0), centre + Vector3(34.0, 3.2 + i * 3.0, 44.0 + i * 4.0), Palette.mat(Palette.CONCRETE, 0.9))
 		_solid_box(Vector3(0.6, 3.2, 3.0), centre + Vector3(21.5, 1.6 + i * 3.0, 44.0 + i * 4.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
 	# safe room interior (wave-1 mission origin)
@@ -309,11 +311,14 @@ func _hdb_block(centre: Vector3) -> void:
 
 func _safe_room(pos: Vector3) -> void:
 	_solid_box(Vector3(14.0, 0.2, 10.0), pos + Vector3(0.0, 0.1, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
-	for side in [-1.0, 1.0]:
+	for side: float in [-1.0, 1.0]:
 		_solid_box(Vector3(14.0, 3.4, 0.4), pos + Vector3(0.0, 1.7, side * 5.0), Palette.mat(Palette.PLASTER, 0.9))
-	_solid_box(Vector3(0.4, 3.4, 10.0), pos + Vector3(-7.0, 1.7, 0.0), Palette.mat(Palette.PLASTER, 0.9))
-	_solid_box(Vector3(0.4, 3.4, 10.0), pos + Vector3(7.0, 1.7, 0.0), Palette.mat(Palette.PLASTER, 0.9))
+	# doorway on the -X side, facing the street, so the room can be entered and left
+	_solid_box(Vector3(0.4, 3.4, 3.5), pos + Vector3(-7.0, 1.7, -3.25), Palette.mat(Palette.PLASTER, 0.9))
+	_solid_box(Vector3(0.4, 3.4, 3.5), pos + Vector3(-7.0, 1.7, 3.25), Palette.mat(Palette.PLASTER, 0.9))
+	_box(Vector3(0.5, 0.4, 3.4), pos + Vector3(-7.0, 3.5, 0.0), Palette.mat_textured(Palette.METAL, "metal", Vector3(1.0, 1.0, 2.0), 0.5, 0.5))
 	_solid_box(Vector3(14.0, 0.3, 10.0), pos + Vector3(0.0, 3.5, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
+	_solid_box(Vector3(0.4, 3.4, 10.0), pos + Vector3(7.0, 1.7, 0.0), Palette.mat(Palette.PLASTER, 0.9))
 	_box(Vector3(2.6, 0.9, 1.2), pos + Vector3(-3.0, 0.6, -3.0), Palette.mat(Palette.METAL, 0.6, 0.4))
 	_box(Vector3(2.2, 1.2, 0.8), pos + Vector3(3.5, 0.7, -3.4), Palette.mat(Palette.PLASTER_2, 0.9))
 	var lamp := OmniLight3D.new()
@@ -329,14 +334,14 @@ func _hawker_block(centre: Vector3) -> void:
 	# pavilion slab
 	_solid_box(Vector3(70.0, 0.25, 54.0), centre + Vector3(0.0, 0.12, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.92))
 	# roof on columns
-	for i in 7:
-		for j in 5:
+	for i: int in 7:
+		for j: int in 5:
 			var cp := centre + Vector3(-30.0 + i * 10.0, 0.0, -22.0 + j * 11.0)
 			_cyl(Vector3(0.5, 5.2, 0.5), cp + Vector3(0.0, 2.6, 0.0), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_solid_box(Vector3(72.0, 0.5, 56.0), centre + Vector3(0.0, 5.4, 0.0), Palette.mat(Palette.METAL_DARK, 0.7, 0.3))
 	_box(Vector3(74.0, 0.2, 12.0), centre + Vector3(0.0, 5.9, -18.0), Palette.mat(Palette.ROOF_TILE, 0.8))
 	# stalls: counters, canopies, signboards
-	for i in 6:
+	for i: int in 6:
 		var sp := centre + Vector3(-27.0 + i * 11.0, 0.0, -20.0)
 		_solid_box(Vector3(8.0, 1.05, 3.2), sp + Vector3(0.0, 0.52, 0.0), Palette.mat(Palette.PLASTER, 0.85))
 		_box(Vector3(8.4, 0.18, 3.6), sp + Vector3(0.0, 1.12, 0.0), Palette.mat(Palette.METAL, 0.4, 0.6))
@@ -353,8 +358,8 @@ func _hawker_block(centre: Vector3) -> void:
 		sign.font_size = 40
 		sign.pixel_size = 0.012
 	# shared dining: tables, stools, bins, tray return
-	for i in 4:
-		for j in 3:
+	for i: int in 4:
+		for j: int in 3:
 			var tp := centre + Vector3(-24.0 + i * 16.0, 0.0, 6.0 + j * 12.0)
 			_cyl(Vector3(2.0, 0.12, 2.0), tp + Vector3(0.0, 0.85, 0.0), Palette.mat(Palette.PLASTER_2, 0.8))
 			_cyl(Vector3(0.3, 0.85, 0.3), tp + Vector3(0.0, 0.42, 0.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
@@ -365,12 +370,12 @@ func _hawker_block(centre: Vector3) -> void:
 		_solid_box(Vector3(3.0, 1.0, 1.0), centre + Vector3(-24.0 + i * 16.0, 0.5, 0.0), Palette.mat(Palette.METAL, 0.5, 0.5))
 		_cyl(Vector3(1.0, 1.2, 1.0), centre + Vector3(-30.0 + i * 16.0, 0.6, -2.0), Palette.mat(Palette.METAL_DARK, 0.7, 0.3))
 	# ceiling fans
-	for i in 4:
+	for i: int in 4:
 		var fp := centre + Vector3(-24.0 + i * 16.0, 0.0, 12.0)
 		_cyl(Vector3(0.3, 0.6, 0.3), fp + Vector3(0.0, 4.9, 0.0), Palette.mat(Palette.METAL, 0.5, 0.5))
 		_box(Vector3(2.6, 0.06, 0.3), fp + Vector3(0.0, 4.55, 0.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
 	# string lights
-	for i in 10:
+	for i: int in 10:
 		var lp := centre + Vector3(-30.0 + i * 7.0, 0.0, -26.0)
 		var bulb := MeshInstance3D.new()
 		var sm := SphereMesh.new()
@@ -385,7 +390,7 @@ func _hawker_block(centre: Vector3) -> void:
 
 ## Modern waterfront edge: towers, promenade, skyline.
 func _waterfront_block(centre: Vector3) -> void:
-	for i in 2:
+	for i: int in 2:
 		var pos := centre + Vector3(-34.0 + i * 68.0, 0.0, -30.0)
 		var h := 70.0 + i * 18.0
 		_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), Palette.mat(Palette.GLASS, 0.12, 0.6))
@@ -395,7 +400,7 @@ func _waterfront_block(centre: Vector3) -> void:
 	# low podium with a skywalk
 	_solid_box(Vector3(60.0, 5.0, 16.0), centre + Vector3(0.0, 2.5, 24.0), Palette.mat(Palette.CONCRETE, 0.8))
 	_box(Vector3(24.0, 0.4, 3.0), centre + Vector3(0.0, 5.3, 14.0), Palette.mat(Palette.METAL, 0.4, 0.6))
-	for i in 6:
+	for i: int in 6:
 		_tree(centre + Vector3(-40.0 + i * 16.0, 0.0, 40.0), 1.0)
 
 ## Aviation compound: hangar, helipads, perimeter fence.
@@ -417,12 +422,12 @@ func _aviation_block(centre: Vector3) -> void:
 	_helipad(centre + Vector3(30.0, 0.0, 24.0), 16.0)
 	locations["helipad_primary"] = centre + Vector3(30.0, 0.3, 24.0)
 	# fence line + windsock
-	for i in 10:
+	for i: int in 10:
 		_cyl(Vector3(0.18, 2.6, 0.18), centre + Vector3(-60.0 + i * 13.0, 1.3, 56.0), Palette.mat(Palette.METAL, 0.6, 0.4))
 	_box(Vector3(130.0, 0.1, 0.1), centre + Vector3(0.0, 2.4, 56.0), Palette.mat(Palette.METAL, 0.6, 0.4))
 	_cyl(Vector3(0.16, 6.0, 0.16), centre + Vector3(-56.0, 3.0, 44.0), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_box(Vector3(0.3, 0.3, 2.2), centre + Vector3(-56.0, 5.9, 45.0), Palette.mat(Color(0.9, 0.4, 0.15), 0.8))
-	for i in 4:
+	for i: int in 4:
 		_tree(centre + Vector3(-56.0 + i * 18.0, 0.0, 48.0), 0.9)
 
 func _helipad(pos: Vector3, radius: float) -> void:
@@ -467,20 +472,20 @@ func _waterfront_edge() -> void:
 	_world_root.add_child(water)
 	# promenade deck + railing
 	_solid_box(Vector3(700.0, 0.3, 22.0), Vector3(0.0, 0.15, PROMENADE_Z), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
-	for i in 46:
+	for i: int in 46:
 		_cyl(Vector3(0.12, 1.1, 0.12), Vector3(-340.0 + i * 15.0, 0.85, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_box(Vector3(700.0, 0.08, 0.08), Vector3(0.0, 1.35, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_helipad(Vector3(locations["helipad_secondary"].x, 0.0, locations["helipad_secondary"].z), 11.0)
-	for i in 8:
+	for i: int in 8:
 		_tree(Vector3(-300.0 + i * 85.0, 0.0, PROMENADE_Z + 6.0), 1.0)
-	for i in 6:
+	for i: int in 6:
 		_street_lamp(Vector3(-320.0 + i * 128.0, 0.0, PROMENADE_Z + 8.0))
 
 func _background_city() -> void:
 	# distant, non-reachable silhouettes — dimensional, not a flat backdrop
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 991
-	for i in 70:
+	for i: int in 70:
 		var side := i % 4
 		var pos := Vector3.ZERO
 		match side:
@@ -506,13 +511,13 @@ func _build_lane_graph() -> void:
 			traffic_nodes.append(Vector3(x, 0.1, z))
 	# pedestrian lanes along every kerb band, both sides of every road
 	for x in X_LINES:
-		for side in [-1.0, 1.0]:
+		for side: float in [-1.0, 1.0]:
 			var pts: Array[Vector3] = []
 			for z in Z_LINES:
 				pts.append(Vector3(x + side * SIDEWALK, 0.25, z))
 			ped_lanes.append(pts)
 	for z in Z_LINES:
-		for side in [-1.0, 1.0]:
+		for side: float in [-1.0, 1.0]:
 			var pts2: Array[Vector3] = []
 			for x in X_LINES:
 				pts2.append(Vector3(x, 0.25, z + side * SIDEWALK))
@@ -520,8 +525,8 @@ func _build_lane_graph() -> void:
 	# parked cars along the kerbs of the shophouse streets
 	var i := 0
 	for x in X_LINES:
-		for side in [-1.0, 1.0]:
-			for j in 4:
+		for side: float in [-1.0, 1.0]:
+			for j: int in 4:
 				var px: float = x + side * (SIDEWALK - 2.0)
 				var pz := -240.0 + j * 160.0 + 40.0
 				if absf(pz) > 300.0:
@@ -533,16 +538,24 @@ func _build_lane_graph() -> void:
 func _scatter_props() -> void:
 	for x in X_LINES:
 		for z in Z_LINES:
-			for k in 2:
+			for k: int in 2:
 				var off := Vector3(-6.0 + k * 12.0, 0.0, 0.0)
 				if k == 1:
 					off = Vector3(0.0, 0.0, -6.0 + 12.0)
 				_street_lamp(Vector3(x, 0.0, z) + off)
-	for i in 26:
-		var pos := Vector3(_rng.randf_range(-300.0, 300.0), 0.0, _rng.randf_range(-300.0, 300.0))
-		if absf(pos.x) < 12.0 and absf(pos.z) < 12.0:
+	for i: int in 40:
+		var pos := Vector3(_rng.randf_range(-310.0, 310.0), 0.0, _rng.randf_range(-310.0, 310.0))
+		if _inside_block(pos):
 			continue
 		_tree(pos, _rng.randf_range(0.8, 1.25))
+
+## True when a point falls on a raised block platform (buildings live there).
+func _inside_block(pos: Vector3) -> bool:
+	for cx in [-240.0, -80.0, 80.0, 240.0]:
+		for cz in [-240.0, -80.0, 80.0, 240.0]:
+			if absf(pos.x - cx) < BLOCK * 0.5 - 6.0 and absf(pos.z - cz) < BLOCK * 0.5 - 6.0:
+				return true
+	return false
 
 func _street_lamp(pos: Vector3) -> void:
 	_cyl(Vector3(0.16, 6.0, 0.16), pos + Vector3(0.0, 3.0, 0.0), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
@@ -560,13 +573,124 @@ func _tree(pos: Vector3, scale: float) -> void:
 	var trunk_h := 3.2 * scale
 	_cyl(Vector3(0.42 * scale, trunk_h, 0.42 * scale), pos + Vector3(0.0, trunk_h * 0.5, 0.0), Palette.mat(Palette.TRUNK, 0.95))
 	# dimensional canopy: several overlapping spheres, not a billboard
-	for i in 4:
+	for i: int in 4:
 		var ang := TAU * i / 4.0
 		var r := 1.5 * scale
 		_sphere(Vector3(r * 2.0, r * 1.7, r * 2.0), pos + Vector3(cos(ang) * 0.9 * scale, trunk_h + 0.9 * scale + (0.2 if i % 2 == 0 else 0.0), sin(ang) * 0.9 * scale),
 			Palette.mat(Palette.FOLIAGE.lerp(Palette.FOLIAGE_LIGHT, float(i % 2)), 0.95))
 	_sphere(Vector3(2.6 * scale, 2.2 * scale, 2.6 * scale), pos + Vector3(0.0, trunk_h + 1.9 * scale, 0.0),
 		Palette.mat(Palette.FOLIAGE, 0.95))
+
+
+# ------------------------------------------------------- junctions & fittings
+## Crosswalks, stop lines and signal heads at every intersection (TRAFFIC-01).
+func _junctions() -> void:
+	var paint := Palette.mat_textured(Palette.PAINT_LINE, "concrete", Vector3(4.0, 1.0, 4.0), 0.8)
+	for x in X_LINES:
+		for z in Z_LINES:
+			for axis in 2:
+				for side: float in [-1.0, 1.0]:
+					var dir := Vector3(1, 0, 0) if axis == 0 else Vector3(0, 0, 1)
+					var centre := Vector3(x, 0.07, z) + dir * (ROAD_HALF + 1.6) * side
+					for i: int in 7:
+						var offset := (i - 3) * 1.7
+						var stripe_pos: Vector3 = centre + Vector3(-dir.z, 0.0, dir.x) * offset
+						var size := Vector3(0.55, 0.02, 3.0) if axis == 0 else Vector3(3.0, 0.02, 0.55)
+						_box(size, stripe_pos, paint)
+					# stop line
+					var stop_pos: Vector3 = Vector3(x, 0.07, z) + dir * (ROAD_HALF - 0.4) * side
+					var stop_size := Vector3(0.4, 0.02, 6.0) if axis == 0 else Vector3(6.0, 0.02, 0.4)
+					_box(stop_size, stop_pos, paint)
+			# signal heads on the corners
+			for sx: float in [-1.0, 1.0]:
+				for sz: float in [-1.0, 1.0]:
+					_traffic_light(Vector3(x + sx * (ROAD_HALF + 1.4), 0.0, z + sz * (ROAD_HALF + 1.4)))
+
+func _traffic_light(pos: Vector3) -> void:
+	_cyl(Vector3(0.16, 3.4, 0.16), pos + Vector3(0.0, 1.7, 0.0), Palette.mat_textured(Palette.METAL_DARK, "metal", Vector3(1.0, 2.0, 1.0), 0.5, 0.6))
+	var head := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = Vector3(0.36, 0.95, 0.3)
+	head.mesh = bm
+	head.material_override = Palette.mat(Palette.METAL_DARK, 0.5, 0.5)
+	head.position = pos + Vector3(0.0, 3.4, 0.0)
+	_world_root.add_child(head)
+	var lamps := [Color(0.95, 0.2, 0.15), Color(0.95, 0.75, 0.2), Color(0.25, 0.9, 0.35)]
+	for i: int in 3:
+		var lamp := MeshInstance3D.new()
+		var sm := SphereMesh.new()
+		sm.radius = 0.11
+		sm.height = 0.22
+		lamp.mesh = sm
+		lamp.material_override = Palette.emissive(lamps[i], 0.6 if i != 2 else 2.4)
+		lamp.position = pos + Vector3(0.0, 3.7 - i * 0.3, 0.16)
+		_world_root.add_child(lamp)
+
+## Everyday street fittings: bins, benches, planters, bollards, cables, AC units.
+func _street_furniture() -> void:
+	var metal := Palette.mat_textured(Palette.METAL, "metal", Vector3(1.0, 2.0, 1.0), 0.55, 0.5)
+	var dark := Palette.mat_textured(Palette.METAL_DARK, "metal", Vector3(1.0, 1.0, 1.0), 0.6, 0.4)
+	for x in X_LINES:
+		for z in Z_LINES:
+			# overhead utility cables across the carriageway
+			for k: int in 3:
+				var cable_z := z - 30.0 + k * 22.0
+				var cable := MeshInstance3D.new()
+				var cb := BoxMesh.new()
+				cb.size = Vector3(22.0, 0.05, 0.05)
+				cable.mesh = cb
+				cable.material_override = dark
+				cable.position = Vector3(x, 7.4, cable_z)
+				cable.rotation_degrees = Vector3(0.0, 0.0, 1.5)
+				_world_root.add_child(cable)
+			# kerbside fittings
+			for side: float in [-1.0, 1.0]:
+				var kerb := Vector3(x + side * (SIDEWALK - 1.0), 0.0, z + 34.0)
+				_cyl(Vector3(0.55, 0.9, 0.55), kerb + Vector3(0.0, 0.45, 0.0), dark)          # bin
+				_cyl(Vector3(0.1, 0.9, 0.1), kerb + Vector3(2.2, 0.45, 0.0), metal)            # bollard
+				var bench := MeshInstance3D.new()
+				var bb := BoxMesh.new()
+				bb.size = Vector3(1.8, 0.12, 0.5)
+				bench.mesh = bb
+				bench.material_override = Palette.mat_textured(Palette.PLASTER, "plaster", Vector3(1.0, 1.0, 1.0), 0.85)
+				bench.position = kerb + Vector3(-2.6, 0.55, 1.8)
+				_world_root.add_child(bench)
+				for lx in [-0.7, 0.7]:
+					var leg := MeshInstance3D.new()
+					var lb := BoxMesh.new()
+					lb.size = Vector3(0.1, 0.55, 0.45)
+					leg.mesh = lb
+					leg.material_override = dark
+					leg.position = bench.position + Vector3(lx, -0.3, 0.0)
+					_world_root.add_child(leg)
+				var planter := MeshInstance3D.new()
+				var pb := BoxMesh.new()
+				pb.size = Vector3(1.2, 0.6, 1.2)
+				planter.mesh = pb
+				planter.material_override = Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(1.0, 1.0, 1.0), 0.9)
+				planter.position = kerb + Vector3(1.6, 0.3, 3.2)
+				_world_root.add_child(planter)
+				_sphere(Vector3(1.1, 0.9, 1.1), planter.position + Vector3(0.0, 0.7, 0.0), Palette.mat(Palette.FOLIAGE, 0.95))
+				# wall-mounted air-con condensers on the flanking facades
+				for k: int in 2:
+					var ac := MeshInstance3D.new()
+					var ab := BoxMesh.new()
+					ab.size = Vector3(0.85, 0.6, 0.4)
+					ac.mesh = ab
+					ac.material_override = Palette.mat_textured(Color(0.62, 0.63, 0.60), "metal", Vector3(1.0, 1.0, 1.0), 0.65, 0.35)
+					ac.position = kerb + Vector3(-2.0 + k * 2.6, 4.2, -0.8)
+					_world_root.add_child(ac)
+				# bus shelter at a few stops
+				if int(absf(z)) % 160 == 0:
+					_bus_shelter(kerb + Vector3(-1.0, 0.0, 6.0))
+
+func _bus_shelter(pos: Vector3) -> void:
+	var metal := Palette.mat_textured(Palette.METAL, "metal", Vector3(1.0, 1.0, 1.0), 0.5, 0.5)
+	for sx in [-1.6, 1.6]:
+		_cyl(Vector3(0.12, 2.6, 0.12), pos + Vector3(sx, 1.3, 0.0), metal)
+	_box(Vector3(4.0, 0.12, 1.6), pos + Vector3(0.0, 2.7, 0.0), Palette.mat_textured(Palette.METAL_DARK, "metal", Vector3(2.0, 1.0, 1.0), 0.5, 0.5))
+	_box(Vector3(3.6, 1.9, 0.08), pos + Vector3(0.0, 1.4, -0.7), Palette.glass())
+	_box(Vector3(3.4, 0.1, 0.5), pos + Vector3(0.0, 0.6, 0.2), Palette.mat_textured(Palette.PLASTER_2, "plaster", Vector3(1.0, 1.0, 1.0), 0.85))
 
 # ------------------------------------------------------------------ helpers
 func _solid_box(size: Vector3, pos: Vector3, material: Material, yaw: float = 0.0) -> MeshInstance3D:

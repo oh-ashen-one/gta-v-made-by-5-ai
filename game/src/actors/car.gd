@@ -190,15 +190,20 @@ func _physics_process(delta: float) -> void:
 func _check_impact(before: Vector3) -> void:
 	if get_slide_collision_count() == 0:
 		return
-	var speed := before.length()
-	if speed < 4.0:
+	# Only horizontal impact speed damages a vehicle: settling onto the road
+	# must never wear a parked car out.
+	if not driver_is_player and not has_ai:
+		return  # a parked car absorbs contact but is never worn out or announced
+	var speed: float = Vector2(before.x, before.z).length()
+	if speed < 5.5:
 		return
-	var dmg: float = clampf(speed * 2.4, 0.0, 45.0)
+	var dmg: float = clampf((speed - 5.5) * 3.0, 0.0, 45.0)
 	health = maxf(0.0, health - dmg)
 	damaged.emit(dmg)
-	if health <= 0.0:
+	if health <= 0.0 and not disabled:
 		disabled = true
-		Events.notify.emit("Vehicle disabled.", "warn")
+		if driver_is_player:
+			Events.notify.emit("Vehicle disabled.", "warn")
 
 func _spin_wheels(delta: float) -> void:
 	var roll := _forward * delta * 2.4
@@ -239,6 +244,10 @@ func _ai_control(delta: float) -> void:
 	velocity.x = dir.x * _forward
 	velocity.z = dir.z * _forward
 
+func _process(_delta: float) -> void:
+	if driver_is_player:
+		Sfx.set_engine_pitch(clampf(absf(_forward) / max_speed, 0.0, 1.0))
+
 func speed_kmh() -> float:
 	return absf(_forward) * 3.6
 
@@ -258,6 +267,7 @@ func interact(player: Node) -> void:
 	_arm.rotation.y = 0.0
 	_camera.current = true
 	Game.set_mode(Game.MODE_CAR)
+	Sfx.start_engine()
 	Events.vehicle_entered.emit(self)
 	Events.notify.emit("Vehicle entered. [E] to exit.", "info")
 
@@ -283,6 +293,7 @@ func exit_vehicle(player: Node) -> void:
 	player.current_vehicle = null
 	player.camera.current = true
 	Game.set_mode(Game.MODE_FOOT)
+	Sfx.stop_engine()
 	Events.vehicle_exited.emit(self)
 	Events.notify.emit("On foot.", "info")
 

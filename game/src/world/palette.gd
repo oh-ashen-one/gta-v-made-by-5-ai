@@ -19,6 +19,60 @@ static func emissive(color: Color, energy: float = 1.4) -> StandardMaterial3D:
 	m.roughness = 0.4
 	return m
 
+## Procedural surface textures (ART-04): no external image assets, but the
+## materials stop reading as flat plastic.
+static var _tex_cache := {}
+static var _mat_cache := {}
+
+static func tex(kind: String) -> NoiseTexture2D:
+	if _tex_cache.has(kind):
+		return _tex_cache[kind]
+	var n := FastNoiseLite.new()
+	match kind:
+		"asphalt":
+			n.noise_type = FastNoiseLite.TYPE_CELLULAR
+			n.frequency = 0.09
+			n.cellular_distance_function = FastNoiseLite.DISTANCE_EUCLIDEAN
+		"concrete":
+			n.noise_type = FastNoiseLite.TYPE_SIMPLEX
+			n.frequency = 0.025
+		"plaster":
+			n.noise_type = FastNoiseLite.TYPE_SIMPLEX
+			n.frequency = 0.05
+		"tile":
+			n.noise_type = FastNoiseLite.TYPE_SIMPLEX
+			n.frequency = 0.11
+		"metal":
+			n.noise_type = FastNoiseLite.TYPE_VALUE
+			n.frequency = 0.08
+		_:
+			n.noise_type = FastNoiseLite.TYPE_SIMPLEX
+			n.frequency = 0.04
+	n.seed = 4200 + kind.length() * 37
+	n.fractal_octaves = 4
+	var t := NoiseTexture2D.new()
+	t.noise = n
+	t.width = 256
+	t.height = 256
+	t.seamless = true
+	t.generate_mipmaps = true
+	_tex_cache[kind] = t
+	return t
+
+static func mat_textured(color: Color, kind: String, uv_scale: Vector3, rough: float = 0.9, metal: float = 0.0) -> StandardMaterial3D:
+	var key := "%s|%.3f|%.3f|%.3f|%.2f|%.2f" % [kind, color.r, color.g, color.b, rough, metal]
+	if _mat_cache.has(key):
+		return _mat_cache[key]
+	var m := StandardMaterial3D.new()
+	m.albedo_color = color
+	m.albedo_texture = tex(kind)
+	m.uv1_scale = uv_scale
+	m.roughness = rough
+	m.metallic = metal
+	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	_mat_cache[key] = m
+	return m
+
 static func glass() -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
 	m.albedo_color = Color(0.42, 0.55, 0.62, 0.55)

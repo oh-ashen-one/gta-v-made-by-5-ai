@@ -39,8 +39,11 @@ var _arm_l: Node3D
 var _arm_r: Node3D
 var _head: Node3D
 var _last_fire_time := 0.0
+var _last_stride_phase := 0
+var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
+	_rng.seed = 771
 	add_to_group("player")
 	add_to_group("actors")
 	collision_layer = 2
@@ -249,6 +252,12 @@ func _animate(delta: float, speed: float, sprinting: bool) -> void:
 	if _reloading:
 		_arm_r.rotation.x = -0.9 + sin(_walk_phase * 2.0) * 0.4
 	_body_root.position.y = absf(sin(_walk_phase)) * 0.04 * stride
+	# footstep audio on each stride contact
+	var stride_phase := int(_walk_phase / PI)
+	if stride_phase != _last_stride_phase:
+		_last_stride_phase = stride_phase
+		if stride > 0.25:
+			Sfx.play("footstep", -18.0, _rng.randf_range(0.9, 1.15))
 
 func _fire() -> void:
 	if current_vehicle != null or busy:
@@ -285,6 +294,7 @@ func _fire() -> void:
 			hit_something = true
 		_spawn_impact(point, -dir)
 	Events.shot_fired.emit(origin, dir, Game.carried_weapon)
+	Sfx.play("gunshot", -4.0, 1.0 if Game.carried_weapon == "pistol" else 0.88)
 	crosshair_hit.emit(point, hit_something)
 	# make noise: gunfire draws witnesses and police (LAW-02)
 	Game.add_heat(2.0)

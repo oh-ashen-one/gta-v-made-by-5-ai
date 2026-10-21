@@ -1,0 +1,198 @@
+{
+  "wave": 1,
+  "author": "MiniMax M3.1 Flash (builder, wave 1)",
+  "created_utc": "2026-10-21T08:20:00Z",
+  "reason": "Tripo browser control and the Customuse MCP are not exposed in this Claude Code CLI (verified by tool search). These requests are for the manager to execute through the connected browser/MCP surfaces. No spending beyond existing Tripo credits is assumed; Meshy is excluded.",
+  "conventions": {
+    "unit": "metres",
+    "up_axis": "+Y",
+    "forward_axis": "-Z (engine convention for vehicles and characters)",
+    "pivot": "ground contact at origin",
+    "export": "glTF 2.0 (.glb), separate materials, no baked lighting, real-world scale",
+    "target_engine": "Godot 4.7.1 (Forward+), imported into game/assets/",
+    "licence": "original generation only; record provider, date and terms before publishing",
+    "art_direction": "docs/concepts/singapore-on-foot.png, singapore-driving.png, singapore-helicopter.png (primary targets); docs/visual-references.json (secondary evidence)"
+  },
+  "requests": [
+    {
+      "id": "W1-HERO-001",
+      "provider": "customuse",
+      "priority": "critical",
+      "prompt": "Original compact sedan for a Singapore street game, 1990s-2000s Asian city taxi-inspired civilian three-box saloon. Right-hand-drive cabin, four visible wheels with separate tyre and hub, modelled front and rear bumpers, headlights, tail lights, wing mirrors, door shut lines, tinted glass, subtle road dust. Paint: desaturated pearl grey with light wear, not a branded livery.",
+      "dimensions": "length 4.4 m, width 1.8 m, height 1.45 m",
+      "required_export": "GLB with named nodes for wheel_FL, wheel_FR, wheel_RL, wheel_RR, door_FL, door_FR, steering_wheel, seat_driver, seat_rear_left, seat_rear_right, headlight_L, headlight_R, taillight_L, taillight_R",
+      "intended_game_path": "game/assets/vehicles/sedan.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-HERO-002",
+      "provider": "customuse",
+      "priority": "critical",
+      "prompt": "Original performance coupe for a Singapore street game. Low sleek two-door coupe, wide stance, visible rims and brake discs, separate rotating wheels, cabin with two bucket seats and a right-hand-drive dash, original fictional badge, deep candy-red paint with clearcoat.",
+      "dimensions": "length 4.3 m, width 1.9 m, height 1.25 m",
+      "required_export": "GLB with named nodes for wheel_FL, wheel_FR, wheel_RL, wheel_RR, door_L, door_R, steering_wheel, seat_driver, seat_passenger",
+      "intended_game_path": "game/assets/vehicles/coupe.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-HERO-003",
+      "provider": "customuse",
+      "priority": "high",
+      "prompt": "Original light commercial delivery van for a Singapore street game, boxy short-nose body, sliding side door, rear roller shutter, cab with right-hand drive, separate wheels with hubs, plain white body with original fictional courier markings.",
+      "dimensions": "length 5.2 m, width 2.0 m, height 2.2 m",
+      "required_export": "GLB with named nodes for wheels, sliding_door, roller_shutter, steering_wheel, seat_driver",
+      "intended_game_path": "game/assets/vehicles/van.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-HERO-004",
+      "provider": "customuse",
+      "priority": "critical",
+      "prompt": "Original compact light utility helicopter for an original Singapore game. Fictional civilian air-service livery, bubble cockpit with visible pilot seat and instrument panel, four-blade main rotor with separate rotor head, tail rotor with gearbox housing, skid landing gear, door rails and a step for boarding, no real-world markings or logos.",
+      "dimensions": "fuselage length 6.5 m, height 3.4 m, main rotor diameter 9.5 m",
+      "required_export": "GLB with named nodes for main_rotor, tail_rotor, rotor_head, pilot_seat, door_L, door_R, skid_L, skid_R, tail_fin",
+      "intended_game_path": "game/assets/vehicles/helicopter.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-HERO-005",
+      "provider": "customuse",
+      "priority": "critical",
+      "prompt": "Original playable adult civilian character for a contemporary Singapore street game, Southeast Asian city resident, mid-20s-30s, everyday streetwear: tee, open overshirt, tapered trousers, sneakers, short hair. Neutral A-pose, no facial likeness to any real person, original design. Realistic proportions (1.75 m).",
+      "dimensions": "height 1.75 m",
+      "required_export": "GLB with a humanoid skeleton (mixamo-compatible or Godot-compatible bone naming), named bones for hips, spine, chest, neck, head, shoulder/upperarm/lowerarm/hand L+R, thigh/shin/foot L+R, plus a separate prop attachment socket on the right hand",
+      "intended_game_path": "game/assets/characters/player.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-HERO-006",
+      "provider": "customuse",
+      "priority": "high",
+      "prompt": "Original fictional city police officer character for a Singapore-inspired fictional game. Plain dark navy uniform, duty belt, cap, radio, boots. No real insignia, badges, rank markings or uniform references of any actual police force; entirely fictional.",
+      "dimensions": "height 1.78 m",
+      "required_export": "GLB with humanoid skeleton, bone names matching the civilian rig, hand socket for a pistol",
+      "intended_game_path": "game/assets/characters/police_officer.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-HERO-007",
+      "provider": "customuse",
+      "priority": "high",
+      "prompt": "Modular shophouse building kit for a Singapore heritage street. One narrow frontage module, 9 m wide, three storeys, recessed five-foot-way arcade with square columns at the front, roller shutters, awning, upper windows with louvres, tiled pitched roof with ridge, painted plaster facade, original fictional signage band. Kit should tile along a street with variation.",
+      "dimensions": "module width 9 m, depth 13 m, height 11.5 m including roof",
+      "required_export": "GLB, pivot at ground level, separate nodes for facade, columns, shutters, awning, sign_band, roof",
+      "intended_game_path": "game/assets/buildings/shophouse_module.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-HERO-008",
+      "provider": "customuse",
+      "priority": "medium",
+      "prompt": "Modular public-housing slab block for a Singapore void-deck neighbourhood. 12-storey slab, 22 m by 13 m footprint, open ground floor with columns, lift lobby recess, continuous window bands, painted render, rooftop water tanks and parapet, communal link bridges.",
+      "dimensions": "22 m x 13 m footprint, 42 m height",
+      "required_export": "GLB with separate nodes for slab_body, ground_columns, lift_lobby, roof_tank, parapet, link_bridge",
+      "intended_game_path": "game/assets/buildings/hdb_slab.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-HERO-009",
+      "provider": "customuse",
+      "priority": "high",
+      "prompt": "Hawker centre stall unit for a Singapore hawker hall: stainless counter with a glass display case, awning canopy, menu board frame with blank panel, gas cylinder bracket, stacked bowls and a chopstick holder. Original fictional stall name plate left blank for texturing.",
+      "dimensions": "3.2 m wide, 1.1 m deep, 2.6 m high including canopy",
+      "required_export": "GLB with separate nodes for counter, canopy, menu_board, shelves, props",
+      "intended_game_path": "game/assets/props/hawker_stall.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-PROP-010",
+      "provider": "tripo",
+      "priority": "medium",
+      "prompt": "Hawker centre communal table with attached round stools, stainless top, wet-mop wear, simple and used.",
+      "dimensions": "table 1.6 m diameter, stools 0.45 m",
+      "required_export": "GLB",
+      "intended_game_path": "game/assets/props/hawker_table.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-PROP-011",
+      "provider": "tripo",
+      "priority": "medium",
+      "prompt": "Street food trolley with canopy and stacked trays, seen in Singapore hawker queues.",
+      "dimensions": "1.4 m x 0.8 m x 2.0 m",
+      "required_export": "GLB",
+      "intended_game_path": "game/assets/props/food_trolley.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-PROP-012",
+      "provider": "tripo",
+      "priority": "medium",
+      "prompt": "Outdoor air-conditioning condenser unit for a shophouse rear wall, weathered metal, wall brackets.",
+      "dimensions": "0.8 m x 0.35 m x 0.6 m",
+      "required_export": "GLB",
+      "intended_game_path": "game/assets/props/ac_unit.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-PROP-013",
+      "provider": "tripo",
+      "priority": "low",
+      "prompt": "Singapore-style street lamp with modern LED head, galvanised pole, side-mounted arm.",
+      "dimensions": "height 6 m",
+      "required_export": "GLB",
+      "intended_game_path": "game/assets/props/street_lamp.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-PROP-014",
+      "provider": "tripo",
+      "priority": "medium",
+      "prompt": "Wheeled refuse bin pair and a stack of plastic crates used in a rear service lane.",
+      "dimensions": "bins 0.6 m cube, crates 0.6 x 0.4 x 0.3 m",
+      "required_export": "GLB",
+      "intended_game_path": "game/assets/props/service_lane_clutter.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-PROP-015",
+      "provider": "tripo",
+      "priority": "low",
+      "prompt": "Potted tropical street plant in a concrete planter, broad leaves, used public-realm planting.",
+      "dimensions": "0.9 m high",
+      "required_export": "GLB",
+      "intended_game_path": "game/assets/props/planter.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-PROP-016",
+      "provider": "tripo",
+      "priority": "medium",
+      "prompt": "Original pistol prop for a fictional action game, compact service pistol, matte polymer frame, no real manufacturer marks, no functional detail.",
+      "dimensions": "length 0.19 m",
+      "required_export": "GLB, pivot at the grip, one-handed scale",
+      "intended_game_path": "game/assets/weapons/pistol.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-PROP-017",
+      "provider": "tripo",
+      "priority": "medium",
+      "prompt": "Original compact automatic long gun prop for a fictional action game, folding stock, short barrel, no real manufacturer marks.",
+      "dimensions": "length 0.62 m collapsed",
+      "required_export": "GLB, pivot at the grip",
+      "intended_game_path": "game/assets/weapons/smg.glb",
+      "status": "pending"
+    },
+    {
+      "id": "W1-PROP-018",
+      "provider": "tripo",
+      "priority": "low",
+      "prompt": "Terminal crates and a low loading dock at an aviation service compound, weathered and marked with blank panels for original signage.",
+      "dimensions": "crates 1.2 m cube, dock 2 m high",
+      "required_export": "GLB",
+      "intended_game_path": "game/assets/props/airfield_clutter.glb",
+      "status": "pending"
+    }
+  ]
+}

@@ -37,6 +37,8 @@ func setup(w: WorldBuilder, p: Player, m: Mission) -> void:
 	Events.ammo_changed.connect(_on_ammo)
 	Events.wanted_changed.connect(_on_wanted)
 	Events.notify.connect(_on_notify)
+	if mission:
+		_objective_label.text = mission.current_objective()
 
 func _build() -> void:
 	var root := Control.new()
