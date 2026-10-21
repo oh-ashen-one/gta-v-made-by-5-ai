@@ -2,7 +2,7 @@
 
 **Canonical north star for every builder, reviewer, and handoff.**
 
-**Status:** planning specification, not a claim that a playable game exists. Writing or merging this document does not start an agent, a four-hour timer, asset generation, paid work, or deployment. Implementation and acceptance status belong in a separate evidence-backed ledger. The user will arrange each wave's execution loop separately; this document specifies the destination and acceptance bar, not an execution-loop implementation.
+**Status:** fixed quality specification; implementation and acceptance belong in the evidence ledger. **Owner update, 2026-10-21:** the visual target is GTA VI-level fidelity in Singapore. Builders choose technical approaches autonomously; the Codex manager monitors hourly and hands the project to the next builder at each fixed four-hour boundary. The first wave is active. This document is not evidence that the target has been achieved.
 
 ## Navigation
 
@@ -28,7 +28,7 @@
 
 Build an **original, high-quality, fully playable third-person open-world action slice set in a compact, unmistakably Singapore-inspired district**. A player must walk and run through a convincing three-dimensional city, interact with its population, use firearms against fictional adult NPCs, steal and drive cars through left-hand traffic, provoke and escape police, board and fly a helicopter, land, exit, and continue playing. These are interconnected systems in the same world, not isolated demonstrations selected from a menu.
 
-“GTA V-style” describes open-world freedom, third-person action, vehicles, cinematic presentation, and systemic consequences. It does not authorize Rockstar code, assets, characters, maps, UI, audio, branding, or missions. The game must have its own identity. It is **not Manhattan with different signs**, a full-country recreation, a photogrammetry flythrough, attractive stills, or a technical demo marketed as a finished game.
+“GTA VI-quality in Singapore” is the visual north star; GTA-style gameplay describes open-world freedom, third-person action, vehicles, cinematic presentation, and systemic consequences. It does not authorize Rockstar code, assets, characters, maps, UI, audio, branding, or missions. The game must have its own identity. It is **not Manhattan with different signs**, a full-country recreation, a photogrammetry flythrough, attractive stills, or a technical demo marketed as a finished game.
 
 The signature experience changes scale without breaking immersion: **walk under a shophouse arcade → interact with a living street → cause an incident → take a car → drive through the district → face pursuit → reach a helicopter → fly over streets just visited → land somewhere meaningful → return to walking**. Buildings and vehicles that look substantial from the air must hold up at street level.
 
@@ -48,7 +48,11 @@ The signature experience changes scale without breaking immersion: **walk under 
 
 ### 1.2 Calibration authority and the frozen target
 
-The active builder may **measure and propose** numerical calibration; an independent reviewer checks the evidence, and the user approves the initial platform/hardware/quality/content contract before implementation is locked. Until then, numerical baselines remain proposals, not new promises attributed to the user. The approved contract records final values, rationale, reviewer, and date. Later changes to it need explicit approval, not a quiet edit after a failing test. No calibration may remove walking, shooting real game NPCs, car theft/driving, living traffic/population, helicopter boarding/flight/landing/exit, consequences, mission integration, 3D world quality, or honest verification. Interior room counts may be consolidated at this stage while retaining the required safe-room, shop, workshop/service, and mission-space functions and a meaningful furnished accessible subset; the whole city never becomes mandatory interior space.
+The active builder may **measure and propose** numerical calibration; an independent reviewer checks the evidence, and the active builder documents and locks the initial platform/hardware/quality/content contract under the owner’s 2026-10-21 delegation. Until then, numerical baselines remain proposals, not new promises attributed to the user. The locked contract records final values, rationale, reviewer, and date. Later changes to it need explicit approval, not a quiet edit after a failing test. No calibration may remove walking, shooting real game NPCs, car theft/driving, living traffic/population, helicopter boarding/flight/landing/exit, consequences, mission integration, 3D world quality, or honest verification. Interior room counts may be consolidated at this stage while retaining the required safe-room, shop, workshop/service, and mission-space functions and a meaningful furnished accessible subset; the whole city never becomes mandatory interior space.
+
+### 1.3 Owner execution update — 2026-10-21
+
+The owner delegates routine technical, engine/version, implementation and initial platform/quality-contract decisions to the active builder and relay manager. Document decisions; do not stop for a separate readiness or engine approval. This supersedes the initial-approval gate in §1.2 and older relay documents for this run. Preserve all required capabilities and the highest-quality target. Each wave has four wall-clock hours, with its final 30 minutes included for tests and handoff. The manager checks hourly, enforces the deadline and automatically starts the successor from the pushed checkpoint and `NEXT_GOAL.md`. An unfinished quality target carries forward; it never extends the clock or becomes a pass. The owner is offline; route actionable questions to the manager and continue independent work.
 
 ## 2. Player experience and bounded world
 
@@ -66,7 +70,18 @@ Free roam remains available before and after the mission. The mission proves int
 4. **Modern waterfront/commercial edge:** contemporary towers, promenade or canal edge, bridge/crossing, a more open road, and a skyline viewpoint. Low-rise streets should reveal the taller skyline across water.
 5. **Fictional aviation/service compound:** connected to the road network, accessible on foot, with plausible boarding space and a usable landing pad.
 
-**WORLD-03 — Recognition through urban form.** The setting must read without a title card through several independent cues: shophouse massing/arcades, public-housing/void-deck language, hawker layout, broad-canopy tropical planting, sheltered pedestrian infrastructure, left-hand road design, and waterfront skyline. Add block numbers, drains, kerbs, service doors, condensers, transit-inspired entrances, bus shelters, and local road vocabulary purposefully. Use English-first useful signage and context-appropriate reviewed translations, never decorative generated gibberish. No copied landmark is required to carry the setting.
+**WORLD-03 — Recognition through urban form.** The setting must read without a title card through several independent cues: shophouse massing/arcades, public-housing/void-deck language, hawker layout, broad-canopy tropical planting, sheltered pedestrian infrastructure, left-hand road design, and waterfront skyline. Add block numbers, drains, kerbs, service doors, condensers, transit-inspired entrances, bus shelters, and local road vocabulary purposefully. Use English-first useful signage and context-appropriate reviewed translations, never decorative generated gibberish. The owner clarified on 2026-10-21 that the most recognizable Singapore waterfront landmarks are required as well as these everyday urban cues.
+
+
+**WORLD-03 opening-view acceptance — immediate Singapore identity (owner clarification, 2026-10-21).** From the normal starting camera and the first minute of walking/driving, the setting must be unmistakably Singapore without a title card, explanatory caption, or place-name label doing the work. Compose the opening route around recognizable Singapore landmarks plus everyday streetscape: shophouses and sheltered five-foot ways, HDB-style housing and void decks, an inhabited hawker centre, tropical canopy/planting, and left-hand traffic with appropriate street details. At least one primary landmark should be clearly readable from an early natural public viewpoint, with Marina Bay Sands and the Supertree Grove established along the opening waterfront sightlines. Validate actual normal-gameplay opening frames and a short continuous traversal, rather than only a favorable aerial/free-camera still. A generic skyscraper city with a few labels does not pass this requirement.
+
+**WORLD-03 landmark clarification — owner-required Singapore skyline (2026-10-21).** The actual rendered game must visibly include:
+
+- **Marina Bay Sands:** the recognizable three-tower composition supporting the long, boat-shaped rooftop SkyPark. The owner's “three things” building and “boat on top” refer to this same landmark.
+- **Gardens by the Bay / Supertree Grove:** a recognizable cluster of tall branching, planted structures with broad canopy crowns. The owner's “electric tree forest” refers to this landmark; its lighting should read appropriately under the chosen game time of day.
+- **Supporting waterfront landmarks:** the Merlion, the lotus-shaped ArtScience Museum, and the Singapore Flyer observation wheel, with distinctive silhouettes and plausible visual relationships to the bay.
+
+Integrate these into the game's original district and waterfront composition, with the main two readable from ground-level viewpoints and the helicopter route. Record which structures are reachable, have collision, or are distant scenery under WORLD-01/WORLD-06. Preserve the approved quality target and the fixed relay timeboxes. Use actual reference views to validate silhouette, proportions, placement and materials. Original modeled geometry and Blender/engine authoring are allowed; external generation remains subject to the existing Tripo-browser/Customuse-MCP routing and credit limits. Update the requirements ledger and outgoing NEXT_GOAL with each landmark's implemented/verified/missing state. Acceptance evidence must include actual in-game street/waterfront and aerial captures; concept art or a label on a generic tower does not demonstrate implementation.
 
 **WORLD-04 — Useful connected networks.** Target three connected driving loops, alternative routes between major destinations, several intersections, rear lanes, sidewalks, crossings, and pedestrian shortcuts. Test actual driving times and camera visibility. Main roads accommodate traffic; tighter streets slow it intentionally. Aerial views show the same physical layout, not a separate background map.
 
@@ -87,7 +102,7 @@ Use these primary references to understand form and life; they do not grant perm
 
 ## 3. Visual identity: grounded, coherent, genuinely 3D
 
-**ART-01 — One look, not an asset collage.** Aim for grounded contemporary cinematic real-time 3D: consistent proportions, restrained color, readable materials, believable tropical light. Stylization is allowed; low-effort primitives are not the finished direction. Before mass production, establish a look-development sheet covering palette, human/vehicle scale, material response, exposure, lighting, asset detail tiers, and camera treatment. All builders inherit it.
+**ART-01 — GTA VI-level fidelity, Singapore identity.** Aim for a one-to-one match in perceived visual fidelity, physical detail, material quality, believable human/vehicle scale, lighting, animation and world coherence with the official GTA VI reference imagery below, translated into Singapore. Photoreal, highest-quality contemporary real-time 3D is the target. Simplified stylization, flat-color primitive scenery, low-poly stand-ins and a generic city are not acceptable final substitutes. This is an aspirational quality target, not a claim of achieved parity or a promise that twenty hours can achieve it. Before mass production, establish a look-development sheet covering palette, human/vehicle scale, material response, exposure, lighting, asset detail tiers, and camera treatment. All builders inherit it.
 
 **ART-02 — Model the world.** Buildings, streets, characters, cars, helicopter, guns, doors, stairs, railings, trees, furniture, and major/interactive props require actual world-space 3D meshes, with rigs where appropriate, depth, silhouette, shading, and suitable collision. Reject final billboard people/cars/buildings/trees, screenshot backdrops replacing traversable space, and primitive hero assets. Textures, trim sheets, normals, decals, leaf cards within dimensional vegetation, particles, sky imagery, and UI are legitimate surface/effect tools—not replacements for whole gameplay objects. “3D throughout” does not mean every leaf or painted letter must be modeled individually.
 
@@ -102,6 +117,88 @@ Use these primary references to understand form and life; they do not grant perm
 **ART-07 — Light, shade, and atmosphere.** Polish one primary time-of-day preset; warm dry late-afternoon is the suggested baseline. Rainy blue hour is a look-development alternative or stretch addition, not a mandatory full weather system. Exposures must preserve readable interiors and streets; avoid blackouts and washed-out transitions. Contact shadows, ambient depth, restrained haze, and useful tree shade should connect foreground and skyline. Avoid neon everywhere and excessive bloom hiding poor assets.
 
 **ART-08 — No final placeholders.** Grayboxes, mannequins, debug labels, missing materials, close-range flat stand-ins, temporary audio, and untextured primitives may appear in development, but must be tracked and replaced before acceptance. Review side streets, interiors, rooftops, and reverse angles—not only the recording route. Closed modeled buildings are legitimate scope; roofless single-plane cardboard visible from the air is not.
+
+### 3.1 Generated concepts of OUR game — primary visual targets
+
+**Owner clarification, 2026-10-21:** reference images must show what this original game should look like in Singapore. The following three images were generated specifically for this project with the built-in image-generation tool. They are the primary working art-direction targets. Existing GTA VI screenshots and Singapore photos in §3.2 are secondary source comparisons, not substitutes for these concepts.
+
+**These are AI-generated concept images, not captures of the current game, not proof of implementation, and not evidence of achievable frame rates.** Match their composition, modeled detail, light, material language, populated streets and Singapore identity in actual playable builds. Keep the required mechanics and bounded map scope. Do not turn implied distant scenery into a new obligation to build an entire city. Generated signs, brands, traffic details and small geometrical artifacts are not production specifications; implementation still uses original assets/signage, correct left-hand traffic, robust collision and coherent vehicle anatomy.
+
+#### CONCEPT-01 — On-foot street and hawker hub
+
+![Generated concept of our Singapore game: third-person on-foot street and hawker hub](docs/concepts/singapore-on-foot.png)
+
+Primary comparison: a human-scale third-person route, modeled shophouse arcades on one side, an inhabited hawker hall on the other, detailed kerbs/drains, broad rain trees, residential blocks and distant waterfront towers. Match the warm light, dimensional surfaces, depth and density without obstructing player movement.
+
+#### CONCEPT-02 — Driving through the same district
+
+![Generated concept of our Singapore game: third-person driving beside the canal](docs/concepts/singapore-driving.png)
+
+Primary comparison: a detailed player-controlled sedan in a plausible chase-camera view, left-hand traffic, street life, canal railings, a bridge and consistent building/material vocabulary. Vehicle cabin, wheels, paint, lights and road interaction must survive close play; a still image cannot certify controls or physics.
+
+#### CONCEPT-03 — Helicopter flight above the connected world
+
+![Generated concept of our Singapore game: helicopter over the connected district](docs/concepts/singapore-helicopter.png)
+
+Primary comparison: a recognizable modeled helicopter over the same shophouse/hawker/HDB-inspired district, complete roofs and back walls, connected roads and waterways, a visible landing pad, and coherent skyline layering. Landing and returning to on-foot play remain required.
+
+**Generation record:** [exact prompts and method](docs/concepts/prompts.json). All three use a shared late-afternoon palette and the on-foot concept as the supporting visual reference for the driving/flight images. Their generated geometry is art direction, not an exact map blueprint. Critics compare current build captures at these three gameplay-camera scales and carry visible mismatches into the next wave. Do not claim a one-to-one fidelity match from a successful build or a textual verdict.
+
+### 3.2 Secondary source references — fidelity and location evidence
+
+**Owner direction: “GTA 6, but in Singapore. Highest quality possible, one-to-one remake.”** The quality-match target is explicit: pursue the fidelity of the GTA VI images while building the original Singapore setting and connected experience specified here. The reference images are source material, **not screenshots of this project**. The bounded district and required gameplay remain the scope; do not silently expand to the full content or geography of GTA VI.
+
+Compare the candidate's actual rendered pixels with these references at similar scale, camera height and lighting. GTA VI screenshots establish rendering quality; Singapore photos establish the place. Neither replaces gameplay tests. A critic must view the images, identify the largest visible gap and send it back to the builder. A blocked image is NOT TESTED; use its source link rather than inventing what it shows. Record reference IDs in critique and handoff.
+
+#### VI-01 — GTA VI — city depth and connected streets
+
+![GTA VI — city depth and connected streets](https://www.rockstargames.com/VI/_next/static/media/Vice_City_03.0nqz~lrqdmlze.jpg)
+
+Layered buildings, completed roofs, planted streets, traffic, readable balconies and distant skyline. Match that density and material depth using Singapore forms.
+
+Source: [Rockstar Games, Vice City 03](https://www.rockstargames.com/VI/media/screenshots) · [Open full reference](https://www.rockstargames.com/VI/_next/static/media/Vice_City_03.0nqz~lrqdmlze.jpg).
+
+#### VI-02 — GTA VI — light, vegetation and material separation
+
+![GTA VI — light, vegetation and material separation](https://www.rockstargames.com/VI/_next/static/media/Vice_City_02.0c5.7qx17u9kl.jpg)
+
+Warm directional light, varied vegetation, contact shadow, water and metal response, and coherent near-to-far detail. Judge equivalent lighting conditions rather than hiding unfinished work in darkness.
+
+Source: [Rockstar Games, Vice City 02](https://www.rockstargames.com/VI/media/screenshots) · [Open full reference](https://www.rockstargames.com/VI/_next/static/media/Vice_City_02.0c5.7qx17u9kl.jpg).
+
+#### VI-03 — GTA VI — close character fidelity
+
+![GTA VI — close character fidelity](https://www.rockstargames.com/VI/_next/static/media/Vice_City_04.06evqutgh7624.jpg)
+
+Skin, hair, fabric, jewelry and expressive dimensional faces establish the close-view fidelity bar. Create original people; inspect our characters at comparable screen size.
+
+Source: [Rockstar Games, Vice City 04](https://www.rockstargames.com/VI/media/screenshots) · [Open full reference](https://www.rockstargames.com/VI/_next/static/media/Vice_City_04.06evqutgh7624.jpg).
+
+#### SG-01 — Singapore — Joo Chiat street-level architecture
+
+![Singapore — Joo Chiat street-level architecture](https://isomer-user-content.by.gov.sg/149/722d5877-6ddb-4c63-b2f3-84ec02a9a44a/Joo_Chiat.png)
+
+Narrow frontage rhythm, shutters, tiled roof ridges, relief ornament, deep entrances, gates, kerbs and everyday street fixtures. These need modeled depth and consistent human scale.
+
+Source: [SG101, Joo Chiat](https://www.sg101.gov.sg/resources/archives/ourneighbourhood-joo-chiat/) · [Open full reference](https://isomer-user-content.by.gov.sg/149/722d5877-6ddb-4c63-b2f3-84ec02a9a44a/Joo_Chiat.png).
+
+#### SG-02 — Singapore — inhabited hawker interior
+
+![Singapore — inhabited hawker interior](https://images.squarespace-cdn.com/content/v1/62f339e7333f08456de6b3aa/05754608-948a-4d6b-acf0-bd94ff8b0d30/Hawker%2BCentre.JPG)
+
+Roof trusses, corrugated roofing, hanging fans, stall counters, practical lighting, communal tables and clear busy aisles. Recreate believable everyday activity and spatial depth, with original reviewed signage.
+
+Source: [Beyond Classrooms, Singapore university trip](https://www.beyondclassrooms.org/singapore-university-trip) · [Open full reference](https://images.squarespace-cdn.com/content/v1/62f339e7333f08456de6b3aa/05754608-948a-4d6b-acf0-bd94ff8b0d30/Hawker%2BCentre.JPG).
+
+#### SG-03 — Singapore — waterfront scale and skyline
+
+![Singapore — waterfront scale and skyline](https://www.singpost.com/dam/files/media/background/2025-11/city-bg-1.jpg)
+
+Waterfront setbacks, bridges, varied tower massing, green promenades, and low-rise foreground against the skyline. Helicopter views must reveal the same completed district that is playable on foot.
+
+Source: [SingPost, corporate sustainability](https://www.singpost.com/corporate/sustainability) · [Open full reference](https://www.singpost.com/dam/files/media/background/2025-11/city-bg-1.jpg).
+
+**Reference provenance:** all six external images were visually inspected on 2026-10-21. They remain hosted by their source publishers and retain their respective copyrights; this repository embeds links and does not include the image binaries in the game or its MIT asset license. Publicity imagery establishes an aspirational bar, not measured performance or evidence that every depicted interaction is playable. For motion and animation comparison use [Rockstar’s official video collection](https://www.rockstargames.com/VI/media/videos) alongside uncut footage of our candidate.
 
 ## 4. Player movement, camera, and interaction
 
@@ -236,11 +333,13 @@ These are observable contracts, not a mandate for one code architecture. Agree i
 
 ## 13. Engine, asset production, and reproducibility
 
-**TECH-01 — Recommend, verify, lock once.** Before implementation, MiniMax recommends one stable supported 3D engine and exact version after checking environment, licensing, packaging, physics, navigation, animation, asset import, and cross-setup compatibility. Favor an established engine over custom infrastructure. Record the rationale and lock the approved selection before building. No engine is user-locked by this document, and no wave may migrate engines or discard the project without explicit approval.
+**TECH-01 — Recommend, verify, lock once.** Before implementation, MiniMax recommends one stable supported 3D engine and exact version after checking environment, licensing, packaging, physics, navigation, animation, asset import, and cross-setup compatibility. Favor an established engine over custom infrastructure. Record the rationale and lock the selection before building under the owner’s delegation. No engine is user-locked by this document, and no wave may migrate engines or discard the project without explicit approval.
 
 **TECH-02 — One reproducible project.** Maintain one authoritative source tree, pinned relevant dependencies, documented startup/build instructions, and a declared target platform. Provisional delivery is a desktop packaged build on the chosen development/test platform; confirm exact OS/hardware before wave one. Test the actual delivery path, not only an editor session. Never silently replace a native game with an unrelated browser prototype for easier screenshots.
 
-**ASSET-01 — Equal toolbox, bounded authority.** All waves may use Tripo, Customuse, Meshy, and Blender MCP subject to verified access, rights, and approved credit limits. Do not run local AI inference; use only authorized hosted AI services. This does not prohibit ordinary local Blender, engine, or DCC processing. Listing a tool does not prove availability or authorize spending, buying credits, exposing credentials, or publishing restricted outputs. If a tool is unavailable, report it and choose an authorized alternative without disguising the limitation.
+**ASSET-01 — Owner-selected generation routes (2026-10-21).** Use **Tripo through browser control for smaller, bulk and secondary 3D objects** (street furniture, clutter, small props and set dressing), and **Customuse through MCP for major/hero assets** (principal characters, cars/helicopter and important detailed structures). Builders choose the appropriate provider within that split. **Meshy is excluded. Do not use Tripo through an API.** Existing Tripo credits are expressly authorized for this work without repeated approval; do not buy credits or subscriptions. Use existing authorized Customuse access for the major-asset lane, preserving native tool confirmation requirements. Blender/DCC and engine processing for cleanup, UVs, materials, rigging, animation, LODs and integration remain allowed. Do not run local AI inference.
+
+A tool connected to the manager is not automatically exposed inside every builder CLI. Verify the actual tool surface. If unavailable, send a concise asset request to the manager (provider, prompt, dimensions, export, destination, priority), continue independent work, and import the returned verified asset. Record job IDs, actual exports and provenance; a queued generation or raw GLB is not a finished in-engine asset.
 
 **ASSET-02 — Production pipeline, not raw downloads.** Every significant asset passes: scale/unit convention; forward/up axes and pivot; clean transforms; valid mesh normals; UV/material inspection; texture packaging; collision; rigs/animation compatibility; polygon/material/texture budgets; LOD strategy; and in-engine inspection under representative lighting. Confirm sockets/grips, root-motion convention, wheel/rotor origins, and doors where relevant. A generated GLB is not automatically game-ready. Preserve editable DCC sources or reproducible source references plus engine-compatible exports (for example GLB/glTF/FBX as supported), not only inaccessible cached outputs.
 

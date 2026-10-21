@@ -6,9 +6,9 @@ A YouTube development experiment: **five AI coding setups collaborating in seque
 
 ## Status
 
-**Planning / starter repository — no playable build yet.**
+**Relay underway on task branches — no accepted playable build yet.**
 
-The required Singapore-inspired playable slice is specified in [END_GOAL.md](END_GOAL.md). Engine, development machine, numerical calibration, and middle-wave order still need confirmation. **MiniMax starts; Opus 5.5 through Claude Code must take the final wave.** No game implementation or asset generation has started in this repository.
+The required Singapore-inspired playable slice is specified in [END_GOAL.md](END_GOAL.md). Engine, development machine, numerical calibration, and middle-wave order still need confirmation. **MiniMax starts; Opus 5.5 through Claude Code must take the final wave.** Implementation has started on the MiniMax wave branch. This is not a claim of a verified playable or visually accepted build.
 
 ## The five setups and wave order
 
@@ -26,7 +26,9 @@ Model names are planned selections, not claims of verified product availability.
 
 ## One shared toolbox
 
-Every wave may use **Tripo, Customuse ("Custom Muse"), Meshy, and Blender MCP**. No model is limited to a particular asset tool or department.
+**Owner update, 2026-10-21:** GTA VI-level visual fidelity in Singapore is the target; see the three generated concepts of our game in END_GOAL.md §3.1 (on foot, driving, helicopter); external reference imagery is secondary. Only Tripo browser control for smaller/bulk assets and Customuse MCP for major assets are approved generation routes. Meshy is excluded. Existing Tripo credits are authorized. Builders make routine decisions autonomously; the manager handles timed handoffs. The update supersedes earlier planning notes below.
+
+Every wave uses **Tripo through browser control** and **Customuse through MCP** according to the split above, with Blender/DCC tools for asset processing. No model is limited to a particular asset tool or department.
 
 Each model can create, modify, or replace 3D assets and improve the entire game: gameplay, visuals, controls, world design, performance, or anything else needed for its wave. Tool connections, capabilities, account access, licenses, and credits still need confirmation. Listing these tools is **not permission to purchase credits or incur charges**.
 
