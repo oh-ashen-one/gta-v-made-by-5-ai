@@ -464,7 +464,7 @@ func _hawker_block(centre: Vector3) -> void:
 		_world_root.add_child(bulb)
 	# mission package in the open aisle in front of the stalls, so it can be
 	# walked to and picked up without climbing over the counter
-	locations["package"] = centre + Vector3(-5.0, 0.25, -14.0)
+	locations["package"] = centre + Vector3(-5.0, 0.25, -16.0)
 
 ## Modern waterfront edge: towers, promenade, skyline.
 func _waterfront_block(centre: Vector3) -> void:

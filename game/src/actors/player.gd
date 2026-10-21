@@ -14,7 +14,7 @@ const JUMP_VELOCITY := 7.2
 const MOUSE_SENS := 0.0022
 const AIM_DISTANCE := 2.2
 const HIP_DISTANCE := 4.6
-const INTERACT_RANGE := 3.4
+const INTERACT_RANGE := 5.0
 
 var camera: Camera3D
 var arm: SpringArm3D

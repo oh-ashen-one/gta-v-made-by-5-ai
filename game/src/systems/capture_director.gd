@@ -52,16 +52,16 @@ func _run() -> void:
 	await _nav_to(world.locations["package"], 1.8, 240.0)
 	await _shot("hawker_market")
 
-	# --- 2. take the package (real interactable) ----------------------------
-	await _interact()
-	await _shot("package_taken")
-	_log("mission stage after package: %d" % mission.stage)
-
-	# --- 3. shoot a hostile -------------------------------------------------
+	# --- 2. clear the armed guards around the market ------------------------
 	var hostile := _nearest_hostile()
 	if hostile:
 		await _shoot_at(hostile)
 		await _shot("combat")
+
+	# --- 3. take the package (real interactable) ----------------------------
+	await _interact()
+	await _shot("package_taken")
+	_log("mission stage after package: %d" % mission.stage)
 
 	# --- 4. steal a car and drive to the aviation compound -------------------
 	var car := _nearest_car()

@@ -23,7 +23,7 @@
       "required_export": "GLB with named nodes for wheel_FL, wheel_FR, wheel_RL, wheel_RR, door_FL, door_FR, steering_wheel, seat_driver, seat_rear_left, seat_rear_right, headlight_L, headlight_R, taillight_L, taillight_R",
       "intended_game_path": "game/assets/vehicles/sedan.glb",
       "status": "delivered",
-      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender (4.4 m, ground at Y=0, nose -Z) with separated spinning wheels; in engine as the sedan and police body"
+      "delivered_note": "Customuse job completed and integrated: cleaned in Blender (4.4 m, ground at Y=0, nose -Z) with separated spinning wheels; in engine as the sedan and the police body"
     },
     {
       "id": "W1-HERO-002",
@@ -34,7 +34,7 @@
       "required_export": "GLB with named nodes for wheel_FL, wheel_FR, wheel_RL, wheel_RR, door_L, door_R, steering_wheel, seat_driver, seat_passenger",
       "intended_game_path": "game/assets/vehicles/coupe.glb",
       "status": "delivered",
-      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender with separated spinning wheels; in engine as the coupe"
+      "delivered_note": "Customuse job completed and integrated: cleaned in Blender with separated spinning wheels; in engine as the coupe"
     },
     {
       "id": "W1-HERO-003",
@@ -45,7 +45,7 @@
       "required_export": "GLB with named nodes for wheels, sliding_door, roller_shutter, steering_wheel, seat_driver",
       "intended_game_path": "game/assets/vehicles/van.glb",
       "status": "delivered",
-      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender with separated spinning wheels; in engine as the delivery van"
+      "delivered_note": "Customuse job completed and integrated: cleaned in Blender with separated spinning wheels; in engine as the delivery van"
     },
     {
       "id": "W1-HERO-004",
@@ -56,7 +56,7 @@
       "required_export": "GLB with named nodes for main_rotor, tail_rotor, rotor_head, pilot_seat, door_L, door_R, skid_L, skid_R, tail_fin",
       "intended_game_path": "game/assets/vehicles/helicopter.glb",
       "status": "delivered",
-      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender with separated main and tail rotors; in engine as the helicopter"
+      "delivered_note": "Customuse job completed and integrated: cleaned in Blender with separated main and tail rotors; in engine as the helicopter"
     },
     {
       "id": "W1-HERO-005",
@@ -67,7 +67,7 @@
       "required_export": "GLB with a humanoid skeleton (mixamo-compatible or Godot-compatible bone naming), named bones for hips, spine, chest, neck, head, shoulder/upperarm/lowerarm/hand L+R, thigh/shin/foot L+R, plus a separate prop attachment socket on the right hand",
       "intended_game_path": "game/assets/characters/player.glb",
       "status": "delivered",
-      "delivered_note": "Customuse, delivered and integrated as a static figure (hawker vendors); still unrigged - rigging and a walk cycle are the open task"
+      "delivered_note": "Customuse job completed; cleaned in Blender but still unrigged, so it is used as a static hawker vendor - rigging and a walk cycle are the open task"
     },
     {
       "id": "W1-HERO-006",
@@ -78,7 +78,7 @@
       "required_export": "GLB with humanoid skeleton, bone names matching the civilian rig, hand socket for a pistol",
       "intended_game_path": "game/assets/characters/police_officer.glb",
       "status": "delivered",
-      "delivered_note": "Customuse, delivered and integrated as a static figure (airfield ground staff); still unrigged"
+      "delivered_note": "Customuse job completed; cleaned in Blender but still unrigged, so it is used as static airfield ground staff"
     },
     {
       "id": "W1-HERO-007",
@@ -89,7 +89,7 @@
       "required_export": "GLB, pivot at ground level, separate nodes for facade, columns, shutters, awning, sign_band, roof",
       "intended_game_path": "game/assets/buildings/shophouse_module.glb",
       "status": "delivered",
-      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender to a 20k triangle budget and instanced along the heritage streets"
+      "delivered_note": "Customuse job completed and integrated: cleaned in Blender to a 20k triangle budget and instanced along the heritage streets"
     },
     {
       "id": "W1-HERO-008",
@@ -100,7 +100,7 @@
       "required_export": "GLB with separate nodes for slab_body, ground_columns, lift_lobby, roof_tank, parapet, link_bridge",
       "intended_game_path": "game/assets/buildings/hdb_slab.glb",
       "status": "delivered",
-      "delivered_note": "Customuse, delivered and integrated: cleaned in Blender to a 40k triangle budget and used as the housing slab body"
+      "delivered_note": "Customuse job completed and integrated: cleaned in Blender to a 40k triangle budget and used as the housing slab body"
     },
     {
       "id": "W1-HERO-009",
@@ -110,7 +110,8 @@
       "dimensions": "3.2 m wide, 1.1 m deep, 2.6 m high including canopy",
       "required_export": "GLB with separate nodes for counter, canopy, menu_board, shelves, props",
       "intended_game_path": "game/assets/props/hawker_stall.glb",
-      "status": "pending"
+      "status": "delivered",
+      "delivered_note": "Delivered through the Tripo small-prop route after Customuse charges exceeded the estimate; cleaned in Blender to 4 000 triangles and integrated as the hawker stall counter"
     },
     {
       "id": "W1-PROP-010",
@@ -121,7 +122,7 @@
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/hawker_table.glb",
       "status": "delivered",
-      "delivered_note": "Tripo, delivered, cleaned in Blender (1.87 M -> 4 000 triangles) and integrated as the hawker communal table"
+      "delivered_note": "Tripo job completed; cleaned from 1.87 M to 4 000 triangles and integrated as the hawker communal table"
     },
     {
       "id": "W1-PROP-011",
@@ -132,7 +133,7 @@
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/food_trolley.glb",
       "status": "delivered",
-      "delivered_note": "Tripo, delivered, cleaned in Blender and staged for the hawker aisle"
+      "delivered_note": "Tripo job completed; cleaned in Blender and staged for the hawker aisle"
     },
     {
       "id": "W1-PROP-012",
@@ -143,7 +144,7 @@
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/ac_unit.glb",
       "status": "delivered",
-      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the wall-mounted air-con condensers"
+      "delivered_note": "Tripo job completed; cleaned in Blender and integrated as the wall-mounted air-con condensers"
     },
     {
       "id": "W1-PROP-013",
@@ -154,7 +155,7 @@
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/street_lamp.glb",
       "status": "delivered",
-      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the street lamps"
+      "delivered_note": "Tripo job completed; cleaned in Blender and integrated as the street lamps"
     },
     {
       "id": "W1-PROP-014",
@@ -165,7 +166,7 @@
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/service_lane_clutter.glb",
       "status": "delivered",
-      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated in the rear service lanes"
+      "delivered_note": "Tripo job completed; cleaned in Blender and integrated in the rear service lanes"
     },
     {
       "id": "W1-PROP-015",
@@ -176,7 +177,7 @@
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/planter.glb",
       "status": "delivered",
-      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the kerbside planters"
+      "delivered_note": "Tripo job completed; cleaned in Blender and integrated as the kerbside planters"
     },
     {
       "id": "W1-PROP-016",
@@ -187,7 +188,7 @@
       "required_export": "GLB, pivot at the grip, one-handed scale",
       "intended_game_path": "game/assets/weapons/pistol.glb",
       "status": "delivered",
-      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the player's pistol"
+      "delivered_note": "Tripo job completed; cleaned in Blender and integrated as the player's pistol"
     },
     {
       "id": "W1-PROP-017",
@@ -198,7 +199,7 @@
       "required_export": "GLB, pivot at the grip",
       "intended_game_path": "game/assets/weapons/smg.glb",
       "status": "delivered",
-      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the player's compact automatic"
+      "delivered_note": "Tripo job completed; cleaned in Blender and integrated as the player's compact automatic"
     },
     {
       "id": "W1-PROP-018",
@@ -209,8 +210,8 @@
       "required_export": "GLB",
       "intended_game_path": "game/assets/props/airfield_clutter.glb",
       "status": "delivered",
-      "delivered_note": "Tripo, delivered, cleaned in Blender and integrated as the airfield clutter"
+      "delivered_note": "Tripo job completed; cleaned in Blender and integrated as the airfield clutter"
     }
   ],
-  "status_summary": "17 of 18 requests were delivered during wave 1 and integrated into the build (8 Customuse hero models, 9 Tripo props). Only the hawker stall counter (W1-HERO-009) is outstanding: Customuse charges exceeded the estimate, so it is being produced through the owner's Tripo small-prop route instead. No further Customuse credits may be spent without new owner authorisation."
+  "status_summary": "All 18 requests were delivered during wave 1 and integrated into the build: 8 Customuse hero models and 10 Tripo props (the hawker counter came through the Tripo small-prop route). Every raw source is reproducible with game/tools/fetch_provider_assets.sh and is rebuilt into the game assets by game/tools/cleanup_provider_assets.py. The rights position is recorded in docs/ASSET_RIGHTS.md: redistribution is permitted by the provider terms, and the binaries are kept out of the git history only for repository size. No further Customuse credits may be spent without new owner authorisation (balance 53); Tripo balance is 75 450."
 }

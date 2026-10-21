@@ -2,19 +2,20 @@
 
 - **Authoring model / wave:** MiniMax M3.1 Flash (wave 1, outgoing).
 - **Incoming model / wave:** Astra through Codex (wave 2).
-- **Incoming checkpoint:** the wave-1 commit pushed to `origin/codex/minimax-wave-01` (branch `codex/minimax-wave-01`); wave-1 source tree lives in `game/` (Godot 4.7.1).
+- **Incoming checkpoint:** the wave-1 commits pushed to **`origin/feature/wave-01-orchard-reach`** (the manager's documentation branch `codex/minimax-wave-01` is left untouched); the wave-1 source tree lives in `game/` (Godot 4.7.1).
 - **How to run:**
   - `godot --path game` (editor/play from source), or
   - `godot --headless --path game --export-release "macOS" game/build/mac/OrchardReach.zip` (packaged build), or
-  - `godot --headless --path game -- --test` (20 automated checks; expect `20/20 checks passed`).
+  - `godot --headless --path game -- --test` (30 automated checks — 20 structural and 10 behavioural regression checks; expect `30/30 checks passed`).
+  - Provider art (18 models) is not in the git history: `bash game/tools/fetch_provider_assets.sh` re-fetches the raw sources, `blender --background --python game/tools/cleanup_provider_assets.py` rebuilds the processed game assets, and `godot --headless --editor --path game --quit` imports them.
 - **Shared brief and fixed constraints:** END_GOAL.md is the destination and outranks this goal. The engine is **locked**: Godot 4.7.1 stable, Forward+, native macOS export — do not migrate engines. No local AI inference. No secrets in the repository. No `main` merge without the owner. Tripo (browser) for small/bulk/secondary props, Customuse (MCP) for hero assets, **Meshy excluded**; existing Tripo credits are authorised, new purchases are not.
 - **Visual bar:** GTA VI in Singapore, highest attainable fidelity. The primary art direction is the generated concept board in `docs/concepts/` (on-foot, driving, helicopter). `docs/visual-references.json` is secondary location/fidelity evidence only. A concept board is **not** evidence that our build matches it — runtime pixels are.
 
 ## What I want you to improve, in priority order
 
 1. **Finish the art replacement — the biggest gap, now half closed.**
-   - Evidence: wave 1 shipped with procedural geometry everywhere; `docs/REQUIREMENTS_LEDGER.md` marks ART-02, ART-05, ART-06 and ART-08 as **Fail/Partial**. During the wave the manager executed four Customuse jobs and staged eight generated models; the builder cleaned them in Blender (`game/tools/cleanup_provider_assets.py`: real-world scale, ground at Y=0, loose-part separation, wheel/rotor naming, triangle budgets) and integrated the sedan, coupe, van, helicopter, shophouse module, HDB slab, hawker table, character and officer.
-   - **Still open:** (a) the generated character and officer are **unrigged** — no skin, no animation; they are used only as static figures (hawker vendors, airfield ground staff). Rigging them (automatic weights in Blender, procedural walk/aim in `Skeleton3D`) is the single highest-value remaining art task, because the player avatar is on screen constantly. (b) The remaining Tripo props in `ASSET_REQUESTS.json` are still pending — the delivered Tripo table needed decimation from 1.87 M to 4 000 triangles, so **every raw generator export must be budgeted before it enters the runtime**. (c) The hawker stall (W1-HERO-009) was not generated: Customuse charges exceeded the estimate and the balance is down to 53 — do **not** submit further Customuse jobs without new owner authorisation.
+   - Evidence: wave 1 started from procedural geometry everywhere; `docs/REQUIREMENTS_LEDGER.md` marks ART-02, ART-05, ART-06 and ART-08 as **Fail/Partial**. During the wave the manager executed **all 18 requested generations** (8 Customuse hero models, 10 Tripo props) and the builder cleaned them in Blender (`game/tools/cleanup_provider_assets.py`: real-world scale, ground at Y=0, loose-part separation, wheel/rotor naming, triangle budgets) and integrated the sedan, coupe, van, helicopter, shophouse module, HDB slab, hawker counter, hawker table, street lamps, air-con units, planters, service clutter, airfield crates, both weapons, the character and the officer.
+   - **Still open:** (a) the generated character and officer are **unrigged** — no skin, no animation; they are used only as static figures (hawker vendors, airfield ground staff). Rigging them (automatic weights in Blender, procedural walk/aim in `Skeleton3D`) and swapping them in as the **player avatar** is the single highest-value remaining art task, because the avatar is on screen constantly. (b) The delivered Tripo table needed decimation from 1.87 M to 4 000 triangles, so **every raw generator export must be budgeted before it enters the runtime** — the build now carries 18 processed assets, and the budgets are listed in `docs/asset-manifest.csv`. (c) The right-hand-drive interior, cabin detail and material response of the generated vehicles are good, but the district around them is still procedural; the art needs to be pushed outward from the hero assets. (d) Customuse's balance is down to 53 — do **not** submit further Customuse jobs without new owner authorisation (Tripo is at 75 450).
    - Observable success: the player avatar is the generated character, rigged and animated; the remaining props are integrated at their triangle budgets; the district no longer reads as an untextured greybox.
 
 2. **Raise the visual fidelity of the district itself.**
@@ -23,11 +24,11 @@
    - Observable success: an independent reviewer comparing our street capture with `docs/concepts/singapore-on-foot.png` can no longer call it a placeholder.
 
 3. **Close the gameplay gaps that the wave-1 ledger marks as Fail/Partial.**
-   - `AUDIO-01` — **no audio at all.** Footsteps with surface variation, engines and tyres, rotor sound, gunfire, police response, street ambience and a distinct hawker interior. This is the loudest hole in the experience.
-   - `TRAFFIC-02` — traffic does not react to blockers; congestion can deadlock a junction. Needs stop/queue/reroute behaviour and pedestrian-crossing response.
-   - `LAW-04` — escape is heat decay only; no search phase, no concealment, no readable "search has ended" feedback.
-   - `QA-012` / `MISSION-04` — pursuit and mission state do not yet survive controller changes and replay cleanly.
-   - `MISSION-03` — a second meaningful checkpoint and explicit restart/abandon controls.
+   - `AUDIO-01` — the procedural sound bank exists (gunshots, footsteps, impacts, pickup, engine loop, rotor loop, police siren) but it is a **non-spatial master-bus pool**: no attenuation, no per-actor mix, no street ambience and no distinct hawker interior. Spatialisation is the remaining work.
+   - `TRAFFIC-02` — traffic now slows for a blocker ahead, but there is no queueing, no reroute around a blocked lane and no signal phase; a junction can still deadlock.
+   - `LAW-04` — the pursuit now has SPOTTED and SEARCHING phases with responders sweeping the last known position and a HUD countdown, but there is **no concealment mechanic** and no rediscovery rule yet.
+   - `MISSION-04` — mission restart resets the stage, package and hostiles, but a full clean replay (complete → fail → replay without leftover actors) is not yet exercised.
+   - `MISSION-03` — two checkpoints (package and the airfield) and an explicit restart key now exist; the abandon path and the failure-recovery wording still need work.
    - Observable success: the ledger rows for AUDIO-01, TRAFFIC-02, LAW-04, QA-012 and MISSION-04 move off Fail/Partial with evidence links.
 
 4. **Turn the automated playthrough into a real evidence pipeline.**
@@ -42,7 +43,9 @@
 ## Preserve
 
 - `game/src/core/game_state.gd` as the single authority for health, mode, wanted level, mission stage and save/load; `game/src/core/events.gd` as the only cross-system bus (SYSTEM-01).
-- The `Game` / `Events` autoload contract and the existing `Assets` request schema.
+- The `Game` / `Events` autoload contract and the `ASSET_REQUESTS.json` request schema.
+- The transition table and its invariants in `docs/TRANSITION_TABLE.md`.
+- The rights position in `docs/ASSET_RIGHTS.md`: provider terms permit redistribution, and every asset is reproducible from `game/tools/fetch_provider_assets.sh`.
 - The left-hand-traffic lane graph (`traffic_manager.gd`, 25 junctions, left-lane offset) and the arcade vehicle model — both work and are cheap to keep.
 - The mission "Harbour Relay" spine: safe room → hawker package → theft → drive → police → helicopter → landing → delivery, and its checkpoint semantics.
 - Existing capture packet, ledger and asset manifest formats.

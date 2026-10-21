@@ -44,6 +44,14 @@ Copy of the [wave handoff template](../../../docs/WAVE_HANDOFF.md), filled with 
 
 Full table in `docs/asset-manifest.csv`. Summary: all original code is MIT (this repository). The eight Customuse models and nine Tripo props are **provider terms, not MIT**; they are staged in `game/assets/providers/` (git-ignored), their public URLs and SHA256 values are recorded, and they are re-fetchable with `game/tools/fetch_provider_assets.sh`. The generated concept board in `docs/concepts/` is project-owned art committed by the manager. No GTA asset, no third-party model and no credential is in the tree.
 
+## Verdict (END_GOAL VERIFY-08)
+
+**Playable experimental build with unmet requirements.** Not "north star accepted", and not "not yet reliably playable".
+
+What the wave-1 build demonstrably does: launches as a native 3D game, presents an authored Singapore-inspired district with five distinct precincts, moves a third-person character with a working camera, fires two firearms that damage and kill NPCs, lets the player steal an occupied car and drive it through left-hand traffic, escalates a wanted level that now rises and falls, spawns police that pursue and stand down, flies a helicopter that can be boarded, landed and exited, and runs the "Harbour Relay" mission spine end to end in an automated playthrough. The engine is locked, the requirement ledger is honest, and every provider asset is documented, rights-checked and reproducible.
+
+What it is not: the GTA VI visual bar (the art is a mix of generated hero assets and procedural geometry, and the character is still unrigged), a spatial soundscape, a traffic system with signals, a pursuit model with search and concealment, a measured performance result, or a build with an independent-vendor critic. Those gaps are named, owned and prioritised in `NEXT_GOAL.md`.
+
 ## Next goal
 
 - **Successor and next goal file:** `NEXT_GOAL.md`, addressed to **Astra through Codex**.

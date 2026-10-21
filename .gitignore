@@ -2,8 +2,10 @@
 game/.godot/
 game/.import/
 game/build/
-# Provider-generated assets: their terms are not MIT, so they are staged
-# locally and re-fetched with game/tools/fetch_provider_assets.sh
+# Provider-generated assets: their terms are not MIT (see docs/ASSET_RIGHTS.md -
+# redistribution is permitted; the binaries are simply too large for the git
+# history), so they are staged locally and re-fetched with
+# game/tools/fetch_provider_assets.sh
 game/assets/providers/
 game/captures/*.tmp
 

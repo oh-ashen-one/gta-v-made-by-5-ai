@@ -51,7 +51,7 @@ func _spawn_hostiles() -> void:
 		h.health = 70.0
 		add_child(h)
 		var ang := TAU * i / 3.0
-		h.global_position = base + Vector3(cos(ang) * 7.0, 0.4, sin(ang) * 7.0)
+		h.global_position = base + Vector3(cos(ang) * 9.0, 0.4, sin(ang) * 9.0)
 		h.state = NPC.State.WALK
 		_hostiles.append(h)
 
