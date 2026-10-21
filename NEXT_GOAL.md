@@ -80,10 +80,13 @@ Untouched in wave 3, still open:
 
 ## Priority 4 — gates that need a clean run
 
-- **Packaged UI save/relaunch (24/24 write + 23/23 load).** Wave 3 could not run it: the
-  `--ui-review` commands were rejected by the approval gate. The packaged 85/85 covers save
-  roundtrip and nine atomic rejections but is not this check.
-- **Ordinary OS playtest (QA-001).** Still no human/native-input first-play evidence.
+- **Packaged UI save/relaunch: now PASSING.** Wave 3 ran it on the exported app: write **24/24** and
+  fresh-process load **23/23**, distinct PIDs, identical save digest
+  `94c6c3ce9a48ca32fe753858a1b9755c0b59c7cdb058bbca02012d3fe17a3da0`, captures at 1280×720. Keep it
+  passing; note that `main.gd` gates the review on `--ui-review`, so the load phase needs **both**
+  `--ui-review` and `--ui-review-load` or the app idles on the title and the supervisor times out.
+- **Ordinary OS playtest (QA-001).** Still no human/native-input first-play evidence. The UI phases
+  are fixture-assisted.
 - **Rights.** Provider source/binary redistribution remains UNVERIFIED per asset
   (`docs/ASSET_RIGHTS.md`, `docs/asset-manifest.csv`). Private implementation only; no blanket MIT.
 

@@ -1,8 +1,7 @@
 # Singapore relay — wave 3 (DeepSeek V4.1 Flash Max through Devin)
 
-**HANDOFF IN PROGRESS** — this file is being updated live. The wave is still running; the hard end is
-2026-10-21 19:46:20 UTC and handoff preparation starts 19:16:20 UTC. Do not treat the "Verified"
-section as final until it says HANDOFF COMPLETE.
+**HANDOFF COMPLETE** — reconciled 2026-10-21T19:10Z. Hard end 19:46:20 UTC; this file was finalised
+during the handoff-preparation window and contains no future-dated claims.
 
 - Current owner: DeepSeek V4.1 Flash Max through Devin, managed by the original Codex relay chat.
 - Branch: `feature/wave-03-deepseek`; push this branch, never main.
