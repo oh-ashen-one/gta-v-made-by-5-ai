@@ -6,36 +6,49 @@ A YouTube development experiment: **five AI coding setups collaborating in seque
 
 **Planning / starter repository — no playable build yet.**
 
-The engine, development machine, first playable scope, wave order, and exact model versions are still to be finalized. No game implementation has started in this repository.
+The engine, development machine, first playable scope, and initial wave order are still to be finalized. **Opus 5.5 through Claude Code must take the final wave.** No game implementation or asset generation has started in this repository.
 
-## The five setups
+## The five setups and wave order
 
-| Setup | Planning note |
-| --- | --- |
-| MiniMax | Proposed first wave. |
-| Codex / Astra | Proposed second wave; exact model version to be confirmed. |
-| Claude Code / Opus | Proposed third wave; exact model version to be confirmed. |
-| Devin / DeepSeek | Working assumption: DeepSeek V4.1 Flash through the Devin monthly subscription; availability and exact model tag are not verified. No separate model API billing is planned. |
-| Argon 4 via AGY CLI | User-reported setup; configuration is not yet verified. |
+The first four positions below are **proposed**, not finalized. The final Opus 5.5 wave is the project requirement.
 
-No local AI models are planned for this video.
+| Wave | Setup | Status / planning note |
+| --- | --- | --- |
+| 1 | MiniMax | Proposed starting setup. |
+| 2 | Astra through Codex | Proposed second wave. |
+| 3 | DeepSeek through Devin | Proposed third wave. Working assumption: DeepSeek V4.1 Flash through the Devin monthly subscription; availability and exact model tag are not verified. No separate model API billing is planned. |
+| 4 | Argon 4 via AGY CLI | Proposed fourth wave; user-reported setup. |
+| 5 — final | Opus 5.5 through Claude Code | Required final wave; user-selected model name, not verified availability. |
+
+Model names are planned selections, not claims of verified product availability. Confirm exact versions, access, and configuration before execution. No local AI models are planned for this video.
+
+## One shared toolbox
+
+Every wave may use **Tripo, Customuse ("Custom Muse"), Meshy, and Blender MCP**. No model is limited to a particular asset tool or department.
+
+Each model can create, modify, or replace 3D assets and improve the entire game: gameplay, visuals, controls, world design, performance, or anything else needed for its wave. Tool connections, capabilities, account access, licenses, and credits still need confirmation. Listing these tools is **not permission to purchase credits or incur charges**.
 
 ## How the relay works
 
-Each AI inherits the **whole current game** and can improve any aspect of it rather than owning only graphics, gameplay, or another department. The aim is to show how the same project evolves wave by wave.
+Each AI inherits the **whole current game** and builds on the previous reviewed checkpoint. The aim is to show the same project improving wave by wave, not five independent games.
 
-The proposed opening sequence is **MiniMax → Astra through Codex → Opus through Claude Code**. The full order and wave goals are not finalized.
+Proposed sequence: **MiniMax → Astra / Codex → DeepSeek / Devin → Argon 4 / AGY CLI → Opus 5.5 / Claude Code**. Only Opus 5.5's final position is fixed.
 
-Each wave should leave a reviewable checkpoint, a short account of what changed, test results, and comparable before/after footage. Once a playable baseline exists, later waves should preserve and improve it.
+Every wave leaves:
+- A reviewable commit/checkpoint and clear summary of changes.
+- Test results and known issues, including anything not tested.
+- Comparable before/after footage once a playable baseline exists.
+- Asset provenance, redistribution status, and notes for the next model.
+
+Later waves should preserve a working baseline while improving it. Use the [wave handoff template](docs/WAVE_HANDOFF.md) and [contribution workflow](CONTRIBUTING.md).
 
 ## Next decisions
 
 - Choose the engine and development environment.
 - Agree on an ambitious, clearly bounded first playable.
-- Confirm the relay order, wave goals, and handoff criteria.
+- Confirm the first four waves, wave goals, and handoff criteria.
+- Confirm shared tool access, permitted assets, and any approved credit budget.
 - Decide how to capture consistent before/after comparisons.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the basic workflow.
 
 ## Original project, not Rockstar source
 
@@ -43,6 +56,8 @@ The title is the video/project title. This is an independent, original game-deve
 
 Do not commit proprietary game code, extracted game assets, paid asset packs without redistribution rights, credentials, or private project material.
 
-## License
+## License and assets
 
-Original contributions to this repository are licensed under the [MIT License](LICENSE). Third-party code, engine components, assets, music, names, and trademarks are **not** licensed by this repository's MIT License; their respective rights and licenses apply. Proprietary game content is excluded.
+The [MIT License](LICENSE) applies to this repository's original code only. It does **not** blanket-license generated or third-party assets, engine components, music, names, or trademarks.
+
+For every asset, record the provider/source, creation or download date, applicable license or terms, attribution requirements, and whether public redistribution is permitted. A successful generation or export does not by itself establish permission to publish the result. Keep assets out of the public repository until their redistribution rights are confirmed; their respective licenses apply separately.
