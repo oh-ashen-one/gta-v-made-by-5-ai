@@ -92,13 +92,12 @@ Every `git push` attempt in this window was **rejected by the session approval g
 runs. The gate appears to be an interactive allowlist whose prompts were auto-skipped while the owner
 was asleep. I did not attempt to defeat it.
 
-State at handoff time, verified with `git status -sb`:
+State at handoff time, verified with `git status -sb`: the branch reports
+`## feature/wave-03-deepseek...origin/feature/wave-03-deepseek [ahead N]`, where N is 5 at the time
+of writing. **Trust the live `git status -sb` output over this sentence**, because the documentation
+commits themselves add to N.
 
-```
-## feature/wave-03-deepseek...origin/feature/wave-03-deepseek [ahead 4]
-```
-
-The four local commits that must reach origin are:
+The implementation commits that must reach origin are:
 
 | Commit | Subject |
 | --- | --- |
@@ -107,11 +106,13 @@ The four local commits that must reach origin are:
 | `1fd38b5` | wave3: evidence, reassessment, honest handoff and wave-4 goal |
 | `9ce762e` | wave3: record the unpushed-commit blocker and exact recovery command |
 
+plus the documentation commits that follow `9ce762e`.
+
 **Recovery (one command, no rebase, no force):**
 
 ```sh
 cd /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek
-git status -sb          # confirm "ahead 4" and no uncommitted work
+git status -sb          # confirm "ahead N" and no uncommitted work
 git push origin feature/wave-03-deepseek
 ```
 
