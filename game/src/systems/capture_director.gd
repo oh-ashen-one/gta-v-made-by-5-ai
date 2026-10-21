@@ -61,6 +61,14 @@ func _run() -> void:
 		await _shoot_at(hostile)
 		await get_tree().create_timer(0.3).timeout
 	await _shot("combat")
+	_log("health after the market fight: %.0f, wanted %d" % [Game.health, Game.wanted_level])
+	# Break contact and let the health come back before the car leg: a script
+	# that rushes on with half its health dies to the first patrol car.
+	var waited := 0.0
+	while Game.health < 85.0 and waited < 14.0:
+		await get_tree().process_frame
+		waited += get_process_delta_time()
+	_log("health before the car leg: %.0f (waited %.1f s)" % [Game.health, waited])
 
 	# --- 3. take the package (real interactable) ----------------------------
 	# the fight scatters the player, so walk back into reach before pressing

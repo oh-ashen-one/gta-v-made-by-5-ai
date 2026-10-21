@@ -204,7 +204,7 @@ func _pursue(delta: float) -> void:
 			velocity.z = 0.0
 			fire_timer -= delta
 			if fire_timer <= 0.0:
-				fire_timer = 1.6
+				fire_timer = 2.0
 				_shoot_at(player)
 	elif is_hostile:
 		if dist > 7.0:
@@ -212,7 +212,7 @@ func _pursue(delta: float) -> void:
 		else:
 			fire_timer -= delta
 			if fire_timer <= 0.0:
-				fire_timer = 1.1
+				fire_timer = 1.4
 				_shoot_at(player)
 
 func _shoot_at(player: Node) -> void:
@@ -226,7 +226,7 @@ func _shoot_at(player: Node) -> void:
 	if not hit.is_empty():
 		var collider = hit["collider"]
 		if collider and collider.has_method("take_damage"):
-			collider.take_damage(9.0, global_position, false)
+			collider.take_damage(5.5, global_position, false)
 			Events.hit_landed.emit(collider, 9.0, hit["position"], false)
 
 func _move_towards(target: Vector3, speed: float, delta: float) -> void:

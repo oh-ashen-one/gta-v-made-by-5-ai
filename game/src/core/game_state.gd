@@ -8,6 +8,8 @@ const MODE_CAR := 1
 const MODE_HELI := 2
 
 const MAX_HEALTH := 100.0
+const REGEN_DELAY := 5.0   # seconds out of fire before health comes back
+const REGEN_RATE := 9.0     # health per second while regenerating
 const SAVE_PATH := "user://orchard_reach_save.json"
 const SAVE_VERSION := 1
 
@@ -31,6 +33,7 @@ var last_safe_rotation: float = 0.0
 var simulation_paused: bool = false
 var in_mission: bool = false
 var search_timer: float = 0.0          # seconds of active search left (LAW-04)
+var _since_damage: float = 0.0         # seconds since the last hit taken
 var player_seen: bool = false          # police currently have eyes on the player
 var last_seen_position: Vector3 = Vector3.ZERO
 var settings := {
@@ -49,12 +52,28 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not simulation_paused:
 		elapsed_seconds += delta
+		_regenerate(delta)
 	# Pursuit decay only happens while nobody is looking (LAW-04: fair escape).
 	if wanted_level > 0 and not player_seen:
 		search_timer = maxf(0.0, search_timer - delta)
 		decay_heat(delta * 1.4)
 		if wanted_level == 0:
 			Events.notify.emit("You lost the search.", "good")
+
+## Health comes back slowly once the player has been out of fire for a few
+## seconds, so a firefight is survivable and a chase can be broken (COMBAT-04).
+## Without it, one close encounter with three guards was lethal.
+func _regenerate(delta: float) -> void:
+	if health <= 0.0 or health >= MAX_HEALTH:
+		_since_damage = 0.0
+		return
+	_since_damage += delta
+	if _since_damage < REGEN_DELAY:
+		return
+	var before := health
+	health = minf(MAX_HEALTH, health + REGEN_RATE * delta)
+	if not is_equal_approx(before, health):
+		Events.health_changed.emit(health, MAX_HEALTH)
 
 # ---------------------------------------------------------------- input setup
 func _setup_input_map() -> void:
@@ -96,6 +115,7 @@ func health_ratio() -> float:
 func damage_player(amount: float) -> void:
 	if health <= 0.0:
 		return
+	_since_damage = 0.0
 	health = maxf(0.0, health - amount)
 	Events.health_changed.emit(health, MAX_HEALTH)
 	if health <= 0.0:
@@ -221,6 +241,7 @@ func load_game() -> bool:
 	if int(parsed.get("version", 0)) != SAVE_VERSION:
 		return false
 	health = float(parsed.get("health", MAX_HEALTH))
+	_since_damage = 0.0
 	wanted_level = int(parsed.get("wanted_level", 0))
 	mission_stage = int(parsed.get("mission_stage", 0))
 	checkpoint_index = int(parsed.get("checkpoint_index", 0))

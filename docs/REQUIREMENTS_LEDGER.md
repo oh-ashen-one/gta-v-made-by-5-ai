@@ -44,7 +44,7 @@ Nothing here is claimed as verified unless a runtime artefact is linked. The wav
 | COMBAT-01 | Partial | Pistol and compact SMG, hitscan, recoil cadence, reload, ammo pools; weapon meshes are placeholder boxes |
 | COMBAT-02 | Partial | Camera-ray hitscan with muzzle obstruction and world collision; no damage falloff model |
 | COMBAT-03 | Implemented — not verified | NPC health, damage reaction, death with body on ground and persistence; no ragdoll |
-| COMBAT-04 | Partial | Player damage, health bar, respawn at checkpoint; no cover or safe-respawn logic beyond checkpoint |
+| COMBAT-04 | Partial | Player damage, health bar, respawn at checkpoint, and **slow health regeneration after five seconds out of fire** (the wave found that one close encounter with three guards was lethal: 9 damage a hit every 1.1–1.6 s from three guns). No cover or safe-respawn logic beyond checkpoint |
 | COMBAT-05 | Partial | Muzzle flash, impact spark, events; no pooled VFX, no spatial audio yet |
 | NPC-01 | Partial | Pedestrians walk lane graphs, idle, queue and flee; routes are rectangular loops |
 | NPC-02 | Partial | Gunfire within 26 m panics civilians; no witness reporting chain |
@@ -167,3 +167,4 @@ An independent critic (a subagent of the **same MiniMax model** — this profile
 | Interaction always preferred a vehicle over a mission interactable, so a parcel at the player's feet lost to a car parked further away | high | **Fixed**: the closest target wins, whatever it is (vehicles and props compete on distance, each with its own reach) |
 | `Input.is_action_just_pressed()` is tied to the frame in which the press was parsed, so a press injected after the player's turn in the frame was invisible — the scripted playthrough could lose an interact entirely | high | **Fixed**: the player watches the *held* state of an action and fires once per press, so human and scripted input share one frame-safe path |
 | The market encounter was unwinnable in practice: the guard posts and the counter row blocked the aisle, so the player could not reach the package at all | high | **Fixed**: the guards hold the stall line and never the centre aisle, the package sits in the open dining aisle, and the pickup reach is 7.5 m; covered by the "the mission package can be picked up" and "picking up the package advances the mission" checks |
+| One close firefight was lethal: three guards firing 9 damage every 1.1 s killed a full-health player in about four seconds, so the scripted run died before it could drive | high | **Fixed**: guard and police hits do 5.5 damage at a slower cadence, and the player regenerates 9 health per second after five seconds out of fire; covered by the "health regenerates once the player is out of fire" check |

@@ -97,6 +97,14 @@ func _behaviour_checks(main: Node) -> void:
 			_check("the mission package can be picked up", not pkg.visible)
 			_check("picking up the package advances the mission", mission.stage > 0, " (stage %d)" % mission.stage)
 
+	# 7. health must come back after a firefight, or one encounter is lethal
+	Game.health = 40.0
+	Game._since_damage = 10.0
+	for i in 30:
+		await get_tree().process_frame
+	_check("health regenerates once the player is out of fire", Game.health > 40.0, " (%.1f)" % Game.health)
+	Game.health = Game.MAX_HEALTH
+
 
 func _can_walk(player: Node) -> bool:
 	# walk on open road, not inside the safe room, so the check measures the
