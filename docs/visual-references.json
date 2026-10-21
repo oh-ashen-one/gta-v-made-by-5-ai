@@ -1,0 +1,62 @@
+[
+  {
+    "id": "VI-01",
+    "title": "GTA VI \u2014 city depth and connected streets",
+    "image_url": "https://www.rockstargames.com/VI/_next/static/media/Vice_City_03.0nqz~lrqdmlze.jpg",
+    "source_url": "https://www.rockstargames.com/VI/media/screenshots",
+    "credit": "Rockstar Games, Vice City 03",
+    "comparison": "Layered buildings, completed roofs, planted streets, traffic, readable balconies and distant skyline. Match that density and material depth using Singapore forms.",
+    "visually_checked": "2026-10-21",
+    "storage": "external reference only"
+  },
+  {
+    "id": "VI-02",
+    "title": "GTA VI \u2014 light, vegetation and material separation",
+    "image_url": "https://www.rockstargames.com/VI/_next/static/media/Vice_City_02.0c5.7qx17u9kl.jpg",
+    "source_url": "https://www.rockstargames.com/VI/media/screenshots",
+    "credit": "Rockstar Games, Vice City 02",
+    "comparison": "Warm directional light, varied vegetation, contact shadow, water and metal response, and coherent near-to-far detail. Judge equivalent lighting conditions rather than hiding unfinished work in darkness.",
+    "visually_checked": "2026-10-21",
+    "storage": "external reference only"
+  },
+  {
+    "id": "VI-03",
+    "title": "GTA VI \u2014 close character fidelity",
+    "image_url": "https://www.rockstargames.com/VI/_next/static/media/Vice_City_04.06evqutgh7624.jpg",
+    "source_url": "https://www.rockstargames.com/VI/media/screenshots",
+    "credit": "Rockstar Games, Vice City 04",
+    "comparison": "Skin, hair, fabric, jewelry and expressive dimensional faces establish the close-view fidelity bar. Create original people; inspect our characters at comparable screen size.",
+    "visually_checked": "2026-10-21",
+    "storage": "external reference only"
+  },
+  {
+    "id": "SG-01",
+    "title": "Singapore \u2014 Joo Chiat street-level architecture",
+    "image_url": "https://isomer-user-content.by.gov.sg/149/722d5877-6ddb-4c63-b2f3-84ec02a9a44a/Joo_Chiat.png",
+    "source_url": "https://www.sg101.gov.sg/resources/archives/ourneighbourhood-joo-chiat/",
+    "credit": "SG101, Joo Chiat",
+    "comparison": "Narrow frontage rhythm, shutters, tiled roof ridges, relief ornament, deep entrances, gates, kerbs and everyday street fixtures. These need modeled depth and consistent human scale.",
+    "visually_checked": "2026-10-21",
+    "storage": "external reference only"
+  },
+  {
+    "id": "SG-02",
+    "title": "Singapore \u2014 inhabited hawker interior",
+    "image_url": "https://images.squarespace-cdn.com/content/v1/62f339e7333f08456de6b3aa/05754608-948a-4d6b-acf0-bd94ff8b0d30/Hawker%2BCentre.JPG",
+    "source_url": "https://www.beyondclassrooms.org/singapore-university-trip",
+    "credit": "Beyond Classrooms, Singapore university trip",
+    "comparison": "Roof trusses, corrugated roofing, hanging fans, stall counters, practical lighting, communal tables and clear busy aisles. Recreate believable everyday activity and spatial depth, with original reviewed signage.",
+    "visually_checked": "2026-10-21",
+    "storage": "external reference only"
+  },
+  {
+    "id": "SG-03",
+    "title": "Singapore \u2014 waterfront scale and skyline",
+    "image_url": "https://www.singpost.com/dam/files/media/background/2025-11/city-bg-1.jpg",
+    "source_url": "https://www.singpost.com/corporate/sustainability",
+    "credit": "SingPost, corporate sustainability",
+    "comparison": "Waterfront setbacks, bridges, varied tower massing, green promenades, and low-rise foreground against the skyline. Helicopter views must reveal the same completed district that is playable on foot.",
+    "visually_checked": "2026-10-21",
+    "storage": "external reference only"
+  }
+]
