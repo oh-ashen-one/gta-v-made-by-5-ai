@@ -1,0 +1,2098 @@
+{
+  "schema": 1,
+  "generated_utc": "2026-10-21T14:01:26+00:00",
+  "reviewer": "GPT-6 Astra documentation/verification reviewer; same model family, separate documentation lane; no new engine execution",
+  "path_base": "docs/wave-02; all run artifact paths below are relative to this directory",
+  "purpose": "Evidence index, not whole-requirement certification. Requirement states are in ../REQUIREMENTS_LEDGER.md.",
+  "status_vocabulary": {
+    "requirements": [
+      "Not started",
+      "In progress",
+      "Implemented\u2014not verified",
+      "Pass",
+      "Fail",
+      "Blocked"
+    ],
+    "tests": [
+      "PASS",
+      "FAIL",
+      "NOT TESTED"
+    ],
+    "visual": [
+      "ACCEPTABLE",
+      "REWORK",
+      "NOT TESTED"
+    ]
+  },
+  "environment": {
+    "machine": "Apple M3 Ultra /256GB RAM",
+    "os": "macOS27.0.1, historical readiness plus current engine logs; no broad hardware support claim",
+    "engine": "Godot4.7.1.stable.official.a13da4feb",
+    "renderer": "Forward+ Metal for R/P/S; historical headless uses dummy renderer",
+    "environment_reference": "../../waves/01/READINESS.md",
+    "power_mode": "NOT TESTED",
+    "seed": 20261021
+  },
+  "runs": [
+    {
+      "id": "R",
+      "kind": "rendered fixture regression",
+      "result": "PASS",
+      "scope": "85 named assertions and clean bounded process only",
+      "artifacts": {
+        "report": "regressions-rendered-r2.json",
+        "metadata": "regressions-rendered-r2.log.meta.json",
+        "log": "regressions-rendered-r2.log",
+        "source_patch": "regressions-rendered-r2.log.source.patch",
+        "resources": "regressions-rendered-r2.log.resources.jsonl",
+        "gpu": "regressions-rendered-r2-gpu.json"
+      },
+      "identity": {
+        "base_checkpoint": "cf211e6d23bb18c4e5ffe03830a8d9d64606780c",
+        "identity_rule": "Base checkpoint PLUS startup per-file source/asset hashes and saved source patch; base HEAD alone is insufficient.",
+        "source_hashes": {
+          "game/src/main.gd": "a5fb46caf05f8926fd00fef286ac1e5aadc79e8a1366a8d6f3e05ecee7e0ff38",
+          "game/src/ui/hud.gd": "93623d1764dcaaa5979215b05ab3b475c1c85e2bd8c6f0addfd05185351ac5b7",
+          "game/src/core/audio.gd": "aa6d7a41a460e36b914ae3d53b8927401a35660970628584b87678296f3d9a61",
+          "game/src/core/game_state.gd": "49ee957b47221ab89a2fb27c51af0fe5a38171337f857c3c90632adf03e8c357",
+          "game/src/core/events.gd": "1cfd38d25f90c828be4f378b6e13a549fa207071fd56c2b411fa80bee2c825b4",
+          "game/src/world/interior_detail.gd": "ff518f4f5d891370ad434290fc4180d7015857b23f9861c0fa3ef89fbd9cd6f2",
+          "game/src/world/palette.gd": "47f8cafc91d3047375d7b59c8bc9bc5b719a13150593497798545ad5cfffb77f",
+          "game/src/world/world_builder.gd": "01c07227e86fb8ccba38c9ef4bbd887e12fd5740e13da9ebc5115ea29cd10792",
+          "game/src/actors/car.gd": "43103c2f776bdfd04c53b68c1211d9b6523b2f33e5fb1f3302401aa131d1e264",
+          "game/src/actors/player.gd": "a82cd2de3d706fdcc2bb221eba6f317310491221eb4ffabb69af7a858db76dd8",
+          "game/src/actors/asset_library.gd": "be51c15da326ac326a1dae58c129aed650781f01275d4f725d9a568121ee0aff",
+          "game/src/actors/npc.gd": "89a120a66f7a0bb6713e150b17a9e6d61db58466e8982ca619d45a2df1d69899",
+          "game/src/actors/character_visual.gd": "2e5423b94421062fbff87bafc2ddec459da9efcefaffbf583a1067805a082d38",
+          "game/src/actors/helicopter.gd": "170b2f57b2012502e83f323192414dbc6875cccb8441a0911775f29214dc442e",
+          "game/src/systems/photo_capture.gd": "9abd36e84ca91f54708c6c8fb44486ede133a465734602b5e35b21ba31e0085b",
+          "game/src/systems/asset_review.gd": "855d188c2fed21f4e68071d8739a2dc4e47e22078e8aca9906ba32d3564d0f6f",
+          "game/src/systems/mission.gd": "775dae6f72eb9b15ae33cef04d6218d7f382236da31495a963016def84eed29e",
+          "game/src/systems/ui_review.gd": "2ae42ba58e714be08743d037750668453a69e0ee4b0d35a292d3b7c7e9ebc72c",
+          "game/src/systems/self_test.gd": "85bac9ee245c22f527e9c20443609e72ba41bb062e254b70040d3bcae733ac52",
+          "game/src/systems/character_review.gd": "9915a9502ba9b39f52eca4badf16fe682819af0182bb2bec6a18a5fa35b225f3",
+          "game/src/systems/capture_director.gd": "9b239241b8f72065d38533b32dcc5b024677c4aeb8390c4ac0a0b7fd2b7796e3",
+          "game/src/systems/delivery_point.gd": "4b508f5150d6eb006fb5a5d20875b1f4f7dc0f667df4d3c2041d7d570a97e8ff",
+          "game/src/systems/package_pickup.gd": "c57ec0465a809f89619037fcf36be949e8e4354f2c15a1b5f191e9c4ea0178f5",
+          "game/src/systems/traffic_manager.gd": "aaa5c736db8cf1472b00e969598587520c0453c79c169f4c2bc79baff266b28e",
+          "game/project.godot": "47799829074788f4ff55b3166a48688460b209bed5af9966e55a6cc0f6c847e8"
+        },
+        "asset_hashes": {
+          "game/assets/authored/rain_tree.glb": "42861b35d071c3ae7847e671b194544f2a854f1708ed53cae1adf3f671646cdc",
+          "game/assets/authored/hawker_pavilion.glb": "ebbc98151a1b71a87dcc4f530251e2aecf8242708f4aefe4deaa646340e34179",
+          "game/assets/authored/boundary_railing.glb": "d7d378eea9c94914402e2ad5f9a1cf08731248cf22d62827ff2939f4cd2884d7",
+          "game/assets/authored/interior_safe_furnishings.glb": "d02d70fd6259c6ae88b30dff99f2caa5613cff66570f4f656fde6fe2fcc6f8c3",
+          "game/assets/authored/interior_convenience_shop.glb": "ca6d5c9e985c1fa2cb62690b8909a15d55435bdc596d675ae8a28599193f15e9",
+          "game/assets/authored/hawker_meal.glb": "7a7047d8d9833c0b991d115629b8049307c588a89bf269cde87b23cf6a077443",
+          "game/assets/authored/fern.glb": "6ca383c475b2ce3ca12611523faef05d6c80e6944b30ab0b774d9aa4eac3a74b",
+          "game/assets/authored/skyline_2.glb": "2294029b2655836a586cafaba6d950da0398af04de7cd789f742a0c6defb279d",
+          "game/assets/authored/skyline_3.glb": "878ad4d86fc86e6de1c56441b5d6947b02d61ecb9f9f27d68d2f6b71406f1b71",
+          "game/assets/authored/palm.glb": "023f21350ffabc5f2293f086912c31fbb605c82fca8be84b9bd0204e5fe0b016",
+          "game/assets/authored/skyline_1.glb": "2f022d37d30eb9aacd2ae0b94257ec53bb70cb23cc113dd8f6a9878763c08f7a",
+          "game/assets/authored/interior_workshop.glb": "48a25bfbdd758b0f9bd0a9e156fff12949434299045a167468711efe5d949df7",
+          "game/assets/authored/skyline_0.glb": "95fee63e84cf9678f4e54b3e8aa1ccf8691391b087f5d6cc301ddeb8e4ac2d81",
+          "game/assets/providers/van_clean.glb": "9183aff3ec40e4f960584b6096624d0f1c80909c572fb4bc8a6eedc0a742255d",
+          "game/assets/providers/pistol_clean.glb": "7acfa673b1496f6322405337b5e49238f44d50388963b6f0160599537e000004",
+          "game/assets/providers/service_clutter_clean.glb": "4566b40c3da2c88ba2a0b9dea5dc5769e6487e3560b50c1689157140865f89d3",
+          "game/assets/providers/airfield_clutter_clean.glb": "8fa1c35b1f836c9c47ff7bc7fb4ab7ebddaaffc13f257e5ec7b20e95171e12aa",
+          "game/assets/providers/hdb_slab_clean.glb": "2dbdd82b0d97ef2b150ce75a83086bbc7058acf0ec7bfce6aecb9c9876d673d4",
+          "game/assets/providers/smg_clean.glb": "a5c8c7c03b3f3328c1ec9d838a45aa6545f1acfc4df9b11715853beafd6def39",
+          "game/assets/providers/shophouse_clean.glb": "24f278f57303c70bce256da2220c37ba3233565e1adab7c8e29afdfdcb3b5e53",
+          "game/assets/providers/civilian_rigged.glb": "ece93fcf6bc7e37ced947d74b4e392df25084c83c2209fe5ae974847dde4c444",
+          "game/assets/providers/hawker_counter_clean.glb": "19d050c87e10e326d9bcc1b3f6bf04cc3b51e34ea2448aabe2e5cc2e864679fd",
+          "game/assets/providers/player_clean.glb": "9e4a8c61796a715b336b8cc8747b2563d4f73c312eff28825af647d88fa6fb5d",
+          "game/assets/providers/street_lamp_clean.glb": "f1f7f9a6ba495eec188aada828e9167a8f48b1c32837dcfe5fea5f16075692a3",
+          "game/assets/providers/officer_clean.glb": "354607e2e9474fe58d203b850204fe150247801a98efcc2e3e409e184e69b8bc",
+          "game/assets/providers/planter_clean.glb": "cdbb9886073c6ba21f2c96a083bdfd97e52293610b3fd387bbc455a67dca1b50",
+          "game/assets/providers/hawker_counter_refined.glb": "ca3063e96c28d3e7350b3beee098679851c799fe3cb136f19c789bb42ee6a2a6",
+          "game/assets/providers/helicopter_clean.glb": "7b3c3143bbae61d35d5928852b72d8cfe38825e62e7be92f7e09cc5db062df55",
+          "game/assets/providers/helicopter_refined.glb": "bd149a128315833f988f98ded1e8a7710c0f5b31e0b52b4afcf392cf79911380",
+          "game/assets/providers/food_trolley_clean.glb": "242f7c5af79be5c7aba112ae855e4f46be6eb7129ff91abd9bc4b3793f8d0ff4",
+          "game/assets/providers/player_rigged.glb": "bfcd5d74c867c0fb62756e7145ef7dcb582f18643f5f25f48e85a6edcfe4602f",
+          "game/assets/providers/pistol_held.glb": "d710ddf885e5aff265d0c0093dabe7a485884496ea1ecb6f929f3d83b7ebea8f",
+          "game/assets/providers/hawker_table_clean.glb": "b3600a3601a7fad3d3df94175e0c1060cb4346ced4a962ed3037983bce3bfc9b",
+          "game/assets/providers/hawker_table_refined.glb": "a83a2fdd84840b41183415a959c298ec6473ca06592ead1da115c66160b197e9",
+          "game/assets/providers/sedan_clean.glb": "a1d663aaa5c50827f86f4f183e1a387c9cf3e053cbe1abdcf30924b2ca9a7a88",
+          "game/assets/providers/coupe_clean.glb": "0560279f049c313d251ee681c8b436af40411f27cfdeddac5765ed179625509f",
+          "game/assets/providers/ac_unit_clean.glb": "bee0a57c2de96a5719fdecae0e69fffa7baefe66c5069e0e883c4f90a8e4a6a2",
+          "game/assets/providers/smg_held.glb": "5d345fbf85ffd7f86067c0c1eac014eb21f5c3c67b0c10ae1e6de20db5d45899",
+          "game/assets/providers/officer_rigged.glb": "e545c1cd4a91b49c17d0dea69e37965fad036b265914bd8d29b6490fefd12b33"
+        },
+        "started_utc": "2026-10-21T13:40:49.679773+00:00",
+        "finished_utc": "2026-10-21T13:41:10.465926+00:00",
+        "command": [
+          "godot",
+          "--path",
+          "game",
+          "--resolution",
+          "1280x720",
+          "--",
+          "--test",
+          "--test-report=../docs/wave-02/regressions-rendered-r2.json"
+        ]
+      },
+      "process": {
+        "pid": 10513,
+        "engine_exit_code": 0,
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_sec": 20.98,
+        "child_reaped": true,
+        "all_error_lines": [],
+        "fatal_errors": [],
+        "classified_nonfatal_errors": [],
+        "sampling_errors": [],
+        "resource_samples": 5,
+        "rss_samples_available": true
+      },
+      "fixture_repositioning": true,
+      "ordinary_player_run": false,
+      "requested_resolution": [
+        1280,
+        720
+      ],
+      "actual_backing_resolution": "Not recorded in this suite; requested window size cannot certify backing raster",
+      "counts": {
+        "total": 85,
+        "passed": 85,
+        "failed": 0
+      },
+      "suite_duration_ms": 14440,
+      "engine_process_duration_seconds": 20.98,
+      "cases": [
+        {
+          "id": "REG-001",
+          "name": "world builder present",
+          "result": "PASS",
+          "requirement_support": [
+            "SYSTEM-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "world builder present",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-002",
+          "name": "player spawned",
+          "result": "PASS",
+          "requirement_support": [
+            "PLAYER-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "player spawned",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-003",
+          "name": "traffic manager present",
+          "result": "PASS",
+          "requirement_support": [
+            "TRAFFIC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "traffic manager present",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-004",
+          "name": "mission running",
+          "result": "PASS",
+          "requirement_support": [
+            "MISSION-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "mission running",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-005",
+          "name": "helicopter present",
+          "result": "PASS",
+          "requirement_support": [
+            "AIR-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "helicopter present",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-006",
+          "name": "hud present",
+          "result": "PASS",
+          "requirement_support": [
+            "UI-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "hud present",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-007",
+          "name": "district contains 3D geometry",
+          "result": "PASS",
+          "requirement_support": [
+            "ART-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "district contains 3D geometry",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-008",
+          "name": "junction graph has 25 connected reference nodes",
+          "result": "PASS",
+          "requirement_support": [
+            "WORLD-04"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "junction graph has 25 connected reference nodes",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-009",
+          "name": "pedestrian paths present",
+          "result": "PASS",
+          "requirement_support": [
+            "NPC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "pedestrian paths present",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-010",
+          "name": "civilian traffic populated",
+          "result": "PASS",
+          "requirement_support": [
+            "WORLD-07",
+            "TRAFFIC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "civilian traffic populated",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-011",
+          "name": "pedestrians populated",
+          "result": "PASS",
+          "requirement_support": [
+            "WORLD-07",
+            "NPC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "pedestrians populated",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-012",
+          "name": "ambient population matches configured budget of 161 unique actors",
+          "result": "PASS",
+          "requirement_support": [
+            "WORLD-07",
+            "NPC-05"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "ambient population matches configured budget of 161 unique actors",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-013",
+          "name": "market diners are reactive damageable NPCs",
+          "result": "PASS",
+          "requirement_support": [
+            "NPC-02",
+            "COMBAT-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "market diners are reactive damageable NPCs",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-014",
+          "name": "busy district walkers spawn along segments not junction piles",
+          "result": "PASS",
+          "requirement_support": [
+            "NPC-01",
+            "NPC-05"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "busy district walkers spawn along segments not junction piles",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-015",
+          "name": "gameplay camera belongs to player",
+          "result": "PASS",
+          "requirement_support": [
+            "PLAYER-02",
+            "PLAYER-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "gameplay camera belongs to player",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-016",
+          "name": "mission publishes initial objective",
+          "result": "PASS",
+          "requirement_support": [
+            "MISSION-02",
+            "UI-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "mission publishes initial objective",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-017",
+          "name": "initial objective marker survives HUD setup order",
+          "result": "PASS",
+          "requirement_support": [
+            "MISSION-02",
+            "UI-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "initial objective marker survives HUD setup order",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-018",
+          "name": "mission registered for save and checkpoint restoration",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-01",
+            "MISSION-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "mission registered for save and checkpoint restoration",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-019",
+          "name": "package is a real interactable",
+          "result": "PASS",
+          "requirement_support": [
+            "MISSION-02",
+            "PLAYER-04"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "package is a real interactable",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-020",
+          "name": "road graph includes the fifth row",
+          "result": "PASS",
+          "requirement_support": [
+            "WORLD-04",
+            "TRAFFIC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "road graph includes the fifth row",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-021",
+          "name": "traffic target is near destination on the left lane",
+          "result": "PASS",
+          "requirement_support": [
+            "TRAFFIC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "traffic target is near destination on the left lane",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-022",
+          "name": "east-west signal excludes north-south movement",
+          "result": "PASS",
+          "requirement_support": [
+            "TRAFFIC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "east-west signal excludes north-south movement",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-023",
+          "name": "junction changeover clears both approaches",
+          "result": "PASS",
+          "requirement_support": [
+            "TRAFFIC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "junction changeover clears both approaches",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-024",
+          "name": "north-south signal excludes east-west movement",
+          "result": "PASS",
+          "requirement_support": [
+            "TRAFFIC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "north-south signal excludes east-west movement",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-025",
+          "name": "visible signal lamps agree with east-west right of way",
+          "result": "PASS",
+          "requirement_support": [
+            "TRAFFIC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "visible signal lamps agree with east-west right of way",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-026",
+          "name": "visible signal lamps switch with north-south right of way",
+          "result": "PASS",
+          "requirement_support": [
+            "TRAFFIC-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "visible signal lamps switch with north-south right of way",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-027",
+          "name": "fire maps to a mouse button rather than a keyboard code",
+          "result": "PASS",
+          "requirement_support": [
+            "PLAYER-05",
+            "COMBAT-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "fire maps to a mouse button rather than a keyboard code",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-028",
+          "name": "real mouse-button event fires the equipped weapon",
+          "result": "PASS",
+          "requirement_support": [
+            "PLAYER-05",
+            "COMBAT-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "real mouse-button event fires the equipped weapon",
+          "observed": "mag 12 -> 11",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-029",
+          "name": "mission avenue has no static trunk obstruction",
+          "result": "PASS",
+          "requirement_support": [
+            "WORLD-04"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "mission avenue has no static trunk obstruction",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-030",
+          "name": "rapid native press and release is not dropped",
+          "result": "PASS",
+          "requirement_support": [
+            "PLAYER-05",
+            "COMBAT-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "rapid native press and release is not dropped",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-031",
+          "name": "close-cover fixture leaves camera sightline on target",
+          "result": "PASS",
+          "requirement_support": [
+            "COMBAT-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "close-cover fixture leaves camera sightline on target",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-032",
+          "name": "muzzle obstruction prevents damage through close cover",
+          "result": "PASS",
+          "requirement_support": [
+            "COMBAT-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "muzzle obstruction prevents damage through close cover",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-033",
+          "name": "clearing muzzle obstruction permits target damage",
+          "result": "PASS",
+          "requirement_support": [
+            "COMBAT-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "clearing muzzle obstruction permits target damage",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-034",
+          "name": "input interaction enters a car",
+          "result": "PASS",
+          "requirement_support": [
+            "CAR-02",
+            "PLAYER-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "input interaction enters a car",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-035",
+          "name": "occupied player collision is disabled",
+          "result": "PASS",
+          "requirement_support": [
+            "CAR-02",
+            "PLAYER-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "occupied player collision is disabled",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-036",
+          "name": "driving input moves the car",
+          "result": "PASS",
+          "requirement_support": [
+            "CAR-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "driving input moves the car",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-037",
+          "name": "occupant follows the moving car",
+          "result": "PASS",
+          "requirement_support": [
+            "SYSTEM-01",
+            "CAR-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "occupant follows the moving car",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-038",
+          "name": "authoritative position follows controlled vehicle",
+          "result": "PASS",
+          "requirement_support": [
+            "SYSTEM-01",
+            "CAR-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "authoritative position follows controlled vehicle",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-039",
+          "name": "left driving input turns left",
+          "result": "PASS",
+          "requirement_support": [
+            "CAR-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "left driving input turns left",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-040",
+          "name": "NPC weapon ray damages occupied car",
+          "result": "PASS",
+          "requirement_support": [
+            "COMBAT-02",
+            "CAR-04"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "NPC weapon ray damages occupied car",
+          "observed": "100.00 -> 96.97",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-041",
+          "name": "car body protects its occupant from that ray",
+          "result": "PASS",
+          "requirement_support": [
+            "COMBAT-04",
+            "CAR-04"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "car body protects its occupant from that ray",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-042",
+          "name": "normal exit returns control and camera",
+          "result": "PASS",
+          "requirement_support": [
+            "PLAYER-03",
+            "CAR-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "normal exit returns control and camera",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-043",
+          "name": "on-foot collision restored",
+          "result": "PASS",
+          "requirement_support": [
+            "PLAYER-03",
+            "CAR-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "on-foot collision restored",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-044",
+          "name": "blocked car exit preserves seated control without wall clipping",
+          "result": "PASS",
+          "requirement_support": [
+            "CAR-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "blocked car exit preserves seated control without wall clipping",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-045",
+          "name": "clearing blocked exit restores normal exit",
+          "result": "PASS",
+          "requirement_support": [
+            "CAR-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "clearing blocked exit restores normal exit",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-046",
+          "name": "death is counted for honest golden-path evidence",
+          "result": "PASS",
+          "requirement_support": [
+            "SYSTEM-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "death is counted for honest golden-path evidence",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-047",
+          "name": "death in car releases both control owners",
+          "result": "PASS",
+          "requirement_support": [
+            "COMBAT-04",
+            "PLAYER-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "death in car releases both control owners",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-048",
+          "name": "death restores visible player and gameplay camera",
+          "result": "PASS",
+          "requirement_support": [
+            "COMBAT-04",
+            "PLAYER-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "death restores visible player and gameplay camera",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-049",
+          "name": "walking still works after vehicle death",
+          "result": "PASS",
+          "requirement_support": [
+            "COMBAT-04",
+            "PLAYER-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "walking still works after vehicle death",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-050",
+          "name": "wanted escalation decays when unobserved",
+          "result": "PASS",
+          "requirement_support": [
+            "LAW-04"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "wanted escalation decays when unobserved",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-051",
+          "name": "health regenerates out of fire",
+          "result": "PASS",
+          "requirement_support": [
+            "COMBAT-04"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "health regenerates out of fire",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-052",
+          "name": "helicopter control is exclusive",
+          "result": "PASS",
+          "requirement_support": [
+            "AIR-01",
+            "PLAYER-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "helicopter control is exclusive",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-053",
+          "name": "lift input gains altitude",
+          "result": "PASS",
+          "requirement_support": [
+            "AIR-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "lift input gains altitude",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-054",
+          "name": "neutral lift stabilizes hover",
+          "result": "PASS",
+          "requirement_support": [
+            "AIR-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "neutral lift stabilizes hover",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-055",
+          "name": "airborne helicopter rejects exit",
+          "result": "PASS",
+          "requirement_support": [
+            "AIR-05"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "airborne helicopter rejects exit",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-056",
+          "name": "pause freezes aircraft",
+          "result": "PASS",
+          "requirement_support": [
+            "PLAYER-05",
+            "AIR-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "pause freezes aircraft",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-057",
+          "name": "pause freezes pursuit heat",
+          "result": "PASS",
+          "requirement_support": [
+            "PLAYER-05",
+            "LAW-05"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "pause freezes pursuit heat",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-058",
+          "name": "controlled descent lands without disabling aircraft",
+          "result": "PASS",
+          "requirement_support": [
+            "AIR-04"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "controlled descent lands without disabling aircraft",
+          "observed": "position=(270.0, 0.16092, 104.0) velocity=(0.0, 0.0, 0.0) health=100.0 floor=true",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-059",
+          "name": "landed helicopter exits to walking",
+          "result": "PASS",
+          "requirement_support": [
+            "AIR-04",
+            "PLAYER-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "landed helicopter exits to walking",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-060",
+          "name": "waterfront helicopter exit permits actual on-foot movement",
+          "result": "PASS",
+          "requirement_support": [
+            "AIR-04",
+            "PLAYER-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "waterfront helicopter exit permits actual on-foot movement",
+          "observed": "moved=4.003 from=(2.461618, 0.275156, -331.4723) to=(6.464643, 0.275928, -331.4723) velocity=(5.963103, 0.0, 0.0)",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-061",
+          "name": "package input pickup advances and hides pickup",
+          "result": "PASS",
+          "requirement_support": [
+            "MISSION-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "package input pickup advances and hides pickup",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-062",
+          "name": "taking car starts the authored driving leg",
+          "result": "PASS",
+          "requirement_support": [
+            "MISSION-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "taking car starts the authored driving leg",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-063",
+          "name": "on-foot arrival cannot bypass driving leg",
+          "result": "PASS",
+          "requirement_support": [
+            "MISSION-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "on-foot arrival cannot bypass driving leg",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-064",
+          "name": "death restores package checkpoint and requires new drive",
+          "result": "PASS",
+          "requirement_support": [
+            "MISSION-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "death restores package checkpoint and requires new drive",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-065",
+          "name": "restoration rebuilds flags and objective",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-01",
+            "MISSION-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "restoration rebuilds flags and objective",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-066",
+          "name": "delivery cannot be triggered remotely",
+          "result": "PASS",
+          "requirement_support": [
+            "PLAYER-04",
+            "MISSION-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "delivery cannot be triggered remotely",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-067",
+          "name": "restart resets pickup checkpoint and prerequisites",
+          "result": "PASS",
+          "requirement_support": [
+            "MISSION-04"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "restart resets pickup checkpoint and prerequisites",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-068",
+          "name": "restart retains exactly three mission guards",
+          "result": "PASS",
+          "requirement_support": [
+            "MISSION-04",
+            "NPC-04"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "restart retains exactly three mission guards",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-069",
+          "name": "save roundtrip restores health and mission checkpoint",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save roundtrip restores health and mission checkpoint",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-070",
+          "name": "save restoration updates package and objective",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-01",
+            "MISSION-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save restoration updates package and objective",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-071",
+          "name": "save restores sensitivity and accessibility settings",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-01",
+            "UI-03"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save restores sensitivity and accessibility settings",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-072",
+          "name": "invalid live state cannot replace the last complete save",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "invalid live state cannot replace the last complete save",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-073",
+          "name": "atomic replacement updates an existing save",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "atomic replacement updates an existing save",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-074",
+          "name": "successful save leaves no temporary checkpoint file",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "successful save leaves no temporary checkpoint file",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-075",
+          "name": "successful load publishes one state-restored event",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02",
+            "SYSTEM-01"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "successful load publishes one state-restored event",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-076",
+          "name": "saved SMG restores held model and clears transient actions",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-01",
+            "ART-05"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "saved SMG restores held model and clears transient actions",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-077",
+          "name": "save rejects truncated position vector atomically",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save rejects truncated position vector atomically",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-078",
+          "name": "save rejects unknown equipped weapon atomically",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save rejects unknown equipped weapon atomically",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-079",
+          "name": "save rejects out-of-range magazine atomically",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save rejects out-of-range magazine atomically",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-080",
+          "name": "save rejects wrong health type atomically",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save rejects wrong health type atomically",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-081",
+          "name": "save rejects invalid checkpoint index atomically",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save rejects invalid checkpoint index atomically",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-082",
+          "name": "save rejects inconsistent pursuit state atomically",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save rejects inconsistent pursuit state atomically",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-083",
+          "name": "save rejects wrong safe-position type atomically",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save rejects wrong safe-position type atomically",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-084",
+          "name": "save rejects out-of-range mouse sensitivity atomically",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save rejects out-of-range mouse sensitivity atomically",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        },
+        {
+          "id": "REG-085",
+          "name": "save rejects wrong accessibility-setting type atomically",
+          "result": "PASS",
+          "requirement_support": [
+            "SAVE-02"
+          ],
+          "whole_requirement_acceptance": false,
+          "expected": "save rejects wrong accessibility-setting type atomically",
+          "observed": "Assertion returned true in the identified fixture suite.",
+          "reproduction": "Execute the run command; named assertion and fixture setup are in ../../game/src/systems/self_test.gd, tied to R startup source hashes.",
+          "video_timestamp": null,
+          "timestamp_note": "No case-specific video; fixture-based suite report and process log only."
+        }
+      ],
+      "limits": [
+        "Not an end-to-end golden path",
+        "Not performance or visual acceptance",
+        "No full requirement passes inferred from assertion names",
+        "Later source/asset edits require appropriate retests"
+      ]
+    },
+    {
+      "id": "P",
+      "kind": "rendered scripted mission",
+      "result": "PASS",
+      "scope": "One identified scripted no-death mission route only",
+      "artifacts": {
+        "report": "route-render-r1/capture_log.json",
+        "metadata": "route-render-r1.log.meta.json",
+        "log": "route-render-r1.log",
+        "source_patch": "route-render-r1.log.source.patch",
+        "qualification": "route-render-r1/qualification.json",
+        "video": "route-render-r1/scripted-route-r1.mp4",
+        "video_metadata": "route-render-r1/scripted-route-r1.json",
+        "timestamps": "route-render-r1/frames/frames.jsonl",
+        "gpu": "route-render-r1-gpu.json"
+      },
+      "identity": {
+        "base_checkpoint": "9937fc99a45c845b6c7a24d1a55b1f1fa3b3af04",
+        "identity_rule": "Base checkpoint PLUS startup per-file source/asset hashes and saved source patch; base HEAD alone is insufficient.",
+        "source_hashes": {
+          "game/src/main.gd": "edf64a83568a93436a83d6802fb19b8dc0f5a10daede8efe0cd5ef1d78c6fdaa",
+          "game/src/ui/hud.gd": "829849515505bfc8886edeac3183cd2642dc57778252fed1ea6151691e8da28b",
+          "game/src/core/audio.gd": "aa6d7a41a460e36b914ae3d53b8927401a35660970628584b87678296f3d9a61",
+          "game/src/core/game_state.gd": "d16e8347388607d465b6c90fa812bc1eb57c006d4ac48e3550f3018f00fd8475",
+          "game/src/core/events.gd": "1e4d2801932844b2f0b2d9a57dbb392efa483ff99e6806f79655e7b4281ed512",
+          "game/src/world/interior_detail.gd": "ff518f4f5d891370ad434290fc4180d7015857b23f9861c0fa3ef89fbd9cd6f2",
+          "game/src/world/palette.gd": "47f8cafc91d3047375d7b59c8bc9bc5b719a13150593497798545ad5cfffb77f",
+          "game/src/world/world_builder.gd": "317a46dec3f1f1532e5e5aa70a8cfda542ea7b6f0b3fa950c2ea0dd44b921887",
+          "game/src/actors/car.gd": "8d4461c9ca375e8534716440d8cb684c765f47b3939645f00357bcf6113dd490",
+          "game/src/actors/player.gd": "2046eead4d1a0e40c438bd7af9c140f03a9000773a5925ed811054b925ee745e",
+          "game/src/actors/asset_library.gd": "be51c15da326ac326a1dae58c129aed650781f01275d4f725d9a568121ee0aff",
+          "game/src/actors/npc.gd": "e485da60fa4ac5f722541ce12a562eb956053e841fccc494e15a86bbcd5d422a",
+          "game/src/actors/character_visual.gd": "2e5423b94421062fbff87bafc2ddec459da9efcefaffbf583a1067805a082d38",
+          "game/src/actors/helicopter.gd": "ec1662bbe2f5071c4800ea7f57d433660979b8782092bb6f3ab68d4f595b5021",
+          "game/src/systems/photo_capture.gd": "9abd36e84ca91f54708c6c8fb44486ede133a465734602b5e35b21ba31e0085b",
+          "game/src/systems/asset_review.gd": "855d188c2fed21f4e68071d8739a2dc4e47e22078e8aca9906ba32d3564d0f6f",
+          "game/src/systems/mission.gd": "775dae6f72eb9b15ae33cef04d6218d7f382236da31495a963016def84eed29e",
+          "game/src/systems/self_test.gd": "845d7513743d26a681d22602b9d4fd5a3f4d3ef4fd34a01dffc60650b9ffb8cf",
+          "game/src/systems/character_review.gd": "9915a9502ba9b39f52eca4badf16fe682819af0182bb2bec6a18a5fa35b225f3",
+          "game/src/systems/capture_director.gd": "73db81e8a5e2d0bce38775123298b10a5e03812668c15766c3302820f3076444",
+          "game/src/systems/delivery_point.gd": "e7d94052aa4452704e31f62df787889ab3a8ffc8df6d2dfbd80b6e82d603605e",
+          "game/src/systems/package_pickup.gd": "ce9173d1e57e87665c42f95bc45ac366b2f1f9cb796877f7c9439d4730afef05",
+          "game/src/systems/traffic_manager.gd": "c936442a9327201189987df8048286a6768b3a63841f8336e1bf174208db36d5",
+          "game/project.godot": "47799829074788f4ff55b3166a48688460b209bed5af9966e55a6cc0f6c847e8"
+        },
+        "asset_hashes": {
+          "game/assets/authored/rain_tree.glb": "42861b35d071c3ae7847e671b194544f2a854f1708ed53cae1adf3f671646cdc",
+          "game/assets/authored/hawker_pavilion.glb": "ebbc98151a1b71a87dcc4f530251e2aecf8242708f4aefe4deaa646340e34179",
+          "game/assets/authored/interior_safe_furnishings.glb": "8e07d63b4ca069d4e21585b5c689b66de48967789fec3702e16623c3a9924fb8",
+          "game/assets/authored/interior_convenience_shop.glb": "bfc9a00a3e951254ee5689fb337d8a8c2644ff2167932aba64739991d2aad814",
+          "game/assets/authored/fern.glb": "6ca383c475b2ce3ca12611523faef05d6c80e6944b30ab0b774d9aa4eac3a74b",
+          "game/assets/authored/skyline_2.glb": "2294029b2655836a586cafaba6d950da0398af04de7cd789f742a0c6defb279d",
+          "game/assets/authored/skyline_3.glb": "878ad4d86fc86e6de1c56441b5d6947b02d61ecb9f9f27d68d2f6b71406f1b71",
+          "game/assets/authored/palm.glb": "023f21350ffabc5f2293f086912c31fbb605c82fca8be84b9bd0204e5fe0b016",
+          "game/assets/authored/skyline_1.glb": "2f022d37d30eb9aacd2ae0b94257ec53bb70cb23cc113dd8f6a9878763c08f7a",
+          "game/assets/authored/interior_workshop.glb": "d344ba68a98eeb8c77e0a4931040f41a4a5447eecdf3d87e237a791653e41487",
+          "game/assets/authored/skyline_0.glb": "95fee63e84cf9678f4e54b3e8aa1ccf8691391b087f5d6cc301ddeb8e4ac2d81",
+          "game/assets/providers/van_clean.glb": "9183aff3ec40e4f960584b6096624d0f1c80909c572fb4bc8a6eedc0a742255d",
+          "game/assets/providers/pistol_clean.glb": "7acfa673b1496f6322405337b5e49238f44d50388963b6f0160599537e000004",
+          "game/assets/providers/service_clutter_clean.glb": "4566b40c3da2c88ba2a0b9dea5dc5769e6487e3560b50c1689157140865f89d3",
+          "game/assets/providers/airfield_clutter_clean.glb": "8fa1c35b1f836c9c47ff7bc7fb4ab7ebddaaffc13f257e5ec7b20e95171e12aa",
+          "game/assets/providers/hdb_slab_clean.glb": "2dbdd82b0d97ef2b150ce75a83086bbc7058acf0ec7bfce6aecb9c9876d673d4",
+          "game/assets/providers/smg_clean.glb": "a5c8c7c03b3f3328c1ec9d838a45aa6545f1acfc4df9b11715853beafd6def39",
+          "game/assets/providers/shophouse_clean.glb": "24f278f57303c70bce256da2220c37ba3233565e1adab7c8e29afdfdcb3b5e53",
+          "game/assets/providers/civilian_rigged.glb": "ece93fcf6bc7e37ced947d74b4e392df25084c83c2209fe5ae974847dde4c444",
+          "game/assets/providers/hawker_counter_clean.glb": "19d050c87e10e326d9bcc1b3f6bf04cc3b51e34ea2448aabe2e5cc2e864679fd",
+          "game/assets/providers/player_clean.glb": "9e4a8c61796a715b336b8cc8747b2563d4f73c312eff28825af647d88fa6fb5d",
+          "game/assets/providers/street_lamp_clean.glb": "f1f7f9a6ba495eec188aada828e9167a8f48b1c32837dcfe5fea5f16075692a3",
+          "game/assets/providers/officer_clean.glb": "354607e2e9474fe58d203b850204fe150247801a98efcc2e3e409e184e69b8bc",
+          "game/assets/providers/planter_clean.glb": "cdbb9886073c6ba21f2c96a083bdfd97e52293610b3fd387bbc455a67dca1b50",
+          "game/assets/providers/hawker_counter_refined.glb": "ca3063e96c28d3e7350b3beee098679851c799fe3cb136f19c789bb42ee6a2a6",
+          "game/assets/providers/helicopter_clean.glb": "7b3c3143bbae61d35d5928852b72d8cfe38825e62e7be92f7e09cc5db062df55",
+          "game/assets/providers/food_trolley_clean.glb": "242f7c5af79be5c7aba112ae855e4f46be6eb7129ff91abd9bc4b3793f8d0ff4",
+          "game/assets/providers/player_rigged.glb": "bfcd5d74c867c0fb62756e7145ef7dcb582f18643f5f25f48e85a6edcfe4602f",
+          "game/assets/providers/pistol_held.glb": "d710ddf885e5aff265d0c0093dabe7a485884496ea1ecb6f929f3d83b7ebea8f",
+          "game/assets/providers/hawker_table_clean.glb": "b3600a3601a7fad3d3df94175e0c1060cb4346ced4a962ed3037983bce3bfc9b",
+          "game/assets/providers/hawker_table_refined.glb": "a83a2fdd84840b41183415a959c298ec6473ca06592ead1da115c66160b197e9",
+          "game/assets/providers/sedan_clean.glb": "a1d663aaa5c50827f86f4f183e1a387c9cf3e053cbe1abdcf30924b2ca9a7a88",
+          "game/assets/providers/coupe_clean.glb": "0560279f049c313d251ee681c8b436af40411f27cfdeddac5765ed179625509f",
+          "game/assets/providers/ac_unit_clean.glb": "bee0a57c2de96a5719fdecae0e69fffa7baefe66c5069e0e883c4f90a8e4a6a2",
+          "game/assets/providers/smg_held.glb": "5d345fbf85ffd7f86067c0c1eac014eb21f5c3c67b0c10ae1e6de20db5d45899",
+          "game/assets/providers/officer_rigged.glb": "e545c1cd4a91b49c17d0dea69e37965fad036b265914bd8d29b6490fefd12b33"
+        },
+        "started_utc": "2026-10-21T12:44:17.886442+00:00",
+        "finished_utc": "2026-10-21T12:48:01.271889+00:00",
+        "command": [
+          "godot",
+          "--path",
+          "game",
+          "--resolution",
+          "1280x720",
+          "--",
+          "--capture",
+          "--capture-dir=../docs/wave-02/route-render-r1",
+          "--record-frames=../docs/wave-02/route-render-r1/frames"
+        ]
+      },
+      "process": {
+        "pid": 1615,
+        "engine_exit_code": 0,
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_sec": 223.57,
+        "child_reaped": true,
+        "all_error_lines": null,
+        "fatal_errors": [],
+        "classified_nonfatal_errors": null,
+        "sampling_errors": null,
+        "resource_samples": null,
+        "rss_samples_available": null
+      },
+      "fixture_repositioning": false,
+      "ordinary_player_run": false,
+      "automation": "scripted input actions, direct mouse-look yaw/pitch, fractional action strengths",
+      "requested_resolution": [
+        1280,
+        720
+      ],
+      "gameplay_elapsed_seconds": 217.919123,
+      "deaths": 0,
+      "combat_kills": 3,
+      "gates": [
+        {
+          "name": "market reached on foot",
+          "result": "PASS",
+          "seconds_since_route_setup": 81.49,
+          "state": {
+            "car_distance_m": 0.0,
+            "deaths": 0,
+            "flight_distance_m": 0.0,
+            "heading": -2.75551152229309,
+            "health": 100.0,
+            "mode": 0,
+            "position": [
+              -116.474548339844,
+              0.380839109420776,
+              -91.6023406982422
+            ],
+            "seconds": 81.49,
+            "stage": 0,
+            "vehicle_health": null,
+            "wanted": 0
+          }
+        },
+        {
+          "name": "combat damaged and killed a mission combatant",
+          "result": "PASS",
+          "seconds_since_route_setup": 88.57,
+          "state": {
+            "car_distance_m": 0.0,
+            "deaths": 0,
+            "flight_distance_m": 0.0,
+            "heading": -2.70879650115967,
+            "health": 83.5,
+            "mode": 0,
+            "position": [
+              -119.600791931152,
+              0.378819823265076,
+              -88.254020690918
+            ],
+            "seconds": 88.57,
+            "stage": 0,
+            "vehicle_health": null,
+            "wanted": 1
+          }
+        },
+        {
+          "name": "package collected through interaction",
+          "result": "PASS",
+          "seconds_since_route_setup": 89.68,
+          "state": {
+            "car_distance_m": 0.0,
+            "deaths": 0,
+            "flight_distance_m": 0.0,
+            "heading": -1.62605762481689,
+            "health": 83.5,
+            "mode": 0,
+            "position": [
+              -117.114845275879,
+              0.380833953619003,
+              -88.1167221069336
+            ],
+            "seconds": 89.68,
+            "stage": 2,
+            "vehicle_health": null,
+            "wanted": 1
+          }
+        },
+        {
+          "name": "usable parked car found",
+          "result": "PASS",
+          "seconds_since_route_setup": 89.87,
+          "state": {
+            "car_distance_m": 0.0,
+            "deaths": 0,
+            "flight_distance_m": 0.0,
+            "heading": -1.62605762481689,
+            "health": 83.5,
+            "mode": 0,
+            "position": [
+              -117.114845275879,
+              0.380833953619003,
+              -88.1167221069336
+            ],
+            "seconds": 89.87,
+            "stage": 2,
+            "vehicle_health": null,
+            "wanted": 1
+          }
+        },
+        {
+          "name": "car entered",
+          "result": "PASS",
+          "seconds_since_route_setup": 98.9,
+          "state": {
+            "car_distance_m": 0.0,
+            "deaths": 0,
+            "flight_distance_m": 0.0,
+            "heading": 0.0,
+            "health": 100.0,
+            "mode": 1,
+            "position": [
+              -152.0,
+              0.160126969218254,
+              -40.0
+            ],
+            "seconds": 98.9,
+            "stage": 3,
+            "vehicle_health": 100.0,
+            "wanted": 2
+          }
+        },
+        {
+          "name": "uninterrupted driving leg reached aviation compound",
+          "result": "PASS",
+          "seconds_since_route_setup": 141.35,
+          "state": {
+            "car_distance_m": 639.150880293921,
+            "deaths": 0,
+            "flight_distance_m": 0.0,
+            "heading": -1.56673324108124,
+            "health": 100.0,
+            "mode": 1,
+            "position": [
+              248.004302978516,
+              0.0609436668455601,
+              159.785751342773
+            ],
+            "seconds": 141.35,
+            "stage": 4,
+            "vehicle_health": 93.0337066650391,
+            "wanted": 0
+          }
+        },
+        {
+          "name": "car exit restored walking",
+          "result": "PASS",
+          "seconds_since_route_setup": 142.7,
+          "state": {
+            "car_distance_m": 639.150880293921,
+            "deaths": 0,
+            "flight_distance_m": 0.0,
+            "heading": 2.51372694969177,
+            "health": 100.0,
+            "mode": 0,
+            "position": [
+              257.103393554688,
+              0.0348515808582306,
+              161.648742675781
+            ],
+            "seconds": 142.7,
+            "stage": 4,
+            "vehicle_health": null,
+            "wanted": 0
+          }
+        },
+        {
+          "name": "helicopter remains usable",
+          "result": "PASS",
+          "seconds_since_route_setup": 142.87,
+          "state": {
+            "car_distance_m": 639.150880293921,
+            "deaths": 0,
+            "flight_distance_m": 0.0,
+            "heading": 2.51372694969177,
+            "health": 100.0,
+            "mode": 0,
+            "position": [
+              257.103393554688,
+              0.0348515808582306,
+              161.648742675781
+            ],
+            "seconds": 142.87,
+            "stage": 4,
+            "vehicle_health": null,
+            "wanted": 0
+          }
+        },
+        {
+          "name": "helicopter boarded",
+          "result": "PASS",
+          "seconds_since_route_setup": 153.66,
+          "state": {
+            "car_distance_m": 639.150880293921,
+            "deaths": 0,
+            "flight_distance_m": 0.0,
+            "heading": 0.0,
+            "health": 100.0,
+            "mode": 2,
+            "position": [
+              270.0,
+              -0.139882773160934,
+              104.0
+            ],
+            "seconds": 153.66,
+            "stage": 5,
+            "vehicle_health": 100.0,
+            "wanted": 0
+          }
+        },
+        {
+          "name": "flight reached waterfront pad airspace",
+          "result": "PASS",
+          "seconds_since_route_setup": 183.41,
+          "state": {
+            "car_distance_m": 639.150880293921,
+            "deaths": 0,
+            "flight_distance_m": 612.764578837901,
+            "heading": 0.661121070384979,
+            "health": 100.0,
+            "mode": 2,
+            "position": [
+              0.967007160186768,
+              109.209739685059,
+              -328.79541015625
+            ],
+            "seconds": 183.41,
+            "stage": 5,
+            "vehicle_health": 100.0,
+            "wanted": 0
+          }
+        },
+        {
+          "name": "helicopter landed intact on destination pad",
+          "result": "PASS",
+          "seconds_since_route_setup": 203.25,
+          "state": {
+            "car_distance_m": 639.150880293921,
+            "deaths": 0,
+            "flight_distance_m": 722.181375972927,
+            "heading": 0.743854463100433,
+            "health": 100.0,
+            "mode": 2,
+            "position": [
+              0.401198327541351,
+              0.000189058482646942,
+              -329.576293945312
+            ],
+            "seconds": 203.25,
+            "stage": 6,
+            "vehicle_health": 100.0,
+            "wanted": 0
+          }
+        },
+        {
+          "name": "landing exit restored walking",
+          "result": "PASS",
+          "seconds_since_route_setup": 203.58,
+          "state": {
+            "car_distance_m": 639.150880293921,
+            "deaths": 0,
+            "flight_distance_m": 722.181375972927,
+            "heading": -0.221494808793068,
+            "health": 100.0,
+            "mode": 0,
+            "position": [
+              2.46161603927612,
+              0.274879693984985,
+              -331.472259521484
+            ],
+            "seconds": 203.58,
+            "stage": 7,
+            "vehicle_health": null,
+            "wanted": 0
+          }
+        },
+        {
+          "name": "mission completed through delivery interaction",
+          "result": "PASS",
+          "seconds_since_route_setup": 217.77,
+          "state": {
+            "car_distance_m": 639.150880293921,
+            "deaths": 0,
+            "flight_distance_m": 722.181375972927,
+            "heading": -1.67103135585785,
+            "health": 100.0,
+            "mode": 0,
+            "position": [
+              93.5511703491211,
+              0.03548464179039,
+              -322.246276855469
+            ],
+            "seconds": 217.77,
+            "stage": 8,
+            "vehicle_health": null,
+            "wanted": 0
+          }
+        }
+      ],
+      "requirement_support": [
+        "MISSION-01",
+        "MISSION-02",
+        "CAR-01",
+        "AIR-01",
+        "AIR-02",
+        "AIR-04",
+        "COMBAT-03"
+      ],
+      "whole_requirement_acceptance": false,
+      "visual_verdict": "NOT TESTED",
+      "performance_acceptance_valid": false,
+      "limits": [
+        "Direct yaw/pitch and fractional input automation, not human OS input",
+        "Wanted already zero before car exit; active cross-mode pursuit unproved",
+        "Silent sampled viewport sequence starts8.256928s and ends217.719363s; not a full-launch recording",
+        "Shared GPU capture slot, recording overhead and initial headless overlap",
+        "Older than current source and aircraft/world changes"
+      ]
+    },
+    {
+      "id": "S",
+      "kind": "first intended1800-second mixed workload",
+      "result": "FAIL",
+      "scope": "Bounded early harness abort; no30-minute success",
+      "artifacts": {
+        "report": "soak-1800-r1/capture_log.json",
+        "metadata": "soak-1800-r1-process.log.meta.json",
+        "log": "soak-1800-r1/engine.log",
+        "process_log": "soak-1800-r1-process.log",
+        "source_patch": "soak-1800-r1-process.log.source.patch",
+        "resources": "soak-1800-r1-process.log.resources.jsonl",
+        "gpu_attempt": "soak-1800-r1-gpu.json",
+        "gpu_run": "soak-1800-r1-gpu-capture.json"
+      },
+      "identity": {
+        "base_checkpoint": "03d9b8700bab986ed191a0bcd39ee8a13cde7ac0",
+        "identity_rule": "Base checkpoint PLUS startup per-file source/asset hashes and saved source patch; base HEAD alone is insufficient.",
+        "source_hashes": {
+          "game/src/main.gd": "a5fb46caf05f8926fd00fef286ac1e5aadc79e8a1366a8d6f3e05ecee7e0ff38",
+          "game/src/ui/hud.gd": "93623d1764dcaaa5979215b05ab3b475c1c85e2bd8c6f0addfd05185351ac5b7",
+          "game/src/core/audio.gd": "aa6d7a41a460e36b914ae3d53b8927401a35660970628584b87678296f3d9a61",
+          "game/src/core/game_state.gd": "49ee957b47221ab89a2fb27c51af0fe5a38171337f857c3c90632adf03e8c357",
+          "game/src/core/events.gd": "1cfd38d25f90c828be4f378b6e13a549fa207071fd56c2b411fa80bee2c825b4",
+          "game/src/world/interior_detail.gd": "ff518f4f5d891370ad434290fc4180d7015857b23f9861c0fa3ef89fbd9cd6f2",
+          "game/src/world/palette.gd": "47f8cafc91d3047375d7b59c8bc9bc5b719a13150593497798545ad5cfffb77f",
+          "game/src/world/world_builder.gd": "01c07227e86fb8ccba38c9ef4bbd887e12fd5740e13da9ebc5115ea29cd10792",
+          "game/src/actors/car.gd": "43103c2f776bdfd04c53b68c1211d9b6523b2f33e5fb1f3302401aa131d1e264",
+          "game/src/actors/player.gd": "a82cd2de3d706fdcc2bb221eba6f317310491221eb4ffabb69af7a858db76dd8",
+          "game/src/actors/asset_library.gd": "be51c15da326ac326a1dae58c129aed650781f01275d4f725d9a568121ee0aff",
+          "game/src/actors/npc.gd": "89a120a66f7a0bb6713e150b17a9e6d61db58466e8982ca619d45a2df1d69899",
+          "game/src/actors/character_visual.gd": "2e5423b94421062fbff87bafc2ddec459da9efcefaffbf583a1067805a082d38",
+          "game/src/actors/helicopter.gd": "170b2f57b2012502e83f323192414dbc6875cccb8441a0911775f29214dc442e",
+          "game/src/systems/photo_capture.gd": "9abd36e84ca91f54708c6c8fb44486ede133a465734602b5e35b21ba31e0085b",
+          "game/src/systems/asset_review.gd": "855d188c2fed21f4e68071d8739a2dc4e47e22078e8aca9906ba32d3564d0f6f",
+          "game/src/systems/mission.gd": "775dae6f72eb9b15ae33cef04d6218d7f382236da31495a963016def84eed29e",
+          "game/src/systems/ui_review.gd": "2ae42ba58e714be08743d037750668453a69e0ee4b0d35a292d3b7c7e9ebc72c",
+          "game/src/systems/self_test.gd": "85bac9ee245c22f527e9c20443609e72ba41bb062e254b70040d3bcae733ac52",
+          "game/src/systems/character_review.gd": "9915a9502ba9b39f52eca4badf16fe682819af0182bb2bec6a18a5fa35b225f3",
+          "game/src/systems/capture_director.gd": "f9ecca2ff99624dfe290018c5ca1fb88bee7d5f26fd95d2c8d329b687e9affb8",
+          "game/src/systems/delivery_point.gd": "4b508f5150d6eb006fb5a5d20875b1f4f7dc0f667df4d3c2041d7d570a97e8ff",
+          "game/src/systems/package_pickup.gd": "c57ec0465a809f89619037fcf36be949e8e4354f2c15a1b5f191e9c4ea0178f5",
+          "game/src/systems/traffic_manager.gd": "aaa5c736db8cf1472b00e969598587520c0453c79c169f4c2bc79baff266b28e",
+          "game/project.godot": "47799829074788f4ff55b3166a48688460b209bed5af9966e55a6cc0f6c847e8"
+        },
+        "asset_hashes": {
+          "game/assets/authored/rain_tree.glb": "42861b35d071c3ae7847e671b194544f2a854f1708ed53cae1adf3f671646cdc",
+          "game/assets/authored/hawker_pavilion.glb": "ebbc98151a1b71a87dcc4f530251e2aecf8242708f4aefe4deaa646340e34179",
+          "game/assets/authored/boundary_railing.glb": "d7d378eea9c94914402e2ad5f9a1cf08731248cf22d62827ff2939f4cd2884d7",
+          "game/assets/authored/interior_safe_furnishings.glb": "d02d70fd6259c6ae88b30dff99f2caa5613cff66570f4f656fde6fe2fcc6f8c3",
+          "game/assets/authored/interior_convenience_shop.glb": "ca6d5c9e985c1fa2cb62690b8909a15d55435bdc596d675ae8a28599193f15e9",
+          "game/assets/authored/hawker_meal.glb": "7a7047d8d9833c0b991d115629b8049307c588a89bf269cde87b23cf6a077443",
+          "game/assets/authored/fern.glb": "6ca383c475b2ce3ca12611523faef05d6c80e6944b30ab0b774d9aa4eac3a74b",
+          "game/assets/authored/skyline_2.glb": "2294029b2655836a586cafaba6d950da0398af04de7cd789f742a0c6defb279d",
+          "game/assets/authored/skyline_3.glb": "878ad4d86fc86e6de1c56441b5d6947b02d61ecb9f9f27d68d2f6b71406f1b71",
+          "game/assets/authored/palm.glb": "023f21350ffabc5f2293f086912c31fbb605c82fca8be84b9bd0204e5fe0b016",
+          "game/assets/authored/skyline_1.glb": "2f022d37d30eb9aacd2ae0b94257ec53bb70cb23cc113dd8f6a9878763c08f7a",
+          "game/assets/authored/interior_workshop.glb": "48a25bfbdd758b0f9bd0a9e156fff12949434299045a167468711efe5d949df7",
+          "game/assets/authored/skyline_0.glb": "95fee63e84cf9678f4e54b3e8aa1ccf8691391b087f5d6cc301ddeb8e4ac2d81",
+          "game/assets/providers/van_clean.glb": "9183aff3ec40e4f960584b6096624d0f1c80909c572fb4bc8a6eedc0a742255d",
+          "game/assets/providers/pistol_clean.glb": "7acfa673b1496f6322405337b5e49238f44d50388963b6f0160599537e000004",
+          "game/assets/providers/service_clutter_clean.glb": "4566b40c3da2c88ba2a0b9dea5dc5769e6487e3560b50c1689157140865f89d3",
+          "game/assets/providers/airfield_clutter_clean.glb": "8fa1c35b1f836c9c47ff7bc7fb4ab7ebddaaffc13f257e5ec7b20e95171e12aa",
+          "game/assets/providers/hdb_slab_clean.glb": "2dbdd82b0d97ef2b150ce75a83086bbc7058acf0ec7bfce6aecb9c9876d673d4",
+          "game/assets/providers/smg_clean.glb": "a5c8c7c03b3f3328c1ec9d838a45aa6545f1acfc4df9b11715853beafd6def39",
+          "game/assets/providers/shophouse_clean.glb": "24f278f57303c70bce256da2220c37ba3233565e1adab7c8e29afdfdcb3b5e53",
+          "game/assets/providers/civilian_rigged.glb": "ece93fcf6bc7e37ced947d74b4e392df25084c83c2209fe5ae974847dde4c444",
+          "game/assets/providers/hawker_counter_clean.glb": "19d050c87e10e326d9bcc1b3f6bf04cc3b51e34ea2448aabe2e5cc2e864679fd",
+          "game/assets/providers/player_clean.glb": "9e4a8c61796a715b336b8cc8747b2563d4f73c312eff28825af647d88fa6fb5d",
+          "game/assets/providers/street_lamp_clean.glb": "f1f7f9a6ba495eec188aada828e9167a8f48b1c32837dcfe5fea5f16075692a3",
+          "game/assets/providers/officer_clean.glb": "354607e2e9474fe58d203b850204fe150247801a98efcc2e3e409e184e69b8bc",
+          "game/assets/providers/planter_clean.glb": "cdbb9886073c6ba21f2c96a083bdfd97e52293610b3fd387bbc455a67dca1b50",
+          "game/assets/providers/hawker_counter_refined.glb": "ca3063e96c28d3e7350b3beee098679851c799fe3cb136f19c789bb42ee6a2a6",
+          "game/assets/providers/helicopter_clean.glb": "7b3c3143bbae61d35d5928852b72d8cfe38825e62e7be92f7e09cc5db062df55",
+          "game/assets/providers/helicopter_refined.glb": "bd149a128315833f988f98ded1e8a7710c0f5b31e0b52b4afcf392cf79911380",
+          "game/assets/providers/food_trolley_clean.glb": "242f7c5af79be5c7aba112ae855e4f46be6eb7129ff91abd9bc4b3793f8d0ff4",
+          "game/assets/providers/player_rigged.glb": "bfcd5d74c867c0fb62756e7145ef7dcb582f18643f5f25f48e85a6edcfe4602f",
+          "game/assets/providers/pistol_held.glb": "d710ddf885e5aff265d0c0093dabe7a485884496ea1ecb6f929f3d83b7ebea8f",
+          "game/assets/providers/hawker_table_clean.glb": "b3600a3601a7fad3d3df94175e0c1060cb4346ced4a962ed3037983bce3bfc9b",
+          "game/assets/providers/hawker_table_refined.glb": "a83a2fdd84840b41183415a959c298ec6473ca06592ead1da115c66160b197e9",
+          "game/assets/providers/sedan_clean.glb": "a1d663aaa5c50827f86f4f183e1a387c9cf3e053cbe1abdcf30924b2ca9a7a88",
+          "game/assets/providers/coupe_clean.glb": "0560279f049c313d251ee681c8b436af40411f27cfdeddac5765ed179625509f",
+          "game/assets/providers/ac_unit_clean.glb": "bee0a57c2de96a5719fdecae0e69fffa7baefe66c5069e0e883c4f90a8e4a6a2",
+          "game/assets/providers/smg_held.glb": "5d345fbf85ffd7f86067c0c1eac014eb21f5c3c67b0c10ae1e6de20db5d45899",
+          "game/assets/providers/officer_rigged.glb": "e545c1cd4a91b49c17d0dea69e37965fad036b265914bd8d29b6490fefd12b33"
+        },
+        "started_utc": "2026-10-21T13:50:11.252107+00:00",
+        "finished_utc": "2026-10-21T13:50:47.602571+00:00",
+        "command": [
+          "godot",
+          "--log-file",
+          "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-02-astra/docs/wave-02/soak-1800-r1/engine.log",
+          "--path",
+          "game",
+          "--resolution",
+          "1920x1080",
+          "--",
+          "--capture",
+          "--soak",
+          "--capture-dir=../docs/wave-02/soak-1800-r1",
+          "--save-path=/tmp/astra-soak-1800-r1-save.json"
+        ]
+      },
+      "process": {
+        "pid": 11709,
+        "engine_exit_code": 2,
+        "exit_code": 2,
+        "timeout": false,
+        "elapsed_sec": 36.54,
+        "child_reaped": true,
+        "all_error_lines": [],
+        "fatal_errors": [],
+        "classified_nonfatal_errors": [],
+        "sampling_errors": [],
+        "resource_samples": 8,
+        "rss_samples_available": true
+      },
+      "requested_resolution": [
+        1920,
+        1080
+      ],
+      "observed_backing_resolution": [
+        2880,
+        1620
+      ],
+      "gameplay_elapsed_seconds": 30.001585,
+      "required_seconds": 1800,
+      "completed_missions": 0,
+      "required_missions": 3,
+      "failure_reason": "Soak runtime error-log gate is unavailable or contains unhandled errors.",
+      "runtime_log_scan": {
+        "checked": false,
+        "classified_nonfatal": [],
+        "fatal_errors": [],
+        "reason": "Explicit --log-file is required for soak error verification."
+      },
+      "ordinary_player_run": false,
+      "performance_acceptance_valid": false,
+      "memory_leak_acceptance_valid": false,
+      "continuous_30_minute_video_claim": false,
+      "limits": [
+        "The command supplied --log-file but Godot consumed that engine argument before user-argument introspection; root diagnosed harness argument discovery, not gameplay crash",
+        "Exclusive perf lease timed out; actual capture lease was shared and contaminated=true",
+        "No successor run becomes PASS without its own terminal log/metadata/completion/liveness evidence"
+      ]
+    }
+  ],
+  "historical_headless_runs": [
+    {
+      "report": "tests/regressions-r1.json",
+      "log": "tests/regressions-r1.log",
+      "assertions": {
+        "total": 49,
+        "passed": 49,
+        "failed": 0
+      },
+      "error_lines_count": 2,
+      "aggregate_clean_result": "FAIL",
+      "qualification": "Numerical assertions are historical only; generic runtime errors were not all rejected by the older supervisor. Known CA diagnostic may be classified, but material-null/freed-lambda errors prevent clean aggregate success."
+    },
+    {
+      "report": "tests/regressions-r2.json",
+      "log": "tests/regressions-r2.log",
+      "assertions": {
+        "total": 57,
+        "passed": 57,
+        "failed": 0
+      },
+      "error_lines_count": 2,
+      "aggregate_clean_result": "FAIL",
+      "qualification": "Numerical assertions are historical only; generic runtime errors were not all rejected by the older supervisor. Known CA diagnostic may be classified, but material-null/freed-lambda errors prevent clean aggregate success."
+    },
+    {
+      "report": "tests/regressions-r3.json",
+      "log": "tests/regressions-r3.log",
+      "assertions": {
+        "total": 61,
+        "passed": 61,
+        "failed": 0
+      },
+      "error_lines_count": 2,
+      "aggregate_clean_result": "FAIL",
+      "qualification": "Numerical assertions are historical only; generic runtime errors were not all rejected by the older supervisor. Known CA diagnostic may be classified, but material-null/freed-lambda errors prevent clean aggregate success."
+    },
+    {
+      "report": "tests/regressions-r4.json",
+      "log": "tests/regressions-r4.log",
+      "assertions": {
+        "total": 68,
+        "passed": 68,
+        "failed": 0
+      },
+      "error_lines_count": 2,
+      "aggregate_clean_result": "FAIL",
+      "qualification": "Numerical assertions are historical only; generic runtime errors were not all rejected by the older supervisor. Known CA diagnostic may be classified, but material-null/freed-lambda errors prevent clean aggregate success."
+    },
+    {
+      "report": "tests/regressions-r5.json",
+      "log": "tests/regressions-r5.log",
+      "assertions": {
+        "total": 73,
+        "passed": 73,
+        "failed": 0
+      },
+      "error_lines_count": 13,
+      "aggregate_clean_result": "FAIL",
+      "qualification": "Numerical assertions are historical only; generic runtime errors were not all rejected by the older supervisor. Known CA diagnostic may be classified, but material-null/freed-lambda errors prevent clean aggregate success."
+    },
+    {
+      "report": "tests/regressions-r6.json",
+      "log": "tests/regressions-r6.log",
+      "assertions": {
+        "total": 75,
+        "passed": 75,
+        "failed": 0
+      },
+      "error_lines_count": 13,
+      "aggregate_clean_result": "FAIL",
+      "qualification": "Numerical assertions are historical only; generic runtime errors were not all rejected by the older supervisor. Known CA diagnostic may be classified, but material-null/freed-lambda errors prevent clean aggregate success."
+    },
+    {
+      "report": "tests/regressions-r7.json",
+      "log": "tests/regressions-r7.log",
+      "assertions": {
+        "total": 83,
+        "passed": 83,
+        "failed": 0
+      },
+      "error_lines_count": 13,
+      "aggregate_clean_result": "FAIL",
+      "qualification": "Numerical assertions are historical only; generic runtime errors were not all rejected by the older supervisor. Known CA diagnostic may be classified, but material-null/freed-lambda errors prevent clean aggregate success."
+    },
+    {
+      "report": "tests/regressions-r8.json",
+      "log": "tests/regressions-r8.log",
+      "assertions": {
+        "total": 85,
+        "passed": 85,
+        "failed": 0
+      },
+      "error_lines_count": 13,
+      "aggregate_clean_result": "FAIL",
+      "qualification": "Numerical assertions are historical only; generic runtime errors were not all rejected by the older supervisor. Known CA diagnostic may be classified, but material-null/freed-lambda errors prevent clean aggregate success."
+    },
+    {
+      "report": "tests/regressions-r9-headless-rejected.json",
+      "log": "tests/regressions-r9-headless-rejected.log",
+      "assertions": {
+        "total": 85,
+        "passed": 85,
+        "failed": 0
+      },
+      "error_lines_count": 13,
+      "aggregate_clean_result": "FAIL",
+      "qualification": "Numerical assertions are historical only; generic runtime errors were not all rejected by the older supervisor. Known CA diagnostic may be classified, but material-null/freed-lambda errors prevent clean aggregate success."
+    }
+  ],
+  "remaining_full_gates_not_tested": [
+    "QA-001 actual packaged launch and second-reviewer reproduction",
+    "QA-018 ordinary-player continuous path plus follow-on restart/load",
+    "Complete sound listening/mix review",
+    "Isolated calibrated performance and reviewed memory trends",
+    "Current final-package license/output clearance"
+  ],
+  "review_artifacts": {
+    "visual_latest_scored": "critic-r6.md",
+    "gameplay_latest": "critic-gameplay-r3.md",
+    "soak_source_review": "critic-soak-harness.md",
+    "rights": "../ASSET_RIGHTS.md",
+    "provenance": "provenance-review.md"
+  }
+}

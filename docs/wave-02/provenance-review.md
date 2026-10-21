@@ -1,12 +1,14 @@
 # Wave-2 provenance review
 
-Recorded UTC: 2026-10-21T12:44:12Z
+Initial visual-review snapshot UTC: 2026-10-21T12:44:12Z
+
+Final metadata-refresh snapshot UTC: 2026-10-21T14:01:29Z
 
 Scope: local evidence audit by the delegated GPT-6 Astra provenance lane. Owned files: `docs/asset-manifest.csv`, `docs/ASSET_RIGHTS.md`, and this review. No models regenerated; no engine launched; no legal pages browsed; no account action, publication, commit, or merge performed by this lane. Root remains responsible for integration and branch publication.
 
 ## Evidence coverage
 
-All eighteen pairs in `docs/wave-02/assets/*_0.png` / `*_1.png` were inspected through `view_image`: contact sheets for triage, then all 36 original 1280×720 files. The generated packaging atlas was also inspected directly. This review concerns the supplied captures of cleaned meshes, not full texture sheets, all hidden faces, or comprehensive views of the seven final derivatives. Current file hashes bind the inventory snapshot; the captures were not cryptographically bound to the GLBs at rendering time.
+All eighteen pairs in `docs/wave-02/assets/*_0.png` / `*_1.png` were inspected through `view_image`: contact sheets for triage, then all 36 original 1280×720 files. The generated packaging atlas was also inspected directly. This review concerns the supplied captures of cleaned meshes, not full texture sheets, all hidden faces, or comprehensive views of the eight final derivatives. Current file hashes bind the inventory snapshot; the captures were not cryptographically bound to the GLBs at rendering time.
 
 | Source ID | Cleaned asset | Limited observation | Evidence |
 | --- | --- | --- | --- |
@@ -35,11 +37,23 @@ Six assets have observed marks or unresolved emblem-like details; eleven have no
 
 - Authoritative source: `docs/asset-deliveries/wave-01.json`. Eighteen successful records: Customuse 8, Tripo 10. The failed Customuse counter request remains a metadata-only row; its successful output is the separate Tripo record.
 - All 18 raw staged GLBs under the sibling manager asset directory matched their authoritative SHA256 values. Source URLs and provider task/job/set IDs were preserved; source hashes were not replaced by derivative hashes.
-- All 25 current provider GLBs have individual rows and local SHA256 values: 18 cleaned files plus 7 private derivatives. Derivative parents, scripts, reports, and editable-source locations are recorded.
-- The previous CSV parsed as 35 data rows with inconsistent 9/11/12 column counts. The rebuilt CSV parses as **64 data rows with exactly 26 columns in every row**, including the header.
+- All 26 current provider GLBs have individual rows and local SHA256 values: 18 cleaned files plus 8 private derivatives. Derivative parents, scripts, reports, and editable-source locations are recorded.
+- The previous CSV parsed as 35 data rows with inconsistent 9/11/12 column counts. The rebuilt CSV parses as **82 data rows with exactly 26 columns in every row**, including the header.
 - Every provider mesh row has separate `UNVERIFIED` public-source and packaged-binary redistribution fields, unresolved current terms/account conditions, and unresolved per-job labels. Private task authorization is not recorded as legal clearance.
 - The atlas SHA256 agrees with its generation metadata. Both exporter companion PNGs were hashed separately and are byte-identical to the original atlas at this snapshot.
 - Original geometry and code retain MIT notice obligations; mixed files containing the generated atlas inherit its unresolved redistribution status. Prior concept/reference/code provenance groups remain represented; obsolete pending-generation claims are removed.
+
+## Final metadata-only refresh
+
+At 2026-10-21T14:01:29Z, the root-declared frozen source/assets were read and hashed; no engine/render process was launched and no new visual inspection was performed. The eighteen-model two-angle observations above are retained unchanged. Newer cloth/shoe runtime views remain limited evidence and do not clear the original marked player mesh or all surfaces of the rigged derivatives.
+
+- Added `helicopter_refined.glb`, its private editable Blender source, and `refine_helicopter.py`. Raw `W1-HERO-004` identity, provider ID/URL, and inherited `UNVERIFIED` source/binary rights are preserved. The refinement report's source and output hashes match actual files.
+- Added original `boundary_railing.glb` and `hawker_meal.glb`, their authoring entrypoint `build_urban_kit.py`, and individual original source entries. GLB JSON confirms both exports have no image textures. No fresh visual-clearance claim is made.
+- Replaced the broad original `.blend` grouping with 13 individual hashed original source files. Railing, meal and safe-furnishing sources contain packaging-atlas reference text from the shared setup helper; their complete saved datablock/dependency state is unreviewed, so whole-source public redistribution remains `UNVERIFIED` even though their GLB exports contain no image textures.
+- Validated **26/26 provider GLBs, 13/13 authored GLBs, 13/13 original editable sources, and 72/72 individual file hashes**. All 18 staged raw provider hashes still match delivery. Provider files and the helicopter editable source are ignored by Git. No required listed file is missing.
+- Refreshed nine changed pre-existing hashes: `world_builder.gd`, `player.gd`, `npc.gd`, `car.gd`, `helicopter.gd`, `hud.gd`, and the three interior GLBs. Foliage and all other existing individually hashed files were rechecked and unchanged.
+- The boundary manifest identifies its save helper (`build_interiors.py`); the manifest now also records the real authoring entrypoint (`build_urban_kit.py`). There is no standalone `hawker_meal` manifest; its script and editable source are present, so this is an explicitly recorded metadata limitation rather than a missing required input.
+- CSV validation: **82 data rows / 26 columns**, plus the 26-column header. The `reviewed_utc` column reflects the final metadata snapshot, not a repeat visual or legal review. No new clearance was granted.
 
 ## Reproduction limits and open gates
 

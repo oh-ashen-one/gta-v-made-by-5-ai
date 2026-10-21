@@ -1,0 +1,10 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--capture", "--soak", "--capture-dir=../docs/wave-02/soak-1800-r1", "--save-path=/tmp/astra-soak-1800-r1-save.json"]
+[capture] 1.02s Route start; seed=20261021; headless=false; scripted-input-automation=true
+[capture] 1.16s screenshot ../docs/wave-02/soak-1800-r1/01_safe_room.png
+[capture] 3.00s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0
+[capture] 21.68s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9
+[capture] 30.00s ABORT Soak runtime error-log gate is unavailable or contains unhandled errors.
+[capture] terminal success=false deaths=0 seconds=30.0

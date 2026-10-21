@@ -1,0 +1,16 @@
+diff --git a/game/src/systems/capture_director.gd b/game/src/systems/capture_director.gd
+index c7b1f95..efcfad0 100644
+--- a/game/src/systems/capture_director.gd
++++ b/game/src/systems/capture_director.gd
+@@ -208,7 +208,10 @@ func _snapshot(elapsed: float) -> Dictionary:
+ 		"wanted": Game.wanted_level, "deaths": Game.death_count - _initial_deaths,
+ 		"car_distance_m": mission.car_driven_distance, "flight_distance_m": mission.flight_distance,
+ 		"vehicle_health": actor.get("health") if actor != player else null, "heading": actor.rotation.y,
+-		"engine_monitors": _performance_snapshot()}
++		"engine_monitors": _performance_snapshot(),
++		"render_texture_pixels": [get_viewport().get_texture().get_width(), get_viewport().get_texture().get_height()],
++		"msaa_3d": ProjectSettings.get_setting("rendering/anti_aliasing/quality/msaa_3d"),
++		"taa": ProjectSettings.get_setting("rendering/anti_aliasing/quality/use_taa")}
+ 
+ func _log(message: String) -> void:
+ 	if _finished: return

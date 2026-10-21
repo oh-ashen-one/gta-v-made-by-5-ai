@@ -93,12 +93,7 @@ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager) 
 		elif arg.begins_with("--record-frames="):
 			_record_dir = arg.trim_prefix("--record-frames=")
 	DirAccess.make_dir_recursive_absolute(out_dir)
-	var engine_args := OS.get_cmdline_args()
-	for index in engine_args.size():
-		if engine_args[index] == "--log-file" and index + 1 < engine_args.size():
-			_engine_log_path = engine_args[index + 1]
-		elif engine_args[index].begins_with("--log-file="):
-			_engine_log_path = engine_args[index].trim_prefix("--log-file=")
+	_engine_log_path = _resolve_engine_log_path()
 	_initialize_monitors()
 	_initial_deaths = Game.death_count
 	_started_us = Time.get_ticks_usec()
@@ -208,7 +203,10 @@ func _snapshot(elapsed: float) -> Dictionary:
 		"wanted": Game.wanted_level, "deaths": Game.death_count - _initial_deaths,
 		"car_distance_m": mission.car_driven_distance, "flight_distance_m": mission.flight_distance,
 		"vehicle_health": actor.get("health") if actor != player else null, "heading": actor.rotation.y,
-		"engine_monitors": _performance_snapshot()}
+		"engine_monitors": _performance_snapshot(),
+		"render_texture_pixels": [get_viewport().get_texture().get_width(), get_viewport().get_texture().get_height()],
+		"msaa_3d": ProjectSettings.get_setting("rendering/anti_aliasing/quality/msaa_3d"),
+		"taa": ProjectSettings.get_setting("rendering/anti_aliasing/quality/use_taa")}
 
 func _log(message: String) -> void:
 	if _finished: return
@@ -607,11 +605,27 @@ func _soak_complete() -> bool:
 	_scan_runtime_log()
 	return _runtime_log_scan["checked"] and _runtime_log_scan["fatal_errors"].is_empty()
 
+func _resolve_engine_log_path() -> String:
+	# Godot consumes recognized --log-file arguments before exposing its
+	# command-line array. Carry an explicit QA copy after the -- separator.
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--qa-engine-log="):
+			var supplied := arg.trim_prefix("--qa-engine-log=")
+			if not supplied.is_empty(): return supplied
+	var engine_args := OS.get_cmdline_args()
+	for index in engine_args.size():
+		if engine_args[index] == "--log-file" and index + 1 < engine_args.size(): return engine_args[index + 1]
+		if engine_args[index].begins_with("--log-file="): return engine_args[index].trim_prefix("--log-file=")
+	return ""
+
 func _scan_runtime_log() -> void:
 	if _engine_log_path.is_empty() or not FileAccess.file_exists(_engine_log_path):
-		_runtime_log_scan = {"checked": false, "fatal_errors": [], "classified_nonfatal": [], "reason": "Explicit --log-file is required for soak error verification."}
+		_runtime_log_scan = {"checked": false, "fatal_errors": [], "classified_nonfatal": [], "reason": "Explicit --qa-engine-log=ABS user argument is required for soak error verification."}
 		return
 	var content := FileAccess.get_file_as_string(_engine_log_path)
+	if content.is_empty():
+		_runtime_log_scan = {"checked": false, "fatal_errors": [], "classified_nonfatal": [], "reason": "QA engine log is empty or unreadable.", "path": _engine_log_path}
+		return
 	var fatal: Array[String] = []
 	var known: Array[String] = []
 	for line in content.split("\n"):

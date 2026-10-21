@@ -1,0 +1,73 @@
+{
+	"completed_runs": 0,
+	"elapsed_seconds": 30.002741,
+	"finished": true,
+	"fixture_checks": [],
+	"free_roam_distance_m": {
+		"car": 0.0,
+		"foot": 0.0,
+		"helicopter": 0.0
+	},
+	"gates": [],
+	"latest": {
+		"car_distance_m": 0.0,
+		"deaths": 0,
+		"engine_monitors": {
+			"draw_calls": 2252.0,
+			"fps": 85.0,
+			"node_count": 17833.0,
+			"object_count": 32335.0,
+			"orphan_node_count": 0.0,
+			"render_buffer_memory_bytes": 221254882.0,
+			"render_texture_memory_bytes": 1941928704.0,
+			"render_video_memory_bytes": 2430664704.0,
+			"resource_count": 475.0,
+			"static_memory_bytes": 283616329.0,
+			"static_memory_peak_bytes": 353618010.0
+		},
+		"flight_distance_m": 0.0,
+		"heading": 0.0097303343936801,
+		"health": 100.0,
+		"mode": 0,
+		"msaa_3d": 2,
+		"phase": "mission",
+		"position": [
+			-318.993865966797,
+			0.0357556566596031,
+			-56.6018981933594
+		],
+		"render_texture_pixels": [
+			2880,
+			1620
+		],
+		"run": 1,
+		"seconds": 30.0,
+		"stage": 0,
+		"taa": true,
+		"vehicle_health": null,
+		"wanted": 0
+	},
+	"reboard_cycle_verified": false,
+	"recent_log": [
+		"1.02s Route start; seed=20261021; headless=false; scripted-input-automation=true",
+		"1.16s screenshot ../docs/wave-02/soak-1800-r1/01_safe_room.png",
+		"3.00s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0",
+		"21.68s walk end at (-317.0, 0.0, -6.0); target=(-320.0, 0.0, 0.0) distance=6.9",
+		"30.00s ABORT Soak runtime error-log gate is unavailable or contains unhandled errors."
+	],
+	"runtime_log_scan": {
+		"checked": false,
+		"classified_nonfatal": [],
+		"fatal_errors": [],
+		"reason": "Explicit --log-file is required for soak error verification."
+	},
+	"terminal_liveness": {
+		"aircraft_cycle_verified": false,
+		"current_horizontal_speed_mps": 6.79999351501465,
+		"final_observation_seconds": 0.0,
+		"foot_distance_last_60_seconds_m": 0.0,
+		"healthy_on_foot": true,
+		"reboard_cycle_verified": false,
+		"seconds_since_foot_motion": 1030.002756
+	}
+}

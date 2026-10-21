@@ -1,105 +1,78 @@
-# Next goal — wave 2 for **Astra through Codex**
+# Next goal — wave 3: DeepSeek V4.1 Flash through Devin
 
-- **Authoring model / wave:** MiniMax M3.1 Flash (wave 1, outgoing).
-- **Incoming model / wave:** Astra through Codex (wave 2).
-- **Incoming checkpoint:** the wave-1 commits pushed to **`origin/feature/wave-01-orchard-reach`** (the manager's documentation branch `codex/minimax-wave-01` is left untouched); the wave-1 source tree lives in `game/` (Godot 4.7.1).
-- **How to run:**
-  - `godot --path game` (editor/play from source), or
-  - `godot --headless --path game --export-release "macOS" build/mac/OrchardReach.zip` (packaged build; the export path is relative to the **project** folder, so `game/build/...` fails with "Target folder does not exist"), or
-  - `godot --headless --path game -- --test` (33 automated checks — 20 structural and 13 behavioural regression checks; expect `33/33 checks passed`).
-  - Provider art (18 models) is not in the git history: `bash game/tools/fetch_provider_assets.sh` re-fetches the **eight Customuse** sources automatically (SHA256-verified) and prints the **ten Tripo** studio links and checksums for a **manual browser export** — the Tripo half is not an automatic fresh-clone recovery. `blender --background --python game/tools/cleanup_provider_assets.py` rebuilds the processed game assets, and `godot --headless --editor --path game --quit` imports them. The manager also carries the ignored processed provider folder into this checkout, so the assets are present here even without a re-fetch.
-- **Shared brief and fixed constraints:** END_GOAL.md is the destination and outranks this goal. The engine is **locked**: Godot 4.7.1 stable, Forward+, native macOS export — do not migrate engines. No local AI inference. No secrets in the repository. No `main` merge without the owner. Tripo (browser) for small/bulk/secondary props, Customuse (MCP) for hero assets, **Meshy excluded**; existing Tripo credits are authorised, new purchases are not.
-- **Visual bar:** GTA VI in Singapore, highest attainable fidelity. The primary art direction is the generated concept board in `docs/concepts/` (on-foot, driving, helicopter). `docs/visual-references.json` is secondary location/fidelity evidence only. A concept board is **not** evidence that our build matches it — runtime pixels are.
+This is the outgoing Astra working draft, not a terminal handoff yet. Read the final rolling HANDOFF.md and exact branch HEAD before starting. The manager owns the timed session switch.
 
-## What I want you to improve, in priority order
+## Inherit the whole candidate
 
-1. **Finish the art replacement — the biggest gap, now half closed.**
-   - Evidence: wave 1 started from procedural geometry everywhere; `docs/REQUIREMENTS_LEDGER.md` marks ART-02, ART-05, ART-06 and ART-08 as **Fail/Partial**. During the wave the manager executed **all 18 requested generations** (8 Customuse hero models, 10 Tripo props) and the builder cleaned them in Blender (`game/tools/cleanup_provider_assets.py`: real-world scale, ground at Y=0, loose-part separation, wheel/rotor naming, triangle budgets) and integrated the sedan, coupe, van, helicopter, shophouse module, HDB slab, hawker counter, hawker table, street lamps, air-con units, planters, service clutter, airfield crates, both weapons, the character and the officer.
-   - **Still open:** (a) the generated character and officer are **unrigged** — no skin, no animation; they are used only as static figures (hawker vendors, airfield ground staff). Rigging them (automatic weights in Blender, procedural walk/aim in `Skeleton3D`) and swapping them in as the **player avatar** is the single highest-value remaining art task, because the avatar is on screen constantly. (b) The delivered Tripo table needed decimation from 1.87 M to 4 000 triangles, so **every raw generator export must be budgeted before it enters the runtime** — the build now carries 18 processed assets, and the budgets are listed in `docs/asset-manifest.csv`. (c) The right-hand-drive interior, cabin detail and material response of the generated vehicles are good, but the district around them is still procedural; the art needs to be pushed outward from the hero assets. (d) Customuse's balance is down to 53 — do **not** submit further Customuse jobs without new owner authorisation (Tripo is at 75 450).
-   - Observable success: the player avatar is the generated character, rigged and animated; the remaining props are integrated at their triangle budgets; the district no longer reads as an untextured greybox.
+- Engine: **Godot 4.7.1.stable.official.a13da4feb**, Forward+, GDScript, native universal macOS. Do not migrate engines.
+- Branch: `feature/wave-02-astra`. Incoming MiniMax source was `4df93fa631d9484fb29e556a97df61a259620248`. Outgoing exact source checkpoint and private archive will be recorded in HANDOFF.md after terminal validation.
+- Primary visual target: inspect the actual three PNGs in `docs/concepts/`. The fixed destination remains END_GOAL.md. The current verdict is **playable experimental build with unmet requirements**, far below GTA VI-level realistic fidelity.
+- Read AGENTS/shared brain, END_GOAL.md, HANDOFF.md, docs/EVIDENCE.md, docs/REQUIREMENTS_LEDGER.md, and the independent final visual review. The predecessor goal is archived in `waves/02/INCOMING_GOAL.md`.
+- Use the actual available model/tools honestly. Wave 2 used fresh-context Astra critics; no different-model or human acceptance was claimed. The next session must verify its own DeepSeek/Devin access.
 
-2. **Raise the visual fidelity of the district itself.**
-   - Evidence: capture packet `game/captures/` shows flat, low-detail surfaces; materials are noise-textured but unmapped; no detail props, decals, signage graphics or surface variation per unit.
-   - Suggested approach: signage text and shop graphics as real textures (original wording only), roof-tile and shutter repetition, balcony and AC-unit variation, kerb and drain detailing, wet/dry surface variation, real foliage cards inside dimensional canopies, improved sun/exposure pass.
-   - Observable success: an independent reviewer comparing our street capture with `docs/concepts/singapore-on-foot.png` can no longer call it a placeholder.
+## Priorities, reassessed from actual evidence
 
-3. **Close the gameplay gaps that the wave-1 ledger marks as Fail/Partial.**
-   - `AUDIO-01` — the procedural sound bank exists (gunshots, footsteps, impacts, pickup, engine loop, rotor loop, police siren) but it is a **non-spatial master-bus pool**: no attenuation, no per-actor mix, no street ambience and no distinct hawker interior. Spatialisation is the remaining work.
-   - `TRAFFIC-02` — traffic now slows for a blocker ahead, but there is no queueing, no reroute around a blocked lane and no signal phase; a junction can still deadlock.
-   - `LAW-04` — the pursuit now has SPOTTED and SEARCHING phases with responders sweeping the last known position and a HUD countdown, but there is **no concealment mechanic** and no rediscovery rule yet.
-   - `MISSION-04` — mission restart resets the stage, package and hostiles, but a full clean replay (complete → fail → replay without leftover actors) is not yet exercised.
-   - `MISSION-03` — two checkpoints (package and the airfield) and an explicit restart key now exist; the abandon path and the failure-recovery wording still need work.
-   - **The police response kills the player during the car leg.** In the scripted playthrough the theft is survived, but the pursuit that follows kills the player before the aviation compound is reached, so the "drive to the aviation compound" step of "Harbour Relay" is never completed by the capture and is not survivable by a new player. Candidates to try: the player's node should follow the vehicle (it stays at the entry point while the car drives away, so shots and proximity checks still find the old position), the police should damage the car rather than the occupant, the responders should lose line of sight faster, and the escape needs a real mechanic (a place to hide, a jam, or a shortcut). Measure it: the capture must complete the drive leg without a respawn.
-   - Observable success: the ledger rows for AUDIO-01, TRAFFIC-02, LAW-04, QA-012 and MISSION-04 move off Fail/Partial with evidence links.
+1. **Replace the large-scale prototype appearance with coherent urban design.** The rigged hero is now integrated, so the highest-value art work has moved outward. The street and aerial captures still contain huge empty tiled lots, repeated detached building rows, uniform tower silhouettes, crude service buildings, and sparse daily activity. Complete one dense, convincingly scaled heritage-to-hawker route, then extend its quality outward. Use varied real frontage, shaded five-foot ways, service alleys, planted courtyards, fine-grained street furniture and believable background blocks. Preserve driving and pedestrian clearances. Compare both moving gameplay and matched stills against all three concepts; a flattering camera is not an art fix.
+2. **Review and repair the delivered assets in motion.** The provider player/civilian/officer have 24-bone skinning and 12 clips. Helicopter partition, axes and pivots were rebuilt from raw geometry. Cars still require genuine wheel identification and pivots: the inherited classifier named thin scraps as wheels and caused orbiting shards. Audit car cabins, driver/seat/door transitions, weapon grip/aim, seated foot contact, character deformation and marks. No new generation of the existing 18 jobs is justified.
+3. **Make the city behave as a connected place.** Basic left-hand lane graph, blocker slowdown, phased lights and bounded responders work, but pedestrians/officers follow simplified routes and can be blocked by buildings; traffic has no robust blocked-lane reroute. Add real navigation and queue/recovery behavior, then observe active pursuit across foot → car → aircraft → foot, including search, rediscovery and escape. Existing route evidence often loses wanted before leaving the car and cannot certify that requirement.
+4. **Close playable-build and ordinary-player gates.** Run the exact private packaged app, verify first launch, title/Continue/settings/pause, save/quit/relaunch and complete ordinary controls. Wave 2's CUA request for Godot was denied; no native OS human input was fabricated. Engine-injected events and scripted fractional-action routes are useful but distinct. Listen to the spatial procedural audio: current videos are silent and no listening-quality review exists. Make readable, fun controls and a comprehensible first-play mission; the ~4-minute automation is not proof of the provisional 10–15-minute new-player experience.
+5. **Profile and optimize with a fixed honest contract.** Preserve populations and visuals while measuring the required combined stress. The 30-minute workload is 720p/shared-slot evidence, not isolated 1080p acceptance. Record actual framebuffer dimensions, quality, hardware/OS, startup/warmup, concurrency and captures. Inspect all generic errors, final process exit and resource trends. Target provisional 1080p/60, p95≤25 ms and p99≤50 ms unless the owner accepts a documented calibration; do not silently lower the north star. Use LOD/instancing/culling/pooling with matching visual and population retests.
+6. **Complete clearance before public distribution.** The audit covers all18 sources and derivatives but provider source/binary redistribution remains UNVERIFIED. Visible badge/sneaker/emblem findings are per asset. Existing job prompts are not clearance. See docs/ASSET_RIGHTS.md and docs/asset-manifest.csv; private implementation can continue.
 
-4. **Turn the automated playthrough into a real evidence pipeline.**
-   - Evidence: `game/src/systems/capture_director.gd` drives the game with real input actions and writes `game/captures/*.png` + `capture_log.json`; it is a scripted playtest, not an uncut human run (QA-018 is therefore only Partial).
-   - Suggested approach: add frame-time/percentile capture during the same route, a repeated-run soak (three mission completions), and per-gate screenshot sets for QA-002 … QA-020.
-   - Observable success: `PERF-02`/`PERF-03`/`PERF-04` can be marked with measured numbers instead of "Not started".
+## Preserve these corrected systems
 
-5. **Get a genuinely independent critic onto the loop.**
-   - Evidence: wave 1's critic pass was performed by subagents of the *same* MiniMax model (this CLI's profile exposes no Opus/Fable despite the alias names). VERIFY-02 independence is therefore only Partial.
-   - Suggested approach: run the wave-2 review from the Codex chat with a genuinely different model, blind A/B on our captures versus the concept board, and record the reviewer identity honestly.
+- `Game`/`Events` authoritative state and bus, transition table and atomic validated save replacement. Invalid loads must leave current state unchanged; held weapon and settings restore with the state.
+- Frame-safe press buffering plus held-state fallback, correct native mouse-button events, automatic SMG cadence and camera/muzzle obstruction checks.
+- Shared nearest eligible interaction target and line-of-sight checks. Disabled cars and hidden/taken items must not steal prompts.
+- Occupied player position follows the controlled vehicle; passenger collision is disabled before reposition. Car/aircraft platform layers exclude the passenger, fixing the landing-exit pinning bug. Vehicles receive fire instead of the hidden occupant at a stale location.
+- Continuous real driving/flight prerequisites; death/respawn cannot bypass the car leg. Real local on-foot delivery is required. Restart clears response actors and restores mission pickup/guards/checkpoints.
+- Vehicle steering convention: facing -Z, positive yaw turns left. Car collision uses actual closing speed and a bounded post-impact drivetrain; normal kerbs have clearance. Aircraft neutral assisted hover, controlled descent, grounded exit and owner camera restoration remain tested behavior.
+- Safe room is in the housing courtyard gap, outside the provider plinth; raised hawker table roots and measured stool positions must not be reverted from old coordinates.
+- Bounded supervisors and explicit error-log path. Numerical assertion totals are machine-derived; a generic ERROR makes the aggregate fail even if all assertions pass. The headless dummy-renderer material-null issue remains distinct from the clean Metal suite.
 
-6. **Finish the asset clearance before anything is published.**
-   - Evidence: `docs/ASSET_RIGHTS.md` — the terms are fine, but only the sedan and the helicopter were rendered and inspected. The character shows a visible sneaker mark, the van and the coupe show badge artifacts, and **thirteen outputs were never rendered**. The Tripo per-job labels (any "personal use only" flag) were not checked.
-   - Suggested approach: render each remaining output (the processed GLBs are in the provider folder the manager carries over), inspect every one for marks and insignia, strip or replace the three known-marked assets, check the Tripo job labels, and record the result per asset in `docs/asset-manifest.csv` and `docs/ASSET_RIGHTS.md`.
-   - Observable success: every row of the asset-rights table has a per-asset verdict, and the "public redistribution confirmed?" column is a fact rather than a plan. Until then, keep the provider binaries out of the public repository and out of any release asset.
+## Assets and reproducibility
 
-## Preserve
+`game/assets/providers/` and provider-derived editable sources are intentionally ignored. The manager must carry the processed folder and the private `art/source/characters/`, `art/source/helicopter/`, and `art/provider-sources/` inputs, with outgoing SHA256 verification. All original 18 raw provider models remain under the sibling manager staging `relay-manager/assets`; exact jobs are in its parent. Current manifest lists18 base+8 derivative GLBs. Original authored GLBs, textures, scripts and Blender sources are in Git.
 
-- `game/src/core/game_state.gd` as the single authority for health, mode, wanted level, mission stage and save/load; `game/src/core/events.gd` as the only cross-system bus (SYSTEM-01).
-- The `Game` / `Events` autoload contract and the `ASSET_REQUESTS.json` request schema.
-- The frame-safe input path in `Player._consume_press()`: the player reacts to the **held** state of an action once per press, not to `Input.is_action_just_pressed()`. A press injected after the player's turn in a frame is otherwise lost, which silently broke the scripted playthrough. Do not go back to `is_action_just_pressed` for the polled actions (fire, reload, weapon swap, interact).
-- Nearest-target interaction: vehicles and mission interactables compete on distance, each with its own reach (`INTERACT_RANGE` 5 m, `PICKUP_RANGE` 7.5 m).
-- The vehicle yaw convention: a node that faces -Z turns **left** when its yaw **increases**. The car and the helicopter both got this sign wrong for the whole of wave 1 (pressing left steered right), which is fixed and covered by a check. Do not reintroduce `rotation.y -= turn` in the vehicle controllers.
-- Health regeneration: 9 health per second after five seconds out of fire, reset by any hit.
-- The transition table and its invariants in `docs/TRANSITION_TABLE.md`.
-- The rights position in `docs/ASSET_RIGHTS.md`: the **terms** permit use and redistribution, but the **output clearance is per asset and still incomplete** — only the sedan and the helicopter were rendered and found free of marks, the character shows a sneaker mark, the van and the coupe show badge artifacts, and thirteen outputs were never rendered. Do not publish the provider binaries until they have been rendered, inspected and the marks stripped. The eight Customuse sources re-fetch automatically with `game/tools/fetch_provider_assets.sh`; the ten Tripo exports need a **manual browser step** (the script records the links and checksums), and the manager carries the processed provider folder into this checkout.
-- The left-hand-traffic lane graph (`traffic_manager.gd`, 25 junctions, left-lane offset) and the arcade vehicle model — both work and are cheap to keep.
-- The mission "Harbour Relay" spine: safe room → hawker package → theft → drive → police → helicopter → landing → delivery, and its checkpoint semantics.
-- Existing capture packet, ledger and asset manifest formats.
-- The reference board as the *primary* art target and the concept-first comparison method.
+The old fetch helper automatically retrieves only the eight Customuse sources. The ten Tripo studio URLs require the authorized browser export route. Do not describe a fresh clone as automatically restored. Prefer the manager's verified carry-forward instead of regenerating or re-downloading.
 
-## Structural gaps the wave-1 independent review identified
+DCC scripts: `cleanup_provider_assets.py` (checkout-relative paths; OR_RAW_DIR/OR_OUT_DIR/OR_PREVIEW_DIR overrides; rendering opt-in), `rig_characters.py`, `refine_helicopter.py`, and the original build_* authoring scripts. Resolve actual filenames and read each header. CPU Blender4.5.11 was used successfully; the default5.2 sandbox launch crashed during Metal probing. Never auto-relaunch after two crashes.
 
-A same-model independent critic (no Opus/Fable access exists in the wave-1 CLI, so this is **not** a different-vendor review) probed the build with headless runtime tests and found the following. The critical and high items were fixed inside wave 1 and are now regression-tested; the structural items are the ones that need new machinery rather than a patch:
+Customuse balance53: no further paid jobs or purchases. Tripo75450: existing credits allowed only for genuinely new small/bulk/secondary needs through browser control. Major assets use Customuse MCP when authorized and available; Meshy/local inference excluded. Installing a skill does not grant spending/publication authority.
 
-| Gap | Why a patch will not fix it | Suggested direction |
-| --- | --- | --- |
-| No traffic signals, junction priority, queueing or pedestrian-crossing response (TRAFFIC-01, TRAFFIC-02) | the world *draws* signal heads but nothing drives them; cars follow a waypoint with a lane offset | build a junction object with a phase table and lane-level occupancy; make AI cars negotiate the junction instead of aiming at a point |
-| Pedestrians and officers cannot route around geometry (NPC-01, NPC-03) | they follow 20 straight kerb polylines; an officer walks straight at the player | a navigation mesh (`NavigationServer3D`) or an `AStar3D` polygon map over the district, baked at build time |
-| Pursuit model is a single heat float (LAW-01, LAW-04) | it cannot express search phase, last known position, rediscovery or spatial escape | per-responder perception with a pursuit state machine; the wave-1 search phase is a first step |
-| No spatial audio, and the shot ray starts at the camera while the muzzle flash sits on the arm (COMBAT-02, COMBAT-05, AUDIO-01) | the sound bank is a master-bus pool | `AudioStreamPlayer3D` with attenuation for footsteps, engines, rotors and gunfire; align the muzzle transform with the camera ray |
-| No frame-time capture, stress route or soak harness (PERF-02/03/04, QA-020) | the capture harness writes PNGs only | extend `capture_director.gd` to record frame times and percentiles over a fixed stress route, and run a 30-minute soak plus three mission completions |
-| No explicit transition table existed (SYSTEM-01) | it is written down now, but nothing enforces it | `docs/TRANSITION_TABLE.md` is the reference; add a headless invariant test for every row |
-| The generated character and officer are unrigged (ART-05) | a skinned mesh with no skeleton cannot animate | automatic weights in Blender, then drive the bones procedurally in `Skeleton3D` |
-| The player avatar is still the procedural figure while the generated character is used only as a static vendor/officer | the generated model has no skeleton, so it cannot be the animated avatar yet | rig the generated character, then swap the avatar for it and keep the procedural rig only as a fallback |
+## Run, test, capture and export
 
-## Known bugs / blockers
+First verify machine, task ownership, current shared rules and shared GPU coordinator. The live Studio coordinator used by wave2 is `/Users/midir/sm2-n1/_scratch/gpu`, not an obsolete cache. Preserve foreign reservations/PAUSED and the global mixed-engine cap2. The root used one owned renderer at a time through `gpu_slot.sh` and `game/tools/render_gate.py`. Resolve the GPU script through the current catalog rather than hard-code an old release path.
 
-- **Provider surfaces (resolved for wave 1, not for the CLI):** wave 1 had neither Tripo browser control nor the Customuse MCP; the manager executed all eighteen jobs instead (8 Customuse hero models, 10 Tripo props). Every request is marked `delivered` in `ASSET_REQUESTS.json` and every raw export was cleaned in Blender and integrated. Do not fabricate assets or substitute direct HTTP calls to Tripo, and do not buy further Customuse credits (balance 53).
-- **Provider assets are not committed.** Their terms are not MIT, so `game/assets/providers/` is git-ignored. A fresh clone must re-fetch them with `bash game/tools/fetch_provider_assets.sh` and re-run the Blender cleanup; `docs/asset-manifest.csv` holds the public URLs and SHA256 values. A wave that needs the assets on another machine must carry that step explicitly.
-- **Triangle budgets are enforced in Blender, not in the engine.** The Tripo table arrived at 1.87 M triangles and was reduced to 4 000; the hero vehicles and buildings were capped at 30–45 k. Keep that discipline: a raw export imported unchanged will stall the frame budget (PERF-02).
-- **No real-time physics:** vehicles and the helicopter use a hand-written kinematic arcade model rather than a physics engine. It is reliable at district speeds but has no suspension, no real collision impulse and no deformation.
-- **Traffic can deadlock** at junctions and AI cars can damage parked cars (wave 1 patched parked-car damage so it no longer disables them, but AI/AI contact still applies damage).
-- **Populated city is light:** ~34 pedestrians and 14 traffic vehicles for a 640 × 640 m district — density is far below END_GOAL WORLD-07 targets and must be profiled before raising the numbers.
-- **Interior coverage:** only the safe room, hawker hall and delivery point are modelled interiors; the shop/workshop/mission-room set required by WORLD-05 does not exist yet.
-- **Camera/settings:** the settings panel exists (F3: mouse sensitivity, invert-Y, reduced shake, HUD visibility), but there is no remapping, no colour-blind mode and no full menu shell — PLAYER-02 and UI-03 stay Partial.
-- **Missing engine cache:** a fresh clone must run one editor import (`godot --headless --editor --path game --quit`) before the class-name cache exists, otherwise `class_name` types fail to resolve.
+Use explicit writable log paths. Import first on a clean clone: `godot --headless --log-file /tmp/orchard-import.log --editor --path game --quit`. The default sandbox blocks global editor preferences; do not modify global configuration to hide that diagnostic.
 
-## Verification
+After a slot is obtained, launch `godot --log-file /tmp/orchard-player.log --path game`. Enter starts; F6 continues; WASD/arrows move or drive, Shift sprints, Space jumps/raises helicopter, Shift lowers helicopter, mouse looks, left/right mouse fires/aims, R reloads, Q swaps weapon, E interacts/boards/exits, Escape pauses, F3 settings, F5 saves, F9 restarts the mission, F1 diagnostics. Verify current input mappings instead of assuming this list is immutable.
 
-- Repeatable route: the automated playthrough (`--capture`) plus a human golden path (foot → armed encounter → theft/driving → police → helicopter → landing → on-foot conclusion).
-- Comparison conditions: same route, same camera, same time-of-day preset, same machine; capture at 1280×720 with the HUD visible for gameplay shots and HUD-hidden for beauty shots.
-- Required before/after evidence: capture sets from both checkpoints, a requirements-ledger diff, and the perf numbers from the stress route.
+Bounded Metal regression (inside the shared render lease):
 
-## Handoff
+```sh
+python3 game/tools/render_gate.py -- \
+  python3 game/tools/bounded_run.py --seconds 75 --log /tmp/orchard-regression.log -- \
+  godot --log-file /tmp/orchard-regression-engine.log --path game -- \
+  --test --test-report=/tmp/orchard-regression.json --save-path=/tmp/orchard-regression-save.json
+```
 
-- Update `docs/REQUIREMENTS_LEDGER.md`, `docs/asset-manifest.csv` (provenance for every imported asset) and `HANDOFF.md`; push the task branch; the next goal is this file, addressed to **Astra through Codex**.
-- If the wave-2 result is still short of the north star, say so plainly: the verdict is "playable experimental build with unmet requirements" until the hard gates in VERIFY-05 and the major blockers in VERIFY-06 are cleared.
+Single scripted route: add `--capture --capture-dir=ABSOLUTE_NEW_DIR --save-path=/tmp/unique-save.json`; supervisor limit735s. Optional `--record-frames=ABSOLUTE_NEW_DIR/frames` writes timestamped JPEG samples with explicit byte/time caps. Encode with `game/tools/encode_capture.py`; inspect delivered timing and last-frame coverage. Photos use `--photos --qa-session --capture-dir=ABSOLUTE_NEW_DIR` and are fixture-assisted free-camera evidence only.
 
-## Incoming model's reassessment
+Full soak: `--capture --soak --capture-dir=ABSOLUTE_NEW_DIR --qa-engine-log=ABS_ENGINE_LOG --save-path=/tmp/unique-save.json`, with the same engine `--log-file ABS_ENGINE_LOG` and outer bound1880s. The QA user argument is required because Godot consumes recognized engine log flags. The acceptance floor is always1800 monotonic seconds plus3actual no-death missions and later transport/final-liveness gates; shortening --soak-seconds can only produce a smoke failure. No continuous30-minute movie is implied. Review final capture_log.json AND supervisor meta/errors/RSS.
 
-- Accepted priorities: all five, in the order given — art first, then the Fail/Partial gameplay rows, then the evidence pipeline and an independent critic.
-- Deviations: none yet. If you reorder, log the reason and the evidence for it here.
+Export privately after source validation:
+
+```sh
+python3 game/tools/bounded_run.py --seconds 240 --log /tmp/orchard-export.log -- \
+  godot --headless --log-file /tmp/orchard-export-engine.log --path game \
+  --export-release macOS build/mac/OrchardReach-wave03.zip
+```
+
+The output path is relative to game/. Extract to a task-owned directory and run the actual `Orchard Reach.app/Contents/MacOS/Orchard Reach` through the shared slot and bounded wrapper. Export success is not launch proof. No signing/notarization/public distribution is claimed.
+
+## Outgoing evidence and open gates
+
+The final HANDOFF and docs/EVIDENCE will record the terminal candidate, soak/resource review, latest captures, package hash and exact residual regressions. Older source hashes/patches are retained per run. Keep all88 requirements and20 QA gates visible; passing a narrow assertion does not pass a whole requirement. The predecessor's33/34 mismatch and orphan processes were not inherited as success.
+
+Finish your own timebox with pushed branch, exact checkpoint, current playable private candidate, evidence, truthful rights, stopped owned processes and a successor goal for the manager's next wave. Do not merge main or publicly release a binary without explicit owner authority.

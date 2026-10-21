@@ -1,173 +1,163 @@
-# Requirements ledger — relay
+# Requirements ledger — Wave 2
 
-> Wave 2 is active on `feature/wave-02-astra`. Inherited rows below are historical and contain known overclaims/malformed entries; current verification lives in `docs/wave-02/LOOP.md` and exact test reports under `docs/wave-02/tests/` until the wave-two reconciliation. The inherited scripted DONE included death/respawn and did not prove the drive leg. GTA VI visual acceptance remains **Fail/REWORK**. Provider output redistribution remains partly **UNVERIFIED**.
+Reconciled **2026-10-21T13:57:49+00:00** by GPT-6 Astra documentation reviewer. This replaces the malformed Wave 1 summary; earlier run evidence remains in [the evidence index](EVIDENCE.md) and [Wave 1 handoff](../waves/01/HANDOFF.md).
 
-Status vocabulary follows END_GOAL §15 (VERIFY-01): `Pass`, `Fail`, `Implemented — not verified`, `Not started`, `Blocked`, `NOT TESTED`.
-Nothing here is claimed as verified unless a runtime artefact is linked. The wave-1 build is a **playable experimental slice**, not an accepted north star.
+**Current verdict: playable experimental build with unmet requirements. The north star is not accepted.** Latest scored visual review is **REWORK, 3.8/10**; public asset redistribution and actual packaged-app launch are unverified. A narrow test PASS never certifies an entire broad requirement.
 
-- **Build under test:** `game/` (Godot 4.7.1 stable, Forward+, macOS export), branch `feature/wave-01-orchard-reach` (pushed to `origin/feature/wave-01-orchard-reach`).
-- **Reference machine:** Apple M3 Ultra, 256 GB RAM, macOS 27.0.1.
-- **Automated evidence:** `godot --headless --path game -- --test` (headless checks) and the automated playthrough capture packet in `game/captures/` plus `game/captures/capture_log.json`.
+The required status vocabulary is exactly `Not started`, `In progress`, `Implemented—not verified`, `Pass`, `Fail`, `Blocked`. Test results separately use **PASS / FAIL / NOT TESTED**; visual review uses **ACCEPTABLE / REWORK / NOT TESTED**. `In progress` includes incomplete implementation or acceptance coverage; `Implemented—not verified` means implementation is reported but the stated outcome is unobserved. `Fail` identifies an observed unmet gate, not a claim that every component failed.
 
-## World
+**Ownership:** every row below is carried by **Wave 2 / GPT-6 Astra** on `feature/wave-02-astra`; the root owns integration, engine scheduling and final handoff. Unclosed rows carry to the next sequential wave. The 88 numbered END_GOAL requirements and all 20 QA gates are preserved (108 rows). The [canonical specification](../END_GOAL.md) retains complete wording, provisional values and the unnumbered system/asset matrices.
 
-| ID | Status | Evidence / gap |
-| --- | --- | --- |
-| WORLD-01 | Implemented — not verified | ~640 × 640 m authored core on a 5 × 5 road grid (`world_builder.gd`); aerial envelope not separately dimensioned |
-| WORLD-02 | Implemented — not verified | Five precincts present: shophouse street, void-deck HDB blocks, roofed hawker hall, waterfront edge, aviation compound; seen in capture packet |
-| WORLD-03 | Implemented — not verified | Frontage rhythm, arcades, void decks, hawker layout, canopy trees, kerbs, signage bands; no independent identity review yet |
-| WORLD-04 | Partial | Orthogonal 25-junction network with three connected loops; alternative routes exist; driving times not measured |
-| WORLD-05 | Partial | Safe room, hawker hall and delivery point are modelled interiors; shop/workshop/mission-room interiors are **not** built |
-| WORLD-06 | Implemented — not verified | Water to the north, background city silhouettes, helipad boundaries; flight bounds are soft |
-| WORLD-07 | Implemented — not verified | 34 pedestrians + 14 traffic vehicles spawned; busiest-view density not profiled |
+**Candidate identity:** there is no single tested final build. R is the clean 85-assertion Metal run based on `cf211e6d23bb18c4e5ffe03830a8d9d64606780c` **plus startup hashes/patch**; P is the older no-death route based on `9937fc99a45c845b6c7a24d1a55b1f1fa3b3af04` **plus startup hashes/patch**. S is the failed long-workload attempt based on `03d9b8700bab986ed191a0bcd39ee8a13cde7ac0` **plus startup hashes/patch**. Base HEAD alone does not identify a dirty-worktree candidate. Exact identities, commands, logs and bounds are linked from [EVIDENCE.md](EVIDENCE.md) and the [machine-readable test index][I]. Later edits inherit no automatic pass.
 
-## Art
+## Numbered requirements
 
-| ID | Status | Evidence / gap |
-| --- | --- | --- |
-| ART-01 | Partial | One palette module (`palette.gd`) shared by every surface; consistency plausible but not independently reviewed |
-| ART-02 Partial | Real world-space 3D geometry with collision throughout. All eighteen provider outputs (8 Customuse hero assets, 10 Tripo props) were cleaned in Blender and integrated where they fit — see `docs/asset-manifest.csv`; the character is still unrigged, and the hero assets are untextured against the concept board |
-| ART-03 | Partial | Arcades, columns, awnings, shutters, roof ridges, kerbs modelled; module count far below the 6–8 kit target |
-| ART-04 | Partial | Material separation by family (plaster, tile, concrete, glass, metal, foliage); no texture maps, so material response is flat |
-| ART-05 | Fail (partial rig) | Procedural limb swing, aim and reload poses; no skinning, no blending, no foot planting, no NPC rig variety |
-| ART-06 Partial | The generated sedan, coupe, van and delivery helicopter (with separated, spinning wheels and main/tail rotors) and the generated shophouse module are integrated; the generated figure is used for the player and the vendors. Cabin detail — glazing, seats, dash, right-hand steering wheel — comes from the generated model |
-| ART-07 | Partial | One warm late-afternoon preset with sun, sky fill, fog, glow; no contact-shadow tuning pass |
-| ART-08 | Fail | Debug-free but visibly placeholder geometry; **this is the largest known gap** |
+| ID | Requirement | Whole-requirement status | Test / source evidence | Remaining scope or bounded conclusion |
+| --- | --- | --- | --- | --- |
+| GOV-01 | Fixed destination | Pass | [END_GOAL](../END_GOAL.md); [loop][L] | The fixed north star is retained. No waived mechanics or reduced visual target are claimed by this ledger. |
+| GOV-02 | Honest experiment | Pass | [END_GOAL](../END_GOAL.md); this ledger | The four-hour Wave 2 deadline remains 15:38:01 UTC; this is an experimental candidate with unmet requirements. |
+| GOV-03 | Original fictional sandbox | In progress | [rights][A]; [mission source](../game/src/systems/mission.gd) | Original fictional mission/adult NPC intent is recorded; complete content and insignia review remains open. Do not equate generated provenance with clearance. |
+| WORLD-01 | A district, not an entire nation | In progress | [readiness][T]; [r8 views][V8] | Approximately 640 × 640 m core is inherited, versus the provisional 750 × 650 m proposal. Ground, aerial envelope and background need separate measured maps and documented calibration. |
+| WORLD-02 | Distinct connected precincts | In progress | [r6 critique][V]; [r8 views][V8] | Shophouse, housing, hawker, waterfront and aviation spaces are visible. Furnishing, useful everyday activity and complete spatial identities remain below the target. |
+| WORLD-03 | Recognition through urban form | In progress | [r6 critique][V] | Singapore ingredients are recognizable (identity 5.0/10); urban grain, planting, occupied frontage and reviewed signage still need work. Names do not certify recognition. |
+| WORLD-04 | Useful connected networks | In progress | [R]; [P] | 25 reference junctions and an actual 639.15 m drive are observed. Three useful loops, alternatives, pedestrian shortcuts, visibility and comparative travel times are not comprehensively demonstrated. |
+| WORLD-05 | Authored interiors, honest exteriors | In progress | [r8 views][V8]; [gameplay notes][G] | Safe room, shop and workshop furnishings are present; latest safe-room/collision edits postdate the full route. Finished enclosed mission space, elevated playable access and all room entrances/camera clearances remain unverified. |
+| WORLD-06 | Understandable boundaries | In progress | [r8 views][V8]; [latest source identity][RI] | Far shore and physical boundaries were added. Walking/vehicle/water/air-limit recovery across the full perimeter is not demonstrated. |
+| WORLD-07 | Living density | In progress | [R]; [r6 critique][V] | The fixture asserts 161 unique ambient actors, not 161 nearby visible people. R6 density scored 2.5/10. The 24–40 nearby pedestrian / 8–12 traffic proposal still needs view-specific profiling and spawn continuity review. |
+| ART-01 | GTA VI-level fidelity, Singapore identity | Fail | [r6 critique][V] | Latest independent scored critique is REWORK 3.8/10 against its stated AAA 8/10 bar; GTA VI-level fidelity is unmet. Later stills have no independent acceptance verdict. |
+| ART-02 | Model the world | In progress | [R]; [r8 views][V8]; [asset manifest][AM] | World-space meshes and rigged derivatives exist. A geometry-count assertion cannot certify every major object, collision, silhouette or absence of final primitive stand-ins. |
+| ART-03 | Architecture survives close inspection | Fail | [r6 critique][V] | Modeled relief exists, but blank faces, repetitive blocks, wide empty ground and incomplete spatial richness fail close-view quality. Newer changes require comparable review; six–eight coherent kits remain unverified. |
+| ART-04 | Material integrity | Fail | [r6 critique][V]; [r8 views][V8] | PBR maps improve separation, but R6 materials scored 3.0/10 with conspicuous repetition and overly uniform surfaces. No full UV/material acceptance on the latest assets. |
+| ART-05 | Characters and animations | In progress | [character captures](wave-02/character-render/); [asset manifest][AM]; [R] | Skinned player/civilian/officer derivatives and held weapons are integrated. Complete blend, foot-contact, recoil/reload/damage, entry/seating and crowd-variation motion review remains open. |
+| ART-06 | Functional vehicle assets | In progress | [asset manifest][AM]; [P]; [latest source identity][RI] | Usable cars/helicopter and separated moving parts exist; latest aircraft axes/pivots changed after P. Full cabin, right-hand-drive, door, seat and rotor visual acceptance remains unverified. |
+| ART-07 | Light, shade, and atmosphere | Fail | [r6 critique][V] | One warm preset is implemented, but lighting scored 4.0/10; weak bounce/depth and dark vegetation remain observed defects. Every interior/street exposure transition is not accepted. |
+| ART-08 | No final placeholders | Fail | [r6 critique][V]; [r8 views][V8] | Prototype-like surfaces, simplified furnishings, repetitive layout and sparse lived-in detail remain visible. No all-angle placeholder-removal acceptance exists. |
+| PLAYER-01 | Responsive third-person locomotion | In progress | [R]; [P] | Actual walking and post-vehicle recovery pass narrow tests. Full street kerb/stair/slope/jump/landing traversal and human acceleration/stopping feel remain untested. |
+| PLAYER-02 | Camera as a core system | In progress | [R]; [P]; [gameplay critic][C] | Control/camera restoration is exercised; later follow/occlusion framing changes need moving review. Narrow arcade/interior/aim occlusion and human comfort are not certified. |
+| PLAYER-03 | One authoritative player state | In progress | [R]; [transition table](TRANSITION_TABLE.md) | Car/air ownership, death recovery and camera tests pass on R. All interrupted/repeated transition states and late-event stress remain broader than this fixture suite. |
+| PLAYER-04 | Discoverable interaction | In progress | [gameplay critic][C]; [R] | Wall/disabled-target selection fixes and local package/delivery interactions are probed. Complete line-of-sight, competing-target and flicker behavior around every interactable remains unverified. |
+| PLAYER-05 | Controls usable at first launch | In progress | [gameplay critic][C]; [R]; [UI views](wave-02/ui-review/) | Engine-injected key/mouse events, pause and settings work in bounded probes. Godot computer-use access was denied; first-launch OS input and new-player usability remain NOT TESTED. |
+| COMBAT-01 | Actual playable firearms | In progress | [R]; [P]; [asset manifest][AM] | Pistol/SMG state and held meshes exist; recorded route kills three combatants. Both complete weapon lifecycles, grips, distinct feel, sound and dropped-mesh behavior are not jointly accepted. |
+| COMBAT-02 | Consistent aiming and collision | In progress | [R] | Mouse events, close-camera/muzzle-cover obstruction and damage after clearance pass. Full moving/elevated target, vehicle/door cover, reticle/impact and reload-switch matrix remains open. |
+| COMBAT-03 | NPC injury is actual game state | In progress | [P]; [R] | Actual damage/death of three mission combatants and reactive/damageable diners are observed. Full civilian injury consequences, body persistence/contact and no repeated reporting/firing need review. |
+| COMBAT-04 | Player risk and recovery | In progress | [R]; [P] | Car body/occupant damage separation, health regeneration and death-to-foot recovery pass. Safe-spawn/death-loop prevention and all collision/aircraft failure paths remain unverified. |
+| COMBAT-05 | Feedback without chaos | In progress | [R]; [gameplay notes][G] | Effects/audio implementation and rapid-fire event tests exist. Sustained-effect bounds, audible mix, dry fire, reload cancellation and death mid-reload are not fully demonstrated. |
+| NPC-01 | Purposeful ambient life | In progress | [R]; [r8 views][V8] | Walkers are spread along segments and damageable seated diners added. Believable crossing, queue, destination change, navigation and activity variety require moving review. |
+| NPC-02 | Perception and visible reactions | In progress | [P]; [gameplay notes][G] | Local gunfire/damage reactions are implemented. Complete theft/driving/police witness visibility/range and escape-route behavior are not independently demonstrated. |
+| NPC-03 | Readable combatants | In progress | [R]; [P]; [gameplay notes][G] | Combatants hit actual vehicle bodies and take damage. Pursuit/navigation remains simplified and can be blocked by buildings; full obstacle/search/disengage behavior is unverified. |
+| NPC-04 | Disruption preserves state | In progress | [R]; [gameplay notes][G] | Restart retains three guards in a focused check. Displacement, interrupted idle, repeated death outcomes, navigation recovery and protected-actor cleanup need complete scenario coverage. |
+| NPC-05 | Stable spawning and ownership | In progress | [R] | Seed and unique-actor budget are checked. Camera-turn spawning/despawning, owned-target persistence and visibly noncloned crowd quality are not accepted. |
+| CAR-01 | Small useful roster | In progress | [R]; [P]; [asset manifest][AM] | Sedan/coupe/van/response variant exist; actual steering and travel pass. Human handling, reverse/braking/tight-turn coverage and all silhouettes need acceptance. |
+| CAR-02 | Theft and ownership transitions | In progress | [R]; [P] | Input-based takeover/control and occupant-follow behavior pass; P enters a parked car and raises wanted. Readable driver removal/door/seat animation and witnessed occupied theft remain incompletely reviewed. |
+| CAR-03 | Safe exits in imperfect conditions | In progress | [R] | Blocked exits preserve seating; clearing the obstruction restores walking/camera/collision. Full moving-exit/disabled/interrupted/ten-cycle combinations remain open. |
+| CAR-04 | Physical feedback and damage | In progress | [R]; [gameplay notes][G] | Bounded contact and NPC-ray vehicle damage exist. Visible damage/disablement, pedestrian impact, varied kerbs and recovery/replacement are not comprehensively observed. |
+| TRAFFIC-01 | Left-hand street logic | In progress | [R]; [gameplay notes][G] | Left-lane targets, fifth graph row, mutually exclusive signal phases and visible lamps pass narrow assertions. Actual crossing response, queues and full-map junction behavior still need observation. |
+| TRAFFIC-02 | Disruption and recovery | In progress | [gameplay notes][G]; [P] | Blocker slowdown exists. Permanent-block rerouting/deadlock recovery, no clipping and safe distant cleanup are not proven by the drive route. |
+| TRAFFIC-03 | Continuity across modes | Implemented—not verified | [gameplay notes][G]; [P] | Persistent cars are implemented and a route changes modes. Abandoned-car revisit and camera-turn continuity have no dedicated current acceptance sequence. |
+| AIR-01 | Vehicle, not cinematic prop | In progress | [P]; [R] | Reach, board, exclusive flight control and real aircraft travel are observed. Updated asset boarding/seat presentation and complete explicit disablement behavior still need review. |
+| AIR-02 | Learnable arcade flight | In progress | [R]; [P] | Lift, neutral hover, descent and one real flight pass. New-player learnability, lateral/backward/bank controls and rotor/audio/attitude coherence are unverified. |
+| AIR-03 | The same city from above | In progress | [P]; [r8 views][V8]; [r6 critique][V] | Same district is visible from flight. All precincts, both pad approaches, roof/backside completion and latest air-view quality remain unaccepted. |
+| AIR-04 | Landing restores walking | In progress | [P]; [R] | One waterfront landing/exit/delivery and the exact 4.003 m post-exit walking fixture pass. Reboard, return and landing/exit at both zones remain required. |
+| AIR-05 | Clear failure/boundary rules | In progress | [R]; [latest source identity][RI] | Airborne exit rejection and controlled landing are tested. Hard impact, water/void, disablement and all flight-limit recovery cases remain open. |
+| LAW-01 | Legible wanted/search state | In progress | [R]; [P] | Wanted rises and unobserved heat decays. All three escalation levels, incident causes and readable search states require a dedicated observed sequence. |
+| LAW-02 | Witnesses and plausible response | In progress | [gameplay notes][G]; [rights][A] | Out-of-sight response rules exist. Witness causality, spawn visibility/delay and fictional-insignia output review remain unverified. |
+| LAW-03 | Functional pursuit | In progress | [P]; [gameplay critic][C] | Police/vehicle response exists, but direct pursuit can be blocked by buildings. P reaches wanted 0 before car exit, so it does not certify active foot/car/air pursuit continuity. |
+| LAW-04 | Fair escape | In progress | [R]; [P] | Unobserved decay and a recorded escape support the implementation. Search/rediscovery plus spatially different concealment opportunities are not fully demonstrated. |
+| LAW-05 | Bounded resources and cleanup | In progress | [gameplay notes][G]; [R] | Responder caps and restart cleanup exist. Long-session duplicate/stale-task, pursuit-car blockage and save-reload cleanup remain unverified. |
+| MISSION-01 | “Harbour Relay,” working title | In progress | [P]; [R] | One scripted no-death 217.92 s mission connects foot/combat/car/air/delivery. This does not establish the provisional 10–15 minute first-play experience, ordinary-player comprehension or full pursuit quality. |
+| MISSION-02 | Robust objective state machine | In progress | [R]; [P] | No foot bypass of driving, checkpoint prerequisites, local delivery and real landing are tested. Alternative routes, all marker/UI changes and current-candidate complete integration require retest. |
+| MISSION-03 | Recoverable mistakes | In progress | [R]; [gameplay notes][G] | Death/checkpoint and restart probes pass. Two meaningful checkpoints, abandonment, lost/destroyed required transport and all recovery paths need full evidence. |
+| MISSION-04 | Clean replay | In progress | [R]; [S] | Focused restart pickup/guard-count checks pass. Three consecutive completed missions and exhaustive clean free-roam/replay state are not proven; first long-run attempt failed early. |
+| UI-01 | Complete playable shell | In progress | [gameplay critic][C]; [UI views](wave-02/ui-review/); [R] | Title/Continue/pause/settings input is probed and malformed state rejected. Actual packaged first launch, all visible shell actions, required-asset errors and OS input remain open. |
+| UI-02 | Original readable HUD | In progress | [P]; [r8 views][V8]; [R] | HUD/objectives exist; initial marker and load refresh tested. Latest marker/camera changes need observation; navigation readability and complete speed/condition/landing guidance are not accepted. |
+| UI-03 | Basic accessibility | In progress | [gameplay critic][C]; [R] | Sensitivity/invert/shake/HUD settings persist. Scalable readable text, contrast/color-independent cues, relevant channel controls and target-resolution review remain incomplete. |
+| AUDIO-01 | Convincing soundscape | In progress | [gameplay notes][G]; [audio source](../game/src/core/audio.gd) | Spatial procedural sounds are wired. P video is silent. No independent listening review establishes surface variation, interior/waterfront acoustics, attenuation, seams or mix. |
+| AUDIO-02 | Rights and restraint | In progress | [rights][A]; [audio source](../game/src/core/audio.gd) | Existing audio is reported code-generated; no commercial music is intended. Final-package inventory, triggered lifecycle and audible quality are not verified by source originality alone. |
+| SAVE-01 | Durable explicit progress | In progress | [gameplay critic][C]; [R]; [transition table](TRANSITION_TABLE.md) | Fresh-process F6 persistence and current atomic roundtrip/settings/held-SMG restoration have narrow evidence. Packaged quit/relaunch and every documented preserved/reset field remain unverified. |
+| SAVE-02 | Recovery/compatibility | In progress | [R]; [gameplay critic][C] | Malformed field validation and failed-write preservation pass; same-directory atomic replacement tested. Power-loss durability, every incompatible version and repeated world restoration are not fully tested. |
+| SYSTEM-01 | One source of truth | In progress | [transition table](TRANSITION_TABLE.md); [R] | Authoritative mode/occupancy/state interfaces and transition table exist; focused invariants pass. Full event-contract and restart/load matrix remains open. |
+| SYSTEM-02 | Testable diagnostics | In progress | [test index][I]; [P]; [R] | Fixtures and direct-yaw/fractional-action automation are labeled. Test-specific repositioning is not ordinary reachability proof. Final packaged developer-control separation still needs audit. |
+| SYSTEM-03 | Graceful repeated actions | In progress | [R]; [S] | Rapid events, blocked transition and restoration checks pass. Long-session late-event/idempotency/identity-reuse coverage remains incomplete after failed first soak. |
+| TECH-01 | Recommend, verify, lock once | Pass | [readiness][T]; [R] | Godot 4.7.1.stable.official.a13da4feb / Forward+ / native macOS is the recorded inherited selection and executes. This decision pass does not certify packaging or performance. |
+| TECH-02 | One reproducible project | In progress | [export][X]; [run instructions](../README.md); [rights][A] | Candidate1 private universal ZIP exists but native exporter 0 / strict wrapper 2 due editor-settings write errors. It predates latest fixes; packaged launch and clean-checkout reproduction remain NOT TESTED. |
+| ASSET-01 | Owner-selected generation routes (2026-10-21) | In progress | [delivery record](asset-deliveries/wave-01.json); [rights][A] | Inherited 8 Customuse +10 Tripo outputs are recorded with jobs; no new paid generation reported in Wave 2. Route adherence/history is evidence, not finished in-engine or rights acceptance. |
+| ASSET-02 | Production pipeline, not raw downloads | In progress | [asset manifest][AM]; [rights][A]; [r8 views][V8] | Cleanup/rig/orientation/refinement scripts and private inputs exist. All significant assets still need complete scale/UV/material/collision/rig/budget/LOD and representative-lighting acceptance. |
+| ASSET-03 | Provenance before publication | In progress | [asset manifest][AM]; [rights][A]; [provenance review](wave-02/provenance-review.md) | Per-asset records replace blanket clearance. Current provider/account/job terms, source versus binary rights, fonts/plugins and exact-package inventory remain incomplete. |
+| ASSET-04 | No stolen or uncertain content | Blocked | [rights][A]; [provenance review](wave-02/provenance-review.md) | Provider assets/derivatives and generated-atlas uses retain UNVERIFIED redistribution rights; six cleaned assets have unresolved marks. Private use does not authorize a distributed build. |
+| ASSET-05 | Repository hygiene | In progress | [rights][A]; [asset manifest][AM] | Ignored provider inputs are privately carried and checksummed. Ten Tripo exports require authorized browser/staging access; fetch script is not an automatic clean-clone reproduction of all assets. |
+| PERF-01 | Actual hardware, not imaginary benchmarks | In progress | [readiness][T]; [P]; [S]; [RI] | M3 Ultra/256 GB/macOS 27.0.1 and run commands are recorded. Power mode, actual raster, quality/build identity, capture overhead and concurrent work require one complete contract; requested window size is not measured framebuffer size. |
+| PERF-02 | Provisional frame-time contract | In progress | [P]; [S] | 1080p at 60 FPS, p95 ≤25 ms, p99 ≤50 ms and no repeatable >100 ms stalls remain unaccepted proposals. W1 720p proposal is not a ratified reduction. Exclusive performance lease timed out; shared captures are not certified benchmarks. |
+| PERF-03 | Combined stress, not empty sky | In progress | [P]; [S]; [soak review][H] | Route frame traces and resource monitors exist. Capture overhead/concurrency, lack of isolated packaged stress route, warm/cold separation and unreviewed memory trends prevent full performance acceptance. |
+| PERF-04 | Stability and loading | Fail | [S]; [export][X] | First 1800 s attempt failed at 30.001585 s, zero mission completions; no 30-minute/three-completion PASS. First/warm packaged launch under 30 s, application restart and leak/stability review remain open. |
+| PERF-05 | Optimize without deception | In progress | [gameplay notes][G]; [r6 critique][V] | Bounded populations/responders and recording limits exist. Meaningful LOD/occlusion/pooling optimization plus same-route visual/population revalidation remains incomplete. |
+| VERIFY-01 | Every requirement stays visible | Pass | this file; [evidence index](EVIDENCE.md); [test index][I] | All 88 numbered requirements and 20 QA gates are retained with exact allowed statuses, bounded evidence and gaps. This is a document-completeness pass only; it is timestamped and must follow later terminal results. |
+| VERIFY-02 | Independent critics inspect artifacts | In progress | [visual critic][V]; [gameplay critic][C]; [soak review][H]; [provenance review](wave-02/provenance-review.md) | Fresh-context same-model reviewers provide separate-author inspection. No human acceptance, different-model claim, whole-candidate runnable independent test or complete moving-footage/audio review exists. |
+| VERIFY-03 | Evidence packet | In progress | [evidence index](EVIDENCE.md); [test index][I] | Hashes/patches, logs, stills and sampled continuous route video exist. Current packaged artifact, full ordinary-player path, free-roam/negative footage and final independent evidence packet remain incomplete. |
+| VERIFY-04 | Test record schema | In progress | [test index][I]; [R]; [P]; [S] | Test index maps exact cases and source identities. Many broad gates have no executed procedure/video timestamp; fixture results, process status and visual verdict are separate. |
+| VERIFY-05 | Hard blockers | Fail | [rights][A]; [export][X]; [S] | Unresolved included-asset redistribution, untested packaged launch and incomplete long-run/candidate validation block acceptance. No earlier no-blockers claim survives this audit. |
+| VERIFY-06 | Major quality blockers | Fail | [r6 critique][V] | Major fidelity/density/material/cohesion defects remain. Soundscape quality and the unratified performance contract are also unaccepted; mechanics passes cannot average these away. |
+| VERIFY-07 | Retest, not rhetorical closure | In progress | [R]; [gameplay critic][C]; [soak review][H] | Several critic findings have narrow retests, including held-SMG restoration. Later candidate changes and remaining visual/runtime issues need new observed closure; author fixes alone do not close criticism. |
+| VERIFY-08 | Final verdict | In progress | [evidence index](EVIDENCE.md); [handoff](../HANDOFF.md) | Current provisional verdict: playable experimental build with unmet requirements. Final relay verdict belongs to its specified final wave; north star accepted is not justified. |
+| RELAY-01 | Goals select work; they do not replace the north star | Pass | [END_GOAL](../END_GOAL.md); [loop][L] | Wave goals retain the north star; one shared branch has explicit file ownership. No departmental waiver or unrelated rewrite is claimed. |
+| RELAY-02 | Inherit and preserve the whole game | In progress | [loop][L]; [R]; [P] | Inherited Godot project and connected mechanics are preserved with evidence. Current-source/full-build revalidation remains necessary after later changes. |
+| RELAY-03 | Evidence travels | In progress | [handoff](../HANDOFF.md); [evidence index](EVIDENCE.md); [rights][A] | Source checkpoints and evidence are present. Final outgoing goal/checkpoint, private asset carry-forward and final-wave packet remain the root owner’s handoff work. |
+| RELAY-04 | Time pressure cannot redefine success | Pass | [loop][L]; [END_GOAL](../END_GOAL.md) | Fixed final-preparation 15:08:01 and hard stop 15:38:01 UTC remain recorded. Missing gates carry forward and do not become passes at expiry. |
 
-## Player, combat, NPCs
+## Required runtime and visual gates
 
-| ID | Status | Evidence / gap |
-| --- | --- | --- |
-| PLAYER-01 | Implemented — not verified | Walk/sprint/jump, acceleration/friction tuning, kerb and step handling via CharacterBody3D |
-| Implemented — not verified | Spring-arm over-the-shoulder camera with wall collision, mouse look, sensitivity/invert/reduced-shake settings, aim and drive transitions |
-| PLAYER-03 | Partial | One control owner, published on `Game`. The wave-1 independent review found the `busy` transition guard was inert (declared, never set), which allowed repeated interaction; the guard is now set across the car and helicopter transitions and the invariants are listed in `docs/TRANSITION_TABLE.md` |
-| PLAYER-04 | Partial | Contextual prompts for vehicles and interactables; no line-of-sight test |
-| PLAYER-05 | Partial | Title screen, pause panel, controls list; no settings sliders, no full menu shell |
-| COMBAT-01 | Partial | Pistol and compact SMG, hitscan, recoil cadence, reload, ammo pools; weapon meshes are placeholder boxes |
-| COMBAT-02 | Partial | Camera-ray hitscan with muzzle obstruction and world collision; no damage falloff model |
-| COMBAT-03 | Implemented — not verified | NPC health, damage reaction, death with body on ground and persistence; no ragdoll |
-| COMBAT-04 | Partial | Player damage, health bar, respawn at checkpoint, and **slow health regeneration after five seconds out of fire** (the wave found that one close encounter with three guards was lethal: 9 damage a hit every 1.1–1.6 s from three guns). No cover or safe-respawn logic beyond checkpoint |
-| COMBAT-05 | Partial | Muzzle flash, impact spark, events; no pooled VFX, no spatial audio yet |
-| NPC-01 | Partial | Pedestrians walk lane graphs, idle, queue and flee; routes are rectangular loops |
-| NPC-02 | Partial | Gunfire within 26 m panics civilians; no witness reporting chain |
-| NPC-03 | Partial | Hostiles and officers pursue and fire with ray tests; simple line-of-fire logic |
-| NPC-04 | Partial | Panic state overrides idle; displaced driver becomes a pedestrian; defeat stops reporting |
-| NPC-05 | Partial | Seeded spawn, fixed population budget; ownership rules exist for mission actors |
+The **test result applies to the complete procedure in END_GOAL §15.1**, not to a subset assertion. A NOT TESTED full gate may contain useful passing subtests. Full procedures remain linked through their canonical IDs; these rows never remove an unexecuted step.
 
-## Vehicles, traffic, law
+| Gate | Procedure | Requirement status | Full-gate test result | Evidence | Remaining scope / defect |
+| --- | --- | --- | --- | --- | --- |
+| QA-001 | Clean launch | Implemented—not verified | NOT TESTED | [X]; [C] | Project processes run, but actual exported app launch and second-reviewer clean-checkout instructions are unverified. |
+| QA-002 | Pedestrian controls | In progress | NOT TESTED | [R]; [P] | Walking and recovery subsets pass; complete walk/run/jump/land/kerb/stair/slope/collision procedure is not executed. |
+| QA-003 | Camera | In progress | NOT TESTED | [R]; [C]; [P] | Camera ownership/pause subsets pass; full constrained camera/aim/transition path and latest framing are unaccepted. |
+| QA-004 | Shooting | In progress | NOT TESTED | [R]; [P] | Real damage and close-cover tests pass; both guns against all moving/cover targets and mid-action combinations remain open. |
+| QA-005 | NPC continuity | In progress | NOT TESTED | [R]; [P] | Reactive actors exist; complete panic/damage/turn-away/mode-change/return persistence procedure is absent. |
+| QA-006 | Car theft | In progress | NOT TESTED | [R]; [P] | Takeover and blocked exits pass subsets; occupied-driver visible transition and proposed ten repeat cycles are not fully recorded. |
+| QA-007 | Driving | In progress | NOT TESTED | [R]; [P] | 639.15 m real driving and left steering are observed; full reverse/brake/contact/alternative-route human procedure remains open. |
+| QA-008 | Traffic | In progress | NOT TESTED | [R] | Signal/lane assertions pass; observed busy crossing, deliberate lane block and understandable recovery are not completed. |
+| QA-009 | Helicopter lifecycle | In progress | NOT TESTED | [R]; [P]; [S] | Board/lift/flight/descent/second-pad exit pass once; full reboard/return/both-zone lifecycle remains unverified. |
+| QA-010 | Aerial world | In progress | NOT TESTED | [P]; [V8] | Flight and static air views exist; all approaches, boundaries, reverse surfaces and latest aircraft/world assets need traversal review. |
+| QA-011 | Police causality | In progress | NOT TESTED | [R]; [P] | One incident/escalation/escape exists; every adopted level and cause with actual responders has not been shown. |
+| QA-012 | Cross-mode pursuit | In progress | NOT TESTED | [P]; [C] | P wanted level is already 0 before car exit. Active pursuit into foot/aircraft, rediscovery then escape remains unproved. |
+| QA-013 | Full-3D district | Fail | FAIL | [V]; [V8] | Real meshes exist, but placeholder-like/world-quality defects fail the full acceptance outcome; all latest interiors/reverse angles remain unreviewed. |
+| QA-014 | Singapore identity | Fail | FAIL | [V] | Independent r6 screenshot review is REWORK, identity 5.0/10; later changes have no independent acceptance. External source images were not reopened by that critic. |
+| QA-015 | Population/cohesion | In progress | NOT TESTED | [R]; [V]; [P] | Configured actors and route coexistence are partial evidence. Full-route density/behavior and latest crowd motion require review. |
+| QA-016 | Mission | In progress | NOT TESTED | [P]; [R]; [S] | One no-death scripted completion passes, with narrow retry tests. Ordinary first-play clarity, recovery, free roam and replay as one procedure remain open. |
+| QA-017 | State invariants | In progress | NOT TESTED | [R]; [C]; [H] | Focused ownership/camera/save invariants pass. Full transition table and post-restart actor/pickup/occupancy snapshots are incomplete. |
+| QA-018 | Continuous golden path | Blocked | NOT TESTED | [P]; [C] | Silent timestamp-preserving scripted samples are not an ordinary-player run. CUA Godot access denied; human OS-input gameplay and follow-on restart/load are absent. |
+| QA-019 | Failure/restart/save | In progress | NOT TESTED | [R]; [C] | Fresh-process persistence and malformed-save probes pass; complete all-mode failure/lost-transport/abandon/packaged-relaunch matrix remains open. |
+| QA-020 | Performance/stability | Fail | FAIL | [S]; [P]; [H] | First long workload aborts at 30 s. No accepted 1800 s/three-run result, isolated calibrated performance, leak review or continuous audio/HUD review. |
 
-| ID | Status | Evidence / gap |
-| --- | --- | --- |
-| CAR-01 | Partial | Sedan, coupe, van and a response variant; arcade handling tuned for district speeds. The yaw sign was inverted for the whole wave (pressing left steered right) and is now fixed and covered by a check |
-| CAR-02 | Implemented — not verified | Empty entry and occupied-car takeover with driver displacement; theft raises heat |
-| CAR-03 | Partial | Exit beside the car; blocked-exit rejection not implemented |
-| CAR-04 | Partial | Collision damage, health, disabled state; no visible deformation |
-| TRAFFIC-01 | Partial | 25-junction lane graph with a geometrically correct **left-hand** lane offset and corner queueing. No signal phase table, no junction priority rules and no pedestrian-crossing response — the world draws signal heads but nothing drives them |
-| TRAFFIC-02 Partial | AI cars now detect a blocker ahead and slow to a crawl instead of driving through it (TRAFFIC-02). No reroute around a permanently blocked lane, and no signal cycle |
-| TRAFFIC-03 | Partial | Cars persist when the player leaves them; traffic never resets or reverses |
-| AIR-01 | Implemented — not verified | Helicopter on the primary pad, walk-up prompt, boarding, rotor spin, flight |
-| AIR-02 | Partial | Arcade lift/yaw/pitch/hover with stabilisation; the yaw sign was inverted for the whole wave, so a pilot could not steer towards a target at all — now fixed, with the same regression check as the car; no fuel, no damage model in flight |
-| AIR-03 | Partial | Same district visible from the air with completed roofs; no streaming |
-| AIR-04 | Implemented — not verified | Landing at the second pad, exit on foot, state continuity |
-| AIR-05 | Partial | Hard impacts damage the aircraft; water/void and flight limits not fully handled |
-| LAW-01 | Implemented — not verified | Three escalation tiers; heat decays while no responder has line of sight (the review found the decay was dead code) and the HUD shows the level and the SPOTTED / SEARCHING state |
-| LAW-02 | Partial | Police spawn out of sight at 28–55 m and pursue |
-| LAW-03 | Partial | Vehicle pursuit plus on-foot officers; helicopter boarding does not clear attention |
-| LAW-04 Partial | Pursuit now has two phases: **SPOTTED** (heat held) and **SEARCHING** (heat decays, police sweep the last known position, HUD shows the countdown). No concealment mechanic yet |
-| LAW-05 | Partial | Responders are bounded, stand down and are removed when the wanted level reaches zero (the review found the cleanup was never called), and a pursuit car is re-spawned when it is wrecked or falls far behind |
+## Unnumbered contracts retained
 
-## Mission, UI, audio, save, systems
+- **END_GOAL §1.2 calibration:** platform/content/frame targets still need a coherent dated contract with rationale and independent review. Wave 1 readiness explicitly labels its 720p/640 m/population contract a proposal; no undocumented reduction of the 1080p provisional north-star target is accepted here.
+- **END_GOAL §12 integration matrix:** all eight events remain required: fire near civilians; occupied theft; pedestrian/obstacle hit; exit under pursuit; board helicopter; land/exit; death/restart; stream/despawn. R/P support only named subsets. Active cross-mode pursuit, actor ownership cleanup and repeated lifecycle outcomes remain open.
+- **END_GOAL §13.1 asset matrix:** buildings/streets, interiors/hawker, characters/weapons, cars, helicopter, greenery/props and audio/UI each still require the listed runtime/visual checks. Provider export, source hash and mesh-count checks are not asset acceptance.
+- **Provisional content/workload targets retained:** four furnished interior functions plus genuine elevated access; three connected driving loops; 24–40 nearby pedestrians and 8–12 traffic at busiest views; two distinct guns; three civilian silhouettes plus response variant; flight between two meaningful landing zones; 10–15 minute first-play mission; two meaningful checkpoints; three pursuit levels; 1080p at 60 FPS / p95 ≤25 ms / p99 ≤50 ms; no repeatable warmed >100 ms stalls; 1800-second mixed workload and three consecutive missions; warm-start-to-control under 30 s. Numbers remain proposals unless explicitly calibrated; underlying required experiences cannot be removed.
+- **Optional scope stays optional:** controller support, more missions/vehicles, dynamic weather/night, multiplayer, console/mobile, every-building interiors and other §17 stretch work do not replace required gates.
 
-| ID | Status | Evidence / gap |
-| --- | --- | --- |
-| MISSION-01 | Partial | "Harbour Relay": safe room → hawker package → theft → drive → police → helicopter → landing → delivery, and the drive leg now keys on the controlled body instead of the player node. The scripted playthrough picks the package up and boards the helicopter, but **the car leg is cut short**: the player is killed by the police response after the theft, so the drive to the aviation compound is never completed by the script. The step that requires a *real pursuit and escape* and the return to clean free roam are still not implemented |
-| MISSION-02 | Partial | Stage machine keyed on real system state (mode, positions, pickups) |
-| MISSION-03 | Partial | One checkpoint at the package; restart from checkpoint available |
-| MISSION-04 | Fail | Replay cleanliness not exercised; mission actors are not reset on restart |
-| UI-01 | Partial | Title, pause, controls text, notifications; no working New/Continue/Quit buttons (keyboard only) |
-| UI-02 | Partial | Health, ammo, wanted, objective, prompt, minimap, speed/altitude; minimap is schematic |
-| UI-03 Partial | Settings panel (F3) with mouse sensitivity, invert-Y, reduced shake and HUD visibility; outline-scaled text and contrast are in place. No remapping, no colour-blind mode |
-| AUDIO-01 | Partial | Procedural sound bank (`game/src/core/audio.gd`): gunshots, footsteps, impacts, pickup, engine loop (pitch tracks speed), rotor loop, police siren. All synthesised in code — original material, no sampled audio. No spatial attenuation or per-actor mixing yet |
-| AUDIO-02 | Pass (for what exists) | Only code-generated sound; no music, no speech, no third-party audio. Nothing to clear, and nothing to attribute |
-| SAVE-01 | Implemented — not verified | Versioned JSON save/load of health, stage, position, ammo, wanted level and heat, checkpoint and safe position. The wave-1 review found the stored values were never applied to the world; loading now moves the player, restores the mission stage and re-marks the checkpoint. Free-roam policy is "reset to checkpoint" |
-| SAVE-02 | Partial | A corrupt or incompatible save now returns false **with a visible message** instead of failing silently; duplicate-object re-entry on repeated loads is still untested |
-| SYSTEM-01 | Implemented — not verified | `Game` autoload owns health, mode, wanted, stage; `Events` is the only cross-system bus. The explicit transition table that END_GOAL asks for is now written down in `docs/TRANSITION_TABLE.md` and its invariants are covered by the automated checks |
-| SYSTEM-02 | Partial | Debug diagnostics exist (`F1`), fixtures exist, but they are not in the shipped HUD |
-| SYSTEM-03 | Partial | Transitions guard against double entry; repeated-action stress not run |
+## Corrections to inherited claims
 
-## Engine, assets, performance, verification
+1. Repaired the missing PLAYER-02 row and malformed ART/TRAFFIC/LAW/UI/ASSET rows; restored GOV and RELAY coverage. Removed nonconforming statuses such as `Partial`, `Pass (for what exists)` and requirement-level `NOT TESTED`.
+2. Withdrew Wave 1 TECH-02/QA-001 packaged-launch implications, ASSET-04 blanket clearance, VERIFY-05 “no hard blockers,” and unqualified 34-check success. The predecessor has a 33/34 prose discrepancy and outlived-builder processes; its scripted DONE included death/respawn that bypassed the drive.
+3. Retained R1–R9 historical headless numerical assertions while refusing clean aggregate success: generic errors were present and the older wrapper missed them. The latest clean rendered R suite is 85/85 with both exits 0, no runtime errors and a reaped child.
+4. The no-death route proves one older scripted route only. It does not certify current source, human feel, a 10–15 minute first play, active cross-mode pursuit, audio, a 1080p contract, or three mission completions.
+5. No in-progress file, partial JSON or source-only soak review is a 30-minute success. S terminated after 30 s with an unavailable error-log gate; the exclusive performance lease also timed out before the actual shared-capture launch.
 
-| ID | Status | Evidence / gap |
-| --- | --- | --- |
-| TECH-01 | Pass (decision recorded) | Godot 4.7.1 stable chosen and locked in `waves/01/READINESS.md` with rejected alternatives |
-| TECH-02 | Pass (packaged build produced) | A universal macOS `.app`/`.zip` is exported from the macOS preset (`godot --headless --path game --export-release "macOS" build/mac/OrchardReach.zip` — the export path is relative to the project folder), about 132 MB after the provider textures were reduced to 1K; it was 644 MB before that step. Re-exported from the handoff commit. The build output is git-ignored and rebuilt locally. **Launching the packaged `.app` itself was not exercised in wave 1** - NOT TESTED |
-| ASSET-01 Partial | Tripo and Customuse were **not exposed in this CLI**, so all eighteen requests were published in `ASSET_REQUESTS.json` and executed by the manager through the connected browser/MCP surfaces (8 Customuse hero assets, 10 Tripo props). Every raw export was cleaned in Blender (`game/tools/cleanup_provider_assets.py`: scale, ground, pivot, part separation, wheel/rotor naming, decimate budgets) and integrated where it fits. **No further generation was paid for in wave 1** |
-| ASSET-02 | Partial | The provider GLBs are imported and cleaned, so the scale/pivot/part/collision pipeline is exercised; the character is still unrigged, textures are 1K reductions of the provider maps, and no LOD or material bake was produced |
-| ASSET-03 Partial | `docs/asset-manifest.csv` records all eighteen provider assets with provider terms, source URLs, SHA256 and the fact that they are **not** MIT-licensed and are not committed to the public repository. `docs/ASSET_RIGHTS.md` records the check — and bounds it: the **terms** permit use and redistribution, but the **output clearance is per asset and incomplete**. Only the sedan and the helicopter were rendered and found free of marks; the character shows a sneaker mark, the van and the coupe show badge artifacts, and thirteen outputs were never rendered. The Tripo per-job labels were not checked individually |
-| ASSET-04 | Pass | No GTA assets, no third-party models, no credentials; all wave-1 content is generated geometry and original text |
-| ASSET-05 | Partial | `.gitignore` excludes engine caches, the build output and the provider binaries (size **and** unverified mark clearance - see `docs/ASSET_RIGHTS.md`); `game/tools/fetch_provider_assets.sh` re-fetches the eight Customuse sources automatically with SHA256 verification and records the ten Tripo studio links and checksums for a **manual browser export**, and `game/tools/cleanup_provider_assets.py` rebuilds the processed game assets. The manager carries the processed provider folder into the successor's checkout, and the capture PNGs are committed as evidence |
-| PERF-01 | Partial | Reference machine recorded (Apple M3 Ultra, 256 GB, macOS 27.0.1, Forward+, 1280x720, MSAA 2x); per-run frame metrics **not yet captured** |
-| PERF-02 | Not started | 1080p60 / p95 ≤ 25 ms contract is declared but not measured |
-| PERF-03 | Not started | No stress-route profiling |
-| PERF-04 | Not started | No 30-minute soak, no three consecutive mission runs |
-| PERF-05 | Not started | No pooling/LOD work yet |
-| VERIFY-01 | Pass (ledger maintained) | This file |
-| VERIFY-02 | Partial | Independent-context critic pass performed in-wave, but **the critic is the same MiniMax model** — no Opus/Fable access exists in this profile, so this is not a different-vendor review |
-| VERIFY-03 | Partial | Commit, run instructions, capture packet and state log exist; frame-time traces do not |
-| VERIFY-04 | Partial | Test records name the tester, machine, build and result for executed checks; most visual gates remain NOT TESTED |
-| VERIFY-05 | Pass (no hard blockers known) | No crash, no secret, no uncleared asset in the tree |
-| VERIFY-06 | Fail | Placeholder art quality and missing audio are major quality blockers against the GTA VI bar |
-| VERIFY-07 | Partial | One critic round performed in-wave with fixes applied; retest coverage partial |
-| VERIFY-08 | Pass (honest verdict) | **Playable experimental build with unmet requirements** — not "north star accepted" |
-
-## QA gate table (END_GOAL §15.1)
-
-| Gate | Status |
-| --- | --- |
-| QA-001 Clean launch | Implemented — not verified (packaged build exported; packaged launch re-verified at handoff) |
-| QA-002 Pedestrian controls | Implemented — not verified |
-| QA-003 Camera | Partial |
-| QA-004 Shooting | Partial |
-| QA-005 NPC continuity | Partial |
-| QA-006 Car theft | Implemented — not verified |
-| QA-007 Driving | Implemented — not verified |
-| QA-008 Traffic | Partial — no blocker-response behaviour |
-| QA-009 Helicopter lifecycle | Implemented — not verified |
-| QA-010 Aerial world | Partial |
-| QA-011 Police causality | Partial |
-| QA-012 Cross-mode pursuit | Partial — the wanted level, heat and responder set now survive foot/car/aircraft changes (one authority, `Game`), police sweep the last known position when sight is broken, and the HUD shows SPOTTED vs SEARCHING. Not yet verified across a full pursuit |
-| QA-013 Full-3D district | Partial — geometry exists, fidelity is placeholder |
-| QA-014 Singapore identity | NOT TESTED by an independent reviewer |
-| QA-015 Population/cohesion | Partial |
-| QA-016 Mission | Implemented — not verified |
-| QA-017 State invariants | Partial |
-| QA-018 Continuous golden path | Partial — the automated playthrough drives the real systems through the real input actions and (after the review found that scripted presses never reached the game) now completes the interaction steps; it is still not an uncut human run |
-| QA-019 Failure/restart/save | Partial |
-| QA-020 Performance/stability | NOT TESTED |
-
-## Wave-1 independent review and what it changed
-
-An independent critic (a subagent of the **same MiniMax model** — this profile has no Opus/Fable access, so VERIFY-02 remains only partially satisfied) reviewed commit `c1d4d40` with six headless runtime probes and a static read of every system file. It found, and the wave then fixed or recorded, the following:
-
-| Finding | Severity | Outcome in this wave |
-| --- | --- | --- |
-| Death while driving or flying left the player bound to the vehicle, unable to move or interact — a hard softlock | critical | **Fixed**: `Player.respawn_at` releases the vehicle, clears `current_vehicle` and `busy`, restores the gameplay camera; covered by the "death in a vehicle releases control" check |
-| Every civilian traffic car was wrecked within ten seconds of play (contact damage was applied every frame at the commanded speed) | critical | **Fixed**: damage now comes from the closing speed along the contact normal, once per contact with a 0.6 s cooldown; street props were moved out of the carriageway; covered by the "no civilian traffic car is wrecked by street contact" check |
-| Scripted input never reached the game: `Input.action_press()` does not synthesise an event, and the player only reacted inside `_unhandled_input` — so the automated playthrough could not interact at all | critical | **Fixed**: fire, reload, weapon swap and interact are polled in `_process`, so scripted and human presses share one path; covered by the "a scripted interact press takes the vehicle" check |
-| The wanted level never decayed and responders were never stood down | high | **Fixed**: heat decays while nobody has sight, responders are removed at zero wanted, and a pursuit car is re-spawned when wrecked or far behind |
-| The player node did not follow the vehicle, so the "drive to the aviation compound" objective, the pursuit target and the minimap all used a stale position | high | **Fixed**: `Player.controlled_actor()` is the single authoritative body and is used by the mission, the police, the HUD and the save file |
-| Pause did not pause: the world kept running behind the menu | high | **Fixed**: the player, NPCs, traffic and the mission all freeze while paused; covered by the "world is frozen while paused" check |
-| Save/load stored values nothing read; a corrupt save failed silently | high | **Fixed**: loading now applies the position, mission stage and checkpoint, and an unreadable save reports a message |
-| The `busy` transition guard was declared but never set | medium | **Fixed**: the guard is now set across the vehicle transitions and documented in the transition table |
-| Car exit only tried one side and could place the player inside geometry | medium | **Fixed**: both sides are ray-tested and the exit is refused with a message when neither is clear |
-| Stealing a moving vehicle raised no heat and left the car in the lane | medium | **Fixed**: any player entry into a vehicle the player did not own raises heat |
-| A displaced driver had no lane and no flee direction, so it froze at the kerb | medium | **Fixed**: the displaced driver gets a flee direction and stays visible |
-| The "driver" of a parked car stood inside the car's own collider | medium | **Fixed**: parked drivers are hidden until they are displaced |
-| Traffic has no signal phase, priority or crossing behaviour; pedestrians cannot route around geometry | structural | **Not fixed — recorded as a successor task.** It needs a junction model and a navigation mesh, not a patch |
-| The audio bank has no spatialisation, and the shot ray starts at the camera while the muzzle flash sits on the arm | medium | **Not fixed — recorded as a successor task** (COMBAT-02, COMBAT-05) |
-| No frame-time capture, stress route or soak harness | medium | **Not fixed — recorded as a successor task** (PERF-02/03/04, QA-020) |
-| Interaction always preferred a vehicle over a mission interactable, so a parcel at the player's feet lost to a car parked further away | high | **Fixed**: the closest target wins, whatever it is (vehicles and props compete on distance, each with its own reach) |
-| `Input.is_action_just_pressed()` is tied to the frame in which the press was parsed, so a press injected after the player's turn in the frame was invisible — the scripted playthrough could lose an interact entirely | high | **Fixed**: the player watches the *held* state of an action and fires once per press, so human and scripted input share one frame-safe path |
-| The market encounter was unwinnable in practice: the guard posts and the counter row blocked the aisle, so the player could not reach the package at all | high | **Fixed**: the guards hold the stall line and never the centre aisle, the package sits in the open dining aisle, and the pickup reach is 7.5 m; covered by the "the mission package can be picked up" and "picking up the package advances the mission" checks |
-| One close firefight was lethal: three guards firing 9 damage every 1.1 s killed a full-health player in about four seconds, so the scripted run died before it could drive | high | **Fixed**: guard and police hits do 5.5 damage at a slower cadence, and the player regenerates 9 health per second after five seconds out of fire; covered by the "health regenerates once the player is out of fire" check |
-| Driving and flying were steering **inverted** for the whole wave: a node that faces -Z turns left when its yaw increases, but the car and the helicopter both did `rotation.y -= turn`, so pressing left steered right. A scripted drive or flight could not reach a target; the helicopter flew out of the district and sank through the world | critical | **Fixed** in both vehicle controllers and covered by the "pressing left steers the vehicle left" check |
+[R]: wave-02/regressions-rendered-r2.json
+[RI]: wave-02/regressions-rendered-r2.log.meta.json
+[P]: wave-02/route-render-r1/qualification.json
+[S]: wave-02/soak-1800-r1/capture_log.json
+[I]: wave-02/test-index.json
+[V]: wave-02/critic-r6.md
+[V8]: wave-02/r8/photo_log.json
+[C]: wave-02/critic-gameplay-r3.md
+[H]: wave-02/critic-soak-harness.md
+[A]: ASSET_RIGHTS.md
+[AM]: asset-manifest.csv
+[G]: wave-02/GAMEPLAY_NOTES.md
+[L]: wave-02/LOOP.md
+[T]: ../waves/01/READINESS.md
+[X]: wave-02/export-candidate1.log.meta.json

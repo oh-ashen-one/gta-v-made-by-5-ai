@@ -21,5 +21,17 @@ func _ready() -> void:
 			print("PERFORMANCE_MONITOR %s id=%d value=%s" % [monitor, id, Performance.get_monitor(id)])
 		else:
 			print("PERFORMANCE_MONITOR UNAVAILABLE ", monitor)
+	var has_qa_log := false
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--qa-engine-log="): has_qa_log = true
+	if has_qa_log:
+		var capture: Node = load("res://src/systems/capture_director.gd").new()
+		capture.set("_engine_log_path", capture._resolve_engine_log_path())
+		capture._scan_runtime_log()
+		var scan: Dictionary = capture.get("_runtime_log_scan")
+		var checked: bool = bool(scan.get("checked", false)) and scan.get("fatal_errors", []).is_empty()
+		print("QA_ENGINE_LOG_SCAN %s checked=%s fatal_count=%d classified_count=%d path=%s" % ["PASS" if checked else "FAIL", checked, scan.get("fatal_errors", []).size(), scan.get("classified_nonfatal", []).size(), scan.get("path", "")])
+		if not checked: failures += 1
+		capture.free()
 	Sfx.shutdown_audio()
 	get_tree().quit(0 if failures == 0 else 1)
