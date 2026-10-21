@@ -65,7 +65,9 @@ static func tint(root: Node, color: Color) -> void:
 				if mat is StandardMaterial3D:
 					var copy: StandardMaterial3D = (mat as StandardMaterial3D).duplicate()
 					copy.albedo_color = copy.albedo_color.lerp(color, 0.55)
-					copy.metallic = maxf(copy.metallic, 0.35)
-					copy.roughness = minf(copy.roughness, 0.45)
-					mesh.surface_set_material(i, copy)
+					# Preserve provider PBR response; fabric and plaster must not
+					# inherit car paint merely because this helper tints them.
+					copy.metallic = mat.metallic
+					copy.roughness = mat.roughness
+					child.set_surface_override_material(i, copy)
 		tint(child, color)

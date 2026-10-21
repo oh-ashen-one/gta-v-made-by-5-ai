@@ -17,6 +17,7 @@ var _ped_lanes: Array = []
 var _player: Node = null
 var _police_timer := 0.0
 var _rng := RandomNumberGenerator.new()
+var _signal_clock := 0.0
 
 func setup(w: WorldBuilder, player: Node) -> void:
 	world = w
@@ -66,6 +67,8 @@ func _spawn_ai_car(kind: String) -> Car:
 	car.global_position = edge["from"].lerp(edge["to"], _rng.randf_range(0.15, 0.8))
 	car.rotation.y = atan2(-(edge["to"].x - edge["from"].x), -(edge["to"].z - edge["from"].z))
 	car.has_ai = true
+	car.max_speed = 12.0
+	car.set_meta("from_node", edge["from"])
 	car.ai_target = _lane_point(edge["from"], edge["to"])
 	car.set_meta("next_node", edge["to"])
 	return car
@@ -91,7 +94,7 @@ func _neighbours(idx: int) -> Array[int]:
 				continue
 			var nr: int = r + dr
 			var nc: int = c + dc
-			if nr < 0 or nr > 3 or nc < 0 or nc > 4:
+			if nr < 0 or nr > 4 or nc < 0 or nc > 4:
 				continue
 			if dr != 0 and dc != 0:
 				continue  # keep traffic orthogonal: believable junctions, no drifting
@@ -106,7 +109,7 @@ func _lane_point(from: Vector3, to: Vector3) -> Vector3:
 		return from
 	dir = dir.normalized()
 	var left := Vector3.UP.cross(dir).normalized()
-	return from + left * LANE_OFFSET + dir * 8.0
+	return to + left * LANE_OFFSET - dir * 8.0
 
 func _spawn_peds() -> void:
 	for i in PED_COUNT:
@@ -124,18 +127,26 @@ func _spawn_peds() -> void:
 func _process(delta: float) -> void:
 	if Game.simulation_paused:
 		return
+	_signal_clock = fmod(_signal_clock + delta, 28.0)
 	for car in cars:
-		if not is_instance_valid(car) or car.disabled:
+		if not is_instance_valid(car) or car.disabled or not car.has_ai:
 			continue
 		var nxt = car.get_meta("next_node", null)
 		if nxt == null:
 			continue
 		var target: Vector3 = car.ai_target
-		if car.global_position.distance_to(Vector3(target.x, car.global_position.y, target.z)) < 7.0:
+		var distance_to_stop := car.global_position.distance_to(Vector3(target.x, car.global_position.y, target.z))
+		var from_node: Vector3 = car.get_meta("from_node", car.global_position)
+		var green := signal_allows(nxt - from_node)
+		car.ai_speed_limit = INF
+		if not green and distance_to_stop < 34.0:
+			car.ai_speed_limit = maxf(0.0, (distance_to_stop - 3.0) * 0.75)
+		if distance_to_stop < 7.0 and green:
 			var from := Vector3(nxt.x, car.global_position.y, nxt.z)
 			var edge: Vector3 = _pick_next_edge(car)
 			if edge == Vector3.ZERO:
 				continue
+			car.set_meta("from_node", from)
 			car.ai_target = _lane_point(from, edge)
 			car.set_meta("next_node", edge)
 	for pc in police_cars:
@@ -145,7 +156,7 @@ func _process(delta: float) -> void:
 			# With eyes on the player they converge; otherwise they sweep the
 			# last known position (LAW-04 search phase).
 			if Game.player_seen:
-				pc.ai_target = _player.global_position
+				pc.ai_target = _player.controlled_actor().global_position
 			else:
 				pc.ai_target = Game.last_seen_position
 	_update_police(delta)
@@ -182,8 +193,19 @@ func _nearest_node(p: Vector3) -> int:
 func _update_police(delta: float) -> void:
 	_police_timer -= delta
 	var wanted := Game.wanted_level
+	for index in range(police_cars.size() - 1, -1, -1):
+		var responder := police_cars[index]
+		if not is_instance_valid(responder):
+			police_cars.remove_at(index)
+		elif responder.disabled or (_player and responder.global_position.distance_to(_player.controlled_actor().global_position) > 200.0):
+			responder.queue_free()
+			police_cars.remove_at(index)
+	for index in range(peds.size() - 1, -1, -1):
+		if not is_instance_valid(peds[index]):
+			peds.remove_at(index)
 	Game.player_seen = false
 	if wanted <= 0:
+		Sfx.set_siren(false, 1.0)
 		# responders stand down and are cleaned up when the search ends (LAW-05)
 		for pc in police_cars:
 			if is_instance_valid(pc):
@@ -196,15 +218,15 @@ func _update_police(delta: float) -> void:
 		for pc in police_cars:
 			if is_instance_valid(pc) and _has_sight(pc.global_position):
 				Game.player_seen = true
-				Game.last_seen_position = _player.global_position
+				Game.last_seen_position = _player.controlled_actor().global_position
 				Game.search_timer = 14.0
 				break
 		if not Game.player_seen:
 			for officer in peds:
 				if is_instance_valid(officer) and officer.is_police and officer.state != NPC.State.DEAD:
-					if officer.global_position.distance_to(_player.global_position) < 45.0 and _has_sight(officer.global_position):
+					if officer.global_position.distance_to(_player.controlled_actor().global_position) < 45.0 and _has_sight(officer.global_position):
 						Game.player_seen = true
-						Game.last_seen_position = _player.global_position
+						Game.last_seen_position = _player.controlled_actor().global_position
 						Game.search_timer = 14.0
 						break
 	if wanted <= 0:
@@ -216,13 +238,17 @@ func _update_police(delta: float) -> void:
 	if _player == null:
 		return
 	# on-foot response: officers appear at a believable distance, never in plain sight
-	if Game.mode == Game.MODE_FOOT and _police_timer <= 0.0:
+	var live_officers := 0
+	for pedestrian in peds:
+		if is_instance_valid(pedestrian) and pedestrian.is_police and pedestrian.state != NPC.State.DEAD:
+			live_officers += 1
+	if Game.mode == Game.MODE_FOOT and _police_timer <= 0.0 and live_officers < mini(2 + wanted, 5):
 		_police_timer = 4.5
 		var officer := NPC.new()
 		officer.is_police = true
 		add_child(officer)
 		var angle := _rng.randf_range(0.0, TAU)
-		var pos: Vector3 = _player.global_position + Vector3(cos(angle), 0.0, sin(angle)) * _rng.randf_range(28.0, 45.0)
+		var pos: Vector3 = _player.controlled_actor().global_position + Vector3(cos(angle), 0.0, sin(angle)) * _rng.randf_range(28.0, 45.0)
 		pos.y = 0.4
 		officer.global_position = pos
 		officer.state = NPC.State.PURSUE
@@ -230,32 +256,34 @@ func _update_police(delta: float) -> void:
 	Sfx.set_siren(wanted > 0 and not police_cars.is_empty(), 1.0 + 0.1 * float(wanted))
 	# vehicle pursuit: one active pursuit car, respawned when it is wrecked
 	# or has fallen far behind (B13)
-	var need_pursuit := false
-	if Game.mode != Game.MODE_FOOT:
-		for pc in police_cars:
-			if not is_instance_valid(pc) or pc.disabled:
-				need_pursuit = true
-			elif _player and pc.global_position.distance_to(_player.global_position) > 180.0:
-				need_pursuit = true
-		if police_cars.is_empty():
-			need_pursuit = true
-	if need_pursuit:
+	# Response vehicles are bounded, and no new road car is spawned to chase
+	# an airborne helicopter. Escaping line of sight can actually end a search.
+	if Game.mode == Game.MODE_CAR and police_cars.size() < mini(wanted, 2) and _police_timer <= 0.0:
+		_police_timer = 8.0
 		var pc := Car.new()
 		pc.kind = "police"
 		add_child(pc)
-		var angle2 := _rng.randf_range(0.0, TAU)
-		var spawn: Vector3 = _player.global_position + Vector3(cos(angle2), 0.0, sin(angle2)) * POLICE_SPAWN_DISTANCE
-		spawn.y = 0.4
-		pc.global_position = spawn
+		var actor: Node3D = _player.controlled_actor()
+		var nearest := _nearest_node(actor.global_position)
+		var candidates := _neighbours(nearest)
+		var spawn_node := nodes[candidates[_rng.randi_range(0, candidates.size() - 1)]] if not candidates.is_empty() else nodes[nearest]
+		pc.global_position = spawn_node + Vector3(4.0, 0.4, 4.0)
 		pc.has_ai = true
-		pc.max_speed = 30.0
+		pc.max_speed = 23.0
+		pc.ai_target = actor.global_position
 		police_cars.append(pc)
+
+## Twenty-eight-second cycle: 12 seconds for each axis with two seconds of
+## clearance between them. This is simulation behavior, not a visual claim.
+func signal_allows(direction: Vector3) -> bool:
+	var east_west := absf(direction.x) > absf(direction.z)
+	return _signal_clock < 12.0 if east_west else (_signal_clock >= 14.0 and _signal_clock < 26.0)
 
 ## Can the police at `from` see the player? Distance plus a world ray test.
 func _has_sight(from: Vector3) -> bool:
 	if _player == null:
 		return false
-	var to_player: Vector3 = _player.global_position + Vector3(0.0, 1.2, 0.0) - (from + Vector3(0.0, 1.2, 0.0))
+	var to_player: Vector3 = _player.controlled_actor().global_position + Vector3(0.0, 1.2, 0.0) - (from + Vector3(0.0, 1.2, 0.0))
 	if to_player.length() > 80.0:
 		return false
 	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
@@ -267,6 +295,15 @@ func _has_sight(from: Vector3) -> bool:
 	return hit.is_empty()
 
 func wanted_reset() -> void:
+	for index in range(peds.size() - 1, -1, -1):
+		var pedestrian := peds[index]
+		if is_instance_valid(pedestrian) and pedestrian.is_police:
+			pedestrian.queue_free()
+			peds.remove_at(index)
+	Game.player_seen = false
+	Game.search_timer = 0.0
+	_police_timer = 0.0
+	Sfx.set_siren(false, 1.0)
 	for pc in police_cars:
 		if is_instance_valid(pc):
 			pc.queue_free()

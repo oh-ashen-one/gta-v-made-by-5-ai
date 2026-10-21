@@ -13,6 +13,9 @@ var _capture_director: Node = null
 func _ready() -> void:
 	print("[wave1] main ready, args=", OS.get_cmdline_user_args())
 	var args := OS.get_cmdline_user_args()
+	if "--asset-review" in args:
+		add_child(load("res://src/systems/asset_review.gd").new())
+		return
 	world = WorldBuilder.new()
 	world.name = "World"
 	add_child(world)
@@ -52,7 +55,6 @@ func _ready() -> void:
 		var tester := SelfTest.new()
 		add_child(tester)
 		await tester.run(self)
-		await get_tree().create_timer(0.2).timeout
 		get_tree().quit(1 if tester.failures > 0 else 0)
 		return
 
@@ -75,7 +77,7 @@ func _ready() -> void:
 		_capture_director.setup(self, player, world, mission, traffic)
 		hud.show_title(false)
 		started = true
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	else:
 		hud.show_title(true)
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

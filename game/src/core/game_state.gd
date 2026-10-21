@@ -15,6 +15,7 @@ const SAVE_VERSION := 1
 
 var mode: int = MODE_FOOT
 var health: float = MAX_HEALTH
+var death_count := 0
 var wanted_level: int = 0
 var wanted_heat: float = 0.0
 var mission_stage: int = 0
@@ -50,9 +51,10 @@ func _ready() -> void:
 	Events.wanted_changed.connect(_on_wanted_changed)
 
 func _process(delta: float) -> void:
-	if not simulation_paused:
-		elapsed_seconds += delta
-		_regenerate(delta)
+	if simulation_paused:
+		return
+	elapsed_seconds += delta
+	_regenerate(delta)
 	# Pursuit decay only happens while nobody is looking (LAW-04: fair escape).
 	if wanted_level > 0 and not player_seen:
 		search_timer = maxf(0.0, search_timer - delta)
@@ -83,8 +85,8 @@ func _setup_input_map() -> void:
 	_add_action("move_right", [KEY_D, KEY_RIGHT])
 	_add_action("sprint", [KEY_SHIFT])
 	_add_action("jump", [KEY_SPACE])
-	_add_action("fire", [MOUSE_BUTTON_LEFT])
-	_add_action("aim", [MOUSE_BUTTON_RIGHT])
+	_add_mouse_action("fire", MOUSE_BUTTON_LEFT)
+	_add_mouse_action("aim", MOUSE_BUTTON_RIGHT)
 	_add_action("reload", [KEY_R])
 	_add_action("interact", [KEY_E])
 	_add_action("weapon_next", [KEY_Q])
@@ -101,6 +103,15 @@ func _add_action(action: String, keys: Array) -> void:
 		var ev := InputEventKey.new()
 		ev.physical_keycode = k
 		InputMap.action_add_event(action, ev)
+
+func _add_mouse_action(action: String, button: MouseButton) -> void:
+	if InputMap.has_action(action):
+		InputMap.action_erase_events(action)
+	else:
+		InputMap.add_action(action)
+	var event := InputEventMouseButton.new()
+	event.button_index = button
+	InputMap.action_add_event(action, event)
 
 # ------------------------------------------------------------------- helpers
 func set_mode(new_mode: int) -> void:
@@ -123,6 +134,7 @@ func damage_player(amount: float) -> void:
 		respawn()
 
 func respawn() -> void:
+	death_count += 1
 	health = MAX_HEALTH
 	Events.health_changed.emit(health, MAX_HEALTH)
 	wanted_heat = 0.0
@@ -130,6 +142,9 @@ func respawn() -> void:
 	var body := get_tree().get_first_node_in_group("player")
 	if body and body.has_method("respawn_at"):
 		body.respawn_at(last_safe_position, last_safe_rotation)
+	var mission := get_tree().get_first_node_in_group("mission")
+	if mission and mission.has_method("on_player_respawn"):
+		mission.on_player_respawn()
 
 func set_wanted(level: int) -> void:
 	if wanted_level == level:
@@ -203,9 +218,10 @@ func mark_safe_position(pos: Vector3, rot: float) -> void:
 	last_safe_rotation = rot
 
 # ------------------------------------------------------------------ save/load
-func save_game() -> bool:
+func save_game(path: String = SAVE_PATH) -> bool:
 	var data := {
 		"version": SAVE_VERSION,
+		"mode": mode,
 		"health": health,
 		"wanted_level": wanted_level,
 		"mission_stage": mission_stage,
@@ -220,17 +236,17 @@ func save_game() -> bool:
 		"last_safe_position": [last_safe_position.x, last_safe_position.y, last_safe_position.z],
 		"last_safe_rotation": last_safe_rotation,
 	}
-	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var f := FileAccess.open(path, FileAccess.WRITE)
 	if f == null:
 		return false
 	f.store_string(JSON.stringify(data, "\t"))
 	f.close()
 	return true
 
-func load_game() -> bool:
-	if not FileAccess.file_exists(SAVE_PATH):
+func load_game(path: String = SAVE_PATH) -> bool:
+	if not FileAccess.file_exists(path):
 		return false
-	var f := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	var f := FileAccess.open(path, FileAccess.READ)
 	if f == null:
 		return false
 	var text := f.get_as_text()
@@ -268,8 +284,10 @@ func load_game() -> bool:
 	# reads is not a save (B7).
 	var body := get_tree().get_first_node_in_group("player")
 	if body and body.has_method("respawn_at"):
+		if int(parsed.get("mode", MODE_FOOT)) != MODE_FOOT:
+			player_position = last_safe_position
+			player_rotation = last_safe_rotation
 		body.respawn_at(player_position, player_rotation)
-	mark_safe_position(player_position, player_rotation)
 	var mission := get_tree().get_first_node_in_group("mission")
 	if mission and mission.has_method("restore_stage"):
 		mission.restore_stage(mission_stage)

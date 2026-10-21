@@ -25,6 +25,7 @@ var _provider_main_rotor: Node3D = null
 var _provider_tail_rotor: Node3D = null
 var _procedural_visuals: Array[Node3D] = []
 var _last_good_position := Vector3.ZERO
+var _impact_cooldown := 0.0
 
 func _ready() -> void:
 	add_to_group("vehicles")
@@ -182,6 +183,9 @@ func _try_provider_asset() -> void:
 		_provider_tail_rotor = tail_rotor
 
 func _physics_process(delta: float) -> void:
+	if Game.simulation_paused:
+		return
+	_impact_cooldown = maxf(0.0, _impact_cooldown - delta)
 	var rotor_speed := 22.0 if pilot_is_player else 6.0
 	if _rotor:
 		_rotor.rotate_y(delta * rotor_speed)
@@ -199,11 +203,13 @@ func _physics_process(delta: float) -> void:
 		velocity.y -= GRAVITY * delta
 	var before := velocity
 	move_and_slide()
-	if before.length() > 12.0 and get_slide_collision_count() > 0:
-		health = maxf(0.0, health - (before.length() - 12.0) * 3.0)
-		if health <= 0.0:
-			disabled = true
-			Events.notify.emit("Helicopter damaged beyond flight.", "bad")
+	if _impact_cooldown <= 0.0:
+		var impact_speed := 0.0
+		for index in get_slide_collision_count():
+			impact_speed = maxf(impact_speed, -before.dot(get_slide_collision(index).get_normal()))
+		if impact_speed > 9.0:
+			_impact_cooldown = 1.0
+			take_damage((impact_speed - 9.0) * 4.0, global_position, false)
 	if is_on_floor():
 		if velocity.length() < 2.0:
 			_landed = true
@@ -229,8 +235,10 @@ func _pilot_input(delta: float) -> void:
 	var target_speed := _pitch_input * MAX_FORWARD
 	velocity.x = lerpf(velocity.x, dir.x * target_speed, clampf(delta * 2.2, 0.0, 1.0))
 	velocity.z = lerpf(velocity.z, dir.z * target_speed, clampf(delta * 2.2, 0.0, 1.0))
-	velocity.y += (LIFT * _lift_input - GRAVITY) * delta
-	velocity.y = clampf(velocity.y, -18.0, 14.0)
+	# Assisted hover is part of the arcade controls: neutral lift holds
+	# altitude, while intentional descent stays within a safe landing speed.
+	var target_vertical_speed := _lift_input * (12.0 if _lift_input >= 0.0 else 6.0)
+	velocity.y = move_toward(velocity.y, target_vertical_speed, 18.0 * delta)
 	if is_on_floor() and _lift_input <= 0.0:
 		velocity.y = minf(velocity.y, 0.0)
 
@@ -285,3 +293,15 @@ func exit_vehicle(player: Node) -> void:
 
 func force_exit() -> void:
 	pilot_is_player = false
+	_yaw_input = 0.0
+	_pitch_input = 0.0
+	_lift_input = 0.0
+	Sfx.stop_rotor()
+
+func take_damage(amount: float, _from_position: Vector3, _by_player: bool = false) -> void:
+	if disabled:
+		return
+	health = maxf(0.0, health - maxf(amount, 0.0))
+	if health <= 0.0:
+		disabled = true
+		Events.notify.emit("Helicopter damaged beyond flight. Descending.", "bad")

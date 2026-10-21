@@ -13,3 +13,7 @@
 - Rights clearance remains per-asset and partly UNVERIFIED; some generated sneaker/badge marks were observed. Private implementation continues; no public binary release or main merge authorized.
 - Existing credits: Tripo75450 for browser-only small props; Customuse53, no further paid jobs or purchases. No Meshy, no local inference.
 - Successor: DeepSeek V4.1 Flash through Devin. Rewrite NEXT_GOAL.md and this rolling handoff using actual evidence before the deadline.
+
+## Wave-two live checkpoint (2026-10-21 11:58 UTC)
+
+Implementation underway. See docs/wave-02/LOOP.md for exclusive lane ownership and actual captures. First real render rounds r1/r2 terminated cleanly; fresh-context same-model critics both return REWORK. Surface mapping, exposure, authored foliage and pavilion are in progress. Mission regression candidate reached 49/49 with bounded exit, followed by route failure while driving (no death); subsequent fixes are being reverified. No uninterrupted mission success is claimed. Provider-derived rig files remain ignored and local; root coordinates their in-engine integration.

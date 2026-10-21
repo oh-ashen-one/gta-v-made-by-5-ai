@@ -1,0 +1,38 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+[wave1] main ready, args=["--capture", "--capture-dir=/tmp/wave2-route1"]
+[capture] 0.61s Route start; seed=20261021; headless=true; controls-only=true
+[capture] 2.56s walk end at (-302.0, 0.0, -46.0); target=(-304.0, 0.0, -46.0) distance=2.0
+[capture] 9.13s walk end at (-318.0, 0.0, -7.0); target=(-320.0, 0.0, 0.0) distance=7.0
+[capture] 31.61s walk end at (-320.0, 0.0, -153.0); target=(-320.0, 0.0, -160.0) distance=6.9
+[capture] 54.61s walk end at (-167.0, 0.0, -160.0); target=(-160.0, 0.0, -160.0) distance=6.9
+[capture] 77.09s walk end at (-86.0, 0.0, -92.0); target=(-85.0, 0.0, -88.0) distance=3.9
+[capture] 77.09s PASS market reached on foot
+[capture] 78.75s combat target health=-32.0 state=3
+[capture] 80.40s combat target health=-32.0 state=3
+[capture] 82.59s combat target health=-32.0 state=3
+[capture] 82.59s PASS combat damaged and killed a mission combatant
+[capture] 83.36s walk end at (-87.0, 0.0, -87.0); target=(-85.0, 0.0, -88.0) distance=2.4
+[interact] MissionPackage at 2.36 m
+[capture] 83.68s PASS package collected through interaction
+[capture] 83.69s PASS usable parked car found
+[capture] 95.62s walk end at (-150.0, 0.0, -42.0); target=(-152.0, 0.0, -40.0) distance=2.6
+[interact] @CharacterBody3D@9751 at 2.48 m
+ERROR: Parameter "material" is null.
+   at: material_get_instance_shader_parameters (servers/rendering/dummy/storage/material_storage.cpp:264)
+[capture] 95.95s PASS car entered
+[capture] 100.60s drive waypoint target=(-160.0, 0.0, 0.0) distance=7.0
+ERROR: Parameter "material" is null.
+   at: material_get_instance_shader_parameters (servers/rendering/dummy/storage/material_storage.cpp:264)
+[capture] 137.05s drive waypoint target=(-160.0, 0.0, 160.0) distance=54.8
+[capture] 173.16s drive waypoint target=(0.0, 0.0, 160.0) distance=168.7
+[capture] 209.33s drive waypoint target=(160.0, 0.0, 160.0) distance=324.2
+[capture] 245.47s drive waypoint target=(320.0, 0.0, 160.0) distance=482.7
+[capture] 256.31s drive waypoint target=(270.0, 0.0, 104.0) distance=429.6
+[capture] 256.31s FAIL uninterrupted driving leg reached aviation compound
+[capture] 256.31s ABORT uninterrupted driving leg reached aviation compound
+[capture] terminal success=false deaths=0 seconds=256.3
+WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

@@ -1,0 +1,164 @@
+[
+	{
+		"asset": "sedan_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			1.97967767715454,
+			1.42510998249054,
+			4.40000009536743
+		]
+	},
+	{
+		"asset": "coupe_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			9.13105773925781,
+			2.60901618003845,
+			4.29937124252319
+		]
+	},
+	{
+		"asset": "van_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			9.73309326171875,
+			5.41967248916626,
+			5.19914722442627
+		]
+	},
+	{
+		"asset": "helicopter_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			8.1081657409668,
+			3.74314427375793,
+			6.49999952316284
+		]
+	},
+	{
+		"asset": "player_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			0.448827564716339,
+			1.75,
+			0.602711319923401
+		]
+	},
+	{
+		"asset": "officer_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			0.472450762987137,
+			1.7807035446167,
+			0.630602240562439
+		]
+	},
+	{
+		"asset": "shophouse_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			10.5898866653442,
+			11.4988288879395,
+			10.0056171417236
+		]
+	},
+	{
+		"asset": "hdb_slab_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			41.3581314086914,
+			41.9951782226562,
+			44.6262893676758
+		]
+	},
+	{
+		"asset": "hawker_counter_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			0.857216596603394,
+			1.53696644306183,
+			1.58859205245972
+		]
+	},
+	{
+		"asset": "hawker_table_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			1.60110783576965,
+			0.754941821098328,
+			1.43202972412109
+		]
+	},
+	{
+		"asset": "food_trolley_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			1.39299583435059,
+			1.37985193729401,
+			0.795682072639465
+		]
+	},
+	{
+		"asset": "ac_unit_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			0.847208321094513,
+			0.688522160053253,
+			0.400736153125763
+		]
+	},
+	{
+		"asset": "street_lamp_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			2.31515979766846,
+			6.00263261795044,
+			3.07665014266968
+		]
+	},
+	{
+		"asset": "service_clutter_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			1.20325446128845,
+			0.928783059120178,
+			1.09848141670227
+		]
+	},
+	{
+		"asset": "planter_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			0.811858355998993,
+			0.899153649806976,
+			0.669844388961792
+		]
+	},
+	{
+		"asset": "pistol_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			0.189715817570686,
+			0.128685176372528,
+			0.0493791624903679
+		]
+	},
+	{
+		"asset": "smg_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			0.621328771114349,
+			0.448586046695709,
+			0.607206225395203
+		]
+	},
+	{
+		"asset": "airfield_clutter_clean.glb",
+		"note": "Neutral two-angle rendered inspection; per-asset rights verdict requires reviewer.",
+		"size_m": [
+			1.99605655670166,
+			0.76749575138092,
+			1.86681854724884
+		]
+	}
+]

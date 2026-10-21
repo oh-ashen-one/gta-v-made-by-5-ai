@@ -162,15 +162,18 @@ func _walk(delta: float) -> void:
 		velocity.x = 0.0
 		velocity.z = 0.0
 		return
-	lane_index += lane_dir
-	if lane_index < 0 or lane_index >= lane.size():
-		lane_dir = -lane_dir
-		lane_index = clampi(lane_index, 0, lane.size() - 1)
-		if randf() < 0.35:
-			state = State.IDLE
-			idle_time = randf_range(2.0, 7.0)
-			return
 	var target: Vector3 = lane[lane_index]
+	var distance := Vector2(target.x - global_position.x, target.z - global_position.z).length()
+	if distance < 0.8:
+		lane_index += lane_dir
+		if lane_index < 0 or lane_index >= lane.size():
+			lane_dir = -lane_dir
+			lane_index = clampi(lane_index, 0, lane.size() - 1)
+			if randf() < 0.35:
+				state = State.IDLE
+				idle_time = randf_range(2.0, 7.0)
+				return
+		target = lane[lane_index]
 	_move_towards(target, WALK_SPEED, delta)
 
 func _flee(delta: float) -> void:
@@ -216,18 +219,26 @@ func _pursue(delta: float) -> void:
 				_shoot_at(player)
 
 func _shoot_at(player: Node) -> void:
+	var target: Node3D = player.controlled_actor() if player.has_method("controlled_actor") else player
+	if target == null:
+		return
 	var origin := global_position + Vector3(0.0, 1.3, 0.0)
-	var dir: Vector3 = (player.global_position + Vector3(0.0, 1.1, 0.0) - origin).normalized()
+	var aim_height := 1.1 if target == player else 1.0
+	var dir: Vector3 = (target.global_position + Vector3(0.0, aim_height, 0.0) - origin).normalized()
 	Events.shot_fired.emit(origin, dir, "npc_pistol")
 	var params := PhysicsRayQueryParameters3D.create(origin, origin + dir * 60.0)
-	params.collision_mask = 1 | 2
+	# Cars and aircraft are cover for their occupants. The ray stops on the
+	# bodywork and damages it; it cannot hit a hidden player at the entry spot.
+	params.collision_mask = 1 | 2 | 8
 	params.exclude = [get_rid()]
+	if target != player:
+		params.exclude.append(player.get_rid())
 	var hit := get_world_3d().direct_space_state.intersect_ray(params)
 	if not hit.is_empty():
 		var collider = hit["collider"]
 		if collider and collider.has_method("take_damage"):
 			collider.take_damage(5.5, global_position, false)
-			Events.hit_landed.emit(collider, 9.0, hit["position"], false)
+			Events.hit_landed.emit(collider, 5.5, hit["position"], false)
 
 func _move_towards(target: Vector3, speed: float, delta: float) -> void:
 	var dir := target - global_position
@@ -274,7 +285,9 @@ func _panic(from_position: Vector3) -> void:
 	if away.length() < 0.2:
 		away = Vector3(randf_range(-1, 1), 0, randf_range(-1, 1))
 	_flee_dir = away.normalized()
-	if not is_police and not is_hostile:
+	if is_hostile or is_police:
+		state = State.PURSUE
+	elif not is_police and not is_hostile:
 		state = State.FLEE
 		panic_time = randf_range(6.0, 12.0)
 		Events.toast("Civilian fleeing!", "info")
@@ -296,7 +309,7 @@ func _on_shot_fired(origin: Vector3, _dir: Vector3, _weapon_id: String) -> void:
 	var d := global_position.distance_to(origin)
 	if d > 26.0:
 		return
-	if not is_police and not is_hostile:
+	if _weapon_id != "npc_pistol":
 		_panic(origin)
 
 func _on_hit_landed(_target: Node, _dmg: float, _point: Vector3, _by_player: bool) -> void:

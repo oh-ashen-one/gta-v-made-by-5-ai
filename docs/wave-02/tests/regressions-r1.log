@@ -1,0 +1,62 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+[wave1] main ready, args=["--test", "--test-report=/tmp/wave2-mission-test4.json"]
+=== Orchard Reach wave-2 bounded regression suite ===
+PASS world builder present 
+PASS player spawned 
+PASS traffic manager present 
+PASS mission running 
+PASS helicopter present 
+PASS hud present 
+PASS district contains 3D geometry 
+PASS junction graph has 25 connected reference nodes 
+PASS pedestrian paths present 
+PASS civilian traffic populated 
+PASS pedestrians populated 
+PASS gameplay camera belongs to player 
+PASS mission publishes initial objective 
+PASS mission registered for save and checkpoint restoration 
+PASS package is a real interactable 
+[interact] @CharacterBody3D@10329 at 1.94 m
+PASS input interaction enters a car 
+PASS occupied player collision is disabled 
+PASS driving input moves the car 
+PASS occupant follows the moving car 
+PASS authoritative position follows controlled vehicle 
+PASS left driving input turns left 
+PASS NPC weapon ray damages occupied car 100.00 -> 96.97
+PASS car body protects its occupant from that ray 
+PASS normal exit returns control and camera 
+PASS on-foot collision restored 
+PASS death is counted for honest golden-path evidence 
+PASS death in car releases both control owners 
+PASS death restores visible player and gameplay camera 
+PASS walking still works after vehicle death 
+PASS wanted escalation decays when unobserved 
+PASS health regenerates out of fire 
+PASS helicopter control is exclusive 
+PASS lift input gains altitude 
+PASS neutral lift stabilizes hover 
+PASS airborne helicopter rejects exit 
+PASS pause freezes aircraft 
+PASS pause freezes pursuit heat 
+PASS controlled descent lands without disabling aircraft position=(270.0, -0.139075, 104.0) velocity=(0.0, 0.0, 0.0) health=100.0 floor=true
+PASS landed helicopter exits to walking 
+[interact] MissionPackage at 1.02 m
+PASS package input pickup advances and hides pickup 
+PASS taking car starts the authored driving leg 
+ERROR: Parameter "material" is null.
+   at: material_get_instance_shader_parameters (servers/rendering/dummy/storage/material_storage.cpp:264)
+PASS on-foot arrival cannot bypass driving leg 
+PASS death restores package checkpoint and requires new drive 
+PASS restoration rebuilds flags and objective 
+PASS delivery cannot be triggered remotely 
+PASS restart resets pickup checkpoint and prerequisites 
+PASS restart retains exactly three mission guards 
+PASS save roundtrip restores health and mission checkpoint 
+PASS save restoration updates package and objective 
+49/49 checks passed, 0 failed; report=/tmp/wave2-mission-test4.json
+WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

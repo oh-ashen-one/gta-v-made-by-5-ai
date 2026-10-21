@@ -32,6 +32,7 @@ func _run() -> void:
 		{"name": "waterfront", "pos": Vector3(60.0, 6.0, -300.0), "look": Vector3(-40.0, 10.0, -60.0), "fov": 70.0},
 		{"name": "aerial_district", "pos": Vector3(250.0, 95.0, 250.0), "look": Vector3(-40.0, 0.0, -60.0), "fov": 62.0},
 		{"name": "aerial_waterfront", "pos": Vector3(40.0, 70.0, -250.0), "look": Vector3(-20.0, 0.0, 40.0), "fov": 64.0},
+		{"name": "street_arcade", "pos": Vector3(-32, 2.0, -149), "look": Vector3(-130, 3.0, -146), "fov": 62.0},
 		{"name": "airfield", "pos": Vector3(215.0, 3.0, 215.0), "look": Vector3(245.0, 3.0, 240.0), "fov": 66.0},
 	]
 	var cam := Camera3D.new()

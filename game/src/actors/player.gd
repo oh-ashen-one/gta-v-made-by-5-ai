@@ -191,7 +191,20 @@ func _physics_process(delta: float) -> void:
 	if Game.simulation_paused:
 		velocity = Vector3.ZERO
 		return
-	if current_vehicle != null or busy:
+	if current_vehicle != null and is_instance_valid(current_vehicle):
+		# Occupancy has one spatial authority. Keep the hidden foot proxy at
+		# the occupied vehicle so witnesses, saves and effects never target
+		# an abandoned entry position. It has no collision while seated.
+		global_position = current_vehicle.global_position
+		Game.player_position = current_vehicle.global_position
+		Game.player_rotation = current_vehicle.rotation.y
+		collision_layer = 0
+		collision_mask = 0
+		velocity = Vector3.ZERO
+		return
+	collision_layer = 2
+	collision_mask = 1 | 4 | 8
+	if busy:
 		velocity = Vector3.ZERO
 		return
 	_fire_cooldown = maxf(0.0, _fire_cooldown - delta)
@@ -242,7 +255,7 @@ func _physics_process(delta: float) -> void:
 	if face_dir.length() > 0.05:
 		var target_yaw := atan2(-face_dir.x, -face_dir.z)
 		rotation.y = lerp_angle(rotation.y, target_yaw, clampf(delta * 12.0, 0.0, 1.0))
-	arm.rotation.y = yaw
+	arm.rotation.y = yaw - rotation.y
 	arm.rotation.x = pitch
 	_animate(delta, horizontal.length(), sprinting)
 	var actor := controlled_actor()
@@ -436,6 +449,8 @@ func respawn_at(pos: Vector3, rot: float) -> void:
 		if vehicle.has_method("force_exit"):
 			vehicle.force_exit()
 	current_vehicle = null
+	collision_layer = 2
+	collision_mask = 1 | 4 | 8
 	global_position = pos
 	yaw = rot
 	rotation.y = rot

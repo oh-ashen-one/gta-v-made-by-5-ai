@@ -24,6 +24,7 @@ var driver_is_player := false
 var has_ai := false
 var ai_target := Vector3.ZERO
 var ai_lookahead := 14.0
+var ai_speed_limit := INF
 var occupied_by_npc := false
 var _forward := 0.0
 var _steer := 0.0
@@ -190,6 +191,15 @@ func _try_provider_asset(dims: Vector3) -> void:
 	# The cleaned export already faces -Z (engine forward) after the Blender
 	# assembly rotation, so no extra rotation is applied here.
 	root.position = Vector3.ZERO
+	# Wave-one normalization assumed every provider car used the sedan axis.
+	# These two exports have their length on X; fit the visible body to the
+	# same real-world bounds as the collider after rotating it to -Z.
+	if kind == "coupe":
+		root.rotation.y = PI * 0.5
+		root.scale = Vector3(dims.z / 9.13, dims.y / 2.61, dims.x / 4.30)
+	elif kind == "van":
+		root.rotation.y = PI * 0.5
+		root.scale = Vector3(dims.z / 9.73, dims.y / 5.42, dims.x / 5.20)
 	if kind == "police":
 		AssetLibrary.tint(root, Color(0.85, 0.88, 0.95))
 	for part in _procedural_visuals:
@@ -231,10 +241,8 @@ func _physics_process(delta: float) -> void:
 	_check_impact(before)
 	_spin_wheels(delta)
 
-func _check_impact(_before: Vector3) -> void:
+func _check_impact(before: Vector3) -> void:
 	if get_slide_collision_count() == 0:
-		return
-	if _impact_cooldown > 0.0:
 		return
 	# A parked car absorbs contact without being worn out or announced.
 	if not driver_is_player and not has_ai:
@@ -245,12 +253,18 @@ func _check_impact(_before: Vector3) -> void:
 	for i in get_slide_collision_count():
 		var collision := get_slide_collision(i)
 		var normal := collision.get_normal()
-		var approach := -velocity.dot(normal)
+		if normal.y > 0.65:
+			continue # Ground support is not a crash.
+		var approach := -before.dot(normal)
 		worst = maxf(worst, approach)
-	if worst < 3.0:
+	if worst > 0.5:
+		# Match the drivetrain to the velocity the collision actually permits.
+		# Holding throttle against a wall must not invent a fresh 27 m/s crash.
+		_forward = signf(_forward) * minf(absf(_forward), Vector2(velocity.x, velocity.z).length())
+	if worst < 6.0 or _impact_cooldown > 0.0:
 		return
-	_impact_cooldown = 0.6
-	var dmg: float = clampf((worst - 3.0) * 3.0, 0.0, 45.0)
+	_impact_cooldown = 1.2
+	var dmg: float = clampf((worst - 6.0) * 0.8, 0.0, 28.0)
 	health = maxf(0.0, health - dmg)
 	damaged.emit(dmg)
 	if health <= 0.0 and not disabled:
@@ -295,12 +309,12 @@ func _ai_control(delta: float) -> void:
 	var dist := to_target.length()
 	var desired_yaw := atan2(-to_target.x, -to_target.z) if dist > 0.01 else rotation.y
 	rotation.y = lerp_angle(rotation.y, desired_yaw, clampf(delta * 2.4, 0.0, 1.0))
-	var speed_limit := max_speed
+	var speed_limit := minf(max_speed, ai_speed_limit)
 	if dist < 12.0:
-		speed_limit = maxf(6.0, dist * 1.4)
+		speed_limit = minf(speed_limit, maxf(4.0, dist * 1.1))
 	if blocker_ahead():
-		speed_limit = minf(speed_limit, 2.5)
-	_forward = move_toward(_forward, speed_limit, accel * delta)
+		speed_limit = 0.0
+	_forward = move_toward(_forward, speed_limit, (BRAKE if speed_limit < _forward else accel) * delta)
 	var dir := -global_transform.basis.z
 	velocity.x = dir.x * _forward
 	velocity.z = dir.z * _forward
@@ -364,6 +378,7 @@ func interact(player: Node) -> void:
 	Events.notify.emit("Vehicle entered. [E] to exit.", "info")
 
 func force_exit() -> void:
+	Sfx.stop_engine()
 	if driver_is_player:
 		driver_is_player = false
 		_forward = 0.0
@@ -378,14 +393,14 @@ func force_exit() -> void:
 func exit_vehicle(player: Node) -> void:
 	if not driver_is_player:
 		return
-	driver_is_player = false
-	_forward = 0.0
-	velocity.x = 0.0
-	velocity.z = 0.0
 	var exit_pos := _clear_exit_position()
 	if exit_pos == Vector3.ZERO:
 		Events.notify.emit("No clear space to step out.", "warn")
 		return
+	driver_is_player = false
+	driver_player = null
+	_forward = 0.0
+	velocity = Vector3.ZERO
 	player.global_position = exit_pos
 	player.visible = true
 	player.current_vehicle = null
@@ -433,3 +448,17 @@ func _clear_exit_position() -> Vector3:
 
 func busy() -> bool:
 	return driver_is_player
+
+## Vehicle bodywork absorbs incoming fire; occupants are protected until they
+## choose to leave. A disabled car still permits a safe exit.
+func take_damage(amount: float, _from_position: Vector3, _by_player: bool = false) -> void:
+	if disabled:
+		return
+	var applied := maxf(amount, 0.0) * 0.55
+	health = maxf(0.0, health - applied)
+	damaged.emit(applied)
+	if health <= 0.0:
+		disabled = true
+		_forward = 0.0
+		if driver_is_player:
+			Events.notify.emit("Vehicle disabled. [E] to get clear.", "warn")

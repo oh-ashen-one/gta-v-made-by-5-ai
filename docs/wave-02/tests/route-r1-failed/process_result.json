@@ -1,0 +1,9 @@
+{
+  "pid": 89679,
+  "exit_code": 2,
+  "timeout": false,
+  "elapsed_sec": 257.82,
+  "child_reaped": true,
+  "headless": true,
+  "golden_path_pass": false
+}

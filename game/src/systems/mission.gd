@@ -15,10 +15,15 @@ var delivery_node: Node3D
 var package_taken := false
 var car_taken := false
 var landed := false
+var car_driven_distance := 0.0
+var flight_distance := 0.0
+var _last_actor_position := Vector3.ZERO
+var _last_actor: Node3D = null
 var _hostiles: Array[NPC] = []
 var _objective := ""
 
 func setup(w: WorldBuilder, p: Player, t: TrafficManager) -> void:
+	add_to_group("mission")
 	world = w
 	player = p
 	traffic = t
@@ -61,6 +66,17 @@ func _process(_delta: float) -> void:
 	if Game.simulation_paused:
 		return
 	var actor: Node3D = _actor()
+	if actor == null:
+		return
+	# Only continuous movement of the controlled vehicle counts. A respawn or
+	# a fixture teleport cannot accidentally fulfil a driving/flight leg.
+	var travelled := 0.0
+	if actor == _last_actor:
+		var step := actor.global_position.distance_to(_last_actor_position)
+		if step < 12.0:
+			travelled = step
+	_last_actor = actor
+	_last_actor_position = actor.global_position
 	match stage:
 		Stage.TO_PACKAGE:
 			pass
@@ -70,31 +86,37 @@ func _process(_delta: float) -> void:
 				Game.add_heat(14.0)
 				_set_stage(Stage.TO_AIRFIELD)
 		Stage.TO_AIRFIELD:
-			if actor.global_position.distance_to(world.locations["helipad_primary"]) < 60.0:
-				_set_stage(Stage.TO_HELI)
+			if Game.mode == Game.MODE_CAR and actor is Car:
+				car_driven_distance += travelled
+				if car_driven_distance >= 80.0 and actor.global_position.distance_to(world.locations["helipad_primary"]) < 60.0:
+					Game.mark_safe_position(world.locations["helipad_primary"] + Vector3(3.6, 0.6, 0.0), 0.0)
+					Game.checkpoint_index = 2
+					Events.checkpoint_reached.emit(2)
+					_set_stage(Stage.TO_HELI)
 		Stage.TO_HELI:
 			if Game.mode == Game.MODE_HELI:
-				Game.mark_safe_position(world.locations["helipad_primary"], 0.0)
-				Game.checkpoint_index = 2
-				Events.checkpoint_reached.emit(2)
+				flight_distance = 0.0
 				_set_stage(Stage.FLY)
 		Stage.FLY:
 			if Game.mode == Game.MODE_HELI:
+				flight_distance += travelled
 				var heli := player.current_vehicle
-				if heli and heli.is_landed() and heli.global_position.distance_to(world.locations["helipad_secondary"]) < 30.0:
+				if heli and flight_distance >= 80.0 and heli.is_landed() and heli.global_position.distance_to(world.locations["helipad_secondary"]) < 30.0:
 					landed = true
+					Game.checkpoint_index = 3
+					Game.mark_safe_position(world.locations["helipad_secondary"] + Vector3(3.6, 0.6, 0.0), 0.0)
+					Events.checkpoint_reached.emit(3)
 					_set_stage(Stage.LAND)
 		Stage.LAND:
 			if Game.mode == Game.MODE_FOOT and actor.global_position.distance_to(world.locations["helipad_secondary"]) < 40.0:
 				_set_stage(Stage.DELIVER)
 		Stage.DELIVER:
-			if delivery_node and player.global_position.distance_to(delivery_node.global_position) < 3.5:
-				_set_stage(Stage.DONE)
+			pass # Delivery is an explicit on-foot interaction, never proximity alone.
 
-func _set_stage(new_stage: int) -> void:
+func _set_stage(new_stage: int, side_effects: bool = true) -> void:
 	stage = new_stage
 	Game.mission_stage = stage
-	Game.in_mission = true
+	Game.in_mission = stage != Stage.DONE
 	match stage:
 		Stage.TO_PACKAGE:
 			_objective = "Harbour Relay — collect the package at the hawker centre."
@@ -123,20 +145,63 @@ func _set_stage(new_stage: int) -> void:
 		Stage.DONE:
 			_objective = "Harbour Relay complete. Free roam continues."
 			Events.objective_marker_changed.emit(Vector3.ZERO)
-			Events.mission_finished.emit(true)
-			Game.save_game()
+			if side_effects:
+				Events.mission_finished.emit(true)
+				Game.save_game()
 	Events.objective_changed.emit(_objective)
 	Events.mission_stage_changed.emit(stage)
 
-## Restore a saved stage without replaying its side effects.
+## Saves restore the matching pickup/flag/objective state. Since vehicles are
+## not serialized, a mid-drive/mid-flight save returns to its honest checkpoint.
 func restore_stage(stage_index: int) -> void:
-	stage = clampi(stage_index, 0, Stage.DONE)
-	Game.mission_stage = stage
-	Events.objective_changed.emit(_objective)
-	Events.mission_stage_changed.emit(stage)
+	var restored := clampi(stage_index, 0, Stage.DONE)
+	if restored == Stage.PACKAGE or restored == Stage.TO_AIRFIELD:
+		restored = Stage.TO_CAR
+	elif restored == Stage.FLY:
+		restored = Stage.TO_HELI
+	elif restored == Stage.LAND:
+		restored = Stage.DELIVER
+	package_taken = restored >= Stage.TO_CAR
+	car_taken = restored >= Stage.TO_HELI
+	landed = restored >= Stage.DELIVER
+	car_driven_distance = 0.0
+	flight_distance = 0.0
+	_last_actor = null
+	if package_node:
+		package_node.set("_taken", package_taken)
+		package_node.visible = not package_taken
+	if restored == Stage.TO_HELI:
+		_reset_helicopter()
+	_set_stage(restored, false)
+
+## Death never substitutes walking for the car leg. The reached checkpoint
+## is retained, while the unfinished transport leg must be played again.
+func on_player_respawn() -> void:
+	if stage == Stage.DONE:
+		return
+	if Game.checkpoint_index >= 3:
+		restore_stage(Stage.DELIVER)
+	elif Game.checkpoint_index >= 2:
+		_reset_helicopter()
+		restore_stage(Stage.TO_HELI)
+	elif Game.checkpoint_index >= 1:
+		restore_stage(Stage.TO_CAR)
+	else:
+		restore_stage(Stage.TO_PACKAGE)
+
+func _reset_helicopter() -> void:
+	var heli := get_tree().get_first_node_in_group("helicopters") as Helicopter
+	if heli:
+		heli.force_exit()
+		heli.global_position = world.locations["helipad_primary"] + Vector3(0.0, 0.6, 0.0)
+		heli.rotation = Vector3.ZERO
+		heli.velocity = Vector3.ZERO
+		heli.health = 100.0
+		heli.disabled = false
 
 func package_collected() -> void:
 	if stage == Stage.TO_PACKAGE:
+		package_taken = true
 		_set_stage(Stage.PACKAGE)
 		_set_stage(Stage.TO_CAR)
 		Game.mark_safe_position(player.global_position, player.rotation.y)
@@ -145,8 +210,9 @@ func package_collected() -> void:
 		Events.toast("Checkpoint saved.", "info")
 
 func delivery_completed() -> void:
-	if stage == Stage.DELIVER:
-		_set_stage(Stage.DONE)
+	if stage == Stage.DELIVER and Game.mode == Game.MODE_FOOT and package_taken and landed:
+		if player.global_position.distance_to(delivery_node.global_position) <= Player.PICKUP_RANGE:
+			_set_stage(Stage.DONE)
 
 ## The body the player controls right now (vehicle when driving or flying).
 func _actor() -> Node3D:
@@ -166,9 +232,22 @@ func restart() -> void:
 			h.queue_free()
 	_hostiles.clear()
 	_spawn_hostiles()
+	player.respawn_at(world.locations["safe_room"] + Vector3(0.0, 0.4, 0.0), PI)
+	Game.health = Game.MAX_HEALTH
+	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
+	Game.wanted_heat = 0.0
+	Game.set_wanted(0)
+	Game.checkpoint_index = 0
+	Game.mark_safe_position(player.global_position, player.yaw)
+	Game.ammo = {"pistol": {"mag": 12, "reserve": 96}, "smg": {"mag": 30, "reserve": 180}}
+	traffic.wanted_reset()
+	_reset_helicopter()
 	package_taken = false
 	car_taken = false
 	landed = false
+	car_driven_distance = 0.0
+	flight_distance = 0.0
+	_last_actor = null
 	_set_stage(Stage.TO_PACKAGE)
 	Events.notify.emit("Mission restarted.", "info")
 

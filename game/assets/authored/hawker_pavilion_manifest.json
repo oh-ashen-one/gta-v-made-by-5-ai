@@ -1,0 +1,22 @@
+{
+  "asset": "hawker_pavilion",
+  "dimensions_blender_xyz_m": [
+    70.4,
+    54.08,
+    9.2
+  ],
+  "triangles": 22100,
+  "objects": 16,
+  "clearance_m": {
+    "eaves": 5.5,
+    "ridge": 9,
+    "fan_bottom": 4.45,
+    "truss_tie": 5.09
+  },
+  "floor": false,
+  "walls": false,
+  "collisions": false,
+  "source": "game/tools/build_pavilion.py",
+  "helper": "game/tools/build_foliage.py",
+  "seed": 8112
+}

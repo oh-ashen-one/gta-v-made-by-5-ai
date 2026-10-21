@@ -56,43 +56,41 @@ func build(seed_value: int = 20261021) -> void:
 	_background_city()
 	_build_lane_graph()
 	_scatter_props()
+	_landscape()
 
 # ---------------------------------------------------------------- environment
 func _environment() -> void:
 	var env := Environment.new()
-	var sky_mat := ProceduralSkyMaterial.new()
-	sky_mat.sky_top_color = Color(0.24, 0.42, 0.68)
-	sky_mat.sky_horizon_color = Color(0.83, 0.78, 0.68)
-	sky_mat.sky_curve = 0.15
-	sky_mat.ground_bottom_color = Color(0.28, 0.27, 0.24)
-	sky_mat.ground_horizon_color = Color(0.72, 0.66, 0.55)
-	sky_mat.sun_angle_max = 24.0
-	sky_mat.sun_curve = 0.08
+	var sky_mat := ShaderMaterial.new()
+	sky_mat.shader = load("res://assets/authored/shaders/tropical_sky.gdshader")
 	var sky := Sky.new()
 	sky.sky_material = sky_mat
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 1.0
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.05
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color(.65,.74,.87)
+	env.ambient_light_energy = 0.42
+	env.tonemap_mode = Environment.TONE_MAPPER_ACES
+	env.tonemap_exposure = 0.95
 	env.fog_enabled = true
-	env.fog_light_color = Color(0.78, 0.76, 0.70)
-	env.fog_density = 0.0012
+	env.fog_light_color = Color(0.56, 0.65, 0.73)
+	env.fog_density = 0.00025
 	env.fog_sky_affect = 0.2
 	env.ssao_enabled = true
-	env.ssao_radius = 1.4
+	env.ssao_radius = 1.6
+	env.ssao_intensity = 1.7
+	env.ssao_light_affect = 0.35
 	env.glow_enabled = true
-	env.glow_intensity = 0.35
+	env.glow_intensity = 0.16
 	env.glow_bloom = 0.05
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
 
 	var sun := DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-46.0, 38.0, 0.0)
-	sun.light_energy = 2.6
-	sun.light_color = Color(1.0, 0.93, 0.82)
+	sun.rotation_degrees = Vector3(-28.0, -38.0, 0.0)
+	sun.light_energy = 1.25
+	sun.light_color = Color(1.0, 0.82, 0.62)
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 220.0
 	sun.shadow_bias = 0.03
@@ -100,7 +98,7 @@ func _environment() -> void:
 
 	var fill := DirectionalLight3D.new()
 	fill.rotation_degrees = Vector3(-25.0, -140.0, 0.0)
-	fill.light_energy = 0.35
+	fill.light_energy = 0.08
 	fill.light_color = Color(0.72, 0.80, 0.95)
 	fill.shadow_enabled = false
 	add_child(fill)
@@ -113,16 +111,16 @@ func _ground() -> void:
 	_world_root.add_child(ground)
 	var mesh := MeshInstance3D.new()
 	var box := BoxMesh.new()
-	box.size = Vector3(1500.0, 4.0, 1500.0)
+	box.size = Vector3(1500.0, 4.0, 1100.0)
 	mesh.mesh = box
 	mesh.material_override = Palette.mat_textured(Color(0.42, 0.41, 0.38), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
-	mesh.position = Vector3(0.0, -2.0, 0.0)
+	mesh.position = Vector3(0.0, -2.0, 200.0)
 	ground.add_child(mesh)
 	var shape := CollisionShape3D.new()
 	var bs := BoxShape3D.new()
-	bs.size = Vector3(1500.0, 4.0, 1500.0)
+	bs.size = Vector3(1500.0, 4.0, 1100.0)
 	shape.shape = bs
-	shape.position = Vector3(0.0, -2.0, 0.0)
+	shape.position = Vector3(0.0, -2.0, 200.0)
 	ground.add_child(shape)
 
 func _roads() -> void:
@@ -144,7 +142,7 @@ func _roads() -> void:
 	# kerbs + sidewalk bands around each block
 	for cx in [-240.0, -80.0, 80.0, 240.0]:
 		for cz in [-240.0, -80.0, 80.0, 240.0]:
-			_solid_box(Vector3(BLOCK, 0.16, BLOCK), Vector3(cx, 0.08, cz), Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(24.0, 1.0, 24.0), 0.92))
+			_solid_box(Vector3(BLOCK, 0.16, BLOCK), Vector3(cx, 0.08, cz), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.92))
 
 # ------------------------------------------------------------------- blocks
 func _build_grid() -> void:
@@ -185,6 +183,8 @@ func _shophouse_block(centre: Vector3) -> void:
 	# two street-facing rows plus a rear service lane
 	_shophouse_row(centre + Vector3(-BLOCK / 2.0 + 8.0, 0.0, -BLOCK / 2.0 + 8.0), Vector3(1, 0, 0), 13)
 	_shophouse_row(centre + Vector3(BLOCK / 2.0 - 8.0, 0.0, BLOCK / 2.0 - 8.0), Vector3(-1, 0, 0), 13)
+	_shophouse_row(centre+Vector3(60,0,-42.4),Vector3(0,0,1),8)
+	_shophouse_row(centre+Vector3(-60,0,42.4),Vector3(0,0,-1),8)
 	# low rear service buildings + a service lane
 	for i: int in 3:
 		var p := centre + Vector3(-40.0 + i * 40.0, 0.0, 30.0)
@@ -202,77 +202,54 @@ func _shophouse_block(centre: Vector3) -> void:
 				clutter.rotation.y = randf_range(-0.6, 0.6)
 
 func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
+	# A block perimeter is a continuous row with outward-facing five-foot ways.
+	# The provider module's actual facade faces +X, not -Z as wave one assumed.
 	var unit_w := 10.6
+	var yaw := atan2(-dir.z, dir.x)
+	var front_dir := Vector3(0,0,-1).rotated(Vector3.UP,yaw)
+	var plaster := Palette.mat_textured(Palette.PLASTER,"plaster",Vector3.ONE,.9)
+	var sign_mat := Palette.mat(Color(.055,.11,.1),.75)
 	for i in count:
-		var pos: Vector3 = origin + dir * (unit_w * 0.5 + i * unit_w)
-		var frontage: Color = Palette.FRONTAGES[i % Palette.FRONTAGES.size()]
-		var height := 9.5 + float(i % 3) * 1.6
-		var depth := 13.0
-		# body — the generated shophouse module when it has been staged,
-		# otherwise the procedural kit
-		var used_provider := false
-		if AssetLibrary.has_asset("shophouse_clean.glb"):
-			var module := AssetLibrary.instantiate("shophouse_clean.glb", _world_root)
-			if module != null:
-				module.position = pos
-				module.rotation.y = 0.0
-				AssetLibrary.tint(module, frontage)
-				used_provider = true
-		if not used_provider:
-			_solid_box(Vector3(unit_w - 0.35, height, depth), pos + Vector3(0.0, height * 0.5, 0.0),
-				Palette.mat_textured(frontage, "plaster", Vector3(3.0, 2.0, 3.0), 0.88))
-		# five-foot-way arcade: columns + covered walkway (recessed threshold)
-		var arcade_dir := Vector3(0.0, 0.0, 1.0) if dir.x != 0.0 else Vector3(1.0, 0.0, 0.0)
-		var along := Vector3(0.0, 0.0, 1.0) if dir.x != 0.0 else Vector3(1.0, 0.0, 0.0)
-		for c in 2:
-			var cpos := pos + dir * (-unit_w * 0.25 + c * unit_w * 0.5) - arcade_dir * (depth * 0.5 + 1.6)
-			_solid_box(Vector3(0.55, 3.6, 0.55), cpos + Vector3(0.0, 1.8, 0.0), Palette.mat(Palette.CONCRETE, 0.9))
-		_solid_box(Vector3(unit_w - 0.35, 0.35, 3.2), pos + Vector3(0.0, 3.7, 0.0) - arcade_dir * (depth * 0.5 + 1.4),
-			Palette.mat(Palette.PLASTER_2, 0.9))
-		# shopfront: dark recess + warm interior glow + shutter panels
-		var front := pos - arcade_dir * (depth * 0.5 + 0.1)
-		_box(Vector3(unit_w - 2.0, 2.6, 0.12), front + Vector3(0.0, 1.3, 0.0), Palette.mat(Color(0.08, 0.07, 0.06), 0.6))
-		_box(Vector3(unit_w - 3.4, 1.7, 0.06), front + Vector3(0.0, 1.5, 0.05), Palette.emissive(Palette.SHOP_WARM, 1.1))
-		_box(Vector3(unit_w - 1.2, 0.5, 0.1), front + Vector3(0.0, 3.3, 0.0), Palette.mat(Palette.METAL, 0.5, 0.5))
-		# upper windows
-		for w: int in 3:
-			var wx := along * (-unit_w * 0.3 + w * unit_w * 0.3)
-			_box(Vector3(1.5, 1.4, 0.1), pos + wx + Vector3(0.0, 6.6, 0.0) - arcade_dir * (depth * 0.5 + 0.06),
-				Palette.mat(Palette.GLASS, 0.25, 0.2))
-			_box(Vector3(1.8, 0.14, 0.22), pos + wx + Vector3(0.0, 5.7, 0.0) - arcade_dir * (depth * 0.5 + 0.08),
-				Palette.mat(Palette.PLASTER, 0.9))
-		# pitched tile roof (skipped when the generated module carries its own)
-		if not used_provider:
-			var roof := MeshInstance3D.new()
-			var prism := PrismMesh.new()
-			prism.size = Vector3(unit_w - 0.2, 2.6, depth + 0.6)
-			roof.mesh = prism
-			roof.material_override = Palette.mat_textured(Palette.ROOF_TILE if i % 2 == 0 else Palette.ROOF_TILE_2, "tile", Vector3(2.0, 2.0, 3.0), 0.8)
-			roof.position = pos + Vector3(0.0, height + 1.3, 0.0)
-			if dir.z != 0.0:
-				roof.rotation_degrees = Vector3(0.0, 90.0, 0.0)
-			_world_root.add_child(roof)
-		# awning + signage
-		var awning := MeshInstance3D.new()
-		var am := BoxMesh.new()
-		am.size = Vector3(unit_w - 1.0, 0.12, 1.6)
-		awning.mesh = am
-		awning.material_override = Palette.mat(Palette.FRONTAGES[(i + 3) % Palette.FRONTAGES.size()], 0.9)
-		awning.position = front + Vector3(0.0, 2.95, 0.0) + arcade_dir * 0.9
-		awning.rotation_degrees = Vector3(0.0, 0.0, 0.0)
-		if dir.x != 0.0:
-			awning.rotation_degrees = Vector3(-14.0, 0.0, 0.0)
-			awning.scale = Vector3(1.0, 1.0, 1.0)
-		else:
-			awning.rotation_degrees = Vector3(0.0, 0.0, 14.0)
-		_world_root.add_child(awning)
-		var sign := _label3d(Palette.SIGN_TEXT[(i * 3 + int(absf(pos.x + pos.z))) % Palette.SIGN_TEXT.size()], front + Vector3(0.0, 3.9, 0.0) + arcade_dir * 0.12)
-		sign.font_size = 44
-		sign.pixel_size = 0.011
-		sign.modulate = Color(0.96, 0.93, 0.86)
-		# kerb parking bay
-		if i % 3 == 1:
-			parked_spots.append({"pos": pos + arcade_dir * (depth * 0.5 + 3.4) + Vector3(0.0, 0.2, 0.0), "heading": 0.0, "kind": "sedan"})
+		var pos: Vector3 = origin + dir * (unit_w * .5+i*unit_w)
+		var frontage: Color = Palette.FRONTAGES[(i+int(absf(origin.x)/25))%Palette.FRONTAGES.size()]
+		var module := AssetLibrary.instantiate("shophouse_clean.glb",_world_root)
+		if module != null:
+			module.position=pos
+			module.rotation.y=yaw+PI*.5
+			module.scale.y=.94+float((i/3)%3)*.04
+			AssetLibrary.tint(module,frontage)
+		# Building envelope and rear wall are solid; arcade remains walkable.
+		_collision_box(Vector3(10.1,7.3,9.5),pos+Vector3(0,7.6,0),yaw)
+		_collision_box(Vector3(10.1,3.7,6.5),pos+Vector3(0,1.85,0)+Vector3(0,0,1.4).rotated(Vector3.UP,yaw),yaw)
+		# A sheltered tiled footway physically joins the modules.
+		var path := _box(Vector3(unit_w,.08,3.3),pos+front_dir*6.2+Vector3(0,.10,0),Palette.mat_textured(Color(.65,.68,.62),"pavers",Vector3.ONE,.86))
+		path.rotation.y=yaw
+		var board := _box(Vector3(7.2,.65,.16),pos+front_dir*5.27+Vector3(0,3.45,0),sign_mat)
+		board.rotation.y=yaw
+		var sign := _label3d(Palette.SIGN_TEXT[(i+int(absf(origin.z)/12))%Palette.SIGN_TEXT.size()],pos+front_dir*5.39+Vector3(0,3.46,0))
+		sign.rotation.y=yaw+PI
+		sign.font_size=48
+		sign.pixel_size=.009
+		sign.outline_size=2
+		# Warm lanterns have modeled holders and small visible emitters.
+		for side in [-1.0,1.0]:
+			var lp: Vector3 = pos+front_dir*5.65+dir*side*4.2+Vector3(0,2.7,0)
+			_box(Vector3(.22,.42,.22),lp,Palette.mat(Palette.METAL_DARK,.5,.45))
+			_box(Vector3(.16,.27,.16),lp,Palette.emissive(Palette.SHOP_WARM,1.6))
+		if i%2==0:
+			var pot:=AssetLibrary.instantiate("planter_clean.glb",_world_root)
+			if pot!=null: pot.position=pos+front_dir*7.2+dir*3.7; pot.scale=Vector3.ONE*1.2
+			_authored("fern.glb",pos+front_dir*7.2+dir*3.7+Vector3(0,.65,0),yaw,Vector3.ONE*.6)
+		if i%3==1:
+			var ac:=AssetLibrary.instantiate("ac_unit_clean.glb",_world_root)
+			if ac!=null: ac.position=pos-front_dir*5.2+Vector3(0,4.3,0); ac.rotation.y=yaw
+
+func _collision_box(size: Vector3, pos: Vector3, yaw: float=0) -> void:
+	var body:=StaticBody3D.new()
+	body.position=pos; body.rotation.y=yaw
+	body.collision_layer=1; body.collision_mask=0
+	var shape:=CollisionShape3D.new(); var box:=BoxShape3D.new(); box.size=size; shape.shape=box
+	body.add_child(shape); _world_root.add_child(body)
 
 ## Public housing: tall slab blocks, void-deck ground floor, courtyard, carpark.
 func _hdb_block(centre: Vector3) -> void:
@@ -378,18 +355,11 @@ func _safe_room(pos: Vector3) -> void:
 
 ## Hawker hub: roofed open-sided shared dining with stalls, tables, fans, lights.
 func _hawker_block(centre: Vector3) -> void:
+	_shophouse_row(centre+Vector3(-63.6,0,-60),Vector3(1,0,0),12)
 	# pavilion slab
-	_solid_box(Vector3(70.0, 0.25, 54.0), centre + Vector3(0.0, 0.12, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.92))
-	# roof on columns
-	for i: int in 7:
-		for j: int in 5:
-			var cp := centre + Vector3(-30.0 + i * 10.0, 0.0, -22.0 + j * 11.0)
-			_cyl(Vector3(0.5, 5.2, 0.5), cp + Vector3(0.0, 2.6, 0.0), Palette.mat(Palette.METAL, 0.5, 0.5))
-	_solid_box(Vector3(72.0, 0.5, 56.0), centre + Vector3(0.0, 5.4, 0.0), Palette.mat(Palette.METAL_DARK, 0.7, 0.3))
-	# a pale ceiling under the roof: without it the underside of the canopy
-	# reads as a black void from street level
-	_box(Vector3(71.0, 0.12, 55.0), centre + Vector3(0.0, 5.02, 0.0), Palette.mat(Palette.PLASTER_2, 0.9))
-	_box(Vector3(74.0, 0.2, 12.0), centre + Vector3(0.0, 5.9, -18.0), Palette.mat(Palette.ROOF_TILE, 0.8))
+	_solid_box(Vector3(70.0, 0.25, 54.0), centre + Vector3(0.0, 0.12, 0.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.92))
+	# Original DCC-authored pitched terracotta pavilion with exposed trusses.
+	_authored("hawker_pavilion.glb", centre)
 	# stalls: counters, canopies, signboards
 	for i: int in 6:
 		var sp := centre + Vector3(-27.0 + i * 11.0, 0.0, -20.0)
@@ -423,29 +393,25 @@ func _hawker_block(centre: Vector3) -> void:
 		sign.font_size = 40
 		sign.pixel_size = 0.012
 	# shared dining: tables, stools, bins, tray return
-	for i: int in 4:
-		for j: int in 3:
-			var tp := centre + Vector3(-24.0 + i * 16.0, 0.0, 6.0 + j * 12.0)
+	for i: int in 8:
+		for j: int in 5:
+			var tp := centre + Vector3(-28.0 + i * 8.0, 0.0, -6.0 + j * 7.0)
 			var provider_table := false
 			if AssetLibrary.has_asset("hawker_table_clean.glb"):
 				var table := AssetLibrary.instantiate("hawker_table_clean.glb", _world_root)
 				if table != null:
 					table.position = tp
+					table.scale = Vector3.ONE * 1.45
 					provider_table = true
 			if not provider_table:
 				_cyl(Vector3(2.0, 0.12, 2.0), tp + Vector3(0.0, 0.85, 0.0), Palette.mat(Palette.PLASTER_2, 0.8))
 				_cyl(Vector3(0.3, 0.85, 0.3), tp + Vector3(0.0, 0.42, 0.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
-			for s in 4:
+			for s in (0 if provider_table else 4):
 				var ang := TAU * s / 4.0 + 0.6
 				_cyl(Vector3(0.55, 0.5, 0.55), tp + Vector3(cos(ang) * 1.5, 0.25, sin(ang) * 1.5), Palette.mat(Palette.PLASTER, 0.85))
 		# tray return + bins
-		_solid_box(Vector3(3.0, 1.0, 1.0), centre + Vector3(-24.0 + i * 16.0, 0.5, 0.0), Palette.mat(Palette.METAL, 0.5, 0.5))
-		_cyl(Vector3(1.0, 1.2, 1.0), centre + Vector3(-30.0 + i * 16.0, 0.6, -2.0), Palette.mat(Palette.METAL_DARK, 0.7, 0.3))
-	# ceiling fans
-	for i: int in 4:
-		var fp := centre + Vector3(-24.0 + i * 16.0, 0.0, 12.0)
-		_cyl(Vector3(0.3, 0.6, 0.3), fp + Vector3(0.0, 4.9, 0.0), Palette.mat(Palette.METAL, 0.5, 0.5))
-		_box(Vector3(2.6, 0.06, 0.3), fp + Vector3(0.0, 4.55, 0.0), Palette.mat(Palette.METAL_DARK, 0.6, 0.4))
+		_solid_box(Vector3(3.0, 1.0, 1.0), centre + Vector3(-28.0 + i * 8.0, 0.5, -25.0), Palette.mat(Palette.METAL, 0.5, 0.5))
+		_cyl(Vector3(1.0, 1.2, 1.0), centre + Vector3(-29.0 + i * 8.0, 0.6, -24.0), Palette.mat(Palette.METAL_DARK, 0.7, 0.3))
 	# warm practical lighting under the hawker roof
 	for i: int in 6:
 		var practical := OmniLight3D.new()
@@ -638,11 +604,8 @@ func _scatter_props() -> void:
 				if k == 1:
 					off = Vector3(0.0, 0.0, -10.5 + 21.0)
 				_street_lamp(Vector3(x, 0.0, z) + off)
-	for i: int in 40:
-		var pos := Vector3(_rng.randf_range(-310.0, 310.0), 0.0, _rng.randf_range(-310.0, 310.0))
-		if _inside_block(pos):
-			continue
-		_tree(pos, _rng.randf_range(0.8, 1.25))
+	# Tree locations are authored in _landscape. The inherited random scatter
+	# put trees in live lanes; real trunk collision made that defect observable.
 
 ## True when a point falls on a raised block platform (buildings live there).
 func _inside_block(pos: Vector3) -> bool:
@@ -672,17 +635,68 @@ func _street_lamp(pos: Vector3) -> void:
 	_world_root.add_child(bulb)
 
 func _tree(pos: Vector3, scale: float) -> void:
-	var trunk_h := 3.2 * scale
-	_cyl(Vector3(0.42 * scale, trunk_h, 0.42 * scale), pos + Vector3(0.0, trunk_h * 0.5, 0.0), Palette.mat(Palette.TRUNK, 0.95))
-	# dimensional canopy: several overlapping spheres, not a billboard
-	for i: int in 4:
-		var ang := TAU * i / 4.0
-		var r := 1.5 * scale
-		_sphere(Vector3(r * 2.0, r * 1.7, r * 2.0), pos + Vector3(cos(ang) * 0.9 * scale, trunk_h + 0.9 * scale + (0.2 if i % 2 == 0 else 0.0), sin(ang) * 0.9 * scale),
-			Palette.mat(Palette.FOLIAGE.lerp(Palette.FOLIAGE_LIGHT, float(i % 2)), 0.95))
-	_sphere(Vector3(2.6 * scale, 2.2 * scale, 2.6 * scale), pos + Vector3(0.0, trunk_h + 1.9 * scale, 0.0),
-		Palette.mat(Palette.FOLIAGE, 0.95))
+	var tree := _authored("rain_tree.glb", pos, _rng.randf_range(-PI, PI), Vector3.ONE * scale)
+	if tree == null:
+		return
+	# Trunk collision only: leaf envelopes never become invisible walls.
+	var body := StaticBody3D.new()
+	body.position = pos + Vector3(0, 2.4 * scale, 0)
+	var shape := CollisionShape3D.new()
+	var cylinder := CylinderShape3D.new()
+	cylinder.radius = 0.45 * scale
+	cylinder.height = 4.8 * scale
+	shape.shape = cylinder
+	body.add_child(shape)
+	_world_root.add_child(body)
 
+func _authored(file: String, pos: Vector3, yaw: float = 0.0, asset_scale: Vector3 = Vector3.ONE) -> Node3D:
+	var path := "res://assets/authored/" + file
+	if not ResourceLoader.exists(path):
+		return null
+	var node: Node3D = (load(path) as PackedScene).instantiate()
+	_world_root.add_child(node)
+	node.position = pos
+	node.rotation.y = yaw
+	node.scale = asset_scale
+	return node
+
+func _landscape() -> void:
+	var turf := Palette.mat_textured(Color(0.24, 0.32, 0.16), "soil", Vector3.ONE, 0.95)
+	var pale := Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9)
+	for col in 4:
+		for row in 4:
+			var centre := Vector3(-240.0 + col * 160.0, 0.0, -240.0 + row * 160.0)
+			var kit := _kit_for(col, row)
+			# The interior of each block has gardens, service lanes and paths.
+			# Preserve the authored mission hall and aviation apron.
+			if kit in ["shophouse", "mixed", "waterfront"]:
+				_box(Vector3(104, 0.06, 62), centre + Vector3(0, .19, 0), turf)
+				_box(Vector3(110, .08, 4), centre + Vector3(0,.21,0), pale)
+				_box(Vector3(4, .08, 90), centre + Vector3(0,.21,0), pale)
+				for j in 3:
+					for k in 2:
+						_tree(centre + Vector3(-40+j*40,.22,-17+k*34), .78+_rng.randf()*.22)
+			if kit == "hawker":
+				for side in [-1.0,1.0]:
+					_box(Vector3(20,.08,112), centre+Vector3(side*56,.2,0),turf)
+					for j in 4:
+						_tree(centre+Vector3(side*56,.24,-47+j*31),.85)
+						_authored("fern.glb",centre+Vector3(side*53,.25,-47+j*31),j*.7,Vector3.ONE*1.3)
+				_box(Vector3(72,.08,17),centre+Vector3(0,.2,51),turf)
+				for j in 4:
+					_tree(centre+Vector3(-27+j*18,.25,51),.75)
+	# Tree-lined verges are deliberately outside the carriageway and crossings.
+	for road in [-160.0,0.0,160.0]:
+		for block in [-240.0,-80.0,80.0,240.0]:
+			for side in [-1.0,1.0]:
+				for j in 3:
+					var p := Vector3(road+side*14, .23, block-47+j*47)
+					_tree(p,.8+_rng.randf()*.2)
+					_box(Vector3(4.0,.12,5.4),p+Vector3(0,.04,0),turf)
+					for k in 2:
+						_authored("fern.glb",p+Vector3(side*.9,.12,-1.4+k*2.8),j+k,Vector3.ONE*.65)
+	for j in 10:
+		_authored("palm.glb",Vector3(-290+j*62,.2,PROMENADE_Z+6),j*.7,Vector3.ONE)
 
 # ------------------------------------------------------- junctions & fittings
 ## Crosswalks, stop lines and signal heads at every intersection (TRAFFIC-01).

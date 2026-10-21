@@ -1,0 +1,38 @@
+[
+  {
+    "asset": "rain_tree",
+    "dimensions_blender_xyz_m": [
+      21.718,
+      21.486,
+      13.738
+    ],
+    "triangles": 21184,
+    "objects": 2,
+    "source": "game/tools/build_foliage.py",
+    "seed": 21021
+  },
+  {
+    "asset": "palm",
+    "dimensions_blender_xyz_m": [
+      7.331,
+      7.83,
+      12.384
+    ],
+    "triangles": 5344,
+    "objects": 2,
+    "source": "game/tools/build_foliage.py",
+    "seed": 21022
+  },
+  {
+    "asset": "fern",
+    "dimensions_blender_xyz_m": [
+      2.453,
+      2.406,
+      0.876
+    ],
+    "triangles": 4960,
+    "objects": 2,
+    "source": "game/tools/build_foliage.py",
+    "seed": 21023
+  }
+]

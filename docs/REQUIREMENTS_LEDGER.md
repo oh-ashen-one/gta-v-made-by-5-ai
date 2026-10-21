@@ -1,4 +1,6 @@
-# Requirements ledger — wave 1 (MiniMax M3.1 Flash)
+# Requirements ledger — relay
+
+> Wave 2 is active on `feature/wave-02-astra`. Inherited rows below are historical and contain known overclaims/malformed entries; current verification lives in `docs/wave-02/LOOP.md` and exact test reports under `docs/wave-02/tests/` until the wave-two reconciliation. The inherited scripted DONE included death/respawn and did not prove the drive leg. GTA VI visual acceptance remains **Fail/REWORK**. Provider output redistribution remains partly **UNVERIFIED**.
 
 Status vocabulary follows END_GOAL §15 (VERIFY-01): `Pass`, `Fail`, `Implemented — not verified`, `Not started`, `Blocked`, `NOT TESTED`.
 Nothing here is claimed as verified unless a runtime artefact is linked. The wave-1 build is a **playable experimental slice**, not an accepted north star.
