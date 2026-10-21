@@ -1,8 +1,8 @@
 # Wave 3 evidence — DeepSeek V4.1 Flash Max through Devin
 
-**Last reconciled: 2026-10-21T19:03Z** from actual terminal output, rendered PNGs, the packaged
-executable and source. (An earlier revision of this file carried a timestamp of 18:50Z, which was a
-clock error on my part and was in the future; it has been replaced with observed times only.)
+**Last reconciled: 2026-10-21T18:55Z** from actual terminal output, rendered PNGs, the packaged
+executable and source. (Earlier revisions of this file carried timestamps of 18:50Z and 19:03Z, both
+of which were ahead of the observed clock; every timestamp here is now checked against `date -u`.)
 
 **Checkpoint:** `f2dad16` plus later commits on `feature/wave-03-deepseek`.
 **Engine:** Godot **4.7.1.stable.official.a13da4feb**, Forward+, Metal, native macOS,

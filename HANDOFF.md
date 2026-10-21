@@ -1,6 +1,6 @@
 # Singapore relay — wave 3 (DeepSeek V4.1 Flash Max through Devin)
 
-**HANDOFF COMPLETE** — reconciled 2026-10-21T19:10Z. Hard end 19:46:20 UTC; this file was finalised
+**HANDOFF COMPLETE** — reconciled 2026-10-21T18:55Z. Hard end 19:46:20 UTC; this file was finalised
 during the handoff-preparation window and contains no future-dated claims.
 
 - Current owner: DeepSeek V4.1 Flash Max through Devin, managed by the original Codex relay chat.
@@ -54,6 +54,15 @@ Read `docs/wave-03/REASSESSMENT.md` for the evidence-based priority decision and
 
 ## Open gates — honest
 
+- **Packaged scripted route: FAIL.** `docs/wave-03/packaged-route/capture_log.json` exits 2 after
+  **263.1 s** with `failure_reason = "uninterrupted driving leg reached aviation compound"`. The
+  foot, combat (3 kills, 0 deaths) and package gates pass, and the car is entered, but the car then
+  barely moves: 7 m from the first waypoint at 107 s, and only ~18 m travelled in the following 35 s,
+  with every later waypoint distance growing. **This is a regression introduced by this wave's
+  density work** — the nearest usable car is now a kerb-parked vehicle at `(-152, -80)` selected out
+  of a much larger parked fleet, and the scripted driver cannot get it onto the carriageway. Wave 2's
+  equivalent route completed 13/13 gates. Do not treat this route as passing; fixing it is wave 4's
+  top functional item.
 - **Independent visual score: none for this wave.** The subagent harness model has no image input,
   so the fresh-context critic returned no judgement rather than inventing one. The owner reviewed the
   street gameplay and called it "pretty good" — encouragement on progress, **not** acceptance, and the
@@ -61,6 +70,8 @@ Read `docs/wave-03/REASSESSMENT.md` for the evidence-based priority decision and
 - **Packaged 1800 s workload / timing after pooling: NOT TESTED.** Not feasible in the remaining
   window. The responder cost is measured (≈145 ms each) and moved to the load path (activation
   19–32 µs), which addresses the hypothesised cause but does not prove the packaged hitch is gone.
+  The failed route does record `p95 73.4 ms / p99 83.3 ms / max 624.6 ms` at a measured
+  **20 fps last / 52 fps max** on a shared, contaminated capture slot — a baseline, not acceptance.
 - **Car wheel articulation, pursuit/navigation recovery, traffic blocked-lane reroute, audio
   listening quality** remain as wave 2 left them. Untouched this wave.
 - **Ordinary OS-input playtest (QA-001)** still absent; the UI phases are fixture-assisted.

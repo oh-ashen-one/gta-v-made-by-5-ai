@@ -18,7 +18,25 @@ the remote branch HEAD and the private asset carry-forward before changing anyth
 - Primary visual target: the three PNGs in `docs/concepts/`. Read them **with a vision-capable
   model**. Do not inherit a score you cannot reproduce.
 
-## Priority 0 — get an independent visual score before building anything
+## Priority 0 — fix the packaged route regression wave 3 introduced
+
+Wave 3 raised street density and **broke the scripted drive**. `docs/wave-03/packaged-route/`
+exits 2 at 263.1 s with `failure_reason = "uninterrupted driving leg reached aviation compound"`.
+Foot, combat (3 kills, 0 deaths) and package gates pass; the car is entered and then barely moves
+(7 m from the first waypoint at 107 s, ~18 m in the next 35 s).
+
+Most likely cause: the route picks `_nearest_usable_car_position()`, and with ~130 parked cars instead
+of ~40 the nearest usable car is now a kerb-parked vehicle at `(-152, -80)` that the scripted driver
+cannot get onto the carriageway. Investigate with real evidence before changing anything:
+
+1. Log which car the route selects and its transform, then reproduce the drive in isolation.
+2. Check whether the new kerb spots at `z ± (SIDEWALK - 2)` sit inside the driven lane, and whether
+   the planted medians (visual-only, no collider) confuse the driver's lane keeping.
+3. Prefer fixing the route's car selection and the driver's escape from a kerb bay over thinning the
+   city back down — the owner explicitly liked the denser street.
+4. Re-run the packaged route and require 13/13 gates before claiming it again.
+
+## Priority 0b — get an independent visual score
 
 Wave 3 produced **no independent visual verdict**. The subagent harness model has no image input; it
 correctly refused to invent one. Do not repeat that waste.
