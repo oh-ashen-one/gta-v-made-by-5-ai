@@ -52,6 +52,7 @@ func _build() -> void:
 	add_child(shape)
 
 	body_root = Node3D.new()
+	body_root.position.y = 0.02 # capsule lower extent
 	add_child(body_root)
 	var skin := Palette.mat(Palette.SKIN.lerp(Color(0.55, 0.40, 0.30), randf() * 0.6), 0.8)
 	_shirt_color = Palette.FRONTAGES[randi() % Palette.FRONTAGES.size()] if not is_police else Color(0.16, 0.20, 0.32)
@@ -301,6 +302,7 @@ func _panic(from_position: Vector3) -> void:
 		return
 	if character_visual != null and character_visual.loaded:
 		character_visual.set_seated(false)
+		character_visual.position.y=0.0
 	var away := global_position - from_position
 	away.y = 0.0
 	if away.length() < 0.2:
@@ -317,6 +319,7 @@ func _die(by_player: bool) -> void:
 	state = State.DEAD
 	velocity = Vector3.ZERO
 	if character_visual != null and character_visual.loaded:
+		character_visual.position.y=0.0
 		character_visual.play_death()
 	else:
 		body_root.rotation_degrees = Vector3(82.0, rotation.y, 0.0)

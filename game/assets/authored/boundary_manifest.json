@@ -1,0 +1,12 @@
+{
+  "asset": "boundary_railing",
+  "authoring_objects": 63,
+  "triangles": 6420,
+  "dimensions_blender_xyz": [
+    15.239999771118164,
+    0.5,
+    2.5499999821186066
+  ],
+  "source": "game/tools/build_interiors.py",
+  "rights": "Original authored geometry and plain English fictional signage"
+}

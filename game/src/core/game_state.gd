@@ -330,6 +330,7 @@ func load_game(path: String = "") -> bool:
 	var mission := get_tree().get_first_node_in_group("mission")
 	if mission and mission.has_method("restore_stage"):
 		mission.restore_stage(mission_stage)
+	Events.state_restored.emit()
 	return true
 
 func _number_in_range(value: Variant, low: float, high: float) -> bool:

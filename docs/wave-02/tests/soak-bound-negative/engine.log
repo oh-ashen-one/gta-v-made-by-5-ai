@@ -1,0 +1,11 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+[wave1] main ready, args=["--capture", "--soak", "--soak-seconds=30", "--capture-dir=/tmp/wave2-soak-bound-negative", "--save-path=/tmp/wave2-soak-bound-save.json"]
+[capture] 0.62s Route start; seed=20261021; headless=true; scripted-input-automation=true
+[capture] 2.60s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0
+[capture] 16.64s walk end at (-315.0, 0.0, -5.0); target=(-320.0, 0.0, 0.0) distance=6.9
+[capture] terminal success=false deaths=0 seconds=30.0
+[capture] 30.01s walk end at (-319.0, 0.0, -90.0); target=(-320.0, 0.0, -160.0) distance=69.8
+[capture] 30.01s FAIL market reached on foot

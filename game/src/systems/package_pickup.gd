@@ -21,16 +21,13 @@ func _ready() -> void:
 	strap.material_override = Palette.mat(Color(0.75, 0.62, 0.25), 0.7, 0.2)
 	strap.position = Vector3(0.0, 0.2, 0.0)
 	add_child(strap)
-	# a soft beacon so the objective reads from across the market
+	# A restrained objective ring, not an opaque world-sized beacon.
 	var beam := MeshInstance3D.new()
-	var beam_mesh := CylinderMesh.new()
-	beam_mesh.top_radius = 0.10
-	beam_mesh.bottom_radius = 0.22
-	beam_mesh.height = 3.4
-	beam_mesh.radial_segments = 10
-	beam.mesh = beam_mesh
-	beam.material_override = Palette.emissive(Color(0.35, 0.95, 0.75), 1.4)
-	beam.position = Vector3(0.0, 1.7, 0.0)
+	var ring := TorusMesh.new();ring.inner_radius=.42;ring.outer_radius=.48
+	ring.rings=32;ring.ring_segments=6;beam.mesh=ring
+	beam.scale.y=.12
+	beam.material_override=Palette.emissive(Color(.35,.85,.65),.4)
+	beam.position=Vector3(0,.045,0)
 	add_child(beam)
 	var glow := OmniLight3D.new()
 	glow.light_color = Color(1.0, 0.85, 0.55)

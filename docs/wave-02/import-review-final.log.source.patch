@@ -1,0 +1,1208 @@
+diff --git a/game/src/actors/car.gd b/game/src/actors/car.gd
+index 219032b..2cf8beb 100644
+--- a/game/src/actors/car.gd
++++ b/game/src/actors/car.gd
+@@ -165,13 +165,13 @@ func _build() -> void:
+ 	_try_provider_asset(dims)
+ 
+ 	_arm = SpringArm3D.new()
+-	_arm.spring_length = 7.2
++	_arm.spring_length = 5.4
+ 	_arm.collision_mask = 1
+ 	_arm.position = Vector3(0.0, dims.y + 0.5, 0.0)
+-	_arm.rotation_degrees = Vector3(-9.0, 0.0, 0.0)
++	_arm.rotation_degrees = Vector3(-12.0, 0.0, 0.0)
+ 	add_child(_arm)
+ 	_camera = Camera3D.new()
+-	_camera.fov = 72.0
++	_camera.fov = 62.0
+ 	_arm.add_child(_camera)
+ 
+ ## Swap in the generated sedan for the civilian and response variants.
+@@ -426,6 +426,8 @@ func exit_vehicle(player: Node) -> void:
+ 	_forward = 0.0
+ 	velocity = Vector3.ZERO
+ 	player.global_position = exit_pos
++	player.yaw = rotation.y
++	player.rotation.y = rotation.y
+ 	player.visible = true
+ 	player.current_vehicle = null
+ 	player.camera.current = true
+diff --git a/game/src/actors/helicopter.gd b/game/src/actors/helicopter.gd
+index 35af44f..6c31c13 100644
+--- a/game/src/actors/helicopter.gd
++++ b/game/src/actors/helicopter.gd
+@@ -155,13 +155,13 @@ func _build() -> void:
+ 	add_child(shape)
+ 
+ 	_arm = SpringArm3D.new()
+-	_arm.spring_length = 11.0
++	_arm.spring_length = 14.0
+ 	_arm.collision_mask = 1
+ 	_arm.position = Vector3(0.0, 3.0, 0.0)
+-	_arm.rotation_degrees = Vector3(-12.0, 0.0, 0.0)
++	_arm.rotation_degrees = Vector3(-25.0, 0.0, 0.0)
+ 	add_child(_arm)
+ 	_camera = Camera3D.new()
+-	_camera.fov = 75.0
++	_camera.fov = 70.0
+ 	_arm.add_child(_camera)
+ 
+ 	for child in get_children():
+@@ -171,12 +171,13 @@ func _build() -> void:
+ 
+ ## Swap in the generated helicopter when it has been cleaned and staged.
+ func _try_provider_asset() -> void:
+-	if not AssetLibrary.has_asset("helicopter_clean.glb"):
++	if not AssetLibrary.has_asset("helicopter_refined.glb"):
+ 		return
+-	var root := AssetLibrary.instantiate("helicopter_clean.glb", self)
++	var root := AssetLibrary.instantiate("helicopter_refined.glb", self)
+ 	if root == null:
+ 		return
+ 	_provider_root = root
++	root.position.y = 0.30 # skids meet the collider lower extent
+ 	_body.visible = false
+ 	for part in _procedural_visuals:
+ 		part.visible = false
+@@ -200,9 +201,9 @@ func _physics_process(delta: float) -> void:
+ 	if _tail_rotor:
+ 		_tail_rotor.rotate_x(delta * (34.0 if pilot_is_player else 8.0))
+ 	if _provider_main_rotor != null:
+-		AssetLibrary.spin_part(_provider_main_rotor, self, Vector3.UP, delta * rotor_speed * 1.6)
++		AssetLibrary.spin_part(_provider_main_rotor, _provider_root, Vector3.UP, delta * rotor_speed * 1.6)
+ 	if _provider_tail_rotor != null:
+-		AssetLibrary.spin_part(_provider_tail_rotor, self, Vector3.RIGHT, delta * rotor_speed * 2.4)
++		AssetLibrary.spin_part(_provider_tail_rotor, _provider_root, Vector3.RIGHT, delta * rotor_speed * 2.4)
+ 	if pilot_is_player and not disabled:
+ 		_pilot_input(delta)
+ 	else:
+@@ -300,6 +301,8 @@ func exit_vehicle(player: Node) -> void:
+ 		return
+ 	pilot_is_player = false
+ 	player.global_position = exit_pos
++	player.yaw = rotation.y
++	player.rotation.y = rotation.y
+ 	player.visible = true
+ 	player.current_vehicle = null
+ 	player.camera.current = true
+diff --git a/game/src/actors/npc.gd b/game/src/actors/npc.gd
+index 6d61818..73376fc 100644
+--- a/game/src/actors/npc.gd
++++ b/game/src/actors/npc.gd
+@@ -52,6 +52,7 @@ func _build() -> void:
+ 	add_child(shape)
+ 
+ 	body_root = Node3D.new()
++	body_root.position.y = 0.02 # capsule lower extent
+ 	add_child(body_root)
+ 	var skin := Palette.mat(Palette.SKIN.lerp(Color(0.55, 0.40, 0.30), randf() * 0.6), 0.8)
+ 	_shirt_color = Palette.FRONTAGES[randi() % Palette.FRONTAGES.size()] if not is_police else Color(0.16, 0.20, 0.32)
+@@ -301,6 +302,7 @@ func _panic(from_position: Vector3) -> void:
+ 		return
+ 	if character_visual != null and character_visual.loaded:
+ 		character_visual.set_seated(false)
++		character_visual.position.y=0.0
+ 	var away := global_position - from_position
+ 	away.y = 0.0
+ 	if away.length() < 0.2:
+@@ -317,6 +319,7 @@ func _die(by_player: bool) -> void:
+ 	state = State.DEAD
+ 	velocity = Vector3.ZERO
+ 	if character_visual != null and character_visual.loaded:
++		character_visual.position.y=0.0
+ 		character_visual.play_death()
+ 	else:
+ 		body_root.rotation_degrees = Vector3(82.0, rotation.y, 0.0)
+diff --git a/game/src/actors/player.gd b/game/src/actors/player.gd
+index cf6edea..66cb33a 100644
+--- a/game/src/actors/player.gd
++++ b/game/src/actors/player.gd
+@@ -13,7 +13,7 @@ const FRICTION := 12.0
+ const JUMP_VELOCITY := 7.2
+ const MOUSE_SENS := 0.0022
+ const AIM_DISTANCE := 2.2
+-const HIP_DISTANCE := 4.6
++const HIP_DISTANCE := 3.2
+ const INTERACT_RANGE := 5.0
+ const PICKUP_RANGE := 7.5
+ 
+@@ -57,6 +57,7 @@ func _ready() -> void:
+ 	_build_body()
+ 	_build_camera()
+ 	Events.health_changed.connect(_on_health_changed)
++	Events.state_restored.connect(_on_state_restored)
+ 	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
+ 
+ func _build_body() -> void:
+@@ -69,6 +70,7 @@ func _build_body() -> void:
+ 	add_child(shape)
+ 
+ 	_body_root = Node3D.new()
++	_body_root.position.y = 0.025 # align visible soles with capsule bottom
+ 	add_child(_body_root)
+ 
+ 	var skin := Palette.mat(Palette.SKIN, 0.8)
+@@ -177,13 +179,13 @@ func _build_camera() -> void:
+ 	arm = SpringArm3D.new()
+ 	arm.spring_length = HIP_DISTANCE
+ 	arm.add_excluded_object(self)
+-	arm.collision_mask = 1
++	arm.collision_mask = 1 | 8
+ 	arm.margin = 0.25
+-	arm.position = Vector3(0.85, 1.62, 0.0)   # over-the-shoulder framing
++	arm.position = Vector3(0.85, 1.50, 0.0)   # over-the-shoulder framing
+ 	arm.rotation_degrees = Vector3(-8.0, 0.0, 0.0)
+ 	add_child(arm)
+ 	camera = Camera3D.new()
+-	camera.fov = 68.0
++	camera.fov = 58.0
+ 	camera.current = true
+ 	arm.add_child(camera)
+ 
+@@ -274,6 +276,10 @@ func _physics_process(delta: float) -> void:
+ 	if has_meta("_qa_motion_probe"):
+ 		get_meta("_qa_motion_state")["resolved"] = velocity
+ 
++	if global_position.y < -8.0 or absf(global_position.x)>400.0 or global_position.z>410.0 or global_position.z < -370.0:
++		Events.toast("Beyond the district. Returning to your checkpoint.","warn")
++		Game.damage_player(Game.MAX_HEALTH)
++		return
+ 	# face movement direction (or camera direction when aiming/firing)
+ 	var face_dir := Vector3.ZERO
+ 	if aiming:
+@@ -560,3 +566,14 @@ func reset_action_state() -> void:
+ 	_update_weapon_mesh()
+ 	if _visual!=null and _visual.loaded: _visual.reset_alive()
+ 	Events.ammo_changed.emit(Game.current_mag(),Game.current_reserve())
++
++func _on_state_restored() -> void:
++	_fire_cooldown=0.0
++	_reload_timer=0.0
++	_reloading=false
++	aiming=false
++	busy=false
++	_press_queue.clear()
++	_press_armed.clear()
++	_update_weapon_mesh()
++	if _visual != null and _visual.loaded: _visual.reset_alive()
+diff --git a/game/src/core/events.gd b/game/src/core/events.gd
+index 9521dd1..24f4e4a 100644
+--- a/game/src/core/events.gd
++++ b/game/src/core/events.gd
+@@ -18,6 +18,7 @@ signal vehicle_exited(vehicle: Node)
+ signal checkpoint_reached(index: int)
+ signal mission_finished(success: bool)
+ signal settings_changed(settings: Dictionary)
++signal state_restored
+ 
+ func toast(text: String, kind: String = "info") -> void:
+ 	notify.emit(text, kind)
+diff --git a/game/src/core/game_state.gd b/game/src/core/game_state.gd
+index 8a1c681..5e80345 100644
+--- a/game/src/core/game_state.gd
++++ b/game/src/core/game_state.gd
+@@ -330,6 +330,7 @@ func load_game(path: String = "") -> bool:
+ 	var mission := get_tree().get_first_node_in_group("mission")
+ 	if mission and mission.has_method("restore_stage"):
+ 		mission.restore_stage(mission_stage)
++	Events.state_restored.emit()
+ 	return true
+ 
+ func _number_in_range(value: Variant, low: float, high: float) -> bool:
+diff --git a/game/src/main.gd b/game/src/main.gd
+index d17152b..9e0188e 100644
+--- a/game/src/main.gd
++++ b/game/src/main.gd
+@@ -89,6 +89,10 @@ func _ready() -> void:
+ 		Game.simulation_paused = true
+ 		hud.show_title(true)
+ 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
++		if "--ui-review" in args:
++			var review: Node = load("res://src/systems/ui_review.gd").new()
++			add_child(review)
++			review.setup(self)
+ 
+ func _unhandled_input(event: InputEvent) -> void:
+ 	if event is InputEventKey and event.pressed and hud.settings_visible():
+diff --git a/game/src/systems/capture_director.gd b/game/src/systems/capture_director.gd
+index a587915..a96bb78 100644
+--- a/game/src/systems/capture_director.gd
++++ b/game/src/systems/capture_director.gd
+@@ -25,6 +25,38 @@ var _samples: Array[Dictionary] = []
+ var _gates: Array[Dictionary] = []
+ var _combat_kills := 0
+ var _boarding_target: Node3D
++var _soak_enabled := false
++var _soak_seconds := 1800.0
++var _phase := "mission"
++var _run_index := 0
++var _run_started := 0.0
++var _run_kills_start := 0
++var _run_gate_start := 0
++var _completed_runs: Array[Dictionary] = []
++var _fixture_checks: Array[Dictionary] = []
++var _free_distance := {"foot": 0.0, "car": 0.0, "helicopter": 0.0}
++var _free_last_actor: Node3D
++var _free_last_position := Vector3.ZERO
++var _continuity_actor: Node3D
++var _continuity_position := Vector3.ZERO
++var _continuity_us := 0
++var _continuity_breaks: Array[Dictionary] = []
++const SOAK_REQUIRED_RUNS := 3
++const SOAK_ACCEPTANCE_SECONDS := 1800.0
++const SOAK_FINAL_RESERVE_SECONDS := 180.0
++var _final_recovery_requested := false
++var _final_observation_started := -1.0
++var _reboard_cycle_verified := false
++var _free_roam_events: Array[Dictionary] = []
++var _foot_motion_bucket := 0.0
++var _recent_foot_motion: Array[Dictionary] = []
++var _last_foot_motion_seconds := -1000.0
++var _engine_log_path := ""
++var _next_error_scan := 30.0
++var _runtime_log_scan := {"checked": false, "fatal_errors": [], "classified_nonfatal": []}
++var _next_soak_still := 300.0
++var _monitor_ids: Dictionary = {}
++var _monitor_unavailable: Array[String] = []
+ var _headless := false
+ var _inclusive_frames_ms: Array[float] = []
+ var _readback_since_frame := false
+@@ -42,6 +74,7 @@ var _record_cost_ms: Array[float] = []
+ const RECORD_INTERVAL_US := 100000 # Requested 10Hz; timestamps are authoritative.
+ const RECORD_MAX_FRAMES := 7200
+ const RECORD_MAX_BYTES := 1024 * 1024 * 1024
++const RECORD_MAX_SECONDS := 720.0
+ 
+ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager) -> void:
+ 	main = m
+@@ -50,11 +83,22 @@ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager)
+ 	mission = mi
+ 	traffic = t
+ 	for arg in OS.get_cmdline_user_args():
+-		if arg.begins_with("--capture-dir="):
++		if arg == "--soak":
++			_soak_enabled = true
++		elif arg.begins_with("--soak-seconds="):
++			_soak_seconds = clampf(float(arg.trim_prefix("--soak-seconds=")), 30.0, 1800.0)
++		elif arg.begins_with("--capture-dir="):
+ 			out_dir = arg.trim_prefix("--capture-dir=")
+ 		elif arg.begins_with("--record-frames="):
+ 			_record_dir = arg.trim_prefix("--record-frames=")
+ 	DirAccess.make_dir_recursive_absolute(out_dir)
++	var engine_args := OS.get_cmdline_args()
++	for index in engine_args.size():
++		if engine_args[index] == "--log-file" and index + 1 < engine_args.size():
++			_engine_log_path = engine_args[index + 1]
++		elif engine_args[index].begins_with("--log-file="):
++			_engine_log_path = engine_args[index].trim_prefix("--log-file=")
++	_initialize_monitors()
+ 	_initial_deaths = Game.death_count
+ 	_started_us = Time.get_ticks_usec()
+ 	_last_frame_us = _started_us
+@@ -83,6 +127,9 @@ func _process(_delta: float) -> void:
+ 			_frames_ms.append(frame_ms)
+ 	_last_frame_us = now
+ 	_readback_since_frame = false
++	if _record_log and not _record_capped and elapsed >= RECORD_MAX_SECONDS:
++		_record_capped = true
++		_record_cap_reason = "Recording duration safety cap reached"
+ 	if _record_log and not _record_capped and now >= _record_next_us:
+ 		var due := 1 + int((now - _record_next_us) / RECORD_INTERVAL_US)
+ 		_record_requested_samples += due
+@@ -95,24 +142,72 @@ func _process(_delta: float) -> void:
+ 	if int(elapsed) != _last_sample_second:
+ 		_last_sample_second = int(elapsed)
+ 		_samples.append(_snapshot(elapsed))
++		if _soak_enabled:
++			_recent_foot_motion.append({"seconds": elapsed, "distance_m": _foot_motion_bucket})
++			_foot_motion_bucket = 0.0
++			while not _recent_foot_motion.is_empty() and _recent_foot_motion[0]["seconds"] < elapsed - 60.0:
++				_recent_foot_motion.pop_front()
+ 		_write_checkpoint()
+-	if Game.death_count != _initial_deaths:
++	if _soak_enabled and elapsed >= _soak_seconds - SOAK_FINAL_RESERVE_SECONDS:
++		_final_recovery_requested = true
++	if _soak_enabled and elapsed >= _next_error_scan:
++		_next_error_scan += 30.0
++		_scan_runtime_log()
++		if not _runtime_log_scan["checked"] or not _runtime_log_scan["fatal_errors"].is_empty():
++			_abort("Soak runtime error-log gate is unavailable or contains unhandled errors.")
++			return
++	if _soak_enabled and not _headless and elapsed >= _next_soak_still and not _capture_in_progress and not _record_pending:
++		_next_soak_still += 300.0
++		_shot("soak_%s_%04d" % [_phase, int(elapsed)])
++	if _phase == "mission":
++		var controlled := player.controlled_actor()
++		if controlled == _continuity_actor and _continuity_us > 0:
++			var travelled := controlled.global_position.distance_to(_continuity_position)
++			var allowance := 2.0 + 80.0 * float(now - _continuity_us) / 1000000.0
++			if travelled > allowance:
++				_continuity_breaks.append({"run": _run_index, "seconds": elapsed, "distance_m": travelled, "allowance_m": allowance})
++				_abort("Unexpected controlled-actor position discontinuity during mission attempt.")
++				return
++		_continuity_actor = controlled
++		_continuity_position = controlled.global_position
++		_continuity_us = now
++	else:
++		_continuity_actor = null
++	if _phase in ["free_roam", "final_recovery", "final_observation"]:
++		var actor := player.controlled_actor()
++		if actor == _free_last_actor:
++			var travelled := actor.global_position.distance_to(_free_last_position)
++			if travelled < 12.0:
++				var key := "foot" if Game.mode == Game.MODE_FOOT else ("car" if Game.mode == Game.MODE_CAR else "helicopter")
++				_free_distance[key] += travelled
++				if Game.mode == Game.MODE_FOOT:
++					_foot_motion_bucket += travelled
++					if travelled > 0.02: _last_foot_motion_seconds = elapsed
++		_free_last_actor = actor
++		_free_last_position = actor.global_position
++	if _phase == "mission" and Game.death_count != _initial_deaths:
+ 		_abort("Player died/respawned; this attempt cannot certify an uninterrupted mission.")
+-	elif player.current_vehicle != null and player.current_vehicle.get("disabled"):
++	elif _phase != "fixture_assisted" and player.current_vehicle != null and player.current_vehicle.get("disabled"):
+ 		_abort("Controlled vehicle disabled; transport leg failed.")
+-	elif elapsed >= ROUTE_TIMEOUT:
+-		_abort("Route exceeded %.0f-second wall-clock limit." % ROUTE_TIMEOUT)
++	elif _soak_enabled and elapsed >= _soak_seconds:
++		var complete := _soak_complete()
++		if not complete: _failure = "Soak deadline reached before required mission/fixture/mixed-activity gates."
++		_finish(complete)
++	elif _phase == "mission" and elapsed - _run_started >= ROUTE_TIMEOUT:
++		_abort("Mission attempt exceeded %.0f-second wall-clock limit." % ROUTE_TIMEOUT)
+ 
+ func _snapshot(elapsed: float) -> Dictionary:
+ 	var actor := player.controlled_actor()
+ 	var pos := actor.global_position
+-	return {"seconds": snappedf(elapsed, 0.01), "position": [pos.x, pos.y, pos.z],
++	return {"seconds": snappedf(elapsed, 0.01), "phase": _phase, "run": _run_index, "position": [pos.x, pos.y, pos.z],
+ 		"mode": Game.mode, "stage": mission.stage, "health": Game.health,
+ 		"wanted": Game.wanted_level, "deaths": Game.death_count - _initial_deaths,
+ 		"car_distance_m": mission.car_driven_distance, "flight_distance_m": mission.flight_distance,
+-		"vehicle_health": actor.get("health") if actor != player else null, "heading": actor.rotation.y}
++		"vehicle_health": actor.get("health") if actor != player else null, "heading": actor.rotation.y,
++		"engine_monitors": _performance_snapshot()}
+ 
+ func _log(message: String) -> void:
++	if _finished: return
+ 	log_lines.append("%.2fs %s" % [_elapsed(), message])
+ 	print("[capture] ", log_lines[-1])
+ 
+@@ -120,6 +215,7 @@ func _elapsed() -> float:
+ 	return float(Time.get_ticks_usec() - _started_us) / 1000000.0
+ 
+ func _gate(label: String, condition: bool) -> bool:
++	if _finished: return false
+ 	_gates.append({"name": label, "passed": condition, "state": _snapshot(_elapsed())})
+ 	_log("%s %s" % ["PASS" if condition else "FAIL", label])
+ 	if not condition:
+@@ -150,6 +246,11 @@ func _record_frame() -> void:
+ 		_record_pending = false
+ 		return
+ 	var timestamp_us := Time.get_ticks_usec()
++	if float(timestamp_us - _started_us) / 1000000.0 >= RECORD_MAX_SECONDS:
++		_record_capped = true
++		_record_cap_reason = "Recording duration safety cap reached"
++		_record_pending = false
++		return
+ 	var capture_started := timestamp_us
+ 	var img := get_viewport().get_texture().get_image()
+ 	if img == null:
+@@ -158,7 +259,19 @@ func _record_frame() -> void:
+ 		return
+ 	var filename := "frame_%06d.jpg" % _record_index
+ 	var path := _record_dir.path_join(filename)
+-	var error := img.save_jpg(path, 0.8)
++	var encoded := img.save_jpg_to_buffer(0.8)
++	if _record_bytes + encoded.size() > RECORD_MAX_BYTES:
++		_record_capped = true
++		_record_cap_reason = "Recording byte safety cap reached"
++		_record_pending = false
++		_readback_since_frame = true
++		return
++	var output := FileAccess.open(path, FileAccess.WRITE)
++	var error := ERR_CANT_OPEN
++	if output:
++		output.store_buffer(encoded)
++		error = output.get_error()
++		output.close()
+ 	var capture_cost := float(Time.get_ticks_usec() - capture_started) / 1000.0
+ 	_record_cost_ms.append(capture_cost)
+ 	_readback_since_frame = true
+@@ -166,10 +279,7 @@ func _record_frame() -> void:
+ 		_record_capped = true
+ 		_record_cap_reason = "JPEG write failed (%d)" % error
+ 	else:
+-		var written := FileAccess.open(path, FileAccess.READ)
+-		var byte_count := written.get_length() if written else 0
+-		if written: written.close()
+-		_record_bytes += byte_count
++		_record_bytes += encoded.size()
+ 		_record_log.store_line(JSON.stringify({"sequence": _record_index, "file": filename,
+ 			"timestamp_us": timestamp_us, "seconds": float(timestamp_us - _started_us) / 1000000.0,
+ 			"width": img.get_width(), "height": img.get_height(), "readback_encode_ms": capture_cost,
+@@ -182,6 +292,13 @@ func _record_frame() -> void:
+ 	_record_pending = false
+ 
+ func _run() -> void:
++	if _finished: return
++	_phase = "mission"
++	_continuity_actor = null
++	_run_index += 1
++	_run_started = _elapsed()
++	_run_kills_start = _combat_kills
++	_run_gate_start = _gates.size()
+ 	await get_tree().create_timer(0.75).timeout
+ 	_log("Route start; seed=%d; headless=%s; scripted-input-automation=true" % [Game.seed_value, _headless])
+ 	await _shot("safe_room")
+@@ -196,7 +313,7 @@ func _run() -> void:
+ 		if is_instance_valid(guard) and guard.state != NPC.State.DEAD:
+ 			await _shoot_at(guard)
+ 		if _finished: return
+-	if not _gate("combat damaged and killed a mission combatant", _combat_kills > 0): return
++	if not _gate("combat damaged and killed a mission combatant", _combat_kills > _run_kills_start): return
+ 	await _shot("combat")
+ 	await _walk_to(world.locations["package"], 2.5, 25.0)
+ 	await _tap("interact")
+@@ -238,7 +355,289 @@ func _run() -> void:
+ 	await _tap("interact")
+ 	if not _gate("mission completed through delivery interaction", mission.stage == Mission.Stage.DONE and Game.death_count == _initial_deaths): return
+ 	await _shot("delivery")
+-	_finish(true)
++	await _route_succeeded()
++
++func _route_succeeded() -> void:
++	if _finished: return
++	_completed_runs.append({"run": _run_index, "started_seconds": _run_started, "finished_seconds": _elapsed(),
++		"duration_seconds": _elapsed() - _run_started, "uninterrupted": Game.death_count == _initial_deaths,
++		"combat_kills": _combat_kills - _run_kills_start, "car_distance_m": mission.car_driven_distance,
++		"flight_distance_m": mission.flight_distance, "gates": _gates.slice(_run_gate_start)})
++	_log("Verified mission completions: %d" % _completed_runs.size())
++	if not _soak_enabled:
++		_finish(true)
++		return
++	if _completed_runs.size() < SOAK_REQUIRED_RUNS:
++		_phase = "mission_restart"
++		_release_all()
++		_log("Restarting through the real Mission.restart for next independent mission attempt.")
++		mission.restart()
++		await get_tree().physics_frame
++		await get_tree().physics_frame
++		await _run()
++		return
++	await _soak_fixture_phase()
++	if _finished: return
++	await _soak_free_roam()
++
++func _fixture_check(label: String, passed: bool) -> void:
++	if _finished: return
++	_fixture_checks.append({"name": label, "passed": passed, "phase": "fixture_assisted", "seconds": _elapsed()})
++	_log("FIXTURE %s %s (excluded from mission completion count)" % ["PASS" if passed else "FAIL", label])
++
++func _soak_fixture_phase() -> void:
++	_phase = "fixture_assisted"
++	_release_all()
++	_log("Beginning explicit fixture-assisted negative cases. Three completion records are already sealed.")
++	Events.notify.emit("QA fixture checks — excluded from mission completion count.", "info")
++	var saved_position := player.global_position
++	var saved_yaw := player.yaw
++	var saved_checkpoint := Game.checkpoint_index
++	var saved_safe_position := Game.last_safe_position
++	var saved_safe_rotation := Game.last_safe_rotation
++	Game.simulation_paused = true
++	var paused_position := player.global_position
++	var paused_car_position := traffic.cars[0].global_position
++	Input.action_press("move_forward")
++	await get_tree().create_timer(0.4, true, false, true).timeout
++	if _finished: return
++	Input.action_release("move_forward")
++	_fixture_check("pause freezes player and live traffic", player.global_position.distance_to(paused_position) < 0.001 and traffic.cars[0].global_position.distance_to(paused_car_position) < 0.001)
++	Game.simulation_paused = false
++	var fixture_path := "/tmp/orchard_soak_%d.json" % OS.get_process_id()
++	var saved := Game.save_game(fixture_path)
++	_fixture_check("completed-run checkpoint writes through atomic save path", saved)
++	if saved:
++		var invalid: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(fixture_path))
++		invalid["player_position"] = [1.0]
++		var file := FileAccess.open(fixture_path, FileAccess.WRITE)
++		file.store_string(JSON.stringify(invalid))
++		file.close()
++		var previous_health := Game.health
++		var previous_stage := mission.stage
++		var loaded := Game.load_game(fixture_path)
++		_fixture_check("malformed checkpoint is rejected without state mutation", not loaded and Game.health == previous_health and mission.stage == previous_stage and player.global_position == saved_position)
++		DirAccess.remove_absolute(fixture_path)
++	# Explicit test-only relocation. It cannot increment _completed_runs:
++	# only the actual route's final interaction calls _route_succeeded.
++	mission._set_stage(Mission.Stage.TO_AIRFIELD, false)
++	player.respawn_at(world.locations["helipad_primary"] + Vector3(3.6, 0.6, 0.0), 0.0)
++	await get_tree().physics_frame
++	await get_tree().physics_frame
++	await get_tree().process_frame
++	if _finished: return
++	_fixture_check("walking to airfield cannot satisfy drive stage", mission.stage == Mission.Stage.TO_AIRFIELD)
++	mission.restore_stage(Mission.Stage.DONE)
++	Game.checkpoint_index = saved_checkpoint
++	Game.mark_safe_position(saved_safe_position, saved_safe_rotation)
++	player.respawn_at(saved_position, saved_yaw)
++	await get_tree().physics_frame
++	await _shot("fixture_phase_finished")
++	for result in _fixture_checks:
++		if not result["passed"]:
++			_abort("A separately labelled soak fixture failed.")
++			return
++	_log("Fixture phase complete; starting genuine mixed free roam from the restored completion location.")
++	Events.notify.emit("QA free roam — three mission runs verified.", "info")
++
++func _soak_free_roam() -> void:
++	_phase = "free_roam"
++	_free_last_actor = null
++	var activity := 0
++	while not _finished and not _final_recovery_requested:
++		if player.current_vehicle is Helicopter and not player.current_vehicle.is_landed():
++			var current_heli := player.current_vehicle as Helicopter
++			var nearest_pad: Vector3 = _nearest_pad(current_heli.global_position)
++			await _fly_to(nearest_pad, 90.0)
++			if _final_recovery_requested: break
++			await _land(nearest_pad, 60.0)
++			if _final_recovery_requested: break
++			if not current_heli.is_landed():
++				_abort("Free-roam aircraft recovery failed to land.")
++				return
++		if Game.mode != Game.MODE_FOOT: await _interact_until(Game.MODE_FOOT)
++		if _finished: return
++		if _final_recovery_requested: break
++		if Game.mode != Game.MODE_FOOT:
++			_abort("Free-roam vehicle recovery could not restore on-foot control.")
++			return
++		match activity % 3:
++			0:
++				var start_node := _nearest_node(player.global_position)
++				var neighbours := traffic._neighbours(start_node)
++				var destination: Vector3 = world.traffic_nodes[neighbours[activity % neighbours.size()]]
++				_log("Free-roam foot leg to " + str(destination.round()))
++				await _nav_to(destination, 7.0, 100.0)
++			1:
++				var car := _nearest_parked_car()
++				if car != null:
++					_boarding_target = car
++					await _nav_to(car.global_position, 2.5, 130.0)
++					if _final_recovery_requested: break
++					await _interact_until(Game.MODE_CAR)
++					if Game.mode == Game.MODE_CAR:
++						var current := _nearest_node(car.global_position)
++						var destination: Vector3 = world.traffic_nodes[(current + 7) % world.traffic_nodes.size()]
++						_log("Free-roam driving leg to " + str(destination.round()))
++						await _drive_route(destination, 130.0)
++						if _final_recovery_requested: break
++						await _verify_reboard_cycle(car)
++			2:
++				var heli := main.get_node_or_null("Helicopter") as Helicopter
++				if heli != null and not heli.disabled:
++					_boarding_target = heli
++					await _nav_to(heli.global_position + heli.global_transform.basis.x * 3.0, 1.2, 180.0)
++					if _final_recovery_requested: break
++					await _interact_until(Game.MODE_HELI)
++					if Game.mode == Game.MODE_HELI:
++						var destination: Vector3 = world.locations["helipad_primary"] if _ground_distance(heli.global_position, world.locations["helipad_primary"]) > 100.0 else world.locations["helipad_secondary"]
++						_log("Free-roam aircraft leg to " + str(destination.round()))
++						await _fly_to(destination, 100.0)
++						if _final_recovery_requested: break
++						if _ground_distance(heli.global_position, destination) >= 15.0:
++							_abort("Free-roam aircraft failed to reach its destination.")
++							return
++						await _land(destination, 60.0)
++						if _final_recovery_requested: break
++						if not heli.is_landed() or heli.disabled:
++							_abort("Free-roam aircraft failed its landing gate.")
++							return
++						await _interact_until(Game.MODE_FOOT)
++						if Game.mode != Game.MODE_FOOT:
++							_abort("Free-roam aircraft exit failed.")
++							return
++						_free_roam_events.append({"event": "aircraft_flight_landing_exit", "seconds": _elapsed(), "passed": true})
++		activity += 1
++		await get_tree().create_timer(0.3).timeout
++	if not _finished: await _soak_final_recovery()
++
++func _verify_reboard_cycle(car: Car) -> void:
++	if _finished or car == null or car.disabled: return
++	_release_all()
++	await get_tree().create_timer(0.7).timeout
++	await _interact_until(Game.MODE_FOOT)
++	if _finished: return
++	var exited := Game.mode == Game.MODE_FOOT and player.current_vehicle == null
++	if not exited:
++		_abort("Free-roam car exit failed.")
++		return
++	_boarding_target = car
++	await _interact_until(Game.MODE_CAR)
++	var same_car := player.current_vehicle == car
++	await _interact_until(Game.MODE_FOOT)
++	var returned := same_car and Game.mode == Game.MODE_FOOT and player.current_vehicle == null and player.camera.current and not player.busy
++	_reboard_cycle_verified = _reboard_cycle_verified or returned
++	_free_roam_events.append({"event": "car_exit_same_car_reboard_exit", "seconds": _elapsed(), "passed": returned})
++	_log("Free-roam same-car return/exit/reboard/exit cycle=%s" % returned)
++	if not returned: _abort("Free-roam same-car reboard ownership cycle failed.")
++
++func _nearest_pad(position: Vector3) -> Vector3:
++	return world.locations["helipad_primary"] if _ground_distance(position, world.locations["helipad_primary"]) < _ground_distance(position, world.locations["helipad_secondary"]) else world.locations["helipad_secondary"]
++
++func _interrupt_free_action() -> bool:
++	return _phase == "free_roam" and _final_recovery_requested
++
++func _soak_final_recovery() -> void:
++	_phase = "final_recovery"
++	_release_all()
++	_log("Reserved final recovery: return to healthy on-foot control, then demonstrate movement until the deadline.")
++	if player.current_vehicle is Helicopter:
++		var heli := player.current_vehicle as Helicopter
++		if not heli.is_landed():
++			var pad := _nearest_pad(heli.global_position)
++			if _ground_distance(heli.global_position, pad) > 8.0: await _fly_to(pad, 75.0)
++			await _land(pad, 60.0)
++		if not heli.is_landed() or heli.disabled:
++			_abort("Final aircraft recovery failed.")
++			return
++	if Game.mode != Game.MODE_FOOT: await _interact_until(Game.MODE_FOOT)
++	if _finished: return
++	if Game.mode != Game.MODE_FOOT or player.current_vehicle != null:
++		_abort("Final control recovery failed to return to foot.")
++		return
++	if not _reboard_cycle_verified:
++		var car := _nearest_parked_car()
++		if car != null and _ground_distance(player.global_position, car.global_position) < 45.0:
++			_boarding_target = car
++			await _walk_to(car.global_position, 2.4, 20.0)
++			await _interact_until(Game.MODE_CAR)
++			if player.current_vehicle == car: await _verify_reboard_cycle(car)
++	if _finished: return
++	_phase = "final_observation"
++	_final_observation_started = _elapsed()
++	var anchor := player.global_position
++	var direction := 1.0
++	while not _finished:
++		var target := anchor + Vector3(direction * 16.0, 0.0, direction * 4.0)
++		target.x = clampf(target.x, -310.0, 310.0)
++		target.z = clampf(target.z, -334.0, 310.0)
++		await _walk_to(target, 1.8, 10.0)
++		direction *= -1.0
++		await get_tree().create_timer(0.2).timeout
++
++func _terminal_liveness() -> Dictionary:
++	var distance := 0.0
++	for sample in _recent_foot_motion:
++		if sample["seconds"] >= _elapsed() - 60.0: distance += sample["distance_m"]
++	return {"foot_distance_last_60_seconds_m": distance, "seconds_since_foot_motion": _elapsed() - _last_foot_motion_seconds,
++		"final_observation_seconds": _elapsed() - _final_observation_started if _final_observation_started >= 0.0 else 0.0,
++		"healthy_on_foot": Game.health > 0.0 and player.alive and not player.busy and not Game.simulation_paused and Game.mode == Game.MODE_FOOT and player.current_vehicle == null and player.camera.current,
++		"reboard_cycle_verified": _reboard_cycle_verified}
++
++func _soak_complete() -> bool:
++	if not _soak_enabled or _soak_seconds < SOAK_ACCEPTANCE_SECONDS or _elapsed() < SOAK_ACCEPTANCE_SECONDS: return false
++	if _completed_runs.size() != SOAK_REQUIRED_RUNS or _phase != "final_observation": return false
++	if _fixture_checks.size() < 4: return false
++	for result in _fixture_checks:
++		if not result["passed"]: return false
++	if not (_free_distance["foot"] >= 100.0 and _free_distance["car"] >= 200.0 and _free_distance["helicopter"] >= 200.0): return false
++	var terminal := _terminal_liveness()
++	if not terminal["healthy_on_foot"] or not terminal["reboard_cycle_verified"]: return false
++	if terminal["final_observation_seconds"] < 30.0 or terminal["foot_distance_last_60_seconds_m"] < 15.0 or terminal["seconds_since_foot_motion"] > 5.0: return false
++	_scan_runtime_log()
++	return _runtime_log_scan["checked"] and _runtime_log_scan["fatal_errors"].is_empty()
++
++func _scan_runtime_log() -> void:
++	if _engine_log_path.is_empty() or not FileAccess.file_exists(_engine_log_path):
++		_runtime_log_scan = {"checked": false, "fatal_errors": [], "classified_nonfatal": [], "reason": "Explicit --log-file is required for soak error verification."}
++		return
++	var content := FileAccess.get_file_as_string(_engine_log_path)
++	var fatal: Array[String] = []
++	var known: Array[String] = []
++	for line in content.split("\n"):
++		if "ERROR:" not in line and "Parse Error:" not in line and "Failed to load script" not in line: continue
++		if 'Condition "ret != noErr"' in line and "get_system_ca_certificates" in content:
++			known.append(line)
++		else:
++			fatal.append(line)
++	_runtime_log_scan = {"checked": true, "fatal_errors": fatal, "classified_nonfatal": known, "path": _engine_log_path, "seconds": _elapsed()}
++
++func _initialize_monitors() -> void:
++	var available := ClassDB.class_get_integer_constant_list("Performance")
++	var wanted := {"object_count": "OBJECT_COUNT", "node_count": "OBJECT_NODE_COUNT", "orphan_node_count": "OBJECT_ORPHAN_NODE_COUNT",
++		"resource_count": "OBJECT_RESOURCE_COUNT", "static_memory_bytes": "MEMORY_STATIC", "static_memory_peak_bytes": "MEMORY_STATIC_MAX",
++		"render_video_memory_bytes": "RENDER_VIDEO_MEM_USED", "render_texture_memory_bytes": "RENDER_TEXTURE_MEM_USED",
++		"render_buffer_memory_bytes": "RENDER_BUFFER_MEM_USED", "draw_calls": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME", "fps": "TIME_FPS"}
++	for key in wanted:
++		if wanted[key] in available: _monitor_ids[key] = ClassDB.class_get_integer_constant("Performance", wanted[key])
++		else: _monitor_unavailable.append(key)
++
++func _performance_snapshot() -> Dictionary:
++	var result: Dictionary = {}
++	for key in _monitor_ids:
++		result[key] = null if _headless and (String(key).begins_with("render_") or key == "draw_calls") else Performance.get_monitor(_monitor_ids[key])
++	return result
++
++func _monitor_summary() -> Dictionary:
++	var summary: Dictionary = {}
++	for key in _monitor_ids:
++		var values: Array[float] = []
++		for sample in _samples:
++			var value: Variant = sample.get("engine_monitors", {}).get(key)
++			if value != null: values.append(float(value))
++		if not values.is_empty():
++			summary[key] = {"first": values[0], "last": values[-1], "min": values.min(), "max": values.max(), "samples": values.size()}
++	return summary
+ 
+ func _tap(action: String) -> void:
+ 	if _finished: return
+@@ -299,7 +698,7 @@ func _walk_to(target: Vector3, stop_distance: float, timeout: float) -> void:
+ 	var sidestep_sign := 1.0
+ 	Input.action_press("move_forward")
+ 	Input.action_press("sprint")
+-	while _elapsed() < deadline and not _finished and Game.mode == Game.MODE_FOOT:
++	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and Game.mode == Game.MODE_FOOT:
+ 		await get_tree().physics_frame
+ 		if _ground_distance(player.global_position, target) <= stop_distance: break
+ 		var delta := get_physics_process_delta_time()
+@@ -352,7 +751,7 @@ func _nav_to(target: Vector3, distance: float, timeout: float) -> void:
+ 		return
+ 	var deadline := _elapsed() + timeout
+ 	for index in _grid_path(_nearest_node(player.global_position), _nearest_node(target)):
+-		if _finished or _elapsed() >= deadline: return
++		if _finished or _interrupt_free_action() or _elapsed() >= deadline: return
+ 		await _walk_to(world.traffic_nodes[index], 7.0, minf(40.0, deadline - _elapsed()))
+ 	await _walk_to(target, distance, maxf(1.0, deadline - _elapsed()))
+ 
+@@ -389,7 +788,7 @@ func _drive_route(target: Vector3, timeout: float) -> void:
+ 	if not player.current_vehicle is Car: return
+ 	var deadline := _elapsed() + timeout
+ 	for index in _grid_path(_nearest_node(player.current_vehicle.global_position), _nearest_node(target)):
+-		if _finished or _elapsed() >= deadline: return
++		if _finished or _interrupt_free_action() or _elapsed() >= deadline: return
+ 		await _drive_to(world.traffic_nodes[index], 7.0, minf(35.0, deadline - _elapsed()))
+ 		if mission.stage == Mission.Stage.TO_HELI: return
+ 	await _drive_to(target, 48.0, maxf(1.0, deadline - _elapsed()))
+@@ -398,9 +797,10 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
+ 	var deadline := _elapsed() + timeout
+ 	var stuck_for := 0.0
+ 	var previous := player.controlled_actor().global_position
+-	while _elapsed() < deadline and not _finished and player.current_vehicle is Car:
++	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and player.current_vehicle is Car:
+ 		await get_tree().physics_frame
+ 		var car := player.current_vehicle as Car
++		if car.disabled: break
+ 		if mission.stage == Mission.Stage.TO_HELI: break
+ 		var offset := target - car.global_position
+ 		offset.y = 0.0
+@@ -460,7 +860,7 @@ func _avoid_car_direction(car: Car, forward: Vector3) -> Vector3:
+ 
+ func _fly_to(target: Vector3, timeout: float) -> void:
+ 	var deadline := _elapsed() + timeout
+-	while _elapsed() < deadline and not _finished and player.current_vehicle is Helicopter:
++	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and player.current_vehicle is Helicopter:
+ 		await get_tree().physics_frame
+ 		var heli := player.current_vehicle as Helicopter
+ 		var offset := target - heli.global_position
+@@ -491,7 +891,7 @@ func _steer_aircraft(heli: Helicopter, offset: Vector3, minimum_altitude: float
+ 
+ func _land(target: Vector3, timeout: float) -> void:
+ 	var deadline := _elapsed() + timeout
+-	while _elapsed() < deadline and not _finished and player.current_vehicle is Helicopter:
++	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and player.current_vehicle is Helicopter:
+ 		await get_tree().physics_frame
+ 		var heli := player.current_vehicle as Helicopter
+ 		if heli.is_landed(): break
+@@ -514,7 +914,9 @@ func _write_checkpoint() -> void:
+ 	var output := FileAccess.open("%s/route_progress.json" % out_dir, FileAccess.WRITE)
+ 	if output:
+ 		output.store_string(JSON.stringify({"elapsed_seconds": _elapsed(), "finished": _finished,
+-			"latest": _snapshot(_elapsed()), "gates": _gates, "recent_log": log_lines.slice(maxi(0, log_lines.size() - 8))}, "\t"))
++			"latest": _snapshot(_elapsed()), "gates": _gates, "completed_runs": _completed_runs.size(),
++			"fixture_checks": _fixture_checks, "free_roam_distance_m": _free_distance, "reboard_cycle_verified": _reboard_cycle_verified,
++			"terminal_liveness": _terminal_liveness(), "runtime_log_scan": _runtime_log_scan, "recent_log": log_lines.slice(maxi(0, log_lines.size() - 8))}, "\t"))
+ 		output.close()
+ 
+ func _percentile(sorted: Array[float], percentile: float) -> float:
+@@ -543,7 +945,7 @@ func _finish(success: bool) -> void:
+ 		"scheduled_samples": _record_requested_samples, "missed_samples": _record_dropped_samples,
+ 		"capped": _record_capped, "cap_reason": _record_cap_reason,
+ 		"max_frames": RECORD_MAX_FRAMES, "max_bytes": RECORD_MAX_BYTES,
+-		"max_duration_seconds": ROUTE_TIMEOUT, "timestamps": "frames.jsonl monotonic seconds from route setup",
++		"max_duration_seconds": RECORD_MAX_SECONDS, "timestamps": "frames.jsonl monotonic seconds from route setup",
+ 		"readback_encode_cost_ms": _frame_metrics(_record_cost_ms)}
+ 	if not _record_dir.is_empty():
+ 		var record_summary := FileAccess.open(_record_dir.path_join("recording.json"), FileAccess.WRITE)
+@@ -553,10 +955,24 @@ func _finish(success: bool) -> void:
+ 	var output := FileAccess.open("%s/capture_log.json" % out_dir, FileAccess.WRITE)
+ 	if output:
+ 		output.store_string(JSON.stringify({"schema": 2, "success": success, "failure_reason": _failure,
+-			"uninterrupted": success and Game.death_count == _initial_deaths, "controls_only": true,
++			"uninterrupted": success and not _soak_enabled and Game.death_count == _initial_deaths, "controls_only": not _soak_enabled,
++			"mission_input_driver_controls_only": true,
+ 			"automation_kind": "scripted input actions, direct mouse-look yaw/pitch, fractional action strengths",
+-			"native_human_run": false, "no_teleports_or_state_bypasses": true,
+-			"headless": _headless, "rendered_performance_valid": not _headless,
++			"native_human_run": false, "no_teleports_or_state_bypasses": not _soak_enabled and _continuity_breaks.is_empty(),
++			"mission_input_driver_writes_transforms_or_health": false, "mission_continuity_breaks": _continuity_breaks,
++			"headless": _headless, "rendered_timing_baseline": not _headless,
++			"performance_acceptance_valid": false,
++			"performance_caveats": ["Runtime timing baseline; exclusive machine/CPU/GPU conditions are not asserted by this script.", "JPEG/screenshot readback adds work; inclusive and unaffected interval summaries are separate.", "Human gameplay and target-frame-rate acceptance require their own review."],
++			"run_mode": "soak" if _soak_enabled else "single_route", "soak_duration_contract_seconds": SOAK_ACCEPTANCE_SECONDS if _soak_enabled else 0,
++			"configured_soak_timeout_seconds": _soak_seconds if _soak_enabled else 0,
++			"required_mission_completions": SOAK_REQUIRED_RUNS if _soak_enabled else 1,
++			"completed_mission_runs": _completed_runs, "fixture_assisted_checks": _fixture_checks,
++			"free_roam_distance_m": _free_distance, "fixture_teleports_count_as_completion": false,
++			"free_roam_events": _free_roam_events, "terminal_liveness": _terminal_liveness(), "runtime_log_scan": _runtime_log_scan,
++			"requires_clean_supervisor_exit": true, "continuous_30_minute_video_claim": false,
++			"evidence_coverage": "1Hz state/resource samples, per-gate screenshots and five-minute soak stills; optional JPEG sequence is independently capped at720s.",
++			"engine_monitor_summary": _monitor_summary(), "unavailable_engine_monitors": _monitor_unavailable,
++			"memory_leak_acceptance_valid": false, "memory_qualification": "Resource trends require review; process exit alone is not a leak verdict.",
+ 			"finished_utc": Time.get_datetime_string_from_system(true), "elapsed_seconds": _elapsed(),
+ 			"engine": Engine.get_version_info()["string"], "seed": Game.seed_value,
+ 			"health": Game.health, "wanted_level": Game.wanted_level, "mission_stage": mission.stage,
+diff --git a/game/src/systems/delivery_point.gd b/game/src/systems/delivery_point.gd
+index e9cd9c0..96903ab 100644
+--- a/game/src/systems/delivery_point.gd
++++ b/game/src/systems/delivery_point.gd
+@@ -3,33 +3,20 @@ extends Node3D
+ 
+ var mission: Node
+ var prompt_text := "[E] Deliver the package"
++var _marker: Node3D
+ 
+ func _ready() -> void:
+ 	add_to_group("interactables")
+-	var crate := MeshInstance3D.new()
+-	var bm := BoxMesh.new()
+-	bm.size = Vector3(1.6, 0.9, 1.0)
+-	crate.mesh = bm
+-	crate.material_override = Palette.mat(Color(0.30, 0.33, 0.28), 0.9)
+-	crate.position = Vector3(0.0, 0.45, 0.0)
+-	add_child(crate)
+-	var band := MeshInstance3D.new()
+-	var sb := BoxMesh.new()
+-	sb.size = Vector3(1.7, 0.12, 1.1)
+-	band.mesh = sb
+-	band.material_override = Palette.emissive(Color(0.35, 0.9, 0.7), 1.4)
+-	band.position = Vector3(0.0, 0.85, 0.0)
+-	add_child(band)
+-	var beam := MeshInstance3D.new()
+-	var beam_mesh := CylinderMesh.new()
+-	beam_mesh.top_radius = 0.10
+-	beam_mesh.bottom_radius = 0.22
+-	beam_mesh.height = 3.4
+-	beam_mesh.radial_segments = 10
+-	beam.mesh = beam_mesh
+-	beam.material_override = Palette.emissive(Color(0.35, 0.95, 0.75), 1.4)
+-	beam.position = Vector3(0.0, 1.7, 0.0)
+-	add_child(beam)
++	var crate := AssetLibrary.instantiate("airfield_clutter_clean.glb", self)
++	if crate!=null: crate.scale=Vector3.ONE*.7
++	_marker=Node3D.new();add_child(_marker)
++	var beam:=MeshInstance3D.new()
++	var ring:=TorusMesh.new();ring.inner_radius=1.15;ring.outer_radius=1.23
++	ring.rings=40;ring.ring_segments=6;beam.mesh=ring;beam.scale.y=.12
++	beam.material_override=Palette.emissive(Color(.35,.85,.65),.4)
++	beam.position=Vector3(0,.045,0);_marker.add_child(beam)
++	_marker.visible=Game.mission_stage==Mission.Stage.DELIVER
++	Events.mission_stage_changed.connect(func(stage: int):_marker.visible=stage==Mission.Stage.DELIVER)
+ 	var lamp := OmniLight3D.new()
+ 	lamp.light_color = Color(0.4, 1.0, 0.8)
+ 	lamp.light_energy = 1.4
+diff --git a/game/src/systems/package_pickup.gd b/game/src/systems/package_pickup.gd
+index 35857a3..a0ef692 100644
+--- a/game/src/systems/package_pickup.gd
++++ b/game/src/systems/package_pickup.gd
+@@ -21,16 +21,13 @@ func _ready() -> void:
+ 	strap.material_override = Palette.mat(Color(0.75, 0.62, 0.25), 0.7, 0.2)
+ 	strap.position = Vector3(0.0, 0.2, 0.0)
+ 	add_child(strap)
+-	# a soft beacon so the objective reads from across the market
++	# A restrained objective ring, not an opaque world-sized beacon.
+ 	var beam := MeshInstance3D.new()
+-	var beam_mesh := CylinderMesh.new()
+-	beam_mesh.top_radius = 0.10
+-	beam_mesh.bottom_radius = 0.22
+-	beam_mesh.height = 3.4
+-	beam_mesh.radial_segments = 10
+-	beam.mesh = beam_mesh
+-	beam.material_override = Palette.emissive(Color(0.35, 0.95, 0.75), 1.4)
+-	beam.position = Vector3(0.0, 1.7, 0.0)
++	var ring := TorusMesh.new();ring.inner_radius=.42;ring.outer_radius=.48
++	ring.rings=32;ring.ring_segments=6;beam.mesh=ring
++	beam.scale.y=.12
++	beam.material_override=Palette.emissive(Color(.35,.85,.65),.4)
++	beam.position=Vector3(0,.045,0)
+ 	add_child(beam)
+ 	var glow := OmniLight3D.new()
+ 	glow.light_color = Color(1.0, 0.85, 0.55)
+diff --git a/game/src/systems/self_test.gd b/game/src/systems/self_test.gd
+index f5e0f5b..c21913c 100644
+--- a/game/src/systems/self_test.gd
++++ b/game/src/systems/self_test.gd
+@@ -12,6 +12,7 @@ var results: Array[Dictionary] = []
+ var _started_ms := 0
+ var _reported := false
+ var _watchdog_timer: Timer
++var _state_restore_events := 0
+ var _report_path := "user://wave2_test_report.json"
+ 
+ func run(main: Node) -> void:
+@@ -278,6 +279,19 @@ func run(main: Node) -> void:
+ 	var reloaded := Game.load_game(TEST_SAVE)
+ 	_check("atomic replacement updates an existing save", replaced and reloaded and is_equal_approx(Game.health, 65.0))
+ 	_check("successful save leaves no temporary checkpoint file", not FileAccess.file_exists(TEST_SAVE + ".tmp-%d" % OS.get_process_id()))
++	Events.state_restored.connect(func(): _state_restore_events += 1)
++	Game.switch_weapon("smg")
++	player._update_weapon_mesh()
++	var smg_saved := Game.save_game(TEST_SAVE)
++	Game.switch_weapon("pistol")
++	player._update_weapon_mesh()
++	player._reloading = true
++	player._reload_timer = 1.0
++	player._fire_cooldown = 0.8
++	player._press_queue["fire"] = true
++	var smg_loaded := Game.load_game(TEST_SAVE)
++	_check("successful load publishes one state-restored event", smg_saved and smg_loaded and _state_restore_events == 1)
++	_check("saved SMG restores held model and clears transient actions", Game.carried_weapon == "smg" and player._weapon_model != null and String(player._weapon_model.scene_file_path).contains("smg") and not player._reloading and player._fire_cooldown == 0.0 and player._press_queue.is_empty())
+ 	_negative_save_checks(player, mission)
+ 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
+ 	await _report()
+@@ -382,7 +396,7 @@ func _state_fingerprint(player: Player, mission: Mission) -> Dictionary:
+ 		"elapsed": Game.elapsed_seconds, "position": Game.player_position, "rotation": Game.player_rotation,
+ 		"weapon": Game.carried_weapon, "ammo": Game.ammo.duplicate(true), "mode": Game.mode,
+ 		"safe_position": Game.last_safe_position, "safe_rotation": Game.last_safe_rotation,
+-		"actor_position": player.global_position, "actor_yaw": player.yaw, "settings": Game.settings.duplicate(true),
++		"actor_position": player.global_position, "actor_yaw": player.yaw, "settings": Game.settings.duplicate(true), "state_restore_events": _state_restore_events,
+ 		"scene_stage": mission.stage, "objective": mission.current_objective(), "package_visible": mission.package_node.visible}
+ 
+ func _negative_save_checks(player: Player, mission: Mission) -> void:
+diff --git a/game/src/systems/traffic_manager.gd b/game/src/systems/traffic_manager.gd
+index 9215813..f68c1bd 100644
+--- a/game/src/systems/traffic_manager.gd
++++ b/game/src/systems/traffic_manager.gd
+@@ -6,7 +6,7 @@ extends Node3D
+ const LANE_OFFSET := 4.0        # lane centre is 4 m to the LEFT of the road centre
+ const PED_COUNT := 116
+ const FOCUSED_PED_COUNT := 42
+-const DINER_COUNT := 16
++const DINER_COUNT := 45
+ const TRAFFIC_COUNT := 14
+ const POLICE_SPAWN_DISTANCE := 55.0
+ 
+@@ -140,22 +140,22 @@ func _spawn_peds() -> void:
+ 	# Damageable/reactive diners and queueing customers. Keep the package and
+ 	# combat aisle (local z=-8 and north of it) clear for actual mission play.
+ 	var centre: Vector3 = world.locations["hawker"]
++	var seats: Array[Vector3] = [Vector3(.857,.495,-.194),Vector3(.025,.48,-.80),Vector3(-.844,.492,-.18),Vector3(-.557,.475,.714),Vector3(.497,.471,.741)]
+ 	for index in DINER_COUNT:
+-		var diner := NPC.new()
+-		add_child(diner)
+-		var column := (index * 2 + index / 6) % 12
+-		var row := 3 + (index / 6) % 4
+-		var side := 1.0 if index % 2 == 0 else -1.0
+-		var position := centre + Vector3(-27.5 + column * 5.0 + side * 1.25, 0.25, -11.0 + row * 4.5)
+-		diner.global_position = position
+-		diner.rotation.y = -PI * 0.5 * side
+-		diner.state = NPC.State.IDLE
+-		diner.idle_time = 3600.0
+-		diner.set_meta("ambient_role", "diner" if index % 3 != 0 else "stall_queue")
+-		diner.set_meta("activity_home", position)
+-		if diner.character_visual != null and diner.character_visual.loaded:
+-			diner.character_visual.set_seated(index % 3 != 0)
+-
++		var diner:=NPC.new();add_child(diner)
++		var table_id: int=index/5
++		var column: int=1+(table_id%3)*4
++		var row: int=3+(table_id/3)*2
++		var seat: Vector3=seats[index%5]
++		var position:=centre+Vector3(-27.5+column*5.0+seat.x,.4,-11.0+row*4.5+seat.z)
++		diner.global_position=position
++		diner.rotation.y=atan2(seat.x,seat.z)
++		diner.state=NPC.State.IDLE;diner.idle_time=3600
++		diner.set_meta("ambient_role","diner")
++		diner.set_meta("activity_home",position)
++		if diner.character_visual!=null and diner.character_visual.loaded:
++			diner.character_visual.position.y=seat.y-.445
++			diner.character_visual.set_seated(true)
+ 		peds.append(diner)
+ 
+ func _spawn_on_segment(ped: NPC, path: Array) -> void:
+diff --git a/game/src/world/world_builder.gd b/game/src/world/world_builder.gd
+index 7b10c3b..48b7381 100644
+--- a/game/src/world/world_builder.gd
++++ b/game/src/world/world_builder.gd
+@@ -26,14 +26,15 @@ var locations := {
+ 	"package": Vector3(-80.0, 1.0, -80.0),
+ 	"marked_car": Vector3(-40.0, 0.2, -150.0),
+ 	"helipad_primary": Vector3(240.0, 0.2, 240.0),
+-	"helipad_secondary": Vector3(0.0, 0.2, -330.0),
+-	"delivery": Vector3(96.0, 0.2, -322.0),
++	"helipad_secondary": Vector3(0.0, 0.2, -337.0),
++	"delivery": Vector3(96.0, 0.2, -337.0),
+ 	"hawker": Vector3(-80.0, 0.2, -80.0),
+ }
+ 
+ var _rng := RandomNumberGenerator.new()
+ var _world_root: Node3D
+ var _collision_root: StaticBody3D
++var _asset_collision_cache: Dictionary = {}
+ 
+ func build(seed_value: int = 20261021) -> void:
+ 	_rng.seed = seed_value
+@@ -57,6 +58,7 @@ func build(seed_value: int = 20261021) -> void:
+ 	locations["workshop"] = interior_data["workshop"]
+ 	_waterfront_edge()
+ 	_background_city()
++	_perimeter()
+ 	_build_lane_graph()
+ 	_scatter_props()
+ 	_landscape()
+@@ -278,6 +280,7 @@ func _hdb_block(centre: Vector3) -> void:
+ 				slab.scale = Vector3.ONE * (h / unit_h)
+ 				if rot == 90.0:
+ 					slab.rotation.y = PI * 0.5
++				_asset_collision(slab)
+ 				used_provider = true
+ 		if not used_provider:
+ 			_solid_box(size, pos + Vector3(0.0, 3.6 + h * 0.5, 0.0), Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(5.0, 7.0, 3.0), 0.85))
+@@ -307,6 +310,8 @@ func _hdb_block(centre: Vector3) -> void:
+ 	# planted courtyard with a community table
+ 	_solid_box(Vector3(40.0, 0.3, 34.0), centre + Vector3(0.0, 0.15, 2.0), Palette.mat(Color(0.32, 0.40, 0.26), 0.95))
+ 	for i: int in 8:
++		if centre.x < -200 and centre.z > -100 and centre.z < 0 and i == 2:
++			continue # the safe-room roof occupies this courtyard edge
+ 		var ang := TAU * i / 8.0
+ 		_tree(centre + Vector3(cos(ang) * 15.0, 0.0, 2.0 + sin(ang) * 12.0), 1.1)
+ 	_box(Vector3(5.0, 0.16, 2.0), centre + Vector3(0.0, 0.9, 2.0), Palette.mat(Palette.PLASTER, 0.85))
+@@ -319,7 +324,7 @@ func _hdb_block(centre: Vector3) -> void:
+ 		_solid_box(Vector3(0.6, 3.2, 3.0), centre + Vector3(21.5, 1.6 + i * 3.0, 44.0 + i * 4.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
+ 	# safe room interior (wave-1 mission origin)
+ 	if centre.x < -200.0 and centre.z > -100.0 and centre.z < 0.0:
+-		_safe_room(centre + Vector3(-52.0, 0.0, 34.0))
++		_safe_room(centre + Vector3(0.0, 0.30, 10.0))
+ 
+ func _safe_room(pos: Vector3) -> void:
+ 	_solid_box(Vector3(14.0, 0.2, 10.0), pos + Vector3(0.0, 0.1, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
+@@ -367,7 +372,7 @@ func _hawker_block(centre: Vector3) -> void:
+ 	_authored("hawker_pavilion.glb", centre)
+ 	# stalls: counters, canopies, signboards
+ 	for i: int in 6:
+-		var sp := centre + Vector3(-27.0 + i * 11.0, 0.0, -20.0)
++		var sp := centre + Vector3(-27.0 + i * 11.0, 0.25, -20.0)
+ 		var used_counter := false
+ 		if AssetLibrary.has_asset("hawker_counter_refined.glb"):
+ 			var counter := AssetLibrary.instantiate("hawker_counter_refined.glb", _world_root)
+@@ -390,7 +395,11 @@ func _hawker_block(centre: Vector3) -> void:
+ 	# shared dining: tables, stools, bins, tray return
+ 	for i: int in 12:
+ 		for j: int in 8:
+-			var tp := centre + Vector3(-27.5 + i * 5.0, 0.0, -11.0 + j * 4.5)
++			var tp := centre + Vector3(-27.5 + i * 5.0, 0.25, -11.0 + j * 4.5)
++			if i%4==1 and j in [3,5,7]:
++				for meal in 3:
++					var angle: float=meal*TAU/3.0
++					_authored("hawker_meal.glb",tp+Vector3(cos(angle)*.32,.755,sin(angle)*.32),-angle)
+ 			var provider_table := false
+ 			if AssetLibrary.has_asset("hawker_table_refined.glb"):
+ 				var table := AssetLibrary.instantiate("hawker_table_refined.glb", _world_root)
+@@ -486,6 +495,10 @@ func _aviation_block(centre: Vector3) -> void:
+ 		_tree(centre + Vector3(-56.0 + i * 18.0, 0.0, 48.0), 0.9)
+ 
+ func _helipad(pos: Vector3, radius: float) -> void:
++	var body:=StaticBody3D.new();body.position=pos+Vector3(0,.15,0)
++	var shape:=CollisionShape3D.new();var cylinder:=CylinderShape3D.new()
++	cylinder.radius=radius;cylinder.height=.3;shape.shape=cylinder
++	body.add_child(shape);_world_root.add_child(body)
+ 	_cyl(Vector3(radius * 2.0, 0.3, radius * 2.0), pos + Vector3(0.0, 0.15, 0.0), Palette.mat(Palette.CONCRETE, 0.9))
+ 	_cyl(Vector3(radius * 1.5, 0.06, radius * 1.5), pos + Vector3(0.0, 0.33, 0.0), Palette.mat(Color(0.16, 0.16, 0.17), 0.9))
+ 	var ring := MeshInstance3D.new()
+@@ -495,13 +508,14 @@ func _helipad(pos: Vector3, radius: float) -> void:
+ 	tm.rings = 24
+ 	tm.ring_segments = 8
+ 	ring.mesh = tm
+-	ring.material_override = Palette.emissive(Color(0.95, 0.95, 0.9), 0.9)
+-	ring.position = pos + Vector3(0.0, 0.34, 0.0)
++	ring.material_override = Palette.mat(Color(0.92, 0.90, 0.74), 0.85)
++	ring.position = pos + Vector3(0.0, 0.38, 0.0)
++	ring.scale.y = 0.015
+ 	_world_root.add_child(ring)
+ 	var h := "H"
+ 	var label := _label3d(h, pos + Vector3(0.0, 0.4, 0.0))
+ 	label.font_size = 120
+-	label.pixel_size = 0.012
++	label.pixel_size = 0.05
+ 	label.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+ 	label.modulate = Color(0.95, 0.95, 0.92)
+ 
+@@ -526,7 +540,7 @@ func _waterfront_edge() -> void:
+ 	water.position = Vector3(0.0, -0.4, PROMENADE_Z - 340.0)
+ 	_world_root.add_child(water)
+ 	# promenade deck + railing
+-	_solid_box(Vector3(700.0, 0.3, 22.0), Vector3(0.0, 0.15, PROMENADE_Z), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
++	_solid_box(Vector3(700.0, 0.3, 22.0), Vector3(0.0, 0.15, PROMENADE_Z), Palette.mat_textured(Palette.CONCRETE_LIGHT,"pavers",Vector3.ONE,0.9))
+ 	for i: int in 46:
+ 		_cyl(Vector3(0.12, 1.1, 0.12), Vector3(-340.0 + i * 15.0, 0.85, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
+ 	_box(Vector3(700.0, 0.08, 0.08), Vector3(0.0, 1.35, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
+@@ -545,14 +559,39 @@ func _background_city() -> void:
+ 		var side := i % 4
+ 		var p := Vector3.ZERO
+ 		match side:
+-			0: p=Vector3(-620+(i/4)*82,0,-560-rng.randf_range(0,120))
++			0: p=Vector3(-620+(i/4)*82,0,-710-rng.randf_range(0,140))
+ 			1: p=Vector3(-440-rng.randf_range(0,90),0,-410+(i/4)*54)
+ 			2: p=Vector3(440+rng.randf_range(0,90),0,-410+(i/4)*54)
+ 			_: p=Vector3(-620+(i/4)*82,0,435+rng.randf_range(0,90))
+ 		var scale_y := rng.randf_range(.55,1.20)
+ 		_authored("skyline_%d.glb"%posmod(i,4),p,rng.randf_range(-.08,.08),Vector3(1,scale_y,1))
+-		if side==0:
+-			_box(Vector3(75,2,95),p+Vector3(0,-1,0),Palette.mat_textured(Palette.CONCRETE,"concrete",Vector3.ONE,.9))
++
++
++func _perimeter() -> void:
++	# One continuous far shoreline anchors the background skyline across a bay.
++	var ground_mat:=Palette.mat_textured(Color(.33,.38,.28),"soil",Vector3.ONE,.95)
++	_box(Vector3(1700,8,700),Vector3(0,-4,-970),ground_mat)
++	_box(Vector3(1700,2,18),Vector3(0,-.7,-624),Palette.mat_textured(Palette.CONCRETE,"concrete",Vector3.ONE,.92))
++	_box(Vector3(1680,.08,16),Vector3(0,.05,-657),Palette.mat_textured(Palette.ASPHALT,"asphalt",Vector3.ONE,.85))
++	for i in 34:
++		_tree(Vector3(-790+i*48,.1,-640),.8)
++	# The authored district has visible physical edges. Aircraft can fly over
++	# the same geometry; ordinary walking/driving meets real railings.
++	for i in 50:
++		var t: float=-367.5+i*15
++		for side in [-1.0,1.0]:
++			var p:=Vector3(side*375,.1,t)
++			_authored("boundary_railing.glb",p,PI*.5)
++			_collision_box(Vector3(.25,2.4,15),p+Vector3(0,1.2,0))
++		var south:=Vector3(t,.1,375)
++		_authored("boundary_railing.glb",south)
++		_collision_box(Vector3(15,2.4,.25),south+Vector3(0,1.2,0))
++	# Waterfront rails have deliberate pad-side pedestrian access, but stop a
++	# normal sprint from falling into the bay.
++	for i in 46:
++		var p:=Vector3(-337.5+i*15,.3,-348.5)
++		_authored("boundary_railing.glb",p,0,Vector3(1,.55,1))
++		_collision_box(Vector3(15,1.35,.25),p+Vector3(0,.68,0))
+ 
+ # ------------------------------------------------------------------ traffic
+ func _build_lane_graph() -> void:
+@@ -883,3 +922,17 @@ func _label3d(text: String, pos: Vector3) -> Label3D:
+ 	l.outline_modulate = Color(0.08, 0.07, 0.06, 0.9)
+ 	_world_root.add_child(l)
+ 	return l
++
++func _asset_collision(node: Node) -> void:
++	# Imported housing includes real raised plinths, steps and void-deck
++	# columns. Collision must follow that geometry instead of an invisible
++	# flat ground below it; cache the immutable shape across instances.
++	if node is MeshInstance3D and node.mesh != null:
++		var id: int = node.mesh.get_instance_id()
++		if not _asset_collision_cache.has(id):
++			_asset_collision_cache[id]=node.mesh.create_trimesh_shape()
++		var body:=StaticBody3D.new();body.collision_layer=1;body.collision_mask=0
++		var shape:=CollisionShape3D.new();shape.shape=_asset_collision_cache[id]
++		body.add_child(shape);node.add_child(body)
++	for child in node.get_children():
++		if not child is StaticBody3D: _asset_collision(child)

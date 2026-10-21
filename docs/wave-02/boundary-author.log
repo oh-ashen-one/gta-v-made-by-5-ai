@@ -1,0 +1,11 @@
+Info: Saved as "boundary_railing.blend"
+INFO Draco mesh compression is available, use library at /Users/midir/Applications/Blender-4.5.11.app/Contents/Resources/4.5/scripts/addons_core/io_scene_gltf2/libextern_draco.dylib
+08:58:30 | INFO: Starting glTF 2.0 export
+08:58:30 | INFO: Extracting primitive: Cube
+08:58:30 | INFO: Primitives created: 4
+08:58:30 | INFO: Finished glTF 2.0 export in 0.007647991180419922 s
+
+INTERIOR_RESULT {"asset": "boundary_railing", "authoring_objects": 63, "triangles": 6420, "dimensions_blender_xyz": [15.239999771118164, 0.5, 2.5499999821186066], "source": "game/tools/build_interiors.py", "rights": "Original authored geometry and plain English fictional signage"}
+Blender 4.5.11 LTS (hash 4db51e9d1e1e built 2026-06-23 01:45:40)
+
+Blender quit

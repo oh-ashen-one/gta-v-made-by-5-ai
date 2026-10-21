@@ -1,0 +1,36 @@
+{
+	"completed_runs": 0,
+	"elapsed_seconds": 30.004908,
+	"finished": true,
+	"fixture_checks": [],
+	"free_roam_distance_m": {
+		"car": 0.0,
+		"foot": 0.0,
+		"helicopter": 0.0
+	},
+	"gates": [],
+	"latest": {
+		"car_distance_m": 0.0,
+		"deaths": 0,
+		"flight_distance_m": 0.0,
+		"heading": 0.0155564043670893,
+		"health": 100.0,
+		"mode": 0,
+		"phase": "mission",
+		"position": [
+			-318.913940429688,
+			0.0358044691383839,
+			-90.1918792724609
+		],
+		"run": 1,
+		"seconds": 30.0,
+		"stage": 0,
+		"vehicle_health": null,
+		"wanted": 0
+	},
+	"recent_log": [
+		"0.62s Route start; seed=20261021; headless=true; scripted-input-automation=true",
+		"2.60s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0",
+		"16.64s walk end at (-315.0, 0.0, -5.0); target=(-320.0, 0.0, 0.0) distance=6.9"
+	]
+}

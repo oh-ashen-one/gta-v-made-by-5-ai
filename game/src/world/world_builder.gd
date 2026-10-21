@@ -26,14 +26,15 @@ var locations := {
 	"package": Vector3(-80.0, 1.0, -80.0),
 	"marked_car": Vector3(-40.0, 0.2, -150.0),
 	"helipad_primary": Vector3(240.0, 0.2, 240.0),
-	"helipad_secondary": Vector3(0.0, 0.2, -330.0),
-	"delivery": Vector3(96.0, 0.2, -322.0),
+	"helipad_secondary": Vector3(0.0, 0.2, -337.0),
+	"delivery": Vector3(96.0, 0.2, -337.0),
 	"hawker": Vector3(-80.0, 0.2, -80.0),
 }
 
 var _rng := RandomNumberGenerator.new()
 var _world_root: Node3D
 var _collision_root: StaticBody3D
+var _asset_collision_cache: Dictionary = {}
 
 func build(seed_value: int = 20261021) -> void:
 	_rng.seed = seed_value
@@ -57,6 +58,7 @@ func build(seed_value: int = 20261021) -> void:
 	locations["workshop"] = interior_data["workshop"]
 	_waterfront_edge()
 	_background_city()
+	_perimeter()
 	_build_lane_graph()
 	_scatter_props()
 	_landscape()
@@ -278,6 +280,7 @@ func _hdb_block(centre: Vector3) -> void:
 				slab.scale = Vector3.ONE * (h / unit_h)
 				if rot == 90.0:
 					slab.rotation.y = PI * 0.5
+				_asset_collision(slab)
 				used_provider = true
 		if not used_provider:
 			_solid_box(size, pos + Vector3(0.0, 3.6 + h * 0.5, 0.0), Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(5.0, 7.0, 3.0), 0.85))
@@ -307,6 +310,8 @@ func _hdb_block(centre: Vector3) -> void:
 	# planted courtyard with a community table
 	_solid_box(Vector3(40.0, 0.3, 34.0), centre + Vector3(0.0, 0.15, 2.0), Palette.mat(Color(0.32, 0.40, 0.26), 0.95))
 	for i: int in 8:
+		if centre.x < -200 and centre.z > -100 and centre.z < 0 and i == 2:
+			continue # the safe-room roof occupies this courtyard edge
 		var ang := TAU * i / 8.0
 		_tree(centre + Vector3(cos(ang) * 15.0, 0.0, 2.0 + sin(ang) * 12.0), 1.1)
 	_box(Vector3(5.0, 0.16, 2.0), centre + Vector3(0.0, 0.9, 2.0), Palette.mat(Palette.PLASTER, 0.85))
@@ -319,7 +324,7 @@ func _hdb_block(centre: Vector3) -> void:
 		_solid_box(Vector3(0.6, 3.2, 3.0), centre + Vector3(21.5, 1.6 + i * 3.0, 44.0 + i * 4.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
 	# safe room interior (wave-1 mission origin)
 	if centre.x < -200.0 and centre.z > -100.0 and centre.z < 0.0:
-		_safe_room(centre + Vector3(-52.0, 0.0, 34.0))
+		_safe_room(centre + Vector3(0.0, 0.30, 10.0))
 
 func _safe_room(pos: Vector3) -> void:
 	_solid_box(Vector3(14.0, 0.2, 10.0), pos + Vector3(0.0, 0.1, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
@@ -367,7 +372,7 @@ func _hawker_block(centre: Vector3) -> void:
 	_authored("hawker_pavilion.glb", centre)
 	# stalls: counters, canopies, signboards
 	for i: int in 6:
-		var sp := centre + Vector3(-27.0 + i * 11.0, 0.0, -20.0)
+		var sp := centre + Vector3(-27.0 + i * 11.0, 0.25, -20.0)
 		var used_counter := false
 		if AssetLibrary.has_asset("hawker_counter_refined.glb"):
 			var counter := AssetLibrary.instantiate("hawker_counter_refined.glb", _world_root)
@@ -390,7 +395,11 @@ func _hawker_block(centre: Vector3) -> void:
 	# shared dining: tables, stools, bins, tray return
 	for i: int in 12:
 		for j: int in 8:
-			var tp := centre + Vector3(-27.5 + i * 5.0, 0.0, -11.0 + j * 4.5)
+			var tp := centre + Vector3(-27.5 + i * 5.0, 0.25, -11.0 + j * 4.5)
+			if i%4==1 and j in [3,5,7]:
+				for meal in 3:
+					var angle: float=meal*TAU/3.0
+					_authored("hawker_meal.glb",tp+Vector3(cos(angle)*.32,.755,sin(angle)*.32),-angle)
 			var provider_table := false
 			if AssetLibrary.has_asset("hawker_table_refined.glb"):
 				var table := AssetLibrary.instantiate("hawker_table_refined.glb", _world_root)
@@ -486,6 +495,10 @@ func _aviation_block(centre: Vector3) -> void:
 		_tree(centre + Vector3(-56.0 + i * 18.0, 0.0, 48.0), 0.9)
 
 func _helipad(pos: Vector3, radius: float) -> void:
+	var body:=StaticBody3D.new();body.position=pos+Vector3(0,.15,0)
+	var shape:=CollisionShape3D.new();var cylinder:=CylinderShape3D.new()
+	cylinder.radius=radius;cylinder.height=.3;shape.shape=cylinder
+	body.add_child(shape);_world_root.add_child(body)
 	_cyl(Vector3(radius * 2.0, 0.3, radius * 2.0), pos + Vector3(0.0, 0.15, 0.0), Palette.mat(Palette.CONCRETE, 0.9))
 	_cyl(Vector3(radius * 1.5, 0.06, radius * 1.5), pos + Vector3(0.0, 0.33, 0.0), Palette.mat(Color(0.16, 0.16, 0.17), 0.9))
 	var ring := MeshInstance3D.new()
@@ -495,13 +508,14 @@ func _helipad(pos: Vector3, radius: float) -> void:
 	tm.rings = 24
 	tm.ring_segments = 8
 	ring.mesh = tm
-	ring.material_override = Palette.emissive(Color(0.95, 0.95, 0.9), 0.9)
-	ring.position = pos + Vector3(0.0, 0.34, 0.0)
+	ring.material_override = Palette.mat(Color(0.92, 0.90, 0.74), 0.85)
+	ring.position = pos + Vector3(0.0, 0.38, 0.0)
+	ring.scale.y = 0.015
 	_world_root.add_child(ring)
 	var h := "H"
 	var label := _label3d(h, pos + Vector3(0.0, 0.4, 0.0))
 	label.font_size = 120
-	label.pixel_size = 0.012
+	label.pixel_size = 0.05
 	label.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
 	label.modulate = Color(0.95, 0.95, 0.92)
 
@@ -526,7 +540,7 @@ func _waterfront_edge() -> void:
 	water.position = Vector3(0.0, -0.4, PROMENADE_Z - 340.0)
 	_world_root.add_child(water)
 	# promenade deck + railing
-	_solid_box(Vector3(700.0, 0.3, 22.0), Vector3(0.0, 0.15, PROMENADE_Z), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
+	_solid_box(Vector3(700.0, 0.3, 22.0), Vector3(0.0, 0.15, PROMENADE_Z), Palette.mat_textured(Palette.CONCRETE_LIGHT,"pavers",Vector3.ONE,0.9))
 	for i: int in 46:
 		_cyl(Vector3(0.12, 1.1, 0.12), Vector3(-340.0 + i * 15.0, 0.85, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_box(Vector3(700.0, 0.08, 0.08), Vector3(0.0, 1.35, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
@@ -545,14 +559,39 @@ func _background_city() -> void:
 		var side := i % 4
 		var p := Vector3.ZERO
 		match side:
-			0: p=Vector3(-620+(i/4)*82,0,-560-rng.randf_range(0,120))
+			0: p=Vector3(-620+(i/4)*82,0,-710-rng.randf_range(0,140))
 			1: p=Vector3(-440-rng.randf_range(0,90),0,-410+(i/4)*54)
 			2: p=Vector3(440+rng.randf_range(0,90),0,-410+(i/4)*54)
 			_: p=Vector3(-620+(i/4)*82,0,435+rng.randf_range(0,90))
 		var scale_y := rng.randf_range(.55,1.20)
 		_authored("skyline_%d.glb"%posmod(i,4),p,rng.randf_range(-.08,.08),Vector3(1,scale_y,1))
-		if side==0:
-			_box(Vector3(75,2,95),p+Vector3(0,-1,0),Palette.mat_textured(Palette.CONCRETE,"concrete",Vector3.ONE,.9))
+
+
+func _perimeter() -> void:
+	# One continuous far shoreline anchors the background skyline across a bay.
+	var ground_mat:=Palette.mat_textured(Color(.33,.38,.28),"soil",Vector3.ONE,.95)
+	_box(Vector3(1700,8,700),Vector3(0,-4,-970),ground_mat)
+	_box(Vector3(1700,2,18),Vector3(0,-.7,-624),Palette.mat_textured(Palette.CONCRETE,"concrete",Vector3.ONE,.92))
+	_box(Vector3(1680,.08,16),Vector3(0,.05,-657),Palette.mat_textured(Palette.ASPHALT,"asphalt",Vector3.ONE,.85))
+	for i in 34:
+		_tree(Vector3(-790+i*48,.1,-640),.8)
+	# The authored district has visible physical edges. Aircraft can fly over
+	# the same geometry; ordinary walking/driving meets real railings.
+	for i in 50:
+		var t: float=-367.5+i*15
+		for side in [-1.0,1.0]:
+			var p:=Vector3(side*375,.1,t)
+			_authored("boundary_railing.glb",p,PI*.5)
+			_collision_box(Vector3(.25,2.4,15),p+Vector3(0,1.2,0))
+		var south:=Vector3(t,.1,375)
+		_authored("boundary_railing.glb",south)
+		_collision_box(Vector3(15,2.4,.25),south+Vector3(0,1.2,0))
+	# Waterfront rails have deliberate pad-side pedestrian access, but stop a
+	# normal sprint from falling into the bay.
+	for i in 46:
+		var p:=Vector3(-337.5+i*15,.3,-348.5)
+		_authored("boundary_railing.glb",p,0,Vector3(1,.55,1))
+		_collision_box(Vector3(15,1.35,.25),p+Vector3(0,.68,0))
 
 # ------------------------------------------------------------------ traffic
 func _build_lane_graph() -> void:
@@ -883,3 +922,17 @@ func _label3d(text: String, pos: Vector3) -> Label3D:
 	l.outline_modulate = Color(0.08, 0.07, 0.06, 0.9)
 	_world_root.add_child(l)
 	return l
+
+func _asset_collision(node: Node) -> void:
+	# Imported housing includes real raised plinths, steps and void-deck
+	# columns. Collision must follow that geometry instead of an invisible
+	# flat ground below it; cache the immutable shape across instances.
+	if node is MeshInstance3D and node.mesh != null:
+		var id: int = node.mesh.get_instance_id()
+		if not _asset_collision_cache.has(id):
+			_asset_collision_cache[id]=node.mesh.create_trimesh_shape()
+		var body:=StaticBody3D.new();body.collision_layer=1;body.collision_mask=0
+		var shape:=CollisionShape3D.new();shape.shape=_asset_collision_cache[id]
+		body.add_child(shape);node.add_child(body)
+	for child in node.get_children():
+		if not child is StaticBody3D: _asset_collision(child)

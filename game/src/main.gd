@@ -59,6 +59,11 @@ func _ready() -> void:
 		return
 
 	if "--test" in args:
+		# Regression input belongs to active gameplay, not the title overlay.
+		# Native mouse events are legitimately consumed by visible menus.
+		hud.show_title(false)
+		started=true
+		Game.simulation_paused=false
 		var tester := SelfTest.new()
 		add_child(tester)
 		await tester.run(self)
@@ -89,6 +94,10 @@ func _ready() -> void:
 		Game.simulation_paused = true
 		hud.show_title(true)
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		if "--ui-review" in args:
+			var review: Node = load("res://src/systems/ui_review.gd").new()
+			add_child(review)
+			review.setup(self)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and hud.settings_visible():
@@ -170,10 +179,11 @@ func _start_game() -> void:
 	hud.show_title(false)
 	hud.set_paused(false)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	Events.toast("Harbour Relay: check the objective.", "info")
+	Events.toast("The hawker centre is marked on your map.", "info")
 
 func _new_game() -> void:
 	mission.restart()
+	hud.clear_notifications()
 	Game.death_count = 0
 	_start_game()
 

@@ -1,0 +1,6 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+[wave1] main ready, args=["--qa-session", "--save-path=/tmp/critic-wave2-save.json"]
+[critic-relaunch-r3] {"health":67.0,"hud_hidden":true,"paused":false,"settings_after":{"hud_visible":false,"invert_y":true,"mouse_sensitivity":1.1,"reduced_shake":true},"settings_before":{"hud_visible":true,"invert_y":false,"mouse_sensitivity":1.0,"reduced_shake":false},"started":true,"title_visible":false,"weapon":"smg","weapon_model":"res://assets/providers/pistol_held.glb"}

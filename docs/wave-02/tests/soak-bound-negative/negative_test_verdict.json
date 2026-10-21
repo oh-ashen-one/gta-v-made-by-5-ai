@@ -1,0 +1,5 @@
+{
+  "expected_failure": true,
+  "negative_test_passed": true,
+  "interpretation": "A short smoke must not certify a30-minute/three-completion soak. It terminatednonzero at30s withzero completions."
+}

@@ -6,7 +6,7 @@ extends Node3D
 const LANE_OFFSET := 4.0        # lane centre is 4 m to the LEFT of the road centre
 const PED_COUNT := 116
 const FOCUSED_PED_COUNT := 42
-const DINER_COUNT := 16
+const DINER_COUNT := 45
 const TRAFFIC_COUNT := 14
 const POLICE_SPAWN_DISTANCE := 55.0
 
@@ -140,22 +140,22 @@ func _spawn_peds() -> void:
 	# Damageable/reactive diners and queueing customers. Keep the package and
 	# combat aisle (local z=-8 and north of it) clear for actual mission play.
 	var centre: Vector3 = world.locations["hawker"]
+	var seats: Array[Vector3] = [Vector3(.857,.495,-.194),Vector3(.025,.48,-.80),Vector3(-.844,.492,-.18),Vector3(-.557,.475,.714),Vector3(.497,.471,.741)]
 	for index in DINER_COUNT:
-		var diner := NPC.new()
-		add_child(diner)
-		var column := (index * 2 + index / 6) % 12
-		var row := 3 + (index / 6) % 4
-		var side := 1.0 if index % 2 == 0 else -1.0
-		var position := centre + Vector3(-27.5 + column * 5.0 + side * 1.25, 0.25, -11.0 + row * 4.5)
-		diner.global_position = position
-		diner.rotation.y = -PI * 0.5 * side
-		diner.state = NPC.State.IDLE
-		diner.idle_time = 3600.0
-		diner.set_meta("ambient_role", "diner" if index % 3 != 0 else "stall_queue")
-		diner.set_meta("activity_home", position)
-		if diner.character_visual != null and diner.character_visual.loaded:
-			diner.character_visual.set_seated(index % 3 != 0)
-
+		var diner:=NPC.new();add_child(diner)
+		var table_id: int=index/5
+		var column: int=1+(table_id%3)*4
+		var row: int=3+(table_id/3)*2
+		var seat: Vector3=seats[index%5]
+		var position:=centre+Vector3(-27.5+column*5.0+seat.x,.4,-11.0+row*4.5+seat.z)
+		diner.global_position=position
+		diner.rotation.y=atan2(seat.x,seat.z)
+		diner.state=NPC.State.IDLE;diner.idle_time=3600
+		diner.set_meta("ambient_role","diner")
+		diner.set_meta("activity_home",position)
+		if diner.character_visual!=null and diner.character_visual.loaded:
+			diner.character_visual.position.y=seat.y-.445
+			diner.character_visual.set_seated(true)
 		peds.append(diner)
 
 func _spawn_on_segment(ped: NPC, path: Array) -> void:

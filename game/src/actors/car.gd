@@ -165,13 +165,13 @@ func _build() -> void:
 	_try_provider_asset(dims)
 
 	_arm = SpringArm3D.new()
-	_arm.spring_length = 7.2
+	_arm.spring_length = 5.4
 	_arm.collision_mask = 1
 	_arm.position = Vector3(0.0, dims.y + 0.5, 0.0)
-	_arm.rotation_degrees = Vector3(-9.0, 0.0, 0.0)
+	_arm.rotation_degrees = Vector3(-12.0, 0.0, 0.0)
 	add_child(_arm)
 	_camera = Camera3D.new()
-	_camera.fov = 72.0
+	_camera.fov = 62.0
 	_arm.add_child(_camera)
 
 ## Swap in the generated sedan for the civilian and response variants.
@@ -426,6 +426,8 @@ func exit_vehicle(player: Node) -> void:
 	_forward = 0.0
 	velocity = Vector3.ZERO
 	player.global_position = exit_pos
+	player.yaw = rotation.y
+	player.rotation.y = rotation.y
 	player.visible = true
 	player.current_vehicle = null
 	player.camera.current = true

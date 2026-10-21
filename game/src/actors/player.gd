@@ -13,7 +13,7 @@ const FRICTION := 12.0
 const JUMP_VELOCITY := 7.2
 const MOUSE_SENS := 0.0022
 const AIM_DISTANCE := 2.2
-const HIP_DISTANCE := 4.6
+const HIP_DISTANCE := 3.2
 const INTERACT_RANGE := 5.0
 const PICKUP_RANGE := 7.5
 
@@ -57,6 +57,7 @@ func _ready() -> void:
 	_build_body()
 	_build_camera()
 	Events.health_changed.connect(_on_health_changed)
+	Events.state_restored.connect(_on_state_restored)
 	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
 
 func _build_body() -> void:
@@ -69,6 +70,7 @@ func _build_body() -> void:
 	add_child(shape)
 
 	_body_root = Node3D.new()
+	_body_root.position.y = 0.025 # align visible soles with capsule bottom
 	add_child(_body_root)
 
 	var skin := Palette.mat(Palette.SKIN, 0.8)
@@ -177,13 +179,13 @@ func _build_camera() -> void:
 	arm = SpringArm3D.new()
 	arm.spring_length = HIP_DISTANCE
 	arm.add_excluded_object(self)
-	arm.collision_mask = 1
+	arm.collision_mask = 1 | 8
 	arm.margin = 0.25
-	arm.position = Vector3(0.85, 1.62, 0.0)   # over-the-shoulder framing
+	arm.position = Vector3(0.85, 1.50, 0.0)   # over-the-shoulder framing
 	arm.rotation_degrees = Vector3(-8.0, 0.0, 0.0)
 	add_child(arm)
 	camera = Camera3D.new()
-	camera.fov = 68.0
+	camera.fov = 58.0
 	camera.current = true
 	arm.add_child(camera)
 
@@ -274,6 +276,10 @@ func _physics_process(delta: float) -> void:
 	if has_meta("_qa_motion_probe"):
 		get_meta("_qa_motion_state")["resolved"] = velocity
 
+	if global_position.y < -8.0 or absf(global_position.x)>400.0 or global_position.z>410.0 or global_position.z < -370.0:
+		Events.toast("Beyond the district. Returning to your checkpoint.","warn")
+		Game.damage_player(Game.MAX_HEALTH)
+		return
 	# face movement direction (or camera direction when aiming/firing)
 	var face_dir := Vector3.ZERO
 	if aiming:
@@ -560,3 +566,14 @@ func reset_action_state() -> void:
 	_update_weapon_mesh()
 	if _visual!=null and _visual.loaded: _visual.reset_alive()
 	Events.ammo_changed.emit(Game.current_mag(),Game.current_reserve())
+
+func _on_state_restored() -> void:
+	_fire_cooldown=0.0
+	_reload_timer=0.0
+	_reloading=false
+	aiming=false
+	busy=false
+	_press_queue.clear()
+	_press_armed.clear()
+	_update_weapon_mesh()
+	if _visual != null and _visual.loaded: _visual.reset_alive()

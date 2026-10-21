@@ -1,0 +1,117 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+[wave1] main ready, args=["--test", "--test-report=/tmp/wave2-mission-test18.json"]
+=== Orchard Reach wave-2 bounded regression suite ===
+PASS world builder present 
+PASS player spawned 
+PASS traffic manager present 
+PASS mission running 
+PASS helicopter present 
+PASS hud present 
+PASS district contains 3D geometry 
+PASS junction graph has 25 connected reference nodes 
+PASS pedestrian paths present 
+PASS civilian traffic populated 
+PASS pedestrians populated 
+PASS ambient population stays within the authored 132 budget 
+PASS market diners are reactive damageable NPCs 
+PASS busy district walkers spawn along segments not junction piles 
+PASS gameplay camera belongs to player 
+PASS mission publishes initial objective 
+PASS initial objective marker survives HUD setup order 
+PASS mission registered for save and checkpoint restoration 
+PASS package is a real interactable 
+PASS road graph includes the fifth row 
+PASS traffic target is near destination on the left lane 
+PASS east-west signal excludes north-south movement 
+PASS junction changeover clears both approaches 
+PASS north-south signal excludes east-west movement 
+PASS visible signal lamps agree with east-west right of way 
+PASS visible signal lamps switch with north-south right of way 
+PASS fire maps to a mouse button rather than a keyboard code 
+DIAGNOSTIC fire action held=true paused=false mag=11 event_matches=true
+PASS real mouse-button event fires the equipped weapon mag 12 -> 11
+PASS mission avenue has no static trunk obstruction 
+PASS rapid native press and release is not dropped 
+PASS close-cover fixture leaves camera sightline on target 
+PASS muzzle obstruction prevents damage through close cover 
+PASS clearing muzzle obstruction permits target damage 
+PASS input interaction enters a car 
+PASS occupied player collision is disabled 
+PASS driving input moves the car 
+PASS occupant follows the moving car 
+PASS authoritative position follows controlled vehicle 
+PASS left driving input turns left 
+PASS NPC weapon ray damages occupied car 100.00 -> 96.97
+PASS car body protects its occupant from that ray 
+PASS normal exit returns control and camera 
+PASS on-foot collision restored 
+PASS blocked car exit preserves seated control without wall clipping 
+PASS clearing blocked exit restores normal exit 
+PASS death is counted for honest golden-path evidence 
+PASS death in car releases both control owners 
+PASS death restores visible player and gameplay camera 
+PASS walking still works after vehicle death 
+PASS wanted escalation decays when unobserved 
+PASS health regenerates out of fire 
+PASS helicopter control is exclusive 
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+PASS lift input gains altitude 
+PASS neutral lift stabilizes hover 
+PASS airborne helicopter rejects exit 
+PASS pause freezes aircraft 
+PASS pause freezes pursuit heat 
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+PASS controlled descent lands without disabling aircraft position=(270.0, -0.139075, 104.0) velocity=(0.0, 0.0, 0.0) health=100.0 floor=true
+PASS landed helicopter exits to walking 
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+PASS waterfront helicopter exit permits actual on-foot movement moved=4.003 from=(2.461618, 0.28, -331.4723) to=(6.46464, 0.275828, -331.4723) velocity=(5.963103, 0.0, 0.0)
+PASS package input pickup advances and hides pickup 
+PASS taking car starts the authored driving leg 
+ERROR: Parameter "material" is null.
+   at: material_get_instance_shader_parameters (servers/rendering/dummy/storage/material_storage.cpp:264)
+PASS on-foot arrival cannot bypass driving leg 
+PASS death restores package checkpoint and requires new drive 
+PASS restoration rebuilds flags and objective 
+PASS delivery cannot be triggered remotely 
+PASS restart resets pickup checkpoint and prerequisites 
+PASS restart retains exactly three mission guards 
+PASS save roundtrip restores health and mission checkpoint 
+PASS save restoration updates package and objective 
+PASS save restores sensitivity and accessibility settings 
+PASS invalid live state cannot replace the last complete save 
+PASS atomic replacement updates an existing save 
+PASS successful save leaves no temporary checkpoint file 
+PASS successful load publishes one state-restored event 
+PASS saved SMG restores held model and clears transient actions 
+PASS save rejects truncated position vector atomically 
+PASS save rejects unknown equipped weapon atomically 
+PASS save rejects out-of-range magazine atomically 
+PASS save rejects wrong health type atomically 
+PASS save rejects invalid checkpoint index atomically 
+PASS save rejects inconsistent pursuit state atomically 
+PASS save rejects wrong safe-position type atomically 
+PASS save rejects out-of-range mouse sensitivity atomically 
+PASS save rejects wrong accessibility-setting type atomically 
+85/85 checks passed, 0 failed; report=/tmp/wave2-mission-test18.json

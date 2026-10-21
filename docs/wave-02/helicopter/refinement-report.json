@@ -1,0 +1,95 @@
+{
+  "source": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/relay-manager/assets/W1-HERO-004.glb",
+  "source_sha256": "a7a9d56a2a8feb41b94098830aefb830820a48c4914c1ed1d55febd6902eff58",
+  "output": "helicopter_refined.glb",
+  "blender": "4.5.11 LTS",
+  "source_triangles": 49447,
+  "source_components": 251,
+  "orientation_max_error_m": 2.384185791015625e-07,
+  "forward": "Godot -Z",
+  "ground_y": 0.0,
+  "parts": {
+    "body": {
+      "vertices": 54620,
+      "triangles": 41001,
+      "component_count": 181,
+      "pivot_godot": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "axis_godot": "static",
+      "bounds_blender": [
+        [
+          -1.6339123249053955,
+          -4.054082870483398,
+          0.0
+        ],
+        [
+          1.3130711317062378,
+          3.606489658355713,
+          3.4975624084472656
+        ]
+      ],
+      "rest_reconstruction_max_error_m": 0.0,
+      "spin_axis_max_error_m": 0
+    },
+    "main_rotor": {
+      "vertices": 11668,
+      "triangles": 7328,
+      "component_count": 67,
+      "pivot_godot": [
+        0.07723954319953918,
+        3.430000066757202,
+        -0.8417122960090637
+      ],
+      "axis_godot": "Y",
+      "bounds_blender": [
+        [
+          -3.249999761581421,
+          -2.069622039794922,
+          3.1252284049987793
+        ],
+        [
+          3.249999761581421,
+          4.054082870483398,
+          3.7431442737579346
+        ]
+      ],
+      "rest_reconstruction_max_error_m": 1.1920928955078125e-07,
+      "spin_axis_max_error_m": 0.0
+    },
+    "tail_rotor": {
+      "vertices": 1753,
+      "triangles": 1118,
+      "component_count": 3,
+      "pivot_godot": [
+        -0.6460000276565552,
+        2.3112430572509766,
+        3.208409309387207
+      ],
+      "axis_godot": "X",
+      "bounds_blender": [
+        [
+          -0.6991162300109863,
+          -3.9114866256713867,
+          1.936928629875183
+        ],
+        [
+          -0.5644421577453613,
+          -2.822211980819702,
+          2.89945125579834
+        ]
+      ],
+      "rest_reconstruction_max_error_m": 0.0,
+      "spin_axis_max_error_m": 0.0
+    }
+  },
+  "rights": "Private derivative of existing Customuse output; no new generation and no blanket rights clearance.",
+  "limits": [
+    "Generated blade geometry remains asymmetric; it is not an aerodynamics model.",
+    "Lower swashplate rods, shaft/motor and all ambiguous body-linked pieces remain static.",
+    "In-engine rotor/collision/landing acceptance must be recorded separately."
+  ],
+  "output_sha256": "bd149a128315833f988f98ded1e8a7710c0f5b31e0b52b4afcf392cf79911380"
+}

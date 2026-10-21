@@ -25,6 +25,39 @@ var _samples: Array[Dictionary] = []
 var _gates: Array[Dictionary] = []
 var _combat_kills := 0
 var _boarding_target: Node3D
+var _soak_enabled := false
+var _soak_seconds := 1800.0
+var _phase := "mission"
+var _run_index := 0
+var _run_started := 0.0
+var _run_kills_start := 0
+var _run_gate_start := 0
+var _completed_runs: Array[Dictionary] = []
+var _fixture_checks: Array[Dictionary] = []
+var _free_distance := {"foot": 0.0, "car": 0.0, "helicopter": 0.0}
+var _free_last_actor: Node3D
+var _free_last_position := Vector3.ZERO
+var _continuity_actor: Node3D
+var _continuity_position := Vector3.ZERO
+var _continuity_us := 0
+var _continuity_breaks: Array[Dictionary] = []
+const SOAK_REQUIRED_RUNS := 3
+const SOAK_ACCEPTANCE_SECONDS := 1800.0
+const SOAK_FINAL_RESERVE_SECONDS := 180.0
+var _final_recovery_requested := false
+var _final_observation_started := -1.0
+var _reboard_cycle_verified := false
+var _aircraft_cycle_verified := false
+var _free_roam_events: Array[Dictionary] = []
+var _foot_motion_bucket := 0.0
+var _recent_foot_motion: Array[Dictionary] = []
+var _last_foot_motion_seconds := -1000.0
+var _engine_log_path := ""
+var _next_error_scan := 30.0
+var _runtime_log_scan := {"checked": false, "fatal_errors": [], "classified_nonfatal": []}
+var _next_soak_still := 300.0
+var _monitor_ids: Dictionary = {}
+var _monitor_unavailable: Array[String] = []
 var _headless := false
 var _inclusive_frames_ms: Array[float] = []
 var _readback_since_frame := false
@@ -42,6 +75,7 @@ var _record_cost_ms: Array[float] = []
 const RECORD_INTERVAL_US := 100000 # Requested 10Hz; timestamps are authoritative.
 const RECORD_MAX_FRAMES := 7200
 const RECORD_MAX_BYTES := 1024 * 1024 * 1024
+const RECORD_MAX_SECONDS := 720.0
 
 func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager) -> void:
 	main = m
@@ -50,11 +84,22 @@ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager) 
 	mission = mi
 	traffic = t
 	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--capture-dir="):
+		if arg == "--soak":
+			_soak_enabled = true
+		elif arg.begins_with("--soak-seconds="):
+			_soak_seconds = clampf(float(arg.trim_prefix("--soak-seconds=")), 30.0, 1800.0)
+		elif arg.begins_with("--capture-dir="):
 			out_dir = arg.trim_prefix("--capture-dir=")
 		elif arg.begins_with("--record-frames="):
 			_record_dir = arg.trim_prefix("--record-frames=")
 	DirAccess.make_dir_recursive_absolute(out_dir)
+	var engine_args := OS.get_cmdline_args()
+	for index in engine_args.size():
+		if engine_args[index] == "--log-file" and index + 1 < engine_args.size():
+			_engine_log_path = engine_args[index + 1]
+		elif engine_args[index].begins_with("--log-file="):
+			_engine_log_path = engine_args[index].trim_prefix("--log-file=")
+	_initialize_monitors()
 	_initial_deaths = Game.death_count
 	_started_us = Time.get_ticks_usec()
 	_last_frame_us = _started_us
@@ -83,6 +128,9 @@ func _process(_delta: float) -> void:
 			_frames_ms.append(frame_ms)
 	_last_frame_us = now
 	_readback_since_frame = false
+	if _record_log and not _record_capped and elapsed >= RECORD_MAX_SECONDS:
+		_record_capped = true
+		_record_cap_reason = "Recording duration safety cap reached"
 	if _record_log and not _record_capped and now >= _record_next_us:
 		var due := 1 + int((now - _record_next_us) / RECORD_INTERVAL_US)
 		_record_requested_samples += due
@@ -95,24 +143,75 @@ func _process(_delta: float) -> void:
 	if int(elapsed) != _last_sample_second:
 		_last_sample_second = int(elapsed)
 		_samples.append(_snapshot(elapsed))
+		if _soak_enabled:
+			_recent_foot_motion.append({"seconds": elapsed, "distance_m": _foot_motion_bucket})
+			_foot_motion_bucket = 0.0
+			while not _recent_foot_motion.is_empty() and _recent_foot_motion[0]["seconds"] < elapsed - 60.0:
+				_recent_foot_motion.pop_front()
 		_write_checkpoint()
-	if Game.death_count != _initial_deaths:
+	if _soak_enabled and elapsed >= _soak_seconds - SOAK_FINAL_RESERVE_SECONDS:
+		_final_recovery_requested = true
+	if _soak_enabled and elapsed >= _next_error_scan:
+		_next_error_scan += 30.0
+		_scan_runtime_log()
+		if not _runtime_log_scan["checked"] or not _runtime_log_scan["fatal_errors"].is_empty():
+			_abort("Soak runtime error-log gate is unavailable or contains unhandled errors.")
+			return
+	if _soak_enabled and not _headless and elapsed >= _next_soak_still and not _capture_in_progress and not _record_pending:
+		_next_soak_still += 300.0
+		_shot("soak_%s_%04d" % [_phase, int(elapsed)])
+	if _phase == "mission":
+		var controlled := player.controlled_actor()
+		if controlled == _continuity_actor and _continuity_us > 0:
+			var travelled := controlled.global_position.distance_to(_continuity_position)
+			var allowance := 2.0 + 80.0 * float(now - _continuity_us) / 1000000.0
+			if travelled > allowance:
+				_continuity_breaks.append({"run": _run_index, "seconds": elapsed, "distance_m": travelled, "allowance_m": allowance})
+				_abort("Unexpected controlled-actor position discontinuity during mission attempt.")
+				return
+		_continuity_actor = controlled
+		_continuity_position = controlled.global_position
+		_continuity_us = now
+	else:
+		_continuity_actor = null
+	if _phase in ["free_roam", "final_recovery", "final_observation"]:
+		var actor := player.controlled_actor()
+		if actor == _free_last_actor:
+			var travelled := actor.global_position.distance_to(_free_last_position)
+			if travelled < 12.0:
+				var key := "foot" if Game.mode == Game.MODE_FOOT else ("car" if Game.mode == Game.MODE_CAR else "helicopter")
+				if Game.mode == Game.MODE_FOOT:
+					var ground_travelled := _ground_distance(actor.global_position, _free_last_position)
+					_free_distance[key] += ground_travelled
+					_foot_motion_bucket += ground_travelled
+					if ground_travelled > 0.02: _last_foot_motion_seconds = elapsed
+				else:
+					_free_distance[key] += travelled
+		_free_last_actor = actor
+		_free_last_position = actor.global_position
+	if _phase == "mission" and Game.death_count != _initial_deaths:
 		_abort("Player died/respawned; this attempt cannot certify an uninterrupted mission.")
-	elif player.current_vehicle != null and player.current_vehicle.get("disabled"):
+	elif _phase != "fixture_assisted" and player.current_vehicle != null and player.current_vehicle.get("disabled"):
 		_abort("Controlled vehicle disabled; transport leg failed.")
-	elif elapsed >= ROUTE_TIMEOUT:
-		_abort("Route exceeded %.0f-second wall-clock limit." % ROUTE_TIMEOUT)
+	elif _soak_enabled and elapsed >= _soak_seconds:
+		var complete := _soak_complete()
+		if not complete: _failure = "Soak deadline reached before required mission/fixture/mixed-activity gates."
+		_finish(complete)
+	elif _phase == "mission" and elapsed - _run_started >= ROUTE_TIMEOUT:
+		_abort("Mission attempt exceeded %.0f-second wall-clock limit." % ROUTE_TIMEOUT)
 
 func _snapshot(elapsed: float) -> Dictionary:
 	var actor := player.controlled_actor()
 	var pos := actor.global_position
-	return {"seconds": snappedf(elapsed, 0.01), "position": [pos.x, pos.y, pos.z],
+	return {"seconds": snappedf(elapsed, 0.01), "phase": _phase, "run": _run_index, "position": [pos.x, pos.y, pos.z],
 		"mode": Game.mode, "stage": mission.stage, "health": Game.health,
 		"wanted": Game.wanted_level, "deaths": Game.death_count - _initial_deaths,
 		"car_distance_m": mission.car_driven_distance, "flight_distance_m": mission.flight_distance,
-		"vehicle_health": actor.get("health") if actor != player else null, "heading": actor.rotation.y}
+		"vehicle_health": actor.get("health") if actor != player else null, "heading": actor.rotation.y,
+		"engine_monitors": _performance_snapshot()}
 
 func _log(message: String) -> void:
+	if _finished: return
 	log_lines.append("%.2fs %s" % [_elapsed(), message])
 	print("[capture] ", log_lines[-1])
 
@@ -120,6 +219,7 @@ func _elapsed() -> float:
 	return float(Time.get_ticks_usec() - _started_us) / 1000000.0
 
 func _gate(label: String, condition: bool) -> bool:
+	if _finished: return false
 	_gates.append({"name": label, "passed": condition, "state": _snapshot(_elapsed())})
 	_log("%s %s" % ["PASS" if condition else "FAIL", label])
 	if not condition:
@@ -150,6 +250,11 @@ func _record_frame() -> void:
 		_record_pending = false
 		return
 	var timestamp_us := Time.get_ticks_usec()
+	if float(timestamp_us - _started_us) / 1000000.0 >= RECORD_MAX_SECONDS:
+		_record_capped = true
+		_record_cap_reason = "Recording duration safety cap reached"
+		_record_pending = false
+		return
 	var capture_started := timestamp_us
 	var img := get_viewport().get_texture().get_image()
 	if img == null:
@@ -158,7 +263,19 @@ func _record_frame() -> void:
 		return
 	var filename := "frame_%06d.jpg" % _record_index
 	var path := _record_dir.path_join(filename)
-	var error := img.save_jpg(path, 0.8)
+	var encoded := img.save_jpg_to_buffer(0.8)
+	if _record_bytes + encoded.size() > RECORD_MAX_BYTES:
+		_record_capped = true
+		_record_cap_reason = "Recording byte safety cap reached"
+		_record_pending = false
+		_readback_since_frame = true
+		return
+	var output := FileAccess.open(path, FileAccess.WRITE)
+	var error := ERR_CANT_OPEN
+	if output:
+		output.store_buffer(encoded)
+		error = output.get_error()
+		output.close()
 	var capture_cost := float(Time.get_ticks_usec() - capture_started) / 1000.0
 	_record_cost_ms.append(capture_cost)
 	_readback_since_frame = true
@@ -166,10 +283,7 @@ func _record_frame() -> void:
 		_record_capped = true
 		_record_cap_reason = "JPEG write failed (%d)" % error
 	else:
-		var written := FileAccess.open(path, FileAccess.READ)
-		var byte_count := written.get_length() if written else 0
-		if written: written.close()
-		_record_bytes += byte_count
+		_record_bytes += encoded.size()
 		_record_log.store_line(JSON.stringify({"sequence": _record_index, "file": filename,
 			"timestamp_us": timestamp_us, "seconds": float(timestamp_us - _started_us) / 1000000.0,
 			"width": img.get_width(), "height": img.get_height(), "readback_encode_ms": capture_cost,
@@ -182,6 +296,13 @@ func _record_frame() -> void:
 	_record_pending = false
 
 func _run() -> void:
+	if _finished: return
+	_phase = "mission"
+	_continuity_actor = null
+	_run_index += 1
+	_run_started = _elapsed()
+	_run_kills_start = _combat_kills
+	_run_gate_start = _gates.size()
 	await get_tree().create_timer(0.75).timeout
 	_log("Route start; seed=%d; headless=%s; scripted-input-automation=true" % [Game.seed_value, _headless])
 	await _shot("safe_room")
@@ -196,7 +317,7 @@ func _run() -> void:
 		if is_instance_valid(guard) and guard.state != NPC.State.DEAD:
 			await _shoot_at(guard)
 		if _finished: return
-	if not _gate("combat damaged and killed a mission combatant", _combat_kills > 0): return
+	if not _gate("combat damaged and killed a mission combatant", _combat_kills > _run_kills_start): return
 	await _shot("combat")
 	await _walk_to(world.locations["package"], 2.5, 25.0)
 	await _tap("interact")
@@ -238,7 +359,295 @@ func _run() -> void:
 	await _tap("interact")
 	if not _gate("mission completed through delivery interaction", mission.stage == Mission.Stage.DONE and Game.death_count == _initial_deaths): return
 	await _shot("delivery")
-	_finish(true)
+	await _route_succeeded()
+
+func _route_succeeded() -> void:
+	if _finished: return
+	_completed_runs.append({"run": _run_index, "started_seconds": _run_started, "finished_seconds": _elapsed(),
+		"duration_seconds": _elapsed() - _run_started, "uninterrupted": Game.death_count == _initial_deaths,
+		"combat_kills": _combat_kills - _run_kills_start, "car_distance_m": mission.car_driven_distance,
+		"flight_distance_m": mission.flight_distance, "gates": _gates.slice(_run_gate_start)})
+	_log("Verified mission completions: %d" % _completed_runs.size())
+	if not _soak_enabled:
+		_finish(true)
+		return
+	if _completed_runs.size() < SOAK_REQUIRED_RUNS:
+		_phase = "mission_restart"
+		_release_all()
+		_log("Restarting through the real Mission.restart for next independent mission attempt.")
+		mission.restart()
+		await get_tree().physics_frame
+		await get_tree().physics_frame
+		await _run()
+		return
+	await _soak_fixture_phase()
+	if _finished: return
+	await _soak_free_roam()
+
+func _fixture_check(label: String, passed: bool) -> void:
+	if _finished: return
+	_fixture_checks.append({"name": label, "passed": passed, "phase": "fixture_assisted", "seconds": _elapsed()})
+	_log("FIXTURE %s %s (excluded from mission completion count)" % ["PASS" if passed else "FAIL", label])
+
+func _soak_fixture_phase() -> void:
+	_phase = "fixture_assisted"
+	_release_all()
+	_log("Beginning explicit fixture-assisted negative cases. Three completion records are already sealed.")
+	Events.notify.emit("QA fixture checks — excluded from mission completion count.", "info")
+	var saved_position := player.global_position
+	var saved_yaw := player.yaw
+	var saved_checkpoint := Game.checkpoint_index
+	var saved_safe_position := Game.last_safe_position
+	var saved_safe_rotation := Game.last_safe_rotation
+	Game.simulation_paused = true
+	var paused_position := player.global_position
+	var paused_car_position := traffic.cars[0].global_position
+	Input.action_press("move_forward")
+	await get_tree().create_timer(0.4, true, false, true).timeout
+	if _finished: return
+	Input.action_release("move_forward")
+	_fixture_check("pause freezes player and live traffic", player.global_position.distance_to(paused_position) < 0.001 and traffic.cars[0].global_position.distance_to(paused_car_position) < 0.001)
+	Game.simulation_paused = false
+	var fixture_path := "/tmp/orchard_soak_%d.json" % OS.get_process_id()
+	var saved := Game.save_game(fixture_path)
+	_fixture_check("completed-run checkpoint writes through atomic save path", saved)
+	if saved:
+		var invalid: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(fixture_path))
+		invalid["player_position"] = [1.0]
+		var file := FileAccess.open(fixture_path, FileAccess.WRITE)
+		file.store_string(JSON.stringify(invalid))
+		file.close()
+		var previous_health := Game.health
+		var previous_stage := mission.stage
+		var loaded := Game.load_game(fixture_path)
+		_fixture_check("malformed checkpoint is rejected without state mutation", not loaded and Game.health == previous_health and mission.stage == previous_stage and player.global_position == saved_position)
+		DirAccess.remove_absolute(fixture_path)
+	# Explicit test-only relocation. It cannot increment _completed_runs:
+	# only the actual route's final interaction calls _route_succeeded.
+	mission._set_stage(Mission.Stage.TO_AIRFIELD, false)
+	player.respawn_at(world.locations["helipad_primary"] + Vector3(3.6, 0.6, 0.0), 0.0)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	await get_tree().process_frame
+	if _finished: return
+	_fixture_check("walking to airfield cannot satisfy drive stage", mission.stage == Mission.Stage.TO_AIRFIELD)
+	mission.restore_stage(Mission.Stage.DONE)
+	Game.checkpoint_index = saved_checkpoint
+	Game.mark_safe_position(saved_safe_position, saved_safe_rotation)
+	player.respawn_at(saved_position, saved_yaw)
+	await get_tree().physics_frame
+	await _shot("fixture_phase_finished")
+	for result in _fixture_checks:
+		if not result["passed"]:
+			_abort("A separately labelled soak fixture failed.")
+			return
+	_log("Fixture phase complete; starting genuine mixed free roam from the restored completion location.")
+	Events.notify.emit("QA free roam — three mission runs verified.", "info")
+
+func _soak_free_roam() -> void:
+	_phase = "free_roam"
+	_free_last_actor = null
+	var activity := 0
+	while not _finished and not _final_recovery_requested:
+		if player.current_vehicle is Helicopter and not player.current_vehicle.is_landed():
+			var current_heli := player.current_vehicle as Helicopter
+			var nearest_pad: Vector3 = _nearest_pad(current_heli.global_position)
+			await _fly_to(nearest_pad, 90.0)
+			if _final_recovery_requested: break
+			await _land(nearest_pad, 60.0)
+			if _final_recovery_requested: break
+			if not current_heli.is_landed():
+				_abort("Free-roam aircraft recovery failed to land.")
+				return
+		if Game.mode != Game.MODE_FOOT: await _interact_until(Game.MODE_FOOT)
+		if _finished: return
+		if _final_recovery_requested: break
+		if Game.mode != Game.MODE_FOOT:
+			_abort("Free-roam vehicle recovery could not restore on-foot control.")
+			return
+		match activity % 3:
+			0:
+				var start_node := _nearest_node(player.global_position)
+				var neighbours := traffic._neighbours(start_node)
+				var destination: Vector3 = world.traffic_nodes[neighbours[activity % neighbours.size()]]
+				_log("Free-roam foot leg to " + str(destination.round()))
+				await _nav_to(destination, 7.0, 100.0)
+			1:
+				var car := _nearest_parked_car()
+				if car != null:
+					_boarding_target = car
+					await _nav_to(car.global_position, 2.5, 130.0)
+					if _final_recovery_requested: break
+					await _interact_until(Game.MODE_CAR)
+					if Game.mode == Game.MODE_CAR:
+						var current := _nearest_node(car.global_position)
+						var destination: Vector3 = world.traffic_nodes[(current + 7) % world.traffic_nodes.size()]
+						_log("Free-roam driving leg to " + str(destination.round()))
+						await _drive_route(destination, 130.0)
+						if _final_recovery_requested: break
+						if _ground_distance(car.global_position, destination) > 18.0:
+							_abort("Free-roam car failed its destination gate.")
+							return
+						_free_roam_events.append({"event": "car_destination_reached", "seconds": _elapsed(), "passed": true})
+						await _verify_reboard_cycle(car)
+			2:
+				var heli := main.get_node_or_null("Helicopter") as Helicopter
+				if heli != null and not heli.disabled:
+					_boarding_target = heli
+					await _nav_to(heli.global_position + heli.global_transform.basis.x * 3.0, 1.2, 180.0)
+					if _final_recovery_requested: break
+					await _interact_until(Game.MODE_HELI)
+					if Game.mode == Game.MODE_HELI:
+						var destination: Vector3 = world.locations["helipad_primary"] if _ground_distance(heli.global_position, world.locations["helipad_primary"]) > 100.0 else world.locations["helipad_secondary"]
+						_log("Free-roam aircraft leg to " + str(destination.round()))
+						await _fly_to(destination, 100.0)
+						if _final_recovery_requested: break
+						if _ground_distance(heli.global_position, destination) >= 15.0:
+							_abort("Free-roam aircraft failed to reach its destination.")
+							return
+						await _land(destination, 60.0)
+						if _final_recovery_requested: break
+						if not heli.is_landed() or heli.disabled:
+							_abort("Free-roam aircraft failed its landing gate.")
+							return
+						await _interact_until(Game.MODE_FOOT)
+						if Game.mode != Game.MODE_FOOT:
+							_abort("Free-roam aircraft exit failed.")
+							return
+						_aircraft_cycle_verified = true
+						_free_roam_events.append({"event": "aircraft_flight_landing_exit", "seconds": _elapsed(), "passed": true})
+		activity += 1
+		await get_tree().create_timer(0.3).timeout
+	if not _finished: await _soak_final_recovery()
+
+func _verify_reboard_cycle(car: Car) -> void:
+	if _finished or car == null or car.disabled: return
+	_release_all()
+	await get_tree().create_timer(0.7).timeout
+	await _interact_until(Game.MODE_FOOT)
+	if _finished: return
+	var exited := Game.mode == Game.MODE_FOOT and player.current_vehicle == null
+	if not exited:
+		_abort("Free-roam car exit failed.")
+		return
+	_boarding_target = car
+	await _interact_until(Game.MODE_CAR)
+	var same_car := player.current_vehicle == car
+	await _interact_until(Game.MODE_FOOT)
+	var returned := same_car and Game.mode == Game.MODE_FOOT and player.current_vehicle == null and player.camera.current and not player.busy
+	_reboard_cycle_verified = _reboard_cycle_verified or returned
+	_free_roam_events.append({"event": "car_exit_same_car_reboard_exit", "seconds": _elapsed(), "passed": returned})
+	_log("Free-roam same-car return/exit/reboard/exit cycle=%s" % returned)
+	if not returned: _abort("Free-roam same-car reboard ownership cycle failed.")
+
+func _nearest_pad(position: Vector3) -> Vector3:
+	return world.locations["helipad_primary"] if _ground_distance(position, world.locations["helipad_primary"]) < _ground_distance(position, world.locations["helipad_secondary"]) else world.locations["helipad_secondary"]
+
+func _interrupt_free_action() -> bool:
+	return _phase == "free_roam" and _final_recovery_requested
+
+func _soak_final_recovery() -> void:
+	_phase = "final_recovery"
+	_release_all()
+	_log("Reserved final recovery: return to healthy on-foot control, then demonstrate movement until the deadline.")
+	if player.current_vehicle is Helicopter:
+		var heli := player.current_vehicle as Helicopter
+		if not heli.is_landed():
+			var pad := _nearest_pad(heli.global_position)
+			if _ground_distance(heli.global_position, pad) > 8.0: await _fly_to(pad, 75.0)
+			await _land(pad, 60.0)
+		if not heli.is_landed() or heli.disabled:
+			_abort("Final aircraft recovery failed.")
+			return
+	if Game.mode != Game.MODE_FOOT: await _interact_until(Game.MODE_FOOT)
+	if _finished: return
+	if Game.mode != Game.MODE_FOOT or player.current_vehicle != null:
+		_abort("Final control recovery failed to return to foot.")
+		return
+	if not _reboard_cycle_verified:
+		var car := _nearest_parked_car()
+		if car != null and _ground_distance(player.global_position, car.global_position) < 45.0:
+			_boarding_target = car
+			await _walk_to(car.global_position, 2.4, 20.0)
+			await _interact_until(Game.MODE_CAR)
+			if player.current_vehicle == car: await _verify_reboard_cycle(car)
+	if _finished: return
+	_phase = "final_observation"
+	_final_observation_started = _elapsed()
+	var anchor := player.global_position
+	var direction := 1.0
+	while not _finished:
+		var target := anchor + Vector3(direction * 16.0, 0.0, direction * 4.0)
+		target.x = clampf(target.x, -310.0, 310.0)
+		target.z = clampf(target.z, -334.0, 310.0)
+		await _walk_to(target, 1.8, 10.0)
+		direction *= -1.0
+		await get_tree().create_timer(0.2).timeout
+
+func _terminal_liveness() -> Dictionary:
+	var distance := 0.0
+	for sample in _recent_foot_motion:
+		if sample["seconds"] >= _elapsed() - 60.0: distance += sample["distance_m"]
+	return {"foot_distance_last_60_seconds_m": distance, "seconds_since_foot_motion": _elapsed() - _last_foot_motion_seconds,
+		"final_observation_seconds": _elapsed() - _final_observation_started if _final_observation_started >= 0.0 else 0.0,
+		"healthy_on_foot": Game.health > 0.0 and player.alive and not player.busy and not Game.simulation_paused and Game.mode == Game.MODE_FOOT and player.current_vehicle == null and player.camera.current,
+		"reboard_cycle_verified": _reboard_cycle_verified, "aircraft_cycle_verified": _aircraft_cycle_verified,
+		"current_horizontal_speed_mps": Vector2(player.velocity.x, player.velocity.z).length()}
+
+func _soak_complete() -> bool:
+	if not _soak_enabled or _soak_seconds < SOAK_ACCEPTANCE_SECONDS or _elapsed() < SOAK_ACCEPTANCE_SECONDS: return false
+	if _completed_runs.size() != SOAK_REQUIRED_RUNS or _phase != "final_observation": return false
+	if _fixture_checks.size() < 4: return false
+	for result in _fixture_checks:
+		if not result["passed"]: return false
+	if not (_free_distance["foot"] >= 100.0 and _free_distance["car"] >= 200.0 and _free_distance["helicopter"] >= 200.0): return false
+	var terminal := _terminal_liveness()
+	if not terminal["healthy_on_foot"] or not terminal["reboard_cycle_verified"] or not terminal["aircraft_cycle_verified"]: return false
+	if terminal["final_observation_seconds"] < 30.0 or terminal["foot_distance_last_60_seconds_m"] < 15.0 or terminal["seconds_since_foot_motion"] > 1.0: return false
+	_scan_runtime_log()
+	return _runtime_log_scan["checked"] and _runtime_log_scan["fatal_errors"].is_empty()
+
+func _scan_runtime_log() -> void:
+	if _engine_log_path.is_empty() or not FileAccess.file_exists(_engine_log_path):
+		_runtime_log_scan = {"checked": false, "fatal_errors": [], "classified_nonfatal": [], "reason": "Explicit --log-file is required for soak error verification."}
+		return
+	var content := FileAccess.get_file_as_string(_engine_log_path)
+	var fatal: Array[String] = []
+	var known: Array[String] = []
+	for line in content.split("\n"):
+		if "ERROR:" not in line and "Parse Error:" not in line and "Failed to load script" not in line: continue
+		if 'Condition "ret != noErr"' in line and "get_system_ca_certificates" in content:
+			known.append(line)
+		else:
+			fatal.append(line)
+	_runtime_log_scan = {"checked": true, "fatal_errors": fatal, "classified_nonfatal": known, "path": _engine_log_path, "seconds": _elapsed()}
+
+func _initialize_monitors() -> void:
+	var available := ClassDB.class_get_integer_constant_list("Performance")
+	var wanted := {"object_count": "OBJECT_COUNT", "node_count": "OBJECT_NODE_COUNT", "orphan_node_count": "OBJECT_ORPHAN_NODE_COUNT",
+		"resource_count": "OBJECT_RESOURCE_COUNT", "static_memory_bytes": "MEMORY_STATIC", "static_memory_peak_bytes": "MEMORY_STATIC_MAX",
+		"render_video_memory_bytes": "RENDER_VIDEO_MEM_USED", "render_texture_memory_bytes": "RENDER_TEXTURE_MEM_USED",
+		"render_buffer_memory_bytes": "RENDER_BUFFER_MEM_USED", "draw_calls": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME", "fps": "TIME_FPS"}
+	for key in wanted:
+		if wanted[key] in available: _monitor_ids[key] = ClassDB.class_get_integer_constant("Performance", wanted[key])
+		else: _monitor_unavailable.append(key)
+
+func _performance_snapshot() -> Dictionary:
+	var result: Dictionary = {}
+	for key in _monitor_ids:
+		result[key] = null if _headless and (String(key).begins_with("render_") or key == "draw_calls") else Performance.get_monitor(_monitor_ids[key])
+	return result
+
+func _monitor_summary() -> Dictionary:
+	var summary: Dictionary = {}
+	for key in _monitor_ids:
+		var values: Array[float] = []
+		for sample in _samples:
+			var value: Variant = sample.get("engine_monitors", {}).get(key)
+			if value != null: values.append(float(value))
+		if not values.is_empty():
+			summary[key] = {"first": values[0], "last": values[-1], "min": values.min(), "max": values.max(), "samples": values.size()}
+	return summary
 
 func _tap(action: String) -> void:
 	if _finished: return
@@ -299,7 +708,7 @@ func _walk_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 	var sidestep_sign := 1.0
 	Input.action_press("move_forward")
 	Input.action_press("sprint")
-	while _elapsed() < deadline and not _finished and Game.mode == Game.MODE_FOOT:
+	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and Game.mode == Game.MODE_FOOT:
 		await get_tree().physics_frame
 		if _ground_distance(player.global_position, target) <= stop_distance: break
 		var delta := get_physics_process_delta_time()
@@ -352,7 +761,7 @@ func _nav_to(target: Vector3, distance: float, timeout: float) -> void:
 		return
 	var deadline := _elapsed() + timeout
 	for index in _grid_path(_nearest_node(player.global_position), _nearest_node(target)):
-		if _finished or _elapsed() >= deadline: return
+		if _finished or _interrupt_free_action() or _elapsed() >= deadline: return
 		await _walk_to(world.traffic_nodes[index], 7.0, minf(40.0, deadline - _elapsed()))
 	await _walk_to(target, distance, maxf(1.0, deadline - _elapsed()))
 
@@ -389,7 +798,7 @@ func _drive_route(target: Vector3, timeout: float) -> void:
 	if not player.current_vehicle is Car: return
 	var deadline := _elapsed() + timeout
 	for index in _grid_path(_nearest_node(player.current_vehicle.global_position), _nearest_node(target)):
-		if _finished or _elapsed() >= deadline: return
+		if _finished or _interrupt_free_action() or _elapsed() >= deadline: return
 		await _drive_to(world.traffic_nodes[index], 7.0, minf(35.0, deadline - _elapsed()))
 		if mission.stage == Mission.Stage.TO_HELI: return
 	await _drive_to(target, 48.0, maxf(1.0, deadline - _elapsed()))
@@ -398,9 +807,10 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 	var deadline := _elapsed() + timeout
 	var stuck_for := 0.0
 	var previous := player.controlled_actor().global_position
-	while _elapsed() < deadline and not _finished and player.current_vehicle is Car:
+	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and player.current_vehicle is Car:
 		await get_tree().physics_frame
 		var car := player.current_vehicle as Car
+		if car.disabled: break
 		if mission.stage == Mission.Stage.TO_HELI: break
 		var offset := target - car.global_position
 		offset.y = 0.0
@@ -460,7 +870,7 @@ func _avoid_car_direction(car: Car, forward: Vector3) -> Vector3:
 
 func _fly_to(target: Vector3, timeout: float) -> void:
 	var deadline := _elapsed() + timeout
-	while _elapsed() < deadline and not _finished and player.current_vehicle is Helicopter:
+	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and player.current_vehicle is Helicopter:
 		await get_tree().physics_frame
 		var heli := player.current_vehicle as Helicopter
 		var offset := target - heli.global_position
@@ -491,7 +901,7 @@ func _steer_aircraft(heli: Helicopter, offset: Vector3, minimum_altitude: float 
 
 func _land(target: Vector3, timeout: float) -> void:
 	var deadline := _elapsed() + timeout
-	while _elapsed() < deadline and not _finished and player.current_vehicle is Helicopter:
+	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and player.current_vehicle is Helicopter:
 		await get_tree().physics_frame
 		var heli := player.current_vehicle as Helicopter
 		if heli.is_landed(): break
@@ -514,7 +924,9 @@ func _write_checkpoint() -> void:
 	var output := FileAccess.open("%s/route_progress.json" % out_dir, FileAccess.WRITE)
 	if output:
 		output.store_string(JSON.stringify({"elapsed_seconds": _elapsed(), "finished": _finished,
-			"latest": _snapshot(_elapsed()), "gates": _gates, "recent_log": log_lines.slice(maxi(0, log_lines.size() - 8))}, "\t"))
+			"latest": _snapshot(_elapsed()), "gates": _gates, "completed_runs": _completed_runs.size(),
+			"fixture_checks": _fixture_checks, "free_roam_distance_m": _free_distance, "reboard_cycle_verified": _reboard_cycle_verified,
+			"terminal_liveness": _terminal_liveness(), "runtime_log_scan": _runtime_log_scan, "recent_log": log_lines.slice(maxi(0, log_lines.size() - 8))}, "\t"))
 		output.close()
 
 func _percentile(sorted: Array[float], percentile: float) -> float:
@@ -543,7 +955,7 @@ func _finish(success: bool) -> void:
 		"scheduled_samples": _record_requested_samples, "missed_samples": _record_dropped_samples,
 		"capped": _record_capped, "cap_reason": _record_cap_reason,
 		"max_frames": RECORD_MAX_FRAMES, "max_bytes": RECORD_MAX_BYTES,
-		"max_duration_seconds": ROUTE_TIMEOUT, "timestamps": "frames.jsonl monotonic seconds from route setup",
+		"max_duration_seconds": RECORD_MAX_SECONDS, "timestamps": "frames.jsonl monotonic seconds from route setup",
 		"readback_encode_cost_ms": _frame_metrics(_record_cost_ms)}
 	if not _record_dir.is_empty():
 		var record_summary := FileAccess.open(_record_dir.path_join("recording.json"), FileAccess.WRITE)
@@ -553,10 +965,24 @@ func _finish(success: bool) -> void:
 	var output := FileAccess.open("%s/capture_log.json" % out_dir, FileAccess.WRITE)
 	if output:
 		output.store_string(JSON.stringify({"schema": 2, "success": success, "failure_reason": _failure,
-			"uninterrupted": success and Game.death_count == _initial_deaths, "controls_only": true,
+			"uninterrupted": success and not _soak_enabled and Game.death_count == _initial_deaths, "controls_only": not _soak_enabled,
+			"mission_input_driver_controls_only": true,
 			"automation_kind": "scripted input actions, direct mouse-look yaw/pitch, fractional action strengths",
-			"native_human_run": false, "no_teleports_or_state_bypasses": true,
-			"headless": _headless, "rendered_performance_valid": not _headless,
+			"native_human_run": false, "no_teleports_or_state_bypasses": not _soak_enabled and _continuity_breaks.is_empty(),
+			"mission_input_driver_writes_transforms_or_health": false, "mission_continuity_breaks": _continuity_breaks,
+			"headless": _headless, "rendered_timing_baseline": not _headless,
+			"performance_acceptance_valid": false,
+			"performance_caveats": ["Runtime timing baseline; exclusive machine/CPU/GPU conditions are not asserted by this script.", "JPEG/screenshot readback adds work; inclusive and unaffected interval summaries are separate.", "Human gameplay and target-frame-rate acceptance require their own review."],
+			"run_mode": "soak" if _soak_enabled else "single_route", "soak_duration_contract_seconds": SOAK_ACCEPTANCE_SECONDS if _soak_enabled else 0,
+			"configured_soak_timeout_seconds": _soak_seconds if _soak_enabled else 0,
+			"required_mission_completions": SOAK_REQUIRED_RUNS if _soak_enabled else 1,
+			"completed_mission_runs": _completed_runs, "fixture_assisted_checks": _fixture_checks,
+			"free_roam_distance_m": _free_distance, "fixture_teleports_count_as_completion": false,
+			"free_roam_events": _free_roam_events, "terminal_liveness": _terminal_liveness(), "runtime_log_scan": _runtime_log_scan,
+			"requires_clean_supervisor_exit": true, "continuous_30_minute_video_claim": false,
+			"evidence_coverage": "1Hz state/resource samples, per-gate screenshots and five-minute soak stills; optional JPEG sequence is independently capped at720s.",
+			"engine_monitor_summary": _monitor_summary(), "unavailable_engine_monitors": _monitor_unavailable,
+			"memory_leak_acceptance_valid": false, "memory_qualification": "Resource trends require review; process exit alone is not a leak verdict.",
 			"finished_utc": Time.get_datetime_string_from_system(true), "elapsed_seconds": _elapsed(),
 			"engine": Engine.get_version_info()["string"], "seed": Game.seed_value,
 			"health": Game.health, "wanted_level": Game.wanted_level, "mission_stage": mission.stage,

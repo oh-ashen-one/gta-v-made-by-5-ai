@@ -12,6 +12,7 @@ var results: Array[Dictionary] = []
 var _started_ms := 0
 var _reported := false
 var _watchdog_timer: Timer
+var _state_restore_events := 0
 var _report_path := "user://wave2_test_report.json"
 
 func run(main: Node) -> void:
@@ -46,7 +47,11 @@ func run(main: Node) -> void:
 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
 	_check("civilian traffic populated", traffic.cars.size() >= 8)
 	_check("pedestrians populated", traffic.peds.size() >= 20)
-	_check("ambient population stays within the authored 132 budget", traffic.peds.size() == TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT and traffic.peds.size() == 132)
+	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT
+	var unique_peds: Dictionary = {}
+	for pedestrian in traffic.peds:
+		if is_instance_valid(pedestrian): unique_peds[pedestrian.get_instance_id()] = true
+	_check("ambient population matches configured budget of %d unique actors" % configured_peds, traffic.peds.size() == configured_peds and unique_peds.size() == configured_peds)
 	var diners := 0
 	var away_from_junction := 0
 	for index in traffic.peds.size():
@@ -58,7 +63,7 @@ func run(main: Node) -> void:
 			for junction in world.traffic_nodes:
 				nearest = minf(nearest, pedestrian.global_position.distance_to(junction))
 			if nearest > 14.0: away_from_junction += 1
-	_check("market diners are reactive damageable NPCs", diners == 16)
+	_check("market diners are reactive damageable NPCs", diners == TrafficManager.DINER_COUNT)
 	_check("busy district walkers spawn along segments not junction piles", away_from_junction >= 34)
 	_check("gameplay camera belongs to player", player.camera.current)
 	_check("mission publishes initial objective", mission.stage == Mission.Stage.TO_PACKAGE and not mission.current_objective().is_empty())
@@ -278,6 +283,19 @@ func run(main: Node) -> void:
 	var reloaded := Game.load_game(TEST_SAVE)
 	_check("atomic replacement updates an existing save", replaced and reloaded and is_equal_approx(Game.health, 65.0))
 	_check("successful save leaves no temporary checkpoint file", not FileAccess.file_exists(TEST_SAVE + ".tmp-%d" % OS.get_process_id()))
+	Events.state_restored.connect(func(): _state_restore_events += 1)
+	Game.switch_weapon("smg")
+	player._update_weapon_mesh()
+	var smg_saved := Game.save_game(TEST_SAVE)
+	Game.switch_weapon("pistol")
+	player._update_weapon_mesh()
+	player._reloading = true
+	player._reload_timer = 1.0
+	player._fire_cooldown = 0.8
+	player._press_queue["fire"] = true
+	var smg_loaded := Game.load_game(TEST_SAVE)
+	_check("successful load publishes one state-restored event", smg_saved and smg_loaded and _state_restore_events == 1)
+	_check("saved SMG restores held model and clears transient actions", Game.carried_weapon == "smg" and player._weapon_model != null and String(player._weapon_model.scene_file_path).contains("smg") and not player._reloading and player._fire_cooldown == 0.0 and player._press_queue.is_empty())
 	_negative_save_checks(player, mission)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
 	await _report()
@@ -382,7 +400,7 @@ func _state_fingerprint(player: Player, mission: Mission) -> Dictionary:
 		"elapsed": Game.elapsed_seconds, "position": Game.player_position, "rotation": Game.player_rotation,
 		"weapon": Game.carried_weapon, "ammo": Game.ammo.duplicate(true), "mode": Game.mode,
 		"safe_position": Game.last_safe_position, "safe_rotation": Game.last_safe_rotation,
-		"actor_position": player.global_position, "actor_yaw": player.yaw, "settings": Game.settings.duplicate(true),
+		"actor_position": player.global_position, "actor_yaw": player.yaw, "settings": Game.settings.duplicate(true), "state_restore_events": _state_restore_events,
 		"scene_stage": mission.stage, "objective": mission.current_objective(), "package_visible": mission.package_node.visible}
 
 func _negative_save_checks(player: Player, mission: Mission) -> void:

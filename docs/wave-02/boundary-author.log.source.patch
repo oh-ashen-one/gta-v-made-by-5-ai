@@ -1,0 +1,46 @@
+diff --git a/game/src/actors/npc.gd b/game/src/actors/npc.gd
+index 6d61818..78b2e71 100644
+--- a/game/src/actors/npc.gd
++++ b/game/src/actors/npc.gd
+@@ -52,6 +52,7 @@ func _build() -> void:
+ 	add_child(shape)
+ 
+ 	body_root = Node3D.new()
++	body_root.position.y = 0.02 # capsule lower extent
+ 	add_child(body_root)
+ 	var skin := Palette.mat(Palette.SKIN.lerp(Color(0.55, 0.40, 0.30), randf() * 0.6), 0.8)
+ 	_shirt_color = Palette.FRONTAGES[randi() % Palette.FRONTAGES.size()] if not is_police else Color(0.16, 0.20, 0.32)
+diff --git a/game/src/actors/player.gd b/game/src/actors/player.gd
+index cf6edea..21f9a50 100644
+--- a/game/src/actors/player.gd
++++ b/game/src/actors/player.gd
+@@ -69,6 +69,7 @@ func _build_body() -> void:
+ 	add_child(shape)
+ 
+ 	_body_root = Node3D.new()
++	_body_root.position.y = 0.025 # align visible soles with capsule bottom
+ 	add_child(_body_root)
+ 
+ 	var skin := Palette.mat(Palette.SKIN, 0.8)
+diff --git a/game/src/world/world_builder.gd b/game/src/world/world_builder.gd
+index 7b10c3b..ca9d163 100644
+--- a/game/src/world/world_builder.gd
++++ b/game/src/world/world_builder.gd
+@@ -307,6 +307,8 @@ func _hdb_block(centre: Vector3) -> void:
+ 	# planted courtyard with a community table
+ 	_solid_box(Vector3(40.0, 0.3, 34.0), centre + Vector3(0.0, 0.15, 2.0), Palette.mat(Color(0.32, 0.40, 0.26), 0.95))
+ 	for i: int in 8:
++		if centre.x < -200 and centre.z > -100 and centre.z < 0 and i == 2:
++			continue # the safe-room roof occupies this courtyard edge
+ 		var ang := TAU * i / 8.0
+ 		_tree(centre + Vector3(cos(ang) * 15.0, 0.0, 2.0 + sin(ang) * 12.0), 1.1)
+ 	_box(Vector3(5.0, 0.16, 2.0), centre + Vector3(0.0, 0.9, 2.0), Palette.mat(Palette.PLASTER, 0.85))
+@@ -319,7 +321,7 @@ func _hdb_block(centre: Vector3) -> void:
+ 		_solid_box(Vector3(0.6, 3.2, 3.0), centre + Vector3(21.5, 1.6 + i * 3.0, 44.0 + i * 4.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
+ 	# safe room interior (wave-1 mission origin)
+ 	if centre.x < -200.0 and centre.z > -100.0 and centre.z < 0.0:
+-		_safe_room(centre + Vector3(-52.0, 0.0, 34.0))
++		_safe_room(centre + Vector3(0.0, 0.30, 10.0))
+ 
+ func _safe_room(pos: Vector3) -> void:
+ 	_solid_box(Vector3(14.0, 0.2, 10.0), pos + Vector3(0.0, 0.1, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))

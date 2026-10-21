@@ -1,0 +1,13 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+SCRIPT_VALIDATION PASS res://src/main.gd
+SCRIPT_VALIDATION PASS res://src/systems/self_test.gd
+SCRIPT_VALIDATION PASS res://src/systems/capture_director.gd
+SCRIPT_VALIDATION PASS res://src/systems/asset_review.gd
+SCRIPT_VALIDATION PASS res://src/systems/photo_capture.gd
+SCRIPT_VALIDATION PASS res://src/systems/character_review.gd
+SCRIPT_VALIDATION PASS res://src/systems/ui_review.gd
+SCRIPT_VALIDATION PASS res://src/world/interior_detail.gd
+SCRIPT_VALIDATION PASS bounded JPEG buffer encoder

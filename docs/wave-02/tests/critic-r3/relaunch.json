@@ -1,0 +1,21 @@
+{
+	"health": 67.0,
+	"hud_hidden": true,
+	"paused": false,
+	"settings_after": {
+		"hud_visible": false,
+		"invert_y": true,
+		"mouse_sensitivity": 1.1,
+		"reduced_shake": true
+	},
+	"settings_before": {
+		"hud_visible": true,
+		"invert_y": false,
+		"mouse_sensitivity": 1.0,
+		"reduced_shake": false
+	},
+	"started": true,
+	"title_visible": false,
+	"weapon": "smg",
+	"weapon_model": "res://assets/providers/pistol_held.glb"
+}

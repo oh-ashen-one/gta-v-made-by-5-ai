@@ -75,7 +75,8 @@ func _build() -> void:
 	_stats_label=_mk_label(root,Vector2(1000,660),18,Color(.94,.95,.92));_stats_label.size=Vector2(245,40)
 	_stats_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	_debug_label=_mk_label(root,Vector2(24,120),14,Color(.7,.8,.85));_debug_label.visible=false
-	_notifications=VBoxContainer.new();_notifications.position=Vector2(755,550);_notifications.size=Vector2(490,90)
+	_notifications=VBoxContainer.new();_notifications.position=Vector2(790,165);_notifications.size=Vector2(450,120)
+	_notifications.z_index=100
 	_notifications.alignment=BoxContainer.ALIGNMENT_END;root.add_child(_notifications)
 	_crosshair=Control.new();_crosshair.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_crosshair.mouse_filter=Control.MOUSE_FILTER_IGNORE;_crosshair.draw.connect(_draw_crosshair);root.add_child(_crosshair)
@@ -208,15 +209,20 @@ func _update_wanted_label() -> void:
 
 func _on_notify(text: String, kind: String) -> void:
 	if text=="Civilian fleeing!": return
-	if _notifications.get_child_count()>=3: _notifications.get_child(0).queue_free()
+	while _notifications.get_child_count()>=3:
+		var expired:=_notifications.get_child(0)
+		_notifications.remove_child(expired)
+		expired.queue_free()
 	var l := _mk_label(_notifications, Vector2.ZERO, 15, Color(0.95, 0.95, 0.9) if kind != "bad" else Color(1.0, 0.55, 0.45))
 	l.text = text
-	l.custom_minimum_size = Vector2(460, 24)
-	l.size = Vector2(460, 24)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.custom_minimum_size = Vector2(440, 24)
+	l.size = Vector2(440, 24)
+	var weak_label: WeakRef = weakref(l)
 	var timer := get_tree().create_timer(NOTIFICATION_LIFETIME)
 	timer.timeout.connect(func():
-		if is_instance_valid(l):
-			l.queue_free())
+		var label := weak_label.get_ref() as Label
+		if is_instance_valid(label): label.queue_free())
 
 func _process(_delta: float) -> void:
 	if player == null:
@@ -304,3 +310,8 @@ func set_marker(pos: Vector3) -> void:
 func set_gameplay_visible(show: bool) -> void:
 	for item in _gameplay_controls:
 		if is_instance_valid(item) and item != _debug_label: item.visible = show
+
+func clear_notifications() -> void:
+	for notice in _notifications.get_children():
+		_notifications.remove_child(notice)
+		notice.queue_free()

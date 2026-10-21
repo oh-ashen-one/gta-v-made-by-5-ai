@@ -1,0 +1,9 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--ui-review"]
+[ui-review] 01_title paused=true
+[ui-review] 02_start paused=false
+[ui-review] 03_pause paused=true
+[ui-review] 04_settings paused=true
+[ui-review] 05_return_to_pause paused=true

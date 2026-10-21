@@ -62,9 +62,25 @@ def label_package(obj,index):
     obj.data.materials.clear();obj.data.materials.append(M["packaging"])
     uv=obj.data.uv_layers.active or obj.data.uv_layers.new(name="UVMap")
     col=index%4;row=(index//4)%4
-    for loop in uv.data:
-        u,v=loop.uv
-        loop.uv=((col+.012+u*.976)/4,(3-row+.012+v*.976)/4)
+    coords=[v.co for v in obj.data.vertices]
+    lo=[min(v[i] for v in coords) for i in range(3)]
+    hi=[max(v[i] for v in coords) for i in range(3)]
+    cylinder="_Tin" in obj.name
+    for poly in obj.data.polygons:
+        half=0
+        if cylinder:
+            half=1 if sum(uv.data[k].uv.x for k in poly.loop_indices)/len(poly.loop_indices)>=.5 else 0
+        for loopid in poly.loop_indices:
+            if cylinder:
+                u,v=uv.data[loopid].uv
+                u=max(0,min(1,(u-.5*half)*2))
+            else:
+                point=obj.data.vertices[obj.data.loops[loopid].vertex_index].co
+                axis=max(range(3),key=lambda k:abs(poly.normal[k]))
+                ua,va=(0,2) if axis==1 else ((1,2) if axis==0 else (0,1))
+                u=(point[ua]-lo[ua])/max(hi[ua]-lo[ua],1e-6)
+                v=(point[va]-lo[va])/max(hi[va]-lo[va],1e-6)
+            uv.data[loopid].uv=((col+.012+u*.976)/4,(3-row+.012+v*.976)/4)
 
 
 def finish(obj,name,mat):

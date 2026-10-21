@@ -1,0 +1,69 @@
+{
+	"continued_movement_m": 1.05607092380524,
+	"disabled_car": {
+		"prompt": "",
+		"target_absent": true
+	},
+	"enabled_car": {
+		"prompt": "[E] Take Sedan",
+		"target_selected": true
+	},
+	"invalid_write": {
+		"previous_bytes_preserved": true,
+		"saved": false
+	},
+	"malformed_settings": {
+		"accepted": false,
+		"state_unchanged": true
+	},
+	"native_f5": {
+		"health": 73.0,
+		"notices": [
+			"Progress saved."
+		],
+		"settings_match": true,
+		"weapon": "smg"
+	},
+	"pause_settings_close": {
+		"mouse_visible": true,
+		"panel": true,
+		"paused": true,
+		"settings": false
+	},
+	"paused_movement_m": 0.0,
+	"replacement": {
+		"bytes_changed": true,
+		"new_health": 67.0,
+		"saved": true,
+		"temporary_absent": true
+	},
+	"save_path": "/tmp/critic-wave2-save.json",
+	"temporary_open_failure": {
+		"fixture_created": true,
+		"previous_bytes_preserved": true,
+		"saved": false
+	},
+	"title_f6_success": {
+		"health": 67.0,
+		"hud_hidden": true,
+		"notices": [
+			"Restored at checkpoint.",
+			"Harbour Relay: check the objective.",
+			"Progress restored."
+		],
+		"paused": false,
+		"settings_match": true,
+		"started": true,
+		"title_visible": false,
+		"weapon": "smg",
+		"weapon_model": "res://assets/providers/pistol_held.glb"
+	},
+	"weapon_before_continue": {
+		"id": "pistol",
+		"model": "res://assets/providers/pistol_held.glb"
+	},
+	"weapon_before_save": {
+		"id": "smg",
+		"model": "res://assets/providers/smg_held.glb"
+	}
+}

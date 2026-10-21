@@ -1,0 +1,680 @@
+{
+	"automation_kind": "scripted input actions, direct mouse-look yaw/pitch, fractional action strengths",
+	"combat_kills": 0,
+	"completed_mission_runs": [],
+	"controls_only": true,
+	"deaths": 0,
+	"elapsed_seconds": 30.003305,
+	"engine": "4.7.1-stable (official)",
+	"failure_reason": "Soak deadline reached before required mission/fixture/mixed-activity gates.",
+	"finished_utc": "2026-10-21T13:02:45",
+	"fixture_assisted_checks": [],
+	"fixture_teleports_count_as_completion": false,
+	"frame_time_method": "Monotonic process-frame intervals; excludes intervals touched by screenshot/recording readback.",
+	"frame_times": {
+		"count": 4329,
+		"max_ms": 92.182,
+		"mean_ms": 6.93065696465696,
+		"p50_ms": 5.957,
+		"p95_ms": 15.296,
+		"p99_ms": 16.27
+	},
+	"frame_times_including_capture_overhead": {
+		"count": 4329,
+		"max_ms": 92.182,
+		"mean_ms": 6.93065696465696,
+		"p50_ms": 5.957,
+		"p95_ms": 15.296,
+		"p99_ms": 16.27
+	},
+	"free_roam_distance_m": {
+		"car": 0.0,
+		"foot": 0.0,
+		"helicopter": 0.0
+	},
+	"gates": [],
+	"headless": true,
+	"health": 100.0,
+	"log": [
+		"0.62s Route start; seed=20261021; headless=true; scripted-input-automation=true",
+		"2.60s walk end at (-250.0, 0.0, -70.0); target=(-252.0, 1.0, -70.0) distance=2.0",
+		"16.64s walk end at (-315.0, 0.0, -5.0); target=(-320.0, 0.0, 0.0) distance=6.9"
+	],
+	"mission_stage": 0,
+	"mode": 0,
+	"native_human_run": false,
+	"no_teleports_or_state_bypasses": true,
+	"peds": 132,
+	"performance_acceptance_valid": false,
+	"performance_caveats": [
+		"Runtime timing baseline; exclusive machine/CPU/GPU conditions are not asserted by this script.",
+		"JPEG/screenshot readback adds work; inclusive and unaffected interval summaries are separate.",
+		"Human gameplay and target-frame-rate acceptance require their own review."
+	],
+	"recording": {
+		"bytes_written": 0,
+		"cap_reason": "",
+		"capped": false,
+		"directory": "",
+		"enabled": false,
+		"frames_written": 0,
+		"max_bytes": 1073741824,
+		"max_duration_seconds": 720.0,
+		"max_frames": 7200,
+		"missed_samples": 0,
+		"readback_encode_cost_ms": {
+			"count": 0,
+			"max_ms": 0.0,
+			"mean_ms": 0.0,
+			"p50_ms": 0.0,
+			"p95_ms": 0.0,
+			"p99_ms": 0.0
+		},
+		"requested": false,
+		"requested_hz": 10,
+		"scheduled_samples": 0,
+		"timestamps": "frames.jsonl monotonic seconds from route setup"
+	},
+	"rendered_timing_baseline": false,
+	"required_mission_completions": 3,
+	"run_mode": "soak",
+	"samples": [
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": -3.14159250259399,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-240.0,
+				0.820000052452087,
+				-70.0
+			],
+			"run": 1,
+			"seconds": 0.09,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 1.58006870746613,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-240.845901489258,
+				0.635839343070984,
+				-70.0
+			],
+			"run": 1,
+			"seconds": 1.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 1.57079660892487,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-246.393020629883,
+				0.635838449001312,
+				-70.0
+			],
+			"run": 1,
+			"seconds": 2.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.36310482025146,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-251.396820068359,
+				0.435833632946014,
+				-70.2904891967773
+			],
+			"run": 1,
+			"seconds": 3.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37534236907959,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-255.759826660156,
+				0.435839146375656,
+				-66.7787170410156
+			],
+			"run": 1,
+			"seconds": 4.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37655687332153,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-260.433837890625,
+				0.280688285827637,
+				-62.0483741760254
+			],
+			"run": 1,
+			"seconds": 5.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37674450874329,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-265.138427734375,
+				0.135613933205605,
+				-57.1645622253418
+			],
+			"run": 1,
+			"seconds": 6.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37676978111267,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-269.846374511719,
+				0.135507524013519,
+				-52.2611961364746
+			],
+			"run": 1,
+			"seconds": 7.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37677216529846,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-274.554565429688,
+				0.135522052645683,
+				-47.3553009033203
+			],
+			"run": 1,
+			"seconds": 8.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37677216529846,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-279.262939453125,
+				0.135696366429329,
+				-42.4490737915039
+			],
+			"run": 1,
+			"seconds": 9.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37677311897278,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-283.971405029297,
+				0.135683283209801,
+				-37.5428428649902
+			],
+			"run": 1,
+			"seconds": 10.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37677454948425,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-288.679870605469,
+				0.135829508304596,
+				-32.6365585327148
+			],
+			"run": 1,
+			"seconds": 11.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37677621841431,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-293.388305664062,
+				0.135693550109863,
+				-27.7302799224854
+			],
+			"run": 1,
+			"seconds": 12.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37677121162415,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-298.096466064453,
+				0.135787650942802,
+				-22.824010848999
+			],
+			"run": 1,
+			"seconds": 13.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37676882743835,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-302.804718017578,
+				0.127654582262039,
+				-17.9177837371826
+			],
+			"run": 1,
+			"seconds": 14.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37675881385803,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-307.512878417969,
+				0.135407477617264,
+				-13.0115642547607
+			],
+			"run": 1,
+			"seconds": 15.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 2.37675333023071,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-312.222442626953,
+				0.0350687019526958,
+				-8.10537433624268
+			],
+			"run": 1,
+			"seconds": 16.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0458352789282799,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-316.458526611328,
+				0.0359353609383106,
+				-4.44135570526123
+			],
+			"run": 1,
+			"seconds": 17.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0167137216776609,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-317.503173828125,
+				0.0263883024454117,
+				-8.92659854888916
+			],
+			"run": 1,
+			"seconds": 18.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0157264228910208,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-317.730072021484,
+				0.0354060903191566,
+				-15.4409055709839
+			],
+			"run": 1,
+			"seconds": 19.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155928637832403,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-317.851684570312,
+				0.0265341475605965,
+				-22.2050018310547
+			],
+			"run": 1,
+			"seconds": 20.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155759854242206,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-317.959442138672,
+				0.0275625921785831,
+				-28.9998779296875
+			],
+			"run": 1,
+			"seconds": 21.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155730647966266,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-318.065673828125,
+				0.0358194075524807,
+				-35.7985305786133
+			],
+			"run": 1,
+			"seconds": 22.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155713455751538,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-318.171752929688,
+				0.0265334434807301,
+				-42.5976638793945
+			],
+			"run": 1,
+			"seconds": 23.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155693981796503,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-318.277862548828,
+				0.0266476981341839,
+				-49.3968391418457
+			],
+			"run": 1,
+			"seconds": 24.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155666526407003,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-318.383972167969,
+				0.035659272223711,
+				-56.1960182189941
+			],
+			"run": 1,
+			"seconds": 25.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155643848702312,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-318.490112304688,
+				0.0357633121311665,
+				-62.9951820373535
+			],
+			"run": 1,
+			"seconds": 26.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155641697347164,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-318.595886230469,
+				0.0333096981048584,
+				-69.7943649291992
+			],
+			"run": 1,
+			"seconds": 27.01,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155615173280239,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-318.701995849609,
+				0.0290620774030685,
+				-76.5935211181641
+			],
+			"run": 1,
+			"seconds": 28.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155588686466217,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-318.808013916016,
+				0.0265340618789196,
+				-83.3926696777344
+			],
+			"run": 1,
+			"seconds": 29.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"flight_distance_m": 0.0,
+			"heading": 0.0155564043670893,
+			"health": 100.0,
+			"mode": 0,
+			"phase": "mission",
+			"position": [
+				-318.913940429688,
+				0.0358044691383839,
+				-90.1918792724609
+			],
+			"run": 1,
+			"seconds": 30.0,
+			"stage": 0,
+			"vehicle_health": null,
+			"wanted": 0
+		}
+	],
+	"schema": 2,
+	"screenshots": 0,
+	"seed": 20261021,
+	"soak_duration_contract_seconds": 30.0,
+	"success": false,
+	"traffic_cars": 14,
+	"uninterrupted": false,
+	"wanted_level": 0
+}

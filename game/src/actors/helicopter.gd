@@ -155,13 +155,13 @@ func _build() -> void:
 	add_child(shape)
 
 	_arm = SpringArm3D.new()
-	_arm.spring_length = 11.0
+	_arm.spring_length = 14.0
 	_arm.collision_mask = 1
 	_arm.position = Vector3(0.0, 3.0, 0.0)
-	_arm.rotation_degrees = Vector3(-12.0, 0.0, 0.0)
+	_arm.rotation_degrees = Vector3(-25.0, 0.0, 0.0)
 	add_child(_arm)
 	_camera = Camera3D.new()
-	_camera.fov = 75.0
+	_camera.fov = 70.0
 	_arm.add_child(_camera)
 
 	for child in get_children():
@@ -171,12 +171,13 @@ func _build() -> void:
 
 ## Swap in the generated helicopter when it has been cleaned and staged.
 func _try_provider_asset() -> void:
-	if not AssetLibrary.has_asset("helicopter_clean.glb"):
+	if not AssetLibrary.has_asset("helicopter_refined.glb"):
 		return
-	var root := AssetLibrary.instantiate("helicopter_clean.glb", self)
+	var root := AssetLibrary.instantiate("helicopter_refined.glb", self)
 	if root == null:
 		return
 	_provider_root = root
+	root.position.y = 0.30 # skids meet the collider lower extent
 	_body.visible = false
 	for part in _procedural_visuals:
 		part.visible = false
@@ -200,9 +201,9 @@ func _physics_process(delta: float) -> void:
 	if _tail_rotor:
 		_tail_rotor.rotate_x(delta * (34.0 if pilot_is_player else 8.0))
 	if _provider_main_rotor != null:
-		AssetLibrary.spin_part(_provider_main_rotor, self, Vector3.UP, delta * rotor_speed * 1.6)
+		AssetLibrary.spin_part(_provider_main_rotor, _provider_root, Vector3.UP, delta * rotor_speed * 1.6)
 	if _provider_tail_rotor != null:
-		AssetLibrary.spin_part(_provider_tail_rotor, self, Vector3.RIGHT, delta * rotor_speed * 2.4)
+		AssetLibrary.spin_part(_provider_tail_rotor, _provider_root, Vector3.RIGHT, delta * rotor_speed * 2.4)
 	if pilot_is_player and not disabled:
 		_pilot_input(delta)
 	else:
@@ -300,6 +301,8 @@ func exit_vehicle(player: Node) -> void:
 		return
 	pilot_is_player = false
 	player.global_position = exit_pos
+	player.yaw = rotation.y
+	player.rotation.y = rotation.y
 	player.visible = true
 	player.current_vehicle = null
 	player.camera.current = true
