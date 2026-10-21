@@ -9,6 +9,7 @@ config_version=5
 config/name="Orchard Reach"
 config/description="Original third-person open-world action slice set in a Singapore-inspired district."
 run/main_scene="res://main.tscn"
+run/flush_stdout_on_print=true
 config/features=PackedStringArray("4.7", "Forward Plus")
 boot_splash/show_image=false
 
