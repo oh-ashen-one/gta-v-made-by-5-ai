@@ -53,10 +53,14 @@ func _run() -> void:
 	await _shot("hawker_market")
 
 	# --- 2. clear the armed guards around the market ------------------------
-	var hostile := _nearest_hostile()
-	if hostile:
+	# clear every guard at the market, not just the closest one
+	for i in 4:
+		var hostile := _nearest_hostile()
+		if hostile == null:
+			break
 		await _shoot_at(hostile)
-		await _shot("combat")
+		await get_tree().create_timer(0.3).timeout
+	await _shot("combat")
 
 	# --- 3. take the package (real interactable) ----------------------------
 	await _interact()

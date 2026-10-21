@@ -81,6 +81,22 @@ func _behaviour_checks(main: Node) -> void:
 	_check("the world is frozen while paused", player.global_position.distance_to(before) < 0.01)
 	Game.simulation_paused = false
 
+	# 6. the mission package must be pickable and must advance the mission
+	var mission = main.get_node_or_null("Mission")
+	if mission and player:
+		var pkg = mission.get_node_or_null("MissionPackage")
+		if pkg:
+			player.global_position = pkg.global_position + Vector3(1.0, 0.3, 0.0)
+			player.current_vehicle = null
+			Game.set_mode(Game.MODE_FOOT)
+			await get_tree().process_frame
+			Input.action_press("interact")
+			await get_tree().process_frame
+			await get_tree().process_frame
+			Input.action_release("interact")
+			_check("the mission package can be picked up", not pkg.visible)
+			_check("picking up the package advances the mission", mission.stage > 0, " (stage %d)" % mission.stage)
+
 
 func _can_walk(player: Node) -> bool:
 	# walk on open road, not inside the safe room, so the check measures the

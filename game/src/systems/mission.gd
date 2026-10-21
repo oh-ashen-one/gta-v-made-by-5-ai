@@ -45,13 +45,15 @@ func _spawn_delivery() -> void:
 
 func _spawn_hostiles() -> void:
 	var base: Vector3 = world.locations["package"]
-	for i in 3:
+	# the guards hold the stall line, so the aisle in front of the counters stays
+	# walkable and the encounter reads as "guarding the market", not "blocking it"
+	var posts := [Vector3(-12.0, 0.0, -8.0), Vector3(12.0, 0.0, -8.0), Vector3(0.0, 0.0, -14.0)]
+	for i in posts.size():
 		var h := NPC.new()
 		h.is_hostile = true
 		h.health = 70.0
 		add_child(h)
-		var ang := TAU * i / 3.0
-		h.global_position = base + Vector3(cos(ang) * 9.0, 0.4, sin(ang) * 9.0)
+		h.global_position = base + posts[i]
 		h.state = NPC.State.WALK
 		_hostiles.append(h)
 
