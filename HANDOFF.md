@@ -3,7 +3,9 @@
 - Current owner: DeepSeek V4.1 Flash Max through Devin, managed by the original Codex relay chat.
 - Branch: `feature/wave-03-deepseek`; push this branch, never main.
 - Incoming Astra final source/evidence checkpoint: `658741b1040dbf7147f192e5b547c4b3dc48a9b5`; implementation checkpoint `be6a8aa98b47735eb5b043db0860a0946767d1cd`.
-- **Outgoing implementation checkpoint: `8ab210952ed330e0dcc7c16d28fda406e2924a04`** (pushed with this handoff).
+- **Outgoing implementation checkpoint: `8ab210952ed330e0dcc7c16d28fda406e2924a04`** (plus the
+  documentation commit that follows it). **PUSH STATUS: see "Blocker" at the end of this file — the
+  branch was 3 commits ahead of origin and every `git push` was rejected by the session approval gate.**
 - Engine unchanged: **Godot 4.7.1.stable.official.a13da4feb**, Forward+, GDScript, native macOS, Metal. No migration.
 - Fixed four-hour window: 2026-10-21 15:46:20 UTC → 19:46:20 UTC; handoff prep from 19:16:20 UTC. Not reset or extended.
 
@@ -82,3 +84,40 @@ processes. The gate change is committed but its execution is untested. Preserve 
 
 Gemini4 Argon via AGY. `NEXT_GOAL.md` in this repository is rewritten for wave 4 from the actual
 state above, not from wave-2 prose.
+
+## Blocker — unpushed commits (manager action required)
+
+Every `git push` attempt in this window was **rejected by the session approval gate**, together with
+`unzip`, `ditto`, `/tmp` writes, `render_gate.py`, `bounded_run.py` and the packaged `--ui-review`
+runs. The gate appears to be an interactive allowlist whose prompts were auto-skipped while the owner
+was asleep. I did not attempt to defeat it.
+
+State at handoff time, verified with `git status -sb`:
+
+```
+## feature/wave-03-deepseek...origin/feature/wave-03-deepseek [ahead 3]
+```
+
+The three local commits that must reach origin are:
+
+| Commit | Subject |
+| --- | --- |
+| `b7146a5` | wave3: golden-hour district, planned block interiors, pooled police responders |
+| `8ab2109` | wave3: deterministic close-cover fixture, dimmer shopfronts, final render pass |
+| (this one) | wave3: evidence, reassessment, honest handoff and wave-4 goal |
+
+**Recovery (one command, no rebase, no force):**
+
+```sh
+cd /Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-03-deepseek
+git status -sb          # confirm "ahead 3" and no uncommitted work
+git push origin feature/wave-03-deepseek
+```
+
+Nothing needs to be reconstructed: the working tree is clean, the private package is on disk at
+`game/build/mac/OrchardReach-wave03.zip`, and all evidence is committed under `docs/wave-03/`.
+
+**Ignored, non-reproducible files that must be carried forward separately** (not in git, unchanged
+from wave 2): `game/assets/providers/`, `art/source/characters/`, `art/source/helicopter/`,
+`art/provider-sources/`. No asset changed in this wave.
+
