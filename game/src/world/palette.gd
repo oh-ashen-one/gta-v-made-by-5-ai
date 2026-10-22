@@ -178,6 +178,19 @@ static func grime_overlay() -> ShaderMaterial:
 		_grime_overlay.render_priority = 1
 	return _grime_overlay
 
+static var _grime_overlay_light: ShaderMaterial = null
+
+## Light variant for conservation shophouses: kept, repainted pastel fronts
+## (CONCEPT-01/02) get only a low splash band at the base, no streaks.
+static func grime_overlay_light() -> ShaderMaterial:
+	if _grime_overlay_light == null:
+		_grime_overlay_light = grime_overlay().duplicate() as ShaderMaterial
+		_grime_overlay_light.set_shader_parameter("band_k", 0.45)
+		_grime_overlay_light.set_shader_parameter("band_h", 0.45)
+		_grime_overlay_light.set_shader_parameter("streak_k", 0.0)
+		_grime_overlay_light.set_shader_parameter("mott_k", 0.12)
+	return _grime_overlay_light
+
 ## Procedural facade sheets (ART-03/ART-04). A 144 m block of plain boxes reads
 ## as a prototype; a window/floor grid on the same box reads as a building.
 ## BoxMesh faces are 0..1 UV, so one sheet is one facade elevation.

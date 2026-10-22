@@ -39,7 +39,7 @@ static func dress(world_root: Node3D) -> Dictionary:
 		if node != world_root and node is Node3D and path != "":
 			if path.contains("shophouse_clean"):
 				shophouses.append(_module_info(node as Node3D, world_root))
-				_overlay(node)
+				_overlay(node, true)
 				continue
 			if path.contains("hdb_slab_clean"):
 				hdbs.append(_module_info(node as Node3D, world_root))
@@ -49,6 +49,11 @@ static func dress(world_root: Node3D) -> Dictionary:
 			stack.append(child)
 		if node is MeshInstance3D:
 			var mi := node as MeshInstance3D
+			# Wave A integration: RoofKit tints infill facades and owns their roofs
+			# (deck, parapet, plant); here they only get wall clutter.
+			if mi.mesh is BoxMesh and RoofKit._facade_variants.values().has(mi.material_override):
+				infill.append({"size": (mi.mesh as BoxMesh).size, "xform": _rel_xform(mi, world_root), "roofkit": true})
+				continue
 			if mi.mesh is BoxMesh and Palette._facade_cache.values().has(mi.material_override):
 				var ixf := _rel_xform(mi, world_root)
 				infill.append({"size": (mi.mesh as BoxMesh).size, "xform": ixf})
@@ -60,6 +65,7 @@ static func dress(world_root: Node3D) -> Dictionary:
 				if kind != "" and kind != "office" and kind != "glass":
 					mi.material_override = Palette.facade_variant(kind, int(absf(ixf.origin.x) * 0.37 + absf(ixf.origin.z) * 0.71))
 	_fix_roof_caps(world_root, infill)
+	_shop_floor(world_root)
 	stats["shophouses"] = shophouses.size()
 	stats["hdb"] = hdbs.size()
 	stats["infill"] = infill.size()
@@ -79,8 +85,10 @@ static func dress(world_root: Node3D) -> Dictionary:
 	# HDB provider slabs carry their own facade; their AABB is far wider than
 	# the visible slab, so they only get the grime pass (no placed clutter).
 	for b in infill:
+		var m0 := membranes.size()
 		_dress_infill(b, rng, condensers, rust_pipes, roof_boxes, membranes, tanks)
-		membrane_cols.append(ROOF_FINISHES[rng.randi() % ROOF_FINISHES.size()])
+		if membranes.size() > m0:
+			membrane_cols.append(ROOF_FINISHES[rng.randi() % ROOF_FINISHES.size()])
 
 	_add_multimesh(world_root, "WallCondensers", _condenser_mesh(), null, condensers)
 	_add_multimesh(world_root, "DrainPipes", _pipe_mesh(), Palette.mat(Color(0.27, 0.29, 0.27), 0.6, 0.2), pipes)
@@ -120,6 +128,23 @@ static func dress(world_root: Node3D) -> Dictionary:
 	return stats
 
 # ----------------------------------------------------------------- analysis
+## The convenience-store kit has no finished floor, so the car-park lot (bay
+## lines, cracks) showed inside the shop. Lay a pale vinyl-tile slab in it.
+static func _shop_floor(world_root: Node3D) -> void:
+	var shop := world_root.find_child("OrchardDailyConvenience", true, false) as Node3D
+	if shop == null:
+		return
+	var floor_mi := MeshInstance3D.new()
+	floor_mi.name = "ShopVinylFloor"
+	var box := BoxMesh.new()
+	box.size = Vector3(13.7, 0.06, 9.7)
+	floor_mi.mesh = box
+	floor_mi.material_override = Palette.mat_textured(Color(0.80, 0.79, 0.74), "pavers", Vector3.ONE, 0.55, 0.0, false)
+	floor_mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	shop.add_child(floor_mi)
+	floor_mi.position = Vector3(0.0, 0.03, 0.0)
+	stats["shop_floor"] = 1
+
 static func _rel_xform(n: Node3D, root: Node3D) -> Transform3D:
 	var xf := n.transform
 	var p := n.get_parent()
@@ -174,7 +199,7 @@ static func _fix_roof_caps(world_root: Node3D, infill: Array[Dictionary]) -> voi
 		fixed += 1
 	stats["roof_caps_fixed"] = fixed
 
-static func _overlay(node: Node) -> void:
+static func _overlay(node: Node, light: bool = false) -> void:
 	var st: Array[Node] = [node]
 	while not st.is_empty():
 		var n: Node = st.pop_back()
@@ -190,7 +215,7 @@ static func _overlay(node: Node) -> void:
 			if m == null:
 				m = mi.mesh.surface_get_material(i)
 			if m is StandardMaterial3D and (m as StandardMaterial3D).transparency == BaseMaterial3D.TRANSPARENCY_DISABLED and m.next_pass == null:
-				m.next_pass = Palette.grime_overlay()
+				m.next_pass = Palette.grime_overlay_light() if light else Palette.grime_overlay()
 				stats["overlays"] = int(stats["overlays"]) + 1
 
 static func _extent(aabb: AABB, axis: Vector3) -> Vector2:
@@ -265,6 +290,9 @@ static func _dress_infill(b: Dictionary, rng: RandomNumberGenerator, condensers:
 	var roof_y := c.y + size.y * 0.5 + 0.475     # top of the roof-deck cap
 	var hx := size.x * 0.5 + 0.35
 	var hz := size.z * 0.5 + 0.35
+	if bool(b.get("roofkit", false)):
+		_dress_infill_walls(size, c, rng, condensers, rust)
+		return
 	# Parapet lip (four low walls) so the roof reads as a deck, not a slab.
 	var lip := 0.55
 	var t := 0.22
@@ -293,7 +321,10 @@ static func _dress_infill(b: Dictionary, rng: RandomNumberGenerator, condensers:
 	roof_boxes.append(Transform3D(Basis.from_scale(vb), Vector3(c.x - size.x * 0.28, roof_y + vb.y * 0.5, c.z + size.z * 0.25)))
 	if rng.randf() < 0.5:
 		tanks.append(Transform3D(Basis.from_scale(Vector3(1.0, 1.1, 1.0)), Vector3(c.x + size.x * 0.3, roof_y + 0.55, c.z - size.z * 0.28)))
-	# Walls: condensers and a rusted downpipe on the two long faces.
+	_dress_infill_walls(size, c, rng, condensers, rust)
+
+## Walls: condensers and a rusted downpipe on the two long faces.
+static func _dress_infill_walls(size: Vector3, c: Vector3, rng: RandomNumberGenerator, condensers: Array[Transform3D], rust: Array[Transform3D]) -> void:
 	var bottom := c.y - size.y * 0.5
 	for face: float in [-1.0, 1.0]:
 		var out := Vector3(0, 0, face) if size.x >= size.z else Vector3(face, 0, 0)
@@ -378,8 +409,22 @@ static func _condenser_mesh() -> ArrayMesh:
 	_st_box(body, Vector3(0, 0, 0), Vector3(0.84, 0.58, 0.30))
 	# top lid lip
 	_st_box(body, Vector3(0, 0.30, 0.0), Vector3(0.88, 0.03, 0.33))
+	# Fan guard: horizontal wire bars across the opening, plus a round bezel
+	# and hub, so the front reads as a grille rather than a flat black disc.
+	for k in 7:
+		var gy := -0.18 + 0.06 * k
+		var half_w := sqrt(maxf(0.0, 0.215 * 0.215 - gy * gy))
+		_st_box(body, Vector3(-0.12, gy, 0.158), Vector3(half_w * 2.0, 0.008, 0.012))
+	_st_box(body, Vector3(-0.12, 0.0, 0.158), Vector3(0.008, 0.43, 0.012))
+	_st_box(body, Vector3(-0.12, 0.0, 0.162), Vector3(0.07, 0.07, 0.02))
+	# Side coil louvres on the right panel.
+	for k in 8:
+		_st_box(body, Vector3(0.27, -0.19 + 0.052 * k, 0.156), Vector3(0.17, 0.012, 0.012))
+	# Feet and a refrigerant pipe stub.
+	_st_box(body, Vector3(-0.30, -0.30, 0.0), Vector3(0.08, 0.03, 0.30))
+	_st_box(body, Vector3(0.30, -0.30, 0.0), Vector3(0.08, 0.03, 0.30))
 	am = body.commit(am)
-	am.surface_set_material(0, Palette.mat(Color(0.60, 0.59, 0.55), 0.62, 0.2))
+	am.surface_set_material(0, Palette.mat(Color(0.72, 0.70, 0.64), 0.68, 0.05))
 	var grille := SurfaceTool.new()
 	grille.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var cz := 0.152
@@ -398,7 +443,7 @@ static func _condenser_mesh() -> ArrayMesh:
 	# side louvre panel
 	_st_box(grille, Vector3(0.27, -0.02, 0.150), Vector3(0.18, 0.40, 0.006))
 	am = grille.commit(am)
-	am.surface_set_material(1, Palette.mat(Color(0.10, 0.10, 0.10), 0.8, 0.3))
+	am.surface_set_material(1, Palette.mat(Color(0.20, 0.21, 0.21), 0.75, 0.2))
 	var br := SurfaceTool.new()
 	br.begin(Mesh.PRIMITIVE_TRIANGLES)
 	_st_box(br, Vector3(-0.32, -0.31, -0.02), Vector3(0.05, 0.04, 0.42))

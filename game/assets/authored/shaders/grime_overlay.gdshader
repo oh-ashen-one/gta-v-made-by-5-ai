@@ -9,6 +9,12 @@ uniform float ground_y = 0.16;
 uniform float strength = 1.0;
 uniform float fade_near = 90.0;
 uniform float fade_far = 420.0;
+// Per-family weighting: conservation shophouses are kept and repainted, so
+// they only get a light splash band (no rain streaks or algae mottling).
+uniform float band_k = 1.0;
+uniform float streak_k = 1.0;
+uniform float mott_k = 1.0;
+uniform float band_h = 1.0;
 
 varying vec3 v_world;
 varying vec3 v_wn;
@@ -33,17 +39,17 @@ void fragment() {
 		m *= 0.86 + 0.20 * w_mask(p / 5.0 + 0.7).r;
 	} else {
 		float y0 = v_world.y - ground_y;
-		float band = 1.0 - smoothstep(0.0, 1.3 + 1.2 * w_mask(vec2(hz / 6.0, 0.2)).g, y0);
-		m *= mix(vec3(1.0), vec3(0.50, 0.55, 0.45), band * 0.85);
+		float band = 1.0 - smoothstep(0.0, (1.3 + 1.2 * w_mask(vec2(hz / 6.0, 0.2)).g) * band_h, y0);
+		m *= mix(vec3(1.0), vec3(0.50, 0.55, 0.45), band * 0.85 * band_k);
 		float s = w_mask(vec2(hz / 4.5, v_world.y / 30.0)).a;
 		float region = smoothstep(0.25, 0.62, w_mask(vec2(hz / 23.0, v_world.y / 47.0 + 0.3)).r);
 		float streak = smoothstep(0.45, 0.80, s) * region;
-		m *= mix(vec3(1.0), vec3(0.52, 0.55, 0.47), streak * 0.9);
+		m *= mix(vec3(1.0), vec3(0.52, 0.55, 0.47), streak * 0.9 * streak_k);
 		// Soot and damp under eaves and ledges: darker toward the wall top band.
-		float eave = smoothstep(0.55, 0.9, w_mask(vec2(hz / 9.0, v_world.y / 3.2)).a) * 0.35;
+		float eave = smoothstep(0.55, 0.9, w_mask(vec2(hz / 9.0, v_world.y / 3.2)).a) * 0.35 * streak_k;
 		m *= mix(vec3(1.0), vec3(0.70, 0.70, 0.64), eave);
 		float mott = smoothstep(0.52, 0.85, w_mask(vec2(hz, v_world.y) / 13.0 + 0.4).g);
-		m *= mix(vec3(1.0), vec3(0.74, 0.78, 0.68), mott * 0.7);
+		m *= mix(vec3(1.0), vec3(0.74, 0.78, 0.68), mott * 0.7 * mott_k);
 	}
 	float dist = length(VERTEX);
 	float k = strength * (1.0 - smoothstep(fade_near, fade_far, dist) * 0.7);

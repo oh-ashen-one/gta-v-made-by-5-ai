@@ -43,7 +43,7 @@ func run(main: Node) -> void:
 		await _report()
 		return
 	_check("district contains 3D geometry", _count_meshes(world) > 400)
-	_check("weathered surfaces and wall/roof clutter present (wave B materials)", _materials_ok(world))
+	_check("weathered surfaces and wall/roof clutter present (wave B materials)", _materials_ok(world), str(SurfaceDressing.stats) + " groups=%d" % world.get_tree().get_nodes_in_group("surface_dressing").size())
 	_check("junction graph has 25 connected reference nodes", world.traffic_nodes.size() == 25)
 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
 	_check("civilian traffic populated", traffic.cars.size() >= 8)
@@ -738,8 +738,9 @@ func _materials_ok(world: Node) -> bool:
 	var road_ok := road != null and road.shader != null and String(road.shader.resource_path).ends_with("road_asphalt.gdshader")
 	var paving_ok := Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.92) is ShaderMaterial
 	var s: Dictionary = SurfaceDressing.stats
-	var dressed := int(s.get("condensers", 0)) >= 500 and int(s.get("roof_props", 0)) >= 500 and int(s.get("roof_caps_fixed", 0)) >= 100 and int(s.get("overlays", 0)) >= 1
-	return road_ok and paving_ok and dressed and world.get_tree().get_nodes_in_group("surface_dressing").size() >= 8
+	# Infill roofs belong to RoofKit since wave-A integration; walls stay here.
+	var dressed := int(s.get("condensers", 0)) >= 500 and int(s.get("infill", 0)) >= 50 and int(s.get("overlays", 0)) >= 1 and int(s.get("shop_floor", 0)) == 1
+	return road_ok and paving_ok and dressed and world.get_tree().get_nodes_in_group("surface_dressing").size() >= 4
 
 func _check(check_name: String, condition: bool, detail: String = "") -> void:
 	if _reported:
