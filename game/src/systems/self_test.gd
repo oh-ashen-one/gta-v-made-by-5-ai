@@ -188,7 +188,7 @@ func run(main: Node) -> void:
 	await _ticks(45)
 	Input.action_release("move_forward")
 	_check("walking still works after vehicle death", player.global_position.distance_to(walk_start) > 1.0)
-	_check("on-foot gait: clip, playback rate and stride follow ground speed", _gait_matches_speed(player))
+	_check("on-foot gait: clip, playback rate and stride follow ground speed; feet carry contact shadows", _gait_matches_speed(player))
 
 	Game.wanted_heat = 46.0
 	Game.set_wanted(2)
@@ -878,7 +878,8 @@ func _gait_matches_speed(player: Player) -> bool:
 	cv.set_motion(6.8)
 	var run_ok := cv._current == "run" and cv.stride_amp > 1.1 and cv.animator.speed_scale > 1.0 and cv.animator.speed_scale < 1.6
 	cv.set_motion(0.0)
-	return walk_ok and run_ok and cv.motion != null
+	var shadows_ok := cv.contact_shadows.size() == 3 and cv._foot_ids.size() == 2 and cv._foot_ids[0] >= 0 and cv._foot_ids[1] >= 0
+	return walk_ok and run_ok and cv.motion != null and shadows_ok
 
 ## Water piece (Opus 5.5 loop): the bay must stay real water, not a tinted
 ## plane, with moving boats and a falling-water Merlion jet.

@@ -15,6 +15,7 @@ var lean_roll := 0.0           # radians, + = toward the character's left
 var look_yaw := 0.0            # radians relative to the body, + = left
 var look_pitch := 0.0          # radians, + = down
 var breath := 0.0              # 0..1 weight of idle breathing
+var arm_swing := 0.0           # 0..1 extra walking arm swing (round C2)
 var _t := 0.0
 var _ids := {}
 # Character frame in skeleton space (set by CharacterVisual from the import
@@ -67,6 +68,16 @@ func _process_modification_with_delta(delta: float) -> void:
 		_amplify("upper_arm.r", 1.0 + (stride_amp - 1.0) * 0.8)
 		_amplify("forearm.l", 1.0 + (stride_amp - 1.0) * 0.5)
 		_amplify("forearm.r", 1.0 + (stride_amp - 1.0) * 0.5)
+	# Walking arms: the provider walk clip barely swings the arms, which the
+	# blind critic read as stiff hanging arms. Exaggerate the clip's own
+	# shoulder swing (opposite to the legs) and keep soft bent elbows.
+	if arm_swing > 0.01:
+		_amplify("upper_arm.l", 1.0 + 0.7 * arm_swing)
+		_amplify("upper_arm.r", 1.0 + 0.7 * arm_swing)
+		_rotate_model_space("upper_arm.l", forward_axis, -0.06 * arm_swing)
+		_rotate_model_space("upper_arm.r", forward_axis, 0.06 * arm_swing)
+		_rotate_model_space("forearm.l", left_axis, -0.26 * arm_swing)
+		_rotate_model_space("forearm.r", left_axis, -0.26 * arm_swing)
 	# Lean: split pitch and roll over spine and chest so the back curves
 	# instead of hinging at one joint. Bone-local axes are unknown for this
 	# provider rig, so rotations are composed in model space.

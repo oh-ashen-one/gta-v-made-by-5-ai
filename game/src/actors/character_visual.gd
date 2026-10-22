@@ -45,6 +45,11 @@ const RUN_THRESHOLD := 2.1
 const LOCOMOTION := ["walk", "run", "aim_walk", "aim_run"]
 var motion: CharacterMotionModifier
 var stride_amp := 1.0
+var walk_arm := 0.0
+# Contact shadows (on-foot round C2): one soft dark decal under each foot plus
+# a wider pelvis blob, so the shoes read as touching the paving in close shots.
+var contact_shadows: Array[Decal] = []
+var _foot_ids := PackedInt32Array()
 
 static func available(role: String = "player") -> bool:
 	return ResourceLoader.exists(PROVIDER_DIR + role + "_rigged.glb")
@@ -92,6 +97,7 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		motion.name = "MotionLayer"
 		skeleton.add_child(motion)
 		_set_motion_frame()
+		_build_contact_shadows()
 	weapon_socket = BoneAttachment3D.new()
 	weapon_socket.name = "WeaponSocket"
 	weapon_socket.bone_name = "hand.r"
@@ -137,8 +143,10 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 		clip = "aim"
 		crossfade = 0.18
 	stride_amp = amp
+	walk_arm = 1.0 if clip == "walk" else 0.0
 	if motion != null:
 		motion.stride_amp = lerpf(motion.stride_amp, amp, 0.2)
+		motion.arm_swing = lerpf(motion.arm_swing, walk_arm, 0.15)
 		motion.breath = lerpf(motion.breath, 1.0 if clip in ["idle", "aim"] else 0.0, 0.05)
 	_play(clip, crossfade, rate)
 
@@ -209,6 +217,7 @@ func weapon_muzzle_position() -> Vector3:
 
 func _process(_delta: float) -> void:
 	_update_animation_activity()
+	_update_contact_shadows()
 	if _weapon_node == null or not is_instance_valid(_weapon_node):
 		return
 	if _last_aim or _last_reload:
@@ -423,3 +432,64 @@ static func _upgrade_materials(root: Node) -> void:
 				mat.rim_enabled = true
 				mat.rim = 0.5
 				mat.rim_tint = 0.8
+
+
+static var _contact_tex: Texture2D
+static func _contact_texture() -> Texture2D:
+	if _contact_tex == null:
+		var g := Gradient.new()
+		g.offsets = PackedFloat32Array([0.0, 0.45, 1.0])
+		g.colors = PackedColorArray([Color(0, 0, 0, 0.92), Color(0, 0, 0, 0.55), Color(0, 0, 0, 0.0)])
+		var t := GradientTexture2D.new()
+		t.gradient = g
+		t.fill = GradientTexture2D.FILL_RADIAL
+		t.fill_from = Vector2(0.5, 0.5)
+		t.fill_to = Vector2(0.5, 0.0)
+		t.width = 64
+		t.height = 64
+		_contact_tex = t
+	return _contact_tex
+
+func _build_contact_shadows() -> void:
+	_foot_ids.clear()
+	for bone in ["foot.l", "foot.r"]:
+		var id := skeleton.find_bone(bone)
+		if id < 0:
+			id = skeleton.find_bone(bone.replace("foot", "toe"))
+		_foot_ids.append(id)
+	var sizes := [Vector3(0.30, 0.5, 0.42), Vector3(0.30, 0.5, 0.42), Vector3(0.78, 0.6, 0.62)]
+	for i in 3:
+		var d := Decal.new()
+		d.name = "ContactShadow%d" % i
+		d.texture_albedo = _contact_texture()
+		d.size = sizes[i]
+		d.modulate = Color(1, 1, 1, 0.62 if i < 2 else 0.42)
+		d.albedo_mix = 1.0
+		d.upper_fade = 0.25
+		d.lower_fade = 0.6
+		d.cull_mask = 1
+		d.top_level = true
+		add_child(d)
+		contact_shadows.append(d)
+	_update_contact_shadows()
+
+func _update_contact_shadows() -> void:
+	if contact_shadows.is_empty() or skeleton == null:
+		return
+	var visible_now := is_visible_in_tree() and not _seated
+	var ground := global_position.y
+	var yaw := global_basis.get_euler().y
+	for i in contact_shadows.size():
+		var d := contact_shadows[i]
+		d.visible = visible_now
+		if not visible_now:
+			continue
+		var p := global_position
+		var lift := 0.0
+		if i < 2 and _foot_ids[i] >= 0:
+			p = skeleton.global_transform * skeleton.get_bone_global_pose(_foot_ids[i]).origin
+			lift = maxf(p.y - ground - 0.08, 0.0)
+		# A raised foot casts a fainter, softer contact shadow.
+		var k := clampf(1.0 - lift / 0.25, 0.0, 1.0)
+		d.modulate.a = (0.62 if i < 2 else 0.42) * (0.25 + 0.75 * k)
+		d.global_transform = Transform3D(Basis(Vector3.UP, yaw), Vector3(p.x, ground + 0.12, p.z))
