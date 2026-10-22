@@ -75,8 +75,11 @@ static func sync(root: Node) -> Dictionary:
 			p["fog_density_ref"] = env.fog_density
 		if env.sky != null and env.sky.sky_material is ShaderMaterial:
 			var sm := env.sky.sky_material as ShaderMaterial
-			for key in ["horizon", "horizon_color", "horizon_col", "sky_horizon"]:
+			# "horizon_cool" is the lighting piece's golden_hour_sky (wave A integration).
+			for key in ["horizon", "horizon_color", "horizon_col", "sky_horizon", "horizon_cool"]:
 				var v: Variant = sm.get_shader_parameter(key)
+				if v is Vector3:
+					v = Color((v as Vector3).x, (v as Vector3).y, (v as Vector3).z)
 				if v is Color:
 					# The far land meets a horizon a little paler than the raw sky band.
 					p["horizon_col"] = (v as Color).lerp(Color(0.86, 0.84, 0.82), 0.25)

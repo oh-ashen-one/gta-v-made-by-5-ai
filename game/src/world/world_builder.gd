@@ -67,6 +67,8 @@ var _reserved: Array[Rect2] = []
 var _roof_kit := RoofKit.new()
 ## Skyline round 2 stats for the self-test (materials used, towers over water).
 var skyline_stats := {}
+## Practical lights and fixtures (street lamps, arcades, void decks, hawker).
+var _lighting := Lighting.new()
 
 func build(seed_value: int = 20261021) -> void:
 	_rng.seed = seed_value
@@ -78,6 +80,7 @@ func build(seed_value: int = 20261021) -> void:
 	_collision_root.collision_layer = 1
 	_collision_root.collision_mask = 0
 	_world_root.add_child(_collision_root)
+	_lighting.root = _world_root
 
 	_environment()
 	_ground()
@@ -102,79 +105,13 @@ func build(seed_value: int = 20261021) -> void:
 	_kerb_markings()
 	_scatter_props()
 	_landscape()
+	_lighting.finish()
 	_batch_static_primitives()
 
 # ---------------------------------------------------------------- environment
+## Sky, sun, fog, tonemap and grade live in Lighting (src/world/lighting.gd).
 func _environment() -> void:
-	var env := Environment.new()
-	var sky_mat := ShaderMaterial.new()
-	sky_mat.shader = load("res://assets/authored/shaders/tropical_sky.gdshader")
-	var sky := Sky.new()
-	sky.sky_material = sky_mat
-	env.background_mode = Environment.BG_SKY
-	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.54, 0.58, 0.70)
-	env.ambient_light_energy = 0.44
-	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	# The manager's review of the aerial found "washed-out whites/pinks". The
-	# previous 1.02 exposure plus 0.58 ambient plus 0.42 glow stacked into the
-	# highlight shoulder on pale HDB facades. Pull all three back.
-	env.tonemap_exposure = 0.92
-	# Warm tropical dusk haze. The approved concepts are late-afternoon: a low
-	# sun, long shadows and gold bounce, not an overcast midday wash. The first
-	# wave-3 pass used 0.0011 and smothered the district in peach dust; this is
-	# light aerial perspective only.
-	env.fog_enabled = true
-	env.fog_light_color = Color(0.80, 0.78, 0.74)
-	env.fog_density = 0.00024
-	env.fog_sky_affect = 0.18
-	env.fog_aerial_perspective = 0.10
-	env.ssao_enabled = true
-	env.ssao_radius = 2.1
-	env.ssao_intensity = 2.0
-	env.ssao_light_affect = 0.45
-	env.glow_enabled = true
-	env.glow_intensity = 0.28
-	env.glow_bloom = 0.10
-	env.glow_hdr_threshold = 1.12
-	env.adjustment_enabled = true
-	env.adjustment_contrast = 1.10
-	env.adjustment_saturation = 1.04
-	var we := WorldEnvironment.new()
-	we.environment = env
-	add_child(we)
-
-	var sun := DirectionalLight3D.new()
-	# Low western sun, ~16 deg elevation, so the street gets long raking light
-	# and readable shade under the five-foot ways (ART-07).
-	sun.rotation_degrees = Vector3(-16.3, 62.0, 0.0)
-	sun.light_energy = 2.35
-	sun.light_color = Color(1.0, 0.80, 0.58)
-	sun.shadow_enabled = true
-	sun.directional_shadow_max_distance = 260.0
-	sun.shadow_bias = 0.025
-	sun.shadow_normal_bias = 1.4
-	sun.shadow_blur = 1.15
-	add_child(sun)
-
-	var fill := DirectionalLight3D.new()
-	# Sky fill from the opposite side keeps shadowed frontage readable instead
-	# of crushing it to black.
-	fill.rotation_degrees = Vector3(-24.0, -128.0, 0.0)
-	fill.light_energy = 0.26
-	fill.light_color = Color(0.62, 0.72, 0.92)
-	fill.shadow_enabled = false
-	add_child(fill)
-
-	var bounce := DirectionalLight3D.new()
-	# Warm ground bounce, aimed upward: shaded five-foot ways and arcades pick
-	# up pavement light instead of reading as flat blue-grey walls.
-	bounce.rotation_degrees = Vector3(58.0, 40.0, 0.0)
-	bounce.light_energy = 0.20
-	bounce.light_color = Color(1.0, 0.80, 0.60)
-	bounce.shadow_enabled = false
-	add_child(bounce)
+	Lighting.build_environment(self)
 
 # -------------------------------------------------------------- ground/roads
 func _ground() -> void:
@@ -242,22 +179,14 @@ func _medians() -> void:
 			var centre := Vector3(x, 0.0, cz)
 			_box(Vector3(1.6, 0.26, span), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
 			_box(Vector3(1.2, 0.30, span - 1.0), centre + Vector3(0.0, 0.30, 0.0), median_turf)
-			# low clipped shrubs only: median trees sit on the road centreline and
-			# would put a real trunk collider on the mission avenue centreline
-			var count := int(span / 9.0)
-			for i in count:
-				var zz: float = cz - span * 0.5 + 4.5 + i * 9.0
-				_sphere(Vector3(1.0, 0.75, 1.0), Vector3(x, 0.52, zz), Palette.mat(Palette.FOLIAGE_LIGHT, 0.95))
+			# planting is StreetDressing's median bed (lighting r4: the smooth
+			# green spheres read as placeholder domes, critic A3)
 	for z in Z_LINES:
 		for k in range(0, 4):
 			var cx := -240.0 + k * 160.0
 			var centre := Vector3(cx, 0.0, z)
 			_box(Vector3(span, 0.26, 1.6), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
 			_box(Vector3(span - 1.0, 0.30, 1.2), centre + Vector3(0.0, 0.30, 0.0), median_turf)
-			var count := int(span / 9.0)
-			for i in count:
-				var xx: float = cx - span * 0.5 + 4.5 + i * 9.0
-				_sphere(Vector3(1.0, 0.75, 1.0), Vector3(xx, 0.52, z), Palette.mat(Palette.FOLIAGE_LIGHT, 0.95))
 
 # ------------------------------------------------------------------- blocks
 func _build_grid() -> void:
@@ -333,6 +262,7 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 			module.rotation.y=yaw+PI*.5
 			module.scale.y=.94+float((i/3)%3)*.04
 			AssetLibrary.tint(module,frontage)
+		_lighting.arcade_bay(pos, yaw, front_dir)
 		# Building envelope and rear wall are solid; arcade remains walkable.
 		_collision_box(Vector3(10.1,7.3,9.5),pos+Vector3(0,7.6,0),yaw)
 		_collision_box(Vector3(10.1,3.7,6.5),pos+Vector3(0,1.85,0)+Vector3(0,0,1.4).rotated(Vector3.UP,yaw),yaw)
@@ -352,7 +282,7 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		# arcade reads as depth with a warm source rather than a flat white card.
 		var back_wall := _box(Vector3(6.6, 2.4, 0.12), pos + front_dir * 2.55 + Vector3(0, 1.35, 0), Palette.mat(Color(0.15, 0.12, 0.10), 0.92))
 		back_wall.rotation.y = yaw
-		var ceiling_strip := _box(Vector3(5.6, 0.16, 0.5), pos + front_dir * 3.3 + Vector3(0, 2.52, 0), Palette.emissive(Color(1.0, 0.74, 0.44), 1.15))
+		var ceiling_strip := _box(Vector3(5.6, 0.16, 0.5), pos + front_dir * 3.3 + Vector3(0, 2.52, 0), Palette.emissive(Color(1.0, 0.74, 0.44), 2.4))
 		ceiling_strip.rotation.y = yaw
 		# Vertical mullions break the opening into bays instead of one blank panel.
 		for m in 3:
@@ -431,6 +361,7 @@ func _hdb_block(centre: Vector3) -> void:
 					slab.rotation.y = PI * 0.5
 				AssetLibrary.tint(slab, Palette.HDB_TINTS[block_key])
 				_asset_collision(slab)
+				_lighting.void_deck(slab)
 				_reserve(size + Vector3(16.0, 0.0, 16.0), pos)
 				_roof_kit.add_hdb_roof(pos, h, rot == 90.0)
 				used_provider = true
@@ -582,6 +513,7 @@ func _hawker_block(centre: Vector3) -> void:
 		# tray return + bins
 		_solid_box(Vector3(3.0, 1.0, 1.0), centre + Vector3(-28.0 + i * 8.0, 0.5, -25.0), Palette.mat(Palette.METAL, 0.5, 0.5))
 		_cyl(Vector3(1.0, 1.2, 1.0), centre + Vector3(-29.0 + i * 8.0, 0.6, -24.0), Palette.mat(Palette.METAL_DARK, 0.7, 0.3))
+	_lighting.hawker_hall(centre)
 	# warm practical lighting under the hawker roof
 	for i: int in 6:
 		var practical := OmniLight3D.new()
@@ -1199,8 +1131,13 @@ func _build_lane_graph() -> void:
 	for z in Z_LINES:
 		for side: float in [-1.0, 1.0]:
 			var heading2 := -PI * 0.5 if side < 0.0 else PI * 0.5
-			for px2: float in [-220.0, -104.0, 56.0, 216.0]:
-				var stagger_x := px2 + (30.0 if side > 0.0 else 0.0)
+			var lots: Array[float] = [-220.0, -104.0, 56.0, 216.0]
+			if z == -160.0:
+				# heritage avenue (photo/gameplay hero street, lighting r4): a
+				# fuller kerb so the toward-sun views read as a lived street
+				lots.append_array([-128.0, -100.0, -50.0, -22.0] if side > 0.0 else [-140.0, -82.0, -36.0])
+			for px2: float in lots:
+				var stagger_x := px2 + (30.0 if side > 0.0 and px2 in [-220.0, -104.0, 56.0, 216.0] else 0.0)
 				parked_spots.append({"pos": Vector3(stagger_x, 0.3, z + side * KERB_PARK_OFFSET), "heading": heading2, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
 
@@ -1496,14 +1433,8 @@ func _street_lamp(pos: Vector3) -> void:
 	if not used_provider:
 		_cyl(Vector3(0.16, 6.0, 0.16), pos + Vector3(0.0, 3.0, 0.0), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
 		_box(Vector3(1.2, 0.14, 0.3), pos + Vector3(0.0, 6.0, 0.0), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
-	var bulb := MeshInstance3D.new()
-	var sm := SphereMesh.new()
-	sm.radius = 0.22
-	sm.height = 0.4
-	bulb.mesh = sm
-	bulb.material_override = Palette.emissive(Palette.SHOP_WARM, 1.8)
-	bulb.position = pos + Vector3(0.0, 5.85, 0.0)
-	_world_root.add_child(bulb)
+	# Lamp head glow + downward light pool (Lighting owns the practicals).
+	_lighting.street_lamp(pos)
 
 func _tree(pos: Vector3, scale: float) -> void:
 	var tree := _authored("rain_tree.glb", pos, _rng.randf_range(-PI, PI), Vector3.ONE * scale)
