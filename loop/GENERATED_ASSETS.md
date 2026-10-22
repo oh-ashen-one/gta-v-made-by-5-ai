@@ -32,6 +32,10 @@ scale) — every tile repeats visibly if sampled at one scale.
 | vfx_bullet_impacts_atlas | `vfx_bullet_impacts_atlas.png` (2048², RGBA, 3x3) | bullet-hole Decals (combat): row 1 concrete, row 2 plaster, row 3 metal, metal, glass | Godot Decal with albedo+alpha, ~0.12–0.2 m; pick the row by surface material; fade after ~20 s; cap count |
 | vfx_puffs_atlas | `vfx_puffs_atlas.png` (2048², RGBA, 2x2) | particles: TL tyre smoke, TR dust, BL gun smoke, BR water spray | billboard particles, alpha blend, grow + fade; TL for burnouts/handbrake, TR for heli downwash on ground + car off-road, BL after shots, BR for heli downwash on water / bow waves |
 | vfx_skid_mark | `vfx_skid_mark.png` (1520x2366, RGBA) | tyre skid trails (driving) | strip along V (wraps vertically, already blurred along V); ~0.25 m wide; build a ribbon mesh behind each sliding wheel, alpha ~0.6, fade over ~30 s |
+| fabric_flannel_plaid | `_albedo` `_normal` `_rough` | player / NPC flannel shirts (judge cited GTA V's flannel) | wraps by whole plaid periods but is stretched ~1.7x horizontally by the period crop: use UV scale (1.72, 1.0); one plaid repeat ≈ 10–12 cm on the garment |
+| fabric_denim | `_albedo` `_normal` `_rough` | jeans/trousers | seamless; twill runs diagonally; ~0.6 tiles per trouser leg width; add darker AO in creases |
+| fabric_batik | `_albedo` `_normal` `_rough`, `fabric_batik_single_albedo` | batik shirts for NPC variety (Singapore identity) | the seamless version ghosts flowers in blend zones — prefer `fabric_batik_single_albedo` (unblended) when one tile covers the garment |
+| fabric_cotton_jersey | `_albedo` `_normal` `_rough`, `_neutral` | T-shirts; `_neutral` is tintable for crowd colour variety | seamless; multiply `_neutral` by any tee colour; normal strength low (knit is fine) |
 
 ## Requests
 Priority note (owner, ~17:45Z): playable mechanics first (locomotion, combat, driving, helicopter), then the world.
