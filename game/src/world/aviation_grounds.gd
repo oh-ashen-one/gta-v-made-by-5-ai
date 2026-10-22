@@ -6,7 +6,7 @@ extends RefCounted
 ## A single procedural ground layer now plans it like a real heliport: a
 ## sealed asphalt apron in front of the hangar with taxi guidance lines, a
 ## tarmac ring and taxiway around the primary pad, concrete kerbs, and mown
-## airside turf (stripes, wear, dry patches) everywhere else, plus low clipped
+## concrete hard-standing (saw-cut slabs, stains; integ-P replaced the turf) elsewhere, plus low clipped
 ## hedges along the perimeter (one MultiMesh). Visual only: no collision, so
 ## the walking, driving and landing routes are unaffected.
 
@@ -38,16 +38,16 @@ void fragment() {
 	float large = fbm(p * 0.045);
 	float mid = fbm(p * 0.21 + 3.0);
 	float fine = vn(p * 7.0) * 0.6 + h21(floor(p * 28.0)) * 0.4;
-	// --- airside turf: mown stripes, clumps, wear and dry patches
-	float stripe = step(0.5, fract(p.x / 7.0));
-	vec3 grass = mix(vec3(0.15, 0.25, 0.075), vec3(0.20, 0.31, 0.095), stripe);
-	grass *= 0.80 + 0.32 * large + 0.10 * (fine - 0.5);
-	float dry = smoothstep(0.58, 0.78, fbm(p * 0.07 + 11.0));
-	grass = mix(grass, vec3(0.34, 0.33, 0.17), dry * 0.55);
-	float clover = smoothstep(0.72, 0.86, vn(p * 1.7 + 5.0)) * 0.5;
-	grass = mix(grass, vec3(0.11, 0.21, 0.07), clover);
-	// worn, compacted strip where turf meets the tarmac edge
-	grass = mix(grass, vec3(0.30, 0.28, 0.20), (1.0 - smoothstep(0.4, 1.6, d)) * 0.45 * mid);
+	// --- concrete hard-standing (integ-P seam: helicopter-P2 flagged the turf
+	// as a regression - apron, workshop forecourt and workshop floor read as
+	// lawn; the baseline had concrete). Cast slabs with saw-cut joints,
+	// tonal variation, tyre/oil stains; variable kept as 'grass' for the mix.
+	vec2 slab = fract(p / 6.0);
+	float joint = 1.0 - smoothstep(0.0, 0.012, min(min(slab.x, 1.0 - slab.x), min(slab.y, 1.0 - slab.y)));
+	float slab_tone = h21(floor(p / 6.0));
+	vec3 grass = vec3(0.50, 0.49, 0.46) * (0.88 + 0.10 * slab_tone + 0.12 * large + 0.06 * (fine - 0.5));
+	grass = mix(grass, vec3(0.36, 0.35, 0.33), smoothstep(0.62, 0.80, fbm(p * 0.09 + 11.0)) * 0.45);
+	grass = mix(grass, vec3(0.22, 0.22, 0.21), joint * 0.7);
 	// --- tarmac: aggregate grain, sealed crack lines, patch repairs, stains
 	vec3 tar = vec3(0.115, 0.118, 0.122) * (0.86 + 0.24 * large) * (0.9 + 0.18 * fine);
 	float patch_m = step(0.62, fbm(floor(p / 6.0) * 0.9 + 2.0));

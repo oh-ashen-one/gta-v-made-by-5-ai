@@ -74,7 +74,10 @@ void fragment() {
 	float hint = 0.025 * (0.5 + 0.5 * cos(a * blades * 0.5)) * smoothstep(0.3, 0.9, r);
 	// tip-path band where the blade tips run
 	float tip = 0.06 * smoothstep(0.82, 0.92, r) * (1.0 - smoothstep(0.95, 1.0, r));
-	float alpha = clamp(0.17 + 0.05 * r + streak + hint + tip, 0.15, 0.40) * span * spin;
+	// integ-P seam: lighter veil (helicopter-P2: 0.15-0.40 washed the airframe out
+	// 2-3.5x and read as a milky slab edge-on) and thinner when seen edge-on.
+	float alpha = clamp(0.08 + 0.04 * r + streak + hint + tip, 0.06, 0.24) * span * spin;
+	alpha *= mix(0.22, 1.0, smoothstep(0.04, 0.40, abs(dot(NORMAL, VIEW))));
 	// a blade sweeping past the camera must not fill the lens
 	alpha *= mix(0.35, 1.0, smoothstep(near_fade, near_fade + 3.0, length(VERTEX)));
 	// visible rotor head
@@ -94,7 +97,7 @@ uniform float water = 1.0;
 uniform float radius_m = 10.0;
 uniform vec3 matte : source_color = vec3(0.46, 0.55, 0.56);
 uniform vec3 foam : source_color = vec3(0.90, 0.93, 0.94);
-uniform vec3 dust : source_color = vec3(0.66, 0.60, 0.50);
+uniform vec3 dust : source_color = vec3(0.74, 0.71, 0.64);
 varying vec2 lp;
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -122,7 +125,7 @@ void fragment() {
 	water_col = mix(water_col, foam, clamp(flecks * 1.4, 0.0, 1.0));
 	float water_a = intensity * clamp(zone * (0.16 + 0.22 * paws + 0.05 * ripple) + flecks * 0.85, 0.0, 0.85);
 	// on land: a thin streaked dust film, no decal blot
-	float dust_a = intensity * zone * clamp(paws * 0.42 + flecks * 0.35, 0.0, 0.45);
+	float dust_a = intensity * zone * clamp(paws * 0.20 + flecks * 0.16, 0.0, 0.18); // integ-P: no brown pad smear
 	ALBEDO = mix(dust * (0.85 + 0.3 * paws), water_col, water);
 	ROUGHNESS = mix(0.95, 0.42, water);
 	SPECULAR = mix(0.2, 0.35, water);
@@ -223,7 +226,7 @@ func _build_discs() -> void:
 	_disc_shadow.mesh = plane
 	var sm := StandardMaterial3D.new()
 	sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
-	sm.albedo_texture = _radial_texture(128, 0.18, 0.93, 0.42, true)
+	sm.albedo_texture = _radial_texture(128, 0.18, 0.93, 0.22, true)
 	sm.cull_mode = BaseMaterial3D.CULL_DISABLED
 	sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_disc_shadow.material_override = sm
@@ -431,7 +434,7 @@ func _process(delta: float) -> void:
 	_tail_mat.set_shader_parameter("phase", -_phase * 2.3)
 	_main_disc.visible = disc_alpha > 0.01
 	_tail_disc.visible = spin > 0.2
-	_disc_shadow.visible = disc_alpha > 0.5
+	_disc_shadow.visible = disc_alpha > 0.5 and not over_water # integ-P: no dark blob trailing on the bay
 	# beacons pulse at ~1 Hz, strobe double-flashes
 	var beat := fmod(_clock, 1.1)
 	for b in _beacons:
@@ -462,7 +465,7 @@ func _physics_process(delta: float) -> void:
 		over_water = true
 	var agl := (heli.global_position.y - ground.y) if has_ground else 999.0
 	# contact shadow under the skids
-	if has_ground and agl < 14.0:
+	if has_ground and agl < 14.0 and not over_water:
 		_contact.global_position = ground + Vector3.UP * 0.4
 		_contact.rotation = Vector3(0.0, heli.rotation.y, 0.0)
 		_contact.modulate = Color(0.0, 0.0, 0.0, clampf(0.75 * (1.0 - agl / 14.0), 0.0, 0.75))
