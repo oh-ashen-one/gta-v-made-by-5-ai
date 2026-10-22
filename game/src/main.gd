@@ -85,6 +85,15 @@ func _ready() -> void:
 		onfoot.setup(self)
 		return
 
+	if "--locomotion-review" in args:
+		hud.show_title(false)
+		started = true
+		Game.simulation_paused = false
+		var locomotion: Node = _qa_system("res://src/systems/locomotion_review.gd")
+		add_child(locomotion)
+		locomotion.setup(self)
+		return
+
 	if "--test" in args:
 		# Regression input belongs to active gameplay, not the title overlay.
 		# Native mouse events are legitimately consumed by visible menus.

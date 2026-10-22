@@ -5,7 +5,7 @@ extends Node3D
 ## health, facing, weapon damage and vehicle transitions.
 
 const PROVIDER_DIR := "res://assets/providers/"
-const LOOP_CLIPS := ["idle", "walk", "run", "aim", "aim_walk", "aim_run", "jump", "seated", "drive"]
+const LOOP_CLIPS := ["idle", "walk", "run", "sprint", "aim", "aim_walk", "aim_run", "jump", "seated", "drive"]
 const WARDROBE := [
 	Color(1.0, 1.0, 1.0), Color(1.20, 1.34, 1.12),
 	Color(1.26, 1.10, 1.02), Color(0.94, 1.14, 1.36),
@@ -35,14 +35,19 @@ var _phase_offset := 0.0
 var _seated := false
 var _driving_pose := false
 
-# On-foot piece: ground speed each locomotion clip covers at rate 1.0, measured
-# from the provider clips' mid-stance foot-bone travel (walk 1.41 m/s, run
-# 4.28 m/s; whole-stance run average 3.7 m/s) and checked in rendered footage.
-# Playback rate = ground speed / clip speed keeps planted feet from sliding.
-const WALK_CLIP_SPEED := 1.45
-const RUN_CLIP_SPEED := 4.0
-const RUN_THRESHOLD := 2.1
-const LOCOMOTION := ["walk", "run", "aim_walk", "aim_run"]
+# Locomotion v2 (Opus 5.5 locomotion piece): three distinct gait cycles are
+# authored in tools/rig_characters.py with foot placement at their real ground
+# speeds (planted feet travel back at exactly this speed), so at the game's
+# walk / run / sprint speeds every clip plays at rate 1.0 with no foot slide.
+# The v1 provider clips were one sine cycle played 0.9-2.5x fast.
+const WALK_CLIP_SPEED := 1.5
+const RUN_CLIP_SPEED := 3.6
+const SPRINT_CLIP_SPEED := 6.8
+const RUN_THRESHOLD := 2.45      # walk <-> run (midway, by ratio, between the clips)
+const SPRINT_THRESHOLD := 5.0    # run <-> sprint
+const LOCOMOTION := ["walk", "run", "sprint", "aim_walk", "aim_run"]
+const ASSET_VERSION := "_v2"
+var gait_v2 := false
 var motion: CharacterMotionModifier
 var stride_amp := 1.0
 var walk_arm := 0.0
@@ -52,7 +57,12 @@ var contact_shadows: Array[Decal] = []
 var _foot_ids := PackedInt32Array()
 
 static func available(role: String = "player") -> bool:
-	return ResourceLoader.exists(PROVIDER_DIR + role + "_rigged.glb")
+	return ResourceLoader.exists(asset_path(role))
+
+## Locomotion v2 exports sit beside the v1 provider files (never overwrite them).
+static func asset_path(role: String) -> String:
+	var v2 := PROVIDER_DIR + role + "_rigged" + ASSET_VERSION + ".glb"
+	return v2 if ResourceLoader.exists(v2) else PROVIDER_DIR + role + "_rigged.glb"
 
 const NPC_DRAW_RANGE := 150.0
 
@@ -62,7 +72,7 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	if not available(role):
 		push_warning("Rigged character missing: " + role + "_rigged.glb")
 		return false
-	var packed := load(PROVIDER_DIR + role + "_rigged.glb") as PackedScene
+	var packed := load(asset_path(role)) as PackedScene
 	if packed == null:
 		return false
 	model = packed.instantiate() as Node3D
@@ -79,6 +89,8 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		var key := String(full_name).get_slice("/", String(full_name).get_slice_count("/") - 1)
 		key = key.get_slice("|", key.get_slice_count("|") - 1)
 		_clips[key] = String(full_name)
+		if key == "sprint":
+			gait_v2 = true
 		var clip := animator.get_animation(full_name)
 		clip.loop_mode = Animation.LOOP_LINEAR if key in LOOP_CLIPS else Animation.LOOP_NONE
 	animator.animation_finished.connect(_on_animation_finished)
@@ -125,30 +137,94 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 	var amp := 1.0
 	if not grounded:
 		clip = "jump"
-		crossfade = 0.12
+		crossfade = 0.14
 	elif reloading:
 		clip = "reload"
 		crossfade = 0.16
-	elif speed > RUN_THRESHOLD:
+	elif gait_v2 and speed > 0.18:
+		# Three authored gaits; playback rate stays 1.0 at the game's own
+		# walk/run/sprint speeds and only bends while accelerating between them.
+		if speed > SPRINT_THRESHOLD and not aiming:
+			clip = "sprint"
+			rate = clampf(speed / SPRINT_CLIP_SPEED, 0.72, 1.25)
+		elif speed > RUN_THRESHOLD:
+			clip = "aim_run" if aiming else "run"
+			rate = clampf(speed / RUN_CLIP_SPEED, 0.68, 1.45)
+		else:
+			clip = "aim_walk" if aiming else "walk"
+			rate = clampf(speed / WALK_CLIP_SPEED, 0.45, 1.6)
+		crossfade = 0.22
+	elif speed > 2.1:
 		clip = "aim_run" if aiming else "run"
-		# Fast running lengthens the stride (procedural layer, player only)
-		# before it raises cadence, as real sprinting does.
 		if motion != null:
 			amp = clampf(1.0 + (speed - 3.6) / 3.2 * 0.25, 1.0, 1.25)
-		rate = clampf(speed / (RUN_CLIP_SPEED * amp), 0.72, 2.0)
+		rate = clampf(speed / (4.0 * amp), 0.72, 2.0)
 	elif speed > 0.18:
 		clip = "aim_walk" if aiming else "walk"
-		rate = clampf(speed / WALK_CLIP_SPEED, 0.45, 1.8)
+		rate = clampf(speed / 1.45, 0.45, 1.8)
 	elif aiming:
 		clip = "aim"
 		crossfade = 0.18
 	stride_amp = amp
-	walk_arm = 1.0 if clip == "walk" else 0.0
+	walk_arm = 1.0 if clip == "walk" and not gait_v2 else 0.0
 	if motion != null:
 		motion.stride_amp = lerpf(motion.stride_amp, amp, 0.2)
 		motion.arm_swing = lerpf(motion.arm_swing, walk_arm, 0.15)
 		motion.breath = lerpf(motion.breath, 1.0 if clip in ["idle", "aim"] else 0.0, 0.05)
+	if clip == "jump" and _air_phase >= 0.0 and _clips.has("jump"):
+		# Airborne pose follows the vertical velocity (take-off, tuck at the
+		# apex, legs reaching down before touch-down), not wall-clock time.
+		_play(clip, crossfade, 0.0)
+		var air_len := animator.get_animation(_clips["jump"]).length
+		animator.seek(clampf(_air_phase, 0.0, 0.999) * air_len, true)
+		return
 	_play(clip, crossfade, rate)
+
+## Vertical velocity -> airborne pose phase (player only; NPCs leave it unset).
+var _air_phase := -1.0
+func set_air_velocity(vy: float, jump_speed: float = 7.2) -> void:
+	_air_phase = clampf(0.45 - vy / jump_speed * 0.45, 0.0, 1.0) if vy < 50.0 else -1.0
+
+## Jump anticipation, landing absorption and the run stop are short one-shot
+## clips (v2 assets); locomotion resumes when they finish or are cancelled.
+func play_action(clip: String, crossfade: float = 0.08) -> bool:
+	if not loaded or _dead or _seated or not _clips.has(clip):
+		return false
+	_one_shot = true
+	_play(clip, crossfade, 1.0)
+	return true
+
+## QA stills: hold one locomotion pose (clip + cycle phase) until released.
+func hold_pose(clip: String, phase: float) -> void:
+	if not loaded or not _clips.has(clip):
+		return
+	_one_shot = true
+	_current = clip
+	animator.play(_clips[clip], 0.0)
+	animator.speed_scale = 0.0
+	animator.seek(animator.get_animation(_clips[clip]).length * phase, true)
+
+func release_pose() -> void:
+	_one_shot = false
+	_current = ""
+	set_motion(_last_speed, _last_aim, _last_grounded, _last_reload)
+
+func cancel_action() -> void:
+	if _one_shot and _current in ["jump_start", "land", "stop"]:
+		_one_shot = false
+		_current = ""
+		set_motion(_last_speed, _last_aim, _last_grounded, _last_reload)
+
+func current_clip() -> String:
+	return _current
+
+## Cycle phase (0..1, left heel strike at 0, right at 0.5) of the playing
+## locomotion clip, or -1.
+func gait_phase() -> float:
+	if not loaded or not (_current in LOCOMOTION) or animator.current_animation == "":
+		return -1.0
+	var length := animator.current_animation_length
+	return fmod(animator.current_animation_position, length) / length if length > 0.0 else -1.0
 
 ## Lean and head-look inputs for the procedural layer (player only).
 func set_body_motion(lean_pitch: float, lean_roll: float, look_yaw: float, look_pitch: float) -> void:

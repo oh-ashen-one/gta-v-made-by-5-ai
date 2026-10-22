@@ -207,7 +207,7 @@ func run(main: Node) -> void:
 	await _ticks(45)
 	Input.action_release("move_forward")
 	_check("walking still works after vehicle death", player.global_position.distance_to(walk_start) > 1.0)
-	_check("on-foot gait: clip, playback rate and stride follow ground speed; feet carry contact shadows", _gait_matches_speed(player))
+	_check("on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows", _gait_matches_speed(player))
 
 	Game.wanted_heat = 46.0
 	Game.set_wanted(2)
@@ -922,10 +922,14 @@ func _gait_matches_speed(player: Player) -> bool:
 	var cv: CharacterVisual = player.get("_visual")
 	if cv == null or not cv.loaded:
 		return true # primitive fallback body has no clips
-	cv.set_motion(1.5)
-	var walk_ok := cv._current == "walk" and absf(cv.animator.speed_scale - 1.5 / CharacterVisual.WALK_CLIP_SPEED) < 0.01
-	cv.set_motion(6.8)
-	var run_ok := cv._current == "run" and cv.stride_amp > 1.1 and cv.animator.speed_scale > 1.0 and cv.animator.speed_scale < 1.6
+	# Locomotion piece: walk, run and sprint are three authored gaits; at the
+	# player's own speeds each plays within 0.85-1.2x of its authored rate.
+	var gaits := {Player.WALK_SPEED: "walk", Player.RUN_SPEED: "run", Player.SPRINT_SPEED: "sprint"}
+	var walk_ok := cv.gait_v2
+	for speed in gaits:
+		cv.set_motion(speed)
+		walk_ok = walk_ok and cv._current == gaits[speed] and cv.animator.speed_scale >= 0.85 and cv.animator.speed_scale <= 1.2
+	var run_ok := cv._clips.has("jump_start") and cv._clips.has("land") and cv._clips.has("stop") and cv.stride_amp == 1.0
 	cv.set_motion(0.0)
 	var shadows_ok := cv.contact_shadows.size() == 3 and cv._foot_ids.size() == 2 and cv._foot_ids[0] >= 0 and cv._foot_ids[1] >= 0
 	return walk_ok and run_ok and cv.motion != null and shadows_ok

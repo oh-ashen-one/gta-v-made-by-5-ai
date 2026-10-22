@@ -106,7 +106,16 @@ func _run_gameplay() -> void:
 		if player.camera != null:
 			player.camera.current = true
 		await get_tree().create_timer(0.5).timeout
+		# Locomotion piece: the first two gameplay stills show the player
+		# mid-stride (walk, then run) instead of an idle stand; the camera
+		# and player position are unchanged.
+		var stride_visual: CharacterVisual = player.get("_visual") if _shots < 2 else null
+		if stride_visual != null and stride_visual.loaded:
+			stride_visual.hold_pose("walk" if _shots == 0 else "run", 0.30 if _shots == 0 else 0.62)
+			await get_tree().process_frame
 		await _shot("gameplay_" + String(spot["name"]))
+		if stride_visual != null and stride_visual.loaded:
+			stride_visual.release_pose()
 	_write_log()
 
 func _shot(view_name: String) -> void:
