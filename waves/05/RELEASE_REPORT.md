@@ -1,6 +1,6 @@
 # Wave 5 (final) release report — Opus 5.5 via Claude Code
 
-**Status: FINAL** (2026-10-22, about 03:37 UTC, final phase of the fixed window). If a late gated render of `98b41b2` lands before 03:50 UTC, it is added in a separate, labeled commit.
+**Status: FINAL** (2026-10-22, 03:45 UTC, final phase of the fixed window).
 
 - Builder: Opus 5.5 (`claude-opus-5-5`) via Claude Code, branch `feature/wave-05-opus`. No main merge, no public release.
 - Fixed window: 2026-10-21T23:56:42Z → 2026-10-22T03:56:42Z (the final 30 minutes are included). There is no sixth wave.
@@ -83,7 +83,7 @@ Soaks #2, #3 and #5 were stopped early because newer fixes superseded them; they
   - **97/97 regressions**
   - **two-process save → relaunch → Continue PASS**: position, health and weapon restored
   - **scripted route 13/13, 0 deaths, 147.6 s**: CPU frame p95 12.36 ms, max 234 ms
-- **Not rendered.** Two foreign `veyr-review-fable` Blender sessions (PIDs 69301 and 70619) have filled the mixed cap of 2 since about 03:04 UTC. The gated runner waits until 03:49:30 UTC. Its HUD change is therefore verified only by code review and headless regressions.
+- **Not rendered.** Two foreign `veyr-review-fable` Blender sessions (PIDs 69301 and 70619) have filled the mixed cap of 2 since about 03:04 UTC. By 03:44 UTC four foreign renderers held capacity, and the builder stopped its idle gated runner without rendering. The HUD change is therefore verified only by code review and headless regressions.
 - Source and asset identity at export: `evidence/final-package-98b41b2/export.log.meta.json` records the checkout `98b41b2` with a clean `game/` tree, and the SHA-256 of 28 source files, 44 asset files and 155 runtime-art files. The `d2a6cad` equivalent is `evidence/final-package/export.log.meta.json`.
 - Its game code differs from `d2a6cad` only in `hud.gd` (the ammo plate and the minimap bay) and `capture_director.gd` (QA automation): `git diff d2a6cad 98b41b2 --stat -- game`.
 

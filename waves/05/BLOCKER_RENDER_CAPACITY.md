@@ -3,7 +3,7 @@
 > **Update, 03:05 UTC.**
 >
 > - From **02:49 to about 02:54 UTC** the foreign loop held only one render (Blender 3909). The gated runner then rendered, one engine at a time, the unchanged wave-4 baseline and the `d2a6cad` candidate, including a rendered route (`evidence/rendered/`).
-> - By 03:04 UTC the loop had started two new sessions (Blender 69301 and 70619), so the cap of 2 was full again. A later candidate, `98b41b2`, can be rendered only if capacity frees before about 03:50 UTC.
+> - By 03:04 UTC the loop had started two new sessions (Blender 69301 and 70619), so the cap of 2 was full again. By 03:44 UTC four foreign renderers held it (Blender 9367, 9406, 69301 and 70619), so the final candidate `98b41b2` was never rendered.
 > - No foreign process or lock was touched at any point.
 
 Recorded 2026-10-22 01:34 UTC by the wave-5 builder (Opus 5.5). The builder has not touched any foreign process or lock and will not.
