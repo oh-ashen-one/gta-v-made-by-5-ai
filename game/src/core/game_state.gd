@@ -11,6 +11,8 @@ const MAX_HEALTH := 100.0
 const REGEN_DELAY := 5.0   # seconds out of fire before health comes back
 const REGEN_RATE := 9.0     # health per second while regenerating
 const SAVE_PATH := "user://orchard_reach_save.json"
+## QA runs without --save-path= or a --qa-session <abs dir> save here, never to SAVE_PATH.
+const QA_SAVE_PATH := "user://qa_session_save.json"
 const SAVE_VERSION := 1
 var _save_path: String = SAVE_PATH
 
@@ -52,6 +54,16 @@ func _ready() -> void:
 	for arg in args:
 		if arg.begins_with("--save-probe="): qa_session = true
 	if qa_session:
+		# Wave A integration (harness hazard found by critics street-life-A2 and
+		# lighting-A4): a QA run must never write the player's real save slot.
+		# Without an explicit --save-path=, save next to the --qa-session dir
+		# (or to a separate QA file in user://).
+		_save_path = QA_SAVE_PATH
+		var qa_dir_index := args.find("--qa-session")
+		if qa_dir_index >= 0 and qa_dir_index + 1 < args.size():
+			var qa_dir: String = args[qa_dir_index + 1]
+			if qa_dir.is_absolute_path() and not qa_dir.begins_with("--"):
+				_save_path = qa_dir.path_join("orchard_reach_save.json")
 		for arg in args:
 			if arg.begins_with("--save-path=") and not arg.trim_prefix("--save-path=").is_empty():
 				_save_path = arg.trim_prefix("--save-path=")

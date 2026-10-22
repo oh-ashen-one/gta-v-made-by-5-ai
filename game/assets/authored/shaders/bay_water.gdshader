@@ -101,13 +101,17 @@ float cell_edge(vec2 p) {
 // thins, loose clumps at the fringe. Two cell scales (1.4 m, 0.45 m) so it
 // reads from the helicopter and from the water.
 float lace_foam(vec2 p, float cov, float foot, float t) {
+	// Integration A (critic water-A4: the Voronoi web read as "cracked ice,
+	// lace or chicken wire"): foam is now soft multi-octave noise patches whose
+	// threshold follows coverage; the bubble cells only modulate brightness.
 	vec2 drift = vec2(t * 0.11, -t * 0.07);
-	float e1 = cell_edge(p * 0.72 + drift);
+	float n1 = vnoise(p * 0.55 + drift) * 0.55 + vnoise(p * 1.7 - drift * 1.3 + 7.0) * 0.30 + vnoise(p * 4.8 + 3.0 - drift) * 0.15;
 	float e2 = cell_edge(p * 2.2 - drift * 1.7 + 11.0);
-	float web1 = smoothstep(cov * 0.42 + 0.02, cov * 0.42 - 0.05, e1);
-	float web2 = smoothstep(cov * 0.38 + 0.015, cov * 0.38 - 0.04, e2) * smoothstep(0.08, 0.35, cov);
-	float solid = smoothstep(0.72, 1.05, cov) * smoothstep(0.02, 0.10, e2 + 0.06);
-	float f = max(max(web1 * 0.92, web2 * 0.8), solid);
+	float bubbles = mix(0.78, 1.0, smoothstep(0.30, 0.0, e2));
+	float thresh = 1.0 - clamp(cov, 0.0, 1.2) * 0.75;
+	float f = smoothstep(thresh - 0.22, thresh + 0.16, n1) * bubbles;
+	f = max(f, smoothstep(0.80, 1.15, cov) * 0.92 * bubbles);
+	f = mix(f, clamp(cov * 0.6, 0.0, 0.8), 0.2);
 	f *= smoothstep(0.02, 0.14, cov);
 	// sub-pixel cells: fall back to the mean coverage, never to a clean line
 	return mix(f, clamp(cov * 0.55, 0.0, 0.85), smoothstep(0.7, 1.8, foot));
@@ -428,11 +432,13 @@ void fragment() {
 		vec2 rp = p + g * 0.6;
 		float stones = cell_edge(rp * 0.85);
 		float pebbles = cell_edge(rp * 2.6 + 5.0);
-		vec3 bed = mix(vec3(0.07, 0.07, 0.055), vec3(0.30, 0.29, 0.22), smoothstep(0.02, 0.22, stones));
+		vec3 bed = mix(vec3(0.12, 0.12, 0.10), vec3(0.28, 0.27, 0.21), smoothstep(0.0, 0.35, stones));
 		bed *= mix(0.75, 1.1, smoothstep(0.0, 0.2, pebbles)) * mix(0.8, 1.15, vnoise(rp * 0.3));
 		bed *= vec3(0.55, 0.88, 0.82);
 		float vis = exp(-depth_m * 0.75) * smoothstep(8.0, 4.0, shore);
-		body = mix(body, bed, vis * 0.9);
+		// Integration A (critic water-A4: top-down "submerged cobbles"): the
+		// rock toe is a faint tint through the shallows, not a cell mosaic.
+		body = mix(body, bed, vis * 0.4);
 	}
 
 	v_foam = foam;

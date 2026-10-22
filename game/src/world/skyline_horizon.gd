@@ -78,6 +78,8 @@ static func sync(root: Node) -> Dictionary:
 			# "horizon_cool" is the lighting piece's golden_hour_sky (wave A integration).
 			for key in ["horizon", "horizon_color", "horizon_col", "sky_horizon", "horizon_cool"]:
 				var v: Variant = sm.get_shader_parameter(key)
+				if v == null and sm.shader != null:
+					v = RenderingServer.shader_get_parameter_default(sm.shader.get_rid(), key)
 				if v is Vector3:
 					v = Color((v as Vector3).x, (v as Vector3).y, (v as Vector3).z)
 				if v is Color:
