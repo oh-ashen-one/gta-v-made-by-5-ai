@@ -71,6 +71,7 @@ func build(seed_value: int = 20261021) -> void:
 	_junctions()
 	_street_furniture()
 	_build_grid()
+	_opening_signage()
 	var interior_data: Dictionary = InteriorDetail.build(_world_root, locations["safe_room"] - Vector3(0,.2,0))
 	locations["convenience_shop"] = interior_data["convenience_shop"]
 	locations["workshop"] = interior_data["workshop"]
@@ -1153,6 +1154,41 @@ func _kerb_markings() -> void:
 					cursor = maxf(cursor, gap.y)
 	_marking_batch(yellow, Palette.mat(Color(0.92, 0.72, 0.16), 0.72))
 	_marking_batch(white, Palette.mat(Color(0.90, 0.90, 0.86), 0.75))
+
+## Everyday wayfinding on the opening avenue (wave 5): a freestanding food-centre
+## signboard at the hall's street corner and blade street-name signs at the first
+## junction. Fictional English names; supporting cues, not the identity itself.
+func _opening_signage() -> void:
+	var board_mat := Palette.mat(Color(0.06, 0.24, 0.17), 0.7)
+	var post_mat := Palette.mat_textured(Palette.METAL_DARK, "metal", Vector3.ONE, 0.6, 0.4)
+	var board := Vector3(-147.5, 4.6, -58.0)
+	for dz: float in [-4.2, 4.2]:
+		_cyl(Vector3(0.18, 4.6, 0.18), Vector3(board.x, 2.3, board.z + dz), post_mat)
+	_box(Vector3(0.28, 1.5, 9.4), board, board_mat)
+	var name_label := _label3d("TEMBUSU FOOD CENTRE", board + Vector3(-0.16, 0.0, 0.0))
+	name_label.rotation.y = -PI * 0.5
+	name_label.font_size = 96
+	name_label.pixel_size = 0.0115
+	name_label.modulate = Color(0.97, 0.93, 0.80)
+	# Blade street-name signs, white on deep blue, at the first junction corner;
+	# each blade runs parallel to the street it names and reads from both sides.
+	var pole := Vector3(-169.2, 0.0, -14.2)
+	_cyl(Vector3(0.1, 3.1, 0.1), pole + Vector3(0.0, 1.55, 0.0), post_mat)
+	_street_blade(pole + Vector3(0.0, 2.95, 0.0), true, "Kampong Sirih Road")
+	_street_blade(pole + Vector3(0.0, 2.6, 0.0), false, "Tembusu Avenue")
+
+func _street_blade(pos: Vector3, along_x: bool, text: String) -> void:
+	var blue := Palette.mat(Color(0.05, 0.12, 0.38), 0.6)
+	_box(Vector3(1.9, 0.32, 0.05) if along_x else Vector3(0.05, 0.32, 1.9), pos, blue)
+	for side: float in [1.0, -1.0]:
+		var offset := Vector3(0.0, 0.0, 0.035 * side) if along_x else Vector3(0.035 * side, 0.0, 0.0)
+		var label := _label3d(text, pos + offset)
+		# Label3D reads toward +Z; turn each copy to face away from its blade face.
+		label.rotation.y = (0.0 if side > 0.0 else PI) if along_x else (PI * 0.5 if side > 0.0 else -PI * 0.5)
+		label.font_size = 40
+		label.pixel_size = 0.0085
+		label.outline_size = 0
+		label.modulate = Color(0.97, 0.97, 0.97)
 
 ## Static primitive batching (wave 5, PERF). The builder emits ~7,900 plain
 ## box/cylinder/sphere MeshInstance3D nodes with ~5,000 one-off materials; each is
