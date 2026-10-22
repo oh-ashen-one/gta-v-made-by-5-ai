@@ -9,7 +9,7 @@ for line in lines:
  parts=line.strip().split(None,2)
  if len(parts)!=3:continue
  pid,state,exe=parts
- if Path(exe).name not in {'Godot','UnrealEditor','Unity','Blender','blender','Orchard Reach'}:continue
+ if Path(exe).name not in {'Godot','godot','UnrealEditor','Unity','Blender','blender','Orchard Reach'}:continue
  args=subprocess.check_output(['ps','-p',pid,'-o','command='],text=True)
  if state.startswith(('E','Z')):raise SystemExit('Engine stuck exiting: '+pid+' '+exe)
  if '--headless' not in args:engines.append({'pid':int(pid),'state':state,'executable':exe})
