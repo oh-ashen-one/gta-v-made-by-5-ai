@@ -52,7 +52,7 @@ void fragment() {
 	// refraction of whatever is behind the glassy core
 	vec2 off = (NORMAL.xy) * 0.012 * (1.0 - aerated);
 	vec3 behind = textureLod(screen_tex, SCREEN_UV + off, 1.0).rgb;
-	float foamy = clamp(0.30 + rim * 0.5 + aerated * 0.5 + streak * 0.3, 0.0, 1.0);
+	float foamy = clamp(0.30 + rim * 0.5 + aerated * 0.7 + streak * 0.3, 0.0, 1.0);
 	ALBEDO = foam_tint * foamy + water_tint * 0.12 * (1.0 - foamy);
 	EMISSION = behind * water_tint * (1.0 - foamy) * 0.9;
 	ROUGHNESS = 0.18 + aerated * 0.5;

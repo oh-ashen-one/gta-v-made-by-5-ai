@@ -44,7 +44,7 @@ var _source_env: Environment
 var _reflection_env: Environment
 var _jet_impact := Vector3.ZERO
 var _pier_rect := Vector4.ZERO
-var _pontoon_rect := Vector4(12.0, -357.2, 34.0, -351.8)
+var _pontoon_rect := Vector4(-44.0, -357.2, -22.0, -351.8)
 
 static func build(builder: Node, root: Node3D, merlion: Node3D, merlion_pos: Vector3) -> BayWater:
 	var bay := BayWater.new()
@@ -140,6 +140,32 @@ func _build_edges(merlion_pos: Vector3) -> void:
 		bol.layers = 1
 	if _builder != null and _builder.has_method("_collision_box"):
 		_builder._collision_box(Vector3(pw, 0.3, pd), pc + Vector3(0.0, 0.5, 0.0))
+	# The avenues run 30 m past the seawall as slabs over the water; give them
+	# pile bents and a deck fascia so they read as jetties, not floating roads.
+	var pile_mesh := CylinderMesh.new()
+	pile_mesh.top_radius = 0.42
+	pile_mesh.bottom_radius = 0.48
+	pile_mesh.height = 3.4
+	pile_mesh.radial_segments = 10
+	pile_mesh.rings = 1
+	pile_mesh.material = Palette.mat_textured(Color(0.40, 0.39, 0.37), "concrete", Vector3.ONE, 0.9)
+	var piles: Array[Transform3D] = []
+	for x in [-320.0, -160.0, 0.0, 160.0, 320.0]:
+		for z in [-357.0, -365.0, -373.0, -379.0]:
+			for side in [-1.0, 1.0]:
+				piles.append(Transform3D(Basis.IDENTITY, Vector3(x + side * 6.5, -1.7, z)))
+		_edge_box(Vector3(16.6, 0.55, 29.6), Vector3(x, -0.26, -365.4), Color(0.30, 0.30, 0.29), 0.9)
+	var pmm := MultiMesh.new()
+	pmm.transform_format = MultiMesh.TRANSFORM_3D
+	pmm.mesh = pile_mesh
+	pmm.instance_count = piles.size()
+	for i in piles.size():
+		pmm.set_instance_transform(i, piles[i])
+	var pmi := MultiMeshInstance3D.new()
+	pmi.name = "JettyPiles"
+	pmi.multimesh = pmm
+	pmi.layers = SUBMERGED_LAYER
+	add_child(pmi)
 
 ## Anything in the district whose bounds dip under the waterline and stays
 ## low (ground slabs, quay edges) is hidden from the mirrored camera only.
@@ -212,6 +238,52 @@ func _build_merlion_jet(merlion: Node3D, merlion_pos: Vector3) -> void:
 	sheath.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(sheath)
 	_splash(_jet_impact)
+	_jet_droplets(pts)
+
+## Droplets peeling off the falling stream, thrown along its direction.
+func _jet_droplets(pts: Array[Vector3]) -> void:
+	var mat := StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	mat.vertex_color_use_as_albedo = true
+	mat.albedo_texture = _soft_dot()
+	mat.roughness = 0.4
+	mat.disable_receive_shadows = true
+	var quad := QuadMesh.new()
+	quad.size = Vector2(0.16, 0.16)
+	quad.material = mat
+	var ramp := Gradient.new()
+	ramp.set_color(0, Color(0.95, 0.97, 0.98, 0.0))
+	ramp.set_color(1, Color(0.95, 0.97, 0.98, 0.0))
+	ramp.add_point(0.1, Color(0.95, 0.97, 0.98, 0.85))
+	ramp.add_point(0.7, Color(0.95, 0.97, 0.98, 0.55))
+	var ramp_tex := GradientTexture1D.new()
+	ramp_tex.gradient = ramp
+	for f in [0.35, 0.55, 0.75]:
+		var i := int(f * float(pts.size() - 1))
+		var dir: Vector3 = (pts[i + 1] - pts[i]).normalized()
+		var p := GPUParticles3D.new()
+		p.name = "MerlionDroplets"
+		p.amount = 70
+		p.lifetime = 0.9
+		p.preprocess = 1.0
+		var pm := ParticleProcessMaterial.new()
+		pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+		pm.emission_sphere_radius = 0.35 + f * 0.4
+		pm.direction = dir
+		pm.spread = 14.0
+		pm.initial_velocity_min = 3.0
+		pm.initial_velocity_max = 6.0
+		pm.gravity = Vector3(0.0, -9.8, 0.0)
+		pm.scale_min = 0.6
+		pm.scale_max = 1.6
+		pm.color_ramp = ramp_tex
+		p.process_material = pm
+		p.draw_pass_1 = quad
+		p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		p.visibility_aabb = AABB(Vector3(-6, -12, -6), Vector3(12, 16, 12))
+		p.position = pts[i]
+		add_child(p)
 
 func _tube(pts: Array[Vector3], radii: Array[float], sides: int) -> ArrayMesh:
 	var st := SurfaceTool.new()

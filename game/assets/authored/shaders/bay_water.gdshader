@@ -21,7 +21,7 @@ uniform float near_shore_z = -350.7;
 uniform float far_shore_z = -615.0;
 // xmin, zmin, xmax, zmax of the Merlion pier base and the boat pontoon
 uniform vec4 pier_rect = vec4(38.0, -354.0, 52.0, -340.0);
-uniform vec4 pontoon_rect = vec4(12.0, -357.0, 34.0, -352.0);
+uniform vec4 pontoon_rect = vec4(-44.0, -357.2, -22.0, -351.8);
 uniform vec3 jet_impact = vec3(45.0, -0.9, -359.0);
 uniform vec4 boats[20];      // x, z, heading (rad, +x = 0), speed m/s
 uniform vec4 boat_size[20];  // half length, half beam, 0, 0
@@ -170,7 +170,11 @@ void fragment() {
 	float lap = 0.55 + 0.45 * sin(t * 1.1 + p.x * 0.09 + p.y * 0.05);
 	float foam_n = fbm(p * 0.9 + vec2(t * 0.15, t * 0.07));
 	float foam_n2 = fbm(p * 2.7 - vec2(t * 0.2, 0.0));
-	float shore_foam = smoothstep(0.9 + 0.8 * lap, 0.0, shore) * smoothstep(0.30, 0.62, foam_n * 0.7 + foam_n2 * 0.5);
+	// a broken lapping line hugging the wall, plus a wider, fainter wash
+	// band of backwash scum that stays readable from the air
+	float edge_w = 1.1 + 0.9 * lap + foot * 1.5;
+	float shore_foam = smoothstep(edge_w, 0.0, shore) * smoothstep(0.28, 0.58, foam_n * 0.7 + foam_n2 * 0.5);
+	shore_foam += smoothstep(5.5 + foot * 2.0, 0.5, shore) * smoothstep(0.52, 0.80, foam_n2 * 0.6 + foam_n * 0.6) * 0.45;
 	float wake_foam = clamp(wake * 1.4 + churn, 0.0, 1.0) * smoothstep(0.32, 0.70, foam_n2 * 0.65 + foam_n * 0.55);
 	float impact_foam = impact * smoothstep(0.25, 0.6, foam_n2 + 0.25 * sin(t * 9.0 + dj * 4.0));
 	float foam = clamp(shore_foam * 0.85 + wake_foam + impact_foam, 0.0, 1.0);
