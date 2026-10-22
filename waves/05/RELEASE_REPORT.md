@@ -64,9 +64,9 @@ All files are in `evidence/rendered/`; `evidence/rendered/README.md` gives ident
 | #4 | `86b5405` | Three missions, all fixture checks and the same-car reboard all passed. Aborted at 819.4 s: a free-roam car wedged mid-U-turn. Fixed. |
 | #6 | `584fb59` | Aborted at 1266.4 s: during a reboard, the automation carjacked a nearer passing AI car. Automation fixed. |
 | #7 | `2e38d8f` | Aborted at 1590.6 s: an AI car waiting at a signal stayed nearer than the automation's own car. Automation fixed in `d2a6cad`. |
-| #8 | `d2a6cad` | Missions 1 and 2 passed. **Aborted at 438.3 s** in mission 3: the scripted walk from the car to the helicopter stalled for 40 s against a car body. The per-frame stuck test never fired while sliding. The automation then pressed interact 55 m from the helicopter and took a nearby car instead. Automation fixed in `a53cd19` (`evidence/soak8-failed/`). |
+| #8 | `d2a6cad` | Missions 1 and 2 passed. **Aborted at 438.3 s** in mission 3: the scripted walk from the car to the helicopter stalled for 40 s against a car body. The per-frame stuck test never fired while sliding. The automation then pressed interact 55 m from the helicopter and took a nearby car instead. Soak #10's stall diagnostics later found the trap: the player had stepped out between the parked mission car and a stationary, unoccupied kerbside car about 5 m apart, at (248, 156) and (253, 157). The straight-line walk pressed into the kerbside car. A human would walk around; this is an automation limit, not a stuck player. Automation fixed in `a53cd19` (`evidence/soak8-failed/`). |
 | #9 | `a53cd19` | Missions 1 and 2 passed. **Aborted at 452.4 s**, a regression caused by the `a53cd19` fix. Its 2.5 s no-progress watchdog kept backing the player out of the hawker-hall edge at (-119, -52.7), a spot the old sidesteps clear in about 4 s, so mission 3's market walk timed out after 10 backouts. The trigger was changed to 12 s in `98b41b2` (`evidence/soak9-failed/`). |
-| #10 | `98b41b2` | PENDING (running 03:02–03:34 UTC). |
+| #10 | `98b41b2` | Missions 1–3 passed by 478.9 s. Mission 3 hit soak #8's two-car pocket at the aviation compound, and the 12 s watchdog backed out and recovered. The fixture and free-roam phases: PENDING (ends about 03:34 UTC). |
 
 Soaks #2, #3 and #5 were stopped early because newer fixes superseded them; they are not results.
 
