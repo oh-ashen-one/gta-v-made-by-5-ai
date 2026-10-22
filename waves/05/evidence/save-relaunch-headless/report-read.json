@@ -1,0 +1,43 @@
+{
+	"checks": [
+		{
+			"detail": "",
+			"label": "fresh process found the expected record",
+			"passed": true
+		},
+		{
+			"detail": "(-170.0077, 0.13584, -26.66871) vs (-170.0077, 0.13584, -26.66871)",
+			"label": "continue restored player position",
+			"passed": true
+		},
+		{
+			"detail": "73.0",
+			"label": "continue restored health",
+			"passed": true
+		},
+		{
+			"detail": "smg",
+			"label": "continue restored carried weapon",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "game is running after continue",
+			"passed": true
+		}
+	],
+	"executable": "/Applications/Godot.app/Contents/MacOS/Godot",
+	"expected": {
+		"health": 73.0,
+		"position": [
+			-170.007736206055,
+			0.135839745402336,
+			-26.6687126159668
+		],
+		"stage": 0.0,
+		"weapon": "smg"
+	},
+	"phase": "read",
+	"pid": 56485,
+	"save_path": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/saveprobe/save.json"
+}

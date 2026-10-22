@@ -100,6 +100,18 @@ func _ready() -> void:
 		started = true
 		return
 
+	for arg in args:
+		if arg.begins_with("--save-probe="):
+			var report := "user://save_probe.json"
+			for other in args:
+				if other.begins_with("--save-probe-report="):
+					report = other.trim_prefix("--save-probe-report=")
+			hud.show_title(false)
+			var probe_node: Node = _qa_system("res://src/systems/save_probe.gd")
+			add_child(probe_node)
+			probe_node.setup(self, arg.trim_prefix("--save-probe="), report)
+			return
+
 	if "--perf-probe" in args:
 		var perf_dir := "user://perf"
 		for arg in args:

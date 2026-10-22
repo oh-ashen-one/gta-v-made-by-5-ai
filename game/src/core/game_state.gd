@@ -49,6 +49,8 @@ func _ready() -> void:
 	seed(seed_value)
 	var args := OS.get_cmdline_user_args()
 	var qa_session := "--test" in args or "--capture" in args or "--qa-session" in args
+	for arg in args:
+		if arg.begins_with("--save-probe="): qa_session = true
 	if qa_session:
 		for arg in args:
 			if arg.begins_with("--save-path=") and not arg.trim_prefix("--save-path=").is_empty():
