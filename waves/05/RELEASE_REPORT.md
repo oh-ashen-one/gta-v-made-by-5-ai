@@ -84,6 +84,7 @@ Soaks #2, #3 and #5 were stopped early because newer fixes superseded them; they
   - **two-process save → relaunch → Continue PASS**: position, health and weapon restored
   - **scripted route 13/13, 0 deaths, 147.6 s**: CPU frame p95 12.36 ms, max 234 ms
 - Rendered check: PENDING. It runs only if the foreign loop frees capacity before about 03:50 UTC; see "Rendered evidence".
+- Source and asset identity at export: `evidence/final-package-98b41b2/export.log.meta.json` records the checkout `98b41b2` with a clean `game/` tree, and the SHA-256 of 28 source files, 44 asset files and 155 runtime-art files. The `d2a6cad` equivalent is `evidence/final-package/export.log.meta.json`.
 - Its game code differs from `d2a6cad` only in `hud.gd` (the ammo plate and the minimap bay) and `capture_director.gd` (QA automation): `git diff d2a6cad 98b41b2 --stat -- game`.
 
 **Rendered-verified fallback: `d2a6cad1c948c5e32e0ee45924e7d5e325e73e5c`**, in `package-wave05/d2a6cad/` (`evidence/final-package/`).
