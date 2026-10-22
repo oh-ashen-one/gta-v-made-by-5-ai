@@ -12,6 +12,9 @@ const X_LINES: Array[float] = [-320.0, -160.0, 0.0, 160.0, 320.0]
 const Z_LINES: Array[float] = [-320.0, -160.0, 0.0, 160.0, 320.0]
 const ROAD_HALF := 8.0          # carriageway half-width (16 m carriageway)
 const SIDEWALK := 10.0          # distance from road centre to walkable kerb band
+## Kerbside parking sits wholly on the carriageway. Wave 4 used SIDEWALK - 2.0
+## (8.0 m), which put each parked car astride the 16 cm block-platform edge.
+const KERB_PARK_OFFSET := ROAD_HALF - 1.35
 const BLOCK := 144.0            # block platform edge-to-edge
 const PROMENADE_Z := -338.0
 const WORLD_MIN := Vector3(-330.0, 0.0, -350.0)
@@ -1052,13 +1055,13 @@ func _build_lane_graph() -> void:
 		for side: float in [-1.0, 1.0]:
 			var heading := 0.0 if side < 0.0 else PI
 			for pz: float in [-218.0, -118.0, -64.0, 56.0, 182.0]:
-				parked_spots.append({"pos": Vector3(x + side * (SIDEWALK - 2.0), 0.3, pz), "heading": heading, "kind": ["sedan", "coupe", "van"][i % 3]})
+				parked_spots.append({"pos": Vector3(x + side * KERB_PARK_OFFSET, 0.3, pz), "heading": heading, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
 	for z in Z_LINES:
 		for side: float in [-1.0, 1.0]:
 			var heading2 := -PI * 0.5 if side < 0.0 else PI * 0.5
 			for px2: float in [-220.0, -104.0, 56.0, 216.0]:
-				parked_spots.append({"pos": Vector3(px2, 0.3, z + side * (SIDEWALK - 2.0)), "heading": heading2, "kind": ["sedan", "coupe", "van"][i % 3]})
+				parked_spots.append({"pos": Vector3(px2, 0.3, z + side * KERB_PARK_OFFSET), "heading": heading2, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
 
 # ------------------------------------------------------------------- props

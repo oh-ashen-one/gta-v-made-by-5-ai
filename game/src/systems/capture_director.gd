@@ -374,8 +374,13 @@ func _run() -> void:
 	if not _gate("flight reached waterfront pad airspace", Game.mode == Game.MODE_HELI and _ground_distance(heli.global_position, world.locations["helipad_secondary"]) < 15.0): return
 	await _shot("aerial_view")
 	await _land(world.locations["helipad_secondary"], 50.0)
+	# The aircraft reports touchdown in its own physics step, which runs after
+	# the mission's step in tree order; give the mission its next tick(s) to
+	# observe the landing before gating (wave-5 run route1 failed on this race).
+	await _await_stage(Mission.Stage.LAND, 1.0)
 	if not _gate("helicopter landed intact on destination pad", heli.is_landed() and not heli.disabled and mission.stage == Mission.Stage.LAND): return
 	await _interact_until(Game.MODE_FOOT)
+	await _await_stage(Mission.Stage.DELIVER, 1.0)
 	if not _gate("landing exit restored walking", Game.mode == Game.MODE_FOOT and mission.stage == Mission.Stage.DELIVER): return
 	await _shot("landed")
 	await _walk_to(world.locations["delivery"], 3.0, 45.0)
@@ -854,7 +859,7 @@ func _drive_route(target: Vector3, timeout: float) -> void:
 	var deadline := _elapsed() + timeout
 	var route := _grid_path(_nearest_node(player.current_vehicle.global_position), _nearest_node(target))
 	if route.size() >= 2:
-		var car_pos := player.current_vehicle.global_position
+		var car_pos: Vector3 = (player.current_vehicle as Node3D).global_position
 		var p0 := world.traffic_nodes[route[0]]
 		var p1 := world.traffic_nodes[route[1]]
 		var to_p0 := Vector2(p0.x - car_pos.x, p0.z - car_pos.z)
@@ -962,6 +967,12 @@ func _steer_aircraft(heli: Helicopter, offset: Vector3, minimum_altitude: float 
 	# Climb clear of the district before translating; align before accelerating.
 	if absf(angle) < 0.8 and heli.global_position.y > minimum_altitude and offset.length() > 2.0:
 		Input.action_press("move_forward", clampf(offset.length() / 65.0, 0.0, 0.8) * maxf(0.0, cos(angle)))
+
+## Wait (physics ticks only, no state writes) for the mission to reach `stage`.
+func _await_stage(stage: int, seconds: float) -> void:
+	var deadline := _elapsed() + seconds
+	while mission.stage != stage and _elapsed() < deadline and not _finished:
+		await get_tree().physics_frame
 
 func _land(target: Vector3, timeout: float) -> void:
 	var deadline := _elapsed() + timeout

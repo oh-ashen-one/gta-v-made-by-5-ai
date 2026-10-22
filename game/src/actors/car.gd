@@ -38,6 +38,8 @@ var _impact_cooldown := 0.0
 var driver_player: Node = null
 var _provider_wheels: Array[Node3D] = []
 var _procedural_visuals: Array[Node3D] = []
+var _blocker_timer := 0.0
+var _blocked_cached := false
 
 func _ready() -> void:
 	add_to_group("vehicles")
@@ -334,7 +336,13 @@ func _ai_control(delta: float) -> void:
 	var speed_limit := minf(max_speed, ai_speed_limit)
 	if dist < 12.0:
 		speed_limit = minf(speed_limit, maxf(4.0, dist * 1.1))
-	if blocker_ahead():
+	# The perception scan walks every vehicle and pedestrian, so it refreshes at
+	# ~8 Hz per car (staggered by instance) rather than on every physics tick.
+	_blocker_timer -= delta
+	if _blocker_timer <= 0.0:
+		_blocker_timer = 0.12 + float(get_instance_id() % 7) * 0.004
+		_blocked_cached = blocker_ahead()
+	if _blocked_cached:
 		speed_limit = 0.0
 	_forward = move_toward(_forward, speed_limit, (BRAKE if speed_limit < _forward else accel) * delta)
 	var dir := -global_transform.basis.z
@@ -347,23 +355,29 @@ func _process(_delta: float) -> void:
 
 ## True when another vehicle or the player blocks the path ahead (TRAFFIC-02).
 func blocker_ahead() -> bool:
+	# A lane-width corridor, not a view cone: the old 35-degree cone also caught
+	# cars parked at the kerb beside the lane, so traffic queued behind them.
 	var fwd := -global_transform.basis.z
-	var origin := global_position + Vector3(0.0, 0.8, 0.0)
+	fwd.y = 0.0
+	fwd = fwd.normalized()
+	var left := Vector3.UP.cross(fwd)
 	for other in get_tree().get_nodes_in_group("vehicles"):
-		if other == self:
+		if other == self or not (other as Node3D).visible:
 			continue
 		var d: Vector3 = other.global_position - global_position
-		var dist := d.length()
-		if dist < 0.5 or dist > 16.0:
+		if absf(d.x) > 16.5 or absf(d.z) > 16.5:
 			continue
-		var dir := d.normalized()
-		if dir.dot(fwd) > 0.82:
+		var ahead := d.dot(fwd)
+		if ahead > 0.5 and ahead < 16.0 and absf(d.dot(left)) < 1.9:
 			return true
 	for actor in get_tree().get_nodes_in_group("actors"):
-		if actor == self:
+		if actor == self or not (actor as Node3D).visible:
 			continue
 		var d2: Vector3 = actor.global_position - global_position
-		if d2.length() < 7.0 and d2.normalized().dot(fwd) > 0.85:
+		if absf(d2.x) > 7.5 or absf(d2.z) > 7.5:
+			continue
+		var ahead2 := d2.dot(fwd)
+		if ahead2 > 0.3 and ahead2 < 7.0 and absf(d2.dot(left)) < 1.5:
 			return true
 	return false
 

@@ -1,33 +1,35 @@
-# Singapore relay — wave 4 checkpoint for final Opus wave
+# Singapore relay — wave 5 (final, Opus 5.5) — IN PROGRESS
 
-Manager reconciliation at 2026-10-21T23:55:27.385364+00:00. Wave 4's fixed window was 2026-10-21 19:47:54–23:47:54 UTC; no extension. The watchdog recorded the driver absent/stopped at the deadline. AGY's diagnostic log reports terminal shutdown at 23:19:59 UTC after waiting on a confirmation. The manager found no remaining AGY driver or Godot/game engine at handoff. Foreign Blender sessions remain untouched.
+Rolling handoff; updated during the wave. Not a final report until marked FINAL.
 
-- Builder: Gemini 4 Argon High, AGY conversation 575b092e-47fe-4dd9-80b7-b715fc4934da.
-- Source checkpoint: `a5bf1323b04bf6685e2000be2a869a2f12de50db` on `feature/wave-04-argon`; manager preserved the uncommitted source after the stop. This handoff commit follows it.
-- Incoming DeepSeek: 96c68334d8a4894916c4acca9eaa9eec6806fd8f. Manager archival baseline 51a4244.
-- Engine: Godot 4.7.1.stable.official.a13da4feb, Forward+, native macOS; owner explicitly accepted Godot.
+- Builder: Opus 5.5 (`claude-opus-5-5`) through Claude Code, branch `feature/wave-05-opus`.
+- Fixed window: 2026-10-21T23:56:42Z → 2026-10-22T03:56:42Z (final 30 min included; verification/packaging from 03:26:42Z). No extension, no sixth wave.
+- Machine: Mac Studio M3 Ultra 256 GB (verified `Mac15,14`). Engine: Godot 4.7.1.stable.official.a13da4feb, Forward+, native macOS.
+- Incoming: `6b51a26` (manager archive) over Argon source `a5bf132`. Predecessor handoff preserved in `waves/05/PREDECESSOR_HANDOFF.md`.
 
-## Actual wave 4 work
+## Incoming wave-4 validation (unchanged source, headless only)
 
-Five original Blender-authored landmark GLBs and editable .blend sources exist: Marina Bay Sands, Supertree Grove, ArtScience Museum, Merlion and Singapore Flyer. build_landmarks.py is reproducible source. World-builder code now references the landmark assets and sets placement/sightlines. Interior workshop geometry was revised. Car/NPC/traffic updates and scripted-route selection changes attempt to address parked-car obstruction and simulation overhead. Photo capture viewpoints and opening positioning changed. These are SOURCE/FILE observations only, not verified behavior or visual quality.
+- Headless import: clean (no ERROR lines).
+- 85/85 headless regressions pass, exit 0 (`waves/05/evidence/incoming-validation/regressions_incoming.json`).
+- **Script validation FAILS**: `capture_director.gd:857` parse error (`car_pos` type cannot be inferred). The scripted mission route therefore could not run at all on the incoming checkpoint; the game idled until stopped (`route_incoming_parse_error.log`). Argon's driving fix was never exercised.
+- No rendered wave-4 baseline yet: shared renderer capacity has been occupied the whole time by four foreign Blender sessions (`veyr-review-fable-20261021`, actively rendering at 200–1100 % CPU). Mixed cap 2 forbids launching Godot; they are untouched. A pristine detached worktree of `6b51a26` with private assets is staged in the session scratchpad so the unchanged wave-4 `aerial_district` and opening views can be captured the moment capacity frees.
 
-END_GOAL incorporates the owner's immediate Singapore recognition requirement and required landmarks. Normal opening gameplay and the first minute must clearly read Singapore without titles/labels doing the work. Generated concepts remain primary visual direction.
+## Wave-5 changes so far
 
-## Verification and missing evidence
+1. Fixed the `capture_director.gd` parse error (typed `car_pos`).
+2. Kerbside parked cars moved wholly onto the carriageway (`KERB_PARK_OFFSET = ROAD_HALF - 1.35`). Wave 3/4 spawned them at 8.0 m, astride the 16 cm block-platform edge and inside the busy pedestrian lane — the wave-3 `05_car_entered.png` shows the chosen car on the paver sidewalk among pedestrians.
+3. AI traffic perception uses a lane-width corridor instead of a 35° cone (the cone stopped traffic behind cars parked beside the lane) and refreshes at ~8 Hz per car instead of every physics tick.
+4. Route automation waits (physics ticks only, no state writes) for the mission to observe touchdown before the landing gate; the helicopter's physics step runs after the mission's in tree order, so the gate raced (route1 FAIL at 206.9 s).
 
-- Background Blender mesh/export command completed and produced five named GLBs. No external provider credits spent in this wave.
-- A headless import was approved at 22:52 UTC before the final source edits. It does not validate the final checkpoint.
-- NO wave 4 runtime captures, rendered regression result, packaged build, continuous route pass, UI pass, or performance acceptance were found at cutoff. The final local test/render command was waiting for native confirmation; it never became accepted evidence.
-- The stopped builder's original HANDOFF and NEXT_GOAL are preserved verbatim in waves/04/ARGON_HANDOFF_AT_STOP.md and ARGON_NEXT_GOAL_AT_STOP.md. Their wave3 test results are predecessor evidence, NOT wave4 verification.
-- The manager made no implementation changes or post-deadline game test runs. Snapshot commit passed preservation review; git whitespace check flagged a harmless blank EOF line in the verbatim archived handoff.
-- Latest actually tested private candidate remains wave3: outputs/OrchardReach-wave-03-experimental.zip in manager workspace, SHA256 733c40b106c05830f0d2778b5e5196706885a88b9e6273a2c4eb50e47651fe64. Wave3 passed85regressions and24write/23load UI fixture checks, but its driving route FAILED and performance remains unaccepted.
+## Verified evidence (this wave)
 
-## Assets and safety
+- Headless scripted route `route2` on the fixed source: **success, 0 deaths, 3 kills, 222.1 s, uninterrupted, no continuity breaks**; driving leg reached the aviation compound at 143 s; flight, landing, exit and delivery passed (`waves/05/evidence/headless-route2/`). Headless = simulation only: no rendering, no screenshots, no frame-time evidence; scripted input automation, not a human run.
+- 85/85 headless regressions after fixes, exit 0.
 
-Carry game/assets/providers, art/source/characters, art/source/helicopter, art/provider-sources privately with verified hashes. Original authored landmark sources are tracked. Provider rights remain per-asset UNVERIFIED for public redistribution; no blanket MIT claim. No public binary release/main merge.
+## Not yet verified / open
 
-Use shared coordinator with GPU_SLOT_DIR=/Users/midir/sm2-n1/_scratch/gpu explicitly, render_gate inside lease, bounded_run, hardcap2 mixed engines. At manager23:54UTC inspection, five foreign Blender processes belonged to veyr-review-fable-20261021 and shiganshina-showcase/minimax-m3-1-flash. Do not launch a renderer while capacity is occupied; no foreign termination. Source/headless work can continue. Stop owned drivers before engines, TERM/up to60s grace. Normal hooks/permissions stay enabled.
+- Any rendered capture (blocked by shared capacity, see above), opening Singapore identity in real pixels, performance, packaged build, OS-input playtest, audio listening.
 
-## Next owner
+## Safety
 
-Final wave5 Opus5.5 via Claude Code. Read NEXT_GOAL, then verify this untested checkpoint and produce the best possible actual playable result within its own four hours. No sixthwave.
+Shared coordinator `GPU_SLOT_DIR=/Users/midir/sm2-n1/_scratch/gpu`, `render_gate.py` inside the lease, `bounded_run.py`. No foreign process touched. No provider credits spent. No main merge.
