@@ -35,6 +35,7 @@ var boat_count := 0
 var moving_boats := 0
 var legacy_spray_hidden := 0
 var reflection_active := false
+var anchored_ships := 0
 ## QA switch (water footage perf A/B); gameplay never turns it off.
 var reflection_enabled := true
 
@@ -62,6 +63,7 @@ func _build(merlion: Node3D, merlion_pos: Vector3) -> void:
 	_build_edges(merlion_pos)
 	_build_merlion_jet(merlion, merlion_pos)
 	_build_boats()
+	_build_anchorage()
 	water_material.set_shader_parameter("pier_rect", _pier_rect)
 	water_material.set_shader_parameter("pontoon_rect", _pontoon_rect)
 	water_material.set_shader_parameter("jet_impact", _jet_impact)
@@ -465,6 +467,42 @@ func _build_boats() -> void:
 		var mm: MultiMesh = _multimeshes[t]
 		var tint: Color = b["tint"]
 		mm.set_instance_custom_data(b["slot"], Color(tint.r, tint.g, tint.b, b["hull"]))
+
+## Ships riding at anchor out on the open sea, beyond the far shore and off
+## the north coast: the horizon silhouettes of the concept's helicopter view.
+func _build_anchorage() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4417
+	var xforms: Array[Transform3D] = []
+	var customs: Array[Color] = []
+	for i in 14:
+		# inside the 2 km far plane of the fixed QA cameras
+		var x := rng.randf_range(-1400.0, 1400.0)
+		var z := rng.randf_range(-1950.0, -1420.0)
+		xforms.append(Transform3D(Basis(Vector3.UP, rng.randf_range(-0.6, 0.6) + (PI if i % 2 == 0 else 0.0)), Vector3(x, LEVEL, z)))
+		customs.append(Color(0.9, 0.9, 0.9, float(i % 4) / 4.0 + 0.01))
+	for i in 6:
+		var x := rng.randf_range(-1200.0, 1200.0)
+		var z := rng.randf_range(860.0, 1350.0)
+		xforms.append(Transform3D(Basis(Vector3.UP, rng.randf_range(-0.6, 0.6)), Vector3(x, LEVEL, z)))
+		customs.append(Color(0.9, 0.9, 0.9, float(i % 4) / 4.0 + 0.01))
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.use_custom_data = true
+	mm.mesh = BoatMeshes.cargo_ship()
+	mm.instance_count = xforms.size()
+	for i in xforms.size():
+		mm.set_instance_transform(i, xforms[i])
+		mm.set_instance_custom_data(i, customs[i])
+	var mmi := MultiMeshInstance3D.new()
+	mmi.name = "Anchorage"
+	mmi.multimesh = mm
+	var mat := ShaderMaterial.new()
+	mat.shader = load(BOAT_SHADER)
+	mmi.material_override = mat
+	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(mmi)
+	anchored_ships = xforms.size()
 
 func boat_positions() -> Array[Vector3]:
 	var out: Array[Vector3] = []

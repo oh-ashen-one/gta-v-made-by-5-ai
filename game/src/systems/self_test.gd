@@ -728,7 +728,7 @@ func _water_checks(world: WorldBuilder) -> void:
 	for i in mini(before.size(), after.size()):
 		if before[i].distance_to(after[i]) > 0.5:
 			moved += 1
-	_check("boats are on the bay and moving", bay.boat_count >= 12 and moved >= 10, "boats=%d moved=%d" % [bay.boat_count, moved])
+	_check("boats are on the bay and moving, ships ride at anchor offshore", bay.boat_count >= 12 and moved >= 10 and bay.anchored_ships >= 10, "boats=%d moved=%d anchored=%d" % [bay.boat_count, moved, bay.anchored_ships])
 	var jet_ok := bay.jet != null and bay.jet.material_override is ShaderMaterial and bay.legacy_spray_hidden >= 1
 	_check("Merlion jet is translucent falling water, opaque legacy strut hidden", jet_ok, "legacy_hidden=%d" % bay.legacy_spray_hidden)
 

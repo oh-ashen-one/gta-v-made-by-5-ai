@@ -211,3 +211,29 @@ static func launch() -> ArrayMesh:
 	b.box(Vector3(-0.9, 2.42, 0.0), Vector3(1.4, 0.05, 1.7), _c(1, 1, 1, ROOF_TINT))
 	b.box(Vector3(-2.2, 1.05, 0.0), Vector3(1.2, 0.4, 1.8), _c(0.20, 0.22, 0.25, PAINT))
 	return b.finish()
+
+## Anchored container ship for the outer roads (Singapore's anchorage on the
+## horizon, CONCEPT-03). Coarse on purpose: it is only ever seen through haze.
+static func cargo_ship() -> ArrayMesh:
+	var b := BoatMeshes.new()
+	var L := 190.0
+	var B := 30.0
+	var white := _c(0.90, 0.89, 0.86, PAINT)
+	b.hull(L, B, 12.0, 4.0, 1.5, 9.0, _c(0.88, 0.88, 0.86, PAINT), _c(1, 1, 1, HULL_TINT), _c(0.10, 0.10, 0.10, PAINT), _c(0.40, 0.10, 0.07, PAINT), _c(0.45, 0.20, 0.14, PAINT))
+	# accommodation block and funnel at the stern
+	b.box(Vector3(-L * 0.5 + 22.0, 24.0, 0.0), Vector3(16.0, 24.0, 24.0), white)
+	b.box(Vector3(-L * 0.5 + 22.0, 33.0, 0.0), Vector3(8.0, 1.8, 30.0), white)
+	b.box(Vector3(-L * 0.5 + 21.0, 31.0, 0.0), Vector3(16.2, 2.2, 24.2), _c(0.10, 0.13, 0.16, GLASS))
+	b.box(Vector3(-L * 0.5 + 12.0, 34.0, 0.0), Vector3(6.0, 10.0, 5.0), _c(0.20, 0.20, 0.22, PAINT))
+	# container stacks in bays along the deck
+	var cols := [_c(0.62, 0.16, 0.10, PAINT), _c(0.12, 0.25, 0.50, PAINT), _c(0.80, 0.45, 0.10, PAINT), _c(0.55, 0.56, 0.55, PAINT), _c(0.15, 0.40, 0.30, PAINT), _c(0.75, 0.72, 0.65, PAINT)]
+	var x := -L * 0.5 + 36.0
+	var k := 0
+	while x < L * 0.5 - 30.0:
+		var tiers := 3 + (k * 7) % 4
+		for t in tiers:
+			for row in 3:
+				b.box(Vector3(x, 12.0 + 1.3 + t * 2.6, -9.0 + row * 9.0), Vector3(12.0, 2.5, 8.6), cols[(k * 3 + t + row * 2) % cols.size()])
+		x += 13.0
+		k += 1
+	return b.finish()
