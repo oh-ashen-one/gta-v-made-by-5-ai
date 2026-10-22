@@ -722,6 +722,14 @@ func _lighting_checks(world: WorldBuilder) -> void:
 			if c is MultiMeshInstance3D and String(c.name).begins_with("LightingFixtures_"):
 				fixtures += (c as MultiMeshInstance3D).multimesh.instance_count
 	_check("every practical has a modelled fixture", lighting != null and fixtures >= lighting.light_count, "fixtures=%d" % fixtures)
+	# Round 3 (critic A2): weathered surfaces and >= 8 clutter types at street level.
+	var dressing: StreetDressing = lighting.dressing if lighting != null else null
+	var kinds := 0
+	if dressing != null:
+		for k in dressing.counts:
+			if int(dressing.counts[k]) > 0: kinds += 1
+	_check("streets are weathered and dressed (wear volumes, >= 8 clutter types)", dressing != null and dressing.weather_volumes >= 16 and kinds >= 8,
+		"" if dressing == null else "volumes=%d kinds=%d" % [dressing.weather_volumes, kinds])
 
 func _count_meshes(node: Node) -> int:
 	var count := 0

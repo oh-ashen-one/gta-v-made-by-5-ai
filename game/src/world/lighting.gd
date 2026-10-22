@@ -12,10 +12,10 @@ extends RefCounted
 ##   --lighting-tonemap=aces|agx    tonemapper (default aces)
 ##   --lighting-off=vfog,ssil,ssao,lut,pcss   disable features for A/B
 
-const SUN_ROTATION_DEG := Vector3(-23.0, 58.0, 0.0)
-const SUN_COLOR := Color(1.0, 0.83, 0.64)
-const SUN_ENERGY := 3.0
-const SKY_ZENITH := Color(0.30, 0.47, 0.76)
+const SUN_ROTATION_DEG := Vector3(-19.0, 58.0, 0.0)
+const SUN_COLOR := Color(1.0, 0.77, 0.54)
+const SUN_ENERGY := 2.55   # round 3: 3.0 clipped sunlit white and car paint (critic A2)
+const SKY_ZENITH := Color(0.36, 0.49, 0.70)
 const CLOUD_COVERAGE := 0.55
 const LAMP_COLOR := Color(1.0, 0.78, 0.52)
 const TUBE_COLOR := Color(0.86, 0.94, 1.0)
@@ -27,6 +27,9 @@ var arcade_lights := 0
 var lamp_lights := 0
 var _fixtures := {}          # key -> {mesh, material, xforms: Array[Transform3D], shadow}
 var _lights_node: Node3D
+var bays: Array = []          # shophouse units, for StreetDressing clutter
+var dressing: StreetDressing
+var hawker_centres: Array = []
 static var _ceiling_points: Array = []   # cached HDB void-deck ceiling grid (local)
 
 static func _arg(prefix: String, fallback: String) -> String:
@@ -66,19 +69,19 @@ static func build_environment(parent: Node) -> Dictionary:
 		env.tonemap_exposure = 1.0
 	else:
 		env.tonemap_mode = Environment.TONE_MAPPER_ACES
-		env.tonemap_exposure = 1.0
-		env.tonemap_white = 6.0
+		env.tonemap_exposure = 1.04
+		env.tonemap_white = 9.0   # keep sunlit white plaster and chrome off the clip (critic A2)
 
 	# Aerial perspective: warm haze that takes its colour from the sky, so far
 	# towers sink into gold toward the sun and blue-grey away from it. The sky
 	# itself is left clear (fog_sky_affect 0) so the gradient stays visible.
 	env.fog_enabled = true
 	env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
-	env.fog_light_color = Color(0.86, 0.85, 0.82)
+	env.fog_light_color = Color(0.93, 0.85, 0.74)
 	env.fog_light_energy = 1.0
-	env.fog_sun_scatter = 0.06
+	env.fog_sun_scatter = 0.09
 	env.fog_density = 0.0005
-	env.fog_aerial_perspective = 0.7
+	env.fog_aerial_perspective = 0.55
 	env.fog_sky_affect = 0.0
 	env.fog_height = 24.0
 	env.fog_height_density = 0.0016
@@ -214,7 +217,7 @@ static func _grade_lut() -> ImageTexture3D:
 				var shadow_w := pow(1.0 - l, 2.2)
 				var high_w := pow(l, 1.8)
 				c += Vector3(-0.012, 0.004, 0.014) * shadow_w
-				c += Vector3(0.030, 0.010, -0.035) * high_w
+				c += Vector3(0.042, 0.012, -0.045) * high_w
 				# gentle S-curve around mid-grey
 				var s := Vector3(_smooth(c.x), _smooth(c.y), _smooth(c.z))
 				c = c.lerp(s, 0.22)
@@ -333,6 +336,7 @@ func arcade_bay(pos: Vector3, yaw: float, front_dir: Vector3) -> void:
 	_fixture("pendant_glow", _box_mesh(), _m("pendant_glow"), Transform3D(basis * Basis.from_scale(Vector3(0.36, 0.14, 0.36)), p))
 	_omni(p + Vector3(0.0, -0.3, 0.0), Color(1.0, 0.74, 0.46), 1.9, 7.5, 1.0, 60.0)
 	arcade_lights += 1
+	bays.append({"pos": pos, "yaw": yaw, "front": front_dir, "dir": Vector3(cos(yaw), 0.0, -sin(yaw))})
 
 ## HDB void deck: rows of fluorescent tube fittings on the soffit, lit with a
 ## cool-white grid so the deck reads instead of sitting as a black cave.
@@ -424,6 +428,7 @@ func _void_deck_points(slab: Node3D) -> Array:
 ## Hawker hall: cool tube over each stall counter and warm pendants over the
 ## dining floor (stall fronts glow like CONCEPT-01's hawker row).
 func hawker_hall(centre: Vector3) -> void:
+	hawker_centres.append(centre)
 	for i in 6:
 		var sp := centre + Vector3(-27.0 + i * 11.0, 0.25, -20.0)
 		_fixture("stall_tube", _box_mesh(), _m("stall_tube"), Transform3D(Basis.from_scale(Vector3(5.5, 0.07, 0.12)), sp + Vector3(0.0, 2.75, 1.9)))
@@ -436,8 +441,10 @@ func hawker_hall(centre: Vector3) -> void:
 			_fixture("pendant_glow", _box_mesh(), _m("pendant_glow"), Transform3D(Basis.from_scale(Vector3(0.5, 0.16, 0.5)), pp))
 			_omni(pp + Vector3(0, -0.4, 0), Color(1.0, 0.80, 0.56), 1.3, 11.0, 0.9, 80.0)
 
-## Emits all collected fixtures as MultiMesh draws (one per fixture type).
+## Emits all collected fixtures as MultiMesh draws (one per fixture type),
+## then the weathering volumes and street clutter (StreetDressing).
 func finish() -> void:
+	dressing = StreetDressing.build(root, bays, hawker_centres)
 	for key in _fixtures:
 		var g: Dictionary = _fixtures[key]
 		var xforms: Array = g["xforms"]

@@ -64,7 +64,7 @@ The convenience-shop and workshop GLBs, their companion atlas PNGs, and their ed
 
 ### Opus 5.5 lighting piece (2026-10-22)
 
-`game/assets/authored/shaders/golden_hour_sky.gdshader` (procedural HDR sky) and `game/src/world/lighting.gd` (environment, sun, fog, a runtime-generated 3D colour-grade LUT and procedural practical-light fixtures built from engine box meshes and emissive materials) are original project code written for this loop. No image, HDRI, LUT file, third-party shader or Rockstar material was used; GTA V reference stills set the quality bar only and are not in the repository. Both files have CSV rows with hashes.
+`game/assets/authored/shaders/golden_hour_sky.gdshader` (procedural HDR sky) and `game/src/world/lighting.gd` (environment, sun, fog, a runtime-generated 3D colour-grade LUT and procedural practical-light fixtures built from engine box meshes and emissive materials) are original project code written for this loop. No image, HDRI, LUT file, third-party shader or Rockstar material was used; GTA V reference stills set the quality bar only and are not in the repository. Both files have CSV rows with hashes. Round 3 adds `game/assets/authored/shaders/street_weathering.gdshader` (procedural screen-space surface wear) and `game/src/world/street_dressing.gd` (street clutter from engine primitives, median ferns reusing the existing original `fern.glb`); both are original code with CSV rows and hashes, and no new imported, generated or third-party asset was added.
 
 ## Reproducibility and storage boundaries
 
