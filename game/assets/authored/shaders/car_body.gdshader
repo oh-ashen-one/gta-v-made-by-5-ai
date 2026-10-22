@@ -115,7 +115,7 @@ void fragment() {
 	float red = smoothstep(0.22, 0.42, col.r - max(col.g, col.b)) * smoothstep(0.66, 0.86, v_car.z) * (1.0 - upper * 0.7);
 	red *= lamp_glow * (1.0 - step(0.5, paint_kind));
 	// The generated sedan carries a marque-like badge on the boot lid: paint it out.
-	float badge = badge_mask * (1.0 - smoothstep(0.05, 0.08, abs(v_car.x))) * smoothstep(0.88, 0.93, v_car.z) * smoothstep(0.50, 0.53, v_car.y) * (1.0 - smoothstep(0.60, 0.63, v_car.y));
+	float badge = badge_mask * (1.0 - smoothstep(0.07, 0.10, abs(v_car.x))) * smoothstep(0.86, 0.91, v_car.z) * smoothstep(0.36, 0.40, v_car.y) * (1.0 - smoothstep(0.62, 0.66, v_car.y));
 	vec3 badge_col = car_state.w > 0.0 ? paint_color.rgb : vec3(0.70, 0.71, 0.72) * albedo_tint.rgb;
 	// ...and the ring on the grille: fill it with dark grille mesh colour.
 	float grille_badge = badge_mask * (1.0 - smoothstep(0.06, 0.09, abs(v_car.x))) * (1.0 - smoothstep(-0.93, -0.88, v_car.z)) * smoothstep(0.38, 0.42, v_car.y) * (1.0 - smoothstep(0.60, 0.64, v_car.y));
