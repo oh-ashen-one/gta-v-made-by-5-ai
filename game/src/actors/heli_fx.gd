@@ -64,9 +64,10 @@ void fragment() {
 	float hubcap = 1.0 - smoothstep(hub * 0.55, hub * 0.75, r);
 	alpha = max(alpha, hubcap * 0.92);
 	ALBEDO = mix(tint, tip_tint, tip * 0.75 * (1.0 - hubcap));
-	ROUGHNESS = 0.45;
-	METALLIC = 0.35;
-	SPECULAR = 0.4;
+	// matte: a blurred disc must never flare into a white glare streak
+	ROUGHNESS = 0.85;
+	METALLIC = 0.0;
+	SPECULAR = 0.15;
 	ALPHA = clamp(alpha, 0.0, 0.95);
 }
 """
