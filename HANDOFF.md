@@ -3,7 +3,7 @@
 - Branch: `Opus-5.5-enhancements` (remote `origin/Opus-5.5-enhancements`). Never merge or push `main`; that needs the owner.
 - Run window: START 2026-10-22T06:28:30Z, FEATURE FREEZE 11:43:30Z, DEADLINE 12:28:30Z. Run record: [`loop/RUN.md`](loop/RUN.md); pieces and verdicts: [`loop/PIECES.md`](loop/PIECES.md); progress page: `python3 loop/make_progress.py` → `progress/index.html`.
 - Machine: Mac Studio (`midirstudio.local`), Godot 4.7.1 Forward+, Metal for renders.
-- Last update: wave-A integration, 2026-10-22 ~10:40Z. Last game-code commit `d3133d1`; the branch head after it only adds loop/progress records.
+- Last update: wave-B pre-integration, 2026-10-22 ~11:30Z (before that: wave-A integration ~10:40Z). Last game-code commit `d3133d1`; the branch head after it only adds loop/progress records.
 
 ## What is merged (wave A)
 
@@ -16,7 +16,7 @@
 
 Integration seam fixes: `4d9af26` (Merlion jet/pier follow the moved statue, skyline haze reads the lighting sky, lighting fixes for sepia shade / milky aerials / sun bias, QA save guard, render gate counts `godot`), `0c36d4b` (water foam and spray), `d3133d1` (added Merlion view re-aimed).
 
-Wave B/C pieces (materials, driving, on-foot, helicopter) were still running in their own worktrees at this handoff. The final integrator merges them.
+Wave B/C pre-integration (Opus 5.5 pre-integrator, 2026-10-22 ~11:05-11:30Z): merged on-foot `35c1ba4` (merge `bf7929a`), helicopter `ceb507a` (`96920d1`), materials `24634e2` (`e83385b`) and its r3 head `98490b9` (`e4ab271`). Headless on `e83385b`: --test 136/136, route 13/13. Street-life is still NOT merged: blocker fixes live on pushed branch `opus55/street-life-fix` (worktree `.worktrees/street-life-fix`); its rendered route passed 13/13 but headless routes failed 2 of 4 (player-car/ambient deadlock; player car disabled by ambient collisions). Driving not merged by the pre-integrator. Details in `loop/RUN.md` (11:05Z-11:30Z lines).
 
 ## Verified
 
