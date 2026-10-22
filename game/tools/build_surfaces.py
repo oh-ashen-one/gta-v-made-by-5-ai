@@ -51,3 +51,45 @@ save('metal',mt,fine*.006,.58+coarse*.13)
 gr=.58+fine*.08+(coarse-.5)*.22
 save('soil',np.stack([gr,gr*.9,gr*.68],-1),fine*.03+coarse*.15,.95+fine*.01)
 print('Authored',len(list(ROOT.glob('*.png'))),'PBR maps in',ROOT)
+
+# ---------------------------------------------------------------------------
+# Weathering masks (wave B "materials"). Separate RNG so the maps above stay
+# byte-identical. All four channels tile seamlessly (spectral synthesis on a
+# torus, wrapped Voronoi), so world-space shaders can sample them at several
+# unrelated scales without seams.
+wr=np.random.default_rng(20261022)
+M=1024
+fy=np.fft.fftfreq(M)[:,None]; fx=np.fft.fftfreq(M)[None,:]
+def spectral(beta,ax=1.0,ay=1.0,lo=0.0):
+ f=np.sqrt((fx*ax)**2+(fy*ay)**2); f[0,0]=1
+ amp=1/np.power(f,beta); amp[f<lo]=0; amp[0,0]=0
+ ph=np.exp(2j*np.pi*wr.random((M,M)))
+ n=np.real(np.fft.ifft2(amp*ph)); n=(n-n.mean())/(n.std()+1e-9)
+ return np.clip(n*.18+.5,0,1)
+blotch=spectral(1.6)                      # R: broad stains / damp patches
+mid=spectral(1.15)                        # G: mid-frequency grime breakup
+streak=spectral(1.3,ax=1.0,ay=14.0)       # A: vertical rain streaks (stretched in v)
+# B: crack network: wrapped Voronoi edge distance, displaced by noise so the
+# cells read as cracking asphalt / render, not as a tile grid.
+pts=wr.random((70,2))*M
+yy,xx=np.mgrid[:M,:M].astype(float)
+disp=(spectral(1.4)-.5)*46
+px=(xx+disp)%M; py=(yy+np.roll(disp,311,0))%M
+d1=np.full((M,M),1e9); d2=np.full((M,M),1e9)
+for p in pts:
+ dx=np.abs(px-p[0]); dx=np.minimum(dx,M-dx); dy=np.abs(py-p[1]); dy=np.minimum(dy,M-dy)
+ d=np.sqrt(dx*dx+dy*dy); d2=np.minimum(d2,np.maximum(d1,d)); d1=np.minimum(d1,d)
+edge=d2-d1
+fine_jit=(spectral(.7)-.5)*2.2
+crack=np.clip(1-(edge+fine_jit)/2.6,0,1)**1.5
+# Secondary hairline cracks from a denser cell set, weaker.
+pts2=wr.random((260,2))*M
+d1=np.full((M,M),1e9); d2=np.full((M,M),1e9)
+for p in pts2:
+ dx=np.abs(px-p[0]); dx=np.minimum(dx,M-dx); dy=np.abs(py-p[1]); dy=np.minimum(dy,M-dy)
+ d=np.sqrt(dx*dx+dy*dy); d2=np.minimum(d2,np.maximum(d1,d)); d1=np.minimum(d1,d)
+hair=np.clip(1-((d2-d1)+fine_jit)/1.6,0,1)**2*.55
+crack=np.maximum(crack,hair)
+rgba=np.stack([blotch,mid,crack,streak],-1)
+Image.fromarray(np.uint8(np.clip(rgba,0,1)*255),'RGBA').save(ROOT/'weather_masks.png')
+print('Authored weather_masks.png (R blotch, G grime, B cracks, A streaks)')

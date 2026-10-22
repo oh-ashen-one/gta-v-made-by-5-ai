@@ -21,11 +21,19 @@ const PLAYER_START := Vector3(-171.0, 0.45, -22.0)
 const PLAYER_START_YAW_DEG := -8.0
 ## Slightly raised opening look so the SkyPark clears the objective card.
 const PLAYER_START_PITCH := -0.02
-const GROVE_POS := Vector3(-50.0, 0.16, -240.0)
-const MBS_POS := Vector3(-88.0, 0.0, -705.0)
-const MBS_SCALE := Vector3(2.2, 1.75, 1.6)
-const ASM_POS := Vector3(-318.0, 0.0, -645.0)
-const FLYER_POS := Vector3(390.0, 0.0, -652.0)
+## Wave A (skyline): the grove moved west and its layout tightened so it stands
+## clear of the Marina Bay Sands silhouette from the street vista and promenade.
+const GROVE_POS := Vector3(-80.0, 0.16, -262.0)
+const MBS_POS := Vector3(-118.0, 0.0, -705.0)
+## Wave A: the MBS GLB is authored at true scale (curved legs, 300 m SkyPark).
+const MBS_SCALE := Vector3.ONE
+## Wave A: moved east of the MBS podium, under the SkyPark cantilever side,
+## so the lotus no longer sits behind the Supertree crowns in photo_06 or
+## against the west tower in photo_16.
+const ASM_POS := Vector3(80.0, 0.0, -640.0)
+## Wave A: moved west so the wheel sits inside photo_06_aerial_district and
+## photo_16 without touching the SkyPark cantilever or the background towers.
+const FLYER_POS := Vector3(210.0, 0.0, -700.0)
 const BLOCK := 144.0            # block platform edge-to-edge
 const PROMENADE_Z := -338.0
 const WORLD_MIN := Vector3(-330.0, 0.0, -350.0)
@@ -45,6 +53,8 @@ var locations := {
 	"hawker": Vector3(-80.0, 0.2, -80.0),
 }
 
+## Bay water, seawalls, boats and the Merlion jet (water piece).
+var bay: BayWater
 var _rng := RandomNumberGenerator.new()
 var _world_root: Node3D
 var _collision_root: StaticBody3D
@@ -53,6 +63,12 @@ var _asset_collision_cache: Dictionary = {}
 ## this so new plots never intersect the heritage rows, HDB slabs, mission hall
 ## or aviation buildings they are meant to surround.
 var _reserved: Array[Rect2] = []
+## Rooftop dressing for infill and HDB roofs, flushed in _background_city().
+var _roof_kit := RoofKit.new()
+## Skyline round 2 stats for the self-test (materials used, towers over water).
+var skyline_stats := {}
+## Practical lights and fixtures (street lamps, arcades, void decks, hawker).
+var _lighting := Lighting.new()
 
 func build(seed_value: int = 20261021) -> void:
 	_rng.seed = seed_value
@@ -64,6 +80,7 @@ func build(seed_value: int = 20261021) -> void:
 	_collision_root.collision_layer = 1
 	_collision_root.collision_mask = 0
 	_world_root.add_child(_collision_root)
+	_lighting.root = _world_root
 
 	_environment()
 	_ground()
@@ -88,79 +105,14 @@ func build(seed_value: int = 20261021) -> void:
 	_kerb_markings()
 	_scatter_props()
 	_landscape()
+	SurfaceDressing.dress(_world_root)   # wave B materials: grime, wall/roof clutter
+	_lighting.finish()
 	_batch_static_primitives()
 
 # ---------------------------------------------------------------- environment
+## Sky, sun, fog, tonemap and grade live in Lighting (src/world/lighting.gd).
 func _environment() -> void:
-	var env := Environment.new()
-	var sky_mat := ShaderMaterial.new()
-	sky_mat.shader = load("res://assets/authored/shaders/tropical_sky.gdshader")
-	var sky := Sky.new()
-	sky.sky_material = sky_mat
-	env.background_mode = Environment.BG_SKY
-	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.54, 0.58, 0.70)
-	env.ambient_light_energy = 0.44
-	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	# The manager's review of the aerial found "washed-out whites/pinks". The
-	# previous 1.02 exposure plus 0.58 ambient plus 0.42 glow stacked into the
-	# highlight shoulder on pale HDB facades. Pull all three back.
-	env.tonemap_exposure = 0.92
-	# Warm tropical dusk haze. The approved concepts are late-afternoon: a low
-	# sun, long shadows and gold bounce, not an overcast midday wash. The first
-	# wave-3 pass used 0.0011 and smothered the district in peach dust; this is
-	# light aerial perspective only.
-	env.fog_enabled = true
-	env.fog_light_color = Color(0.80, 0.78, 0.74)
-	env.fog_density = 0.00024
-	env.fog_sky_affect = 0.18
-	env.fog_aerial_perspective = 0.10
-	env.ssao_enabled = true
-	env.ssao_radius = 2.1
-	env.ssao_intensity = 2.0
-	env.ssao_light_affect = 0.45
-	env.glow_enabled = true
-	env.glow_intensity = 0.28
-	env.glow_bloom = 0.10
-	env.glow_hdr_threshold = 1.12
-	env.adjustment_enabled = true
-	env.adjustment_contrast = 1.10
-	env.adjustment_saturation = 1.04
-	var we := WorldEnvironment.new()
-	we.environment = env
-	add_child(we)
-
-	var sun := DirectionalLight3D.new()
-	# Low western sun, ~16 deg elevation, so the street gets long raking light
-	# and readable shade under the five-foot ways (ART-07).
-	sun.rotation_degrees = Vector3(-16.3, 62.0, 0.0)
-	sun.light_energy = 2.35
-	sun.light_color = Color(1.0, 0.80, 0.58)
-	sun.shadow_enabled = true
-	sun.directional_shadow_max_distance = 260.0
-	sun.shadow_bias = 0.025
-	sun.shadow_normal_bias = 1.4
-	sun.shadow_blur = 1.15
-	add_child(sun)
-
-	var fill := DirectionalLight3D.new()
-	# Sky fill from the opposite side keeps shadowed frontage readable instead
-	# of crushing it to black.
-	fill.rotation_degrees = Vector3(-24.0, -128.0, 0.0)
-	fill.light_energy = 0.26
-	fill.light_color = Color(0.62, 0.72, 0.92)
-	fill.shadow_enabled = false
-	add_child(fill)
-
-	var bounce := DirectionalLight3D.new()
-	# Warm ground bounce, aimed upward: shaded five-foot ways and arcades pick
-	# up pavement light instead of reading as flat blue-grey walls.
-	bounce.rotation_degrees = Vector3(58.0, 40.0, 0.0)
-	bounce.light_energy = 0.20
-	bounce.light_color = Color(1.0, 0.80, 0.60)
-	bounce.shadow_enabled = false
-	add_child(bounce)
+	Lighting.build_environment(self)
 
 # -------------------------------------------------------------- ground/roads
 func _ground() -> void:
@@ -172,7 +124,10 @@ func _ground() -> void:
 	var box := BoxMesh.new()
 	box.size = Vector3(1500.0, 4.0, 1100.0)
 	mesh.mesh = box
-	mesh.material_override = Palette.mat_textured(Color(0.42, 0.41, 0.38), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
+	# Wave B r3 (materials): base ground is neutral concrete hard-standing
+	# again; r2's grass base leaked onto workshop floors, forecourts and the
+	# airfield apron (critic regression). Grass stays on explicit verges.
+	mesh.material_override = Palette.mat_textured(Color(0.44, 0.44, 0.43), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
 	mesh.position = Vector3(0.0, -2.0, 200.0)
 	ground.add_child(mesh)
 	var shape := CollisionShape3D.new()
@@ -183,8 +138,8 @@ func _ground() -> void:
 	ground.add_child(shape)
 
 func _roads() -> void:
-	var asphalt := Palette.mat_textured(Palette.ASPHALT, "asphalt", Vector3(8.0, 1.0, 120.0), 0.9)
-	var paint := Palette.mat(Palette.PAINT_LINE, 0.75)
+	var asphalt := Palette.road_asphalt()
+	var paint := Palette.road_paint(Palette.PAINT_LINE)
 	for x in X_LINES:
 		var strip := _solid_box(Vector3(ROAD_HALF * 2.0, 0.06, 760.0), Vector3(x, 0.03, 0.0), asphalt)
 		strip.name = "RoadX"
@@ -228,22 +183,14 @@ func _medians() -> void:
 			var centre := Vector3(x, 0.0, cz)
 			_box(Vector3(1.6, 0.26, span), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
 			_box(Vector3(1.2, 0.30, span - 1.0), centre + Vector3(0.0, 0.30, 0.0), median_turf)
-			# low clipped shrubs only: median trees sit on the road centreline and
-			# would put a real trunk collider on the mission avenue centreline
-			var count := int(span / 9.0)
-			for i in count:
-				var zz: float = cz - span * 0.5 + 4.5 + i * 9.0
-				_sphere(Vector3(1.0, 0.75, 1.0), Vector3(x, 0.52, zz), Palette.mat(Palette.FOLIAGE_LIGHT, 0.95))
+			# planting is StreetDressing's median bed (lighting r4: the smooth
+			# green spheres read as placeholder domes, critic A3)
 	for z in Z_LINES:
 		for k in range(0, 4):
 			var cx := -240.0 + k * 160.0
 			var centre := Vector3(cx, 0.0, z)
 			_box(Vector3(span, 0.26, 1.6), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
 			_box(Vector3(span - 1.0, 0.30, 1.2), centre + Vector3(0.0, 0.30, 0.0), median_turf)
-			var count := int(span / 9.0)
-			for i in count:
-				var xx: float = cx - span * 0.5 + 4.5 + i * 9.0
-				_sphere(Vector3(1.0, 0.75, 1.0), Vector3(xx, 0.52, z), Palette.mat(Palette.FOLIAGE_LIGHT, 0.95))
 
 # ------------------------------------------------------------------- blocks
 func _build_grid() -> void:
@@ -319,11 +266,12 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 			module.rotation.y=yaw+PI*.5
 			module.scale.y=.94+float((i/3)%3)*.04
 			AssetLibrary.tint(module,frontage)
+		_lighting.arcade_bay(pos, yaw, front_dir)
 		# Building envelope and rear wall are solid; arcade remains walkable.
 		_collision_box(Vector3(10.1,7.3,9.5),pos+Vector3(0,7.6,0),yaw)
 		_collision_box(Vector3(10.1,3.7,6.5),pos+Vector3(0,1.85,0)+Vector3(0,0,1.4).rotated(Vector3.UP,yaw),yaw)
 		# A sheltered tiled footway physically joins the modules.
-		var path := _box(Vector3(unit_w,.08,3.3),pos+front_dir*6.2+Vector3(0,.10,0),Palette.mat_textured(Color(.65,.68,.62),"pavers",Vector3.ONE,.86))
+		var path := _box(Vector3(unit_w,.08,3.3),pos+front_dir*6.2+Vector3(0,.10,0),Palette.five_foot_tiles())
 		path.rotation.y=yaw
 		var board := _box(Vector3(7.2,.65,.16),pos+front_dir*5.27+Vector3(0,3.45,0),sign_mat)
 		board.rotation.y=yaw
@@ -338,7 +286,7 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		# arcade reads as depth with a warm source rather than a flat white card.
 		var back_wall := _box(Vector3(6.6, 2.4, 0.12), pos + front_dir * 2.55 + Vector3(0, 1.35, 0), Palette.mat(Color(0.15, 0.12, 0.10), 0.92))
 		back_wall.rotation.y = yaw
-		var ceiling_strip := _box(Vector3(5.6, 0.16, 0.5), pos + front_dir * 3.3 + Vector3(0, 2.52, 0), Palette.emissive(Color(1.0, 0.74, 0.44), 1.15))
+		var ceiling_strip := _box(Vector3(5.6, 0.16, 0.5), pos + front_dir * 3.3 + Vector3(0, 2.52, 0), Palette.emissive(Color(1.0, 0.74, 0.44), 2.4))
 		ceiling_strip.rotation.y = yaw
 		# Vertical mullions break the opening into bays instead of one blank panel.
 		for m in 3:
@@ -417,7 +365,9 @@ func _hdb_block(centre: Vector3) -> void:
 					slab.rotation.y = PI * 0.5
 				AssetLibrary.tint(slab, Palette.HDB_TINTS[block_key])
 				_asset_collision(slab)
+				_lighting.void_deck(slab)
 				_reserve(size + Vector3(16.0, 0.0, 16.0), pos)
+				_roof_kit.add_hdb_roof(pos, h, rot == 90.0)
 				used_provider = true
 		if not used_provider:
 			_solid_box(size, pos + Vector3(0.0, 3.6 + h * 0.5, 0.0), Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(5.0, 7.0, 3.0), 0.85))
@@ -567,6 +517,7 @@ func _hawker_block(centre: Vector3) -> void:
 		# tray return + bins
 		_solid_box(Vector3(3.0, 1.0, 1.0), centre + Vector3(-28.0 + i * 8.0, 0.5, -25.0), Palette.mat(Palette.METAL, 0.5, 0.5))
 		_cyl(Vector3(1.0, 1.2, 1.0), centre + Vector3(-29.0 + i * 8.0, 0.6, -24.0), Palette.mat(Palette.METAL_DARK, 0.7, 0.3))
+	_lighting.hawker_hall(centre)
 	# warm practical lighting under the hawker roof
 	for i: int in 6:
 		var practical := OmniLight3D.new()
@@ -605,7 +556,7 @@ func _waterfront_block(centre: Vector3) -> void:
 		_box(Vector3(126.0, 0.12, 5.0), centre + Vector3(0.0, 0.08, 34.0), pavers)
 		_authored("supertree_grove.glb", grove_pos, 0.0, Vector3.ONE)
 		# Planted trunk colliders only: the crowns stay open sky for flight.
-		for tree_off in [Vector3(0, 0, 0), Vector3(-24, 0, 8), Vector3(24, 0, 6), Vector3(-16, 0, -18), Vector3(17, 0, -19), Vector3(-34, 0, -12), Vector3(33, 0, -14)]:
+		for tree_off in [Vector3(0, 0, 0), Vector3(-15.4, 0, -4.9), Vector3(15.4, 0, -3.5), Vector3(-9.8, 0, 11.9), Vector3(10.5, 0, 12.6), Vector3(-21.7, 0, 7.7), Vector3(21.0, 0, 9.1)]:
 			_collision_box(Vector3(7.0, 12.0, 7.0), grove_pos + tree_off + Vector3(0.0, 6.0, 0.0))
 		locations["supertree_grove"] = grove_pos
 		for i: int in 6:
@@ -619,7 +570,12 @@ func _waterfront_block(centre: Vector3) -> void:
 		for i: int in 2:
 			var pos := centre + Vector3(-34.0 + i * 68.0, 0.0, -30.0)
 			var h := 70.0 + i * 18.0
-			_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), Palette.facade("office"))
+			# Wave A (skyline): shared curtain-wall shader instead of the dotted sheet.
+			var tower_mat := LandmarkLooks.material_for("near_shore_tower_%d" % i) as ShaderMaterial
+			# Round 2: lobby base and plant-screen crown on these near towers too.
+			tower_mat.set_shader_parameter("legacy_base", pos.y)
+			tower_mat.set_shader_parameter("legacy_height", h)
+			_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), tower_mat)
 			for f in int(h / 4.0):
 				_box(Vector3(26.6, 0.35, 26.6), pos + Vector3(0.0, 4.0 + f * 4.0, 0.0), Palette.mat(Palette.METAL, 0.4, 0.7))
 			_box(Vector3(28.0, 0.7, 28.0), pos + Vector3(0.0, h + 0.35, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.8))
@@ -635,7 +591,9 @@ func _waterfront_block(centre: Vector3) -> void:
 ## Singapore Flyer to the east. Scale follows real proportions (towers ~180 m,
 ## SkyPark ~260 m long, Flyer ~160 m).
 func _far_shore_landmarks() -> void:
-	var plaza := Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9)
+	# Round 4: grey granite pavers; the warm CONCRETE_LIGHT read as a brown
+	# dirt strip under the far-shore trees from the aerial views (critic A3).
+	var plaza := Palette.mat_textured(Color(0.56, 0.57, 0.56), "pavers", Vector3.ONE, 0.9)
 	var turf := Palette.mat_textured(Color(0.24, 0.33, 0.17), "soil", Vector3.ONE, 0.95)
 	_box(Vector3(920.0, 0.30, 70.0), Vector3(-20.0, 0.15, -668.0), plaza)
 	_box(Vector3(920.0, 0.20, 160.0), Vector3(-20.0, 0.10, -783.0), turf)
@@ -643,8 +601,10 @@ func _far_shore_landmarks() -> void:
 	_collision_box(Vector3(1700.0, 2.0, 700.0), Vector3(0.0, -1.0, -970.0))
 	var mbs := MBS_POS
 	_authored("marina_bay_sands.glb", mbs, 0.0, MBS_SCALE)
-	_collision_box(Vector3(234.0, 196.0, 66.0), mbs + Vector3(0.0, 98.0, 0.0))
-	_collision_box(Vector3(260.0, 18.0, 52.0), mbs + Vector3(19.0, 188.0, 0.0))
+	# Towers, SkyPark (cantilever east) and podium of the true-scale model.
+	_collision_box(Vector3(232.0, 194.0, 30.0), mbs + Vector3(-6.5, 97.0, 0.0))
+	_collision_box(Vector3(305.0, 12.0, 40.0), mbs + Vector3(32.5, 197.0, 0.0))
+	_collision_box(Vector3(300.0, 14.0, 20.0), mbs + Vector3(20.0, 7.0, 27.0))
 	locations["marina_bay_sands"] = mbs
 	var asm := ASM_POS
 	_authored("artscience_museum.glb", asm, deg_to_rad(12.0), Vector3.ONE * 1.6)
@@ -667,12 +627,12 @@ func _aviation_block(centre: Vector3) -> void:
 				guard.position = centre + Vector3(18.0 + i * 6.0, 0.0, 10.0 + i * 3.0)
 				guard.rotation.y = -1.1
 	# hangar
-	_solid_box(Vector3(38.0, 12.0, 24.0), centre + Vector3(-30.0, 6.0, -20.0), Palette.mat(Palette.METAL, 0.6, 0.4))
+	_solid_box(Vector3(38.0, 12.0, 24.0), centre + Vector3(-30.0, 6.0, -20.0), Palette.corrugated(Palette.METAL.lightened(0.3)))
 	var hangar_roof := MeshInstance3D.new()
 	var prism := PrismMesh.new()
 	prism.size = Vector3(38.0, 3.0, 24.0)
 	hangar_roof.mesh = prism
-	hangar_roof.material_override = Palette.mat(Palette.METAL_DARK, 0.6, 0.4)
+	hangar_roof.material_override = Palette.corrugated(Palette.METAL_DARK.lightened(0.25), 0.7)
 	hangar_roof.position = centre + Vector3(-30.0, 13.5, -20.0)
 	_world_root.add_child(hangar_roof)
 	_box(Vector3(14.0, 9.0, 0.2), centre + Vector3(-30.0, 4.5, -8.1), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
@@ -721,6 +681,7 @@ func _helipad(pos: Vector3, radius: float) -> void:
 	label.pixel_size = 0.05
 	label.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
 	label.modulate = Color(0.95, 0.95, 0.92)
+	HelipadDressing.build(_world_root, pos, radius, radius >= 14.0)
 
 func _mixed_block(centre: Vector3) -> void:
 	_shophouse_row(centre + Vector3(-BLOCK / 2.0 + 8.0, 0.0, -BLOCK / 2.0 + 8.0), Vector3(1, 0, 0), 13)
@@ -756,6 +717,7 @@ func _block_plots() -> void:
 			_box(Vector3(120.0, 0.05, 0.16), centre + Vector3(0.0, 0.075, -3.1), Palette.mat(Palette.PAINT_LINE, 0.8))
 			_box(Vector3(0.16, 0.05, 120.0), centre + Vector3(-3.1, 0.075, 0.0), Palette.mat(Palette.PAINT_LINE, 0.8))
 			# A service apron rings the plots between them and the frontage.
+			# A service apron rings the plots (paved hard-standing, incl. aviation).
 			_box(Vector3(118.0, 0.05, 118.0), centre + Vector3(0.0, 0.025, 0.0), apron)
 			if kit in ["hawker", "aviation"]:
 				if kit == "hawker":
@@ -930,32 +892,20 @@ func _infill_building(size: Vector3, pos: Vector3, kind: String) -> void:
 	var bm := BoxMesh.new()
 	bm.size = size
 	mesh.mesh = bm
-	mesh.material_override = Palette.facade(kind)
+	mesh.material_override = RoofKit.facade_variant(kind, pos)
 	body.add_child(mesh)
 	var shape := CollisionShape3D.new()
 	var bs := BoxShape3D.new()
 	bs.size = size
 	shape.shape = bs
 	body.add_child(shape)
-	# A darker roof deck than the walls: from above, a district of bright parapets
-	# read as flat pale parcels. Real roofs are weathered grey with equipment.
-	_box(size + Vector3(0.7, 0.55, 0.7), pos + Vector3(0.0, size.y + 0.2, 0.0), Palette.mat(Color(0.40, 0.39, 0.37), 0.95))
-	if size.y > 9.0:
-		_cyl(Vector3(1.8, 2.0, 1.8), pos + Vector3(size.x * 0.22, size.y + 1.4, -size.z * 0.2), Palette.mat(Palette.METAL, 0.7, 0.3))
-		_box(Vector3(3.0, 0.9, 2.4), pos + Vector3(-size.x * 0.25, size.y + 0.7, size.z * 0.22), Palette.mat(Color(0.52, 0.52, 0.50), 0.9))
+	# Weathered membrane deck, parapet and seeded roof plant (RoofKit, wave A):
+	# the critic found the aerials "dominated by untextured beige box roofs".
+	_roof_kit.add_flat_roof(size, pos, kind)
 
 # ------------------------------------------------------------- water + skyline
 func _waterfront_edge() -> void:
-	var water := MeshInstance3D.new()
-	var pm := PlaneMesh.new()
-	pm.size = Vector2(1600.0, 700.0)
-	water.mesh = pm
-	var wm := Palette.mat(Palette.WATER, 0.08, 0.4)
-	wm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	wm.albedo_color = Color(0.16, 0.31, 0.36, 0.92)
-	water.mesh.material = wm
-	water.position = Vector3(0.0, -0.4, PROMENADE_Z - 340.0)
-	_world_root.add_child(water)
+	# The bay surface, seawalls, boats and Merlion jet live in bay.gd (BayWater).
 	# promenade deck + railing
 	_solid_box(Vector3(700.0, 0.3, 22.0), Vector3(0.0, 0.15, PROMENADE_Z), Palette.mat_textured(Palette.CONCRETE_LIGHT,"pavers",Vector3.ONE,0.9))
 	for i: int in 46:
@@ -963,51 +913,115 @@ func _waterfront_edge() -> void:
 	_box(Vector3(700.0, 0.08, 0.08), Vector3(0.0, 1.35, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_helipad(Vector3(locations["helipad_secondary"].x, 0.0, locations["helipad_secondary"].z), 11.0)
 	# The Merlion pier jutting into the bay between the waterfront helipad and delivery zone
-	var merlion_pos := Vector3(45.0, 0.30, -345.0)
-	_solid_box(Vector3(14.0, 0.32, 14.0), Vector3(45.0, 0.15, -347.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9))
-	_authored("merlion_landmark.glb", merlion_pos, 0.0, Vector3.ONE)
+	# Wave A (skyline): the statue stands at the end of a pier past the railing,
+	# turned toward the promenade, so walkers see the lion face three-quarter on
+	# with the jet arcing into the bay instead of the back of the figure.
+	# Wave A integration: the water piece's stone pier base, wet band and jet
+	# follow this pier and the statue's rotation (see BayWater.build).
+	var merlion_pos := Vector3(64.0, 0.30, -371.0)
+	var merlion_pier := Rect2(57.0, -375.5, 14.0, 27.0)
+	_solid_box(Vector3(14.0, 0.32, 27.0), Vector3(64.0, 0.15, -362.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9))
+	var merlion := _authored("merlion_landmark.glb", merlion_pos, deg_to_rad(-135.0), Vector3.ONE)
 	_collision_box(Vector3(8.5, 3.5, 8.5), merlion_pos + Vector3(0.0, 1.75, 0.0))
 	locations["merlion"] = merlion_pos
+	bay = BayWater.build(self, _world_root, merlion, merlion_pos, merlion_pier)
 	for i: int in 8:
 		_tree(Vector3(-300.0 + i * 85.0, 0.0, PROMENADE_Z + 6.0), 1.0)
 	for i: int in 6:
 		_street_lamp(Vector3(-320.0 + i * 128.0, 0.0, PROMENADE_Z + 8.0))
 
 func _background_city() -> void:
-	# Existing side/back context remains dimensional, with its existing shadows.
+	# Wave A (skyline): one layered procedural city replaces the repeated
+	# skyline GLB grid (see SkylineCity). Roof dressing collected by the infill
+	# and HDB builders is flushed here too, before static batching.
+	_roof_kit.build(_world_root)
+	var city := SkylineCity.new(991)
 	var rng := RandomNumberGenerator.new()
-	rng.seed = 991
+	rng.seed = 4421
+	# Clear sky behind the SkyPark and around the Flyer wheel; nothing tall on
+	# the near far-shore plaza in front of the landmarks.
+	# The SkyPark bow cantilevers west, and the aerial cameras look across it
+	# from the east, so the low zone widens westward with depth (a wedge).
+	for band in [[-800.0, -300.0], [-900.0, -360.0], [-1050.0, -440.0], [-1300.0, -520.0]]:
+		var z_far: float = band[0]
+		var x_west: float = band[1]
+		city.clear_zone(Rect2(x_west, z_far, 115.0 - x_west, MBS_POS.z - z_far), 70.0)
+	city.clear_zone(Rect2(MBS_POS.x - 200.0, MBS_POS.z - 40.0, 400.0, 75.0), 0.0)
+	city.clear_zone(Rect2(FLYER_POS.x - 95.0, FLYER_POS.z - 480.0, 190.0, 520.0), 30.0)
+	city.clear_zone(Rect2(ASM_POS.x - 45.0, ASM_POS.z - 40.0, 90.0, 80.0), 0.0)
+	city.clear_zone(Rect2(-900.0, -700.0, 1800.0, 60.0), 0.0)
+	# Far shore, five depth layers: low waterfront edge -> mid-rise -> tall CBD
+	# clusters flanking MBS -> distant horizon band.
+	for layer in 5:
+		var z0: float = [-725.0, -790.0, -870.0, -980.0, -1180.0][layer]
+		var step: float = [46.0, 42.0, 38.0, 44.0, 52.0][layer]
+		var x := -900.0 + rng.randf_range(0.0, step)
+		while x < 900.0:
+			var z := z0 + rng.randf_range(-22.0, 22.0)
+			var h: float
+			var cbd_west := x > -620.0 and x < -330.0
+			var cbd_east := x > 330.0 and x < 640.0
+			match layer:
+				0: h = rng.randf_range(22.0, 48.0)
+				1: h = rng.randf_range(40.0, 95.0)
+				2: h = rng.randf_range(70.0, 150.0) * (1.6 if cbd_west or cbd_east else 1.0)
+				3: h = rng.randf_range(90.0, 180.0) * (1.45 if cbd_west or cbd_east else 1.0)
+				_: h = rng.randf_range(40.0, 110.0)
+			city.add_random(Vector3(x, 0.0, z), minf(h, 265.0), layer == 4 and rng.randf() < 0.5)
+			x += step * rng.randf_range(0.75, 1.3)
+	# Round 2: the inner east flank row (behind the aviation compound) is the
+	# authored mullioned-glass towers again (podium, crown, spire). The critic
+	# found the procedural slabs that replaced them read as flat boxes from
+	# the airfield and the drive. West and south stay procedural (the aerial
+	# views judged those better), and nothing stands in the bay any more.
+	var near_rng := RandomNumberGenerator.new()
+	near_rng.seed = 991
 	for i in 64:
 		var side := i % 4
-		if side == 0: continue
+		if side == 0:
+			continue
 		var p := Vector3.ZERO
 		match side:
-			1: p=Vector3(-440-rng.randf_range(0,90),0,-410+(i/4)*54)
-			2: p=Vector3(440+rng.randf_range(0,90),0,-410+(i/4)*54)
-			_: p=Vector3(-620+(i/4)*82,0,435+rng.randf_range(0,90))
-		_authored("skyline_%d.glb"%posmod(i,4),p,rng.randf_range(-.08,.08),Vector3(1,rng.randf_range(.55,1.20),1))
-	# Three staggered clusters on the existing far shore. Lower near-water
-	# blocks and taller rear blocks overlap in depth instead of isolated plinths.
-	# This is inaccessible context, not additional playable city area.
-	var groups: Array = [[],[],[],[]]
+			1: p = Vector3(-440.0 - near_rng.randf_range(0.0, 90.0), 0.0, -410.0 + (i / 4) * 54.0)
+			2: p = Vector3(440.0 + near_rng.randf_range(0.0, 90.0), 0.0, -410.0 + (i / 4) * 54.0)
+			_: p = Vector3(-620.0 + (i / 4) * 82.0, 0.0, 435.0 + near_rng.randf_range(0.0, 90.0))
+		var yaw := near_rng.randf_range(-0.08, 0.08)
+		var hs := near_rng.randf_range(0.55, 1.20)
+		if side != 2 or SkylineCity._over_water(p, 40.0):
+			continue
+		_authored("skyline_%d.glb" % ((i / 4) % 4), p, yaw, Vector3(1.0, hs, 1.0))
+	# Procedural estates and mixed blocks: west flank and south edge from the
+	# district edge outward, east flank behind the authored row.
+	for side in [-1.0, 1.0]:
+		var x0: float = 455.0 if side < 0.0 else 600.0
+		for row in (3 if side < 0.0 else 2):
+			var zz := -330.0 + rng.randf_range(0.0, 30.0)
+			while zz < 600.0:
+				var xx: float = side * (x0 + row * 72.0 + rng.randf_range(-10.0, 10.0))
+				var res := rng.randf() < 0.4
+				city.add_random(Vector3(xx, 0.0, zz), rng.randf_range(38.0, 75.0) + row * 24.0 + (40.0 if not res and rng.randf() < 0.45 else 0.0), res)
+				zz += rng.randf_range(48.0, 72.0)
 	for row in 3:
-		for cluster in 3:
-			for col in 8:
-				var variant: int = 2 if row == 0 and col % 3 != 0 else (row+cluster+col)%4
-				var x: float = -720+cluster*490+col*54+rng.randf_range(-7,7)+row*13
-				var z: float = -711-row*130+rng.randf_range(-18,18)
-				# Keep open sky behind the Marina Bay Sands silhouette and clear
-				# ground under the Flyer; draws stay cheap (the rng sequence is kept).
-				if (x > -265.0 and x < 115.0) or (row == 0 and x > 300.0 and x < 480.0):
-					rng.randf_range(.48,.73); rng.randf_range(.90,1.18); rng.randf_range(-.07,.07)
-					continue
-				var height_scale: float = rng.randf_range(.48,.73) if row == 0 else rng.randf_range(.70,1.22)+row*.08
-				var width_scale: float = rng.randf_range(.90,1.18)
-				var basis := Basis(Vector3.UP,rng.randf_range(-.07,.07)).scaled(Vector3(width_scale,height_scale,width_scale))
-				groups[variant].append(Transform3D(basis,Vector3(x,0,z)))
-	for variant in 4:
-		var tints := [Color(0.86, 0.84, 0.80), Color(0.60, 0.68, 0.76), Color(0.94, 0.88, 0.78), Color(0.72, 0.76, 0.80)]
-		_batch_background("res://assets/authored/skyline_%d.glb"%variant,groups[variant],tints[variant])
+		var xs := -620.0 + rng.randf_range(0.0, 30.0)
+		while xs < 560.0:
+			var res2 := rng.randf() < 0.4
+			city.add_random(Vector3(xs, 0.0, 455.0 + row * 72.0 + rng.randf_range(-10.0, 10.0)), rng.randf_range(32.0, 72.0) + row * 25.0, res2)
+			xs += rng.randf_range(50.0, 76.0)
+	# Round 4: third tower layer, wing estates, city carpet, low-rise blocks,
+	# far ridges and the shared sun/haze sync (see SkylineHorizon).
+	# `--skyline-off=horizon` builds without it (perf / look A/B only).
+	var horizon := SkylineHorizon.new()
+	var horizon_on := not ("--skyline-off=horizon" in OS.get_cmdline_user_args())
+	if horizon_on:
+		horizon.populate(city)
+	city.build(_world_root)
+	if horizon_on:
+		horizon.build(_world_root, city)
+		_batch_background("res://assets/authored/rain_tree.glb", horizon.promenade_tree_transforms(_far_shore_tree_clear))
+	SkylineHorizon.sync(self)
+	skyline_stats = {"materials": city.materials_used.size(), "over_water": city.over_water, "placed": city.placed, "ground_shadows": city.ground_shadows,
+		"lowrise": horizon.lowrise, "far_towers": horizon.far_towers, "carpet_km2": horizon.carpet_area / 1.0e6, "promenade_trees": horizon.promenade_trees, "atmosphere": SkylineHorizon.params().size()}
+	print("[world] skyline city: ", city.placed, " towers; roof kit: ", _roof_kit.roofs, " roofs")
 
 func _batch_background(path: String, transforms: Array, tint: Color = Color.WHITE) -> void:
 	var packed: PackedScene = load(path)
@@ -1046,26 +1060,28 @@ func _background_mesh_parts(node: Node, parent_transform: Transform3D, result: A
 
 func _perimeter() -> void:
 	# One continuous far shoreline anchors the background skyline across a bay.
-	var ground_mat:=Palette.mat_textured(Color(.33,.38,.28),"soil",Vector3.ONE,.95)
+	# Round 4: neutral made ground under the city carpet (the soil texture
+	# showed through as brown dirt at the far shore's edges).
+	var ground_mat:=Palette.mat(Color(.36,.37,.35),.95)
 	_box(Vector3(1700,8,700),Vector3(0,-4,-970),ground_mat)
-	_box(Vector3(1700,2,18),Vector3(0,-.7,-624),Palette.mat_textured(Palette.CONCRETE,"concrete",Vector3.ONE,.92))
+	# Round 4: grey granite seawall coping (the warm concrete read as a brown
+	# dirt band along the far shore from the aerial views, critic A3).
+	_box(Vector3(1700,2,18),Vector3(0,-.7,-624),Palette.mat(Color(0.47,0.48,0.48),.88))
 	_box(Vector3(1680,.08,16),Vector3(0,.05,-657),Palette.mat_textured(Palette.ASPHALT,"asphalt",Vector3.ONE,.85))
+	# Round 4: the far-shore rows are batched full-size rain trees now
+	# (SkylineHorizon.promenade_tree_transforms); the world RNG still advances
+	# once per old tree so every later random placement stays where it was.
 	for i in 34:
 		if _far_shore_clear(Vector3(-790+i*48,.1,-640)):
-			_tree(Vector3(-790+i*48,.1,-640),.8)
+			_rng.randf_range(-PI, PI)
 	# A treed far shoreline. The manager's aerial review called the horizon
 	# "abrupt"; the bay previously ended where open water met a flat plane.
 	# This band gives the far shore a real edge with canopy and low roofs.
 	for i in 44:
 		if _far_shore_clear(Vector3(-800.0 + i * 37.0, 0.15, -652.0)):
-			_tree(Vector3(-800.0 + i * 37.0, 0.15, -652.0), 0.95 + float(i % 4) * 0.12)
-	for i in 16:
-		# Low roofs stay out of the Marina Bay Sands footprint and SkyPark overhang.
-		var roof_x := -760.0 + i * 100.0
-		if roof_x > MBS_POS.x - 140.0 and roof_x < MBS_POS.x + 160.0:
-			continue
-		_box(Vector3(26.0, 7.0 + float(i % 3) * 3.0, 14.0), Vector3(roof_x, 3.5, -712.0),
-			Palette.mat_textured(Color(0.52, 0.50, 0.47), "concrete", Vector3.ONE, 0.92))
+			_rng.randf_range(-PI, PI)
+	# (Wave A: the 16 plain low-roof boxes at z=-712 are now SkylineCity's
+	# waterfront layer, with facades and roofs.)
 	# The authored district has visible physical edges. Aircraft can fly over
 	# the same geometry; ordinary walking/driving meets real railings.
 	for i in 50:
@@ -1121,8 +1137,13 @@ func _build_lane_graph() -> void:
 	for z in Z_LINES:
 		for side: float in [-1.0, 1.0]:
 			var heading2 := -PI * 0.5 if side < 0.0 else PI * 0.5
-			for px2: float in [-220.0, -104.0, 56.0, 216.0]:
-				var stagger_x := px2 + (30.0 if side > 0.0 else 0.0)
+			var lots: Array[float] = [-220.0, -104.0, 56.0, 216.0]
+			if z == -160.0:
+				# heritage avenue (photo/gameplay hero street, lighting r4): a
+				# fuller kerb so the toward-sun views read as a lived street
+				lots.append_array([-128.0, -100.0, -50.0, -22.0] if side > 0.0 else [-140.0, -82.0, -36.0])
+			for px2: float in lots:
+				var stagger_x := px2 + (30.0 if side > 0.0 and px2 in [-220.0, -104.0, 56.0, 216.0] else 0.0)
 				parked_spots.append({"pos": Vector3(stagger_x, 0.3, z + side * KERB_PARK_OFFSET), "heading": heading2, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
 
@@ -1161,11 +1182,17 @@ func _kerb_markings() -> void:
 						for offset: float in [ROAD_HALF - 0.35, ROAD_HALF - 0.58]:
 							yellow.append(_marking(axis, line + side * offset, mid, Vector3(0.12, 1.0, length)))
 					cursor = maxf(cursor, gap.y)
-	_marking_batch(yellow, Palette.mat(Color(0.92, 0.72, 0.16), 0.72))
-	_marking_batch(white, Palette.mat(Color(0.90, 0.90, 0.86), 0.75))
+	_marking_batch(yellow, Palette.road_paint(Color(0.92, 0.72, 0.16)))
+	_marking_batch(white, Palette.road_paint(Color(0.90, 0.90, 0.86)))
 
 ## Far-shore planting keeps clear of the ArtScience lotus and the Flyer terminal
 ## (release critic: shoreline tree rows grew through both).
+## Far-shore promenade trees also keep off the Marina Bay Sands podium.
+func _far_shore_tree_clear(p: Vector3) -> bool:
+	if p.x > MBS_POS.x - 165.0 and p.x < MBS_POS.x + 200.0 and p.z > MBS_POS.z - 32.0 and p.z < MBS_POS.z + 40.0:
+		return false
+	return _far_shore_clear(p)
+
 func _far_shore_clear(p: Vector3) -> bool:
 	var to_asm := Vector2(p.x - ASM_POS.x, p.z - ASM_POS.z).length()
 	var to_flyer := Vector2(p.x - FLYER_POS.x, p.z - FLYER_POS.z).length()
@@ -1230,6 +1257,8 @@ func _batch_static_primitives() -> void:
 		if mi.mesh == null or mi.get_child_count() > 0 or not mi.get_groups().is_empty() or not mi.get_meta_list().is_empty() or mi.get_script() != null: continue
 		if not mi.is_visible_in_tree() or mi.visibility_range_end > 0.0 or mi.skin != null: continue
 		var mat := mi.material_override as StandardMaterial3D
+		# Weathered surface shaders (Palette, wave B) batch like textured materials.
+		var shader_mat := mi.material_override as ShaderMaterial
 		var mesh_key := ""
 		var mat_key := ""
 		var unit_scale := Vector3.ONE
@@ -1239,7 +1268,7 @@ func _batch_static_primitives() -> void:
 			# Repeated imported props (trees, ferns, planters, condensers, lamps,
 			# railings, side skyline) keep their own surface materials; tinted
 			# single-surface modules (shophouses) merge per shared tint.
-			if mat != null: continue
+			if mat != null or shader_mat != null: continue
 			mesh_key = "mesh#%d" % mi.mesh.get_instance_id()
 			mat_key = "surfaces"
 			if mi.mesh.get_surface_count() == 1 and mi.get_surface_override_material(0) is StandardMaterial3D:
@@ -1249,7 +1278,7 @@ func _batch_static_primitives() -> void:
 			elif not _imported_batchable(mi):
 				continue
 			source = _scene_source(mi)
-		elif mat == null or mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+		elif shader_mat == null and (mat == null or mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED):
 			continue
 		elif mi.mesh is BoxMesh:
 			var bm := mi.mesh as BoxMesh
@@ -1265,6 +1294,8 @@ func _batch_static_primitives() -> void:
 			mesh_key = "sph|%.3f|%.3f|%d|%d|%s" % [sm.radius, sm.height, sm.radial_segments, sm.rings, sm.is_hemisphere]
 		else:
 			continue
+		if mat_key == "" and shader_mat != null:
+			mat_key = "obj#%d" % shader_mat.get_instance_id()
 		if mat_key == "":
 			mat_key = ("obj#%d" % mat.get_instance_id()) if (mat.albedo_texture != null or mat.normal_texture != null or mat.roughness_texture != null) else \
 				"c|%s|%.3f|%.3f|%.3f|%s|%s|%.3f|%d|%d" % [mat.albedo_color, mat.roughness, mat.metallic, mat.metallic_specular, mat.emission_enabled, mat.emission, mat.emission_energy_multiplier, mat.cull_mode, mat.shading_mode]
@@ -1283,7 +1314,7 @@ func _batch_static_primitives() -> void:
 		var cell := Vector2i(floori(xform.origin.x / 160.0), floori(xform.origin.z / 160.0))
 		var key := "%s#%s#%d" % [mesh_key, mat_key, mi.cast_shadow]
 		if not groups.has(key):
-			groups[key] = {"mesh": batch_mesh, "material": mat, "shadow": mi.cast_shadow, "xforms": [], "nodes": [], "cells": [], "source": source}
+			groups[key] = {"mesh": batch_mesh, "material": shader_mat if shader_mat != null else mat, "shadow": mi.cast_shadow, "xforms": [], "nodes": [], "cells": [], "source": source}
 		groups[key]["xforms"].append(Transform3D(xform.basis * Basis.from_scale(unit_scale), xform.origin) if mesh_key == "box" else xform)
 		groups[key]["nodes"].append(mi)
 		groups[key]["cells"].append(cell)
@@ -1412,14 +1443,8 @@ func _street_lamp(pos: Vector3) -> void:
 	if not used_provider:
 		_cyl(Vector3(0.16, 6.0, 0.16), pos + Vector3(0.0, 3.0, 0.0), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
 		_box(Vector3(1.2, 0.14, 0.3), pos + Vector3(0.0, 6.0, 0.0), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
-	var bulb := MeshInstance3D.new()
-	var sm := SphereMesh.new()
-	sm.radius = 0.22
-	sm.height = 0.4
-	bulb.mesh = sm
-	bulb.material_override = Palette.emissive(Palette.SHOP_WARM, 1.8)
-	bulb.position = pos + Vector3(0.0, 5.85, 0.0)
-	_world_root.add_child(bulb)
+	# Lamp head glow + downward light pool (Lighting owns the practicals).
+	_lighting.street_lamp(pos)
 
 func _tree(pos: Vector3, scale: float) -> void:
 	var tree := _authored("rain_tree.glb", pos, _rng.randf_range(-PI, PI), Vector3.ONE * scale)
@@ -1445,6 +1470,7 @@ func _authored(file: String, pos: Vector3, yaw: float = 0.0, asset_scale: Vector
 	node.position = pos
 	node.rotation.y = yaw
 	node.scale = asset_scale
+	LandmarkLooks.apply(node)
 	return node
 
 func _landscape() -> void:
@@ -1471,7 +1497,7 @@ func _landscape() -> void:
 # ------------------------------------------------------- junctions & fittings
 ## Crosswalks, stop lines and signal heads at every intersection (TRAFFIC-01).
 func _junctions() -> void:
-	var paint := Palette.mat_textured(Palette.PAINT_LINE, "concrete", Vector3(4.0, 1.0, 4.0), 0.8)
+	var paint := Palette.road_paint(Palette.PAINT_LINE)
 	for x in X_LINES:
 		for z in Z_LINES:
 			for axis in 2:

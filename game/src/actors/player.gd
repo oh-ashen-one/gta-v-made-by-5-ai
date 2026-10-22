@@ -46,6 +46,30 @@ var _head: Node3D
 var _last_fire_time := 0.0
 var _last_stride_phase := 0
 var _rng := RandomNumberGenerator.new()
+# On-foot feel (wave C): heading + scalar speed give arcs, momentum and
+# visible lean instead of instant vector snaps; the camera trails on a spring.
+const ACCEL_WALK := 11.0       # m/s^2 from standstill to jog
+const ACCEL_SPRINT := 6.5      # m/s^2 jog to sprint
+const DECEL := 10.5            # m/s^2 releasing the stick
+const PIVOT_DECEL := 20.0      # m/s^2 braking into a sharp reversal
+const ARM_BASE := Vector3(0.85, 1.50, 0.0)
+var _heading := 0.0
+var _speed := 0.0
+var _prev_speed := 0.0
+var _heading_rate := 0.0
+var _lean_pitch := 0.0
+var _lean_pitch_vel := 0.0
+var _lean_roll := 0.0
+var _look_yaw := 0.0
+var _look_pitch := 0.0
+var _land_dip := 0.0
+var _land_dip_vel := 0.0
+var _was_on_floor := true
+var _fall_speed := 0.0
+var _cam_follow := Vector3.ZERO
+var _cam_ready := false
+var _contact_shadow: Decal
+var _sprint_cam := 0.0
 
 func _ready() -> void:
 	_rng.seed = 771
@@ -123,6 +147,9 @@ func _build_body() -> void:
 	_muzzle_flash.visible = false
 	_body_root.add_child(_muzzle_flash)
 
+	_contact_shadow = _make_contact_shadow()
+	add_child(_contact_shadow)
+
 	_visual = CharacterVisual.new()
 	_body_root.add_child(_visual)
 	if _visual.configure("player"):
@@ -130,6 +157,31 @@ func _build_body() -> void:
 			if child is Node3D and child != _visual and child != _muzzle_flash:
 				child.visible = false
 		_update_weapon_mesh()
+
+## Soft ambient-occlusion blob under the feet so the figure sits on the
+## pavement in shade, where the sun shadow cannot ground it.
+func _make_contact_shadow() -> Decal:
+	var decal := Decal.new()
+	decal.name = "ContactShadow"
+	decal.size = Vector3(1.15, 0.7, 1.15)
+	decal.position = Vector3(0.0, 0.05, 0.0)
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0.0, 0.0, 0.0, 0.78))
+	grad.set_color(1, Color(0.0, 0.0, 0.0, 0.0))
+	grad.add_point(0.45, Color(0.0, 0.0, 0.0, 0.42))
+	var tex := GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.fill_to = Vector2(1.0, 0.5)
+	tex.width = 64
+	tex.height = 64
+	decal.texture_albedo = tex
+	decal.modulate = Color(1, 1, 1, 0.62)
+	decal.upper_fade = 0.25
+	decal.lower_fade = 0.6
+	decal.cull_mask = 1
+	return decal
 
 func _limb(hip: Vector3, size: Vector3, cloth: Material, foot: Material) -> Node3D:
 	var pivot := Node3D.new()
@@ -181,13 +233,41 @@ func _build_camera() -> void:
 	arm.add_excluded_object(self)
 	arm.collision_mask = 1 | 8
 	arm.margin = 0.25
-	arm.position = Vector3(0.85, 1.50, 0.0)   # over-the-shoulder framing
+	arm.position = ARM_BASE   # over-the-shoulder framing
 	arm.rotation_degrees = Vector3(-8.0, 0.0, 0.0)
 	add_child(arm)
 	camera = Camera3D.new()
 	camera.fov = 58.0
 	camera.current = true
 	arm.add_child(camera)
+	_build_character_lights()
+
+## Third-person character lighting (on-foot piece): a soft camera-side fill
+## and a warm back rim that only touch the player's own meshes (render layer
+## 11), so the figure keeps readable skin, cloth folds and silhouette in deep
+## arcade shade without lifting the world. No shadows, two lights.
+func _build_character_lights() -> void:
+	var fill := OmniLight3D.new()
+	fill.name = "CharacterFill"
+	fill.light_cull_mask = CharacterVisual.PLAYER_LIGHT_LAYER
+	fill.light_color = Color(1.0, 0.93, 0.84)
+	fill.light_energy = 0.32
+	fill.light_specular = 0.15
+	fill.omni_range = 7.0
+	fill.omni_attenuation = 0.6
+	fill.position = Vector3(-0.9, 0.7, 0.2)
+	fill.shadow_enabled = false
+	camera.add_child(fill)
+	var rim := DirectionalLight3D.new()
+	rim.name = "CharacterRim"
+	rim.light_cull_mask = CharacterVisual.PLAYER_LIGHT_LAYER
+	rim.light_color = Color(1.0, 0.86, 0.68)
+	rim.light_energy = 0.38
+	rim.light_specular = 0.35
+	rim.shadow_enabled = false
+	rim.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_ONLY
+	rim.basis = Basis.looking_at(Vector3(0.45, -0.55, 1.0).normalized(), Vector3.UP)
+	camera.add_child(rim)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if Game.simulation_paused:
@@ -244,7 +324,7 @@ func _physics_process(delta: float) -> void:
 	if aiming:
 		arm.spring_length = lerpf(arm.spring_length, AIM_DISTANCE, delta * 10.0)
 	else:
-		arm.spring_length = lerpf(arm.spring_length, HIP_DISTANCE, delta * 8.0)
+		arm.spring_length = lerpf(arm.spring_length, HIP_DISTANCE + 0.35 * _sprint_cam, delta * 4.0)
 
 	var input_dir := Vector2(
 		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
@@ -256,16 +336,39 @@ func _physics_process(delta: float) -> void:
 	var target_speed := SPRINT_SPEED if sprinting else WALK_SPEED
 	if aiming:
 		target_speed *= 0.55
+	target_speed *= clampf(input_dir.length(), 0.0, 1.0)
 
+	# Heading + speed locomotion: the body turns at a speed-dependent rate
+	# (tight at a walk, wide arcs at a sprint) and a sharp reversal brakes
+	# first, so direction changes carry weight instead of snapping.
 	var horizontal := Vector3(velocity.x, 0.0, velocity.z)
+	_speed = minf(_speed, horizontal.length() + 0.05) # walls and props stop us
+	var prev_heading := _heading
 	if basis_dir.length() > 0.05:
-		horizontal = horizontal.lerp(basis_dir.normalized() * target_speed, clampf(ACCEL * delta / maxf(target_speed, 0.001), 0.0, 1.0))
+		var want := atan2(-basis_dir.x, -basis_dir.z)
+		if aiming or _speed < 0.25:
+			_heading = want if _speed < 0.25 else lerp_angle(_heading, want, clampf(delta * 14.0, 0.0, 1.0))
+		else:
+			var diff := wrapf(want - _heading, -PI, PI)
+			var turn_rate := lerpf(11.0, 4.6, clampf(_speed / SPRINT_SPEED, 0.0, 1.0))
+			if absf(diff) > 1.75 and _speed > 2.0:
+				target_speed = 0.0
+				turn_rate *= 0.35
+			_heading += clampf(diff, -turn_rate * delta, turn_rate * delta)
+		var rate := ACCEL_WALK if _speed < WALK_SPEED else ACCEL_SPRINT
+		if _speed > target_speed:
+			rate = PIVOT_DECEL if target_speed <= 0.01 else DECEL
+		_speed = move_toward(_speed, target_speed, rate * delta)
 	else:
-		horizontal = horizontal.lerp(Vector3.ZERO, clampf(FRICTION * delta, 0.0, 1.0))
+		_speed = move_toward(_speed, 0.0, DECEL * delta)
+	if delta > 0.0:
+		_heading_rate = lerpf(_heading_rate, wrapf(_heading - prev_heading, -PI, PI) / delta, clampf(delta * 10.0, 0.0, 1.0))
+	horizontal = Vector3(-sin(_heading), 0.0, -cos(_heading)) * _speed
 	velocity.x = horizontal.x
 	velocity.z = horizontal.z
 	if not is_on_floor():
 		velocity.y -= 24.0 * delta
+		_fall_speed = maxf(_fall_speed, -velocity.y)
 	else:
 		velocity.y = -0.5
 		if Input.is_action_just_pressed("jump"):
@@ -280,21 +383,73 @@ func _physics_process(delta: float) -> void:
 		Events.toast("Beyond the district. Returning to your checkpoint.","warn")
 		Game.damage_player(Game.MAX_HEALTH)
 		return
-	# face movement direction (or camera direction when aiming/firing)
-	var face_dir := Vector3.ZERO
+	# face the travel heading (or the camera direction when aiming/firing)
 	if aiming:
-		face_dir = -camera.global_transform.basis.z
-	elif basis_dir.length() > 0.05:
-		face_dir = basis_dir
-	if face_dir.length() > 0.05:
-		var target_yaw := atan2(-face_dir.x, -face_dir.z)
-		rotation.y = lerp_angle(rotation.y, target_yaw, clampf(delta * 12.0, 0.0, 1.0))
+		var aim_dir := -camera.global_transform.basis.z
+		rotation.y = lerp_angle(rotation.y, atan2(-aim_dir.x, -aim_dir.z), clampf(delta * 12.0, 0.0, 1.0))
+		_heading = rotation.y if _speed < 0.25 else _heading
+	elif _speed > 0.05 or basis_dir.length() > 0.05:
+		rotation.y = lerp_angle(rotation.y, _heading, clampf(delta * 16.0, 0.0, 1.0))
+	else:
+		_heading = rotation.y
 	arm.rotation.y = yaw - rotation.y
 	arm.rotation.x = pitch
+	_update_body_motion(delta, sprinting)
+	_update_camera_follow(delta, sprinting)
 	_animate(delta, horizontal.length(), sprinting)
 	var actor := controlled_actor()
 	Game.player_position = actor.global_position
 	Game.player_rotation = yaw
+
+## Weight cues: forward lean with acceleration and sprint, a damped rock when
+## stopping, roll into turns, a knee dip on landing and head look toward the
+## camera's view. Whole-body roll pivots on the feet; the spine adds curve.
+func _update_body_motion(delta: float, sprinting: bool) -> void:
+	if _visual == null or not _visual.loaded or delta <= 0.0:
+		return
+	var accel := (_speed - _prev_speed) / delta
+	_prev_speed = _speed
+	var pitch_target := clampf(_speed / SPRINT_SPEED, 0.0, 1.0) * (0.17 if sprinting else 0.08)
+	pitch_target += clampf(absf(accel) * 0.014, 0.0, 0.16)
+	_lean_pitch_vel += ((pitch_target - _lean_pitch) * 110.0 - _lean_pitch_vel * 13.0) * delta
+	_lean_pitch += _lean_pitch_vel * delta
+	var roll_target := clampf(_heading_rate * _speed * 0.045, -0.32, 0.32)
+	if not is_on_floor():
+		roll_target = 0.0
+	_lean_roll = lerpf(_lean_roll, roll_target, clampf(delta * 7.0, 0.0, 1.0))
+	var on_floor := is_on_floor()
+	if on_floor and not _was_on_floor:
+		_land_dip_vel -= clampf(_fall_speed * 0.05, 0.05, 0.6)
+		_fall_speed = 0.0
+	_was_on_floor = on_floor
+	_land_dip_vel += (-_land_dip * 160.0 - _land_dip_vel * 16.0) * delta
+	_land_dip = clampf(_land_dip + _land_dip_vel * delta, -0.16, 0.05)
+	_visual.rotation = Vector3(-_lean_pitch * 0.35, 0.0, _lean_roll * 0.55)
+	_visual.position.y = _land_dip
+	var rel := wrapf(yaw - rotation.y, -PI, PI)
+	var look_target := clampf(rel, -1.05, 1.05) if absf(rel) < 2.0 and not aiming else 0.0
+	_look_yaw = lerpf(_look_yaw, look_target, clampf(delta * 5.0, 0.0, 1.0))
+	_look_pitch = lerpf(_look_pitch, clampf(-pitch * 0.55, -0.35, 0.45), clampf(delta * 5.0, 0.0, 1.0))
+	_visual.set_body_motion(_lean_pitch * 0.65, _lean_roll * 0.45, _look_yaw, _look_pitch)
+
+## The camera trails the body on a critically damped spring (no rigid lock),
+## widens slightly at a sprint and snaps after teleports.
+func _update_camera_follow(delta: float, sprinting: bool) -> void:
+	if not _cam_ready or _cam_follow.distance_to(global_position) > 3.0:
+		_cam_follow = global_position
+		_cam_ready = true
+	var k := 1.0 - exp(-delta * 9.0)
+	_cam_follow.x = lerpf(_cam_follow.x, global_position.x, k)
+	_cam_follow.z = lerpf(_cam_follow.z, global_position.z, k)
+	_cam_follow.y = lerpf(_cam_follow.y, global_position.y, 1.0 - exp(-delta * 6.0))
+	var lag := _cam_follow - global_position
+	if lag.length() > 0.7:
+		lag = lag.normalized() * 0.7
+		_cam_follow = global_position + lag
+	arm.position = ARM_BASE + global_transform.basis.inverse() * lag
+	var sprint_amount := clampf((_speed - WALK_SPEED) / (SPRINT_SPEED - WALK_SPEED), 0.0, 1.0) if sprinting else 0.0
+	camera.fov = lerpf(camera.fov, 58.0 + 5.0 * sprint_amount, clampf(delta * 3.0, 0.0, 1.0))
+	_sprint_cam = sprint_amount
 
 func _animate(delta: float, speed: float, sprinting: bool) -> void:
 	if _visual != null and _visual.loaded:
@@ -493,7 +648,9 @@ func _consume_press(action: String) -> bool:
 
 func _update_prompt() -> void:
 	if current_vehicle != null:
-		Events.interaction_prompt.emit("[E] Exit vehicle")
+		# an airborne helicopter cannot be left, so no exit prompt in flight
+		var airborne: bool = current_vehicle is Helicopter and not current_vehicle.is_landed()
+		Events.interaction_prompt.emit("" if airborne else "[E] Exit vehicle")
 		return
 	var target := _interaction_target()
 	var prompt := ""
@@ -531,6 +688,9 @@ func respawn_at(pos: Vector3, rot: float) -> void:
 	yaw = rot
 	rotation.y = rot
 	velocity = Vector3.ZERO
+	_speed = 0.0
+	_heading = rot
+	_cam_ready = false
 	visible = true
 	alive = true
 	if _visual != null and _visual.loaded:

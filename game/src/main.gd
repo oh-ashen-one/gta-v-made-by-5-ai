@@ -76,6 +76,15 @@ func _ready() -> void:
 		review.setup(self)
 		return
 
+	if "--onfoot-review" in args:
+		hud.show_title(false)
+		started = true
+		Game.simulation_paused = false
+		var onfoot: Node = _qa_system("res://src/systems/onfoot_review.gd")
+		add_child(onfoot)
+		onfoot.setup(self)
+		return
+
 	if "--test" in args:
 		# Regression input belongs to active gameplay, not the title overlay.
 		# Native mouse events are legitimately consumed by visible menus.
@@ -88,6 +97,19 @@ func _ready() -> void:
 		get_tree().quit(1 if tester.failures > 0 else 0)
 		return
 
+	if "--heli-review" in args:
+		var heli_dir := "user://heli_review"
+		for arg in args:
+			if arg.begins_with("--capture-dir="):
+				heli_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		Game.simulation_paused = false
+		var heli_review: Node = _qa_system("res://src/systems/heli_review.gd")
+		add_child(heli_review)
+		heli_review.setup(self, world, heli_dir)
+		return
+
 	if "--photos" in args or "--gameplay-photos" in args:
 		var photo_dir := "captures"
 		for arg in args:
@@ -97,6 +119,18 @@ func _ready() -> void:
 		add_child(shooter)
 		shooter.setup(self, world, photo_dir)
 		# the frames are evidence of the district, not of the title screen
+		hud.show_title(false)
+		started = true
+		return
+
+	if "--water-footage" in args:
+		var footage_dir := "user://water_footage"
+		for arg in args:
+			if arg.begins_with("--capture-dir="):
+				footage_dir = arg.trim_prefix("--capture-dir=")
+		var footage: Node = _qa_system("res://src/systems/water_footage.gd")
+		add_child(footage)
+		footage.setup(self, world, footage_dir)
 		hud.show_title(false)
 		started = true
 		return

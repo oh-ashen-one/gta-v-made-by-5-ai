@@ -38,7 +38,7 @@ const POLICE_CAR_POOL_SIZE := 2
 ## and kerbside parking.
 var ambient: AmbientTraffic
 var crowd: CrowdDirector
-var dressing: StreetDressing
+var dressing: AvenueDressing
 
 func setup(w: WorldBuilder, player: Node) -> void:
 	add_to_group("traffic_manager")
@@ -61,7 +61,7 @@ func _setup_street_life() -> void:
 	crowd = CrowdDirector.new()
 	add_child(crowd)
 	crowd.setup(self)
-	dressing = StreetDressing.new()
+	dressing = AvenueDressing.new()
 	add_child(dressing)
 	dressing.build(world)
 
