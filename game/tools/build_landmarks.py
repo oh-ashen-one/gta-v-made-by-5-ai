@@ -182,7 +182,7 @@ def build_marina_bay_sands() -> dict:
     b = MeshBuilder()
 
     steel = make_material("mbs_champagne_steel", (0.50, 0.47, 0.41), 0.38, 0.62)
-    hull_side = make_material("mbs_skypark_hull", (0.56, 0.54, 0.50), 0.32, 0.55)
+    hull_side = make_material("mbs_skypark_hull", (0.30, 0.30, 0.30), 0.30, 0.6)
     soffit = make_material("mbs_skypark_soffit", (0.20, 0.21, 0.22), 0.70, 0.30)
     glass = make_material("mbs_curtain_glass", (0.30, 0.40, 0.47), 0.14, 0.55)
     gap_dark = make_material("mbs_atrium_shadow", (0.06, 0.07, 0.08), 0.85, 0.0)
@@ -264,6 +264,9 @@ def build_marina_bay_sands() -> dict:
             x1, h1 = stations[i + 1]
             b.strut(soffit, (x0, side * (h0 + 0.1), deck_z - 1.4), (x1, side * (h1 + 0.1), deck_z - 1.4), 0.35, sides=4)
             b.strut(steel, (x0, side * h0, deck_z + 0.7), (x1, side * h1, deck_z + 0.7), 0.18, sides=4)
+            # Pale fascia band along the top edge: the crisp line the SkyPark
+            # reads as from the bay, over the darker hull below.
+            b.strut(pavilion, (x0, side * (h0 + 0.15), deck_z - 0.5), (x1, side * (h1 + 0.15), deck_z - 0.5), 0.6, sides=4)
     # Infinity pool along the bay (-Y) edge, with a pale stone surround.
     b.box(pavilion, (-10.0, -12.5, deck_z + 0.25), (150.0, 9.0, 0.5))
     b.box(pool_aqua, (-10.0, -13.0, deck_z + 0.55), (146.0, 6.5, 0.3))
@@ -296,6 +299,12 @@ def build_marina_bay_sands() -> dict:
             b.box(podium_stone if k % 2 == 0 else steel, (vx, -27.0, 12.4 + k * 1.0), (w, 19.0 - k * 3.4, 1.0))
     b.box(podium_stone, (0.0, 0.0, 2.0), (330.0, 50.0, 4.0))
 
+    # Mirror in X so the SkyPark cantilever points east (+X): from the street
+    # vista the towers then stay clear of the Supertree Grove to their west.
+    for name, (v, f) in b.data.items():
+        v[:] = [(-x, y, z) for x, y, z in v]
+        f[:] = [tuple(reversed(face)) for face in f]
+
     return b.finish("marina_bay_sands")
 
 
@@ -322,7 +331,7 @@ def build_supertree_grove() -> dict:
     skyway_steel = make_material("st_skyway_steel", (0.48, 0.46, 0.43), 0.40, 0.55)
     mound_stone = make_material("st_planter_stone", (0.26, 0.25, 0.22), 0.85, 0.0)
 
-    S = 0.82
+    S = 0.70
     trees = [
         (0.0, 0.0, 50.0, 4.6, 14.5),
         (-22.0, -7.0, 42.0, 3.8, 12.5),

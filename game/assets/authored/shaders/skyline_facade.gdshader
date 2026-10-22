@@ -18,14 +18,19 @@ uniform float style = 0.0;
 uniform float palette = 0.3;
 uniform float floor_scale = 0.8;
 uniform float seed = 0.0;
-uniform vec3 glass_a : source_color = vec3(0.14, 0.22, 0.31);
-uniform vec3 glass_b : source_color = vec3(0.34, 0.42, 0.48);
-uniform vec3 glass_c : source_color = vec3(0.13, 0.24, 0.24);
-uniform vec3 glass_d : source_color = vec3(0.26, 0.23, 0.20);
-uniform vec3 frame_col : source_color = vec3(0.52, 0.53, 0.53);
-uniform vec3 wall_a : source_color = vec3(0.64, 0.63, 0.60);
-uniform vec3 wall_b : source_color = vec3(0.50, 0.52, 0.54);
-uniform vec3 wall_c : source_color = vec3(0.70, 0.66, 0.58);
+uniform vec3 glass_a : source_color = vec3(0.10, 0.16, 0.23);
+uniform vec3 glass_b : source_color = vec3(0.27, 0.33, 0.38);
+uniform vec3 glass_c : source_color = vec3(0.10, 0.19, 0.20);
+uniform vec3 glass_d : source_color = vec3(0.21, 0.19, 0.17);
+uniform vec3 frame_col : source_color = vec3(0.46, 0.47, 0.48);
+uniform vec3 wall_a : source_color = vec3(0.60, 0.59, 0.56);
+uniform vec3 wall_b : source_color = vec3(0.45, 0.47, 0.49);
+uniform vec3 wall_c : source_color = vec3(0.67, 0.63, 0.55);
+// Extra aerial perspective for far skyline layers only (starts at haze_start).
+uniform vec3 haze_col : source_color = vec3(0.74, 0.76, 0.80);
+uniform float haze_start = 450.0;
+uniform float haze_density = 0.0008;
+uniform float haze_max = 0.5;
 uniform vec3 roof_col : source_color = vec3(0.32, 0.31, 0.30);
 uniform float band_frac = 0.20;
 uniform float mullion_m = 2.6;
@@ -107,4 +112,9 @@ void fragment() {
 		SPECULAR = mix(0.4, 0.7, glassy);
 		EMISSION = vec3(1.0, 0.78, 0.5) * lit * 0.25;
 	}
+	// Distance haze: far layers fade toward the sky so the city reads in depth.
+	float d = length(VERTEX);
+	float hz_amt = (1.0 - exp(-max(d - haze_start, 0.0) * haze_density)) * haze_max;
+	ALBEDO = mix(ALBEDO, haze_col * 0.85, hz_amt);
+	EMISSION += haze_col * hz_amt * 0.18;
 }

@@ -647,8 +647,8 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 ## layered background city and landmark material upgrades are present.
 func _skyline_checks(world: WorldBuilder) -> void:
 	var mbs: Vector3 = world.locations["marina_bay_sands"]
-	var mbs_rect := Rect2(mbs.x - 185.0, mbs.z - 30.0, 307.0, 67.2)
-	var circles := {"artscience_museum": 26.4, "singapore_flyer": 40.0, "supertree_grove": 31.0, "merlion": 5.4}
+	var mbs_rect := Rect2(mbs.x - 122.0, mbs.z - 30.0, 307.0, 67.2)
+	var circles := {"artscience_museum": 26.4, "singapore_flyer": 40.0, "supertree_grove": 28.0, "merlion": 5.4}
 	var apart := true
 	var keys := circles.keys()
 	for i in keys.size():

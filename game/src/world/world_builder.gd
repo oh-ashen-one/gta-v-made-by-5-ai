@@ -23,13 +23,14 @@ const PLAYER_START_YAW_DEG := -8.0
 const PLAYER_START_PITCH := -0.02
 ## Wave A (skyline): the grove moved west and its layout tightened so it stands
 ## clear of the Marina Bay Sands silhouette from the street vista and promenade.
-const GROVE_POS := Vector3(-100.0, 0.16, -265.0)
-const MBS_POS := Vector3(-88.0, 0.0, -705.0)
+const GROVE_POS := Vector3(-80.0, 0.16, -262.0)
+const MBS_POS := Vector3(-118.0, 0.0, -705.0)
 ## Wave A: the MBS GLB is authored at true scale (curved legs, 300 m SkyPark).
 const MBS_SCALE := Vector3.ONE
-## Wave A: shifted east so the lotus no longer sits behind the Supertree crowns
-## in photo_06_aerial_district; it now stands just west of the MBS podium.
-const ASM_POS := Vector3(-262.0, 0.0, -640.0)
+## Wave A: moved east of the MBS podium, under the SkyPark cantilever side,
+## so the lotus no longer sits behind the Supertree crowns in photo_06 or
+## against the west tower in photo_16.
+const ASM_POS := Vector3(80.0, 0.0, -640.0)
 ## Wave A: moved west so the wheel sits inside photo_06_aerial_district and
 ## photo_16 without touching the SkyPark cantilever or the background towers.
 const FLYER_POS := Vector3(210.0, 0.0, -700.0)
@@ -615,7 +616,7 @@ func _waterfront_block(centre: Vector3) -> void:
 		_box(Vector3(126.0, 0.12, 5.0), centre + Vector3(0.0, 0.08, 34.0), pavers)
 		_authored("supertree_grove.glb", grove_pos, 0.0, Vector3.ONE)
 		# Planted trunk colliders only: the crowns stay open sky for flight.
-		for tree_off in [Vector3(0, 0, 0), Vector3(-18.0, 0, -5.7), Vector3(18.0, 0, -4.1), Vector3(-11.5, 0, 13.9), Vector3(12.3, 0, 14.8), Vector3(-25.4, 0, 9.0), Vector3(24.6, 0, 10.7)]:
+		for tree_off in [Vector3(0, 0, 0), Vector3(-15.4, 0, -4.9), Vector3(15.4, 0, -3.5), Vector3(-9.8, 0, 11.9), Vector3(10.5, 0, 12.6), Vector3(-21.7, 0, 7.7), Vector3(21.0, 0, 9.1)]:
 			_collision_box(Vector3(7.0, 12.0, 7.0), grove_pos + tree_off + Vector3(0.0, 6.0, 0.0))
 		locations["supertree_grove"] = grove_pos
 		for i: int in 6:
@@ -654,10 +655,10 @@ func _far_shore_landmarks() -> void:
 	_collision_box(Vector3(1700.0, 2.0, 700.0), Vector3(0.0, -1.0, -970.0))
 	var mbs := MBS_POS
 	_authored("marina_bay_sands.glb", mbs, 0.0, MBS_SCALE)
-	# Towers, SkyPark (cantilever west) and podium of the true-scale model.
-	_collision_box(Vector3(232.0, 194.0, 30.0), mbs + Vector3(6.5, 97.0, 0.0))
-	_collision_box(Vector3(305.0, 12.0, 40.0), mbs + Vector3(-32.5, 197.0, 0.0))
-	_collision_box(Vector3(300.0, 14.0, 20.0), mbs + Vector3(-20.0, 7.0, 27.0))
+	# Towers, SkyPark (cantilever east) and podium of the true-scale model.
+	_collision_box(Vector3(232.0, 194.0, 30.0), mbs + Vector3(-6.5, 97.0, 0.0))
+	_collision_box(Vector3(305.0, 12.0, 40.0), mbs + Vector3(32.5, 197.0, 0.0))
+	_collision_box(Vector3(300.0, 14.0, 20.0), mbs + Vector3(20.0, 7.0, 27.0))
 	locations["marina_bay_sands"] = mbs
 	var asm := ASM_POS
 	_authored("artscience_museum.glb", asm, deg_to_rad(12.0), Vector3.ONE * 1.6)
@@ -1002,7 +1003,7 @@ func _background_city() -> void:
 		var z_far: float = band[0]
 		var x_west: float = band[1]
 		city.clear_zone(Rect2(x_west, z_far, 115.0 - x_west, MBS_POS.z - z_far), 70.0)
-	city.clear_zone(Rect2(MBS_POS.x - 200.0, MBS_POS.z - 40.0, 330.0, 75.0), 0.0)
+	city.clear_zone(Rect2(MBS_POS.x - 200.0, MBS_POS.z - 40.0, 400.0, 75.0), 0.0)
 	city.clear_zone(Rect2(FLYER_POS.x - 95.0, FLYER_POS.z - 480.0, 190.0, 520.0), 30.0)
 	city.clear_zone(Rect2(ASM_POS.x - 45.0, ASM_POS.z - 40.0, 90.0, 80.0), 0.0)
 	city.clear_zone(Rect2(-900.0, -700.0, 1800.0, 60.0), 0.0)

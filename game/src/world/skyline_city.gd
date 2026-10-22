@@ -66,8 +66,8 @@ func add_random(pos: Vector3, height: float, residential: bool = false) -> void:
 	var yaw := _rng.randf_range(-0.25, 0.25) + (PI * 0.5 if _rng.randf() < 0.3 else 0.0)
 	if add(kind, pos, width, height, depth, yaw):
 		# Most towers stand on a podium; it fills the street wall between them.
-		if height > 55.0 and _rng.randf() < 0.7:
-			add(5, pos + Vector3(_rng.randf_range(-4, 4), 0.0, _rng.randf_range(-4, 4)), width * 1.9, _rng.randf_range(12.0, 22.0), _rng.randf_range(0.6, 1.0), yaw, 1.0)
+		if height > 70.0 and _rng.randf() < 0.6:
+			add(5, pos + Vector3(_rng.randf_range(-4, 4), 0.0, _rng.randf_range(-4, 4)), width * 1.35, _rng.randf_range(9.0, 16.0), _rng.randf_range(0.6, 1.0), yaw, 1.0)
 
 func build(parent: Node3D) -> void:
 	var shader: Shader = load(SHADER)
