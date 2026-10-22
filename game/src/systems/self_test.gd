@@ -43,6 +43,7 @@ func run(main: Node) -> void:
 		await _report()
 		return
 	_check("district contains 3D geometry", _count_meshes(world) > 400)
+	_check("weathered surfaces and wall/roof clutter present (wave B materials)", _materials_ok(world))
 	_check("junction graph has 25 connected reference nodes", world.traffic_nodes.size() == 25)
 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
 	_check("civilian traffic populated", traffic.cars.size() >= 8)
@@ -654,6 +655,16 @@ func _tap(action: String) -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	await _ticks(3)
+
+## Wave B materials: road is the lane-aware asphalt shader, dressing placed
+## condensers and roof plant, and the floating infill roof shells were reshaped.
+func _materials_ok(world: Node) -> bool:
+	var road := Palette.road_asphalt() as ShaderMaterial
+	var road_ok := road != null and road.shader != null and String(road.shader.resource_path).ends_with("road_asphalt.gdshader")
+	var paving_ok := Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.92) is ShaderMaterial
+	var s: Dictionary = SurfaceDressing.stats
+	var dressed := int(s.get("condensers", 0)) >= 500 and int(s.get("roof_props", 0)) >= 500 and int(s.get("roof_caps_fixed", 0)) >= 100 and int(s.get("overlays", 0)) >= 1
+	return road_ok and paving_ok and dressed and world.get_tree().get_nodes_in_group("surface_dressing").size() >= 8
 
 func _check(check_name: String, condition: bool, detail: String = "") -> void:
 	if _reported:

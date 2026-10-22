@@ -59,9 +59,13 @@ static func tex(kind: String) -> NoiseTexture2D:
 	_tex_cache[kind] = t
 	return t
 
-static func mat_textured(color: Color, kind: String, _uv_scale: Vector3, rough: float = 0.9, metal: float = 0.0) -> StandardMaterial3D:
+static func mat_textured(color: Color, kind: String, _uv_scale: Vector3, rough: float = 0.9, metal: float = 0.0, weathered: bool = true) -> Material:
 	# World-space mapping: pavers represent a two-metre tile; other maps four metres.
 	# The previous per-box UV stretch and shared cache produced kilometre-long stripes.
+	# Wave B: exterior asphalt, paving, concrete and render use weathered
+	# surface shaders (tyre wear, patches, cracks, grime, rain streaks).
+	if weathered and kind in WEATHERED_KINDS and not "--clean-surfaces" in OS.get_cmdline_user_args():
+		return weathered_surface(color, kind, rough, metal)
 	var key := "%s|%s|%.2f|%.2f" % [kind, color.to_html(), rough, metal]
 	if _mat_cache.has(key):
 		return _mat_cache[key]
@@ -91,6 +95,88 @@ static func mat_textured(color: Color, kind: String, _uv_scale: Vector3, rough: 
 	_mat_cache[key] = m
 	return m
 
+## --- Weathered surfaces (wave B "materials") ------------------------------
+## Original world-space shaders under assets/authored/shaders/. One cached
+## ShaderMaterial per (kind, colour, roughness), so the static batcher still
+## merges every box that shares it.
+const WEATHERED_KINDS := ["asphalt", "pavers", "concrete", "plaster", "soil"]
+const SURF_DIR := "res://assets/authored/surfaces/"
+const SHADER_DIR := "res://assets/authored/shaders/"
+static var _weather_cache := {}
+
+static func weather_masks() -> Texture2D:
+	return load(SURF_DIR + "weather_masks.png")
+
+static func weathered_surface(color: Color, kind: String, rough: float = 0.9, metal: float = 0.0, lot: bool = true) -> ShaderMaterial:
+	var key := "%s|%s|%.2f|%.2f|%s" % [kind, color.to_html(), rough, metal, lot]
+	if _weather_cache.has(key):
+		return _weather_cache[key]
+	var m := ShaderMaterial.new()
+	m.set_shader_parameter("weather_masks", weather_masks())
+	match kind:
+		"asphalt":
+			m.shader = load(SHADER_DIR + "road_asphalt.gdshader")
+			m.set_shader_parameter("albedo_tex", load(SURF_DIR + "asphalt_albedo.png"))
+			m.set_shader_parameter("normal_tex", load(SURF_DIR + "asphalt_normal.png"))
+			m.set_shader_parameter("tint", Vector3(color.r, color.g, color.b))
+			m.set_shader_parameter("road_grid", 0.0 if lot else 1.0)
+		"pavers":
+			m.shader = load(SHADER_DIR + "paving.gdshader")
+			m.set_shader_parameter("albedo_tex", load(SURF_DIR + "pavers_albedo.png"))
+			m.set_shader_parameter("normal_tex", load(SURF_DIR + "pavers_normal.png"))
+			m.set_shader_parameter("rough_tex", load(SURF_DIR + "pavers_roughness.png"))
+			m.set_shader_parameter("tint", Vector3(color.r, color.g, color.b))
+			m.set_shader_parameter("base_rough", rough)
+		_:
+			m.shader = load(SHADER_DIR + "weathered_wall.gdshader")
+			m.set_shader_parameter("albedo_tex", load(SURF_DIR + kind + "_albedo.png"))
+			m.set_shader_parameter("normal_tex", load(SURF_DIR + kind + "_normal.png"))
+			m.set_shader_parameter("tint", Vector3(color.r, color.g, color.b))
+			m.set_shader_parameter("base_rough", rough)
+			m.set_shader_parameter("metal", metal)
+			m.set_shader_parameter("peel", 1.0 if kind == "plaster" else 0.0)
+			m.set_shader_parameter("slabs", 1.0 if kind == "concrete" else 0.0)
+			if kind == "soil":
+				m.set_shader_parameter("streaks", 0.0)
+	m.set_meta("weathered_kind", kind)
+	_weather_cache[key] = m
+	return m
+
+## The district carriageways: lane-aware tyre tracks, oil lines, gutters,
+## reinstatement patches, trench strips, manhole covers and cracking.
+static func road_asphalt(color: Color = ASPHALT) -> Material:
+	if "--clean-surfaces" in OS.get_cmdline_user_args():
+		return mat_textured(color, "asphalt", Vector3.ONE, 0.9, 0.0, false)
+	return weathered_surface(color, "asphalt", 0.9, 0.0, false)
+
+static var _paint_cache := {}
+
+## Worn carriageway markings (lane dashes, kerb lines, junction stripes).
+static func road_paint(color: Color, rough: float = 0.75) -> Material:
+	if "--clean-surfaces" in OS.get_cmdline_user_args():
+		return mat(color, rough)
+	var key := color.to_html()
+	if _paint_cache.has(key):
+		return _paint_cache[key]
+	var m := ShaderMaterial.new()
+	m.shader = load(SHADER_DIR + "road_paint.gdshader")
+	m.set_shader_parameter("weather_masks", weather_masks())
+	m.set_shader_parameter("paint", Vector3(color.r, color.g, color.b))
+	m.set_meta("weathered_kind", "paint")
+	_paint_cache[key] = m
+	return m
+
+static var _grime_overlay: ShaderMaterial = null
+
+## Multiply pass for imported building modules and facade sheets (next_pass).
+static func grime_overlay() -> ShaderMaterial:
+	if _grime_overlay == null:
+		_grime_overlay = ShaderMaterial.new()
+		_grime_overlay.shader = load(SHADER_DIR + "grime_overlay.gdshader")
+		_grime_overlay.set_shader_parameter("weather_masks", weather_masks())
+		_grime_overlay.render_priority = 1
+	return _grime_overlay
+
 ## Procedural facade sheets (ART-03/ART-04). A 144 m block of plain boxes reads
 ## as a prototype; a window/floor grid on the same box reads as a building.
 ## BoxMesh faces are 0..1 UV, so one sheet is one facade elevation.
@@ -110,6 +196,8 @@ static func facade(kind: String) -> StandardMaterial3D:
 		"workshop": m.uv1_scale = Vector3(2.0, 1.0, 1.0)
 		_: m.uv1_scale = Vector3(2.0, 2.0, 1.0)
 	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	if not "--clean-surfaces" in OS.get_cmdline_user_args():
+		m.next_pass = grime_overlay()
 	_facade_cache[kind] = m
 	return m
 
@@ -160,7 +248,53 @@ static func _facade_image(kind: String) -> ImageTexture:
 				img.fill_rect(Rect2i(0, fy * 12, 256, 2), Color(0.20, 0.23, 0.25))
 		_:
 			img.fill(Color(0.72, 0.70, 0.65))
+	if not "--clean-surfaces" in OS.get_cmdline_user_args():
+		_weather_facade(img, kind)
+	img.generate_mipmaps()
 	return ImageTexture.create_from_image(img)
+
+## Wave B: bake tropical weathering into a facade sheet: dirty rain streaks
+## running down from every window sill, algae mottling and a faded top band.
+## Deterministic per kind; the sheet still tiles (drips wrap vertically).
+static func _weather_facade(img: Image, kind: String) -> void:
+	var w := img.get_width()
+	var h := img.get_height()
+	var mott := FastNoiseLite.new()
+	mott.seed = 911 + kind.length() * 13
+	mott.frequency = 0.035
+	mott.fractal_octaves = 3
+	var streak := FastNoiseLite.new()
+	streak.seed = 377 + kind.length() * 7
+	streak.frequency = 1.0
+	streak.fractal_octaves = 2
+	var src := img.duplicate() as Image
+	for x in w:
+		var drip := 0.0
+		# two passes so drips that start near the bottom wrap over the top edge
+		for pass_i in 2:
+			for y in h:
+				var c := src.get_pixel(x, y)
+				var lum := (c.r + c.g + c.b) / 3.0
+				var above := src.get_pixel(x, (y - 1 + h) % h)
+				var above_lum := (above.r + above.g + above.b) / 3.0
+				var is_wall := lum > 0.42
+				if is_wall and above_lum < 0.36:
+					drip = 1.0
+				elif not is_wall:
+					drip = 0.0
+				else:
+					drip *= 0.955
+				if pass_i == 0:
+					continue
+				var col_streak := streak.get_noise_2d(float(x) * 0.9, float(y) * 0.025) * 0.5 + 0.5
+				var m := mott.get_noise_2d(float(x), float(y)) * 0.5 + 0.5
+				var k := 1.0
+				if is_wall:
+					k -= drip * (0.22 + 0.25 * col_streak)
+					k -= smoothstep(0.62, 0.9, col_streak) * 0.10
+				k -= smoothstep(0.45, 0.85, m) * 0.16
+				var out := Color(c.r * k, c.g * (k + 0.015 * m), c.b * (k - 0.02 * m))
+				img.set_pixel(x, y, out)
 
 static func glass() -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()

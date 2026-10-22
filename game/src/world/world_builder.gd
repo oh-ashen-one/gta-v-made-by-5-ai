@@ -88,6 +88,7 @@ func build(seed_value: int = 20261021) -> void:
 	_kerb_markings()
 	_scatter_props()
 	_landscape()
+	SurfaceDressing.dress(_world_root)   # wave B materials: grime, wall/roof clutter
 	_batch_static_primitives()
 
 # ---------------------------------------------------------------- environment
@@ -183,8 +184,8 @@ func _ground() -> void:
 	ground.add_child(shape)
 
 func _roads() -> void:
-	var asphalt := Palette.mat_textured(Palette.ASPHALT, "asphalt", Vector3(8.0, 1.0, 120.0), 0.9)
-	var paint := Palette.mat(Palette.PAINT_LINE, 0.75)
+	var asphalt := Palette.road_asphalt()
+	var paint := Palette.road_paint(Palette.PAINT_LINE)
 	for x in X_LINES:
 		var strip := _solid_box(Vector3(ROAD_HALF * 2.0, 0.06, 760.0), Vector3(x, 0.03, 0.0), asphalt)
 		strip.name = "RoadX"
@@ -1161,8 +1162,8 @@ func _kerb_markings() -> void:
 						for offset: float in [ROAD_HALF - 0.35, ROAD_HALF - 0.58]:
 							yellow.append(_marking(axis, line + side * offset, mid, Vector3(0.12, 1.0, length)))
 					cursor = maxf(cursor, gap.y)
-	_marking_batch(yellow, Palette.mat(Color(0.92, 0.72, 0.16), 0.72))
-	_marking_batch(white, Palette.mat(Color(0.90, 0.90, 0.86), 0.75))
+	_marking_batch(yellow, Palette.road_paint(Color(0.92, 0.72, 0.16)))
+	_marking_batch(white, Palette.road_paint(Color(0.90, 0.90, 0.86)))
 
 ## Far-shore planting keeps clear of the ArtScience lotus and the Flyer terminal
 ## (release critic: shoreline tree rows grew through both).
@@ -1230,6 +1231,8 @@ func _batch_static_primitives() -> void:
 		if mi.mesh == null or mi.get_child_count() > 0 or not mi.get_groups().is_empty() or not mi.get_meta_list().is_empty() or mi.get_script() != null: continue
 		if not mi.is_visible_in_tree() or mi.visibility_range_end > 0.0 or mi.skin != null: continue
 		var mat := mi.material_override as StandardMaterial3D
+		# Weathered surface shaders (Palette, wave B) batch like textured materials.
+		var shader_mat := mi.material_override as ShaderMaterial
 		var mesh_key := ""
 		var mat_key := ""
 		var unit_scale := Vector3.ONE
@@ -1239,7 +1242,7 @@ func _batch_static_primitives() -> void:
 			# Repeated imported props (trees, ferns, planters, condensers, lamps,
 			# railings, side skyline) keep their own surface materials; tinted
 			# single-surface modules (shophouses) merge per shared tint.
-			if mat != null: continue
+			if mat != null or shader_mat != null: continue
 			mesh_key = "mesh#%d" % mi.mesh.get_instance_id()
 			mat_key = "surfaces"
 			if mi.mesh.get_surface_count() == 1 and mi.get_surface_override_material(0) is StandardMaterial3D:
@@ -1249,7 +1252,7 @@ func _batch_static_primitives() -> void:
 			elif not _imported_batchable(mi):
 				continue
 			source = _scene_source(mi)
-		elif mat == null or mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+		elif shader_mat == null and (mat == null or mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED):
 			continue
 		elif mi.mesh is BoxMesh:
 			var bm := mi.mesh as BoxMesh
@@ -1265,6 +1268,8 @@ func _batch_static_primitives() -> void:
 			mesh_key = "sph|%.3f|%.3f|%d|%d|%s" % [sm.radius, sm.height, sm.radial_segments, sm.rings, sm.is_hemisphere]
 		else:
 			continue
+		if mat_key == "" and shader_mat != null:
+			mat_key = "obj#%d" % shader_mat.get_instance_id()
 		if mat_key == "":
 			mat_key = ("obj#%d" % mat.get_instance_id()) if (mat.albedo_texture != null or mat.normal_texture != null or mat.roughness_texture != null) else \
 				"c|%s|%.3f|%.3f|%.3f|%s|%s|%.3f|%d|%d" % [mat.albedo_color, mat.roughness, mat.metallic, mat.metallic_specular, mat.emission_enabled, mat.emission, mat.emission_energy_multiplier, mat.cull_mode, mat.shading_mode]
@@ -1283,7 +1288,7 @@ func _batch_static_primitives() -> void:
 		var cell := Vector2i(floori(xform.origin.x / 160.0), floori(xform.origin.z / 160.0))
 		var key := "%s#%s#%d" % [mesh_key, mat_key, mi.cast_shadow]
 		if not groups.has(key):
-			groups[key] = {"mesh": batch_mesh, "material": mat, "shadow": mi.cast_shadow, "xforms": [], "nodes": [], "cells": [], "source": source}
+			groups[key] = {"mesh": batch_mesh, "material": shader_mat if shader_mat != null else mat, "shadow": mi.cast_shadow, "xforms": [], "nodes": [], "cells": [], "source": source}
 		groups[key]["xforms"].append(Transform3D(xform.basis * Basis.from_scale(unit_scale), xform.origin) if mesh_key == "box" else xform)
 		groups[key]["nodes"].append(mi)
 		groups[key]["cells"].append(cell)
@@ -1471,7 +1476,7 @@ func _landscape() -> void:
 # ------------------------------------------------------- junctions & fittings
 ## Crosswalks, stop lines and signal heads at every intersection (TRAFFIC-01).
 func _junctions() -> void:
-	var paint := Palette.mat_textured(Palette.PAINT_LINE, "concrete", Vector3(4.0, 1.0, 4.0), 0.8)
+	var paint := Palette.road_paint(Palette.PAINT_LINE)
 	for x in X_LINES:
 		for z in Z_LINES:
 			for axis in 2:
