@@ -52,7 +52,10 @@ func _grab() -> void:
 	_frame += 1
 	img.save_jpg("%s/frames/f%05d.jpg" % [out_dir, _frame], 0.9)
 	if _jsonl:
-		_jsonl.store_line(JSON.stringify({"file": "f%05d.jpg" % _frame, "seconds": _elapsed(), "phase": _phase, "kmh": snappedf(car.speed_kmh(), 0.1) if car else 0.0}))
+		var row := {"file": "f%05d.jpg" % _frame, "seconds": _elapsed(), "phase": _phase, "kmh": snappedf(car.speed_kmh(), 0.1) if car else 0.0}
+		var life := main.get_node_or_null("DriveLife")
+		if life != null: row["life"] = life.life_counts(get_viewport().get_camera_3d())
+		_jsonl.store_line(JSON.stringify(row))
 
 func _still(label: String) -> void:
 	await RenderingServer.frame_post_draw

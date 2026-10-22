@@ -51,6 +51,7 @@ func _ready() -> void:
 	traffic.name = "Traffic"
 	add_child(traffic)
 	traffic.setup(world, player)
+	DriveLife.attach(self, world, traffic, player)   # driving-q rQ3: junction life while driving
 
 	mission = Mission.new()
 	mission.name = "Mission"

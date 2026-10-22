@@ -84,6 +84,14 @@ flat grey-pink haze sky are retired.
   bikes and median shrubs stay single, opaque silhouettes. Cars carry a grooved, blocky tyre with a bulged sidewall, a
   polished ten-spoke alloy and a visible brake disc and caliper. Paint is an even base coat under a sharp clear-coat;
   daylight lamp coronas stay small; skid marks are feathered, translucent rubber; wheelspin smoke is thin.
+- Driving rQ3: junction life while driving (drive_life.gd): the signal on the player's axis is green on arrival, two cars
+  queue at each cross-street stop line with brake lamps lit and a third rolls up, oncoming cars hold short of the box
+  while the player is near it, a car leads ahead and one paces in the kerb lane, and ~30-40 people walk the footways
+  and wait at the crossings. Every corner pole carries a hooded three-aspect head facing each approach. The player's
+  sedan is a deep metallic cobalt (metal flake, harder clear-coat) no traffic car shares; tail lamps show light-guide
+  bars and an outline; chrome twin exhaust tips. Chase lens ~2.3 m (2.05 m at speed), looking further ahead, so a car
+  20 m ahead stays visible over the roof. Behind the wheel the HUD drops the weapon readout and fades the objective
+  card after ~5 s and the exit prompt after ~3 s.
 - No camera shake by default; reduced-shake setting halves it further. The only vehicle shake is a short (~0.4 s) kick on a hard collision.
 - Capture convention: 16:9, 1280×720 internal, HUD visible for gameplay shots and hidden for beauty shots.
 

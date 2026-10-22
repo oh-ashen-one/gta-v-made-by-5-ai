@@ -94,6 +94,8 @@ var _cam_lat := 0.0
 var _cam_lat_v := 0.0
 ## QA readback (self_test / showcase): last values applied to the body.
 var last_roll := 0.0
+## Held brake (queued at a red light): brake lamps stay lit while stopped.
+var hold_brake := false
 var last_pitch := 0.0
 var skid_marks_laid := 0
 var sparks_fired := 0
@@ -255,7 +257,7 @@ func _build_coronas() -> void:
 		_smoke_tex = _make_smoke_tex()
 		_corona_mesh = QuadMesh.new()
 		_corona_mesh.size = Vector2(1.0, 1.0)
-		_tail_mat = _corona_material(Color(1.0, 0.10, 0.05), 0.55)
+		_tail_mat = _corona_material(Color(1.0, 0.10, 0.05), 0.32)
 		_brake_mat = _corona_material(Color(1.0, 0.16, 0.08), 1.5)  # rQ2: was 2.6 (100-150 px halo)
 		_head_mat = _corona_material(Color(1.0, 0.93, 0.80), 0.4)  # rQ2: daylight; 1.0 read as a floating white sprite
 	var rear_z := _aabb.end.z - 0.16
@@ -318,8 +320,37 @@ func _build_contact_shadow() -> void:
 ## lettering, no brands.
 static var _plate_mat: StandardMaterial3D
 const PLATE_PREFIX := ["SJK", "SKF", "SLA", "SGB", "SMT", "SNX", "SDR", "SKP"]
+## rQ3: original lettering on the plain van flanks (the generated livery
+## was pseudo-text). Fictional local firms, no real brands.
+const VAN_FIRMS := ["TEMBUSU MOVERS\nhouse & office  6274 1180", "KAMPONG FRESH\nwholesale produce  6352 0947", "ORCHARD REACH AIRCON\nservicing & repair  6291 5530", "LIM BROS FLORIST\nwreaths & bouquets  6448 2206"]
+func _build_van_livery() -> void:
+	var seed_n := absi(car.get_instance_id())
+	var text: String = VAN_FIRMS[seed_n % VAN_FIRMS.size()]
+	for side in [-1.0, 1.0]:
+		var label := Label3D.new()
+		label.text = text
+		label.font_size = 96
+		label.pixel_size = 0.0031
+		label.outline_size = 0
+		label.modulate = Color(0.05, 0.22, 0.26)
+		label.shaded = true
+		label.double_sided = false
+		label.line_spacing = -8.0
+		label.position = Vector3(side * (_aabb.size.x * 0.5 + 0.012), _aabb.position.y + _aabb.size.y * 0.55, _aabb.get_center().z + _aabb.size.z * 0.08)
+		label.rotation = Vector3(0.0, side * PI * 0.5, 0.0)
+		label.visibility_range_end = 70.0
+		if _body_node != null:
+			var holder := Node3D.new()
+			_body_node.add_child(holder)
+			holder.transform = _base_xform.affine_inverse()
+			holder.add_child(label)
+		else:
+			add_child(label)
+
 func _build_rear_detail() -> void:
-	if car.kind == "van": return
+	if car.kind == "van":
+		_build_van_livery()
+		return
 	if _plate_mat == null:
 		_plate_mat = StandardMaterial3D.new()
 		_plate_mat.albedo_color = Color(0.93, 0.76, 0.12)
@@ -358,6 +389,53 @@ func _build_rear_detail() -> void:
 	label.rotation = Vector3(0.0, 0.0, 0.0)
 	label.visibility_range_end = 45.0
 	plate.add_child(label)
+	_build_exhaust(holder, rear, y0, h)
+
+## rQ3: polished twin exhaust tips under the rear bumper (critic Q2: no
+## metal detail at the rear). A chrome outer sleeve and a sooty bore per side.
+static var _chrome_mat: StandardMaterial3D
+static var _soot_mat: StandardMaterial3D
+static var _tip_mesh: CylinderMesh
+static var _bore_mesh: CylinderMesh
+func _build_exhaust(holder: Node3D, rear: float, y0: float, h: float) -> void:
+	if _chrome_mat == null:
+		_chrome_mat = StandardMaterial3D.new()
+		_chrome_mat.albedo_color = Color(0.93, 0.93, 0.95)
+		_chrome_mat.metallic = 1.0
+		_chrome_mat.roughness = 0.12
+		_soot_mat = StandardMaterial3D.new()
+		_soot_mat.albedo_color = Color(0.025, 0.022, 0.02)
+		_soot_mat.roughness = 0.9
+		_tip_mesh = CylinderMesh.new()
+		_tip_mesh.top_radius = 0.048
+		_tip_mesh.bottom_radius = 0.052
+		_tip_mesh.height = 0.2
+		_tip_mesh.radial_segments = 20
+		_tip_mesh.rings = 1
+		_bore_mesh = CylinderMesh.new()
+		_bore_mesh.top_radius = 0.038
+		_bore_mesh.bottom_radius = 0.038
+		_bore_mesh.height = 0.012
+		_bore_mesh.radial_segments = 16
+		_bore_mesh.rings = 1
+	var hx := _aabb.size.x * 0.5
+	var xs: Array = [-0.30, 0.30] if car.kind == "coupe" else [-hx * 0.62, -hx * 0.62 + 0.13]
+	for x: float in xs:
+		var tip := MeshInstance3D.new()
+		tip.mesh = _tip_mesh
+		tip.material_override = _chrome_mat
+		tip.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+		tip.position = Vector3(x, y0 + h * 0.17, rear - 0.04)
+		tip.visibility_range_end = 70.0
+		holder.add_child(tip)
+		var bore := MeshInstance3D.new()
+		bore.mesh = _bore_mesh
+		bore.material_override = _soot_mat
+		bore.rotation = tip.rotation
+		bore.position = tip.position + Vector3(0.0, 0.0, 0.098)
+		bore.visibility_range_end = 70.0
+		bore.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		holder.add_child(bore)
 
 func body_node() -> Node3D:
 	return _body_node
@@ -393,7 +471,7 @@ func _physics_process(delta: float) -> void:
 	_heave_v += ((0.0 - _heave) * SPRING_K * 1.4 - _heave_v * SPRING_D) * delta
 	_heave += _heave_v * delta
 	_apply_body()
-	_set_brake(_long_acc < -3.0 and absf(speed) > 0.6 or (car.driver_is_player and Input.is_action_pressed("move_back") and speed > 0.3))
+	_set_brake(hold_brake or _long_acc < -3.0 and absf(speed) > 0.6 or (car.driver_is_player and Input.is_action_pressed("move_back") and speed > 0.3))
 	if car.driver_is_player:
 		_player_fx(delta, speed, pre_speed)
 
@@ -678,6 +756,7 @@ func on_player_changed(driving: bool) -> void:
 	if driving:
 		build_player_rig()
 		_cam_snap = true
+		if car.damage != null: car.damage.make_hero()
 	_set_self_layer(driving)
 	if _probe != null:
 		_probe.visible = driving
@@ -749,7 +828,7 @@ func _lay_skids() -> void:
 		mm.set_instance_transform(_skid_head, Transform3D(b, mid))
 		# Patchy rubber: per-segment opacity jitter so the line is not a ruled stripe.
 		var patch := 0.72 + 0.28 * sin(float(skid_marks_laid) * 1.7 + float(i) * 2.3) * sin(float(skid_marks_laid) * 0.37)
-		mm.set_instance_color(_skid_head, Color(1.0, 1.0, 1.0, clampf((0.40 + _slip * 0.22) * patch, 0.0, 0.62)))
+		mm.set_instance_color(_skid_head, Color(1.0, 1.0, 1.0, clampf((0.62 + _slip * 0.26) * patch, 0.0, 0.86)))  # rQ3: read as shadow at 0.4
 		_skid_head = (_skid_head + 1) % SKID_COUNT
 		mm.visible_instance_count = mini(SKID_COUNT, maxi(mm.visible_instance_count, _skid_head if mm.visible_instance_count < SKID_COUNT else SKID_COUNT))
 		if skid_marks_laid >= SKID_COUNT: mm.visible_instance_count = SKID_COUNT
@@ -892,7 +971,9 @@ func _update_camera(delta: float) -> void:
 	# driving-q: the lens settles lower as speed builds (1.93 m -> ~1.67 m
 	# above the road at top speed) for a lower, more cinematic chase angle
 	# with more grazing road in the lower third.
-	var height := (1.38 - 0.26 * smoothstep(0.25, 0.9, ratio)) * size_k
+	# rQ3: ~0.4 m higher (2.3 m -> 2.05 m at speed) so a low car 20 m ahead
+	# stays visible over the roof (critic Q2: the struck coupe was hidden).
+	var height := (1.75 - 0.25 * smoothstep(0.25, 0.9, ratio)) * size_k
 	var fwd := Vector3(-sin(_cam_yaw), 0.0, -cos(_cam_yaw))
 	var cam_right := Vector3(cos(_cam_yaw), 0.0, -sin(_cam_yaw))
 	# Weight swing: the camera is thrown outward in a corner and settles back.
@@ -912,7 +993,7 @@ func _update_camera(delta: float) -> void:
 	sq.shape = sph
 	sq.transform = Transform3D(Basis.IDENTITY, pivot)
 	sq.motion = desired - pivot
-	sq.collision_mask = 1
+	sq.collision_mask = 1 | 8   # rQ3: never park the lens inside a car behind
 	sq.exclude = [car.get_rid()]
 	var frac: PackedFloat32Array = space.cast_motion(sq)
 	if frac.size() >= 1 and frac[0] < 1.0:
@@ -921,7 +1002,7 @@ func _update_camera(delta: float) -> void:
 		_cam_pos = desired
 	else:
 		_cam_pos = _cam_pos.lerp(desired, clampf(delta * 14.0, 0.0, 1.0))
-	var look := base + Vector3(0.0, 1.0 * size_k, 0.0) + fwd * (2.6 + ratio * 3.5)
+	var look := base + Vector3(0.0, 1.05 * size_k, 0.0) + fwd * (4.2 + ratio * 4.0)
 	var xf := Transform3D(Basis.IDENTITY, _cam_pos).looking_at(look, Vector3.UP)
 	# Collision kick only (LOOK_DEV: no default shake); decays in ~0.4 s.
 	if _trauma > 0.001:

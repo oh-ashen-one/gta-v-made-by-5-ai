@@ -36,7 +36,9 @@ func setup(w: WorldBuilder, p: Player, m: Mission) -> void:
 	mission = m
 	layer = 10
 	_build()
-	Events.objective_changed.connect(func(text): _objective_label.text = String(text).replace("Harbour Relay — ", ""))
+	Events.objective_changed.connect(func(text):
+		_objective_label.text = String(text).replace("Harbour Relay — ", "")
+		_objective_flash = 5.0)
 	Events.interaction_prompt.connect(func(text): _prompt_label.text = text)
 	Events.health_changed.connect(_on_health)
 	Events.ammo_changed.connect(_on_ammo)
@@ -56,7 +58,7 @@ func _build() -> void:
 	add_child(root)
 	_fit_layout()
 	get_viewport().size_changed.connect(_fit_layout)
-	_panel(root,Vector2(24,24),Vector2(620,78),Color(.025,.055,.058,.88))
+	var obj_panel := _panel(root,Vector2(24,24),Vector2(620,78),Color(.025,.055,.058,.88))
 	var tag := _mk_label(root,Vector2(40,34),11,Color(.57,.78,.70))
 	tag.text="HARBOUR RELAY"
 	_objective_label=_mk_label(root,Vector2(40,53),18,Color(.96,.94,.86))
@@ -74,9 +76,11 @@ func _build() -> void:
 	_health_label=_mk_label(root,Vector2(24,678),12,Color(.88,.93,.88));_health_label.text="HEALTH 100"
 	# Wave 5 (rendered critic): the white ammo text was unreadable over bright
 	# sky and towers, so the readout gets the objective card's backing plate.
-	_panel(root,Vector2(1092,24),Vector2(164,66),Color(.025,.055,.058,.80))
+	var ammo_panel := _panel(root,Vector2(1092,24),Vector2(164,66),Color(.025,.055,.058,.80))
 	_ammo_label=_mk_label(root,Vector2(1110,30),26,Color(.97,.95,.88));_ammo_label.text="12 / 96"
 	_weapon_label=_mk_label(root,Vector2(1112,64),12,Color(.65,.74,.74));_weapon_label.text="PISTOL"
+	_drive_fade_items = [obj_panel, tag, _objective_label]
+	_drive_hide_items = [ammo_panel, _ammo_label, _weapon_label]
 	_wanted_label=_mk_label(root,Vector2(815,110),16,Color(.97,.68,.36));_wanted_label.size=Vector2(430,45)
 	_wanted_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	_stats_label=_mk_label(root,Vector2(1000,660),18,Color(.94,.95,.92));_stats_label.size=Vector2(245,40)
@@ -239,9 +243,32 @@ func _on_notify(text: String, kind: String) -> void:
 		var label := weak_label.get_ref() as Label
 		if is_instance_valid(label): label.queue_free())
 
+## driving-q rQ3: behind the wheel the frame belongs to the road (critic Q2:
+## "the prototype HUD covers a large share of the frame"). The weapon readout
+## hides, the objective card shows for a few seconds after entering or after a
+## new objective and then fades, and the exit prompt fades after 3 s.
+var _drive_fade_items: Array = []
+var _drive_hide_items: Array = []
+var _car_time := 0.0
+var _objective_flash := 0.0
+
+func _drive_declutter(delta: float) -> void:
+	var driving := Game.mode == Game.MODE_CAR
+	_car_time = _car_time + delta if driving else 0.0
+	_objective_flash = maxf(0.0, _objective_flash - delta)
+	var obj_a := 1.0
+	if driving:
+		obj_a = maxf(clampf((5.0 - _car_time) / 0.6, 0.0, 1.0), clampf(_objective_flash / 0.6, 0.0, 1.0))
+	for item in _drive_fade_items:
+		(item as CanvasItem).modulate.a = obj_a
+	for item in _drive_hide_items:
+		(item as CanvasItem).modulate.a = 0.0 if driving else 1.0
+	_prompt_label.modulate.a = clampf((3.5 - _car_time) / 0.5, 0.0, 1.0) if driving else 1.0
+
 func _process(_delta: float) -> void:
 	if player == null:
 		return
+	_drive_declutter(_delta)
 	# Gameplay messages must not draw over modal controls or settings values.
 	_notifications.visible = bool(Game.settings.get("hud_visible",true)) and not Game.simulation_paused and not _title_panel.visible and not _settings_panel.visible
 	var speed := 0.0

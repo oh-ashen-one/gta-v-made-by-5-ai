@@ -15,8 +15,9 @@ uniform sampler2D albedo_tex : source_color, filter_linear_mipmap_anisotropic, r
 uniform sampler2D orm_tex : hint_default_white, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform vec4 albedo_tint : source_color = vec4(1.0);
 uniform float paint_kind = 0.0;          // 0: light/neutral paint (sedan, van, police), 1: saturated paint (coupe)
-uniform float proxy_normal_mix = 0.62;   // how much the panels follow the smooth proxy shape
+uniform float proxy_normal_mix = 0.8;    // rQ3: 0.62 left facets in close traffic paint   // how much the panels follow the smooth proxy shape
 uniform float lamp_glow = 1.0;           // 0 disables shader lamps (kinds whose texture has no lamp texels)
+uniform float plain_sides = 0.0;         // rQ3: 1 paints out the generated van's pseudo-text livery
 uniform float badge_mask = 0.0;          // 1 paints over the generated model's boot badge (no marque on our cars)
 
 // Model -> normalised car space rows: x in [-1,1] (right), y in [0,1] (up),
@@ -27,6 +28,8 @@ instance uniform vec4 car_row_z = vec4(0.0);
 // x: brake (0..1), y: lamps on (0..1), z: overall wear (0..1), w: paint override strength
 instance uniform vec4 car_state = vec4(0.0, 0.0, 0.0, 0.0);
 instance uniform vec4 paint_color : source_color = vec4(0.8, 0.8, 0.8, 1.0);
+// rQ3 hero finish: x metal flake (0..1), y gloss (0..1). Player car only.
+instance uniform vec4 paint_fx = vec4(0.0);
 // Dents: centre (model space) + radius, push direction (model space) + depth.
 instance uniform vec4 dent0 = vec4(0.0);
 instance uniform vec4 dent1 = vec4(0.0);
@@ -122,6 +125,16 @@ void fragment() {
 		float p_sat = (p_mx - min(panel.r, min(panel.g, panel.b))) / (p_mx + 0.001);
 		paint = max(paint, smoothstep(0.40, 0.60, p_sat) * smoothstep(0.08, 0.18, p_mx) * step(panel.g, panel.r) * (1.0 - upper * 0.6));
 	}
+	// rQ3: with a paint override (hero / civilian colours) the light-paint
+	// mask also takes the mid-grey panels the generated sedan bakes in (the
+	// 0.30-0.48 luminance ramp left most of the hero body grey). Black trim,
+	// tyres and lamps stay out.
+	if (paint_kind < 0.5 && car_state.w > 0.0) {
+		float p_l = dot(panel, vec3(0.299, 0.587, 0.114));
+		float p_mx2 = max(panel.r, max(panel.g, panel.b));
+		float p_sat2 = (p_mx2 - min(panel.r, min(panel.g, panel.b))) / (p_mx2 + 0.001);
+		paint = max(paint, smoothstep(0.10, 0.2, p_l) * smoothstep(0.12, 0.2, lum) * (1.0 - smoothstep(0.22, 0.36, max(sat, p_sat2))));
+	}
 	paint *= 1.0 - glass;
 	// Luminance-normalise the panel colour: low-frequency grime in the source
 	// texture is mostly a brightness swing, so keep the hue and pin the value.
@@ -133,9 +146,15 @@ void fragment() {
 	// Tail lamps: strongly red texels on the rear quarter.
 	float red = smoothstep(0.22, 0.42, col.r - max(col.g, col.b)) * smoothstep(0.66, 0.86, v_car.z) * (1.0 - upper * 0.7);
 	red *= lamp_glow * (1.0 - step(0.5, paint_kind));
+	// rQ3: the generated sedan has a dark red strip down the centre of the
+	// boot and bumper (critic: "maroon band, UV bleed"). Lamps sit outboard;
+	// red texels in the centre band of the rear are body paint.
+	float centre_rear = (1.0 - smoothstep(0.30, 0.42, abs(v_car.x))) * smoothstep(0.62, 0.78, v_car.z) * step(paint_kind, 0.5) * (1.0 - glass);
+	red *= 1.0 - centre_rear;
+	paint = max(paint, centre_rear * smoothstep(0.18, 0.3, v_car.y) * badge_mask);
 	// The generated sedan carries a marque-like badge on the boot lid: paint it out.
 	float badge = badge_mask * (1.0 - smoothstep(0.07, 0.10, abs(v_car.x))) * smoothstep(0.86, 0.91, v_car.z) * smoothstep(0.36, 0.40, v_car.y) * (1.0 - smoothstep(0.62, 0.66, v_car.y));
-	vec3 badge_col = car_state.w > 0.0 ? paint_color.rgb : panel;  // rQ2: the flat grey fill read as a dark stripe down the boot
+	vec3 badge_col = car_state.w > 0.0 ? paint_color.rgb : vec3(0.62);  // rQ2: the flat grey fill read as a dark stripe down the boot
 	// ...and the ring on the grille: fill it with dark grille mesh colour.
 	float grille_badge = badge_mask * (1.0 - smoothstep(0.06, 0.09, abs(v_car.x))) * (1.0 - smoothstep(-0.93, -0.88, v_car.z)) * smoothstep(0.38, 0.42, v_car.y) * (1.0 - smoothstep(0.60, 0.64, v_car.y));
 	col = mix(col, vec3(0.045, 0.047, 0.05), grille_badge);
@@ -150,6 +169,21 @@ void fragment() {
 		paint = max(paint, badge);
 		red *= 1.0 - badge;
 	}
+	// rQ3 tail lamp internals: a dark ruby lens over a reflector bowl with
+	// stacked light-guide bars and a bright outline (critic: GTA's lamps show
+	// visible internal detail, ours were flat red texels).
+	float lamp_mask = smoothstep(0.15, 0.6, red);
+	float bars = smoothstep(0.35, 0.5, abs(fract(v_car.y * 34.0) - 0.5) * 2.0);
+	float cells = smoothstep(0.15, 0.3, abs(fract(v_car.x * 9.0) - 0.5) * 2.0);
+	float lamp_edge = clamp(fwidth(lamp_mask) * 3.5, 0.0, 1.0);
+	float lamp_detail = clamp(0.22 + 0.58 * bars * cells + lamp_edge * 1.1, 0.0, 1.4);
+	col = mix(col, vec3(0.30, 0.018, 0.02) * (0.55 + 0.45 * bars), lamp_mask * 0.85);
+	// rQ3: the generated van carries gibberish lettering on its flanks (critic:
+	// "DONCH OORS ELPEP"). Paint the flanks plain; car_fx adds original
+	// lettering on top.
+	float flank = plain_sides * smoothstep(0.80, 0.9, abs(v_car.x)) * smoothstep(0.24, 0.32, v_car.y) * (1.0 - smoothstep(0.80, 0.86, v_car.y)) * (1.0 - smoothstep(0.78, 0.88, abs(v_car.z))) * (1.0 - glass) * (1.0 - lamp_mask);
+	col = mix(col, vec3(0.85, 0.85, 0.83), flank);
+	paint = max(paint, flank);
 	// Smooth reflections on paint and glass.
 	float smooth_mix = proxy_normal_mix * max(paint, glass);
 	vec3 n = normalize(mix(NORMAL, v_proxy_n, smooth_mix));
@@ -176,18 +210,20 @@ void fragment() {
 	}
 	NORMAL = n;
 	ALBEDO = col;
-	float rough = mix(orm.g, 0.2, paint);
+	float rough = mix(orm.g, mix(0.2, 0.1, paint_fx.y), paint);
+	rough = mix(rough, 0.08, lamp_mask);
 	rough = mix(rough, 0.05, glass);
 	float metal = mix(orm.b, 0.12, max(paint, glass));
+	metal = mix(metal, 0.12 + 0.43 * paint_fx.x, paint);
 	rough = mix(rough, 0.62, smoothstep(0.08, 0.45, dmg) * paint);
 	ROUGHNESS = clamp(rough, 0.03, 1.0);
 	METALLIC = clamp(metal, 0.0, 1.0);
-	SPECULAR = mix(mix(0.5, 0.62, paint), 0.7, glass);
-	CLEARCOAT = max(paint, glass) * (1.0 - smoothstep(0.08, 0.4, dmg));
-	CLEARCOAT_ROUGHNESS = 0.03;
+	SPECULAR = mix(mix(0.5, mix(0.62, 0.8, paint_fx.y), paint), 0.7, glass);
+	CLEARCOAT = max(max(paint, glass), lamp_mask) * (1.0 - smoothstep(0.08, 0.4, dmg));
+	CLEARCOAT_ROUGHNESS = 0.07;   // rQ3: 0.03 bloomed the low sun into a blown roof blob (route_07)
 	// Glass reads darker and deeper so reflections dominate.
 	ALBEDO = mix(ALBEDO, ALBEDO * 0.35, glass);
 	// Lamp emission: tail lamps on when driven, flare under braking.
-	float lamp = red * (car_state.y * 0.9 + car_state.x * 3.0);  // rQ2: 5.5 bloomed into an orange blob
+	float lamp = red * (car_state.y * 0.5 + car_state.x * 2.0) * lamp_detail;  // rQ3: running lamps no longer bloom over their own detail  // rQ2: 5.5 bloomed into an orange blob
 	EMISSION = vec3(1.0, 0.07, 0.03) * lamp;
 }

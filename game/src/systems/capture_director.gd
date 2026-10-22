@@ -1056,7 +1056,10 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		if offset.length() < stop_distance: break
 		var forward := -car.global_transform.basis.z
 		var direction := offset.normalized()
-		var avoidance := _avoid_car_direction(car, forward)
+		# driving-q rQ3: probe along the way to the target, not the bonnet: mid-turn
+		# the bonnet points at cars queued on the cross street and the swerve
+		# sent the car circling the junction.
+		var avoidance := _avoid_car_direction(car, direction if direction.dot(forward) > -0.2 else forward)
 		if avoidance != Vector3.ZERO:
 			direction = avoidance
 		var angle := atan2(forward.z * direction.x - forward.x * direction.z, forward.dot(direction))

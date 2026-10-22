@@ -168,6 +168,7 @@ func run(main: Node) -> void:
 	_check("chase camera trails behind the car", car._camera.current and car._camera.top_level and chase_gap.length() > 3.0 and chase_gap.length() < 9.0 and chase_gap.dot(-car.global_transform.basis.z) < 0.0, "gap=%.2f" % chase_gap.length())
 	# driving C2: contact shadow under every car; struck cars take the momentum.
 	_check("car carries a ground contact shadow", car_fx != null and car_fx.get_node_or_null("ContactShadow") is Decal)
+	_driving_q3_checks(main, car)
 	var shove_probe := Car.new()
 	shove_probe.kind = "sedan"
 	main.add_child(shove_probe)
@@ -778,6 +779,34 @@ func _skyline_checks(world: WorldBuilder) -> void:
 ## driving-p: handbrake rotation, momentum exchange in a rear-end crash, a
 ## wall rebound that keeps some speed, and visible damage. Disclosed fixture
 ## moves on the open test road; the car is put back afterwards.
+## driving-q rQ3: junction signal heads face their approaches, the hero car has
+## a unique glossy finish with exhaust tips, and the junction-life director is
+## live while driving.
+func _driving_q3_checks(main: Node, car: Car) -> void:
+	var facing_ok := 0
+	var axes := [0, 0]
+	for lamp in get_tree().get_nodes_in_group("traffic_lamps"):
+		var mi := lamp as MeshInstance3D
+		if mi == null: continue
+		var ax := int(mi.get_meta("signal_axis", -1))
+		if ax < 0 or ax > 1: continue
+		axes[ax] += 1
+		var n := mi.global_transform.basis.y.normalized()
+		if (ax == 0 and absf(n.x) > 0.95) or (ax == 1 and absf(n.z) > 0.95): facing_ok += 1
+	_check("signal heads face both approaches at every junction", axes[0] >= 75 and axes[1] >= 75 and facing_ok == axes[0] + axes[1], "x=%d z=%d facing=%d" % [axes[0], axes[1], facing_ok])
+	var dmg: Node = car.damage
+	var clone := false
+	if dmg != null:
+		for v in get_tree().get_nodes_in_group("vehicles"):
+			if v == car or not v is Car or (v as Car).kind != car.kind or (v as Car).damage == null: continue
+			var pc: Color = (v as Car).damage.paint
+			var hc: Color = dmg.paint
+			if (pc.a <= 0.0 and hc.a <= 0.0) or (pc.a > 0.0 and hc.a > 0.0 and Vector3(pc.r - hc.r, pc.g - hc.g, pc.b - hc.b).length() < 0.12): clone = true
+	_check("player car has a hero finish no traffic car shares", dmg != null and bool(dmg.is_hero) and not clone)
+	_check("player car carries chrome exhaust tips", car.fx != null and car.fx._chrome_mat != null)
+	var life: Node = main.get_node_or_null("DriveLife")
+	_check("junction-life director builds its pools while driving", life != null and life._cars.size() > 0, "cars=%d" % [life._cars.size() if life else -1])
+
 func _driving_feel_checks(main: Node, car: Car) -> void:
 	var home := car.global_position
 	car.global_position = Vector3(0.0, 0.3, -300.0)

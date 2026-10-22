@@ -45,7 +45,7 @@ var _blocked_cached := false
 const WHEEL_FIT := {
 	"sedan": {"zf": -1.36, "zr": 1.19, "x": 0.885, "r": 0.355, "xl": 0.885},
 	"police": {"zf": -1.36, "zr": 1.19, "x": 0.885, "r": 0.355, "xl": 0.885},
-	"coupe": {"zf": -1.21, "zr": 1.21, "x": 0.925, "r": 0.355, "xl": 0.925},
+	"coupe": {"zf": -1.21, "zr": 1.21, "x": 0.905, "r": 0.355, "xl": 0.905},  # rQ3: 2 cm in, wheels sat proud of the arches
 	"van": {"zf": -1.38, "zr": 1.37, "x": 0.97, "r": 0.39, "xl": 0.74},
 }
 var _articulated: Array[Dictionary] = []

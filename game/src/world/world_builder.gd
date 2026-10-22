@@ -1524,28 +1524,14 @@ func _junctions() -> void:
 				for sz: float in [-1.0, 1.0]:
 					_traffic_light(Vector3(x + sx * (ROAD_HALF + 1.4), 0.0, z + sz * (ROAD_HALF + 1.4)), 0 if sx*sz>0 else 1)
 
-func _traffic_light(pos: Vector3, axis: int = 0) -> void:
+func _traffic_light(pos: Vector3, _axis: int = 0) -> void:
 	_cyl(Vector3(0.16, 3.4, 0.16), pos + Vector3(0.0, 1.7, 0.0), Palette.mat_textured(Palette.METAL_DARK, "metal", Vector3(1.0, 2.0, 1.0), 0.5, 0.6))
-	var head := MeshInstance3D.new()
-	var bm := BoxMesh.new()
-	bm.size = Vector3(0.36, 0.95, 0.3)
-	head.mesh = bm
-	head.material_override = Palette.mat(Palette.METAL_DARK, 0.5, 0.5)
-	head.position = pos + Vector3(0.0, 3.4, 0.0)
-	_world_root.add_child(head)
-	var lamps := [Color(0.95, 0.2, 0.15), Color(0.95, 0.75, 0.2), Color(0.25, 0.9, 0.35)]
-	for i: int in 3:
-		var lamp := MeshInstance3D.new()
-		var sm := SphereMesh.new()
-		sm.radius = 0.11
-		sm.height = 0.22
-		lamp.mesh = sm
-		lamp.add_to_group("traffic_lamps")
-		lamp.set_meta("signal_axis",axis)
-		lamp.set_meta("lamp_index",i)
-		lamp.material_override = Palette.emissive(lamps[i], 0.6 if i != 2 else 2.4)
-		lamp.position = pos + Vector3(0.0, 3.7 - i * 0.3, 0.16)
-		_world_root.add_child(lamp)
+	# driving-q rQ3: heads face their approaches (signal_heads.gd).
+	var jx: float = X_LINES[0]
+	for x in X_LINES: if absf(x - pos.x) < absf(jx - pos.x): jx = x
+	var jz: float = Z_LINES[0]
+	for z in Z_LINES: if absf(z - pos.z) < absf(jz - pos.z): jz = z
+	SignalHeads.build(_world_root, pos, Vector2(pos.x - jx, pos.z - jz))
 
 ## Everyday street fittings: bins, benches, planters, bollards, cables, AC units.
 func _street_furniture() -> void:

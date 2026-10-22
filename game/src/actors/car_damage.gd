@@ -17,16 +17,26 @@ extends Node3D
 
 const BodyShader := preload("res://assets/authored/shaders/car_body.gdshader")
 const MAX_DENTS := 4
-const MAX_DENT_DEPTH := 0.42
+const MAX_DENT_DEPTH := 0.56
 const DEBRIS_LAYER := 32
 const DEBRIS_POOL := 64
 const SCATTER_MAX := 18
 ## Civilian sedan paint (Singapore traffic is mostly white, silver, grey and black).
 const SEDAN_PAINTS := [
 	Color(0.86, 0.86, 0.84), Color(0.60, 0.61, 0.63), Color(0.035, 0.036, 0.04),
-	Color(0.20, 0.21, 0.23), Color(0.06, 0.11, 0.25), Color(0.42, 0.035, 0.03),
+	Color(0.20, 0.21, 0.23), Color(0.34, 0.23, 0.14), Color(0.42, 0.035, 0.03),
 	Color(0.60, 0.53, 0.40), Color(0.84, 0.85, 0.86), Color(0.12, 0.17, 0.15),
 ]
+
+## driving-q rQ3: traffic coupes are repainted away from the hero's colour
+## (critic: a red traffic coupe read as a clone of the player's red coupe).
+const COUPE_PAINTS := [
+	Color(0.80, 0.81, 0.82), Color(0.03, 0.03, 0.035), Color(0.90, 0.90, 0.88),
+	Color(0.05, 0.19, 0.42), Color(0.86, 0.60, 0.05), Color(0.08, 0.30, 0.27),
+]
+## Player car paint: a deep metallic cobalt no traffic car uses, with metal flake
+## and a harder clear-coat (critic Q2: the hero read as flat grey under backlight).
+const HERO_SEDAN := Color(0.045, 0.17, 0.56)
 
 static var _mat_cache: Dictionary = {}
 static var _debris_pool: Array[RigidBody3D] = []
@@ -50,6 +60,7 @@ var _dent_next := 0
 var _glass_fx: GPUParticles3D
 var _state := Vector4(0.0, 0.0, 0.0, 0.0)
 var paint := Color(0.0, 0.0, 0.0, 0.0)
+var is_hero := false
 ## QA readback
 var dents_applied := 0
 var debris_spawned := 0
@@ -105,8 +116,58 @@ func _swap_material(m: MeshInstance3D) -> void:
 			sm.set_shader_parameter("paint_kind", 1.0 if car.kind == "coupe" else 0.0)
 			sm.set_shader_parameter("lamp_glow", 0.0 if car.kind == "coupe" else 1.0)
 			sm.set_shader_parameter("badge_mask", 1.0 if car.kind == "sedan" or car.kind == "police" else 0.0)
+			sm.set_shader_parameter("plain_sides", 1.0 if car.kind == "van" else 0.0)
 			_mat_cache[key] = sm
 		m.set_surface_override_material(i, sm)
+
+## Player took this car: hero paint, and no other car of this kind in the
+## city keeps the same colour.
+func make_hero() -> void:
+	is_hero = true
+	if car.kind == "sedan" or car.kind == "police":
+		paint = HERO_SEDAN
+		paint.a = 1.0
+	_push_paint()
+	for v in car.get_tree().get_nodes_in_group("vehicles"):
+		if v == car or not v is Car or (v as Car).damage == null: continue
+		(v as Car).damage.call("avoid_paint_of", car)
+	if OS.get_cmdline_user_args().has("--drive-life-debug"):
+		var same := 0
+		var total := 0
+		for v in car.get_tree().get_nodes_in_group("vehicles"):
+			if v == car or not v is Car or (v as Car).kind != car.kind or (v as Car).damage == null: continue
+			total += 1
+			if (v as Car).damage.paint.a <= 0.0 and paint.a <= 0.0: same += 1
+		print("[car-damage] hero %s paint=%s same-kind=%d unpainted-clones=%d" % [car.kind, paint, total, same])
+
+func clear_hero() -> void:
+	is_hero = false
+	_push_paint()
+
+## Repaint this car if it would read as a clone of `other`.
+func avoid_paint_of(other: Car) -> void:
+	if other == null or other.kind != car.kind or other.damage == null or is_hero: return
+	var their: Color = other.damage.paint
+	var mine := paint
+	var same := (their.a <= 0.0 and mine.a <= 0.0) or (their.a > 0.0 and mine.a > 0.0 and Vector3(their.r - mine.r, their.g - mine.g, their.b - mine.b).length() < 0.12)
+	if not same: return
+	var pal: Array = COUPE_PAINTS if car.kind == "coupe" else SEDAN_PAINTS
+	var seed_i := absi(int(car.get_instance_id() / 7))
+	for k in pal.size():
+		var cand: Color = pal[(seed_i + k) % pal.size()]
+		if their.a > 0.0 and Vector3(their.r - cand.r, their.g - cand.g, their.b - cand.b).length() < 0.2: continue
+		paint = cand
+		paint.a = 1.0
+		break
+	_push_paint()
+
+func _push_paint() -> void:
+	_state.w = paint.a
+	for m in _meshes:
+		if not is_instance_valid(m): continue
+		m.set_instance_shader_parameter("paint_color", paint)
+		m.set_instance_shader_parameter("paint_fx", Color(0.35, 1.0, 0.0, 0.0) if is_hero else Color(0.0, 0.0, 0.0, 0.0))
+	_push_state()
 
 ## Brake (0..1) and running lamps (0..1) for the shader lamps.
 func set_lamps(brake: float, lights: float) -> void:
@@ -136,7 +197,7 @@ func add_dent(world_point: Vector3, push: Vector3, energy: float) -> void:
 	p.z = clampf(p.z, _aabb.position.z, _aabb.end.z)
 	p.y = clampf(p.y, _aabb.position.y + _aabb.size.y * 0.28, _aabb.position.y + _aabb.size.y * 0.78)
 	var radius := lerpf(0.5, 1.15, energy)
-	var depth := lerpf(0.06, 0.32, energy)
+	var depth := lerpf(0.08, 0.46, energy)   # rQ3: 0.32 read as cosmetic after a 73 km/h hit
 	# Hitting the same corner again deepens that dent.
 	var merged := false
 	for dent in _dents:
