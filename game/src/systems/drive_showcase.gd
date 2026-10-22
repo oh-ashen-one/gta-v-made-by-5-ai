@@ -161,7 +161,10 @@ func _corner(a: Vector3, n: Vector3, c: Vector3, entry_kmh: float, handbrake: bo
 			# right-hand carriageway (wrong side for Singapore); it now uses the same
 			# rolling lookahead into the LEFT lane as the handbrake exit.
 			_steer_to(_lane_point(n, c, maxf(along_out + 11.0, 9.0)), 3.2)
-			Input.action_press("move_forward")
+			# rQ2: full throttle through the grip corner swung the car wide onto
+			# the right-hand carriageway; coast until the nose is lined up.
+			if handbrake or heading.dot(f_out) > 0.9 or car.speed_kmh() < entry_kmh:
+				Input.action_press("move_forward")
 			if await _unstick(f_out):
 				continue
 		if not still_done and heading.dot(f_out) > 0.55 and heading.dot(f_out) < 0.9:
@@ -252,7 +255,7 @@ func _run() -> void:
 	await _still("02_at_speed")
 	# 2. Junction one: brake late, roll into the corner on grip.
 	_phase = "corner1"
-	await _corner(n0, n1, n2, 48.0, false, "03_corner_grip")
+	await _corner(n0, n1, n2, 40.0, false, "03_corner_grip")
 	# 3. Accelerate, then a handbrake turn at junction two.
 	_phase = "straight2"
 	await _leg(n1, n2, 66.0, 34.0, 10.0)

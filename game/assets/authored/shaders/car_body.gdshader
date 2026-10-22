@@ -123,8 +123,13 @@ void fragment() {
 		paint = max(paint, smoothstep(0.40, 0.60, p_sat) * smoothstep(0.08, 0.18, p_mx) * step(panel.g, panel.r) * (1.0 - upper * 0.6));
 	}
 	paint *= 1.0 - glass;
-	col = mix(col, panel, paint * 0.88);
-	lum = mix(lum, dot(panel, vec3(0.299, 0.587, 0.114)), paint * 0.88);
+	// Luminance-normalise the panel colour: low-frequency grime in the source
+	// texture is mostly a brightness swing, so keep the hue and pin the value.
+	float p_lum = max(dot(panel, vec3(0.299, 0.587, 0.114)), 1e-3);
+	float ref_val = paint_kind < 0.5 ? 0.62 : 0.2;
+	vec3 base = clamp(panel * mix(1.0, ref_val / p_lum, 0.8), 0.0, 1.0);
+	col = mix(col, base, paint * 0.9);
+	lum = mix(lum, dot(base, vec3(0.299, 0.587, 0.114)), paint * 0.9);
 	// Tail lamps: strongly red texels on the rear quarter.
 	float red = smoothstep(0.22, 0.42, col.r - max(col.g, col.b)) * smoothstep(0.66, 0.86, v_car.z) * (1.0 - upper * 0.7);
 	red *= lamp_glow * (1.0 - step(0.5, paint_kind));
