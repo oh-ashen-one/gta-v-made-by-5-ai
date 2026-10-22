@@ -552,11 +552,11 @@ func _make_sparks() -> GPUParticles3D:
 	var pm := ParticleProcessMaterial.new()
 	pm.direction = Vector3(0.0, 1.0, 0.0)
 	pm.spread = 62.0
-	pm.initial_velocity_min = 6.0
-	pm.initial_velocity_max = 15.0
+	pm.initial_velocity_min = 5.0
+	pm.initial_velocity_max = 12.0
 	pm.gravity = Vector3(0.0, -18.0, 0.0)
-	pm.scale_min = 0.6
-	pm.scale_max = 1.2
+	pm.scale_min = 0.5
+	pm.scale_max = 1.0
 	var grad := Gradient.new()
 	grad.set_color(0, Color(1.0, 0.85, 0.55, 1.0))
 	grad.set_color(1, Color(1.0, 0.28, 0.04, 0.0))
@@ -565,7 +565,7 @@ func _make_sparks() -> GPUParticles3D:
 	pm.color_ramp = gt
 	p.process_material = pm
 	var quad := QuadMesh.new()
-	quad.size = Vector2(0.032, 0.42)
+	quad.size = Vector2(0.022, 0.24)
 	var m := StandardMaterial3D.new()
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -573,6 +573,10 @@ func _make_sparks() -> GPUParticles3D:
 	m.vertex_color_use_as_albedo = true
 	m.albedo_color = Color(2.1, 1.05, 0.32)
 	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	# C2: streaks that reach the lens fade out instead of filling the frame.
+	m.distance_fade_mode = BaseMaterial3D.DISTANCE_FADE_PIXEL_ALPHA
+	m.distance_fade_min_distance = 1.2
+	m.distance_fade_max_distance = 3.5
 	quad.material = m
 	p.draw_pass_1 = quad
 	return p
