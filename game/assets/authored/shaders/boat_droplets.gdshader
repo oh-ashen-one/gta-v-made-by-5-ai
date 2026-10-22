@@ -48,18 +48,28 @@ void vertex() {
 	vec3 p = p0 + v0 * age + vec3(-spd * age * 0.92, -4.9 * age * age, 0.0);
 	float alive = step(-0.02, p.y) * step(0.05, s);
 	// fade in fast, out as it falls apart
-	v_alpha = alive * smoothstep(0.0, 0.08, ph) * (1.0 - smoothstep(0.55, 1.0, ph)) * (stern ? 0.45 : 0.95);
+	// Integration A (critic water-A4: "uniform opaque round white discs"):
+	// translucent, varied, and stretched along the droplet's motion below.
+	v_alpha = alive * smoothstep(0.0, 0.08, ph) * (1.0 - smoothstep(0.45, 1.0, ph)) * (stern ? 0.28 : 0.55) * mix(0.45, 1.0, r2);
 	v_shade = 0.8 + 0.2 * r1;
 	v_uv = UV;
 	vec3 centre = (MODELVIEW_MATRIX * vec4(p, 1.0)).xyz;
-	vec2 corner = (UV - 0.5) * size * alive;
+	vec3 vel = v0 + vec3(-spd * 0.92, -9.8 * age, 0.0);
+	vec2 vdir = (MODELVIEW_MATRIX * vec4(vel, 0.0)).xy;
+	float vlen = length(vdir);
+	vec2 ax = vlen > 1e-3 ? vdir / vlen : vec2(0.0, 1.0);
+	vec2 ay = vec2(-ax.y, ax.x);
+	float stretch = 1.0 + clamp(vlen * 0.09, 0.0, 2.2);
+	vec2 q = (UV - 0.5) * size * alive;
+	vec2 corner = ax * q.y * stretch + ay * q.x * 0.55;
 	VERTEX = centre + vec3(corner, 0.0);
 	NORMAL = vec3(0.0, 0.0, 1.0);
 }
 
 void fragment() {
 	float d = length(v_uv - 0.5) * 2.0;
-	float a = smoothstep(1.0, 0.35, d) * v_alpha;
+	// Soft misty falloff instead of a hard-edged disc.
+	float a = exp(-d * d * 3.2) * smoothstep(1.0, 0.7, d) * v_alpha;
 	if (a < 0.02) {
 		discard;
 	}
