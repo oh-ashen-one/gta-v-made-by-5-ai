@@ -178,9 +178,13 @@ static func _begin(sim: PhysicalBoneSimulator3D, bodies: Dictionary, push: Vecto
 	sim.add_child(guard)
 	# Stop simulating once settled; the bodies stay where they came to rest.
 	var tree := sim.get_tree()
+	# Capture only the instance id: capturing the node itself makes Godot log
+	# "Lambda capture at index 0 was freed" when the corpse is cleaned up first.
+	var sim_id := sim.get_instance_id()
 	tree.create_timer(9.0, true, true).timeout.connect(func() -> void:
-		if is_instance_valid(sim):
-			for pb in sim.get_children():
+		var live: Object = instance_from_id(sim_id)
+		if live != null and is_instance_valid(live):
+			for pb in (live as Node).get_children():
 				if pb is PhysicalBone3D:
 					(pb as PhysicalBone3D).axis_lock_linear_x = true
 					(pb as PhysicalBone3D).axis_lock_linear_y = true
