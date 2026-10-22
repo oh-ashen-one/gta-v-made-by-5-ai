@@ -35,6 +35,8 @@ var j_p2 := Vector3.ZERO
 var j_len := 0.0
 var obstacle_gap := INF
 var stuck_time := 0.0
+## Seconds at (near) standstill anywhere; drives the out-of-sight gridlock reset.
+var idle_time := 0.0
 var scan_timer := 0.0
 var active := true
 var _brake_lamps: Array[MeshInstance3D] = []

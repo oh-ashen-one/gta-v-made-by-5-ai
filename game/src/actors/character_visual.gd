@@ -84,6 +84,8 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	animator.animation_finished.connect(_on_animation_finished)
 	_upgrade_materials(model)
 	if role == "civilian":
+		_wardrobe_variant = wardrobe_variant
+		_wardrobe_surface = 0
 		_apply_wardrobe(model, WARDROBE[posmod(wardrobe_variant, WARDROBE.size())])
 		var stature := 0.94 + float(posmod(wardrobe_variant, 7)) * 0.017
 		scale = Vector3(stature, stature, stature)
@@ -281,6 +283,11 @@ func _find_type(node: Node, type_name: String) -> Node:
 			return found
 	return null
 
+## Street-life integration: every clothing surface (top, trousers, ...) gets
+## its own WARDROBE colour plus a per-figure value/warmth jitter, so a crowd
+## of the same rig no longer reads as clones.
+var _wardrobe_variant := 0
+var _wardrobe_surface := 0
 func _apply_wardrobe(node: Node, tint: Color) -> void:
 	if node is MeshInstance3D:
 		var mesh_instance := node as MeshInstance3D
@@ -289,8 +296,14 @@ func _apply_wardrobe(node: Node, tint: Color) -> void:
 				var mat := mesh_instance.mesh.surface_get_material(i)
 				if mat is StandardMaterial3D and String(mat.resource_name).contains("CharacterClothing"):
 					var copy := mat.duplicate() as StandardMaterial3D
-					copy.albedo_color = tint
+					var c := tint
+					if _wardrobe_surface > 0:
+						c = WARDROBE[posmod(_wardrobe_variant * 5 + _wardrobe_surface * 11 + 3, WARDROBE.size())]
+					var h := posmod(_wardrobe_variant * 37 + _wardrobe_surface * 13, 97) / 96.0
+					c = c.lerp(Color(0.12, 0.12, 0.14), 0.35 * h) if h > 0.5 else c.lightened(0.25 * h)
+					copy.albedo_color = c
 					mesh_instance.set_surface_override_material(i, copy)
+					_wardrobe_surface += 1
 	for child in node.get_children():
 		_apply_wardrobe(child, tint)
 

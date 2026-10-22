@@ -110,7 +110,8 @@ func _build() -> void:
 	character_visual = CharacterVisual.new()
 	body_root.add_child(character_visual)
 	var role := "officer" if is_police else "civilian"
-	if character_visual.configure(role, get_instance_id() % 24):
+	# Hashed id spreads consecutive spawns across the wardrobe (street-life integration).
+	if character_visual.configure(role, posmod(hash(get_instance_id()), 997)):
 		for child in body_root.get_children():
 			if child is Node3D and child != character_visual:
 				child.visible = false

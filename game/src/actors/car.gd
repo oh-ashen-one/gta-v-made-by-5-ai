@@ -199,10 +199,13 @@ func _build() -> void:
 
 	_arm = SpringArm3D.new()
 	_arm.spring_length = 5.4
-	_arm.collision_mask = 1
+	# World (1) and vehicles (8): the chase camera must not pass inside a
+	# parked or ambient bus. The car's own body is excluded below.
+	_arm.collision_mask = 1 | 8
 	_arm.position = Vector3(0.0, dims.y + 0.5, 0.0)
 	_arm.rotation_degrees = Vector3(-12.0, 0.0, 0.0)
 	add_child(_arm)
+	_arm.add_excluded_object(get_rid())
 	_camera = Camera3D.new()
 	_camera.fov = 62.0
 	_arm.add_child(_camera)

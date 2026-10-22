@@ -21,6 +21,17 @@ const MIN_GAP := 8.0
 const ACCEL := 2.6
 const DECEL := 6.5
 const CELL := 16.0
+## Integration fixes (pre-integrator, wave B):
+## - the opening five-foot-way spawn stretch stays clear of ambient vehicles
+##   so the player is never wedged between a parked car and a stopped bus;
+## - a vehicle stalled for GRIDLOCK_RESET s is re-seeded out of sight, which
+##   dissolves junction gridlock without a visible pop;
+## - a vehicle stalled next to the player on foot is moved away after
+##   WEDGE_RESET s even if visible (safety over continuity).
+const OPENING_CLEAR := 34.0
+const GRIDLOCK_RESET := 18.0
+const WEDGE_RESET := 4.0
+const WEDGE_RADIUS := 7.0
 
 var traffic: TrafficManager
 var nodes: Array[Vector3] = []
@@ -38,7 +49,7 @@ var _cam_fwd := Vector3.FORWARD
 var _grid: Dictionary = {}
 var _grid_timer := 0.0
 var _promoted: Array[Car] = []
-var stats := {"relocated": 0, "cuts": 0, "promoted": 0}
+var stats := {"relocated": 0, "cuts": 0, "promoted": 0, "unstuck": 0}
 
 func setup(t: TrafficManager) -> void:
 	name = "AmbientTraffic"
@@ -101,6 +112,8 @@ func _physics_process(delta: float) -> void:
 	for v in vehicles:
 		if v.active:
 			_drive(v, delta)
+			if v.active:
+				_unstick(v, delta)
 	_recycle(false)
 	_tidy_promoted()
 	if _debug:
@@ -218,7 +231,7 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 			p = lane_point(e, lane, s)
 		if not _gap_free(e, lane, s):
 			continue
-		if _player_near(p, 9.0):
+		if _player_near(p, 18.0) or _in_opening_clear(p):
 			continue
 		_place(v, e, lane, s)
 		return true
@@ -230,6 +243,45 @@ func _gap_free(e: int, lane: int, s: float) -> bool:
 		if absf((other as AmbientVehicle).s - s) < MIN_GAP + 3.0:
 			return false
 	return true
+
+func _in_opening_clear(p: Vector3) -> bool:
+	if traffic == null or traffic.world == null or not traffic.world.locations.has("player_start"):
+		return false
+	var o: Vector3 = traffic.world.locations["player_start"]
+	return Vector2(p.x - o.x, p.z - o.z).length() < OPENING_CLEAR
+
+## Out of the camera's sight (behind it, or far away)?
+func _hidden_from_camera(p: Vector3) -> bool:
+	var rel := p - _cam_pos
+	rel.y = 0.0
+	return rel.length() > 140.0 or (rel.length() > 14.0 and rel.normalized().dot(_cam_fwd) < -0.15)
+
+## Stalled vehicles: re-seed gridlocked ones out of sight, and move any that
+## have stopped against the on-foot player.
+func _unstick(v: AmbientVehicle, delta: float) -> void:
+	if v.speed < 0.3:
+		v.idle_time += delta
+	else:
+		v.idle_time = 0.0
+		return
+	var on_foot := Game.mode != Game.MODE_CAR
+	var wedged := on_foot and v.idle_time > WEDGE_RESET and _player_near(v.global_position, WEDGE_RADIUS + v.dims.z * 0.5)
+	var opening := v.idle_time > WEDGE_RESET and _in_opening_clear(v.global_position)
+	var gridlock := v.idle_time > GRIDLOCK_RESET and _hidden_from_camera(v.global_position)
+	if wedged or opening or gridlock:
+		v.idle_time = 0.0
+		stats["unstuck"] += 1
+		if not _seed_vehicle(v, true):
+			_park_offscreen(v)
+
+func _park_offscreen(v: AmbientVehicle) -> void:
+	var key := v.edge * 2 + v.lane
+	if _keys.has(key):
+		_keys[key].erase(v)
+	v.active = false
+	v.visible = false
+	v.collision_layer = 0
+	v.global_position = Vector3(0, -60.0, 0)
 
 func _player_near(p: Vector3, r: float) -> bool:
 	return Vector2(p.x - Game.player_position.x, p.z - Game.player_position.z).length() < r
