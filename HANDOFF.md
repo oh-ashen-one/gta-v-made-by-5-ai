@@ -10,13 +10,17 @@
 
 ## Release candidate (private, native macOS)
 
-- Built from **`584fb590e34466d6103c22196381a686d1bf44d2`** with a clean `game/` tree. Later commits change documentation and evidence only; check with `git diff 584fb59 HEAD -- game`.
+- Built from **`c42425afd5a2fe568ff822dc3d7391fac62be747`** with a clean `game/` tree. Its game code is identical to `2e38d8f`, the commit soak #7 runs on. Later commits change documentation and evidence only; check with `git diff c42425a HEAD -- game`.
 - Files, git-ignored and local only: `package-wave05/OrchardReach-wave-05-final-signed.zip` (ad-hoc signed private copy), `package-wave05/OrchardReach.zip` (raw export), plus `hashes.txt`, `identity.txt` and `sign-report.json`.
-- SHA-256: signed zip `a493083299b1f592c0f7e113be94fe9d49399a3672d81eb61dbd6d654f2a2079`; raw zip `5025c0b34f3f895e08ddad77553d79ad12cab235ffd585e21a870326e355a786`; PCK `ab713a8d8a7a0687022648a7eb78d16e5d2d5982efa32d9a328db4853d8b4ca6`; signed executable `8bcab7662ccc07941d9c89be7b7a6bf9eaa3469f38e80ed3c3f0b0b97c2dde03`.
+- SHA-256:
+  - signed zip `3ae8f8c346720d651fb84f6680f9210eb5c99de4f1726c452fa9de104e493b22`
+  - raw zip `5d600330c7b428167a1f4d6168cf2196722205be2fb0fcd3f0ae1c5b3b51548f`
+  - PCK `54373c6d736c4328138da91092ceba89de075e0e75499af0ca313f5f23b97c05`
+  - signed executable `80bb3701b04ddeca53c88e91afa25b7708d246885bd64e18d9e2ed498fe54d68`
 - Packaged verification, run headless with the signed binary (`waves/05/evidence/final-package/`):
   - 97/97 regressions, clean exit.
   - Two-process save/relaunch: write in one PID, Continue in a fresh PID; position, health and weapon restored.
-  - Scripted route: 13/13 gates, 0 deaths, 147.6 s.
+  - Scripted route: 13/13 gates, 0 deaths, 147.5 s.
 - The signature is a local ad-hoc signature only: no Developer ID, no notarization, and no clearance for public redistribution of provider assets.
 
 ## Verified this wave (headless unless a rendered file is linked)

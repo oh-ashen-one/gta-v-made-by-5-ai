@@ -47,7 +47,17 @@
 
 ## Release candidate
 
-Pending a rebuild from the soak #7 commit. The previous candidate was `584fb59`: packaged 97/97 regressions, two-process save/relaunch, and the packaged route at 147.6 s (`evidence/final-package/`, superseded).
+- Built from `c42425afd5a2fe568ff822dc3d7391fac62be747`. Its game code is identical to `2e38d8f`, the commit soak #7 runs on.
+- Private, git-ignored files in `package-wave05/`, with SHA-256:
+  - signed zip `3ae8f8c346720d651fb84f6680f9210eb5c99de4f1726c452fa9de104e493b22`
+  - raw zip `5d600330c7b428167a1f4d6168cf2196722205be2fb0fcd3f0ae1c5b3b51548f`
+  - PCK `54373c6d736c4328138da91092ceba89de075e0e75499af0ca313f5f23b97c05`
+- Packaged checks, run headless with the signed binary:
+  - **97/97 regressions**
+  - **two-process save → relaunch → Continue**: position, health and weapon restored
+  - **scripted route**: 13/13 gates, 0 deaths, 147.5 s
+- The signature is a local ad-hoc signature only, with no notarization. Provider asset rights for public redistribution are unverified.
+- Evidence: `evidence/final-package/`.
 
 ## Not done / failing / untested
 
