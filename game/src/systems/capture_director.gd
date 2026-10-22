@@ -898,6 +898,8 @@ func _drive_route(target: Vector3, timeout: float) -> void:
 		if mission.stage == Mission.Stage.TO_HELI: return
 	await _drive_to(target, 48.0, maxf(1.0, deadline - _elapsed()))
 
+var _reverse_side := -1.0
+
 func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 	var deadline := _elapsed() + timeout
 	var stuck_for := 0.0
@@ -934,11 +936,15 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 			stuck_for = 0.0
 		previous = car.global_position
 		if stuck_for > 0.9:
-			# Reverse and steer clear using the same inputs as a player.
+			# Reverse and steer clear using the same inputs as a player; alternate
+			# the steering side so a symmetric trap (a U-turn wedged between kerbs
+			# and parked cars) cannot repeat the same failed manoeuvre (wave 5).
+			_reverse_side = -_reverse_side
 			Input.action_release("move_forward")
 			Input.action_press("move_back")
 			Input.action_release("move_left")
-			Input.action_press("move_right")
+			Input.action_release("move_right")
+			Input.action_press("move_right" if _reverse_side > 0.0 else "move_left")
 			await get_tree().create_timer(1.2).timeout
 			stuck_for = 0.0
 	_release_all()

@@ -1,0 +1,121 @@
+[capture] 0.75s Route start; seed=20261021; headless=true; scripted-input-automation=true
+[capture] 20.51s walk end at (-119.0, 0.0, -86.0); target=(-115.0, 0.0, -88.0) distance=3.9
+[capture] 20.51s PASS market reached on foot
+[capture] 22.17s combat target health=-32.0 state=3
+[capture] 23.82s combat target health=-32.0 state=3
+[capture] 25.49s combat target health=-32.0 state=3
+[capture] 25.49s PASS combat damaged and killed a mission combatant
+[capture] 25.93s walk end at (-117.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=2.4
+[capture] 26.25s PASS package collected through interaction
+[capture] 26.25s PASS usable parked car found
+[capture] 32.69s walk end at (-151.0, 0.0, -65.0); target=(-153.0, 0.0, -64.0) distance=2.5
+[capture] 33.01s PASS car entered
+[capture] 37.36s drive waypoint target=(-160.0, 0.0, 0.0) distance=6.9
+[capture] 46.36s drive waypoint target=(-160.0, 0.0, 160.0) distance=7.0
+[capture] 55.69s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9
+[capture] 64.71s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0
+[capture] 69.99s drive waypoint target=(320.0, 0.0, 160.0) distance=70.2
+[capture] 69.99s PASS uninterrupted driving leg reached aviation compound
+[capture] 71.33s PASS car exit restored walking
+[capture] 71.33s PASS helicopter remains usable
+[capture] 84.44s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.4
+[capture] 84.76s PASS helicopter boarded
+[capture] 114.70s PASS flight reached waterfront pad airspace
+[capture] 134.58s PASS helicopter landed intact on destination pad
+[capture] 134.90s PASS landing exit restored walking
+[capture] 148.71s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 149.03s PASS mission completed through delivery interaction
+[capture] 149.03s Verified mission completions: 1
+[capture] 149.03s Restarting through the real Mission.restart for next independent mission attempt.
+[capture] 149.81s Route start; seed=20261021; headless=true; scripted-input-automation=true
+[capture] 172.86s walk end at (-115.0, 0.0, -84.0); target=(-115.0, 0.0, -88.0) distance=4.0
+[capture] 172.86s PASS market reached on foot
+[capture] 174.51s combat target health=-32.0 state=3
+[capture] 176.16s combat target health=-32.0 state=3
+[capture] 177.82s combat target health=-32.0 state=3
+[capture] 177.82s PASS combat damaged and killed a mission combatant
+[capture] 178.26s walk end at (-115.0, 0.0, -86.0); target=(-115.0, 0.0, -88.0) distance=2.5
+[capture] 178.58s PASS package collected through interaction
+[capture] 178.58s PASS usable parked car found
+[capture] 186.54s walk end at (-152.0, 0.0, -116.0); target=(-153.0, 0.0, -118.0) distance=2.5
+[capture] 186.86s PASS car entered
+[capture] 193.89s drive waypoint target=(-160.0, 0.0, 0.0) distance=7.0
+[capture] 204.59s drive waypoint target=(-160.0, 0.0, 160.0) distance=7.0
+[capture] 213.86s drive waypoint target=(0.0, 0.0, 160.0) distance=7.0
+[capture] 222.87s drive waypoint target=(160.0, 0.0, 160.0) distance=6.9
+[capture] 228.09s drive waypoint target=(320.0, 0.0, 160.0) distance=72.6
+[capture] 228.09s PASS uninterrupted driving leg reached aviation compound
+[capture] 229.42s PASS car exit restored walking
+[capture] 229.42s PASS helicopter remains usable
+[capture] 240.73s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.3
+[capture] 241.05s PASS helicopter boarded
+[capture] 270.99s PASS flight reached waterfront pad airspace
+[capture] 290.86s PASS helicopter landed intact on destination pad
+[capture] 291.19s PASS landing exit restored walking
+[capture] 304.99s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 305.31s PASS mission completed through delivery interaction
+[capture] 305.31s Verified mission completions: 2
+[capture] 305.31s Restarting through the real Mission.restart for next independent mission attempt.
+[capture] 306.08s Route start; seed=20261021; headless=true; scripted-input-automation=true
+[capture] 325.81s walk end at (-119.0, 0.0, -86.0); target=(-115.0, 0.0, -88.0) distance=3.9
+[capture] 325.81s PASS market reached on foot
+[capture] 327.47s combat target health=-32.0 state=3
+[capture] 329.12s combat target health=-32.0 state=3
+[capture] 330.78s combat target health=-32.0 state=3
+[capture] 330.78s PASS combat damaged and killed a mission combatant
+[capture] 331.23s walk end at (-117.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=2.4
+[capture] 331.55s PASS package collected through interaction
+[capture] 331.55s PASS usable parked car found
+[capture] 339.71s walk end at (-164.0, 0.0, -65.0); target=(-167.0, 0.0, -64.0) distance=2.6
+[capture] 340.04s PASS car entered
+[capture] 345.91s drive waypoint target=(-160.0, 0.0, 0.0) distance=6.9
+[capture] 354.92s drive waypoint target=(-160.0, 0.0, 160.0) distance=6.9
+[capture] 364.24s drive waypoint target=(0.0, 0.0, 160.0) distance=7.0
+[capture] 373.27s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0
+[capture] 379.71s drive waypoint target=(320.0, 0.0, 160.0) distance=49.7
+[capture] 379.71s PASS uninterrupted driving leg reached aviation compound
+[capture] 381.05s PASS car exit restored walking
+[capture] 381.05s PASS helicopter remains usable
+[capture] 394.14s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.3
+[capture] 394.46s PASS helicopter boarded
+[capture] 424.41s PASS flight reached waterfront pad airspace
+[capture] 444.27s PASS helicopter landed intact on destination pad
+[capture] 444.60s PASS landing exit restored walking
+[capture] 458.40s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 458.73s PASS mission completed through delivery interaction
+[capture] 458.73s Verified mission completions: 3
+[capture] 458.73s Beginning explicit fixture-assisted negative cases. Three completion records are already sealed.
+[capture] 459.14s FIXTURE PASS pause freezes player and live traffic (excluded from mission completion count)
+[capture] 459.14s FIXTURE PASS completed-run checkpoint writes through atomic save path (excluded from mission completion count)
+[capture] 459.14s FIXTURE PASS malformed checkpoint is rejected without state mutation (excluded from mission completion count)
+[capture] 459.16s FIXTURE PASS walking to airfield cannot satisfy drive stage (excluded from mission completion count)
+[capture] 459.18s Fixture phase complete; starting genuine mixed free roam from the restored completion location.
+[capture] 459.18s Free-roam foot leg to (0.0, 0.0, -320.0)
+[capture] 472.64s walk end at (7.0, 0.0, -321.0); target=(0.0, 0.0, -320.0) distance=6.9
+[capture] 480.41s walk end at (54.0, 0.0, -326.0); target=(56.0, 0.0, -327.0) distance=2.5
+[capture] 480.73s Free-roam driving leg to (160.0, 0.0, 0.0)
+[capture] 492.36s drive waypoint target=(0.0, 0.0, -320.0) distance=6.9
+[capture] 501.64s drive waypoint target=(0.0, 0.0, -160.0) distance=7.0
+[capture] 510.65s drive waypoint target=(0.0, 0.0, 0.0) distance=7.0
+[capture] 520.93s drive waypoint target=(160.0, 0.0, 0.0) distance=7.0
+[capture] 520.95s drive waypoint target=(160.0, 0.0, 0.0) distance=6.9
+[capture] 522.64s Free-roam same-car return/exit/reboard/exit cycle=true
+[capture] 522.95s walk end at (155.0, 0.0, 2.0); target=(160.0, 0.0, 0.0) distance=5.0
+[capture] 547.81s walk end at (160.0, 0.0, -153.0); target=(160.0, 0.0, -160.0) distance=6.9
+[capture] 571.33s walk end at (160.0, 0.0, -313.0); target=(160.0, 0.0, -320.0) distance=7.0
+[capture] 594.33s walk end at (7.0, 0.0, -320.0); target=(0.0, 0.0, -320.0) distance=6.9
+[capture] 599.29s walk end at (3.0, 0.0, -338.0); target=(3.0, 0.0, -339.0) distance=1.1
+[capture] 599.61s Free-roam aircraft leg to (270.0, 0.0, 104.0)
+[capture] 649.97s Free-roam foot leg to (160.0, 0.0, 160.0)
+[capture] 660.56s walk end at (315.0, 0.0, 155.0); target=(320.0, 0.0, 160.0) distance=6.9
+[capture] 683.26s walk end at (167.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=7.0
+[capture] 683.28s walk end at (167.0, 0.0, 160.0); target=(160.0, 0.0, 160.0) distance=6.8
+[capture] 688.97s walk end at (164.0, 0.0, 181.0); target=(167.0, 0.0, 182.0) distance=2.5
+[capture] 689.30s Free-roam driving leg to (-320.0, 0.0, -320.0)
+[capture] 724.31s drive waypoint target=(160.0, 0.0, 160.0) distance=24.8
+[capture] 759.33s drive waypoint target=(160.0, 0.0, 0.0) distance=185.8
+[capture] 794.35s drive waypoint target=(160.0, 0.0, -160.0) distance=218.5
+[capture] 813.51s drive waypoint target=(160.0, 0.0, -320.0) distance=7.0
+[capture] 819.31s drive waypoint target=(0.0, 0.0, -320.0) distance=66.1
+[capture] 819.31s ABORT Free-roam car failed its destination gate.
+[capture] terminal success=false deaths=0 seconds=819.4

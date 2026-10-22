@@ -1107,18 +1107,23 @@ func _build_lane_graph() -> void:
 			ped_lanes.append(pts2)
 	# Parked cars along both kerb families. Wave 2 only lined the north-south
 	# streets, so the east-west frontages read as permanently empty.
+	# The two kerbs are staggered by 30 m: lots directly opposite each other
+	# left ~11 m between parked bodies, less than a car's ~13 m U-turn (wave 5
+	# soak: a free-roam car wedged mid-turn for 95 s).
 	var i := 0
 	for x in X_LINES:
 		for side: float in [-1.0, 1.0]:
 			var heading := 0.0 if side < 0.0 else PI
 			for pz: float in [-218.0, -118.0, -64.0, 56.0, 182.0]:
-				parked_spots.append({"pos": Vector3(x + side * KERB_PARK_OFFSET, 0.3, pz), "heading": heading, "kind": ["sedan", "coupe", "van"][i % 3]})
+				var stagger_z := pz + (30.0 if side > 0.0 else 0.0)
+				parked_spots.append({"pos": Vector3(x + side * KERB_PARK_OFFSET, 0.3, stagger_z), "heading": heading, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
 	for z in Z_LINES:
 		for side: float in [-1.0, 1.0]:
 			var heading2 := -PI * 0.5 if side < 0.0 else PI * 0.5
 			for px2: float in [-220.0, -104.0, 56.0, 216.0]:
-				parked_spots.append({"pos": Vector3(px2, 0.3, z + side * KERB_PARK_OFFSET), "heading": heading2, "kind": ["sedan", "coupe", "van"][i % 3]})
+				var stagger_x := px2 + (30.0 if side > 0.0 else 0.0)
+				parked_spots.append({"pos": Vector3(stagger_x, 0.3, z + side * KERB_PARK_OFFSET), "heading": heading2, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
 
 ## Singapore kerb markings (wave 5): double yellow no-parking lines that stop at
