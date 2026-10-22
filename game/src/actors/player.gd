@@ -769,7 +769,12 @@ func take_damage(amount: float, from_position: Vector3, _by_player: bool = false
 		return
 	Game.damage_player(amount)
 	_damage_flash = 0.3
-	if _visual != null and _visual.loaded and Game.health > 0:
+	# integ-P seam: while aiming (or the gun is still raised from a shot) a hit
+	# must not drop the gun arm via the full-body 'hit' clip; the damage flash
+	# and camera shake carry the feedback instead.
+	var pc := get_node_or_null("PlayerCombat")
+	var gun_up := aiming or (pc != null and float(pc.get("hold")) > 0.0)
+	if _visual != null and _visual.loaded and Game.health > 0 and not gun_up:
 		_visual.play_hit()
 
 func _on_health_changed(value: float, _max_value: float) -> void:

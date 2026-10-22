@@ -72,6 +72,8 @@ func _ready() -> void:
 	Events.health_changed.connect(_on_health_changed)
 	Events.wanted_changed.connect(_on_wanted_changed)
 
+var _lost_search_msg_at := -100.0  # integ-P: no stacked 'lost the search' toasts
+
 func _process(delta: float) -> void:
 	if simulation_paused:
 		return
@@ -81,7 +83,8 @@ func _process(delta: float) -> void:
 	if wanted_level > 0 and not player_seen:
 		search_timer = maxf(0.0, search_timer - delta)
 		decay_heat(delta * 1.4)
-		if wanted_level == 0:
+		if wanted_level == 0 and elapsed_seconds - _lost_search_msg_at > 12.0:
+			_lost_search_msg_at = elapsed_seconds
 			Events.notify.emit("You lost the search.", "good")
 
 ## Health comes back slowly once the player has been out of fire for a few

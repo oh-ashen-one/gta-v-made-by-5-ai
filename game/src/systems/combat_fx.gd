@@ -106,19 +106,19 @@ func shot(muzzle: Vector3, aim_dir: Vector3, end: Vector3, hit: bool, normal: Ve
 	var big := 1.0 if weapon == "pistol" or weapon == "npc_pistol" else 0.8
 	# Flame cone: two crossed stretched sheets along the barrel, a star facing
 	# the camera and a short side burst, for a 3-frame life with the light.
-	var cone_len := _rng.randf_range(0.38, 0.50) * big
-	_emit("flame", muzzle + dir * cone_len * 0.5, Vector3.ZERO, 0.055, cone_len, 0.14 * big, 0.14 * big,
-		Color(1.0, 0.85, 0.55, 1.0) * 2.5, 0.0, 0.0, dir, _rng.randf())
-	_emit("flame", muzzle + dir * cone_len * 0.32, Vector3.ZERO, 0.045, cone_len * 0.55, 0.16 * big, 0.12 * big,
-		Color(1.0, 0.62, 0.30, 1.0) * 1.9, 0.0, 0.0, dir, _rng.randf())
-	_emit("flash", muzzle + dir * 0.04, Vector3.ZERO, 0.05, 0.0, 0.26 * big, 0.30 * big,
-		Color(1.0, 0.82, 0.55, 1.0) * 2.1, _rng.randf() * TAU, 0.0, Vector3.ZERO, _rng.randf())
+	var cone_len := _rng.randf_range(0.20, 0.30) * big  # integ-P: compact burst, never swallows the gun
+	_emit("flame", muzzle + dir * cone_len * 0.5, Vector3.ZERO, 0.045, cone_len, 0.075 * big, 0.07 * big,
+		Color(1.0, 0.85, 0.55, 1.0) * 1.6, 0.0, 0.0, dir, _rng.randf())
+	_emit("flame", muzzle + dir * cone_len * 0.32, Vector3.ZERO, 0.04, cone_len * 0.55, 0.085 * big, 0.06 * big,
+		Color(1.0, 0.62, 0.30, 1.0) * 1.3, 0.0, 0.0, dir, _rng.randf())
+	_emit("flash", muzzle + dir * 0.06, Vector3.ZERO, 0.04, 0.0, 0.11 * big, 0.13 * big,
+		Color(1.0, 0.82, 0.55, 1.0) * 1.3, _rng.randf() * TAU, 0.0, Vector3.ZERO, _rng.randf())
 	var side := dir.cross(Vector3.UP).normalized()
 	if side.length() < 0.1:
 		side = Vector3.RIGHT
 	for s in [-1.0, 1.0]:
-		_emit("flame", muzzle + side * s * 0.05 + dir * 0.02, Vector3.ZERO, 0.04, 0.10 * big, 0.05, 0.04,
-			Color(1.0, 0.7, 0.4, 1.0) * 2.2, 0.0, 0.0, (side * s + dir * 0.4).normalized(), _rng.randf())
+		_emit("flame", muzzle + side * s * 0.04 + dir * 0.02, Vector3.ZERO, 0.035, 0.06 * big, 0.03, 0.025,
+			Color(1.0, 0.7, 0.4, 1.0) * 1.4, 0.0, 0.0, (side * s + dir * 0.4).normalized(), _rng.randf())
 	# Muzzle sparks and smoke.
 	for i in 5:
 		var v := (dir + Vector3(_rng.randf_range(-0.25, 0.25), _rng.randf_range(-0.2, 0.25), _rng.randf_range(-0.25, 0.25))).normalized() * _rng.randf_range(6.0, 14.0)
@@ -127,10 +127,10 @@ func shot(muzzle: Vector3, aim_dir: Vector3, end: Vector3, hit: bool, normal: Ve
 	for i in 3:
 		var sv := dir * _rng.randf_range(0.5, 1.3) + Vector3(_rng.randf_range(-0.15, 0.15), _rng.randf_range(0.15, 0.4), _rng.randf_range(-0.15, 0.15))
 		_emit("puff", muzzle + dir * (0.05 + 0.06 * i), sv, _rng.randf_range(0.8, 1.3), 0.0, 0.03 + 0.01 * i, 0.20 + 0.05 * i,
-			Color(0.62, 0.62, 0.60, 0.16 - 0.03 * i), _rng.randf() * TAU, -0.35, Vector3.ZERO, _rng.randf(), 0.0, 2.6)
+			Color(0.66, 0.66, 0.64, 0.24 - 0.04 * i), _rng.randf() * TAU, -0.35, Vector3.ZERO, _rng.randf(), 0.0, 2.6)
 	# The flash light sits ahead of the barrel so it rakes the surroundings
 	# instead of blowing out the shooter's own sleeve.
-	_flash_light(muzzle + dir * 0.6 + Vector3.UP * 0.1, 1.8 * big if by_player else 2.0)
+	_flash_light(muzzle + dir * 0.6 + Vector3.UP * 0.1, 1.1 * big if by_player else 1.4)
 	# Tracer: a hot streak that travels from the muzzle to the end point.
 	var to_end := end - muzzle
 	var dist := to_end.length()
@@ -138,9 +138,9 @@ func shot(muzzle: Vector3, aim_dir: Vector3, end: Vector3, hit: bool, normal: Ve
 		stats["tracer"] += 1
 		var speed := 340.0
 		var life := maxf(dist / speed, 0.034)
-		var seg := minf(dist * 0.5, 3.2)
-		_emit("tracer", muzzle + to_end.normalized() * seg * 0.5, to_end.normalized() * (dist - seg) / life, life, seg, 0.032, 0.024,
-			Color(1.0, 0.80, 0.52, 1.0) * 5.0, 0.0, 0.0, to_end.normalized(), 0.0)
+		var seg := minf(dist * 0.22, 1.1)
+		_emit("tracer", muzzle + to_end.normalized() * seg * 0.5, to_end.normalized() * (dist - seg) / life, life, seg, 0.016, 0.012,
+			Color(1.0, 0.80, 0.52, 1.0) * 2.4, 0.0, 0.0, to_end.normalized(), 0.0)
 	if hit:
 		impact(end, normal, collider, dir)
 	_eject_casing(muzzle, dir, by_player)
@@ -167,7 +167,7 @@ func impact(point: Vector3, normal: Vector3, collider: Object, shot_dir: Vector3
 		return
 	# Hard surface: a white-hot flash, sparks thrown off the reflection, a
 	# dust/plaster puff along the normal, chips that fall, and a bullet hole.
-	_emit("flash", point + n * 0.03, Vector3.ZERO, 0.05, 0.0, 0.16, 0.24, Color(1.0, 0.86, 0.6, 1.0) * 4.0, _rng.randf() * TAU, 0.0, Vector3.ZERO, _rng.randf())
+	_emit("flash", point + n * 0.03, Vector3.ZERO, 0.04, 0.0, 0.08, 0.12, Color(1.0, 0.86, 0.6, 1.0) * 2.4, _rng.randf() * TAU, 0.0, Vector3.ZERO, _rng.randf())
 	var spark_count := 18 if is_vehicle else 14
 	for i in spark_count:
 		var v := (reflect * 0.6 + n * 0.8 + Vector3(_rng.randf_range(-0.7, 0.7), _rng.randf_range(-0.3, 0.8), _rng.randf_range(-0.7, 0.7))).normalized() * _rng.randf_range(3.0, 12.0)
@@ -534,9 +534,9 @@ func _hole_texture(metal: bool) -> Texture2D:
 				col = Color(0.12, 0.11, 0.10, halo * halo * 0.45)
 				if rr < 0.52:
 					var t := (rr - 0.16) / 0.36
-					col = Color(0.78, 0.75, 0.70, 0.85).lerp(Color(0.5, 0.48, 0.45, 0.6), clampf(t, 0.0, 1.0))
-					col = col * (0.85 + 0.3 * n)
-					col.a = 0.9 - 0.35 * clampf(t, 0.0, 1.0)
+					col = Color(0.36, 0.34, 0.31, 0.75).lerp(Color(0.24, 0.23, 0.21, 0.35), clampf(t, 0.0, 1.0))
+					col = col * (0.8 + 0.4 * n)
+					col.a = (0.75 - 0.45 * clampf(t, 0.0, 1.0)) * (0.6 + 0.6 * n)
 				if rr < 0.2:
 					col = Color(0.06, 0.055, 0.05, 1.0).lerp(Color(0.2, 0.19, 0.18, 1.0), clampf((rr - 0.1) / 0.1, 0.0, 1.0))
 				for c in cracks:
