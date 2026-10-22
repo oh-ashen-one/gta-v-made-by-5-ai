@@ -11,10 +11,10 @@ extends Node
 ## distance from the kerb, some pairs stop to talk, and everyone uses the
 ## junction crosswalks.
 
-const EXTRA_WALKERS := 46
+const EXTRA_WALKERS := 64
 const LOITER_PAIRS := 9
 const SPAWN_RADIUS := 115.0
-const DESPAWN_RADIUS := 165.0
+const DESPAWN_RADIUS := 135.0
 ## Pavement lines: just behind the kerb, mid-pavement, and the five-foot way.
 const OFFSETS: Array[float] = [9.75, 10.5, 11.35]
 
@@ -166,7 +166,7 @@ func _recycle(cut: bool) -> void:
 			budget -= 1
 
 func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
-	var spine_share := 0.5 if _cam_pos.y > 30.0 else 0.3
+	var spine_share := 0.5 if _cam_pos.y > 30.0 else 0.15
 	if not loiter and _rng.randf() < spine_share and _seed_spine(p, hidden_only):
 		return true
 	for attempt in 12:
