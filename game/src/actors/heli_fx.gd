@@ -45,52 +45,43 @@ var over_water := false
 
 const DISC_SHADER := """
 shader_type spatial;
-render_mode blend_mix, depth_draw_never, cull_disabled, shadows_disabled;
+// Wave P round 2: the swept disc is an UNSHADED light-grey veil (alpha
+// 0.15-0.40) so it can never turn into a dark wedge/ellipse over the water or
+// a sunlit cream plate in low sun. Its pattern depends on radius only (fine
+// concentric blade-tip streaks plus a very soft 2-lobe blade hint), so there
+// is no straight radial edge and no frame-to-frame strobing.
+render_mode blend_mix, unshaded, depth_draw_never, cull_disabled, shadows_disabled;
 uniform float spin = 1.0;
 uniform float phase = 0.0;
 uniform float blades = 4.0;
-uniform vec3 tint : source_color = vec3(0.075, 0.078, 0.084);
-uniform vec3 sheen : source_color = vec3(0.40, 0.42, 0.45);
+uniform vec3 tint : source_color = vec3(0.10, 0.10, 0.11);
+uniform vec3 veil_col : source_color = vec3(0.80, 0.82, 0.84);
 uniform float hub = 0.08;
-uniform float veil = 0.11;
 uniform float near_fade = 2.5;
 varying vec2 lp;
 void vertex() { lp = VERTEX.xz; }
-// One motion-blurred blade: a crisp leading edge and a smear trailing it.
-float smear(float k, float len) {
-	return smoothstep(0.0, 0.018, k) * exp(-k / len);
-}
+float hash(float x) { return fract(sin(x * 127.1) * 43758.5453); }
 void fragment() {
 	float r = length(lp);
 	if (r > 1.0) { discard; }
+	float span = smoothstep(hub + 0.02, hub + 0.18, r) * (1.0 - smoothstep(0.93, 1.0, r));
+	// concentric motion streaks: thin rings of slightly varying density
+	float ring = r * 46.0;
+	float rs = hash(floor(ring)) * (1.0 - abs(fract(ring) - 0.5) * 2.0);
+	float streak = 0.05 * rs * smoothstep(0.25, 0.9, r);
+	// soft blade hint: a smooth cosine, never a hard edge (amplitude < 0.03)
 	float a = atan(lp.y, lp.x) + phase;
-	float k = fract(a * blades / 6.2831853);
-	// ghost blades (shutter blur) plus a fainter earlier exposure
-	float s = smear(k, 0.22) * 0.55 + smear(fract(k + 0.5), 0.10) * 0.14;
-	// blade root starts outside the hub; soft tip edge
-	float span = smoothstep(hub + 0.02, hub + 0.16, r) * (1.0 - smoothstep(0.94, 1.0, r));
-	// the swept disc is a faint veil everywhere, a little denser to the tips,
-	// with a darker tip-path band where the blade tips run
-	float v = veil * (0.70 + 0.30 * r) + 0.07 * smoothstep(0.84, 0.93, r) * (1.0 - smoothstep(0.95, 1.0, r));
-	float dens = span * clamp(v + s * (1.0 - v), 0.0, 0.95);
-	// optical depth: seen edge-on the disc thickens into a dark blurred band
-	float c = clamp(abs(dot(NORMAL, VIEW)), 0.30, 1.0);
-	float alpha = 1.0 - pow(1.0 - dens, 1.0 / c);
-	// face-on the swept disc stays see-through; edge-on it may thicken
-	alpha = min(alpha, mix(0.85, 0.58, c)) * spin;
+	float hint = 0.025 * (0.5 + 0.5 * cos(a * blades * 0.5)) * smoothstep(0.3, 0.9, r);
+	// tip-path band where the blade tips run
+	float tip = 0.06 * smoothstep(0.82, 0.92, r) * (1.0 - smoothstep(0.95, 1.0, r));
+	float alpha = clamp(0.17 + 0.05 * r + streak + hint + tip, 0.15, 0.40) * span * spin;
 	// a blade sweeping past the camera must not fill the lens
-	alpha *= smoothstep(near_fade, near_fade + 3.0, length(VERTEX));
+	alpha *= mix(0.35, 1.0, smoothstep(near_fade, near_fade + 3.0, length(VERTEX)));
 	// visible rotor head
 	float hubcap = 1.0 - smoothstep(hub * 0.75, hub * 1.02, r);
 	alpha = max(alpha, hubcap * 0.97 * step(0.02, spin));
-	// seen from above, the smeared blades catch sky and sun (light grey
-	// streaks over dark ground); seen from below they stay dark
-	float top = FRONT_FACING ? 1.0 : 0.0;
-	vec3 lit = mix(tint, sheen, clamp(s * (0.55 + 0.45 * top) + (0.15 + 0.25 * top) * r, 0.0, 1.0));
-	ALBEDO = lit * (1.0 - hubcap) + tint * hubcap;
-	ROUGHNESS = mix(0.45, 0.6, hubcap);
-	METALLIC = mix(0.15, 0.6, hubcap);
-	SPECULAR = 0.45;
+	vec3 c = veil_col * (0.92 + 0.10 * rs);
+	ALBEDO = mix(c, tint, hubcap);
 	ALPHA = clamp(alpha, 0.0, 0.97);
 }
 """
