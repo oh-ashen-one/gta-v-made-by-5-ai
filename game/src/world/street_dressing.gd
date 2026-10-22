@@ -431,7 +431,10 @@ func _median_planting() -> void:
 					if r.randf() < 0.3:
 						_add("shrub", Transform3D(bas * Basis.from_scale(Vector3(0.7, 0.45, 0.7)), p + Vector3(0, -0.05, 0)), greens[r.randi() % greens.size()].darkened(0.25))
 					if r.randf() < 0.6:
-						_ferns.append(Transform3D(Basis(Vector3.UP, r.randf() * TAU) * Basis.from_scale(Vector3.ONE * r.randf_range(0.9, 1.5)), p + Vector3(0, -0.02, 0)))
+						# fern.glb is ~2.4 m across: scale it inside the 1.2 m turf bed
+						var fs := r.randf_range(0.85, 1.15)
+						var fp := Vector3(line, p.y, p.z) if along_z else Vector3(p.x, p.y, line)
+						_ferns.append(Transform3D(Basis(Vector3.UP, r.randf() * TAU) * Basis.from_scale(Vector3(0.48, 0.6, 0.48) * fs), fp + Vector3(0, -0.02, 0)))
 					t += r.randf_range(0.7, 1.1)
 				_count("median_shrub")
 
@@ -462,16 +465,15 @@ func _emit_ferns() -> void:
 	if scene == null:
 		return
 	var inst := scene.instantiate()
-	var mi: MeshInstance3D = null
+	# both parts: frond stems and the modelled pinnae (leaves)
 	for n in inst.find_children("*", "MeshInstance3D", true, false):
-		mi = n
-		break
-	if mi == null or mi.mesh == null:
-		inst.free()
-		return
-	var mesh: Mesh = mi.mesh
-	var local := mi.transform
+		var mi := n as MeshInstance3D
+		if mi.mesh != null:
+			_emit_fern_part(mi.mesh, mi.transform, String(mi.name))
 	inst.free()
+	_count("median_fern", _ferns.size())
+
+func _emit_fern_part(mesh: Mesh, local: Transform3D, part: String) -> void:
 	var cells := {}
 	for xf in _ferns:
 		var c := Vector2i(int(floor((xf.origin.x + 400.0) / 160.0)), int(floor((xf.origin.z + 400.0) / 160.0)))
@@ -486,12 +488,11 @@ func _emit_ferns() -> void:
 		for i in arr.size():
 			mm.set_instance_transform(i, arr[i])
 		var mmi := MultiMeshInstance3D.new()
-		mmi.name = "StreetDressing_fern_%d_%d" % [c.x, c.y]
+		mmi.name = "StreetDressing_%s_%d_%d" % [part, c.x, c.y]
 		mmi.multimesh = mm
 		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mmi.visibility_range_end = 300.0
 		root.add_child(mmi)
-	_count("median_fern", _ferns.size())
 
 var _mat_cache := {}
 var _shrub: Mesh
