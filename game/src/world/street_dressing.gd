@@ -29,6 +29,7 @@ var _batches := {}   # key -> {mesh, xforms, colors, shadow}
 var counts := {}     # prop type -> instance count (self-test reads this)
 var weather_volumes := 0
 var _ferns: Array[Transform3D] = []
+var _signs: Array = []   # nearfield sign plates
 
 static func build(parent: Node3D, bays: Array, hawkers: Array = []) -> StreetDressing:
 	var d := StreetDressing.new()
@@ -337,18 +338,20 @@ func _kerb_run(line: float, side: float, along_z: bool, r: RandomNumberGenerator
 		var pv := ROAD_HALF + 1.0   # sidewalk band just behind the kerb
 		var py := 0.16
 		if roll < 0.06 and not _near_junction_by(t, 22.0):
-			# parked scooters in a kerbside motorcycle lot (3-5 abreast)
-			var n := r.randi_range(3, 5)
+			# parked scooters along the kerb (nearfield: parallel to the
+			# kerb at 8.95 m so they clear the 10 m pedestrian lane and can
+			# carry collision; 3-4 in a row, 2 m apart)
+			var n := r.randi_range(3, 4)
 			for k in n:
-				var sb := b * Basis(Vector3.UP, PI * 0.5 + r.randf_range(-0.12, 0.12)) * Basis(Vector3.RIGHT, 0.0)
+				var sb := b * Basis(Vector3.UP, r.randf_range(-0.10, 0.10) + (PI if r.randf() < 0.3 else 0.0))
 				var sc: Color = [Color(0.85, 0.85, 0.82), Color(0.08, 0.08, 0.09), Color(0.62, 0.10, 0.08), Color(0.15, 0.28, 0.50), Color(0.55, 0.56, 0.55)][r.randi() % 5]
-				_add("scooter", Transform3D(sb * Basis(Vector3.FORWARD, 0.08), o + b * Vector3(-1.6 + k * 0.85, py, pv + 0.9)), sc)
+				_add("scooter", Transform3D(sb * Basis(Vector3.RIGHT, -0.10), o + b * Vector3(-3.0 + k * 2.0, py, ROAD_HALF + 0.95)), sc)
 			_count("scooter", n)
 		elif roll < 0.11:
-			# shared-bike cluster
-			for k in r.randi_range(2, 4):
-				var bb := b * Basis(Vector3.UP, r.randf_range(-0.4, 0.4)) * Basis(Vector3.RIGHT, 0.07)
-				_add("bike", Transform3D(bb, o + b * Vector3(-1.0 + k * 0.6, py, pv + 0.4 + r.randf() * 0.4)), [Color(0.95, 0.55, 0.05), Color(0.90, 0.80, 0.10), Color(0.15, 0.55, 0.30)][r.randi() % 3])
+			# shared-bike cluster, parked along the kerb
+			for k in r.randi_range(2, 3):
+				var bb := b * Basis(Vector3.UP, r.randf_range(-0.12, 0.12)) * Basis(Vector3.RIGHT, -0.12)
+				_add("bike", Transform3D(bb, o + b * Vector3(-1.9 + k * 1.9, py, ROAD_HALF + 0.85)), [Color(0.95, 0.55, 0.05), Color(0.90, 0.80, 0.10), Color(0.15, 0.55, 0.30)][r.randi() % 3])
 				_count("bicycle")
 		elif roll < 0.15:
 			# green telecom / power cabinet
@@ -362,11 +365,16 @@ func _kerb_run(line: float, side: float, along_z: bool, r: RandomNumberGenerator
 				_add("cyl", Transform3D(b * Basis.from_scale(Vector3(0.17, 0.08, 0.17)), o + b * Vector3(-1.5 + k * 1.0, py + 0.75, pv - 0.55)), Color(0.85, 0.65, 0.10))
 			_count("bollard", 4)
 		elif roll < 0.24:
-			# signpost: no-parking / street sign
-			_add("cyl", Transform3D(b * Basis.from_scale(Vector3(0.07, 2.6, 0.07)), o + b * Vector3(0, py + 1.3, pv - 0.4)), Color(0.55, 0.56, 0.55))
-			var sc2: Color = [Color(0.08, 0.22, 0.55), Color(0.80, 0.12, 0.10), Color(0.10, 0.38, 0.22)][r.randi() % 3]
-			_boxf(b, o, Vector3(0, py + 2.35, pv - 0.4), Vector3(0.6, 0.6, 0.03), sc2)
-			_boxf(b, o, Vector3(0, py + 2.35, pv - 0.43), Vector3(0.45, 0.08, 0.01), Color(0.92, 0.92, 0.9))
+			# signpost: pictogram plate facing the traffic on this side
+			# (nearfield: legible faces instead of blank coloured boxes)
+			if NearField.enabled():
+				var fwd := -b.x if r.randf() < 0.5 else b.x
+				_signs.append({"pos": o + b * Vector3(0, py, pv - 0.55), "face": fwd, "cell": [1, 5, 6, 3, 2, 7][r.randi() % 6], "h": 2.2, "size": 0.6})
+			else:
+				_add("cyl", Transform3D(b * Basis.from_scale(Vector3(0.07, 2.6, 0.07)), o + b * Vector3(0, py + 1.3, pv - 0.4)), Color(0.55, 0.56, 0.55))
+				var sc2: Color = [Color(0.08, 0.22, 0.55), Color(0.80, 0.12, 0.10), Color(0.10, 0.38, 0.22)][r.randi() % 3]
+				_boxf(b, o, Vector3(0, py + 2.35, pv - 0.4), Vector3(0.6, 0.6, 0.03), sc2)
+				_boxf(b, o, Vector3(0, py + 2.35, pv - 0.43), Vector3(0.45, 0.08, 0.01), Color(0.92, 0.92, 0.9))
 			_count("signpost")
 		elif roll < 0.27:
 			# traffic cones left from roadworks
@@ -471,6 +479,11 @@ func _yellow_boxes() -> void:
 
 # ------------------------------------------------------- median planting
 func _median_planting() -> void:
+	if NearField.enabled():
+		# nearfield (opus55 D) builds the median islands, shrubs and signs
+		counts["median_nose"] = int(NearField.stats.get("median_nose", 0))
+		counts["median_shrub"] = int(NearField.stats.get("median_shrub", 0))
+		return
 	# Round 4 (critic A3): a kerbed planter, not a box of green domes. Turned
 	# soil with mulch patches along the bed, dense ferns and spiky mondo/lily
 	# tufts (no smooth hemispheres), and a painted concrete nose with a
@@ -599,6 +612,9 @@ func _material(kind: String) -> Material:
 		mat.roughness = 0.9
 	if kind == "paint":
 		mat.roughness = 0.6
+		if NearField.enabled():
+			_mat_cache[kind] = Palette.road_paint(Color(1, 1, 1))
+			return _mat_cache[kind]
 	if kind == "box" or kind == "cyl":
 		mat.metallic_specular = 0.35
 	_mat_cache[kind] = mat
@@ -612,6 +628,11 @@ func _emit() -> void:
 			continue
 		var kind: String = g["kind"]
 		var mesh: Mesh = _shrub_mesh() if kind == "shrub" else _mesh(kind)
+		var nf_two := NearField.enabled() and (kind == "bike" or kind == "scooter")
+		if nf_two:
+			# nearfield: multi-material two-wheeler models with collision
+			mesh = NearField.two_wheeler_mesh(kind == "scooter")
+			NearField.two_wheeler_collision(root, xforms, kind == "scooter")
 		var mm := MultiMesh.new()
 		mm.transform_format = MultiMesh.TRANSFORM_3D
 		mm.use_colors = true
@@ -623,8 +644,10 @@ func _emit() -> void:
 		var mmi := MultiMeshInstance3D.new()
 		mmi.name = "StreetDressing_%s" % key.replace("@", "_")
 		mmi.multimesh = mm
-		mmi.material_override = _material(kind)
+		if not nf_two:
+			mmi.material_override = _material(kind)
 		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if g["shadow"] else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(mmi)
 	_emit_ferns()
+	NearField.emit_signs(root, _signs)
 	print("[street-dressing] %d weathering volumes, props: %s" % [weather_volumes, str(counts)])

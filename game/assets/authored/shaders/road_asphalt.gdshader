@@ -13,6 +13,9 @@ uniform float grid_period = 160.0;
 uniform float road_half = 8.0;
 uniform float tile_m = 4.0;
 uniform float wear = 1.0;
+uniform sampler2D agg_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D agg_nrm : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform float grain_k = 0.42;
 
 varying vec3 v_world;
 
@@ -47,34 +50,22 @@ void fragment() {
 	// Metres per pixel, for footprint-aware aggregate detail.
 	float px = max(length(fwidth(p)), 1e-4);
 	float dist = length(VERTEX);
-	vec3 agg = texture(albedo_tex, p / tile_m).rgb;
-	vec3 agg2 = texture(albedo_tex, w_rot(p, 0.73) / (tile_m * 2.7) + 0.37).rgb;
-	float a = mix(agg.r, agg2.r, 0.45);
+	// Nearfield (opus55 wave D): graded stone aggregate in bitumen from a 2 m
+	// authored tile, sampled twice (rotated, 2 m and 3.3 m) so it never tiles.
+	// Mip filtering averages the grain away with distance, so the road far off
+	// is one calm tone instead of the old blotchy camouflage mottle.
+	float g1 = texture(agg_tex, p / 2.0).g;
+	float g2 = texture(agg_tex, w_rot(p, 0.73) / 3.3 + 0.37).g;
+	float grain = (mix(g1, g2, 0.42) - 0.5) * 2.0;
 	vec4 big = w_mask(p / 97.0);
 	vec4 med = w_mask(w_rot(p, 1.1) / 23.0 + 0.21);
 	vec4 sml = w_mask(p / 6.3 + 0.5);
-	float tone = a * (0.70 + 0.60 * big.r) * (0.84 + 0.32 * med.g);
-	// Sun-bleached, oxidised areas read lighter and greyer.
-	tone *= 1.0 + 0.18 * smoothstep(0.55, 0.8, big.g);
-	// Exposed aggregate: light stone chips in dark binder at 2-30 cm scales,
-	// each octave faded by pixel footprint so distant road never shimmers.
-	float o1 = (vnoise(p * 34.0) - 0.5) * oct_w(1.0 / 34.0, px);
-	float o2 = (vnoise(w_rot(p, 0.9) * 13.0 + 3.1) - 0.5) * oct_w(1.0 / 13.0, px);
-	float o3 = (vnoise(w_rot(p, 2.1) * 4.5 + 7.7) - 0.5) * oct_w(1.0 / 4.5, px);
-	// Light stone chips (granite aggregate) and dark binder pits.
-	float chips = smoothstep(0.58, 0.74, vnoise(p * 23.0 + 11.0)) * oct_w(1.0 / 23.0, px);
-	float chips2 = smoothstep(0.60, 0.76, vnoise(w_rot(p, 1.7) * 57.0 + 2.0)) * oct_w(1.0 / 57.0, px);
-	float pits = smoothstep(0.62, 0.80, vnoise(w_rot(p, 0.3) * 41.0 + 19.0)) * oct_w(1.0 / 41.0, px);
-	float tar = smoothstep(0.66, 0.84, vnoise(w_rot(p, 0.4) * 2.2 + 5.0)) * oct_w(0.45, px);
-	// Mid-range mottling (0.5-2 m): ravelled light patches and darker binder
-	// so the carriageway 10-40 m out never reads as one smooth slab.
-	float o4 = (vnoise(w_rot(p, 1.3) * 1.7 + 13.0) - 0.5) * oct_w(0.6, px);
-	float o5 = (vnoise(w_rot(p, 0.2) * 0.55 + 23.0) - 0.5);
-	float ravel = smoothstep(0.60, 0.78, vnoise(p * 0.9 + 31.0)) * oct_w(1.1, px);
-	float aggregate = 1.25 * o1 + 1.30 * o2 + 1.15 * o3 + 0.75 * chips + 0.60 * chips2 - 0.45 * pits - 0.25 * tar
-		+ 0.95 * o4 + 0.40 * o5 + 0.22 * ravel;
-	tone *= clamp(1.0 + (aggregate - 0.12) * wear, 0.35, 2.2);
-	float rough = 0.88;
+	// Coherent, low-amplitude large-scale variation only (no mottle).
+	float tone = (0.95 + 0.10 * big.r) * (0.97 + 0.06 * med.g);
+	// Sun-bleached, oxidised areas read slightly lighter and greyer.
+	tone *= 1.0 + 0.08 * smoothstep(0.55, 0.8, big.g);
+	tone *= 1.0 + grain_k * grain;
+	float rough = 0.90;
 	vec3 hue = vec3(1.0);
 
 	// Road frame: lateral offset from the carriageway centreline.
@@ -97,11 +88,11 @@ void fragment() {
 	tracks += w_gauss(al - 5.15, 0.34);
 	tracks += w_gauss(al - 6.85, 0.34);
 	tracks = clamp(tracks, 0.0, 1.0) * tvar * lane * wear;
-	tone *= 1.0 - 0.48 * tracks;
-	rough = mix(rough, 0.70, tracks * 0.8);
+	tone *= 1.0 - 0.20 * tracks;
+	rough = mix(rough, 0.76, tracks * 0.8);
 	// Between the tracks the surface is dustier and lighter.
 	float between = lane * (w_gauss(al - 2.0, 0.55) + w_gauss(al - 6.0, 0.55));
-	tone *= 1.0 + 0.14 * between * (1.0 - tracks);
+	tone *= 1.0 + 0.06 * between * (1.0 - tracks);
 
 	// Oil drip line in each lane centre: blotchy dark, a little glossy.
 	float oil = lane * (w_gauss(al - 2.0, 0.42) + w_gauss(al - 6.0, 0.42));
@@ -109,13 +100,13 @@ void fragment() {
 	// Generic lots: scattered oil stains where cars park.
 	float lot_oil = (1.0 - lane) * (1.0 - junction) * smoothstep(0.62, 0.80, w_mask(p / 9.0 + 0.13).r) * smoothstep(0.4, 0.7, sml.g);
 	oil = clamp(oil + lot_oil, 0.0, 1.0) * wear;
-	tone *= 1.0 - 0.42 * oil;
+	tone *= 1.0 - 0.22 * oil;
 	rough -= 0.10 * oil;
 	hue = mix(hue, vec3(0.92, 0.93, 1.02), oil * 0.5);
 
 	// Gutter: dust band then a dark damp algae edge against the kerb.
 	float gutter = lane * smoothstep(6.6, 7.9, al);
-	tone = mix(tone, tone * 1.22 + 0.04, gutter * 0.55 * (0.6 + 0.4 * med.g));
+	tone = mix(tone, tone * 1.10 + 0.02, gutter * 0.45 * (0.6 + 0.4 * med.g));
 	float wet = lane * smoothstep(7.55, 8.05, al) * (0.55 + 0.45 * big.g);
 	tone *= 1.0 - 0.38 * wet;
 	hue = mix(hue, vec3(0.90, 0.98, 0.86), wet * 0.6);
@@ -194,7 +185,11 @@ void fragment() {
 
 	ALBEDO = clamp(tint * tone * hue, vec3(0.0), vec3(1.0));
 	ROUGHNESS = clamp(rough, 0.3, 1.0);
-	NORMAL_MAP = texture(normal_tex, p / tile_m).rgb;
-	NORMAL_MAP_DEPTH = mix(0.55, 0.25, max(inside, cover));
-	SPECULAR = 0.5;
+	// Fine aggregate relief only; the old 4 m normal tile carried broad
+	// undulations that rippled the sky reflection ("navy and wavy" shade).
+	vec3 n1 = texture(agg_nrm, p / 2.0).rgb;
+	vec3 n2 = texture(agg_nrm, w_rot(p, 0.73) / 3.3 + 0.37).rgb;
+	NORMAL_MAP = normalize(mix(n1, n2, 0.42) * 2.0 - 1.0) * 0.5 + 0.5;
+	NORMAL_MAP_DEPTH = mix(0.9, 0.3, max(inside, cover)) * (1.0 - smoothstep(25.0, 90.0, dist) * 0.7);
+	SPECULAR = 0.32;
 }

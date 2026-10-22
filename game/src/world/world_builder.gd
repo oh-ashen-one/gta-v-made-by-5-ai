@@ -159,13 +159,16 @@ func _roads() -> void:
 			_solid_box(Vector3(BLOCK, 0.16, BLOCK), Vector3(cx, 0.08, cz), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.92))
 	# Kerb stones define the carriageway edge; without them the road and the
 	# pavement merged into one grey field at street level.
-	var kerb := Palette.mat_textured(Color(0.72, 0.70, 0.65), "concrete", Vector3.ONE, 0.88)
-	for x in X_LINES:
-		for side: float in [-1.0, 1.0]:
-			_box(Vector3(0.30, 0.20, 760.0), Vector3(x + side * (ROAD_HALF + 0.15), 0.10, 0.0), kerb)
-	for z in Z_LINES:
-		for side: float in [-1.0, 1.0]:
-			_box(Vector3(760.0, 0.20, 0.30), Vector3(0.0, 0.10, z + side * (ROAD_HALF + 0.15)), kerb)
+	if NearField.enabled():
+		NearField.build_road_kerbs(_world_root)   # nearfield: swept precast kerb units
+	else:
+		var kerb := Palette.mat_textured(Color(0.72, 0.70, 0.65), "concrete", Vector3.ONE, 0.88)
+		for x in X_LINES:
+			for side: float in [-1.0, 1.0]:
+				_box(Vector3(0.30, 0.20, 760.0), Vector3(x + side * (ROAD_HALF + 0.15), 0.10, 0.0), kerb)
+		for z in Z_LINES:
+			for side: float in [-1.0, 1.0]:
+				_box(Vector3(760.0, 0.20, 0.30), Vector3(0.0, 0.10, z + side * (ROAD_HALF + 0.15)), kerb)
 	_medians()
 
 ## Planted central medians. The manager's review of the street still called the
@@ -177,12 +180,22 @@ func _medians() -> void:
 	var median_kerb := Palette.mat_textured(Color(0.70, 0.68, 0.63), "concrete", Vector3.ONE, 0.88)
 	var median_turf := Palette.mat_textured(Color(0.24, 0.33, 0.16), "soil", Vector3.ONE, 0.95)
 	var span := 160.0 - 2.0 * (ROAD_HALF + 6.0)   # clear of both junction mouths
+	# nearfield (opus55 D): kerbed islands with bull-nosed painted ends,
+	# dense shrubs and keep-left signs replace the two flat boxes
+	var nf := NearField.enabled()
+	var nf_shrubs := {}
+	var nf_signs: Array = []
+	var nf_rng := RandomNumberGenerator.new()
+	nf_rng.seed = 5150
 	for x in X_LINES:
 		for k in range(0, 4):
 			var cz := -240.0 + k * 160.0
 			var centre := Vector3(x, 0.0, cz)
-			_box(Vector3(1.6, 0.26, span), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
-			_box(Vector3(1.2, 0.30, span - 1.0), centre + Vector3(0.0, 0.30, 0.0), median_turf)
+			if nf:
+				NearField.build_median(_world_root, centre, true, span, median_turf, nf_shrubs, nf_signs, nf_rng)
+			else:
+				_box(Vector3(1.6, 0.26, span), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
+				_box(Vector3(1.2, 0.30, span - 1.0), centre + Vector3(0.0, 0.30, 0.0), median_turf)
 			# driving C2: the planted bed is solid (critic: cars drove through it)
 			_collision_box(Vector3(1.6, 0.9, span), centre + Vector3(0.0, 0.45, 0.0))
 			# planting is StreetDressing's median bed (lighting r4: the smooth
@@ -191,9 +204,15 @@ func _medians() -> void:
 		for k in range(0, 4):
 			var cx := -240.0 + k * 160.0
 			var centre := Vector3(cx, 0.0, z)
-			_box(Vector3(span, 0.26, 1.6), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
-			_box(Vector3(span - 1.0, 0.30, 1.2), centre + Vector3(0.0, 0.30, 0.0), median_turf)
+			if nf:
+				NearField.build_median(_world_root, centre, false, span, median_turf, nf_shrubs, nf_signs, nf_rng)
+			else:
+				_box(Vector3(span, 0.26, 1.6), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
+				_box(Vector3(span - 1.0, 0.30, 1.2), centre + Vector3(0.0, 0.30, 0.0), median_turf)
 			_collision_box(Vector3(span, 0.9, 1.6), centre + Vector3(0.0, 0.45, 0.0))
+	if nf:
+		NearField.emit_shrubs(_world_root, nf_shrubs)
+		NearField.emit_signs(_world_root, nf_signs)
 
 # ------------------------------------------------------------------- blocks
 func _build_grid() -> void:
@@ -1585,26 +1604,23 @@ func _street_furniture() -> void:
 					planter_box.material_override = Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(1.0, 1.0, 1.0), 0.9)
 					planter_box.position = planter_pos + Vector3(0.0, 0.3, 0.0)
 					_world_root.add_child(planter_box)
-				_sphere(Vector3(1.1, 0.9, 1.1), planter_pos + Vector3(0.0, 0.8, 0.0), Palette.mat(Palette.FOLIAGE, 0.95))
-				# wall-mounted air-con condensers on the flanking facades
-				for k: int in 2:
-					if AssetLibrary.has_asset("ac_unit_clean.glb"):
-						var ac_model := AssetLibrary.instantiate("ac_unit_clean.glb", _world_root)
-						if ac_model != null:
-							ac_model.position = kerb + Vector3(-2.0 + k * 2.6, 4.2, -0.8)
-							continue
-					var ac := MeshInstance3D.new()
-					var ab := BoxMesh.new()
-					ab.size = Vector3(0.85, 0.6, 0.4)
-					ac.mesh = ab
-					ac.material_override = Palette.mat_textured(Color(0.62, 0.63, 0.60), "metal", Vector3(1.0, 1.0, 1.0), 0.65, 0.35)
-					ac.position = kerb + Vector3(-2.0 + k * 2.6, 4.2, -0.8)
-					_world_root.add_child(ac)
+				if NearField.enabled():
+					NearField.shrub_instance(_world_root, planter_pos + Vector3(0.0, 0.42, 0.0), 1.05, "ixora")
+				else:
+					_sphere(Vector3(1.1, 0.9, 1.1), planter_pos + Vector3(0.0, 0.8, 0.0), Palette.mat(Palette.FOLIAGE, 0.95))
+				# (nearfield: the two "wall-mounted" condensers here hung 4.2 m
+				# over the open sidewalk with no wall behind them, the floating
+				# grey cubes critics flagged; facades carry their own units)
 				# bus shelter at a few stops
 				if int(absf(z)) % 160 == 0:
 					_bus_shelter(kerb + Vector3(-1.0, 0.0, 6.0))
 
 func _bus_shelter(pos: Vector3) -> void:
+	if NearField.enabled():
+		var nf_signs: Array = []
+		NearField.bus_shelter(_world_root, pos, nf_signs)
+		NearField.emit_signs(_world_root, nf_signs)
+		return
 	var metal := Palette.mat_textured(Palette.METAL, "metal", Vector3(1.0, 1.0, 1.0), 0.5, 0.5)
 	for sx in [-1.6, 1.6]:
 		_cyl(Vector3(0.12, 2.6, 0.12), pos + Vector3(sx, 1.3, 0.0), metal)

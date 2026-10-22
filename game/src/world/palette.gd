@@ -120,6 +120,9 @@ static func weathered_surface(color: Color, kind: String, rough: float = 0.9, me
 			m.set_shader_parameter("normal_tex", load(SURF_DIR + "asphalt_normal.png"))
 			m.set_shader_parameter("tint", Vector3(color.r, color.g, color.b))
 			m.set_shader_parameter("road_grid", 0.0 if lot else 1.0)
+			# nearfield (opus55 D): graded aggregate tile for fine grain
+			m.set_shader_parameter("agg_tex", load(SURF_DIR + "asphalt_aggregate_albedo.png"))
+			m.set_shader_parameter("agg_nrm", load(SURF_DIR + "asphalt_aggregate_normal.png"))
 		"pavers":
 			m.shader = load(SHADER_DIR + "paving.gdshader")
 			m.set_shader_parameter("albedo_tex", load(SURF_DIR + "pavers_albedo.png"))
@@ -380,7 +383,9 @@ const PLASTER_2 := Color(0.78, 0.74, 0.66)
 const CONCRETE := Color(0.55, 0.54, 0.51)
 const CONCRETE_LIGHT := Color(0.62, 0.60, 0.56)
 # r3: slightly cool so golden-hour sun reads neutral grey, not brown (R/B<=1.3).
-const ASPHALT := Color(0.195, 0.232, 0.305)
+# nearfield (opus55 D): the r3 blue (B/R 1.56) rendered shade as navy ink under
+# the blue sky fill (critic B3: B-R +18). Near-neutral, a touch cool.
+const ASPHALT := Color(0.168, 0.172, 0.184)
 const ASPHALT_EDGE := Color(0.30, 0.30, 0.31)
 const PAINT_LINE := Color(0.85, 0.83, 0.72)
 const GLASS := Color(0.44, 0.56, 0.62)
