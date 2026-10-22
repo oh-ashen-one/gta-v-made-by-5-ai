@@ -390,11 +390,23 @@ def pose_frame(arm,kind,t,h):
 # y = forward of the hip joint, z = up, metres at 1.75 m stature.
 GAITS = {
     # v m/s, frames per two-step cycle, stance fraction, ankle half-track (planted / mid-swing)
-    'walk':   dict(v=1.50, frames=29, beta=.60, track=.050, swing_track=.088, hip=.880, bob=.010,
-                   heel=.28, theta_c=16., flat=(.14, .52), theta_to=-46.,
-                   swing=[(.28, -.26, .255), (.66, .13, .185)], lean=-3., pel_pitch=-1., pel_yaw=5., chest_yaw=-8.,
-                   pel_roll=3.5, sway=.020, arm_f=17., arm_b=-15., elbow=(14., 30.), arm_out=5.,
-                   head_bob=1.),
+    # Locomotion-Q (run-2 critic: locked knees, short stride, arms bent in
+    # front): lower hip so the stance knee keeps ~12-18 deg of flex, the heel
+    # lands further ahead, a stronger pelvis/chest counter-rotation and arms
+    # that hang and swing from the shoulder with nearly straight elbows.
+    'walk':   dict(v=1.50, frames=29, beta=.60, track=.050, swing_track=.085, hip=.874, bob=.011,
+                   heel=.31, theta_c=17., flat=(.13, .50), theta_to=-47.,
+                   swing=[(.28, -.29, .255), (.66, .15, .185)], lean=-2., pel_pitch=-1., pel_yaw=7.5, chest_yaw=-12.,
+                   pel_roll=4., sway=.022, arm_f=19., arm_b=-24., elbow=(5., 17.), arm_out=8.,
+                   head_bob=1., lmax=.984),
+    # Aimed backpedal (locomotion-Q): its own gait, not the walk reversed.
+    # Short quick steps landing on the ball of the foot behind the hips,
+    # rolling to a flat foot, peeling heel-last in front; low foot lift.
+    'back':   dict(v=-1.30, frames=22, beta=.60, track=.060, swing_track=.080, hip=.862, bob=.008,
+                   heel=-.26, theta_c=-15., flat=(.22, .70), theta_to=9.,
+                   swing=[(.32, .14, .19), (.70, -.20, .175)], lean=3., pel_pitch=1., pel_yaw=4., chest_yaw=-5.,
+                   pel_roll=3., sway=.018, arm_f=10., arm_b=-10., elbow=(10., 20.), arm_out=6.,
+                   head_bob=.6, lmax=.975, swing_theta=[(0., 9.), (.35, -4.), (.72, -20.), (1., -15.)]),
     'run':    dict(v=3.60, frames=21, beta=.31, track=.036, swing_track=.075, hip=.872, bob=.036,
                    heel=.23, theta_c=7., flat=(.12, .36), theta_to=-46.,
                    swing=[(.34, -.30, .46), (.70, .06, .42)], lean=-12., pel_pitch=-5., pel_yaw=8., chest_yaw=-13.,
@@ -406,7 +418,8 @@ GAITS = {
                    pel_roll=2., sway=.006, arm_f=58., arm_b=-48., elbow=(78., 100.), arm_out=10.,
                    head_bob=2.),
 }
-GAIT_OF = {'walk': 'walk', 'aim_walk': 'walk', 'run': 'run', 'aim_run': 'run', 'sprint': 'sprint'}
+GAIT_OF = {'walk': 'walk', 'aim_walk': 'walk', 'run': 'run', 'aim_run': 'run', 'sprint': 'sprint', 'aim_back': 'back'}
+WALK_KINDS = ('walk', 'aim_walk', 'aim_back')
 FOOT_HEEL = Vector((0., -.075, 0.))   # sole heel point relative to ankle-at-rest projection
 FOOT_BALL = Vector((0., .080, 0.))
 ANKLE_REST = Vector((0., -.015, .13))
@@ -481,6 +494,8 @@ def _swing_ankle(g, w, s):
 
 
 def _swing_theta(g, w):
+    if 'swing_theta' in g:
+        return _lerp_keys(g['swing_theta'], w)
     if g['flat'][0] < 0:
         return _lerp_keys([(0., g['theta_to']), (.35, -30.), (.7, 2.), (1., g['theta_c'])], w)
     return _lerp_keys([(0., g['theta_to']), (.30, -22.), (.62, 8.), (1., g['theta_c'])], w)
@@ -557,14 +572,14 @@ def gait_frame(arm, kind, t, h, stats):
     # every planted leg can reach its foot with a nearly straight knee.
     mid = beta*.5
     c = math.cos(2*math.pi*2*(t - mid))
-    if kind in ('walk', 'aim_walk'):
+    if kind in WALK_KINDS:
         z = g['hip'] + g['bob']*c
     else:
         z = g['hip'] - g['bob']*c
     yaw = g['pel_yaw']*math.cos(2*math.pi*t)
     roll = -g['pel_roll']*math.cos(2*math.pi*(t - mid))
     sway = g['sway']*math.cos(2*math.pi*(t - mid))*s
-    lmax = (arm.pose.bones['thigh.l'].bone.length + arm.pose.bones['shin.l'].bone.length)*(.992 if kind in ('walk', 'aim_walk') else .985)
+    lmax = (arm.pose.bones['thigh.l'].bone.length + arm.pose.bones['shin.l'].bone.length)*g.get('lmax', .992 if kind in WALK_KINDS else .985)
     for _ in range(3):
         _set_pelvis(arm, s, z, sway, yaw, roll, g['pel_pitch'])
         need = 0.
@@ -593,11 +608,11 @@ def gait_frame(arm, kind, t, h, stats):
         ang = g['arm_f']*sw if sw > 0 else -g['arm_b']*sw
         e0, e1 = g['elbow']
         elbow = e0 + (e1 - e0)*max(0., sw)
-        across = 6.*max(0., sw) if kind != 'walk' else 0.
+        across = 6.*max(0., sw) if kind not in WALK_KINDS else 0.
         rotate(arm, 'clavicle.'+side, 0, 0, 0)
         rotate(arm, 'upper_arm.'+side, ang, sign*across*.4, sign*g['arm_out'])
         rotate(arm, 'forearm.'+side, elbow, 0, -sign*across*.5)
-        rotate(arm, 'hand.'+side, 6 if kind == 'walk' else 10, 0, 0)
+        rotate(arm, 'hand.'+side, 2 if kind in WALK_KINDS else 10, 0, 0)
     bpy.context.view_layer.update()
     for side, (ankle, theta, planted, toe, sign) in feet.items():
         miss = _leg_ik(arm, side, sign, ankle, theta, toe)
@@ -653,6 +668,14 @@ def action_frame(arm, kind, t, h):
         z = .885 - .17*k
         _arms(arm, 20.*k + 8., 18.*k + 8., 20. + 30.*k, 20. + 30.*k, out=6. + 10.*k)
         _plant_feet(arm, s, {'l': (-.02, hx, 0., 0.), 'r': (-.10, hx + .01, 0., 0.)}, z, lean=-4. - 20.*k)
+    elif kind == 'skid':       # 0.40 s (locomotion-Q): sprint brake before a 180 -- lead heel
+        # dug in far ahead with the toes up, trailing leg on its ball, hips
+        # dropped and the trunk thrown back, arms out front for balance.
+        k = smoothstep(0., .45, t)
+        z = .885 - .16*k
+        _arms(arm, 20. + 38.*k, 10. + 30.*k, 30. + 25.*k, 25. + 30.*k, out=10. + 16.*k)
+        _plant_feet(arm, s, {'l': (HIP_Y + .20 + .30*k, .10, 6. + 18.*k, 0.),
+                             'r': (HIP_Y - .14 - .20*k, .09, -18. - 14.*k, .01)}, z, lean=-8. + 20.*k, pitch=4.*k)
     elif kind == 'stop':       # 0.55 s: plant the lead foot, brake, bring the trailing foot in
         # Body decelerates ~16 m/s^2 from a jog: lead heel slides back with the ground.
         tt = t*.55
@@ -678,6 +701,7 @@ def animate(arm,mesh,h):
            'aim':(2.4,True),'aim_walk':(T['walk'],True),'aim_run':(T['run'],True),
            'reload':(1.4,False),'hit':(.36,False),'jump_start':(.2,False),'jump':(1.0,True),
            'land':(.42,False),'stop':(.55,False),'fall':(.9,False),
+           'aim_back':(T['back'],True),'skid':(.40,False),
            'seated':(2.4,True),'drive':(2.4,True)}
     scene=bpy.context.scene;scene.render.fps=FPS
     arm.animation_data_create()
@@ -688,7 +712,7 @@ def animate(arm,mesh,h):
         for frame in range(count+1):
             scene.frame_set(frame+1)
             if name in GAIT_OF:gait_frame(arm,name,(frame%count)/count,h,stats)
-            elif name in ('jump_start','jump','land','stop'):action_frame(arm,name,frame/count,h)
+            elif name in ('jump_start','jump','land','stop','skid'):action_frame(arm,name,frame/count,h)
             else:pose_frame(arm,name,frame/count,h)
             if name in ('fall','hit'):
                 bpy.context.view_layer.update()
