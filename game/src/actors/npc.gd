@@ -158,6 +158,13 @@ func become_displaced_pedestrian(pos: Vector3) -> void:
 func _physics_process(delta: float) -> void:
 	if Game.simulation_paused:
 		return
+	# Render LOD on a fixed per-NPC phase (critic pass 2: the old gate reused
+	# the far-walk slot, which advances every tick, so most NPCs never checked).
+	if (Engine.get_physics_frames() + get_instance_id()) % 8 == 0 and character_visual != null and character_visual.loaded:
+		var cam := get_viewport().get_camera_3d()
+		if cam != null:
+			var limit := CharacterVisual.NPC_DRAW_RANGE + 10.0
+			character_visual.set_lod_far(state != State.DEAD and global_position.distance_squared_to(cam.global_position) > limit * limit)
 	if state == State.DEAD:
 		velocity.x = 0.0
 		velocity.z = 0.0
@@ -165,11 +172,6 @@ func _physics_process(delta: float) -> void:
 			velocity.y -= 24.0 * delta
 		move_and_slide()
 		return
-	if Engine.get_physics_frames() % 8 == _sim_slot and character_visual != null and character_visual.loaded:
-		var cam := get_viewport().get_camera_3d()
-		if cam != null:
-			var limit := CharacterVisual.NPC_DRAW_RANGE + 10.0
-			character_visual.set_lod_far(global_position.distance_squared_to(cam.global_position) > limit * limit)
 	if state == State.IDLE and is_on_floor() and not is_hostile and not is_police:
 		# Settled: no collision solve while standing or seated.
 		velocity = Vector3.ZERO

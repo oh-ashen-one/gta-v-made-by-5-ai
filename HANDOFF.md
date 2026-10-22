@@ -14,27 +14,34 @@ Rolling handoff; updated during the wave. Not a final report until marked FINAL.
 - **Script validation FAILS**: `capture_director.gd:857` parse error (`car_pos` type cannot be inferred). The scripted mission route therefore could not run at all on the incoming checkpoint; the game idled until stopped (`route_incoming_parse_error.log`). Argon's driving fix was never exercised.
 - No rendered wave-4 baseline yet: shared renderer capacity has been occupied the whole time by four foreign Blender sessions (`veyr-review-fable-20261021`, actively rendering at 200–1100 % CPU). Mixed cap 2 forbids launching Godot; they are untouched. A pristine detached worktree of `6b51a26` with private assets is staged in the session scratchpad so the unchanged wave-4 `aerial_district` and opening views can be captured the moment capacity frees.
 
-## Wave-5 changes so far (all pushed on `feature/wave-05-opus`)
+## Wave-5 changes (all pushed on `feature/wave-05-opus`)
 
-1. Route automation parse error fixed (incoming blocker); landing/exit gates wait for the mission's own tick (tree-order race).
-2. Kerbside parked cars on the carriageway (were astride the 16 cm platform edge in the pedestrian lane); lane-corridor traffic perception at ~8 Hz; AI stuck recovery.
-3. **Opening identity:** the run now starts outdoors on a new heritage shophouse five-foot way (x=-180 row) facing the inhabited hawker hall across the x=-160 avenue, HDB slabs behind. Marina Bay Sands (real proportions, ~196 m), the ArtScience lotus and the Singapore Flyer stand on the far shore of the bay (CONCEPT-03 geography); one Supertree Grove sits in the bayside garden block beside the opening sightline; Merlion on the promenade pier facing the bay. Near-shore office towers restored on the east waterfront block.
-4. Headless tools: `sightline_probe.gd` (ray-cast semantic map of what a camera sees — geometric, not a render), `perf_probe.gd` (CPU attribution), `mesh_census.gd`, `wheel_probe.gd`.
-5. Performance: NPC/car simulation LOD, parked-car sleep; static batching of 9,705 primitive/prop meshes into 1,153 chunked MultiMesh draws (`--no-static-batching` disables it for A/B).
-6. Articulated overlay wheels on moving provider cars, seated driver silhouettes, road-graph police pursuit, helicopter aerial envelope + ditch recovery, landable far shore, Singapore kerb markings (double yellow lines broken by white parking lots), five-foot-way pedestrians.
-7. Regression suite extended to 92 checks (7 new wave-5 checks).
+1. Route automation parse error fixed (incoming blocker). Landing and exit gates wait for the mission's own tick.
+2. Driving and parking: kerbside cars sit on the carriageway (they had been astride the 16 cm platform edge in the pedestrian lane). Lane-corridor traffic perception runs at about 8 Hz. AI stuck recovery checks behind before reversing.
+3. **Opening identity.** The run starts outdoors on a new heritage shophouse five-foot way facing the inhabited hawker hall across the x=-160 avenue, with HDB slabs behind. The camera is framed so the Marina Bay Sands silhouette clears the HUD and the player. MBS (real proportions, about 196 m), the ArtScience lotus and the Singapore Flyer stand on the far shore of the bay. The Supertree Grove is in the bayside garden beside the sightline, and the Merlion is on the promenade pier. Supporting signage: Tembusu Food Centre board and street-name blades.
+4. Performance: NPC/car simulation LOD, parked-car sleep, NPC draw range plus animation pause beyond 150 m. 10,161 static meshes merged into 1,107 MultiMesh draws (district mesh instances 11,064 → 909). `--no-static-batching` turns the merge off for A/B.
+5. Vehicles and pursuit: articulated overlay wheels, seated drivers, junction-grid police pursuit with committed waypoints and a mid-block endgame, pursuit telemetry.
+6. World: landable far shore, helicopter aerial envelope and ditch recovery, Singapore kerb markings, five-foot-way pedestrians.
+7. Audio: click-free engine/rotor loop seams, a whole-cycle siren, a soft-saturated gunshot, objective seam and peak checks (no listening).
+8. QA: sightline, perf, census, wheel and two-process save/relaunch probes. QA entry points fail fast. The regression suite is up to 96 checks.
+9. Two fresh-context critic passes (Opus subagents, code-only): 4 majors and 9 minors fixed or documented (`waves/05/evidence/critic_review_*.md`).
 
-## Verified evidence (this wave, headless only)
+## Verified evidence (headless only, unless a rendered capture is linked)
 
-- Headless scripted route: success, 0 deaths, all 13 gates, ~149–153 s on each build since the recomposition (`waves/05/evidence/headless-route*/`). Scripted input automation, not a human run, no pixels.
-- 92/92 regressions, exit 0.
-- Sightline probe of the real opening camera: all three MBS towers + SkyPark visible (77% of silhouette), Supertree crowns, hawker hall, heritage row, HDB (`waves/05/evidence/sightlines-headless/`). Batching verified geometry-equivalent across five views (category shares within 0.3 pp).
-- CPU: headless physics tick ~11.3 → ~6.8 ms; route CPU frame p95 18.0 → 12.0 ms (shared, loaded machine).
+- Headless scripted route: success, 0 deaths, 13/13 gates, about 149 s on every build since the recomposition.
+- 96/96 regressions, exit 0.
+- Packaging pipeline dry run at `2b0331c`: export, ad-hoc signed private copy, **95/95 packaged regressions**, packaged two-process save/relaunch, packaged headless route success at 149.0 s. The final package is rebuilt from the final commit.
+- Sightline probe of the real opening camera: all three MBS towers and the SkyPark, Supertree crowns, Flyer, hawker hall, heritage row and HDB in frame. Batching is geometry-equivalent in five views.
+- CPU (shared, loaded machine): physics tick about 11.3 → 4.5–4.9 ms; route CPU frame p95 18.0 → 12.0 ms.
 
-## Not yet verified / open
+## Rendered capture plan / status
 
-- **Any rendered capture** (shared capacity still occupied by four foreign Blender renders — their leases record a 4 h max hold from 23:34–23:36 UTC). A gated auto-runner captures the unchanged wave-4 baseline the moment capacity frees.
-- Rendered opening identity, materials/lighting of the recomposed skyline, rendered frame time, packaged build launch, OS-input playtest, audio listening.
+- No rendered frame yet. Four foreign Blender renders hold the shared capacity. The coordinator's 4-hour max-hold limit ends their leases at about 01:58 UTC (one) and 03:35–03:37 UTC (three).
+- A gated runner (`scratchpad/bin/auto_render2.sh`: lease → `render_gate.py` → `bounded_run.py`, one engine at a time, no launches after 03:50:30 UTC) captures, in order: candidate opening/gameplay photos, the **unchanged wave-4 baseline** (`aerial_district` (250,95,250)→(-40,0,-60) FOV 62, then the wave-4 opening), candidate fixed views, then a rendered candidate route. It uses the signed final package only after that package is marked final. See `waves/05/BASELINE_W4.md`.
+
+## Known incidents
+
+- One save-probe run without `--qa-session`, at 00:55 UTC, wrote the game's default user save slot (`~/Library/Application Support/Godot/app_userdata/Orchard Reach/orchard_reach_save.json`) with probe data. The file was removed, and the probe now refuses to run without a task-owned path. If a player save existed there before 00:55 UTC, it was overwritten at that point; it cannot be restored.
 
 ## Safety
 

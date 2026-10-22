@@ -148,6 +148,8 @@ func _recycle_police_car(pc: Car) -> void:
 		return
 	pc.has_ai = false
 	pc._forward = 0.0
+	pc.remove_meta("pursuit_wp")
+	pc.remove_meta("pursuit_goal")
 	pc.velocity = Vector3.ZERO
 	pc.visible = false
 	pc.collision_layer = 0
@@ -386,8 +388,13 @@ func _pursuit_waypoint(pc: Car, goal: Vector3) -> Vector3:
 		wp = a if (a == b or Vector2(nodes[a].x - here.x, nodes[a].z - here.z).length() > 10.0) else _grid_step(a, b)
 	pc.set_meta("pursuit_wp", wp)
 	pc.set_meta("pursuit_goal", b)
-	# At the goal's own junction with no clear line, hold the junction rather
-	# than drive through the block.
+	if wp == b and Vector2(nodes[b].x - here.x, nodes[b].z - here.z).length() <= 10.0:
+		# At the goal's own junction: run down the road through it toward the
+		# goal instead of parking at the junction (critic pass 2).
+		var j := nodes[b]
+		if absf(goal.x - j.x) < absf(goal.z - j.z):
+			return Vector3(j.x, j.y, goal.z)
+		return Vector3(goal.x, j.y, j.z)
 	return nodes[wp]
 
 ## One Manhattan step on the 5x5 junction grid from node a toward node b.

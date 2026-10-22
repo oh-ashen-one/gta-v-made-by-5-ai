@@ -1,0 +1,2 @@
+[world] static primitive batching: 10161 meshes -> 1107 multimesh draws
+MESH_CENSUS {"convertible":3,"imported":555,"labels":283,"lights":18,"mesh_instances":909,"multimesh_instances":1149,"multimesh_items":11331,"primitive":{"BoxMesh":50,"PlaneMesh":1,"PrismMesh":1,"SphereMesh":300,"TorusMesh":2},"unique_override_materials":353}

@@ -1265,20 +1265,37 @@ func _batch_static_primitives() -> void:
 			var sc := xform.basis.get_scale()
 			if maxf(sc.x, maxf(sc.y, sc.z)) > minf(sc.x, minf(sc.y, sc.z)) * 1.10: continue
 		var cell := Vector2i(floori(xform.origin.x / 160.0), floori(xform.origin.z / 160.0))
-		var key := "%s#%s#%d#%s" % [mesh_key, mat_key, mi.cast_shadow, cell]
+		var key := "%s#%s#%d" % [mesh_key, mat_key, mi.cast_shadow]
 		if not groups.has(key):
-			groups[key] = {"mesh": batch_mesh, "material": mat, "shadow": mi.cast_shadow, "xforms": [], "nodes": [], "source": source}
+			groups[key] = {"mesh": batch_mesh, "material": mat, "shadow": mi.cast_shadow, "xforms": [], "nodes": [], "cells": [], "source": source}
 		groups[key]["xforms"].append(Transform3D(xform.basis * Basis.from_scale(unit_scale), xform.origin) if mesh_key == "box" else xform)
 		groups[key]["nodes"].append(mi)
+		groups[key]["cells"].append(cell)
 	var unit_box := BoxMesh.new()
 	unit_box.size = Vector3.ONE
-	var batches := 0
+	# Large families split per 160 m cell so culling still works; small ones
+	# (one-off facade colours etc.) become a single district-wide draw.
+	var batch_list: Array[Dictionary] = []
 	for key in groups:
 		var g: Dictionary = groups[key]
+		var count: int = (g["xforms"] as Array).size()
 		# Imported props only merge when repeated; one-off landmarks stay nodes.
-		if String(key).begins_with("mesh#") and (g["xforms"] as Array).size() < 4:
+		if String(key).begins_with("mesh#") and count < 4:
 			continue
 		originals.append_array(g["nodes"])
+		if count <= 24:
+			batch_list.append(g)
+			continue
+		var by_cell := {}
+		for i in count:
+			var cell: Vector2i = g["cells"][i]
+			if not by_cell.has(cell):
+				by_cell[cell] = {"mesh": g["mesh"], "material": g["material"], "shadow": g["shadow"], "xforms": [], "source": g["source"]}
+			by_cell[cell]["xforms"].append(g["xforms"][i])
+		for cell in by_cell:
+			batch_list.append(by_cell[cell])
+	var batches := 0
+	for g in batch_list:
 		var mm := MultiMesh.new()
 		mm.transform_format = MultiMesh.TRANSFORM_3D
 		mm.mesh = g["mesh"] if g["mesh"] != null else unit_box

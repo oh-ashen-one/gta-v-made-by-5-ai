@@ -124,6 +124,7 @@ func play_death() -> void:
 		return
 	_dead = true
 	_one_shot = false
+	set_lod_far(false)
 	_play("fall", 0.08)
 
 func reset_alive() -> void:
@@ -144,6 +145,9 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 		weapon_socket.add_child(weapon)
 	_weapon_node = weapon
 	_weapon_kind = weapon_kind
+	if asset_role != "player":
+		for mesh_node in weapon.find_children("*", "MeshInstance3D", true, false):
+			(mesh_node as MeshInstance3D).visibility_range_end = NPC_DRAW_RANGE
 	# *_held.glb derivatives face -Z and place their origin at the grip.
 	# At rest the muzzle hangs along the fingers; aiming stabilizes the barrel
 	# on the body's forward axis while its grip follows the animated wrist.

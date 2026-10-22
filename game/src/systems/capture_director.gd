@@ -234,7 +234,12 @@ func _snapshot(elapsed: float) -> Dictionary:
 ## Pursuit telemetry (wave 5): responder count, nearest responder distance and
 ## how many responders moved under 0.5 m since the previous sample (stuck).
 var _police_last: Dictionary = {}
+var _police_last_time := -1.0
 func _police_sample(pos: Vector3) -> Dictionary:
+	# Only refresh the movement reference once per second of route time, so
+	# 10 Hz frame records cannot make a slow responder look stationary.
+	var now := _elapsed()
+	var refresh := _police_last_time < 0.0 or now - _police_last_time >= 0.95
 	var nearest := INF
 	var count := 0
 	var still := 0
@@ -245,8 +250,10 @@ func _police_sample(pos: Vector3) -> Dictionary:
 		nearest = minf(nearest, pc.global_position.distance_to(pos))
 		var id := pc.get_instance_id()
 		seen[id] = pc.global_position
-		if _police_last.has(id) and (pc.global_position as Vector3).distance_to(_police_last[id]) < 0.5: still += 1
-	_police_last = seen
+		if refresh and _police_last.has(id) and (pc.global_position as Vector3).distance_to(_police_last[id]) < 0.5: still += 1
+	if refresh:
+		_police_last = seen
+		_police_last_time = now
 	return {"cars": count, "nearest_m": snappedf(nearest, 0.1) if count > 0 else null, "stationary": still}
 
 func _log(message: String) -> void:
@@ -468,7 +475,9 @@ func _soak_fixture_phase() -> void:
 	Input.action_release("move_forward")
 	_fixture_check("pause freezes player and live traffic", player.global_position.distance_to(paused_position) < 0.001 and traffic.cars[0].global_position.distance_to(paused_car_position) < 0.001)
 	Game.simulation_paused = false
-	var fixture_path := "/tmp/orchard_soak_%d.json" % OS.get_process_id()
+	# Keep the fixture beside the task-owned save when one was supplied.
+	var save_dir := String(Game.get("_save_path")).get_base_dir()
+	var fixture_path := ("%s/orchard_soak_%d.json" % [save_dir, OS.get_process_id()]) if save_dir.begins_with("/") else "/tmp/orchard_soak_%d.json" % OS.get_process_id()
 	var saved := Game.save_game(fixture_path)
 	_fixture_check("completed-run checkpoint writes through atomic save path", saved)
 	if saved:
