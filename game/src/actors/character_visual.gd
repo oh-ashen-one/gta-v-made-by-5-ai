@@ -38,6 +38,8 @@ var _driving_pose := false
 static func available(role: String = "player") -> bool:
 	return ResourceLoader.exists(PROVIDER_DIR + role + "_rigged.glb")
 
+const NPC_DRAW_RANGE := 150.0
+
 func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	asset_role = role
 	_phase_offset = fmod(float(get_instance_id() % 997) / 997.0 + float(wardrobe_variant) * 0.137, 1.0)
@@ -68,6 +70,10 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		_apply_wardrobe(model, WARDROBE[posmod(wardrobe_variant, WARDROBE.size())])
 		var stature := 0.94 + float(posmod(wardrobe_variant, 7)) * 0.017
 		scale = Vector3(stature, stature, stature)
+	if role != "player":
+		# Ambient figures are not drawn beyond 150 m of the camera (wave 5 perf).
+		for mesh_node in model.find_children("*", "MeshInstance3D", true, false):
+			(mesh_node as MeshInstance3D).visibility_range_end = NPC_DRAW_RANGE
 	weapon_socket = BoneAttachment3D.new()
 	weapon_socket.name = "WeaponSocket"
 	weapon_socket.bone_name = "hand.r"
@@ -167,9 +173,17 @@ func set_paused(paused: bool) -> void:
 	_manual_pause = paused
 	_update_animation_activity()
 
+## Render LOD (wave 5): beyond the meshes' visibility range the figure is not
+## drawn, so its animation need not advance either.
+var _lod_far := false
+func set_lod_far(far: bool) -> void:
+	if far == _lod_far: return
+	_lod_far = far
+	_update_animation_activity()
+
 func _update_animation_activity() -> void:
 	if animator != null:
-		var should_run := not (_manual_pause or (Game.simulation_paused and not ignore_simulation_pause))
+		var should_run := not (_manual_pause or _lod_far or (Game.simulation_paused and not ignore_simulation_pause))
 		if animator.active != should_run:
 			animator.active = should_run
 

@@ -1,0 +1,159 @@
+{
+	"note": "Headless CPU attribution; Godot TIME_PHYSICS_PROCESS/TIME_PROCESS monitors per frame; shared machine.",
+	"rows": [
+		{
+			"frame_interval_ms": {
+				"max": 13.19,
+				"mean": 6.9,
+				"p50": 8.01,
+				"p95": 11.93
+			},
+			"frames": 871,
+			"phase": "baseline",
+			"physics_ms": {
+				"max": 5.41,
+				"mean": 4.9,
+				"p50": 4.74,
+				"p95": 5.41
+			},
+			"process_ms": {
+				"max": 2.04,
+				"mean": 1.94,
+				"p50": 1.93,
+				"p95": 2.04
+			}
+		},
+		{
+			"frame_interval_ms": {
+				"max": 11.96,
+				"mean": 6.9,
+				"p50": 7.56,
+				"p95": 10.77
+			},
+			"frames": 870,
+			"phase": "no_pedestrians",
+			"physics_ms": {
+				"max": 4.52,
+				"mean": 4.11,
+				"p50": 4.19,
+				"p95": 4.52
+			},
+			"process_ms": {
+				"max": 2.74,
+				"mean": 2.46,
+				"p50": 2.6,
+				"p95": 2.74
+			}
+		},
+		{
+			"frame_interval_ms": {
+				"max": 12.97,
+				"mean": 6.9,
+				"p50": 7.9,
+				"p95": 11.1
+			},
+			"frames": 871,
+			"phase": "no_ai_traffic",
+			"physics_ms": {
+				"max": 6.26,
+				"mean": 3.96,
+				"p50": 3.59,
+				"p95": 6.26
+			},
+			"process_ms": {
+				"max": 3.03,
+				"mean": 2.21,
+				"p50": 2.13,
+				"p95": 3.03
+			}
+		},
+		{
+			"frame_interval_ms": {
+				"max": 13.75,
+				"mean": 6.9,
+				"p50": 8.0,
+				"p95": 12.05
+			},
+			"frames": 870,
+			"phase": "no_parked_cars",
+			"physics_ms": {
+				"max": 6.26,
+				"mean": 5.2,
+				"p50": 5.2,
+				"p95": 6.26
+			},
+			"process_ms": {
+				"max": 2.62,
+				"mean": 2.2,
+				"p50": 2.18,
+				"p95": 2.62
+			}
+		},
+		{
+			"frame_interval_ms": {
+				"max": 13.58,
+				"mean": 6.9,
+				"p50": 8.0,
+				"p95": 11.97
+			},
+			"frames": 870,
+			"phase": "no_traffic_manager",
+			"physics_ms": {
+				"max": 5.43,
+				"mean": 5.04,
+				"p50": 5.17,
+				"p95": 5.43
+			},
+			"process_ms": {
+				"max": 2.66,
+				"mean": 2.2,
+				"p50": 2.16,
+				"p95": 2.66
+			}
+		},
+		{
+			"frame_interval_ms": {
+				"max": 9.95,
+				"mean": 6.9,
+				"p50": 7.33,
+				"p95": 9.12
+			},
+			"frames": 870,
+			"phase": "no_actors_at_all",
+			"physics_ms": {
+				"max": 5.38,
+				"mean": 2.95,
+				"p50": 2.31,
+				"p95": 5.38
+			},
+			"process_ms": {
+				"max": 4.27,
+				"mean": 3.37,
+				"p50": 3.16,
+				"p95": 4.27
+			}
+		},
+		{
+			"frame_interval_ms": {
+				"max": 13.93,
+				"mean": 6.9,
+				"p50": 8.0,
+				"p95": 11.78
+			},
+			"frames": 870,
+			"phase": "baseline_again",
+			"physics_ms": {
+				"max": 6.59,
+				"mean": 5.06,
+				"p50": 5.32,
+				"p95": 6.59
+			},
+			"process_ms": {
+				"max": 3.42,
+				"mean": 2.45,
+				"p50": 2.2,
+				"p95": 3.42
+			}
+		}
+	]
+}

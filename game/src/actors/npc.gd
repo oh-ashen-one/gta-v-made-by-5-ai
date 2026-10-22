@@ -165,6 +165,11 @@ func _physics_process(delta: float) -> void:
 			velocity.y -= 24.0 * delta
 		move_and_slide()
 		return
+	if Engine.get_physics_frames() % 8 == _sim_slot and character_visual != null and character_visual.loaded:
+		var cam := get_viewport().get_camera_3d()
+		if cam != null:
+			var limit := CharacterVisual.NPC_DRAW_RANGE + 10.0
+			character_visual.set_lod_far(global_position.distance_squared_to(cam.global_position) > limit * limit)
 	if state == State.IDLE and is_on_floor() and not is_hostile and not is_police:
 		# Settled: no collision solve while standing or seated.
 		velocity = Vector3.ZERO
