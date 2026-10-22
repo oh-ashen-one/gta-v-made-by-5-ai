@@ -1,0 +1,72 @@
+{
+  "started_utc": "2026-10-22T03:03:21.054118+00:00",
+  "finished_utc": "2026-10-22T03:03:35.177674+00:00",
+  "source": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/app/Orchard Reach.app",
+  "destination": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/signed/Orchard Reach.app",
+  "archive": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/OrchardReach-wave-05-final-signed.zip",
+  "archive_sha256": "129ecc4f15a6526dab241b231aad90bf18c977626acc248b4761cf1748fbb550",
+  "archive_bytes": 394528087,
+  "before": {
+    "Contents/Info.plist": {
+      "sha256": "861e675bc8e821a04b3d0db2e315559badb81d4a3aa864c1d6c89fed3938115d",
+      "bytes": 1788
+    },
+    "Contents/PkgInfo": {
+      "sha256": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+      "bytes": 9
+    },
+    "Contents/MacOS/Orchard Reach": {
+      "sha256": "233633697eb0f31f0d26344eba344fb53c5700b2c308c7e84d0877ddd82271e2",
+      "bytes": 169949840
+    },
+    "Contents/Resources/Orchard Reach.pck": {
+      "sha256": "5cb6c167ae883d9b4c242b184dfb49d9f7ad2608f054a840320103d3e095bd0a",
+      "bytes": 343341856
+    },
+    "Contents/Resources/icon.icns": {
+      "sha256": "779ff524928785811d6d4c61f47a26491160b1092db9b610e85fcdfd9b2d2b2a",
+      "bytes": 67500
+    },
+    "Contents/Resources/PrivacyInfo.xcprivacy": {
+      "sha256": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+      "bytes": 229
+    }
+  },
+  "after": {
+    "Contents/Info.plist": {
+      "sha256": "861e675bc8e821a04b3d0db2e315559badb81d4a3aa864c1d6c89fed3938115d",
+      "bytes": 1788
+    },
+    "Contents/PkgInfo": {
+      "sha256": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+      "bytes": 9
+    },
+    "Contents/_CodeSignature/CodeResources": {
+      "sha256": "bc67aabe10d7aa473e3ac4920e12bf6b23416634a6021bfb44685565aeadab7d",
+      "bytes": 2928
+    },
+    "Contents/MacOS/Orchard Reach": {
+      "sha256": "8d071ddf0a9c358c0e4bc6e2a3b8ad16255c63eb8ea2378312a8196270f33000",
+      "bytes": 169435792
+    },
+    "Contents/Resources/Orchard Reach.pck": {
+      "sha256": "5cb6c167ae883d9b4c242b184dfb49d9f7ad2608f054a840320103d3e095bd0a",
+      "bytes": 343341856
+    },
+    "Contents/Resources/icon.icns": {
+      "sha256": "779ff524928785811d6d4c61f47a26491160b1092db9b610e85fcdfd9b2d2b2a",
+      "bytes": 67500
+    },
+    "Contents/Resources/PrivacyInfo.xcprivacy": {
+      "sha256": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+      "bytes": 229
+    }
+  },
+  "pck_identical": true,
+  "source_unchanged": true,
+  "strict_verify_exit": 0,
+  "strict_verify_output": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/signed/Orchard Reach.app: valid on disk\n/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/signed/Orchard Reach.app: satisfies its Designated Requirement\n",
+  "signature_description": "Executable=/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach\nIdentifier=com.ashenone.orchardreach\nFormat=app bundle with Mach-O universal (x86_64 arm64)\nCodeDirectory v=20400 size=160690 flags=0x2(adhoc) hashes=5015+3 location=embedded\nSignature=adhoc\nInfo.plist entries=25\nTeamIdentifier=not set\nSealed Resources version=2 rules=13 files=3\nInternal requirements count=0 size=12\n",
+  "qualification": "Local ad-hoc signature only; no Developer ID, notarization, Finder/Gatekeeper or public redistribution certification.",
+  "removed_cosmetic_attributes": []
+}

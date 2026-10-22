@@ -1,0 +1,14 @@
+[capture] 19.59s PASS market reached on foot
+[capture] 24.58s PASS combat damaged and killed a mission combatant
+[capture] 25.35s PASS package collected through interaction
+[capture] 25.35s PASS usable parked car found
+[capture] 31.11s PASS car entered
+[capture] 69.19s PASS uninterrupted driving leg reached aviation compound
+[capture] 70.52s PASS car exit restored walking
+[capture] 70.52s PASS helicopter remains usable
+[capture] 83.28s PASS helicopter boarded
+[capture] 113.22s PASS flight reached waterfront pad airspace
+[capture] 133.09s PASS helicopter landed intact on destination pad
+[capture] 133.42s PASS landing exit restored walking
+[capture] 147.54s PASS mission completed through delivery interaction
+[capture] terminal success=true deaths=0 seconds=147.6

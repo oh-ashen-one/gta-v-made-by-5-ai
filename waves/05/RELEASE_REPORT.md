@@ -21,7 +21,7 @@
 | --- | --- | --- | --- |
 | Mission integrity | Repaired the route automation. Landing and exit gates wait for the mission's own tick. | `evidence/headless-route*/`, `evidence/rendered/candidate-route/` | **Rendered (Metal) route on the signed `d2a6cad` binary: 13/13 gates, 0 deaths, 149.1 s.** Headless: all 11 source-build routes after the recomposition and every packaged route passed 13/13 with 0 deaths, in 147.6–153.0 s. Scripted input, not a human run. |
 | **Opening Singapore identity** | The run opens outdoors on a new heritage shophouse five-foot way, facing the Tembusu Food Centre hawker hall across the x=-160 avenue, with HDB slabs behind. Marina Bay Sands (about 182 m towers, a 196 m SkyPark top), the ArtScience lotus and the Singapore Flyer stand across the bay. The Supertree Grove sits in the bayside garden beside the opening sightline. The Merlion stands on the promenade pier. | `evidence/rendered/candidate-gameplay/photo_01_gameplay_opening_start.png`, `evidence/sightlines-headless/release-code-2e38d8f/` | **Rendered.** The opening frame shows the five-foot way, MBS (three towers and SkyPark, clear of the objective card), Supertree crowns, the Flyer, the hawker hall and a double-yellow left-hand kerb. The wave-4 opening (`rendered/baseline-w4-gameplay/`) was an indoor safe room. Critic: Supertrees read as magenta wireframe "cocktail glasses"; the Merlion is not recognizable; the sign is cropped to "EMBUSU" by a tree. |
-| HUD | Ammo readout on a backing plate. The minimap draws the whole bay, the far shore, the MBS footprint and the promenade deck. Before, it drew a 30 m water strip, leaving the bay as bare background. | `859df8e`, critic review 5 | Fixes the two worst rendered defects the critic found. Rendered re-check: PENDING, see below. |
+| HUD | Ammo readout on a backing plate. The minimap draws the whole bay, the far shore, the MBS footprint and the promenade deck. Before, it drew a 30 m water strip, leaving the bay as bare background. | `859df8e`, critic review 5 | Targets the two worst rendered defects the critic found. In the final candidate `98b41b2`, which passes 97/97 headless. Rendered re-check: PENDING, see below. |
 | Carjack and pedestrian safety | Soak #1 found a defect: the displaced driver of an occupied car stood frozen in the carriageway. Cars could not hurt pedestrians, so mission 2's car rammed an invulnerable body until wrecked. Now vehicles injure or scatter pedestrians (one impact per person per 0.6 s), and displaced drivers flee and rejoin a pavement. | `evidence/soak1-failed/`, regression checks | Fixed. Later soaks passed the same leg. |
 | Parking and U-turns | Kerbside cars moved off the 16 cm platform edge onto the carriageway. Opposite lots are now staggered by 30 m, after soak #4 found an 11 m U-turn wedge. | `regressions_release_2e38d8f.json`, `evidence/soak4-failed-freeroam/` | **85/91 kerbside cars can pull out and drive 12 m**; 6 exceptions are listed in the check. |
 | Traffic | Lane-corridor perception at about 8 Hz. Stuck recovery checks behind before reversing. | regressions | Critic: the rendered driving frame shows almost no traffic (`rendered/candidate-route/06_driving.png`). |
@@ -72,13 +72,28 @@ Soaks #2, #3 and #5 were stopped early because newer fixes superseded them; they
 
 ## Release candidate
 
-PENDING: the `98b41b2` package (HUD fixes plus automation) is being exported and verified. If it fails verification, the candidate stays `d2a6cad`.
+**Final candidate: `98b41b2328c96d9b7338826de0c498452f8a95ab`** (`d2a6cad` + HUD fixes + route automation fixes).
 
-- `d2a6cad1c948c5e32e0ee45924e7d5e325e73e5c`: verified fallback, kept in `package-wave05/d2a6cad/`.
-  - SHA-256: signed zip `36c5132f…98eb2198d`, raw zip `04f21828…ff6b6`, PCK `233a76c6…ffc64`, signed executable `8cbba859…16548`.
-  - Packaged, headless: 97/97 regressions, two-process save → relaunch → Continue, route 13/13 in 147.6 s.
-  - Packaged, rendered (Metal): route 13/13 with 0 deaths in 149.1 s, opening and fixed views (`evidence/rendered/`).
-- The signature is a local ad-hoc signature only, with no notarization. Provider asset rights for public redistribution are unverified.
+- Private, git-ignored files in `package-wave05/`. SHA-256:
+  - signed zip `129ecc4f15a6526dab241b231aad90bf18c977626acc248b4761cf1748fbb550`
+  - raw zip `131aa64b2b3815bd3714129b7a6455e14def70a34d4ba862810ef668b716cd88`
+  - PCK `5cb6c167ae883d9b4c242b184dfb49d9f7ad2608f054a840320103d3e095bd0a`
+  - signed executable `8d071ddf0a9c358c0e4bc6e2a3b8ad16255c63eb8ea2378312a8196270f33000`
+- Packaged checks with the signed binary, headless (`evidence/final-package-98b41b2/`):
+  - **97/97 regressions**
+  - **two-process save → relaunch → Continue PASS**: position, health and weapon restored
+  - **scripted route 13/13, 0 deaths, 147.6 s**: CPU frame p95 12.36 ms, max 234 ms
+- Rendered check: PENDING. It runs only if the foreign loop frees capacity before about 03:50 UTC; see "Rendered evidence".
+- Its game code differs from `d2a6cad` only in `hud.gd` (the ammo plate and the minimap bay) and `capture_director.gd` (QA automation): `git diff d2a6cad 98b41b2 --stat -- game`.
+
+**Rendered-verified fallback: `d2a6cad1c948c5e32e0ee45924e7d5e325e73e5c`**, in `package-wave05/d2a6cad/` (`evidence/final-package/`).
+
+- SHA-256: signed zip `36c5132f…98eb2198d`, raw zip `04f21828…ff6b6`, PCK `233a76c6…ffc64`, signed executable `8cbba859…16548`.
+- Packaged headless: 97/97, save/relaunch PASS, route 13/13 in 147.6 s.
+- Packaged rendered (Metal): **route 13/13, 0 deaths, 149.1 s**, plus every view in `evidence/rendered/`.
+- It still has the HUD defects that `98b41b2` fixes.
+
+Both builds carry a local ad-hoc signature only, with no notarization. Provider asset rights for public redistribution are unverified.
 
 ## Not done / failing / untested
 
