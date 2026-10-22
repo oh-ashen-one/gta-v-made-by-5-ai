@@ -139,13 +139,15 @@ void fragment() {
 	if (dmg > 0.01) {
 		vec3 fn = normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
 		if (dot(fn, n) < 0.0) fn = -fn;
-		n = normalize(mix(n, fn, clamp(dmg * 1.6, 0.0, 0.85)));
+		n = normalize(mix(n, fn, clamp(dmg * 1.2, 0.0, 0.6)));
 		float streak = vnoise(v_model * vec3(3.0, 38.0, 3.0)) * vnoise(v_model * vec3(31.0, 4.0, 31.0) + 7.0);
 		float scrape = smoothstep(0.18, 0.42, dmg) * smoothstep(0.18, 0.34, streak);
-		vec3 bare = vec3(0.55, 0.56, 0.58) * (0.8 + 0.4 * vnoise(v_model * 60.0));
+		// driving-q: duller, darker scuffed steel; the 0.55 grey under a 0.2
+		// clear-coat lit up a crumpled boot as a white blob in the chase view.
+		vec3 bare = vec3(0.30, 0.31, 0.32) * (0.8 + 0.4 * vnoise(v_model * 60.0));
 		vec3 grime = col * 0.45;
 		col = mix(col, grime, smoothstep(0.08, 0.5, dmg) * 0.55 * paint);
-		col = mix(col, bare, scrape * (paint + 0.4) * 0.9);
+		col = mix(col, bare, scrape * (paint + 0.4) * 0.7);
 		// Spider cracks: thin bright lines in the glass near the dent.
 		float cell = abs(sin(v_model.x * 41.0 + vnoise(v_model * 9.0) * 6.0) * sin(v_model.y * 37.0 + v_model.z * 29.0));
 		float crack = (1.0 - smoothstep(0.0, 0.07, cell)) * glass * smoothstep(0.05, 0.3, dmg);
@@ -158,11 +160,11 @@ void fragment() {
 	float rough = mix(orm.g, 0.2, paint);
 	rough = mix(rough, 0.05, glass);
 	float metal = mix(orm.b, 0.12, max(paint, glass));
-	rough = mix(rough, 0.55, smoothstep(0.2, 0.6, dmg) * paint);
+	rough = mix(rough, 0.62, smoothstep(0.08, 0.45, dmg) * paint);
 	ROUGHNESS = clamp(rough, 0.03, 1.0);
 	METALLIC = clamp(metal, 0.0, 1.0);
 	SPECULAR = mix(mix(0.5, 0.62, paint), 0.7, glass);
-	CLEARCOAT = max(paint, glass) * (1.0 - smoothstep(0.25, 0.6, dmg));
+	CLEARCOAT = max(paint, glass) * (1.0 - smoothstep(0.08, 0.4, dmg));
 	CLEARCOAT_ROUGHNESS = 0.06;
 	// Glass reads darker and deeper so reflections dominate.
 	ALBEDO = mix(ALBEDO, ALBEDO * 0.35, glass);

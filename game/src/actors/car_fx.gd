@@ -865,7 +865,10 @@ func _update_camera(delta: float) -> void:
 	# Framing scales with the body (van is taller/longer than a coupe).
 	var size_k: float = {"van": 1.38, "coupe": 0.96, "police": 1.03}.get(car.kind, 1.0)
 	var dist := (4.7 + ratio * 0.3) * size_k + _cam_long
-	var height := 1.38 * size_k + ratio * 0.08
+	# driving-q: the lens settles lower as speed builds (1.93 m -> ~1.67 m
+	# above the road at top speed) for a lower, more cinematic chase angle
+	# with more grazing road in the lower third.
+	var height := (1.38 - 0.26 * smoothstep(0.25, 0.9, ratio)) * size_k
 	var fwd := Vector3(-sin(_cam_yaw), 0.0, -cos(_cam_yaw))
 	var cam_right := Vector3(cos(_cam_yaw), 0.0, -sin(_cam_yaw))
 	# Weight swing: the camera is thrown outward in a corner and settles back.
@@ -929,5 +932,11 @@ func _update_motion_blur(delta: float, aspeed: float, xf: Transform3D) -> void:
 	_blur_frames = 0 if (jump or _cam_snap or not camera.current or _entry_t < 1.0) else _blur_frames + 1
 	var speed_k := smoothstep(3.0, 13.0, aspeed)
 	var frac := clampf(SHUTTER_S / maxf(delta, 1e-4), 0.0, 2.0)
-	motion_blur.znear = camera.near
+	var vp := camera.get_viewport()
+	var vs := vp.get_visible_rect().size if vp != null else Vector2(16.0, 9.0)
+	var box := _aabb.grow(0.1)
+	box.position.y = maxf(box.position.y, 0.04)
+	box.end.y = _aabb.end.y + 0.15
+	motion_blur.set_car_mask(camera, car.global_transform, box, vs.x / maxf(vs.y, 1.0))
+	motion_blur.debug_mask = "--motion-blur-debug" in OS.get_cmdline_user_args()
 	motion_blur.shutter = frac * speed_k if _blur_frames >= 2 else 0.0

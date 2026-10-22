@@ -23,6 +23,11 @@ extends CompositorEffect
 
 var shutter := 0.0
 var znear := 0.05              # camera near plane (reverse-Z depth -> metres)
+var zfar := 4000.0
+## Car mask, set each frame by car_fx: view->car transform rows, padded box,
+## tan of the half field of view. `mask` is swapped whole (render thread reads it).
+var mask := PackedFloat32Array()
+var debug_mask := false
 var max_px := 72.0
 var samples := 14
 var frames_rendered := 0      # QA readback: render callbacks that ran a blur
@@ -51,7 +56,34 @@ layout(push_constant, std430) uniform Params {
 	float taps;
 	float frame;
 	float znear;
+	vec4 m0;        // view space -> car space, rows 0..2 (xyz = basis, w = origin)
+	vec4 m1;
+	vec4 m2;
+	vec4 box_min;   // car-space mask box; w = zfar
+	vec4 box_max;   // w = debug tint
+	vec2 tan_half;  // tan(fov/2) in x and y
+	float mask_on;
+	float pad;
 } p;
+
+float lin_z(float d) {
+	float zf = p.box_min.w;
+	return p.znear * zf / max(d * (zf - p.znear) + p.znear, 1e-6);
+}
+
+// The player car moves with the camera, but its physics steps and the camera
+// spring never line up exactly, so its motion vectors are not zero. Mask it
+// out geometrically: reconstruct the view-space point and test it against the
+// car's (padded) box in car space.
+bool in_car(vec2 uv, float d) {
+	if (p.mask_on < 0.5 || d <= 0.0) {
+		return false;
+	}
+	float z = lin_z(d);
+	vec3 v = vec3((uv.x * 2.0 - 1.0) * p.tan_half.x, (1.0 - uv.y * 2.0) * p.tan_half.y, -1.0) * z;
+	vec3 c = vec3(dot(p.m0.xyz, v) + p.m0.w, dot(p.m1.xyz, v) + p.m1.w, dot(p.m2.xyz, v) + p.m2.w);
+	return all(greaterThanEqual(c, p.box_min.xyz)) && all(lessThanEqual(c, p.box_max.xyz));
+}
 
 // Distant pixels (skyline, far facades) move mostly through camera yaw; damp
 // their streak so corners keep a readable city while the road still streaks.
@@ -76,6 +108,13 @@ void main() {
 	}
 	vec2 uv = (vec2(px) + 0.5) / p.size;
 	float d0 = textureLod(depth_tex, uv, 0.0).r;
+	if (in_car(uv, d0)) {
+		if (p.box_max.w > 0.5) {
+			vec4 cc = imageLoad(src_image, px);
+			imageStore(color_image, px, vec4(cc.rgb * vec3(1.6, 0.4, 0.4), cc.a));
+		}
+		return;
+	}
 	vec2 vel = textureLod(velocity_tex, uv, 0.0).xy * p.shutter * far_damp(d0);
 	float len_px = length(vel * p.size);
 	if (len_px < 0.6) {
@@ -102,7 +141,7 @@ void main() {
 		// Reverse-Z: larger depth is nearer. A nearer, much slower tap is the
 		// car body (or a prop) in front of moving background: keep it out.
 		float w = 1.0;
-		if (ds > d0 * 1.08 + 1e-6 && length(vs) < vlen * 0.5) {
+		if ((ds > d0 * 1.08 + 1e-6 && length(vs) < vlen * 0.5) || in_car(suv, ds)) {
 			w = 0.0;
 		}
 		ivec2 spx = clamp(ivec2(suv * p.size), ivec2(0), isz - 1);
@@ -206,4 +245,28 @@ func _render_callback(callback_type: int, render_data: RenderData) -> void:
 
 func _push(size: Vector2i, mode: float) -> PackedByteArray:
 	var pc := PackedFloat32Array([float(size.x), float(size.y), shutter, max_px * float(size.y) / 720.0, mode, float(samples), float(frames_rendered % 64), znear])
+	var m := mask
+	if m.size() == 20:
+		# m0 m1 m2 (12), box_min.xyz, box_max.xyz, tan x, tan y
+		pc.append_array(m.slice(0, 12))
+		pc.append_array(PackedFloat32Array([m[12], m[13], m[14], zfar, m[15], m[16], m[17], 1.0 if debug_mask else 0.0, m[18], m[19], 1.0, 0.0]))
+	else:
+		pc.resize(32)
+		pc[23] = zfar
 	return pc.to_byte_array()
+
+## Called on the main thread after the chase camera moves.
+func set_car_mask(cam: Camera3D, car_xf: Transform3D, box: AABB, aspect: float) -> void:
+	var v2c := car_xf.affine_inverse() * cam.global_transform
+	var b := v2c.basis
+	var o := v2c.origin
+	var ty := tan(deg_to_rad(cam.fov) * 0.5)
+	znear = cam.near
+	zfar = cam.far
+	mask = PackedFloat32Array([
+		b.x.x, b.y.x, b.z.x, o.x,
+		b.x.y, b.y.y, b.z.y, o.y,
+		b.x.z, b.y.z, b.z.z, o.z,
+		box.position.x, box.position.y, box.position.z,
+		box.end.x, box.end.y, box.end.z,
+		ty * aspect, ty])
