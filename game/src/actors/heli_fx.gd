@@ -58,12 +58,12 @@ void fragment() {
 	// Blade streaks (camera-shutter blur) plus two fainter ghost positions
 	// from earlier in the exposure; between the streaks the disc is almost
 	// clear, so there is no solid plate or ring.
-	float streak = blade(k, 0.09) * 0.62;
-	streak += blade(fract(k + 0.33), 0.06) * 0.16;
-	streak += blade(fract(k + 0.66), 0.05) * 0.08;
+	float streak = blade(k, 0.16) * 0.88;
+	streak += blade(fract(k + 0.33), 0.08) * 0.22;
+	streak += blade(fract(k + 0.66), 0.06) * 0.12;
 	// blade chord tapers toward the tip; a blade root starts at the grip
 	float span = smoothstep(hub + 0.04, hub + 0.20, r) * (1.0 - smoothstep(0.80, 1.0, r));
-	float haze = 0.022 * span;
+	float haze = 0.05 * span;
 	float alpha = spin * (streak * span + haze);
 	// grazing view: let optical density grow only a little (no hula-hoop rim)
 	float graze = 1.0 - abs(dot(NORMAL, VIEW));

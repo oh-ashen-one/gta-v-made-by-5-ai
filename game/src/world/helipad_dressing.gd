@@ -12,6 +12,7 @@ static func build(root: Node3D, pos: Vector3, radius: float, primary: bool) -> v
 	holder.name = "HelipadDressing"
 	holder.position = pos
 	root.add_child(holder)
+	_deck_surface(holder, radius)
 	_markings(holder, radius)
 	_edge_lights(holder, radius)
 	_safety_apron(holder, radius)
@@ -58,6 +59,65 @@ static func _cyl(radius: float, height: float, sides: int = 12) -> CylinderMesh:
 	return c
 
 ## Painted aiming-point circle, dashed TLOF edge, touchdown/positioning marks.
+## Weathered deck surface over the dark touchdown disc: cast-in panel
+## joints, aggregate grain, rubber scuffs from skids, oil stains and the
+## yellow shoulder bars, so the pad is no longer a flat black slab.
+const DECK_SHADER := """
+shader_type spatial;
+render_mode cull_disabled;
+uniform float pad_r = 10.0;
+varying vec2 p;
+float h21(vec2 q) { return fract(sin(dot(q, vec2(127.1, 311.7))) * 43758.5453); }
+float vn(vec2 q) {
+	vec2 i = floor(q); vec2 f = fract(q); f = f * f * (3.0 - 2.0 * f);
+	return mix(mix(h21(i), h21(i + vec2(1, 0)), f.x), mix(h21(i + vec2(0, 1)), h21(i + vec2(1, 1)), f.x), f.y);
+}
+float fbm(vec2 q) { return vn(q) * 0.5 + vn(q * 2.1) * 0.25 + vn(q * 4.3) * 0.125 + vn(q * 8.7) * 0.0625; }
+void vertex() { p = VERTEX.xz; }
+void fragment() {
+	float r = length(p);
+	if (r > pad_r) { discard; }
+	vec3 base = vec3(0.235, 0.245, 0.235);
+	float large = fbm(p * 0.18);
+	float grain = vn(p * 9.0) * 0.6 + h21(floor(p * 40.0)) * 0.4;
+	vec3 col = base * (0.82 + 0.30 * large) * (0.92 + 0.14 * grain);
+	// cast-in deck panel joints every 3 m
+	vec2 g = abs(fract(p / 3.0 + 0.5) - 0.5) * 3.0;
+	float joint = 1.0 - smoothstep(0.015, 0.045, min(g.x, g.y));
+	col *= 1.0 - 0.45 * joint;
+	// rubber scuffs where skids touch down: dark arcs around the centre
+	float ang = atan(p.y, p.x);
+	float scuff = smoothstep(0.55, 0.85, fbm(vec2(ang * 3.0, r * 0.7) + 7.0)) * smoothstep(pad_r * 0.12, pad_r * 0.3, r) * (1.0 - smoothstep(pad_r * 0.45, pad_r * 0.7, r));
+	col *= 1.0 - 0.38 * scuff;
+	// oil / fuel stains
+	float stain = smoothstep(0.64, 0.80, fbm(p * 0.16 + 3.0)) * smoothstep(0.3, 0.7, vn(p * 1.3));
+	col = mix(col, vec3(0.10, 0.095, 0.09), stain * 0.45);
+	// sun-bleached, dusty outer band
+	col = mix(col, vec3(0.40, 0.39, 0.35), smoothstep(pad_r * 0.80, pad_r, r) * 0.45 * (0.6 + 0.4 * large));
+	// yellow shoulder bars either side of the H, paint worn by fbm
+	vec2 b = vec2(abs(abs(p.x) - pad_r * 0.60), abs(p.y));
+	float bar = (1.0 - step(0.30, b.x)) * (1.0 - step(pad_r * 0.33, b.y));
+	float wear = smoothstep(0.25, 0.55, fbm(p * 2.3));
+	col = mix(col, vec3(0.80, 0.60, 0.12), bar * (0.55 + 0.45 * wear));
+	ALBEDO = col;
+	ROUGHNESS = mix(0.86, 0.55, stain * 0.8);
+	SPECULAR = 0.35;
+}
+"""
+
+static func _deck_surface(holder: Node3D, radius: float) -> void:
+	var plane := PlaneMesh.new()
+	var pad_r := radius * 0.75
+	plane.size = Vector2(pad_r * 2.0, pad_r * 2.0)
+	var shader := Shader.new()
+	shader.code = DECK_SHADER
+	var m := ShaderMaterial.new()
+	m.shader = shader
+	m.set_shader_parameter("pad_r", pad_r)
+	var mi := _mesh(holder, plane, m, Vector3(0.0, PAD_TOP + 0.034, 0.0))
+	mi.name = "DeckSurface"
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
 static func _markings(holder: Node3D, radius: float) -> void:
 	var yellow := Palette.mat(Color(0.86, 0.66, 0.14), 0.7)
 	var white := Palette.mat(Color(0.86, 0.85, 0.80), 0.75)
