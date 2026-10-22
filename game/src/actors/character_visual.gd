@@ -457,17 +457,16 @@ func _build_contact_shadows() -> void:
 		if id < 0:
 			id = skeleton.find_bone(bone.replace("foot", "toe"))
 		_foot_ids.append(id)
-	var sizes := [Vector3(0.30, 0.5, 0.42), Vector3(0.30, 0.5, 0.42), Vector3(0.78, 0.6, 0.62)]
+	var sizes := [Vector3(0.34, 0.7, 0.46), Vector3(0.34, 0.7, 0.46), Vector3(0.85, 0.7, 0.68)]
 	for i in 3:
 		var d := Decal.new()
 		d.name = "ContactShadow%d" % i
 		d.texture_albedo = _contact_texture()
 		d.size = sizes[i]
-		d.modulate = Color(1, 1, 1, 0.62 if i < 2 else 0.42)
+		d.modulate = Color(1, 1, 1, 0.85 if i < 2 else 0.5)
 		d.albedo_mix = 1.0
 		d.upper_fade = 0.25
 		d.lower_fade = 0.6
-		d.cull_mask = 1
 		d.top_level = true
 		add_child(d)
 		contact_shadows.append(d)
@@ -477,7 +476,12 @@ func _update_contact_shadows() -> void:
 	if contact_shadows.is_empty() or skeleton == null:
 		return
 	var visible_now := is_visible_in_tree() and not _seated
-	var ground := global_position.y
+	# Ankle bones sit ~0.09 m above the sole; the lower ankle marks the ground
+	# (works whatever height the visual root sits at, and on stairs/kerbs).
+	var feet: Array[Vector3] = []
+	for id in _foot_ids:
+		feet.append(skeleton.global_transform * skeleton.get_bone_global_pose(id).origin if id >= 0 else global_position)
+	var ground := minf(feet[0].y, feet[1].y) - 0.09
 	var yaw := global_basis.get_euler().y
 	for i in contact_shadows.size():
 		var d := contact_shadows[i]
@@ -486,10 +490,10 @@ func _update_contact_shadows() -> void:
 			continue
 		var p := global_position
 		var lift := 0.0
-		if i < 2 and _foot_ids[i] >= 0:
-			p = skeleton.global_transform * skeleton.get_bone_global_pose(_foot_ids[i]).origin
-			lift = maxf(p.y - ground - 0.08, 0.0)
+		if i < 2:
+			p = feet[i]
+			lift = maxf(p.y - ground - 0.12, 0.0)
 		# A raised foot casts a fainter, softer contact shadow.
 		var k := clampf(1.0 - lift / 0.25, 0.0, 1.0)
-		d.modulate.a = (0.62 if i < 2 else 0.42) * (0.25 + 0.75 * k)
-		d.global_transform = Transform3D(Basis(Vector3.UP, yaw), Vector3(p.x, ground + 0.12, p.z))
+		d.modulate.a = (0.85 if i < 2 else 0.5) * (0.25 + 0.75 * k)
+		d.global_transform = Transform3D(Basis(Vector3.UP, yaw), Vector3(p.x, ground + 0.05, p.z))
