@@ -396,8 +396,8 @@ GAITS = {
     # that hang and swing from the shoulder with nearly straight elbows.
     'walk':   dict(v=1.50, frames=29, beta=.60, track=.050, swing_track=.085, hip=.874, bob=.011,
                    heel=.31, theta_c=17., flat=(.13, .50), theta_to=-47.,
-                   swing=[(.28, -.29, .255), (.66, .15, .185)], lean=-2., pel_pitch=-1., pel_yaw=7.5, chest_yaw=-12.,
-                   pel_roll=4., sway=.022, arm_f=19., arm_b=-24., elbow=(5., 17.), arm_out=8.,
+                   swing=[(.28, -.29, .255), (.66, .15, .185)], lean=-2., pel_pitch=-1., pel_yaw=7.5, chest_yaw=-9.,
+                   pel_roll=4., sway=.022, arm_f=15., arm_b=-24., elbow=(5., 12.), arm_out=10.,
                    head_bob=1., lmax=.984),
     # Aimed backpedal (locomotion-Q): its own gait, not the walk reversed.
     # Short quick steps landing on the ball of the foot behind the hips,

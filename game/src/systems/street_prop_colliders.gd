@@ -62,7 +62,7 @@ static func _add_box(body: StaticBody3D, xf: Transform3D, aabb: AABB, kind: Stri
 		return
 	# Generic boxes/cylinders: only knee-to-waist street clutter with a real
 	# footprint (planters, bins, crates, bollards), not walls, signs or trim.
-	if kind in ["box", "cyl"] and (size.y > 1.3 or minf(size.x, size.z) < 0.12 or maxf(size.x, size.z) > 2.6):
+	if kind in ["box", "cyl"] and (size.y < 0.5 or size.y > 1.3 or minf(size.x, size.z) < 0.12 or maxf(size.x, size.z) > 2.6):
 		return
 	var center_local := aabb.get_center()
 	var origin := xf * center_local

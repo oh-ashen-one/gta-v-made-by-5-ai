@@ -85,7 +85,7 @@ var _airborne_time := 0.0
 var _land_running := false
 # Locomotion-Q: weighted starts, the sprint skid-and-pivot, shoulder-safe
 # camera and pedestrian/prop avoidance.
-const START_ACCEL_WALK := 3.3   # m/s^2: standstill -> walk in ~0.45 s (a real first step)
+const START_ACCEL_WALK := 2.6   # m/s^2: standstill -> walk in ~0.45 s (a real first step)
 const START_ACCEL_RUN := 5.2    # m/s^2 below 2 m/s when setting off at a jog
 const SKID_MIN_SPEED := 2.9     # reversals faster than this plant and skid
 const AIM_BACK_SPEED := 1.3
@@ -96,7 +96,6 @@ var _skid_heading := 0.0
 var _pivot_t := 0.0
 var _shoulder_x := ARM_BASE.x
 var _avoid := PlayerAvoidance.new()
-var _skid_dust: CPUParticles3D
 
 func _ready() -> void:
 	_rng.seed = 771
@@ -110,8 +109,6 @@ func _ready() -> void:
 	_ensure_walk_action()
 	CombatFx.attach_player(self) # combat piece: FX, recoil/aim layer, hit markers
 	StreetPropColliders.ensure.call_deferred(get_tree())
-	_skid_dust = _make_skid_dust()
-	add_child(_skid_dust)
 	Events.health_changed.connect(_on_health_changed)
 	Events.state_restored.connect(_on_state_restored)
 	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
@@ -428,11 +425,13 @@ func _physics_process(delta: float) -> void:
 		var rate := ACCEL_WALK if _speed < RUN_SPEED else ACCEL_SPRINT
 		# Setting off from a stand builds speed over a real first step.
 		if target_speed <= WALK_SPEED + 0.3:
-			rate = minf(rate, START_ACCEL_WALK + _speed * 2.0)
+			rate = minf(rate, START_ACCEL_WALK + _speed * 1.5)
 		elif _speed < 2.0:
 			rate = lerpf(START_ACCEL_RUN, ACCEL_WALK, clampf(_speed / 2.0, 0.0, 1.0))
 		if _speed > target_speed:
 			rate = PIVOT_DECEL if target_speed <= 0.01 else DECEL
+			if _skid_t >= 0.0:
+				rate = 13.0 # a skid carries: ~0.45 s from a sprint
 		_speed = move_toward(_speed, target_speed, rate * delta)
 		_stop_armed = false
 		# Moving off during a standing landing's absorb: step out of it rather
@@ -502,6 +501,7 @@ func _physics_process(delta: float) -> void:
 	arm.rotation.x = pitch
 	_update_body_motion(delta, sprinting)
 	_update_camera_follow(delta, sprinting)
+	_avoid.hide_near_camera(camera, global_position + Vector3.UP * 1.2)
 	_animate(delta, horizontal.length(), sprinting)
 	var actor := controlled_actor()
 	Game.player_position = actor.global_position
@@ -640,19 +640,15 @@ func _shoulder_room(space: PhysicsDirectSpaceState3D, head: Vector3, dir: Vector
 		return ARM_BASE.x + 0.3
 	return maxf(head.distance_to(hit["position"]) - 0.3, 0.0)
 
-## Sprint/run 180: plant and skid (dust off the sliding heel), then pivot on
-## the spot and drive out the other way.
+## Sprint/run 180: plant and skid over the dug-in heel, then pivot on the
+## spot and drive out the other way.
 func _update_skid(delta: float, stick_held: bool) -> void:
 	_pivot_t = maxf(0.0, _pivot_t - delta)
 	if _skid_t < 0.0:
-		if _skid_dust != null:
-			_skid_dust.emitting = false
 		return
 	_skid_t += delta
 	if _visual != null:
 		_visual.skidding = true
-	if _skid_dust != null:
-		_skid_dust.emitting = _speed > 1.2
 	if _speed < 1.0 or _skid_t > 0.6 or not is_on_floor():
 		_skid_t = -1.0
 		if _visual != null:
@@ -663,56 +659,7 @@ func _update_skid(delta: float, stick_held: bool) -> void:
 			_pivot_t = 0.24
 			_speed = 1.4
 			if _visual != null:
-				_visual.play_action("jump_start", 0.06)
-
-func _make_skid_dust() -> CPUParticles3D:
-	var p := CPUParticles3D.new()
-	p.name = "SkidDust"
-	p.emitting = false
-	p.amount = 28
-	p.lifetime = 0.7
-	p.local_coords = false
-	p.position = Vector3(0.0, 0.06, -0.35)
-	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
-	p.emission_box_extents = Vector3(0.18, 0.02, 0.25)
-	p.direction = Vector3(0.0, 0.4, -1.0)
-	p.spread = 35.0
-	p.initial_velocity_min = 0.6
-	p.initial_velocity_max = 1.6
-	p.gravity = Vector3(0.0, 0.25, 0.0)
-	p.damping_min = 2.5
-	p.damping_max = 4.0
-	p.scale_amount_min = 0.22
-	p.scale_amount_max = 0.48
-	var curve := Curve.new()
-	curve.add_point(Vector2(0.0, 0.4))
-	curve.add_point(Vector2(1.0, 1.0))
-	p.scale_amount_curve = curve
-	var ramp := Gradient.new()
-	ramp.set_color(0, Color(0.62, 0.58, 0.52, 0.42))
-	ramp.set_color(1, Color(0.62, 0.58, 0.52, 0.0))
-	p.color_ramp = ramp
-	var quad := QuadMesh.new()
-	quad.size = Vector2(0.5, 0.5)
-	var mat := StandardMaterial3D.new()
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.vertex_color_use_as_albedo = true
-	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
-	var g := Gradient.new()
-	g.set_color(0, Color(1, 1, 1, 1))
-	g.set_color(1, Color(1, 1, 1, 0))
-	var tex := GradientTexture2D.new()
-	tex.gradient = g
-	tex.fill = GradientTexture2D.FILL_RADIAL
-	tex.fill_from = Vector2(0.5, 0.5)
-	tex.fill_to = Vector2(1.0, 0.5)
-	tex.width = 32
-	tex.height = 32
-	mat.albedo_texture = tex
-	quad.material = mat
-	p.mesh = quad
-	return p
+				_visual.play_action("jump_start", 0.06, 1.6)
 
 func _animate(delta: float, speed: float, sprinting: bool) -> void:
 	if _visual != null and _visual.loaded:

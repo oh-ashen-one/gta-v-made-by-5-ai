@@ -141,10 +141,24 @@ var _low_cam: Camera3D
 const ARCADE := Vector3(-150.0, 0.45, -148.0)
 const ARCADE_YAW := -0.977 # -56 deg, the heritage_arcade gameplay view's line
 
+var _low_front := false
+var _obs := false
 func _follow_low_cam(player: Player) -> void:
 	var right := player.global_transform.basis.x
 	var fwd := -player.global_transform.basis.z
 	var target := player.global_position + right * 3.3 + fwd * 0.6 + Vector3.UP * 0.55
+	if _low_front:
+		# GTAV-02-style: a low camera ~4 m ahead, the figure walking at it.
+		target = player.global_position + fwd * 3.1 + right * 0.45 + Vector3.UP * 0.62
+		_low_cam.global_position = _low_cam.global_position.lerp(target, 0.35) if _low_cam.global_position.distance_to(target) < 2.0 else target
+		_low_cam.look_at(player.global_position + Vector3.UP * 0.95)
+		return
+	if _obs:
+		# Full-figure observer 3/4 in front of the aiming player.
+		target = player.global_position + right * 2.4 - player.global_transform.basis.z * 3.0 + Vector3.UP * 1.05
+		_low_cam.global_position = target
+		_low_cam.look_at(player.global_position + Vector3.UP * 0.85)
+		return
 	_low_cam.global_position = _low_cam.global_position.lerp(target, 0.35) if _low_cam.global_position.distance_to(target) < 2.0 else target
 	_low_cam.look_at(player.global_position + Vector3.UP * 0.8 + fwd * 0.3)
 
@@ -176,6 +190,12 @@ func _extra_phases(player: Player, visual: CharacterVisual) -> void:
 	await _hold(player, visual, "low_stand", 0.6, {})
 	await _hold(player, visual, "low_walk", 3.4, {"move_forward": 1.0, "walk": 1.0})
 	await _hold(player, visual, "low_stop", 0.8, {})
+	await _place(player, START + Vector3(0.0, 0.0, 3.0), 0.0)
+	_low_front = true
+	_low_cam.current = true
+	_follow_low_cam(player)
+	await _hold(player, visual, "low_front_walk", 3.0, {"move_forward": 1.0, "walk": 1.0})
+	_low_front = false
 	_low_cam.current = false
 	player.camera.current = true
 	# 2. Aimed strafe and backpedal in the five-foot way.
@@ -186,6 +206,19 @@ func _extra_phases(player: Player, visual: CharacterVisual) -> void:
 	await _hold(player, visual, "arcade_strafe_l", 1.6, {"aim": 1.0, "move_left": 1.0})
 	await _hold(player, visual, "arcade_back", 2.0, {"aim": 1.0, "move_back": 1.0})
 	await _hold(player, visual, "arcade_fwd", 1.2, {"aim": 1.0, "move_forward": 1.0})
+	# The same moves seen full-figure from an observer camera (legs in frame).
+	await _place(player, ARCADE, ARCADE_YAW)
+	_obs = true
+	_low_cam.fov = 46.0
+	_low_cam.current = true
+	_follow_low_cam(player)
+	await _hold(player, visual, "obs_aim", 0.5, {"aim": 1.0})
+	await _hold(player, visual, "obs_strafe_r", 1.6, {"aim": 1.0, "move_right": 1.0})
+	await _hold(player, visual, "obs_strafe_l", 1.6, {"aim": 1.0, "move_left": 1.0})
+	await _hold(player, visual, "obs_back", 2.0, {"aim": 1.0, "move_back": 1.0})
+	_obs = false
+	_low_cam.current = false
+	player.camera.current = true
 	# 3. Into the crowd: start 7 m short of the densest knot of pedestrians.
 	var crowd := _crowd_spot(player)
 	if crowd.size() == 2:
@@ -209,6 +242,10 @@ func _crowd_spot(player: Player) -> Array:
 	for a in npcs:
 		var na := a as Node3D
 		if na == null or not na.visible or na.global_position.distance_to(START) > 160.0:
+			continue
+		# Pavement walkers only (not diners seated in the hawker centre).
+		var va = na.get("velocity")
+		if va == null or Vector2(va.x, va.z).length() < 0.4:
 			continue
 		var n := 0
 		for b in npcs:
