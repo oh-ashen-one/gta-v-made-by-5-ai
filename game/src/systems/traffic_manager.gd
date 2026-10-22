@@ -274,6 +274,8 @@ func _spawn_peds() -> void:
 		[Vector3(-10.0, 0.25, -145.0), Vector3(-10.0, 0.25, -15.0)],
 		[Vector3(-145.0, 0.25, -150.0), Vector3(-15.0, 0.25, -150.0)],
 		[Vector3(-145.0, 0.25, -10.0), Vector3(-15.0, 0.25, -10.0)],
+		# Wave 5: the opening heritage row's five-foot way, opposite the hall.
+		[Vector3(-171.5, 0.25, -148.0), Vector3(-171.5, 0.25, -36.0)],
 	]
 	for index in PED_COUNT:
 		var ped := NPC.new()

@@ -56,6 +56,12 @@ var _stuck_check_time := 0.0
 var _reverse_time := 0.0
 var _ai_steer_visual := 0.0
 static var _wheel_meshes: Array[Mesh] = []
+## Seated driver silhouette (ART-06 occupants, wave 5): moving and occupied cars
+## were visibly driverless because the driver NPC/player is hidden while seated.
+## Right-hand drive: the driver sits on +X when the car faces -Z.
+const DRIVER_SEAT := {"sedan": Vector3(0.38, 0.0, 0.12), "police": Vector3(0.38, 0.0, 0.12), "coupe": Vector3(0.40, -0.08, 0.18), "van": Vector3(0.42, 0.42, -0.55)}
+static var _driver_parts: Array = []
+var _driver_bust: Node3D = null
 ## Simulation LOD (wave 5): AI traffic beyond SIM_NEAR of the player integrates
 ## along its lane every SIM_FAR_TICKS ticks without a collision solve (measured
 ## ~130 us per AI car per tick headless). Settled parked cars stop ticking until
@@ -334,8 +340,35 @@ func _check_impact(before: Vector3) -> void:
 		if driver_is_player:
 			Events.notify.emit("Vehicle disabled.", "warn")
 
+func _update_driver_bust() -> void:
+	var seated := driver_is_player or has_ai or occupied_by_npc
+	if seated and _driver_bust == null and not disabled:
+		if _driver_parts.is_empty():
+			var torso := CapsuleMesh.new()
+			torso.radius = 0.2
+			torso.height = 0.62
+			var head := SphereMesh.new()
+			head.radius = 0.105
+			head.height = 0.23
+			_driver_parts = [torso, head, Palette.mat(Color(0.16, 0.18, 0.22), 0.9), Palette.mat(Color(0.52, 0.38, 0.29), 0.7)]
+		_driver_bust = Node3D.new()
+		_driver_bust.position = DRIVER_SEAT.get(kind, DRIVER_SEAT["sedan"]) + Vector3(0.0, 0.0, 0.0)
+		add_child(_driver_bust)
+		for part in [[0, 2, Vector3(0.0, 0.86, 0.0)], [1, 3, Vector3(0.0, 1.16, -0.02)]]:
+			var mi := MeshInstance3D.new()
+			mi.mesh = _driver_parts[part[0]]
+			mi.material_override = _driver_parts[part[1]]
+			mi.position = part[2]
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			mi.visibility_range_end = 90.0
+			_driver_bust.add_child(mi)
+	if _driver_bust != null:
+		_driver_bust.visible = seated
+
 func _spin_wheels(delta: float) -> void:
 	var roll := _forward * delta * 2.4
+	if Engine.get_physics_frames() % 30 == get_instance_id() % 30:
+		_update_driver_bust()
 	if _provider_root != null:
 		# The provider bodies have their tyres baked into one mesh (their wheel_*
 		# nodes are stray strips). Moving cars get articulated overlay wheels at
@@ -472,6 +505,7 @@ func interact(player: Node) -> void:
 	player.current_vehicle = self
 	player.visible = false
 	player.global_position = global_position
+	_update_driver_bust()
 	_arm.rotation.y = 0.0
 	_camera.current = true
 	Game.set_mode(Game.MODE_CAR)
@@ -513,6 +547,7 @@ func exit_vehicle(player: Node) -> void:
 	player.busy = false
 	Game.set_mode(Game.MODE_FOOT)
 	Sfx.stop_engine()
+	_update_driver_bust()
 	Events.vehicle_exited.emit(self)
 	Events.notify.emit("On foot.", "info")
 
@@ -528,6 +563,7 @@ func displace_driver() -> void:
 func set_ai_driver(driver: Node) -> void:
 	_driver = driver
 	occupied_by_npc = true
+	_update_driver_bust()
 
 ## A clear spot beside the car, or zero when both sides are blocked.
 func _clear_exit_position() -> Vector3:

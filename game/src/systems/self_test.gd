@@ -547,6 +547,24 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 		for z in WorldBuilder.Z_LINES: lateral = minf(lateral, absf(p.z - z))
 		if lateral + 1.05 <= WorldBuilder.ROAD_HALF: on_carriageway += 1
 	_check("kerbside parked cars sit wholly on the carriageway", kerbside > 0 and on_carriageway == kerbside, "%d/%d" % [on_carriageway, kerbside])
+	# Drivability of every kerbside car as parked: its own hull can pull out
+	# toward the traffic lane and travel 12 m without striking anything.
+	var drivable := 0
+	var probed := 0
+	var blocked_at: Array[String] = []
+	for v in get_tree().get_nodes_in_group("vehicles"):
+		if not v is Car or v.has_ai or v.driver_is_player or not v.visible or v.get_meta("courtyard_only", false): continue
+		var car_body := v as Car
+		probed += 1
+		var forward := -car_body.global_transform.basis.z
+		var to_lane := Vector3.UP.cross(forward).normalized() * -1.0   # right of travel = toward road centre (left-hand traffic)
+		var lifted := car_body.global_transform.translated(Vector3.UP * 0.05)
+		var pull_out := forward * 6.0 + to_lane * 1.6
+		if not car_body.test_move(lifted, pull_out) and not car_body.test_move(lifted.translated(pull_out), forward * 6.0):
+			drivable += 1
+		elif blocked_at.size() < 6:
+			blocked_at.append(str(car_body.global_position.round()))
+	_check("kerbside parked cars can pull out and drive 12 m unobstructed", probed > 0 and drivable >= int(probed * 0.9), "%d/%d blocked=%s" % [drivable, probed, blocked_at])
 	var sleeping := 0
 	for v in get_tree().get_nodes_in_group("vehicles"):
 		if v is Car and not v.has_ai and not v.driver_is_player and v.visible and not v.is_physics_processing():

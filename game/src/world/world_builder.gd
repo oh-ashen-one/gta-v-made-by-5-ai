@@ -82,6 +82,7 @@ func build(seed_value: int = 20261021) -> void:
 	_far_shore_landmarks()
 	locations["player_start"] = PLAYER_START
 	_build_lane_graph()
+	_kerb_markings()
 	_scatter_props()
 	_landscape()
 
@@ -200,17 +201,12 @@ func _roads() -> void:
 	# Kerb stones define the carriageway edge; without them the road and the
 	# pavement merged into one grey field at street level.
 	var kerb := Palette.mat_textured(Color(0.72, 0.70, 0.65), "concrete", Vector3.ONE, 0.88)
-	var yellow_line := Palette.mat(Color(0.92, 0.72, 0.16), 0.72)
 	for x in X_LINES:
 		for side: float in [-1.0, 1.0]:
 			_box(Vector3(0.30, 0.20, 760.0), Vector3(x + side * (ROAD_HALF + 0.15), 0.10, 0.0), kerb)
-			_box(Vector3(0.12, 0.02, 740.0), Vector3(x + side * (ROAD_HALF - 0.35), 0.075, 0.0), yellow_line)
-			_box(Vector3(0.12, 0.02, 740.0), Vector3(x + side * (ROAD_HALF - 0.58), 0.075, 0.0), yellow_line)
 	for z in Z_LINES:
 		for side: float in [-1.0, 1.0]:
 			_box(Vector3(760.0, 0.20, 0.30), Vector3(0.0, 0.10, z + side * (ROAD_HALF + 0.15)), kerb)
-			_box(Vector3(740.0, 0.02, 0.12), Vector3(0.0, 0.075, z + side * (ROAD_HALF - 0.35)), yellow_line)
-			_box(Vector3(740.0, 0.02, 0.12), Vector3(0.0, 0.075, z + side * (ROAD_HALF - 0.58)), yellow_line)
 	_medians()
 
 ## Planted central medians. The manager's review of the street still called the
@@ -1116,6 +1112,65 @@ func _build_lane_graph() -> void:
 			for px2: float in [-220.0, -104.0, 56.0, 216.0]:
 				parked_spots.append({"pos": Vector3(px2, 0.3, z + side * KERB_PARK_OFFSET), "heading": heading2, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
+
+## Singapore kerb markings (wave 5): double yellow no-parking lines that stop at
+## junction mouths and break for white-outlined kerbside parking lots. Two
+## MultiMesh draws replace the twenty continuous 740 m strips, which ran
+## straight through every junction and under every parked car.
+func _kerb_markings() -> void:
+	var yellow: Array[Transform3D] = []
+	var white: Array[Transform3D] = []
+	for axis in 2:
+		var lines: Array[float] = X_LINES if axis == 0 else Z_LINES
+		for line in lines:
+			for side: float in [-1.0, 1.0]:
+				var gaps: Array[Vector2] = []
+				for cross in (Z_LINES if axis == 0 else X_LINES):
+					gaps.append(Vector2(cross - ROAD_HALF - 1.0, cross + ROAD_HALF + 1.0))
+				for spot in parked_spots:
+					if bool(spot.get("courtyard_only", false)): continue
+					var p: Vector3 = spot["pos"]
+					var lateral := p.x if axis == 0 else p.z
+					var along := p.z if axis == 0 else p.x
+					if absf(lateral - (line + side * KERB_PARK_OFFSET)) > 0.2: continue
+					gaps.append(Vector2(along - 3.4, along + 3.4))
+					# Lot outline: two transverse ends and the traffic-side edge.
+					for end_offset: float in [-3.3, 3.3]:
+						white.append(_marking(axis, line + side * KERB_PARK_OFFSET, along + end_offset, Vector3(2.3, 1.0, 0.12)))
+					white.append(_marking(axis, line + side * (KERB_PARK_OFFSET - 1.15), along, Vector3(0.12, 1.0, 6.7)))
+				gaps.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.x < b.x)
+				var cursor := -370.0
+				gaps.append(Vector2(370.0, 371.0))
+				for gap: Vector2 in gaps:
+					if gap.x > cursor + 0.5:
+						var mid: float = (cursor + gap.x) * 0.5
+						var length: float = gap.x - cursor
+						for offset: float in [ROAD_HALF - 0.35, ROAD_HALF - 0.58]:
+							yellow.append(_marking(axis, line + side * offset, mid, Vector3(0.12, 1.0, length)))
+					cursor = maxf(cursor, gap.y)
+	_marking_batch(yellow, Palette.mat(Color(0.92, 0.72, 0.16), 0.72))
+	_marking_batch(white, Palette.mat(Color(0.90, 0.90, 0.86), 0.75))
+
+## A flat paint stripe: size.x across the road, size.z along it.
+func _marking(axis: int, lateral: float, along: float, size: Vector3) -> Transform3D:
+	var basis := Basis.from_scale(Vector3(size.x, 0.02, size.z)) if axis == 0 else Basis.from_scale(Vector3(size.z, 0.02, size.x))
+	var origin := Vector3(lateral, 0.075, along) if axis == 0 else Vector3(along, 0.075, lateral)
+	return Transform3D(basis, origin)
+
+func _marking_batch(transforms: Array[Transform3D], material: Material) -> void:
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	var unit := BoxMesh.new()
+	unit.size = Vector3.ONE
+	mm.mesh = unit
+	mm.instance_count = transforms.size()
+	for i in transforms.size():
+		mm.set_instance_transform(i, transforms[i])
+	var instance := MultiMeshInstance3D.new()
+	instance.multimesh = mm
+	instance.material_override = material
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_world_root.add_child(instance)
 
 # ------------------------------------------------------------------- props
 func _scatter_props() -> void:
