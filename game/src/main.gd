@@ -93,6 +93,15 @@ func _ready() -> void:
 		add_child(locomotion)
 		locomotion.setup(self)
 		return
+	if "--combat-review" in args:
+		# Combat piece footage: aim, wall burst, hostile hit/fall, reload, police.
+		hud.show_title(false)
+		started = true
+		Game.simulation_paused = false
+		var combat_review: Node = _qa_system("res://src/systems/combat_review.gd")
+		add_child(combat_review)
+		combat_review.setup(self)
+		return
 
 	if "--test" in args:
 		# Regression input belongs to active gameplay, not the title overlay.
