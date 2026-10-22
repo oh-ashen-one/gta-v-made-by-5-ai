@@ -75,6 +75,11 @@ func _track(point_fn: Callable) -> void:
 ## Press fire once while tracking; returns after `hold` seconds. Saves the
 ## frame on which the shot lands as `still_name` if given.
 func _shoot(point_fn: Callable, hold: float, still_name: String = "") -> void:
+	var guard := 0
+	while (player._fire_cooldown > 0.0 or player._reloading) and guard < 90:
+		_track(point_fn)
+		await _frame_step()
+		guard += 1
 	var before := int(CombatFx.stats["muzzle"])
 	_track(point_fn)
 	player._press_queue["fire"] = true
@@ -188,9 +193,9 @@ func _run() -> void:
 		wall_normal = -fwd.rotated(Vector3.UP, 1.2)
 	_note("wall %s normal %s dist %.1f" % [wall_point, wall_normal, eye.distance_to(wall_point)])
 	# Hostile ~14 m ahead with a clear line, police further up the street.
-	var enemy_pos := player.global_position + fwd * 14.0
+	var enemy_pos := player.global_position + fwd * 11.5
 	for lateral in [0.0, 1.5, -1.5, 3.0]:
-		var cand: Vector3 = player.global_position + fwd * 14.0 + fwd.cross(Vector3.UP) * lateral
+		var cand: Vector3 = player.global_position + fwd * 11.5 + fwd.cross(Vector3.UP) * lateral
 		if _clear(eye, cand + Vector3.UP * 1.2):
 			enemy_pos = cand
 			break
@@ -242,8 +247,10 @@ func _run() -> void:
 	await _frame_step()
 	cam.global_position = muzzle + aim_dir * 0.9 - mside * 1.1 + Vector3.UP * 0.15
 	cam.look_at(muzzle + aim_dir * 0.25)
-	var before := int(CombatFx.stats["muzzle"])
 	cam.current = true
+	while player._fire_cooldown > 0.0:
+		await _frame_step()
+	var before := int(CombatFx.stats["muzzle"])
 	player._press_queue["fire"] = true
 	for i in 6:
 		await _frame_step()
@@ -284,7 +291,7 @@ func _run() -> void:
 	Game.set_wanted(2)
 	var right := fwd.cross(Vector3.UP).normalized()
 	var cops: Array[NPC] = []
-	for spec in [[13.0, 4.0], [16.0, 7.5]]:
+	for spec in [[10.0, 3.0], [12.5, 6.0]]:
 		var c: NPC = _spawn(player.global_position + fwd * float(spec[0]) + right * float(spec[1]), true, 100.0)
 		c.state = NPC.State.PURSUE
 		c.rotation.y = atan2(fwd.x, fwd.z)

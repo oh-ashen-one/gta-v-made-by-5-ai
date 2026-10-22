@@ -106,13 +106,13 @@ func shot(muzzle: Vector3, aim_dir: Vector3, end: Vector3, hit: bool, normal: Ve
 	var big := 1.0 if weapon == "pistol" or weapon == "npc_pistol" else 0.8
 	# Flame cone: two crossed stretched sheets along the barrel, a star facing
 	# the camera and a short side burst, for a 3-frame life with the light.
-	var cone_len := _rng.randf_range(0.30, 0.42) * big
-	_emit("flame", muzzle + dir * cone_len * 0.5, Vector3.ZERO, 0.055, cone_len, 0.11 * big, 0.11 * big,
-		Color(1.0, 0.85, 0.55, 1.0) * 3.6, 0.0, 0.0, dir, _rng.randf())
+	var cone_len := _rng.randf_range(0.38, 0.50) * big
+	_emit("flame", muzzle + dir * cone_len * 0.5, Vector3.ZERO, 0.055, cone_len, 0.14 * big, 0.14 * big,
+		Color(1.0, 0.85, 0.55, 1.0) * 2.5, 0.0, 0.0, dir, _rng.randf())
 	_emit("flame", muzzle + dir * cone_len * 0.32, Vector3.ZERO, 0.045, cone_len * 0.55, 0.16 * big, 0.12 * big,
-		Color(1.0, 0.62, 0.30, 1.0) * 2.6, 0.0, 0.0, dir, _rng.randf())
-	_emit("flash", muzzle + dir * 0.04, Vector3.ZERO, 0.05, 0.0, 0.20 * big, 0.24 * big,
-		Color(1.0, 0.82, 0.55, 1.0) * 3.0, _rng.randf() * TAU, 0.0, Vector3.ZERO, _rng.randf())
+		Color(1.0, 0.62, 0.30, 1.0) * 1.9, 0.0, 0.0, dir, _rng.randf())
+	_emit("flash", muzzle + dir * 0.04, Vector3.ZERO, 0.05, 0.0, 0.26 * big, 0.30 * big,
+		Color(1.0, 0.82, 0.55, 1.0) * 2.1, _rng.randf() * TAU, 0.0, Vector3.ZERO, _rng.randf())
 	var side := dir.cross(Vector3.UP).normalized()
 	if side.length() < 0.1:
 		side = Vector3.RIGHT
@@ -130,7 +130,7 @@ func shot(muzzle: Vector3, aim_dir: Vector3, end: Vector3, hit: bool, normal: Ve
 			Color(0.62, 0.62, 0.60, 0.16 - 0.03 * i), _rng.randf() * TAU, -0.35, Vector3.ZERO, _rng.randf(), 0.0, 2.6)
 	# The flash light sits ahead of the barrel so it rakes the surroundings
 	# instead of blowing out the shooter's own sleeve.
-	_flash_light(muzzle + dir * 0.6 + Vector3.UP * 0.1, 2.6 * big if by_player else 2.2)
+	_flash_light(muzzle + dir * 0.6 + Vector3.UP * 0.1, 1.8 * big if by_player else 2.0)
 	# Tracer: a hot streak that travels from the muzzle to the end point.
 	var to_end := end - muzzle
 	var dist := to_end.length()
@@ -139,7 +139,7 @@ func shot(muzzle: Vector3, aim_dir: Vector3, end: Vector3, hit: bool, normal: Ve
 		var speed := 340.0
 		var life := maxf(dist / speed, 0.034)
 		var seg := minf(dist * 0.5, 3.2)
-		_emit("tracer", muzzle + to_end.normalized() * seg * 0.5, to_end.normalized() * (dist - seg) / life, life, seg, 0.022, 0.016,
+		_emit("tracer", muzzle + to_end.normalized() * seg * 0.5, to_end.normalized() * (dist - seg) / life, life, seg, 0.032, 0.024,
 			Color(1.0, 0.80, 0.52, 1.0) * 5.0, 0.0, 0.0, to_end.normalized(), 0.0)
 	if hit:
 		impact(end, normal, collider, dir)
@@ -157,9 +157,9 @@ func impact(point: Vector3, normal: Vector3, collider: Object, shot_dir: Vector3
 	if is_body:
 		# Restrained hit mist (no gore): a quick dark-red puff and cloth fibres
 		# carried along the round's direction.
-		for i in 4:
-			var v := (shot_dir.normalized() * 1.6 + n * 0.6 + Vector3(_rng.randf_range(-0.6, 0.6), _rng.randf_range(-0.2, 0.7), _rng.randf_range(-0.6, 0.6))) * _rng.randf_range(0.6, 1.3)
-			_emit("puff", point, v, _rng.randf_range(0.22, 0.38), 0.0, 0.05, 0.22, Color(0.36, 0.05, 0.04, 0.75), _rng.randf() * TAU, 1.2, Vector3.ZERO, _rng.randf(), 0.0, 4.0)
+		for i in 5:
+			var v := (shot_dir.normalized() * 1.8 + n * 0.5 + Vector3(_rng.randf_range(-0.6, 0.6), _rng.randf_range(-0.2, 0.7), _rng.randf_range(-0.6, 0.6))) * _rng.randf_range(0.7, 1.5)
+			_emit("puff", point, v, _rng.randf_range(0.28, 0.45), 0.0, 0.08, _rng.randf_range(0.28, 0.4), Color(0.55, 0.06, 0.05, 0.85), _rng.randf() * TAU, 1.2, Vector3.ZERO, _rng.randf(), 0.0, 4.0)
 		for i in 5:
 			var v2 := (shot_dir.normalized() * 2.0 + Vector3(_rng.randf_range(-1, 1), _rng.randf_range(0.0, 1.4), _rng.randf_range(-1, 1))) * _rng.randf_range(0.8, 2.0)
 			_emit("chip", point, v2, _rng.randf_range(0.3, 0.6), 0.0, 0.012, 0.010, Color(0.22, 0.04, 0.03, 1.0), _rng.randf() * TAU, 9.0, Vector3.ZERO, 0.0)
@@ -171,7 +171,7 @@ func impact(point: Vector3, normal: Vector3, collider: Object, shot_dir: Vector3
 	var spark_count := 18 if is_vehicle else 14
 	for i in spark_count:
 		var v := (reflect * 0.6 + n * 0.8 + Vector3(_rng.randf_range(-0.7, 0.7), _rng.randf_range(-0.3, 0.8), _rng.randf_range(-0.7, 0.7))).normalized() * _rng.randf_range(3.0, 12.0)
-		_emit("spark", point + n * 0.02, v, _rng.randf_range(0.12, 0.38), 0.0, 0.018, 0.010, Color(1.0, 0.66, 0.30, 1.0) * 6.0, 0.0, 9.5, Vector3.ZERO, 0.0, 0.03)
+		_emit("spark", point + n * 0.02, v, _rng.randf_range(0.10, 0.36), 0.0, 0.013, 0.007, Color(1.0, 0.66, 0.30, 1.0) * 6.0, 0.0, 9.5, Vector3.ZERO, 0.0, 0.018)
 	var dust := Color(0.70, 0.66, 0.60, 0.8) if not is_vehicle else Color(0.45, 0.45, 0.46, 0.4)
 	for i in (7 if not is_vehicle else 2):
 		var v := (n * _rng.randf_range(1.2, 4.0) + Vector3(_rng.randf_range(-0.6, 0.6), _rng.randf_range(-0.1, 0.7), _rng.randf_range(-0.6, 0.6)))
@@ -201,7 +201,7 @@ func stagger(actor: CharacterBody3D, from_position: Vector3, amount: float, leth
 		away = -actor.global_transform.basis.z
 	away = away.normalized()
 	var push := (3.0 if lethal else 2.2) * clampf(amount / 30.0, 0.6, 1.5)
-	_staggers.append({"actor": actor, "vel": away * push, "t": 0.32 if not lethal else 0.5})
+	_staggers.append({"actor": actor, "vel": away * push, "t": 0.36 if not lethal else 0.5})
 	var visual: Node = actor.get("character_visual")
 	if visual == null:
 		visual = actor.get("_visual")

@@ -118,7 +118,7 @@ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager) 
 	Events.actor_died.connect(func(actor: Node, by_player: bool):
 		if by_player and actor is NPC and actor.is_hostile:
 			_combat_kills += 1
-			_maybe_combat_shot())
+			_maybe_combat_shot(actor as NPC))
 	_run()
 
 func _process(_delta: float) -> void:
@@ -931,12 +931,24 @@ func _nearest_parked_car() -> Car:
 ## kill shot (muzzle flash, tracer, impact, falling guard) rather than after
 ## the gun is lowered. Same player camera; only the moment changes.
 var _combat_shot_taken := false
-func _maybe_combat_shot() -> void:
+func _maybe_combat_shot(victim: NPC) -> void:
 	if _phase != "mission" or _combat_shot_taken or mission == null:
 		return
+	# The first kill whose victim is in clear view of the player camera (a
+	# guard hidden behind a stall reads as nothing); otherwise the last kill.
+	var alive := 0
 	for guard in mission._hostiles:
 		if is_instance_valid(guard) and guard.state != NPC.State.DEAD:
-			return
+			alive += 1
+	var cam: Camera3D = player.camera
+	var visible_victim := true
+	for h in [1.2, 1.6]:
+		var q := PhysicsRayQueryParameters3D.create(cam.global_position, victim.global_position + Vector3.UP * h)
+		q.collision_mask = 1 | 8
+		if not player.get_world_3d().direct_space_state.intersect_ray(q).is_empty():
+			visible_victim = false
+	if not visible_victim and alive > 0:
+		return
 	_combat_shot_taken = true
 	await _shot("combat")
 

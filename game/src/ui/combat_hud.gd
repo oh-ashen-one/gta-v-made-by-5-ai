@@ -31,8 +31,10 @@ func _ready() -> void:
 
 func _on_hit(target: Node, _damage: float, _point: Vector3, by_player: bool) -> void:
 	if by_player and target != null and (target.is_in_group("npcs") or target.is_in_group("vehicles")):
-		_hit_t = 0.22
-		_kill = false
+		# hit_landed follows take_damage, so a lethal hit has already died.
+		var lethal: bool = target is NPC and (target as NPC).state == NPC.State.DEAD
+		_hit_t = 0.38 if lethal else 0.22
+		_kill = lethal
 		hits_shown += 1
 	elif not by_player and target != null and target.is_in_group("player") and player != null:
 		var from := _last_enemy_origin if _last_enemy_origin != Vector3.INF else player.global_position - player.global_basis.z
@@ -72,20 +74,19 @@ func _draw_overlay() -> void:
 	var c := size * 0.5
 	var aiming := player != null and bool(player.get("aiming"))
 	if aiming and _on_target:
-		_canvas.draw_circle(c, 3.2, Color(0.95, 0.18, 0.14, 0.95))
-		_canvas.draw_arc(c, 6.5, 0.0, TAU, 24, Color(0.95, 0.2, 0.15, 0.7), 1.5, true)
+		_canvas.draw_circle(c, 2.6, Color(0.95, 0.18, 0.14, 0.95))
 	if _hit_t > 0.0:
 		var life := 0.38 if _kill else 0.22
 		var t := 1.0 - _hit_t / life
 		var col := Color(0.95, 0.16, 0.12, 1.0) if _kill else Color(1.0, 1.0, 1.0, 1.0)
 		col.a = clampf(_hit_t / life * 1.6, 0.0, 1.0)
-		var r0 := (7.0 if not _kill else 8.0) + t * 3.0
-		var r1 := r0 + (7.0 if not _kill else 11.0)
+		var r0 := (11.0 if not _kill else 12.0) + t * 3.0
+		var r1 := r0 + (6.0 if not _kill else 9.0)
 		for k in 4:
 			var a := PI * 0.25 + k * PI * 0.5
 			var d := Vector2(cos(a), sin(a))
 			_canvas.draw_line(c + d * r0 + Vector2(1, 1), c + d * r1 + Vector2(1, 1), Color(0, 0, 0, col.a * 0.6), 3.4, true)
-			_canvas.draw_line(c + d * r0, c + d * r1, col, 2.4 if not _kill else 3.0, true)
+			_canvas.draw_line(c + d * r0, c + d * r1, col, 2.0 if not _kill else 2.6, true)
 	if player != null and not _dmg.is_empty():
 		var cam: Camera3D = player.get("camera")
 		for e in _dmg:

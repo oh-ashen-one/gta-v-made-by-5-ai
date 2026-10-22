@@ -52,7 +52,7 @@ func kick(world_dir: Vector3, strength: float, lethal: bool, side: float) -> voi
 	_dir = local.normalized()
 	_v += 12.0 * strength * (1.4 if lethal else 1.0)
 	_side = signf(side) if absf(side) > 0.05 else 1.0
-	_twist = clampf(_twist + 0.45 * strength * _side, -0.9, 0.9)
+	_twist = clampf(_twist + 0.6 * strength * _side, -1.0, 1.0)
 	if lethal:
 		_lethal = 1.0
 
@@ -77,19 +77,20 @@ func _process_modification_with_delta(delta: float) -> void:
 	if absf(amt) < 0.002 and absf(_twist) < 0.002:
 		return
 	var axis := _up.cross(_dir).normalized()   # rotates the top of a bone toward _dir
-	_rot("spine", axis, amt * 0.22)
-	_rot("chest", axis, amt * 0.30)
-	_rot("neck", axis, amt * 0.22)
-	_rot("head", axis, amt * 0.35)
-	_rot("spine", _up, _twist * 0.35)
-	_rot("chest", _up, _twist * 0.45)
-	_rot("head", _up, -_twist * 0.3)
+	_rot("pelvis", axis, -amt * 0.10)
+	_rot("spine", axis, amt * 0.36)
+	_rot("chest", axis, amt * 0.48)
+	_rot("neck", axis, amt * 0.30)
+	_rot("head", axis, amt * 0.45)
+	_rot("spine", _up, _twist * 0.55)
+	_rot("chest", _up, _twist * 0.65)
+	_rot("head", _up, -_twist * 0.35)
 	# Arms fling outward and up a little, elbows open.
 	var side_axis := _fwd
-	_rot("upper_arm.l", side_axis, -amt * 0.35)
-	_rot("upper_arm.r", side_axis, amt * 0.35)
-	_rot("forearm.l", axis, amt * 0.25)
-	_rot("forearm.r", axis, amt * 0.25)
+	_rot("upper_arm.l", side_axis, -amt * 0.55)
+	_rot("upper_arm.r", side_axis, amt * 0.55)
+	_rot("forearm.l", axis, amt * 0.35)
+	_rot("forearm.r", axis, amt * 0.35)
 	# Knees give: thighs swing forward, shins fold.
 	var left := _fwd.cross(_up).normalized()
 	_rot("thigh.l", left, -amt * 0.12)
