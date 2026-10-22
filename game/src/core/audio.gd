@@ -35,6 +35,7 @@ func _ready() -> void:
 	_bank["engine"] = _engine_loop()
 	_bank["rotor"] = _rotor_loop()
 	_bank["siren"] = _siren_loop()
+	_bank["tyre"] = _tyre_loop()
 	for i in 12:
 		var p := AudioStreamPlayer.new()
 		p.bus = "Master"
@@ -176,7 +177,9 @@ func _process(delta: float) -> void:
 			if not helicopter and v.kind=="police":
 				_actor_loops[id]["siren"] = _spatial_loop(v,"siren",-12.0,160.0)
 		var record: Dictionary = _actor_loops[id]
-		record["engine"].pitch_scale = .75+clampf(v.velocity.length()/30.0,0,1)*1.0
+		# The player's car drives its own pitch every frame (drive_engine).
+		if not (not helicopter and v.driver_is_player and v.get("fx") != null):
+			record["engine"].pitch_scale = .75+clampf(v.velocity.length()/30.0,0,1)*1.0
 		if record.has("siren"):
 			record["siren"].volume_db = -13.0 if Game.wanted_level>0 else -80.0
 	# Prune references after streamed/destroyed vehicles; audio is actor-owned.
@@ -191,6 +194,18 @@ func _process(delta: float) -> void:
 	if _bird_timer<=0:
 		_bird_timer=_rng.randf_range(7,13)
 		play_at("bird",listener+Vector3(_rng.randf_range(-18,18),10,_rng.randf_range(-18,18)),-24.0,_rng.randf_range(.85,1.15))
+
+## opus55 driving: per-frame engine pitch/level for the player's car (gearbox
+## model in car_fx.gd), and the shared tyre-squeal loop stream.
+func drive_engine(vehicle: Node, pitch: float, volume_db: float) -> void:
+	if _headless_audio or not is_instance_valid(vehicle): return
+	var record: Dictionary = _actor_loops.get(vehicle.get_instance_id(), {})
+	if record.has("engine") and is_instance_valid(record["engine"]):
+		record["engine"].pitch_scale = pitch
+		record["engine"].volume_db = volume_db
+
+func loop_stream(id: String) -> AudioStream:
+	return _bank.get(id)
 
 func shutdown_audio() -> void:
 	_audio_shutdown=true
@@ -354,6 +369,25 @@ func _engine_loop() -> AudioStreamWAV:
 		var saw := fmod(t * 62.0, 1.0) * 2.0 - 1.0
 		low = low * 0.9 + _rng.randf_range(-1.0, 1.0) * 0.1
 		s[i] = (saw * 0.22 + low * 0.35 + sin(TAU * 32.0 * t) * 0.18) * 0.7
+	return _wav(_loop_seam(s), true)
+
+## Tyre squeal: a wavering 900-1300 Hz tone over band-passed noise.
+func _tyre_loop() -> AudioStreamWAV:
+	var n := int(MIX_RATE * 0.8) + LOOP_PAD
+	var s := PackedFloat32Array()
+	s.resize(n)
+	var phase := 0.0
+	var lp := 0.0
+	var hp := 0.0
+	for i in n:
+		var t := float(i) / MIX_RATE
+		var f := 1080.0 + sin(TAU * 3.75 * t) * 160.0 + sin(TAU * 11.25 * t) * 45.0
+		phase += TAU * f / MIX_RATE
+		var noise := _rng.randf_range(-1.0, 1.0)
+		lp = lp * 0.55 + noise * 0.45
+		hp = lp - hp * 0.2
+		var tone := sin(phase) * 0.5 + sin(phase * 2.01) * 0.12
+		s[i] = tanh((tone * (0.8 + 0.2 * sin(TAU * 7.5 * t)) + hp * 0.35) * 0.9) * 0.55
 	return _wav(_loop_seam(s), true)
 
 func _rotor_loop() -> AudioStreamWAV:

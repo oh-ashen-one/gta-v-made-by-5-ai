@@ -70,6 +70,14 @@ const SIM_NEAR := 110.0
 const SIM_FAR_TICKS := 3
 var _sim_accum := 0.0
 var _sim_slot := 0
+## Presentation layer (car_fx.gd, opus55 driving): body roll/pitch, paint,
+## lights, smoke, skids, sparks and the weighted chase camera.
+const CarFxScript := preload("res://src/actors/car_fx.gd")
+var fx: Node3D = null
+## Travel heading for the player car: it trails the body heading at speed so
+## hard cornering slides a little (tyre smoke and marks come from this slip).
+var _vel_yaw := 0.0
+var _handbrake := false
 
 func _ready() -> void:
 	_sim_slot = int(get_instance_id() % SIM_FAR_TICKS)
@@ -196,6 +204,9 @@ func _build() -> void:
 			_procedural_visuals.append(child)
 	# Provider vehicle art when available; the procedural build is the fallback.
 	_try_provider_asset(dims)
+	fx = CarFxScript.new()
+	add_child(fx)
+	fx.setup(self, _provider_root)
 
 	_arm = SpringArm3D.new()
 	_arm.spring_length = 5.4
@@ -419,13 +430,40 @@ func _player_control(delta: float) -> void:
 	else:
 		_forward = move_toward(_forward, 0.0, (DRAG + absf(_forward) * 0.25) * delta * 6.0)
 	_steer = lerpf(_steer, steer_input, clampf(delta * 9.0, 0.0, 1.0))
-	var turn := _steer * TURN_SPEED * clampf(absf(_forward) / 8.0, 0.0, 1.0) * signf(_forward if absf(_forward) > 0.05 else 1.0)
+	var speed_ratio := clampf(absf(_forward) / max_speed, 0.0, 1.0)
+	_handbrake = Input.is_action_pressed("jump")
+	# Weight: steering authority eases off at speed; the handbrake bites.
+	var turn := _steer * TURN_SPEED * clampf(absf(_forward) / 8.0, 0.0, 1.0) * lerpf(1.0, 0.82, speed_ratio) * signf(_forward if absf(_forward) > 0.05 else 1.0)
+	if _handbrake:
+		turn *= 1.35
+		_forward = move_toward(_forward, 0.0, 9.0 * delta)
 	# A node that faces -Z turns left when its yaw increases, so the sign here
 	# has to be positive: pressing left has to steer left, not right.
 	rotation.y += turn * delta
-	var dir := -global_transform.basis.z
+	# Grip: the travel heading follows the nose at a speed-dependent rate, so a
+	# fast corner carries a visible slip angle instead of rail-turning.
+	var slip_gap := angle_difference(_vel_yaw, rotation.y)
+	if absf(_forward) < 2.0 or _forward < 0.0 or absf(slip_gap) > 1.2:
+		_vel_yaw = rotation.y
+	else:
+		var grip := lerpf(12.0, 6.5, speed_ratio)
+		if _handbrake: grip = 1.8
+		_vel_yaw = lerp_angle(_vel_yaw, rotation.y, clampf(grip * delta, 0.0, 1.0))
+		# Sliding scrubs speed.
+		_forward *= 1.0 - clampf(absf(slip_gap) * 0.9 * delta, 0.0, 0.05)
+	var dir := Vector3(-sin(_vel_yaw), 0.0, -cos(_vel_yaw))
 	velocity.x = dir.x * _forward
 	velocity.z = dir.z * _forward
+
+## Velocity the drivetrain is asking for this tick (before collision response).
+func commanded_velocity() -> Vector3:
+	return Vector3(-sin(_vel_yaw), 0.0, -cos(_vel_yaw)) * _forward if driver_is_player else -global_transform.basis.z * _forward
+
+## 0..1 slide intensity of the player car (drives tyre smoke and skid marks).
+func drift_amount() -> float:
+	if not driver_is_player or absf(_forward) < 5.0: return 0.0
+	var gap := absf(angle_difference(_vel_yaw, rotation.y))
+	return clampf((gap - 0.06) / 0.16, 0.0, 1.0) + (0.6 if _handbrake and absf(_forward) > 6.0 else 0.0)
 
 func _ai_control(delta: float) -> void:
 	var to_target := ai_target - global_position
@@ -542,6 +580,8 @@ func interact(player: Node) -> void:
 	player.global_position = global_position
 	_update_driver_bust()
 	_arm.rotation.y = 0.0
+	_vel_yaw = rotation.y
+	if fx != null: fx.on_player_changed(true)
 	_camera.current = true
 	Game.set_mode(Game.MODE_CAR)
 	Sfx.start_engine()
@@ -556,6 +596,7 @@ func force_exit() -> void:
 		_forward = 0.0
 		velocity.x = 0.0
 		velocity.z = 0.0
+		if fx != null: fx.on_player_changed(false)
 		if driver_player is Player:
 			(driver_player as Player).current_vehicle = null
 			(driver_player as Player).busy = false
@@ -576,6 +617,7 @@ func exit_vehicle(player: Node) -> void:
 	driver_player = null
 	_forward = 0.0
 	velocity = Vector3.ZERO
+	if fx != null: fx.on_player_changed(false)
 	player.global_position = exit_pos
 	player.yaw = rotation.y
 	player.rotation.y = rotation.y

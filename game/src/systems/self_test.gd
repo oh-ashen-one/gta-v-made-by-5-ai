@@ -149,6 +149,12 @@ func run(main: Node) -> void:
 	Input.action_release("move_forward")
 	Input.action_release("move_left")
 	_check("left driving input turns left", (-car.global_transform.basis.z).x < nose_before.x - 0.05)
+	# opus55 driving: the sprung body and the trailing chase camera stay wired.
+	var car_fx: Node = car.fx
+	var lean := Vector2(car_fx.last_roll, car_fx.last_pitch) if car_fx != null else Vector2.ZERO
+	_check("car body rolls and pitches under load", car_fx != null and (absf(lean.x) > 0.004 or absf(lean.y) > 0.004), "roll=%.4f pitch=%.4f" % [lean.x, lean.y])
+	var chase_gap := car._camera.global_position - car.global_position
+	_check("chase camera trails behind the car", car._camera.current and car._camera.top_level and chase_gap.length() > 3.0 and chase_gap.length() < 9.0 and chase_gap.dot(-car.global_transform.basis.z) < 0.0, "gap=%.2f" % chase_gap.length())
 
 	# Incoming weapon rays must hit the car body rather than its hidden occupant.
 	car._forward = 0.0
