@@ -318,6 +318,11 @@ func exit_vehicle(player: Node) -> void:
 	if not is_on_floor():
 		Events.notify.emit("Land before exiting.", "warn")
 		return
+	# The far shore is landable scenery, not walkable district (on foot beyond
+	# the district is out of bounds), so exits stay inside the playable area.
+	if absf(global_position.x) > 395.0 or global_position.z < -365.0 or global_position.z > 405.0:
+		Events.notify.emit("Restricted landing area - fly back over the district to exit.", "warn")
+		return
 	var side := global_transform.basis.x
 	var forward := -global_transform.basis.z
 	var offsets: Array[Vector3] = [side * 2.8, -side * 2.8, forward * 4.0, -forward * 4.0]
