@@ -139,6 +139,6 @@ static func _surface_materials(node: Node) -> void:
 			elif name.ends_with("tile"): kind="concrete"
 			elif name.contains("steel"): kind="metal"
 			if kind != "":
-				var material := Palette.mat_textured(source.albedo_color,kind,Vector3.ONE,source.roughness,source.metallic)
+				var material := Palette.mat_textured(source.albedo_color,kind,Vector3.ONE,source.roughness,source.metallic,false)
 				node.set_surface_override_material(index,material)
 	for child in node.get_children(): _surface_materials(child)

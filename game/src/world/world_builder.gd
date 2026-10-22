@@ -105,6 +105,7 @@ func build(seed_value: int = 20261021) -> void:
 	_kerb_markings()
 	_scatter_props()
 	_landscape()
+	SurfaceDressing.dress(_world_root)   # wave B materials: grime, wall/roof clutter
 	_lighting.finish()
 	_batch_static_primitives()
 
@@ -123,7 +124,10 @@ func _ground() -> void:
 	var box := BoxMesh.new()
 	box.size = Vector3(1500.0, 4.0, 1100.0)
 	mesh.mesh = box
-	mesh.material_override = Palette.mat_textured(Color(0.42, 0.41, 0.38), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
+	# Wave B r3 (materials): base ground is neutral concrete hard-standing
+	# again; r2's grass base leaked onto workshop floors, forecourts and the
+	# airfield apron (critic regression). Grass stays on explicit verges.
+	mesh.material_override = Palette.mat_textured(Color(0.44, 0.44, 0.43), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
 	mesh.position = Vector3(0.0, -2.0, 200.0)
 	ground.add_child(mesh)
 	var shape := CollisionShape3D.new()
@@ -134,8 +138,8 @@ func _ground() -> void:
 	ground.add_child(shape)
 
 func _roads() -> void:
-	var asphalt := Palette.mat_textured(Palette.ASPHALT, "asphalt", Vector3(8.0, 1.0, 120.0), 0.9)
-	var paint := Palette.mat(Palette.PAINT_LINE, 0.75)
+	var asphalt := Palette.road_asphalt()
+	var paint := Palette.road_paint(Palette.PAINT_LINE)
 	for x in X_LINES:
 		var strip := _solid_box(Vector3(ROAD_HALF * 2.0, 0.06, 760.0), Vector3(x, 0.03, 0.0), asphalt)
 		strip.name = "RoadX"
@@ -267,7 +271,7 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		_collision_box(Vector3(10.1,7.3,9.5),pos+Vector3(0,7.6,0),yaw)
 		_collision_box(Vector3(10.1,3.7,6.5),pos+Vector3(0,1.85,0)+Vector3(0,0,1.4).rotated(Vector3.UP,yaw),yaw)
 		# A sheltered tiled footway physically joins the modules.
-		var path := _box(Vector3(unit_w,.08,3.3),pos+front_dir*6.2+Vector3(0,.10,0),Palette.mat_textured(Color(.65,.68,.62),"pavers",Vector3.ONE,.86))
+		var path := _box(Vector3(unit_w,.08,3.3),pos+front_dir*6.2+Vector3(0,.10,0),Palette.five_foot_tiles())
 		path.rotation.y=yaw
 		var board := _box(Vector3(7.2,.65,.16),pos+front_dir*5.27+Vector3(0,3.45,0),sign_mat)
 		board.rotation.y=yaw
@@ -623,12 +627,12 @@ func _aviation_block(centre: Vector3) -> void:
 				guard.position = centre + Vector3(18.0 + i * 6.0, 0.0, 10.0 + i * 3.0)
 				guard.rotation.y = -1.1
 	# hangar
-	_solid_box(Vector3(38.0, 12.0, 24.0), centre + Vector3(-30.0, 6.0, -20.0), Palette.mat(Palette.METAL, 0.6, 0.4))
+	_solid_box(Vector3(38.0, 12.0, 24.0), centre + Vector3(-30.0, 6.0, -20.0), Palette.corrugated(Palette.METAL.lightened(0.3)))
 	var hangar_roof := MeshInstance3D.new()
 	var prism := PrismMesh.new()
 	prism.size = Vector3(38.0, 3.0, 24.0)
 	hangar_roof.mesh = prism
-	hangar_roof.material_override = Palette.mat(Palette.METAL_DARK, 0.6, 0.4)
+	hangar_roof.material_override = Palette.corrugated(Palette.METAL_DARK.lightened(0.25), 0.7)
 	hangar_roof.position = centre + Vector3(-30.0, 13.5, -20.0)
 	_world_root.add_child(hangar_roof)
 	_box(Vector3(14.0, 9.0, 0.2), centre + Vector3(-30.0, 4.5, -8.1), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
@@ -713,6 +717,7 @@ func _block_plots() -> void:
 			_box(Vector3(120.0, 0.05, 0.16), centre + Vector3(0.0, 0.075, -3.1), Palette.mat(Palette.PAINT_LINE, 0.8))
 			_box(Vector3(0.16, 0.05, 120.0), centre + Vector3(-3.1, 0.075, 0.0), Palette.mat(Palette.PAINT_LINE, 0.8))
 			# A service apron rings the plots between them and the frontage.
+			# A service apron rings the plots (paved hard-standing, incl. aviation).
 			_box(Vector3(118.0, 0.05, 118.0), centre + Vector3(0.0, 0.025, 0.0), apron)
 			if kit in ["hawker", "aviation"]:
 				if kit == "hawker":
@@ -1177,8 +1182,8 @@ func _kerb_markings() -> void:
 						for offset: float in [ROAD_HALF - 0.35, ROAD_HALF - 0.58]:
 							yellow.append(_marking(axis, line + side * offset, mid, Vector3(0.12, 1.0, length)))
 					cursor = maxf(cursor, gap.y)
-	_marking_batch(yellow, Palette.mat(Color(0.92, 0.72, 0.16), 0.72))
-	_marking_batch(white, Palette.mat(Color(0.90, 0.90, 0.86), 0.75))
+	_marking_batch(yellow, Palette.road_paint(Color(0.92, 0.72, 0.16)))
+	_marking_batch(white, Palette.road_paint(Color(0.90, 0.90, 0.86)))
 
 ## Far-shore planting keeps clear of the ArtScience lotus and the Flyer terminal
 ## (release critic: shoreline tree rows grew through both).
@@ -1252,6 +1257,8 @@ func _batch_static_primitives() -> void:
 		if mi.mesh == null or mi.get_child_count() > 0 or not mi.get_groups().is_empty() or not mi.get_meta_list().is_empty() or mi.get_script() != null: continue
 		if not mi.is_visible_in_tree() or mi.visibility_range_end > 0.0 or mi.skin != null: continue
 		var mat := mi.material_override as StandardMaterial3D
+		# Weathered surface shaders (Palette, wave B) batch like textured materials.
+		var shader_mat := mi.material_override as ShaderMaterial
 		var mesh_key := ""
 		var mat_key := ""
 		var unit_scale := Vector3.ONE
@@ -1261,7 +1268,7 @@ func _batch_static_primitives() -> void:
 			# Repeated imported props (trees, ferns, planters, condensers, lamps,
 			# railings, side skyline) keep their own surface materials; tinted
 			# single-surface modules (shophouses) merge per shared tint.
-			if mat != null: continue
+			if mat != null or shader_mat != null: continue
 			mesh_key = "mesh#%d" % mi.mesh.get_instance_id()
 			mat_key = "surfaces"
 			if mi.mesh.get_surface_count() == 1 and mi.get_surface_override_material(0) is StandardMaterial3D:
@@ -1271,7 +1278,7 @@ func _batch_static_primitives() -> void:
 			elif not _imported_batchable(mi):
 				continue
 			source = _scene_source(mi)
-		elif mat == null or mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+		elif shader_mat == null and (mat == null or mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED):
 			continue
 		elif mi.mesh is BoxMesh:
 			var bm := mi.mesh as BoxMesh
@@ -1287,6 +1294,8 @@ func _batch_static_primitives() -> void:
 			mesh_key = "sph|%.3f|%.3f|%d|%d|%s" % [sm.radius, sm.height, sm.radial_segments, sm.rings, sm.is_hemisphere]
 		else:
 			continue
+		if mat_key == "" and shader_mat != null:
+			mat_key = "obj#%d" % shader_mat.get_instance_id()
 		if mat_key == "":
 			mat_key = ("obj#%d" % mat.get_instance_id()) if (mat.albedo_texture != null or mat.normal_texture != null or mat.roughness_texture != null) else \
 				"c|%s|%.3f|%.3f|%.3f|%s|%s|%.3f|%d|%d" % [mat.albedo_color, mat.roughness, mat.metallic, mat.metallic_specular, mat.emission_enabled, mat.emission, mat.emission_energy_multiplier, mat.cull_mode, mat.shading_mode]
@@ -1305,7 +1314,7 @@ func _batch_static_primitives() -> void:
 		var cell := Vector2i(floori(xform.origin.x / 160.0), floori(xform.origin.z / 160.0))
 		var key := "%s#%s#%d" % [mesh_key, mat_key, mi.cast_shadow]
 		if not groups.has(key):
-			groups[key] = {"mesh": batch_mesh, "material": mat, "shadow": mi.cast_shadow, "xforms": [], "nodes": [], "cells": [], "source": source}
+			groups[key] = {"mesh": batch_mesh, "material": shader_mat if shader_mat != null else mat, "shadow": mi.cast_shadow, "xforms": [], "nodes": [], "cells": [], "source": source}
 		groups[key]["xforms"].append(Transform3D(xform.basis * Basis.from_scale(unit_scale), xform.origin) if mesh_key == "box" else xform)
 		groups[key]["nodes"].append(mi)
 		groups[key]["cells"].append(cell)
@@ -1488,7 +1497,7 @@ func _landscape() -> void:
 # ------------------------------------------------------- junctions & fittings
 ## Crosswalks, stop lines and signal heads at every intersection (TRAFFIC-01).
 func _junctions() -> void:
-	var paint := Palette.mat_textured(Palette.PAINT_LINE, "concrete", Vector3(4.0, 1.0, 4.0), 0.8)
+	var paint := Palette.road_paint(Palette.PAINT_LINE)
 	for x in X_LINES:
 		for z in Z_LINES:
 			for axis in 2:

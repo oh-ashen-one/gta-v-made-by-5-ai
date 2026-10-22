@@ -43,6 +43,7 @@ func run(main: Node) -> void:
 		await _report()
 		return
 	_check("district contains 3D geometry", _count_meshes(world) > 400)
+	_check("weathered surfaces and wall/roof clutter present (wave B materials)", _materials_ok(world), str(SurfaceDressing.stats) + " groups=%d" % world.get_tree().get_nodes_in_group("surface_dressing").size())
 	_check("junction graph has 25 connected reference nodes", world.traffic_nodes.size() == 25)
 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
 	_check("civilian traffic populated", traffic.cars.size() >= 8)
@@ -734,6 +735,32 @@ func _tap(action: String) -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	await _ticks(3)
+
+## Wave B materials: road is the lane-aware asphalt shader, dressing placed
+## condensers and roof plant, and the floating infill roof shells were reshaped.
+func _materials_ok(world: Node) -> bool:
+	var road := Palette.road_asphalt() as ShaderMaterial
+	var road_ok := road != null and road.shader != null and String(road.shader.resource_path).ends_with("road_asphalt.gdshader")
+	var paving_ok := Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.92) is ShaderMaterial
+	var s: Dictionary = SurfaceDressing.stats
+	# Infill roofs belong to RoofKit since wave-A integration; walls stay here.
+	var dressed := int(s.get("condensers", 0)) >= 500 and int(s.get("infill", 0)) >= 50 and int(s.get("overlays", 0)) >= 1 and int(s.get("shop_floor", 0)) == 1
+	# r3: carriageway tint stays neutral/cool (golden sun must not turn it brown)
+	# and no large hard-standing slab (ground, aprons) uses the turf material.
+	var tint: Vector3 = road.get_shader_parameter("tint")
+	var neutral := tint.z >= tint.x
+	return road_ok and paving_ok and dressed and neutral and _hard_standing_not_turf(world) and world.get_tree().get_nodes_in_group("surface_dressing").size() >= 4
+
+func _hard_standing_not_turf(node: Node) -> bool:
+	if node is MeshInstance3D and (node as MeshInstance3D).mesh is BoxMesh:
+		var sz: Vector3 = ((node as MeshInstance3D).mesh as BoxMesh).size
+		var m := (node as MeshInstance3D).material_override
+		if sz.x >= 100.0 and sz.z >= 100.0 and m != null and String(m.get_meta("weathered_kind", "")) == "soil":
+			return false
+	for c in node.get_children():
+		if not _hard_standing_not_turf(c):
+			return false
+	return true
 
 func _check(check_name: String, condition: bool, detail: String = "") -> void:
 	if _reported:
