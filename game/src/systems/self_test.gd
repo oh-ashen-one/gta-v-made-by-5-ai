@@ -740,4 +740,8 @@ func _water_checks(world: WorldBuilder) -> void:
 	_check("bay water is a non-periodic multi-octave wave field with whitecaps", code.contains("sea_field") and not code.contains("swell_gradient") and wc > 0.0, "whitecaps=%s" % wc)
 	_check("avenue ends over the bay are railed jetty decks, not bare road slabs", bay.get_node_or_null("JettyRailPosts") != null)
 	_check("sea continues to the horizon through a skirt sharing the water material", bay.horizon_skirt != null and bay.horizon_skirt.material_override == bay.water_material and code.contains("horizon_colour"))
+	# water round 3: Marina Bay is a calm dammed reservoir. Whitecaps are gated
+	# to open sea, every moving hull carries a Kelvin wedge plus a widening
+	# turbulent stern trail, and the quays carry a lapping wet line.
+	_check("bay stays glassy; foam is event-driven (Kelvin wakes, stern trail, quay wet line)", code.contains("* open_sea;") and code.contains("trail_foam") and code.contains("0.354") and code.contains("wet_line") and bay.boat_count >= 17)
 

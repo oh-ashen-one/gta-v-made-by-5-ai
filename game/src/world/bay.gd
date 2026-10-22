@@ -515,6 +515,11 @@ func _build_boats() -> void:
 		[-260.0, -420.0, 120.0, 32.0, -8.0, 1, "launch"],
 		[520.0, -520.0, 160.0, 50.0, 5.0, 2, "bumboat"],
 		[-60.0, -585.0, 300.0, 16.0, 7.5, 1, "launch"],
+		# near-water traffic: boats under way close to the promenade so the
+		# water-level and shoreline views always hold a hull with a bow wave
+		# and a spreading wake in the nearest half of the water
+		[-92.0, -418.0, 42.0, 19.0, 7.0, 1, "cruiser"],
+		[-66.0, -384.0, 34.0, 10.0, -10.5, 2, "launch"],
 	]
 	var idx := 0
 	for loop in loops:
