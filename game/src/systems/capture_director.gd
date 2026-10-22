@@ -600,6 +600,15 @@ func _verify_reboard_cycle(car: Car) -> void:
 		_abort("Free-roam car exit failed.")
 		return
 	_boarding_target = car
+	# Interaction takes the nearest vehicle, so at a busy junction a passing car
+	# can be nearer than our own (wave 5 soak6: the automation carjacked passing
+	# traffic). Like a player, wait until our car is the interaction target.
+	var target_wait_until := _elapsed() + 6.0
+	while not _finished and _elapsed() < target_wait_until and player._interaction_target() != car:
+		if _ground_distance(player.global_position, car.global_position) > 2.6:
+			await _walk_to(car.global_position + car.global_transform.basis.x * 1.9, 0.7, 4.0)
+		else:
+			await get_tree().physics_frame
 	await _interact_until(Game.MODE_CAR)
 	var same_car := player.current_vehicle == car
 	await _interact_until(Game.MODE_FOOT)
