@@ -297,6 +297,7 @@ func run(main: Node) -> void:
 	_check("successful load publishes one state-restored event", smg_saved and smg_loaded and _state_restore_events == 1)
 	_check("saved SMG restores held model and clears transient actions", Game.carried_weapon == "smg" and player._weapon_model != null and String(player._weapon_model.scene_file_path).contains("smg") and not player._reloading and player._fire_cooldown == 0.0 and player._press_queue.is_empty())
 	_negative_save_checks(player, mission)
+	await _wave5_checks(world, traffic, heli)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
 	await _report()
 
@@ -531,6 +532,50 @@ func _weapon_input_checks(main: Node, player: Player) -> void:
 	Game.wanted_heat = 0.0
 	Game.set_wanted(0)
 	await _ticks(3)
+
+## Wave-5 additions: kerbside parking geometry, parked-car sleep, road-graph
+## pursuit, aircraft ditch recovery, landmark set and the outdoor opening.
+func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopter) -> void:
+	var kerbside := 0
+	var on_carriageway := 0
+	for spot in world.parked_spots:
+		if bool(spot.get("courtyard_only", false)): continue
+		kerbside += 1
+		var p: Vector3 = spot["pos"]
+		var lateral := INF
+		for x in WorldBuilder.X_LINES: lateral = minf(lateral, absf(p.x - x))
+		for z in WorldBuilder.Z_LINES: lateral = minf(lateral, absf(p.z - z))
+		if lateral + 1.05 <= WorldBuilder.ROAD_HALF: on_carriageway += 1
+	_check("kerbside parked cars sit wholly on the carriageway", kerbside > 0 and on_carriageway == kerbside, "%d/%d" % [on_carriageway, kerbside])
+	var sleeping := 0
+	for v in get_tree().get_nodes_in_group("vehicles"):
+		if v is Car and not v.has_ai and not v.driver_is_player and v.visible and not v.is_physics_processing():
+			sleeping += 1
+	_check("settled parked cars stop ticking until taken", sleeping >= 20, "%d asleep" % sleeping)
+	var chaser := Car.new()
+	chaser.kind = "police"
+	traffic.add_child(chaser)
+	chaser.global_position = Vector3(-160.0, 0.3, -100.0)
+	var goal := Vector3(0.0, 0.3, -60.0)
+	var waypoint := traffic._pursuit_waypoint(chaser, goal)
+	var on_graph := false
+	for node in world.traffic_nodes:
+		if Vector2(node.x - waypoint.x, node.z - waypoint.z).length() < 0.5: on_graph = true
+	_check("police pursuit routes along junctions around a block", on_graph and waypoint.distance_to(goal) > 20.0, str(waypoint))
+	chaser.queue_free()
+	var parked_at := heli.global_position
+	heli.global_position = Vector3(0.0, -6.0, -500.0)
+	heli.velocity = Vector3.ZERO
+	await _ticks(2)
+	_check("ditched aircraft is recovered above its last supported position", heli.global_position.y > -1.0, str(heli.global_position))
+	heli.global_position = parked_at
+	heli.velocity = Vector3.ZERO
+	await _ticks(2)
+	var placed := true
+	for key in ["marina_bay_sands", "supertree_grove", "artscience_museum", "singapore_flyer", "merlion"]:
+		placed = placed and world.locations.has(key)
+	_check("all five required Singapore landmarks are placed", placed)
+	_check("run opens outdoors on the heritage street, not inside the safe room", world.locations["player_start"].distance_to(world.locations["safe_room"]) > 40.0)
 
 func _ticks(count: int) -> void:
 	for tick in count:

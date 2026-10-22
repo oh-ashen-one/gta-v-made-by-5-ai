@@ -25,6 +25,11 @@ var _provider_main_rotor: Node3D = null
 var _provider_tail_rotor: Node3D = null
 var _procedural_visuals: Array[Node3D] = []
 var _last_good_position := Vector3.ZERO
+const AIR_LIMIT_X := 820.0
+const AIR_LIMIT_NORTH := -1080.0
+const AIR_LIMIT_SOUTH := 820.0
+const AIR_CEILING := 420.0
+var _envelope_notice := 0.0
 var _impact_cooldown := 0.0
 
 func _ready() -> void:
@@ -210,8 +215,29 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0.0, 6.0 * delta)
 		velocity.z = move_toward(velocity.z, 0.0, 6.0 * delta)
 		velocity.y -= GRAVITY * delta
+	# Aerial envelope (WORLD-06, wave 5): beyond the far-shore skyline the
+	# aircraft is turned back rather than flying into empty scenery.
+	var off_x := absf(global_position.x) - AIR_LIMIT_X
+	var off_n := AIR_LIMIT_NORTH - global_position.z
+	var off_s := global_position.z - AIR_LIMIT_SOUTH
+	if off_x > 0.0 or off_n > 0.0 or off_s > 0.0 or global_position.y > AIR_CEILING:
+		var home := Vector3(-global_position.x, 0.0, -150.0 - global_position.z).normalized()
+		velocity.x = lerpf(velocity.x, home.x * 18.0, clampf(delta * 1.5, 0.0, 1.0))
+		velocity.z = lerpf(velocity.z, home.z * 18.0, clampf(delta * 1.5, 0.0, 1.0))
+		velocity.y = minf(velocity.y, 0.0) if global_position.y > AIR_CEILING else velocity.y
+		if pilot_is_player and _envelope_notice <= 0.0:
+			_envelope_notice = 6.0
+			Events.notify.emit("Restricted airspace - turning back over the bay.", "warn")
+	_envelope_notice = maxf(0.0, _envelope_notice - delta)
 	var before := velocity
 	move_and_slide()
+	# A ditched aircraft (below the water line, where nothing supports it) is
+	# recovered to its last supported position instead of falling forever.
+	if global_position.y < -3.0:
+		global_position = _last_good_position + Vector3(0.0, 1.5, 0.0) if _last_good_position != Vector3.ZERO else Vector3(0.0, 2.0, -337.0)
+		velocity = Vector3.ZERO
+		if pilot_is_player:
+			Events.notify.emit("Aircraft recovered to its last landing site.", "warn")
 	if _impact_cooldown <= 0.0:
 		var impact_speed := 0.0
 		for index in get_slide_collision_count():

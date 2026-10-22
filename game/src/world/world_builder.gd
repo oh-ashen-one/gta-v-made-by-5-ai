@@ -639,6 +639,8 @@ func _far_shore_landmarks() -> void:
 	var turf := Palette.mat_textured(Color(0.24, 0.33, 0.17), "soil", Vector3.ONE, 0.95)
 	_box(Vector3(920.0, 0.30, 70.0), Vector3(-20.0, 0.15, -668.0), plaza)
 	_box(Vector3(920.0, 0.20, 160.0), Vector3(-20.0, 0.10, -783.0), turf)
+	# The far shore is landable ground for the helicopter (WORLD-06).
+	_collision_box(Vector3(1700.0, 2.0, 700.0), Vector3(0.0, -1.0, -970.0))
 	var mbs := MBS_POS
 	_authored("marina_bay_sands.glb", mbs, 0.0, MBS_SCALE)
 	_collision_box(Vector3(234.0, 196.0, 66.0), mbs + Vector3(0.0, 98.0, 0.0))

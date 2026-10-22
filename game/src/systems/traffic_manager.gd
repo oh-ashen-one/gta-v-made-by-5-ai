@@ -353,11 +353,39 @@ func _process(delta: float) -> void:
 		if _player:
 			# With eyes on the player they converge; otherwise they sweep the
 			# last known position (LAW-04 search phase).
-			if Game.player_seen:
-				pc.ai_target = _player.controlled_actor().global_position
-			else:
-				pc.ai_target = Game.last_seen_position
+			var goal: Vector3 = _player.controlled_actor().global_position if Game.player_seen else Game.last_seen_position
+			pc.ai_target = _pursuit_waypoint(pc, goal)
 	_update_police(delta)
+
+## Road-graph pursuit (wave 5). Wave 2-4 aimed responders straight at the
+## player, so a car on the far side of a block drove into the buildings. Close
+## with a clear line, chase directly; otherwise follow the junction grid one
+## Manhattan step at a time toward the goal's nearest junction.
+func _pursuit_waypoint(pc: Car, goal: Vector3) -> Vector3:
+	var here := pc.global_position
+	var gap := Vector2(goal.x - here.x, goal.z - here.z).length()
+	if gap < 45.0:
+		var space := get_world_3d().direct_space_state
+		var q := PhysicsRayQueryParameters3D.create(here + Vector3.UP, goal + Vector3.UP)
+		q.collision_mask = 1
+		if space == null or space.intersect_ray(q).is_empty():
+			return goal
+	var a := _nearest_node(here)
+	var b := _nearest_node(goal)
+	if a == b:
+		return goal
+	if Vector2(nodes[a].x - here.x, nodes[a].z - here.z).length() > 10.0:
+		return nodes[a]
+	var ra := a / 5
+	var ca := a % 5
+	var rb := b / 5
+	var cb := b % 5
+	var nxt := a
+	if absi(cb - ca) >= absi(rb - ra):
+		nxt = ra * 5 + ca + signi(cb - ca)
+	else:
+		nxt = (ra + signi(rb - ra)) * 5 + ca
+	return nodes[nxt]
 
 func _pick_next_edge(car: Car) -> Vector3:
 	var nxt = car.get_meta("next_node", null)

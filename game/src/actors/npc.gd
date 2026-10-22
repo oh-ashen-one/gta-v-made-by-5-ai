@@ -30,6 +30,15 @@ var _torso: MeshInstance3D
 var _shirt_color := Color(0.7, 0.7, 0.7)
 var _spawn_position := Vector3.ZERO
 var _home_lane := 0
+## Simulation level of detail (wave 5). Headless attribution measured the 185
+## ambient NPCs at ~6 ms of an ~11 ms physics tick. Settled idle actors skip the
+## collision solve; calm walkers beyond SIM_NEAR of the player advance along
+## their lane every SIM_FAR_TICKS ticks by direct integration. Anyone panicking,
+## pursuing, hostile, police or near the player keeps per-tick move_and_slide.
+const SIM_NEAR := 70.0
+const SIM_FAR_TICKS := 4
+var _sim_accum := 0.0
+var _sim_slot := 0
 
 func _ready() -> void:
 	add_to_group("npcs")
@@ -39,6 +48,7 @@ func _ready() -> void:
 	floor_max_angle = deg_to_rad(60.0)
 	_build()
 	_spawn_position = global_position
+	_sim_slot = int(get_instance_id() % SIM_FAR_TICKS)
 	Events.shot_fired.connect(_on_shot_fired)
 	Events.hit_landed.connect(_on_hit_landed)
 
@@ -155,6 +165,27 @@ func _physics_process(delta: float) -> void:
 			velocity.y -= 24.0 * delta
 		move_and_slide()
 		return
+	if state == State.IDLE and is_on_floor() and not is_hostile and not is_police:
+		# Settled: no collision solve while standing or seated.
+		velocity = Vector3.ZERO
+		idle_time -= delta
+		if idle_time <= 0.0:
+			state = State.WALK
+		_animate(delta, 0.0)
+		return
+	if state == State.WALK and not is_hostile and not is_police and \
+			global_position.distance_squared_to(Game.player_position) > SIM_NEAR * SIM_NEAR:
+		_sim_accum += delta
+		_sim_slot = (_sim_slot + 1) % SIM_FAR_TICKS
+		if _sim_slot != 0:
+			return
+		var step := _sim_accum
+		_sim_accum = 0.0
+		_walk(step)
+		global_position += Vector3(velocity.x, 0.0, velocity.z) * step
+		_animate(step, Vector2(velocity.x, velocity.z).length())
+		return
+	_sim_accum = 0.0
 	if not is_on_floor():
 		velocity.y -= 24.0 * delta
 	else:

@@ -40,8 +40,33 @@ var _provider_wheels: Array[Node3D] = []
 var _procedural_visuals: Array[Node3D] = []
 var _blocker_timer := 0.0
 var _blocked_cached := false
+## Baked-tyre centres measured from each provider body in Car space
+## (tools/wheel_probe.gd, wave 5): front/rear z, outer face x, tyre radius.
+const WHEEL_FIT := {
+	"sedan": {"zf": -1.36, "zr": 1.19, "x": 0.885, "r": 0.355, "xl": 0.885},
+	"police": {"zf": -1.36, "zr": 1.19, "x": 0.885, "r": 0.355, "xl": 0.885},
+	"coupe": {"zf": -1.21, "zr": 1.21, "x": 0.925, "r": 0.355, "xl": 0.925},
+	"van": {"zf": -1.38, "zr": 1.37, "x": 0.97, "r": 0.39, "xl": 0.74},
+}
+var _articulated: Array[Dictionary] = []
+## AI stuck recovery: a car that wants to move but has not covered half a metre
+## in two seconds backs out, turning, for 1.6 s (TRAFFIC recovery, wave 5).
+var _stuck_check_pos := Vector3.ZERO
+var _stuck_check_time := 0.0
+var _reverse_time := 0.0
+var _ai_steer_visual := 0.0
+static var _wheel_meshes: Array[Mesh] = []
+## Simulation LOD (wave 5): AI traffic beyond SIM_NEAR of the player integrates
+## along its lane every SIM_FAR_TICKS ticks without a collision solve (measured
+## ~130 us per AI car per tick headless). Settled parked cars stop ticking until
+## someone takes them.
+const SIM_NEAR := 110.0
+const SIM_FAR_TICKS := 3
+var _sim_accum := 0.0
+var _sim_slot := 0
 
 func _ready() -> void:
+	_sim_slot = int(get_instance_id() % SIM_FAR_TICKS)
 	add_to_group("vehicles")
 	collision_layer = 8
 	collision_mask = 1 | 2 | 4 | 8
@@ -233,6 +258,18 @@ func _physics_process(delta: float) -> void:
 	if driver_is_player:
 		_player_control(delta)
 	elif has_ai:
+		if global_position.distance_squared_to(Game.player_position) > SIM_NEAR * SIM_NEAR:
+			_sim_accum += delta
+			_sim_slot = (_sim_slot + 1) % SIM_FAR_TICKS
+			if _sim_slot != 0:
+				return
+			var step := _sim_accum
+			_sim_accum = 0.0
+			_ai_control(step)
+			global_position += Vector3(velocity.x, 0.0, velocity.z) * step
+			_spin_wheels(step)
+			return
+		_sim_accum = 0.0
 		_ai_control(delta)
 	else:
 		_forward = move_toward(_forward, 0.0, ACCEL * delta)
@@ -240,6 +277,8 @@ func _physics_process(delta: float) -> void:
 		velocity.z = 0.0
 		if is_zero_approx(_forward) and is_on_floor():
 			velocity = Vector3.ZERO
+			# Parked and settled: sleep until interact() or a pool wakes it.
+			set_physics_process(false)
 			return
 	if not is_on_floor():
 		velocity.y -= 24.0 * delta
@@ -298,9 +337,18 @@ func _check_impact(before: Vector3) -> void:
 func _spin_wheels(delta: float) -> void:
 	var roll := _forward * delta * 2.4
 	if _provider_root != null:
-		# The inherited classifier named displaced body strips as wheel_*.
-		# Keep their imported transforms: spinning them creates orbiting shards.
-		# Proper wheel partition/pivots/steering remain an explicit ART-06 gap.
+		# The provider bodies have their tyres baked into one mesh (their wheel_*
+		# nodes are stray strips). Moving cars get articulated overlay wheels at
+		# the measured baked-tyre positions instead (tools/wheel_probe.gd).
+		if _articulated.is_empty() and (driver_is_player or has_ai):
+			_build_articulated_wheels()
+		if not _articulated.is_empty():
+			var r: float = WHEEL_FIT.get(kind, WHEEL_FIT["sedan"])["r"]
+			var steer_visual := clampf(_steer if driver_is_player else _ai_steer_visual, -1.0, 1.0) * 0.32
+			for wheel in _articulated:
+				wheel["spin"].rotate_x(-_forward * delta / r)
+				if wheel["front"]:
+					wheel["pivot"].rotation.y = steer_visual
 		return
 	for w in _wheels:
 		if w is MeshInstance3D:
@@ -332,6 +380,7 @@ func _ai_control(delta: float) -> void:
 	to_target.y = 0.0
 	var dist := to_target.length()
 	var desired_yaw := atan2(-to_target.x, -to_target.z) if dist > 0.01 else rotation.y
+	_ai_steer_visual = clampf(angle_difference(rotation.y, desired_yaw) * 2.0, -1.0, 1.0)
 	rotation.y = lerp_angle(rotation.y, desired_yaw, clampf(delta * 2.4, 0.0, 1.0))
 	var speed_limit := minf(max_speed, ai_speed_limit)
 	if dist < 12.0:
@@ -344,7 +393,18 @@ func _ai_control(delta: float) -> void:
 		_blocked_cached = blocker_ahead()
 	if _blocked_cached:
 		speed_limit = 0.0
-	_forward = move_toward(_forward, speed_limit, (BRAKE if speed_limit < _forward else accel) * delta)
+	if _reverse_time > 0.0:
+		_reverse_time -= delta
+		_forward = move_toward(_forward, -4.0, BRAKE * delta)
+		rotation.y += 0.9 * delta
+	else:
+		_forward = move_toward(_forward, speed_limit, (BRAKE if speed_limit < _forward else accel) * delta)
+		_stuck_check_time += delta
+		if _stuck_check_time >= 2.0:
+			if speed_limit > 3.0 and global_position.distance_to(_stuck_check_pos) < 0.5:
+				_reverse_time = 1.6
+			_stuck_check_pos = global_position
+			_stuck_check_time = 0.0
 	var dir := -global_transform.basis.z
 	velocity.x = dir.x * _forward
 	velocity.z = dir.z * _forward
@@ -400,6 +460,7 @@ func interact(player: Node) -> void:
 	driver_player = player
 	driver_is_player = true
 	has_ai = false
+	set_physics_process(true)
 	if player is Player:
 		(player as Player).busy = true        # guard the transition (PLAYER-03)
 	# Disable the passenger immediately, before moving it into the vehicle.
@@ -524,3 +585,97 @@ func take_damage(amount: float, _from_position: Vector3, _by_player: bool = fals
 
 func is_disabled() -> bool:
 	return disabled
+
+## One shared tyre + rim mesh (two surfaces), built once for every car.
+static func _articulated_wheel_mesh() -> Mesh:
+	if not _wheel_meshes.is_empty():
+		return _wheel_meshes[0]
+	var rubber := Palette.mat(Color(0.045, 0.045, 0.05), 0.92)
+	var alloy := Palette.mat(Color(0.70, 0.71, 0.73), 0.32, 0.85)
+	# Procedural winding is not hand-checked per face; draw both sides.
+	rubber.cull_mode = BaseMaterial3D.CULL_DISABLED
+	alloy.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var st := SurfaceTool.new()
+	# Tyre: unit radius, 0.25 wide along X, with a rounded shoulder.
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var seg := 28
+	var profile: Array[Vector2] = [Vector2(-0.5, 0.80), Vector2(-0.5, 0.94), Vector2(-0.42, 1.0), Vector2(0.42, 1.0), Vector2(0.5, 0.94), Vector2(0.5, 0.80)]
+	for i in seg:
+		var a0 := TAU * i / seg
+		var a1 := TAU * (i + 1) / seg
+		for k in profile.size() - 1:
+			var p0: Vector2 = profile[k]
+			var p1: Vector2 = profile[k + 1]
+			var v00 := Vector3(p0.x * 0.25, cos(a0) * p0.y, sin(a0) * p0.y)
+			var v01 := Vector3(p0.x * 0.25, cos(a1) * p0.y, sin(a1) * p0.y)
+			var v10 := Vector3(p1.x * 0.25, cos(a0) * p1.y, sin(a0) * p1.y)
+			var v11 := Vector3(p1.x * 0.25, cos(a1) * p1.y, sin(a1) * p1.y)
+			for v in [v00, v10, v11, v00, v11, v01]:
+				st.add_vertex(v)
+	st.generate_normals()
+	st.set_material(rubber)
+	var mesh := st.commit()
+	# Rim: recessed alloy dish with five spokes on both faces.
+	st = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for face: float in [-1.0, 1.0]:
+		var x := face * 0.105
+		for i in seg:
+			var a0 := TAU * i / seg
+			var a1 := TAU * (i + 1) / seg
+			# outer lip ring
+			var o0 := Vector3(x, cos(a0) * 0.80, sin(a0) * 0.80)
+			var o1 := Vector3(x, cos(a1) * 0.80, sin(a1) * 0.80)
+			var i0 := Vector3(x, cos(a0) * 0.70, sin(a0) * 0.70)
+			var i1 := Vector3(x, cos(a1) * 0.70, sin(a1) * 0.70)
+			for v in ([o0, i0, i1, o0, i1, o1] if face > 0 else [o0, i1, i0, o0, o1, i1]):
+				st.add_vertex(v)
+			# dark recessed dish behind the spokes
+			var d := Vector3(x - face * 0.04, 0.0, 0.0)
+			var d0 := Vector3(x - face * 0.04, cos(a0) * 0.70, sin(a0) * 0.70)
+			var d1 := Vector3(x - face * 0.04, cos(a1) * 0.70, sin(a1) * 0.70)
+			for v in ([d, d0, d1] if face > 0 else [d, d1, d0]):
+				st.add_vertex(v)
+		for sp in 5:
+			var a := TAU * sp / 5.0
+			var axis := Vector3(0.0, cos(a), sin(a))
+			var side := Vector3(0.0, -sin(a), cos(a)) * 0.075
+			var root := Vector3(x, 0.0, 0.0) + axis * 0.16
+			var tip := Vector3(x, 0.0, 0.0) + axis * 0.72
+			var q := [root - side, tip - side * 0.6, tip + side * 0.6, root + side]
+			for v in ([q[0], q[1], q[2], q[0], q[2], q[3]] if face > 0 else [q[0], q[2], q[1], q[0], q[3], q[2]]):
+				st.add_vertex(v)
+		# hub cap
+		for i in 12:
+			var a0 := TAU * i / 12.0
+			var a1 := TAU * (i + 1) / 12.0
+			var c := Vector3(x + face * 0.01, 0.0, 0.0)
+			var h0 := c + Vector3(0.0, cos(a0) * 0.18, sin(a0) * 0.18)
+			var h1 := c + Vector3(0.0, cos(a1) * 0.18, sin(a1) * 0.18)
+			for v in ([c, h0, h1] if face > 0 else [c, h1, h0]):
+				st.add_vertex(v)
+	st.generate_normals()
+	st.set_material(alloy)
+	st.commit(mesh)
+	_wheel_meshes.append(mesh)
+	return mesh
+
+func _build_articulated_wheels() -> void:
+	var fit: Dictionary = WHEEL_FIT.get(kind, WHEEL_FIT["sedan"])
+	var r: float = fit["r"]
+	var mesh := _articulated_wheel_mesh()
+	for front: bool in [true, false]:
+		for side: float in [-1.0, 1.0]:
+			var pivot := Node3D.new()
+			var outer: float = fit["x"] if side > 0.0 else fit["xl"]
+			# Outer face sits just proud of the baked tyre so it covers it.
+			pivot.position = Vector3(side * (outer - 0.11), r, fit["zf"] if front else fit["zr"])
+			add_child(pivot)
+			var spin := Node3D.new()
+			pivot.add_child(spin)
+			var wheel := MeshInstance3D.new()
+			wheel.mesh = mesh
+			wheel.scale = Vector3(1.0, r, r)
+			wheel.visibility_range_end = 140.0
+			spin.add_child(wheel)
+			_articulated.append({"pivot": pivot, "spin": spin, "front": front})
