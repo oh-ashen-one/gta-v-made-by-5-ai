@@ -129,7 +129,8 @@ static func build_environment(parent: Node) -> Dictionary:
 	env.glow_strength = 1.0
 	env.glow_bloom = 0.02
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
-	env.glow_hdr_threshold = 1.05
+	# Above sunlit white plaster (~1.3 linear under a 3.1 sun): only emitters bloom.
+	env.glow_hdr_threshold = 1.6
 	env.glow_hdr_scale = 2.0
 	env.glow_hdr_luminance_cap = 10.0
 
