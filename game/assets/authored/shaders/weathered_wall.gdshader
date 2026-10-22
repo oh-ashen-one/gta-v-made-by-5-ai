@@ -14,7 +14,8 @@ uniform float ground_y = 0.16;
 uniform float peel = 0.0;
 uniform float streaks = 1.0;
 uniform float wear = 1.0;
-uniform float slabs = 1.0;     // 6 m cast-slab joints on horizontal tops (concrete only)
+uniform float slabs = 1.0;
+uniform float turf = 0.0;      // planted ground: patchy grass, bare earth, leaf litter     // 6 m cast-slab joints on horizontal tops (concrete only)
 
 varying vec3 v_world;
 varying vec3 v_wn;
@@ -51,6 +52,16 @@ void fragment() {
 		// Rust / oil stains and tyre scuffs.
 		float stain = smoothstep(0.66, 0.82, w_mask(p / 17.0 + 0.77).r) * wear;
 		col = mix(col, col * vec3(0.62, 0.55, 0.48), stain * 0.7);
+		if (turf > 0.0) {
+			// Patchy tropical turf: worn bare earth, darker lush clumps, litter.
+			vec4 tf = w_mask(p / 2.3 + 0.19);
+			float bare = smoothstep(0.55, 0.75, med.g * 0.6 + tf.r * 0.5);
+			col = mix(col * (0.75 + 0.5 * tf.g), vec3(0.24, 0.19, 0.13) * (0.8 + 0.4 * tf.b), bare * 0.75 * turf);
+			float lush = smoothstep(0.6, 0.85, tf.a);
+			col = mix(col, col * vec3(0.70, 0.95, 0.65), lush * 0.6 * turf);
+			float speck = step(0.83, w_mask(p * 2.9).g);
+			col = mix(col, vec3(0.32, 0.24, 0.14), speck * 0.5 * turf);
+		}
 		// Roof decks and slab tops: ponding rings, lichen and soot.
 		float pond = smoothstep(0.62, 0.80, big.r) * wear;
 		col = mix(col, col * vec3(0.58, 0.60, 0.52), pond * 0.8);

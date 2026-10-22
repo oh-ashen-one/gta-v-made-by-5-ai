@@ -29,7 +29,7 @@ void fragment() {
 	float lum = dot(base, vec3(0.333));
 	// Pull individual stones toward the sheet mean: weathering evens them out.
 	vec3 mean = textureLod(albedo_tex, p / tile_m, 9.0).rgb;
-	base = mix(base, mean, 0.58);
+	base = mix(base, mean, 0.72);
 	vec4 big = w_mask(p / 61.0);
 	vec4 med = w_mask(w_rot(p, 0.9) / 13.0 + 0.4);
 	vec4 sml = w_mask(p / 3.7 + 0.2);
@@ -57,7 +57,7 @@ void fragment() {
 	rough -= 0.18 * damp;
 	// Joints hold dirt and moss.
 	float joint = 1.0 - smoothstep(0.20, 0.42, lum);
-	col = mix(col, col * vec3(0.45, 0.50, 0.40), joint * 0.6 * (0.5 + 0.5 * med.r));
+	col = mix(col, col * vec3(0.55, 0.58, 0.48), joint * 0.45 * (0.5 + 0.5 * med.r));
 	// Gum spots and drip stains.
 	vec2 gc = floor(p * 1.6);
 	float gh = w_hash12(gc + 5.1);
@@ -84,5 +84,5 @@ void fragment() {
 	ALBEDO = clamp(col, vec3(0.0), vec3(1.0));
 	ROUGHNESS = clamp(rough, 0.35, 1.0);
 	NORMAL_MAP = texture(normal_tex, p / tile_m).rgb;
-	NORMAL_MAP_DEPTH = 0.45;
+	NORMAL_MAP_DEPTH = 0.32;
 }

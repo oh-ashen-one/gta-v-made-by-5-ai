@@ -138,6 +138,7 @@ static func weathered_surface(color: Color, kind: String, rough: float = 0.9, me
 			m.set_shader_parameter("slabs", 1.0 if kind == "concrete" else 0.0)
 			if kind == "soil":
 				m.set_shader_parameter("streaks", 0.0)
+				m.set_shader_parameter("turf", 1.0)
 	m.set_meta("weathered_kind", kind)
 	_weather_cache[key] = m
 	return m
@@ -199,6 +200,28 @@ static func facade(kind: String) -> StandardMaterial3D:
 	if not "--clean-surfaces" in OS.get_cmdline_user_args():
 		m.next_pass = grime_overlay()
 	_facade_cache[kind] = m
+	return m
+
+## Wave B: repainted variants of a facade sheet, so a district of infill
+## blocks is not one cream colour (paint fades and is redone unit by unit).
+const FACADE_TINTS := [
+	Color(1.0, 1.0, 1.0), Color(0.86, 0.87, 0.88), Color(0.97, 0.86, 0.80),
+	Color(0.95, 0.90, 0.74), Color(0.84, 0.90, 0.84), Color(0.74, 0.73, 0.71),
+	Color(0.90, 0.84, 0.88),
+]
+static var _facade_variant_cache := {}
+
+static func facade_variant(kind: String, index: int) -> StandardMaterial3D:
+	var i := posmod(index, FACADE_TINTS.size())
+	if i == 0:
+		return facade(kind)
+	var key := "%s|%d" % [kind, i]
+	if _facade_variant_cache.has(key):
+		return _facade_variant_cache[key]
+	var m := facade(kind).duplicate() as StandardMaterial3D
+	m.albedo_color = FACADE_TINTS[i]
+	m.next_pass = facade(kind).next_pass
+	_facade_variant_cache[key] = m
 	return m
 
 static func _facade_image(kind: String) -> ImageTexture:

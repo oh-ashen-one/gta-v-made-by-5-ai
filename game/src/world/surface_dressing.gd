@@ -50,7 +50,15 @@ static func dress(world_root: Node3D) -> Dictionary:
 		if node is MeshInstance3D:
 			var mi := node as MeshInstance3D
 			if mi.mesh is BoxMesh and Palette._facade_cache.values().has(mi.material_override):
-				infill.append({"size": (mi.mesh as BoxMesh).size, "xform": _rel_xform(mi, world_root)})
+				var ixf := _rel_xform(mi, world_root)
+				infill.append({"size": (mi.mesh as BoxMesh).size, "xform": ixf})
+				# Repaint: pick a tint variant per building (deterministic by position).
+				var kind := ""
+				for k in Palette._facade_cache:
+					if Palette._facade_cache[k] == mi.material_override:
+						kind = k
+				if kind != "" and kind != "office" and kind != "glass":
+					mi.material_override = Palette.facade_variant(kind, int(absf(ixf.origin.x) * 0.37 + absf(ixf.origin.z) * 0.71))
 	_fix_roof_caps(world_root, infill)
 	stats["shophouses"] = shophouses.size()
 	stats["hdb"] = hdbs.size()

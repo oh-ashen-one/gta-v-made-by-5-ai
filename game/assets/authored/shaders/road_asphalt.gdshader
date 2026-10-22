@@ -53,15 +53,15 @@ void fragment() {
 	vec2 rf = lane > 0.5 ? vec2(lat, along) : p;   // patch frame
 
 	// Tyre tracks: polished, darker, smoother rubber lines in every lane.
-	float tvar = 0.55 + 0.45 * w_mask(vec2(along / 41.0, lat / 13.0 + 0.3)).g;
+	float tvar = 0.70 + 0.30 * w_mask(vec2(along / 41.0, lat / 13.0 + 0.3)).g;
 	float tracks = 0.0;
 	tracks += w_gauss(al - 1.15, 0.34);
 	tracks += w_gauss(al - 2.85, 0.34);
 	tracks += w_gauss(al - 5.15, 0.34);
 	tracks += w_gauss(al - 6.85, 0.34);
 	tracks = clamp(tracks, 0.0, 1.0) * tvar * lane * wear;
-	tone *= 1.0 - 0.40 * tracks;
-	rough = mix(rough, 0.52, tracks * 0.85);
+	tone *= 1.0 - 0.48 * tracks;
+	rough = mix(rough, 0.46, tracks * 0.9);
 	// Between the tracks the surface is dustier and lighter.
 	float between = lane * (w_gauss(al - 2.0, 0.55) + w_gauss(al - 6.0, 0.55));
 	tone *= 1.0 + 0.14 * between * (1.0 - tracks);
