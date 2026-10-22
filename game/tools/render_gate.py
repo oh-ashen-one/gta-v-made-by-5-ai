@@ -2,7 +2,7 @@
 """Last-moment shared-engine safety check; used inside the common GPU lease."""
 import os,sys,subprocess,json
 from pathlib import Path
-root=Path(os.environ.get('GPU_SLOT_DIR','/Users/midir/sm2-n1/_scratch/gpu'))
+root=Path(os.environ.get('GPU_SLOT_DIR',os.path.expanduser('~/.cache/gpu-slot')))
 if (root/'PAUSED').exists():raise SystemExit('Shared GPU coordinator is PAUSED; renderer not launched.')
 lines=subprocess.check_output(['ps','-axo','pid=,stat=,comm='],text=True).splitlines();engines=[]
 for line in lines:

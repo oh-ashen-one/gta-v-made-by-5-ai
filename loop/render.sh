@@ -6,7 +6,7 @@ set -euo pipefail
 [ $# -ge 4 ] && [ "$4" = "--" ] || { echo "usage: $0 <label> <seconds> <abs-out-dir> -- <engine args...>" >&2; exit 2; }
 label="opus55-$1"; seconds="$2"; out="$3"; shift 4
 root="$(cd "$(dirname "$0")/.." && pwd)"
-export GPU_SLOT_DIR="${GPU_SLOT_DIR:-/Users/midir/sm2-n1/_scratch/gpu}"
+export GPU_SLOT_DIR="${GPU_SLOT_DIR:-$HOME/.cache/gpu-slot}"
 slot="$(ls -td "$HOME"/.config/devin/brain/sources/oh-ashen-one--claude-code-game-builder/*/tools/gpu/gpu_slot.sh 2>/dev/null | head -1)"
 [ -n "$slot" ] || { echo "gpu_slot.sh not found in the shared-brain catalog" >&2; exit 3; }
 mkdir -p "$out"

@@ -81,7 +81,8 @@ Record reference IDs in every critique and handoff. A blocked image is NOT TESTE
    `progress/img/`) updated every round with pieces, verdicts, the latest A/B pairs next to their reference
    IDs, open gaps, commits, before/after captures and time remaining. Never put GTA V reference images in
    `progress/`; show their IDs and links. The owner views it through
-   `python3 -m http.server 8765 --bind 127.0.0.1 --directory progress` (already started; never bind 0.0.0.0).
+   `python3 -m http.server 8767 --bind 127.0.0.1 --directory progress` (start it headless at loop start; 8765
+   belongs to another project; never bind 0.0.0.0).
 6. **Effort.** Maximum thoroughness on every piece ("ultracode").
 
 ## How to run the engine on this machine
