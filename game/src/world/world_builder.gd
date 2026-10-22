@@ -124,9 +124,10 @@ func _ground() -> void:
 	var box := BoxMesh.new()
 	box.size = Vector3(1500.0, 4.0, 1100.0)
 	mesh.mesh = box
-	# Wave B r2 (materials): unbuilt land is kept grass verge, not a bare
-	# concrete/dirt field (blind critics flagged "empty dirt lots").
-	mesh.material_override = Palette.mat_textured(Color(0.25, 0.33, 0.17), "soil", Vector3(70.0, 1.0, 70.0), 0.95)
+	# Wave B r3 (materials): base ground is neutral concrete hard-standing
+	# again; r2's grass base leaked onto workshop floors, forecourts and the
+	# airfield apron (critic regression). Grass stays on explicit verges.
+	mesh.material_override = Palette.mat_textured(Color(0.44, 0.44, 0.43), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
 	mesh.position = Vector3(0.0, -2.0, 200.0)
 	ground.add_child(mesh)
 	var shape := CollisionShape3D.new()
@@ -715,9 +716,8 @@ func _block_plots() -> void:
 			_box(Vector3(120.0, 0.05, 0.16), centre + Vector3(0.0, 0.075, -3.1), Palette.mat(Palette.PAINT_LINE, 0.8))
 			_box(Vector3(0.16, 0.05, 120.0), centre + Vector3(-3.1, 0.075, 0.0), Palette.mat(Palette.PAINT_LINE, 0.8))
 			# A service apron rings the plots between them and the frontage.
-			# Wave B r2 (materials): the aviation compound's open ground is kept
-			# airfield grass, not a bare apron the critics read as a dirt lot.
-			_box(Vector3(118.0, 0.05, 118.0), centre + Vector3(0.0, 0.025, 0.0), Palette.mat_textured(Color(0.25, 0.34, 0.17), "soil", Vector3.ONE, 0.95) if kit == "aviation" else apron)
+			# A service apron rings the plots (paved hard-standing, incl. aviation).
+			_box(Vector3(118.0, 0.05, 118.0), centre + Vector3(0.0, 0.025, 0.0), apron)
 			if kit in ["hawker", "aviation"]:
 				if kit == "hawker":
 					# The pavilion occupies the west two-thirds; the east strip is

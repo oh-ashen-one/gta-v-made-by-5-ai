@@ -740,7 +740,22 @@ func _materials_ok(world: Node) -> bool:
 	var s: Dictionary = SurfaceDressing.stats
 	# Infill roofs belong to RoofKit since wave-A integration; walls stay here.
 	var dressed := int(s.get("condensers", 0)) >= 500 and int(s.get("infill", 0)) >= 50 and int(s.get("overlays", 0)) >= 1 and int(s.get("shop_floor", 0)) == 1
-	return road_ok and paving_ok and dressed and world.get_tree().get_nodes_in_group("surface_dressing").size() >= 4
+	# r3: carriageway tint stays neutral/cool (golden sun must not turn it brown)
+	# and no large hard-standing slab (ground, aprons) uses the turf material.
+	var tint: Vector3 = road.get_shader_parameter("tint")
+	var neutral := tint.z >= tint.x
+	return road_ok and paving_ok and dressed and neutral and _hard_standing_not_turf(world) and world.get_tree().get_nodes_in_group("surface_dressing").size() >= 4
+
+func _hard_standing_not_turf(node: Node) -> bool:
+	if node is MeshInstance3D and (node as MeshInstance3D).mesh is BoxMesh:
+		var sz: Vector3 = ((node as MeshInstance3D).mesh as BoxMesh).size
+		var m := (node as MeshInstance3D).material_override
+		if sz.x >= 100.0 and sz.z >= 100.0 and m != null and String(m.get_meta("weathered_kind", "")) == "soil":
+			return false
+	for c in node.get_children():
+		if not _hard_standing_not_turf(c):
+			return false
+	return true
 
 func _check(check_name: String, condition: bool, detail: String = "") -> void:
 	if _reported:
