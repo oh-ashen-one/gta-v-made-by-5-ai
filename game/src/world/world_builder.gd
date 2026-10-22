@@ -622,6 +622,7 @@ func _far_shore_landmarks() -> void:
 
 ## Aviation compound: hangar, helipads, perimeter fence.
 func _aviation_block(centre: Vector3) -> void:
+	preload("res://src/world/aviation_grounds.gd").build(_world_root, centre) # wave P: turf, apron tarmac, hedges
 	# ground staff (static figures from the generated officer set)
 	if AssetLibrary.has_asset("officer_clean.glb"):
 		for i: int in 2:
