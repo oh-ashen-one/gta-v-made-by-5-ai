@@ -10,6 +10,31 @@ The required status vocabulary is exactly `Not started`, `In progress`, `Impleme
 
 **Candidate identity:** current package source is **`be6a8aa98b47735eb5b043db0860a0946767d1cd`**, archive SHA256 **`e5288cf6ea786456e66e2403aef4bccd27aa0d4c38ad47894ae7a9f842e6cbb7`** and PCK SHA256 **`80b8920a83d124d63e30539decfc05103c9dcaaf9c58af3bb342d381bcb82b7b`**. PR links its actual exported-app **85/85** regression; UIW2/UIL2 link the current two-process **24/24 + 23/23** fixture checks. All four export/test processes agree on 25 recorded source hashes and 150 runtime-art hashes. S2 is the older **1800.007973-second, three-mission, zero-death** 720p candidate based on `03d9b8700bab986ed191a0bcd39ee8a13cde7ac0` plus exact startup hashes/patch. PS1 is the previous `df911c6` package’s failed log-gate attempt. The current PS2 package workload passes at 1800.008636 seconds with three uninterrupted missions and zero deaths; the repeated-stall timing gate fails. Exact identities, commands and bounds remain in [EVIDENCE.md](EVIDENCE.md) and the [test index][I]; base HEAD alone never identifies a dirty-tree candidate. The separate ad-hoc-signed delivery archive is **`377447ff855c91da8746c23a67cc4877c22b34e32eadf64c420a6c1b56c006e8`**, with the same PCK but executable SHA256 **`5ed701023c5f052084982fe7734f64f36f23de9b2570a415e9ee7701dfc9f470`**. Its own SPR/SUIW/SUIL results pass **85/85 + 24/24 + 23/23**, and SP completes a separate **13/13-gate, zero-death scripted route**. It does not inherit the raw app’s 30-minute run.
 
+## Wave 5 (final, Opus 5.5) update — IN PROGRESS
+
+Rows below this section are the inherited Wave 2–4 ledger and are **not** re-verified unless listed here. Wave 5 evidence lives in `waves/05/evidence/`. Shared renderer capacity was occupied by four foreign Blender sessions from 23:56 UTC onward, so every Wave 5 result below is **headless** (simulation, geometry or CPU timing) unless a rendered capture is explicitly linked. Headless results do not certify pixels, materials, lighting or rendered frame time.
+
+| ID | Wave 5 status | Evidence | Wave 5 change and what remains |
+| --- | --- | --- | --- |
+| WORLD-03 | In progress | `waves/05/evidence/sightlines-headless/` | Outdoor opening on a new heritage shophouse five-foot way facing the inhabited hawker hall across the x=-160 avenue, HDB slabs behind, Marina Bay Sands across the bay on the avenue sightline. Headless ray probe of the actual opening camera: all three MBS towers + SkyPark visible (77% of its silhouette, 2.3% of frame), Supertree crowns above the hawker roof, hawker hall, shophouses, HDB. **Rendered opening frame not yet verified.** |
+| QA-018 | In progress | `waves/05/evidence/headless-route*/` | Incoming wave-4 route automation could not run (parse error). Repaired; headless scripted route now completes all 13 gates with 0 deaths (latest 149–153 s). Scripted input automation, not an ordinary player run; no rendered route yet. |
+| QA-007 / CAR-03 | In progress | `regressions_92.json` | Kerbside cars moved off the platform edge onto the carriageway (wave 3/4 cars straddled the 16 cm kerb in the pedestrian lane). New check: 87/91 kerbside cars can pull out and drive 12 m unobstructed (4 listed exceptions). |
+| TRAFFIC-02 | In progress | `regressions_92.json`, route logs | Lane-corridor perception (old cone stopped traffic behind kerb-parked cars), throttled to ~8 Hz; AI stuck recovery (reverse-and-turn). Busy-junction human observation not done. |
+| LAW-03 | In progress | `regressions_92.json` | Police pursue along the junction grid when the direct line is blocked or > 45 m (were aimed straight at the player through buildings). Live pursuit not render-observed. |
+| ART-06 | In progress | `wheel_probe.log` | Moving provider cars get spinning/steering overlay wheels at measured baked-tyre positions; seated driver silhouettes in moving/occupied cars. Not render-inspected. |
+| WORLD-06 / AIR-05 | In progress | `regressions_92.json` | Landable far-shore ground, helicopter aerial envelope (turn-back), ditch recovery to last supported position (regression-checked). |
+| PERF-02 / QA-020 | In progress (not accepted) | `perf_probe_*.json`, route frame times | CPU: NPC/car simulation LOD and parked-car sleep cut the headless physics tick ~11.3 → ~6.8 ms; route CPU frame p95 18.0 → 12.0 ms. Render: 9,705 static mesh nodes merged into 1,153 chunked MultiMesh draws (district mesh instances 11,064 → 1,359; unique materials 4,988 → 353), geometry verified equivalent by the headless probe. **No rendered frame-time measurement yet.** |
+
+### Wave 5 landmark status (WORLD-03)
+
+| Landmark | Placement | Reachable / collision | Verification |
+| --- | --- | --- | --- |
+| Marina Bay Sands (3 towers + boat SkyPark) | Far shore across the bay, (-88, 0, -705), scale (2.2, 1.75, 1.6): ~182 m towers, ~196 m SkyPark top, ~260 m SkyPark | Distant scenery; towers/SkyPark collision; far-shore ground is landable by helicopter | Headless probe: opening camera 77% visible; promenade 97% visible, 8.4% of frame. Rendered: NOT TESTED |
+| Supertree Grove (7 trees + skyway) | Bayside garden block, (-50, 0.16, -240), 48 m | Reachable on foot; trunk collision | Probe: crowns visible in opening view above the hawker roof; aerial/heli views. Rendered: NOT TESTED |
+| ArtScience Museum (lotus) | Far-shore water's edge (-318, 0, -645), ×1.6 | Scenery; collision | Probe: promenade 95% visible; hidden in the opening view by the heritage row. Rendered: NOT TESTED |
+| Singapore Flyer | Far shore east (390, 0, -652), ×1.4 | Scenery; collision | Probe: right edge of opening view (partly behind grove), heli approach. Rendered: NOT TESTED |
+| Merlion | Promenade pier (45, 0.3, -345), facing the bay | Reachable on foot; collision | Probe: promenade 98% visible. Rendered: NOT TESTED |
+
 ## Numbered requirements
 
 | ID | Requirement | Whole-requirement status | Test / source evidence | Remaining scope or bounded conclusion |

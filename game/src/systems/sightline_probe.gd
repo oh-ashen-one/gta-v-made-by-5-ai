@@ -125,9 +125,29 @@ func _collect(node: Node, parent: Node3D) -> void:
 	elif node is MultiMeshInstance3D:
 		var mmi := node as MultiMeshInstance3D
 		if mmi.multimesh != null and mmi.multimesh.mesh != null and mmi.is_visible_in_tree():
-			var shape := _shape_for(mmi.multimesh.mesh)
+			# Physics bodies drop non-uniform scale, so bake each instance's full
+			# transform into its own triangle soup and place the body at identity.
+			var faces: PackedVector3Array = mmi.multimesh.mesh.get_faces()
+			var category := "background_city"
+			var batch_name := String(mmi.name)
+			if batch_name.begins_with("StaticBatch"):
+				category = "other"
+				for key in ["rain_tree", "palm", "fern"]:
+					if batch_name.contains(key): category = "tree"
+				if batch_name.contains("skyline"): category = "background_city"
+				if batch_name.contains("shophouse"): category = "shophouse"
+				if batch_name.contains("hdb"): category = "hdb"
+			var copies: Array = mmi.get_meta("probe_xforms", [])
 			for i in mmi.multimesh.instance_count:
-				_add_body(parent, shape, mmi.global_transform * mmi.multimesh.get_instance_transform(i), "background_city")
+				var local: Transform3D = copies[i] if i < copies.size() else mmi.multimesh.get_instance_transform(i)
+				var xf := mmi.global_transform * local
+				var baked := PackedVector3Array()
+				baked.resize(faces.size())
+				for f in faces.size():
+					baked[f] = xf * faces[f]
+				var shape := ConcavePolygonShape3D.new()
+				shape.set_faces(baked)
+				_add_body(parent, shape, Transform3D.IDENTITY, category)
 	for child in node.get_children():
 		_collect(child, parent)
 

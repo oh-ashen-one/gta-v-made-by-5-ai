@@ -177,13 +177,11 @@ func _physics_process(delta: float) -> void:
 			global_position.distance_squared_to(Game.player_position) > SIM_NEAR * SIM_NEAR:
 		_sim_accum += delta
 		_sim_slot = (_sim_slot + 1) % SIM_FAR_TICKS
-		if _sim_slot != 0:
-			return
-		var step := _sim_accum
-		_sim_accum = 0.0
-		_walk(step)
-		global_position += Vector3(velocity.x, 0.0, velocity.z) * step
-		_animate(step, Vector2(velocity.x, velocity.z).length())
+		if _sim_slot == 0:
+			_walk(_sim_accum)
+			_animate(_sim_accum, Vector2(velocity.x, velocity.z).length())
+			_sim_accum = 0.0
+		global_position += Vector3(velocity.x, 0.0, velocity.z) * delta
 		return
 	_sim_accum = 0.0
 	if not is_on_floor():

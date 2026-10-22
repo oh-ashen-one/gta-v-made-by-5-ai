@@ -70,7 +70,7 @@ func _ready() -> void:
 	print("[launch] world_ui_ready_ms=",Time.get_ticks_msec()," executable=",OS.get_executable_path()," editor_binary=",OS.has_feature("editor"))
 
 	if "--character-review" in args:
-		var review: Node = load("res://src/systems/character_review.gd").new()
+		var review: Node = _qa_system("res://src/systems/character_review.gd")
 		add_child(review)
 		review.setup(self)
 		return
@@ -92,7 +92,7 @@ func _ready() -> void:
 		for arg in args:
 			if arg.begins_with("--capture-dir="):
 				photo_dir = arg.split("=")[1]
-		var shooter: Node = load("res://src/systems/photo_capture.gd").new()
+		var shooter: Node = _qa_system("res://src/systems/photo_capture.gd")
 		add_child(shooter)
 		shooter.setup(self, world, photo_dir)
 		# the frames are evidence of the district, not of the title screen
@@ -108,7 +108,7 @@ func _ready() -> void:
 		hud.show_title(false)
 		started = true
 		Game.simulation_paused = false
-		var perf: Node = load("res://src/systems/perf_probe.gd").new()
+		var perf: Node = _qa_system("res://src/systems/perf_probe.gd")
 		add_child(perf)
 		perf.setup(self, perf_dir)
 		return
@@ -121,13 +121,13 @@ func _ready() -> void:
 		hud.show_title(false)
 		started = true
 		Game.simulation_paused = false
-		var probe: Node = load("res://src/systems/sightline_probe.gd").new()
+		var probe: Node = _qa_system("res://src/systems/sightline_probe.gd")
 		add_child(probe)
 		probe.setup(self, probe_dir)
 		return
 
 	if "--capture" in args:
-		_capture_director = load("res://src/systems/capture_director.gd").new()
+		_capture_director = _qa_system("res://src/systems/capture_director.gd")
 		add_child(_capture_director)
 		_capture_director.setup(self, player, world, mission, traffic)
 		hud.show_title(false)
@@ -138,7 +138,7 @@ func _ready() -> void:
 		hud.show_title(true)
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		if "--ui-review" in args:
-			var review: Node = load("res://src/systems/ui_review.gd").new()
+			var review: Node = _qa_system("res://src/systems/ui_review.gd")
 			add_child(review)
 			review.setup(self)
 
@@ -271,3 +271,14 @@ func _take_screenshot() -> void:
 	var file := folder+"/native_%d.png"%Time.get_ticks_msec()
 	var result := get_viewport().get_texture().get_image().save_png(file)
 	print("[native-screenshot] ",file," result=",result," player=",player.global_position," mode=",Game.mode)
+
+## QA entry points are loaded by path; a script that fails to parse used to
+## leave the automation idling until its outer bound (wave 4 capture_director).
+## Fail fast and loudly instead.
+func _qa_system(path: String) -> Node:
+	var script := load(path) as Script
+	if script == null or not script.can_instantiate():
+		push_error("QA system failed to load: " + path)
+		get_tree().quit(3)
+		return Node.new()
+	return script.new()

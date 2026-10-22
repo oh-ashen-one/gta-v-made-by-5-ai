@@ -1,0 +1,350 @@
+{
+	"grid": [
+		256,
+		144
+	],
+	"note": "Headless geometric ray probe, not a render. Leaf cards and glass count as opaque.",
+	"views": [
+		{
+			"camera_forward": "(0.206, -0.12, -0.971)",
+			"camera_position": "(-170.83, 2.02, -18.72)",
+			"fov": 58.0,
+			"landmarks": {
+				"artscience_museum": {
+					"bbox_norm": [],
+					"frame_percent": 0.0,
+					"unoccluded_frame_percent": 0.23,
+					"visible_fraction": 0.0
+				},
+				"marina_bay_sands": {
+					"bbox_norm": [
+						0.36,
+						0.11,
+						0.55,
+						0.39
+					],
+					"frame_percent": 2.26,
+					"unoccluded_frame_percent": 2.94,
+					"visible_fraction": 0.77
+				},
+				"merlion_landmark": {
+					"bbox_norm": [],
+					"frame_percent": 0.0,
+					"unoccluded_frame_percent": 0.0,
+					"visible_fraction": 0.0
+				},
+				"singapore_flyer": {
+					"bbox_norm": [
+						0.74,
+						0.19,
+						0.85,
+						0.31
+					],
+					"frame_percent": 0.16,
+					"unoccluded_frame_percent": 0.48,
+					"visible_fraction": 0.33
+				},
+				"supertree_grove": {
+					"bbox_norm": [
+						0.56,
+						0.2,
+						0.73,
+						0.32
+					],
+					"frame_percent": 0.61,
+					"unoccluded_frame_percent": 1.51,
+					"visible_fraction": 0.4
+				}
+			},
+			"name": "opening_player_camera",
+			"shares_percent": {
+				"background_city": 0.0,
+				"hawker": 2.49,
+				"hdb": 1.72,
+				"marina_bay_sands": 2.26,
+				"other": 55.08,
+				"person": 3.28,
+				"shophouse": 16.31,
+				"singapore_flyer": 0.16,
+				"sky": 14.94,
+				"supertree_grove": 0.61,
+				"tree": 2.92,
+				"vehicle": 0.22
+			}
+		},
+		{
+			"camera_forward": "(-0.235, 0.1, -0.967)",
+			"camera_position": "(30.0, 1.9, -330.0)",
+			"fov": 58.0,
+			"landmarks": {
+				"artscience_museum": {
+					"bbox_norm": [
+						0.11,
+						0.47,
+						0.19,
+						0.59
+					],
+					"frame_percent": 0.52,
+					"unoccluded_frame_percent": 0.55,
+					"visible_fraction": 0.95
+				},
+				"marina_bay_sands": {
+					"bbox_norm": [
+						0.31,
+						0.12,
+						0.66,
+						0.59
+					],
+					"frame_percent": 8.44,
+					"unoccluded_frame_percent": 8.73,
+					"visible_fraction": 0.97
+				},
+				"merlion_landmark": {
+					"bbox_norm": [
+						0.89,
+						0.34,
+						1.0,
+						0.64
+					],
+					"frame_percent": 0.79,
+					"unoccluded_frame_percent": 0.81,
+					"visible_fraction": 0.98
+				},
+				"singapore_flyer": {
+					"bbox_norm": [],
+					"frame_percent": 0.0,
+					"unoccluded_frame_percent": 0.0,
+					"visible_fraction": 0.0
+				},
+				"supertree_grove": {
+					"bbox_norm": [],
+					"frame_percent": 0.0,
+					"unoccluded_frame_percent": 0.0,
+					"visible_fraction": 0.0
+				}
+			},
+			"name": "promenade_merlion",
+			"shares_percent": {
+				"artscience_museum": 0.52,
+				"marina_bay_sands": 8.44,
+				"merlion_landmark": 0.79,
+				"other": 36.8,
+				"sky": 48.21,
+				"tree": 1.29,
+				"water": 3.94
+			}
+		},
+		{
+			"camera_forward": "(-0.667, -0.218, -0.713)",
+			"camera_position": "(250.0, 95.0, 250.0)",
+			"fov": 62.0,
+			"landmarks": {
+				"artscience_museum": {
+					"bbox_norm": [
+						0.58,
+						0.35,
+						0.6,
+						0.39
+					],
+					"frame_percent": 0.05,
+					"unoccluded_frame_percent": 0.05,
+					"visible_fraction": 1.0
+				},
+				"marina_bay_sands": {
+					"bbox_norm": [
+						0.64,
+						0.2,
+						0.8,
+						0.4
+					],
+					"frame_percent": 1.51,
+					"unoccluded_frame_percent": 1.57,
+					"visible_fraction": 0.96
+				},
+				"merlion_landmark": {
+					"bbox_norm": [],
+					"frame_percent": 0.0,
+					"unoccluded_frame_percent": 0.0,
+					"visible_fraction": 0.0
+				},
+				"singapore_flyer": {
+					"bbox_norm": [],
+					"frame_percent": 0.0,
+					"unoccluded_frame_percent": 0.0,
+					"visible_fraction": 0.0
+				},
+				"supertree_grove": {
+					"bbox_norm": [
+						0.57,
+						0.38,
+						0.63,
+						0.46
+					],
+					"frame_percent": 0.19,
+					"unoccluded_frame_percent": 0.23,
+					"visible_fraction": 0.84
+				}
+			},
+			"name": "aerial_district_fixed",
+			"shares_percent": {
+				"artscience_museum": 0.05,
+				"background_city": 3.38,
+				"hawker": 0.01,
+				"hdb": 10.63,
+				"marina_bay_sands": 1.51,
+				"other": 37.24,
+				"person": 0.01,
+				"shophouse": 5.13,
+				"sky": 34.39,
+				"supertree_grove": 0.19,
+				"tree": 5.9,
+				"vehicle": 0.13,
+				"water": 1.42
+			}
+		},
+		{
+			"camera_forward": "(-0.319, -0.124, -0.94)",
+			"camera_position": "(120.0, 110.0, -120.0)",
+			"fov": 62.0,
+			"landmarks": {
+				"artscience_museum": {
+					"bbox_norm": [
+						0.3,
+						0.47,
+						0.34,
+						0.53
+					],
+					"frame_percent": 0.14,
+					"unoccluded_frame_percent": 0.15,
+					"visible_fraction": 0.93
+				},
+				"marina_bay_sands": {
+					"bbox_norm": [
+						0.41,
+						0.26,
+						0.61,
+						0.55
+					],
+					"frame_percent": 3.0,
+					"unoccluded_frame_percent": 3.13,
+					"visible_fraction": 0.96
+				},
+				"merlion_landmark": {
+					"bbox_norm": [
+						0.49,
+						0.73,
+						0.51,
+						0.76
+					],
+					"frame_percent": 0.05,
+					"unoccluded_frame_percent": 0.05,
+					"visible_fraction": 0.95
+				},
+				"singapore_flyer": {
+					"bbox_norm": [
+						0.88,
+						0.29,
+						1.0,
+						0.62
+					],
+					"frame_percent": 0.91,
+					"unoccluded_frame_percent": 0.93,
+					"visible_fraction": 0.98
+				},
+				"supertree_grove": {
+					"bbox_norm": [
+						0.06,
+						0.67,
+						0.3,
+						0.97
+					],
+					"frame_percent": 2.79,
+					"unoccluded_frame_percent": 2.99,
+					"visible_fraction": 0.93
+				}
+			},
+			"name": "heli_approach",
+			"shares_percent": {
+				"artscience_museum": 0.14,
+				"background_city": 0.81,
+				"marina_bay_sands": 3.0,
+				"merlion_landmark": 0.05,
+				"other": 28.45,
+				"person": 0.0,
+				"singapore_flyer": 0.91,
+				"sky": 45.36,
+				"supertree_grove": 2.79,
+				"tree": 2.93,
+				"vehicle": 0.05,
+				"water": 15.51
+			}
+		},
+		{
+			"camera_forward": "(-0.016, 0.044, -0.999)",
+			"camera_position": "(-150.0, 1.9, -60.0)",
+			"fov": 58.0,
+			"landmarks": {
+				"artscience_museum": {
+					"bbox_norm": [],
+					"frame_percent": 0.0,
+					"unoccluded_frame_percent": 0.18,
+					"visible_fraction": 0.0
+				},
+				"marina_bay_sands": {
+					"bbox_norm": [
+						0.46,
+						0.26,
+						0.66,
+						0.53
+					],
+					"frame_percent": 0.96,
+					"unoccluded_frame_percent": 3.03,
+					"visible_fraction": 0.32
+				},
+				"merlion_landmark": {
+					"bbox_norm": [],
+					"frame_percent": 0.0,
+					"unoccluded_frame_percent": 0.0,
+					"visible_fraction": 0.0
+				},
+				"singapore_flyer": {
+					"bbox_norm": [
+						0.9,
+						0.29,
+						1.0,
+						0.42
+					],
+					"frame_percent": 0.15,
+					"unoccluded_frame_percent": 0.63,
+					"visible_fraction": 0.24
+				},
+				"supertree_grove": {
+					"bbox_norm": [
+						0.66,
+						0.28,
+						0.91,
+						0.44
+					],
+					"frame_percent": 0.84,
+					"unoccluded_frame_percent": 2.82,
+					"visible_fraction": 0.3
+				}
+			},
+			"name": "hawker_road_north",
+			"shares_percent": {
+				"background_city": 0.05,
+				"hawker": 7.36,
+				"hdb": 11.24,
+				"marina_bay_sands": 0.96,
+				"other": 32.51,
+				"person": 1.95,
+				"shophouse": 7.01,
+				"singapore_flyer": 0.15,
+				"sky": 18.12,
+				"supertree_grove": 0.84,
+				"tree": 6.74,
+				"vehicle": 13.07
+			}
+		}
+	]
+}

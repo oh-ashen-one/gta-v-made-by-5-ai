@@ -50,6 +50,8 @@ static func spin_part(node: Node3D, owner_body: Node3D, world_axis: Vector3, ang
 		return
 	node.rotate_object_local(axis_local.normalized(), angle)
 
+static var _tint_cache := {}
+
 ## Recolor a provider asset so a shared mesh can stand in for several vehicles.
 static func tint(root: Node, color: Color) -> void:
 	if root == null:
@@ -63,11 +65,17 @@ static func tint(root: Node, color: Color) -> void:
 			for i in surface:
 				var mat: Material = mesh.surface_get_material(i)
 				if mat is StandardMaterial3D:
-					var copy: StandardMaterial3D = (mat as StandardMaterial3D).duplicate()
-					copy.albedo_color = copy.albedo_color.lerp(color, 0.55)
-					# Preserve provider PBR response; fabric and plaster must not
-					# inherit car paint merely because this helper tints them.
-					copy.metallic = mat.metallic
-					copy.roughness = mat.roughness
+					# One shared tinted copy per (material, colour): identical
+					# frontages can then be merged into one draw (wave 5).
+					var key := "%d|%s" % [mat.get_instance_id(), color.to_html()]
+					var copy: StandardMaterial3D = _tint_cache.get(key)
+					if copy == null:
+						copy = (mat as StandardMaterial3D).duplicate()
+						copy.albedo_color = copy.albedo_color.lerp(color, 0.55)
+						# Preserve provider PBR response; fabric and plaster must not
+						# inherit car paint merely because this helper tints them.
+						copy.metallic = mat.metallic
+						copy.roughness = mat.roughness
+						_tint_cache[key] = copy
 					child.set_surface_override_material(i, copy)
 		tint(child, color)

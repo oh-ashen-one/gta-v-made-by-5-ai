@@ -85,6 +85,7 @@ func build(seed_value: int = 20261021) -> void:
 	_kerb_markings()
 	_scatter_props()
 	_landscape()
+	_batch_static_primitives()
 
 # ---------------------------------------------------------------- environment
 func _environment() -> void:
@@ -1151,6 +1152,109 @@ func _kerb_markings() -> void:
 	_marking_batch(yellow, Palette.mat(Color(0.92, 0.72, 0.16), 0.72))
 	_marking_batch(white, Palette.mat(Color(0.90, 0.90, 0.86), 0.75))
 
+## Static primitive batching (wave 5, PERF). The builder emits ~7,900 plain
+## box/cylinder/sphere MeshInstance3D nodes with ~5,000 one-off materials; each is
+## its own draw (and shadow/depth draw). After the district is complete, identical
+## primitives with equivalent opaque materials are merged per 160 m cell into
+## MultiMeshes. World-triplanar and per-face facade mapping are position/face
+## based, so the merged geometry samples the same textures. Grouped, scripted,
+## metadata-bearing (signal lamps), transparent or range-limited meshes stay as
+## they are; collision bodies are untouched.
+func _batch_static_primitives() -> void:
+	if "--no-static-batching" in OS.get_cmdline_user_args():
+		print("[world] static primitive batching disabled for A/B capture")
+		return
+	var groups := {}
+	var originals: Array[MeshInstance3D] = []
+	var stack: Array[Node] = [_world_root]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		for child in node.get_children():
+			stack.append(child)
+		if not node is MeshInstance3D: continue
+		var mi := node as MeshInstance3D
+		if mi.mesh == null or mi.get_child_count() > 0 or not mi.get_groups().is_empty() or not mi.get_meta_list().is_empty() or mi.get_script() != null: continue
+		if not mi.visible or mi.visibility_range_end > 0.0 or mi.skin != null: continue
+		var mat := mi.material_override as StandardMaterial3D
+		var mesh_key := ""
+		var mat_key := ""
+		var unit_scale := Vector3.ONE
+		var batch_mesh: Mesh = mi.mesh
+		var source := ""
+		if mi.mesh is ArrayMesh:
+			# Repeated imported props (trees, ferns, planters, condensers, lamps,
+			# railings, side skyline) keep their own surface materials; tinted
+			# single-surface modules (shophouses) merge per shared tint.
+			if mat != null: continue
+			mesh_key = "mesh#%d" % mi.mesh.get_instance_id()
+			mat_key = "surfaces"
+			if mi.mesh.get_surface_count() == 1 and mi.get_surface_override_material(0) is StandardMaterial3D:
+				mat = mi.get_surface_override_material(0) as StandardMaterial3D
+				if mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED: continue
+				mat_key = "tint#%d" % mat.get_instance_id()
+			elif not _imported_batchable(mi):
+				continue
+			source = _scene_source(mi)
+		elif mat == null or mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+			continue
+		elif mi.mesh is BoxMesh:
+			var bm := mi.mesh as BoxMesh
+			if bm.subdivide_width != 0 or bm.subdivide_height != 0 or bm.subdivide_depth != 0: continue
+			mesh_key = "box"
+			unit_scale = bm.size
+			batch_mesh = null
+		elif mi.mesh is CylinderMesh:
+			var cm := mi.mesh as CylinderMesh
+			mesh_key = "cyl|%.3f|%.3f|%.3f|%d|%d|%s|%s" % [cm.top_radius, cm.bottom_radius, cm.height, cm.radial_segments, cm.rings, cm.cap_top, cm.cap_bottom]
+		elif mi.mesh is SphereMesh:
+			var sm := mi.mesh as SphereMesh
+			mesh_key = "sph|%.3f|%.3f|%d|%d|%s" % [sm.radius, sm.height, sm.radial_segments, sm.rings, sm.is_hemisphere]
+		else:
+			continue
+		if mat_key == "":
+			mat_key = ("obj#%d" % mat.get_instance_id()) if (mat.albedo_texture != null or mat.normal_texture != null or mat.roughness_texture != null) else \
+				"c|%s|%.3f|%.3f|%.3f|%s|%s|%.3f|%d|%d" % [mat.albedo_color, mat.roughness, mat.metallic, mat.metallic_specular, mat.emission_enabled, mat.emission, mat.emission_energy_multiplier, mat.cull_mode, mat.shading_mode]
+		var xform := mi.transform
+		var parent := mi.get_parent()
+		while parent != _world_root and parent is Node3D:
+			xform = (parent as Node3D).transform * xform
+			parent = parent.get_parent()
+		if parent != _world_root: continue
+		var cell := Vector2i(floori(xform.origin.x / 160.0), floori(xform.origin.z / 160.0))
+		var key := "%s#%s#%d#%s" % [mesh_key, mat_key, mi.cast_shadow, cell]
+		if not groups.has(key):
+			groups[key] = {"mesh": batch_mesh, "material": mat, "shadow": mi.cast_shadow, "xforms": [], "nodes": [], "source": source}
+		groups[key]["xforms"].append(Transform3D(xform.basis * Basis.from_scale(unit_scale), xform.origin) if mesh_key == "box" else xform)
+		groups[key]["nodes"].append(mi)
+	var unit_box := BoxMesh.new()
+	unit_box.size = Vector3.ONE
+	var batches := 0
+	for key in groups:
+		var g: Dictionary = groups[key]
+		# Imported props only merge when repeated; one-off landmarks stay nodes.
+		if String(key).begins_with("mesh#") and (g["xforms"] as Array).size() < 4:
+			continue
+		originals.append_array(g["nodes"])
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = g["mesh"] if g["mesh"] != null else unit_box
+		var xforms: Array = g["xforms"]
+		mm.instance_count = xforms.size()
+		for i in xforms.size():
+			mm.set_instance_transform(i, xforms[i])
+		var mmi := MultiMeshInstance3D.new()
+		mmi.name = "StaticBatch_%s_%d" % [g["source"], batches]
+		mmi.multimesh = mm
+		mmi.material_override = g["material"]
+		mmi.cast_shadow = g["shadow"]
+		_probe_copy(mmi, xforms)
+		_world_root.add_child(mmi)
+		batches += 1
+	for mi in originals:
+		mi.get_parent().remove_child(mi)
+		mi.free()
+	print("[world] static primitive batching: ", originals.size(), " meshes -> ", batches, " multimesh draws")
+
 ## A flat paint stripe: size.x across the road, size.z along it.
 func _marking(axis: int, lateral: float, along: float, size: Vector3) -> Transform3D:
 	var basis := Basis.from_scale(Vector3(size.x, 0.02, size.z)) if axis == 0 else Basis.from_scale(Vector3(size.z, 0.02, size.x))
@@ -1167,10 +1271,37 @@ func _marking_batch(transforms: Array[Transform3D], material: Material) -> void:
 	for i in transforms.size():
 		mm.set_instance_transform(i, transforms[i])
 	var instance := MultiMeshInstance3D.new()
+	instance.name = "StaticBatchMarkings"
 	instance.multimesh = mm
 	instance.material_override = material
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_probe_copy(instance, transforms)
 	_world_root.add_child(instance)
+
+## Opaque or alpha-tested imported surfaces only; blended surfaces need per-node
+## sorting and stay as they are.
+func _imported_batchable(mi: MeshInstance3D) -> bool:
+	for i in mi.get_surface_override_material_count():
+		if mi.get_surface_override_material(i) != null: return false
+	for i in mi.mesh.get_surface_count():
+		var m := mi.mesh.surface_get_material(i)
+		if m is BaseMaterial3D and (m as BaseMaterial3D).transparency in [BaseMaterial3D.TRANSPARENCY_ALPHA, BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS]:
+			return false
+		if m != null and not m is BaseMaterial3D: return false
+	return true
+
+func _scene_source(node: Node) -> String:
+	var n := node
+	while n != null and n != _world_root:
+		if String(n.scene_file_path) != "": return String(n.scene_file_path).get_file().get_basename()
+		n = n.get_parent()
+	return "prop"
+
+## Headless (dummy renderer) MultiMeshes do not retain instance transforms, so
+## the sightline probe gets its own copy to verify batched geometry.
+func _probe_copy(instance: MultiMeshInstance3D, transforms: Array) -> void:
+	if "--sightline-probe" in OS.get_cmdline_user_args():
+		instance.set_meta("probe_xforms", transforms.duplicate())
 
 # ------------------------------------------------------------------- props
 func _scatter_props() -> void:

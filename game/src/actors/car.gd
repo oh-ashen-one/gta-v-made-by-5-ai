@@ -265,15 +265,15 @@ func _physics_process(delta: float) -> void:
 		_player_control(delta)
 	elif has_ai:
 		if global_position.distance_squared_to(Game.player_position) > SIM_NEAR * SIM_NEAR:
+			# Steering/speed decisions every SIM_FAR_TICKS ticks; motion every tick
+			# (cheap direct integration) so distant traffic does not judder.
 			_sim_accum += delta
 			_sim_slot = (_sim_slot + 1) % SIM_FAR_TICKS
-			if _sim_slot != 0:
-				return
-			var step := _sim_accum
-			_sim_accum = 0.0
-			_ai_control(step)
-			global_position += Vector3(velocity.x, 0.0, velocity.z) * step
-			_spin_wheels(step)
+			if _sim_slot == 0:
+				_ai_control(_sim_accum)
+				_sim_accum = 0.0
+			global_position += Vector3(velocity.x, 0.0, velocity.z) * delta
+			_spin_wheels(delta)
 			return
 		_sim_accum = 0.0
 		_ai_control(delta)
