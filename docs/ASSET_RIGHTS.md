@@ -90,6 +90,7 @@ At the post-soak visual checkpoint, four original-code hashes (world builder, pa
 All additions are original code written for this project (MIT); no imported meshes, textures or audio, and no paid or external generation.
 
 - `game/assets/authored/shaders/bay_water.gdshader`, `water_jet.gdshader`, `bay_boat.gdshader` — new shaders (bay_water rewritten in round 2: procedural noise wave field, whitecaps, sparkle; still fully original code).
+- `game/assets/authored/shaders/timber_deck.gdshader` — new in round 3: procedural weathered-hardwood boardwalk for the bay jetties and pontoon (world-space planks, gaps, grain, bleaching, wet staining). Original code; no textures, no third-party or Rockstar material. bay_water round 3 adds event-driven foam (Kelvin wakes, stern trails, quay surges, jet boil) — also original code.
 - `game/src/world/bay.gd`, `game/src/world/boat_meshes.gd` — runtime-generated sea plane, seawalls, pier base, pontoon, boats (bumboat, river cruiser, launch), Merlion jet tube and splash particles.
 - `merlion_landmark.glb` is unchanged on disk; its opaque `merlion_water_spray` mesh is hidden at runtime and replaced by the translucent jet above.
 - GTA V reference images (`loop/references/`, git-ignored) were used only to judge quality; nothing from them is in the game or the repository.

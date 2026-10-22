@@ -289,6 +289,13 @@ void fragment() {
 	shore_foam += smoothstep(4.5 + foot * 1.5, 0.5, shore) * smoothstep(0.58, 0.80, foam_n2 * 0.6 + foam_n * 0.6) * 0.30 * (0.4 + surge);
 	float wake_foam = clamp(trail_foam + churn * 0.9 * smoothstep(0.22, 0.55, wake_break), 0.0, 1.0);
 	float impact_foam = impact * smoothstep(0.25, 0.6, foam_n2 + 0.25 * sin(t * 9.0 + dj * 4.0));
+	// aerated boil around the plunge point, then foam rings pushed outward
+	// that break up and thin as they spread
+	float boil = smoothstep(7.5, 2.0, dj) * smoothstep(0.40, 0.68, foam_n2 * 0.7 + foam_fine * 0.5 + 0.1 * sin(t * 4.0 - dj));
+	float ring_ph = fract((dj - t * 1.6) / 2.8);
+	float rings = smoothstep(0.22, 0.0, abs(ring_ph - 0.5)) * exp(-dj * 0.16) * smoothstep(2.0, 4.0, dj)
+		* smoothstep(0.32, 0.62, wake_break);
+	impact_foam = clamp(impact_foam + boil * 0.85 + rings * 0.7, 0.0, 1.0);
 	// scattered whitecaps on the sharpest crests of gusty patches, streaked
 	// down-wind; open water outside the bay gets more of them
 	vec2 wd = normalize(wind_dir);

@@ -176,6 +176,7 @@ func _build_edges(merlion_pos: Vector3) -> void:
 	var pd := _pontoon_rect.w - _pontoon_rect.y
 	var deck := _edge_box(Vector3(pw, 0.22, pd), pc + Vector3(0.0, 0.52, 0.0), Color(0.46, 0.38, 0.30), 0.85, "pavers")
 	deck.layers = 1
+	deck.material_override = timber_deck_material(0.0, Vector4(_pontoon_rect.x, _pontoon_rect.y, _pontoon_rect.z, _pontoon_rect.w))
 	_edge_box(Vector3(pw - 0.4, 0.6, pd - 0.5), pc + Vector3(0.0, 0.16, 0.0), Color(0.10, 0.11, 0.12), 0.5, "")
 	for i: int in 5:
 		var bx := _pontoon_rect.x + 1.0 + i * (pw - 2.0) / 4.0
@@ -216,7 +217,7 @@ func _build_edges(merlion_pos: Vector3) -> void:
 ## boardwalk deck, edge kerbs and a steel guard rail on posts, so from the air
 ## they read as viewing jetties. Visual only: collision stays the road's.
 func _build_jetty_decks() -> void:
-	var deck_mat := Palette.mat_textured(Color(0.74, 0.66, 0.55), "pavers", Vector3.ONE, 0.88)
+	var deck_mat := timber_deck_material(0.0, Vector4.ZERO)
 	var kerb_mat := Palette.mat_textured(Color(0.66, 0.64, 0.60), "concrete", Vector3.ONE, 0.85)
 	var rail_mat := Palette.mat(Color(0.30, 0.32, 0.33), 0.45, 0.6)
 	var post := BoxMesh.new()
@@ -250,6 +251,15 @@ func _build_jetty_decks() -> void:
 	mmi.name = "JettyRailPosts"
 	mmi.multimesh = mm
 	add_child(mmi)
+
+## Weathered hardwood boardwalk (round 3: the critic read the decks as
+## "untextured flat brown slabs").
+static func timber_deck_material(axis: float, rect: Vector4) -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = load("res://assets/authored/shaders/timber_deck.gdshader")
+	m.set_shader_parameter("plank_axis", axis)
+	m.set_shader_parameter("deck_rect", rect)
+	return m
 
 func _jetty_box(size: Vector3, pos: Vector3, m: Material) -> void:
 	var mi := MeshInstance3D.new()
