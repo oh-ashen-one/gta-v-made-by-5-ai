@@ -1,11 +1,11 @@
 {
-  "started_utc": "2026-10-22T01:51:25.378607+00:00",
-  "finished_utc": "2026-10-22T01:51:41.434711+00:00",
+  "started_utc": "2026-10-22T02:17:24.432203+00:00",
+  "finished_utc": "2026-10-22T02:17:40.422258+00:00",
   "source": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/app/Orchard Reach.app",
   "destination": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/signed/Orchard Reach.app",
   "archive": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/OrchardReach-wave-05-final-signed.zip",
-  "archive_sha256": "a493083299b1f592c0f7e113be94fe9d49399a3672d81eb61dbd6d654f2a2079",
-  "archive_bytes": 394530386,
+  "archive_sha256": "3ae8f8c346720d651fb84f6680f9210eb5c99de4f1726c452fa9de104e493b22",
+  "archive_bytes": 394530621,
   "before": {
     "Contents/Info.plist": {
       "sha256": "861e675bc8e821a04b3d0db2e315559badb81d4a3aa864c1d6c89fed3938115d",
@@ -20,8 +20,8 @@
       "bytes": 169949840
     },
     "Contents/Resources/Orchard Reach.pck": {
-      "sha256": "ab713a8d8a7a0687022648a7eb78d16e5d2d5982efa32d9a328db4853d8b4ca6",
-      "bytes": 343344336
+      "sha256": "54373c6d736c4328138da91092ceba89de075e0e75499af0ca313f5f23b97c05",
+      "bytes": 343344608
     },
     "Contents/Resources/icon.icns": {
       "sha256": "779ff524928785811d6d4c61f47a26491160b1092db9b610e85fcdfd9b2d2b2a",
@@ -42,16 +42,16 @@
       "bytes": 9
     },
     "Contents/_CodeSignature/CodeResources": {
-      "sha256": "a21fcaf07ba49bc8dceaea9ac9cb3a08295e0bc33efdb1a96b7e03e3471710aa",
+      "sha256": "71bb447e30be86ccdca1980699414146eab8ffc29a85f1eefc07ca96475f13e4",
       "bytes": 2928
     },
     "Contents/MacOS/Orchard Reach": {
-      "sha256": "8bcab7662ccc07941d9c89be7b7a6bf9eaa3469f38e80ed3c3f0b0b97c2dde03",
+      "sha256": "80bb3701b04ddeca53c88e91afa25b7708d246885bd64e18d9e2ed498fe54d68",
       "bytes": 169435792
     },
     "Contents/Resources/Orchard Reach.pck": {
-      "sha256": "ab713a8d8a7a0687022648a7eb78d16e5d2d5982efa32d9a328db4853d8b4ca6",
-      "bytes": 343344336
+      "sha256": "54373c6d736c4328138da91092ceba89de075e0e75499af0ca313f5f23b97c05",
+      "bytes": 343344608
     },
     "Contents/Resources/icon.icns": {
       "sha256": "779ff524928785811d6d4c61f47a26491160b1092db9b610e85fcdfd9b2d2b2a",
