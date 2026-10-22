@@ -40,7 +40,7 @@ These folders contain the first and only rendered frames of wave 5. Shared rende
 
 ## What the builder looked at
 
-The builder viewed these six frames itself. Any other frame has not been reviewed by the builder. A fresh-context critic review of the stills is in `../critic_review_5_rendered.md` if present.
+The builder viewed these six frames itself. Any other frame has not been reviewed by the builder. A fresh-context Opus critic reviewed 21 of these stills, with pixel and luminance probes, in [`../critic_review_5_rendered.md`](../critic_review_5_rendered.md). It found the opening reads as Singapore, scored the concepts 4/10 on foot, 2/10 driving and 3/10 helicopter, and reported the minimap and ammo-contrast defects that `98b41b2` addresses.
 
 - `candidate-gameplay/photo_01_gameplay_opening_start.png`, the opening frame. Visible:
   - The player on a heritage shophouse five-foot way: green shutters and colonnade.

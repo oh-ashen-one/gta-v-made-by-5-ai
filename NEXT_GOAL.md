@@ -11,7 +11,7 @@ If the owner continues the project later, these are the highest-value open items
    - Supertrees overlapping MBS;
    - the dark void deck;
    - the Flyer lost from `photo_06_aerial_district`;
-   - the 1.06 s render-side hitch on entering the market.
+   - the 1.06 s render-side hitch on entering the market. One lead, untested: `game/export_presets.cfg` sets no shader-baker option. Since Godot 4.5, exports can precompile shaders, which could remove first-use pipeline compilation in the packaged build.
 3. Re-shoot the HUD frames the critic named (`09_aerial_view`, `11_delivery`, and the waterfront and grove gameplay views) to confirm the `98b41b2` minimap and ammo fixes, unless the release report already links them.
 4. Measure rendered frame time on an exclusive GPU slot. Wave 5's rendered route (p95 11.65 ms) shared the GPU with a foreign Blender render. Also A/B the batching with `--no-static-batching`.
 5. Raise landmark and material fidelity (ART-01..08); the landmarks are original low-poly forms.
