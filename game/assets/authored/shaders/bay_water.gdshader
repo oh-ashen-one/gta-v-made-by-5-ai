@@ -312,7 +312,8 @@ void fragment() {
 	// ---------------- jet impact: rings + splash foam
 	float dj = length(p - jet_impact.xz);
 	float impact = smoothstep(4.2, 0.6, dj);
-	float ripples = sin(dj * 3.4 - t * 6.0) * exp(-dj * 0.28) * smoothstep(0.3, 1.2, dj);
+	// rings broken by the chop so they never read as a perfect target
+	float ripples = sin(dj * 3.4 - t * 6.0 + vnoise(p * 0.5) * 2.5) * exp(-dj * 0.28) * smoothstep(0.3, 1.2, dj) * (0.35 + 0.9 * vnoise(p * 0.7 + vec2(t * 0.3, 0.0)));
 
 	// ---------------- normals
 	// isotropic footprint (geometric mean of the two screen axes) so grazing
@@ -419,6 +420,20 @@ void fragment() {
 	body *= mix(0.92, 1.08, gust);
 	// thin lacy foam residue: a pale aqua lift, not grey scum
 	body += vec3(0.11, 0.19, 0.19) * residue;
+	// Round 4 (critic: "opaque uniform teal, no depth or seabed"): a rock-
+	// armour toe along every quay and pier shows through the shallows,
+	// stones fading out as the bottom drops away from the wall.
+	if (shore < 8.0) {
+		float depth_m = mix(0.25, 5.0, smoothstep(0.0, 7.0, shore + (foam_n - 0.5) * 2.0));
+		vec2 rp = p + g * 0.6;
+		float stones = cell_edge(rp * 0.85);
+		float pebbles = cell_edge(rp * 2.6 + 5.0);
+		vec3 bed = mix(vec3(0.07, 0.07, 0.055), vec3(0.30, 0.29, 0.22), smoothstep(0.02, 0.22, stones));
+		bed *= mix(0.75, 1.1, smoothstep(0.0, 0.2, pebbles)) * mix(0.8, 1.15, vnoise(rp * 0.3));
+		bed *= vec3(0.55, 0.88, 0.82);
+		float vis = exp(-depth_m * 0.75) * smoothstep(8.0, 4.0, shore);
+		body = mix(body, bed, vis * 0.9);
+	}
 
 	v_foam = foam;
 	v_glint_r = clamp(glint_roughness * 0.6 + lost * 0.9, 0.08, 0.45);
