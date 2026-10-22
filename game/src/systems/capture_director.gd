@@ -225,10 +225,29 @@ func _snapshot(elapsed: float) -> Dictionary:
 		"wanted": Game.wanted_level, "deaths": Game.death_count - _initial_deaths,
 		"car_distance_m": mission.car_driven_distance, "flight_distance_m": mission.flight_distance,
 		"vehicle_health": actor.get("health") if actor != player else null, "heading": actor.rotation.y,
+		"police": _police_sample(pos),
 		"engine_monitors": _performance_snapshot(),
 		"render_texture_pixels": [get_viewport().get_texture().get_width(), get_viewport().get_texture().get_height()],
 		"msaa_3d": ProjectSettings.get_setting("rendering/anti_aliasing/quality/msaa_3d"),
 		"taa": ProjectSettings.get_setting("rendering/anti_aliasing/quality/use_taa")}
+
+## Pursuit telemetry (wave 5): responder count, nearest responder distance and
+## how many responders moved under 0.5 m since the previous sample (stuck).
+var _police_last: Dictionary = {}
+func _police_sample(pos: Vector3) -> Dictionary:
+	var nearest := INF
+	var count := 0
+	var still := 0
+	var seen := {}
+	for pc in traffic.police_cars:
+		if not is_instance_valid(pc) or pc.disabled: continue
+		count += 1
+		nearest = minf(nearest, pc.global_position.distance_to(pos))
+		var id := pc.get_instance_id()
+		seen[id] = pc.global_position
+		if _police_last.has(id) and (pc.global_position as Vector3).distance_to(_police_last[id]) < 0.5: still += 1
+	_police_last = seen
+	return {"cars": count, "nearest_m": snappedf(nearest, 0.1) if count > 0 else null, "stationary": still}
 
 func _log(message: String) -> void:
 	if _finished: return
