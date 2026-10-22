@@ -22,3 +22,8 @@ Recorded 2026-10-22 01:34 UTC by the wave-5 builder (Opus 5.5). The builder has 
 - Their 4-hour leases end at about 03:35–03:37 UTC. If the loop does not refill them, the gated runner should get roughly 15 minutes of capacity inside the final window.
 - The release candidate is already built and verified headless (`HANDOFF.md`). Only the rendered evidence is waiting on capacity.
 
+## Update, 02:22 UTC
+
+- The loop relaunched `fable-veyr-dragon-20261021` at 02:11:27 UTC (Blender 33509, lease 33493, 4-hour hold until about 06:11). The count is back to four foreign renderers.
+- When the three knight leases end at about 03:35–03:37, this session alone (count 1) would leave room for one Godot render under the cap of 2, unless the loop refills those slots too.
+
