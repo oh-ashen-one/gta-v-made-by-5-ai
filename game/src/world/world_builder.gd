@@ -18,7 +18,9 @@ const KERB_PARK_OFFSET := ROAD_HALF - 1.35
 ## Opening composition (WORLD-03 opening-view acceptance, wave 5).
 const OPENING_ROW_X := -180.0
 const PLAYER_START := Vector3(-171.0, 0.45, -22.0)
-const PLAYER_START_YAW_DEG := -12.0
+const PLAYER_START_YAW_DEG := -8.0
+## Slightly raised opening look so the SkyPark clears the objective card.
+const PLAYER_START_PITCH := -0.02
 const GROVE_POS := Vector3(-50.0, 0.16, -240.0)
 const MBS_POS := Vector3(-88.0, 0.0, -705.0)
 const MBS_SCALE := Vector3(2.2, 1.75, 1.6)
@@ -1174,7 +1176,7 @@ func _batch_static_primitives() -> void:
 		if not node is MeshInstance3D: continue
 		var mi := node as MeshInstance3D
 		if mi.mesh == null or mi.get_child_count() > 0 or not mi.get_groups().is_empty() or not mi.get_meta_list().is_empty() or mi.get_script() != null: continue
-		if not mi.visible or mi.visibility_range_end > 0.0 or mi.skin != null: continue
+		if not mi.is_visible_in_tree() or mi.visibility_range_end > 0.0 or mi.skin != null: continue
 		var mat := mi.material_override as StandardMaterial3D
 		var mesh_key := ""
 		var mat_key := ""
@@ -1220,6 +1222,12 @@ func _batch_static_primitives() -> void:
 			xform = (parent as Node3D).transform * xform
 			parent = parent.get_parent()
 		if parent != _world_root: continue
+		# MultiMesh normals use the instance basis without an inverse-transpose,
+		# so strongly non-uniform scale on curved/slanted meshes stays unbatched
+		# (unit boxes are exact: their faces stay axis-aligned; critic, wave 5).
+		if mesh_key != "box":
+			var sc := xform.basis.get_scale()
+			if maxf(sc.x, maxf(sc.y, sc.z)) > minf(sc.x, minf(sc.y, sc.z)) * 1.10: continue
 		var cell := Vector2i(floori(xform.origin.x / 160.0), floori(xform.origin.z / 160.0))
 		var key := "%s#%s#%d#%s" % [mesh_key, mat_key, mi.cast_shadow, cell]
 		if not groups.has(key):

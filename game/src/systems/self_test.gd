@@ -580,6 +580,13 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 	for node in world.traffic_nodes:
 		if Vector2(node.x - waypoint.x, node.z - waypoint.z).length() < 0.5: on_graph = true
 	_check("police pursuit routes along junctions around a block", on_graph and waypoint.distance_to(goal) > 20.0, str(waypoint))
+	# Leaving a junction must not flip the target back to it (critic finding).
+	chaser.set_meta("pursuit_wp", -1)
+	chaser.global_position = Vector3(-160.0, 0.3, -166.0)
+	var first := traffic._pursuit_waypoint(chaser, goal)
+	chaser.global_position = Vector3(-160.0, 0.3, -146.0)
+	var second := traffic._pursuit_waypoint(chaser, goal)
+	_check("pursuit commits to its next junction after leaving one", first.distance_to(second) < 0.5 and Vector2(first.x + 160.0, first.z + 166.0).length() > 30.0, "%s then %s" % [first, second])
 	chaser.queue_free()
 	var parked_at := heli.global_position
 	heli.global_position = Vector3(0.0, -6.0, -500.0)

@@ -371,23 +371,36 @@ func _pursuit_waypoint(pc: Car, goal: Vector3) -> Vector3:
 		var q := PhysicsRayQueryParameters3D.create(here + Vector3.UP, goal + Vector3.UP)
 		q.collision_mask = 1
 		if space == null or space.intersect_ray(q).is_empty():
+			pc.set_meta("pursuit_wp", -1)
 			return goal
-	var a := _nearest_node(here)
+	# Commit to one junction at a time (a fresh nearest-node choice every frame
+	# flipped between two junctions; critic, wave 5).
 	var b := _nearest_node(goal)
+	var wp := int(pc.get_meta("pursuit_wp", -1))
+	if wp >= 0 and int(pc.get_meta("pursuit_goal", -1)) == b:
+		if Vector2(nodes[wp].x - here.x, nodes[wp].z - here.z).length() > 10.0:
+			return nodes[wp]
+		wp = _grid_step(wp, b)
+	else:
+		var a := _nearest_node(here)
+		wp = a if (a == b or Vector2(nodes[a].x - here.x, nodes[a].z - here.z).length() > 10.0) else _grid_step(a, b)
+	pc.set_meta("pursuit_wp", wp)
+	pc.set_meta("pursuit_goal", b)
+	# At the goal's own junction with no clear line, hold the junction rather
+	# than drive through the block.
+	return nodes[wp]
+
+## One Manhattan step on the 5x5 junction grid from node a toward node b.
+func _grid_step(a: int, b: int) -> int:
 	if a == b:
-		return goal
-	if Vector2(nodes[a].x - here.x, nodes[a].z - here.z).length() > 10.0:
-		return nodes[a]
+		return a
 	var ra := a / 5
 	var ca := a % 5
 	var rb := b / 5
 	var cb := b % 5
-	var nxt := a
 	if absi(cb - ca) >= absi(rb - ra):
-		nxt = ra * 5 + ca + signi(cb - ca)
-	else:
-		nxt = (ra + signi(rb - ra)) * 5 + ca
-	return nodes[nxt]
+		return ra * 5 + ca + signi(cb - ca)
+	return (ra + signi(rb - ra)) * 5 + ca
 
 func _pick_next_edge(car: Car) -> Vector3:
 	var nxt = car.get_meta("next_node", null)

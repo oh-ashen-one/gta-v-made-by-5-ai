@@ -88,6 +88,7 @@ func _run_gameplay() -> void:
 	for spot in spots:
 		_active_view = spot
 		player.respawn_at(spot["pos"], spot["yaw"])
+		player.pitch = WorldBuilder.PLAYER_START_PITCH if spot["name"] == "opening_start" else -0.12
 		# Let the AI settle and traffic roll into frame before the shutter.
 		await get_tree().create_timer(2.4).timeout
 		# respawn_at publishes a checkpoint toast; it is not part of the look.

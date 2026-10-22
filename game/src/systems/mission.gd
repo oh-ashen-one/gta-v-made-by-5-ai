@@ -255,6 +255,7 @@ func restart() -> void:
 	_hostiles.clear()
 	_spawn_hostiles()
 	player.respawn_at(world.locations["player_start"], deg_to_rad(WorldBuilder.PLAYER_START_YAW_DEG))
+	player.pitch = WorldBuilder.PLAYER_START_PITCH
 	Game.health = Game.MAX_HEALTH
 	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
 	Game.wanted_heat = 0.0

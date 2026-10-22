@@ -284,6 +284,7 @@ func _physics_process(delta: float) -> void:
 		if is_zero_approx(_forward) and is_on_floor():
 			velocity = Vector3.ZERO
 			# Parked and settled: sleep until interact() or a pool wakes it.
+			_update_driver_bust()
 			set_physics_process(false)
 			return
 	if not is_on_floor():
@@ -434,7 +435,8 @@ func _ai_control(delta: float) -> void:
 		_forward = move_toward(_forward, speed_limit, (BRAKE if speed_limit < _forward else accel) * delta)
 		_stuck_check_time += delta
 		if _stuck_check_time >= 2.0:
-			if speed_limit > 3.0 and global_position.distance_to(_stuck_check_pos) < 0.5:
+			# Back out only when the lane behind is clear (critic, wave 5).
+			if speed_limit > 3.0 and global_position.distance_to(_stuck_check_pos) < 0.5 and not _blocker_behind():
 				_reverse_time = 1.6
 			_stuck_check_pos = global_position
 			_stuck_check_time = 0.0
@@ -472,6 +474,21 @@ func blocker_ahead() -> bool:
 		var ahead2 := d2.dot(fwd)
 		if ahead2 > 0.3 and ahead2 < 7.0 and absf(d2.dot(left)) < 1.5:
 			return true
+	return false
+
+func _blocker_behind() -> bool:
+	var back := global_transform.basis.z
+	back.y = 0.0
+	back = back.normalized()
+	var left := Vector3.UP.cross(back)
+	for group in ["vehicles", "actors"]:
+		for other in get_tree().get_nodes_in_group(group):
+			if other == self or not (other as Node3D).visible: continue
+			var d: Vector3 = (other as Node3D).global_position - global_position
+			if absf(d.x) > 9.0 or absf(d.z) > 9.0: continue
+			var behind := d.dot(back)
+			if behind > 0.3 and behind < 8.5 and absf(d.dot(left)) < 1.9:
+				return true
 	return false
 
 func speed_kmh() -> float:
@@ -526,6 +543,9 @@ func force_exit() -> void:
 			(driver_player as Player).busy = false
 			(driver_player as Player).visible = true
 	driver_player = null
+	# Respawn, restart and load all leave through here (critic, wave 5): the
+	# car may sleep next tick, so the seated figure must be cleared now.
+	_update_driver_bust()
 
 func exit_vehicle(player: Node) -> void:
 	if not driver_is_player:
@@ -711,7 +731,9 @@ func _build_articulated_wheels() -> void:
 			pivot.add_child(spin)
 			var wheel := MeshInstance3D.new()
 			wheel.mesh = mesh
-			wheel.scale = Vector3(1.0, r, r)
+			# 1.5 % proud of the measured baked tyre and slightly wider, so the
+			# spinning tread covers it instead of z-fighting (critic, wave 5).
+			wheel.scale = Vector3(1.04, r * 1.015, r * 1.015)
 			wheel.visibility_range_end = 140.0
 			spin.add_child(wheel)
 			_articulated.append({"pivot": pivot, "spin": spin, "front": front})

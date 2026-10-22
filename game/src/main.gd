@@ -43,6 +43,7 @@ func _ready() -> void:
 	# hawker hall, looking up the avenue to the bay (WORLD-03 opening view).
 	player.global_position = world.locations["player_start"]
 	player.yaw = deg_to_rad(WorldBuilder.PLAYER_START_YAW_DEG)
+	player.pitch = WorldBuilder.PLAYER_START_PITCH
 	player.rotation.y = player.yaw
 	Game.mark_safe_position(player.global_position, player.yaw)
 
