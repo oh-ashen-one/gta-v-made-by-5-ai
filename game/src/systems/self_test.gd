@@ -169,6 +169,7 @@ func run(main: Node) -> void:
 	await _ticks(20)
 	_check("a rammed car is shoved by the impact", shove_probe.global_position.distance_to(shove_from) > 1.0, "moved=%.2f" % shove_probe.global_position.distance_to(shove_from))
 	shove_probe.queue_free()
+	await _driving_feel_checks(main, car)
 
 	# Incoming weapon rays must hit the car body rather than its hidden occupant.
 	car._forward = 0.0
@@ -207,7 +208,9 @@ func run(main: Node) -> void:
 	await _ticks(45)
 	Input.action_release("move_forward")
 	_check("walking still works after vehicle death", player.global_position.distance_to(walk_start) > 1.0)
-	_check("on-foot gait: clip, playback rate and stride follow ground speed; feet carry contact shadows", _gait_matches_speed(player))
+	_check("on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows", _gait_matches_speed(player))
+	var jump_apex: float = pow(Player.JUMP_VELOCITY, 2.0) / (2.0 * 24.0)
+	_check("on-foot jump is a human hop (0.40-0.70 m rise, under 0.5 s airtime)", jump_apex > 0.4 and jump_apex < 0.7 and 2.0 * Player.JUMP_VELOCITY / 24.0 < 0.5, "apex=%.2f" % jump_apex)
 
 	Game.wanted_heat = 46.0
 	Game.set_wanted(2)
@@ -234,6 +237,7 @@ func run(main: Node) -> void:
 	_check("rotor spools up to a motion-blurred disc in flight", heli_fx["rotor_spin"] > 0.95 and heli_fx["disc_visible"] and not heli_fx["blades_visible"], str(heli_fx))
 	_check("flight chase camera trails behind and above the aircraft", heli_fx["camera_current"] and heli_fx["camera_distance"] > 8.0 and heli_fx["camera_distance"] < 26.0 and heli_fx["camera_behind"] and heli_fx["camera_height"] > 1.0, str(heli_fx))
 	_check("rotor downwash kicks up the ground near the pad", heli_fx["wash"] > 0.2 and heli_fx["wash_visible"], str(heli_fx))
+	_check("chase camera looks down on the rotor disc; aviation grounds are planted (wave P)", heli_fx["camera_height"] > 5.5 and world.find_child("AviationGrounds", true, false) != null, str(heli_fx))
 	heli.exit_vehicle(player)
 	_check("airborne helicopter rejects exit", player.current_vehicle == heli)
 	Game.simulation_paused = true
@@ -251,6 +255,7 @@ func run(main: Node) -> void:
 	Input.action_release("sprint")
 	await _ticks(20)
 	_check("controlled descent lands without disabling aircraft", heli.is_landed() and not heli.disabled, "position=%s velocity=%s health=%.1f floor=%s" % [heli.global_position, heli.velocity, heli.health, heli.is_on_floor()])
+	_check("ground cushion settles a full-descent landing gently (wave P)", heli.last_touchdown_speed < 1.6, "touchdown=%.2f m/s" % heli.last_touchdown_speed)
 	heli.exit_vehicle(player)
 	_check("landed helicopter exits to walking", player.current_vehicle == null and Game.mode == Game.MODE_FOOT)
 	await _waterfront_exit_check(player, heli)
@@ -546,8 +551,10 @@ func _weapon_input_checks(main: Node, player: Player) -> void:
 	_check("muzzle obstruction prevents damage through close cover", is_equal_approx(target.health, target_health))
 	cover.queue_free()
 	await _ticks(15)
+	var fx_before: Dictionary = CombatFx.stats.duplicate()
 	await _tap("fire")
 	_check("clearing muzzle obstruction permits target damage", target.health < target_health)
+	await _combat_fx_checks(player, fx_before)
 	if player._visual != null:
 		player._visual.set_paused(false)
 	Input.action_release("aim")
@@ -558,6 +565,25 @@ func _weapon_input_checks(main: Node, player: Player) -> void:
 	Game.wanted_heat = 0.0
 	Game.set_wanted(0)
 	await _ticks(3)
+
+## Combat piece: every shot shows a muzzle flash, tracer, impact and brass,
+## a hit target staggers, recoil recovers, and sustained fire stays bounded.
+func _combat_fx_checks(player: Player, before: Dictionary) -> void:
+	var st: Dictionary = CombatFx.stats
+	_check("shot produced muzzle flash, tracer, impact and ejected casing", st["muzzle"] > before["muzzle"] and st["tracer"] > before["tracer"] and st["impact"] > before["impact"] and st["casing"] > before["casing"], str(st))
+	_check("struck NPC staggers and flinches", st["flinch"] > before["flinch"])
+	var combat := player.get_node_or_null("PlayerCombat")
+	_check("player recoil layer present and kicked by the shot", combat != null and (absf(combat.cam_kick) > 0.0005 or absf(combat.cam_kick_v) > 0.01))
+	await _ticks(24)
+	_check("recoil recovers within ~0.4 s", combat != null and absf(combat.cam_kick) < 0.003 and absf(combat.gun_kick) < 0.05, "cam=%.4f gun=%.3f" % [combat.cam_kick if combat else -1.0, combat.gun_kick if combat else -1.0])
+	var fx := CombatFx.get_fx(get_tree())
+	for i in 150:
+		fx.shot(player.global_position + Vector3(0, 1.4, 0), Vector3.FORWARD, player.global_position + Vector3(0, 1.4, -12.0), true, Vector3.BACK, null, "pistol", true)
+	var live: Dictionary = fx.live_counts()
+	var bounded := true
+	for kind in CombatFx.MAX_PARTICLES:
+		if int(live[kind]) > int(CombatFx.MAX_PARTICLES[kind]): bounded = false
+	_check("sustained fire keeps effect pools bounded", bounded and int(live["casings"]) <= CombatFx.MAX_CASINGS, str(live))
 
 ## Wave-5 additions: kerbside parking geometry, parked-car sleep, road-graph
 ## pursuit, aircraft ditch recovery, landmark set and the outdoor opening.
@@ -739,6 +765,87 @@ func _skyline_checks(world: WorldBuilder) -> void:
 		lum[m.get_string(1)] = 0.2126 * m.get_string(2).to_float() + 0.7152 * m.get_string(3).to_float() + 0.0722 * m.get_string(4).to_float()
 	var gap := float(lum.get("horizon_col", 0.0)) - float(lum.get("haze_col", 1.0))
 	_check("skyline: aerial haze is darker than the horizon sky so far towers keep silhouettes", lum.size() == 2 and gap >= 0.10 and int(sk.get("atmosphere", 0)) >= 2, "gap %.2f %s" % [gap, str(lum)])
+
+## driving-p: handbrake rotation, momentum exchange in a rear-end crash, a
+## wall rebound that keeps some speed, and visible damage. Disclosed fixture
+## moves on the open test road; the car is put back afterwards.
+func _driving_feel_checks(main: Node, car: Car) -> void:
+	var home := car.global_position
+	car.global_position = Vector3(0.0, 0.3, -300.0)
+	car.rotation = Vector3.ZERO
+	car.velocity = Vector3(0.0, 0.0, -18.0)
+	await _ticks(2)
+	var yaw0 := car.rotation.y
+	Input.action_press("jump")
+	Input.action_press("move_left")
+	var slide := 0.0
+	for i in 40:
+		await get_tree().physics_frame
+		slide = maxf(slide, car.drift_amount())
+	Input.action_release("jump")
+	Input.action_release("move_left")
+	var turned := absf(angle_difference(yaw0, car.rotation.y))
+	_check("handbrake turn swings the car round with the tail sliding", turned > 0.7 and slide > 0.2, "yaw %.2f rad slide %.2f" % [turned, slide])
+	# Rear-end a stationary car at ~65 km/h.
+	car.global_position = Vector3(0.0, 0.3, -300.0)
+	car.rotation = Vector3.ZERO
+	car.velocity = Vector3.ZERO
+	car._yaw_rate = 0.0
+	car._steer = 0.0
+	await _ticks(2)
+	var parked := Car.new()
+	parked.kind = "sedan"
+	main.add_child(parked)
+	parked.global_position = Vector3(0.0, 0.5, -314.0)
+	await _ticks(3)
+	var parked_from := parked.global_position
+	car.last_impact = {}
+	car.velocity = Vector3(0.0, 0.0, -18.0)
+	Input.action_press("move_forward")
+	for i in 60:
+		await get_tree().physics_frame
+		if not car.last_impact.is_empty(): break
+	Input.action_release("move_forward")
+	var hit := car.last_impact.duplicate()
+	await _ticks(30)
+	var kept := float(hit.get("speed_after", 0.0)) / maxf(0.1, float(hit.get("speed_before", 1.0)))
+	_check("rear-end crash shares momentum (our car keeps rolling, the struck car is shoved)", bool(hit.get("car", false)) and kept > 0.2 and kept < 0.75 and parked.global_position.distance_to(parked_from) > 2.0, "kept %.2f moved %.2f closing %.1f" % [kept, parked.global_position.distance_to(parked_from), float(hit.get("closing", 0.0))])
+	if car.damage != null and parked.damage != null:
+		_check("crash leaves dents on both cars and throws debris", car.damage.dent_count() > 0 and parked.damage.dent_count() > 0 and car.damage.debris_spawned > 0, "dents %d/%d debris %d" % [car.damage.dent_count(), parked.damage.dent_count(), car.damage.debris_spawned])
+	parked.queue_free()
+	# Wall: rebound with a little speed kept, never a dead stop and never through it.
+	var wall := StaticBody3D.new()
+	wall.collision_layer = 1
+	wall.collision_mask = 0
+	var wall_shape := CollisionShape3D.new()
+	var wall_box := BoxShape3D.new()
+	wall_box.size = Vector3(12.0, 3.0, 0.6)
+	wall_shape.shape = wall_box
+	wall.add_child(wall_shape)
+	main.add_child(wall)
+	wall.global_position = Vector3(0.0, 1.5, -320.0)
+	car.global_position = Vector3(0.0, 0.3, -306.0)
+	car.rotation = Vector3.ZERO
+	car._yaw_rate = 0.0
+	car.last_impact = {}
+	car._impact_cooldown = 0.0
+	await _ticks(2)
+	car.velocity = Vector3(0.0, 0.0, -16.0)
+	Input.action_press("move_forward")
+	for i in 60:
+		await get_tree().physics_frame
+		if not car.last_impact.is_empty(): break
+	Input.action_release("move_forward")
+	var wall_hit := car.last_impact.duplicate()
+	await _ticks(4)
+	_check("wall impact rebounds instead of stopping dead", not bool(wall_hit.get("car", true)) and float(wall_hit.get("speed_after", 0.0)) > 1.5 and car.velocity.z > 0.0 and car.global_position.z > -320.0, "after %.1f m/s vz %.1f" % [float(wall_hit.get("speed_after", 0.0)), car.velocity.z])
+	wall.queue_free()
+	car.velocity = Vector3.ZERO
+	car._forward = 0.0
+	car._yaw_rate = 0.0
+	car.global_position = home
+	car.rotation = Vector3.ZERO
+	await _ticks(2)
 
 func _ticks(count: int) -> void:
 	for tick in count:
@@ -922,10 +1029,20 @@ func _gait_matches_speed(player: Player) -> bool:
 	var cv: CharacterVisual = player.get("_visual")
 	if cv == null or not cv.loaded:
 		return true # primitive fallback body has no clips
-	cv.set_motion(1.5)
-	var walk_ok := cv._current == "walk" and absf(cv.animator.speed_scale - 1.5 / CharacterVisual.WALK_CLIP_SPEED) < 0.01
-	cv.set_motion(6.8)
-	var run_ok := cv._current == "run" and cv.stride_amp > 1.1 and cv.animator.speed_scale > 1.0 and cv.animator.speed_scale < 1.6
+	# Locomotion piece: walk, run and sprint are three authored gaits; at the
+	# player's own speeds each plays within 0.85-1.2x of its authored rate.
+	var gaits := {Player.WALK_SPEED: "walk", Player.RUN_SPEED: "run", Player.SPRINT_SPEED: "sprint"}
+	var walk_ok := cv.gait_v2
+	for speed in gaits:
+		cv.set_motion(speed)
+		walk_ok = walk_ok and cv._current == gaits[speed] and cv.animator.speed_scale >= 0.85 and cv.animator.speed_scale <= 1.2
+	var run_ok := cv._clips.has("jump_start") and cv._clips.has("land") and cv._clips.has("stop") and cv.stride_amp == 1.0
+	# Airborne: the jump clip must keep a non-zero rate (a zero rate froze the
+	# crossfade into the air pose for the whole flight).
+	cv.set_air_velocity(2.0, 5.0)
+	cv.set_motion(0.0, false, false)
+	run_ok = run_ok and cv.current_clip() == "jump" and cv.animator.speed_scale > 0.5
+	cv.set_air_velocity(99.0, 5.0)
 	cv.set_motion(0.0)
 	var shadows_ok := cv.contact_shadows.size() == 3 and cv._foot_ids.size() == 2 and cv._foot_ids[0] >= 0 and cv._foot_ids[1] >= 0
 	return walk_ok and run_ok and cv.motion != null and shadows_ok

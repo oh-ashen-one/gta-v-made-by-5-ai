@@ -371,21 +371,326 @@ def pose_frame(arm,kind,t,h):
         rotate(arm,'upper_arm.l',0,0,-8*d)
         rotate(arm,'upper_arm.r',0,0,10*d)
         rotate(arm,'head',-14*d)
+    if kind in ('idle','aim','reload') and 'GAITS' in globals():
+        # Locomotion v2: relaxed standing stance with the feet ~20 cm apart
+        # (the bind pose stands them 29 cm apart) and soft knees.
+        s=h/1.75;_set_pelvis(arm,s,.892,0.,0.,0.)
+        for side,sign in [('l',1),('r',-1)]:
+            _leg_ik(arm,side,sign,Vector((sign*.10*s,-.025*s,.13*s)),0.,0.,toe_out=7.)
+
+
+# ---------------------------------------------------------------------------
+# Locomotion v2 (Opus 5.5 locomotion piece): foot-placement gait authoring.
+# Each gait is authored at its real ground speed with planted feet that move
+# back at exactly that speed (in-place clip), heel/ball roll pivots, analytic
+# two-bone leg IK, pelvis height limited by leg reach (inverted-pendulum walk,
+# compliant run with a true flight phase), pelvis yaw/drop/sway, counter-
+# rotating chest, stabilised head and counter-swinging arms. Nothing here is
+# motion capture; all values are hand-set biomechanics targets.
+# y = forward of the hip joint, z = up, metres at 1.75 m stature.
+GAITS = {
+    # v m/s, frames per two-step cycle, stance fraction, ankle half-track (planted / mid-swing)
+    'walk':   dict(v=1.50, frames=29, beta=.60, track=.050, swing_track=.088, hip=.880, bob=.010,
+                   heel=.28, theta_c=16., flat=(.14, .52), theta_to=-46.,
+                   swing=[(.28, -.26, .255), (.66, .13, .185)], lean=-3., pel_pitch=-1., pel_yaw=5., chest_yaw=-8.,
+                   pel_roll=3.5, sway=.020, arm_f=17., arm_b=-15., elbow=(14., 30.), arm_out=5.,
+                   head_bob=1.),
+    'run':    dict(v=3.60, frames=21, beta=.31, track=.036, swing_track=.075, hip=.872, bob=.036,
+                   heel=.23, theta_c=7., flat=(.12, .36), theta_to=-46.,
+                   swing=[(.34, -.30, .46), (.70, .06, .42)], lean=-12., pel_pitch=-5., pel_yaw=8., chest_yaw=-13.,
+                   pel_roll=2.5, sway=.010, arm_f=36., arm_b=-34., elbow=(82., 96.), arm_out=9.,
+                   head_bob=2.),
+    'sprint': dict(v=6.80, frames=18, beta=.17, track=.030, swing_track=.070, hip=.880, bob=.030,
+                   heel=.15, theta_c=-9., flat=(-1., -1.), theta_to=-50.,
+                   swing=[(.30, -.36, .62), (.64, .20, .54)], lean=-19., pel_pitch=-9., pel_yaw=10., chest_yaw=-16.,
+                   pel_roll=2., sway=.006, arm_f=58., arm_b=-48., elbow=(78., 100.), arm_out=10.,
+                   head_bob=2.),
+}
+GAIT_OF = {'walk': 'walk', 'aim_walk': 'walk', 'run': 'run', 'aim_run': 'run', 'sprint': 'sprint'}
+FOOT_HEEL = Vector((0., -.075, 0.))   # sole heel point relative to ankle-at-rest projection
+FOOT_BALL = Vector((0., .080, 0.))
+ANKLE_REST = Vector((0., -.015, .13))
+HIP_Y = -.055
+
+
+def _rx(theta_deg, v):
+    t = math.radians(theta_deg)
+    return Vector((v.x, v.y*math.cos(t) - v.z*math.sin(t), v.y*math.sin(t) + v.z*math.cos(t)))
+
+
+def _lerp_keys(keys, u):
+    """Piecewise smooth interpolation through (u, value) keys."""
+    if u <= keys[0][0]: return keys[0][1]
+    for (u0, a), (u1, b) in zip(keys, keys[1:]):
+        if u <= u1:
+            k = smoothstep(u0, u1, u)
+            return a + (b - a)*k
+    return keys[-1][1]
+
+
+def _stance_theta(g, u):
+    f0, f1 = g['flat']
+    if f0 < 0:  # forefoot strike: stays on the ball, heel lowers then rises
+        return _lerp_keys([(0., g['theta_c']), (.30, -3.), (.55, -8.), (1., g['theta_to'])], u)
+    return _lerp_keys([(0., g['theta_c']), (f0, 0.), (f1, 0.), (1., g['theta_to'])], u)
+
+
+def _stance_ankle(g, u, s):
+    """Ankle (y, z) and foot pitch for stance progress u; planted points move back at v."""
+    T = g['frames']/FPS
+    heel_ground = HIP_Y + g['heel'] - g['v']*u*g['beta']*T
+    theta = _stance_theta(g, u)
+    heel = Vector((0., heel_ground, 0.))
+    d_h = Vector((0., ANKLE_REST.y - FOOT_HEEL.y, ANKLE_REST.z))
+    d_b = Vector((0., ANKLE_REST.y - FOOT_BALL.y, ANKLE_REST.z))
+    if theta >= 0:
+        a = heel + _rx(theta, d_h)
+    else:
+        a = heel + Vector((0., FOOT_BALL.y - FOOT_HEEL.y, 0.)) + _rx(theta, d_b)
+    return a*s, theta
+
+
+def _hermite(p0, m0, p1, m1, k):
+    k2 = k*k; k3 = k2*k
+    return (2*k3-3*k2+1)*p0 + (k3-2*k2+k)*m0 + (-2*k3+3*k2)*p1 + (k3-k2)*m1
+
+
+def _swing_ankle(g, w, s):
+    """Swing progress w in [0,1]: toe-off -> heel recovery -> knee drive -> contact."""
+    T = g['frames']/FPS
+    Ts = (1. - g['beta'])*T
+    eps = .02
+    p0, _ = _stance_ankle(g, 1., s); pm, _ = _stance_ankle(g, 1. - eps, s)
+    q0, _ = _stance_ankle(g, 0., s); qp, _ = _stance_ankle(g, eps, s)
+    v0 = (p0 - pm)/(eps*g['beta']*T)   # m/s at toe-off
+    v1 = (qp - q0)/(eps*g['beta']*T)   # m/s just after contact
+    keys = [(0., p0, v0*Ts)]
+    for wk, y, z in g['swing']:
+        keys.append((wk, Vector((0., HIP_Y + y, z))*s, None))
+    keys.append((1., q0, v1*Ts*.6))
+    # Catmull-Rom style tangents for interior keys (in units of w)
+    for i in range(1, len(keys)-1):
+        (wa, a, _), (wb, b, _) = keys[i-1], keys[i+1]
+        keys[i] = (keys[i][0], keys[i][1], (b - a)/(wb - wa))
+    for (wa, a, ma), (wb, b, mb) in zip(keys, keys[1:]):
+        if w <= wb:
+            span = wb - wa
+            k = (w - wa)/span
+            return _hermite(a, ma*span, b, mb*span, k)
+    return keys[-1][1]
+
+
+def _swing_theta(g, w):
+    if g['flat'][0] < 0:
+        return _lerp_keys([(0., g['theta_to']), (.35, -30.), (.7, 2.), (1., g['theta_c'])], w)
+    return _lerp_keys([(0., g['theta_to']), (.30, -22.), (.62, 8.), (1., g['theta_c'])], w)
+
+
+def _aim_bone(bone, head, tail, twist=None):
+    rest = (bone.bone.tail_local - bone.bone.head_local).normalized()
+    q = rest.rotation_difference((tail - head).normalized()) @ bone.bone.matrix_local.to_quaternion()
+    m = q.to_matrix().to_4x4(); m.translation = head; bone.matrix = m
+    bpy.context.view_layer.update()
+
+
+def _orient_bone(bone, rot, head):
+    q = rot @ bone.bone.matrix_local.to_quaternion()
+    m = q.to_matrix().to_4x4(); m.translation = head; bone.matrix = m
+    bpy.context.view_layer.update()
+
+
+def _leg_ik(arm, side, sign, ankle, theta, toe_bend=0., toe_out=4.):
+    thigh = arm.pose.bones['thigh.'+side]; shin = arm.pose.bones['shin.'+side]
+    foot = arm.pose.bones['foot.'+side]; toe = arm.pose.bones['toe.'+side]
+    hip = thigh.head.copy()
+    a = thigh.bone.length; b = shin.bone.length
+    delta = ankle - hip
+    dist = min(delta.length, a + b - 1e-4); d = delta.normalized()
+    along = (a*a - b*b + dist*dist)/(2*dist)
+    bend = math.sqrt(max(0., a*a - along*along))
+    pole = Vector((sign*.12, 1., 0.))
+    pole = (pole - d*pole.dot(d)).normalized()
+    knee = hip + d*along + pole*bend
+    reach = hip + d*dist
+    _aim_bone(thigh, hip, knee)
+    _aim_bone(shin, knee, reach)
+    rot = Quaternion(Vector((0, 0, 1)), math.radians(-sign*toe_out)) @ Quaternion(Vector((1, 0, 0)), math.radians(theta))
+    _orient_bone(foot, rot, shin.tail.copy())
+    rotate(arm, 'toe.'+side, toe_bend)
+    return (ankle - reach).length
+
+
+def _set_pelvis(arm, s, z, x_sway, yaw, roll, pitch=0.):
+    pel = arm.pose.bones['pelvis']
+    rot = (Quaternion(Vector((0, 0, 1)), math.radians(yaw)) @ Quaternion(Vector((0, 1, 0)), math.radians(roll))
+           @ Quaternion(Vector((1, 0, 0)), math.radians(pitch)))
+    _orient_bone(pel, rot, Vector((x_sway, HIP_Y*s, z*s)))
+
+
+def gait_frame(arm, kind, t, h, stats):
+    """Foot-placement gait pose at cycle phase t (left heel strike at t=0)."""
+    s = h/1.75
+    g = GAITS[GAIT_OF[kind]]
+    T = g['frames']/FPS; beta = g['beta']
+    reset_pose(arm)
+    rotate(arm, 'fingers.l', 0, 0, 22); rotate(arm, 'fingers.r', 0, 0, -22)
+    feet = {}
+    for side, sign, off in [('l', 1, 0.), ('r', -1, .5)]:
+        p = (t + off) % 1.
+        if p < beta:
+            u = p/beta
+            ankle, theta = _stance_ankle(g, u, s)
+            x = g['track']
+            planted = u <= .88   # the last of toe-off may peel early
+            toe = max(0., -theta) if theta < 0 else 0.
+        else:
+            w = (p - beta)/(1. - beta)
+            ankle = _swing_ankle(g, w, s)
+            theta = _swing_theta(g, w)
+            x = g['track'] + (g['swing_track'] - g['track'])*math.sin(math.pi*w)
+            planted = False
+            toe = max(0., -theta)*.5*(1. - smoothstep(0., .4, w))
+        ankle = Vector((sign*x*s, ankle.y, ankle.z))
+        feet[side] = (ankle, theta, planted, toe, sign)
+    # Pelvis: nominal height with gait bob (run: lowest at mid-stance, highest
+    # in flight; walk: highest at mid-stance), then lowered just enough that
+    # every planted leg can reach its foot with a nearly straight knee.
+    mid = beta*.5
+    c = math.cos(2*math.pi*2*(t - mid))
+    if kind in ('walk', 'aim_walk'):
+        z = g['hip'] + g['bob']*c
+    else:
+        z = g['hip'] - g['bob']*c
+    yaw = g['pel_yaw']*math.cos(2*math.pi*t)
+    roll = -g['pel_roll']*math.cos(2*math.pi*(t - mid))
+    sway = g['sway']*math.cos(2*math.pi*(t - mid))*s
+    lmax = (arm.pose.bones['thigh.l'].bone.length + arm.pose.bones['shin.l'].bone.length)*(.992 if kind in ('walk', 'aim_walk') else .985)
+    for _ in range(3):
+        _set_pelvis(arm, s, z, sway, yaw, roll, g['pel_pitch'])
+        need = 0.
+        for side, (ankle, theta, planted, toe, sign) in feet.items():
+            if not planted: continue
+            hip = arm.pose.bones['thigh.'+side].head
+            dxy = Vector((ankle.x - hip.x, ankle.y - hip.y, 0.)).length
+            zmax = ankle.z + math.sqrt(max(0., lmax*lmax - dxy*dxy))
+            need = max(need, hip.z - zmax)
+        if need <= 1e-4: break
+        z -= need/s
+    stats.setdefault(kind, {'pelvis_min': 9., 'pelvis_max': -9., 'ik_miss': 0.})
+    st = stats[kind]; st['pelvis_min'] = min(st['pelvis_min'], z); st['pelvis_max'] = max(st['pelvis_max'], z)
+    # Trunk: forward lean, chest counter-rotation against the pelvis.
+    rotate(arm, 'spine', g['lean']*.45, -yaw*.45, -roll*.5)
+    rotate(arm, 'chest', g['lean']*.55, (g['chest_yaw']*math.cos(2*math.pi*t) - yaw*.55)*.9, -roll*.3)
+    # Head stays level and faces the travel direction.
+    net_yaw = yaw - yaw*.45 + (g['chest_yaw']*math.cos(2*math.pi*t) - yaw*.55)*.9
+    lean_total = g['lean'] + g['pel_pitch']
+    rotate(arm, 'neck', -lean_total*.42, -net_yaw*.5, 0)
+    rotate(arm, 'head', -lean_total*.45 + g['head_bob']*math.cos(2*math.pi*2*(t - mid)), -net_yaw*.5, 0)
+    # Arms counter-swing their own-side leg; elbows bend more on the forward swing.
+    for side, sign, off in [('l', 1, 0.), ('r', -1, .5)]:
+        ph = 2*math.pi*((t + off - .06) % 1.)
+        sw = -math.cos(ph)            # +1 = arm forward (own leg back)
+        ang = g['arm_f']*sw if sw > 0 else -g['arm_b']*sw
+        e0, e1 = g['elbow']
+        elbow = e0 + (e1 - e0)*max(0., sw)
+        across = 6.*max(0., sw) if kind != 'walk' else 0.
+        rotate(arm, 'clavicle.'+side, 0, 0, 0)
+        rotate(arm, 'upper_arm.'+side, ang, sign*across*.4, sign*g['arm_out'])
+        rotate(arm, 'forearm.'+side, elbow, 0, -sign*across*.5)
+        rotate(arm, 'hand.'+side, 6 if kind == 'walk' else 10, 0, 0)
+    bpy.context.view_layer.update()
+    for side, (ankle, theta, planted, toe, sign) in feet.items():
+        miss = _leg_ik(arm, side, sign, ankle, theta, toe)
+        if planted: st['ik_miss'] = max(st['ik_miss'], miss)
+    if kind.startswith('aim'):
+        aim_arms(arm, math.sin(2*math.pi*t)*.5)
+
+
+def _plant_feet(arm, s, feet, z, lean=0., pitch=0.):
+    """Static-feet helper for jump/land/stop poses: feet = {side: (y, x, theta, lift)}."""
+    _set_pelvis(arm, s, z, 0., 0., 0., pitch)
+    rotate(arm, 'spine', lean*.45); rotate(arm, 'chest', lean*.55)
+    rotate(arm, 'neck', -lean*.4); rotate(arm, 'head', -lean*.45)
+    bpy.context.view_layer.update()
+    for side, sign in [('l', 1), ('r', -1)]:
+        y, x, theta, lift = feet[side]
+        heel = Vector((0., y, lift))
+        if theta >= 0:
+            a = heel + _rx(theta, Vector((0., ANKLE_REST.y - FOOT_HEEL.y, ANKLE_REST.z)))
+        else:
+            a = heel + Vector((0., FOOT_BALL.y - FOOT_HEEL.y, 0.)) + _rx(theta, Vector((0., ANKLE_REST.y - FOOT_BALL.y, ANKLE_REST.z)))
+        _leg_ik(arm, side, sign, Vector((sign*x*s, a.y*s, a.z*s)), theta, max(0., -theta) if lift < .01 else 0.)
+
+
+def _arms(arm, l, r, elbow_l, elbow_r, out=6.):
+    rotate(arm, 'upper_arm.l', l, 0, out); rotate(arm, 'upper_arm.r', r, 0, -out)
+    rotate(arm, 'forearm.l', elbow_l); rotate(arm, 'forearm.r', elbow_r)
+
+
+def action_frame(arm, kind, t, h):
+    """Jump anticipation / airborne / landing and the run stop."""
+    s = h/1.75
+    reset_pose(arm)
+    rotate(arm, 'fingers.l', 0, 0, 22); rotate(arm, 'fingers.r', 0, 0, -22)
+    hx = .085
+    if kind == 'jump_start':   # 0.2 s: dip and drive up onto the toes
+        dip = math.sin(math.pi*min(1., t/.7))*(1. - smoothstep(.7, 1., t)) if t < 1 else 0.
+        dip = smoothstep(0., .55, t) - smoothstep(.55, 1., t)*1.25
+        z = .885 - .10*max(0., dip) + .02*max(0., -dip)
+        toe = -28.*smoothstep(.6, 1., t)
+        _arms(arm, -30.*max(0., dip) + 40.*smoothstep(.6, 1., t), -30.*max(0., dip) + 40.*smoothstep(.6, 1., t), 25., 25.)
+        _plant_feet(arm, s, {'l': (-.06, hx, toe, 0.), 'r': (-.06, hx, toe, 0.)}, z, lean=-14.*max(0., dip) - 4.)
+    elif kind == 'jump':       # airborne, sampled by vertical velocity: 0 take-off .. .45 apex .. 1 reach for landing
+        tuck = math.sin(math.pi*smoothstep(.05, .9, t))
+        reach = smoothstep(.6, 1., t)
+        z = .89
+        fl = (HIP_Y - .02 + .26*tuck - .05*reach, hx, -40.*(1. - smoothstep(0., .3, t)) + 10.*reach, .10 + .30*tuck - .02*reach)
+        fr = (HIP_Y - .18*tuck + .02*reach, hx + .01, -45.*(1. - smoothstep(0., .45, t)) + 6.*reach, .05 + .40*tuck)
+        _arms(arm, 35. - 25.*tuck + 10.*reach, 25. - 5.*tuck + 15.*reach, 40. + 20.*tuck, 35. + 15.*tuck, out=12. + 14.*reach)
+        _plant_feet(arm, s, {'l': fl, 'r': fr}, z, lean=-6. - 6.*tuck + 4.*reach)
+    elif kind == 'land':       # 0.42 s: knees absorb, chest folds, then rises
+        k = smoothstep(0., .22, t)*(1. - smoothstep(.35, 1., t))
+        z = .885 - .17*k
+        _arms(arm, 20.*k + 8., 18.*k + 8., 20. + 30.*k, 20. + 30.*k, out=6. + 10.*k)
+        _plant_feet(arm, s, {'l': (-.02, hx, 0., 0.), 'r': (-.10, hx + .01, 0., 0.)}, z, lean=-4. - 20.*k)
+    elif kind == 'stop':       # 0.55 s: plant the lead foot, brake, bring the trailing foot in
+        # Body decelerates ~16 m/s^2 from a jog: lead heel slides back with the ground.
+        tt = t*.55
+        stop_t = .225
+        travel = 3.6*min(tt, stop_t) - .5*16.*min(tt, stop_t)**2
+        lead_y = HIP_Y + .30 - travel
+        k = smoothstep(0., .3, t)*(1. - smoothstep(.55, 1., t))
+        z = .885 - .07*k
+        w = smoothstep(.25, .75, t)
+        trail_y = HIP_Y - .40 + (.38 - .02)*w + (-.0)
+        trail_lift = .14*math.sin(math.pi*w)
+        lead_theta = 12.*(1. - smoothstep(0., .25, t))
+        trail_theta = -35.*(1. - smoothstep(.2, .55, t))
+        _arms(arm, 22.*k - 5.*(1 - k), -10.*k, 30. + 20.*k, 30. + 10.*k, out=8.)
+        _plant_feet(arm, s, {'l': (lead_y - HIP_Y + HIP_Y, .06 + .03*w, lead_theta, 0.),
+                             'r': (trail_y, .06 + .03*w, trail_theta, trail_lift)}, z, lean=6.*k - 3.)
+    bpy.context.view_layer.update()
 
 
 def animate(arm,mesh,h):
-    clips={'idle':(2.4,True),'walk':(1.04,True),'run':(.72,True),
-           'aim':(2.4,True),'aim_walk':(1.04,True),'aim_run':(.72,True),
-           'reload':(1.4,False),'hit':(.36,False),'jump':(.8,True),'fall':(.9,False),
+    T={k:g['frames']/FPS for k,g in GAITS.items()}
+    clips={'idle':(2.4,True),'walk':(T['walk'],True),'run':(T['run'],True),'sprint':(T['sprint'],True),
+           'aim':(2.4,True),'aim_walk':(T['walk'],True),'aim_run':(T['run'],True),
+           'reload':(1.4,False),'hit':(.36,False),'jump_start':(.2,False),'jump':(1.0,True),
+           'land':(.42,False),'stop':(.55,False),'fall':(.9,False),
            'seated':(2.4,True),'drive':(2.4,True)}
     scene=bpy.context.scene;scene.render.fps=FPS
     arm.animation_data_create()
+    stats={}
     for name,(duration,loop) in clips.items():
         count=max(2,round(duration*FPS));action=bpy.data.actions.new(name)
         action.use_fake_user=True;arm.animation_data.action=action
         for frame in range(count+1):
-            scene.frame_set(frame+1);pose_frame(arm,name,frame/count,h)
-            if name in ('walk','run','aim_walk','aim_run','fall','hit'):
+            scene.frame_set(frame+1)
+            if name in GAIT_OF:gait_frame(arm,name,(frame%count)/count,h,stats)
+            elif name in ('jump_start','jump','land','stop'):action_frame(arm,name,frame/count,h)
+            else:pose_frame(arm,name,frame/count,h)
+            if name in ('fall','hit'):
                 bpy.context.view_layer.update()
                 evaluated=mesh.evaluated_get(bpy.context.evaluated_depsgraph_get())
                 ground=min((evaluated.matrix_world @ Vector(c)).z for c in evaluated.bound_box)
@@ -401,6 +706,9 @@ def animate(arm,mesh,h):
             for point in fc.keyframe_points:point.interpolation='LINEAR'
     arm.animation_data.action=None
     reset_pose(arm);scene.frame_set(1)
+    print('GAIT_STATS',json.dumps(stats))
+    for k,g in GAITS.items():
+        print('GAIT_SPEED',k,'clip_speed_mps',g['v'],'cycle_s',round(g['frames']/FPS,3),'stride_m',round(g['v']*g['frames']/FPS,3))
     return clips
 
 
@@ -421,6 +729,9 @@ def write_diagnostics(arm, mesh, name, folder):
         materials=np.array([t.material_index for t in data.loop_triangles],dtype=np.int32)
         np.savez_compressed(folder/(name+'_'+label+'.npz'),positions=positions,triangles=triangles,uv=uv,materials=materials)
         evaluated.to_mesh_clear()
+
+
+SUFFIX=''
 
 
 def process(name, diagnostics=None):
@@ -444,7 +755,7 @@ def process(name, diagnostics=None):
                 if group.weight>.0001:influenced[mesh.vertex_groups[group.group].name]+=1
     clips=animate(arm,mesh,spec['height'])
     mesh.data.calc_loop_triangles()
-    report={'asset':name,'source':spec['source'],'output':name+'_rigged.glb',
+    report={'asset':name,'source':spec['source'],'output':name+'_rigged'+SUFFIX+'.glb',
         'blender':bpy.app.version_string,'vertices':len(mesh.data.vertices),
         'triangles':len(mesh.data.loop_triangles),'bones':len(arm.data.bones),
         'bounds_blender_m':bounds(mesh),'forward':'Blender +Y / Godot -Z',
@@ -454,14 +765,14 @@ def process(name, diagnostics=None):
         'limitations':['Authored procedural gait, no motion capture or foot-placement IK.',
                         'No facial articulation; fingers use one curl bone per hand, requiring grip refinement.']}
     SOURCE_DIR.mkdir(parents=True, exist_ok=True)
-    bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE_DIR/(name+'_rigged.blend')))
-    bpy.ops.export_scene.gltf(filepath=str(ASSET_DIR/(name+'_rigged.glb')),
+    bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE_DIR/(name+'_rigged'+SUFFIX+'.blend')))
+    bpy.ops.export_scene.gltf(filepath=str(ASSET_DIR/(name+'_rigged'+SUFFIX+'.glb')),
         export_format='GLB',export_yup=True,export_apply=False,
         export_animations=True,export_animation_mode='NLA_TRACKS',
         export_nla_strips=True,export_force_sampling=True,
         export_skins=True,export_def_bones=True,export_materials='EXPORT',
         export_extras=True)
-    (ASSET_DIR/(name+'_rig_report.json')).write_text(json.dumps(report,indent=2)+'\n')
+    (ASSET_DIR/(name+'_rig_report'+SUFFIX+'.json')).write_text(json.dumps(report,indent=2)+'\n')
     print('CHARACTER_RIG_REPORT',json.dumps(report))
     if diagnostics:write_diagnostics(arm,mesh,name,Path(diagnostics))
 
@@ -508,9 +819,16 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--characters',nargs='+',choices=list(SPECS),default=list(SPECS))
     parser.add_argument('--weapons-only', action='store_true')
     parser.add_argument('--diagnostics', help='Optional CPU-evaluated deformation NPZs; does not render.')
+    # Locomotion v2 writes NEW files (e.g. player_rigged_v2.glb) so the shared
+    # provider folder's existing exports are never overwritten.
+    parser.add_argument('--suffix', default='_v2')
+    # Held-weapon exports keep their existing names, so they only run on request.
+    parser.add_argument('--with-weapons', action='store_true')
     args=parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
+    global SUFFIX
+    SUFFIX=args.suffix
     if not args.weapons_only:
         for name in args.characters:process(name,args.diagnostics)
-    process_weapons()
+    if args.weapons_only or args.with_weapons:process_weapons()
 
 if __name__=='__main__':main()

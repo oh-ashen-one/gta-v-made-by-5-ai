@@ -289,6 +289,8 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		# arcade reads as depth with a warm source rather than a flat white card.
 		var back_wall := _box(Vector3(6.6, 2.4, 0.12), pos + front_dir * 2.55 + Vector3(0, 1.35, 0), Palette.mat(Color(0.15, 0.12, 0.10), 0.92))
 		back_wall.rotation.y = yaw
+		# Combat piece: rounds stop on the visible shop wall, not 0.7 m behind it.
+		_collision_box(Vector3(6.6, 2.4, 0.12), pos + front_dir * 2.55 + Vector3(0, 1.35, 0), yaw)
 		var ceiling_strip := _box(Vector3(5.6, 0.16, 0.5), pos + front_dir * 3.3 + Vector3(0, 2.52, 0), Palette.emissive(Color(1.0, 0.74, 0.44), 2.4))
 		ceiling_strip.rotation.y = yaw
 		# Vertical mullions break the opening into bays instead of one blank panel.
@@ -622,6 +624,7 @@ func _far_shore_landmarks() -> void:
 
 ## Aviation compound: hangar, helipads, perimeter fence.
 func _aviation_block(centre: Vector3) -> void:
+	preload("res://src/world/aviation_grounds.gd").build(_world_root, centre) # wave P: turf, apron tarmac, hedges
 	# ground staff (static figures from the generated officer set)
 	if AssetLibrary.has_asset("officer_clean.glb"):
 		for i: int in 2:
