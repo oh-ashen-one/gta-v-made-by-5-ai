@@ -12,9 +12,9 @@ extends RefCounted
 ##   --lighting-tonemap=aces|agx    tonemapper (default aces)
 ##   --lighting-off=vfog,ssil,ssao,lut,pcss   disable features for A/B
 
-const SUN_ROTATION_DEG := Vector3(-14.5, 58.0, 0.0)
-const SUN_COLOR := Color(1.0, 0.74, 0.50)
-const SUN_ENERGY := 3.1
+const SUN_ROTATION_DEG := Vector3(-23.0, 58.0, 0.0)
+const SUN_COLOR := Color(1.0, 0.83, 0.64)
+const SUN_ENERGY := 3.0
 const LAMP_COLOR := Color(1.0, 0.78, 0.52)
 const TUBE_COLOR := Color(0.86, 0.94, 1.0)
 
@@ -49,9 +49,9 @@ static func build_environment(parent: Node) -> Dictionary:
 	# one flat blue-black (critic 5, defect 8).
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	# 75 % sky, 25 % warm pavement grey: shade reads blue-lifted, not violet.
-	env.ambient_light_sky_contribution = 0.75
+	env.ambient_light_sky_contribution = 0.8
 	env.ambient_light_color = Color(0.66, 0.58, 0.50)
-	env.ambient_light_energy = 1.05
+	env.ambient_light_energy = 0.58
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 
 	var tonemap := _arg("--lighting-tonemap", "aces")
@@ -68,20 +68,20 @@ static func build_environment(parent: Node) -> Dictionary:
 	# itself is left clear (fog_sky_affect 0) so the gradient stays visible.
 	env.fog_enabled = true
 	env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
-	env.fog_light_color = Color(0.86, 0.80, 0.70)
+	env.fog_light_color = Color(0.86, 0.85, 0.82)
 	env.fog_light_energy = 1.0
-	env.fog_sun_scatter = 0.35
-	env.fog_density = 0.00055
-	env.fog_aerial_perspective = 0.55
+	env.fog_sun_scatter = 0.06
+	env.fog_density = 0.00042
+	env.fog_aerial_perspective = 0.7
 	env.fog_sky_affect = 0.0
 	env.fog_height = 24.0
 	env.fog_height_density = 0.0016
 
 	# Light volumetric haze: sun shafts through canopies and arcade columns.
 	env.volumetric_fog_enabled = true
-	env.volumetric_fog_density = 0.0016
+	env.volumetric_fog_density = 0.0007
 	env.volumetric_fog_albedo = Color(1.0, 0.93, 0.84)
-	env.volumetric_fog_anisotropy = 0.62
+	env.volumetric_fog_anisotropy = 0.45
 	env.volumetric_fog_length = 140.0
 	env.volumetric_fog_detail_spread = 2.0
 	env.volumetric_fog_gi_inject = 0.6
@@ -111,7 +111,7 @@ static func build_environment(parent: Node) -> Dictionary:
 	# the void-deck soffit.
 	env.ssil_enabled = true
 	env.ssil_radius = 6.0
-	env.ssil_intensity = 1.35
+	env.ssil_intensity = 0.9
 	env.ssil_sharpness = 0.98
 	env.ssil_normal_rejection = 1.0
 
@@ -136,8 +136,8 @@ static func build_environment(parent: Node) -> Dictionary:
 
 	env.adjustment_enabled = true
 	env.adjustment_brightness = 1.0
-	env.adjustment_contrast = 1.06
-	env.adjustment_saturation = 1.08
+	env.adjustment_contrast = 1.12
+	env.adjustment_saturation = 1.0
 	env.adjustment_color_correction = _grade_lut()
 
 	var off := _arg("--lighting-off", "").split(",")
@@ -158,17 +158,19 @@ static func build_environment(parent: Node) -> Dictionary:
 
 	var sun := DirectionalLight3D.new()
 	sun.name = "Sun"
-	# Low western sun (~14.5 deg): long raking light, gold facades, deep but
+	# Late-afternoon western sun (~23 deg, round 2: 14.5 left the ground at
+	# sin(14.5)=0.25 of the sun, so roads read near-black and shade ratios
+	# collapsed). Still long raking shadows (2.4x object height), gold facades, deep but
 	# sky-filled shade under the five-foot ways (ART-07).
 	sun.rotation_degrees = SUN_ROTATION_DEG
 	sun.light_energy = SUN_ENERGY
 	sun.light_color = SUN_COLOR
-	sun.light_angular_distance = 0.0 if "pcss" in off else 1.1   # soft, contact-hardening penumbrae
+	sun.light_angular_distance = 0.0 if "pcss" in off else 0.5   # soft, contact-hardening penumbrae
 	sun.light_volumetric_fog_energy = 1.0
 	sun.shadow_enabled = true
 	sun.shadow_bias = 0.03
 	sun.shadow_normal_bias = 1.2
-	sun.shadow_blur = 1.0
+	sun.shadow_blur = 0.8
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
 	sun.directional_shadow_max_distance = 280.0
 	sun.directional_shadow_split_1 = 0.05
@@ -183,7 +185,7 @@ static func build_environment(parent: Node) -> Dictionary:
 	# Warm pavement bounce aimed upward: soffits, arcade ceilings and the void
 	# deck pick up gold from the sunlit ground.
 	bounce.rotation_degrees = Vector3(62.0, 40.0, 0.0)
-	bounce.light_energy = 0.16
+	bounce.light_energy = 0.12
 	bounce.light_color = Color(1.0, 0.78, 0.56)
 	bounce.light_specular = 0.0
 	bounce.shadow_enabled = false

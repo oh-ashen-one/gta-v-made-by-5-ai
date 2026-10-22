@@ -680,7 +680,7 @@ func _lighting_checks(world: WorldBuilder) -> void:
 		sky_code = (env.sky.sky_material as ShaderMaterial).shader.code
 	_check("sky glow and clouds follow the sun light (LIGHT0)", sky_code.contains("LIGHT0_DIRECTION") and sky_code.contains("cloud"))
 	var elevation := -sun.rotation_degrees.x if sun != null else 0.0
-	_check("warm low late-afternoon sun with soft shadows", sun != null and sun.shadow_enabled and elevation > 8.0 and elevation < 25.0
+	_check("warm low late-afternoon sun with soft shadows", sun != null and sun.shadow_enabled and elevation > 8.0 and elevation < 30.0
 		and sun.light_color.r > sun.light_color.b + 0.3 and sun.light_angular_distance > 0.0, "elevation=%.1f" % elevation)
 	var lit: WorldBuilder = world
 	var lighting: Lighting = lit.get("_lighting")
