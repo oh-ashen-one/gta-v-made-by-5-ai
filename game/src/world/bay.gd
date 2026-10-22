@@ -35,6 +35,8 @@ var boat_count := 0
 var moving_boats := 0
 var legacy_spray_hidden := 0
 var reflection_active := false
+## QA switch (water footage perf A/B); gameplay never turns it off.
+var reflection_enabled := true
 
 var _builder: Node
 var _boats: Array[Dictionary] = []
@@ -585,7 +587,7 @@ func _process(delta: float) -> void:
 	if reflection_viewport.size != want:
 		reflection_viewport.size = want
 	var t := cam.global_transform
-	if t.origin.y < LEVEL + 0.05 or not _bay_in_view(cam):
+	if not reflection_enabled or t.origin.y < LEVEL + 0.05 or not _bay_in_view(cam):
 		# Nothing of the bay on screen: skip the mirrored render entirely.
 		reflection_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 		water_material.set_shader_parameter("reflection_ready", 0.0)

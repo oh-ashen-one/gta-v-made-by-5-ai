@@ -77,7 +77,54 @@ func _run() -> void:
 	if _log:
 		_log.close()
 	print("[water-footage] frames=", _index, " dir=", out_dir)
+	await _perf_ab(cam)
 	Game.simulation_paused = true
 	Sfx.shutdown_audio()
 	await get_tree().create_timer(.15, true, false, true).timeout
 	get_tree().quit(0)
+
+## GPU cost of the planar reflection: the photo_16 aerial pose measured with
+## the reflection pass on, then off (RenderingServer per-viewport timers).
+func _perf_ab(cam: Camera3D) -> void:
+	var bay: BayWater = world.bay
+	if bay == null:
+		return
+	cam.global_position = Vector3(120, 110, -120)
+	cam.fov = 62.0
+	cam.look_at(Vector3(-60, 40, -650), Vector3.UP)
+	var main_rid := get_viewport().get_viewport_rid()
+	RenderingServer.viewport_set_measure_render_time(main_rid, true)
+	var refl_rid := RID()
+	if bay.reflection_viewport != null:
+		refl_rid = bay.reflection_viewport.get_viewport_rid()
+		RenderingServer.viewport_set_measure_render_time(refl_rid, true)
+	var report := {}
+	for mode in ["reflection_on", "reflection_off"]:
+		bay.reflection_enabled = mode == "reflection_on"
+		for i in 20:
+			await RenderingServer.frame_post_draw
+		var gpu := 0.0
+		var refl := 0.0
+		var cpu := 0.0
+		var interval := 0.0
+		var n := 90
+		var last := Time.get_ticks_usec()
+		for i in n:
+			await RenderingServer.frame_post_draw
+			var now := Time.get_ticks_usec()
+			interval += float(now - last) / 1000.0
+			last = now
+			gpu += RenderingServer.viewport_get_measured_render_time_gpu(main_rid)
+			cpu += RenderingServer.viewport_get_measured_render_time_cpu(main_rid)
+			if refl_rid.is_valid() and bay.reflection_active:
+				refl += RenderingServer.viewport_get_measured_render_time_gpu(refl_rid)
+		report[mode] = {"main_gpu_ms": snappedf(gpu / n, 0.01), "main_cpu_ms": snappedf(cpu / n, 0.01),
+			"reflection_gpu_ms": snappedf(refl / n, 0.01), "frame_interval_ms": snappedf(interval / n, 0.01),
+			"draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)}
+	bay.reflection_enabled = true
+	print("[water-perf] ", JSON.stringify(report))
+	var f := FileAccess.open(out_dir.path_join("water_perf.json"), FileAccess.WRITE)
+	if f:
+		f.store_string(JSON.stringify(report, "\t"))
+		f.close()
+

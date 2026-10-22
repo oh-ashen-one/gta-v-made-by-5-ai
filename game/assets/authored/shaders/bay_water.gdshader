@@ -73,7 +73,7 @@ vec2 rot(vec2 v, float a) {
 vec2 swell_gradient(vec2 p, float t, float foot, float choppy) {
 	vec2 g = vec2(0.0);
 	float lambda = 11.0;
-	float amp = 0.15;
+	float amp = 0.21;
 	float spread = 0.0;
 	for (int i = 0; i < 14; i++) {
 		float fi = float(i);
