@@ -8,8 +8,8 @@
 shader_type spatial;
 render_mode unshaded, cull_disabled, fog_disabled, shadows_disabled, world_vertex_coords;
 
-uniform vec3 horizon_col : source_color = vec3(0.84, 0.80, 0.76);
-uniform vec3 haze_col : source_color = vec3(0.55, 0.61, 0.69);
+uniform vec3 horizon_col : source_color = vec3(0.80, 0.83, 0.87);
+uniform vec3 haze_col : source_color = vec3(0.60, 0.67, 0.77);
 uniform float clip_frac = 0.955;
 
 float cam_far(mat4 inv_proj) {

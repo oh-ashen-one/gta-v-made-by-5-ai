@@ -69,6 +69,7 @@ static func sync(root: Node) -> Dictionary:
 		# Direction toward the sun (the light shines along its local -Z).
 		var b := Basis.from_euler(sun.rotation)
 		p["sun_dir"] = b.z.normalized()
+		p["sun_col"] = sun.light_color
 	if env != null:
 		if env.fog_enabled:
 			p["fog_col"] = env.fog_light_color
@@ -86,6 +87,8 @@ static func sync(root: Node) -> Dictionary:
 					# The far land meets a horizon a little paler than the raw sky band.
 					p["horizon_col"] = (v as Color).lerp(Color(0.86, 0.84, 0.82), 0.25)
 					break
+	# Aerial D1: one aerial-perspective setting for every skyline shader.
+	p.merge(AerialAtmosphere.HAZE, true)
 	_params = p
 	for m in _materials:
 		if is_instance_valid(m):
@@ -345,7 +348,8 @@ func _lowrise(parent: Node3D, city: SkylineCity) -> void:
 	mmi.name = "SkylineLowrise"
 	mmi.multimesh = mm
 	mmi.material_override = mat
-	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	# Aerial D1: real shadows inside the long aerial shadow range.
+	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	parent.add_child(mmi)
 	lowrise = xforms.size()
 

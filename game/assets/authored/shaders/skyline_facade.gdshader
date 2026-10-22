@@ -39,19 +39,22 @@ uniform vec3 frame_col : source_color = vec3(0.72, 0.73, 0.72);
 // blue-grey below the horizon sky (warm toward the sun) instead of a white
 // veil, so far towers stay darker silhouettes. SkylineAtmosphere.sync
 // overwrites sun_dir / fog / horizon from the live world at build time.
-uniform vec3 haze_col : source_color = vec3(0.55, 0.61, 0.69);
-uniform vec3 haze_sun_col : source_color = vec3(0.96, 0.82, 0.62);
-uniform vec3 horizon_col : source_color = vec3(0.84, 0.80, 0.76);
-uniform vec3 sun_dir = vec3(0.85, 0.28, 0.45);
-uniform float haze_start = 200.0;
-uniform float haze_density = 0.0018;
-uniform float haze_max = 0.7;
+// Aerial D1: denser, cooler aerial perspective (critics: far skyline as
+// contrasty as the near district). AerialAtmosphere.HAZE pushes the same
+// values into every skyline-piece material through SkylineHorizon.sync.
+uniform vec3 haze_col : source_color = vec3(0.60, 0.67, 0.77);
+uniform vec3 haze_sun_col : source_color = vec3(0.98, 0.86, 0.70);
+uniform vec3 horizon_col : source_color = vec3(0.80, 0.83, 0.87);
+uniform vec3 sun_dir = vec3(0.91, 0.34, 0.24);
+uniform float haze_start = 150.0;
+uniform float haze_density = 0.0022;
+uniform float haze_max = 0.82;
 uniform float horizon_start = 1700.0;
 uniform float horizon_end = 3600.0;
 uniform float far_full = 0.55;
 // Environment-fog stand-in (match WorldBuilder/lighting fog colour + density).
-uniform vec3 fog_col : source_color = vec3(0.80, 0.78, 0.74);
-uniform float fog_density_ref = 0.00024;
+uniform vec3 fog_col : source_color = vec3(0.70, 0.77, 0.86);
+uniform float fog_density_ref = 0.00046;
 uniform float fog_scale = 1.0;
 uniform vec3 roof_col : source_color = vec3(0.32, 0.31, 0.30);
 // Round 4: low-rise hinterland roofs vary per instance (terracotta, grey,
@@ -71,6 +74,14 @@ uniform float lit_chance = 0.0;
 // ground and the tower height (0 = off).
 uniform float legacy_base = 0.0;
 uniform float legacy_height = 0.0;
+// Aerial D1: reflective glazing. Curtain-wall panes are a coated, partly
+// mirrored glass (F0 ~0.1-0.3): they reflect the sky and clouds and catch
+// sun glints panel by panel. Single-mesh towers near the airfield stay satin
+// (a mirror sun disc bloomed there, critic A2); Marina Bay Sands opts out.
+uniform bool satin_single = true;
+uniform float glass_reflect = 1.0;
+uniform float glint_strength = 1.0;
+uniform vec3 sun_col : source_color = vec3(1.0, 0.85, 0.67);
 
 varying vec3 wpos;
 varying vec3 wnorm;
@@ -276,6 +287,31 @@ void fragment() {
 			float facing = dot(normalize(vec3(n.x, 0.0, n.z)), sdn);
 			c *= mix(1.0 - 0.45 * form_contrast, 1.0 + 0.12 * form_contrast, smoothstep(-0.35, 0.6, facing));
 		}
+		// Reflective glazing: metallic F0 tint per glass system.
+		bool curtain = (mat_id == 0 || mat_id == 2 || mat_id == 3 || mat_id == 6);
+		vec3 f0 = mat_id == 0 ? vec3(0.11, 0.16, 0.18) : (mat_id == 2 ? vec3(0.22, 0.27, 0.31) : (mat_id == 3 ? vec3(0.19, 0.15, 0.10) : (mat_id == 6 ? vec3(0.13, 0.17, 0.16) : vec3(0.07, 0.08, 0.09))));
+		vec3 sdn = normalize(sun_dir);
+		float face_sun = dot(normalize(vec3(n.x, 0.0, n.z)), normalize(vec3(sdn.x, 0.0, sdn.z)));
+		if (form_contrast > 0.0) {
+			// Shaded faces reflect the darker, bluer sky away from the sun.
+			f0 *= mix(0.62, 1.0, smoothstep(-0.35, 0.5, face_sun));
+		}
+		float gm = glazing * (curtain ? 0.82 : 0.45) * glass_reflect;
+		c = mix(c, f0, gm);
+		metal = max(metal, gm);
+		rough = mix(rough, curtain ? 0.09 : 0.16, glazing * glass_reflect);
+		// Sun glints: each pane carries its own small tilt, so a sunlit face
+		// sparkles pane by pane where the mirror direction meets the sun,
+		// fading to a soft sheen when panes shrink below a pixel.
+		vec3 vw = normalize(CAMERA_POSITION_WORLD - wpos);
+		vec3 tw0 = vec3(tang.x, 0.0, tang.y);
+		vec3 gn = normalize(n + tw0 * (hash2(cell + sd + 11.3) - 0.5) * 0.55 + vec3(0.0, 1.0, 0.0) * (hash2(cell + sd + 5.9) - 0.3) * 0.6);
+		float gl = max(dot(reflect(-vw, gn), sdn), 0.0);
+		float gl_face = max(dot(reflect(-vw, n), sdn), 0.0);
+		float sparkle = pow(gl, 260.0) * 5.0 + pow(gl, 30.0) * 0.30;
+		float sheen = pow(gl_face, 8.0) * 0.22;
+		float glint = mix(sparkle, sheen, clamp(filt * 1.5, 0.0, 1.0)) * glazing * (curtain ? 1.0 : 0.4) * step(0.0, dot(n, sdn));
+		EMISSION += sun_col * min(glint, 4.0) * glint_strength * glass_reflect;
 		ALBEDO = c;
 		// Each glazed panel is tilted a little ("oil-canning"), so a flat face
 		// turned to the sun breaks into a mosaic of brighter and darker panes
@@ -294,10 +330,11 @@ void fragment() {
 		// Single-mesh glass towers stand near the airfield and face the low
 		// sun: a mirror-sharp sun highlight clipped into a white blob that
 		// bloomed past the outline (critic A2, photo_09). Keep them satin.
-		if (!use_instance_custom) {
+		if (!use_instance_custom && satin_single) {
 			ROUGHNESS = max(ROUGHNESS, 0.52);
 			SPECULAR *= 0.55;
 			METALLIC = 0.0;
+			EMISSION = vec3(0.0);
 		}
 	}
 	// Aerial perspective, written to FOG so it replaces (not stacks on) the

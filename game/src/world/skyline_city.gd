@@ -17,8 +17,9 @@ extends RefCounted
 
 const SHADER := "res://assets/authored/shaders/skyline_facade.gdshader"
 const SHADOW_SHADER := "res://assets/authored/shaders/skyline_ground_shadow.gdshader"
-## Must match the sun in WorldBuilder._environment (rotation_degrees x, y).
-const SUN_EULER_DEG := Vector2(-16.3, 62.0)
+## The live sun (Lighting.SUN_ROTATION_DEG x, y); the fake ground shadows
+## must fall the same way as the real ones (aerial D1 moved the sun).
+const SUN_EULER_DEG := Vector2(Lighting.SUN_ROTATION_DEG.x, Lighting.SUN_ROTATION_DEG.y)
 ## towers given a ground cast shadow (self-test reads it)
 var ground_shadows := 0
 
@@ -161,7 +162,10 @@ func build(parent: Node3D) -> void:
 		mmi.name = "SkylineCity_%d" % kind
 		mmi.multimesh = mm
 		mmi.material_override = mat
-		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		# Aerial D1: towers cast real shadows inside the sun's shadow range
+		# (1.3 km from the air, AerialAtmosphere); the swept ground polygons
+		# below only cover what lies beyond it.
+		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		if "--sightline-probe" in OS.get_cmdline_user_args():
 			var xforms: Array = []
 			for item in list:
@@ -207,6 +211,7 @@ func _add_ground_shadows(parent: Node3D, list: Array, kind: int) -> void:
 		ground_shadows += 1
 	var mat := ShaderMaterial.new()
 	mat.shader = load(SHADOW_SHADER)
+	AerialAtmosphere.fake_shadow_materials.append(mat)
 	var mi := MeshInstance3D.new()
 	mi.name = "SkylineShadow_%d" % kind
 	# The material lives on the surface (not material_override): WorldBuilder's
