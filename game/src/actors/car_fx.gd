@@ -48,6 +48,7 @@ static var _brake_mat: StandardMaterial3D
 static var _head_mat: StandardMaterial3D
 static var _paint_cache: Dictionary = {}
 static var _corona_mesh: QuadMesh
+static var _probe_prewarmed := false
 
 var _tail_coronas: Array[MeshInstance3D] = []
 var _head_coronas: Array[MeshInstance3D] = []
@@ -100,6 +101,40 @@ func setup(owner_car: Car, provider_root: Node3D) -> void:
 	_pivot = Vector3(0.0, _aabb.position.y + _aabb.size.y * 0.32, _aabb.get_center().z)
 	_build_coronas()
 	_prev_yaw = car.rotation.y
+	if not _probe_prewarmed and not "--no-car-probe" in OS.get_cmdline_user_args():
+		_probe_prewarmed = true
+		_prewarm_probe.call_deferred()
+
+## The first render of a reflection probe compiles the probe-pass pipelines
+## for every nearby material (~0.6 s measured on car entry, merged build).
+## Pay that once at load, behind the title/start, with a throwaway probe.
+func _prewarm_probe() -> void:
+	if not is_inside_tree(): return
+	var warm := ReflectionProbe.new()
+	warm.update_mode = ReflectionProbe.UPDATE_ONCE
+	warm.size = Vector3(90.0, 40.0, 90.0)
+	warm.max_distance = 160.0
+	warm.mesh_lod_threshold = 12.0
+	warm.enable_shadows = false
+	warm.ambient_mode = ReflectionProbe.AMBIENT_DISABLED
+	warm.intensity = 0.0
+	warm.top_level = true
+	get_tree().current_scene.add_child(warm)
+	warm.global_position = Game.player_position + Vector3(0.0, 1.4, 0.0)
+	# Sweep it over the road grid so materials across the district are seen
+	# once (a single start-point warm-up left a 0.43 s hitch mid-drive).
+	var spots: Array[Vector3] = [Game.player_position]
+	var world_node = get_tree().current_scene.get("world")
+	if world_node != null and world_node.get("traffic_nodes") != null:
+		var nodes: Array = world_node.traffic_nodes
+		for i in range(0, nodes.size(), 2):
+			spots.append(nodes[i])
+	for spot in spots:
+		if not is_instance_valid(warm): return
+		warm.global_position = spot + Vector3(0.0, 1.4, 0.0)
+		for f in 7:
+			await get_tree().process_frame
+	if is_instance_valid(warm): warm.queue_free()
 
 ## Merged visual bounds of the provider body in Car space.
 func _visual_aabb(root: Node3D) -> AABB:
@@ -316,6 +351,10 @@ func build_player_rig() -> void:
 	_probe.cull_mask = 0xFFFFF & ~VISUAL_LAYER_SELF
 	_probe.visible = false
 	add_child(_probe)
+	# QA A/B switch: --no-car-probe keeps the paint on sky-only reflections.
+	if "--no-car-probe" in OS.get_cmdline_user_args():
+		_probe.queue_free()
+		_probe = null
 	# Brake glow spilling on the road and the body behind the car.
 	_brake_light = OmniLight3D.new()
 	_brake_light.light_color = Color(1.0, 0.12, 0.06)
