@@ -72,10 +72,10 @@ vec2 rot(vec2 v, float a) {
 // out once a pixel covers half its wavelength (no shimmering moire far away).
 vec2 swell_gradient(vec2 p, float t, float foot, float choppy) {
 	vec2 g = vec2(0.0);
-	float lambda = 13.0;
-	float amp = 0.16;
+	float lambda = 11.0;
+	float amp = 0.15;
 	float spread = 0.0;
-	for (int i = 0; i < 11; i++) {
+	for (int i = 0; i < 14; i++) {
 		float fi = float(i);
 		spread = (hash12(vec2(fi, 7.0)) - 0.5) * 1.9;
 		vec2 d = normalize(rot(wind_dir, spread));
@@ -84,8 +84,8 @@ vec2 swell_gradient(vec2 p, float t, float foot, float choppy) {
 		float ph = k * dot(d, p) - w * t + fi * 1.7;
 		float fade = clamp(1.0 - foot / (lambda * 0.35), 0.0, 1.0);
 		g += d * (amp * k * cos(ph)) * fade * (i > 5 ? choppy : 1.0);
-		lambda *= 0.68;
-		amp *= 0.66;
+		lambda *= 0.74;
+		amp *= 0.71;
 	}
 	return g;
 }
@@ -135,7 +135,7 @@ void fragment() {
 			if (behind > 0.0) {
 				float arm = abs(abs(lat) - hb * 0.8 - behind * 0.30);
 				float width = 0.55 + behind * 0.06;
-				float fade = exp(-behind / (12.0 * spd + 8.0));
+				float fade = exp(-behind / (12.0 * spd + 8.0)) * smoothstep(70.0, 35.0, behind);
 				wake += smoothstep(width, 0.0, arm) * fade * min(spd, 1.0) * 0.55;
 				float wash = smoothstep(hb * 0.8 + behind * 0.06, 0.0, abs(lat)) * exp(-behind / (8.0 * spd + 3.0));
 				churn += wash * min(spd, 1.0) * 1.7;
@@ -160,7 +160,7 @@ void fragment() {
 	float h0 = fbm(q1) + 0.5 * fbm(q2);
 	float hx = fbm(q1 + vec2(e0, 0.0)) + 0.5 * fbm(q2 + vec2(e0 * 2.3, 0.0));
 	float hz = fbm(q1 + vec2(0.0, e0)) + 0.5 * fbm(q2 + vec2(0.0, e0 * 2.3));
-	g += vec2(hx - h0, hz - h0) / e0 * nf * 0.05 * micro_fade * (1.0 + rough_water);
+	g += vec2(hx - h0, hz - h0) / e0 * nf * 0.03 * micro_fade * (1.0 + rough_water);
 	vec2 rdir = (p - jet_impact.xz) / max(dj, 0.001);
 	g += rdir * ripples * 0.12;
 	vec3 n_world = normalize(vec3(-g.x, 1.0, -g.y));
@@ -187,7 +187,7 @@ void fragment() {
 	vec3 sky = mix(sky_horizon, sky_zenith, pow(clamp(r_world.y, 0.0, 1.0), 0.6));
 	if (reflection_ready > 0.5) {
 		vec2 ruv = vec2(SCREEN_UV.x, 1.0 - SCREEN_UV.y);
-		float strength = distortion * clamp(14.0 / (dist * 0.2 + 6.0), 0.3, 1.0);
+		float strength = distortion * clamp(9.0 / (dist + 6.0), 0.06, 0.6);
 		ruv += vec2(n_world.x, -n_world.z) * strength;
 		ruv = clamp(ruv, vec2(0.002), vec2(0.998));
 		refl = texture(reflection_tex, ruv).rgb * reflection_gain;
