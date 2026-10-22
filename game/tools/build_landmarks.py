@@ -6,7 +6,7 @@ Run with:
 
 Generates in game/assets/authored/:
   - marina_bay_sands.glb     (3 curved-leg towers + cantilevered boat-hulled SkyPark, true scale)
-  - supertree_grove.glb      (7 vertical-garden Supertrees, rust-purple steel, solid lattice funnel canopies, skyway)
+  - supertree_grove.glb      (7 vertical-garden Supertrees, rust-purple steel, planted funnel throats under open perforated steel-lattice crowns, skyway)
   - artscience_museum.glb    (10-finger sculpted lotus museum on reflection pond base)
   - merlion_landmark.glb     (metaball-sculpted Merlion on wave plinth + arching water jet)
   - singapore_flyer.glb      (giant spoked observation wheel + 28 viewing capsules + terminal podium)
@@ -399,10 +399,34 @@ def build_supertree_grove() -> dict:
         cz = lambda t: cz0 + t * (h - cz0)
         shell_sides = 24
         outer = [ring(cx, cy, cz(t), r, shell_sides) for t, r in crown]
-        b.loft_rings(canopy_shell, outer)
-        b.loft_rings(canopy_shell, [list(reversed(rg)) for rg in outer])
-        inner = [ring(cx, cy, cz(t) + 0.6, r * 0.93, shell_sides, phase=0.05) for t, r in crown[1:]]
+        # Round 2: only the throat is a solid planted funnel. The outer bowl is
+        # an open steel lattice with perforated panels on a checkerboard and
+        # planted pockets, so sky shows through the crown as on the real
+        # Supertrees (the critic read the solid bowls as planters).
+        throat = outer[:3]
+        b.loft_rings(canopy_shell, throat)
+        b.loft_rings(canopy_shell, [list(reversed(rg)) for rg in throat])
+        inner = [ring(cx, cy, cz(t) + 0.6, r * 0.93, shell_sides, phase=0.05) for t, r in crown[1:3]]
         b.loft_rings(canopy_plant, [list(reversed(rg)) for rg in inner])
+
+        def panel(mat, ra, rb, j, inset=0.0):
+            jn = (j + 1) % len(ra)
+            quad = [ra[j], ra[jn], rb[jn], rb[j]]
+            if inset:
+                quad = [(x, y, z + inset) for x, y, z in quad]
+            v, f = b.data[mat.name]
+            k = len(v)
+            v.extend(quad)
+            f.append((k, k + 1, k + 2, k + 3))
+            f.append((k + 3, k + 2, k + 1, k))
+
+        for k in range(2, len(outer) - 1):
+            for j in range(shell_sides):
+                cell = (j + k) % 4
+                if cell == 0:
+                    panel(canopy_shell, outer[k], outer[k + 1], j)
+                elif cell == 2 and (j // 2 + idx) % 2 == 0:
+                    panel(canopy_plant, outer[k], outer[k + 1], j, inset=0.5)
         # Radial ribs on the outside of the funnel.
         n_r = 16
         for r_i in range(n_r):

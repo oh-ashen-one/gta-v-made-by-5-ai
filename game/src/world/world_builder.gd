@@ -633,7 +633,11 @@ func _waterfront_block(centre: Vector3) -> void:
 			var pos := centre + Vector3(-34.0 + i * 68.0, 0.0, -30.0)
 			var h := 70.0 + i * 18.0
 			# Wave A (skyline): shared curtain-wall shader instead of the dotted sheet.
-			_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), LandmarkLooks.material_for("near_shore_tower_%d" % i))
+			var tower_mat := LandmarkLooks.material_for("near_shore_tower_%d" % i) as ShaderMaterial
+			# Round 2: lobby base and plant-screen crown on these near towers too.
+			tower_mat.set_shader_parameter("legacy_base", pos.y)
+			tower_mat.set_shader_parameter("legacy_height", h)
+			_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), tower_mat)
 			for f in int(h / 4.0):
 				_box(Vector3(26.6, 0.35, 26.6), pos + Vector3(0.0, 4.0 + f * 4.0, 0.0), Palette.mat(Palette.METAL, 0.4, 0.7))
 			_box(Vector3(28.0, 0.7, 28.0), pos + Vector3(0.0, h + 0.35, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.8))
@@ -1057,13 +1061,13 @@ func _background_city() -> void:
 			var zz := -330.0 + rng.randf_range(0.0, 30.0)
 			while zz < 600.0:
 				var xx: float = side * (x0 + row * 72.0 + rng.randf_range(-10.0, 10.0))
-				var res := rng.randf() < 0.55
+				var res := rng.randf() < 0.4
 				city.add_random(Vector3(xx, 0.0, zz), rng.randf_range(38.0, 75.0) + row * 24.0 + (40.0 if not res and rng.randf() < 0.45 else 0.0), res)
 				zz += rng.randf_range(48.0, 72.0)
 	for row in 3:
 		var xs := -620.0 + rng.randf_range(0.0, 30.0)
 		while xs < 560.0:
-			var res2 := rng.randf() < 0.55
+			var res2 := rng.randf() < 0.4
 			city.add_random(Vector3(xs, 0.0, 455.0 + row * 72.0 + rng.randf_range(-10.0, 10.0)), rng.randf_range(32.0, 72.0) + row * 25.0, res2)
 			xs += rng.randf_range(50.0, 76.0)
 	city.build(_world_root)

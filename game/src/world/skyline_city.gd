@@ -30,7 +30,7 @@ var _last_material := -1
 ## Facade systems each archetype may wear (ids from skyline_facade.gdshader):
 ## 0 dark blue-green glass, 1 limestone, 2 silver-blue glass, 3 bronze glass,
 ## 4 white aluminium ribbon, 5 painted residential, 6 finned grey-green glass.
-const MATERIALS_BY_KIND := [[0, 1, 2, 3, 6], [0, 2, 6, 1], [0, 2, 3], [5, 5, 1, 4], [0, 6, 4, 2], [1, 4, 3]]
+const MATERIALS_BY_KIND := [[0, 1, 2, 3, 6], [0, 2, 6, 1], [0, 2, 3], [5, 5, 1, 4], [0, 6, 4, 2], [1, 4, 2]]
 
 func _init(seed_value: int = 7310) -> void:
 	_rng.seed = seed_value
@@ -118,11 +118,15 @@ func add_random(pos: Vector3, height: float, residential: bool = false) -> void:
 	var mat := -1
 	if height > 140.0 and kind != 3:
 		mat = _pick_from(kind, [0, 1, 0, 3, 1, 2, 6])
+	elif height > 60.0 and kind != 3:
+		# Mid-rise office towers on the flanks: a third dark glass so the
+		# estates do not read as one pale wall from the aerial views.
+		mat = _pick_from(kind, [0, 1, 0, 3, 2, 6, 4, 0, 2])
 	if add(kind, pos, width, height, depth, yaw, mat):
 		# Every tower over 55 m stands on a podium; it fills the street wall
 		# between towers and gives each a readable base.
 		if height > 55.0:
-			add(5, pos + Vector3(_rng.randf_range(-4, 4), 0.0, _rng.randf_range(-4, 4)), width * 1.4, _rng.randf_range(9.0, 16.0), _rng.randf_range(0.7, 1.0), yaw, [1, 4, 3][_rng.randi() % 3])
+			add(5, pos + Vector3(_rng.randf_range(-4, 4), 0.0, _rng.randf_range(-4, 4)), width * 1.4, _rng.randf_range(9.0, 16.0), _rng.randf_range(0.7, 1.0), yaw, [1, 4, 2][_rng.randi() % 3])
 
 func build(parent: Node3D) -> void:
 	var shader: Shader = load(SHADER)

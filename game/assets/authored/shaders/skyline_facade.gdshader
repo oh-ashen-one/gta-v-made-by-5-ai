@@ -49,6 +49,10 @@ uniform float mullion_m = 2.6;
 // Daytime build: interiors stay dark. >0 only for dusk variants, and then the
 // lit panes are masked to the glazing so they never straddle the grid.
 uniform float lit_chance = 0.0;
+// Single-mesh towers can opt into the lobby base / crown: world y of the
+// ground and the tower height (0 = off).
+uniform float legacy_base = 0.0;
+uniform float legacy_height = 0.0;
 
 varying vec3 wpos;
 varying vec3 wnorm;
@@ -80,8 +84,8 @@ void vertex() {
 	} else {
 		float legacy = style > 0.5 ? 1.0 : (palette < 0.3 ? 0.0 : (palette < 0.55 ? 2.0 : (palette < 0.8 ? 6.0 : 3.0)));
 		icustom = vec4((legacy + 0.5) / 8.0, fract(seed * 3.7), floor_scale, seed);
-		inst_base = 0.0;
-		inst_h = 0.0;
+		inst_base = legacy_base;
+		inst_h = legacy_height;
 	}
 }
 
@@ -157,10 +161,10 @@ void fragment() {
 			metal = 0.15 * glazing; rough = mix(0.55, 0.26, glazing); spec = 0.55;
 		} else if (mat_id == 3) {
 			// Bronze glass in a dark anodised frame.
-			vec3 g = lin(mix(vec3(0.17, 0.13, 0.09), vec3(0.22, 0.17, 0.11), tv)) * (0.8 + 0.4 * refl);
+			vec3 g = lin(mix(vec3(0.27, 0.23, 0.17), vec3(0.32, 0.27, 0.19), tv)) * (0.8 + 0.4 * refl);
 			float band = pulse(fy, 0.16, fwy);
 			float mull = pulse(bay, 0.1, fwx);
-			c = mix(g, lin(vec3(0.12, 0.10, 0.08)), max(band, mull));
+			c = mix(g, lin(vec3(0.20, 0.18, 0.15)), max(band, mull));
 			glazing = 1.0 - max(band, mull);
 			metal = 0.0; rough = mix(0.5, 0.34, glazing); spec = 0.35;
 		} else if (mat_id == 4) {
