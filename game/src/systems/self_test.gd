@@ -169,6 +169,7 @@ func run(main: Node) -> void:
 	await _ticks(20)
 	_check("a rammed car is shoved by the impact", shove_probe.global_position.distance_to(shove_from) > 1.0, "moved=%.2f" % shove_probe.global_position.distance_to(shove_from))
 	shove_probe.queue_free()
+	await _driving_feel_checks(main, car)
 
 	# Incoming weapon rays must hit the car body rather than its hidden occupant.
 	car._forward = 0.0
@@ -739,6 +740,87 @@ func _skyline_checks(world: WorldBuilder) -> void:
 		lum[m.get_string(1)] = 0.2126 * m.get_string(2).to_float() + 0.7152 * m.get_string(3).to_float() + 0.0722 * m.get_string(4).to_float()
 	var gap := float(lum.get("horizon_col", 0.0)) - float(lum.get("haze_col", 1.0))
 	_check("skyline: aerial haze is darker than the horizon sky so far towers keep silhouettes", lum.size() == 2 and gap >= 0.10 and int(sk.get("atmosphere", 0)) >= 2, "gap %.2f %s" % [gap, str(lum)])
+
+## driving-p: handbrake rotation, momentum exchange in a rear-end crash, a
+## wall rebound that keeps some speed, and visible damage. Disclosed fixture
+## moves on the open test road; the car is put back afterwards.
+func _driving_feel_checks(main: Node, car: Car) -> void:
+	var home := car.global_position
+	car.global_position = Vector3(0.0, 0.3, -300.0)
+	car.rotation = Vector3.ZERO
+	car.velocity = Vector3(0.0, 0.0, -18.0)
+	await _ticks(2)
+	var yaw0 := car.rotation.y
+	Input.action_press("jump")
+	Input.action_press("move_left")
+	var slide := 0.0
+	for i in 40:
+		await get_tree().physics_frame
+		slide = maxf(slide, car.drift_amount())
+	Input.action_release("jump")
+	Input.action_release("move_left")
+	var turned := absf(angle_difference(yaw0, car.rotation.y))
+	_check("handbrake turn swings the car round with the tail sliding", turned > 0.7 and slide > 0.2, "yaw %.2f rad slide %.2f" % [turned, slide])
+	# Rear-end a stationary car at ~65 km/h.
+	car.global_position = Vector3(0.0, 0.3, -300.0)
+	car.rotation = Vector3.ZERO
+	car.velocity = Vector3.ZERO
+	car._yaw_rate = 0.0
+	car._steer = 0.0
+	await _ticks(2)
+	var parked := Car.new()
+	parked.kind = "sedan"
+	main.add_child(parked)
+	parked.global_position = Vector3(0.0, 0.5, -314.0)
+	await _ticks(3)
+	var parked_from := parked.global_position
+	car.last_impact = {}
+	car.velocity = Vector3(0.0, 0.0, -18.0)
+	Input.action_press("move_forward")
+	for i in 60:
+		await get_tree().physics_frame
+		if not car.last_impact.is_empty(): break
+	Input.action_release("move_forward")
+	var hit := car.last_impact.duplicate()
+	await _ticks(30)
+	var kept := float(hit.get("speed_after", 0.0)) / maxf(0.1, float(hit.get("speed_before", 1.0)))
+	_check("rear-end crash shares momentum (our car keeps rolling, the struck car is shoved)", bool(hit.get("car", false)) and kept > 0.2 and kept < 0.75 and parked.global_position.distance_to(parked_from) > 2.0, "kept %.2f moved %.2f closing %.1f" % [kept, parked.global_position.distance_to(parked_from), float(hit.get("closing", 0.0))])
+	if car.damage != null and parked.damage != null:
+		_check("crash leaves dents on both cars and throws debris", car.damage.dent_count() > 0 and parked.damage.dent_count() > 0 and car.damage.debris_spawned > 0, "dents %d/%d debris %d" % [car.damage.dent_count(), parked.damage.dent_count(), car.damage.debris_spawned])
+	parked.queue_free()
+	# Wall: rebound with a little speed kept, never a dead stop and never through it.
+	var wall := StaticBody3D.new()
+	wall.collision_layer = 1
+	wall.collision_mask = 0
+	var wall_shape := CollisionShape3D.new()
+	var wall_box := BoxShape3D.new()
+	wall_box.size = Vector3(12.0, 3.0, 0.6)
+	wall_shape.shape = wall_box
+	wall.add_child(wall_shape)
+	main.add_child(wall)
+	wall.global_position = Vector3(0.0, 1.5, -320.0)
+	car.global_position = Vector3(0.0, 0.3, -306.0)
+	car.rotation = Vector3.ZERO
+	car._yaw_rate = 0.0
+	car.last_impact = {}
+	car._impact_cooldown = 0.0
+	await _ticks(2)
+	car.velocity = Vector3(0.0, 0.0, -16.0)
+	Input.action_press("move_forward")
+	for i in 60:
+		await get_tree().physics_frame
+		if not car.last_impact.is_empty(): break
+	Input.action_release("move_forward")
+	var wall_hit := car.last_impact.duplicate()
+	await _ticks(4)
+	_check("wall impact rebounds instead of stopping dead", not bool(wall_hit.get("car", true)) and float(wall_hit.get("speed_after", 0.0)) > 1.5 and car.velocity.z > 0.0 and car.global_position.z > -320.0, "after %.1f m/s vz %.1f" % [float(wall_hit.get("speed_after", 0.0)), car.velocity.z])
+	wall.queue_free()
+	car.velocity = Vector3.ZERO
+	car._forward = 0.0
+	car._yaw_rate = 0.0
+	car.global_position = home
+	car.rotation = Vector3.ZERO
+	await _ticks(2)
 
 func _ticks(count: int) -> void:
 	for tick in count:
