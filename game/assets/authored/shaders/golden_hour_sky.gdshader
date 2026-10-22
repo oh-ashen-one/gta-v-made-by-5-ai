@@ -10,14 +10,14 @@ shader_type sky;
 // underside and the thick core fall to a blue-grey base. Everything reads the
 // sun from LIGHT0 so the cloud lighting agrees with the shadow direction.
 uniform vec3 zenith_color : source_color = vec3(0.30, 0.47, 0.76);
-uniform vec3 mid_color : source_color = vec3(0.47, 0.62, 0.85);
-uniform vec3 horizon_cool : source_color = vec3(0.86, 0.86, 0.85);
-uniform vec3 horizon_warm : source_color = vec3(0.98, 0.86, 0.70);
+uniform vec3 mid_color : source_color = vec3(0.55, 0.63, 0.76);
+uniform vec3 horizon_cool : source_color = vec3(0.88, 0.85, 0.80);
+uniform vec3 horizon_warm : source_color = vec3(1.0, 0.80, 0.58);
 uniform vec3 ground_color : source_color = vec3(0.34, 0.32, 0.29);
 uniform float sky_energy = 1.0;
 uniform float cloud_coverage = 0.55;
 uniform float cloud_scale = 3.2;
-uniform float sun_disc_energy = 22.0;
+uniform float sun_disc_energy = 40.0;
 uniform vec3 fallback_sun = vec3(0.80, 0.40, 0.45);
 
 float hash2(vec2 p) {
@@ -86,7 +86,10 @@ float density(vec2 p) {
 	float b = puff(w * 1.7) * 0.62 + puff(w * 3.6 + vec2(4.1, 2.3)) * 0.26 + billow(w * 7.5) * 0.12;
 	float n = c * 0.66 + b * 0.50;
 	// Field mean is ~0.6 (std ~0.1): coverage 0.5 leaves ~40 % of the deck clear.
-	float lo = 1.17 - cloud_coverage;
+	// Low-frequency coverage field: big cloud banks and wide clear gaps
+	// instead of evenly scattered popcorn (critic A3).
+	float cov = cloud_coverage + 0.30 * (vnoise(p * 0.21 + vec2(3.0, 8.0)) - 0.5);
+	float lo = 1.17 - cov;
 	// Narrow ramp: crisp cumulus outlines with blue gaps, not a milky veil.
 	return smoothstep(lo, lo + 0.07, n) * (0.75 + 0.25 * smoothstep(lo + 0.07, lo + 0.25, n));
 }
@@ -109,7 +112,7 @@ void sky() {
 	// Humid tropical gradient: pale blue overhead, a wide warm haze band low
 	// down (warmest toward the sun's azimuth), no saturated cobalt.
 	vec3 horizon = mix(horizon_cool, horizon_warm, pow(az, 1.6));
-	float t1 = smoothstep(0.0, 0.22, hp);
+	float t1 = smoothstep(0.0, 0.32, hp);
 	t1 = t1 * t1 * (3.0 - 2.0 * t1);
 	float t2 = smoothstep(0.25, 0.95, hp);
 	vec3 col = mix(horizon, mid_color, t1);
@@ -118,14 +121,17 @@ void sky() {
 
 	// Forward scattering around the sun: a tight halo, not a veil.
 	vec3 glow_tint = sun_tint * vec3(1.0, 0.90, 0.72);
-	col += glow_tint * (pow(mup, 8.0) * 0.22 + pow(mup, 64.0) * 0.55 + pow(mup, 900.0) * 2.2);
+	// Round 4: a wide warm veil around the low sun (golden-hour haze).
+	col += glow_tint * (pow(mup, 4.0) * 0.05 + pow(mup, 10.0) * 0.20 + pow(mup, 80.0) * 0.6 + pow(mup, 1200.0) * 3.0);
 
 	if (h > 0.0) {
 		// Cloud deck in a softened perspective: rho = (h + 0.10)^-0.45 still
 		// shrinks clouds toward the horizon (2.9x), but a flat-plane
 		// projection squashes them into streaks; this keeps distant cumulus
 		// about a third as tall as wide, so the horizon band stacks puffs.
-		float r = pow(h + 0.10, -0.45);
+		// Round 4: closer to a true cloud-plane projection, so cumulus are
+		// big overhead and flatten into stacked banks toward the horizon.
+		float r = pow(h + 0.06, -0.62) * 0.68;
 		vec2 p = dh * r * cloud_scale + vec2(7.3, 2.1);
 		float D = density(p);
 		if (D > 0.002) {
@@ -161,7 +167,7 @@ void sky() {
 	}
 
 	// Sun disc (HDR: drives the bloom in backlit frames).
-	float disc = smoothstep(0.99986, 0.99994, mu);
+	float disc = smoothstep(0.99980, 0.99990, mu);
 	col += vec3(1.0, 0.90, 0.72) * disc * sun_disc_energy;
 
 	if (h < 0.0) {

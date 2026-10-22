@@ -84,19 +84,22 @@ vec3 asphalt_wear(vec2 p, float lat, float along, float aa) {
 	// gutter grime and silt against the kerb
 	float gutter = smoothstep(7.0, 7.95, a);
 	m *= mix(1.0, 0.62 + 0.18 * vnoise(p * 0.7), gutter);
-	// patch repairs: dark rectangles with a sealed seam
+	// patch repairs with a sealed seam (round 4: edges wander and tones
+	// vary, so they no longer read as evenly spaced dark rectangles)
 	vec2 cell = vec2(floor(lat / 3.2), floor(along / 7.5));
 	float r = h21(cell + 3.1);
-	if (r < 0.18) {
+	if (r < 0.14) {
 		vec2 lp = vec2(fract(lat / 3.2) * 3.2, fract(along / 7.5) * 7.5);
+		lp += (vec2(vnoise(p * 1.7), vnoise(p * 1.7 + 5.0)) - 0.5) * 0.35;
 		vec2 sz = vec2(1.0 + 1.8 * h21(cell + 7.7), 1.6 + 4.6 * h21(cell + 1.3));
 		vec2 o = vec2(0.1 + (3.0 - sz.x) * h21(cell + 4.4), 0.2 + (7.2 - sz.y) * h21(cell + 9.9));
 		vec2 q = lp - o;
 		float inside = step(0.0, q.x) * step(q.x, sz.x) * step(0.0, q.y) * step(q.y, sz.y);
 		float edge = min(min(q.x, sz.x - q.x), min(q.y, sz.y - q.y));
 		float seam = inside * (1.0 - smoothstep(0.0, 0.06 + aa, edge));
-		m *= mix(vec3(1.0), vec3(0.86, 0.86, 0.88), inside);
-		m *= 1.0 - 0.30 * seam;
+		float tone = mix(0.84, 1.06, h21(cell + 2.2)) * mix(0.94, 1.0, vnoise(p * 2.3));
+		m *= mix(vec3(1.0), vec3(tone, tone, tone * 1.02), inside);
+		m *= 1.0 - 0.20 * seam;
 	}
 	// crack network, only in aged zones
 	vec2 warp = vec2(fbm(p * 1.3), fbm(p * 1.3 + 7.1)) * 0.8;
@@ -104,6 +107,20 @@ vec3 asphalt_wear(vec2 p, float lat, float along, float aa) {
 	float crack = 1.0 - smoothstep(0.0, 0.03 + aa, ce);
 	float aged = smoothstep(0.58, 0.72, fbm(p * 0.09 + 3.0));
 	m *= 1.0 - 0.38 * crack * aged;
+	// oil and coolant stains: soft irregular blobs, densest in the kerb
+	// parking lane and at the lane centres where cars idle
+	float st_n = fbm(p * 0.55 + 13.0);
+	float stain = smoothstep(0.66, 0.76, st_n) * (0.6 + 0.4 * vnoise(p * 3.1));
+	float park_lane = smoothstep(5.4, 6.2, a) * (1.0 - smoothstep(7.4, 7.9, a));
+	m *= 1.0 - (0.22 + 0.18 * park_lane) * stain;
+	// tar-sealed cracks: glossy black snakes in long-patched zones
+	vec2 tw = vec2(fbm(p * 0.6 + 2.0), fbm(p * 0.6 + 9.0)) * 1.6;
+	float te = vor_edge(p * 0.16 + tw);
+	float tar = 1.0 - smoothstep(0.003, 0.008 + aa * 0.16, te);
+	m *= 1.0 - 0.32 * tar * smoothstep(0.55, 0.65, fbm(p * 0.05 + 40.0));
+	// worn and broken road paint: grime breaks the lines up in patches
+	float paint_wear = smoothstep(0.45, 0.7, fbm(vec2(along * 0.35, lat * 1.5) + 21.0));
+	m *= mix(vec3(1.0), vec3(0.78, 0.76, 0.80), paint_wear * smoothstep(6.6, 7.2, a));
 	// longitudinal joint crack near the lane boundary
 	float joint = 1.0 - smoothstep(0.0, 0.03 + aa, abs(a - 4.0 - 0.15 * sin(along * 0.31)));
 	m *= 1.0 - 0.35 * joint * smoothstep(0.4, 0.7, vnoise(vec2(along * 0.05, 2.0)));
@@ -121,8 +138,9 @@ vec3 paver_wear(vec2 p, float kerb_d, float aa) {
 	// discoloured and replaced paver tiles (0.6 x 0.3 grid)
 	vec2 tc = floor(vec2(p.x / 0.6, p.y / 0.3));
 	float tr = h21(tc + 0.5);
-	if (tr < 0.06) {
-		m *= mix(vec3(0.80, 0.78, 0.76), vec3(0.92, 0.90, 0.86), h21(tc + 9.0));
+	if (tr < 0.04) {
+		// replaced tiles: a gentle tone shift, not a dark decal
+		m *= mix(vec3(0.90, 0.89, 0.87), vec3(1.04, 1.02, 0.98), h21(tc + 9.0));
 	}
 	// grain, damp patches and mid-scale soiling
 	float gr = mix(0.5, vnoise(p * 8.0), 1.0 - smoothstep(0.05, 0.2, aa));
@@ -204,10 +222,13 @@ void fragment() {
 			float lat = along_z ? lat_x : lat_z;
 			float along = along_z ? w.z : w.x;
 			m = asphalt_wear(w.xz, lat, along, aa);
-		} else if (w.y < 3.0) {
+		} else if (w.y < 0.5 || (w.y < 3.0 && min(abs(lat_x), abs(lat_z)) > 8.4)) {
+			// pavers, void-deck slabs and forecourts: anything on the
+			// carriageway above kerb height (car hoods, roofs) stays clean
+			// (critic A3: cracks on a parked sedan's hood)
 			float kd = min(abs(lat_x), abs(lat_z)) - 8.3;
 			m = paver_wear(w.xz, max(kd, 0.0), aa);
-		} else {
+		} else if (w.y > 3.0) {
 			m = mix(vec3(0.9), vec3(1.0), fbm(w.xz * 0.3));
 		}
 	} else if (abs(n.y) < 0.3) {

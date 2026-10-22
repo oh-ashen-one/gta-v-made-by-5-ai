@@ -12,10 +12,10 @@ extends RefCounted
 ##   --lighting-tonemap=aces|agx    tonemapper (default aces)
 ##   --lighting-off=vfog,ssil,ssao,lut,pcss   disable features for A/B
 
-const SUN_ROTATION_DEG := Vector3(-19.0, 58.0, 0.0)
+const SUN_ROTATION_DEG := Vector3(-19.0, 61.0, 0.0)   # r4: disc sits above the heritage avenue, inside the toward-sun frames
 const SUN_COLOR := Color(1.0, 0.77, 0.54)
 const SUN_ENERGY := 2.55   # round 3: 3.0 clipped sunlit white and car paint (critic A2)
-const SKY_ZENITH := Color(0.36, 0.49, 0.70)
+const SKY_ZENITH := Color(0.38, 0.48, 0.64)   # r4: dustier, less midday-cobalt
 const CLOUD_COVERAGE := 0.55
 const LAMP_COLOR := Color(1.0, 0.78, 0.52)
 const TUBE_COLOR := Color(0.86, 0.94, 1.0)
@@ -77,10 +77,10 @@ static func build_environment(parent: Node) -> Dictionary:
 	# itself is left clear (fog_sky_affect 0) so the gradient stays visible.
 	env.fog_enabled = true
 	env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
-	env.fog_light_color = Color(0.93, 0.85, 0.74)
+	env.fog_light_color = Color(0.97, 0.84, 0.68)
 	env.fog_light_energy = 1.0
-	env.fog_sun_scatter = 0.09
-	env.fog_density = 0.0005
+	env.fog_sun_scatter = 0.16
+	env.fog_density = 0.00065
 	env.fog_aerial_perspective = 0.55
 	env.fog_sky_affect = 0.0
 	env.fog_height = 24.0
@@ -88,7 +88,7 @@ static func build_environment(parent: Node) -> Dictionary:
 
 	# Light volumetric haze: sun shafts through canopies and arcade columns.
 	env.volumetric_fog_enabled = true
-	env.volumetric_fog_density = 0.0007
+	env.volumetric_fog_density = 0.0009
 	env.volumetric_fog_albedo = Color(1.0, 0.93, 0.84)
 	env.volumetric_fog_anisotropy = 0.45
 	env.volumetric_fog_length = 140.0

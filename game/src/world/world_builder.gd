@@ -165,22 +165,14 @@ func _medians() -> void:
 			var centre := Vector3(x, 0.0, cz)
 			_box(Vector3(1.6, 0.26, span), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
 			_box(Vector3(1.2, 0.30, span - 1.0), centre + Vector3(0.0, 0.30, 0.0), median_turf)
-			# low clipped shrubs only: median trees sit on the road centreline and
-			# would put a real trunk collider on the mission avenue centreline
-			var count := int(span / 9.0)
-			for i in count:
-				var zz: float = cz - span * 0.5 + 4.5 + i * 9.0
-				_sphere(Vector3(1.0, 0.75, 1.0), Vector3(x, 0.52, zz), Palette.mat(Palette.FOLIAGE_LIGHT, 0.95))
+			# planting is StreetDressing's median bed (lighting r4: the smooth
+			# green spheres read as placeholder domes, critic A3)
 	for z in Z_LINES:
 		for k in range(0, 4):
 			var cx := -240.0 + k * 160.0
 			var centre := Vector3(cx, 0.0, z)
 			_box(Vector3(span, 0.26, 1.6), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
 			_box(Vector3(span - 1.0, 0.30, 1.2), centre + Vector3(0.0, 0.30, 0.0), median_turf)
-			var count := int(span / 9.0)
-			for i in count:
-				var xx: float = cx - span * 0.5 + 4.5 + i * 9.0
-				_sphere(Vector3(1.0, 0.75, 1.0), Vector3(xx, 0.52, z), Palette.mat(Palette.FOLIAGE_LIGHT, 0.95))
 
 # ------------------------------------------------------------------- blocks
 func _build_grid() -> void:
@@ -1061,8 +1053,13 @@ func _build_lane_graph() -> void:
 	for z in Z_LINES:
 		for side: float in [-1.0, 1.0]:
 			var heading2 := -PI * 0.5 if side < 0.0 else PI * 0.5
-			for px2: float in [-220.0, -104.0, 56.0, 216.0]:
-				var stagger_x := px2 + (30.0 if side > 0.0 else 0.0)
+			var lots: Array[float] = [-220.0, -104.0, 56.0, 216.0]
+			if z == -160.0:
+				# heritage avenue (photo/gameplay hero street, lighting r4): a
+				# fuller kerb so the toward-sun views read as a lived street
+				lots.append_array([-128.0, -100.0, -50.0, -22.0] if side > 0.0 else [-140.0, -82.0, -36.0])
+			for px2: float in lots:
+				var stagger_x := px2 + (30.0 if side > 0.0 and px2 in [-220.0, -104.0, 56.0, 216.0] else 0.0)
 				parked_spots.append({"pos": Vector3(stagger_x, 0.3, z + side * KERB_PARK_OFFSET), "heading": heading2, "kind": ["sedan", "coupe", "van"][i % 3]})
 				i += 1
 

@@ -695,9 +695,11 @@ func _lighting_checks(world: WorldBuilder) -> void:
 		and zen.s < 0.65 and cover >= 0.5, "zenith_s=%.2f coverage=%.2f" % [zen.s, cover])
 	# Round 2: shade must stay darker than sun (A1 shadow ratios 0.58-0.59) and
 	# the sun must not throw a warm veil across sun-facing frames.
-	_check("shadow contrast and no glare veil (ambient, crisp sun, low sun scatter)", env != null and sun != null
-		and env.ambient_light_energy <= 0.7 and sun.light_angular_distance <= 0.3 and env.fog_sun_scatter <= 0.1
-		and env.volumetric_fog_density <= 0.001 and env.adjustment_saturation <= 1.02,
+	# Round 4 (critic A3) asks for a warm golden-hour haze, so the scatter cap
+	# is a bounded veil (<= 0.25), not zero.
+	_check("shadow contrast and bounded haze (ambient, crisp sun, sun scatter <= 0.25)", env != null and sun != null
+		and env.ambient_light_energy <= 0.7 and sun.light_angular_distance <= 0.3 and env.fog_sun_scatter <= 0.25
+		and env.volumetric_fog_density <= 0.0015 and env.adjustment_saturation <= 1.02,
 		"" if env == null else "ambient=%.2f scatter=%.2f" % [env.ambient_light_energy, env.fog_sun_scatter])
 	var elevation := -sun.rotation_degrees.x if sun != null else 0.0
 	_check("warm low late-afternoon sun with soft shadows", sun != null and sun.shadow_enabled and elevation > 8.0 and elevation < 30.0
@@ -730,6 +732,20 @@ func _lighting_checks(world: WorldBuilder) -> void:
 			if int(dressing.counts[k]) > 0: kinds += 1
 	_check("streets are weathered and dressed (wear volumes, >= 8 clutter types)", dressing != null and dressing.weather_volumes >= 16 and kinds >= 8,
 		"" if dressing == null else "volumes=%d kinds=%d" % [dressing.weather_volumes, kinds])
+	# Round 4 (critic A3): kerbed median planters with painted noses, no domes.
+	var domes := 0
+	if district != null:
+		for c in district.get_children():
+			if c is MultiMeshInstance3D and String(c.name).begins_with("StreetDressing_shrub"):
+				domes += 1
+	_check("median beds have painted noses and no dome shrubs", dressing != null and int(dressing.counts.get("median_nose", 0)) >= 32 and domes == 0,
+		"noses=%d dome_batches=%d" % [0 if dressing == null else int(dressing.counts.get("median_nose", 0)), domes])
+	# Round 4: the low sun disc sits inside the heritage-avenue toward-sun view.
+	if sun != null:
+		var to_sun := sun.global_transform.basis.z.normalized()
+		var fwd := (Vector3(-40.0, 5.0, -155.0) - Vector3(-150.0, 2.6, -157.0)).normalized()
+		var ang := rad_to_deg(Vector2(fwd.x, fwd.z).angle_to(Vector2(to_sun.x, to_sun.z)))
+		_check("low sun is in frame on the heritage avenue (toward-sun view)", absf(ang) < 40.0 and to_sun.y > 0.15, "azimuth_off=%.1f elev=%.2f" % [ang, to_sun.y])
 
 func _count_meshes(node: Node) -> int:
 	var count := 0
