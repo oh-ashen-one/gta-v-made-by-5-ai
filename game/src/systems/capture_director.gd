@@ -757,6 +757,15 @@ func _tap(action: String) -> void:
 func _interact_until(target_mode: int) -> void:
 	for attempt in 3:
 		if _finished or Game.mode == target_mode: return
+		# Never press interact far from the requested vehicle (soak #8): the
+		# nearest other car would be taken instead. Walk back beside it first.
+		if Game.mode == Game.MODE_FOOT and target_mode != Game.MODE_FOOT and is_instance_valid(_boarding_target):
+			var away := _ground_distance(player.global_position, _boarding_target.global_position)
+			if away > 6.0:
+				_log("interaction deferred: %s is %.1f m away" % [_boarding_target.name, away])
+				var side := 1.0 if attempt % 2 == 0 else -1.0
+				var reach := 3.0 if _boarding_target is Helicopter else 1.9
+				await _walk_to(_boarding_target.global_position + _boarding_target.global_transform.basis.x * side * reach, 0.7, 30.0)
 		await _tap("interact")
 		if Game.mode == target_mode: return
 		_log("interaction attempt %d: %s" % [attempt, _interaction_diagnostic()])
@@ -786,6 +795,20 @@ func _interaction_diagnostic() -> String:
 		description += " LOS=clear"
 	return description
 
+func _nearby_vehicles_diagnostic() -> String:
+	var parts: PackedStringArray = []
+	for vehicle in get_tree().get_nodes_in_group("vehicles"):
+		var body := vehicle as Node3D
+		if body == null: continue
+		var gap := _ground_distance(player.global_position, body.global_position)
+		if gap > 7.0: continue
+		var state := ""
+		if body is Car:
+			var car := body as Car
+			state = " ai=%s npc=%s player=%s speed=%.1f" % [car.has_ai, car.occupied_by_npc, car.driver_is_player, car.velocity.length()]
+		parts.append("%s@%s %.1fm%s" % [body.name, body.global_position.snapped(Vector3.ONE * 0.1), gap, state])
+	return "; ".join(parts) if not parts.is_empty() else "no vehicle within 7 m"
+
 func _release_all() -> void:
 	for action in ACTIONS:
 		Input.action_release(action)
@@ -804,13 +827,38 @@ func _walk_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 	var stuck_for := 0.0
 	var sidestep_for := 0.0
 	var sidestep_sign := 1.0
+	# Progress watchdog (soak #8): sliding along a car body never trips the
+	# per-frame stuck test, so 2.5 s without gaining 0.5 m backs out, then
+	# walks across the old line on alternating sides before resuming.
+	var best_distance := _ground_distance(player.global_position, target)
+	var best_at := _elapsed()
+	var backout_for := 0.0
+	var backouts := 0
 	Input.action_press("move_forward")
 	Input.action_press("sprint")
 	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and Game.mode == Game.MODE_FOOT:
 		await get_tree().physics_frame
-		if _ground_distance(player.global_position, target) <= stop_distance: break
+		var distance := _ground_distance(player.global_position, target)
+		if distance <= stop_distance: break
 		var delta := get_physics_process_delta_time()
 		_face_towards(target)
+		if backout_for > 0.0:
+			backout_for -= delta
+			player.yaw += PI if backout_for > 1.2 + 0.3 * backouts else (1.0 if backouts % 2 == 1 else -1.0) * PI * 0.5
+			if backout_for <= 0.0:
+				best_distance = distance
+				best_at = _elapsed()
+			last_pos = player.global_position
+			continue
+		if distance < best_distance - 0.5:
+			best_distance = distance
+			best_at = _elapsed()
+		elif _elapsed() - best_at > 2.5:
+			backouts += 1
+			backout_for = 0.8 + 1.2 + 0.3 * backouts
+			Input.action_release("jump")
+			_log("walk stalled %.1f m from target at %s; backing out (%d): %s" % [distance, player.global_position.snapped(Vector3.ONE * 0.1), backouts, _nearby_vehicles_diagnostic()])
+			continue
 		if sidestep_for > 0.0:
 			sidestep_for -= delta
 			player.yaw += sidestep_sign * 1.2
