@@ -41,34 +41,45 @@ render_mode blend_mix, depth_draw_never, cull_disabled, shadows_disabled;
 uniform float spin = 1.0;
 uniform float phase = 0.0;
 uniform float blades = 4.0;
-uniform vec3 tint : source_color = vec3(0.055, 0.058, 0.062);
-uniform vec3 tip_tint : source_color = vec3(0.62, 0.60, 0.52);
+uniform vec3 tint : source_color = vec3(0.045, 0.047, 0.05);
+uniform vec3 tip_tint : source_color = vec3(0.30, 0.31, 0.32);
 uniform float hub = 0.10;
 varying vec2 lp;
 void vertex() { lp = VERTEX.xz; }
+// One motion-blurred blade: a crisp leading edge, a short smear behind it.
+float blade(float k, float len) {
+	return smoothstep(0.0, 0.012, k) * exp(-k / len);
+}
 void fragment() {
 	float r = length(lp);
 	if (r > 1.0) { discard; }
 	float a = atan(lp.y, lp.x) + phase;
 	float k = fract(a * blades / 6.2831853);
-	// leading edge is crisp, the trailing smear fades over the sector
-	float smear = smoothstep(0.0, 0.035, k) * pow(1.0 - k, 2.6);
-	float band = 0.86 + 0.14 * sin(r * 71.0 + k * 3.0);
-	float radial = smoothstep(hub, hub + 0.18, r) * (1.0 - smoothstep(0.955, 1.0, r));
-	float tip = smoothstep(0.86, 0.90, r) * (1.0 - smoothstep(0.93, 0.965, r));
-	float body = (0.11 + 0.36 * smear) * band;
-	float alpha = spin * radial * (body + tip * (0.10 + 0.25 * smear));
-	// a thin disc seen at a grazing angle still reads (optical density grows)
+	// Blade streaks (camera-shutter blur) plus two fainter ghost positions
+	// from earlier in the exposure; between the streaks the disc is almost
+	// clear, so there is no solid plate or ring.
+	float streak = blade(k, 0.09) * 0.62;
+	streak += blade(fract(k + 0.33), 0.06) * 0.16;
+	streak += blade(fract(k + 0.66), 0.05) * 0.08;
+	// blade chord tapers toward the tip; a blade root starts at the grip
+	float span = smoothstep(hub + 0.04, hub + 0.20, r) * (1.0 - smoothstep(0.80, 1.0, r));
+	float haze = 0.022 * span;
+	float alpha = spin * (streak * span + haze);
+	// grazing view: let optical density grow only a little (no hula-hoop rim)
 	float graze = 1.0 - abs(dot(NORMAL, VIEW));
-	alpha *= 1.0 + 2.2 * graze * graze;
-	float hubcap = 1.0 - smoothstep(hub * 0.55, hub * 0.75, r);
-	alpha = max(alpha, hubcap * 0.92);
-	ALBEDO = mix(tint, tip_tint, tip * 0.75 * (1.0 - hubcap));
-	// matte: a blurred disc must never flare into a white glare streak
-	ROUGHNESS = 0.85;
-	METALLIC = 0.0;
-	SPECULAR = 0.15;
-	ALPHA = clamp(alpha, 0.0, 0.95);
+	alpha *= 1.0 + 0.6 * graze * graze;
+	// a blade sweeping past the chase camera must not fill the lens
+	alpha *= smoothstep(2.5, 6.5, length(VERTEX));
+	// visible rotor head: a dark hub cap
+	float hubcap = 1.0 - smoothstep(hub * 0.80, hub * 1.05, r);
+	streak *= 1.0 - hubcap;
+	alpha = max(alpha, hubcap * 0.96);
+	// leading edges catch a little sky light; the hub stays dark metal
+	ALBEDO = mix(tint, tip_tint, clamp(streak * 0.9, 0.0, 1.0) * (1.0 - hubcap));
+	ROUGHNESS = 0.7;
+	METALLIC = mix(0.0, 0.6, hubcap);
+	SPECULAR = 0.2;
+	ALPHA = clamp(alpha, 0.0, 0.96);
 }
 """
 
@@ -396,8 +407,12 @@ func _physics_process(delta: float) -> void:
 		_dust_mat.initial_velocity_min = 1.5
 		_dust_mat.initial_velocity_max = 4.5
 		_dust_mat.gravity = Vector3(0.0, -2.2, 0.0)
+		_dust_mat.scale_min = 0.22
+		_dust_mat.scale_max = 0.5
 	else:
 		_dust_draw.albedo_color = Color(0.80, 0.75, 0.66, 0.55)
 		_dust_mat.initial_velocity_min = 0.2
 		_dust_mat.initial_velocity_max = 1.2
 		_dust_mat.gravity = Vector3(0.0, -0.6, 0.0)
+		_dust_mat.scale_min = 0.8
+		_dust_mat.scale_max = 1.6
