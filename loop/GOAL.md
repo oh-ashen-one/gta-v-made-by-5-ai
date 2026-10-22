@@ -27,6 +27,7 @@ It should be utterly perfect, alive and cinematic, with every single thing done 
 movement, interactive characters, the city, sky, missions, and anything else you can think of.
 
 ## Run window and model
+- **Owner update 2026-10-22 ~17:27Z (supersedes the hard 6-hour limit below):** keep going until the critiques and blind judgements meet the north star (a blind judge prefers ours to GTA V, or cannot tell, and is genuinely wowed) or until the owner stops the run. Work in rolling waves; integrate and push after each wave. All guardrails still apply. Current run state: `loop/RUN.md`.
 - One unattended overnight run with a **hard 6-hour wall-clock limit**. First action: write START and
   DEADLINE = START + 6 h (UTC, from `date -u`) to `loop/RUN.md`. Check `date -u` before every new build or
   critique round.

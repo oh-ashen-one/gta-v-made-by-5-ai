@@ -70,6 +70,14 @@ const SIM_NEAR := 110.0
 const SIM_FAR_TICKS := 3
 var _sim_accum := 0.0
 var _sim_slot := 0
+## Presentation layer (car_fx.gd, opus55 driving): body roll/pitch, paint,
+## lights, smoke, skids, sparks and the weighted chase camera.
+const CarFxScript := preload("res://src/actors/car_fx.gd")
+var fx: Node3D = null
+## Travel heading for the player car: it trails the body heading at speed so
+## hard cornering slides a little (tyre smoke and marks come from this slip).
+var _vel_yaw := 0.0
+var _handbrake := false
 
 func _ready() -> void:
 	_sim_slot = int(get_instance_id() % SIM_FAR_TICKS)
@@ -196,6 +204,9 @@ func _build() -> void:
 			_procedural_visuals.append(child)
 	# Provider vehicle art when available; the procedural build is the fallback.
 	_try_provider_asset(dims)
+	fx = CarFxScript.new()
+	add_child(fx)
+	fx.setup(self, _provider_root)
 
 	_arm = SpringArm3D.new()
 	_arm.spring_length = 5.4
@@ -264,6 +275,9 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector3.ZERO
 		move_and_slide()
 		return
+	if not driver_is_player and _shove.length_squared() > 0.01:
+		_shoved_motion(delta)
+		return
 	if driver_is_player:
 		_player_control(delta)
 	elif has_ai:
@@ -298,6 +312,42 @@ func _physics_process(delta: float) -> void:
 	var before := velocity
 	move_and_slide()
 	_check_impact(before)
+	_spin_wheels(delta)
+
+var _shove := Vector3.ZERO
+var _shove_spin := 0.0
+var _rebound := 0.0
+var shoves_taken := 0
+
+## Struck by the player: slide away with the transferred momentum, spin about
+## the contact point, and scrub to a stop on the tyres (~9 m/s^2).
+func shove(v: Vector3, at: Vector3) -> void:
+	if driver_is_player or disabled: return
+	v.y = 0.0
+	_shove += v
+	var r := at - global_position
+	r.y = 0.0
+	_shove_spin = clampf(_shove_spin - r.cross(v).y * 0.07, -2.2, 2.2)
+	_forward = 0.0
+	shoves_taken += 1
+	set_physics_process(true)
+	health = maxf(1.0, health - clampf(v.length() * 1.2, 0.0, 30.0))
+	if fx != null and fx.has_method("impact_at"):
+		fx.impact_at(at, -v.normalized(), clampf(v.length() / 14.0, 0.25, 1.0))
+
+func _shoved_motion(delta: float) -> void:
+	velocity.x = _shove.x
+	velocity.z = _shove.z
+	velocity.y = -0.6 if is_on_floor() else velocity.y - 24.0 * delta
+	rotate_y(_shove_spin * delta)
+	move_and_slide()
+	_shove = _shove.move_toward(Vector3.ZERO, 9.0 * delta)
+	_shove_spin = move_toward(_shove_spin, 0.0, 3.0 * delta)
+	if get_slide_collision_count() > 0:
+		for i in get_slide_collision_count():
+			var n := get_slide_collision(i).get_normal()
+			if n.y < 0.65 and _shove.dot(n) < 0.0:
+				_shove = (_shove - n * _shove.dot(n) * 1.4) * 0.6
 	_spin_wheels(delta)
 
 ## Kinematic wheel contact: lift over a low kerb only when the complete car
@@ -346,11 +396,23 @@ func _check_impact(before: Vector3) -> void:
 				else:
 					person.scramble_from(global_position)
 			continue
+		# driving C2: momentum goes into the struck car (critic C1: an 84 km/h
+		# ram stopped dead and left the victim unmoved).
+		if struck is Car and approach > 3.0 and driver_is_player:
+			var other := struck as Car
+			var now_ms := Time.get_ticks_msec()
+			if now_ms - int(other.get_meta("shove_ms", -100000)) > 350:
+				other.set_meta("shove_ms", now_ms)
+				other.shove(-normal * approach * 0.62, collision.get_position())
+				_rebound = maxf(_rebound, approach * 0.34)
 		worst = maxf(worst, approach)
 	if blocked > 0.5:
 		# Match the drivetrain to the velocity the collision actually permits.
 		# Holding throttle against a wall must not invent a fresh 27 m/s crash.
 		_forward = signf(_forward) * minf(absf(_forward), Vector2(velocity.x, velocity.z).length())
+		if _rebound > 0.0:
+			_forward = (signf(_forward) if absf(_forward) > 0.01 else 1.0) * maxf(absf(_forward), _rebound)
+			_rebound = 0.0
 	if worst < 6.0 or _impact_cooldown > 0.0:
 		return
 	_impact_cooldown = 1.2
@@ -422,13 +484,40 @@ func _player_control(delta: float) -> void:
 	else:
 		_forward = move_toward(_forward, 0.0, (DRAG + absf(_forward) * 0.25) * delta * 6.0)
 	_steer = lerpf(_steer, steer_input, clampf(delta * 9.0, 0.0, 1.0))
-	var turn := _steer * TURN_SPEED * clampf(absf(_forward) / 8.0, 0.0, 1.0) * signf(_forward if absf(_forward) > 0.05 else 1.0)
+	var speed_ratio := clampf(absf(_forward) / max_speed, 0.0, 1.0)
+	_handbrake = Input.is_action_pressed("jump")
+	# Weight: steering authority eases off at speed; the handbrake bites.
+	var turn := _steer * TURN_SPEED * clampf(absf(_forward) / 8.0, 0.0, 1.0) * lerpf(1.0, 0.82, speed_ratio) * signf(_forward if absf(_forward) > 0.05 else 1.0)
+	if _handbrake:
+		turn *= 1.35
+		_forward = move_toward(_forward, 0.0, 9.0 * delta)
 	# A node that faces -Z turns left when its yaw increases, so the sign here
 	# has to be positive: pressing left has to steer left, not right.
 	rotation.y += turn * delta
-	var dir := -global_transform.basis.z
+	# Grip: the travel heading follows the nose at a speed-dependent rate, so a
+	# fast corner carries a visible slip angle instead of rail-turning.
+	var slip_gap := angle_difference(_vel_yaw, rotation.y)
+	if absf(_forward) < 2.0 or _forward < 0.0 or absf(slip_gap) > 1.2:
+		_vel_yaw = rotation.y
+	else:
+		var grip := lerpf(12.0, 6.5, speed_ratio)
+		if _handbrake: grip = 1.8
+		_vel_yaw = lerp_angle(_vel_yaw, rotation.y, clampf(grip * delta, 0.0, 1.0))
+		# Sliding scrubs speed.
+		_forward *= 1.0 - clampf(absf(slip_gap) * 0.9 * delta, 0.0, 0.05)
+	var dir := Vector3(-sin(_vel_yaw), 0.0, -cos(_vel_yaw))
 	velocity.x = dir.x * _forward
 	velocity.z = dir.z * _forward
+
+## Velocity the drivetrain is asking for this tick (before collision response).
+func commanded_velocity() -> Vector3:
+	return Vector3(-sin(_vel_yaw), 0.0, -cos(_vel_yaw)) * _forward if driver_is_player else -global_transform.basis.z * _forward
+
+## 0..1 slide intensity of the player car (drives tyre smoke and skid marks).
+func drift_amount() -> float:
+	if not driver_is_player or absf(_forward) < 5.0: return 0.0
+	var gap := absf(angle_difference(_vel_yaw, rotation.y))
+	return clampf((gap - 0.06) / 0.16, 0.0, 1.0) + (0.6 if _handbrake and absf(_forward) > 6.0 else 0.0)
 
 func _ai_control(delta: float) -> void:
 	var to_target := ai_target - global_position
@@ -545,6 +634,8 @@ func interact(player: Node) -> void:
 	player.global_position = global_position
 	_update_driver_bust()
 	_arm.rotation.y = 0.0
+	_vel_yaw = rotation.y
+	if fx != null: fx.on_player_changed(true)
 	_camera.current = true
 	Game.set_mode(Game.MODE_CAR)
 	Sfx.start_engine()
@@ -559,6 +650,7 @@ func force_exit() -> void:
 		_forward = 0.0
 		velocity.x = 0.0
 		velocity.z = 0.0
+		if fx != null: fx.on_player_changed(false)
 		if driver_player is Player:
 			(driver_player as Player).current_vehicle = null
 			(driver_player as Player).busy = false
@@ -579,6 +671,7 @@ func exit_vehicle(player: Node) -> void:
 	driver_player = null
 	_forward = 0.0
 	velocity = Vector3.ZERO
+	if fx != null: fx.on_player_changed(false)
 	player.global_position = exit_pos
 	player.yaw = rotation.y
 	player.rotation.y = rotation.y

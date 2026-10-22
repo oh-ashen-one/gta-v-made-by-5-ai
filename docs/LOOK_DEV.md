@@ -74,8 +74,8 @@ flat grey-pink haze sky are retired.
 ## Camera treatment
 
 - Third-person over-the-shoulder: camera 1.62 m, lateral offset 0.85 m, arm 4.6 m (2.2 m aiming), so the character never sits on the reticle.
-- FOV 68° on foot, 72° driving, 75° flight.
-- No camera shake by default; reduced-shake setting halves it further.
+- FOV 68° on foot, 75° flight. Driving (opus55): 64° at rest easing to 76° at top speed; the chase camera sits ~4.8 m behind and ~1.9 m up, lags the car's yaw and springs fore/aft with acceleration.
+- No camera shake by default; reduced-shake setting halves it further. The only vehicle shake is a short (~0.4 s) kick on a hard collision.
 - Capture convention: 16:9, 1280×720 internal, HUD visible for gameplay shots and hidden for beauty shots.
 
 ## What is still placeholder (honest)

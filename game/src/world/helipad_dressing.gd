@@ -210,7 +210,9 @@ static func _flood_masts(holder: Node3D, radius: float) -> void:
 	var heads: Array[Transform3D] = []
 	var faces: Array[Transform3D] = []
 	for i in 4:
-		var a := TAU * (float(i) + 0.5) / 4.0
+		# Rotated 22.5 deg off the diagonals so no mast stands between the fixed
+		# photo_09 airfield camera (pad + (-20, 3, 24)) and the pad centre.
+		var a := TAU * (float(i) + 0.5) / 4.0 + TAU / 16.0
 		var p := Vector3(cos(a), 0.0, sin(a)) * (radius + 7.0)
 		poles.append(Transform3D(Basis(), p + Vector3(0.0, 4.0, 0.0)))
 		var face_basis := Basis.looking_at((-p).normalized() + Vector3(0.0, -0.6, 0.0), Vector3.UP)

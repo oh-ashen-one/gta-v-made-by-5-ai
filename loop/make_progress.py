@@ -25,9 +25,10 @@ def esc(s):
 
 def run_times():
     text = (ROOT / "loop/RUN.md").read_text() if (ROOT / "loop/RUN.md").exists() else ""
+    window = text.rsplit("\n## Run ", 1)[-1] if "\n## Run " in text else text  # latest run window only
     def grab(key):
-        m = re.search(r"%s:\s*(\S+Z)" % key, text)
-        return datetime.strptime(m.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc) if m else None
+        found = re.findall(r"^- %s:\s*(\S+Z)" % key, window, re.M)  # latest run window wins
+        return datetime.strptime(found[-1], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc) if found else None
     log = [l[2:] for l in text.split("## Log", 1)[-1].splitlines() if l.startswith("- ")] if "## Log" in text else []
     return grab("START"), grab("DEADLINE"), log
 
@@ -86,6 +87,8 @@ def main():
     if deadline:
         secs = int((deadline - now).total_seconds())
         remaining = "%dh %02dm left" % (secs // 3600, (secs % 3600) // 60) if secs > 0 else "DEADLINE reached"
+    elif start:
+        remaining = "open-ended run: continues until a blind judge prefers ours to GTA V and is wowed, or the owner stops it"
     verdict_class = {"OURS WINS": "win", "INDISTINGUISHABLE": "win", "OURS LOSES": "lose"}
     round_html = []
     for d in rounds():
@@ -125,6 +128,7 @@ figure{margin:0}img{width:100%%;height:auto;display:block;border-radius:3px}pre{
 <h1>Orchard Reach — Opus 5.5 enhancement loop</h1>
 <p class=meta>Bar: Grand Theft Auto V (GTA V references are linked by ID, never shown here). START %s · DEADLINE %s · <b>%s</b> · page built %s</p>
 <p class=meta>Honest status: "best build so far" is not "north star accepted". A piece is accepted only when a blind critic prefers it to its GTA V reference and is wowed.</p>
+<p class=meta><b>Final result (2026-10-22 run):</b> all 23 blind critic rounds returned OURS LOSES and none was wowed &mdash; no piece is preferred over GTA V. Merged: water, skyline, lighting, materials, on-foot, helicopter, driving; street-life not merged (headless route deadlocks). Final checks: headless --test 140/140, headless and rendered --capture route 13/13. Next biggest gaps: traffic/crowd density at junctions, close-range character fidelity, aerial sun/shadow contrast and glass specular, near-field kerb/planter/asphalt materials, hero-car paint and collisions, helicopter rotor visibility. Details in HANDOFF.md.</p>
 <h2>Pieces</h2>%s
 <h2>Critique rounds (latest first)</h2>%s
 <h2>Integrations</h2>%s

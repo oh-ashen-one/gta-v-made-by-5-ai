@@ -521,9 +521,10 @@ func _median_planting() -> void:
 					var lat := r.randf_range(-0.40, 0.40)
 					if r.randf() < 0.75:
 						var fs := r.randf_range(0.8, 1.1)
-						_ferns.append(Transform3D(Basis(Vector3.UP, r.randf() * TAU) * Basis.from_scale(Vector3(0.46, 0.42, 0.46) * fs), o + b * Vector3(t, 0.44, lat * 0.5)))
+						# driving C2: lower bed (critic: fern cards filled 25-35% of the chase view)
+						_ferns.append(Transform3D(Basis(Vector3.UP, r.randf() * TAU) * Basis.from_scale(Vector3(0.36, 0.24, 0.36) * fs), o + b * Vector3(t, 0.44, lat * 0.5)))
 					for q in 2:
-						var tb := Basis(Vector3.UP, r.randf() * TAU) * Basis.from_scale(Vector3(1.0, r.randf_range(1.0, 1.7), 1.0) * r.randf_range(1.6, 2.4))
+						var tb := Basis(Vector3.UP, r.randf() * TAU) * Basis.from_scale(Vector3(1.0, r.randf_range(0.7, 1.1), 1.0) * r.randf_range(1.4, 2.0))
 						_add("tuft", Transform3D(tb, o + b * Vector3(t + r.randf_range(-0.4, 0.4), 0.45, r.randf_range(-0.5, 0.5))), greens[r.randi() % greens.size()], false)
 					t += r.randf_range(0.55, 0.85)
 				_count("median_shrub")
