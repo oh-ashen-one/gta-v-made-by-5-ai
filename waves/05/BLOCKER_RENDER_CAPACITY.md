@@ -15,3 +15,10 @@ Recorded 2026-10-22 01:34 UTC by the wave-5 builder (Opus 5.5). The builder has 
 - The older lease `fable-veyr-knight-v4` (21:58 UTC) was replaced at 01:14 UTC by the dragon session, so the loop refills slots as they free.
 - **Consequence:** wave 5 has no rendered frame at all yet: no wave-4 baseline, no final-candidate screenshots, no rendered frame time. Everything verified so far is headless.
 - **Request:** close or pause at least three of the four veyr sessions for about 10 minutes, any time before 03:50 UTC. Alternatively, record an explicit owner exception. A gated runner is already waiting, one engine at a time, through lease → `render_gate.py` → `bounded_run.py`. As soon as capacity frees it captures, in order: the final-candidate opening, the unchanged wave-4 baseline (`aerial_district` and the wave-4 opening), the candidate fixed views, and a rendered candidate route. It launches nothing after 03:50:30 UTC.
+
+## Update, 01:58 UTC
+
+- The `fable-veyr-dragon` session (80753) ended at about 01:56. Three veyr knight renderers (3909, 4774, 5200) are still running, so the mixed cap is still exceeded.
+- Their 4-hour leases end at about 03:35–03:37 UTC. If the loop does not refill them, the gated runner should get roughly 15 minutes of capacity inside the final window.
+- The release candidate is already built and verified headless (`HANDOFF.md`). Only the rendered evidence is waiting on capacity.
+
