@@ -28,6 +28,7 @@ const JET_SHADER := "res://assets/authored/shaders/water_jet.gdshader"
 
 var water: MeshInstance3D
 var water_material: ShaderMaterial
+var horizon_skirt: MeshInstance3D
 var jet: MeshInstance3D
 var reflection_viewport: SubViewport
 var reflection_camera: Camera3D
@@ -96,6 +97,44 @@ func _build_water() -> void:
 	water.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	water.set_meta("bay_water", true)
 	add_child(water)
+	# Horizon skirt: an inward-facing ring at ~0.93 x camera far, from the sea
+	# up to eye height, sharing the water material in skirt mode. It fills the
+	# below-horizon gap the far plane leaves (critic: flat pale band with a
+	# hard top edge) with the same far-sea colour the plane fades into.
+	var ring := CylinderMesh.new()
+	ring.top_radius = 1.0
+	ring.bottom_radius = 1.0
+	ring.height = 1.0
+	ring.cap_top = false
+	ring.cap_bottom = false
+	ring.radial_segments = 96
+	ring.rings = 1
+	ring.flip_faces = true
+	horizon_skirt = MeshInstance3D.new()
+	horizon_skirt.name = "BayHorizonSkirt"
+	horizon_skirt.mesh = ring
+	horizon_skirt.material_override = water_material
+	horizon_skirt.set_instance_shader_parameter("skirt", 1.0)
+	horizon_skirt.layers = WATER_LAYER
+	horizon_skirt.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	horizon_skirt.extra_cull_margin = 16384.0
+	horizon_skirt.set_meta("bay_water", true)
+	horizon_skirt.visible = false
+	add_child(horizon_skirt)
+
+func _update_horizon_skirt(cam: Camera3D) -> void:
+	if horizon_skirt == null:
+		return
+	if cam == null or cam == reflection_camera or cam.global_position.y < LEVEL + 0.3:
+		horizon_skirt.visible = false
+		return
+	var r := cam.far * 0.93
+	var top := cam.global_position.y
+	var h := maxf(top - LEVEL, 0.2)
+	horizon_skirt.visible = true
+	horizon_skirt.global_transform = Transform3D(Basis.from_scale(Vector3(r, h, r)),
+		Vector3(cam.global_position.x, LEVEL + h * 0.5, cam.global_position.z))
+	water_material.set_shader_parameter("horizon_radius", r)
 
 # ------------------------------------------------------------- shoreline
 func _edge_box(size: Vector3, pos: Vector3, color: Color, rough: float, kind: String = "concrete") -> MeshInstance3D:
@@ -664,6 +703,7 @@ func _process(delta: float) -> void:
 	if not get_tree().paused:
 		_time += delta
 	_update_boats(_time)
+	_update_horizon_skirt(get_viewport().get_camera_3d())
 	if reflection_camera == null:
 		return
 	var cam := get_viewport().get_camera_3d()

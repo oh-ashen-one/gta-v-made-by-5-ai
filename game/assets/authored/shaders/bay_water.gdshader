@@ -33,11 +33,18 @@ uniform float glint_roughness = 0.16;
 uniform vec2 wind_dir = vec2(0.80, -0.60);
 uniform float whitecaps = 0.55;
 uniform float sparkle_gain = 2.6;
+// Horizon skirt: the sea plane is clipped at the camera far plane, leaving a
+// pale band of below-horizon sky with a hard top edge. BayWater keeps a ring
+// (same material, skirt = 1) at horizon_radius up to eye height, and the sea
+// blends into the identical reflection-only colour before it gets there.
+uniform float horizon_radius = 1800.0;
+instance uniform float skirt = 0.0;
 
 varying vec3 world_pos;
 varying float v_glint_r;
 varying float v_foam;
 varying float v_sparkle;
+varying float v_horizon;
 
 void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
@@ -148,7 +155,25 @@ float rect_distance(vec2 p, vec4 r) {
 	return length(max(q, vec2(0.0))) + min(max(q.x, q.y), 0.0);
 }
 
+vec3 horizon_colour(vec2 suv) {
+	vec3 refl = sky_horizon;
+	if (reflection_ready > 0.5) {
+		refl = texture(reflection_tex, clamp(vec2(suv.x, 1.0 - suv.y), vec2(0.002), vec2(0.998))).rgb * reflection_gain;
+	}
+	return mix(deep_color * 1.8, refl, 0.80);
+}
+
 void fragment() {
+	if (skirt > 0.5) {
+		v_foam = 0.0;
+		v_glint_r = 0.3;
+		v_sparkle = 0.0;
+		v_horizon = 1.0;
+		ALBEDO = vec3(0.0);
+		EMISSION = horizon_colour(SCREEN_UV);
+		SPECULAR = 0.0;
+		ROUGHNESS = 1.0;
+	} else {
 	vec2 p = world_pos.xz;
 	float t = TIME;
 	float foot = max(length(fwidth(p)), 0.0005);
@@ -298,11 +323,14 @@ void fragment() {
 	v_foam = foam;
 	v_glint_r = clamp(glint_roughness * 0.6 + lost * 0.9, 0.08, 0.45);
 	v_sparkle = (1.0 - clamp(lost * 2.5, 0.0, 1.0)) * (1.0 - foam);
-	ALBEDO = mix(body * (1.0 - F), foam_color, foam);
-	EMISSION = refl * F * (1.0 - foam);
+	float hz = smoothstep(horizon_radius * 0.55, horizon_radius * 0.98, length(cam_to.xz));
+	v_horizon = hz;
+	ALBEDO = mix(body * (1.0 - F), foam_color, foam) * (1.0 - hz);
+	EMISSION = mix(refl * F * (1.0 - foam), horizon_colour(SCREEN_UV), hz);
 	SPECULAR = 0.0;
 	METALLIC = 0.0;
 	ROUGHNESS = mix(0.2, 1.0, foam);
+	}
 }
 
 float ggx(float ndh, float r) {
@@ -329,5 +357,5 @@ void light() {
 	float broad = min(ggx(ndh, v_glint_r) * k, spec_cap);
 	// tiny sun sparkles on resolved wavelet facets
 	float spark = min(ggx(ndh, 0.045) * k, 6.0) * v_sparkle * sparkle_gain;
-	SPECULAR_LIGHT += ATTENUATION * LIGHT_COLOR * (broad + spark) * (1.0 - v_foam);
+	SPECULAR_LIGHT += ATTENUATION * LIGHT_COLOR * (broad + spark) * (1.0 - v_foam) * (1.0 - v_horizon);
 }

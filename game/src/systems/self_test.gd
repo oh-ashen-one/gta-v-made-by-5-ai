@@ -739,4 +739,5 @@ func _water_checks(world: WorldBuilder) -> void:
 	var wc: float = float(wc_value) if wc_value != null else 0.55
 	_check("bay water is a non-periodic multi-octave wave field with whitecaps", code.contains("sea_field") and not code.contains("swell_gradient") and wc > 0.0, "whitecaps=%s" % wc)
 	_check("avenue ends over the bay are railed jetty decks, not bare road slabs", bay.get_node_or_null("JettyRailPosts") != null)
+	_check("sea continues to the horizon through a skirt sharing the water material", bay.horizon_skirt != null and bay.horizon_skirt.material_override == bay.water_material and code.contains("horizon_colour"))
 
