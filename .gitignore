@@ -26,6 +26,7 @@ art/provider-sources/
 # must stay out of source Git; they are test/run artefacts only.
 /package-wave03/
 /package-wave04/
+/package-wave05/
 
 # Temporary continuous capture frames; encoded evidence and timing manifest remain
 docs/wave-02/*/frames/*.jpg
