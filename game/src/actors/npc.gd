@@ -179,7 +179,11 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector3.ZERO
 		idle_time -= delta
 		if idle_time <= 0.0:
-			state = State.WALK
+			# Seated diners keep their seat until something startles them.
+			if has_meta("ambient_role"):
+				idle_time = 3600.0
+			else:
+				state = State.WALK
 		_animate(delta, 0.0)
 		return
 	if state == State.WALK and not is_hostile and not is_police and \
@@ -389,9 +393,12 @@ func _panic(from_position: Vector3) -> void:
 	if is_hostile or is_police:
 		state = State.PURSUE
 	elif not is_police and not is_hostile:
+		# Announce only the change into fleeing, not every repeat (critic pass 3).
+		var was_fleeing := state == State.FLEE
 		state = State.FLEE
 		panic_time = randf_range(6.0, 12.0)
-		Events.toast("Civilian fleeing!", "info")
+		if not was_fleeing:
+			Events.toast("Civilian fleeing!", "info")
 
 func _die(by_player: bool) -> void:
 	state = State.DEAD

@@ -319,26 +319,32 @@ func _check_impact(before: Vector3) -> void:
 	# Damage comes from the closing speed along the contact normal, once per
 	# contact: a car scraping a wall must not lose health every frame (B2).
 	var worst := 0.0
+	var blocked := 0.0
 	for i in get_slide_collision_count():
 		var collision := get_slide_collision(i)
 		var normal := collision.get_normal()
 		if normal.y > 0.65:
 			continue # Ground support is not a crash.
 		var approach := -before.dot(normal)
+		blocked = maxf(blocked, approach)
 		# A person is not a wall (wave 5 soak: a stranded carjack victim acted
 		# as an invulnerable kinematic block and wrecked the car). Fast contact
 		# injures them; slow contact makes them scramble aside.
 		var struck := collision.get_collider()
 		if struck is NPC:
 			var person := struck as NPC
-			if person.state != NPC.State.DEAD:
+			# One impact per person per 0.6 s: contact persists across ticks, and
+			# the commanded speed in `before` stays high (critic pass 3).
+			var now := Time.get_ticks_msec()
+			if person.state != NPC.State.DEAD and now - int(person.get_meta("car_hit_ms", -100000)) > 600:
+				person.set_meta("car_hit_ms", now)
 				if approach > 2.5:
 					person.take_damage(clampf((approach - 2.0) * 16.0, 18.0, 220.0), global_position, driver_is_player)
 				else:
 					person.scramble_from(global_position)
 			continue
 		worst = maxf(worst, approach)
-	if worst > 0.5:
+	if blocked > 0.5:
 		# Match the drivetrain to the velocity the collision actually permits.
 		# Holding throttle against a wall must not invent a fresh 27 m/s crash.
 		_forward = signf(_forward) * minf(absf(_forward), Vector2(velocity.x, velocity.z).length())

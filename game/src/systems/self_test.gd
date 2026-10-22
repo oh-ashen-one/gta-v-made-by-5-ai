@@ -612,6 +612,9 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 		if is_instance_valid(candidate) and not candidate.is_police and not candidate.is_hostile and candidate.state != NPC.State.DEAD and not candidate.has_meta("ambient_role"):
 			victim = candidate
 			break
+	if victim == null:
+		_check("carjacked driver flees from the car and rejoins a pavement lane", false, "no civilian available")
+		return
 	var restore := {"pos": victim.global_position, "lane": victim.lane, "index": victim.lane_index, "dir": victim.lane_dir, "state": victim.state, "health": victim.health}
 	victim.become_displaced_pedestrian(Vector3(-155.0, 0.3, -116.0), Vector3(-153.4, 0.3, -118.0))
 	var fled_away := victim._flee_dir.dot((Vector3(-155.0, 0.3, -116.0) - Vector3(-153.4, 0.3, -118.0)).normalized()) > 0.9
