@@ -108,6 +108,11 @@ Everything shipped is original.
 - Nothing may open a GUI app, OS dialog or new terminal window (`open`, `osascript` are denied). Background
   jobs stay headless.
 - No paid generation (Tripo, Meshy, Customuse, Higgsfield, etc.): there is no owner online to approve spend.
+  **Owner update 2026-10-22 ~17:30Z:** Higgsfield IMAGE generation is approved for this loop. Only the orchestrator
+  generates (one job at a time, reviewed before the next, per house rules); builders must NOT call generation tools.
+  Generated textures/cards live in the git-ignored `game/assets/providers/higgsfield/` (linked into every worktree) and are
+  catalogued in `loop/GENERATED_ASSETS.md`; request new ones by appending to the request list there. Use them freely; never
+  commit them (provider outputs, not MIT, not cleared for public redistribution); add a ledger row when you ship one.
   Use Blender (headless, through `loop/render.sh` if it renders), procedural Godot work and existing assets.
 - No package installs. Keep the asset provenance ledger (`docs/asset-manifest.csv`, `docs/ASSET_RIGHTS.md`)
   current for every new or changed asset. No public release or deployment.
