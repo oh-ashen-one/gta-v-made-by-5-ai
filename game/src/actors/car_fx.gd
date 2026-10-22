@@ -322,10 +322,11 @@ func _build_rear_detail() -> void:
 		add_child(holder)
 	var plate := MeshInstance3D.new()
 	var pm := BoxMesh.new()
-	pm.size = Vector3(0.52, 0.12, 0.012)
+	pm.size = Vector3(0.56, 0.135, 0.012)
 	plate.mesh = pm
 	plate.material_override = _plate_mat
-	plate.position = Vector3(0.0, y0 + h * 0.30, rear + 0.004)
+	# Covers the provider model's baked (unreadable) plate recess.
+	plate.position = Vector3(0.0, y0 + h * 0.385, rear + 0.004)
 	plate.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	plate.visibility_range_end = 60.0
 	holder.add_child(plate)
