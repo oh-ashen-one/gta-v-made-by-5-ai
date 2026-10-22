@@ -101,6 +101,7 @@ func setup(owner_car: Car, provider_root: Node3D) -> void:
 	_pivot = Vector3(0.0, _aabb.position.y + _aabb.size.y * 0.32, _aabb.get_center().z)
 	_build_coronas()
 	_build_contact_shadow()
+	_build_rear_detail()
 	_prev_yaw = car.rotation.y
 	if not _probe_prewarmed and not "--no-car-probe" in OS.get_cmdline_user_args():
 		_probe_prewarmed = true
@@ -296,6 +297,51 @@ func _build_contact_shadow() -> void:
 	decal.distance_fade_length = 20.0
 	decal.cull_mask = 1
 	add_child(decal)
+
+## C2: readable rear at 720p (critic C1: plate and rear detail lost): a
+## Singapore-style rear plate (black characters on yellow). Original
+## lettering, no brands.
+static var _plate_mat: StandardMaterial3D
+const PLATE_PREFIX := ["SJK", "SKF", "SLA", "SGB", "SMT", "SNX", "SDR", "SKP"]
+func _build_rear_detail() -> void:
+	if car.kind == "van": return
+	if _plate_mat == null:
+		_plate_mat = StandardMaterial3D.new()
+		_plate_mat.albedo_color = Color(0.93, 0.76, 0.12)
+		_plate_mat.roughness = 0.45
+	var rear := _aabb.end.z
+	var y0 := _aabb.position.y
+	var h := _aabb.size.y
+	# Ride on the sprung body (roll/pitch) rather than the chassis.
+	var holder := Node3D.new()
+	holder.name = "RearDetail"
+	if _body_node != null:
+		_body_node.add_child(holder)
+		holder.transform = _base_xform.affine_inverse()
+	else:
+		add_child(holder)
+	var plate := MeshInstance3D.new()
+	var pm := BoxMesh.new()
+	pm.size = Vector3(0.52, 0.12, 0.012)
+	plate.mesh = pm
+	plate.material_override = _plate_mat
+	plate.position = Vector3(0.0, y0 + h * 0.30, rear + 0.004)
+	plate.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	plate.visibility_range_end = 60.0
+	holder.add_child(plate)
+	var label := Label3D.new()
+	var seed_n := absi(car.get_instance_id())
+	label.text = "%s %d %s" % [PLATE_PREFIX[seed_n % PLATE_PREFIX.size()], 1000 + seed_n % 8999, "ABCDEGHJKLMPRSTUXYZ"[seed_n % 19]]
+	label.font_size = 64
+	label.pixel_size = 0.0011
+	label.outline_size = 0
+	label.modulate = Color(0.03, 0.03, 0.03)
+	label.shaded = true
+	label.double_sided = false
+	label.position = Vector3(0.0, 0.0, 0.0075)
+	label.rotation = Vector3(0.0, 0.0, 0.0)
+	label.visibility_range_end = 45.0
+	plate.add_child(label)
 
 func body_node() -> Node3D:
 	return _body_node

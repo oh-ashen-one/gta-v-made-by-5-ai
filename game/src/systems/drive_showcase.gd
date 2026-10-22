@@ -56,7 +56,7 @@ func _still(label: String) -> void:
 	await RenderingServer.frame_post_draw
 	var img := get_viewport().get_texture().get_image()
 	if img != null:
-		img.save_png("%s/%s.png" % [out_dir, label])
+		img.save_jpg("%s/%s.jpg" % [out_dir, label], 0.95)  # C2: PNG encode hitched 250-300 ms
 		var fx = car.fx
 		_log("still %s speed=%.1f km/h roll=%.3f pitch=%.3f fov=%.1f skids=%d sparks=%d" % [label, car.speed_kmh(), fx.last_roll, fx.last_pitch, car._camera.fov, fx.skid_marks_laid, fx.sparks_fired])
 
@@ -220,6 +220,7 @@ func _run() -> void:
 		victim.set_physics_process(true)
 		_log("victim %s at %s kind=%s" % [victim.name, victim.global_position, victim.kind])
 		Input.action_press("move_forward")
+		var sparks_before: int = car.fx.sparks_fired
 		var hit_time := -1.0
 		t_end = _elapsed() + 7.0
 		while _elapsed() < t_end:
@@ -227,7 +228,7 @@ func _run() -> void:
 			_steer_to(victim.global_position, 2.0)
 			if Engine.get_physics_frames() % 20 == 0:
 				_log("ram: speed=%.1f dist=%.1f contacts=%d" % [car.speed_kmh(), car.global_position.distance_to(victim.global_position), car.get_slide_collision_count()])
-			if hit_time < 0.0 and car.fx.sparks_fired > 0:
+			if hit_time < 0.0 and car.fx.sparks_fired > sparks_before:
 				hit_time = _elapsed()
 				_release()
 				await get_tree().create_timer(0.12).timeout

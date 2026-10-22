@@ -995,7 +995,13 @@ func _drive_route(target: Vector3, timeout: float) -> void:
 			targets.append(node - dir_in * mouth + Vector3.UP.cross(dir_in).normalized() * DRIVE_LANE)
 		if k + 1 < nodes.size():
 			var dir_out := Vector3(nodes[k + 1].x - node.x, 0.0, nodes[k + 1].z - node.z).normalized()
-			targets.append(node + dir_out * mouth + Vector3.UP.cross(dir_out).normalized() * DRIVE_LANE)
+			var left_out := Vector3.UP.cross(dir_out).normalized()
+			# A turn goes through the point where the two lane lines cross, so
+			# the car follows the lane round the corner instead of cutting the
+			# kerb (left turn) or the median nose (right turn).
+			if not targets.is_empty() and absf(dir_in.dot(dir_out)) < 0.5:
+				targets.append(node + (Vector3.UP.cross(dir_in).normalized() + left_out) * DRIVE_LANE)
+			targets.append(node + dir_out * mouth + left_out * DRIVE_LANE)
 		elif targets.is_empty():
 			targets.append(node)
 		for t in targets:
@@ -1004,7 +1010,7 @@ func _drive_route(target: Vector3, timeout: float) -> void:
 			if mission.stage == Mission.Stage.TO_HELI: return
 	await _drive_to(target, 48.0, maxf(1.0, deadline - _elapsed()))
 
-const DRIVE_LANE := 3.4
+const DRIVE_LANE := 4.0
 
 var _reverse_side := -1.0
 
