@@ -204,7 +204,7 @@ func _process_modification_with_delta(delta: float) -> void:
 	var lat := (_R - D * _R.dot(D)).normalized()
 	var t := 0.52
 	while t > 0.24:
-		og = eye + D * t - ua * (SIGHT_H + 0.075) + lat * 0.11
+		og = eye + D * t - ua * (SIGHT_H + 0.13) + lat * 0.19   # wave Q2: clear of the head from the OTS camera
 		var gb0 := _gun_basis(D, ua)
 		var wr := og - _hand_from_gun(gb0) * GRIP_POS - gb0 * GUN_SEAT
 		if wr.distance_to(s_r) <= reach:

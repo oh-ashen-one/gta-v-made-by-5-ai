@@ -18,7 +18,7 @@ const AIM_FOV := 55.0
 ## Aim framing on the spring arm (base 0.85 m right of the body): toward the
 ## spine and a little lower, so the hero stands on the left third, head to
 ## waist, with both arms and the pistol reaching into the frame.
-const AIM_ARM_OFFSET := Vector3(-0.13, 0.20, 0.0)
+const AIM_ARM_OFFSET := Vector3(0.12, 0.06, 0.0)  # wave Q2: further right/lower so the head never hides the pistol
 var arm_offset := Vector3.ZERO
 var player: Node3D
 var hold := 0.0                 # seconds the gun stays raised after a shot

@@ -20,7 +20,7 @@ const FRICTION := 12.0
 # hop, not the old 1.08 m / 0.60 s superhuman float).
 const JUMP_VELOCITY := 5.0
 const MOUSE_SENS := 0.0022
-const AIM_DISTANCE := 1.5  # combat piece: over-the-shoulder aim (wave Q: hero, arms and gun in frame)
+const AIM_DISTANCE := 1.85  # combat piece: over-the-shoulder aim (wave Q: hero, arms and gun in frame)
 const HIP_DISTANCE := 3.2
 const INTERACT_RANGE := 5.0
 const PICKUP_RANGE := 7.5
