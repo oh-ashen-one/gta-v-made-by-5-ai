@@ -79,7 +79,7 @@ func _build() -> void:
 	_stats_label=_mk_label(root,Vector2(1000,660),18,Color(.94,.95,.92));_stats_label.size=Vector2(245,40)
 	_stats_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	_debug_label=_mk_label(root,Vector2(24,120),14,Color(.7,.8,.85));_debug_label.visible=false
-	_notifications=VBoxContainer.new();_notifications.position=Vector2(790,165);_notifications.size=Vector2(450,120)
+	_notifications=VBoxContainer.new();_notifications.position=Vector2(790,330);_notifications.size=Vector2(450,120)  # wave 5: below the opening skyline
 	_notifications.z_index=100
 	_notifications.alignment=BoxContainer.ALIGNMENT_END;root.add_child(_notifications)
 	_crosshair=Control.new();_crosshair.set_anchors_preset(Control.PRESET_FULL_RECT)
