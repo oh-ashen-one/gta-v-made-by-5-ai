@@ -932,6 +932,12 @@ func _gait_matches_speed(player: Player) -> bool:
 		cv.set_motion(speed)
 		walk_ok = walk_ok and cv._current == gaits[speed] and cv.animator.speed_scale >= 0.85 and cv.animator.speed_scale <= 1.2
 	var run_ok := cv._clips.has("jump_start") and cv._clips.has("land") and cv._clips.has("stop") and cv.stride_amp == 1.0
+	# Airborne: the jump clip must keep a non-zero rate (a zero rate froze the
+	# crossfade into the air pose for the whole flight).
+	cv.set_air_velocity(2.0, 5.0)
+	cv.set_motion(0.0, false, false)
+	run_ok = run_ok and cv.current_clip() == "jump" and cv.animator.speed_scale > 0.5
+	cv.set_air_velocity(99.0, 5.0)
 	cv.set_motion(0.0)
 	var shadows_ok := cv.contact_shadows.size() == 3 and cv._foot_ids.size() == 2 and cv._foot_ids[0] >= 0 and cv._foot_ids[1] >= 0
 	return walk_ok and run_ok and cv.motion != null and shadows_ok
