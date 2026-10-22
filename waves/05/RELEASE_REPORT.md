@@ -48,15 +48,15 @@
 
 ## Release candidate
 
-- Built from `c42425afd5a2fe568ff822dc3d7391fac62be747`. Its game code is identical to `2e38d8f`, the commit soak #7 runs on.
+- Built from `d2a6cad1c948c5e32e0ee45924e7d5e325e73e5c`, the commit soak #8 runs on.
 - Private, git-ignored files in `package-wave05/`, with SHA-256:
-  - signed zip `3ae8f8c346720d651fb84f6680f9210eb5c99de4f1726c452fa9de104e493b22`
-  - raw zip `5d600330c7b428167a1f4d6168cf2196722205be2fb0fcd3f0ae1c5b3b51548f`
-  - PCK `54373c6d736c4328138da91092ceba89de075e0e75499af0ca313f5f23b97c05`
+  - signed zip `36c5132f3948ad465b4860ae9d9c166dd7eedfee99ade6120e578e988eb2198d`
+  - raw zip `04f2182845dba94326eabf43a8d43f55144db6861fe4e36f3d4e459fd695f6b6`
+  - PCK `233a76c68f3ca83207e9575790bb0c51ff674eeba6ed596fb07b9ee7036ffc64`
 - Packaged checks, run headless with the signed binary:
   - **97/97 regressions**
   - **two-process save → relaunch → Continue**: position, health and weapon restored
-  - **scripted route**: 13/13 gates, 0 deaths, 147.5 s
+  - **scripted route**: 13/13 gates, 0 deaths, 147.6 s
 - The signature is a local ad-hoc signature only, with no notarization. Provider asset rights for public redistribution are unverified.
 - Evidence: `evidence/final-package/`.
 

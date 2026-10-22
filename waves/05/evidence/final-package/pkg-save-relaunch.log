@@ -1,7 +1,7 @@
-[save-probe] PASS player walked with ordinary input before saving 4.78335857391357
-[save-probe] PASS save written through Game.save_game 
 [save-probe] PASS fresh process found the expected record 
 [save-probe] PASS continue restored player position (-170.3357, 0.13584, -26.72658) vs (-170.3357, 0.13584, -26.72658)
 [save-probe] PASS continue restored health 73.0
 [save-probe] PASS continue restored carried weapon smg
 [save-probe] PASS game is running after continue 
+[save-probe] PASS player walked with ordinary input before saving 4.78335857391357
+[save-probe] PASS save written through Game.save_game 

@@ -486,10 +486,10 @@
 			"passed": true
 		}
 	],
-	"duration_ms": 12573,
+	"duration_ms": 12522,
 	"engine": "4.7.1-stable (official)",
 	"failed": 0,
-	"finished_utc": "2026-10-22T02:18:07",
+	"finished_utc": "2026-10-22T02:40:52",
 	"fixture_repositioning": true,
 	"golden_path": false,
 	"passed": 97,

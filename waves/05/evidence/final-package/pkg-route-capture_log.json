@@ -5,8 +5,8 @@
 		{
 			"car_distance_m": 652.223567395471,
 			"combat_kills": 3,
-			"duration_seconds": 147.515074,
-			"finished_seconds": 147.515079,
+			"duration_seconds": 147.547149,
+			"finished_seconds": 147.547155,
 			"flight_distance_m": 727.806888435502,
 			"gates": [
 				{
@@ -49,7 +49,7 @@
 							1
 						],
 						"run": 1,
-						"seconds": 19.59,
+						"seconds": 19.58,
 						"stage": 0,
 						"taa": true,
 						"vehicle_health": null,
@@ -76,7 +76,7 @@
 							"static_memory_peak_bytes": 0.0
 						},
 						"flight_distance_m": 0.0,
-						"heading": -0.0319087691605091,
+						"heading": 0.0472294054925442,
 						"health": 89.0,
 						"mode": 0,
 						"msaa_3d": 2,
@@ -96,7 +96,7 @@
 							1
 						],
 						"run": 1,
-						"seconds": 24.54,
+						"seconds": 24.58,
 						"stage": 0,
 						"taa": true,
 						"vehicle_health": null,
@@ -123,7 +123,7 @@
 							"static_memory_peak_bytes": 0.0
 						},
 						"flight_distance_m": 0.0,
-						"heading": -1.32219886779785,
+						"heading": -1.32092225551605,
 						"health": 89.0,
 						"mode": 0,
 						"msaa_3d": 2,
@@ -134,16 +134,16 @@
 							"stationary": 0
 						},
 						"position": [
-							-117.130699157715,
-							0.380839735269547,
-							-87.4679794311523
+							-117.13069152832,
+							0.380839705467224,
+							-87.4679946899414
 						],
 						"render_texture_pixels": [
 							3,
 							1
 						],
 						"run": 1,
-						"seconds": 25.32,
+						"seconds": 25.35,
 						"stage": 2,
 						"taa": true,
 						"vehicle_health": null,
@@ -170,7 +170,7 @@
 							"static_memory_peak_bytes": 0.0
 						},
 						"flight_distance_m": 0.0,
-						"heading": -1.32219886779785,
+						"heading": -1.32092225551605,
 						"health": 89.0,
 						"mode": 0,
 						"msaa_3d": 2,
@@ -181,16 +181,16 @@
 							"stationary": 0
 						},
 						"position": [
-							-117.130699157715,
-							0.380839735269547,
-							-87.4679794311523
+							-117.13069152832,
+							0.380839705467224,
+							-87.4679946899414
 						],
 						"render_texture_pixels": [
 							3,
 							1
 						],
 						"run": 1,
-						"seconds": 25.32,
+						"seconds": 25.35,
 						"stage": 2,
 						"taa": true,
 						"vehicle_health": null,
@@ -207,7 +207,7 @@
 							"draw_calls": null,
 							"fps": 145.0,
 							"node_count": 15561.0,
-							"object_count": 28053.0,
+							"object_count": 28056.0,
 							"orphan_node_count": 0.0,
 							"render_buffer_memory_bytes": null,
 							"render_texture_memory_bytes": null,
@@ -237,7 +237,7 @@
 							1
 						],
 						"run": 1,
-						"seconds": 31.06,
+						"seconds": 31.12,
 						"stage": 3,
 						"taa": true,
 						"vehicle_health": 100.0,
@@ -254,7 +254,7 @@
 							"draw_calls": null,
 							"fps": 145.0,
 							"node_count": 15575.0,
-							"object_count": 28086.0,
+							"object_count": 28089.0,
 							"orphan_node_count": 0.0,
 							"render_buffer_memory_bytes": null,
 							"render_texture_memory_bytes": null,
@@ -284,7 +284,7 @@
 							1
 						],
 						"run": 1,
-						"seconds": 69.14,
+						"seconds": 69.19,
 						"stage": 4,
 						"taa": true,
 						"vehicle_health": 96.975,
@@ -301,7 +301,7 @@
 							"draw_calls": null,
 							"fps": 145.0,
 							"node_count": 15576.0,
-							"object_count": 28092.0,
+							"object_count": 28095.0,
 							"orphan_node_count": 0.0,
 							"render_buffer_memory_bytes": null,
 							"render_texture_memory_bytes": null,
@@ -331,7 +331,7 @@
 							1
 						],
 						"run": 1,
-						"seconds": 70.47,
+						"seconds": 70.52,
 						"stage": 4,
 						"taa": true,
 						"vehicle_health": null,
@@ -348,7 +348,7 @@
 							"draw_calls": null,
 							"fps": 145.0,
 							"node_count": 15576.0,
-							"object_count": 28092.0,
+							"object_count": 28095.0,
 							"orphan_node_count": 0.0,
 							"render_buffer_memory_bytes": null,
 							"render_texture_memory_bytes": null,
@@ -378,7 +378,7 @@
 							1
 						],
 						"run": 1,
-						"seconds": 70.47,
+						"seconds": 70.52,
 						"stage": 4,
 						"taa": true,
 						"vehicle_health": null,
@@ -395,7 +395,7 @@
 							"draw_calls": null,
 							"fps": 145.0,
 							"node_count": 15576.0,
-							"object_count": 28092.0,
+							"object_count": 28095.0,
 							"orphan_node_count": 0.0,
 							"render_buffer_memory_bytes": null,
 							"render_texture_memory_bytes": null,
@@ -425,7 +425,7 @@
 							1
 						],
 						"run": 1,
-						"seconds": 83.25,
+						"seconds": 83.28,
 						"stage": 5,
 						"taa": true,
 						"vehicle_health": 100.0,
@@ -442,7 +442,7 @@
 							"draw_calls": null,
 							"fps": 145.0,
 							"node_count": 15575.0,
-							"object_count": 28086.0,
+							"object_count": 28089.0,
 							"orphan_node_count": 0.0,
 							"render_buffer_memory_bytes": null,
 							"render_texture_memory_bytes": null,
@@ -472,7 +472,7 @@
 							1
 						],
 						"run": 1,
-						"seconds": 113.19,
+						"seconds": 113.23,
 						"stage": 5,
 						"taa": true,
 						"vehicle_health": 100.0,
@@ -489,7 +489,7 @@
 							"draw_calls": null,
 							"fps": 145.0,
 							"node_count": 15575.0,
-							"object_count": 28090.0,
+							"object_count": 28093.0,
 							"orphan_node_count": 0.0,
 							"render_buffer_memory_bytes": null,
 							"render_texture_memory_bytes": null,
@@ -519,7 +519,7 @@
 							1
 						],
 						"run": 1,
-						"seconds": 133.06,
+						"seconds": 133.09,
 						"stage": 6,
 						"taa": true,
 						"vehicle_health": 100.0,
@@ -534,9 +534,9 @@
 						"deaths": 0,
 						"engine_monitors": {
 							"draw_calls": null,
-							"fps": 144.0,
+							"fps": 145.0,
 							"node_count": 15576.0,
-							"object_count": 28098.0,
+							"object_count": 28101.0,
 							"orphan_node_count": 0.0,
 							"render_buffer_memory_bytes": null,
 							"render_texture_memory_bytes": null,
@@ -566,7 +566,7 @@
 							1
 						],
 						"run": 1,
-						"seconds": 133.39,
+						"seconds": 133.42,
 						"stage": 7,
 						"taa": true,
 						"vehicle_health": null,
@@ -583,7 +583,7 @@
 							"draw_calls": null,
 							"fps": 144.0,
 							"node_count": 15575.0,
-							"object_count": 28093.0,
+							"object_count": 28096.0,
 							"orphan_node_count": 0.0,
 							"render_buffer_memory_bytes": null,
 							"render_texture_memory_bytes": null,
@@ -593,7 +593,7 @@
 							"static_memory_peak_bytes": 0.0
 						},
 						"flight_distance_m": 727.806888435502,
-						"heading": -1.58654546737671,
+						"heading": -1.58655273914337,
 						"health": 100.0,
 						"mode": 0,
 						"msaa_3d": 2,
@@ -604,16 +604,16 @@
 							"stationary": 0
 						},
 						"position": [
-							93.5466003417969,
-							0.2757468521595,
-							-337.03857421875
+							93.5465545654297,
+							0.27583971619606,
+							-337.038696289062
 						],
 						"render_texture_pixels": [
 							3,
 							1
 						],
 						"run": 1,
-						"seconds": 147.51,
+						"seconds": 147.55,
 						"stage": 8,
 						"taa": true,
 						"vehicle_health": null,
@@ -622,7 +622,7 @@
 				}
 			],
 			"run": 1,
-			"started_seconds": 0.000005,
+			"started_seconds": 0.000006,
 			"uninterrupted": true
 		}
 	],
@@ -630,7 +630,7 @@
 	"continuous_30_minute_video_claim": false,
 	"controls_only": true,
 	"deaths": 0,
-	"elapsed_seconds": 147.516001,
+	"elapsed_seconds": 147.548158,
 	"engine": "4.7.1-stable (official)",
 	"engine_monitor_summary": {
 		"fps": {
@@ -649,8 +649,8 @@
 		},
 		"object_count": {
 			"first": 27943.0,
-			"last": 28092.0,
-			"max": 28096.0,
+			"last": 28095.0,
+			"max": 28099.0,
 			"min": 27943.0,
 			"samples": 148
 		},
@@ -685,7 +685,7 @@
 	},
 	"evidence_coverage": "1Hz state/resource samples, per-gate screenshots and five-minute soak stills; optional JPEG sequence is independently capped at720s.",
 	"failure_reason": "",
-	"finished_utc": "2026-10-22T02:20:57",
+	"finished_utc": "2026-10-22T02:43:43",
 	"fixture_assisted_checks": [],
 	"fixture_teleports_count_as_completion": false,
 	"frame_stalls": {
@@ -694,8 +694,8 @@
 		"events": [
 			{
 				"capture_overhead": false,
-				"ended_seconds": 0.223766,
-				"interval_ms": 223.766,
+				"ended_seconds": 0.221242,
+				"interval_ms": 221.242,
 				"phase": "mission",
 				"readback_since_frame": false,
 				"recording_pending": false,
@@ -712,20 +712,20 @@
 	},
 	"frame_time_method": "Monotonic process-frame intervals; excludes intervals touched by screenshot/recording readback.",
 	"frame_times": {
-		"count": 21346,
-		"max_ms": 223.766,
-		"mean_ms": 6.91064606952124,
-		"p50_ms": 7.958,
-		"p95_ms": 12.508,
-		"p99_ms": 13.841
+		"count": 21351,
+		"max_ms": 221.242,
+		"mean_ms": 6.9105283124912,
+		"p50_ms": 8.134,
+		"p95_ms": 12.626,
+		"p99_ms": 13.75
 	},
 	"frame_times_including_capture_overhead": {
-		"count": 21346,
-		"max_ms": 223.766,
-		"mean_ms": 6.91064606952124,
-		"p50_ms": 7.958,
-		"p95_ms": 12.508,
-		"p99_ms": 13.841
+		"count": 21351,
+		"max_ms": 221.242,
+		"mean_ms": 6.9105283124912,
+		"p50_ms": 8.134,
+		"p95_ms": 12.626,
+		"p99_ms": 13.75
 	},
 	"free_roam_distance_m": {
 		"car": 0.0,
@@ -774,7 +774,7 @@
 					1
 				],
 				"run": 1,
-				"seconds": 19.59,
+				"seconds": 19.58,
 				"stage": 0,
 				"taa": true,
 				"vehicle_health": null,
@@ -801,7 +801,7 @@
 					"static_memory_peak_bytes": 0.0
 				},
 				"flight_distance_m": 0.0,
-				"heading": -0.0319087691605091,
+				"heading": 0.0472294054925442,
 				"health": 89.0,
 				"mode": 0,
 				"msaa_3d": 2,
@@ -821,7 +821,7 @@
 					1
 				],
 				"run": 1,
-				"seconds": 24.54,
+				"seconds": 24.58,
 				"stage": 0,
 				"taa": true,
 				"vehicle_health": null,
@@ -848,7 +848,7 @@
 					"static_memory_peak_bytes": 0.0
 				},
 				"flight_distance_m": 0.0,
-				"heading": -1.32219886779785,
+				"heading": -1.32092225551605,
 				"health": 89.0,
 				"mode": 0,
 				"msaa_3d": 2,
@@ -859,16 +859,16 @@
 					"stationary": 0
 				},
 				"position": [
-					-117.130699157715,
-					0.380839735269547,
-					-87.4679794311523
+					-117.13069152832,
+					0.380839705467224,
+					-87.4679946899414
 				],
 				"render_texture_pixels": [
 					3,
 					1
 				],
 				"run": 1,
-				"seconds": 25.32,
+				"seconds": 25.35,
 				"stage": 2,
 				"taa": true,
 				"vehicle_health": null,
@@ -895,7 +895,7 @@
 					"static_memory_peak_bytes": 0.0
 				},
 				"flight_distance_m": 0.0,
-				"heading": -1.32219886779785,
+				"heading": -1.32092225551605,
 				"health": 89.0,
 				"mode": 0,
 				"msaa_3d": 2,
@@ -906,16 +906,16 @@
 					"stationary": 0
 				},
 				"position": [
-					-117.130699157715,
-					0.380839735269547,
-					-87.4679794311523
+					-117.13069152832,
+					0.380839705467224,
+					-87.4679946899414
 				],
 				"render_texture_pixels": [
 					3,
 					1
 				],
 				"run": 1,
-				"seconds": 25.32,
+				"seconds": 25.35,
 				"stage": 2,
 				"taa": true,
 				"vehicle_health": null,
@@ -932,7 +932,7 @@
 					"draw_calls": null,
 					"fps": 145.0,
 					"node_count": 15561.0,
-					"object_count": 28053.0,
+					"object_count": 28056.0,
 					"orphan_node_count": 0.0,
 					"render_buffer_memory_bytes": null,
 					"render_texture_memory_bytes": null,
@@ -962,7 +962,7 @@
 					1
 				],
 				"run": 1,
-				"seconds": 31.06,
+				"seconds": 31.12,
 				"stage": 3,
 				"taa": true,
 				"vehicle_health": 100.0,
@@ -979,7 +979,7 @@
 					"draw_calls": null,
 					"fps": 145.0,
 					"node_count": 15575.0,
-					"object_count": 28086.0,
+					"object_count": 28089.0,
 					"orphan_node_count": 0.0,
 					"render_buffer_memory_bytes": null,
 					"render_texture_memory_bytes": null,
@@ -1009,7 +1009,7 @@
 					1
 				],
 				"run": 1,
-				"seconds": 69.14,
+				"seconds": 69.19,
 				"stage": 4,
 				"taa": true,
 				"vehicle_health": 96.975,
@@ -1026,7 +1026,7 @@
 					"draw_calls": null,
 					"fps": 145.0,
 					"node_count": 15576.0,
-					"object_count": 28092.0,
+					"object_count": 28095.0,
 					"orphan_node_count": 0.0,
 					"render_buffer_memory_bytes": null,
 					"render_texture_memory_bytes": null,
@@ -1056,7 +1056,7 @@
 					1
 				],
 				"run": 1,
-				"seconds": 70.47,
+				"seconds": 70.52,
 				"stage": 4,
 				"taa": true,
 				"vehicle_health": null,
@@ -1073,7 +1073,7 @@
 					"draw_calls": null,
 					"fps": 145.0,
 					"node_count": 15576.0,
-					"object_count": 28092.0,
+					"object_count": 28095.0,
 					"orphan_node_count": 0.0,
 					"render_buffer_memory_bytes": null,
 					"render_texture_memory_bytes": null,
@@ -1103,7 +1103,7 @@
 					1
 				],
 				"run": 1,
-				"seconds": 70.47,
+				"seconds": 70.52,
 				"stage": 4,
 				"taa": true,
 				"vehicle_health": null,
@@ -1120,7 +1120,7 @@
 					"draw_calls": null,
 					"fps": 145.0,
 					"node_count": 15576.0,
-					"object_count": 28092.0,
+					"object_count": 28095.0,
 					"orphan_node_count": 0.0,
 					"render_buffer_memory_bytes": null,
 					"render_texture_memory_bytes": null,
@@ -1150,7 +1150,7 @@
 					1
 				],
 				"run": 1,
-				"seconds": 83.25,
+				"seconds": 83.28,
 				"stage": 5,
 				"taa": true,
 				"vehicle_health": 100.0,
@@ -1167,7 +1167,7 @@
 					"draw_calls": null,
 					"fps": 145.0,
 					"node_count": 15575.0,
-					"object_count": 28086.0,
+					"object_count": 28089.0,
 					"orphan_node_count": 0.0,
 					"render_buffer_memory_bytes": null,
 					"render_texture_memory_bytes": null,
@@ -1197,7 +1197,7 @@
 					1
 				],
 				"run": 1,
-				"seconds": 113.19,
+				"seconds": 113.23,
 				"stage": 5,
 				"taa": true,
 				"vehicle_health": 100.0,
@@ -1214,7 +1214,7 @@
 					"draw_calls": null,
 					"fps": 145.0,
 					"node_count": 15575.0,
-					"object_count": 28090.0,
+					"object_count": 28093.0,
 					"orphan_node_count": 0.0,
 					"render_buffer_memory_bytes": null,
 					"render_texture_memory_bytes": null,
@@ -1244,7 +1244,7 @@
 					1
 				],
 				"run": 1,
-				"seconds": 133.06,
+				"seconds": 133.09,
 				"stage": 6,
 				"taa": true,
 				"vehicle_health": 100.0,
@@ -1259,9 +1259,9 @@
 				"deaths": 0,
 				"engine_monitors": {
 					"draw_calls": null,
-					"fps": 144.0,
+					"fps": 145.0,
 					"node_count": 15576.0,
-					"object_count": 28098.0,
+					"object_count": 28101.0,
 					"orphan_node_count": 0.0,
 					"render_buffer_memory_bytes": null,
 					"render_texture_memory_bytes": null,
@@ -1291,7 +1291,7 @@
 					1
 				],
 				"run": 1,
-				"seconds": 133.39,
+				"seconds": 133.42,
 				"stage": 7,
 				"taa": true,
 				"vehicle_health": null,
@@ -1308,7 +1308,7 @@
 					"draw_calls": null,
 					"fps": 144.0,
 					"node_count": 15575.0,
-					"object_count": 28093.0,
+					"object_count": 28096.0,
 					"orphan_node_count": 0.0,
 					"render_buffer_memory_bytes": null,
 					"render_texture_memory_bytes": null,
@@ -1318,7 +1318,7 @@
 					"static_memory_peak_bytes": 0.0
 				},
 				"flight_distance_m": 727.806888435502,
-				"heading": -1.58654546737671,
+				"heading": -1.58655273914337,
 				"health": 100.0,
 				"mode": 0,
 				"msaa_3d": 2,
@@ -1329,16 +1329,16 @@
 					"stationary": 0
 				},
 				"position": [
-					93.5466003417969,
-					0.2757468521595,
-					-337.03857421875
+					93.5465545654297,
+					0.27583971619606,
+					-337.038696289062
 				],
 				"render_texture_pixels": [
 					3,
 					1
 				],
 				"run": 1,
-				"seconds": 147.51,
+				"seconds": 147.55,
 				"stage": 8,
 				"taa": true,
 				"vehicle_health": null,
@@ -1349,34 +1349,34 @@
 	"headless": true,
 	"health": 100.0,
 	"log": [
-		"0.72s Route start; seed=20261021; headless=true; scripted-input-automation=true",
-		"19.59s walk end at (-119.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=4.0",
-		"19.59s PASS market reached on foot",
-		"21.24s combat target health=-32.0 state=3",
-		"22.89s combat target health=-32.0 state=3",
-		"24.54s combat target health=-32.0 state=3",
-		"24.54s PASS combat damaged and killed a mission combatant",
-		"24.99s walk end at (-117.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=2.5",
-		"25.32s PASS package collected through interaction",
-		"25.32s PASS usable parked car found",
-		"30.73s walk end at (-151.0, 0.0, -88.0); target=(-153.0, 0.0, -88.0) distance=2.6",
-		"31.06s PASS car entered",
-		"36.59s drive waypoint target=(-160.0, 0.0, 0.0) distance=7.0",
-		"45.57s drive waypoint target=(-160.0, 0.0, 160.0) distance=7.0",
-		"54.90s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9",
-		"63.92s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0",
-		"69.14s drive waypoint target=(320.0, 0.0, 160.0) distance=72.0",
-		"69.14s PASS uninterrupted driving leg reached aviation compound",
-		"70.47s PASS car exit restored walking",
-		"70.47s PASS helicopter remains usable",
-		"82.92s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.4",
-		"83.25s PASS helicopter boarded",
-		"113.19s PASS flight reached waterfront pad airspace",
-		"133.06s PASS helicopter landed intact on destination pad",
-		"133.39s PASS landing exit restored walking",
-		"147.19s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9",
-		"147.52s PASS mission completed through delivery interaction",
-		"147.52s Verified mission completions: 1"
+		"0.71s Route start; seed=20261021; headless=true; scripted-input-automation=true",
+		"19.58s walk end at (-119.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=4.0",
+		"19.58s PASS market reached on foot",
+		"21.26s combat target health=-32.0 state=3",
+		"22.93s combat target health=-32.0 state=3",
+		"24.58s combat target health=-32.0 state=3",
+		"24.58s PASS combat damaged and killed a mission combatant",
+		"25.02s walk end at (-117.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=2.5",
+		"25.35s PASS package collected through interaction",
+		"25.35s PASS usable parked car found",
+		"30.79s walk end at (-151.0, 0.0, -88.0); target=(-153.0, 0.0, -88.0) distance=2.5",
+		"31.12s PASS car entered",
+		"36.64s drive waypoint target=(-160.0, 0.0, 0.0) distance=7.0",
+		"45.63s drive waypoint target=(-160.0, 0.0, 160.0) distance=7.0",
+		"54.96s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9",
+		"63.97s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0",
+		"69.19s drive waypoint target=(320.0, 0.0, 160.0) distance=72.0",
+		"69.19s PASS uninterrupted driving leg reached aviation compound",
+		"70.52s PASS car exit restored walking",
+		"70.52s PASS helicopter remains usable",
+		"82.96s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.4",
+		"83.28s PASS helicopter boarded",
+		"113.23s PASS flight reached waterfront pad airspace",
+		"133.09s PASS helicopter landed intact on destination pad",
+		"133.42s PASS landing exit restored walking",
+		"147.22s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9",
+		"147.55s PASS mission completed through delivery interaction",
+		"147.55s Verified mission completions: 1"
 	],
 	"memory_leak_acceptance_valid": false,
 	"memory_qualification": "Resource trends require review; process exit alone is not a leak verdict.",
@@ -1481,7 +1481,7 @@
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
-				"fps": 3.0,
+				"fps": 14.0,
 				"node_count": 15545.0,
 				"object_count": 28004.0,
 				"orphan_node_count": 0.0,
@@ -1536,7 +1536,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -0.70360940694809,
+			"heading": -0.703609228134155,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -1547,16 +1547,16 @@
 				"stationary": 0
 			},
 			"position": [
-				-167.276519775391,
-				0.0358330905437469,
-				-26.3877506256104
+				-167.2080078125,
+				0.0358331687748432,
+				-26.4684944152832
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 2.0,
+			"seconds": 2.01,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -1590,16 +1590,16 @@
 				"stationary": 0
 			},
 			"position": [
-				-163.000152587891,
-				0.0268463678658009,
-				-31.4278526306152
+				-162.92741394043,
+				0.0349240377545357,
+				-31.5135726928711
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 3.0,
+			"seconds": 3.01,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -1642,7 +1642,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 4.01,
+			"seconds": 4.0,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -1676,9 +1676,9 @@
 				"stationary": 0
 			},
 			"position": [
-				-154.218383789062,
-				0.0275992900133133,
-				-41.777961730957
+				-154.145065307617,
+				0.0358263626694679,
+				-41.8643684387207
 			],
 			"render_texture_pixels": [
 				3,
@@ -1728,7 +1728,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 6.01,
+			"seconds": 6.0,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -1771,7 +1771,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 7.01,
+			"seconds": 7.0,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -1814,7 +1814,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 8.01,
+			"seconds": 8.0,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -1857,7 +1857,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 9.01,
+			"seconds": 9.0,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -1868,7 +1868,7 @@
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
-				"fps": 144.0,
+				"fps": 145.0,
 				"node_count": 15545.0,
 				"object_count": 28009.0,
 				"orphan_node_count": 0.0,
@@ -1880,7 +1880,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -0.920832514762878,
+			"heading": -0.922341585159302,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -1892,8 +1892,8 @@
 			},
 			"position": [
 				-145.342132568359,
-				0.135829076170921,
-				-65.2947006225586
+				0.13582906126976,
+				-65.3662338256836
 			],
 			"render_texture_pixels": [
 				3,
@@ -1923,7 +1923,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.01205444335938,
+			"heading": -1.01357364654541,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -1935,8 +1935,8 @@
 			},
 			"position": [
 				-145.342132568359,
-				0.135829120874405,
-				-69.3491973876953
+				0.135829135775566,
+				-69.4125442504883
 			],
 			"render_texture_pixels": [
 				3,
@@ -1966,7 +1966,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.10016071796417,
+			"heading": -1.10306775569916,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -1978,15 +1978,15 @@
 			},
 			"position": [
 				-145.342132568359,
-				0.135829195380211,
-				-72.8396987915039
+				0.135829210281372,
+				-72.9491195678711
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 12.0,
+			"seconds": 12.01,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -2009,7 +2009,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.18382501602173,
+			"heading": -1.18646848201752,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -2021,15 +2021,15 @@
 			},
 			"position": [
 				-145.342132568359,
-				0.135829344391823,
-				-75.8684387207031
+				0.135829359292984,
+				-75.96044921875
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 13.0,
+			"seconds": 13.01,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -2083,7 +2083,7 @@
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
-				"fps": 145.0,
+				"fps": 144.0,
 				"node_count": 15545.0,
 				"object_count": 28020.0,
 				"orphan_node_count": 0.0,
@@ -2095,7 +2095,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.30535066127777,
+			"heading": -1.30560219287872,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -2106,16 +2106,16 @@
 				"stationary": 0
 			},
 			"position": [
-				-145.301040649414,
-				0.21294978260994,
-				-79.8032302856445
+				-145.301498413086,
+				0.217455670237541,
+				-79.8149566650391
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 15.0,
+			"seconds": 15.01,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -2138,7 +2138,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.32161819934845,
+			"heading": -1.32173311710358,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -2149,16 +2149,16 @@
 				"stationary": 0
 			},
 			"position": [
-				-142.020492553711,
+				-141.926254272461,
 				0.380839347839355,
-				-81.1407089233398
+				-81.1674575805664
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 16.0,
+			"seconds": 16.01,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -2330,7 +2330,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 20.01,
+			"seconds": 20.0,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -2353,7 +2353,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": 0.976656973361969,
+			"heading": 0.976816475391388,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -2373,7 +2373,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 21.01,
+			"seconds": 21.0,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -2396,7 +2396,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.04971790313721,
+			"heading": -1.04981195926666,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -2416,7 +2416,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 22.01,
+			"seconds": 22.0,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -2439,7 +2439,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -0.648428022861481,
+			"heading": -0.800611674785614,
 			"health": 94.5,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -2459,7 +2459,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 23.01,
+			"seconds": 23.0,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -2472,7 +2472,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15546.0,
-				"object_count": 28030.0,
+				"object_count": 28033.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -2482,7 +2482,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -0.369416207075119,
+			"heading": -0.355600535869598,
 			"health": 89.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -2502,7 +2502,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 24.01,
+			"seconds": 24.0,
 			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
@@ -2514,8 +2514,8 @@
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 144.0,
-				"node_count": 15547.0,
-				"object_count": 28034.0,
+				"node_count": 15545.0,
+				"object_count": 28026.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -2525,7 +2525,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.32219886779785,
+			"heading": -1.3196257352829,
 			"health": 89.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -2536,60 +2536,17 @@
 				"stationary": 0
 			},
 			"position": [
-				-117.295639038086,
-				0.380839347839355,
-				-87.4267959594727
+				-117.455703735352,
+				0.380449444055557,
+				-87.386833190918
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 25.01,
-			"stage": 2,
-			"taa": true,
-			"vehicle_health": null,
-			"wanted": 1
-		},
-		{
-			"car_distance_m": 0.0,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15547.0,
-				"object_count": 28035.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 0.0,
-			"heading": 1.55597984790802,
-			"health": 89.0,
-			"mode": 0,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				-119.42049407959,
-				0.380445539951324,
-				-87.5058364868164
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 26.01,
-			"stage": 2,
+			"seconds": 25.0,
+			"stage": 0,
 			"taa": true,
 			"vehicle_health": null,
 			"wanted": 1
@@ -2611,7 +2568,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": 1.55626904964447,
+			"heading": 1.5557404756546,
 			"health": 89.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -2622,9 +2579,52 @@
 				"stationary": 0
 			},
 			"position": [
-				-125.570167541504,
-				0.380839347839355,
-				-87.5964508056641
+				-119.162330627441,
+				0.380833297967911,
+				-87.5018768310547
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 26.0,
+			"stage": 2,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 1
+		},
+		{
+			"car_distance_m": 0.0,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15547.0,
+				"object_count": 28041.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 1.55626797676086,
+			"health": 89.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				-125.240257263184,
+				0.380839318037033,
+				-87.5916061401367
 			],
 			"render_texture_pixels": [
 				3,
@@ -2644,7 +2644,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15547.0,
-				"object_count": 28039.0,
+				"object_count": 28042.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -2654,7 +2654,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": 1.55628478527069,
+			"heading": 1.55628407001495,
 			"health": 89.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -2665,9 +2665,9 @@
 				"stationary": 0
 			},
 			"position": [
-				-132.289505004883,
+				-131.950790405273,
 				0.380839347839355,
-				-87.6943740844727
+				-87.6894454956055
 			],
 			"render_texture_pixels": [
 				3,
@@ -2686,8 +2686,8 @@
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
-				"node_count": 15545.0,
-				"object_count": 28031.0,
+				"node_count": 15547.0,
+				"object_count": 28042.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -2698,7 +2698,7 @@
 			},
 			"flight_distance_m": 0.0,
 			"heading": 1.55627954006195,
-			"health": 89.1875,
+			"health": 89.31032,
 			"mode": 0,
 			"msaa_3d": 2,
 			"phase": "mission",
@@ -2708,16 +2708,16 @@
 				"stationary": 0
 			},
 			"position": [
-				-138.965576171875,
+				-138.739044189453,
 				0.380839347839355,
-				-87.7911529541016
+				-87.7878646850586
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 29.0,
+			"seconds": 29.01,
 			"stage": 2,
 			"taa": true,
 			"vehicle_health": null,
@@ -2730,7 +2730,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15545.0,
-				"object_count": 28032.0,
+				"object_count": 28035.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -2740,8 +2740,8 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": 1.55629360675812,
-			"health": 98.2287880000003,
+			"heading": 1.55629336833954,
+			"health": 98.309600000001,
 			"mode": 0,
 			"msaa_3d": 2,
 			"phase": "mission",
@@ -2751,9 +2751,9 @@
 				"stationary": 0
 			},
 			"position": [
-				-145.877716064453,
-				0.170103833079338,
-				-87.8916320800781
+				-145.537368774414,
+				0.276306480169296,
+				-87.8866958618164
 			],
 			"render_texture_pixels": [
 				3,
@@ -2773,7 +2773,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15561.0,
-				"object_count": 28053.0,
+				"object_count": 28056.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -2810,13 +2810,13 @@
 			"wanted": 2
 		},
 		{
-			"car_distance_m": 5.05087527539581,
+			"car_distance_m": 4.3725401153788,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15561.0,
-				"object_count": 28056.0,
+				"object_count": 28059.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -2826,7 +2826,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": 3.06545829772949,
+			"heading": 3.06588006019592,
 			"health": 100.0,
 			"mode": 1,
 			"msaa_3d": 2,
@@ -2837,9 +2837,9 @@
 				"stationary": 0
 			},
 			"position": [
-				-153.639404296875,
-				0.0609419532120228,
-				-82.9589157104492
+				-153.587890625,
+				0.0609413981437683,
+				-83.6352920532227
 			],
 			"render_texture_pixels": [
 				3,
@@ -2853,13 +2853,13 @@
 			"wanted": 2
 		},
 		{
-			"car_distance_m": 20.9825265100226,
+			"car_distance_m": 19.6533637335524,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15561.0,
-				"object_count": 28056.0,
+				"object_count": 28059.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -2880,29 +2880,29 @@
 				"stationary": 0
 			},
 			"position": [
-				-154.857986450195,
-				0.060941968113184,
-				-67.0739364624023
+				-154.756256103516,
+				0.0609419345855713,
+				-68.3992004394531
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 33.01,
+			"seconds": 33.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 2
 		},
 		{
-			"car_distance_m": 40.965792982839,
+			"car_distance_m": 39.9666319480166,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28071.0,
+				"object_count": 28074.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -2919,13 +2919,13 @@
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 168.3,
+				"nearest_m": 168.5,
 				"stationary": 0
 			},
 			"position": [
-				-156.387222290039,
-				0.060941930860281,
-				-47.1492691040039
+				-156.310760498047,
+				0.060941968113184,
+				-48.1455001831055
 			],
 			"render_texture_pixels": [
 				3,
@@ -2939,13 +2939,13 @@
 			"wanted": 2
 		},
 		{
-			"car_distance_m": 60.9489717176184,
+			"car_distance_m": 59.6198146631941,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28067.0,
+				"object_count": 28070.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -2962,33 +2962,33 @@
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 158.2,
+				"nearest_m": 158.5,
 				"stationary": 0
 			},
 			"position": [
-				-157.916458129883,
-				0.0609419532120228,
-				-27.2246894836426
+				-157.814727783203,
+				0.0609419457614422,
+				-28.5499477386475
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 35.01,
+			"seconds": 35.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 2
 		},
 		{
-			"car_distance_m": 76.5596518209204,
+			"car_distance_m": 75.8446567198262,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28067.0,
+				"object_count": 28070.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3005,76 +3005,119 @@
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 139.4,
+				"nearest_m": 139.8,
 				"stationary": 0
 			},
 			"position": [
-				-159.111053466797,
-				0.0609414018690586,
-				-11.6597843170166
+				-159.056335449219,
+				0.0609419457614422,
+				-12.3726825714111
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 36.01,
+			"seconds": 36.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 2
 		},
 		{
-			"car_distance_m": 85.1003051465377,
+			"car_distance_m": 84.3758403426036,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28071.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 3.12888479232788,
+			"health": 100.0,
+			"mode": 1,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 1,
+				"nearest_m": 116.8,
+				"stationary": 0
+			},
+			"position": [
+				-159.609786987305,
+				0.0609419569373131,
+				-3.86121964454651
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 37.0,
+			"stage": 3,
+			"taa": true,
+			"vehicle_health": 96.975,
+			"wanted": 2
+		},
+		{
+			"car_distance_m": 100.266080922447,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28074.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 3.13993978500366,
+			"health": 100.0,
+			"mode": 1,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 1,
+				"nearest_m": 94.4,
+				"stationary": 0
+			},
+			"position": [
+				-159.648223876953,
+				0.0609416365623474,
+				12.0289497375488
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 38.0,
+			"stage": 3,
+			"taa": true,
+			"vehicle_health": 96.975,
+			"wanted": 2
+		},
+		{
+			"car_distance_m": 120.207943714224,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 144.0,
 				"node_count": 15575.0,
-				"object_count": 28068.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 0.0,
-			"heading": 3.13416981697083,
-			"health": 100.0,
-			"mode": 1,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 1,
-				"nearest_m": 116.4,
-				"stationary": 0
-			},
-			"position": [
-				-159.61637878418,
-				0.0609419569373131,
-				-3.13678550720215
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 37.01,
-			"stage": 3,
-			"taa": true,
-			"vehicle_health": 96.975,
-			"wanted": 2
-		},
-		{
-			"car_distance_m": 101.595536238514,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28071.0,
+				"object_count": 28074.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3091,76 +3134,33 @@
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 94.2,
+				"nearest_m": 77.4,
 				"stationary": 0
 			},
 			"position": [
-				-159.650421142578,
-				0.0609415471553802,
-				13.3584032058716
+				-159.681106567383,
+				0.0609409138560295,
+				31.9707851409912
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 38.01,
-			"stage": 3,
-			"taa": true,
-			"vehicle_health": 96.975,
-			"wanted": 2
-		},
-		{
-			"car_distance_m": 121.537396109663,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28071.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 0.0,
-			"heading": 3.13993978500366,
-			"health": 100.0,
-			"mode": 1,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 1,
-				"nearest_m": 77.6,
-				"stationary": 0
-			},
-			"position": [
-				-159.683288574219,
-				0.0609409175813198,
-				33.300235748291
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 39.01,
+			"seconds": 39.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 1
 		},
 		{
-			"car_distance_m": 141.479222483002,
+			"car_distance_m": 140.149764335714,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28071.0,
+				"object_count": 28074.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3177,33 +3177,33 @@
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 71.0,
+				"nearest_m": 70.3,
 				"stationary": 0
 			},
 			"position": [
-				-159.71614074707,
-				0.0609433874487877,
-				53.2420349121094
+				-159.713958740234,
+				0.0609431453049183,
+				51.9125785827637
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 40.01,
+			"seconds": 40.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 1
 		},
 		{
-			"car_distance_m": 161.421075589024,
+			"car_distance_m": 160.091621286236,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
-				"fps": 146.0,
+				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28071.0,
+				"object_count": 28074.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3220,13 +3220,13 @@
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 81.5,
+				"nearest_m": 80.2,
 				"stationary": 0
 			},
 			"position": [
-				-159.748962402344,
-				0.0609426312148571,
-				73.1838607788086
+				-159.746780395508,
+				0.0609424598515034,
+				71.8544082641602
 			],
 			"render_texture_pixels": [
 				3,
@@ -3240,13 +3240,13 @@
 			"wanted": 1
 		},
 		{
-			"car_distance_m": 181.362951940857,
+			"car_distance_m": 180.033489978872,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
-				"fps": 144.0,
+				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28071.0,
+				"object_count": 28074.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3263,33 +3263,33 @@
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 105.3,
+				"nearest_m": 104.0,
 				"stationary": 0
 			},
 			"position": [
-				-159.78205871582,
-				0.0609419643878937,
-				93.1257095336914
+				-159.779861450195,
+				0.0609422288835049,
+				91.7962493896484
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 42.0,
+			"seconds": 42.01,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 1
 		},
 		{
-			"car_distance_m": 201.304835326038,
+			"car_distance_m": 199.975380933844,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28071.0,
+				"object_count": 28074.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3306,33 +3306,33 @@
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 125.1,
+				"nearest_m": 123.8,
 				"stationary": 1
 			},
 			"position": [
-				-159.814926147461,
-				0.0609428733587265,
-				113.067565917969
+				-159.812683105469,
+				0.0609414167702198,
+				111.73811340332
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 43.0,
+			"seconds": 43.01,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 1
 		},
 		{
-			"car_distance_m": 221.24674207624,
+			"car_distance_m": 219.91728774365,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28071.0,
+				"object_count": 28074.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3349,13 +3349,13 @@
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 145.0,
+				"nearest_m": 143.6,
 				"stationary": 1
 			},
 			"position": [
-				-159.84797668457,
-				0.0609420910477638,
-				133.00944519043
+				-159.845779418945,
+				0.0609431564807892,
+				131.679992675781
 			],
 			"render_texture_pixels": [
 				3,
@@ -3369,13 +3369,13 @@
 			"wanted": 1
 		},
 		{
-			"car_distance_m": 236.706159613095,
+			"car_distance_m": 236.009198225103,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28071.0,
+				"object_count": 28074.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3392,13 +3392,13 @@
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 160.4,
+				"nearest_m": 159.7,
 				"stationary": 1
 			},
 			"position": [
-				-159.873580932617,
-				0.0609432756900787,
-				148.468841552734
+				-159.872436523438,
+				0.0609400980174541,
+				147.771881103516
 			],
 			"render_texture_pixels": [
 				3,
@@ -3412,13 +3412,13 @@
 			"wanted": 1
 		},
 		{
-			"car_distance_m": 244.32836627122,
+			"car_distance_m": 243.984139448963,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28071.0,
+				"object_count": 28074.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3428,20 +3428,20 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -2.58710312843323,
+			"heading": -2.66744422912598,
 			"health": 100.0,
 			"mode": 1,
 			"msaa_3d": 2,
 			"phase": "mission",
 			"police": {
 				"cars": 1,
-				"nearest_m": 167.8,
+				"nearest_m": 167.5,
 				"stationary": 1
 			},
 			"position": [
-				-159.169586181641,
-				0.0609413981437683,
-				155.959045410156
+				-159.342849731445,
+				0.0609419420361519,
+				155.661697387695
 			],
 			"render_texture_pixels": [
 				3,
@@ -3455,13 +3455,13 @@
 			"wanted": 1
 		},
 		{
-			"car_distance_m": 253.248455598019,
+			"car_distance_m": 252.583392336033,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3471,7 +3471,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.57499063014984,
+			"heading": -1.57816767692566,
 			"health": 100.0,
 			"mode": 1,
 			"msaa_3d": 2,
@@ -3482,9 +3482,9 @@
 				"stationary": 0
 			},
 			"position": [
-				-150.951095581055,
-				0.0609414502978325,
-				158.218383789062
+				-151.616149902344,
+				0.0609419532120228,
+				158.214981079102
 			],
 			"render_texture_pixels": [
 				3,
@@ -3498,13 +3498,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 271.335332169197,
+			"car_distance_m": 270.005467160605,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3514,7 +3514,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.56993436813354,
+			"heading": -1.56993472576141,
 			"health": 100.0,
 			"mode": 1,
 			"msaa_3d": 2,
@@ -3525,29 +3525,29 @@
 				"stationary": 0
 			},
 			"position": [
-				-132.864227294922,
-				0.0609414167702198,
-				158.209915161133
+				-134.194091796875,
+				0.0609414130449295,
+				158.211074829102
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 48.01,
+			"seconds": 48.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 291.237042739056,
+			"car_distance_m": 289.907208218239,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3568,72 +3568,158 @@
 				"stationary": 0
 			},
 			"position": [
-				-112.962524414062,
-				0.0609414242208004,
-				158.192352294922
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 49.01,
-			"stage": 3,
-			"taa": true,
-			"vehicle_health": 96.975,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 311.138646646403,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15576.0,
-				"object_count": 28082.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 0.0,
-			"heading": -1.56993436813354,
-			"health": 100.0,
-			"mode": 1,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				-93.0609283447266,
+				-114.292358398438,
 				0.0609419420361519,
-				158.174789428711
+				158.193542480469
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 50.01,
+			"seconds": 49.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 331.040231480263,
+			"car_distance_m": 309.808812155388,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15576.0,
+				"object_count": 28085.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": -1.56993436813354,
+			"health": 100.0,
+			"mode": 1,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				-94.3907623291016,
+				0.0609414167702198,
+				158.17594909668
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 50.0,
+			"stage": 3,
+			"taa": true,
+			"vehicle_health": 96.975,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 329.710401042365,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28081.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": -1.57257676124573,
+			"health": 100.0,
+			"mode": 1,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				-74.4891815185547,
+				0.0609419532120228,
+				158.161392211914
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 51.0,
+			"stage": 3,
+			"taa": true,
+			"vehicle_health": 96.975,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 349.611973657273,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28081.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": -1.57930135726929,
+			"health": 100.0,
+			"mode": 1,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				-54.5878982543945,
+				0.0609419532120228,
+				158.260940551758
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 52.0,
+			"stage": 3,
+			"taa": true,
+			"vehicle_health": 96.975,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 369.513560517691,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 144.0,
 				"node_count": 15575.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3643,7 +3729,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.57358419895172,
+			"heading": -1.5887485742569,
 			"health": 100.0,
 			"mode": 1,
 			"msaa_3d": 2,
@@ -3654,95 +3740,9 @@
 				"stationary": 0
 			},
 			"position": [
-				-73.1593551635742,
-				0.0609419383108616,
-				158.164672851562
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 51.01,
-			"stage": 3,
-			"taa": true,
-			"vehicle_health": 96.975,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 350.941806747578,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28078.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 0.0,
-			"heading": -1.57936501502991,
-			"health": 100.0,
-			"mode": 1,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				-53.258113861084,
-				0.060941930860281,
-				158.272323608398
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 52.01,
-			"stage": 3,
-			"taa": true,
-			"vehicle_health": 96.975,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 370.50864510145,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28078.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 0.0,
-			"heading": -1.58953285217285,
-			"health": 100.0,
-			"mode": 1,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				-33.6932067871094,
-				0.0609419718384743,
-				158.540405273438
+				-34.6881256103516,
+				0.0609419345855713,
+				158.522247314453
 			],
 			"render_texture_pixels": [
 				3,
@@ -3756,13 +3756,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 388.939141719602,
+			"car_distance_m": 388.030975832604,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3772,7 +3772,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.60824799537659,
+			"heading": -1.60716998577118,
 			"health": 100.0,
 			"mode": 1,
 			"msaa_3d": 2,
@@ -3783,9 +3783,9 @@
 				"stationary": 0
 			},
 			"position": [
-				-15.2699508666992,
-				0.0609414018690586,
-				159.047836303711
+				-16.1775016784668,
+				0.0609419494867325,
+				159.014419555664
 			],
 			"render_texture_pixels": [
 				3,
@@ -3799,13 +3799,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 398.123489900492,
+			"car_distance_m": 397.6365433475,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3815,7 +3815,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.61903738975525,
+			"heading": -1.62703704833984,
 			"health": 100.0,
 			"mode": 1,
 			"msaa_3d": 2,
@@ -3826,9 +3826,9 @@
 				"stationary": 0
 			},
 			"position": [
-				-6.09590721130371,
-				0.0609413869678974,
-				159.47966003418
+				-6.58220100402832,
+				0.0609419532120228,
+				159.454483032227
 			],
 			"render_texture_pixels": [
 				3,
@@ -3842,13 +3842,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 411.294219209813,
+			"car_distance_m": 410.073955043219,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3858,7 +3858,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.57497596740723,
+			"heading": -1.57497906684875,
 			"health": 100.0,
 			"mode": 1,
 			"msaa_3d": 2,
@@ -3869,9 +3869,9 @@
 				"stationary": 0
 			},
 			"position": [
-				7.07396984100342,
-				0.0609408095479012,
-				159.582061767578
+				5.8537163734436,
+				0.0609433241188526,
+				159.576950073242
 			],
 			"render_texture_pixels": [
 				3,
@@ -3885,13 +3885,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 431.092297567986,
+			"car_distance_m": 429.771204723977,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3912,9 +3912,9 @@
 				"stationary": 0
 			},
 			"position": [
-				26.8718738555908,
-				0.0609414391219616,
-				159.665100097656
+				25.5507926940918,
+				0.0609414577484131,
+				159.659545898438
 			],
 			"render_texture_pixels": [
 				3,
@@ -3928,13 +3928,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 450.95456431713,
+			"car_distance_m": 449.961456372403,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3955,9 +3955,9 @@
 				"stationary": 0
 			},
 			"position": [
-				46.7339668273926,
-				0.0609430745244026,
-				159.748184204102
+				45.7408676147461,
+				0.0609429217875004,
+				159.744018554688
 			],
 			"render_texture_pixels": [
 				3,
@@ -3971,13 +3971,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 470.816802366637,
+			"car_distance_m": 469.823690607212,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -3998,9 +3998,9 @@
 				"stationary": 0
 			},
 			"position": [
-				66.5960311889648,
-				0.0609425902366638,
-				159.83122253418
+				65.6029281616211,
+				0.0609425604343414,
+				159.827056884766
 			],
 			"render_texture_pixels": [
 				3,
@@ -4014,13 +4014,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 490.679044111632,
+			"car_distance_m": 489.685932471417,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28078.0,
+				"object_count": 28081.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4041,9 +4041,9 @@
 				"stationary": 0
 			},
 			"position": [
-				86.4580993652344,
-				0.0609420798718929,
-				159.91423034668
+				85.4649963378906,
+				0.060942467302084,
+				159.910095214844
 			],
 			"render_texture_pixels": [
 				3,
@@ -4057,13 +4057,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 510.541285707615,
+			"car_distance_m": 509.548158749007,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28081.0,
+				"object_count": 28084.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4084,9 +4084,9 @@
 				"stationary": 0
 			},
 			"position": [
-				106.320167541504,
-				0.0609415322542191,
-				159.997177124023
+				105.327049255371,
+				0.0609424337744713,
+				159.993026733398
 			],
 			"render_texture_pixels": [
 				3,
@@ -4100,13 +4100,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 530.403519733809,
+			"car_distance_m": 529.082432760857,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28081.0,
+				"object_count": 28084.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4127,29 +4127,29 @@
 				"stationary": 0
 			},
 			"position": [
-				126.182228088379,
-				0.0609416924417019,
-				160.080154418945
+				124.861152648926,
+				0.0609409064054489,
+				160.074630737305
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 62.01,
+			"seconds": 62.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 548.624969675206,
+			"car_distance_m": 547.698051243089,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28081.0,
+				"object_count": 28084.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4170,72 +4170,29 @@
 				"stationary": 0
 			},
 			"position": [
-				144.403518676758,
-				0.0609433092176914,
-				160.156326293945
+				143.476608276367,
+				0.0609408654272556,
+				160.152465820312
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 63.01,
+			"seconds": 63.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 557.813618390821,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28084.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 0.0,
-			"heading": -1.5673496723175,
-			"health": 100.0,
-			"mode": 1,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				153.592102050781,
-				0.0609419532120228,
-				160.184265136719
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 64.01,
-			"stage": 3,
-			"taa": true,
-			"vehicle_health": 96.975,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 570.703616946004,
+			"car_distance_m": 557.473009831272,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 144.0,
 				"node_count": 15575.0,
-				"object_count": 28084.0,
+				"object_count": 28087.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4245,7 +4202,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.56640565395355,
+			"heading": -1.56787192821503,
 			"health": 100.0,
 			"mode": 1,
 			"msaa_3d": 2,
@@ -4256,29 +4213,29 @@
 				"stationary": 0
 			},
 			"position": [
-				166.481979370117,
-				0.0609437599778175,
-				160.128372192383
+				153.251495361328,
+				0.0609419457614422,
+				160.185394287109
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 65.01,
+			"seconds": 64.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 590.422251760028,
+			"car_distance_m": 569.510047643445,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28084.0,
+				"object_count": 28087.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4299,29 +4256,29 @@
 				"stationary": 0
 			},
 			"position": [
-				186.200424194336,
-				0.0609438717365265,
-				160.041839599609
+				165.288421630859,
+				0.0609434433281422,
+				160.13362121582
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 66.01,
+			"seconds": 65.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 610.25062894728,
+			"car_distance_m": 589.100370197557,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
-				"fps": 146.0,
+				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28084.0,
+				"object_count": 28087.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4342,29 +4299,29 @@
 				"stationary": 0
 			},
 			"position": [
-				206.028610229492,
-				0.060942143201828,
-				159.954788208008
+				184.878555297852,
+				0.0609429106116295,
+				160.047622680664
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 67.01,
+			"seconds": 66.0,
 			"stage": 3,
 			"taa": true,
 			"vehicle_health": 96.975,
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 629.74849757459,
+			"car_distance_m": 608.928732066415,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
-				"fps": 144.0,
+				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28085.0,
+				"object_count": 28087.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4385,9 +4342,52 @@
 				"stationary": 0
 			},
 			"position": [
-				225.526290893555,
-				0.06094104424119,
-				159.869186401367
+				204.706726074219,
+				0.0609423331916332,
+				159.960586547852
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 67.0,
+			"stage": 3,
+			"taa": true,
+			"vehicle_health": 96.975,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 628.757078706287,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28088.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": -1.56640565395355,
+			"health": 100.0,
+			"mode": 1,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				224.534881591797,
+				0.060941107571125,
+				159.87353515625
 			],
 			"render_texture_pixels": [
 				3,
@@ -4401,13 +4401,13 @@
 			"wanted": 0
 		},
 		{
-			"car_distance_m": 649.576752274297,
+			"car_distance_m": 648.585333435796,
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4428,9 +4428,9 @@
 				"stationary": 0
 			},
 			"position": [
-				245.354354858398,
-				0.0609437972307205,
-				159.7822265625
+				244.362945556641,
+				0.0609439089894295,
+				159.786575317383
 			],
 			"render_texture_pixels": [
 				3,
@@ -4450,7 +4450,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28085.0,
+				"object_count": 28088.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4471,16 +4471,16 @@
 				"stationary": 0
 			},
 			"position": [
-				256.661773681641,
-				0.0609403438866138,
-				159.732543945312
+				256.534118652344,
+				0.0609407909214497,
+				159.733108520508
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 70.0,
+			"seconds": 70.01,
 			"stage": 4,
 			"taa": true,
 			"vehicle_health": 96.975,
@@ -4493,7 +4493,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28090.0,
+				"object_count": 28093.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4503,7 +4503,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -0.26787257194519,
+			"heading": -0.268471747636795,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -4514,16 +4514,16 @@
 				"stationary": 0
 			},
 			"position": [
-				257.504699707031,
-				0.0358239002525806,
-				161.06477355957
+				257.484588623047,
+				0.0358238629996777,
+				161.064865112305
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 71.0,
+			"seconds": 71.01,
 			"stage": 4,
 			"taa": true,
 			"vehicle_health": null,
@@ -4536,7 +4536,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28090.0,
+				"object_count": 28093.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4546,7 +4546,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -0.24231268465519,
+			"heading": -0.242763459682465,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -4557,16 +4557,16 @@
 				"stationary": 0
 			},
 			"position": [
-				259.033630371094,
-				0.0358229465782642,
-				161.058059692383
+				259.006256103516,
+				0.0358281321823597,
+				161.058181762695
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 72.0,
+			"seconds": 72.01,
 			"stage": 4,
 			"taa": true,
 			"vehicle_health": null,
@@ -4579,7 +4579,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28090.0,
+				"object_count": 28093.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4589,7 +4589,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -0.224668994545937,
+			"heading": -0.224827334284782,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -4600,16 +4600,16 @@
 				"stationary": 0
 			},
 			"position": [
-				260.677337646484,
-				0.0276022329926491,
-				158.056076049805
+				260.64990234375,
+				0.0276020653545856,
+				158.140655517578
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 73.0,
+			"seconds": 73.01,
 			"stage": 4,
 			"taa": true,
 			"vehicle_health": null,
@@ -4622,7 +4622,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28090.0,
+				"object_count": 28093.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4632,7 +4632,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -0.22169055044651,
+			"heading": -0.221773311495781,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -4643,16 +4643,16 @@
 				"stationary": 0
 			},
 			"position": [
-				262.194213867188,
-				0.143179878592491,
-				151.969696044922
+				262.165924072266,
+				0.137693494558334,
+				152.072540283203
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 74.0,
+			"seconds": 74.01,
 			"stage": 4,
 			"taa": true,
 			"vehicle_health": null,
@@ -4665,7 +4665,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4675,7 +4675,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -0.221162676811218,
+			"heading": -0.221258401870728,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -4686,59 +4686,16 @@
 				"stationary": 0
 			},
 			"position": [
-				263.693603515625,
-				0.135845169425011,
-				145.394378662109
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 75.0,
-			"stage": 4,
-			"taa": true,
-			"vehicle_health": null,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28086.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 0.0,
-			"heading": -0.22105173766613,
-			"health": 100.0,
-			"mode": 0,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				265.211883544922,
+				263.665740966797,
 				0.135845154523849,
-				138.656585693359
+				145.499603271484
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 76.01,
+			"seconds": 75.01,
 			"stage": 4,
 			"taa": true,
 			"vehicle_health": null,
@@ -4751,7 +4708,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4761,7 +4718,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -0.221105679869652,
+			"heading": -0.221139490604401,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -4772,102 +4729,59 @@
 				"stationary": 0
 			},
 			"position": [
-				266.700714111328,
-				0.135845154523849,
-				132.023223876953
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 77.01,
-			"stage": 4,
-			"taa": true,
-			"vehicle_health": null,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28086.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 0.0,
-			"heading": -0.221163019537926,
-			"health": 100.0,
-			"mode": 0,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				268.190856933594,
-				0.135839462280273,
-				125.389152526855
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 78.01,
-			"stage": 4,
-			"taa": true,
-			"vehicle_health": null,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28086.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 0.0,
-			"heading": -0.22113510966301,
-			"health": 100.0,
-			"mode": 0,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				269.326324462891,
+				265.135467529297,
 				0.135845169425011,
-				120.34114074707
+				138.98323059082
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 79.01,
+			"seconds": 76.0,
+			"stage": 4,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28089.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": -0.221110388636589,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				266.627258300781,
+				0.135845169425011,
+				132.350051879883
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 77.0,
 			"stage": 4,
 			"taa": true,
 			"vehicle_health": null,
@@ -4880,7 +4794,7 @@
 				"draw_calls": null,
 				"fps": 144.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4890,7 +4804,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": -1.37798547744751,
+			"heading": -0.22114235162735,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -4901,16 +4815,16 @@
 				"stationary": 0
 			},
 			"position": [
-				270.289825439453,
-				1.13597404956818,
-				120.184745788574
+				268.117736816406,
+				0.135845139622688,
+				125.716026306152
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 80.01,
+			"seconds": 78.0,
 			"stage": 4,
 			"taa": true,
 			"vehicle_health": null,
@@ -4923,7 +4837,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4933,7 +4847,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": 0.0558726973831654,
+			"heading": -0.221144631505013,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -4944,9 +4858,95 @@
 				"stationary": 0
 			},
 			"position": [
-				273.925659179688,
-				0.43583470582962,
-				117.586135864258
+				269.326141357422,
+				0.135845139622688,
+				120.341232299805
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 79.0,
+			"stage": 4,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28089.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": -1.3829253911972,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				270.099609375,
+				1.23596489429474,
+				120.217643737793
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 80.0,
+			"stage": 4,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28089.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 0.0,
+			"heading": 0.0507460422813892,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				273.877532958984,
+				0.435831546783447,
+				117.759223937988
 			],
 			"render_texture_pixels": [
 				3,
@@ -4966,7 +4966,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -4976,7 +4976,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 0.0,
-			"heading": 0.14132958650589,
+			"heading": 0.139540150761604,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -4987,9 +4987,9 @@
 				"stationary": 0
 			},
 			"position": [
-				274.078033447266,
+				274.096832275391,
 				0.435831278562546,
-				111.347343444824
+				111.565963745117
 			],
 			"render_texture_pixels": [
 				3,
@@ -5009,7 +5009,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5039,7 +5039,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 83.0,
+			"seconds": 83.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5052,7 +5052,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28090.0,
+				"object_count": 28093.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5061,8 +5061,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 4.88847115635872,
-			"heading": 0.390773564577103,
+			"flight_distance_m": 4.69041064381599,
+			"heading": 0.384352743625641,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -5074,7 +5074,7 @@
 			},
 			"position": [
 				270.0,
-				5.24709033966064,
+				5.04883575439453,
 				104.0
 			],
 			"render_texture_pixels": [
@@ -5082,7 +5082,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 84.0,
+			"seconds": 84.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5095,7 +5095,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28090.0,
+				"object_count": 28093.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5104,8 +5104,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 16.871047526598,
-			"heading": 0.543554067611694,
+			"flight_distance_m": 16.6710505783558,
+			"heading": 0.543167471885681,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -5117,7 +5117,7 @@
 			},
 			"position": [
 				270.0,
-				17.231409072876,
+				17.0314121246338,
 				104.0
 			],
 			"render_texture_pixels": [
@@ -5125,7 +5125,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 85.0,
+			"seconds": 85.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5138,7 +5138,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28090.0,
+				"object_count": 28093.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5147,8 +5147,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 28.8710341751575,
-			"heading": 0.547026872634888,
+			"flight_distance_m": 28.6710334122181,
+			"heading": 0.54702615737915,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -5160,7 +5160,7 @@
 			},
 			"position": [
 				270.0,
-				29.2313995361328,
+				29.0313987731934,
 				104.0
 			],
 			"render_texture_pixels": [
@@ -5168,7 +5168,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 86.0,
+			"seconds": 86.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5181,7 +5181,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5190,7 +5190,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 40.8710799515247,
+			"flight_distance_m": 40.6710791885853,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5203,7 +5203,7 @@
 			},
 			"position": [
 				270.0,
-				41.2314453125,
+				41.0314445495605,
 				104.0
 			],
 			"render_texture_pixels": [
@@ -5211,7 +5211,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 87.0,
+			"seconds": 87.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5224,7 +5224,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5233,7 +5233,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 52.8711257278919,
+			"flight_distance_m": 52.6711249649525,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5246,7 +5246,7 @@
 			},
 			"position": [
 				270.0,
-				53.2314910888672,
+				53.0314903259277,
 				104.0
 			],
 			"render_texture_pixels": [
@@ -5254,7 +5254,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 88.0,
+			"seconds": 88.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5267,7 +5267,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5276,7 +5276,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 65.071149379015,
+			"flight_distance_m": 64.6711554825306,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5289,7 +5289,7 @@
 			},
 			"position": [
 				270.0,
-				65.431510925293,
+				65.0315170288086,
 				104.0
 			],
 			"render_texture_pixels": [
@@ -5310,7 +5310,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5319,7 +5319,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 77.0709662735462,
+			"flight_distance_m": 76.4709754288197,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5332,7 +5332,7 @@
 			},
 			"position": [
 				270.0,
-				77.4313278198242,
+				76.8313369750977,
 				104.0
 			],
 			"render_texture_pixels": [
@@ -5340,7 +5340,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 90.01,
+			"seconds": 90.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5353,7 +5353,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5362,7 +5362,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 89.0707831680775,
+			"flight_distance_m": 88.4707923233509,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5375,7 +5375,7 @@
 			},
 			"position": [
 				270.0,
-				89.4311447143555,
+				88.8311538696289,
 				104.0
 			],
 			"render_texture_pixels": [
@@ -5383,136 +5383,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 91.01,
-			"stage": 5,
-			"taa": true,
-			"vehicle_health": 100.0,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28086.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 101.194058865309,
-			"heading": 0.547032117843628,
-			"health": 100.0,
-			"mode": 2,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				269.55859375,
-				101.430961608887,
-				103.275283813477
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 92.01,
-			"stage": 5,
-			"taa": true,
-			"vehicle_health": 100.0,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28086.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 121.540580481291,
-			"heading": 0.547032117843628,
-			"health": 100.0,
-			"mode": 2,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				260.033996582031,
-				109.098915100098,
-				87.6364364624023
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 93.01,
-			"stage": 5,
-			"taa": true,
-			"vehicle_health": 100.0,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28086.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 147.675972998142,
-			"heading": 0.547032117843628,
-			"health": 100.0,
-			"mode": 2,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				246.420074462891,
-				109.237411499023,
-				65.2830505371094
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 94.01,
+			"seconds": 91.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5525,7 +5396,7 @@
 				"draw_calls": null,
 				"fps": 144.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5534,7 +5405,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 174.309226244688,
+			"flight_distance_m": 100.527492448688,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5546,16 +5417,16 @@
 				"stationary": 0
 			},
 			"position": [
-				232.564498901367,
-				109.237632751465,
-				42.532787322998
+				269.723236083984,
+				100.83097076416,
+				103.545631408691
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 95.0,
+			"seconds": 92.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5568,7 +5439,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5577,7 +5448,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 201.496555119753,
+			"flight_distance_m": 120.319276034832,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5589,16 +5460,16 @@
 				"stationary": 0
 			},
 			"position": [
-				218.422622680664,
-				109.237632751465,
-				19.3124656677246
+				260.6708984375,
+				109.043106079102,
+				88.6821899414062
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 96.0,
+			"seconds": 93.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5611,7 +5482,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5620,7 +5491,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 228.695060282946,
+			"flight_distance_m": 146.331072151661,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5632,16 +5503,59 @@
 				"stationary": 0
 			},
 			"position": [
-				204.275207519531,
-				109.237632751465,
-				-3.91707801818848
+				247.119903564453,
+				109.237319946289,
+				66.4321670532227
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 97.0,
+			"seconds": 94.0,
+			"stage": 5,
+			"taa": true,
+			"vehicle_health": 100.0,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 146.0,
+				"node_count": 15575.0,
+				"object_count": 28089.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 173.856434047222,
+			"heading": 0.547032117843628,
+			"health": 100.0,
+			"mode": 2,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				232.800033569336,
+				109.237632751465,
+				42.9195251464844
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 95.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5654,7 +5568,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5663,7 +5577,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 255.894585937262,
+			"flight_distance_m": 201.043277740479,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5675,16 +5589,59 @@
 				"stationary": 0
 			},
 			"position": [
-				190.127502441406,
+				218.658401489258,
 				109.237632751465,
-				-27.1476020812988
+				19.6995964050293
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 98.0,
+			"seconds": 96.01,
+			"stage": 5,
+			"taa": true,
+			"vehicle_health": 100.0,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 144.0,
+				"node_count": 15575.0,
+				"object_count": 28089.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 228.241737902164,
+			"heading": 0.547032117843628,
+			"health": 100.0,
+			"mode": 2,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				204.511001586914,
+				109.237632751465,
+				-3.52990579605103
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 97.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5697,7 +5654,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5706,7 +5663,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 283.547958344221,
+			"flight_distance_m": 255.441251963377,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5718,9 +5675,52 @@
 				"stationary": 0
 			},
 			"position": [
-				175.743133544922,
+				190.363311767578,
 				109.237632751465,
-				-50.7653694152832
+				-26.760425567627
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 98.01,
+			"stage": 5,
+			"taa": true,
+			"vehicle_health": 100.0,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28089.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 282.641290396452,
+			"heading": 0.547032117843628,
+			"health": 100.0,
+			"mode": 2,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				176.214752197266,
+				109.237632751465,
+				-49.9910163879395
 			],
 			"render_texture_pixels": [
 				3,
@@ -5740,7 +5740,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5749,7 +5749,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 310.294659554958,
+			"flight_distance_m": 309.387991607189,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5761,16 +5761,16 @@
 				"stationary": 0
 			},
 			"position": [
-				161.830383300781,
+				162.302001953125,
 				109.237632751465,
-				-73.6087799072266
+				-72.8344268798828
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 100.0,
+			"seconds": 100.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5783,7 +5783,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5792,7 +5792,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 337.947580099106,
+			"flight_distance_m": 336.587601959705,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5804,9 +5804,9 @@
 				"stationary": 0
 			},
 			"position": [
-				147.446899414062,
+				148.154281616211,
 				109.237632751465,
-				-97.2265472412109
+				-96.0650177001953
 			],
 			"render_texture_pixels": [
 				3,
@@ -5826,7 +5826,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5835,7 +5835,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 365.147142887115,
+			"flight_distance_m": 363.787164747715,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5847,9 +5847,9 @@
 				"stationary": 0
 			},
 			"position": [
-				133.299255371094,
+				134.006637573242,
 				109.237632751465,
-				-120.457138061523
+				-119.295608520508
 			],
 			"render_texture_pixels": [
 				3,
@@ -5869,7 +5869,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5878,7 +5878,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 392.346851229668,
+			"flight_distance_m": 390.986861288548,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5890,9 +5890,9 @@
 				"stationary": 0
 			},
 			"position": [
-				119.151321411133,
+				119.858726501465,
 				109.237632751465,
-				-143.687728881836
+				-142.52619934082
 			],
 			"render_texture_pixels": [
 				3,
@@ -5912,7 +5912,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5921,7 +5921,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 419.546650052071,
+			"flight_distance_m": 418.18666011095,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5933,16 +5933,16 @@
 				"stationary": 0
 			},
 			"position": [
-				105.003219604492,
+				105.710624694824,
 				109.237632751465,
-				-166.918319702148
+				-165.756790161133
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 104.01,
+			"seconds": 104.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5955,7 +5955,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -5964,7 +5964,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 446.746448874474,
+			"flight_distance_m": 445.386458933353,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -5976,16 +5976,16 @@
 				"stationary": 0
 			},
 			"position": [
-				90.8551177978516,
+				91.5625228881836,
 				109.237632751465,
-				-190.148910522461
+				-188.987380981445
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 105.01,
+			"seconds": 105.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -5998,7 +5998,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6007,7 +6007,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 473.945864498615,
+			"flight_distance_m": 472.585925519466,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -6019,16 +6019,59 @@
 				"stationary": 0
 			},
 			"position": [
-				76.7073364257812,
+				77.4147186279297,
 				109.237632751465,
-				-213.37922668457
+				-212.217742919922
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 106.01,
+			"seconds": 106.0,
+			"stage": 5,
+			"taa": true,
+			"vehicle_health": 100.0,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28089.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 499.784705102444,
+			"heading": 0.547032117843628,
+			"health": 100.0,
+			"mode": 2,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				63.2670745849609,
+				109.237632751465,
+				-235.447418212891
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 107.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6041,7 +6084,7 @@
 				"draw_calls": null,
 				"fps": 144.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6050,7 +6093,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 501.144644081593,
+			"flight_distance_m": 526.983346641064,
 			"heading": 0.547032117843628,
 			"health": 100.0,
 			"mode": 2,
@@ -6062,52 +6105,9 @@
 				"stationary": 0
 			},
 			"position": [
-				62.5596923828125,
+				49.1195793151855,
 				109.237632751465,
-				-236.608901977539
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 107.01,
-			"stage": 5,
-			"taa": true,
-			"vehicle_health": 100.0,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28086.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 528.343234658241,
-			"heading": 0.547032117843628,
-			"health": 100.0,
-			"mode": 2,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				48.4122200012207,
-				109.237632751465,
-				-259.838439941406
+				-258.677001953125
 			],
 			"render_texture_pixels": [
 				3,
@@ -6125,9 +6125,9 @@
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
-				"fps": 145.0,
+				"fps": 146.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6136,8 +6136,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 555.540825635195,
-			"heading": 0.550952017307281,
+			"flight_distance_m": 554.180961966515,
+			"heading": 0.550550699234009,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -6148,9 +6148,9 @@
 				"stationary": 0
 			},
 			"position": [
-				34.25537109375,
+				34.9646759033203,
 				109.237632751465,
-				-283.061096191406
+				-281.90087890625
 			],
 			"render_texture_pixels": [
 				3,
@@ -6168,9 +6168,9 @@
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
-				"fps": 145.0,
+				"fps": 144.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6179,8 +6179,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 582.424497514963,
-			"heading": 0.560934662818909,
+			"flight_distance_m": 581.150210976601,
+			"heading": 0.560062408447266,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -6191,9 +6191,9 @@
 				"stationary": 0
 			},
 			"position": [
-				20.1731586456299,
+				20.8424549102783,
 				109.237632751465,
-				-305.923034667969
+				-304.845794677734
 			],
 			"render_texture_pixels": [
 				3,
@@ -6213,7 +6213,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6222,8 +6222,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 602.854279726744,
-			"heading": 0.5781529545784,
+			"flight_distance_m": 602.083841711283,
+			"heading": 0.577176094055176,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -6234,9 +6234,9 @@
 				"stationary": 0
 			},
 			"position": [
-				9.38873672485352,
+				9.79865646362305,
 				109.237632751465,
-				-323.074310302734
+				-322.432159423828
 			],
 			"render_texture_pixels": [
 				3,
@@ -6256,7 +6256,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6265,8 +6265,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 613.39051874727,
-			"heading": 0.605761051177979,
+			"flight_distance_m": 613.154809728265,
+			"heading": 0.604583561420441,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -6277,16 +6277,16 @@
 				"stationary": 0
 			},
 			"position": [
-				3.72109365463257,
+				3.84984302520752,
 				109.237632751465,
-				-331.794586181641
+				-331.601287841797
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 112.0,
+			"seconds": 112.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6299,7 +6299,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6308,8 +6308,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 617.940839897841,
-			"heading": 0.653199970722198,
+			"flight_distance_m": 617.809002034366,
+			"heading": 0.65021026134491,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -6320,9 +6320,9 @@
 				"stationary": 0
 			},
 			"position": [
-				1.19260001182556,
+				1.26771402359009,
 				109.237632751465,
-				-335.489501953125
+				-335.384063720703
 			],
 			"render_texture_pixels": [
 				3,
@@ -6342,7 +6342,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6351,8 +6351,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 622.285911202431,
-			"heading": 0.719414293766022,
+			"flight_distance_m": 621.987403959036,
+			"heading": 0.716721832752228,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -6363,16 +6363,16 @@
 				"stationary": 0
 			},
 			"position": [
-				0.499186933040619,
-				105.419250488281,
-				-336.447021484375
+				0.510261952877045,
+				105.717338562012,
+				-336.431915283203
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 114.0,
+			"seconds": 114.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6385,7 +6385,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28086.0,
+				"object_count": 28089.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6394,8 +6394,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 628.282716803253,
-			"heading": 0.743477404117584,
+			"flight_distance_m": 627.982714109123,
+			"heading": 0.743085622787476,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -6406,16 +6406,16 @@
 				"stationary": 0
 			},
 			"position": [
-				0.414983510971069,
-				99.4243850708008,
-				-336.561553955078
+				0.416178822517395,
+				99.7243804931641,
+				-336.559936523438
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 115.0,
+			"seconds": 115.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6428,7 +6428,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28087.0,
+				"object_count": 28090.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6437,8 +6437,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 634.282654166222,
-			"heading": 0.746833324432373,
+			"flight_distance_m": 633.982658654451,
+			"heading": 0.746759474277496,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -6449,9 +6449,9 @@
 				"stationary": 0
 			},
 			"position": [
-				0.405971348285675,
-				93.4244766235352,
-				-336.573791503906
+				0.406098544597626,
+				93.7244720458984,
+				-336.573608398438
 			],
 			"render_texture_pixels": [
 				3,
@@ -6471,7 +6471,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28088.0,
+				"object_count": 28091.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6480,8 +6480,8 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 640.282563075423,
-			"heading": 0.747031688690186,
+			"flight_distance_m": 639.98256765306,
+			"heading": 0.747031450271606,
 			"health": 100.0,
 			"mode": 2,
 			"msaa_3d": 2,
@@ -6492,8 +6492,8 @@
 				"stationary": 0
 			},
 			"position": [
-				0.40501281619072,
-				87.4245681762695,
+				0.405026346445084,
+				87.7245635986328,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -6501,7 +6501,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 117.01,
+			"seconds": 117.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6514,7 +6514,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28088.0,
+				"object_count": 28091.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6523,7 +6523,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 646.282471522689,
+			"flight_distance_m": 645.982476100326,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -6535,8 +6535,8 @@
 				"stationary": 0
 			},
 			"position": [
-				0.40491110086441,
-				81.4246597290039,
+				0.404912531375885,
+				81.7246551513672,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -6544,7 +6544,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 118.01,
+			"seconds": 118.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6557,7 +6557,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28089.0,
+				"object_count": 28091.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6566,7 +6566,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 652.282379969954,
+			"flight_distance_m": 651.982384547591,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -6578,8 +6578,8 @@
 				"stationary": 0
 			},
 			"position": [
-				0.404900252819061,
-				75.4247512817383,
+				0.404900431632996,
+				75.7247467041016,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -6587,7 +6587,93 @@
 				1
 			],
 			"run": 1,
-			"seconds": 119.01,
+			"seconds": 119.0,
+			"stage": 5,
+			"taa": true,
+			"vehicle_health": 100.0,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28092.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 657.982292994857,
+			"heading": 0.74703186750412,
+			"health": 100.0,
+			"mode": 2,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				0.404899269342422,
+				69.7248382568359,
+				-336.574981689453
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 120.0,
+			"stage": 5,
+			"taa": true,
+			"vehicle_health": 100.0,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15575.0,
+				"object_count": 28092.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 663.982201442122,
+			"heading": 0.74703186750412,
+			"health": 100.0,
+			"mode": 2,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				0.404899269342422,
+				63.7249298095703,
+				-336.574981689453
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 121.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6600,7 +6686,7 @@
 				"draw_calls": null,
 				"fps": 144.0,
 				"node_count": 15575.0,
-				"object_count": 28089.0,
+				"object_count": 28092.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6609,7 +6695,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 658.28228841722,
+			"flight_distance_m": 669.982109889388,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -6622,93 +6708,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				69.4248428344727,
-				-336.574981689453
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 120.01,
-			"stage": 5,
-			"taa": true,
-			"vehicle_health": 100.0,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28089.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 664.282196864486,
-			"heading": 0.74703186750412,
-			"health": 100.0,
-			"mode": 2,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				0.404899269342422,
-				63.424934387207,
-				-336.574981689453
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 121.01,
-			"stage": 5,
-			"taa": true,
-			"vehicle_health": 100.0,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15575.0,
-				"object_count": 28089.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 670.282105311751,
-			"heading": 0.74703186750412,
-			"health": 100.0,
-			"mode": 2,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				0.404899269342422,
-				57.4250259399414,
+				57.7250213623047,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -6729,7 +6729,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28089.0,
+				"object_count": 28092.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6738,7 +6738,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 676.282013759017,
+			"flight_distance_m": 675.982018336654,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -6751,7 +6751,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				51.4251174926758,
+				51.7251129150391,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -6772,7 +6772,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6781,7 +6781,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 682.181923732162,
+			"flight_distance_m": 681.981926783919,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -6794,7 +6794,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				45.5252075195312,
+				45.7252044677734,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -6802,7 +6802,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 124.0,
+			"seconds": 124.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6815,7 +6815,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6824,7 +6824,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 688.281830653548,
+			"flight_distance_m": 687.981835231185,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -6837,7 +6837,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				39.4253005981445,
+				39.7252960205078,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -6845,7 +6845,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 125.0,
+			"seconds": 125.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6858,7 +6858,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6867,7 +6867,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 694.281739100814,
+			"flight_distance_m": 693.981743678451,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -6880,7 +6880,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				33.4253921508789,
+				33.7253875732422,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -6888,7 +6888,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 126.0,
+			"seconds": 126.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6901,7 +6901,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6910,7 +6910,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 700.281733378768,
+			"flight_distance_m": 699.981732234359,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -6923,7 +6923,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				27.4253959655762,
+				27.7253971099854,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -6931,7 +6931,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 127.0,
+			"seconds": 127.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -6944,7 +6944,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6953,7 +6953,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 706.281756266952,
+			"flight_distance_m": 705.981755122542,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -6966,7 +6966,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				21.4253730773926,
+				21.7253742218018,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -6987,7 +6987,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -6996,7 +6996,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 712.281779155135,
+			"flight_distance_m": 712.081778392196,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -7009,7 +7009,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				15.425350189209,
+				15.6253509521484,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -7017,7 +7017,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 129.0,
+			"seconds": 129.01,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -7030,7 +7030,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7039,7 +7039,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 718.281802043319,
+			"flight_distance_m": 717.98180089891,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -7052,7 +7052,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				9.42532730102539,
+				9.72532844543457,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -7060,7 +7060,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 130.01,
+			"seconds": 130.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -7073,7 +7073,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7082,7 +7082,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 722.35295663774,
+			"flight_distance_m": 722.216172084212,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -7095,7 +7095,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				5.40869283676147,
+				5.54529905319214,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -7103,7 +7103,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 131.01,
+			"seconds": 131.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -7116,7 +7116,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7125,7 +7125,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 725.057748183608,
+			"flight_distance_m": 724.922744855285,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -7138,7 +7138,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				2.70438075065613,
+				2.83938360214233,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -7146,7 +7146,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 132.01,
+			"seconds": 132.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -7159,7 +7159,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28091.0,
+				"object_count": 28094.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7168,7 +7168,7 @@
 				"static_memory_bytes": 0.0,
 				"static_memory_peak_bytes": 0.0
 			},
-			"flight_distance_m": 727.75775757432,
+			"flight_distance_m": 727.622757568955,
 			"heading": 0.74703186750412,
 			"health": 100.0,
 			"mode": 2,
@@ -7181,7 +7181,7 @@
 			},
 			"position": [
 				0.404899269342422,
-				0.00437214970588684,
+				0.139372155070305,
 				-336.574981689453
 			],
 			"render_texture_pixels": [
@@ -7189,7 +7189,7 @@
 				1
 			],
 			"run": 1,
-			"seconds": 133.01,
+			"seconds": 133.0,
 			"stage": 5,
 			"taa": true,
 			"vehicle_health": 100.0,
@@ -7200,9 +7200,9 @@
 			"deaths": 0,
 			"engine_monitors": {
 				"draw_calls": null,
-				"fps": 144.0,
+				"fps": 145.0,
 				"node_count": 15576.0,
-				"object_count": 28096.0,
+				"object_count": 28099.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7212,7 +7212,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.5861052274704,
+			"heading": -1.58564186096191,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7223,102 +7223,16 @@
 				"stationary": 0
 			},
 			"position": [
-				4.42242431640625,
-				0.27593058347702,
-				-338.446472167969
+				4.17590665817261,
+				0.275930613279343,
+				-338.4501953125
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 134.01,
-			"stage": 7,
-			"taa": true,
-			"vehicle_health": null,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 145.0,
-				"node_count": 15576.0,
-				"object_count": 28096.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 727.806888435502,
-			"heading": -1.58658874034882,
-			"health": 100.0,
-			"mode": 0,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				10.4795732498169,
-				0.275925725698471,
-				-338.350677490234
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 135.01,
-			"stage": 7,
-			"taa": true,
-			"vehicle_health": null,
-			"wanted": 0
-		},
-		{
-			"car_distance_m": 652.223567395471,
-			"deaths": 0,
-			"engine_monitors": {
-				"draw_calls": null,
-				"fps": 146.0,
-				"node_count": 15576.0,
-				"object_count": 28096.0,
-				"orphan_node_count": 0.0,
-				"render_buffer_memory_bytes": null,
-				"render_texture_memory_bytes": null,
-				"render_video_memory_bytes": null,
-				"resource_count": 591.0,
-				"static_memory_bytes": 0.0,
-				"static_memory_peak_bytes": 0.0
-			},
-			"flight_distance_m": 727.806888435502,
-			"heading": -1.58658945560455,
-			"health": 100.0,
-			"mode": 0,
-			"msaa_3d": 2,
-			"phase": "mission",
-			"police": {
-				"cars": 0,
-				"nearest_m": null,
-				"stationary": 0
-			},
-			"position": [
-				17.1874122619629,
-				0.267480880022049,
-				-338.244812011719
-			],
-			"render_texture_pixels": [
-				3,
-				1
-			],
-			"run": 1,
-			"seconds": 136.01,
+			"seconds": 134.0,
 			"stage": 7,
 			"taa": true,
 			"vehicle_health": null,
@@ -7331,7 +7245,7 @@
 				"draw_calls": null,
 				"fps": 144.0,
 				"node_count": 15576.0,
-				"object_count": 28096.0,
+				"object_count": 28099.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7341,7 +7255,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58658671379089,
+			"heading": -1.58658635616302,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7352,9 +7266,95 @@
 				"stationary": 0
 			},
 			"position": [
-				23.9753265380859,
-				0.2698814868927,
-				-338.137420654297
+				10.1511173248291,
+				0.275929600000381,
+				-338.355651855469
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 135.0,
+			"stage": 7,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15576.0,
+				"object_count": 28099.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 727.806888435502,
+			"heading": -1.58658599853516,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				16.8488712310791,
+				0.275450140237808,
+				-338.249908447266
+			],
+			"render_texture_pixels": [
+				3,
+				1
+			],
+			"run": 1,
+			"seconds": 136.0,
+			"stage": 7,
+			"taa": true,
+			"vehicle_health": null,
+			"wanted": 0
+		},
+		{
+			"car_distance_m": 652.223567395471,
+			"deaths": 0,
+			"engine_monitors": {
+				"draw_calls": null,
+				"fps": 145.0,
+				"node_count": 15576.0,
+				"object_count": 28099.0,
+				"orphan_node_count": 0.0,
+				"render_buffer_memory_bytes": null,
+				"render_texture_memory_bytes": null,
+				"render_video_memory_bytes": null,
+				"resource_count": 591.0,
+				"static_memory_bytes": 0.0,
+				"static_memory_peak_bytes": 0.0
+			},
+			"flight_distance_m": 727.806888435502,
+			"heading": -1.58658492565155,
+			"health": 100.0,
+			"mode": 0,
+			"msaa_3d": 2,
+			"phase": "mission",
+			"police": {
+				"cars": 0,
+				"nearest_m": null,
+				"stationary": 0
+			},
+			"position": [
+				23.6355476379395,
+				0.275838166475296,
+				-338.142639160156
 			],
 			"render_texture_pixels": [
 				3,
@@ -7374,7 +7374,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28092.0,
+				"object_count": 28095.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7384,7 +7384,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58658516407013,
+			"heading": -1.5865832567215,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7395,9 +7395,9 @@
 				"stationary": 0
 			},
 			"position": [
-				30.7730922698975,
-				0.275779962539673,
-				-338.029907226562
+				30.4331760406494,
+				0.275530368089676,
+				-338.035217285156
 			],
 			"render_texture_pixels": [
 				3,
@@ -7417,7 +7417,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28092.0,
+				"object_count": 28095.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7427,7 +7427,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58658337593079,
+			"heading": -1.58657956123352,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7438,9 +7438,9 @@
 				"stationary": 0
 			},
 			"position": [
-				37.5720596313477,
-				0.275842726230621,
-				-337.922485351562
+				37.2321472167969,
+				0.27124148607254,
+				-337.927642822266
 			],
 			"render_texture_pixels": [
 				3,
@@ -7460,7 +7460,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28092.0,
+				"object_count": 28095.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7470,7 +7470,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58658075332642,
+			"heading": -1.58657395839691,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7481,9 +7481,9 @@
 				"stationary": 0
 			},
 			"position": [
-				44.3711891174316,
-				0.275828808546066,
-				-337.815002441406
+				44.0312881469727,
+				0.268310219049454,
+				-337.819976806641
 			],
 			"render_texture_pixels": [
 				3,
@@ -7503,7 +7503,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28092.0,
+				"object_count": 28095.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7513,7 +7513,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58657503128052,
+			"heading": -1.58656740188599,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7524,9 +7524,9 @@
 				"stationary": 0
 			},
 			"position": [
-				51.1703453063965,
-				0.275820046663284,
-				-337.707397460938
+				50.9437675476074,
+				0.267596960067749,
+				-337.710632324219
 			],
 			"render_texture_pixels": [
 				3,
@@ -7546,7 +7546,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28092.0,
+				"object_count": 28095.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7556,7 +7556,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58656668663025,
+			"heading": -1.58656203746796,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7567,9 +7567,9 @@
 				"stationary": 0
 			},
 			"position": [
-				57.9695091247559,
-				0.275442540645599,
-				-337.599792480469
+				57.7429084777832,
+				0.266625165939331,
+				-337.603149414062
 			],
 			"render_texture_pixels": [
 				3,
@@ -7589,7 +7589,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28092.0,
+				"object_count": 28095.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7599,7 +7599,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58655989170074,
+			"heading": -1.58655095100403,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7610,9 +7610,9 @@
 				"stationary": 0
 			},
 			"position": [
-				64.7686767578125,
-				0.275438904762268,
-				-337.492309570312
+				64.5420684814453,
+				0.268381536006927,
+				-337.495635986328
 			],
 			"render_texture_pixels": [
 				3,
@@ -7632,7 +7632,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28092.0,
+				"object_count": 28095.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7642,7 +7642,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58654940128326,
+			"heading": -1.58654189109802,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7653,9 +7653,9 @@
 				"stationary": 0
 			},
 			"position": [
-				71.5678176879883,
-				0.268669694662094,
-				-337.384948730469
+				71.2279281616211,
+				0.268310219049454,
+				-337.390075683594
 			],
 			"render_texture_pixels": [
 				3,
@@ -7675,7 +7675,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28092.0,
+				"object_count": 28095.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7685,7 +7685,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58654630184174,
+			"heading": -1.58655548095703,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7696,16 +7696,16 @@
 				"stationary": 0
 			},
 			"position": [
-				78.3669509887695,
-				0.275836616754532,
-				-337.277770996094
+				78.0270767211914,
+				0.267585664987564,
+				-337.283233642578
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 145.01,
+			"seconds": 145.0,
 			"stage": 7,
 			"taa": true,
 			"vehicle_health": null,
@@ -7718,7 +7718,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28092.0,
+				"object_count": 28095.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7728,7 +7728,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58654987812042,
+			"heading": -1.58654856681824,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7739,16 +7739,16 @@
 				"stationary": 0
 			},
 			"position": [
-				85.166130065918,
-				0.27575671672821,
-				-337.170715332031
+				84.8262100219727,
+				0.266534864902496,
+				-337.176055908203
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 146.01,
+			"seconds": 146.0,
 			"stage": 7,
 			"taa": true,
 			"vehicle_health": null,
@@ -7761,7 +7761,7 @@
 				"draw_calls": null,
 				"fps": 145.0,
 				"node_count": 15575.0,
-				"object_count": 28092.0,
+				"object_count": 28095.0,
 				"orphan_node_count": 0.0,
 				"render_buffer_memory_bytes": null,
 				"render_texture_memory_bytes": null,
@@ -7771,7 +7771,7 @@
 				"static_memory_peak_bytes": 0.0
 			},
 			"flight_distance_m": 727.806888435502,
-			"heading": -1.58654797077179,
+			"heading": -1.58654510974884,
 			"health": 100.0,
 			"mode": 0,
 			"msaa_3d": 2,
@@ -7782,16 +7782,16 @@
 				"stationary": 0
 			},
 			"position": [
-				91.96533203125,
-				0.275836288928986,
-				-337.063568115234
+				91.6253433227539,
+				0.27582773566246,
+				-337.068878173828
 			],
 			"render_texture_pixels": [
 				3,
 				1
 			],
 			"run": 1,
-			"seconds": 147.01,
+			"seconds": 147.0,
 			"stage": 7,
 			"taa": true,
 			"vehicle_health": null,
@@ -7810,7 +7810,7 @@
 		"foot_distance_last_60_seconds_m": 0.0,
 		"healthy_on_foot": true,
 		"reboard_cycle_verified": false,
-		"seconds_since_foot_motion": 1147.515304
+		"seconds_since_foot_motion": 1147.547407
 	},
 	"traffic_cars": 26,
 	"unavailable_engine_monitors": [],
