@@ -125,6 +125,7 @@ figure{margin:0}img{width:100%%;height:auto;display:block;border-radius:3px}pre{
 <h1>Orchard Reach — Opus 5.5 enhancement loop</h1>
 <p class=meta>Bar: Grand Theft Auto V (GTA V references are linked by ID, never shown here). START %s · DEADLINE %s · <b>%s</b> · page built %s</p>
 <p class=meta>Honest status: "best build so far" is not "north star accepted". A piece is accepted only when a blind critic prefers it to its GTA V reference and is wowed.</p>
+<p class=meta><b>Final result (2026-10-22 run):</b> all 23 blind critic rounds returned OURS LOSES and none was wowed &mdash; no piece is preferred over GTA V. Merged: water, skyline, lighting, materials, on-foot, helicopter, driving; street-life not merged (headless route deadlocks). Final checks: headless --test 140/140, headless and rendered --capture route 13/13. Next biggest gaps: traffic/crowd density at junctions, close-range character fidelity, aerial sun/shadow contrast and glass specular, near-field kerb/planter/asphalt materials, hero-car paint and collisions, helicopter rotor visibility. Details in HANDOFF.md.</p>
 <h2>Pieces</h2>%s
 <h2>Critique rounds (latest first)</h2>%s
 <h2>Integrations</h2>%s
