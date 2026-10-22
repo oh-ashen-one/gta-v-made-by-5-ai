@@ -656,8 +656,6 @@ func _far_shore_landmarks() -> void:
 	_collision_box(Vector3(66.0, 12.0, 42.0), flyer + Vector3(0.0, 6.0, 0.0), flyer_yaw)
 	_collision_box(Vector3(150.0, 150.0, 22.0), flyer + Vector3(0.0, 87.0, 0.0), flyer_yaw)
 	locations["singapore_flyer"] = flyer
-	for i: int in 14:
-		_tree(Vector3(-400.0 + i * 52.0, 0.0, -640.0), 1.1)
 
 ## Aviation compound: hangar, helipads, perimeter fence.
 func _aviation_block(centre: Vector3) -> void:
@@ -1053,14 +1051,20 @@ func _perimeter() -> void:
 	_box(Vector3(1700,2,18),Vector3(0,-.7,-624),Palette.mat_textured(Palette.CONCRETE,"concrete",Vector3.ONE,.92))
 	_box(Vector3(1680,.08,16),Vector3(0,.05,-657),Palette.mat_textured(Palette.ASPHALT,"asphalt",Vector3.ONE,.85))
 	for i in 34:
-		_tree(Vector3(-790+i*48,.1,-640),.8)
+		if _far_shore_clear(Vector3(-790+i*48,.1,-640)):
+			_tree(Vector3(-790+i*48,.1,-640),.8)
 	# A treed far shoreline. The manager's aerial review called the horizon
 	# "abrupt"; the bay previously ended where open water met a flat plane.
 	# This band gives the far shore a real edge with canopy and low roofs.
 	for i in 44:
-		_tree(Vector3(-800.0 + i * 37.0, 0.15, -652.0), 0.95 + float(i % 4) * 0.12)
+		if _far_shore_clear(Vector3(-800.0 + i * 37.0, 0.15, -652.0)):
+			_tree(Vector3(-800.0 + i * 37.0, 0.15, -652.0), 0.95 + float(i % 4) * 0.12)
 	for i in 16:
-		_box(Vector3(26.0, 7.0 + float(i % 3) * 3.0, 14.0), Vector3(-760.0 + i * 100.0, 3.5, -712.0),
+		# Low roofs stay out of the Marina Bay Sands footprint and SkyPark overhang.
+		var roof_x := -760.0 + i * 100.0
+		if roof_x > MBS_POS.x - 140.0 and roof_x < MBS_POS.x + 160.0:
+			continue
+		_box(Vector3(26.0, 7.0 + float(i % 3) * 3.0, 14.0), Vector3(roof_x, 3.5, -712.0),
 			Palette.mat_textured(Color(0.52, 0.50, 0.47), "concrete", Vector3.ONE, 0.92))
 	# The authored district has visible physical edges. Aircraft can fly over
 	# the same geometry; ordinary walking/driving meets real railings.
@@ -1154,6 +1158,13 @@ func _kerb_markings() -> void:
 					cursor = maxf(cursor, gap.y)
 	_marking_batch(yellow, Palette.mat(Color(0.92, 0.72, 0.16), 0.72))
 	_marking_batch(white, Palette.mat(Color(0.90, 0.90, 0.86), 0.75))
+
+## Far-shore planting keeps clear of the ArtScience lotus and the Flyer terminal
+## (release critic: shoreline tree rows grew through both).
+func _far_shore_clear(p: Vector3) -> bool:
+	var to_asm := Vector2(p.x - ASM_POS.x, p.z - ASM_POS.z).length()
+	var to_flyer := Vector2(p.x - FLYER_POS.x, p.z - FLYER_POS.z).length()
+	return to_asm > 34.0 and to_flyer > 42.0
 
 ## Everyday wayfinding on the opening avenue (wave 5): a freestanding food-centre
 ## signboard at the hall's street corner and blade street-name signs at the first

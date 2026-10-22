@@ -321,6 +321,12 @@ func exit_vehicle(player: Node) -> void:
 	# The far shore is landable scenery, not walkable district (on foot beyond
 	# the district is out of bounds), so exits stay inside the playable area.
 	if absf(global_position.x) > 395.0 or global_position.z < -365.0 or global_position.z > 405.0:
+		if disabled:
+			# A downed aircraft out of bounds cannot fly back: recover the pilot
+			# to the last safe point instead of trapping them (release critic).
+			Events.notify.emit("Aircraft down outside the district - recovered to your last safe point.", "warn")
+			player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
+			return
 		Events.notify.emit("Restricted landing area - fly back over the district to exit.", "warn")
 		return
 	var side := global_transform.basis.x
