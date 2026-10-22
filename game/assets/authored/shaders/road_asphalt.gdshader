@@ -71,8 +71,8 @@ void fragment() {
 	float o4 = (vnoise(w_rot(p, 1.3) * 1.7 + 13.0) - 0.5) * oct_w(0.6, px);
 	float o5 = (vnoise(w_rot(p, 0.2) * 0.55 + 23.0) - 0.5);
 	float ravel = smoothstep(0.60, 0.78, vnoise(p * 0.9 + 31.0)) * oct_w(1.1, px);
-	float aggregate = 1.25 * o1 + 0.95 * o2 + 0.55 * o3 + 0.75 * chips + 0.60 * chips2 - 0.45 * pits - 0.25 * tar
-		+ 0.55 * o4 + 0.40 * o5 + 0.22 * ravel;
+	float aggregate = 1.25 * o1 + 1.30 * o2 + 0.85 * o3 + 0.75 * chips + 0.60 * chips2 - 0.45 * pits - 0.25 * tar
+		+ 0.70 * o4 + 0.40 * o5 + 0.22 * ravel;
 	tone *= clamp(1.0 + (aggregate - 0.12) * wear, 0.35, 2.2);
 	float rough = 0.88;
 	vec3 hue = vec3(1.0);
@@ -165,6 +165,17 @@ void fragment() {
 	tone = mix(tone, 0.42 * grate * (0.8 + 0.3 * sml.g), cover);
 	rough = mix(rough, 0.62, cover);
 	tone *= 1.0 - 0.6 * cover_ring;
+
+	// Kerbside slot gratings every ~15 m between the double yellow lines and
+	// the kerb face: concrete surround, cast-iron bars.
+	float ga = mod(along + 3.0 * step(0.0, lat), 15.0) - 7.5;
+	vec2 gq = vec2(al - 7.86, ga);
+	float gsur = lane * (1.0 - smoothstep(0.125, 0.14, abs(gq.x))) * (1.0 - smoothstep(0.56, 0.60, abs(gq.y)));
+	float gin = lane * (1.0 - smoothstep(0.085, 0.10, abs(gq.x))) * (1.0 - smoothstep(0.46, 0.48, abs(gq.y)));
+	float bars = 0.35 + 0.65 * smoothstep(0.35, 0.6, abs(fract(gq.y / 0.07) - 0.5) * 2.0);
+	tone = mix(tone, 1.7 * (0.85 + 0.3 * sml.g), (gsur - gin) * 0.85);
+	tone = mix(tone, 0.16 * bars, gin);
+	rough = mix(rough, 0.55, gin);
 
 	// Cracks: regional alligator cracking plus longitudinal joint cracks.
 	float region = smoothstep(0.48, 0.70, big.g * 0.7 + med.r * 0.5);

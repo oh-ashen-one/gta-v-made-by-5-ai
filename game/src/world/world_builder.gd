@@ -124,7 +124,9 @@ func _ground() -> void:
 	var box := BoxMesh.new()
 	box.size = Vector3(1500.0, 4.0, 1100.0)
 	mesh.mesh = box
-	mesh.material_override = Palette.mat_textured(Color(0.42, 0.41, 0.38), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
+	# Wave B r2 (materials): unbuilt land is kept grass verge, not a bare
+	# concrete/dirt field (blind critics flagged "empty dirt lots").
+	mesh.material_override = Palette.mat_textured(Color(0.25, 0.33, 0.17), "soil", Vector3(70.0, 1.0, 70.0), 0.95)
 	mesh.position = Vector3(0.0, -2.0, 200.0)
 	ground.add_child(mesh)
 	var shape := CollisionShape3D.new()
@@ -268,7 +270,7 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		_collision_box(Vector3(10.1,7.3,9.5),pos+Vector3(0,7.6,0),yaw)
 		_collision_box(Vector3(10.1,3.7,6.5),pos+Vector3(0,1.85,0)+Vector3(0,0,1.4).rotated(Vector3.UP,yaw),yaw)
 		# A sheltered tiled footway physically joins the modules.
-		var path := _box(Vector3(unit_w,.08,3.3),pos+front_dir*6.2+Vector3(0,.10,0),Palette.mat_textured(Color(.65,.68,.62),"pavers",Vector3.ONE,.86))
+		var path := _box(Vector3(unit_w,.08,3.3),pos+front_dir*6.2+Vector3(0,.10,0),Palette.five_foot_tiles())
 		path.rotation.y=yaw
 		var board := _box(Vector3(7.2,.65,.16),pos+front_dir*5.27+Vector3(0,3.45,0),sign_mat)
 		board.rotation.y=yaw
@@ -624,12 +626,12 @@ func _aviation_block(centre: Vector3) -> void:
 				guard.position = centre + Vector3(18.0 + i * 6.0, 0.0, 10.0 + i * 3.0)
 				guard.rotation.y = -1.1
 	# hangar
-	_solid_box(Vector3(38.0, 12.0, 24.0), centre + Vector3(-30.0, 6.0, -20.0), Palette.mat(Palette.METAL, 0.6, 0.4))
+	_solid_box(Vector3(38.0, 12.0, 24.0), centre + Vector3(-30.0, 6.0, -20.0), Palette.corrugated(Palette.METAL.lightened(0.3)))
 	var hangar_roof := MeshInstance3D.new()
 	var prism := PrismMesh.new()
 	prism.size = Vector3(38.0, 3.0, 24.0)
 	hangar_roof.mesh = prism
-	hangar_roof.material_override = Palette.mat(Palette.METAL_DARK, 0.6, 0.4)
+	hangar_roof.material_override = Palette.corrugated(Palette.METAL_DARK.lightened(0.25), 0.7)
 	hangar_roof.position = centre + Vector3(-30.0, 13.5, -20.0)
 	_world_root.add_child(hangar_roof)
 	_box(Vector3(14.0, 9.0, 0.2), centre + Vector3(-30.0, 4.5, -8.1), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))

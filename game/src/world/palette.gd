@@ -178,6 +178,38 @@ static func grime_overlay() -> ShaderMaterial:
 		_grime_overlay.render_priority = 1
 	return _grime_overlay
 
+static var _corrugated_cache := {}
+
+## Weathered corrugated-steel cladding/roofing (sheds, hangars, workshops).
+static func corrugated(color: Color, rust: float = 1.0) -> Material:
+	if "--clean-surfaces" in OS.get_cmdline_user_args():
+		return mat(color, 0.6, 0.4)
+	var key := "%s|%.2f" % [color.to_html(), rust]
+	if _corrugated_cache.has(key):
+		return _corrugated_cache[key]
+	var m := ShaderMaterial.new()
+	m.shader = load(SHADER_DIR + "corrugated_metal.gdshader")
+	m.set_shader_parameter("weather_masks", weather_masks())
+	m.set_shader_parameter("tint", Vector3(color.r, color.g, color.b))
+	m.set_shader_parameter("rust", rust)
+	m.set_meta("weathered_kind", "corrugated")
+	_corrugated_cache[key] = m
+	return m
+
+static var _five_foot: Material = null
+
+## Encaustic heritage tiles for the shophouse five-foot ways (CONCEPT-01/02).
+static func five_foot_tiles() -> Material:
+	if "--clean-surfaces" in OS.get_cmdline_user_args():
+		return mat_textured(Color(.65, .68, .62), "pavers", Vector3.ONE, .86)
+	if _five_foot == null:
+		var m := ShaderMaterial.new()
+		m.shader = load(SHADER_DIR + "encaustic_tiles.gdshader")
+		m.set_shader_parameter("weather_masks", weather_masks())
+		m.set_meta("weathered_kind", "encaustic")
+		_five_foot = m
+	return _five_foot
+
 static var _grime_overlay_light: ShaderMaterial = null
 
 ## Light variant for conservation shophouses: kept, repainted pastel fronts

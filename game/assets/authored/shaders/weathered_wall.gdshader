@@ -55,8 +55,12 @@ void fragment() {
 		if (turf > 0.0) {
 			// Patchy tropical turf: worn bare earth, darker lush clumps, litter.
 			vec4 tf = w_mask(p / 2.3 + 0.19);
-			float bare = smoothstep(0.55, 0.75, med.g * 0.6 + tf.r * 0.5);
-			col = mix(col * (0.75 + 0.5 * tf.g), vec3(0.24, 0.19, 0.13) * (0.8 + 0.4 * tf.b), bare * 0.75 * turf);
+			// r2: kept Singapore verges are mostly grass; bare earth only in
+			// worn patches, so a lot never reads as an empty dirt field.
+			float bare = smoothstep(0.66, 0.84, med.g * 0.6 + tf.r * 0.5);
+			vec3 grass = tint * vec3(0.95, 1.12, 0.85) * (0.80 + 0.45 * tf.g);
+			col = mix(col, grass, 0.55 * turf);
+			col = mix(col * (0.80 + 0.4 * tf.g), vec3(0.24, 0.19, 0.13) * (0.8 + 0.4 * tf.b), bare * 0.6 * turf);
 			float lush = smoothstep(0.6, 0.85, tf.a);
 			col = mix(col, col * vec3(0.70, 0.95, 0.65), lush * 0.6 * turf);
 			float speck = step(0.83, w_mask(p * 2.9).g);
