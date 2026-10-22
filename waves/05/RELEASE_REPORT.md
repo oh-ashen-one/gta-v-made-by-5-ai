@@ -41,7 +41,8 @@
 | #1 | `2463cd3` | Aborted at 231.9 s, during mission 2's drive: the frozen carjack victim. Fixed. |
 | #4 | `86b5405` | Three missions, all fixture checks and the same-car reboard all passed. Aborted at 819.4 s: a free-roam car wedged mid-U-turn. Fixed. |
 | #6 | `584fb59` | Three missions, all fixtures, the failed #4 leg (63 s) and three reboard cycles all passed. Aborted at 1266.4 s: in a fourth reboard, at a busy junction, the automation pressed interact while a passing AI car was nearer, and carjacked it. Interaction picking the nearest car is intended; the automation was fixed in `2e38d8f`. |
-| #7 | `2e38d8f` | **Running** (02:12–02:43 UTC). Result recorded below. |
+| #7 | `2e38d8f` | Three missions, all fixtures, four reboard cycles and the old U-turn leg all passed. Aborted at 1590.6 s: an AI car stopped at the central junction's signal stayed nearer than the automation's own car for its whole 6 s wait. Fixed in the automation in `d2a6cad`, which now tries each side of its car. |
+| #8 | `d2a6cad` | **Running** (02:40–03:11 UTC). Result recorded below. |
 
 **No 30-minute soak has completed yet.** Soaks #2, #3 and #5 were stopped early because newer fixes superseded them. They are not results.
 

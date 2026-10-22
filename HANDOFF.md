@@ -31,7 +31,8 @@
   - #1 aborted at 231.9 s (carjack victim frozen in the road; fixed).
   - #4 aborted at 819.4 s (U-turn wedge between opposite parked cars; fixed).
   - #6 aborted at 1266.4 s (the automation carjacked passing traffic during a reboard; automation fixed).
-  - #7 is running on `2e38d8f`.
+  - #7 aborted at 1590.6 s (the same reboard issue next to a car waiting at a signal; automation fixed again in `d2a6cad`).
+  - #8 is running on `d2a6cad`.
   - Records: `evidence/soak*-failed*/`.
 - Opening identity: **headless geometric ray probe of the release code** (`evidence/sightlines-headless/release-code-2e38d8f/`; the images are stamped "NOT A RENDER").
   - Opening camera: MBS is 77 % unoccluded, with a box 22–48 % of frame height. That this clears the HUD objective card is computed from `hud.gd`, not seen.
