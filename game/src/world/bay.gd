@@ -50,12 +50,15 @@ var _source_env: Environment
 var _reflection_env: Environment
 var _jet_impact := Vector3.ZERO
 var _pier_rect := Vector4.ZERO
+## Pier deck footprint in world XZ (x, z, width, depth); empty = 14 m square under the statue.
+var _pier_xz := Rect2()
 var _pontoon_rect := Vector4(-44.0, -357.2, -22.0, -351.8)
 
-static func build(builder: Node, root: Node3D, merlion: Node3D, merlion_pos: Vector3) -> BayWater:
+static func build(builder: Node, root: Node3D, merlion: Node3D, merlion_pos: Vector3, pier: Rect2 = Rect2()) -> BayWater:
 	var bay := BayWater.new()
 	bay.name = "Bay"
 	bay._builder = builder
+	bay._pier_xz = pier
 	root.add_child(bay)
 	bay._build(merlion, merlion_pos)
 	return bay
@@ -168,10 +171,16 @@ func _build_edges(merlion_pos: Vector3) -> void:
 	_edge_box(Vector3(1700.0, 0.8, 0.06), Vector3(0.0, LEVEL + 0.40, FAR_SHORE_Z + 0.03), wet, 0.35, "")
 	_edge_box(Vector3(1700.0, 0.16, 0.08), Vector3(0.0, LEVEL + 0.05, FAR_SHORE_Z + 0.04), algae, 0.6, "")
 	# Merlion pier: a stone base under the existing deck so it no longer floats.
-	var pier := Vector3(merlion_pos.x, 0.0, merlion_pos.z - 2.0)
-	_edge_box(Vector3(14.2, 3.2, 14.2), pier + Vector3(0.0, -1.62, 0.0), granite, 0.9)
-	_edge_box(Vector3(14.32, 0.75, 14.32), pier + Vector3(0.0, LEVEL + 0.42, 0.0), wet, 0.35, "")
-	_pier_rect = Vector4(pier.x - 7.1, pier.z - 7.1, pier.x + 7.1, pier.z + 7.1)
+	# Wave A integration: follows the skyline piece's longer pier deck.
+	var pr := _pier_xz
+	if pr.size.x <= 0.0:
+		pr = Rect2(merlion_pos.x - 7.0, merlion_pos.z - 9.0, 14.0, 14.0)
+	var pier := Vector3(pr.get_center().x, 0.0, pr.get_center().y)
+	var pw0 := pr.size.x + 0.2
+	var pd0 := pr.size.y + 0.2
+	_edge_box(Vector3(pw0, 3.2, pd0), pier + Vector3(0.0, -1.62, 0.0), granite, 0.9)
+	_edge_box(Vector3(pw0 + 0.12, 0.75, pd0 + 0.12), pier + Vector3(0.0, LEVEL + 0.42, 0.0), wet, 0.35, "")
+	_pier_rect = Vector4(pier.x - pw0 * 0.5, pier.z - pd0 * 0.5, pier.x + pw0 * 0.5, pier.z + pd0 * 0.5)
 	# Floating pontoon west of the pier: composite deck on dark floats,
 	# mooring bollards, two bumboats tied up alongside (see _build_boats).
 	var pc := Vector3((_pontoon_rect.x + _pontoon_rect.z) * 0.5, LEVEL, (_pontoon_rect.y + _pontoon_rect.w) * 0.5)
@@ -305,20 +314,28 @@ func _build_merlion_jet(merlion: Node3D, merlion_pos: Vector3) -> void:
 			if n is MeshInstance3D and (String(n.name).contains("water_spray") or String(n.name).contains("water_jet")):
 				(n as MeshInstance3D).visible = false
 				legacy_spray_hidden += 1
-	# Parabola of the original authored spout (mouth at local (0, 9.8, -2.1)),
-	# extended down to the real waterline.
+	# Parabola of the authored spout, extended down to the real waterline.
+	# Wave A integration: the skyline piece's rebuilt Merlion has its mouth at
+	# about local (0, 8.25, -2.8) (from the GLB's jet strut bounds) and the
+	# statue is yawed, so the arc is built in statue space and rotated.
+	var mouth_y := 8.25
+	var mouth_z := 2.8
+	var fall := mouth_y + 2.2 - 0.6
+	var yaw_basis := Basis.IDENTITY
+	if merlion != null:
+		yaw_basis = Basis(Vector3.UP, merlion.rotation.y)
 	var pts: Array[Vector3] = []
 	var radii: Array[float] = []
 	var steps := 44
 	var u_end := 1.0
 	var target := LEVEL - merlion_pos.y - 0.2
-	# solve 9.8 + 2.2u - 11.4u^2 = target
-	u_end = (2.2 + sqrt(2.2 * 2.2 + 4.0 * 11.4 * (9.8 - target))) / (2.0 * 11.4)
+	# solve mouth_y + 2.2u - fall*u^2 = target
+	u_end = (2.2 + sqrt(2.2 * 2.2 + 4.0 * fall * (mouth_y - target))) / (2.0 * fall)
 	for k in steps + 1:
 		var u := u_end * float(k) / float(steps)
-		var y := 9.8 + 2.2 * u - 11.4 * u * u
-		var z := -(2.1 + u * 11.5)
-		pts.append(merlion_pos + Vector3(0.0, y, z))
+		var y := mouth_y + 2.2 * u - fall * u * u
+		var z := -(mouth_z + u * 12.0)
+		pts.append(merlion_pos + yaw_basis * Vector3(0.0, y, z))
 		var f := float(k) / float(steps)
 		radii.append(0.20 + 0.55 * f * f + 0.08 * f)
 	_jet_impact = Vector3(pts[-1].x, LEVEL, pts[-1].z)

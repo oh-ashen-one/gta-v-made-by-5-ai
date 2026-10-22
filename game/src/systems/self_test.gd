@@ -631,6 +631,7 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 	for key in ["marina_bay_sands", "supertree_grove", "artscience_museum", "singapore_flyer", "merlion"]:
 		placed = placed and world.locations.has(key)
 	_check("all five required Singapore landmarks are placed", placed)
+	_skyline_checks(world)
 	_check("run opens outdoors on the heritage street, not inside the safe room", world.locations["player_start"].distance_to(world.locations["safe_room"]) > 40.0)
 	var audio := Sfx.loop_metrics()
 	var seam_ok := true
@@ -641,6 +642,78 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 		if row["peak"] > 0.995: clip_ok = false
 	_check("synthesized loops have continuous seams (objective, not listening)", seam_ok and audio.size() >= 5, str(audio))
 	_check("synthesized sounds stay below full-scale clipping", clip_ok)
+
+## Skyline piece (wave A, Opus 5.5): landmark footprints stay apart, the Flyer
+## sits inside the fixed photo_06 aerial frame, roofs are dressed and the
+## layered background city and landmark material upgrades are present.
+func _skyline_checks(world: WorldBuilder) -> void:
+	var mbs: Vector3 = world.locations["marina_bay_sands"]
+	var mbs_rect := Rect2(mbs.x - 122.0, mbs.z - 30.0, 307.0, 67.2)
+	var circles := {"artscience_museum": 26.4, "singapore_flyer": 40.0, "supertree_grove": 28.0, "merlion": 5.4}
+	var apart := true
+	var keys := circles.keys()
+	for i in keys.size():
+		var a: Vector3 = world.locations[keys[i]]
+		var ra: float = circles[keys[i]]
+		if mbs_rect.grow(ra).has_point(Vector2(a.x, a.z)): apart = false
+		for j in range(i + 1, keys.size()):
+			var b: Vector3 = world.locations[keys[j]]
+			if Vector2(a.x - b.x, a.z - b.z).length() < ra + float(circles[keys[j]]): apart = false
+	_check("skyline: landmark footprints do not overlap each other", apart)
+	# photo_06_aerial_district camera (fixed comparison view): 62 deg vertical FOV at 16:9.
+	var cam := Vector3(250.0, 95.0, 250.0)
+	var fwd := (Vector3(-40.0, 0.0, -60.0) - cam).normalized()
+	var to_flyer: Vector3 = world.locations["singapore_flyer"] + Vector3(0.0, 85.0, 0.0) - cam
+	var flat_fwd := Vector2(fwd.x, fwd.z).normalized()
+	var flat_to := Vector2(to_flyer.x, to_flyer.z).normalized()
+	var half_h := rad_to_deg(atan(tan(deg_to_rad(31.0)) * 16.0 / 9.0))
+	var off := rad_to_deg(flat_fwd.angle_to(flat_to))
+	_check("skyline: Singapore Flyer lies inside the photo_06 aerial frame", absf(off) < half_h - 5.0, "%.1f deg of %.1f" % [off, half_h])
+	var root := world.get_node_or_null("District")
+	var deck := root.get_node_or_null("RoofKit_deck") if root else null
+	_check("skyline: flat roofs carry weathered decks and roof plant", deck != null and world._roof_kit.roofs >= 100 and world._roof_kit.part_count("condenser") >= 200 and world._roof_kit.part_count("housing") >= 60,
+		"roofs %d condensers %d housings %d" % [world._roof_kit.roofs, world._roof_kit.part_count("condenser"), world._roof_kit.part_count("housing")])
+	var city_layers := 0
+	if root:
+		for child in root.get_children():
+			if String(child.name).begins_with("SkylineCity_"): city_layers += 1
+	_check("skyline: layered background city is built from batched tower archetypes", city_layers >= 5, str(city_layers))
+	var upgraded := LandmarkLooks.material_for("mbs_curtain_glass") is ShaderMaterial and LandmarkLooks.material_for("st_vertical_garden") is ShaderMaterial
+	_check("skyline: landmark facade and vertical-garden shaders are applied", upgraded)
+	var sk: Dictionary = world.skyline_stats
+	_check("skyline: background city wears at least 5 distinct facade systems", int(sk.get("materials", 0)) >= 5, str(sk))
+	_check("skyline: no background tower stands in the bay", int(sk.get("over_water", -1)) == 0 and int(sk.get("placed", 0)) > 150, str(sk))
+	# The shadow meshes must survive static batching with their shader intact.
+	var shadow_layers := 0
+	if root:
+		for child in root.get_children():
+			if String(child.name).begins_with("SkylineShadow_") and child is MeshInstance3D and (child as MeshInstance3D).mesh.surface_get_material(0) is ShaderMaterial:
+				shadow_layers += 1
+	_check("skyline: every background tower casts a ground shadow", int(sk.get("ground_shadows", 0)) == int(sk.get("placed", -1)) and shadow_layers >= 5, "%s layers %d" % [str(sk), shadow_layers])
+	# Aerial perspective: the CBD across the bay (800 m) must haze at
+	# least ~33% toward the pale sky colour (critic A2: far contrast was 95%).
+	var fsh: Shader = load("res://assets/authored/shaders/skyline_facade.gdshader")
+	var hre := RegEx.new()
+	hre.compile("uniform float (haze_start|haze_density|haze_max) = ([0-9.]+);")
+	var hv := {}
+	for m in hre.search_all(fsh.code):
+		hv[m.get_string(1)] = m.get_string(2).to_float()
+	var hs := float(hv.size())
+	var h_start: float = hv.get("haze_start", 1e9)
+	var h_den: float = hv.get("haze_density", 0.0)
+	var h_max: float = hv.get("haze_max", 0.0)
+	var haze_800 := (1.0 - exp(-maxf(800.0 - h_start, 0.0) * h_den)) * h_max
+	var haze_200 := (1.0 - exp(-maxf(200.0 - h_start, 0.0) * h_den)) * h_max
+	_check("skyline: far CBD hazes toward the sky, near district stays crisp", hs == 3.0 and haze_800 >= 0.33 and haze_200 <= 0.1, "haze@800m=%.2f haze@200m=%.2f" % [haze_800, haze_200])
+	# Round 4: land and city beyond the bay, and haze that stays below the sky.
+	_check("skyline: hinterland city carpet, low-rise blocks and third tower layer run past the bay", int(sk.get("lowrise", 0)) >= 2000 and float(sk.get("carpet_km2", 0.0)) >= 20.0 and int(sk.get("far_towers", 0)) >= 200 and int(sk.get("promenade_trees", 0)) >= 60, str(sk))
+	var hcol := RegEx.new()
+	hcol.compile("uniform vec3 (haze_col|horizon_col) : source_color = vec3\\(([0-9.]+), ([0-9.]+), ([0-9.]+)\\);")
+	var lum := {}
+	for m in hcol.search_all(fsh.code):
+		lum[m.get_string(1)] = 0.2126 * m.get_string(2).to_float() + 0.7152 * m.get_string(3).to_float() + 0.0722 * m.get_string(4).to_float()
+	var gap := float(lum.get("horizon_col", 0.0)) - float(lum.get("haze_col", 1.0))
+	_check("skyline: aerial haze is darker than the horizon sky so far towers keep silhouettes", lum.size() == 2 and gap >= 0.10 and int(sk.get("atmosphere", 0)) >= 2, "gap %.2f %s" % [gap, str(lum)])
 
 func _ticks(count: int) -> void:
 	for tick in count:
