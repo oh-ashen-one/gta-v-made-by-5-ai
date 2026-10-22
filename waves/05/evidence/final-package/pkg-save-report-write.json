@@ -1,0 +1,28 @@
+{
+	"checks": [
+		{
+			"detail": "4.78335857391357",
+			"label": "player walked with ordinary input before saving",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "save written through Game.save_game",
+			"passed": true
+		}
+	],
+	"executable": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach",
+	"expected": {
+		"health": 73.0,
+		"position": [
+			-170.335708618164,
+			0.135839745402336,
+			-26.7265777587891
+		],
+		"stage": 0,
+		"weapon": "smg"
+	},
+	"phase": "write",
+	"pid": 16190,
+	"save_path": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/pkg-save.json"
+}

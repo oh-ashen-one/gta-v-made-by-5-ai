@@ -1,0 +1,29 @@
+[capture] 0.75s Route start; seed=20261021; headless=true; scripted-input-automation=true
+[capture] 19.61s walk end at (-119.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=4.0
+[capture] 19.61s PASS market reached on foot
+[capture] 21.28s combat target health=-32.0 state=3
+[capture] 22.95s combat target health=-32.0 state=3
+[capture] 24.60s combat target health=-32.0 state=3
+[capture] 24.61s PASS combat damaged and killed a mission combatant
+[capture] 25.04s walk end at (-117.0, 0.0, -87.0); target=(-115.0, 0.0, -88.0) distance=2.5
+[capture] 25.37s PASS package collected through interaction
+[capture] 25.37s PASS usable parked car found
+[capture] 30.81s walk end at (-151.0, 0.0, -88.0); target=(-153.0, 0.0, -88.0) distance=2.5
+[capture] 31.13s PASS car entered
+[capture] 36.66s drive waypoint target=(-160.0, 0.0, 0.0) distance=7.0
+[capture] 45.64s drive waypoint target=(-160.0, 0.0, 160.0) distance=7.0
+[capture] 54.98s drive waypoint target=(0.0, 0.0, 160.0) distance=6.9
+[capture] 63.99s drive waypoint target=(160.0, 0.0, 160.0) distance=7.0
+[capture] 69.21s drive waypoint target=(320.0, 0.0, 160.0) distance=72.0
+[capture] 69.21s PASS uninterrupted driving leg reached aviation compound
+[capture] 70.55s PASS car exit restored walking
+[capture] 70.55s PASS helicopter remains usable
+[capture] 82.99s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.4
+[capture] 83.31s PASS helicopter boarded
+[capture] 113.25s PASS flight reached waterfront pad airspace
+[capture] 133.13s PASS helicopter landed intact on destination pad
+[capture] 133.45s PASS landing exit restored walking
+[capture] 147.26s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 147.58s PASS mission completed through delivery interaction
+[capture] 147.58s Verified mission completions: 1
+[capture] terminal success=true deaths=0 seconds=147.6
