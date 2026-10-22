@@ -113,6 +113,7 @@ func _leg(a: Vector3, b: Vector3, kmh: float, stop_before: float, timeout: float
 		Input.action_release("move_back")
 		if car.speed_kmh() < kmh: Input.action_press("move_forward")
 		elif car.speed_kmh() > kmh + 8.0: Input.action_press("move_back")
+		await _unstick(f, a, b, side)
 		if (b - car.global_position).dot(f) < stop_before: break
 
 ## Take the junction at `n` from the a->n lane into the n->c lane.
@@ -154,13 +155,49 @@ func _corner(a: Vector3, n: Vector3, c: Vector3, entry_kmh: float, handbrake: bo
 			if hb_t > 0.35: Input.action_press("move_forward", 0.6)
 		else:
 			Input.action_release("jump")
-			_steer_to(exit, 3.2)
+			# driving-q: a rolling lookahead (not a fixed point 34 m out) pulls
+			# a wide handbrake exit back into the lane before the median nose.
+			var along_out := (car.global_position - n).dot(f_out)
+			_steer_to(_lane_point(n, c, maxf(along_out + 11.0, 9.0)) if handbrake else exit, 3.2)
 			Input.action_press("move_forward")
+			if await _unstick(f_out):
+				continue
 		if not still_done and heading.dot(f_out) > 0.55 and heading.dot(f_out) < 0.9:
 			still_done = true
 			await _still(still_label)
 		if heading.dot(f_out) > 0.97 and (car.global_position - n).dot(f_out) > 16.0: break
 	Input.action_release("jump")
+
+## driving-q: a scripted car pinned against a median nose or kerb (throttle
+## held, no speed for 0.7 s) backs out for a second, steering away, and then
+## carries on, so the footage reaches the collision phases.
+var _stuck_t := 0.0
+func _unstick(f: Vector3, a: Vector3 = Vector3.INF, b: Vector3 = Vector3.INF, side: float = 1.0) -> bool:
+	if not Input.is_action_pressed("move_forward") or car.speed_kmh() > 3.0:
+		_stuck_t = 0.0
+		return false
+	_stuck_t += get_physics_process_delta_time()
+	if _stuck_t < 0.7: return false
+	_stuck_t = 0.0
+	_log("unstick at %s" % [car.global_position])
+	var target := car.global_position + f * 12.0
+	if a != Vector3.INF: target = _lane_point(a, b, (car.global_position - a).dot(f) + 12.0, side)
+	var fwd := -car.global_transform.basis.z
+	var off := target - car.global_position
+	var steer_left := (fwd.z * off.x - fwd.x * off.z) > 0.0
+	Input.action_release("move_forward")
+	Input.action_release("move_left")
+	Input.action_release("move_right")
+	Input.action_press("move_back")
+	# Reversing: opposite lock swings the nose toward the target.
+	Input.action_press("move_right" if steer_left else "move_left", 1.0)
+	var t_end := _elapsed() + 1.1
+	while _elapsed() < t_end:
+		await get_tree().physics_frame
+	Input.action_release("move_back")
+	Input.action_release("move_left")
+	Input.action_release("move_right")
+	return true
 
 func _run() -> void:
 	_t0 = Time.get_ticks_usec()

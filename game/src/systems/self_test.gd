@@ -151,6 +151,13 @@ func run(main: Node) -> void:
 	Input.action_release("move_forward")
 	Input.action_release("move_left")
 	_check("left driving input turns left", (-car.global_transform.basis.z).x < nose_before.x - 0.05)
+	# driving-q: chase-cam motion blur is wired and opens with speed; the road
+	# keeps 16x anisotropic filtering and a bounded aggregate contrast.
+	var mb: CarMotionBlur = car.fx.motion_blur if car.fx != null else null
+	var comp: Compositor = car._camera.compositor
+	_check("chase camera motion blur opens with speed", mb != null and comp != null and comp.compositor_effects.has(mb) and mb.shutter > 0.05 and car.speed_kmh() > 15.0, "shutter=%.2f speed=%.0f" % [mb.shutter if mb else -1.0, car.speed_kmh()])
+	var road_sh := (Palette.road_asphalt() as ShaderMaterial).shader if Palette.road_asphalt() is ShaderMaterial else null
+	_check("road filtering and aggregate contrast stay speckle-free", int(ProjectSettings.get_setting("rendering/textures/default_filters/anisotropic_filtering_level")) == 4 and road_sh != null and road_sh.code.contains("0.72, 1.38"))
 	# opus55 driving: the sprung body and the trailing chase camera stay wired.
 	var car_fx: Node = car.fx
 	var lean := Vector2(car_fx.last_roll, car_fx.last_pitch) if car_fx != null else Vector2.ZERO

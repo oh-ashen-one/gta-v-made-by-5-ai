@@ -73,8 +73,11 @@ var _damage_smoke: GPUParticles3D
 var _skids: MultiMeshInstance3D
 var _skid_head := 0
 var _skid_last: Array[Vector3] = [Vector3.INF, Vector3.INF]
-var _blur: MeshInstance3D
-var _blur_mat: ShaderMaterial
+## driving-q: chase-camera motion blur (compositor effect) and its state.
+var motion_blur: CarMotionBlur = null
+var _blur_frames := 0             # frames since the chase camera went live
+var _blur_prev_cam := Transform3D.IDENTITY
+const SHUTTER_S := 0.8 / 60.0     # exposure: 0.8 of a 60 Hz frame (~290-degree shutter)
 var _slip := 0.0
 var _probe_timer := 0.0
 var _debris_t := 0.0
@@ -625,48 +628,16 @@ func _build_skids() -> void:
 	add_child(_skids)
 	_skids.global_transform = Transform3D.IDENTITY
 
+## driving-q: the old frame-edge radial blur (a screen-texture quad that only
+## touched the outer frame and left the lower-third road as static speckle)
+## is replaced by per-pixel motion blur along the engine's motion vectors, a
+## compositor effect on the chase camera only (car_motion_blur.gd).
 func _build_blur() -> void:
-	var sh := Shader.new()
-	sh.code = """
-shader_type spatial;
-render_mode unshaded, depth_test_disabled, cull_disabled, shadows_disabled, skip_vertex_transform, fog_disabled;
-uniform sampler2D screen_tex : hint_screen_texture, filter_linear_mipmap;
-uniform float strength = 0.0;
-void vertex() {
-	POSITION = vec4(VERTEX.xy * 2.0, 1.0, 1.0);
-}
-void fragment() {
-	vec2 uv = SCREEN_UV;
-	vec2 c = vec2(0.5, 0.56);
-	vec2 d = uv - c;
-	float r = length(d * vec2(1.6, 1.0));
-	float amt = strength * smoothstep(0.42, 1.0, r);
-	vec3 acc = vec3(0.0);
-	float w = 0.0;
-	for (int i = 0; i < 10; i++) {
-		float t = float(i) / 9.0;
-		vec2 suv = c + d * (1.0 - amt * 0.10 * t);
-		float wi = 1.0 - t * 0.5;
-		acc += textureLod(screen_tex, suv, amt * 1.5).rgb * wi;
-		w += wi;
-	}
-	ALBEDO = acc / w;
-	ALPHA = clamp(amt * 2.5, 0.0, 1.0);
-}
-"""
-	_blur_mat = ShaderMaterial.new()
-	_blur_mat.shader = sh
-	_blur_mat.render_priority = 100
-	var quad := QuadMesh.new()
-	quad.size = Vector2(1.0, 1.0)
-	_blur = MeshInstance3D.new()
-	_blur.mesh = quad
-	_blur.material_override = _blur_mat
-	_blur.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	_blur.extra_cull_margin = 16384.0
-	_blur.visible = false
-	camera.add_child(_blur)
-	_blur.position = Vector3(0.0, 0.0, -0.5)
+	if "--no-motion-blur" in OS.get_cmdline_user_args(): return
+	motion_blur = CarMotionBlur.new()
+	var comp := Compositor.new()
+	comp.compositor_effects = [motion_blur]
+	camera.compositor = comp
 
 ## Start the chase camera from where the on-foot camera was (no hard cut).
 func begin_entry_blend(from_cam: Camera3D) -> void:
@@ -688,7 +659,8 @@ func on_player_changed(driving: bool) -> void:
 		_probe.visible = driving
 		_probe_timer = 0.0
 	for b in _head_beams: b.visible = driving
-	if _blur != null: _blur.visible = false
+	_blur_frames = 0
+	if motion_blur != null: motion_blur.shutter = 0.0
 	for p in _smoke: p.emitting = false
 	if _squeal != null and not driving: _squeal.stop()
 	if not driving and camera != null:
@@ -942,8 +914,20 @@ func _update_camera(delta: float) -> void:
 		fov = lerpf(_entry_fov, _cam_fov, k)
 	camera.global_transform = xf
 	camera.fov = fov
-	if _blur_mat != null:
-		var s := clampf((ratio - 0.55) / 0.45, 0.0, 1.0) * 0.55
-		_blur_mat.set_shader_parameter("strength", s)
-		_blur.visible = s > 0.02 and camera.current
+	_update_motion_blur(delta, aspeed, xf)
 	_cam_snap = false
+
+## Exposure for the motion blur: a fixed shutter time expressed as a fraction
+## of this frame, faded in with speed. Off for the first frames on the chase
+## camera, during the entry blend and on any camera jump (a cut would smear
+## the whole frame along stale motion vectors).
+func _update_motion_blur(delta: float, aspeed: float, xf: Transform3D) -> void:
+	if motion_blur == null: return
+	var jump := xf.origin.distance_to(_blur_prev_cam.origin) > maxf(3.0, aspeed * delta * 3.0) \
+		or xf.basis.z.dot(_blur_prev_cam.basis.z) < 0.94
+	_blur_prev_cam = xf
+	_blur_frames = 0 if (jump or _cam_snap or not camera.current or _entry_t < 1.0) else _blur_frames + 1
+	var speed_k := smoothstep(3.0, 13.0, aspeed)
+	var frac := clampf(SHUTTER_S / maxf(delta, 1e-4), 0.0, 2.0)
+	motion_blur.znear = camera.near
+	motion_blur.shutter = frac * speed_k if _blur_frames >= 2 else 0.0
