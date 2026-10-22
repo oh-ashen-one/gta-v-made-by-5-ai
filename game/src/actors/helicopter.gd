@@ -371,7 +371,7 @@ func _update_chase_camera(delta: float) -> void:
 		_cam_pos = _chase_target(ground_speed)
 		_cam_look = global_position + Vector3.UP * 2.4
 		_cam_roll = 0.0
-	_cam_yaw = lerp_angle(_cam_yaw, rotation.y, clampf(delta * 1.8, 0.0, 1.0))
+	_cam_yaw = lerp_angle(_cam_yaw, rotation.y, clampf(delta * 2.6, 0.0, 1.0))
 	var desired := _chase_target(ground_speed)
 	# horizontal lag gives the inertia; height tracks faster so climbs and
 	# descents never leave the camera looking up at the belly

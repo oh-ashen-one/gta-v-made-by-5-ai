@@ -391,12 +391,12 @@ func _physics_process(delta: float) -> void:
 	_dust_mat.emission_ring_radius = radius * 0.32
 	_dust_mat.emission_ring_inner_radius = radius * 0.12
 	if over_water:
-		_dust_draw.albedo_color = Color(0.90, 0.94, 0.96)
+		_dust_draw.albedo_color = Color(0.90, 0.94, 0.96, 0.9)
 		_dust_mat.initial_velocity_min = 1.5
 		_dust_mat.initial_velocity_max = 4.5
 		_dust_mat.gravity = Vector3(0.0, -2.2, 0.0)
 	else:
-		_dust_draw.albedo_color = Color(0.80, 0.75, 0.66)
+		_dust_draw.albedo_color = Color(0.80, 0.75, 0.66, 0.55)
 		_dust_mat.initial_velocity_min = 0.2
 		_dust_mat.initial_velocity_max = 1.2
 		_dust_mat.gravity = Vector3(0.0, -0.6, 0.0)
