@@ -49,6 +49,9 @@ func _run() -> void:
 	]
 	views.append_array(InteriorDetail.inspection_views(world.locations["safe_room"]-Vector3(0,.2,0)))
 	views.append({"name":"shoreline_reverse","pos":Vector3(96,3,-337),"look":Vector3(0,42,-780),"fov":64.0})
+	# Wave 5: helicopter-height view over the bayside garden toward the far-shore
+	# skyline (CONCEPT-03 composition), appended so earlier indices stay stable.
+	views.append({"name":"bay_skyline_aerial","pos":Vector3(120,110,-120),"look":Vector3(-60,40,-650),"fov":62.0})
 	var cam := Camera3D.new()
 	cam.current = true
 	cam.far = 2000.0
