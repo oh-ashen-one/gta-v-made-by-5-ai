@@ -363,6 +363,9 @@ func _step_low_kerb(delta: float) -> void:
 func _check_impact(before: Vector3) -> void:
 	if get_slide_collision_count() == 0:
 		return
+	if driver_is_player:
+		_player_collision_response(before)
+		return
 	# A parked car absorbs contact without being worn out or announced.
 	if not driver_is_player and not has_ai:
 		return
@@ -421,6 +424,111 @@ func _check_impact(before: Vector3) -> void:
 		if driver_is_player:
 			Events.notify.emit("Vehicle disabled.", "warn")
 
+const KIND_MASS := {"sedan": 1.0, "police": 1.05, "coupe": 0.9, "van": 1.7}
+const WALL_RESTITUTION := 0.22
+const CAR_RESTITUTION := 0.18
+const SPIN_PER_IMPULSE := 0.085
+## Damage + debris layer (car_damage.gd), created by CarFx for provider bodies.
+var damage: Node = null
+## QA readback: last player impact (closing speed, speed kept, struck body).
+var last_impact := {}
+var _crash_fx_ms := -100000
+
+func mass() -> float:
+	return float(KIND_MASS.get(kind, 1.0))
+
+## Planar velocity this car is actually moving with (shoved, driven or AI).
+func planar_velocity() -> Vector3:
+	if _shove.length_squared() > 0.01: return _shove
+	return Vector3(velocity.x, 0.0, velocity.z)
+
+## Player car contacts (opus55 driving-p): a real impulse exchange instead of a
+## dead stop. Walls reflect a little of the closing speed and scrub the slide;
+## cars split the momentum by mass (the struck car is shoved, ours keeps the
+## rest). An off-centre hit spins the car about its centre of mass. Dents,
+## debris, glass and sparks are scaled by the closing speed.
+func _player_collision_response(before: Vector3) -> void:
+	var v := Vector3(before.x, 0.0, before.z)
+	var changed := false
+	var worst := 0.0
+	var now_ms := Time.get_ticks_msec()
+	for i in get_slide_collision_count():
+		var collision := get_slide_collision(i)
+		var n := collision.get_normal()
+		if n.y > 0.65: continue
+		var struck := collision.get_collider()
+		if struck is NPC:
+			var person := struck as NPC
+			var approach_p := -before.dot(n)
+			if person.state != NPC.State.DEAD and now_ms - int(person.get_meta("car_hit_ms", -100000)) > 600:
+				person.set_meta("car_hit_ms", now_ms)
+				if approach_p > 2.5:
+					person.take_damage(clampf((approach_p - 2.0) * 16.0, 18.0, 220.0), global_position, true)
+				else:
+					person.scramble_from(global_position)
+			continue
+		n.y = 0.0
+		if n.length_squared() < 0.01: continue
+		n = n.normalized()
+		# Any solid contact: our velocity comes from the impulse model below, not
+		# from the kinematic slide (which zeroes it against a car moving away).
+		changed = true
+		var contact := collision.get_position()
+		var r := contact - global_position
+		r.y = 0.0
+		var closing := 0.0
+		var impulse := 0.0   # per unit of our mass
+		if struck is Car:
+			var other := struck as Car
+			var rel := (v - other.planar_velocity()).dot(n)
+			if rel >= -0.05: continue
+			closing = -rel
+			var m1 := mass()
+			var m2 := other.mass()
+			var j := (1.0 + CAR_RESTITUTION) * closing / (1.0 / m1 + 1.0 / m2)
+			impulse = j / m1
+			if now_ms - int(other.get_meta("shove_ms", -100000)) > 60:
+				other.set_meta("shove_ms", now_ms)
+				other.shove(-n * (j / m2), contact)
+		else:
+			var vn := v.dot(n)
+			if vn >= -0.05: continue
+			closing = -vn
+			var low := contact.y - global_position.y < 0.3
+			var e := 0.0 if (low and closing < 6.0) else WALL_RESTITUTION
+			impulse = (1.0 + e) * closing
+			# Scraping along a wall bleeds speed.
+			var tangent := v - n * vn
+			v = n * vn + tangent * (1.0 - clampf(closing * 0.014, 0.0, 0.35))
+		v += n * impulse
+		changed = true
+		_yaw_rate = clampf(_yaw_rate + r.cross(n * impulse).y * SPIN_PER_IMPULSE, -3.0, 3.0)
+		worst = maxf(worst, closing)
+		if closing > 3.0 and now_ms - _crash_fx_ms > 220:
+			_crash_fx_ms = now_ms
+			var energy := clampf((closing - 2.0) / 20.0, 0.05, 1.0)
+			if damage != null: damage.add_dent(contact, n, energy)
+			if struck is Car and (struck as Car).damage != null:
+				(struck as Car).damage.add_dent(contact, -n, energy * 0.9)
+			if fx != null and fx.has_method("crash"):
+				fx.crash(contact, n, closing, struck is Car)
+			last_impact = {"closing": closing, "speed_before": Vector2(before.x, before.z).length(), "speed_after": Vector2(v.x, v.z).length(), "car": struck is Car, "ms": now_ms}
+	if not changed:
+		_forward = Vector3(velocity.x, 0.0, velocity.z).dot(-global_transform.basis.z)
+		return
+	velocity.x = v.x
+	velocity.z = v.z
+	_forward = v.dot(Vector3(-sin(rotation.y), 0.0, -cos(rotation.y)))
+	if worst < 6.0 or _impact_cooldown > 0.0:
+		return
+	_impact_cooldown = 0.5
+	var dmg: float = clampf((worst - 6.0) * 0.8, 0.0, 28.0)
+	health = maxf(0.0, health - dmg)
+	damaged.emit(dmg)
+	if health <= 0.0 and not disabled:
+		disabled = true
+		Events.notify.emit("Vehicle disabled.", "warn")
+
 func _update_driver_bust() -> void:
 	var seated := driver_is_player or has_ai or occupied_by_npc
 	if seated and _driver_bust == null and not disabled:
@@ -468,47 +576,87 @@ func _spin_wheels(delta: float) -> void:
 		if w is MeshInstance3D:
 			w.rotate_x(roll)
 
+## Player handling (opus55 driving-p): a planar momentum model rather than a
+## rail. The body keeps its world velocity between ticks; tyres bleed off the
+## sideways part at a capped rate (about 1.3 g), so the car turns by grip and
+## slides once that grip is exceeded. Yaw follows a bicycle-model target that
+## is limited by the same grip and eased in, so the nose leads, the body rolls
+## and the tail can step out. The handbrake locks the rears: lateral grip
+## collapses, yaw is boosted and the car rotates around its front axle while
+## the old momentum carries it, then grip returns over ~0.3 s on release.
+const WHEELBASE := 2.65
+const LAT_GRIP := 13.5          # m/s^2 lateral tyre force cap (normal)
+const LAT_GRIP_HANDBRAKE := 3.2
+var _yaw_rate := 0.0
+var _grip_recover := 1.0
+
 func _player_control(delta: float) -> void:
 	var throttle := Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
 	var steer_input := Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
-	if throttle > 0.01:
-		_forward = minf(_forward + accel * throttle * delta, max_speed)
-	elif throttle < -0.01:
-		if _forward > 0.2:
-			_forward = maxf(_forward - BRAKE * delta, 0.0)
-		else:
-			_forward = maxf(_forward - accel * 0.7 * delta, -REVERSE_SPEED)
-	else:
-		_forward = move_toward(_forward, 0.0, (DRAG + absf(_forward) * 0.25) * delta * 6.0)
-	_steer = lerpf(_steer, steer_input, clampf(delta * 9.0, 0.0, 1.0))
-	var speed_ratio := clampf(absf(_forward) / max_speed, 0.0, 1.0)
 	_handbrake = Input.is_action_pressed("jump")
-	# Weight: steering authority eases off at speed; the handbrake bites.
-	var turn := _steer * TURN_SPEED * clampf(absf(_forward) / 8.0, 0.0, 1.0) * lerpf(1.0, 0.82, speed_ratio) * signf(_forward if absf(_forward) > 0.05 else 1.0)
-	if _handbrake:
-		turn *= 1.35
-		_forward = move_toward(_forward, 0.0, 9.0 * delta)
-	# A node that faces -Z turns left when its yaw increases, so the sign here
-	# has to be positive: pressing left has to steer left, not right.
-	rotation.y += turn * delta
-	# Grip: the travel heading follows the nose at a speed-dependent rate, so a
-	# fast corner carries a visible slip angle instead of rail-turning.
-	var slip_gap := angle_difference(_vel_yaw, rotation.y)
-	if absf(_forward) < 2.0 or _forward < 0.0 or absf(slip_gap) > 1.2:
-		_vel_yaw = rotation.y
+	var fwd := Vector3(-sin(rotation.y), 0.0, -cos(rotation.y))
+	var right := Vector3(cos(rotation.y), 0.0, -sin(rotation.y))
+	var v := Vector3(velocity.x, 0.0, velocity.z)
+	var v_long := v.dot(fwd)
+	var v_lat := v.dot(right)
+	var speed_ratio := clampf(absf(v_long) / max_speed, 0.0, 1.0)
+	# Longitudinal: strong launch that tapers toward top speed, firm brakes.
+	if throttle > 0.01:
+		if v_long < -0.4:
+			v_long = minf(v_long + BRAKE * throttle * delta, 0.0)
+		else:
+			var pull := accel * (1.18 - 0.78 * pow(speed_ratio, 1.6))
+			v_long = minf(v_long + pull * throttle * delta, max_speed)
+	elif throttle < -0.01:
+		if v_long > 0.3:
+			v_long = maxf(v_long - BRAKE * -throttle * delta, 0.0)
+		else:
+			v_long = maxf(v_long - accel * 0.7 * -throttle * delta, -REVERSE_SPEED)
 	else:
-		var grip := lerpf(12.0, 6.5, speed_ratio)
-		if _handbrake: grip = 1.8
-		_vel_yaw = lerp_angle(_vel_yaw, rotation.y, clampf(grip * delta, 0.0, 1.0))
-		# Sliding scrubs speed.
-		_forward *= 1.0 - clampf(absf(slip_gap) * 0.9 * delta, 0.0, 0.05)
-	var dir := Vector3(-sin(_vel_yaw), 0.0, -cos(_vel_yaw))
-	velocity.x = dir.x * _forward
-	velocity.z = dir.z * _forward
+		# Coasting: rolling resistance plus aero drag (~2 m/s^2 at 60 km/h),
+		# so lifting off carries the car instead of braking it.
+		v_long = move_toward(v_long, 0.0, (0.5 + 0.0065 * v_long * v_long) * delta)
+	if _handbrake:
+		v_long = move_toward(v_long, 0.0, 5.5 * delta)
+	_steer = lerpf(_steer, steer_input, clampf(delta * 8.0, 0.0, 1.0))
+	# Lateral grip: bleed the sideways velocity, capped by the tyre force.
+	_grip_recover = 0.0 if _handbrake else minf(1.0, _grip_recover + delta * 3.2)
+	var grip_cap := lerpf(LAT_GRIP_HANDBRAKE, LAT_GRIP, _grip_recover)
+	var grip_rate := lerpf(1.1, lerpf(10.0, 6.0, speed_ratio), _grip_recover)
+	var dv_lat := -v_lat * (1.0 - exp(-grip_rate * delta))
+	dv_lat = clampf(dv_lat, -grip_cap * delta, grip_cap * delta)
+	v_lat += dv_lat
+	# Sliding scrubs speed.
+	v_long -= signf(v_long) * minf(absf(v_long), absf(dv_lat) * 0.18)
+	# Yaw: bicycle target, wheel angle narrowing with speed, grip-limited.
+	var wheel_angle := _steer * lerpf(0.58, 0.16, pow(speed_ratio, 0.8))
+	var yaw_target := v_long / WHEELBASE * tan(wheel_angle)
+	var yaw_cap := grip_cap * 1.18 / maxf(absf(v_long), 1.0)
+	yaw_target = clampf(yaw_target, -yaw_cap, yaw_cap)
+	var yaw_k := 7.5
+	if _handbrake and absf(v_long) > 3.0:
+		# Rears locked: the tail swings out around the front axle.
+		yaw_target = v_long / WHEELBASE * tan(_steer * 0.6) * 1.25 + signf(v_long) * _steer * 1.1
+		yaw_target = clampf(yaw_target, -3.2, 3.2)
+		yaw_k = 3.4
+	elif absf(v_long) > 3.0:
+		# Self-aligning: a sliding car straightens toward its travel unless held.
+		var beta := atan2(v_lat, absf(v_long))
+		yaw_target -= beta * 1.6 * _grip_recover
+	_yaw_rate = lerpf(_yaw_rate, yaw_target, 1.0 - exp(-yaw_k * delta))
+	if absf(v_long) < 0.4 and absf(v_lat) < 0.4:
+		_yaw_rate = move_toward(_yaw_rate, 0.0, 6.0 * delta)
+	rotation.y += _yaw_rate * delta
+	# Momentum stays in world space; next tick's grip turns it.
+	v = fwd * v_long + right * v_lat
+	velocity.x = v.x
+	velocity.z = v.z
+	_forward = v_long
+	_vel_yaw = atan2(-v.x, -v.z) if v.length() > 1.0 else rotation.y
 
 ## Velocity the drivetrain is asking for this tick (before collision response).
 func commanded_velocity() -> Vector3:
-	return Vector3(-sin(_vel_yaw), 0.0, -cos(_vel_yaw)) * _forward if driver_is_player else -global_transform.basis.z * _forward
+	return Vector3(velocity.x, 0.0, velocity.z) if driver_is_player else -global_transform.basis.z * _forward
 
 ## 0..1 slide intensity of the player car (drives tyre smoke and skid marks).
 func drift_amount() -> float:
@@ -632,13 +780,17 @@ func interact(player: Node) -> void:
 	_update_driver_bust()
 	_arm.rotation.y = 0.0
 	_vel_yaw = rotation.y
+	_yaw_rate = 0.0
+	_grip_recover = 1.0
+	velocity = Vector3.ZERO
+	if fx != null and player is Player:
+		fx.begin_entry_blend((player as Player).camera)
 	if fx != null: fx.on_player_changed(true)
 	_camera.current = true
 	Game.set_mode(Game.MODE_CAR)
 	Sfx.start_engine()
 	player.busy = false            # the transition is complete
 	Events.vehicle_entered.emit(self)
-	Events.notify.emit("Vehicle entered. [E] to exit.", "info")
 
 func force_exit() -> void:
 	Sfx.stop_engine()
