@@ -477,15 +477,15 @@ func _build_anchorage() -> void:
 	var customs: Array[Color] = []
 	for i in 14:
 		# inside the 2 km far plane of the fixed QA cameras
-		var x := rng.randf_range(-1400.0, 1400.0)
-		var z := rng.randf_range(-1950.0, -1420.0)
+		var x := rng.randf_range(-1100.0, 1100.0)
+		var z := rng.randf_range(-1980.0, -1660.0)
 		xforms.append(Transform3D(Basis(Vector3.UP, rng.randf_range(-0.6, 0.6) + (PI if i % 2 == 0 else 0.0)), Vector3(x, LEVEL, z)))
-		customs.append(Color(0.9, 0.9, 0.9, float(i % 4) / 4.0 + 0.01))
+		customs.append(Color(0.9, 0.9, 0.9, float(1 + i % 2) / 4.0 + 0.01))
 	for i in 6:
 		var x := rng.randf_range(-1200.0, 1200.0)
-		var z := rng.randf_range(860.0, 1350.0)
+		var z := rng.randf_range(980.0, 1380.0)
 		xforms.append(Transform3D(Basis(Vector3.UP, rng.randf_range(-0.6, 0.6)), Vector3(x, LEVEL, z)))
-		customs.append(Color(0.9, 0.9, 0.9, float(i % 4) / 4.0 + 0.01))
+		customs.append(Color(0.9, 0.9, 0.9, float(1 + i % 2) / 4.0 + 0.01))
 	var mm := MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.use_custom_data = true
