@@ -425,6 +425,10 @@ func _check_impact(before: Vector3) -> void:
 			Events.notify.emit("Vehicle disabled.", "warn")
 
 const KIND_MASS := {"sedan": 1.0, "police": 1.05, "coupe": 0.9, "van": 1.7}
+## Player-driven launch / brake scale per body (integ-P seam). Sedan ~0-97 km/h in 4.3 s,
+## coupe ~3.6 s, van ~6.8 s; brakes 1.0-1.2 g (van 0.85 g).
+const KIND_LAUNCH := {"sedan": 0.72, "police": 0.78, "coupe": 0.86, "van": 0.46}
+const KIND_BRAKE := {"sedan": 0.52, "police": 0.55, "coupe": 0.56, "van": 0.40}
 const WALL_RESTITUTION := 0.22
 const CAR_RESTITUTION := 0.18
 const SPIN_PER_IMPULSE := 0.085
@@ -601,15 +605,20 @@ func _player_control(delta: float) -> void:
 	var v_lat := v.dot(right)
 	var speed_ratio := clampf(absf(v_long) / max_speed, 0.0, 1.0)
 	# Longitudinal: strong launch that tapers toward top speed, firm brakes.
+	# integ-P seam (driving-P1 critic: every vehicle had the same hypercar
+	# numbers, van 0-97 km/h in 3.0 s, 2.2 g brakes): per-kind launch and
+	# brake scale, so the van is heavy and the coupe is the quick one.
+	var launch_k: float = KIND_LAUNCH.get(kind, 0.72)
+	var brake_ms2: float = BRAKE * float(KIND_BRAKE.get(kind, 0.55))
 	if throttle > 0.01:
 		if v_long < -0.4:
-			v_long = minf(v_long + BRAKE * throttle * delta, 0.0)
+			v_long = minf(v_long + brake_ms2 * throttle * delta, 0.0)
 		else:
-			var pull := accel * (1.18 - 0.78 * pow(speed_ratio, 1.6))
+			var pull := accel * launch_k * (1.18 - 0.78 * pow(speed_ratio, 1.6))
 			v_long = minf(v_long + pull * throttle * delta, max_speed)
 	elif throttle < -0.01:
 		if v_long > 0.3:
-			v_long = maxf(v_long - BRAKE * -throttle * delta, 0.0)
+			v_long = maxf(v_long - brake_ms2 * -throttle * delta, 0.0)
 		else:
 			v_long = maxf(v_long - accel * 0.7 * -throttle * delta, -REVERSE_SPEED)
 	else:

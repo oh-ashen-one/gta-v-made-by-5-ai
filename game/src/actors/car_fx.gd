@@ -885,11 +885,15 @@ func _update_camera(delta: float) -> void:
 	_cam_yaw = lerp_angle(_cam_yaw, target_yaw, clampf(delta * yaw_k, 0.0, 1.0))
 	# Longitudinal spring: the car pulls away under throttle and the camera
 	# closes in under braking, then settles.
-	var long_target := clampf(_long_acc * 0.065, -0.9, 0.55)
+	# integ-P seam: closing in under hard braking/reverse is capped (critic: the
+	# van's rear filled 60-70% of the frame).
+	var long_target := clampf(_long_acc * 0.05, -0.35, 0.55)
 	_cam_long_v += ((long_target - _cam_long) * 26.0 - _cam_long_v * 7.0) * delta
 	_cam_long += _cam_long_v * delta
-	var dist := 4.7 + ratio * 0.3 + _cam_long
-	var height := 1.38 + ratio * 0.08
+	# Framing scales with the body (van is taller/longer than a coupe).
+	var size_k: float = {"van": 1.38, "coupe": 0.96, "police": 1.03}.get(car.kind, 1.0)
+	var dist := (4.7 + ratio * 0.3) * size_k + _cam_long
+	var height := 1.38 * size_k + ratio * 0.08
 	var fwd := Vector3(-sin(_cam_yaw), 0.0, -cos(_cam_yaw))
 	var cam_right := Vector3(cos(_cam_yaw), 0.0, -sin(_cam_yaw))
 	# Weight swing: the camera is thrown outward in a corner and settles back.
@@ -897,21 +901,28 @@ func _update_camera(delta: float) -> void:
 	_cam_lat_v += ((lat_target - _cam_lat) * 18.0 - _cam_lat_v * 6.5) * delta
 	_cam_lat += _cam_lat_v * delta
 	var base := car.global_position
-	var pivot := base + Vector3(0.0, 1.25, 0.0)
+	var pivot := base + Vector3(0.0, 1.25 * size_k, 0.0)
 	var desired := base - fwd * dist + cam_right * _cam_lat + Vector3(0.0, height + 0.55, 0.0)
 	# Keep the lens out of walls: pull in along the pivot ray.
 	var space := car.get_world_3d().direct_space_state
-	var q := PhysicsRayQueryParameters3D.create(pivot, desired)
-	q.collision_mask = 1
-	q.exclude = [car.get_rid()]
-	var hit := space.intersect_ray(q)
-	if not hit.is_empty():
-		desired = (hit["position"] as Vector3) + (pivot - desired).normalized() * 0.35
+	# integ-P seam: a sphere sweep instead of a thin ray, so a wall beside the
+	# lens (not only one straight behind it) pulls the camera in.
+	var sq := PhysicsShapeQueryParameters3D.new()
+	var sph := SphereShape3D.new()
+	sph.radius = 0.38
+	sq.shape = sph
+	sq.transform = Transform3D(Basis.IDENTITY, pivot)
+	sq.motion = desired - pivot
+	sq.collision_mask = 1
+	sq.exclude = [car.get_rid()]
+	var frac: PackedFloat32Array = space.cast_motion(sq)
+	if frac.size() >= 1 and frac[0] < 1.0:
+		desired = pivot + (desired - pivot) * maxf(frac[0], 0.12)
 	if _cam_snap:
 		_cam_pos = desired
 	else:
 		_cam_pos = _cam_pos.lerp(desired, clampf(delta * 14.0, 0.0, 1.0))
-	var look := base + Vector3(0.0, 1.0, 0.0) + fwd * (2.6 + ratio * 3.5)
+	var look := base + Vector3(0.0, 1.0 * size_k, 0.0) + fwd * (2.6 + ratio * 3.5)
 	var xf := Transform3D(Basis.IDENTITY, _cam_pos).looking_at(look, Vector3.UP)
 	# Collision kick only (LOOK_DEV: no default shake); decays in ~0.4 s.
 	if _trauma > 0.001:
