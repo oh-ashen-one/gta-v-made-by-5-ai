@@ -33,3 +33,7 @@ docs/wave-02/*/frames/*.jpg
 docs/wave-02/*/frames/*.jpeg
 
 art/source/helicopter/
+
+# Opus 5.5 loop: builder worktrees and GTA V comparison references (copyrighted, never committed)
+/.worktrees/
+/loop/references/
