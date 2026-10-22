@@ -137,7 +137,10 @@ func _build_pause_panel(root: Control) -> void:
 
 func _build_title_panel(root: Control) -> void:
 	_title_panel=Control.new();_title_panel.set_anchors_preset(Control.PRESET_FULL_RECT);_title_panel.visible=true;root.add_child(_title_panel)
-	_panel(_title_panel,Vector2.ZERO,Vector2(1280,720),Color(.015,.04,.045,.92))
+	# Wave 5: the menu side stays dark for legibility while the right side lets
+	# the opening skyline (Marina Bay Sands across the bay) show through.
+	_panel(_title_panel,Vector2.ZERO,Vector2(700,720),Color(.015,.04,.045,.90))
+	_panel(_title_panel,Vector2(700,0),Vector2(580,720),Color(.015,.04,.045,.42))
 	var small:=_mk_label(_title_panel,Vector2(96,105),13,Color(.65,.81,.71));small.text="THE HARBOUR DISTRICT"
 	var title:=_mk_label(_title_panel,Vector2(91,142),64,Color(.98,.94,.84));title.text="ORCHARD REACH"
 	var sub:=_mk_label(_title_panel,Vector2(96,230),18,Color(.72,.8,.78));sub.text="A city to cross. A package to deliver."
@@ -145,7 +148,8 @@ func _build_title_panel(root: Control) -> void:
 	_button(_title_panel,"Continue   ·   F6",Vector2(96,365),func():get_tree().current_scene._continue_game())
 	_button(_title_panel,"Settings   ·   F3",Vector2(96,420),func():get_tree().current_scene._toggle_settings())
 	_button(_title_panel,"Quit game",Vector2(96,475),func():get_tree().current_scene._quit_game())
-	var controls:=_mk_label(_title_panel,Vector2(720,320),17,Color(.78,.85,.80))
+	_panel(_title_panel,Vector2(712,438),Vector2(520,208),Color(.015,.04,.045,.58))
+	var controls:=_mk_label(_title_panel,Vector2(730,452),17,Color(.86,.92,.88))
 	controls.text="WALK THE ARCADES\nWASD move · Mouse look · Shift sprint\n\nTAKE THE WHEEL\nE enter/exit · W/S throttle · A/D steer\n\nTAKE TO THE AIR\nSpace climb · Shift descend · E land and exit"
 	var footer:=_mk_label(_title_panel,Vector2(96,650),13,Color(.48,.62,.58));footer.text="Original fictional Singapore-inspired district"
 
