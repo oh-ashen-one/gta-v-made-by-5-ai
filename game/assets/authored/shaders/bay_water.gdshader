@@ -35,7 +35,7 @@ uniform float spec_cap = 0.32;
 uniform float glint_roughness = 0.16;
 uniform vec2 wind_dir = vec2(0.80, -0.60);
 uniform float whitecaps = 0.55;  // only beyond the harbour mouth; the dammed bay stays glassy
-uniform float sparkle_gain = 1.1;
+uniform float sparkle_gain = 0.65;
 // Horizon skirt: the sea plane is clipped at the camera far plane, leaving a
 // pale band of below-horizon sky with a hard top edge. BayWater keeps a ring
 // (same material, skirt = 1) at horizon_radius up to eye height, and the sea
@@ -76,6 +76,41 @@ float fbm(vec2 p) {
 		a *= 0.5;
 	}
 	return v;
+}
+
+// F2 - F1 of a jittered grid: ~0 along cell borders (bubble walls).
+float cell_edge(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	float d1 = 8.0;
+	float d2 = 8.0;
+	for (int y = -1; y <= 1; y++) {
+		for (int x = -1; x <= 1; x++) {
+			vec2 g = vec2(float(x), float(y));
+			vec2 o = vec2(hash12(i + g), hash12(i + g + 17.3));
+			float d = length(g + o - f);
+			if (d < d1) { d2 = d1; d1 = d; } else if (d < d2) { d2 = d; }
+		}
+	}
+	return d2 - d1;
+}
+
+// Round 4 (critic: "smooth, even white strokes with clean edges"): every
+// foam source now produces a coverage value, and coverage is rendered as
+// aerated foam: solid where it is thick, a lacy web of bubble walls where it
+// thins, loose clumps at the fringe. Two cell scales (1.4 m, 0.45 m) so it
+// reads from the helicopter and from the water.
+float lace_foam(vec2 p, float cov, float foot, float t) {
+	vec2 drift = vec2(t * 0.11, -t * 0.07);
+	float e1 = cell_edge(p * 0.72 + drift);
+	float e2 = cell_edge(p * 2.2 - drift * 1.7 + 11.0);
+	float web1 = smoothstep(cov * 0.42 + 0.02, cov * 0.42 - 0.05, e1);
+	float web2 = smoothstep(cov * 0.38 + 0.015, cov * 0.38 - 0.04, e2) * smoothstep(0.08, 0.35, cov);
+	float solid = smoothstep(0.72, 1.05, cov) * smoothstep(0.02, 0.10, e2 + 0.06);
+	float f = max(max(web1 * 0.92, web2 * 0.8), solid);
+	f *= smoothstep(0.02, 0.14, cov);
+	// sub-pixel cells: fall back to the mean coverage, never to a clean line
+	return mix(f, clamp(cov * 0.55, 0.0, 0.85), smoothstep(0.7, 1.8, foot));
 }
 
 vec2 rot(vec2 v, float a) {
@@ -217,44 +252,60 @@ void fragment() {
 		float L = 2.0 * hl;
 		float spd = clamp(b.w / 6.0, 0.0, 1.4);
 		if (abs(along) > L * 11.0 + 20.0 || abs(lat) > L * 4.5 + 12.0) continue;
-		// irregular contact ring around the hull (moored boats lap a little)
+		// moored hulls lap a little; boats under way get no halo ahead of the
+		// stem, only a torn contact band along both sides from the shoulder aft
 		float e = length(vec2(along / (hl + 0.7), lat / (hb + 0.6)));
-		float ring = smoothstep(1.5, 1.0, e) * (0.25 + 0.75 * spd) * smoothstep(0.25, 0.6, wake_break);
-		churn += ring;
-		if (spd > 0.02) {
-			float s1 = min(spd, 1.0);
-			// bow spray: white water peeling off both sides of the bow
-			float bow_t = clamp((along - hl * 0.1) / (hl * 0.95), 0.0, 1.0);
-			float bow_side = abs(abs(lat) - hb * (1.05 + (1.0 - bow_t) * 0.35));
-			float bow = smoothstep(0.9 + hb * 0.4, 0.0, bow_side) * smoothstep(hl * 0.05, hl * 0.6, along) * smoothstep(hl * 1.25, hl * 0.9, along);
-			trail_foam += bow * s1 * 1.4 * smoothstep(0.2, 0.5, wake_break);
-			float behind = -(along + hl * 0.85);
-			if (behind > -hl * 0.4) {
-				float b2 = max(behind, 0.0);
-				float age = b2 / (L * 8.0);
-				// turbulent centre: > 2x beam wide at the transom, widening
-				float hw = hb * 1.25 + b2 * 0.12;
-				float tf = exp(-b2 / (L * 3.0)) * smoothstep(L * 9.0, L * 4.0, b2) * smoothstep(-hl * 0.4, 0.4, behind);
-				float core = smoothstep(hw, hw * 0.25, abs(lat));
-				// breaks into patches as it ages: threshold rises with distance
-				float patchy = smoothstep(0.18 + age * 0.55, 0.42 + age * 0.55, wake_break + (1.0 - core) * -0.15);
-				trail_foam += core * tf * s1 * mix(1.6, 1.0, age) * patchy;
-				churn += core * tf * s1 * 0.8;
-				// Kelvin arms: diverging crests on both sides
-				float arm_d = abs(lat) - (hb * 0.9 + b2 * 0.354);
-				float af = exp(-b2 / (L * 2.6)) * smoothstep(L * 6.5, L * 2.5, b2) * smoothstep(-hl * 0.4, hl * 0.4, behind) * s1;
-				float arm_w = 0.9 + b2 * 0.07;
-				float arm = smoothstep(arm_w, 0.0, abs(arm_d + 0.3));
-				wake += arm * af;
-				trail_foam += arm * af * 0.85 * smoothstep(0.34 + age * 0.7, 0.56 + age * 0.7, wake_break);
-				// displacement waves: the arm crest plus echoes inside the wedge,
-				// and transverse waves across it
-				float inside = smoothstep(1.5, -1.0, arm_d);
-				float wv = cos(arm_d * 1.6) * exp(-abs(arm_d) * 0.22) * inside;
-				wake_g += right * sign(lat) * wv * af * 0.38;
-				float trans = cos(b2 * 6.2831853 / max(L * 0.9, 2.0)) * smoothstep(0.0, -2.0, arm_d) * af;
-				wake_g += -fwd * trans * 0.12;
-			}
+		if (spd <= 0.02) {
+			float lap = smoothstep(1.35, 1.0, e) * 0.32;
+			trail_foam += lap;
+			churn += lap;
+			continue;
+		}
+		float s1 = min(spd, 1.0);
+		float alat = abs(lat);
+		float hw_here = hb * clamp((hl - along) / (hl * 0.9), 0.08, 1.0);
+		float contact = smoothstep(hw_here + 0.8 + hb * 0.6, hw_here, alat) * smoothstep(hl * 0.95, hl * 0.5, along) * smoothstep(-hl * 1.15, -hl * 0.7, along);
+		trail_foam += contact * (0.30 + 0.80 * s1);
+		churn += contact * s1;
+		// bow wave crest peeling off both shoulders onto the water
+		float bow_t = clamp((along - hl * 0.1) / (hl * 0.95), 0.0, 1.0);
+		float bow_side = abs(alat - hb * (1.15 + (1.0 - bow_t) * 0.55));
+		float bow = smoothstep(0.9 + hb * 0.5, 0.0, bow_side) * smoothstep(-hl * 0.2, hl * 0.4, along) * smoothstep(hl * 1.1, hl * 0.8, along);
+		trail_foam += bow * s1 * 0.95;
+		float behind = -(along + hl * 0.85);
+		if (behind > -hl * 0.4) {
+			float b2 = max(behind, 0.0);
+			float age = b2 / (L * 7.0);
+			// the trail meanders and fans out; its edge is torn, not ruled
+			float mw = (vnoise(vec2(b2 * 0.06 + float(i) * 7.1, t * 0.05)) - 0.5) * (hb * 0.9 + b2 * 0.16);
+			float lat_m = lat - mw;
+			float hw = hb * 1.2 + b2 * 0.24;
+			float edge_n = (foam_n - 0.5) * hw * 1.1 + (foam_n2 - 0.5) * hw * 0.5;
+			float core = smoothstep(hw + edge_n, hw * 0.12, abs(lat_m));
+			float tf = smoothstep(-hl * 0.4, 0.4, behind) * smoothstep(L * 8.0, L * 2.5, b2);
+			// torn blotches at 2-8 m scale so the fan is broken up even from
+			// the helicopter; they get sparser as the foam ages
+			float brk = vnoise(p * 0.13 + float(i) * 5.1) * 0.55 + vnoise(p * 0.42 - float(i) * 2.3) * 0.35 + foam_n * 0.35;
+			float patch = smoothstep(0.30 + age * 0.40, 0.60 + age * 0.40, brk);
+			// solid churn at the transom decaying over ~2 lengths into lace
+			float near_stern = exp(-b2 / (L * 0.8));
+			trail_foam += core * tf * s1 * (1.30 * near_stern * mix(patch, 1.0, near_stern) + 0.95 * patch * exp(-b2 / (L * 4.2)));
+			churn += core * tf * s1 * 0.8 * exp(-b2 / (L * 3.0));
+			// Kelvin arms: diverging crests on both sides
+			float arm_d = abs(lat) - (hb * 0.9 + b2 * 0.354);
+			float af = exp(-b2 / (L * 2.6)) * smoothstep(L * 6.5, L * 2.5, b2) * smoothstep(-hl * 0.4, hl * 0.4, behind) * s1;
+			float arm_w = 0.9 + b2 * 0.07;
+			float arm = smoothstep(arm_w, 0.0, abs(arm_d + 0.3));
+			wake += arm * af;
+			float patch2 = smoothstep(0.32 + age * 0.4, 0.62 + age * 0.4, brk * 0.7 + foam_n2 * 0.45);
+			trail_foam += arm * af * 1.0 * patch2;
+			// displacement waves: the arm crest plus echoes inside the wedge,
+			// and transverse waves across it
+			float inside = smoothstep(1.5, -1.0, arm_d);
+			float wv = cos(arm_d * 1.6) * exp(-abs(arm_d) * 0.22) * inside;
+			wake_g += right * sign(lat) * wv * af * 0.38;
+			float trans = cos(b2 * 6.2831853 / max(L * 0.9, 2.0)) * smoothstep(0.0, -2.0, arm_d) * af;
+			wake_g += -fwd * trans * 0.12;
 		}
 	}
 
@@ -284,10 +335,16 @@ void fragment() {
 	float surge_ph = t * 0.85 + fbm(p * 0.035) * 9.0 + p.x * 0.045 + p.y * 0.03;
 	float surge = pow(0.5 + 0.5 * sin(surge_ph), 2.0);
 	float reach = 0.6 + foot * 1.5 + 3.6 * surge * (0.35 + 0.9 * fbm(p * 0.11 + vec2(t * 0.04, -t * 0.03)));
-	float wet_line = smoothstep(0.8 + foot * 1.8, 0.05, shore) * mix(0.6, 0.95, foam_n);
-	float shore_foam = wet_line + smoothstep(reach + foot, 0.0, shore) * smoothstep(0.30, 0.58, foam_n * 0.7 + foam_n2 * 0.5 + surge * 0.12);
-	shore_foam += smoothstep(4.5 + foot * 1.5, 0.5, shore) * smoothstep(0.58, 0.80, foam_n2 * 0.6 + foam_n * 0.6) * 0.30 * (0.4 + surge);
-	float wake_foam = clamp(trail_foam + churn * 0.9 * smoothstep(0.22, 0.55, wake_break), 0.0, 1.0);
+	// the wall line is broken: long stretches of thin wet lace, gaps, and
+	// surges that throw torn foam several metres off the stone
+	float along_wall = fbm(p * 0.07 + vec2(t * 0.03, 0.0));
+	float wet_line = smoothstep(0.9 + foot * 1.8, 0.05, shore) * mix(0.15, 1.0, smoothstep(0.30, 0.68, along_wall));
+	float shore_cov = wet_line * 0.85 + smoothstep(reach + foot, 0.0, shore) * smoothstep(0.30, 0.62, foam_n * 0.7 + foam_n2 * 0.5 + surge * 0.15) * 1.1;
+	shore_cov += smoothstep(6.0 + foot * 1.5, 0.5, shore) * smoothstep(0.55, 0.80, foam_n2 * 0.6 + foam_n * 0.6) * 0.45 * (0.4 + surge);
+	float wake_cov = clamp(trail_foam, 0.0, 1.4);
+	float foam_cov = max(shore_cov, wake_cov) + 0.5 * min(shore_cov, wake_cov);
+	float wake_foam = foam_cov > 0.01 ? lace_foam(p, foam_cov, foot, t) : 0.0;
+	float shore_foam = 0.0;
 	float impact_foam = impact * smoothstep(0.25, 0.6, foam_n2 + 0.25 * sin(t * 9.0 + dj * 4.0));
 	// aerated boil around the plunge point, then foam rings pushed outward
 	// that break up and thin as they spread

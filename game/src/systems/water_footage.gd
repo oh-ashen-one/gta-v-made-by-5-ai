@@ -51,6 +51,14 @@ func _run() -> void:
 		var next := start
 		var mid_saved := false
 		cam.fov = shot["fov"]
+		# settle the cut: let the planar reflection render from the new pose
+		# before the first recorded frame (critic: reflection pop-in)
+		cam.global_position = shot["from"]
+		cam.look_at(shot["look_from"], Vector3.UP)
+		for _w in 3:
+			await RenderingServer.frame_post_draw
+		start = Time.get_ticks_usec()
+		next = start
 		while true:
 			var now := Time.get_ticks_usec()
 			var u := clampf(float(now - start) / (dur * 1000000.0), 0.0, 1.0)

@@ -40,7 +40,9 @@ var anchored_ships := 0
 ## QA switch (water footage perf A/B); gameplay never turns it off.
 var reflection_enabled := true
 
+var wash: BoatWash
 var _builder: Node
+var _reflection_grace := 0.0
 var _boats: Array[Dictionary] = []
 var _multimeshes := {}
 var _time := 0.0
@@ -64,6 +66,7 @@ func _build(merlion: Node3D, merlion_pos: Vector3) -> void:
 	_build_edges(merlion_pos)
 	_build_merlion_jet(merlion, merlion_pos)
 	_build_boats()
+	wash = BoatWash.build(self, _boats)
 	_build_anchorage()
 	water_material.set_shader_parameter("pier_rect", _pier_rect)
 	water_material.set_shader_parameter("pontoon_rect", _pontoon_rect)
@@ -158,7 +161,7 @@ func _build_edges(merlion_pos: Vector3) -> void:
 	# Near seawall: dressed granite face down into the water, a pale coping
 	# lip at deck level, a dark wet band and a thin algae line at the waterline.
 	_edge_box(Vector3(1500.0, 3.4, 0.9), Vector3(0.0, -1.38, -350.25), granite, 0.9)
-	_edge_box(Vector3(700.0, 0.16, 1.2), Vector3(0.0, 0.36, -349.9), Color(0.70, 0.68, 0.64), 0.85)
+	_edge_box(Vector3(700.0, 0.16, 1.2), Vector3(0.0, 0.36, -349.9), Color(0.50, 0.49, 0.46), 0.85)
 	_edge_box(Vector3(1500.0, 0.75, 0.06), Vector3(0.0, LEVEL + 0.42, -350.73), wet, 0.35, "")
 	_edge_box(Vector3(1500.0, 0.16, 0.08), Vector3(0.0, LEVEL + 0.06, -350.74), algae, 0.6, "")
 	# Far shore: the existing concrete edge gets the same wet band.
@@ -635,13 +638,17 @@ func _update_boats(t: float) -> void:
 			heading = atan2(tangent.y, tangent.x)
 		var s: float = b["seed"]
 		var bob := sin(t * 1.3 + s) * 0.06 + sin(t * 2.1 + s * 2.0) * 0.03
-		var pitch := sin(t * 1.1 + s * 1.3) * 0.012 - speed * 0.004
+		# planing runabouts ride bow-up
+		var planing := 0.035 if b["type"] == "launch" and speed > 5.0 else 0.0
+		var pitch := sin(t * 1.1 + s * 1.3) * 0.012 - speed * 0.004 - planing
 		var roll := sin(t * 0.9 + s * 0.7) * 0.025
 		var basis := Basis(Vector3.UP, -heading) * Basis(Vector3.FORWARD, pitch) * Basis(Vector3.RIGHT, roll)
 		var pos := Vector3(p2.x, LEVEL + bob, p2.y)
 		b["pos"] = pos
 		var mm: MultiMesh = _multimeshes[b["type"]]
 		mm.set_instance_transform(b["slot"], Transform3D(basis, pos))
+		if wash != null and not b.has("moored"):
+			wash.update_boat(b, Transform3D(basis, pos), speed)
 		var half: Vector2 = b["half"]
 		packed.append(Vector4(p2.x, p2.y, heading, speed))
 		sizes.append(Vector4(half.x, half.y, 0.0, 0.0))
@@ -731,7 +738,12 @@ func _process(delta: float) -> void:
 	if reflection_viewport.size != want:
 		reflection_viewport.size = want
 	var t := cam.global_transform
-	if not reflection_enabled or t.origin.y < LEVEL + 0.05 or not _bay_in_view(cam):
+	var in_view := t.origin.y >= LEVEL + 0.05 and _bay_in_view(cam)
+	if in_view:
+		_reflection_grace = 1.5
+	else:
+		_reflection_grace = maxf(_reflection_grace - get_process_delta_time(), 0.0)
+	if not reflection_enabled or t.origin.y < LEVEL + 0.05 or (not in_view and _reflection_grace <= 0.0):
 		# Nothing of the bay on screen: skip the mirrored render entirely.
 		reflection_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 		water_material.set_shader_parameter("reflection_ready", 0.0)

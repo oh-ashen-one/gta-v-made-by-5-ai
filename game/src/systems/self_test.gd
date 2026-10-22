@@ -744,4 +744,14 @@ func _water_checks(world: WorldBuilder) -> void:
 	# to open sea, every moving hull carries a Kelvin wedge plus a widening
 	# turbulent stern trail, and the quays carry a lapping wet line.
 	_check("bay stays glassy; foam is event-driven (Kelvin wakes, stern trail, quay wet line)", code.contains("* open_sea;") and code.contains("trail_foam") and code.contains("0.354") and code.contains("wet_line") and bay.boat_count >= 17)
+	# water round 4: boats under way throw raised white water (bow spray
+	# sheets, churned stern mound, ballistic droplets), every foam source is
+	# rendered as lacy aerated foam, and the runabouts carry crew and rails.
+	var wash := bay.wash
+	var wash_ok := wash != null and wash.sheets != null and wash.sheets.instance_count == bay.moving_boats \
+		and wash.churns != null and wash.churns.instance_count == bay.moving_boats and wash.droplet_quads >= bay.moving_boats * 100
+	_check("moving boats throw raised spray sheets, stern churn and droplets", wash_ok, "moving=%d droplets=%d" % [bay.moving_boats, wash.droplet_quads if wash != null else 0])
+	_check("wake and quay foam is lacy coverage, not smooth strokes", code.contains("lace_foam(") and code.contains("cell_edge(") and not code.contains("ring = smoothstep(1.5, 1.0, e)"))
+	var launch_tris := BoatMeshes.launch().get_faces().size() / 3
+	_check("runabout hull is a detailed crewed model (rails, windshield, driver)", launch_tris >= 1500, "tris=%d" % launch_tris)
 
