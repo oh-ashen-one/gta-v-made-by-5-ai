@@ -32,6 +32,7 @@ const OPENING_CLEAR := 34.0
 const GRIDLOCK_RESET := 18.0
 const WEDGE_RESET := 4.0
 const WEDGE_RADIUS := 7.0
+const DEADLOCK_RESET := 6.0
 
 var traffic: TrafficManager
 var nodes: Array[Vector3] = []
@@ -266,6 +267,11 @@ func _unstick(v: AmbientVehicle, delta: float) -> void:
 		return
 	var on_foot := Game.mode != Game.MODE_CAR
 	var wedged := on_foot and v.idle_time > WEDGE_RESET and _player_near(v.global_position, WEDGE_RADIUS + v.dims.z * 0.5)
+	# In a car: an ambient car yields to the player's car while the player's
+	# car waits on it, a mutual deadlock that froze the scripted drive at the
+	# (-160, 0, 0) junction. Break it after DEADLOCK_RESET s.
+	if not on_foot and v.idle_time > DEADLOCK_RESET and _player_near(v.global_position, 12.0 + v.dims.z * 0.5):
+		wedged = true
 	var opening := v.idle_time > WEDGE_RESET and _in_opening_clear(v.global_position)
 	var gridlock := v.idle_time > GRIDLOCK_RESET and _hidden_from_camera(v.global_position)
 	if wedged or opening or gridlock:
