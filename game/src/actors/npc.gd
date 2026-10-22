@@ -214,9 +214,10 @@ func _physics_process(delta: float) -> void:
 	_animate(delta, Vector2(velocity.x, velocity.z).length())
 
 func _walk(delta: float) -> void:
-	if lane.is_empty():
-		# A displaced driver or any lane-less walker rejoins the nearest
+	if lane.is_empty() and not is_hostile and not is_police:
+		# A displaced driver or other lane-less civilian rejoins the nearest
 		# pavement instead of standing frozen in a carriageway (wave 5 soak).
+		# Mission guards and officers keep holding their posts as before.
 		_adopt_nearest_lane()
 	if lane.is_empty():
 		velocity.x = 0.0
