@@ -48,6 +48,8 @@ static func build_environment(parent: Node) -> Dictionary:
 	# the self-test can read them; the shader defaults match.
 	sky_mat.set_shader_parameter("zenith_color", SKY_ZENITH)
 	sky_mat.set_shader_parameter("cloud_coverage", CLOUD_COVERAGE)
+	# Explicit so SkylineHorizon.sync() can read the horizon for the far-city haze.
+	sky_mat.set_shader_parameter("horizon_cool", Color(0.88, 0.85, 0.80))
 	var sky := Sky.new()
 	sky.sky_material = sky_mat
 	sky.radiance_size = Sky.RADIANCE_SIZE_256
@@ -58,8 +60,10 @@ static func build_environment(parent: Node) -> Dictionary:
 	# one flat blue-black (critic 5, defect 8).
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	# 75 % sky, 25 % warm pavement grey: shade reads blue-lifted, not violet.
-	env.ambient_light_sky_contribution = 0.6
-	env.ambient_light_color = Color(0.70, 0.66, 0.60)
+	# Wave A integration: lighting-A4 measured the shade as sepia (blue/red
+	# 0.51-0.63 vs 0.72-1.23 in the references); lean the fill toward the sky.
+	env.ambient_light_sky_contribution = 0.72
+	env.ambient_light_color = Color(0.62, 0.65, 0.70)
 	env.ambient_light_energy = 0.52
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 
@@ -77,14 +81,18 @@ static func build_environment(parent: Node) -> Dictionary:
 	# itself is left clear (fog_sky_affect 0) so the gradient stays visible.
 	env.fog_enabled = true
 	env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
-	env.fog_light_color = Color(0.97, 0.84, 0.68)
+	# Wave A integration: lighting-A4 found aerial views milky (2nd-pct luma 68
+	# vs 44 baseline) and glass towers washed to cream. The skyline piece's
+	# shader haze already layers the far city, so the global fog is thinner and
+	# less warm, and the sun-side warmth comes from sun scatter instead.
+	env.fog_light_color = Color(0.88, 0.85, 0.80)
 	env.fog_light_energy = 1.0
-	env.fog_sun_scatter = 0.16
-	env.fog_density = 0.00065
-	env.fog_aerial_perspective = 0.55
+	env.fog_sun_scatter = 0.22
+	env.fog_density = 0.00038
+	env.fog_aerial_perspective = 0.35
 	env.fog_sky_affect = 0.0
 	env.fog_height = 24.0
-	env.fog_height_density = 0.0016
+	env.fog_height_density = 0.0009
 
 	# Light volumetric haze: sun shafts through canopies and arcade columns.
 	env.volumetric_fog_enabled = true
@@ -177,9 +185,12 @@ static func build_environment(parent: Node) -> Dictionary:
 	sun.light_angular_distance = 0.0 if "pcss" in off else 0.15   # crisp leaf/pole shadows (0.5+ smeared the dappling, critic A1)
 	sun.light_volumetric_fog_energy = 1.0
 	sun.shadow_enabled = true
-	sun.shadow_bias = 0.03
-	sun.shadow_normal_bias = 1.2
-	sun.shadow_blur = 0.6
+	# Wave A integration: lighting-A4 saw stair-stepped self-shadow blocks on the
+	# player's shirt and trousers at this grazing sun; more normal bias and a
+	# little more blur remove the acne without detaching contact shadows.
+	sun.shadow_bias = 0.04
+	sun.shadow_normal_bias = 2.0
+	sun.shadow_blur = 0.85
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
 	sun.directional_shadow_max_distance = 280.0
 	sun.directional_shadow_split_1 = 0.05
