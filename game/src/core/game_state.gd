@@ -71,8 +71,10 @@ func _ready() -> void:
 	Events.mode_changed.connect(_on_mode_changed)
 	Events.health_changed.connect(_on_health_changed)
 	Events.wanted_changed.connect(_on_wanted_changed)
+	Events.shot_fired.connect(func(_o, _d, _w) -> void: _last_shot_at = elapsed_seconds)
 
 var _lost_search_msg_at := -100.0  # integ-P: no stacked 'lost the search' toasts
+var _last_shot_at := -100.0  # integ-P: never announce a lost search mid-firefight
 
 func _process(delta: float) -> void:
 	if simulation_paused:
@@ -83,7 +85,7 @@ func _process(delta: float) -> void:
 	if wanted_level > 0 and not player_seen:
 		search_timer = maxf(0.0, search_timer - delta)
 		decay_heat(delta * 1.4)
-		if wanted_level == 0 and elapsed_seconds - _lost_search_msg_at > 12.0:
+		if wanted_level == 0 and elapsed_seconds - _lost_search_msg_at > 12.0 and elapsed_seconds - _last_shot_at > 6.0:
 			_lost_search_msg_at = elapsed_seconds
 			Events.notify.emit("You lost the search.", "good")
 

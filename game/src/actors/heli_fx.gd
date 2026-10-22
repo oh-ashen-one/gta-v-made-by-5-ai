@@ -42,6 +42,7 @@ var _phase := 0.0
 var _clock := 0.0
 var wash_intensity := 0.0
 var over_water := false
+var _shadow_ground_ok := false  # integ-P: solid ground (not the bay) within downwash range
 
 const DISC_SHADER := """
 shader_type spatial;
@@ -434,7 +435,9 @@ func _process(delta: float) -> void:
 	_tail_mat.set_shader_parameter("phase", -_phase * 2.3)
 	_main_disc.visible = disc_alpha > 0.01
 	_tail_disc.visible = spin > 0.2
-	_disc_shadow.visible = disc_alpha > 0.5 and not over_water # integ-P: no dark blob trailing on the bay
+	# integ-P: no dark blob trailing on the bay. over_water is only known near the
+	# surface, so the disc shadow is limited to low hover over solid ground.
+	_disc_shadow.visible = disc_alpha > 0.5 and _shadow_ground_ok
 	# beacons pulse at ~1 Hz, strobe double-flashes
 	var beat := fmod(_clock, 1.1)
 	for b in _beacons:
@@ -464,6 +467,7 @@ func _physics_process(delta: float) -> void:
 		has_ground = true
 		over_water = true
 	var agl := (heli.global_position.y - ground.y) if has_ground else 999.0
+	_shadow_ground_ok = has_ground and not over_water
 	# contact shadow under the skids
 	if has_ground and agl < 14.0 and not over_water:
 		_contact.global_position = ground + Vector3.UP * 0.4

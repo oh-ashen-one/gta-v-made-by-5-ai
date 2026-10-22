@@ -122,7 +122,7 @@ func shot(muzzle: Vector3, aim_dir: Vector3, end: Vector3, hit: bool, normal: Ve
 	# Muzzle sparks and smoke.
 	for i in 5:
 		var v := (dir + Vector3(_rng.randf_range(-0.25, 0.25), _rng.randf_range(-0.2, 0.25), _rng.randf_range(-0.25, 0.25))).normalized() * _rng.randf_range(6.0, 14.0)
-		_emit("spark", muzzle, v, _rng.randf_range(0.05, 0.12), 0.0, 0.012, 0.006, Color(1.0, 0.7, 0.35, 1.0) * 6.0, 0.0, 4.0, Vector3.ZERO, 0.0, 0.03)
+		_emit("spark", muzzle, v, _rng.randf_range(0.05, 0.12), 0.0, 0.012, 0.006, Color(1.0, 0.7, 0.35, 1.0) * 3.5, 0.0, 4.0, Vector3.ZERO, 0.0, 0.011)
 	# Thin grey smoke that curls off the muzzle after the flash.
 	for i in 3:
 		var sv := dir * _rng.randf_range(0.5, 1.3) + Vector3(_rng.randf_range(-0.15, 0.15), _rng.randf_range(0.15, 0.4), _rng.randf_range(-0.15, 0.15))
@@ -171,7 +171,7 @@ func impact(point: Vector3, normal: Vector3, collider: Object, shot_dir: Vector3
 	var spark_count := 18 if is_vehicle else 14
 	for i in spark_count:
 		var v := (reflect * 0.6 + n * 0.8 + Vector3(_rng.randf_range(-0.7, 0.7), _rng.randf_range(-0.3, 0.8), _rng.randf_range(-0.7, 0.7))).normalized() * _rng.randf_range(3.0, 12.0)
-		_emit("spark", point + n * 0.02, v, _rng.randf_range(0.10, 0.36), 0.0, 0.013, 0.007, Color(1.0, 0.66, 0.30, 1.0) * 6.0, 0.0, 9.5, Vector3.ZERO, 0.0, 0.018)
+		_emit("spark", point + n * 0.02, v, _rng.randf_range(0.10, 0.36), 0.0, 0.013, 0.007, Color(1.0, 0.66, 0.30, 1.0) * 3.5, 0.0, 9.5, Vector3.ZERO, 0.0, 0.007)
 	var dust := Color(0.70, 0.66, 0.60, 0.8) if not is_vehicle else Color(0.45, 0.45, 0.46, 0.4)
 	for i in (7 if not is_vehicle else 2):
 		var v := (n * _rng.randf_range(1.2, 4.0) + Vector3(_rng.randf_range(-0.6, 0.6), _rng.randf_range(-0.1, 0.7), _rng.randf_range(-0.6, 0.6)))
