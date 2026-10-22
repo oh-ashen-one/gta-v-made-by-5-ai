@@ -159,6 +159,7 @@ func _build_edges(merlion_pos: Vector3) -> void:
 			for side in [-1.0, 1.0]:
 				piles.append(Transform3D(Basis.IDENTITY, Vector3(x + side * 6.5, -1.7, z)))
 		_edge_box(Vector3(16.6, 0.55, 29.6), Vector3(x, -0.26, -365.4), Color(0.30, 0.30, 0.29), 0.9)
+	_build_jetty_decks()
 	var pmm := MultiMesh.new()
 	pmm.transform_format = MultiMesh.TRANSFORM_3D
 	pmm.mesh = pile_mesh
@@ -170,6 +171,56 @@ func _build_edges(merlion_pos: Vector3) -> void:
 	pmi.multimesh = pmm
 	pmi.layers = SUBMERGED_LAYER
 	add_child(pmi)
+
+## The avenue ends over the water were asphalt slabs with lane paint and
+## arrows (critic: "floating asphalt"). Cap each with a pale timber-toned
+## boardwalk deck, edge kerbs and a steel guard rail on posts, so from the air
+## they read as viewing jetties. Visual only: collision stays the road's.
+func _build_jetty_decks() -> void:
+	var deck_mat := Palette.mat_textured(Color(0.74, 0.66, 0.55), "pavers", Vector3.ONE, 0.88)
+	var kerb_mat := Palette.mat_textured(Color(0.66, 0.64, 0.60), "concrete", Vector3.ONE, 0.85)
+	var rail_mat := Palette.mat(Color(0.30, 0.32, 0.33), 0.45, 0.6)
+	var post := BoxMesh.new()
+	post.size = Vector3(0.09, 1.05, 0.09)
+	post.material = rail_mat
+	var posts: Array[Transform3D] = []
+	var z0 := -350.9
+	var z1 := -380.2
+	var span := z0 - z1
+	var zc := (z0 + z1) * 0.5
+	for x: float in [-320.0, -160.0, 0.0, 160.0, 320.0]:
+		_jetty_box(Vector3(17.6, 0.22, span), Vector3(x, 0.13, zc), deck_mat)
+		for side: float in [-1.0, 1.0]:
+			_jetty_box(Vector3(0.45, 0.22, span), Vector3(x + side * 8.6, 0.30, zc), kerb_mat)
+			_jetty_box(Vector3(0.07, 0.07, span), Vector3(x + side * 8.6, 1.38, zc), rail_mat)
+			_jetty_box(Vector3(0.04, 0.04, span), Vector3(x + side * 8.6, 0.92, zc), rail_mat)
+			var n := int(span / 2.4)
+			for k in n + 1:
+				posts.append(Transform3D(Basis.IDENTITY, Vector3(x + side * 8.6, 0.88, z0 - float(k) * span / float(n))))
+		_jetty_box(Vector3(17.6, 0.22, 0.45), Vector3(x, 0.30, z1 + 0.2), kerb_mat)
+		_jetty_box(Vector3(17.2, 0.07, 0.07), Vector3(x, 1.38, z1 + 0.2), rail_mat)
+		for k in 8:
+			posts.append(Transform3D(Basis.IDENTITY, Vector3(x - 8.0 + float(k) * 16.0 / 7.0, 0.88, z1 + 0.2)))
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = post
+	mm.instance_count = posts.size()
+	for i in posts.size():
+		mm.set_instance_transform(i, posts[i])
+	var mmi := MultiMeshInstance3D.new()
+	mmi.name = "JettyRailPosts"
+	mmi.multimesh = mm
+	add_child(mmi)
+
+func _jetty_box(size: Vector3, pos: Vector3, m: Material) -> void:
+	var mi := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = size
+	mi.mesh = bm
+	mi.material_override = m
+	mi.position = pos
+	mi.set_meta("bay_edge", true)
+	add_child(mi)
 
 ## Anything in the district whose bounds dip under the waterline and stays
 ## low (ground slabs, quay edges) is hidden from the mirrored camera only.

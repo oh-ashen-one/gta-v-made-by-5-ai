@@ -731,4 +731,12 @@ func _water_checks(world: WorldBuilder) -> void:
 	_check("boats are on the bay and moving, ships ride at anchor offshore", bay.boat_count >= 12 and moved >= 10 and bay.anchored_ships >= 10, "boats=%d moved=%d anchored=%d" % [bay.boat_count, moved, bay.anchored_ships])
 	var jet_ok := bay.jet != null and bay.jet.material_override is ShaderMaterial and bay.legacy_spray_hidden >= 1
 	_check("Merlion jet is translucent falling water, opaque legacy strut hidden", jet_ok, "legacy_hidden=%d" % bay.legacy_spray_hidden)
+	# water round 2: the periodic sine-sum swell read as straight streaks from
+	# the air; the surface must stay a non-periodic multi-octave noise field
+	# with whitecaps, and the avenue ends must stay capped as railed jetties.
+	var code: String = bay.water_material.shader.code
+	var wc_value: Variant = bay.water_material.get_shader_parameter("whitecaps")
+	var wc: float = float(wc_value) if wc_value != null else 0.55
+	_check("bay water is a non-periodic multi-octave wave field with whitecaps", code.contains("sea_field") and not code.contains("swell_gradient") and wc > 0.0, "whitecaps=%s" % wc)
+	_check("avenue ends over the bay are railed jetty decks, not bare road slabs", bay.get_node_or_null("JettyRailPosts") != null)
 

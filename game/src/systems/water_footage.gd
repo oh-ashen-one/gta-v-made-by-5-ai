@@ -121,6 +121,12 @@ func _perf_ab(cam: Camera3D) -> void:
 		report[mode] = {"main_gpu_ms": snappedf(gpu / n, 0.01), "main_cpu_ms": snappedf(cpu / n, 0.01),
 			"reflection_gpu_ms": snappedf(refl / n, 0.01), "frame_interval_ms": snappedf(interval / n, 0.01),
 			"draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)}
+		if gpu <= 0.0:
+			# Godot's Metal backend returns 0 for viewport GPU timestamps; say
+			# so instead of reporting a fake 0 ms (critic water-A1).
+			report[mode]["main_gpu_ms"] = null
+			report[mode]["reflection_gpu_ms"] = null
+			report[mode]["gpu_timer_note"] = "GPU timestamps unavailable on this backend; use frame_interval_ms (wall time per frame)"
 	bay.reflection_enabled = true
 	print("[water-perf] ", JSON.stringify(report))
 	var f := FileAccess.open(out_dir.path_join("water_perf.json"), FileAccess.WRITE)
