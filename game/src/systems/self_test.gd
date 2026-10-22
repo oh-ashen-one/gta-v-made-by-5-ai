@@ -237,6 +237,7 @@ func run(main: Node) -> void:
 	_check("rotor spools up to a motion-blurred disc in flight", heli_fx["rotor_spin"] > 0.95 and heli_fx["disc_visible"] and not heli_fx["blades_visible"], str(heli_fx))
 	_check("flight chase camera trails behind and above the aircraft", heli_fx["camera_current"] and heli_fx["camera_distance"] > 8.0 and heli_fx["camera_distance"] < 26.0 and heli_fx["camera_behind"] and heli_fx["camera_height"] > 1.0, str(heli_fx))
 	_check("rotor downwash kicks up the ground near the pad", heli_fx["wash"] > 0.2 and heli_fx["wash_visible"], str(heli_fx))
+	_check("chase camera looks down on the rotor disc; aviation grounds are planted (wave P)", heli_fx["camera_height"] > 5.5 and world.find_child("AviationGrounds", true, false) != null, str(heli_fx))
 	heli.exit_vehicle(player)
 	_check("airborne helicopter rejects exit", player.current_vehicle == heli)
 	Game.simulation_paused = true
@@ -254,6 +255,7 @@ func run(main: Node) -> void:
 	Input.action_release("sprint")
 	await _ticks(20)
 	_check("controlled descent lands without disabling aircraft", heli.is_landed() and not heli.disabled, "position=%s velocity=%s health=%.1f floor=%s" % [heli.global_position, heli.velocity, heli.health, heli.is_on_floor()])
+	_check("ground cushion settles a full-descent landing gently (wave P)", heli.last_touchdown_speed < 1.6, "touchdown=%.2f m/s" % heli.last_touchdown_speed)
 	heli.exit_vehicle(player)
 	_check("landed helicopter exits to walking", player.current_vehicle == null and Game.mode == Game.MODE_FOOT)
 	await _waterfront_exit_check(player, heli)

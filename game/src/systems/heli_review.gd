@@ -21,6 +21,12 @@ func setup(m: Node, w: WorldBuilder, dir: String) -> void:
 	player = m.get("player")
 	out_dir = dir
 	DirAccess.make_dir_recursive_absolute(out_dir.path_join("frames"))
+	# The sortie is driven by scripted actions only: detach the keyboard and
+	# mouse bindings for this QA process so stray desktop typing cannot exit
+	# or yaw the aircraft mid-capture (seen in a rendered run: E and A/D).
+	for action in InputMap.get_actions():
+		if not String(action).begins_with("ui_"):
+			InputMap.action_erase_events(action)
 	_run()
 
 func _note(text: String) -> void:
@@ -51,7 +57,7 @@ func _shot(label: String) -> void:
 	else:
 		await get_tree().physics_frame
 	var state := heli.presentation_state() if heli != null else {}
-	_note("shot %s pos=%s spin=%.2f wash=%.2f bank=%.2f" % [label, heli.global_position, state.get("rotor_spin", 0.0), state.get("wash", 0.0), heli.get_child(0).rotation.z if heli else 0.0])
+	_note("shot %s pos=%s spin=%.2f wash=%.2f bank=%.2f cam_dist=%.1f cam_h=%.1f" % [label, heli.global_position, state.get("rotor_spin", 0.0), state.get("wash", 0.0), heli.get_child(0).rotation.z if heli else 0.0, state.get("camera_distance", 0.0), state.get("camera_height", 0.0)])
 
 func _release() -> void:
 	for a in ["move_left", "move_right", "move_forward", "move_back", "jump", "sprint"]:
@@ -121,10 +127,19 @@ func _run() -> void:
 	await _fly(Vector3.ZERO, 50.0, 1.0, 2.6, -0.9)
 	await _shot("h05_bank_right")
 	await _fly(Vector3.ZERO, 50.0, 1.0, 1.0, -0.9)
-	# cruise to the bay, then a low hover over open water
+	# fast forward flight to the bay, banking S-turns low over the water,
+	# then a low hover over open water
 	var bay := Vector3(-30.0, 0.0, -400.0)
-	await _fly(bay, 45.0, 1.0, 25.0, 0.0, 20.0)
-	await _fly(bay, 45.0, 0.3, 4.0, 0.0, 3.0)
+	await _fly(Vector3(-30.0, 0.0, -470.0), 40.0, 1.0, 25.0, 0.0, 30.0)
+	await _shot("h05b_fast_forward_bay")
+	await _fly(Vector3.ZERO, 30.0, 1.0, 2.0, 0.85)
+	await _shot("h05c_bay_bank_left")
+	await _fly(Vector3.ZERO, 30.0, 1.0, 1.4, 0.85)
+	await _fly(Vector3.ZERO, 30.0, 1.0, 2.4, -0.85)
+	await _shot("h05d_bay_bank_right")
+	await _fly(Vector3.ZERO, 30.0, 1.0, 1.0, -0.85)
+	await _fly(bay, 30.0, 1.0, 12.0, 0.0, 20.0)
+	await _fly(bay, 30.0, 0.3, 5.0, 0.0, 3.0)
 	await _fly(bay, 7.0, 0.0, 9.0, 0.0, -1.0)
 	await _shot("h06_low_hover_spray")
 	# approach and land on the waterfront pad
