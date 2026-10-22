@@ -50,9 +50,9 @@ uniform float spin = 1.0;
 uniform float phase = 0.0;
 uniform float blades = 4.0;
 uniform vec3 tint : source_color = vec3(0.075, 0.078, 0.084);
-uniform vec3 sheen : source_color = vec3(0.50, 0.52, 0.55);
+uniform vec3 sheen : source_color = vec3(0.40, 0.42, 0.45);
 uniform float hub = 0.08;
-uniform float veil = 0.08;
+uniform float veil = 0.11;
 uniform float near_fade = 2.5;
 varying vec2 lp;
 void vertex() { lp = VERTEX.xz; }
@@ -66,7 +66,7 @@ void fragment() {
 	float a = atan(lp.y, lp.x) + phase;
 	float k = fract(a * blades / 6.2831853);
 	// ghost blades (shutter blur) plus a fainter earlier exposure
-	float s = smear(k, 0.24) * 0.78 + smear(fract(k + 0.5), 0.10) * 0.16;
+	float s = smear(k, 0.22) * 0.55 + smear(fract(k + 0.5), 0.10) * 0.14;
 	// blade root starts outside the hub; soft tip edge
 	float span = smoothstep(hub + 0.02, hub + 0.16, r) * (1.0 - smoothstep(0.94, 1.0, r));
 	// the swept disc is a faint veil everywhere, a little denser to the tips,
@@ -76,7 +76,8 @@ void fragment() {
 	// optical depth: seen edge-on the disc thickens into a dark blurred band
 	float c = clamp(abs(dot(NORMAL, VIEW)), 0.30, 1.0);
 	float alpha = 1.0 - pow(1.0 - dens, 1.0 / c);
-	alpha = min(alpha, 0.80) * spin;
+	// face-on the swept disc stays see-through; edge-on it may thicken
+	alpha = min(alpha, mix(0.85, 0.58, c)) * spin;
 	// a blade sweeping past the camera must not fill the lens
 	alpha *= smoothstep(near_fade, near_fade + 3.0, length(VERTEX));
 	// visible rotor head

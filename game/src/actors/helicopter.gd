@@ -402,7 +402,9 @@ func _pilot_input(delta: float) -> void:
 	# atan(v * yaw_rate / g), so a fast turn is a steep, dramatic bank.
 	var accel := (forward_speed - _prev_forward_speed) / maxf(delta, 0.001)
 	_prev_forward_speed = forward_speed
-	_accel_pitch = lerpf(_accel_pitch, clampf(-accel * 0.045, -0.26, 0.24), clampf(delta * 3.0, 0.0, 1.0))
+	# a slow aircraft barely flares: the dip/flare scales with airspeed
+	var flare_scale := 0.3 + 0.7 * speed_frac
+	_accel_pitch = lerpf(_accel_pitch, clampf(-accel * 0.045, -0.26, 0.24) * flare_scale, clampf(delta * 3.0, 0.0, 1.0))
 	var cruise_pitch := -0.17 * clampf(forward_speed / MAX_FORWARD, -0.5, 1.0)
 	var target_pitch := clampf(cruise_pitch + _accel_pitch - _pitch_input * 0.04, -0.38, 0.30)
 	var coordinated := atan(forward_speed * _yaw_rate / 9.8) * 0.85
