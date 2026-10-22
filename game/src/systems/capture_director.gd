@@ -828,8 +828,9 @@ func _walk_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 	var sidestep_for := 0.0
 	var sidestep_sign := 1.0
 	# Progress watchdog (soak #8): sliding along a car body never trips the
-	# per-frame stuck test, so 2.5 s without gaining 0.5 m backs out, then
-	# walks across the old line on alternating sides before resuming.
+	# per-frame stuck test, so 12 s without gaining 0.5 m backs out, then
+	# walks across the old line on alternating sides before resuming. Soak #9
+	# showed a 2.5 s trigger interrupts sidesteps that clear walls on their own.
 	var best_distance := _ground_distance(player.global_position, target)
 	var best_at := _elapsed()
 	var backout_for := 0.0
@@ -853,7 +854,7 @@ func _walk_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		if distance < best_distance - 0.5:
 			best_distance = distance
 			best_at = _elapsed()
-		elif _elapsed() - best_at > 2.5:
+		elif _elapsed() - best_at > 12.0:
 			backouts += 1
 			backout_for = 0.8 + 1.2 + 0.3 * backouts
 			Input.action_release("jump")
