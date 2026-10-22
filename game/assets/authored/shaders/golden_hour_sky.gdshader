@@ -9,14 +9,14 @@ shader_type sky;
 // the sun and the upper (zenith-side) silhouette are lit warm white, the flat
 // underside and the thick core fall to a blue-grey base. Everything reads the
 // sun from LIGHT0 so the cloud lighting agrees with the shadow direction.
-uniform vec3 zenith_color : source_color = vec3(0.36, 0.53, 0.78);
-uniform vec3 mid_color : source_color = vec3(0.58, 0.70, 0.86);
-uniform vec3 horizon_cool : source_color = vec3(0.84, 0.86, 0.88);
-uniform vec3 horizon_warm : source_color = vec3(1.00, 0.88, 0.72);
+uniform vec3 zenith_color : source_color = vec3(0.30, 0.47, 0.76);
+uniform vec3 mid_color : source_color = vec3(0.47, 0.62, 0.85);
+uniform vec3 horizon_cool : source_color = vec3(0.86, 0.86, 0.85);
+uniform vec3 horizon_warm : source_color = vec3(0.98, 0.86, 0.70);
 uniform vec3 ground_color : source_color = vec3(0.34, 0.32, 0.29);
 uniform float sky_energy = 1.0;
-uniform float cloud_coverage = 0.56;
-uniform float cloud_scale = 0.62;
+uniform float cloud_coverage = 0.55;
+uniform float cloud_scale = 3.2;
 uniform float sun_disc_energy = 22.0;
 uniform vec3 fallback_sun = vec3(0.80, 0.40, 0.45);
 
@@ -59,17 +59,36 @@ float billow(vec2 p) {
 		float v = vnoise(p);
 		n += (1.0 - abs(v * 2.0 - 1.0)) * a;
 		p = rot * p * 2.07 + vec2(3.1, 4.7);
-		a *= 0.5;
+		a *= 0.42;
 	}
-	return n / 0.9375;
+	return n / 0.8526;
+}
+
+// Inverted cellular noise: round cauliflower lobes for cumulus tops.
+float puff(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	float md = 1.0;
+	for (int y = -1; y <= 1; y++) {
+		for (int x = -1; x <= 1; x++) {
+			vec2 g = vec2(float(x), float(y));
+			vec2 o = vec2(hash2(i + g), hash2(i + g + vec2(17.3, 5.9)));
+			vec2 r = g + o - f;
+			md = min(md, dot(r, r));
+		}
+	}
+	return 1.0 - clamp(sqrt(md), 0.0, 1.0);
 }
 
 float density(vec2 p) {
-	float c = fbm3(p * 0.42);
-	float b = billow(p * 1.15 + vec2(c * 1.4, -c));
-	float n = c * 0.62 + b * 0.48;
-	float lo = 1.0 - cloud_coverage;
-	return smoothstep(lo, lo + 0.22, n);
+	float c = fbm3(p * 0.80);
+	vec2 w = p + vec2(c * 0.6, -c * 0.5);
+	float b = puff(w * 1.7) * 0.62 + puff(w * 3.6 + vec2(4.1, 2.3)) * 0.26 + billow(w * 7.5) * 0.12;
+	float n = c * 0.66 + b * 0.50;
+	// Field mean is ~0.6 (std ~0.1): coverage 0.5 leaves ~40 % of the deck clear.
+	float lo = 1.17 - cloud_coverage;
+	// Narrow ramp: crisp cumulus outlines with blue gaps, not a milky veil.
+	return smoothstep(lo, lo + 0.07, n) * (0.75 + 0.25 * smoothstep(lo + 0.07, lo + 0.25, n));
 }
 
 void sky() {
@@ -90,7 +109,7 @@ void sky() {
 	// Humid tropical gradient: pale blue overhead, a wide warm haze band low
 	// down (warmest toward the sun's azimuth), no saturated cobalt.
 	vec3 horizon = mix(horizon_cool, horizon_warm, pow(az, 1.6));
-	float t1 = smoothstep(0.0, 0.32, hp);
+	float t1 = smoothstep(0.0, 0.22, hp);
 	t1 = t1 * t1 * (3.0 - 2.0 * t1);
 	float t2 = smoothstep(0.25, 0.95, hp);
 	vec3 col = mix(horizon, mid_color, t1);
@@ -102,34 +121,41 @@ void sky() {
 	col += glow_tint * (pow(mup, 8.0) * 0.22 + pow(mup, 64.0) * 0.55 + pow(mup, 900.0) * 2.2);
 
 	if (h > 0.0) {
-		// Planar cloud deck: perspective shrinks clouds toward the horizon.
-		float r = 1.0 / (h + 0.055);
-		vec2 uv = d.xz * r;
-		vec2 p = uv * cloud_scale + vec2(7.3, 2.1);
+		// Cloud deck in a softened perspective: rho = (h + 0.10)^-0.45 still
+		// shrinks clouds toward the horizon (2.9x), but a flat-plane
+		// projection squashes them into streaks; this keeps distant cumulus
+		// about a third as tall as wide, so the horizon band stacks puffs.
+		float r = pow(h + 0.10, -0.45);
+		vec2 p = dh * r * cloud_scale + vec2(7.3, 2.1);
 		float D = density(p);
 		if (D > 0.002) {
-			// Screen-up (toward the zenith) and screen-down (outward) samples:
-			// density thinning upward = lit cauliflower top; thinning downward
-			// = the flat shaded base.
-			float step_v = 0.10 + 0.05 * r;
-			float d_up = density(p - dh * step_v);
-			float d_dn = density(p + dh * step_v);
-			// Toward the sun along the deck: thinning = sun-facing edge.
-			float d_sun = density(p + sh * 0.22);
-			float top = clamp((D - d_up) * 1.6 + 0.35, 0.0, 1.0);
-			float base = clamp((D - d_dn) * 1.8, 0.0, 1.0);
-			float sunface = clamp((D - d_sun) * 2.2 + 0.25, 0.0, 1.0);
-			float core = smoothstep(0.55, 1.0, D) * (1.0 - top);
-			float light = clamp(0.30 + 0.42 * top + 0.42 * sunface * (0.55 + 0.45 * az) - 0.38 * base - 0.22 * core, 0.0, 1.15);
-			vec3 shade_col = mix(vec3(0.50, 0.55, 0.64), vec3(0.62, 0.60, 0.62), az);
+			// Self-shadowing from the cloud's own density field. Density
+			// stacked above this point on screen (toward the zenith) means we
+			// are looking at the lower body or flat base; density between us
+			// and the sun means the far, shaded side. Both darken; the free
+			// upper silhouette and the sun-facing edge stay bright.
+			float step_v = 0.10;
+			float up1 = density(p - dh * step_v);
+			float up2 = density(p - dh * step_v * 2.6);
+			float dn1 = density(p + dh * step_v * 1.4);
+			float sn1 = density(p + sh * 0.10);
+			float sn2 = density(p + sh * 0.26);
+			float above = up1 * 0.55 + up2 * 0.45;
+			float toward_sun = sn1 * 0.5 + sn2 * 0.5;
+			// Flat base: the bottom rim (nothing below) of a tall stack.
+			float base = clamp((D - dn1) * 1.6, 0.0, 1.0) * above;
+			float light = 1.15 - 1.05 * above - 0.45 * toward_sun * (0.4 + 0.6 * az) - 0.55 * base;
+			light += 0.25 * (1.0 - toward_sun) * az;
+			light = clamp(light, 0.0, 1.15);
+			vec3 shade_col = mix(vec3(0.33, 0.38, 0.49), vec3(0.47, 0.44, 0.50), az);
 			vec3 lit_col = mix(vec3(1.0, 0.98, 0.95), sun_tint * vec3(1.05, 0.97, 0.88), 0.45) * 1.32;
 			vec3 ccol = mix(shade_col, lit_col, light);
 			// Silver lining on thin edges close to the sun.
 			ccol += glow_tint * pow(mup, 12.0) * (1.0 - D) * 1.6;
 			// Far clouds dissolve into the horizon haze (aerial perspective).
-			float fade = smoothstep(0.015, 0.16, h);
-			ccol = mix(horizon * 1.04, ccol, 0.35 + 0.65 * fade);
-			float alpha = D * smoothstep(0.008, 0.05, h);
+			float fade = smoothstep(0.0, 0.10, h);
+			ccol = mix(horizon * 1.04, ccol, 0.55 + 0.45 * fade);
+			float alpha = D * smoothstep(0.004, 0.035, h);
 			col = mix(col, ccol, alpha);
 		}
 	}

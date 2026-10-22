@@ -33,19 +33,26 @@ Opus 5.5 wave A (lighting piece) replaced the wave-1..5 rig; code in `game/src/w
 `game/assets/authored/shaders/golden_hour_sky.gdshader`. Logged change: the earlier 46-degree noon key and the
 flat grey-pink haze sky are retired.
 
-- One time-of-day preset: warm, dry, late afternoon ("golden hour"). Key sun at ~14.5 deg elevation from the
-  east-south-east of the map (rotation -14.5, 58, 0), colour `#FFBD80`, energy 3.1, PCSS soft shadows (angular
-  size 1.1 deg), 4 blended splits to 280 m, 8192 directional atlas.
-- Sky: procedural, HDR. Saturated blue zenith (`#214A99`), lighter mid sky, warm gold horizon toward the sun
-  and cool blue-grey away from it, domain-warped cumulus lit from the sun side with silver linings, HDR sun disc.
-  The sky reads LIGHT0, so glow, clouds and shadows always agree.
-- Ambient and reflections from the sky (75 % sky, 25 % warm grey `#A89480`): shade is blue-lifted, never black.
-  SSAO (radius 1.6, intensity 2.6) for contact darkening in five-foot ways; SSIL for warm pavement bounce; a
-  0.16 warm upward "ground bounce" directional (no specular, not in the sky).
-- Atmosphere: exponential fog 0.00055 with aerial perspective 0.55 and sun scatter 0.35 (sky left clear), light
-  height fog, volumetric fog 0.0016 (anisotropy 0.62, 140 m) for sun shafts.
-- Exposure and grade: ACES, exposure 1.0, white 6. Glow threshold 1.05, intensity 0.42 (only HDR emitters bloom).
-  Procedural 3D LUT: slight teal in shadows, warm highlights, gentle S-curve; contrast 1.06, saturation 1.08.
+- One time-of-day preset: humid tropical late afternoon. Key sun at ~23 deg elevation from the east-south-east
+  of the map (rotation -23, 58, 0), colour `#FFD4A3`, energy 3.0, near-hard shadows (angular size 0.15 deg,
+  blur 0.6) so leaf dappling, poles and the helicopter cast crisp shapes; 4 blended splits to 280 m, 8192 atlas.
+  Round 2 change: 14.5 deg left horizontal ground at sin(14.5) = 0.25 of the sun, so roads read near-black and
+  shade/sun ratios collapsed to ~0.58 (critic A1).
+- Sky (round 2): procedural, HDR. Pale humid blue (zenith `#4D78C2`, mid `#789ED9`), a wide pale haze band in
+  the lowest ~10 deg (warm `#FADBB3` toward the sun, neutral `#DBDBD9` away). A cumulus deck (coverage 0.55) built
+  from inverted cellular "puff" lobes over a low-frequency bank field, in a softened perspective
+  (rho = (h + 0.10)^-0.45) so distant clouds stack as puffs rather than streaks. Each cloud self-shadows from its
+  own density field: density above on screen and toward the sun darkens it to a blue-grey base; the free upper
+  silhouette and sun-facing edges are warm white (HDR 1.3). Clouds sink into the haze near the horizon. Sky
+  HSV saturation in the top band measures 0.16-0.27 (A1: 0.51-0.54; GTA V refs 0.12-0.22).
+- Ambient: 60 % sky + 40 % warm grey `#B3A899`, energy 0.52 (was 1.05; shade must stay clearly darker than
+  sun). Reflections from the sky. SSAO (radius 1.6, intensity 2.6); SSIL intensity 0.9; a 0.12 warm upward
+  "ground bounce" directional (no specular, not in the sky).
+- Atmosphere: exponential fog 0.0005, aerial perspective 0.7, sun scatter 0.06 (0.35 threw a warm veil over a
+  third of every sun-facing frame); light height fog; volumetric fog 0.0007 (anisotropy 0.45, 140 m).
+- Exposure and grade: ACES, exposure 1.0, white 6. Glow threshold 1.6, intensity 0.42 (only HDR emitters and
+  the sun bloom). Procedural 3D LUT: slight teal in shadows, warm highlights, gentle S-curve; contrast 1.12,
+  saturation 1.0.
 - Practicals (all shadowless, distance-culled, each with a modelled fixture): street lamps (warm spot + glowing
   head), five-foot-way pendants (warm omni per shophouse bay), void-deck fluorescent tubes on the soffit
   (cool-white omni grid; void-deck lower third mean luminance >= 60/255), hawker stall tubes and dining pendants.

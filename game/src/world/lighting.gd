@@ -15,6 +15,8 @@ extends RefCounted
 const SUN_ROTATION_DEG := Vector3(-23.0, 58.0, 0.0)
 const SUN_COLOR := Color(1.0, 0.83, 0.64)
 const SUN_ENERGY := 3.0
+const SKY_ZENITH := Color(0.30, 0.47, 0.76)
+const CLOUD_COVERAGE := 0.55
 const LAMP_COLOR := Color(1.0, 0.78, 0.52)
 const TUBE_COLOR := Color(0.86, 0.94, 1.0)
 
@@ -39,6 +41,10 @@ static func build_environment(parent: Node) -> Dictionary:
 	var env := Environment.new()
 	var sky_mat := ShaderMaterial.new()
 	sky_mat.shader = load("res://assets/authored/shaders/golden_hour_sky.gdshader")
+	# Humid tropical sky under a cumulus deck (round 2, critic A1). Set here so
+	# the self-test can read them; the shader defaults match.
+	sky_mat.set_shader_parameter("zenith_color", SKY_ZENITH)
+	sky_mat.set_shader_parameter("cloud_coverage", CLOUD_COVERAGE)
 	var sky := Sky.new()
 	sky.sky_material = sky_mat
 	sky.radiance_size = Sky.RADIANCE_SIZE_256
@@ -49,9 +55,9 @@ static func build_environment(parent: Node) -> Dictionary:
 	# one flat blue-black (critic 5, defect 8).
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	# 75 % sky, 25 % warm pavement grey: shade reads blue-lifted, not violet.
-	env.ambient_light_sky_contribution = 0.8
-	env.ambient_light_color = Color(0.66, 0.58, 0.50)
-	env.ambient_light_energy = 0.58
+	env.ambient_light_sky_contribution = 0.6
+	env.ambient_light_color = Color(0.70, 0.66, 0.60)
+	env.ambient_light_energy = 0.52
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 
 	var tonemap := _arg("--lighting-tonemap", "aces")
@@ -71,7 +77,7 @@ static func build_environment(parent: Node) -> Dictionary:
 	env.fog_light_color = Color(0.86, 0.85, 0.82)
 	env.fog_light_energy = 1.0
 	env.fog_sun_scatter = 0.06
-	env.fog_density = 0.00042
+	env.fog_density = 0.0005
 	env.fog_aerial_perspective = 0.7
 	env.fog_sky_affect = 0.0
 	env.fog_height = 24.0
@@ -165,12 +171,12 @@ static func build_environment(parent: Node) -> Dictionary:
 	sun.rotation_degrees = SUN_ROTATION_DEG
 	sun.light_energy = SUN_ENERGY
 	sun.light_color = SUN_COLOR
-	sun.light_angular_distance = 0.0 if "pcss" in off else 0.5   # soft, contact-hardening penumbrae
+	sun.light_angular_distance = 0.0 if "pcss" in off else 0.15   # crisp leaf/pole shadows (0.5+ smeared the dappling, critic A1)
 	sun.light_volumetric_fog_energy = 1.0
 	sun.shadow_enabled = true
 	sun.shadow_bias = 0.03
 	sun.shadow_normal_bias = 1.2
-	sun.shadow_blur = 0.8
+	sun.shadow_blur = 0.6
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
 	sun.directional_shadow_max_distance = 280.0
 	sun.directional_shadow_split_1 = 0.05

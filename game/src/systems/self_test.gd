@@ -679,6 +679,26 @@ func _lighting_checks(world: WorldBuilder) -> void:
 	if env != null and env.sky != null and env.sky.sky_material is ShaderMaterial:
 		sky_code = (env.sky.sky_material as ShaderMaterial).shader.code
 	_check("sky glow and clouds follow the sun light (LIGHT0)", sky_code.contains("LIGHT0_DIRECTION") and sky_code.contains("cloud"))
+	# Round 2 (critic A1): humid cumulus sky, not an empty cobalt gradient.
+	var sky_mat: ShaderMaterial = env.sky.sky_material if env != null and env.sky != null and env.sky.sky_material is ShaderMaterial else null
+	var zen := Color.BLUE
+	var cover := 0.0
+	if sky_mat != null:
+		var zv: Variant = sky_mat.get_shader_parameter("zenith_color")
+		if zv == null: zv = RenderingServer.shader_get_parameter_default(sky_mat.shader.get_rid(), "zenith_color")
+		if zv is Vector3: zen = Color(zv.x, zv.y, zv.z)
+		elif zv is Color: zen = zv
+		var cv: Variant = sky_mat.get_shader_parameter("cloud_coverage")
+		if cv == null: cv = RenderingServer.shader_get_parameter_default(sky_mat.shader.get_rid(), "cloud_coverage")
+		if cv != null: cover = float(cv)
+	_check("sky is pale humid blue under shaded cumulus (no cobalt)", sky_code.contains("puff(") and sky_code.contains("above")
+		and zen.s < 0.65 and cover >= 0.5, "zenith_s=%.2f coverage=%.2f" % [zen.s, cover])
+	# Round 2: shade must stay darker than sun (A1 shadow ratios 0.58-0.59) and
+	# the sun must not throw a warm veil across sun-facing frames.
+	_check("shadow contrast and no glare veil (ambient, crisp sun, low sun scatter)", env != null and sun != null
+		and env.ambient_light_energy <= 0.7 and sun.light_angular_distance <= 0.3 and env.fog_sun_scatter <= 0.1
+		and env.volumetric_fog_density <= 0.001 and env.adjustment_saturation <= 1.02,
+		"" if env == null else "ambient=%.2f scatter=%.2f" % [env.ambient_light_energy, env.fog_sun_scatter])
 	var elevation := -sun.rotation_degrees.x if sun != null else 0.0
 	_check("warm low late-afternoon sun with soft shadows", sun != null and sun.shadow_enabled and elevation > 8.0 and elevation < 30.0
 		and sun.light_color.r > sun.light_color.b + 0.3 and sun.light_angular_distance > 0.0, "elevation=%.1f" % elevation)
