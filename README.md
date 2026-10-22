@@ -6,7 +6,7 @@ A YouTube development experiment: **five AI coding setups collaborating in seque
 
 ## Status
 
-**Relay underway on task branches. Wave 2 delivers a privately packaged experimental candidate with unmet requirements; no visually accepted or public release exists.**
+**Final wave 5 (Opus 5.5 via Claude Code) on `feature/wave-05-opus`: best available experimental build with unmet requirements; no visually accepted or public release exists.** Start with [`waves/05/RELEASE_REPORT.md`](waves/05/RELEASE_REPORT.md) and [`HANDOFF.md`](HANDOFF.md). Wave 5 opens the game outdoors on a heritage five-foot way facing the hawker hall, with Marina Bay Sands, the ArtScience Museum and the Singapore Flyer across the bay and the Supertree Grove beside the avenue; its evidence is headless (simulation, geometry, CPU) unless a rendered capture is explicitly linked.
 
 The current build lives in [`game/`](game/): **Godot 4.7.1 stable** (Forward+, GDScript, native macOS export) with an authored Singapore-inspired district, third-person control, two firearms, car theft and arcade driving, left-hand traffic, police response, a flyable helicopter, a roofed hawker hub, a void-deck housing neighbourhood, a waterfront edge and the authored mission "Harbour Relay".
 
