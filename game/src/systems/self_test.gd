@@ -682,6 +682,22 @@ func _skyline_checks(world: WorldBuilder) -> void:
 	var sk: Dictionary = world.skyline_stats
 	_check("skyline: background city wears at least 5 distinct facade systems", int(sk.get("materials", 0)) >= 5, str(sk))
 	_check("skyline: no background tower stands in the bay", int(sk.get("over_water", -1)) == 0 and int(sk.get("placed", 0)) > 150, str(sk))
+	_check("skyline: every background tower casts a ground shadow", int(sk.get("ground_shadows", 0)) == int(sk.get("placed", -1)), str(sk))
+	# Aerial perspective: the CBD across the bay (800 m) must haze at
+	# least ~33% toward the pale sky colour (critic A2: far contrast was 95%).
+	var fsh: Shader = load("res://assets/authored/shaders/skyline_facade.gdshader")
+	var hre := RegEx.new()
+	hre.compile("uniform float (haze_start|haze_density|haze_max) = ([0-9.]+);")
+	var hv := {}
+	for m in hre.search_all(fsh.code):
+		hv[m.get_string(1)] = m.get_string(2).to_float()
+	var hs := float(hv.size())
+	var h_start: float = hv.get("haze_start", 1e9)
+	var h_den: float = hv.get("haze_density", 0.0)
+	var h_max: float = hv.get("haze_max", 0.0)
+	var haze_800 := (1.0 - exp(-maxf(800.0 - h_start, 0.0) * h_den)) * h_max
+	var haze_200 := (1.0 - exp(-maxf(200.0 - h_start, 0.0) * h_den)) * h_max
+	_check("skyline: far CBD hazes toward the sky, near district stays crisp", hs == 3.0 and haze_800 >= 0.33 and haze_200 <= 0.1, "haze@800m=%.2f haze@200m=%.2f" % [haze_800, haze_200])
 
 func _ticks(count: int) -> void:
 	for tick in count:

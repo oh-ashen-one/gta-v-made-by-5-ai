@@ -1071,7 +1071,7 @@ func _background_city() -> void:
 			city.add_random(Vector3(xs, 0.0, 455.0 + row * 72.0 + rng.randf_range(-10.0, 10.0)), rng.randf_range(32.0, 72.0) + row * 25.0, res2)
 			xs += rng.randf_range(50.0, 76.0)
 	city.build(_world_root)
-	skyline_stats = {"materials": city.materials_used.size(), "over_water": city.over_water, "placed": city.placed}
+	skyline_stats = {"materials": city.materials_used.size(), "over_water": city.over_water, "placed": city.placed, "ground_shadows": city.ground_shadows}
 	print("[world] skyline city: ", city.placed, " towers; roof kit: ", _roof_kit.roofs, " roofs")
 
 func _batch_background(path: String, transforms: Array, tint: Color = Color.WHITE) -> void:

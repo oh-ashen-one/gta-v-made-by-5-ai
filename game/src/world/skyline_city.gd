@@ -16,6 +16,11 @@ extends RefCounted
 ## and behind the Singapore Flyer wheel.
 
 const SHADER := "res://assets/authored/shaders/skyline_facade.gdshader"
+const SHADOW_SHADER := "res://assets/authored/shaders/skyline_ground_shadow.gdshader"
+## Must match the sun in WorldBuilder._environment (rotation_degrees x, y).
+const SUN_EULER_DEG := Vector2(-16.3, 62.0)
+## towers given a ground cast shadow (self-test reads it)
+var ground_shadows := 0
 
 var _rng := RandomNumberGenerator.new()
 var _groups: Array = []          # per archetype: Array of [Transform3D, Color]
@@ -161,6 +166,51 @@ func build(parent: Node3D) -> void:
 				xforms.append(item[0])
 			mmi.set_meta("probe_xforms", xforms)
 		parent.add_child(mmi)
+		_add_ground_shadows(parent, list, kind)
+
+## Round 3: sharp ground cast shadows for every background tower (they cast
+## no real shadow, and the sun's shadow map ends at 260 m). Each tower's
+## footprint is swept along the sun's horizontal direction by
+## height / tan(sun elevation); only the footprint edges facing away from the
+## sun are swept, which tiles footprint + shadow without overlap. All shadows
+## of an archetype go into one world-space mesh: one draw call each.
+func _add_ground_shadows(parent: Node3D, list: Array, kind: int) -> void:
+	var sun_basis := Basis.from_euler(Vector3(deg_to_rad(SUN_EULER_DEG.x), deg_to_rad(SUN_EULER_DEG.y), 0.0))
+	var light_dir := -sun_basis.z
+	var sd := Vector2(light_dir.x, light_dir.z)
+	var len_per_h := sd.length() / maxf(-light_dir.y, 0.05)
+	sd = sd.normalized()
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_normal(Vector3.UP)
+	for item in list:
+		var xf: Transform3D = item[0]
+		var h := xf.basis.y.length()
+		# Capped well short of the true 16-degree length (3.4 x height) so the
+		# shadows read as separate sharp shapes with sunlit ground between them
+		# instead of merging into one dark sheet across the CBD.
+		var sweep := Vector3(sd.x, 0.0, sd.y) * minf(h * minf(len_per_h, 1.25), 150.0)
+		var o := Vector3(xf.origin.x, xf.origin.y + 0.35, xf.origin.z)
+		var bx := Vector3(xf.basis.x.x, 0.0, xf.basis.x.z) * 0.5
+		var bz := Vector3(xf.basis.z.x, 0.0, xf.basis.z.z) * 0.5
+		var c := [o - bx - bz, o + bx - bz, o + bx + bz, o - bx + bz]
+		for e in 4:
+			var p0: Vector3 = c[e]
+			var p1: Vector3 = c[(e + 1) % 4]
+			var mid := (p0 + p1) * 0.5 - o
+			if Vector2(mid.x, mid.z).dot(sd) <= 0.0:
+				continue
+			for v in [p0, p1, p1 + sweep, p0, p1 + sweep, p0 + sweep]:
+				st.add_vertex(v)
+		ground_shadows += 1
+	var mat := ShaderMaterial.new()
+	mat.shader = load(SHADOW_SHADER)
+	var mi := MeshInstance3D.new()
+	mi.name = "SkylineShadow_%d" % kind
+	mi.mesh = st.commit()
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(mi)
 
 # ------------------------------------------------------------- mesh archetypes
 # Unit footprint (about 1 x 1), unit height; instance scale sets real size.

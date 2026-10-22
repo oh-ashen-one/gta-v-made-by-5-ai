@@ -36,14 +36,14 @@ uniform float seed = 0.0;
 uniform vec3 glass_b : source_color = vec3(0.33, 0.41, 0.48);
 uniform vec3 frame_col : source_color = vec3(0.72, 0.73, 0.72);
 // Extra aerial perspective for the farthest layers only (starts at haze_start).
-uniform vec3 haze_col : source_color = vec3(0.74, 0.76, 0.80);
-uniform float haze_start = 1050.0;
-uniform float haze_density = 0.0007;
-uniform float haze_max = 0.45;
+uniform vec3 haze_col : source_color = vec3(0.80, 0.78, 0.76);
+uniform float haze_start = 200.0;
+uniform float haze_density = 0.0013;
+uniform float haze_max = 0.7;
 // Environment-fog stand-in (match WorldBuilder/lighting fog colour + density).
 uniform vec3 fog_col : source_color = vec3(0.80, 0.78, 0.74);
 uniform float fog_density_ref = 0.00024;
-uniform float fog_scale = 0.5;
+uniform float fog_scale = 1.0;
 uniform vec3 roof_col : source_color = vec3(0.32, 0.31, 0.30);
 uniform float band_frac = 0.20;
 uniform float mullion_m = 2.6;
@@ -163,7 +163,7 @@ void fragment() {
 			float mull = pulse(bay, 0.09, fwx);
 			c = mix(g, frame_col, max(band, mull * 0.85));
 			glazing = 1.0 - max(band, mull);
-			metal = 0.15 * glazing; rough = mix(0.55, 0.26, glazing); spec = 0.55;
+			metal = 0.0; rough = mix(0.55, 0.34, glazing); spec = 0.42;
 		} else if (mat_id == 3) {
 			// Bronze glass in a dark anodised frame.
 			vec3 g = lin(mix(vec3(0.27, 0.23, 0.17), vec3(0.32, 0.27, 0.19), tv)) * (0.8 + 0.4 * refl);
@@ -205,7 +205,7 @@ void fragment() {
 			c = mix(g, fin_col * 0.62, band);
 			c = mix(c, fin_col, fin);
 			glazing = (1.0 - fin) * (1.0 - band);
-			metal = 0.15 * glazing; rough = mix(0.7, 0.28, glazing); spec = 0.5;
+			metal = 0.0; rough = mix(0.7, 0.34, glazing); spec = 0.42;
 		}
 		// Lobby base and plant-screen crown (procedural towers only).
 		if (inst_h > 0.0) {
@@ -250,14 +250,25 @@ void fragment() {
 		METALLIC = metal * graze;
 		ROUGHNESS = mix(0.75, rough, graze);
 		SPECULAR = spec * mix(0.25, 1.0, graze);
+		// Single-mesh glass towers stand near the airfield and face the low
+		// sun: a mirror-sharp sun highlight clipped into a white blob that
+		// bloomed past the outline (critic A2, photo_09). Keep them satin.
+		if (!use_instance_custom) {
+			ROUGHNESS = max(ROUGHNESS, 0.52);
+			SPECULAR *= 0.55;
+			METALLIC = 0.0;
+		}
 	}
 	// Aerial perspective, written to FOG so it replaces (not stacks on) the
-	// environment fog. The CBD across the bay (~0.6-1 km) keeps about half the
-	// environment fog so its dark glass and light stone still separate (SG-03),
-	// while the horizon band (> haze_start) fades fully into the sky colour.
-	// Three depth layers: district (little haze), CBD (some), horizon (most).
+	// environment fog. Round 3: round 2 kept only half the environment fog on
+	// the CBD, so the dark glass across the bay was as punchy as the district
+	// under the camera (critic A2: far L* spread 95% of near, p5 L* 25). Now
+	// the haze starts past the near district (~haze_start) and climbs steeply:
+	// ~28% at 600 m, ~38% at 800 m, ~45% at 1 km, toward the pale horizon-sky
+	// colour, so each farther layer is lighter, flatter and sky-tinted.
 	float d = length(VERTEX);
 	float env_amt = (1.0 - exp(-d * fog_density_ref)) * fog_scale;
 	float hz_amt = (1.0 - exp(-max(d - haze_start, 0.0) * haze_density)) * haze_max;
-	FOG = vec4(mix(fog_col, haze_col, clamp(hz_amt * 2.0, 0.0, 1.0)), clamp(env_amt + hz_amt, 0.0, 1.0));
+	float amt = clamp(max(env_amt, hz_amt), 0.0, 0.92);
+	FOG = vec4(mix(fog_col, haze_col, smoothstep(0.0, 0.35, hz_amt)), amt);
 }
