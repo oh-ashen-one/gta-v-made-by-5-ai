@@ -34,6 +34,12 @@ var j_c := Vector3.ZERO
 var j_p2 := Vector3.ZERO
 var j_len := 0.0
 var obstacle_gap := INF
+## What the last obstacle scan stopped for (person, player, car), or null.
+var obstacle_node: Node3D = null
+## Seconds held by an obstacle that is not ordinary queue traffic.
+var blocked_time := 0.0
+## Lateral offset still to be eased out after a lane change (m, + = left).
+var lat_shift := 0.0
 var stuck_time := 0.0
 ## Seconds at (near) standstill anywhere; drives the out-of-sight gridlock reset.
 var idle_time := 0.0

@@ -39,6 +39,7 @@ const POLICE_CAR_POOL_SIZE := 2
 var ambient: AmbientTraffic
 var crowd: CrowdDirector
 var dressing: AvenueDressing
+var signals: JunctionSignals
 
 func setup(w: WorldBuilder, player: Node) -> void:
 	add_to_group("traffic_manager")
@@ -64,6 +65,10 @@ func _setup_street_life() -> void:
 	dressing = AvenueDressing.new()
 	add_child(dressing)
 	dressing.build(world)
+	signals = JunctionSignals.new()
+	add_child(signals)
+	signals.build(world)
+	_update_signal_lamps(true)
 
 ## Build the officer responders during world load, then keep them inert and
 ## out of `peds` until a responder is actually requested.
@@ -570,7 +575,7 @@ func _update_signal_lamps(force: bool = false) -> void:
 		_signal_materials.append(Palette.emissive(Color(0.025, 1.0, 0.12), 3.0))
 		_signal_unlit = Palette.mat(Color(0.025, 0.035, 0.03), 0.35, 0.15)
 	for lamp in get_tree().get_nodes_in_group("traffic_lamps"):
-		if not lamp is MeshInstance3D: continue
+		if not lamp is GeometryInstance3D: continue   # MeshInstance3D or JunctionSignals MultiMesh
 		var axis := int(lamp.get_meta("signal_axis", 0))
 		var lens := int(lamp.get_meta("lamp_index", 0))
 		var active_lens := 0

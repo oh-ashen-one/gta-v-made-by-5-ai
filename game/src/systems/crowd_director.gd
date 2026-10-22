@@ -180,7 +180,7 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 		return true
 	# Street-level cameras: half the people go on the street being looked down.
 	var view_lines: Array[Dictionary] = []
-	if _cam_pos.y < 30.0 and _rng.randf() < 0.5:
+	if _cam_pos.y < 30.0 and _rng.randf() < 0.7:
 		var along_z := absf(_cam_fwd.z) > absf(_cam_fwd.x)
 		for ln2 in _lines:
 			var lat: float = _cam_pos.x if along_z else _cam_pos.z
@@ -197,6 +197,12 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 		if absf(lateral - focus_lat) > SPAWN_RADIUS:
 			continue
 		var along := clampf(focus_along + _rng.randf_range(-SPAWN_RADIUS, SPAWN_RADIUS), -326.0, 326.0)
+		# Street-life D: on the street the camera looks down, most people go in
+		# the 6-90 m in front of the lens, where they are actually seen.
+		if not view_lines.is_empty() and not hidden_only and _rng.randf() < 0.65:
+			var cam_along := _cam_pos.z if int(ln["axis"]) == 0 else _cam_pos.x
+			var fwd_along := _cam_fwd.z if int(ln["axis"]) == 0 else _cam_fwd.x
+			along = clampf(cam_along + signf(fwd_along) * _rng.randf_range(6.0, 90.0), -326.0, 326.0)
 		# Not on a crossing: people are seeded on the pavement, not mid-road.
 		var on_crossing := false
 		for j in WorldBuilder.Z_LINES:
@@ -213,6 +219,9 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 			if rel.length() < 95.0 and rel.normalized().dot(_cam_fwd) > -0.25:
 				continue
 		if Vector2(pos.x - Game.player_position.x, pos.z - Game.player_position.z).length() < 4.0:
+			continue
+		# Never inside or against the lens (a hand filled a frame edge).
+		if Vector2(pos.x - _cam_pos.x, pos.z - _cam_pos.z).length() < 7.0:
 			continue
 		_assign(p, ln, off, pos, loiter)
 		return true
