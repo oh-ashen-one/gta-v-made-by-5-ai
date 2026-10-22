@@ -4,7 +4,8 @@
 // cardboard wall with a dot grid. Round 2 gives every tower one of seven
 // distinct cladding systems, a lobby base and a plant-screen crown, keeps
 // daytime interiors unlit and holds glass roughness high enough that no face
-// clips to a flat white bar.
+// clips to a flat white bar (light claddings stay at or below ~0.5 linear
+// albedo so sun-facing faces keep their pattern).
 //
 // Materials (MultiMesh custom data .r = (id + 0.5) / 8):
 //   0 dark blue-green reflective curtain wall, slim mullions, mottled reflections
@@ -112,7 +113,11 @@ void fragment() {
 		METALLIC = 0.0;
 		SPECULAR = 0.3;
 	} else {
-		float hz = abs(n.x) > abs(n.z) ? wpos.z : wpos.x;
+		// Horizontal coordinate along the face. Picking x or z by the larger
+		// normal component flipped on 45-degree faces (octagon towers), which
+		// blew fwidth up and filtered the whole face to one flat bright tone.
+		vec2 tang = normalize(vec2(-n.z, n.x) + vec2(1e-5, 0.0));
+		float hz = dot(wpos.xz, tang);
 		float fy = wpos.y / fh;
 		float fwy = fwidth(fy);
 		float bay = hz / mullion_m;
@@ -139,7 +144,7 @@ void fragment() {
 			metal = 0.0; rough = mix(0.6, 0.34, glazing); spec = mix(0.4, 0.3, glazing);
 		} else if (mat_id == 1) {
 			// Light limestone with paired, deep-set windows and string courses.
-			vec3 wall = lin(mix(vec3(0.80, 0.77, 0.70), vec3(0.74, 0.72, 0.68), tv));
+			vec3 wall = lin(mix(vec3(0.72, 0.69, 0.63), vec3(0.67, 0.65, 0.61), tv));
 			wall *= 0.9 + 0.14 * vnoise(vec2(hz, wpos.y) * 0.06 + sd);
 			float wx = pulse(bay * 0.5 + 0.12, 0.76, fwx * 0.5) * (1.0 - pulse(bay * 0.5 + 0.12 + 0.36, 0.04, fwx * 0.5));
 			float wy = pulse(fy + 0.3, 0.6, fwy);
@@ -169,7 +174,7 @@ void fragment() {
 			metal = 0.0; rough = mix(0.5, 0.34, glazing); spec = 0.35;
 		} else if (mat_id == 4) {
 			// White aluminium panel with continuous dark ribbon windows.
-			vec3 wall = lin(mix(vec3(0.86, 0.86, 0.84), vec3(0.80, 0.82, 0.83), tv));
+			vec3 wall = lin(mix(vec3(0.76, 0.76, 0.74), vec3(0.71, 0.73, 0.74), tv));
 			float ribbon = pulse(fy + 0.15, 0.48, fwy);
 			float mull = pulse(bay * 0.8, 0.05, fwx * 0.8);
 			vec3 win = lin(vec3(0.07, 0.11, 0.15)) * (0.75 + 0.5 * refl);
@@ -178,7 +183,7 @@ void fragment() {
 			metal = 0.1 * glazing; rough = mix(0.6, 0.25, glazing); spec = 0.5;
 		} else if (mat_id == 5) {
 			// Painted concrete residential slab: balconies, dark windows, colour band.
-			vec3 wall = lin(tv < 0.33 ? vec3(0.84, 0.80, 0.70) : (tv < 0.66 ? vec3(0.76, 0.77, 0.75) : vec3(0.80, 0.74, 0.66)));
+			vec3 wall = lin(tv < 0.33 ? vec3(0.76, 0.72, 0.63) : (tv < 0.66 ? vec3(0.69, 0.70, 0.68) : vec3(0.72, 0.67, 0.60)));
 			wall *= 0.9 + 0.12 * vnoise(vec2(hz, wpos.y) * 0.05 + sd);
 			float wx = pulse(bay * 0.5, 0.62, fwx * 0.5);
 			float wy = pulse(fy + 0.2, 0.5, fwy);
@@ -196,7 +201,7 @@ void fragment() {
 			vec3 g = lin(mix(vec3(0.16, 0.22, 0.21), vec3(0.20, 0.26, 0.27), tv)) * (0.8 + 0.4 * refl);
 			float fin = pulse(bay * 0.75, 0.24, fwx * 0.75);
 			float band = pulse(fy, 0.08, fwy);
-			vec3 fin_col = lin(vec3(0.84, 0.84, 0.82));
+			vec3 fin_col = lin(vec3(0.74, 0.74, 0.72));
 			c = mix(g, fin_col * 0.62, band);
 			c = mix(c, fin_col, fin);
 			glazing = (1.0 - fin) * (1.0 - band);
@@ -231,9 +236,20 @@ void fragment() {
 		c *= 0.9 + 0.1 * smoothstep(0.0, 12.0, wpos.y);
 		c *= mix(0.88, 1.06, fract(icustom.a * 7.31));
 		ALBEDO = c;
-		METALLIC = metal;
-		ROUGHNESS = rough;
-		SPECULAR = spec;
+		// Each glazed panel is tilted a little ("oil-canning"), so a flat face
+		// turned to the sun breaks into a mosaic of brighter and darker panes
+		// instead of one uniform specular slab with no gradient.
+		vec3 tw = vec3(tang.x, 0.0, tang.y);
+		float tilt = mix(0.035, 0.14, glazing);
+		vec3 nw = normalize(n + tw * (hash2(cell + sd + 7.1) - 0.5) * tilt + vec3(0.0, 1.0, 0.0) * (hash2(cell + sd + 3.3) - 0.5) * tilt);
+		NORMAL = normalize((VIEW_MATRIX * vec4(nw, 0.0)).xyz);
+		// Grazing faces (slim fins, tower flanks seen edge-on) would mirror the
+		// bright sky into a flat clipped-white bar; damp the Fresnel spike.
+		float ndv = clamp(dot(NORMAL, normalize(VIEW)), 0.0, 1.0);
+		float graze = smoothstep(0.02, 0.4, ndv);
+		METALLIC = metal * graze;
+		ROUGHNESS = mix(0.75, rough, graze);
+		SPECULAR = spec * mix(0.25, 1.0, graze);
 	}
 	// Aerial perspective, written to FOG so it replaces (not stacks on) the
 	// environment fog. The CBD across the bay (~0.6-1 km) keeps about half the

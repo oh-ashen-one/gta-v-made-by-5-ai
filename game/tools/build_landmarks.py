@@ -598,17 +598,19 @@ def build_merlion_landmark() -> dict:
     # Mane: one heavy ruff framing the face plus merged locks flowing down the
     # back of the neck (separate small balls read as fingers at range).
     ell((0.0, -0.10, 6.35), (1.65, 1.0, 1.45), 1.75)
-    # Mane fringe: a ring of heavy curls framing the face (the lion read from
-    # the front and three-quarter views), with a beard under the jaw.
-    for k in range(14):
-        a = 2.0 * math.pi * k / 14.0
-        ball((math.cos(a) * 1.55, 0.25, 6.35 + math.sin(a) * 1.45), 1.15)
+    # Mane (skyline round 2): the round-1 rim of 20 equal curls on one circle
+    # read as a gear. The ruff is now three staggered layers of tufts that
+    # shrink and step back from the face, with irregular sizes, so the
+    # silhouette is a shaggy, layered lion's mane with depth.
+    rng_m = random.Random(512)
+    for layer, (rad_x, rad_z, depth, n, rr) in enumerate(((1.45, 1.35, 0.30, 13, 0.80), (1.70, 1.55, -0.20, 11, 0.78), (1.35, 1.30, -0.75, 9, 0.85))):
+        for k in range(n):
+            a = 2.0 * math.pi * (k + 0.5 * layer) / n
+            if layer == 0 and math.sin(a) < -0.75:
+                continue  # chin stays clear for the beard
+            jitter = 1.0 + rng_m.uniform(-0.12, 0.12)
+            ball((math.cos(a) * rad_x * jitter, depth + rng_m.uniform(-0.12, 0.12), 6.35 + math.sin(a) * rad_z * jitter), rr * rng_m.uniform(0.85, 1.12))
     ball((0.0, 0.9, 4.95), 1.05)
-    # Scalloped curls on the rim of the mane, so its silhouette is a lion's
-    # ruff rather than a smooth disc.
-    for k in range(20):
-        a = 2.0 * math.pi * (k + 0.5) / 20.0
-        ball((math.cos(a) * 2.35, 0.05 - 0.25 * abs(math.sin(a)), 6.35 + math.sin(a) * 2.2), 0.62)
     for k in range(10):
         a = 2.0 * math.pi * k / 10.0
         ca, sa = math.cos(a), math.sin(a)
