@@ -715,7 +715,9 @@ func _block_plots() -> void:
 			_box(Vector3(120.0, 0.05, 0.16), centre + Vector3(0.0, 0.075, -3.1), Palette.mat(Palette.PAINT_LINE, 0.8))
 			_box(Vector3(0.16, 0.05, 120.0), centre + Vector3(-3.1, 0.075, 0.0), Palette.mat(Palette.PAINT_LINE, 0.8))
 			# A service apron rings the plots between them and the frontage.
-			_box(Vector3(118.0, 0.05, 118.0), centre + Vector3(0.0, 0.025, 0.0), apron)
+			# Wave B r2 (materials): the aviation compound's open ground is kept
+			# airfield grass, not a bare apron the critics read as a dirt lot.
+			_box(Vector3(118.0, 0.05, 118.0), centre + Vector3(0.0, 0.025, 0.0), Palette.mat_textured(Color(0.25, 0.34, 0.17), "soil", Vector3.ONE, 0.95) if kit == "aviation" else apron)
 			if kit in ["hawker", "aviation"]:
 				if kit == "hawker":
 					# The pavilion occupies the west two-thirds; the east strip is

@@ -7,7 +7,7 @@ shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
 #include "res://assets/authored/shaders/weathering.gdshaderinc"
 
-uniform float tile_m = 0.20;
+uniform float tile_m = 0.25;
 uniform float frontage_m = 10.6;
 
 varying vec3 v_world;
@@ -27,8 +27,8 @@ float motif(vec2 q, float kind) {
 		float petals = min(min(sdf_circle(q, vec2(0.0, 0.38), 0.34), sdf_circle(q, vec2(0.0, -0.38), 0.34)),
 			min(sdf_circle(q, vec2(0.38, 0.0), 0.34), sdf_circle(q, vec2(-0.38, 0.0), 0.34)));
 		if (petals < 0.0) region = 1.0;
-		if (length(q) < 0.17) region = 3.0;
-		if (length(a - 1.0) < 0.42) region = 2.0;
+		if (length(q) < 0.12) region = 3.0;
+		if (length(a - 1.0) < 0.50) region = 2.0;
 		if (abs(length(a - 1.0) - 0.42) < 0.05) region = 3.0;
 	} else if (kind < 0.67) {
 		// Eight-point star on a diamond.
@@ -76,13 +76,19 @@ void fragment() {
 	vec3 col = reg < 0.5 ? cream : (reg < 1.5 ? c1 : (reg < 2.5 ? c2 : c3));
 	// Mean colour for distance (approximate region coverage).
 	vec3 mean_col = cream * 0.5 + c1 * 0.22 + c2 * 0.18 + c3 * 0.10;
-	float detail = 1.0 - smoothstep(0.012, 0.035, px);
+	float detail = 1.0 - smoothstep(0.02, 0.06, px);
 	col = mix(mean_col, col, detail);
-	// Grout lines.
+	// Panels: a plain border course every 6 tiles frames each carpet of
+	// pattern, so the floor keeps structure at distance.
+	vec2 pm = mod(tid, 6.0);
+	float border = (pm.x < 0.5 || pm.y < 0.5) ? 1.0 : 0.0;
+	col = mix(col, (h2 < 0.5 ? terra * 0.85 : navy * 1.1), border);
+	// Grout lines, anti-aliased so the grid survives into the distance.
 	vec2 g = abs(fract(p / tile_m) - 0.5) * tile_m;
-	float grout = (1.0 - smoothstep(tile_m * 0.5 - 0.006, tile_m * 0.5 - 0.002, max(g.x, g.y))) ;
-	grout = 1.0 - grout;
-	col = mix(col, vec3(0.30, 0.28, 0.25), grout * 0.7 * (1.0 - smoothstep(0.004, 0.012, px)));
+	float gd = tile_m * 0.5 - max(g.x, g.y);
+	float fw = max(fwidth(gd), 1e-4);
+	float grout = (1.0 - smoothstep(0.003, 0.003 + fw, gd)) * clamp(0.008 / fw, 0.0, 1.0);
+	col = mix(col, vec3(0.26, 0.24, 0.21), grout * 0.75);
 	// Per-tile tone, a few replaced plain tiles and cracked ones.
 	float th = w_hash12(tid + 3.7);
 	col *= 0.90 + 0.18 * th;
@@ -92,7 +98,7 @@ void fragment() {
 	vec4 big = w_mask(p / 7.0 + 0.4);
 	vec4 med = w_mask(p / 1.3 + 0.2);
 	float fade = smoothstep(0.35, 0.75, big.g * 0.7 + med.r * 0.4);
-	col = mix(col, mix(col, vec3(0.50, 0.47, 0.42), 0.5), fade * 0.45);
+	col = mix(col, mix(col, vec3(0.50, 0.47, 0.42), 0.4), fade * 0.35);
 	float grime = smoothstep(0.55, 0.85, big.r * 0.6 + med.g * 0.5);
 	col *= 1.0 - 0.30 * grime;
 	float crack = w_mask(p / 3.0 + 0.6).b * smoothstep(0.5, 0.8, big.b);
