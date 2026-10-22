@@ -603,6 +603,26 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 	heli.global_position = parked_at
 	heli.velocity = Vector3.ZERO
 	await _ticks(2)
+	# A carjacked driver flees away from the car and then rejoins a pavement
+	# lane instead of standing frozen in the carriageway (wave 5 soak finding).
+	# Disclosed fixture: borrow a live civilian (creating/freeing an actor here
+	# trips the dummy renderer's known material-null diagnostic), then restore it.
+	var victim: NPC = null
+	for candidate in traffic.peds:
+		if is_instance_valid(candidate) and not candidate.is_police and not candidate.is_hostile and candidate.state != NPC.State.DEAD and not candidate.has_meta("ambient_role"):
+			victim = candidate
+			break
+	var restore := {"pos": victim.global_position, "lane": victim.lane, "index": victim.lane_index, "dir": victim.lane_dir, "state": victim.state, "health": victim.health}
+	victim.become_displaced_pedestrian(Vector3(-155.0, 0.3, -116.0), Vector3(-153.4, 0.3, -118.0))
+	var fled_away := victim._flee_dir.dot((Vector3(-155.0, 0.3, -116.0) - Vector3(-153.4, 0.3, -118.0)).normalized()) > 0.9
+	victim._adopt_nearest_lane()
+	_check("carjacked driver flees from the car and rejoins a pavement lane", fled_away and victim.lane.size() >= 2, "lane points %d" % victim.lane.size())
+	victim.global_position = restore["pos"]
+	victim.lane = restore["lane"]
+	victim.lane_index = restore["index"]
+	victim.lane_dir = restore["dir"]
+	victim.state = restore["state"]
+	victim.health = restore["health"]
 	var placed := true
 	for key in ["marina_bay_sands", "supertree_grove", "artscience_museum", "singapore_flyer", "merlion"]:
 		placed = placed and world.locations.has(key)

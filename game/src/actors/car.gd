@@ -325,6 +325,18 @@ func _check_impact(before: Vector3) -> void:
 		if normal.y > 0.65:
 			continue # Ground support is not a crash.
 		var approach := -before.dot(normal)
+		# A person is not a wall (wave 5 soak: a stranded carjack victim acted
+		# as an invulnerable kinematic block and wrecked the car). Fast contact
+		# injures them; slow contact makes them scramble aside.
+		var struck := collision.get_collider()
+		if struck is NPC:
+			var person := struck as NPC
+			if person.state != NPC.State.DEAD:
+				if approach > 2.5:
+					person.take_damage(clampf((approach - 2.0) * 16.0, 18.0, 220.0), global_position, driver_is_player)
+				else:
+					person.scramble_from(global_position)
+			continue
 		worst = maxf(worst, approach)
 	if worst > 0.5:
 		# Match the drivetrain to the velocity the collision actually permits.
@@ -575,7 +587,7 @@ func displace_driver() -> void:
 	occupied_by_npc = false
 	if _driver and is_instance_valid(_driver):
 		if _driver.has_method("become_displaced_pedestrian"):
-			_driver.become_displaced_pedestrian(global_position + global_transform.basis.x * 1.8)
+			_driver.become_displaced_pedestrian(global_position + global_transform.basis.x * 1.8, global_position)
 		_driver = null
 	Game.add_heat(6.0)
 	Events.notify.emit("Vehicle taken. Witnesses are looking.", "warn")

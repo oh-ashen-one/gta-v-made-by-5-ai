@@ -139,7 +139,7 @@ func assign_lane(lanes: Array, lane_id: int) -> void:
 	lane_index = randi() % maxi(1, lane.size())
 	lane_dir = 1 if randf() > 0.5 else -1
 
-func become_displaced_pedestrian(pos: Vector3) -> void:
+func become_displaced_pedestrian(pos: Vector3, threat: Vector3 = Vector3.INF) -> void:
 	global_position = pos
 	collision_layer = 4
 	collision_mask = 1 | 4
@@ -149,11 +149,13 @@ func become_displaced_pedestrian(pos: Vector3) -> void:
 	panic_time = 6.0
 	health = maxf(health, 60.0)
 	visible = true
-	var away := global_position - pos
+	# Run away from the vehicle that was taken, not in a random direction.
+	var away := (global_position - threat) if threat != Vector3.INF else Vector3.ZERO
 	away.y = 0.0
 	if away.length() < 0.2:
 		away = Vector3(randf_range(-1, 1), 0.0, randf_range(-1, 1))
 	_flee_dir = away.normalized()
+	lane = []
 
 func _physics_process(delta: float) -> void:
 	if Game.simulation_paused:
@@ -213,6 +215,10 @@ func _physics_process(delta: float) -> void:
 
 func _walk(delta: float) -> void:
 	if lane.is_empty():
+		# A displaced driver or any lane-less walker rejoins the nearest
+		# pavement instead of standing frozen in a carriageway (wave 5 soak).
+		_adopt_nearest_lane()
+	if lane.is_empty():
 		velocity.x = 0.0
 		velocity.z = 0.0
 		return
@@ -229,6 +235,37 @@ func _walk(delta: float) -> void:
 				return
 		target = lane[lane_index]
 	_move_towards(target, WALK_SPEED, delta)
+
+## Step out of the way of a slow vehicle: a short, quiet flee for civilians.
+func scramble_from(from_position: Vector3) -> void:
+	if state == State.DEAD or is_hostile or is_police or state == State.FLEE:
+		return
+	var away := global_position - from_position
+	away.y = 0.0
+	if away.length() < 0.2:
+		away = Vector3(randf_range(-1, 1), 0.0, randf_range(-1, 1))
+	_flee_dir = away.normalized()
+	state = State.FLEE
+	panic_time = 2.5
+
+func _adopt_nearest_lane() -> void:
+	var traffic := get_tree().get_first_node_in_group("traffic_manager")
+	if traffic == null: return
+	var best_lane: Array = []
+	var best_index := 0
+	var best := INF
+	for candidate in traffic.get("_ped_lanes"):
+		var points: Array = candidate
+		for i in points.size():
+			var d := global_position.distance_squared_to(points[i])
+			if d < best:
+				best = d
+				best_lane = points
+				best_index = i
+	if best_lane.size() >= 2:
+		lane = best_lane
+		lane_index = best_index
+		lane_dir = 1 if best_index < best_lane.size() - 1 else -1
 
 func _flee(delta: float) -> void:
 	panic_time -= delta

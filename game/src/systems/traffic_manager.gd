@@ -35,6 +35,7 @@ var _police_car_pool: Array[Car] = []
 const POLICE_CAR_POOL_SIZE := 2
 
 func setup(w: WorldBuilder, player: Node) -> void:
+	add_to_group("traffic_manager")
 	world = w
 	_player = player
 	nodes = w.traffic_nodes
