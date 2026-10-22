@@ -235,6 +235,41 @@ func _bird() -> AudioStreamWAV:
 	return _wav(s)
 
 # ------------------------------------------------------------------ synthesis
+## Loop seam (wave 5): the engine/rotor loops restarted with a different noise
+## state and a half-cycle tone, a click every 0.5 s. Use whole tone cycles and
+## crossfade the tail into the head so sample n-1 flows into sample 0.
+## `s` holds LOOP_PAD extra samples past the loop end; that continuation is
+## blended into the head, so sample n-1 flows into sample 0, then trimmed.
+const LOOP_PAD := 1323   # 60 ms at 22.05 kHz
+func _loop_seam(s: PackedFloat32Array) -> PackedFloat32Array:
+	var n := s.size() - LOOP_PAD
+	for i in LOOP_PAD:
+		var weight := float(i + 1) / float(LOOP_PAD + 1)
+		s[i] = lerpf(s[n + i], s[i], weight)
+	s.resize(n)
+	return s
+
+## Objective loop/clip metrics for the regression suite (not a listening test).
+func loop_metrics() -> Dictionary:
+	var out := {}
+	for key in _bank:
+		var stream: AudioStreamWAV = _bank[key]
+		var data := stream.data
+		var count := data.size() / 2
+		if count < 2: continue
+		var peak := 0
+		var interior := 0
+		var previous := data.decode_s16(0)
+		for i in count:
+			var v := data.decode_s16(i * 2)
+			peak = maxi(peak, absi(v))
+			interior = maxi(interior, absi(v - previous))
+			previous = v
+		var seam := absi(data.decode_s16(0) - data.decode_s16((count - 1) * 2))
+		# A seam is a click only if it jumps further than the waveform ever does
+		# between neighbouring samples (a sawtooth's own reset is not a click).
+		out[key] = {"looped": stream.loop_mode != AudioStreamWAV.LOOP_DISABLED, "peak": peak / 32000.0, "seam_step": seam / 32000.0, "max_interior_step": interior / 32000.0}
+	return out
 func _wav(samples: PackedFloat32Array, loop: bool = false) -> AudioStreamWAV:
 	var stream := AudioStreamWAV.new()
 	stream.format = AudioStreamWAV.FORMAT_16_BITS
@@ -265,7 +300,9 @@ func _gunshot() -> AudioStreamWAV:
 		var body := sin(TAU * 95.0 * t) * exp(-t * 16.0) * 0.55
 		var crack := noise * exp(-t * 42.0) * 0.8
 		var tail := low * exp(-t * 9.0) * 0.5
-		s[i] = clampf(body + crack + tail, -1.0, 1.0)
+		# Soft saturation instead of a hard clamp: the hard-clipped crack hit
+		# full scale (objective peak check, wave 5).
+		s[i] = tanh((body + crack + tail) * 1.1) * 0.86
 	return _wav(s)
 
 func _footstep() -> AudioStreamWAV:
@@ -308,7 +345,7 @@ func _ui_click() -> AudioStreamWAV:
 	return _wav(s)
 
 func _engine_loop() -> AudioStreamWAV:
-	var n := int(MIX_RATE * 0.5)
+	var n := int(MIX_RATE * 0.5) + LOOP_PAD
 	var s := PackedFloat32Array()
 	s.resize(n)
 	var low := 0.0
@@ -316,11 +353,11 @@ func _engine_loop() -> AudioStreamWAV:
 		var t := float(i) / MIX_RATE
 		var saw := fmod(t * 62.0, 1.0) * 2.0 - 1.0
 		low = low * 0.9 + _rng.randf_range(-1.0, 1.0) * 0.1
-		s[i] = (saw * 0.22 + low * 0.35 + sin(TAU * 31.0 * t) * 0.18) * 0.7
-	return _wav(s, true)
+		s[i] = (saw * 0.22 + low * 0.35 + sin(TAU * 32.0 * t) * 0.18) * 0.7
+	return _wav(_loop_seam(s), true)
 
 func _rotor_loop() -> AudioStreamWAV:
-	var n := int(MIX_RATE * 0.5)
+	var n := int(MIX_RATE * 0.5) + LOOP_PAD
 	var s := PackedFloat32Array()
 	s.resize(n)
 	var low := 0.0
@@ -328,11 +365,12 @@ func _rotor_loop() -> AudioStreamWAV:
 		var t := float(i) / MIX_RATE
 		var chop := 0.6 + 0.4 * sin(TAU * 22.0 * t)
 		low = low * 0.88 + _rng.randf_range(-1.0, 1.0) * 0.12
-		s[i] = (low * 0.5 * chop + sin(TAU * 55.0 * t) * 0.12) * 0.8
-	return _wav(s, true)
+		s[i] = (low * 0.5 * chop + sin(TAU * 56.0 * t) * 0.12) * 0.8
+	return _wav(_loop_seam(s), true)
 
 func _siren_loop() -> AudioStreamWAV:
-	var n := int(MIX_RATE * 1.0)
+	# Two whole 0.8 s wail cycles: a 1.0 s loop restarted the pattern mid-phrase.
+	var n := int(MIX_RATE * 1.6)
 	var s := PackedFloat32Array()
 	s.resize(n)
 	for i in n:

@@ -594,6 +594,15 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 		placed = placed and world.locations.has(key)
 	_check("all five required Singapore landmarks are placed", placed)
 	_check("run opens outdoors on the heritage street, not inside the safe room", world.locations["player_start"].distance_to(world.locations["safe_room"]) > 40.0)
+	var audio := Sfx.loop_metrics()
+	var seam_ok := true
+	var clip_ok := true
+	for key in audio:
+		var row: Dictionary = audio[key]
+		if row["looped"] and row["seam_step"] > maxf(0.06, row["max_interior_step"] * 1.05): seam_ok = false
+		if row["peak"] > 0.995: clip_ok = false
+	_check("synthesized loops have continuous seams (objective, not listening)", seam_ok and audio.size() >= 5, str(audio))
+	_check("synthesized sounds stay below full-scale clipping", clip_ok)
 
 func _ticks(count: int) -> void:
 	for tick in count:
