@@ -37,6 +37,7 @@ var _home_lane := 0
 ## pursuing, hostile, police or near the player keeps per-tick move_and_slide.
 const SIM_NEAR := 70.0
 const SIM_FAR_TICKS := 4
+const FAR_DRAW_RANGE := 270.0
 var _sim_accum := 0.0
 var _sim_slot := 0
 
@@ -117,6 +118,12 @@ func _build() -> void:
 			var gun := AssetLibrary.instantiate("pistol_held.glb", body_root)
 			if gun != null:
 				character_visual.attach_weapon(gun,"pistol")
+		else:
+			# Street life: crowds must read from helicopter and aerial views.
+			# Beyond CharacterVisual.NPC_DRAW_RANGE the rig already stops
+			# animating (set_lod_far), so a distant figure costs one draw.
+			for mesh_node in character_visual.find_children("*", "MeshInstance3D", true, false):
+				(mesh_node as MeshInstance3D).visibility_range_end = FAR_DRAW_RANGE
 
 func _limb(hip: Vector3, size: Vector3, cloth: Material) -> Node3D:
 	var pivot := Node3D.new()
@@ -239,7 +246,52 @@ func _walk(delta: float) -> void:
 				idle_time = randf_range(2.0, 7.0)
 				return
 		target = lane[lane_index]
+	if _crossing_hold(target):
+		velocity.x = 0.0
+		velocity.z = 0.0
+		return
 	_move_towards(target, WALK_SPEED, delta)
+
+## Street life: wait at the kerb while the road about to be crossed has a
+## green (or amber) for its traffic, instead of walking into moving cars.
+var _traffic_ref: Node = null
+func _crossing_hold(target: Vector3) -> bool:
+	if is_hostile or is_police:
+		return false
+	var dir := target - global_position
+	dir.y = 0.0
+	if dir.length() < 0.1:
+		return false
+	dir = dir.normalized()
+	var probe := global_position + dir * 0.9
+	var band := WorldBuilder.ROAD_HALF + 0.35
+	var flow := Vector3.ZERO
+	for x in WorldBuilder.X_LINES:
+		if absf(probe.x - x) < band and absf(global_position.x - x) >= band:
+			flow = Vector3(0, 0, 1)
+	for z in WorldBuilder.Z_LINES:
+		if absf(probe.z - z) < band and absf(global_position.z - z) >= band:
+			flow = Vector3(1, 0, 0)
+	if flow == Vector3.ZERO:
+		return false
+	if _traffic_ref == null or not is_instance_valid(_traffic_ref):
+		_traffic_ref = get_tree().get_first_node_in_group("traffic_manager")
+	if _traffic_ref == null:
+		return false
+	# Cross only in the other axis's green: that road's traffic is held.
+	var cross := Vector3(flow.z, 0, flow.x)
+	return not _traffic_ref.signal_allows(cross)
+
+## Street life: jump clear of an approaching vehicle, sideways off its path.
+func dodge_vehicle(car_pos: Vector3, car_fwd: Vector3) -> void:
+	if state == State.DEAD or is_hostile or is_police or state == State.FLEE:
+		return
+	var side := Vector3.UP.cross(car_fwd).normalized()
+	if (global_position - car_pos).dot(side) < 0.0:
+		side = -side
+	_flee_dir = (side + car_fwd * 0.25).normalized()
+	state = State.FLEE
+	panic_time = 1.6
 
 ## Step out of the way of a slow vehicle: a short, quiet flee for civilians.
 func scramble_from(from_position: Vector3) -> void:

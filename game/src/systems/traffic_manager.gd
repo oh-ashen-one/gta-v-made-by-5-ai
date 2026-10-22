@@ -3,11 +3,11 @@ extends Node3D
 ## Population and traffic simulation: lane graph, left-hand traffic, civilian
 ## pedestrians, parked cars, and police response (TRAFFIC-01/02, LAW-02/03).
 
-const LANE_OFFSET := 4.0        # lane centre is 4 m to the LEFT of the road centre
+const LANE_OFFSET := 4.6        # kerb-lane centre, 4.6 m LEFT of the road centre (shared with AmbientTraffic)
 const PED_COUNT := 140
 const FOCUSED_PED_COUNT := 58
 const DINER_COUNT := 45
-const TRAFFIC_COUNT := 26
+const TRAFFIC_COUNT := 14
 const POLICE_SPAWN_DISTANCE := 55.0
 
 var world: WorldBuilder
@@ -33,6 +33,12 @@ var _officer_pool_ready := false
 var _officer_activation_us: Array[int] = []
 var _police_car_pool: Array[Car] = []
 const POLICE_CAR_POOL_SIZE := 2
+## Street life (Opus wave A): camera-centred lane traffic, pedestrian density
+## and avenue trees. Physics cars above remain for police, carjacking targets
+## and kerbside parking.
+var ambient: AmbientTraffic
+var crowd: CrowdDirector
+var dressing: StreetDressing
 
 func setup(w: WorldBuilder, player: Node) -> void:
 	add_to_group("traffic_manager")
@@ -46,6 +52,18 @@ func setup(w: WorldBuilder, player: Node) -> void:
 	_spawn_peds()
 	_warm_officer_pool()
 	_update_signal_lamps(true)
+	_setup_street_life()
+
+func _setup_street_life() -> void:
+	ambient = AmbientTraffic.new()
+	add_child(ambient)
+	ambient.setup(self)
+	crowd = CrowdDirector.new()
+	add_child(crowd)
+	crowd.setup(self)
+	dressing = StreetDressing.new()
+	add_child(dressing)
+	dressing.build(world)
 
 ## Build the officer responders during world load, then keep them inert and
 ## out of `peds` until a responder is actually requested.
@@ -289,6 +307,8 @@ func _spawn_peds() -> void:
 		else:
 			path = _ped_lanes[_rng.randi_range(0, _ped_lanes.size() - 1)]
 		_spawn_on_segment(ped, path)
+		if index >= FOCUSED_PED_COUNT:
+			ped.set_meta("roamer", true)
 		peds.append(ped)
 	# Damageable/reactive diners and queueing customers. Keep the package and
 	# combat aisle (local z=-8 and north of it) clear for actual mission play.

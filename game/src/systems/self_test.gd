@@ -47,7 +47,7 @@ func run(main: Node) -> void:
 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
 	_check("civilian traffic populated", traffic.cars.size() >= 8)
 	_check("pedestrians populated", traffic.peds.size() >= 20)
-	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT
+	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT + CrowdDirector.EXTRA_WALKERS
 	var unique_peds: Dictionary = {}
 	for pedestrian in traffic.peds:
 		if is_instance_valid(pedestrian): unique_peds[pedestrian.get_instance_id()] = true
@@ -298,6 +298,7 @@ func run(main: Node) -> void:
 	_check("saved SMG restores held model and clears transient actions", Game.carried_weapon == "smg" and player._weapon_model != null and String(player._weapon_model.scene_file_path).contains("smg") and not player._reloading and player._fire_cooldown == 0.0 and player._press_queue.is_empty())
 	_negative_save_checks(player, mission)
 	await _wave5_checks(world, traffic, heli)
+	await _street_life_checks(player, traffic)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
 	await _report()
 
@@ -552,6 +553,9 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 	var drivable := 0
 	var probed := 0
 	var blocked_at: Array[String] = []
+	# Static layout check: moving lane traffic is not a parking obstruction.
+	var lane_traffic: Array = get_tree().get_nodes_in_group("ambient_vehicles")
+	for body in lane_traffic: (body as CollisionObject3D).collision_layer = 0
 	for v in get_tree().get_nodes_in_group("vehicles"):
 		if not v is Car or v.has_ai or v.driver_is_player or not v.visible or v.get_meta("courtyard_only", false): continue
 		var car_body := v as Car
@@ -565,6 +569,7 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 		elif blocked_at.size() < 6:
 			blocked_at.append(str(car_body.global_position.round()))
 	_check("kerbside parked cars can pull out and drive 12 m unobstructed", probed > 0 and drivable >= int(probed * 0.9), "%d/%d blocked=%s" % [drivable, probed, blocked_at])
+	for body in lane_traffic: if (body as AmbientVehicle).active: (body as CollisionObject3D).collision_layer = 8
 	var sleeping := 0
 	for v in get_tree().get_nodes_in_group("vehicles"):
 		if v is Car and not v.has_ai and not v.driver_is_player and v.visible and not v.is_physics_processing():
@@ -706,3 +711,93 @@ func _report(timed_out: bool = false) -> void:
 	print("%d/%d checks passed, %d failed; report=%s" % [results.size() - failures, results.size(), failures, _report_path])
 	finished.emit(failures)
 	get_tree().quit(124 if timed_out else (1 if failures > 0 else 0))
+
+## Street life (Opus wave A): camera-centred lane traffic, crowds, avenue
+## canopy and taking a stopped ambient car.
+func _street_life_checks(player: Player, traffic: TrafficManager) -> void:
+	var amb := traffic.ambient
+	_check("street life systems present", amb != null and traffic.crowd != null and traffic.dressing != null)
+	if amb == null or traffic.crowd == null or traffic.dressing == null:
+		return
+	print("[street-test] mode=", Game.mode, " vehicle=", player.current_vehicle)
+	if player.current_vehicle != null:
+		await _tap("interact")
+		await _ticks(5)
+	player.respawn_at(Vector3(-171.0, 0.45, -60.0), PI)
+	if player.camera != null:
+		player.camera.current = true
+	await _ticks(12)
+	var near := amb.count_near(amb._focus, AmbientTraffic.SPAWN_RADIUS + 5.0)
+	_check("camera-centred lane traffic is dense", near >= 45, "%d within %d m of %s" % [near, int(AmbientTraffic.SPAWN_RADIUS), amb._focus.round()])
+	var wrong := 0
+	var checked := 0
+	for v in amb.vehicles:
+		if not v.active or v.s < AmbientTraffic.ENTRY:
+			continue
+		var ed: Dictionary = amb.edges[v.edge]
+		var lateral: float = (v.global_position - (ed["a"] as Vector3)).dot(ed["left"])
+		checked += 1
+		if lateral < 1.0 or lateral > 5.5:
+			wrong += 1
+	_check("ambient traffic keeps to the left-hand lanes", checked > 20 and wrong == 0, "%d/%d off-lane" % [wrong, checked])
+	var before := {}
+	for v in amb.vehicles:
+		if v.active:
+			before[v] = v.global_position
+	await _ticks(150)
+	var moved := 0
+	var total := 0
+	var held := 0
+	for v in before:
+		if not is_instance_valid(v) or not v.active:
+			continue
+		total += 1
+		if (v as Node3D).global_position.distance_to(before[v]) > 3.0:
+			moved += 1
+	for v in amb.vehicles:
+		if v.active and v.speed < 0.6 and v.s > AmbientTraffic.ENTRY:
+			held += 1
+	_check("ambient traffic flows and queues", total > 20 and moved >= int(total * 0.4) and held >= 1, "%d/%d moved, %d holding" % [moved, total, held])
+	var overlaps := 0
+	for i in amb.vehicles.size():
+		var a := amb.vehicles[i]
+		if not a.active:
+			continue
+		for j in range(i + 1, amb.vehicles.size()):
+			var b := amb.vehicles[j]
+			if b.active and a.global_position.distance_to(b.global_position) < 2.2:
+				overlaps += 1
+	_check("ambient vehicles never overlap", overlaps == 0, "%d overlapping pairs" % overlaps)
+	var walkers := traffic.crowd.count_near(traffic.crowd._focus, 130.0)
+	_check("camera-centred crowd on the pavements", walkers >= 40, "%d roamers within 130 m" % walkers)
+	var overhang := 0
+	for xf in traffic.dressing.trees:
+		# Rain-tree crown radius is ~10.5 m at unit scale.
+		if 10.5 * xf.basis.get_scale().x - (StreetDressing.TRUNK_OFFSET - WorldBuilder.ROAD_HALF) >= 3.0:
+			overhang += 1
+	_check("avenue tree crowns overhang the carriageway", traffic.dressing.trees.size() >= 150 and overhang == traffic.dressing.trees.size(), "%d trees, %d overhang" % [traffic.dressing.trees.size(), overhang])
+	# Take a stopped ambient car through the normal interaction input.
+	var target: AmbientVehicle = null
+	var best := INF
+	for v in amb.vehicles:
+		if v.active and v.kind != "bus" and v.s > AmbientTraffic.ENTRY + 6.0:
+			var d := v.global_position.distance_to(player.global_position)
+			if d < best:
+				best = d
+				target = v
+	var taken := false
+	if target != null and Game.mode == Game.MODE_FOOT:
+		target.vmax = 0.0
+		target.speed = 0.0
+		var side := target.global_transform.basis.x
+		player.respawn_at(target.global_position + side * 2.3 + Vector3(0, 0.45, 0), 0.0)
+		await _ticks(4)
+		var promoted_before: int = amb.stats["promoted"]
+		await _tap("interact")
+		await _ticks(2)
+		taken = Game.mode == Game.MODE_CAR and player.current_vehicle is Car and int(amb.stats["promoted"]) == promoted_before + 1
+		if taken:
+			await _tap("interact")
+			await _ticks(5)
+	_check("a stopped ambient car can be taken with interact", taken, "mode=%d promoted=%d" % [Game.mode, int(amb.stats["promoted"])])
+
