@@ -35,16 +35,33 @@ uniform float seed = 0.0;
 // Legacy colour overrides kept for the Marina Bay Sands material.
 uniform vec3 glass_b : source_color = vec3(0.33, 0.41, 0.48);
 uniform vec3 frame_col : source_color = vec3(0.72, 0.73, 0.72);
-// Extra aerial perspective for the farthest layers only (starts at haze_start).
-uniform vec3 haze_col : source_color = vec3(0.80, 0.78, 0.76);
+// Aerial perspective (skyline_haze.gdshaderinc). Round 4: the haze is a cool
+// blue-grey below the horizon sky (warm toward the sun) instead of a white
+// veil, so far towers stay darker silhouettes. SkylineAtmosphere.sync
+// overwrites sun_dir / fog / horizon from the live world at build time.
+uniform vec3 haze_col : source_color = vec3(0.55, 0.61, 0.69);
+uniform vec3 haze_sun_col : source_color = vec3(0.96, 0.82, 0.62);
+uniform vec3 horizon_col : source_color = vec3(0.84, 0.80, 0.76);
+uniform vec3 sun_dir = vec3(0.85, 0.28, 0.45);
 uniform float haze_start = 200.0;
-uniform float haze_density = 0.0013;
+uniform float haze_density = 0.0018;
 uniform float haze_max = 0.7;
+uniform float horizon_start = 1700.0;
+uniform float horizon_end = 3600.0;
+uniform float far_full = 0.55;
 // Environment-fog stand-in (match WorldBuilder/lighting fog colour + density).
 uniform vec3 fog_col : source_color = vec3(0.80, 0.78, 0.74);
 uniform float fog_density_ref = 0.00024;
 uniform float fog_scale = 1.0;
 uniform vec3 roof_col : source_color = vec3(0.32, 0.31, 0.30);
+// Round 4: low-rise hinterland roofs vary per instance (terracotta, grey,
+// pale membrane, dark metal) instead of one grey deck.
+uniform float roof_variety = 0.0;
+// Round 4: per-face sun shading boost. The aerial views see the far towers
+// front-lit, and haze flattened lit and shaded faces to one tone; this
+// deepens faces turned away from the sun (and lifts sun-facing ones a
+// little) so every tower reads as a solid with a light and a dark side.
+uniform float form_contrast = 0.0;
 uniform float band_frac = 0.20;
 uniform float mullion_m = 2.6;
 // Daytime build: interiors stay dark. >0 only for dusk variants, and then the
@@ -57,6 +74,7 @@ uniform float legacy_height = 0.0;
 
 varying vec3 wpos;
 varying vec3 wnorm;
+#include "res://assets/authored/shaders/skyline_haze.gdshaderinc"
 varying vec4 icustom;
 varying float inst_base;
 varying float inst_h;
@@ -105,7 +123,12 @@ void fragment() {
 		vec2 q = wpos.xz;
 		float stain = vnoise(q * 0.08 + sd) * 0.6 + vnoise(q * 0.31 - sd) * 0.4;
 		float seam = max(pulse(q.x / 3.0, 0.05, fwidth(q.x / 3.0)), pulse(q.y / 3.0, 0.05, fwidth(q.y / 3.0)));
-		vec3 c = roof_col * (0.78 + 0.42 * stain);
+		vec3 rc = roof_col;
+		if (roof_variety > 0.5) {
+			float k = fract(icustom.a * 13.7);
+			rc = k < 0.34 ? lin(vec3(0.58, 0.33, 0.24)) : (k < 0.6 ? lin(vec3(0.52, 0.52, 0.50)) : (k < 0.82 ? lin(vec3(0.70, 0.69, 0.66)) : lin(vec3(0.26, 0.29, 0.30))));
+		}
+		vec3 c = rc * (0.78 + 0.42 * stain);
 		c = mix(c, c * 0.72, seam * 0.6);
 		c = mix(c, lin(vec3(0.30, 0.34, 0.30)), smoothstep(0.72, 0.9, vnoise(q * 0.05 + 3.0 + sd)) * 0.5);
 		ALBEDO = c;
@@ -192,8 +215,9 @@ void fragment() {
 			c = mix(wall, win, wx * wy);
 			c = mix(c, wall * 1.06, slab);
 			float stripe = pulse(bay / 9.0, 0.08, fwx / 9.0);
-			vec3 accent = lin(tv < 0.5 ? vec3(0.62, 0.30, 0.22) : vec3(0.30, 0.44, 0.52));
-			c = mix(c, accent, stripe * 0.85);
+			// Round 4: muted accents (full-strength red stripes read as toy-like).
+			vec3 accent = lin(tv < 0.5 ? vec3(0.60, 0.40, 0.33) : vec3(0.38, 0.47, 0.53));
+			c = mix(c, accent, stripe * 0.5);
 			glazing = wx * wy;
 			rough = 0.85; spec = 0.35;
 		} else {
@@ -206,6 +230,18 @@ void fragment() {
 			c = mix(c, fin_col, fin);
 			glazing = (1.0 - fin) * (1.0 - band);
 			metal = 0.0; rough = mix(0.7, 0.34, glazing); spec = 0.42;
+		}
+		// Round 4: coarse banding that survives at 1-3 km, where the per-floor
+		// grid filters to its mean. Every 6-11 floors a refuge / plant floor
+		// (spandrel band with louvres) crosses the face, and glass faces carry
+		// broad vertical reflection streaks of neighbouring towers and sky.
+		float nb = floor(mix(6.0, 11.0, fract(icustom.a * 5.3)));
+		float mband = pulse(fy / nb + fract(icustom.a * 3.1), 1.0 / nb, fwy / nb);
+		vec3 band_col = (mat_id == 0 || mat_id == 3) ? lin(vec3(0.30, 0.32, 0.32)) : (mat_id == 2 || mat_id == 6 ? lin(vec3(0.82, 0.82, 0.80)) : c * 0.6);
+		c = mix(c, band_col, mband * 0.85);
+		if (mat_id == 0 || mat_id == 2 || mat_id == 3 || mat_id == 6) {
+			float streak = vnoise(vec2(hz * 0.06 + sd, 0.5));
+			c *= 0.78 + 0.5 * streak;
 		}
 		// Lobby base and plant-screen crown (procedural towers only).
 		if (inst_h > 0.0) {
@@ -235,6 +271,11 @@ void fragment() {
 		// Grime gathers at the base; whole towers vary slightly in value.
 		c *= 0.9 + 0.1 * smoothstep(0.0, 12.0, wpos.y);
 		c *= mix(0.88, 1.06, fract(icustom.a * 7.31));
+		if (form_contrast > 0.0) {
+			vec3 sdn = normalize(vec3(sun_dir.x, 0.0, sun_dir.z));
+			float facing = dot(normalize(vec3(n.x, 0.0, n.z)), sdn);
+			c *= mix(1.0 - 0.45 * form_contrast, 1.0 + 0.12 * form_contrast, smoothstep(-0.35, 0.6, facing));
+		}
 		ALBEDO = c;
 		// Each glazed panel is tilted a little ("oil-canning"), so a flat face
 		// turned to the sun breaks into a mosaic of brighter and darker panes
@@ -260,15 +301,8 @@ void fragment() {
 		}
 	}
 	// Aerial perspective, written to FOG so it replaces (not stacks on) the
-	// environment fog. Round 3: round 2 kept only half the environment fog on
-	// the CBD, so the dark glass across the bay was as punchy as the district
-	// under the camera (critic A2: far L* spread 95% of near, p5 L* 25). Now
-	// the haze starts past the near district (~haze_start) and climbs steeply:
-	// ~28% at 600 m, ~38% at 800 m, ~45% at 1 km, toward the pale horizon-sky
-	// colour, so each farther layer is lighter, flatter and sky-tinted.
-	float d = length(VERTEX);
-	float env_amt = (1.0 - exp(-d * fog_density_ref)) * fog_scale;
-	float hz_amt = (1.0 - exp(-max(d - haze_start, 0.0) * haze_density)) * haze_max;
-	float amt = clamp(max(env_amt, hz_amt), 0.0, 0.92);
-	FOG = vec4(mix(fog_col, haze_col, smoothstep(0.0, 0.35, hz_amt)), amt);
+	// environment fog: ~36% at 600 m, ~53% at 1 km toward a cool blue-grey
+	// (warm toward the sun) that stays below the horizon sky, so each farther
+	// layer is flatter and sky-tinted but still a darker silhouette.
+	FOG = skyline_haze_clip(wpos, CAMERA_POSITION_WORLD, far_full, -VERTEX.z, INV_PROJECTION_MATRIX);
 }

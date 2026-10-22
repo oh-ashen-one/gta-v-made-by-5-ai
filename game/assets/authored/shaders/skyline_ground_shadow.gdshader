@@ -12,7 +12,7 @@ uniform vec3 shadow_col : source_color = vec3(0.10, 0.12, 0.17);
 uniform float strength = 0.74;
 // Match skyline_facade.gdshader.
 uniform float haze_start = 200.0;
-uniform float haze_density = 0.0013;
+uniform float haze_density = 0.0018;
 uniform float haze_max = 0.7;
 
 void fragment() {

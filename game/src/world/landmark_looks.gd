@@ -51,9 +51,12 @@ static func material_for(material_name: String, source: Material = null) -> Mate
 			m.set_shader_parameter("mullion_m", 1.9)
 			m.set_shader_parameter("band_frac", 0.17)
 			m.set_shader_parameter("lit_chance", 0.0)
-			m.set_shader_parameter("glass_b", Color(0.42, 0.52, 0.58))
-			m.set_shader_parameter("frame_col", Color(0.76, 0.75, 0.71))
-			result = m
+			# Round 4: darker blue-green glass between pale spandrels, so the
+			# three towers read as glass again rather than pale cream (critic A3).
+			m.set_shader_parameter("glass_b", Color(0.27, 0.37, 0.43))
+			m.set_shader_parameter("frame_col", Color(0.74, 0.74, 0.71))
+			m.set_shader_parameter("form_contrast", 0.7)
+			result = SkylineHorizon.register(m)
 		"near_shore_tower_0", "near_shore_tower_1":
 			var t := ShaderMaterial.new()
 			t.shader = load(FACADE_SHADER)
@@ -62,7 +65,18 @@ static func material_for(material_name: String, source: Material = null) -> Mate
 			t.set_shader_parameter("floor_scale", 0.6)
 			t.set_shader_parameter("seed", 0.37 if material_name.ends_with("0") else 0.81)
 			t.set_shader_parameter("lit_chance", 0.0)
-			result = t
+			result = SkylineHorizon.register(t)
+		"glass_0", "glass_1", "glass_2", "glass_3", "glass_4":
+			# Authored east-flank towers (skyline_0..3.glb only): mirror glass at
+			# roughness 0.19 caught the low sun as one blown-out disc spanning
+			# two towers in photo_09 (critic A3). Satin glass keeps a broad
+			# sheen and the panel grid instead.
+			if source is StandardMaterial3D:
+				var gl := (source as StandardMaterial3D).duplicate() as StandardMaterial3D
+				gl.roughness = maxf(gl.roughness, 0.46)
+				gl.metallic = minf(gl.metallic, 0.25)
+				gl.metallic_specular = 0.4
+				result = gl
 		"st_vertical_garden":
 			var g := ShaderMaterial.new()
 			g.shader = load(GARDEN_SHADER)

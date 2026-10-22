@@ -155,6 +155,8 @@ func build(parent: Node3D) -> void:
 		var mat := ShaderMaterial.new()
 		mat.shader = shader
 		mat.set_shader_parameter("use_instance_custom", true)
+		mat.set_shader_parameter("form_contrast", 1.0)
+		SkylineHorizon.register(mat)
 		var mmi := MultiMeshInstance3D.new()
 		mmi.name = "SkylineCity_%d" % kind
 		mmi.multimesh = mm

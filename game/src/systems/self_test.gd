@@ -704,6 +704,15 @@ func _skyline_checks(world: WorldBuilder) -> void:
 	var haze_800 := (1.0 - exp(-maxf(800.0 - h_start, 0.0) * h_den)) * h_max
 	var haze_200 := (1.0 - exp(-maxf(200.0 - h_start, 0.0) * h_den)) * h_max
 	_check("skyline: far CBD hazes toward the sky, near district stays crisp", hs == 3.0 and haze_800 >= 0.33 and haze_200 <= 0.1, "haze@800m=%.2f haze@200m=%.2f" % [haze_800, haze_200])
+	# Round 4: land and city beyond the bay, and haze that stays below the sky.
+	_check("skyline: hinterland city carpet, low-rise blocks and third tower layer run past the bay", int(sk.get("lowrise", 0)) >= 2000 and float(sk.get("carpet_km2", 0.0)) >= 20.0 and int(sk.get("far_towers", 0)) >= 200 and int(sk.get("promenade_trees", 0)) >= 60, str(sk))
+	var hcol := RegEx.new()
+	hcol.compile("uniform vec3 (haze_col|horizon_col) : source_color = vec3\\(([0-9.]+), ([0-9.]+), ([0-9.]+)\\);")
+	var lum := {}
+	for m in hcol.search_all(fsh.code):
+		lum[m.get_string(1)] = 0.2126 * m.get_string(2).to_float() + 0.7152 * m.get_string(3).to_float() + 0.0722 * m.get_string(4).to_float()
+	var gap := float(lum.get("horizon_col", 0.0)) - float(lum.get("haze_col", 1.0))
+	_check("skyline: aerial haze is darker than the horizon sky so far towers keep silhouettes", lum.size() == 2 and gap >= 0.10 and int(sk.get("atmosphere", 0)) >= 2, "gap %.2f %s" % [gap, str(lum)])
 
 func _ticks(count: int) -> void:
 	for tick in count:

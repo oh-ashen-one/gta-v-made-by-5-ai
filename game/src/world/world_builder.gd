@@ -653,7 +653,9 @@ func _waterfront_block(centre: Vector3) -> void:
 ## Singapore Flyer to the east. Scale follows real proportions (towers ~180 m,
 ## SkyPark ~260 m long, Flyer ~160 m).
 func _far_shore_landmarks() -> void:
-	var plaza := Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9)
+	# Round 4: grey granite pavers; the warm CONCRETE_LIGHT read as a brown
+	# dirt strip under the far-shore trees from the aerial views (critic A3).
+	var plaza := Palette.mat_textured(Color(0.56, 0.57, 0.56), "pavers", Vector3.ONE, 0.9)
 	var turf := Palette.mat_textured(Color(0.24, 0.33, 0.17), "soil", Vector3.ONE, 0.95)
 	_box(Vector3(920.0, 0.30, 70.0), Vector3(-20.0, 0.15, -668.0), plaza)
 	_box(Vector3(920.0, 0.20, 160.0), Vector3(-20.0, 0.10, -783.0), turf)
@@ -1070,8 +1072,16 @@ func _background_city() -> void:
 			var res2 := rng.randf() < 0.4
 			city.add_random(Vector3(xs, 0.0, 455.0 + row * 72.0 + rng.randf_range(-10.0, 10.0)), rng.randf_range(32.0, 72.0) + row * 25.0, res2)
 			xs += rng.randf_range(50.0, 76.0)
+	# Round 4: third tower layer, wing estates, city carpet, low-rise blocks,
+	# far ridges and the shared sun/haze sync (see SkylineHorizon).
+	var horizon := SkylineHorizon.new()
+	horizon.populate(city)
 	city.build(_world_root)
-	skyline_stats = {"materials": city.materials_used.size(), "over_water": city.over_water, "placed": city.placed, "ground_shadows": city.ground_shadows}
+	horizon.build(_world_root, city)
+	_batch_background("res://assets/authored/rain_tree.glb", horizon.promenade_tree_transforms(_far_shore_tree_clear))
+	SkylineHorizon.sync(self)
+	skyline_stats = {"materials": city.materials_used.size(), "over_water": city.over_water, "placed": city.placed, "ground_shadows": city.ground_shadows,
+		"lowrise": horizon.lowrise, "far_towers": horizon.far_towers, "carpet_km2": horizon.carpet_area / 1.0e6, "promenade_trees": horizon.promenade_trees, "atmosphere": SkylineHorizon.params().size()}
 	print("[world] skyline city: ", city.placed, " towers; roof kit: ", _roof_kit.roofs, " roofs")
 
 func _batch_background(path: String, transforms: Array, tint: Color = Color.WHITE) -> void:
@@ -1111,19 +1121,26 @@ func _background_mesh_parts(node: Node, parent_transform: Transform3D, result: A
 
 func _perimeter() -> void:
 	# One continuous far shoreline anchors the background skyline across a bay.
-	var ground_mat:=Palette.mat_textured(Color(.33,.38,.28),"soil",Vector3.ONE,.95)
+	# Round 4: neutral made ground under the city carpet (the soil texture
+	# showed through as brown dirt at the far shore's edges).
+	var ground_mat:=Palette.mat(Color(.36,.37,.35),.95)
 	_box(Vector3(1700,8,700),Vector3(0,-4,-970),ground_mat)
-	_box(Vector3(1700,2,18),Vector3(0,-.7,-624),Palette.mat_textured(Palette.CONCRETE,"concrete",Vector3.ONE,.92))
+	# Round 4: grey granite seawall coping (the warm concrete read as a brown
+	# dirt band along the far shore from the aerial views, critic A3).
+	_box(Vector3(1700,2,18),Vector3(0,-.7,-624),Palette.mat(Color(0.47,0.48,0.48),.88))
 	_box(Vector3(1680,.08,16),Vector3(0,.05,-657),Palette.mat_textured(Palette.ASPHALT,"asphalt",Vector3.ONE,.85))
+	# Round 4: the far-shore rows are batched full-size rain trees now
+	# (SkylineHorizon.promenade_tree_transforms); the world RNG still advances
+	# once per old tree so every later random placement stays where it was.
 	for i in 34:
 		if _far_shore_clear(Vector3(-790+i*48,.1,-640)):
-			_tree(Vector3(-790+i*48,.1,-640),.8)
+			_rng.randf_range(-PI, PI)
 	# A treed far shoreline. The manager's aerial review called the horizon
 	# "abrupt"; the bay previously ended where open water met a flat plane.
 	# This band gives the far shore a real edge with canopy and low roofs.
 	for i in 44:
 		if _far_shore_clear(Vector3(-800.0 + i * 37.0, 0.15, -652.0)):
-			_tree(Vector3(-800.0 + i * 37.0, 0.15, -652.0), 0.95 + float(i % 4) * 0.12)
+			_rng.randf_range(-PI, PI)
 	# (Wave A: the 16 plain low-roof boxes at z=-712 are now SkylineCity's
 	# waterfront layer, with facades and roofs.)
 	# The authored district has visible physical edges. Aircraft can fly over
@@ -1226,6 +1243,12 @@ func _kerb_markings() -> void:
 
 ## Far-shore planting keeps clear of the ArtScience lotus and the Flyer terminal
 ## (release critic: shoreline tree rows grew through both).
+## Far-shore promenade trees also keep off the Marina Bay Sands podium.
+func _far_shore_tree_clear(p: Vector3) -> bool:
+	if p.x > MBS_POS.x - 165.0 and p.x < MBS_POS.x + 200.0 and p.z > MBS_POS.z - 32.0 and p.z < MBS_POS.z + 40.0:
+		return false
+	return _far_shore_clear(p)
+
 func _far_shore_clear(p: Vector3) -> bool:
 	var to_asm := Vector2(p.x - ASM_POS.x, p.z - ASM_POS.z).length()
 	var to_flyer := Vector2(p.x - FLYER_POS.x, p.z - FLYER_POS.z).length()
