@@ -29,12 +29,27 @@ Rules: one accent per façade band, no saturated neon, no pure black (use `#1C1C
 
 ## Lighting
 
-- One time-of-day preset: warm, dry, late afternoon. Key sun at 46° elevation, colour `#FFF0D2`, energy 2.6, shadows on, 220 m shadow distance.
-- Sky fill: procedural sky, horizon `#D4C7AE`, top `#3D6BAD`, ambient from sky, energy 1.0.
-- Practical lights: warm `#FFCC9E` emissive geometry with matching omni/spot lights; every visible light source has a modelled fixture.
-- Fill light: cool `#B8CCF2` directional at 0.35 energy, no shadows.
-- Atmosphere: light fog, density 0.0012, colour `#C7C2B3` — depth cue only, never a haze curtain.
-- Exposure: Filmic tonemap, exposure 1.05, bloom 0.35 (restrained; bloom must not hide flat assets).
+Opus 5.5 wave A (lighting piece) replaced the wave-1..5 rig; code in `game/src/world/lighting.gd`, sky in
+`game/assets/authored/shaders/golden_hour_sky.gdshader`. Logged change: the earlier 46-degree noon key and the
+flat grey-pink haze sky are retired.
+
+- One time-of-day preset: warm, dry, late afternoon ("golden hour"). Key sun at ~14.5 deg elevation from the
+  east-south-east of the map (rotation -14.5, 58, 0), colour `#FFBD80`, energy 3.1, PCSS soft shadows (angular
+  size 1.1 deg), 4 blended splits to 280 m, 8192 directional atlas.
+- Sky: procedural, HDR. Saturated blue zenith (`#214A99`), lighter mid sky, warm gold horizon toward the sun
+  and cool blue-grey away from it, domain-warped cumulus lit from the sun side with silver linings, HDR sun disc.
+  The sky reads LIGHT0, so glow, clouds and shadows always agree.
+- Ambient and reflections from the sky (75 % sky, 25 % warm grey `#A89480`): shade is blue-lifted, never black.
+  SSAO (radius 1.6, intensity 2.6) for contact darkening in five-foot ways; SSIL for warm pavement bounce; a
+  0.16 warm upward "ground bounce" directional (no specular, not in the sky).
+- Atmosphere: exponential fog 0.00055 with aerial perspective 0.55 and sun scatter 0.35 (sky left clear), light
+  height fog, volumetric fog 0.0016 (anisotropy 0.62, 140 m) for sun shafts.
+- Exposure and grade: ACES, exposure 1.0, white 6. Glow threshold 1.05, intensity 0.42 (only HDR emitters bloom).
+  Procedural 3D LUT: slight teal in shadows, warm highlights, gentle S-curve; contrast 1.06, saturation 1.08.
+- Practicals (all shadowless, distance-culled, each with a modelled fixture): street lamps (warm spot + glowing
+  head), five-foot-way pendants (warm omni per shophouse bay), void-deck fluorescent tubes on the soffit
+  (cool-white omni grid; void-deck lower third mean luminance >= 60/255), hawker stall tubes and dining pendants.
+- Debug A/B switches: `--lighting-gi=sdfgi`, `--lighting-tonemap=agx`, `--lighting-off=vfog,ssil,ssao,lut,pcss,fog,glow,skyamb,practicals`.
 
 ## Materials
 

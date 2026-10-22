@@ -47,6 +47,7 @@ func run(main: Node) -> void:
 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
 	_check("civilian traffic populated", traffic.cars.size() >= 8)
 	_check("pedestrians populated", traffic.peds.size() >= 20)
+	_lighting_checks(world)
 	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT
 	var unique_peds: Dictionary = {}
 	for pedestrian in traffic.peds:
@@ -662,6 +663,45 @@ func _check(check_name: String, condition: bool, detail: String = "") -> void:
 		failures += 1
 	results.append({"name": check_name, "passed": condition, "detail": detail})
 	print("%s %s %s" % ["PASS" if condition else "FAIL", check_name, detail])
+
+## Lighting piece (Opus 5.5 wave A): golden-hour rig and practicals.
+func _lighting_checks(world: WorldBuilder) -> void:
+	var we: WorldEnvironment = null
+	var sun: DirectionalLight3D = null
+	for c in world.get_children():
+		if c is WorldEnvironment: we = c
+		if c is DirectionalLight3D and c.name == "Sun": sun = c
+	var env: Environment = we.environment if we != null else null
+	_check("golden-hour environment: sky ambient, SSAO+SSIL, glow, clear sky gradient",
+		env != null and env.background_mode == Environment.BG_SKY and env.ambient_light_source == Environment.AMBIENT_SOURCE_SKY
+		and env.ssao_enabled and env.ssil_enabled and env.glow_enabled and env.fog_sky_affect < 0.05 and env.adjustment_color_correction != null)
+	var sky_code := ""
+	if env != null and env.sky != null and env.sky.sky_material is ShaderMaterial:
+		sky_code = (env.sky.sky_material as ShaderMaterial).shader.code
+	_check("sky glow and clouds follow the sun light (LIGHT0)", sky_code.contains("LIGHT0_DIRECTION") and sky_code.contains("cloud"))
+	var elevation := -sun.rotation_degrees.x if sun != null else 0.0
+	_check("warm low late-afternoon sun with soft shadows", sun != null and sun.shadow_enabled and elevation > 8.0 and elevation < 25.0
+		and sun.light_color.r > sun.light_color.b + 0.3 and sun.light_angular_distance > 0.0, "elevation=%.1f" % elevation)
+	var lit: WorldBuilder = world
+	var lighting: Lighting = lit.get("_lighting")
+	_check("void decks, arcades and street lamps carry practical lights", lighting != null and lighting.void_deck_lights >= 24
+		and lighting.arcade_lights >= 150 and lighting.lamp_lights >= 40,
+		"" if lighting == null else "void=%d arcade=%d lamps=%d" % [lighting.void_deck_lights, lighting.arcade_lights, lighting.lamp_lights])
+	var district := world.get_node_or_null("District")
+	var lights_node := district.get_node_or_null("PracticalLights") if district != null else null
+	var bounded := lights_node != null and lights_node.get_child_count() > 0
+	if bounded:
+		for l in lights_node.get_children():
+			if not (l is Light3D) or (l as Light3D).shadow_enabled or not (l as Light3D).distance_fade_enabled:
+				bounded = false
+				break
+	_check("practical lights are shadowless and distance-culled (cluster budget)", bounded)
+	var fixtures := 0
+	if district != null:
+		for c in district.get_children():
+			if c is MultiMeshInstance3D and String(c.name).begins_with("LightingFixtures_"):
+				fixtures += (c as MultiMeshInstance3D).multimesh.instance_count
+	_check("every practical has a modelled fixture", lighting != null and fixtures >= lighting.light_count, "fixtures=%d" % fixtures)
 
 func _count_meshes(node: Node) -> int:
 	var count := 0
