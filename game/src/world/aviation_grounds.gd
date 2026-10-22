@@ -17,6 +17,7 @@ uniform vec2 half_size = vec2(58.0, 58.0);
 uniform vec4 apron_rect = vec4(-56.0, -8.0, -4.0, 22.0);   // x0, z0, x1, z1
 uniform vec4 taxi_rect = vec4(-6.0, 15.0, 30.0, 31.0);
 uniform vec3 pad_c = vec3(30.0, 24.0, 23.0);               // x, z, tarmac radius
+uniform vec4 hole_rect = vec4(1e6, 1e6, 1e6, 1e6);         // integ-P: workshop lot keeps its own floor/forecourt
 varying vec3 wp;
 varying vec2 lp;
 float h21(vec2 q) { return fract(sin(dot(q, vec2(127.1, 311.7))) * 43758.5453); }
@@ -33,6 +34,7 @@ float rect_d(vec2 p, vec4 r) {
 void vertex() { lp = VERTEX.xz; wp = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz; }
 void fragment() {
 	vec2 p = lp;
+	if (p.x > hole_rect.x && p.x < hole_rect.z && p.y > hole_rect.y && p.y < hole_rect.w) { discard; }
 	// signed distance to the sealed surfaces (negative = on tarmac)
 	float d = min(min(rect_d(p, apron_rect), rect_d(p, taxi_rect)), length(p - pad_c.xy) - pad_c.z);
 	float large = fbm(p * 0.045);
@@ -95,6 +97,12 @@ static func build(root: Node3D, centre: Vector3) -> void:
 	shader.code = GROUND_SHADER
 	var mat := ShaderMaterial.new()
 	mat.shader = shader
+	# integ-P seam: the workshop (interior floor + forecourt) shares this block;
+	# cut its reserved lot out so its own concrete floor shows (helicopter-P2
+	# regression: workshop floor/forecourt rendered as this ground layer).
+	var ws := InteriorDetail.WORKSHOP + Vector3(0.0, 0.0, 5.0) - holder.position
+	if absf(ws.x) < 75.0 and absf(ws.z) < 75.0:
+		mat.set_shader_parameter("hole_rect", Vector4(ws.x - 17.0, ws.z - 16.0, ws.x + 17.0, ws.z + 16.0))
 	var ground := MeshInstance3D.new()
 	ground.name = "AviationGround"
 	ground.mesh = plane

@@ -504,7 +504,14 @@ func _update_body_motion(delta: float, sprinting: bool) -> void:
 			_land_running = _speed >= 0.8
 			if not _land_running:
 				_visual.play_action("land", 0.05)
-			# Running landing: a fast knee-absorb (land clip at 2x, ~0.21 s)
+			# integ-P seam (locomotion-P2: feet slid ~3.5 m/s under the planted
+			# 'land' crouch): at jog/sprint speed the stride simply continues and
+			# the procedural knee dip carries the impact; only a slow landing
+			# plays the fast knee-absorb clip.
+			elif _speed >= 2.2:
+				_speed *= 0.9
+				_land_dip_vel -= 0.38
+			# Slow running landing: a fast knee-absorb (land clip at 2x, ~0.21 s)
 			# that bleeds speed, then the run picks up again.
 			elif _visual.play_action("land", 0.04, 2.0):
 				_speed *= 0.72
