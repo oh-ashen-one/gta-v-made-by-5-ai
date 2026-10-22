@@ -1,0 +1,30 @@
+{
+  "checkpoint": "43af02c0e57415f534ab9878d18b3f6fc01cd643",
+  "command": [
+    "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach",
+    "--log-file",
+    "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-photos/engine.log",
+    "--",
+    "--photos",
+    "--capture-dir=/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-photos/shots"
+  ],
+  "started_utc": "2026-10-22T02:51:32.841157+00:00",
+  "shot_sha256": {
+    "photo_01_street_heritage.png": "18f379923b3a09ff634716625f34101bf7c64ef93b9ea81ad4778d061e6ce495",
+    "photo_02_street_wide.png": "7c20ba531addfbfd92bbabf13b0443056116431efe17ff23fb8a0636fbcbe7d0",
+    "photo_03_hawker_interior.png": "38257dfd0632e93a7dce1797c3537061c60d9f5a0c37cd37ca5fd44a488df569",
+    "photo_04_housing_void_deck.png": "dd15013997a4dc01cdf86532dd67d54c4c6c108b31f30b5628d41d20b67ff9c9",
+    "photo_05_waterfront.png": "696a83c4b4206cb1dd20d72f19299c6a6648509311f7e536904c257d7bb3dfce",
+    "photo_06_aerial_district.png": "5efe3ac23fe112119148ae07f59433d732a10cc2eba20b887df437e8dd7ac342",
+    "photo_07_aerial_waterfront.png": "8b1a085ac773f79ded82313f4c37f7c10036c6f1497be019f1fba15eaa4fb1b5",
+    "photo_08_street_arcade.png": "8ea8320ffd62ad43ef069044381b1109c7a615dc75f00fc628157f6f60d7eabf",
+    "photo_09_airfield.png": "5321bca6e7af82a21a717831ea564cd508cd11a7003fa28d6a1cbe862915efa7",
+    "photo_10_safe_room_furnished.png": "063270ec4e6537f664b6b93f0f343bf902ba9f5dc3799c50cf3b30f99128c578",
+    "photo_11_convenience_exterior.png": "1864872478e5b9a949efb34d00393b6591cc75f13f3e2ce956c579f88d90c092",
+    "photo_12_convenience_interior.png": "0835deb8f85afad3d170475c79f651ca8a6f76c770c8ac862c5599308e8c3995",
+    "photo_13_workshop_exterior.png": "a1a15a8f65f17eb7c10e0312245c914d2cf6273b3d153e04c10cf23de3dc3906",
+    "photo_14_workshop_interior.png": "95116a4cd51140a39c984233c4992ac9868461641ae7a4a63f1fb1985679530b",
+    "photo_15_shoreline_reverse.png": "23b3070f09dde08677bb5f64b96398ce6c0adc60996c76f32a4b8e9efc98e220",
+    "photo_16_bay_skyline_aerial.png": "93a859a536c0e47aefa4635b9f7759352658940e2a8d4f0ac3f655b5317b4d08"
+  }
+}

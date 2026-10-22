@@ -1,0 +1,2 @@
+[render_job] 2026-10-22T02:50:52Z label=opus-w5-candidate-gameplay bin=/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach out=/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-gameplay
+[render_job] 2026-10-22T02:51:31Z label=opus-w5-candidate-gameplay exit=0

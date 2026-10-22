@@ -1,0 +1,26 @@
+{
+  "checkpoint": "43af02c0e57415f534ab9878d18b3f6fc01cd643",
+  "command": [
+    "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach",
+    "--log-file",
+    "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-route/engine.log",
+    "--",
+    "--capture",
+    "--capture-dir=/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-route/shots",
+    "--save-path=/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-route/save.json"
+  ],
+  "started_utc": "2026-10-22T02:51:48.687814+00:00",
+  "shot_sha256": {
+    "01_opening_street.png": "fdc48537a86efc48f95dbbe9e498fb4bf67674f3d1b9d624166a957ac0c3d77d",
+    "02_hawker_market.png": "ccc1a12cd2b1ff0f5388a271bfe32c5d7a10eed556225e806228457c0ab8468e",
+    "03_combat.png": "d2f82d0a883a1672227a629c3070a686f56b36879b0b4007e8b82d2aea45d3c7",
+    "04_package_taken.png": "05b9a369381d6bcd678c8b2b5e1d3013beef1d0024273f47fba1372f8474d75f",
+    "05_car_entered.png": "088d5191b65d992db738009c28f4724febf92048665e70c5f4be96e08498533e",
+    "06_driving.png": "b5bc200e526eeafbd8c182e007b6ea68db0e342d26c52061f23c583872cb0468",
+    "07_exited_car.png": "632bc95fc3811c5971601837e39afe5768ac04d513043ad3e3fd0be7311258e0",
+    "08_helicopter_boarding.png": "510e69c8aa92254f007fcf223c266a7b47e10989fc28ff9d04ef38a451c56977",
+    "09_aerial_view.png": "cf4b1ab668875ee1f79e37ad33ba2285a86dfc68f5bd4157a0239ca0ad52585f",
+    "10_landed.png": "cb69654c78d89602dcb9b726f40506716d4c1ab46e3d7a3255e23d36cb4f9db8",
+    "11_delivery.png": "f5eb76cc862e51a16de9c28e62a2c9f3b00d26334d678d1dfcbc7d1eaed49ce5"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "checkpoint": "6b51a26afbc3e638d859d9051d423b117ffb3c0a",
+  "command": [
+    "godot",
+    "--log-file",
+    "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/baseline-w4-gameplay/engine.log",
+    "--path",
+    "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/baseline-w4/game",
+    "--",
+    "--gameplay-photos",
+    "--capture-dir=/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/baseline-w4-gameplay/shots"
+  ],
+  "started_utc": "2026-10-22T02:49:21.314304+00:00",
+  "shot_sha256": {
+    "photo_01_gameplay_opening_start.png": "32dd3204ded12e764d27de17998078afd441df63bb7ba8872201b2ea6aa8d0f4",
+    "photo_02_gameplay_heritage_arcade.png": "c539118516f5cd4eb69a10cff61cc8b352c676c27c397a80d77844ffcee2f675",
+    "photo_03_gameplay_heritage_road.png": "db1950ce726df56d115fd41a8e7e9bf79caab8b4198ae46fdfdce18578c62c92",
+    "photo_04_gameplay_hawker_approach.png": "88c0ad97bf2b0a5c624fdbc26df3450f79093f93d20a6926570aa2cf01c60881",
+    "photo_05_gameplay_junction_traffic.png": "788ca5fa715768ff4d3622ee3e1369ea93442dda1d746d9b86608cf92e6c3eb8",
+    "photo_06_gameplay_waterfront_promenade.png": "34ae35509e1d4093bc5ef8572c5f38ba566468ac1539c68a7376f8251b569805",
+    "photo_07_gameplay_supertree_grove_vista.png": "31a0a9230be414ebcc141950bd68cd478dd50b7b4c8e8d65f9c3c53d81c38430"
+  }
+}

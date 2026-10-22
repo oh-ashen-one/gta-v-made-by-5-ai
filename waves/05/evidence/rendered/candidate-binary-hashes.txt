@@ -1,0 +1,6 @@
+04f2182845dba94326eabf43a8d43f55144db6861fe4e36f3d4e459fd695f6b6  OrchardReach.zip
+36c5132f3948ad465b4860ae9d9c166dd7eedfee99ade6120e578e988eb2198d  OrchardReach-wave-05-final-signed.zip
+233633697eb0f31f0d26344eba344fb53c5700b2c308c7e84d0877ddd82271e2  app/Orchard Reach.app/Contents/MacOS/Orchard Reach
+8cbba859c0de59f8f7169822aa05073676a6b92e3fb01e5dd463352873116548  signed/Orchard Reach.app/Contents/MacOS/Orchard Reach
+233a76c68f3ca83207e9575790bb0c51ff674eeba6ed596fb07b9ee7036ffc64  app/Orchard Reach.app/Contents/Resources/Orchard Reach.pck
+233a76c68f3ca83207e9575790bb0c51ff674eeba6ed596fb07b9ee7036ffc64  signed/Orchard Reach.app/Contents/Resources/Orchard Reach.pck

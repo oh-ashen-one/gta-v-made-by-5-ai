@@ -1,0 +1,31 @@
+{
+  "checkpoint": "6b51a26afbc3e638d859d9051d423b117ffb3c0a",
+  "command": [
+    "godot",
+    "--log-file",
+    "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/baseline-w4-photos/engine.log",
+    "--path",
+    "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/baseline-w4/game",
+    "--",
+    "--photos",
+    "--capture-dir=/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/baseline-w4-photos/shots"
+  ],
+  "started_utc": "2026-10-22T02:49:05.138045+00:00",
+  "shot_sha256": {
+    "photo_01_street_heritage.png": "d7d30439eac16873761ffd53e7d816c74824e87799a4a75f99ad582661ba6e66",
+    "photo_02_street_wide.png": "3bc5d06e5f982b74343f176b2efa0628c4a0303b2b3a7cc7bb024fb8e8717a38",
+    "photo_03_hawker_interior.png": "a87e381470446c1338911246953d03865860a152fd44f204388d081a1e208957",
+    "photo_04_housing_void_deck.png": "f2e1c1eb609dc9a4f782293815c5c03e281c80feba9ebe7dee39033b640a193c",
+    "photo_05_waterfront.png": "b5cc70d3bce65f5a81177dc33046be23cdfc3b70147154188d17f5561a4c0d93",
+    "photo_06_aerial_district.png": "886e00dc93a7f6764e53b6b8c6fce2b069e5cca9ba9a7e83d62392def53d64e9",
+    "photo_07_aerial_waterfront.png": "d5bdc50f8ddaff2635a97f95e0579ff737ba391b5d3dc052937b0dacab4d544f",
+    "photo_08_street_arcade.png": "274b733040557752b920cc611caffea9df2473e380af60862aa9742c81e574bf",
+    "photo_09_airfield.png": "44dc1a86c81cb9d36312a50133cbff84e18eb043235940ca96e1b1b9bc8c00a4",
+    "photo_10_safe_room_furnished.png": "7b965bc55494f5d7299126c03abc6cf2bd99e20fcc7856e243689e79ac653a6d",
+    "photo_11_convenience_exterior.png": "6fd0b4f1f51c272adbea49b5fa8a47f98c33245a8af956f5490abb742f049b18",
+    "photo_12_convenience_interior.png": "df3cf5f1f725df11057e03ace083921e3c762359c8de567e18836df5fdc82bb7",
+    "photo_13_workshop_exterior.png": "c26e4781dd8d89b4284025178246fad57707d073fef3cc55065e36b1d488f72a",
+    "photo_14_workshop_interior.png": "f6c6dfbb0c2b4a14ea45c9059fa40f78aa456a699a15357263ea944887d28124",
+    "photo_15_shoreline_reverse.png": "0ee19413831079334b84e4d6114072487413ee78e71ba9da8c2cdf64390af0b2"
+  }
+}

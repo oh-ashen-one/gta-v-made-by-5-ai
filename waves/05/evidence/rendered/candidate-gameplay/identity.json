@@ -1,0 +1,21 @@
+{
+  "checkpoint": "43af02c0e57415f534ab9878d18b3f6fc01cd643",
+  "command": [
+    "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/final/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach",
+    "--log-file",
+    "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-gameplay/engine.log",
+    "--",
+    "--gameplay-photos",
+    "--capture-dir=/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-gameplay/shots"
+  ],
+  "started_utc": "2026-10-22T02:50:52.906294+00:00",
+  "shot_sha256": {
+    "photo_01_gameplay_opening_start.png": "8d49de1a1ee61586c1a9444c597b60e5025d291b17500ca0cbf60f6778c8f76d",
+    "photo_02_gameplay_heritage_arcade.png": "86a10759fef5afe8abc939069966e59a87af2aaf345346fa0570e3214cd48a07",
+    "photo_03_gameplay_heritage_road.png": "e11ce384048f9583469db23d7852548621d846702b1358319f7af0e367cde1d0",
+    "photo_04_gameplay_hawker_approach.png": "aeba688d7f405ce993486d31cad1676d050493e2394102779405158f0459f160",
+    "photo_05_gameplay_junction_traffic.png": "9813108dd83515697793d0ef49049e8894b4426124f60d4949d844cd71bd80c6",
+    "photo_06_gameplay_waterfront_promenade.png": "c788ec988edb57aedbd384e5bb30ec10e02c833236b1e9c1373862149a2b1dc9",
+    "photo_07_gameplay_supertree_grove_vista.png": "890a94af49050baff5ae6f6354148abd36e71124667712e395e9862d5ce716b0"
+  }
+}

@@ -1,0 +1,112 @@
+{
+	"note": "fixed-view captures from an authored camera; fixture-assisted, not player-reachable proof",
+	"view_records": [
+		{
+			"camera_look": "",
+			"camera_position": "(-171.0, 0.45, -22.0)",
+			"fov": 0,
+			"name": "gameplay_opening_start",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "",
+			"camera_position": "(-150.0, 0.45, -148.0)",
+			"fov": 0,
+			"name": "gameplay_heritage_arcade",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "",
+			"camera_position": "(-34.0, 0.45, -156.0)",
+			"fov": 0,
+			"name": "gameplay_heritage_road",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "",
+			"camera_position": "(-100.0, 0.45, -122.0)",
+			"fov": 0,
+			"name": "gameplay_hawker_approach",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "",
+			"camera_position": "(-12.0, 0.45, -52.0)",
+			"fov": 0,
+			"name": "gameplay_junction_traffic",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "",
+			"camera_position": "(64.0, 0.45, -336.0)",
+			"fov": 0,
+			"name": "gameplay_waterfront_promenade",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "",
+			"camera_position": "(-6.0, 0.45, -150.0)",
+			"fov": 0,
+			"name": "gameplay_supertree_grove_vista",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		}
+	],
+	"views": [
+		"saved /private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-gameplay/shots/photo_01_gameplay_opening_start.png",
+		"saved /private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-gameplay/shots/photo_02_gameplay_heritage_arcade.png",
+		"saved /private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-gameplay/shots/photo_03_gameplay_heritage_road.png",
+		"saved /private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-gameplay/shots/photo_04_gameplay_hawker_approach.png",
+		"saved /private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-gameplay/shots/photo_05_gameplay_junction_traffic.png",
+		"saved /private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-gameplay/shots/photo_06_gameplay_waterfront_promenade.png",
+		"saved /private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/rendered/candidate-gameplay/shots/photo_07_gameplay_supertree_grove_vista.png"
+	]
+}
