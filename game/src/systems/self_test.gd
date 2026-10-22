@@ -298,6 +298,7 @@ func run(main: Node) -> void:
 	_check("saved SMG restores held model and clears transient actions", Game.carried_weapon == "smg" and player._weapon_model != null and String(player._weapon_model.scene_file_path).contains("smg") and not player._reloading and player._fire_cooldown == 0.0 and player._press_queue.is_empty())
 	_negative_save_checks(player, mission)
 	await _wave5_checks(world, traffic, heli)
+	await _water_checks(world)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
 	await _report()
 
@@ -706,3 +707,51 @@ func _report(timed_out: bool = false) -> void:
 	print("%d/%d checks passed, %d failed; report=%s" % [results.size() - failures, results.size(), failures, _report_path])
 	finished.emit(failures)
 	get_tree().quit(124 if timed_out else (1 if failures > 0 else 0))
+
+## Water piece (Opus 5.5 loop): the bay must stay real water, not a tinted
+## plane, with moving boats and a falling-water Merlion jet.
+func _water_checks(world: WorldBuilder) -> void:
+	var bay: BayWater = world.bay
+	var shader_ok := bay != null and bay.water_material != null and bay.water_material.shader != null \
+		and bay.water_material.shader.resource_path.ends_with("bay_water.gdshader")
+	_check("bay water uses the animated water shader, not a flat material", shader_ok)
+	if bay == null:
+		return
+	var cap_value: Variant = bay.water_material.get_shader_parameter("spec_cap")
+	var cap: float = float(cap_value) if cap_value != null else -1.0
+	_check("water sun glint is capped so no light blows a white disc", cap > 0.0 and cap <= 0.5, "spec_cap=%s" % cap)
+	_check("water surface sits below the promenade deck with a seawall face", BayWater.LEVEL < -0.5 and bay.water.layers == BayWater.WATER_LAYER)
+	var before := bay.boat_positions()
+	await _ticks(30)
+	var after := bay.boat_positions()
+	var moved := 0
+	for i in mini(before.size(), after.size()):
+		if before[i].distance_to(after[i]) > 0.5:
+			moved += 1
+	_check("boats are on the bay and moving, ships ride at anchor offshore", bay.boat_count >= 12 and moved >= 10 and bay.anchored_ships >= 10, "boats=%d moved=%d anchored=%d" % [bay.boat_count, moved, bay.anchored_ships])
+	var jet_ok := bay.jet != null and bay.jet.material_override is ShaderMaterial and bay.legacy_spray_hidden >= 1
+	_check("Merlion jet is translucent falling water, opaque legacy strut hidden", jet_ok, "legacy_hidden=%d" % bay.legacy_spray_hidden)
+	# water round 2: the periodic sine-sum swell read as straight streaks from
+	# the air; the surface must stay a non-periodic multi-octave noise field
+	# with whitecaps, and the avenue ends must stay capped as railed jetties.
+	var code: String = bay.water_material.shader.code
+	var wc_value: Variant = bay.water_material.get_shader_parameter("whitecaps")
+	var wc: float = float(wc_value) if wc_value != null else 0.55
+	_check("bay water is a non-periodic multi-octave wave field with whitecaps", code.contains("sea_field") and not code.contains("swell_gradient") and wc > 0.0, "whitecaps=%s" % wc)
+	_check("avenue ends over the bay are railed jetty decks, not bare road slabs", bay.get_node_or_null("JettyRailPosts") != null)
+	_check("sea continues to the horizon through a skirt sharing the water material", bay.horizon_skirt != null and bay.horizon_skirt.material_override == bay.water_material and code.contains("horizon_colour"))
+	# water round 3: Marina Bay is a calm dammed reservoir. Whitecaps are gated
+	# to open sea, every moving hull carries a Kelvin wedge plus a widening
+	# turbulent stern trail, and the quays carry a lapping wet line.
+	_check("bay stays glassy; foam is event-driven (Kelvin wakes, stern trail, quay wet line)", code.contains("* open_sea;") and code.contains("trail_foam") and code.contains("0.354") and code.contains("wet_line") and bay.boat_count >= 17)
+	# water round 4: boats under way throw raised white water (bow spray
+	# sheets, churned stern mound, ballistic droplets), every foam source is
+	# rendered as lacy aerated foam, and the runabouts carry crew and rails.
+	var wash := bay.wash
+	var wash_ok := wash != null and wash.sheets != null and wash.sheets.instance_count == bay.moving_boats \
+		and wash.churns != null and wash.churns.instance_count == bay.moving_boats and wash.droplet_quads >= bay.moving_boats * 100
+	_check("moving boats throw raised spray sheets, stern churn and droplets", wash_ok, "moving=%d droplets=%d" % [bay.moving_boats, wash.droplet_quads if wash != null else 0])
+	_check("wake and quay foam is lacy coverage, not smooth strokes", code.contains("lace_foam(") and code.contains("cell_edge(") and not code.contains("ring = smoothstep(1.5, 1.0, e)"))
+	var launch_tris := BoatMeshes.launch().get_faces().size() / 3
+	_check("runabout hull is a detailed crewed model (rails, windshield, driver)", launch_tris >= 1500, "tris=%d" % launch_tris)
+

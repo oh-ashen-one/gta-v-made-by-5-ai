@@ -45,6 +45,8 @@ var locations := {
 	"hawker": Vector3(-80.0, 0.2, -80.0),
 }
 
+## Bay water, seawalls, boats and the Merlion jet (water piece).
+var bay: BayWater
 var _rng := RandomNumberGenerator.new()
 var _world_root: Node3D
 var _collision_root: StaticBody3D
@@ -946,16 +948,7 @@ func _infill_building(size: Vector3, pos: Vector3, kind: String) -> void:
 
 # ------------------------------------------------------------- water + skyline
 func _waterfront_edge() -> void:
-	var water := MeshInstance3D.new()
-	var pm := PlaneMesh.new()
-	pm.size = Vector2(1600.0, 700.0)
-	water.mesh = pm
-	var wm := Palette.mat(Palette.WATER, 0.08, 0.4)
-	wm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	wm.albedo_color = Color(0.16, 0.31, 0.36, 0.92)
-	water.mesh.material = wm
-	water.position = Vector3(0.0, -0.4, PROMENADE_Z - 340.0)
-	_world_root.add_child(water)
+	# The bay surface, seawalls, boats and Merlion jet live in bay.gd (BayWater).
 	# promenade deck + railing
 	_solid_box(Vector3(700.0, 0.3, 22.0), Vector3(0.0, 0.15, PROMENADE_Z), Palette.mat_textured(Palette.CONCRETE_LIGHT,"pavers",Vector3.ONE,0.9))
 	for i: int in 46:
@@ -965,9 +958,10 @@ func _waterfront_edge() -> void:
 	# The Merlion pier jutting into the bay between the waterfront helipad and delivery zone
 	var merlion_pos := Vector3(45.0, 0.30, -345.0)
 	_solid_box(Vector3(14.0, 0.32, 14.0), Vector3(45.0, 0.15, -347.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9))
-	_authored("merlion_landmark.glb", merlion_pos, 0.0, Vector3.ONE)
+	var merlion := _authored("merlion_landmark.glb", merlion_pos, 0.0, Vector3.ONE)
 	_collision_box(Vector3(8.5, 3.5, 8.5), merlion_pos + Vector3(0.0, 1.75, 0.0))
 	locations["merlion"] = merlion_pos
+	bay = BayWater.build(self, _world_root, merlion, merlion_pos)
 	for i: int in 8:
 		_tree(Vector3(-300.0 + i * 85.0, 0.0, PROMENADE_Z + 6.0), 1.0)
 	for i: int in 6:
