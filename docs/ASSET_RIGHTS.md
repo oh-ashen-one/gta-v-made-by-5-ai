@@ -84,3 +84,12 @@ The convenience-shop and workshop GLBs, their companion atlas PNGs, and their ed
 At 2026-10-21T14:01:29Z, the frozen source/assets were rehashed without launching engines or inspecting new rendered views. The CSV now contains **82 data rows with 26 columns**, including all **26 provider GLBs**, all **13 authored GLBs**, and individual entries for all **13 original editable Blender sources**. There are **72 individually hashed files**; grouped source/texture entries intentionally have no single-file hash. All 18 raw sources still match the delivery record. Nine existing single-file hashes changed since the initial snapshot (six code files and three interior GLBs); foliage and other recorded assets were rechecked and retained matching hashes. No required listed file is missing. Existing visual observations and unresolved rights are preserved. `reviewed_utc` in the CSV now denotes this metadata snapshot; the two-angle visual review remains the earlier review.
 
 At the post-soak visual checkpoint, four original-code hashes (world builder, palette, car controller, HUD) were refreshed. No provider/source asset changed and no rights or visual clearance was inferred. Vehicle wheel animation is contained because the inherited wheel labels include body fragments; genuine wheel partitioning remains unfinished.
+
+## Opus 5.5 loop — water piece (2026-10-22)
+
+All additions are original code written for this project (MIT); no imported meshes, textures or audio, and no paid or external generation.
+
+- `game/assets/authored/shaders/bay_water.gdshader`, `water_jet.gdshader`, `bay_boat.gdshader` — new shaders.
+- `game/src/world/bay.gd`, `game/src/world/boat_meshes.gd` — runtime-generated sea plane, seawalls, pier base, pontoon, boats (bumboat, river cruiser, launch), Merlion jet tube and splash particles.
+- `merlion_landmark.glb` is unchanged on disk; its opaque `merlion_water_spray` mesh is hidden at runtime and replaced by the translucent jet above.
+- GTA V reference images (`loop/references/`, git-ignored) were used only to judge quality; nothing from them is in the game or the repository.
