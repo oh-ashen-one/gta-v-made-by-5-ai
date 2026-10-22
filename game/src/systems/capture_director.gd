@@ -603,11 +603,15 @@ func _verify_reboard_cycle(car: Car) -> void:
 	# Interaction takes the nearest vehicle, so at a busy junction a passing car
 	# can be nearer than our own (wave 5 soak6: the automation carjacked passing
 	# traffic). Like a player, wait until our car is the interaction target.
-	var target_wait_until := _elapsed() + 6.0
-	while not _finished and _elapsed() < target_wait_until and player._interaction_target() != car:
-		if _ground_distance(player.global_position, car.global_position) > 2.6:
-			await _walk_to(car.global_position + car.global_transform.basis.x * 1.9, 0.7, 4.0)
-		else:
+	# Try each door side and end of our car in turn (a car stopped at a signal
+	# beside one door stays nearer for a whole cycle; soak7 at 1590 s).
+	var approaches: Array[Vector3] = [car.global_transform.basis.x * 1.9, car.global_transform.basis.x * -1.9,
+		car.global_transform.basis.z * -3.0, car.global_transform.basis.z * 3.0]
+	for approach in approaches:
+		if _finished or player._interaction_target() == car: break
+		await _walk_to(car.global_position + approach, 0.6, 5.0)
+		var settle_until := _elapsed() + 1.5
+		while not _finished and _elapsed() < settle_until and player._interaction_target() != car:
 			await get_tree().physics_frame
 	await _interact_until(Game.MODE_CAR)
 	var same_car := player.current_vehicle == car
