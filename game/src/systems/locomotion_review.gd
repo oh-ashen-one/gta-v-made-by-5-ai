@@ -22,10 +22,13 @@ var _metrics := {}
 var _attach := {}
 var _prev_feet := {}
 var _ground_y := 0.0
+var _metrics_only := false # --loco-metrics-only: skeleton metrics, no frames (headless)
 
 func setup(m: Node) -> void:
 	main = m
 	for arg in OS.get_cmdline_user_args():
+		if arg == "--loco-metrics-only":
+			_metrics_only = true
 		if arg.begins_with("--capture-dir="):
 			out_dir = arg.trim_prefix("--capture-dir=")
 	DirAccess.make_dir_recursive_absolute(out_dir + "/frames")
@@ -80,10 +83,11 @@ func _run() -> void:
 				Input.action_release("jump")
 			await get_tree().physics_frame
 			_measure(player, visual)
-			await RenderingServer.frame_post_draw
-			var img := get_viewport().get_texture().get_image()
 			var file := "frames/f%04d.jpg" % _frame
-			img.save_jpg(out_dir + "/" + file, 0.9)
+			if not _metrics_only:
+				await RenderingServer.frame_post_draw
+				var img := get_viewport().get_texture().get_image()
+				img.save_jpg(out_dir + "/" + file, 0.9)
 			_rows.append(JSON.stringify({"file": file, "seconds": _frame / FPS, "phase": _phase,
 				"clip": visual.current_clip() if visual else "", "rate": snappedf(visual.animator.speed_scale, 0.01) if visual else 0.0,
 				"speed": snappedf(Vector2(player.velocity.x, player.velocity.z).length(), 0.01),
@@ -95,7 +99,8 @@ func _run() -> void:
 	var fh := FileAccess.open(out_dir + "/frames.jsonl", FileAccess.WRITE)
 	fh.store_string("\n".join(_rows) + "\n")
 	fh.close()
-	await _contact_sheets(player, visual)
+	if not _metrics_only:
+		await _contact_sheets(player, visual)
 	var report := {}
 	for phase in _metrics:
 		var m: Dictionary = _metrics[phase]

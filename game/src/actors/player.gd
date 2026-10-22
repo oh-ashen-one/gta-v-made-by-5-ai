@@ -82,6 +82,7 @@ var _jump_windup := -1.0
 var _walk_toggle := false
 var _stop_armed := false
 var _airborne_time := 0.0
+var _land_running := false
 
 func _ready() -> void:
 	_rng.seed = 771
@@ -394,6 +395,10 @@ func _physics_process(delta: float) -> void:
 			rate = PIVOT_DECEL if target_speed <= 0.01 else DECEL
 		_speed = move_toward(_speed, target_speed, rate * delta)
 		_stop_armed = false
+		# Moving off during a standing landing's absorb: step out of it rather
+		# than sliding the planted feet.
+		if _visual != null and _visual.current_clip() == "land" and not _land_running and _speed > 1.0:
+			_visual.cancel_action()
 		if _visual != null and _visual.current_clip() == "stop":
 			_visual.cancel_action()
 	else:
@@ -416,12 +421,12 @@ func _physics_process(delta: float) -> void:
 			# Standing jump: a short crouch (jump_start clip) then take-off.
 			_jump_windup -= delta
 			if _jump_windup < 0.0:
-				velocity.y = JUMP_VELOCITY
+				velocity.y = _jump_speed()
 		elif Input.is_action_just_pressed("jump"):
 			if _speed < 1.0 and _visual != null and _visual.loaded and _visual.play_action("jump_start", 0.06):
 				_jump_windup = JUMP_WINDUP
 			else:
-				velocity.y = JUMP_VELOCITY
+				velocity.y = _jump_speed()
 	if has_meta("_qa_motion_probe"):
 		get_meta("_qa_motion_state")["requested"] = velocity
 	move_and_slide()
@@ -450,6 +455,27 @@ func _physics_process(delta: float) -> void:
 	Game.player_position = actor.global_position
 	Game.player_rotation = yaw
 
+## Take-off speed: a human hop on open ground; facing a kerb, planter, bench
+## or low wall (0.35-1.25 m) the take-off scales up just enough to clear its
+## top (a vault), so the lower jump never traps the player.
+func _jump_speed() -> float:
+	var space := get_world_3d().direct_space_state
+	var fwd := -global_transform.basis.z
+	if _speed > 0.25:
+		fwd = Vector3(-sin(_heading), 0.0, -cos(_heading))
+	var top := 0.0
+	for reach: float in [0.55, 0.85]:
+		var from := global_position + fwd * reach + Vector3.UP * 1.45
+		var q := PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 1.35)
+		q.exclude = [get_rid()]
+		var hit := space.intersect_ray(q)
+		if not hit.is_empty():
+			var hit_pos: Vector3 = hit["position"]
+			top = maxf(top, hit_pos.y - global_position.y)
+	if top < 0.35 or top > 1.25:
+		return JUMP_VELOCITY
+	return maxf(JUMP_VELOCITY, sqrt(2.0 * 24.0 * (top + 0.2)))
+
 ## Weight cues: forward lean with acceleration and sprint, a damped rock when
 ## stopping, roll into turns, a knee dip on landing and head look toward the
 ## camera's view. Whole-body roll pivots on the feet; the spine adds curve.
@@ -474,12 +500,13 @@ func _update_body_motion(delta: float, sprinting: bool) -> void:
 		# Weighted landing: a knee-bend absorb clip after a real jump/fall;
 		# at running speed the procedural dip carries it into the stride.
 		if _fall_speed > 3.0 and _airborne_time > 0.25:
-			if _speed < 0.8:
+			_land_running = _speed >= 0.8
+			if not _land_running:
 				_visual.play_action("land", 0.05)
-			# Running landing: a fast knee-absorb (land clip at ~1.7x, ~0.25 s)
-			# that bleeds a little speed, then the run picks up again.
-			elif _visual.play_action("land", 0.04, 1.7):
-				_speed *= 0.82
+			# Running landing: a fast knee-absorb (land clip at 2x, ~0.21 s)
+			# that bleeds speed, then the run picks up again.
+			elif _visual.play_action("land", 0.04, 2.0):
+				_speed *= 0.72
 				_land_dip_vel -= 0.25
 		_fall_speed = 0.0
 	_airborne_time = 0.0 if on_floor else _airborne_time + delta
