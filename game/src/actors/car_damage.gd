@@ -17,7 +17,7 @@ extends Node3D
 
 const BodyShader := preload("res://assets/authored/shaders/car_body.gdshader")
 const MAX_DENTS := 4
-const MAX_DENT_DEPTH := 0.34
+const MAX_DENT_DEPTH := 0.42
 const DEBRIS_LAYER := 32
 const DEBRIS_POOL := 64
 const SCATTER_MAX := 18
@@ -127,14 +127,16 @@ func add_dent(world_point: Vector3, push: Vector3, energy: float) -> void:
 	var inv := car.global_transform.affine_inverse()
 	var p := inv * world_point
 	var d := (inv.basis * push)
-	d.y *= 0.25
+	d.y = 0.0
 	if d.length_squared() < 0.0001: return
 	d = d.normalized()
+	# Nose and tail hits buckle the bonnet/boot down as well as in.
+	if absf(d.z) > 0.6: d = (d + Vector3.DOWN * 0.45).normalized()
 	p.x = clampf(p.x, _aabb.position.x, _aabb.end.x)
 	p.z = clampf(p.z, _aabb.position.z, _aabb.end.z)
 	p.y = clampf(p.y, _aabb.position.y + _aabb.size.y * 0.28, _aabb.position.y + _aabb.size.y * 0.78)
-	var radius := lerpf(0.45, 1.05, energy)
-	var depth := lerpf(0.05, 0.24, energy)
+	var radius := lerpf(0.5, 1.15, energy)
+	var depth := lerpf(0.06, 0.32, energy)
 	# Hitting the same corner again deepens that dent.
 	var merged := false
 	for dent in _dents:
@@ -314,13 +316,13 @@ func glass_burst(at: Vector3, normal: Vector3, energy: float, car_velocity: Vect
 		pm.emission_sphere_radius = 0.35
 		_glass_fx.process_material = pm
 		var quad := QuadMesh.new()
-		quad.size = Vector2(0.035, 0.028)
+		quad.size = Vector2(0.016, 0.012)
 		var m := StandardMaterial3D.new()
 		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 		m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
-		m.albedo_color = Color(1.1, 1.2, 1.3, 0.9)
+		m.albedo_color = Color(0.85, 0.92, 1.0, 0.8)
 		quad.material = m
 		_glass_fx.draw_pass_1 = quad
 		car.get_tree().current_scene.add_child(_glass_fx)

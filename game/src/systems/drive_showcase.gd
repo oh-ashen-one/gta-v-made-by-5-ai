@@ -239,58 +239,6 @@ func _run() -> void:
 	Input.action_release("move_back")
 	await get_tree().create_timer(0.7).timeout
 	await _still("07_stopped_settle")
-	# 6. Into a wall: find the building line beside the lane and hit it at an angle.
-	_phase = "wall"
-	var left := Vector3.UP.cross(f23).normalized() * _side_of(n2, n3)
-	var wall_point := Vector3.INF
-	var space := car.get_world_3d().direct_space_state
-	car.last_impact = {}
-	for ahead in [18.0, 24.0, 30.0, 36.0, 42.0, 48.0, 54.0, 60.0, 66.0]:
-		for sd in [1.0]:
-			if wall_point != Vector3.INF: break
-			for hgt in [1.2]:
-				var o: Vector3 = car.global_position + f23 * float(ahead) + Vector3.UP * float(hgt)
-				var q := PhysicsRayQueryParameters3D.create(o, o + left * float(sd) * 16.0)
-				q.collision_mask = 1
-				q.exclude = [car.get_rid()]
-				var hit := space.intersect_ray(q)
-				_log("wall ray ahead=%.0f side=%.0f h=%.1f hit=%s" % [ahead, sd, hgt, (str(hit["position"]) + " n=" + str(hit["normal"]) + " " + str(hit["collider"])) if not hit.is_empty() else "none"])
-				if not hit.is_empty() and absf((hit["normal"] as Vector3).y) < 0.5:
-					wall_point = hit["position"]
-					break
-		if wall_point != Vector3.INF: break
-	_log("wall point %s" % [wall_point])
-	if wall_point != Vector3.INF:
-		var impacts_before: int = car.fx.sparks_fired
-		Input.action_press("move_forward")
-		var wall_hit := -1.0
-		t_end = _elapsed() + 7.0
-		while _elapsed() < t_end:
-			await get_tree().physics_frame
-			if wall_hit < 0.0: _steer_to(wall_point, 2.4)
-			if wall_hit < 0.0 and not car.last_impact.is_empty() and not car.last_impact.get("car", true):
-				wall_hit = _elapsed()
-				_log("wall impact %s" % [car.last_impact])
-				_release()
-				await _still("11_wall_impact")
-			if wall_hit > 0.0 and _elapsed() - wall_hit > 1.8: break
-		_release()
-	# Back out of the wall and rejoin the lane before the next hit.
-	_phase = "recover"
-	Input.action_press("move_back")
-	# Reversing with the wheel turned toward the kerb swings the nose back out.
-	Input.action_press("move_left" if _side_of(n2, n3) > 0.0 else "move_right", 0.8)
-	await get_tree().create_timer(1.6).timeout
-	_release()
-	await get_tree().create_timer(0.4).timeout
-	await _leg(n2, n3, 32.0, -1e9, 3.0)
-	Input.action_release("move_forward")
-	Input.action_press("move_back")
-	t_end = _elapsed() + 3.0
-	while _elapsed() < t_end and car.forward_speed() > 0.4:
-		await get_tree().physics_frame
-	_release()
-	await get_tree().create_timer(0.5).timeout
 	# 5. Ram a parked car standing in the lane 34 m ahead.
 	_phase = "collision"
 	# A traffic car (prefer a coupe) is stopped and parked in the lane ahead.
@@ -334,6 +282,52 @@ func _run() -> void:
 		_release()
 		_log("victim moved %.2f m, speed now %.1f km/h, victim dents=%d debris=%d" % [victim.global_position.distance_to(victim_from), car.speed_kmh(), victim.damage.dent_count() if victim.damage else -1, car.damage.debris_spawned if car.damage else -1])
 		await _still("10_after_collision")
+	# 6. Into a wall: find the building line beside the lane and hit it at an angle.
+	_phase = "wall"
+	var left := Vector3.UP.cross(f23).normalized() * _side_of(n2, n3)
+	var wall_point := Vector3.INF
+	var space := car.get_world_3d().direct_space_state
+	car.last_impact = {}
+	var avoid := victim.global_position if victim != null else Vector3.INF
+	for ahead in [14.0, 20.0, 26.0, 32.0, 38.0, 44.0, 50.0, 56.0, 62.0]:
+		for sd in [1.0]:
+			if wall_point != Vector3.INF: break
+			for hgt in [1.2]:
+				var o: Vector3 = car.global_position + f23 * float(ahead) + Vector3.UP * float(hgt)
+				var q := PhysicsRayQueryParameters3D.create(o, o + left * float(sd) * 22.0)
+				q.collision_mask = 1
+				q.exclude = [car.get_rid()]
+				var hit := space.intersect_ray(q)
+				_log("wall ray ahead=%.0f side=%.0f h=%.1f hit=%s" % [ahead, sd, hgt, (str(hit["position"]) + " n=" + str(hit["normal"]) + " " + str(hit["collider"])) if not hit.is_empty() else "none"])
+				# The struck car must not sit on the line to the wall.
+				var clear := true
+				if avoid != Vector3.INF and not hit.is_empty():
+					var seg: Vector3 = hit["position"] - car.global_position
+					seg.y = 0.0
+					var rel := avoid - car.global_position
+					rel.y = 0.0
+					var tt := clampf(rel.dot(seg) / maxf(seg.length_squared(), 0.01), 0.0, 1.0)
+					clear = (rel - seg * tt).length() > 3.5
+				if not hit.is_empty() and absf((hit["normal"] as Vector3).y) < 0.5 and clear:
+					wall_point = hit["position"]
+					break
+		if wall_point != Vector3.INF: break
+	_log("wall point %s" % [wall_point])
+	if wall_point != Vector3.INF:
+		var impacts_before: int = car.fx.sparks_fired
+		Input.action_press("move_forward")
+		var wall_hit := -1.0
+		t_end = _elapsed() + 7.0
+		while _elapsed() < t_end:
+			await get_tree().physics_frame
+			if wall_hit < 0.0: _steer_to(wall_point, 2.4)
+			if wall_hit < 0.0 and not car.last_impact.is_empty() and not car.last_impact.get("car", true):
+				wall_hit = _elapsed()
+				_log("wall impact %s" % [car.last_impact])
+				_release()
+				await _still("11_wall_impact")
+			if wall_hit > 0.0 and _elapsed() - wall_hit > 1.8: break
+		_release()
 	await get_tree().create_timer(0.8).timeout
 	_recording = false
 	# Added review views (not fixed comparison cameras).
@@ -369,8 +363,8 @@ func _run() -> void:
 			count += 1
 	centre = centre / count if count > 0 else n2
 	var f12 := (n2 - n1).normalized()
-	look_cam.global_position = n2 - f12 * 16.0 + f23 * 7.0 + Vector3.UP * 4.2
-	look_cam.look_at(n2 + f23 * 4.0, Vector3.UP)
+	look_cam.global_position = n2 - f12 * 15.0 + Vector3.UP * 4.5
+	look_cam.look_at(centre, Vector3.UP)
 	look_cam.fov = 60.0
 	await get_tree().create_timer(0.4).timeout
 	await _still("15_junction_tyre_marks")

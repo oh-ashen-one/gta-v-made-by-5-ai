@@ -87,7 +87,7 @@ void vertex() {
 	// Buckling: panels wrinkle across the push, not just recess along it.
 	vec3 wob = (vec3(vnoise(p * 5.0 + 3.0), vnoise(p * 5.0 + 11.0), vnoise(p * 5.0 + 23.0)) - 0.5) * 2.0;
 	float dlen = dent_dir0.w * w0 + dent_dir1.w * w1 + dent_dir2.w * w2 + dent_dir3.w * w3;
-	disp += wob * dlen * 0.55;
+	disp += wob * dlen * 0.85;
 	VERTEX = p + disp;
 	v_dent = w;
 }

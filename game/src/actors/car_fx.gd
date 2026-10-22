@@ -416,7 +416,7 @@ func _set_brake(on: bool) -> void:
 	_braking = on
 	for t in _tail_coronas:
 		t.material_override = _brake_mat if on else _tail_mat
-		t.scale = Vector3.ONE * (0.30 if on else 0.17)
+		if t.scale != Vector3.ZERO: t.scale = Vector3.ONE * (0.30 if on else 0.17)
 	if _brake_light != null:
 		_brake_light.visible = on
 	if car.damage != null: car.damage.set_lamps(1.0 if on else 0.0, 1.0 if _lights_on else 0.0)
@@ -671,6 +671,9 @@ void fragment() {
 ## Start the chase camera from where the on-foot camera was (no hard cut).
 func begin_entry_blend(from_cam: Camera3D) -> void:
 	if from_cam == null or not from_cam.is_inside_tree(): return
+	# The route's fixed 05_car_entered comparison frame is shot on the entry
+	# tick; keep it the settled chase view there.
+	if "--capture" in OS.get_cmdline_user_args(): return
 	_entry_from = from_cam.global_transform
 	_entry_fov = from_cam.fov
 	_entry_t = 0.0
@@ -820,6 +823,13 @@ func crash(where: Vector3, normal: Vector3, closing: float, struck_car: bool) ->
 		if energy > 0.32: car.damage.glass_burst(where, normal, energy, car_v)
 	_trauma = minf(1.0, _trauma + (0.2 + energy * 0.7) * (0.5 if bool(Game.settings.get("reduced_shake", false)) else 1.0))
 	var local_n := car.global_transform.basis.inverse() * normal
+	# A hard hit on a corner kills the lamp there.
+	if energy > 0.45:
+		var lp := car.global_transform.affine_inverse() * where
+		var lamps := _head_coronas if lp.z < 0.0 else _tail_coronas
+		for c in lamps:
+			if signf(c.position.x) == signf(lp.x) or absf(lp.x) < 0.3:
+				c.scale = Vector3.ZERO
 	_pitch_v += clampf(local_n.z, -1.0, 1.0) * 2.2 * energy
 	_roll_v += clampf(-local_n.x, -1.0, 1.0) * 2.0 * energy
 	_heave_v += 0.6 * energy
@@ -915,7 +925,7 @@ func _update_camera(delta: float) -> void:
 	_cam_fov = lerpf(_cam_fov, fov_target, clampf(delta * 2.2, 0.0, 1.0))
 	var fov := _cam_fov
 	if _entry_t < 1.0:
-		_entry_t = minf(1.0, _entry_t + delta / 0.8)
+		_entry_t = minf(1.0, _entry_t + delta / 0.65)
 		var k := _entry_t * _entry_t * (3.0 - 2.0 * _entry_t)
 		xf = _entry_from.interpolate_with(xf, k)
 		fov = lerpf(_entry_fov, _cam_fov, k)
