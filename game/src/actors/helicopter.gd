@@ -18,7 +18,6 @@ var _rotor: Node3D
 var _tail_rotor: Node3D
 var _body: Node3D
 var _camera: Camera3D
-var _arm: SpringArm3D
 var _landed := false
 var _provider_root: Node3D = null
 var _provider_main_rotor: Node3D = null
@@ -31,6 +30,17 @@ const AIR_LIMIT_SOUTH := 820.0
 const AIR_CEILING := 420.0
 var _envelope_notice := 0.0
 var _impact_cooldown := 0.0
+# opus55 helicopter piece: rotor spool, presentation FX and a lagged chase rig.
+var _fx: HeliFX = null
+var rotor_spin := 0.15
+var _cam_ready := false
+var _cam_yaw := 0.0
+var _cam_pos := Vector3.ZERO
+var _cam_roll := 0.0
+var _cam_look := Vector3.ZERO
+var _prev_forward_speed := 0.0
+var _accel_pitch := 0.0
+var _hover_clock := 0.0
 
 func _ready() -> void:
 	add_to_group("vehicles")
@@ -159,20 +169,29 @@ func _build() -> void:
 	shape.position = Vector3(0.0, 1.6, 0.4)
 	add_child(shape)
 
-	_arm = SpringArm3D.new()
-	_arm.spring_length = 14.0
-	_arm.collision_mask = 1
-	_arm.position = Vector3(0.0, 3.0, 0.0)
-	_arm.rotation_degrees = Vector3(-25.0, 0.0, 0.0)
-	add_child(_arm)
+	# Chase camera: a free (top-level) camera that trails the aircraft with
+	# positional and yaw lag and leans into banks (see _update_chase_camera).
 	_camera = Camera3D.new()
-	_camera.fov = 70.0
-	_arm.add_child(_camera)
+	_camera.name = "ChaseCamera"
+	_camera.fov = 72.0
+	_camera.top_level = true
+	add_child(_camera)
 
 	for child in get_children():
 		if child is MeshInstance3D:
 			_procedural_visuals.append(child)
 	_try_provider_asset()
+	_fx = HeliFX.new()
+	_fx.name = "HeliFX"
+	if _provider_root != null:
+		_fx.setup(self, _provider_root)
+	else:
+		_fx.setup(self, _body)
+		_fx.main_hub = Vector3(0.0, 3.62, 0.0)
+		_fx.main_radius = 3.8
+		_fx.tail_hub = Vector3(0.34, 2.4, 5.3)
+		_fx.tail_radius = 1.1
+	add_child(_fx)
 
 ## Swap in the generated helicopter when it has been cleaned and staged.
 func _try_provider_asset() -> void:
@@ -200,11 +219,28 @@ func _physics_process(delta: float) -> void:
 	if _provider_root != null:
 		_provider_root.rotation.x = _body.rotation.x
 		_provider_root.rotation.z = _body.rotation.z
-	var rotor_speed := 22.0 if pilot_is_player else 6.0
+		_provider_root.position.y = 0.30 + _body.position.y
+	# Rotor spool: the turbine winds up over ~2 s after boarding and runs down
+	# slowly after shutdown, instead of snapping between two speeds.
+	var spin_target := 1.0 if pilot_is_player and not disabled else 0.12
+	rotor_spin = move_toward(rotor_spin, spin_target, delta * (0.55 if spin_target > rotor_spin else 0.18))
+	var rotor_speed := lerpf(3.0, 26.0, rotor_spin)
+	if _fx != null:
+		_fx.spin = rotor_spin
+	# Above ~60 % rpm the blades are drawn as the motion-blurred disc only.
+	var blades_visible := rotor_spin < 0.6
+	if _provider_main_rotor != null:
+		_provider_main_rotor.visible = blades_visible
+	elif _rotor != null:
+		_rotor.visible = blades_visible
+	if _provider_tail_rotor != null:
+		_provider_tail_rotor.visible = rotor_spin < 0.45
+	elif _tail_rotor != null:
+		_tail_rotor.visible = rotor_spin < 0.45
 	if _rotor:
 		_rotor.rotate_y(delta * rotor_speed)
 	if _tail_rotor:
-		_tail_rotor.rotate_x(delta * (34.0 if pilot_is_player else 8.0))
+		_tail_rotor.rotate_x(delta * rotor_speed * 1.5)
 	if _provider_main_rotor != null:
 		AssetLibrary.spin_part(_provider_main_rotor, _provider_root, Vector3.UP, delta * rotor_speed * 1.6)
 	if _provider_tail_rotor != null:
@@ -215,6 +251,9 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0.0, 6.0 * delta)
 		velocity.z = move_toward(velocity.z, 0.0, 6.0 * delta)
 		velocity.y -= GRAVITY * delta
+		_body.rotation.x = lerp_angle(_body.rotation.x, 0.0, clampf(delta * 3.0, 0.0, 1.0))
+		_body.rotation.z = lerp_angle(_body.rotation.z, 0.0, clampf(delta * 3.0, 0.0, 1.0))
+		_body.position.y = lerpf(_body.position.y, 0.0, clampf(delta * 3.0, 0.0, 1.0))
 	# Aerial envelope (WORLD-06, wave 5): beyond the far-shore skyline the
 	# aircraft is turned back rather than flying into empty scenery.
 	var off_x := absf(global_position.x) - AIR_LIMIT_X
@@ -262,10 +301,24 @@ func _pilot_input(delta: float) -> void:
 	# a node that faces -Z turns left when its yaw increases: pressing left
 	# has to yaw left, or the aircraft flies away from the target
 	rotation.y += _yaw_input * 1.5 * delta
-	# arcade stabilisation: pitch the body with input, self-level when released
-	var target_pitch := -_pitch_input * 0.35
-	_body.rotation.x = lerp_angle(_body.rotation.x, target_pitch, clampf(delta * 4.0, 0.0, 1.0))
-	_body.rotation.z = lerp_angle(_body.rotation.z, _yaw_input * 0.30, clampf(delta * 4.0, 0.0, 1.0))
+	# Attitude with inertia: the nose dips while the aircraft is accelerating
+	# and flares up while it brakes; it banks into yaw in proportion to
+	# forward speed (a coordinated turn), and the airframe settles slowly.
+	var basis_now := global_transform.basis
+	var forward_speed := Vector3(velocity.x, 0.0, velocity.z).dot(-basis_now.z)
+	var lateral_speed := Vector3(velocity.x, 0.0, velocity.z).dot(basis_now.x)
+	var accel := (forward_speed - _prev_forward_speed) / maxf(delta, 0.001)
+	_prev_forward_speed = forward_speed
+	_accel_pitch = lerpf(_accel_pitch, clampf(-accel * 0.035, -0.22, 0.22), clampf(delta * 2.5, 0.0, 1.0))
+	var target_pitch := -_pitch_input * 0.24 + _accel_pitch
+	var speed_frac := clampf(absf(forward_speed) / MAX_FORWARD, 0.0, 1.0)
+	var target_bank := _yaw_input * (0.16 + 0.34 * speed_frac) - lateral_speed * 0.012
+	_body.rotation.x = lerp_angle(_body.rotation.x, target_pitch, clampf(delta * 2.6, 0.0, 1.0))
+	_body.rotation.z = lerp_angle(_body.rotation.z, target_bank, clampf(delta * 2.2, 0.0, 1.0))
+	# gentle hover bob while airborne (visual only)
+	_hover_clock += delta
+	var bob := (sin(_hover_clock * 1.3) * 0.06 + sin(_hover_clock * 2.9) * 0.025) if not is_on_floor() else 0.0
+	_body.position.y = lerpf(_body.position.y, bob, clampf(delta * 3.0, 0.0, 1.0))
 	var dir := -global_transform.basis.z
 	var target_speed := _pitch_input * MAX_FORWARD
 	velocity.x = lerpf(velocity.x, dir.x * target_speed, clampf(delta * 2.2, 0.0, 1.0))
@@ -277,9 +330,65 @@ func _pilot_input(delta: float) -> void:
 	if is_on_floor() and _lift_input <= 0.0:
 		velocity.y = minf(velocity.y, 0.0)
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if pilot_is_player:
 		Sfx.set_rotor_pitch(clampf(velocity.length() / 30.0, 0.0, 1.0))
+	if _camera != null and (_camera.current or pilot_is_player):
+		_update_chase_camera(delta)
+	else:
+		_cam_ready = false
+
+## Chase camera with inertia: trails behind along a lagged heading, sits a
+## little higher when descending, pulls back and widens with speed and rolls
+## with a fraction of the airframe bank. A ray keeps it out of buildings.
+func _update_chase_camera(delta: float) -> void:
+	var ground_speed := Vector2(velocity.x, velocity.z).length()
+	var speed_frac := clampf(ground_speed / MAX_FORWARD, 0.0, 1.0)
+	if not _cam_ready:
+		_cam_yaw = rotation.y
+		_cam_ready = true
+		_cam_pos = _chase_target(ground_speed)
+		_cam_look = global_position + Vector3.UP * 2.4
+		_cam_roll = 0.0
+	_cam_yaw = lerp_angle(_cam_yaw, rotation.y, clampf(delta * 1.8, 0.0, 1.0))
+	var desired := _chase_target(ground_speed)
+	_cam_pos = _cam_pos.lerp(desired, clampf(delta * 3.2, 0.0, 1.0))
+	var pivot := global_position + Vector3.UP * 3.0
+	var cam_pos := _cam_pos
+	var space := get_world_3d().direct_space_state
+	var query := PhysicsRayQueryParameters3D.create(pivot, cam_pos, 1)
+	query.exclude = [get_rid()]
+	var hit := space.intersect_ray(query)
+	if not hit.is_empty():
+		cam_pos = (hit["position"] as Vector3) + (pivot - cam_pos).normalized() * 0.6
+	var look := global_position + Vector3.UP * 2.4 + Vector3(velocity.x, 0.0, velocity.z) * 0.35
+	_cam_look = _cam_look.lerp(look, clampf(delta * 5.0, 0.0, 1.0))
+	_camera.global_position = cam_pos
+	if cam_pos.distance_to(_cam_look) > 0.5:
+		_camera.look_at(_cam_look, Vector3.UP)
+	_cam_roll = lerpf(_cam_roll, _body.rotation.z * 0.45, clampf(delta * 2.5, 0.0, 1.0))
+	_camera.rotate_object_local(Vector3.FORWARD, -_cam_roll)
+	_camera.fov = lerpf(_camera.fov, 72.0 + 8.0 * speed_frac, clampf(delta * 1.5, 0.0, 1.0))
+
+func _chase_target(ground_speed: float) -> Vector3:
+	var back := Basis(Vector3.UP, _cam_yaw) * Vector3(0.0, 0.0, 1.0)
+	var distance := 13.0 + ground_speed * 0.12
+	var height := 4.6 + clampf(-velocity.y * 0.10, -1.2, 2.0)
+	return global_position + back * distance + Vector3.UP * height
+
+## Snapshot of the presentation layer for regression checks.
+func presentation_state() -> Dictionary:
+	var blades: Node3D = _provider_main_rotor if _provider_main_rotor != null else _rotor
+	var offset := _camera.global_position - global_position
+	return {"rotor_spin": rotor_spin,
+		"disc_visible": _fx != null and _fx.disc_shown(),
+		"blades_visible": blades != null and blades.visible,
+		"camera_current": _camera.current,
+		"camera_distance": offset.length(),
+		"camera_height": offset.y,
+		"camera_behind": offset.dot(-global_transform.basis.z) < 0.0,
+		"wash": _fx.wash_intensity if _fx != null else 0.0,
+		"wash_visible": _fx != null and _fx.wash_intensity > 0.03}
 
 func is_landed() -> bool:
 	return _landed
