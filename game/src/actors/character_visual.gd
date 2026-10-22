@@ -35,6 +35,17 @@ var _phase_offset := 0.0
 var _seated := false
 var _driving_pose := false
 
+# On-foot piece: ground speed each locomotion clip covers at rate 1.0, measured
+# from the provider clips' mid-stance foot-bone travel (walk 1.41 m/s, run
+# 4.28 m/s; whole-stance run average 3.7 m/s) and checked in rendered footage.
+# Playback rate = ground speed / clip speed keeps planted feet from sliding.
+const WALK_CLIP_SPEED := 1.45
+const RUN_CLIP_SPEED := 4.0
+const RUN_THRESHOLD := 2.1
+const LOCOMOTION := ["walk", "run", "aim_walk", "aim_run"]
+var motion: CharacterMotionModifier
+var stride_amp := 1.0
+
 static func available(role: String = "player") -> bool:
 	return ResourceLoader.exists(PROVIDER_DIR + role + "_rigged.glb")
 
@@ -66,6 +77,7 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		var clip := animator.get_animation(full_name)
 		clip.loop_mode = Animation.LOOP_LINEAR if key in LOOP_CLIPS else Animation.LOOP_NONE
 	animator.animation_finished.connect(_on_animation_finished)
+	_upgrade_materials(model)
 	if role == "civilian":
 		_apply_wardrobe(model, WARDROBE[posmod(wardrobe_variant, WARDROBE.size())])
 		var stature := 0.94 + float(posmod(wardrobe_variant, 7)) * 0.017
@@ -74,12 +86,21 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		# Ambient figures are not drawn beyond 150 m of the camera (wave 5 perf).
 		for mesh_node in model.find_children("*", "MeshInstance3D", true, false):
 			(mesh_node as MeshInstance3D).visibility_range_end = NPC_DRAW_RANGE
+	if role == "player":
+		_player_look(model)
+		motion = CharacterMotionModifier.new()
+		motion.name = "MotionLayer"
+		skeleton.add_child(motion)
+		_set_motion_frame()
 	weapon_socket = BoneAttachment3D.new()
 	weapon_socket.name = "WeaponSocket"
 	weapon_socket.bone_name = "hand.r"
 	skeleton.add_child(weapon_socket)
 	loaded = true
 	_play("idle", 0.0)
+	if motion != null:
+		animator.seek(0.0, true)
+		motion.capture_reference()
 	return true
 
 func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloading: bool = false) -> void:
@@ -94,19 +115,41 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 		return
 	var clip := "idle"
 	var rate := 1.0
+	var crossfade := 0.28
+	var amp := 1.0
 	if not grounded:
 		clip = "jump"
+		crossfade = 0.12
 	elif reloading:
 		clip = "reload"
-	elif speed > 2.5:
+		crossfade = 0.16
+	elif speed > RUN_THRESHOLD:
 		clip = "aim_run" if aiming else "run"
-		rate = clampf(speed / 4.5, 0.70, 1.55)
+		# Fast running lengthens the stride (procedural layer, player only)
+		# before it raises cadence, as real sprinting does.
+		if motion != null:
+			amp = clampf(1.0 + (speed - 3.6) / 3.2 * 0.25, 1.0, 1.25)
+		rate = clampf(speed / (RUN_CLIP_SPEED * amp), 0.72, 2.0)
 	elif speed > 0.18:
 		clip = "aim_walk" if aiming else "walk"
-		rate = clampf(speed / 1.65, 0.60, 1.55)
+		rate = clampf(speed / WALK_CLIP_SPEED, 0.45, 1.8)
 	elif aiming:
 		clip = "aim"
-	_play(clip, 0.16, rate)
+		crossfade = 0.18
+	stride_amp = amp
+	if motion != null:
+		motion.stride_amp = lerpf(motion.stride_amp, amp, 0.2)
+		motion.breath = lerpf(motion.breath, 1.0 if clip in ["idle", "aim"] else 0.0, 0.05)
+	_play(clip, crossfade, rate)
+
+## Lean and head-look inputs for the procedural layer (player only).
+func set_body_motion(lean_pitch: float, lean_roll: float, look_yaw: float, look_pitch: float) -> void:
+	if motion == null:
+		return
+	motion.lean_pitch = lean_pitch
+	motion.lean_roll = lean_roll
+	motion.look_yaw = look_yaw
+	motion.look_pitch = look_pitch
 
 func set_seated(seated: bool, driving: bool = false) -> void:
 	_seated = seated
@@ -199,9 +242,18 @@ func _play(clip: String, crossfade: float, rate: float = 1.0) -> void:
 	animator.speed_scale = rate
 	if _current == clip:
 		return
+	# Walk <-> run (and aim variants) keep the gait phase so the feet never
+	# jump to a different step during the blend.
+	var phase := -1.0
+	if _current in LOCOMOTION and clip in LOCOMOTION and animator.current_animation != "":
+		var cur_len := animator.current_animation_length
+		if cur_len > 0.0:
+			phase = fmod(animator.current_animation_position, cur_len) / cur_len
 	_current = clip
 	animator.play(_clips[clip], crossfade)
-	if asset_role != "player" and clip in LOOP_CLIPS:
+	if phase >= 0.0:
+		animator.seek(phase * animator.get_animation(_clips[clip]).length, false)
+	elif asset_role != "player" and clip in LOOP_CLIPS:
 		animator.seek(_phase_offset * animator.get_animation(_clips[clip]).length, true)
 
 func _on_animation_finished(_animation: StringName) -> void:
@@ -232,3 +284,66 @@ func _apply_wardrobe(node: Node, tint: Color) -> void:
 					mesh_instance.set_surface_override_material(i, copy)
 	for child in node.get_children():
 		_apply_wardrobe(child, tint)
+
+
+## Render layer 11 carries the player's own fill/rim lights (Player camera).
+const PLAYER_LIGHT_LAYER := 1 << 10
+## The player's meshes also sit on render layer 11 so his own fill/rim lights
+## (on the Player camera) touch only him.
+func _player_look(node: Node) -> void:
+	for mesh_node in node.find_children("*", "MeshInstance3D", true, false):
+		(mesh_node as MeshInstance3D).layers = 1 | PLAYER_LIGHT_LAYER
+
+## Skeleton-space facing and left axes from the imported hierarchy, so the
+## procedural layer leans the right way whatever the glTF root rotation is.
+func _set_motion_frame() -> void:
+	var xf := Transform3D.IDENTITY
+	var node: Node = skeleton
+	while node != null and node != self:
+		if node is Node3D:
+			xf = (node as Node3D).transform * xf
+		node = node.get_parent()
+	var inv := xf.basis.orthonormalized().inverse()
+	# The owning actor faces -Z.
+	motion.forward_axis = (inv * Vector3.FORWARD).normalized()
+	motion.left_axis = (inv * Vector3.LEFT).normalized()
+
+## Character shading (on-foot piece). The provider export marks skin and
+## cloth fully metallic and leaves them without any sheen, which renders the
+## figure as a dull, dark plastic in shade. Real dielectric response, skin
+## subsurface scattering and a soft cloth rim make the figure read as a person
+## at close third-person range. Shared imported materials are upgraded once.
+static func _upgrade_materials(root: Node) -> void:
+	for mesh_node in root.find_children("*", "MeshInstance3D", true, false):
+		var mesh := (mesh_node as MeshInstance3D).mesh
+		if mesh == null:
+			continue
+		for i in mesh.get_surface_count():
+			var mat := mesh.surface_get_material(i) as StandardMaterial3D
+			if mat == null or mat.has_meta("orchard_upgraded"):
+				continue
+			mat.set_meta("orchard_upgraded", true)
+			var mat_name := String(mat.resource_name)
+			if mat_name.contains("Skin"):
+				mat.metallic = 0.0
+				mat.metallic_specular = 0.42
+				mat.roughness = 0.82
+				mat.subsurf_scatter_enabled = true
+				mat.subsurf_scatter_strength = 0.32
+				mat.subsurf_scatter_skin_mode = true
+				mat.rim_enabled = true
+				mat.rim = 0.22
+				mat.rim_tint = 0.55
+				mat.normal_scale = 1.15
+			elif mat_name.contains("Clothing"):
+				mat.metallic = 0.0
+				mat.metallic_specular = 0.28
+				mat.rim_enabled = true
+				mat.rim = 0.55
+				mat.rim_tint = 0.85
+				mat.normal_scale = 1.55
+			elif mat_name.contains("Textile"):
+				mat.metallic_specular = 0.25
+				mat.rim_enabled = true
+				mat.rim = 0.5
+				mat.rim_tint = 0.8

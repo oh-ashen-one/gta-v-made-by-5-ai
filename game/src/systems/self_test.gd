@@ -187,6 +187,7 @@ func run(main: Node) -> void:
 	await _ticks(45)
 	Input.action_release("move_forward")
 	_check("walking still works after vehicle death", player.global_position.distance_to(walk_start) > 1.0)
+	_check("on-foot gait: clip, playback rate and stride follow ground speed", _gait_matches_speed(player))
 
 	Game.wanted_heat = 46.0
 	Game.set_wanted(2)
@@ -706,3 +707,17 @@ func _report(timed_out: bool = false) -> void:
 	print("%d/%d checks passed, %d failed; report=%s" % [results.size() - failures, results.size(), failures, _report_path])
 	finished.emit(failures)
 	get_tree().quit(124 if timed_out else (1 if failures > 0 else 0))
+
+
+## On-foot piece: the walk clip plays at walking pace and the run clip's rate
+## and stride scale with sprint speed, so planted feet do not slide.
+func _gait_matches_speed(player: Player) -> bool:
+	var cv: CharacterVisual = player.get("_visual")
+	if cv == null or not cv.loaded:
+		return true # primitive fallback body has no clips
+	cv.set_motion(1.5)
+	var walk_ok := cv._current == "walk" and absf(cv.animator.speed_scale - 1.5 / CharacterVisual.WALK_CLIP_SPEED) < 0.01
+	cv.set_motion(6.8)
+	var run_ok := cv._current == "run" and cv.stride_amp > 1.1 and cv.animator.speed_scale > 1.0 and cv.animator.speed_scale < 1.6
+	cv.set_motion(0.0)
+	return walk_ok and run_ok and cv.motion != null
