@@ -679,6 +679,9 @@ func _skyline_checks(world: WorldBuilder) -> void:
 	_check("skyline: layered background city is built from batched tower archetypes", city_layers >= 5, str(city_layers))
 	var upgraded := LandmarkLooks.material_for("mbs_curtain_glass") is ShaderMaterial and LandmarkLooks.material_for("st_vertical_garden") is ShaderMaterial
 	_check("skyline: landmark facade and vertical-garden shaders are applied", upgraded)
+	var sk: Dictionary = world.skyline_stats
+	_check("skyline: background city wears at least 5 distinct facade systems", int(sk.get("materials", 0)) >= 5, str(sk))
+	_check("skyline: no background tower stands in the bay", int(sk.get("over_water", -1)) == 0 and int(sk.get("placed", 0)) > 150, str(sk))
 
 func _ticks(count: int) -> void:
 	for tick in count:

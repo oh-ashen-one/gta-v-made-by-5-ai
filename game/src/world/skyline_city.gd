@@ -21,6 +21,16 @@ var _rng := RandomNumberGenerator.new()
 var _groups: Array = []          # per archetype: Array of [Transform3D, Color]
 var _clear: Array[Dictionary] = []  # {rect: Rect2, max_h: float}
 var placed := 0
+## material id -> tower count (self-test reads it)
+var materials_used := {}
+## towers whose footprint overlaps bay water (must stay 0)
+var over_water := 0
+var _last_kind := -1
+var _last_material := -1
+## Facade systems each archetype may wear (ids from skyline_facade.gdshader):
+## 0 dark blue-green glass, 1 limestone, 2 silver-blue glass, 3 bronze glass,
+## 4 white aluminium ribbon, 5 painted residential, 6 finned grey-green glass.
+const MATERIALS_BY_KIND := [[0, 1, 2, 3, 6], [0, 2, 6, 1], [0, 2, 3], [5, 5, 1, 4], [0, 6, 4, 2], [1, 4, 3]]
 
 func _init(seed_value: int = 7310) -> void:
 	_rng.seed = seed_value
@@ -40,22 +50,61 @@ func _allowed_height(x: float, z: float, footprint: float) -> float:
 	return h
 
 ## Place one tower. kind: 0 setback, 1 octagon, 2 round, 3 slab, 4 fin, 5 podium.
-func add(kind: int, pos: Vector3, width: float, height: float, depth_ratio: float = 1.0, yaw: float = 0.0, style: float = -1.0) -> bool:
+## material: facade system id in skyline_facade.gdshader (0..6), -1 = pick.
+func add(kind: int, pos: Vector3, width: float, height: float, depth_ratio: float = 1.0, yaw: float = 0.0, material: int = -1) -> bool:
 	var cap := _allowed_height(pos.x, pos.z, width * maxf(1.0, depth_ratio))
 	if cap < 12.0:
 		return false
+	# Round 2: nothing stands in the bay. The critic found flank towers
+	# floating over open water at the left bank.
+	if _over_water(pos, width * maxf(1.0, depth_ratio)):
+		return false
 	height = minf(height, cap)
-	if style < 0.0:
-		style = 0.0 if kind in [1, 2, 4] else (1.0 if kind in [3, 5] else float(_rng.randf() < 0.25))
+	if material < 0:
+		material = _pick_material(kind)
+
 	var basis := Basis(Vector3.UP, yaw) * Basis.from_scale(Vector3(width, height, width * depth_ratio))
-	var custom := Color(style, _rng.randf(), _rng.randf_range(0.35, 0.75), _rng.randf())
+	var custom := Color((float(material) + 0.5) / 8.0, _rng.randf(), _rng.randf_range(0.35, 0.75), _rng.randf())
 	_groups[kind].append([Transform3D(basis, pos), custom])
+	materials_used[material] = int(materials_used.get(material, 0)) + 1
 	placed += 1
 	return true
+
+## Bay water (see WorldBuilder._waterfront_edge): x -800..800, z -1028..-328,
+## minus the far-shore land that starts at z = -628.
+static func _over_water(pos: Vector3, footprint: float) -> bool:
+	var r := footprint * 0.5 + 6.0
+	return absf(pos.x) - r < 800.0 and pos.z - r < -328.0 and pos.z + r > -628.0
+
+## Material per archetype, never the same archetype + material as the
+## previous tower (neighbours along a row are placed consecutively).
+func _pick_material(kind: int) -> int:
+	var options: Array = MATERIALS_BY_KIND[kind]
+	var m: int = options[_rng.randi() % options.size()]
+	var tries := 0
+	while kind == _last_kind and m == _last_material and tries < 8:
+		m = options[_rng.randi() % options.size()]
+		tries += 1
+	if kind != 5:
+		_last_kind = kind
+		_last_material = m
+	return m
+
+func _pick_from(kind: int, options: Array) -> int:
+	var m: int = options[_rng.randi() % options.size()]
+	var tries := 0
+	while m == _last_material and tries < 8:
+		m = options[_rng.randi() % options.size()]
+		tries += 1
+	_last_kind = kind
+	_last_material = m
+	return m
 
 ## A random tower whose archetype and proportions suit its height band.
 func add_random(pos: Vector3, height: float, residential: bool = false) -> void:
 	var kind: int = 3 if residential else [0, 1, 2, 4, 0, 3][_rng.randi() % 6]
+	if kind == _last_kind and not residential:
+		kind = [0, 1, 2, 4][(_rng.randi() % 3 + [0, 1, 2, 4].find(kind) + 1) % 4]
 	var width := _rng.randf_range(22.0, 34.0)
 	var depth := 1.0
 	if kind == 3:
@@ -64,10 +113,16 @@ func add_random(pos: Vector3, height: float, residential: bool = false) -> void:
 	elif kind == 2:
 		width = _rng.randf_range(24.0, 32.0)
 	var yaw := _rng.randf_range(-0.25, 0.25) + (PI * 0.5 if _rng.randf() < 0.3 else 0.0)
-	if add(kind, pos, width, height, depth, yaw):
-		# Most towers stand on a podium; it fills the street wall between them.
-		if height > 70.0 and _rng.randf() < 0.6:
-			add(5, pos + Vector3(_rng.randf_range(-4, 4), 0.0, _rng.randf_range(-4, 4)), width * 1.35, _rng.randf_range(9.0, 16.0), _rng.randf_range(0.6, 1.0), yaw, 1.0)
+	# Tall CBD towers alternate dark glass and light stone first, so the
+	# cluster has real value contrast (SG-03), then the other systems.
+	var mat := -1
+	if height > 140.0 and kind != 3:
+		mat = _pick_from(kind, [0, 1, 0, 3, 1, 2, 6])
+	if add(kind, pos, width, height, depth, yaw, mat):
+		# Every tower over 55 m stands on a podium; it fills the street wall
+		# between towers and gives each a readable base.
+		if height > 55.0:
+			add(5, pos + Vector3(_rng.randf_range(-4, 4), 0.0, _rng.randf_range(-4, 4)), width * 1.4, _rng.randf_range(9.0, 16.0), _rng.randf_range(0.7, 1.0), yaw, [1, 4, 3][_rng.randi() % 3])
 
 func build(parent: Node3D) -> void:
 	var shader: Shader = load(SHADER)
@@ -76,6 +131,10 @@ func build(parent: Node3D) -> void:
 		var list: Array = _groups[kind]
 		if list.is_empty():
 			continue
+		for item in list:
+			var xf: Transform3D = item[0]
+			if _over_water(xf.origin, xf.basis.x.length()):
+				over_water += 1
 		var mm := MultiMesh.new()
 		mm.transform_format = MultiMesh.TRANSFORM_3D
 		mm.use_custom_data = true

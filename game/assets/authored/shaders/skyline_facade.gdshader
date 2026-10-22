@@ -1,15 +1,28 @@
-// Skyline facade (wave A, Opus 5.5). World-space curtain-wall / punched-window
-// facade for landmark towers and the procedural background city. Floor bands,
-// mullions, per-panel tint variation and sparse warm interiors come from world
-// position, so instances can be scaled freely without UVs. Upward faces get a
-// weathered roof deck instead of facade, which is what an aerial camera sees.
+// Skyline facade (wave A round 2, Opus 5.5). World-space facades for the
+// landmark towers and the procedural background city. Round 1 used one pale
+// punched-window material for almost everything, so the CBD read as a beige
+// cardboard wall with a dot grid. Round 2 gives every tower one of seven
+// distinct cladding systems, a lobby base and a plant-screen crown, keeps
+// daytime interiors unlit and holds glass roughness high enough that no face
+// clips to a flat white bar.
+//
+// Materials (MultiMesh custom data .r = (id + 0.5) / 8):
+//   0 dark blue-green reflective curtain wall, slim mullions, mottled reflections
+//   1 light limestone, deep-set paired windows, string courses
+//   2 silver-blue glass, white aluminium mullions and spandrels
+//   3 bronze glass in a dark anodised frame
+//   4 white aluminium panel with continuous dark ribbon windows
+//   5 painted concrete residential slab (cream / grey), balconies, colour band
+//   6 grey-green glass behind deep vertical white fins
 // Patterns fade to their mean with distance (fwidth) so far towers do not moire.
 //
 // Per-instance control (MultiMesh custom data, or the uniforms for single meshes):
-//   INSTANCE_CUSTOM.r  style blend: 0 = glass curtain wall, 1 = punched concrete
-//   INSTANCE_CUSTOM.g  palette pick 0..1
+//   INSTANCE_CUSTOM.r  material id (see above)
+//   INSTANCE_CUSTOM.g  tint variation 0..1
 //   INSTANCE_CUSTOM.b  floor height scale (0.5..1.0 -> 2.8..4.2 m)
 //   INSTANCE_CUSTOM.a  random seed
+// Single meshes (Marina Bay Sands, near-shore towers) use the legacy uniforms:
+// style 0 = glass (palette picks 0/2/6/3), style 1 = punched stone.
 shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back;
 
@@ -18,27 +31,30 @@ uniform float style = 0.0;
 uniform float palette = 0.3;
 uniform float floor_scale = 0.8;
 uniform float seed = 0.0;
-uniform vec3 glass_a : source_color = vec3(0.10, 0.16, 0.23);
-uniform vec3 glass_b : source_color = vec3(0.27, 0.33, 0.38);
-uniform vec3 glass_c : source_color = vec3(0.10, 0.19, 0.20);
-uniform vec3 glass_d : source_color = vec3(0.21, 0.19, 0.17);
-uniform vec3 frame_col : source_color = vec3(0.46, 0.47, 0.48);
-uniform vec3 wall_a : source_color = vec3(0.60, 0.59, 0.56);
-uniform vec3 wall_b : source_color = vec3(0.45, 0.47, 0.49);
-uniform vec3 wall_c : source_color = vec3(0.67, 0.63, 0.55);
-// Extra aerial perspective for far skyline layers only (starts at haze_start).
+// Legacy colour overrides kept for the Marina Bay Sands material.
+uniform vec3 glass_b : source_color = vec3(0.33, 0.41, 0.48);
+uniform vec3 frame_col : source_color = vec3(0.72, 0.73, 0.72);
+// Extra aerial perspective for the farthest layers only (starts at haze_start).
 uniform vec3 haze_col : source_color = vec3(0.74, 0.76, 0.80);
-uniform float haze_start = 450.0;
-uniform float haze_density = 0.0008;
-uniform float haze_max = 0.5;
+uniform float haze_start = 1050.0;
+uniform float haze_density = 0.0007;
+uniform float haze_max = 0.45;
+// Environment-fog stand-in (match WorldBuilder/lighting fog colour + density).
+uniform vec3 fog_col : source_color = vec3(0.80, 0.78, 0.74);
+uniform float fog_density_ref = 0.00024;
+uniform float fog_scale = 0.5;
 uniform vec3 roof_col : source_color = vec3(0.32, 0.31, 0.30);
 uniform float band_frac = 0.20;
 uniform float mullion_m = 2.6;
-uniform float lit_chance = 0.035;
+// Daytime build: interiors stay dark. >0 only for dusk variants, and then the
+// lit panes are masked to the glazing so they never straddle the grid.
+uniform float lit_chance = 0.0;
 
 varying vec3 wpos;
 varying vec3 wnorm;
 varying vec4 icustom;
+varying float inst_base;
+varying float inst_h;
 
 vec3 lin(vec3 c) { return pow(c, vec3(2.2)); }
 float hash2(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -57,15 +73,28 @@ float pulse(float x, float w, float fw) {
 void vertex() {
 	wpos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	wnorm = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
-	icustom = use_instance_custom ? INSTANCE_CUSTOM : vec4(style, palette, floor_scale, seed);
+	if (use_instance_custom) {
+		icustom = INSTANCE_CUSTOM;
+		inst_base = MODEL_MATRIX[3].y;
+		inst_h = length(MODEL_MATRIX[1].xyz);
+	} else {
+		float legacy = style > 0.5 ? 1.0 : (palette < 0.3 ? 0.0 : (palette < 0.55 ? 2.0 : (palette < 0.8 ? 6.0 : 3.0)));
+		icustom = vec4((legacy + 0.5) / 8.0, fract(seed * 3.7), floor_scale, seed);
+		inst_base = 0.0;
+		inst_h = 0.0;
+	}
 }
 
 void fragment() {
-	float st = icustom.r;
-	float pal = icustom.g;
+	int mat_id = clamp(int(icustom.r * 8.0), 0, 6);
+	float tv = icustom.g;
 	float fh = mix(2.8, 4.2, clamp(icustom.b, 0.0, 1.0));
 	float sd = icustom.a * 97.0;
 	vec3 n = normalize(wnorm);
+	float metal = 0.0;
+	float rough = 0.85;
+	float spec = 0.4;
+	float glazing = 0.0;  // 1 where the pixel is a window pane (for lit masking)
 	if (n.y > 0.6) {
 		// Roof deck: weathered membrane with stains, panel seams and a lighter rim.
 		vec2 q = wpos.xz;
@@ -77,44 +106,138 @@ void fragment() {
 		ALBEDO = c;
 		ROUGHNESS = 0.92;
 		METALLIC = 0.0;
+		SPECULAR = 0.3;
 	} else {
 		float hz = abs(n.x) > abs(n.z) ? wpos.z : wpos.x;
 		float fy = wpos.y / fh;
 		float fwy = fwidth(fy);
-		float fwx = fwidth(hz / mullion_m);
-		vec2 cell = vec2(floor(hz / mullion_m), floor(fy));
+		float bay = hz / mullion_m;
+		float fwx = fwidth(bay);
+		vec2 cell = vec2(floor(bay), floor(fy));
 		float r = hash2(cell + sd);
 		float rf = hash2(vec2(floor(fy), sd));
-		// Glass curtain wall.
-		vec3 g = pal < 0.3 ? glass_a : (pal < 0.55 ? glass_b : (pal < 0.8 ? glass_c : glass_d));
-		g *= 0.86 + 0.24 * r + 0.08 * rf;
-		float band = pulse(fy, band_frac, fwy);
-		float mull = pulse(hz / mullion_m, 0.08, fwx);
-		vec3 curtain = mix(g, frame_col, max(band, mull * 0.75));
-		// Punched concrete: window openings inside a light wall.
-		vec3 wall = (pal < 0.4 ? wall_a : (pal < 0.7 ? wall_b : wall_c)) * (0.86 + 0.2 * vnoise(vec2(hz, wpos.y) * 0.04 + sd));
-		float wx = pulse(hz / mullion_m + 0.3, 0.55, fwx);
-		float wy = pulse(fy + 0.25, 0.48, fwy);
-		vec3 win = lin(vec3(0.16, 0.19, 0.22)) * (0.7 + 0.6 * r);
-		vec3 punched = mix(wall, win, wx * wy);
-		vec3 c = mix(curtain, punched, st);
-		// Sparse warm interiors (late-afternoon lights already on in a few rooms).
-		float lit = step(1.0 - lit_chance, r) * (1.0 - band) * (1.0 - clamp(fwy * 2.0, 0.0, 1.0));
-		c = mix(c, lin(vec3(0.95, 0.78, 0.52)), lit * mix(0.8, 0.6, st));
-		// Grime gathers at the base; whole towers vary in value so the
-		// skyline reads as many buildings, not one material.
-		c *= 0.9 + 0.1 * smoothstep(0.0, 12.0, wpos.y);
-		c *= mix(0.68, 1.08, fract(icustom.a * 7.31));
-		ALBEDO = c;
-		float glassy = (1.0 - st) * (1.0 - max(band, mull));
-		METALLIC = mix(0.05, 0.3, glassy);
-		ROUGHNESS = mix(0.8, 0.16 + 0.12 * r, glassy);
-		SPECULAR = mix(0.4, 0.7, glassy);
+		// Large soft patches: reflections of neighbouring towers and sky.
+		float refl = vnoise(vec2(hz * 0.035, wpos.y * 0.012) + sd);
+		float filt = clamp(fwy * 2.0, 0.0, 1.0);
+		vec3 c;
+		if (mat_id == 0) {
+			// Dark blue-green reflective curtain wall.
+			vec3 g = lin(mix(vec3(0.04, 0.11, 0.13), vec3(0.05, 0.12, 0.17), tv));
+			g *= 0.8 + 0.35 * refl + 0.12 * r * (1.0 - filt);
+			// Sky reflection brightens the glass toward the top of the tower.
+			if (inst_h > 0.0) {
+				g *= mix(0.85, 1.45, smoothstep(0.0, 1.0, (wpos.y - inst_base) / inst_h));
+			}
+			float band = pulse(fy, 0.1, fwy);
+			float mull = pulse(bay * 1.25, 0.06, fwx * 1.25);
+			c = mix(g, lin(vec3(0.27, 0.31, 0.32)), max(band, mull) * 0.85);
+			glazing = 1.0 - max(band, mull);
+			metal = 0.0; rough = mix(0.6, 0.34, glazing); spec = mix(0.4, 0.3, glazing);
+		} else if (mat_id == 1) {
+			// Light limestone with paired, deep-set windows and string courses.
+			vec3 wall = lin(mix(vec3(0.80, 0.77, 0.70), vec3(0.74, 0.72, 0.68), tv));
+			wall *= 0.9 + 0.14 * vnoise(vec2(hz, wpos.y) * 0.06 + sd);
+			float wx = pulse(bay * 0.5 + 0.12, 0.76, fwx * 0.5) * (1.0 - pulse(bay * 0.5 + 0.12 + 0.36, 0.04, fwx * 0.5));
+			float wy = pulse(fy + 0.3, 0.6, fwy);
+			float reveal = pulse(fy + 0.3 - 0.6, 0.06, fwy) * wx;  // shadowed head of the opening
+			vec3 win = lin(vec3(0.06, 0.08, 0.10)) * (0.8 + 0.5 * r * (1.0 - filt));
+			c = mix(wall, win, wx * wy);
+			c = mix(c, wall * 0.55, reveal);
+			float course = pulse(fy / 4.0, 0.06, fwy / 4.0);
+			c = mix(c, wall * 1.08, course);
+			glazing = wx * wy;
+			rough = mix(0.88, 0.3, glazing); spec = 0.45;
+		} else if (mat_id == 2) {
+			// Silver-blue glass, white aluminium grid.
+			vec3 g = glass_b * (0.85 + 0.3 * refl + 0.1 * r * (1.0 - filt)) * mix(0.9, 1.1, tv);
+			float band = pulse(fy, band_frac, fwy);
+			float mull = pulse(bay, 0.09, fwx);
+			c = mix(g, frame_col, max(band, mull * 0.85));
+			glazing = 1.0 - max(band, mull);
+			metal = 0.15 * glazing; rough = mix(0.55, 0.26, glazing); spec = 0.55;
+		} else if (mat_id == 3) {
+			// Bronze glass in a dark anodised frame.
+			vec3 g = lin(mix(vec3(0.17, 0.13, 0.09), vec3(0.22, 0.17, 0.11), tv)) * (0.8 + 0.4 * refl);
+			float band = pulse(fy, 0.16, fwy);
+			float mull = pulse(bay, 0.1, fwx);
+			c = mix(g, lin(vec3(0.12, 0.10, 0.08)), max(band, mull));
+			glazing = 1.0 - max(band, mull);
+			metal = 0.0; rough = mix(0.5, 0.34, glazing); spec = 0.35;
+		} else if (mat_id == 4) {
+			// White aluminium panel with continuous dark ribbon windows.
+			vec3 wall = lin(mix(vec3(0.86, 0.86, 0.84), vec3(0.80, 0.82, 0.83), tv));
+			float ribbon = pulse(fy + 0.15, 0.48, fwy);
+			float mull = pulse(bay * 0.8, 0.05, fwx * 0.8);
+			vec3 win = lin(vec3(0.07, 0.11, 0.15)) * (0.75 + 0.5 * refl);
+			c = mix(wall, win, ribbon * (1.0 - mull * 0.8));
+			glazing = ribbon * (1.0 - mull);
+			metal = 0.1 * glazing; rough = mix(0.6, 0.25, glazing); spec = 0.5;
+		} else if (mat_id == 5) {
+			// Painted concrete residential slab: balconies, dark windows, colour band.
+			vec3 wall = lin(tv < 0.33 ? vec3(0.84, 0.80, 0.70) : (tv < 0.66 ? vec3(0.76, 0.77, 0.75) : vec3(0.80, 0.74, 0.66)));
+			wall *= 0.9 + 0.12 * vnoise(vec2(hz, wpos.y) * 0.05 + sd);
+			float wx = pulse(bay * 0.5, 0.62, fwx * 0.5);
+			float wy = pulse(fy + 0.2, 0.5, fwy);
+			float slab = pulse(fy, 0.12, fwy);
+			vec3 win = lin(vec3(0.10, 0.11, 0.12)) * (0.8 + 0.5 * r * (1.0 - filt));
+			c = mix(wall, win, wx * wy);
+			c = mix(c, wall * 1.06, slab);
+			float stripe = pulse(bay / 9.0, 0.08, fwx / 9.0);
+			vec3 accent = lin(tv < 0.5 ? vec3(0.62, 0.30, 0.22) : vec3(0.30, 0.44, 0.52));
+			c = mix(c, accent, stripe * 0.85);
+			glazing = wx * wy;
+			rough = 0.85; spec = 0.35;
+		} else {
+			// Grey-green glass behind deep white vertical fins.
+			vec3 g = lin(mix(vec3(0.16, 0.22, 0.21), vec3(0.20, 0.26, 0.27), tv)) * (0.8 + 0.4 * refl);
+			float fin = pulse(bay * 0.75, 0.24, fwx * 0.75);
+			float band = pulse(fy, 0.08, fwy);
+			vec3 fin_col = lin(vec3(0.84, 0.84, 0.82));
+			c = mix(g, fin_col * 0.62, band);
+			c = mix(c, fin_col, fin);
+			glazing = (1.0 - fin) * (1.0 - band);
+			metal = 0.15 * glazing; rough = mix(0.7, 0.28, glazing); spec = 0.5;
+		}
+		// Lobby base and plant-screen crown (procedural towers only).
+		if (inst_h > 0.0) {
+			float ly = wpos.y - inst_base;
+			float base_h = min(9.0, inst_h * 0.12);
+			if (ly < base_h) {
+				float col = pulse(hz / 7.5, 0.18, fwidth(hz / 7.5));
+				vec3 lobby = lin(vec3(0.05, 0.06, 0.07)) * (0.8 + 0.4 * refl);
+				c = mix(lobby, lin(vec3(0.62, 0.60, 0.56)), max(col, step(base_h - 1.0, ly)));
+				glazing = 0.0;
+				rough = 0.5;
+			}
+			float crown0 = inst_h - min(7.0, inst_h * 0.06);
+			if (ly > crown0 && mat_id != 5) {
+				float louvre = pulse(hz / 0.9, 0.5, fwidth(hz / 0.9));
+				vec3 screen = lin(mat_id == 3 ? vec3(0.22, 0.19, 0.15) : vec3(0.70, 0.71, 0.70));
+				c = mix(screen, screen * 0.62, louvre * 0.6);
+				c = mix(c, screen * 1.1, step(inst_h - 0.8, ly));
+				glazing = 0.0;
+				rough = 0.7; metal = 0.0;
+			}
+		}
+		// Optional lit interiors (dusk variants only), masked to whole panes.
+		float lit = step(1.0 - lit_chance, r) * glazing * (1.0 - filt);
+		c = mix(c, lin(vec3(0.95, 0.78, 0.52)), lit * 0.7);
 		EMISSION = vec3(1.0, 0.78, 0.5) * lit * 0.25;
+		// Grime gathers at the base; whole towers vary slightly in value.
+		c *= 0.9 + 0.1 * smoothstep(0.0, 12.0, wpos.y);
+		c *= mix(0.88, 1.06, fract(icustom.a * 7.31));
+		ALBEDO = c;
+		METALLIC = metal;
+		ROUGHNESS = rough;
+		SPECULAR = spec;
 	}
-	// Distance haze: far layers fade toward the sky so the city reads in depth.
+	// Aerial perspective, written to FOG so it replaces (not stacks on) the
+	// environment fog. The CBD across the bay (~0.6-1 km) keeps about half the
+	// environment fog so its dark glass and light stone still separate (SG-03),
+	// while the horizon band (> haze_start) fades fully into the sky colour.
+	// Three depth layers: district (little haze), CBD (some), horizon (most).
 	float d = length(VERTEX);
+	float env_amt = (1.0 - exp(-d * fog_density_ref)) * fog_scale;
 	float hz_amt = (1.0 - exp(-max(d - haze_start, 0.0) * haze_density)) * haze_max;
-	ALBEDO = mix(ALBEDO, haze_col * 0.85, hz_amt);
-	EMISSION += haze_col * hz_amt * 0.18;
+	FOG = vec4(mix(fog_col, haze_col, clamp(hz_amt * 2.0, 0.0, 1.0)), clamp(env_amt + hz_amt, 0.0, 1.0));
 }

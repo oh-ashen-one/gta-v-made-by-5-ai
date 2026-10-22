@@ -50,7 +50,7 @@ static func material_for(material_name: String, source: Material = null) -> Mate
 			m.set_shader_parameter("floor_scale", 0.45)
 			m.set_shader_parameter("mullion_m", 1.9)
 			m.set_shader_parameter("band_frac", 0.17)
-			m.set_shader_parameter("lit_chance", 0.018)
+			m.set_shader_parameter("lit_chance", 0.0)
 			m.set_shader_parameter("glass_b", Color(0.42, 0.52, 0.58))
 			m.set_shader_parameter("frame_col", Color(0.76, 0.75, 0.71))
 			result = m
@@ -61,7 +61,7 @@ static func material_for(material_name: String, source: Material = null) -> Mate
 			t.set_shader_parameter("palette", 0.2 if material_name.ends_with("0") else 0.7)
 			t.set_shader_parameter("floor_scale", 0.6)
 			t.set_shader_parameter("seed", 0.37 if material_name.ends_with("0") else 0.81)
-			t.set_shader_parameter("lit_chance", 0.03)
+			t.set_shader_parameter("lit_chance", 0.0)
 			result = t
 		"st_vertical_garden":
 			var g := ShaderMaterial.new()

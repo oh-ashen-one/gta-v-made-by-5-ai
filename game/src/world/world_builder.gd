@@ -63,6 +63,8 @@ var _asset_collision_cache: Dictionary = {}
 var _reserved: Array[Rect2] = []
 ## Rooftop dressing for infill and HDB roofs, flushed in _background_city().
 var _roof_kit := RoofKit.new()
+## Skyline round 2 stats for the self-test (materials used, towers over water).
+var skyline_stats := {}
 
 func build(seed_value: int = 20261021) -> void:
 	_rng.seed = seed_value
@@ -1026,22 +1028,46 @@ func _background_city() -> void:
 				_: h = rng.randf_range(40.0, 110.0)
 			city.add_random(Vector3(x, 0.0, z), minf(h, 265.0), layer == 4 and rng.randf() < 0.5)
 			x += step * rng.randf_range(0.75, 1.3)
-	# Flanking estates and mixed blocks beyond the playable district edge.
+	# Round 2: the inner east flank row (behind the aviation compound) is the
+	# authored mullioned-glass towers again (podium, crown, spire). The critic
+	# found the procedural slabs that replaced them read as flat boxes from
+	# the airfield and the drive. West and south stay procedural (the aerial
+	# views judged those better), and nothing stands in the bay any more.
+	var near_rng := RandomNumberGenerator.new()
+	near_rng.seed = 991
+	for i in 64:
+		var side := i % 4
+		if side == 0:
+			continue
+		var p := Vector3.ZERO
+		match side:
+			1: p = Vector3(-440.0 - near_rng.randf_range(0.0, 90.0), 0.0, -410.0 + (i / 4) * 54.0)
+			2: p = Vector3(440.0 + near_rng.randf_range(0.0, 90.0), 0.0, -410.0 + (i / 4) * 54.0)
+			_: p = Vector3(-620.0 + (i / 4) * 82.0, 0.0, 435.0 + near_rng.randf_range(0.0, 90.0))
+		var yaw := near_rng.randf_range(-0.08, 0.08)
+		var hs := near_rng.randf_range(0.55, 1.20)
+		if side != 2 or SkylineCity._over_water(p, 40.0):
+			continue
+		_authored("skyline_%d.glb" % ((i / 4) % 4), p, yaw, Vector3(1.0, hs, 1.0))
+	# Procedural estates and mixed blocks: west flank and south edge from the
+	# district edge outward, east flank behind the authored row.
 	for side in [-1.0, 1.0]:
-		for row in 3:
-			var zz := -420.0 + rng.randf_range(0.0, 30.0)
-			while zz < 520.0:
-				var xx: float = side * (455.0 + row * 70.0 + rng.randf_range(-10.0, 10.0))
-				var res := rng.randf() < 0.65
-				city.add_random(Vector3(xx, 0.0, zz), rng.randf_range(35.0, 70.0) + row * 22.0 + (40.0 if not res and rng.randf() < 0.4 else 0.0), res)
+		var x0: float = 455.0 if side < 0.0 else 600.0
+		for row in (3 if side < 0.0 else 2):
+			var zz := -330.0 + rng.randf_range(0.0, 30.0)
+			while zz < 600.0:
+				var xx: float = side * (x0 + row * 72.0 + rng.randf_range(-10.0, 10.0))
+				var res := rng.randf() < 0.55
+				city.add_random(Vector3(xx, 0.0, zz), rng.randf_range(38.0, 75.0) + row * 24.0 + (40.0 if not res and rng.randf() < 0.45 else 0.0), res)
 				zz += rng.randf_range(48.0, 72.0)
 	for row in 3:
 		var xs := -620.0 + rng.randf_range(0.0, 30.0)
-		while xs < 620.0:
-			var res2 := rng.randf() < 0.6
-			city.add_random(Vector3(xs, 0.0, 455.0 + row * 70.0 + rng.randf_range(-10.0, 10.0)), rng.randf_range(30.0, 70.0) + row * 25.0, res2)
+		while xs < 560.0:
+			var res2 := rng.randf() < 0.55
+			city.add_random(Vector3(xs, 0.0, 455.0 + row * 72.0 + rng.randf_range(-10.0, 10.0)), rng.randf_range(32.0, 72.0) + row * 25.0, res2)
 			xs += rng.randf_range(50.0, 76.0)
 	city.build(_world_root)
+	skyline_stats = {"materials": city.materials_used.size(), "over_water": city.over_water, "placed": city.placed}
 	print("[world] skyline city: ", city.placed, " towers; roof kit: ", _roof_kit.roofs, " roofs")
 
 func _batch_background(path: String, transforms: Array, tint: Color = Color.WHITE) -> void:
