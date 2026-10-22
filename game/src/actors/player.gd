@@ -20,7 +20,7 @@ const FRICTION := 12.0
 # hop, not the old 1.08 m / 0.60 s superhuman float).
 const JUMP_VELOCITY := 5.0
 const MOUSE_SENS := 0.0022
-const AIM_DISTANCE := 1.7  # combat piece: tighter over-the-shoulder aim
+const AIM_DISTANCE := 1.6  # combat piece: over-the-shoulder aim (wave Q: hero, arms and gun in frame)
 const HIP_DISTANCE := 3.2
 const INTERACT_RANGE := 5.0
 const PICKUP_RANGE := 7.5
@@ -543,7 +543,9 @@ func _update_camera_follow(delta: float, sprinting: bool) -> void:
 	if lag.length() > 0.7:
 		lag = lag.normalized() * 0.7
 		_cam_follow = global_position + lag
-	arm.position = ARM_BASE + global_transform.basis.inverse() * lag
+	var pc := get_node_or_null("PlayerCombat")
+	var aim_off: Vector3 = pc.get("arm_offset") if pc != null else Vector3.ZERO
+	arm.position = ARM_BASE + aim_off + global_transform.basis.inverse() * lag
 	var sprint_amount := clampf((_speed - RUN_SPEED) / (SPRINT_SPEED - RUN_SPEED), 0.0, 1.0) if sprinting else 0.0
 	camera.fov = lerpf(camera.fov, 58.0 + 5.0 * sprint_amount, clampf(delta * 3.0, 0.0, 1.0))
 	_sprint_cam = sprint_amount
@@ -762,6 +764,8 @@ func _update_prompt() -> void:
 		return
 	var target := _interaction_target()
 	var prompt := ""
+	if CombatFx.in_combat():
+		target = null # combat piece: no interaction prompts mid-firefight
 	if target != null:
 		if target is Helicopter:
 			prompt="[E] Board helicopter"

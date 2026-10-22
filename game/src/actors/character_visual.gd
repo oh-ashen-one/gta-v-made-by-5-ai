@@ -279,6 +279,7 @@ func play_death() -> void:
 	_play("fall", 0.08)
 
 func reset_alive() -> void:
+	Ragdoll.clear(self) # combat piece: pooled responders leave their ragdoll
 	_dead = false
 	_one_shot = false
 	_seated = false
@@ -296,6 +297,7 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 		weapon_socket.add_child(weapon)
 	_weapon_node = weapon
 	_weapon_kind = weapon_kind
+	AimIkLayer.ensure(self) # combat piece: aim/reload upper-body layer
 	if asset_role != "player":
 		for mesh_node in weapon.find_children("*", "MeshInstance3D", true, false):
 			(mesh_node as MeshInstance3D).visibility_range_end = NPC_DRAW_RANGE
