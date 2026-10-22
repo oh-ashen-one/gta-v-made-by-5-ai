@@ -26,7 +26,9 @@ Rolling handoff; updated during the wave. Not a final report until marked FINAL.
 6. World: landable far shore, helicopter aerial envelope and ditch recovery, Singapore kerb markings, five-foot-way pedestrians.
 7. Audio: click-free engine/rotor loop seams, a whole-cycle siren, a soft-saturated gunshot, objective seam and peak checks (no listening).
 8. QA: sightline, perf, census, wheel and two-process save/relaunch probes. QA entry points fail fast. The regression suite is up to 96 checks.
-9. Two fresh-context critic passes (Opus subagents, code-only): 4 majors and 9 minors fixed or documented (`waves/05/evidence/critic_review_*.md`).
+9. Four fresh-context critic passes (Opus subagents, code-only; the last was a whole-diff release review): 8 major/high and 11 minor/low findings fixed or documented (`waves/05/evidence/critic_review_*.md`).
+10. A 30-minute headless soak found and drove a real fix: carjacked drivers had stood frozen in the road, and invulnerable pedestrians wrecked the car. Vehicles now injure or scatter pedestrians, displaced drivers rejoin a pavement, and there is one impact per person per 0.6 s.
+11. Title screen shows the opening skyline; notifications sit below it. Far-shore planting clears the landmarks. A downed out-of-bounds pilot is recovered.
 
 ## Verified evidence (headless only, unless a rendered capture is linked)
 

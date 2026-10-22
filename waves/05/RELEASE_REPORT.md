@@ -28,7 +28,7 @@
 | Streetscape | Double yellow lines that stop at junctions; white kerbside lots; five-foot-way pedestrians; Tembusu Food Centre signboard and street-name blades. | probe | Not rendered |
 | Audio | Click-free engine and rotor loop seams, a whole-cycle siren, a soft-saturated gunshot. | `regressions_94_audio.json` | Objective metrics only. **Nobody has listened.** |
 | QA tooling | Sightline probe, perf probe, mesh census, wheel probe, two-process save/relaunch probe; QA entry points fail fast. | `evidence/` | — |
-| Independent review | Three fresh-context Opus critic subagent passes over the source diff. 6 major/high and 11 minor/low findings were fixed or documented. | `evidence/critic_review_1.md`, `_2.md`, `_3.md` | Code review only, not a visual review |
+| Independent review | Four fresh-context Opus critic subagent passes over the source diff, the last a whole-diff release review. 8 major/high and 11 minor/low findings were fixed or documented. | `evidence/critic_review_1.md` … `_4.md` | Code review only, not a visual review |
 
 ## Not done / failing / untested (carry-forward for the owner)
 
