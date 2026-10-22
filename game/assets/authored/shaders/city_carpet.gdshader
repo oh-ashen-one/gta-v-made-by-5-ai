@@ -111,7 +111,8 @@ void fragment() {
 	// in 9 m slots, ~40% occupied, drifting at 9-15 m/s. Seen from the
 	// helicopter it is a field of moving specks along the grid.
 	float car_fade = 1.0 - clamp((fwm - 0.6) / 2.4, 0.0, 1.0);
-	for (int axis = 0; axis < 2; axis++) {
+	// Only street pixels near enough to resolve a car pay for the lanes.
+	if (car_fade * st > 0.001) for (int axis = 0; axis < 2; axis++) {
 		float across = (axis == 0 ? fract(q.y / block_m) : fract(q.x / block_m)) * block_m;
 		float along = axis == 0 ? q.x : q.y;
 		float row = axis == 0 ? cell.y : cell.x;

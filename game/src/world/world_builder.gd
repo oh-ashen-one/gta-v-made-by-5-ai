@@ -1074,11 +1074,15 @@ func _background_city() -> void:
 			xs += rng.randf_range(50.0, 76.0)
 	# Round 4: third tower layer, wing estates, city carpet, low-rise blocks,
 	# far ridges and the shared sun/haze sync (see SkylineHorizon).
+	# `--skyline-off=horizon` builds without it (perf / look A/B only).
 	var horizon := SkylineHorizon.new()
-	horizon.populate(city)
+	var horizon_on := not ("--skyline-off=horizon" in OS.get_cmdline_user_args())
+	if horizon_on:
+		horizon.populate(city)
 	city.build(_world_root)
-	horizon.build(_world_root, city)
-	_batch_background("res://assets/authored/rain_tree.glb", horizon.promenade_tree_transforms(_far_shore_tree_clear))
+	if horizon_on:
+		horizon.build(_world_root, city)
+		_batch_background("res://assets/authored/rain_tree.glb", horizon.promenade_tree_transforms(_far_shore_tree_clear))
 	SkylineHorizon.sync(self)
 	skyline_stats = {"materials": city.materials_used.size(), "over_water": city.over_water, "placed": city.placed, "ground_shadows": city.ground_shadows,
 		"lowrise": horizon.lowrise, "far_towers": horizon.far_towers, "carpet_km2": horizon.carpet_area / 1.0e6, "promenade_trees": horizon.promenade_trees, "atmosphere": SkylineHorizon.params().size()}
