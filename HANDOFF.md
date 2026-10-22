@@ -1,52 +1,69 @@
-# Singapore relay — wave 5 (final, Opus 5.5) — FINAL
+# Orchard Reach — Opus 5.5 enhancement loop (rolling handoff)
 
-- Builder: Opus 5.5 (`claude-opus-5-5`) through Claude Code, branch `feature/wave-05-opus`. No main merge, no public release. No sixth wave: [`NEXT_GOAL.md`](NEXT_GOAL.md) points to the release report.
-- Fixed window: 2026-10-21T23:56:42Z → 2026-10-22T03:56:42Z (final 30 min included).
-- Machine: Mac Studio M3 Ultra 256 GB (`Mac15,14`, verified). Engine: Godot 4.7.1.stable.official.a13da4feb, Forward+, native macOS (Metal 4.0 for renders).
-- Incoming: `6b51a26` (manager archive) over the Argon game tree `a5bf132`.
-- Read first: [`waves/05/RELEASE_REPORT.md`](waves/05/RELEASE_REPORT.md) (what was delivered, what is verified, what is not), then [`waves/05/evidence/rendered/README.md`](waves/05/evidence/rendered/README.md) (the real renders).
+- Branch: `Opus-5.5-enhancements` (remote `origin/Opus-5.5-enhancements`). Never merge or push `main`; that needs the owner.
+- Run window: START 2026-10-22T06:28:30Z, FEATURE FREEZE 11:43:30Z, DEADLINE 12:28:30Z. Run record: [`loop/RUN.md`](loop/RUN.md); pieces and verdicts: [`loop/PIECES.md`](loop/PIECES.md); progress page: `python3 loop/make_progress.py` → `progress/index.html`.
+- Machine: Mac Studio (`midirstudio.local`), Godot 4.7.1 Forward+, Metal for renders.
+- Last update: wave-A integration, 2026-10-22 ~10:40Z. Last game-code commit `d3133d1`; the branch head after it only adds loop/progress records.
 
-## Release candidates (private, native macOS, git-ignored `package-wave05/`)
+## What is merged (wave A)
 
-1. **Final candidate `98b41b2`**: `d2a6cad` plus HUD fixes (ammo backing plate; the minimap draws the bay and far shore) and route automation fixes.
-   - SHA-256: signed zip `129ecc4f15a6526dab241b231aad90bf18c977626acc248b4761cf1748fbb550`, raw zip `131aa64b2b3815bd3714129b7a6455e14def70a34d4ba862810ef668b716cd88`, PCK `5cb6c167ae883d9b4c242b184dfb49d9f7ad2608f054a840320103d3e095bd0a`, signed executable `8d071ddf0a9c358c0e4bc6e2a3b8ad16255c63eb8ea2378312a8196270f33000`.
-   - Packaged headless results (`waves/05/evidence/final-package-98b41b2/`): 97/97 regressions; save → relaunch → Continue PASS (position, health, weapon); route 13/13 with 0 deaths in 147.6 s.
-   - It is in `package-wave05/`, and the zip hashes were re-checked after persisting.
-   - **Not rendered.** Two foreign veyr Blender sessions have filled the shared cap since about 03:04 UTC, four held it by 03:44, when the builder stopped its idle gated runner. The HUD change is verified only by review and headless regressions; the `d2a6cad` renders show the pre-fix HUD.
-2. **`d2a6cad`**: the rendered-verified fallback, in `package-wave05/d2a6cad/` (`waves/05/evidence/final-package/`). Its game code differs from `98b41b2` only in `hud.gd` and the QA automation.
-   - SHA-256: signed zip `36c5132f3948ad465b4860ae9d9c166dd7eedfee99ade6120e578e988eb2198d`, raw zip `04f2182845dba94326eabf43a8d43f55144db6861fe4e36f3d4e459fd695f6b6`, PCK `233a76c68f3ca83207e9575790bb0c51ff674eeba6ed596fb07b9ee7036ffc64`, signed executable `8cbba859c0de59f8f7169822aa05073676a6b92e3fb01e5dd463352873116548`.
-   - Packaged headless results: 97/97 regressions, save/relaunch PASS, route 13/13 in 147.6 s.
-   - **Packaged rendered (Metal): route 13/13, 0 deaths, 149.1 s**, plus the opening, gameplay and fixed views.
+| Piece | Merged commit | Critic verdict vs GTA V | Better than baseline (critic) |
+| --- | --- | --- | --- |
+| water | `e3eef3e` (merge `ca6591d`) | OURS LOSES (4/4 rounds) | yes, every round |
+| skyline | `5e58313` (merge `9d849b4`) | OURS LOSES (4/4 rounds) | yes in A3 and A4 |
+| lighting | `301a7c9` (merge `ffc3b01`) | OURS LOSES (4/4 rounds) | no (regressions); merged per the orchestrator's 08:39Z guidance, regressions fixed in `4d9af26` |
+| street-life | not merged | OURS LOSES (2 rounds) | no; branch `opus55/street-life` and its worktree kept |
 
-Both signatures are local ad-hoc signatures only: no Developer ID, no notarization, and no clearance for public redistribution of provider assets.
+Integration seam fixes: `4d9af26` (Merlion jet/pier follow the moved statue, skyline haze reads the lighting sky, lighting fixes for sepia shade / milky aerials / sun bias, QA save guard, render gate counts `godot`), `0c36d4b` (water foam and spray), `d3133d1` (added Merlion view re-aimed).
 
-## Verified this wave
+Wave B/C pieces (materials, driving, on-foot, helicopter) were still running in their own worktrees at this handoff. The final integrator merges them.
 
-- **Real renders** (02:49–02:54 UTC, shared GPU, `evidence/rendered/`):
-  - The unchanged wave-4 baseline: 15 fixed views, including the owner's aerial camera, and 7 gameplay views.
-  - The `d2a6cad` candidate: 16 fixed views, 7 gameplay views and an 11-shot rendered route.
-  - Rendered route frame time: p50 7.73 ms, p95 11.65 ms, p99 15.30 ms, max 1,063 ms. Not acceptance-valid because of contamination.
-- Fresh-context critic of the renders (`evidence/critic_review_5_rendered.md`):
-  - The opening frame now reads as Singapore.
-  - Concept scores: on foot 4/10, driving 2/10, helicopter 3/10.
-  - Worst defects: the minimap and ammo contrast (fixed in `98b41b2`, rendered re-check pending); an empty world, a white glow by the helicopter, and water reading as paving (open).
-- Mission route: every source and packaged route after the recomposition passed 13/13 gates with 0 deaths, in 147.6–153.0 s headless and 149.1 s rendered.
-- **30-minute soak #10 on `98b41b2` COMPLETED**: 1,800.1 s, 0 deaths, exit 0, 0 errors; three missions, 4/4 fixture checks, five reboard cycles, and 11.9 km of free roam (`waves/05/evidence/soak10-completed-98b41b2/`). It is headless and scripted. Earlier soaks #1, #4, #6, #7, #8 and #9 aborted; the reasons and fixes are in the release report.
-- CPU (shared machine): physics tick ~11.3 → ~5.1 ms. Mesh census: district mesh instances 11,064 → 909.
-- Critic code passes 1–4 (21 findings) were fixed or documented.
+## Verified
 
-## Not verified / failing / open
+- **Headless** on `d3133d1`: `--test` 131/131 PASS; `--capture` route 13/13, 0 deaths, 149.9 s.
+- **Rendered** on `d3133d1` (real Metal frames, 1280x720, `loop/render.sh`, GPU lease shared with other sessions, so timing is contaminated):
+  - `--photos`: 18 views. `--gameplay-photos`: 7 views. `--capture` route: 13/13, 0 deaths, 151.9 s. 0 engine errors.
+  - Route frame times (excluding readback): mean 15.0, p50 14.7, p95 22.4, p99 26.9, max 398 ms. The baseline was 11.8 / 11.7 / 17.1 / 18.7 / 328 ms. Water planar reflection about 2.5x the draw calls over the bay (critic water-A4). The 1.06 s market hitch did not recur.
+  - Images: `progress/img/integration/A/` (same names as `progress/img/baseline/`).
+- What the integrator saw in the frames, compared with the baseline: blue sky with cumulus and a warm low sun replace the lavender haze. The bay reads as water, with reflections, boats and wakes. There is a layered far city with aerial perspective. The rebuilt Supertrees and Merlion look much better. The streets now have parked cars, bins, bikes and a planted median. The void deck is legible. Lighting, water and skyline read as one place, with no seam between pieces in the standard views.
 
-- Visual fidelity (ART-01..08) is far from the concepts, and the world is sparse.
-- The 1.06 s render-side hitch on entering the market.
-- `photo_06_aerial_district` lost the Flyer compared with wave 4.
-- Not done: an exclusive-GPU frame-time measurement, an ordinary OS-input human playtest, an audio listening test, and public asset-rights clearance.
+## Honest status against GTA V
 
-## Known incidents
+Every wave-A critic verdict is **OURS LOSES**, and no critic was wowed. The integration has improved a lot on the inherited wave-5 baseline, but it is not near GTA V. The main gaps:
 
-- At 00:55 UTC a save-probe run without `--qa-session` wrote the default user save slot (`~/Library/Application Support/Godot/app_userdata/Orchard Reach/orchard_reach_save.json`). The probe file was removed and the probe now refuses to run without a task-owned path. A pre-existing player save, if there was one, was overwritten at 00:55 and cannot be restored.
-- The `a53cd19` automation fix introduced a regression, soak #9's market-walk timeout. It was corrected in `98b41b2`.
+- **Sparse life:** few pedestrians and clone crowds (street-life was not merged).
+- **Placeholder props:** the boat outboard is a ball; mannequin crews; box buses on the street-life branch.
+- **Surface wear:** surfaces are still too clean (the wave-B materials piece is in progress).
+- **Popcorn clouds:** small, uniform cloud sprites.
+- **Aerials:** still beige and milky.
+- **Character shading:** blotchy shading on the player's clothes.
 
-## Safety
+## Open issues
 
-Shared coordinator `GPU_SLOT_DIR=/Users/midir/sm2-n1/_scratch/gpu`, with `render_gate.py` inside the lease and `bounded_run.py` around every engine run. One rendered engine ran at a time, and only while the foreign renderer count was below the mixed cap of 2. No foreign process or lock was touched. No provider credits were spent and nothing was generated externally. No main merge.
+- **Player self-shadow and camo blotches** on the shirt and trousers under the low sun. The trousers look grey with blotches; the baseline showed smooth denim. Real renders ruled out SSIL, SSAO, PCSS and the grade LUT (`--lighting-off=` diagnostics in `/private/tmp/opus55/integ-A/t-*`). Sun normal bias 2.0 did not remove it. Next suspects: shadow-map settings in `project.godot` (8192 atlas, soft filter quality 3) or a character-material interaction.
+- **Scripted drive runs along the planted median.** Agave plants pass through the car body (route `06_driving`). The planter has no collision.
+- **Workshop facade (photo 13):** lost its crisp dappled leaf light.
+- **Water:** boat models are low detail; the foam is softer now but has not been re-judged by a critic.
+- **Merlion jet:** the arc is placed from the GLB's jet bounds (mouth at about local (0, 8.25, -2.8)). Re-check it if `build_landmarks.py` changes the statue.
+- **Save-slot hazard:** other sessions' route runs rewrote the player's real save slot (`~/Library/Application Support/Godot/app_userdata/Orchard Reach/orchard_reach_save.json`) at 09:08:33Z, 10:14:49Z and 10:32:07Z. Their branches do not have the `4d9af26` save guard yet. Always pass `--save-path=` until every branch carries it.
+- **Render gate:** `render_gate.py` now counts Homebrew `godot` renderers. Before this fix, the cap of 2 relied on the lease alone. Expect more refusals when other sessions render; retry later.
+
+## How to run
+
+```sh
+cd <checkout>                     # this directory
+godot --headless --path game --import                                   # fresh worktree only
+python3 game/tools/bounded_run.py --seconds 300 --log /private/tmp/opus55/<you>/test.log -- \
+  godot --headless --path game -- --test --qa-session /private/tmp/opus55/<you> --save-path=/private/tmp/opus55/<you>/save.json
+bash loop/render.sh <label> 600 /private/tmp/opus55/<you>/route -- -- --capture --qa-session /private/tmp/opus55/<you>/route \
+  --capture-dir=/private/tmp/opus55/<you>/route/frames --qa-render-size=1280x720 --save-path=/private/tmp/opus55/<you>/route/save.json
+```
+
+Other game modes: `--photos`, `--gameplay-photos`, `--perf-probe`, `--sightline-probe`, and `--soak` together with `--capture`. Lighting diagnostics: `--lighting-off=ssil,ssao,pcss,lut,fog,vfog,glow,skyamb`.
+
+## Previous: wave 5 (Opus 5.5, 2026-10-21/22)
+
+- Ran on branch `feature/wave-05-opus`. The final candidate was `98b41b2`, with `d2a6cad` as the rendered-verified fallback. Both are private native macOS packages in the git-ignored `package-wave05/`, ad-hoc signed only. Not cleared for public redistribution of provider assets.
+- Results: 97/97 regressions; route 13/13 (147.6 s headless, 149.1 s rendered); a 30-minute headless soak completed.
+- Details are in [`waves/05/RELEASE_REPORT.md`](waves/05/RELEASE_REPORT.md) and [`waves/05/evidence/rendered/README.md`](waves/05/evidence/rendered/README.md).
+- Known incident: a save-probe run at 00:55Z overwrote the player save slot.
