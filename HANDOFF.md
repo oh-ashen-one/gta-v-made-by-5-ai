@@ -1,5 +1,7 @@
 # Singapore relay — wave 5 (final, Opus 5.5) — IN PROGRESS
 
+> **BLOCKER — manager action requested:** no shared renderer capacity for any wave-5 render, because the foreign `veyr-review-fable-20261021` loop holds four Blender renderers and refills its slots. See [`waves/05/BLOCKER_RENDER_CAPACITY.md`](waves/05/BLOCKER_RENDER_CAPACITY.md).
+
 Rolling handoff; updated during the wave. Not a final report until marked FINAL.
 
 - Builder: Opus 5.5 (`claude-opus-5-5`) through Claude Code, branch `feature/wave-05-opus`.
