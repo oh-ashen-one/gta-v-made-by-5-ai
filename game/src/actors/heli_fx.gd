@@ -56,7 +56,7 @@ void fragment() {
 	float band = 0.86 + 0.14 * sin(r * 71.0 + k * 3.0);
 	float radial = smoothstep(hub, hub + 0.18, r) * (1.0 - smoothstep(0.955, 1.0, r));
 	float tip = smoothstep(0.86, 0.90, r) * (1.0 - smoothstep(0.93, 0.965, r));
-	float body = (0.075 + 0.30 * smear) * band;
+	float body = (0.11 + 0.36 * smear) * band;
 	float alpha = spin * radial * (body + tip * (0.10 + 0.25 * smear));
 	float hubcap = 1.0 - smoothstep(hub * 0.55, hub * 0.75, r);
 	alpha = max(alpha, hubcap * 0.92);
@@ -128,6 +128,21 @@ static func _radial_texture(size: int, inner: float, outer: float, peak: float, 
 				if noisy:
 					a *= 0.65 + 0.35 * rng.randf()
 			img.set_pixel(x, y, Color(1, 1, 1, clampf(a * peak, 0.0, 1.0)))
+	return ImageTexture.create_from_image(img)
+
+## Gaussian-soft puff with low-frequency breakup (no per-pixel grain).
+static func _soft_puff(size: int) -> ImageTexture:
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var noise := FastNoiseLite.new()
+	noise.seed = 3
+	noise.frequency = 0.09
+	var c := (size - 1) * 0.5
+	for y in size:
+		for x in size:
+			var r := Vector2(x - c, y - c).length() / c
+			var a := exp(-r * r * 3.2) * (0.7 + 0.3 * (noise.get_noise_2d(x, y) * 0.5 + 0.5))
+			a *= 1.0 - smoothstep(0.85, 1.0, r)
+			img.set_pixel(x, y, Color(1, 1, 1, clampf(a, 0.0, 1.0)))
 	return ImageTexture.create_from_image(img)
 
 func _disc_material(blades: float, hub: float) -> ShaderMaterial:
@@ -212,7 +227,7 @@ func _build_ground_fx() -> void:
 	_dust = GPUParticles3D.new()
 	_dust.name = "DownwashParticles"
 	_dust.top_level = true
-	_dust.amount = 260
+	_dust.amount = 140
 	_dust.lifetime = 2.2
 	_dust.preprocess = 0.0
 	_dust.randomness = 0.6
@@ -239,8 +254,8 @@ func _build_ground_fx() -> void:
 	_dust_mat.angle_max = 180.0
 	_dust_mat.angular_velocity_min = -40.0
 	_dust_mat.angular_velocity_max = 40.0
-	_dust_mat.scale_min = 1.4
-	_dust_mat.scale_max = 3.2
+	_dust_mat.scale_min = 2.2
+	_dust_mat.scale_max = 4.5
 	var curve := Curve.new()
 	curve.add_point(Vector2(0.0, 0.35))
 	curve.add_point(Vector2(1.0, 1.6))
@@ -250,8 +265,8 @@ func _build_ground_fx() -> void:
 	var ramp := Gradient.new()
 	ramp.set_color(0, Color(1, 1, 1, 0.0))
 	ramp.set_color(1, Color(1, 1, 1, 0.0))
-	ramp.add_point(0.12, Color(1, 1, 1, 0.55))
-	ramp.add_point(0.55, Color(1, 1, 1, 0.30))
+	ramp.add_point(0.15, Color(1, 1, 1, 0.13))
+	ramp.add_point(0.55, Color(1, 1, 1, 0.06))
 	var gt := GradientTexture1D.new()
 	gt.gradient = ramp
 	_dust_mat.color_ramp = gt
@@ -264,8 +279,8 @@ func _build_ground_fx() -> void:
 	_dust_draw.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	_dust_draw.billboard_keep_scale = true
 	_dust_draw.vertex_color_use_as_albedo = true
-	_dust_draw.albedo_texture = _radial_texture(64, 0.0, 0.2, 1.0, true)
-	_dust_draw.albedo_color = Color(0.66, 0.60, 0.51)
+	_dust_draw.albedo_texture = _soft_puff(64)
+	_dust_draw.albedo_color = Color(0.78, 0.72, 0.62)
 	_dust_draw.proximity_fade_enabled = true
 	_dust_draw.proximity_fade_distance = 0.8
 	_dust_draw.distance_fade_mode = BaseMaterial3D.DISTANCE_FADE_PIXEL_ALPHA
@@ -295,14 +310,14 @@ func _light_bulb(pos: Vector3, color: Color, energy: float, radius: float) -> Me
 
 func _build_lights() -> void:
 	# navigation lights: red to port (-X), green to starboard (+X), white tail
-	_light_bulb(Vector3(-0.98, 1.05, -0.9), Color(1.0, 0.12, 0.08), 3.0, 0.07)
-	_light_bulb(Vector3(0.98, 1.05, -0.9), Color(0.15, 1.0, 0.35), 3.0, 0.07)
-	_light_bulb(Vector3(-0.66, 2.95, 3.55), Color(1.0, 0.95, 0.85), 2.0, 0.06)
+	_light_bulb(Vector3(-0.98, 1.05, -0.9), Color(1.0, 0.12, 0.08), 1.2, 0.045)
+	_light_bulb(Vector3(0.98, 1.05, -0.9), Color(0.15, 1.0, 0.35), 1.2, 0.045)
+	_light_bulb(Vector3(-0.66, 2.95, 3.55), Color(1.0, 0.95, 0.85), 1.0, 0.04)
 	# red anti-collision beacons (top of the engine fairing and the belly)
-	_beacons.append(_light_bulb(Vector3(0.08, 3.30, 0.45), Color(1.0, 0.08, 0.05), 6.0, 0.09))
-	_beacons.append(_light_bulb(Vector3(0.0, 0.62, 0.2), Color(1.0, 0.08, 0.05), 6.0, 0.08))
+	_beacons.append(_light_bulb(Vector3(0.08, 3.30, 0.45), Color(1.0, 0.08, 0.05), 3.0, 0.06))
+	_beacons.append(_light_bulb(Vector3(0.0, 0.62, 0.2), Color(1.0, 0.08, 0.05), 3.0, 0.055))
 	# white strobe at the tail
-	_strobes.append(_light_bulb(Vector3(-0.66, 3.05, 3.6), Color(1.0, 1.0, 1.0), 9.0, 0.06))
+	_strobes.append(_light_bulb(Vector3(-0.66, 3.05, 3.6), Color(1.0, 1.0, 1.0), 4.0, 0.045))
 
 func _process(delta: float) -> void:
 	_clock += delta
@@ -356,7 +371,7 @@ func _physics_process(delta: float) -> void:
 	# downwash strength: rpm x proximity
 	var target := 0.0
 	if has_ground:
-		target = clampf(spin * 1.25 - 0.25, 0.0, 1.0) * clampf(1.0 - (agl - 2.0) / (WASH_HEIGHT - 2.0), 0.0, 1.0)
+		target = smoothstep(0.6, 1.0, spin) * clampf(1.0 - (agl - 2.0) / (WASH_HEIGHT - 2.0), 0.0, 1.0)
 	wash_intensity = lerpf(wash_intensity, target, clampf(delta * 3.0, 0.0, 1.0))
 	var active := wash_intensity > 0.03
 	_wash.visible = active
@@ -378,7 +393,7 @@ func _physics_process(delta: float) -> void:
 		_dust_mat.initial_velocity_max = 4.5
 		_dust_mat.gravity = Vector3(0.0, -2.2, 0.0)
 	else:
-		_dust_draw.albedo_color = Color(0.66, 0.60, 0.51)
-		_dust_mat.initial_velocity_min = 0.6
-		_dust_mat.initial_velocity_max = 2.4
+		_dust_draw.albedo_color = Color(0.80, 0.75, 0.66)
+		_dust_mat.initial_velocity_min = 0.2
+		_dust_mat.initial_velocity_max = 1.2
 		_dust_mat.gravity = Vector3(0.0, -0.6, 0.0)

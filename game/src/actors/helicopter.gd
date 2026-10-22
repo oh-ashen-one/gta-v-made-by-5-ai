@@ -211,6 +211,27 @@ func _try_provider_asset() -> void:
 	var tail_rotor := AssetLibrary.find_named(root, "tail_rotor")
 	if tail_rotor is Node3D:
 		_provider_tail_rotor = tail_rotor
+	_paint_finish(root)
+
+## Lift the provider airframe from flat black to a lacquered gunmetal with a
+## clearcoat, so close frames read as painted aluminium rather than plastic.
+func _paint_finish(node: Node) -> void:
+	if node is MeshInstance3D and node != _provider_main_rotor and node != _provider_tail_rotor:
+		var mi := node as MeshInstance3D
+		if mi.mesh != null:
+			for i in mi.mesh.get_surface_count():
+				var mat := mi.get_active_material(i)
+				if mat is StandardMaterial3D and (mat as StandardMaterial3D).transparency == BaseMaterial3D.TRANSPARENCY_DISABLED:
+					var m := (mat as StandardMaterial3D).duplicate() as StandardMaterial3D
+					m.albedo_color = Color(1.55, 1.62, 1.72)
+					m.clearcoat_enabled = true
+					m.clearcoat = 0.85
+					m.clearcoat_roughness = 0.12
+					m.roughness = minf(m.roughness, 1.0) * 0.75
+					mi.set_surface_override_material(i, m)
+	for child in node.get_children():
+		if child != _provider_main_rotor and child != _provider_tail_rotor:
+			_paint_finish(child)
 
 func _physics_process(delta: float) -> void:
 	if Game.simulation_paused:
@@ -223,7 +244,7 @@ func _physics_process(delta: float) -> void:
 	# Rotor spool: the turbine winds up over ~2 s after boarding and runs down
 	# slowly after shutdown, instead of snapping between two speeds.
 	var spin_target := 1.0 if pilot_is_player and not disabled else 0.12
-	rotor_spin = move_toward(rotor_spin, spin_target, delta * (0.55 if spin_target > rotor_spin else 0.18))
+	rotor_spin = move_toward(rotor_spin, spin_target, delta * (0.55 if spin_target > rotor_spin else 0.30))
 	var rotor_speed := lerpf(3.0, 26.0, rotor_spin)
 	if _fx != null:
 		_fx.spin = rotor_spin
@@ -352,7 +373,10 @@ func _update_chase_camera(delta: float) -> void:
 		_cam_roll = 0.0
 	_cam_yaw = lerp_angle(_cam_yaw, rotation.y, clampf(delta * 1.8, 0.0, 1.0))
 	var desired := _chase_target(ground_speed)
-	_cam_pos = _cam_pos.lerp(desired, clampf(delta * 3.2, 0.0, 1.0))
+	# horizontal lag gives the inertia; height tracks faster so climbs and
+	# descents never leave the camera looking up at the belly
+	var flat := Vector3(_cam_pos.x, 0.0, _cam_pos.z).lerp(Vector3(desired.x, 0.0, desired.z), clampf(delta * 6.0, 0.0, 1.0))
+	_cam_pos = Vector3(flat.x, lerpf(_cam_pos.y, desired.y, clampf(delta * 7.0, 0.0, 1.0)), flat.z)
 	var pivot := global_position + Vector3.UP * 3.0
 	var cam_pos := _cam_pos
 	var space := get_world_3d().direct_space_state
@@ -361,19 +385,19 @@ func _update_chase_camera(delta: float) -> void:
 	var hit := space.intersect_ray(query)
 	if not hit.is_empty():
 		cam_pos = (hit["position"] as Vector3) + (pivot - cam_pos).normalized() * 0.6
-	var look := global_position + Vector3.UP * 2.4 + Vector3(velocity.x, 0.0, velocity.z) * 0.35
+	var look := global_position + Vector3.UP * 2.0 + Vector3(velocity.x, 0.0, velocity.z) * 0.35
 	_cam_look = _cam_look.lerp(look, clampf(delta * 5.0, 0.0, 1.0))
 	_camera.global_position = cam_pos
 	if cam_pos.distance_to(_cam_look) > 0.5:
 		_camera.look_at(_cam_look, Vector3.UP)
 	_cam_roll = lerpf(_cam_roll, _body.rotation.z * 0.45, clampf(delta * 2.5, 0.0, 1.0))
 	_camera.rotate_object_local(Vector3.FORWARD, -_cam_roll)
-	_camera.fov = lerpf(_camera.fov, 72.0 + 8.0 * speed_frac, clampf(delta * 1.5, 0.0, 1.0))
+	_camera.fov = lerpf(_camera.fov, 68.0 + 8.0 * speed_frac, clampf(delta * 1.5, 0.0, 1.0))
 
 func _chase_target(ground_speed: float) -> Vector3:
 	var back := Basis(Vector3.UP, _cam_yaw) * Vector3(0.0, 0.0, 1.0)
-	var distance := 13.0 + ground_speed * 0.12
-	var height := 4.6 + clampf(-velocity.y * 0.10, -1.2, 2.0)
+	var distance := 10.5 + ground_speed * 0.06
+	var height := 4.3 + clampf(absf(velocity.y) * 0.10, 0.0, 1.6)
 	return global_position + back * distance + Vector3.UP * height
 
 ## Snapshot of the presentation layer for regression checks.
