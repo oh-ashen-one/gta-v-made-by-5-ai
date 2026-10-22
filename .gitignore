@@ -41,3 +41,4 @@ art/source/helicopter/
 # Opus 5.5 loop: full-size captures (compressed JPEGs go to progress/img)
 /loop/captures/
 /progress/.index.html.tmp
+/loop/.lock
