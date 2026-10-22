@@ -21,11 +21,18 @@ const PLAYER_START := Vector3(-171.0, 0.45, -22.0)
 const PLAYER_START_YAW_DEG := -8.0
 ## Slightly raised opening look so the SkyPark clears the objective card.
 const PLAYER_START_PITCH := -0.02
-const GROVE_POS := Vector3(-50.0, 0.16, -240.0)
+## Wave A (skyline): the grove moved west and its layout tightened so it stands
+## clear of the Marina Bay Sands silhouette from the street vista and promenade.
+const GROVE_POS := Vector3(-100.0, 0.16, -265.0)
 const MBS_POS := Vector3(-88.0, 0.0, -705.0)
-const MBS_SCALE := Vector3(2.2, 1.75, 1.6)
-const ASM_POS := Vector3(-318.0, 0.0, -645.0)
-const FLYER_POS := Vector3(390.0, 0.0, -652.0)
+## Wave A: the MBS GLB is authored at true scale (curved legs, 300 m SkyPark).
+const MBS_SCALE := Vector3.ONE
+## Wave A: shifted east so the lotus no longer sits behind the Supertree crowns
+## in photo_06_aerial_district; it now stands just west of the MBS podium.
+const ASM_POS := Vector3(-262.0, 0.0, -640.0)
+## Wave A: moved west so the wheel sits inside photo_06_aerial_district and
+## photo_16 without touching the SkyPark cantilever or the background towers.
+const FLYER_POS := Vector3(210.0, 0.0, -700.0)
 const BLOCK := 144.0            # block platform edge-to-edge
 const PROMENADE_Z := -338.0
 const WORLD_MIN := Vector3(-330.0, 0.0, -350.0)
@@ -53,6 +60,8 @@ var _asset_collision_cache: Dictionary = {}
 ## this so new plots never intersect the heritage rows, HDB slabs, mission hall
 ## or aviation buildings they are meant to surround.
 var _reserved: Array[Rect2] = []
+## Rooftop dressing for infill and HDB roofs, flushed in _background_city().
+var _roof_kit := RoofKit.new()
 
 func build(seed_value: int = 20261021) -> void:
 	_rng.seed = seed_value
@@ -418,6 +427,7 @@ func _hdb_block(centre: Vector3) -> void:
 				AssetLibrary.tint(slab, Palette.HDB_TINTS[block_key])
 				_asset_collision(slab)
 				_reserve(size + Vector3(16.0, 0.0, 16.0), pos)
+				_roof_kit.add_hdb_roof(pos, h, rot == 90.0)
 				used_provider = true
 		if not used_provider:
 			_solid_box(size, pos + Vector3(0.0, 3.6 + h * 0.5, 0.0), Palette.mat_textured(Palette.CONCRETE, "concrete", Vector3(5.0, 7.0, 3.0), 0.85))
@@ -605,7 +615,7 @@ func _waterfront_block(centre: Vector3) -> void:
 		_box(Vector3(126.0, 0.12, 5.0), centre + Vector3(0.0, 0.08, 34.0), pavers)
 		_authored("supertree_grove.glb", grove_pos, 0.0, Vector3.ONE)
 		# Planted trunk colliders only: the crowns stay open sky for flight.
-		for tree_off in [Vector3(0, 0, 0), Vector3(-24, 0, 8), Vector3(24, 0, 6), Vector3(-16, 0, -18), Vector3(17, 0, -19), Vector3(-34, 0, -12), Vector3(33, 0, -14)]:
+		for tree_off in [Vector3(0, 0, 0), Vector3(-18.0, 0, -5.7), Vector3(18.0, 0, -4.1), Vector3(-11.5, 0, 13.9), Vector3(12.3, 0, 14.8), Vector3(-25.4, 0, 9.0), Vector3(24.6, 0, 10.7)]:
 			_collision_box(Vector3(7.0, 12.0, 7.0), grove_pos + tree_off + Vector3(0.0, 6.0, 0.0))
 		locations["supertree_grove"] = grove_pos
 		for i: int in 6:
@@ -619,7 +629,8 @@ func _waterfront_block(centre: Vector3) -> void:
 		for i: int in 2:
 			var pos := centre + Vector3(-34.0 + i * 68.0, 0.0, -30.0)
 			var h := 70.0 + i * 18.0
-			_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), Palette.facade("office"))
+			# Wave A (skyline): shared curtain-wall shader instead of the dotted sheet.
+			_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), LandmarkLooks.material_for("near_shore_tower_%d" % i))
 			for f in int(h / 4.0):
 				_box(Vector3(26.6, 0.35, 26.6), pos + Vector3(0.0, 4.0 + f * 4.0, 0.0), Palette.mat(Palette.METAL, 0.4, 0.7))
 			_box(Vector3(28.0, 0.7, 28.0), pos + Vector3(0.0, h + 0.35, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.8))
@@ -643,8 +654,10 @@ func _far_shore_landmarks() -> void:
 	_collision_box(Vector3(1700.0, 2.0, 700.0), Vector3(0.0, -1.0, -970.0))
 	var mbs := MBS_POS
 	_authored("marina_bay_sands.glb", mbs, 0.0, MBS_SCALE)
-	_collision_box(Vector3(234.0, 196.0, 66.0), mbs + Vector3(0.0, 98.0, 0.0))
-	_collision_box(Vector3(260.0, 18.0, 52.0), mbs + Vector3(19.0, 188.0, 0.0))
+	# Towers, SkyPark (cantilever west) and podium of the true-scale model.
+	_collision_box(Vector3(232.0, 194.0, 30.0), mbs + Vector3(6.5, 97.0, 0.0))
+	_collision_box(Vector3(305.0, 12.0, 40.0), mbs + Vector3(-32.5, 197.0, 0.0))
+	_collision_box(Vector3(300.0, 14.0, 20.0), mbs + Vector3(-20.0, 7.0, 27.0))
 	locations["marina_bay_sands"] = mbs
 	var asm := ASM_POS
 	_authored("artscience_museum.glb", asm, deg_to_rad(12.0), Vector3.ONE * 1.6)
@@ -930,19 +943,16 @@ func _infill_building(size: Vector3, pos: Vector3, kind: String) -> void:
 	var bm := BoxMesh.new()
 	bm.size = size
 	mesh.mesh = bm
-	mesh.material_override = Palette.facade(kind)
+	mesh.material_override = RoofKit.facade_variant(kind, pos)
 	body.add_child(mesh)
 	var shape := CollisionShape3D.new()
 	var bs := BoxShape3D.new()
 	bs.size = size
 	shape.shape = bs
 	body.add_child(shape)
-	# A darker roof deck than the walls: from above, a district of bright parapets
-	# read as flat pale parcels. Real roofs are weathered grey with equipment.
-	_box(size + Vector3(0.7, 0.55, 0.7), pos + Vector3(0.0, size.y + 0.2, 0.0), Palette.mat(Color(0.40, 0.39, 0.37), 0.95))
-	if size.y > 9.0:
-		_cyl(Vector3(1.8, 2.0, 1.8), pos + Vector3(size.x * 0.22, size.y + 1.4, -size.z * 0.2), Palette.mat(Palette.METAL, 0.7, 0.3))
-		_box(Vector3(3.0, 0.9, 2.4), pos + Vector3(-size.x * 0.25, size.y + 0.7, size.z * 0.22), Palette.mat(Color(0.52, 0.52, 0.50), 0.9))
+	# Weathered membrane deck, parapet and seeded roof plant (RoofKit, wave A):
+	# the critic found the aerials "dominated by untextured beige box roofs".
+	_roof_kit.add_flat_roof(size, pos, kind)
 
 # ------------------------------------------------------------- water + skyline
 func _waterfront_edge() -> void:
@@ -963,9 +973,12 @@ func _waterfront_edge() -> void:
 	_box(Vector3(700.0, 0.08, 0.08), Vector3(0.0, 1.35, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_helipad(Vector3(locations["helipad_secondary"].x, 0.0, locations["helipad_secondary"].z), 11.0)
 	# The Merlion pier jutting into the bay between the waterfront helipad and delivery zone
-	var merlion_pos := Vector3(45.0, 0.30, -345.0)
-	_solid_box(Vector3(14.0, 0.32, 14.0), Vector3(45.0, 0.15, -347.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9))
-	_authored("merlion_landmark.glb", merlion_pos, 0.0, Vector3.ONE)
+	# Wave A (skyline): the statue stands at the end of a pier past the railing,
+	# turned toward the promenade, so walkers see the lion face three-quarter on
+	# with the jet arcing into the bay instead of the back of the figure.
+	var merlion_pos := Vector3(64.0, 0.30, -371.0)
+	_solid_box(Vector3(14.0, 0.32, 27.0), Vector3(64.0, 0.15, -362.0), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9))
+	_authored("merlion_landmark.glb", merlion_pos, deg_to_rad(-135.0), Vector3.ONE)
 	_collision_box(Vector3(8.5, 3.5, 8.5), merlion_pos + Vector3(0.0, 1.75, 0.0))
 	locations["merlion"] = merlion_pos
 	for i: int in 8:
@@ -974,40 +987,61 @@ func _waterfront_edge() -> void:
 		_street_lamp(Vector3(-320.0 + i * 128.0, 0.0, PROMENADE_Z + 8.0))
 
 func _background_city() -> void:
-	# Existing side/back context remains dimensional, with its existing shadows.
+	# Wave A (skyline): one layered procedural city replaces the repeated
+	# skyline GLB grid (see SkylineCity). Roof dressing collected by the infill
+	# and HDB builders is flushed here too, before static batching.
+	_roof_kit.build(_world_root)
+	var city := SkylineCity.new(991)
 	var rng := RandomNumberGenerator.new()
-	rng.seed = 991
-	for i in 64:
-		var side := i % 4
-		if side == 0: continue
-		var p := Vector3.ZERO
-		match side:
-			1: p=Vector3(-440-rng.randf_range(0,90),0,-410+(i/4)*54)
-			2: p=Vector3(440+rng.randf_range(0,90),0,-410+(i/4)*54)
-			_: p=Vector3(-620+(i/4)*82,0,435+rng.randf_range(0,90))
-		_authored("skyline_%d.glb"%posmod(i,4),p,rng.randf_range(-.08,.08),Vector3(1,rng.randf_range(.55,1.20),1))
-	# Three staggered clusters on the existing far shore. Lower near-water
-	# blocks and taller rear blocks overlap in depth instead of isolated plinths.
-	# This is inaccessible context, not additional playable city area.
-	var groups: Array = [[],[],[],[]]
+	rng.seed = 4421
+	# Clear sky behind the SkyPark and around the Flyer wheel; nothing tall on
+	# the near far-shore plaza in front of the landmarks.
+	# The SkyPark bow cantilevers west, and the aerial cameras look across it
+	# from the east, so the low zone widens westward with depth (a wedge).
+	for band in [[-800.0, -300.0], [-900.0, -360.0], [-1050.0, -440.0], [-1300.0, -520.0]]:
+		var z_far: float = band[0]
+		var x_west: float = band[1]
+		city.clear_zone(Rect2(x_west, z_far, 115.0 - x_west, MBS_POS.z - z_far), 70.0)
+	city.clear_zone(Rect2(MBS_POS.x - 200.0, MBS_POS.z - 40.0, 330.0, 75.0), 0.0)
+	city.clear_zone(Rect2(FLYER_POS.x - 95.0, FLYER_POS.z - 480.0, 190.0, 520.0), 30.0)
+	city.clear_zone(Rect2(ASM_POS.x - 45.0, ASM_POS.z - 40.0, 90.0, 80.0), 0.0)
+	city.clear_zone(Rect2(-900.0, -700.0, 1800.0, 60.0), 0.0)
+	# Far shore, five depth layers: low waterfront edge -> mid-rise -> tall CBD
+	# clusters flanking MBS -> distant horizon band.
+	for layer in 5:
+		var z0: float = [-725.0, -790.0, -870.0, -980.0, -1180.0][layer]
+		var step: float = [46.0, 42.0, 38.0, 44.0, 52.0][layer]
+		var x := -900.0 + rng.randf_range(0.0, step)
+		while x < 900.0:
+			var z := z0 + rng.randf_range(-22.0, 22.0)
+			var h: float
+			var cbd_west := x > -620.0 and x < -330.0
+			var cbd_east := x > 330.0 and x < 640.0
+			match layer:
+				0: h = rng.randf_range(22.0, 48.0)
+				1: h = rng.randf_range(40.0, 95.0)
+				2: h = rng.randf_range(70.0, 150.0) * (1.6 if cbd_west or cbd_east else 1.0)
+				3: h = rng.randf_range(90.0, 180.0) * (1.45 if cbd_west or cbd_east else 1.0)
+				_: h = rng.randf_range(40.0, 110.0)
+			city.add_random(Vector3(x, 0.0, z), minf(h, 265.0), layer == 4 and rng.randf() < 0.5)
+			x += step * rng.randf_range(0.75, 1.3)
+	# Flanking estates and mixed blocks beyond the playable district edge.
+	for side in [-1.0, 1.0]:
+		for row in 3:
+			var zz := -420.0 + rng.randf_range(0.0, 30.0)
+			while zz < 520.0:
+				var xx: float = side * (455.0 + row * 70.0 + rng.randf_range(-10.0, 10.0))
+				var res := rng.randf() < 0.65
+				city.add_random(Vector3(xx, 0.0, zz), rng.randf_range(35.0, 70.0) + row * 22.0 + (40.0 if not res and rng.randf() < 0.4 else 0.0), res)
+				zz += rng.randf_range(48.0, 72.0)
 	for row in 3:
-		for cluster in 3:
-			for col in 8:
-				var variant: int = 2 if row == 0 and col % 3 != 0 else (row+cluster+col)%4
-				var x: float = -720+cluster*490+col*54+rng.randf_range(-7,7)+row*13
-				var z: float = -711-row*130+rng.randf_range(-18,18)
-				# Keep open sky behind the Marina Bay Sands silhouette and clear
-				# ground under the Flyer; draws stay cheap (the rng sequence is kept).
-				if (x > -265.0 and x < 115.0) or (row == 0 and x > 300.0 and x < 480.0):
-					rng.randf_range(.48,.73); rng.randf_range(.90,1.18); rng.randf_range(-.07,.07)
-					continue
-				var height_scale: float = rng.randf_range(.48,.73) if row == 0 else rng.randf_range(.70,1.22)+row*.08
-				var width_scale: float = rng.randf_range(.90,1.18)
-				var basis := Basis(Vector3.UP,rng.randf_range(-.07,.07)).scaled(Vector3(width_scale,height_scale,width_scale))
-				groups[variant].append(Transform3D(basis,Vector3(x,0,z)))
-	for variant in 4:
-		var tints := [Color(0.86, 0.84, 0.80), Color(0.60, 0.68, 0.76), Color(0.94, 0.88, 0.78), Color(0.72, 0.76, 0.80)]
-		_batch_background("res://assets/authored/skyline_%d.glb"%variant,groups[variant],tints[variant])
+		var xs := -620.0 + rng.randf_range(0.0, 30.0)
+		while xs < 620.0:
+			var res2 := rng.randf() < 0.6
+			city.add_random(Vector3(xs, 0.0, 455.0 + row * 70.0 + rng.randf_range(-10.0, 10.0)), rng.randf_range(30.0, 70.0) + row * 25.0, res2)
+			xs += rng.randf_range(50.0, 76.0)
+	city.build(_world_root)
+	print("[world] skyline city: ", city.placed, " towers; roof kit: ", _roof_kit.roofs, " roofs")
 
 func _batch_background(path: String, transforms: Array, tint: Color = Color.WHITE) -> void:
 	var packed: PackedScene = load(path)
@@ -1059,13 +1093,8 @@ func _perimeter() -> void:
 	for i in 44:
 		if _far_shore_clear(Vector3(-800.0 + i * 37.0, 0.15, -652.0)):
 			_tree(Vector3(-800.0 + i * 37.0, 0.15, -652.0), 0.95 + float(i % 4) * 0.12)
-	for i in 16:
-		# Low roofs stay out of the Marina Bay Sands footprint and SkyPark overhang.
-		var roof_x := -760.0 + i * 100.0
-		if roof_x > MBS_POS.x - 140.0 and roof_x < MBS_POS.x + 160.0:
-			continue
-		_box(Vector3(26.0, 7.0 + float(i % 3) * 3.0, 14.0), Vector3(roof_x, 3.5, -712.0),
-			Palette.mat_textured(Color(0.52, 0.50, 0.47), "concrete", Vector3.ONE, 0.92))
+	# (Wave A: the 16 plain low-roof boxes at z=-712 are now SkylineCity's
+	# waterfront layer, with facades and roofs.)
 	# The authored district has visible physical edges. Aircraft can fly over
 	# the same geometry; ordinary walking/driving meets real railings.
 	for i in 50:
@@ -1445,6 +1474,7 @@ func _authored(file: String, pos: Vector3, yaw: float = 0.0, asset_scale: Vector
 	node.position = pos
 	node.rotation.y = yaw
 	node.scale = asset_scale
+	LandmarkLooks.apply(node)
 	return node
 
 func _landscape() -> void:

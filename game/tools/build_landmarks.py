@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Original Blender-authored 3D Singapore waterfront & skyline landmarks.
 Run with:
-  /Users/midir/Applications/Blender-4.5.11.app/Contents/MacOS/Blender --background --factory-startup --threads 4 --python game/tools/build_landmarks.py
+  /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup --python game/tools/build_landmarks.py
+(wave A, Opus 5.5: rebuilt MBS, Supertrees and Merlion with Blender 5.2)
 
 Generates in game/assets/authored/:
-  - marina_bay_sands.glb     (3 splayed/tapered towers + cantilevered boat-shaped SkyPark)
-  - supertree_grove.glb      (7 branching vertical-garden Supertrees + flared canopy crowns + OCBC Skyway)
+  - marina_bay_sands.glb     (3 curved-leg towers + cantilevered boat-hulled SkyPark, true scale)
+  - supertree_grove.glb      (7 vertical-garden Supertrees, rust-purple steel, solid lattice funnel canopies, skyway)
   - artscience_museum.glb    (10-finger sculpted lotus museum on reflection pond base)
-  - merlion_landmark.glb     (sculpted Merlion statue on wave plinth + arching water jet)
+  - merlion_landmark.glb     (metaball-sculpted Merlion on wave plinth + arching water jet)
   - singapore_flyer.glb      (giant spoked observation wheel + 28 viewing capsules + terminal podium)
 """
 from __future__ import annotations
@@ -166,244 +167,276 @@ class MeshBuilder:
 
 
 def build_marina_bay_sands() -> dict:
-    """Three splayed/tapered hotel towers supporting the cantilevered boat-shaped SkyPark."""
+    """Three curved-leg hotel towers under a cantilevered, boat-hulled SkyPark.
+
+    Wave A (Opus 5.5) rebuild at true scale (no non-uniform scale in Godot):
+    towers ~194 m, SkyPark ~300 m long with a ~75 m cantilever off the west
+    tower. Seen from the bay (Blender -Y face), each tower is a straight leg
+    plus a leg that curves out toward the ground, split by a thin atrium slit
+    that closes ~75 m up. The SkyPark is a thick tapered hull (dark soffit,
+    champagne sides) carrying a pool, palms and pavilions, so it reads as a
+    mass rather than a plank. Facade floor banding comes from the Godot
+    landmark glass shader (material name mbs_curtain_glass).
+    """
     bpy.ops.wm.read_factory_settings(use_empty=True)
     b = MeshBuilder()
 
-    steel = make_material("mbs_champagne_steel", (0.76, 0.74, 0.69), 0.34, 0.68)
-    hull_metal = make_material("mbs_skypark_hull", (0.82, 0.80, 0.76), 0.28, 0.74)
-    glass_dark = make_material("mbs_curtain_glass", (0.09, 0.20, 0.28), 0.16, 0.62)
-    glass_mid = make_material("mbs_curtain_glass_mid", (0.14, 0.27, 0.36), 0.18, 0.58)
-    warm_win = make_material("mbs_warm_suite", (0.96, 0.76, 0.44), 0.35, 0.0, 2.2)
-    beacon_gold = make_material("mbs_skypark_glow", (1.0, 0.80, 0.42), 0.25, 0.0, 3.4)
-    podium_stone = make_material("mbs_podium_stone", (0.64, 0.61, 0.56), 0.78, 0.05)
-    deck_wood = make_material("mbs_skypark_deck", (0.48, 0.35, 0.22), 0.72, 0.0)
-    pool_aqua = make_material("mbs_infinity_pool", (0.12, 0.74, 0.88), 0.12, 0.1, 1.4)
-    foliage = make_material("mbs_sky_foliage", (0.14, 0.38, 0.16), 0.85, 0.0)
+    steel = make_material("mbs_champagne_steel", (0.50, 0.47, 0.41), 0.38, 0.62)
+    hull_side = make_material("mbs_skypark_hull", (0.56, 0.54, 0.50), 0.32, 0.55)
+    soffit = make_material("mbs_skypark_soffit", (0.20, 0.21, 0.22), 0.70, 0.30)
+    glass = make_material("mbs_curtain_glass", (0.30, 0.40, 0.47), 0.14, 0.55)
+    gap_dark = make_material("mbs_atrium_shadow", (0.06, 0.07, 0.08), 0.85, 0.0)
+    podium_stone = make_material("mbs_podium_stone", (0.42, 0.40, 0.37), 0.80, 0.05)
+    podium_glass = make_material("mbs_podium_glass", (0.16, 0.22, 0.26), 0.20, 0.45)
+    deck_wood = make_material("mbs_skypark_deck", (0.50, 0.38, 0.26), 0.75, 0.0)
+    pool_aqua = make_material("mbs_infinity_pool", (0.10, 0.52, 0.62), 0.06, 0.15)
+    foliage = make_material("mbs_sky_foliage", (0.13, 0.30, 0.13), 0.90, 0.0)
+    pavilion = make_material("mbs_skypark_pavilion", (0.62, 0.61, 0.58), 0.45, 0.10)
 
-    # Waterfront podium & colonnade base connecting the three towers
-    b.box(podium_stone, (0.0, 0.0, 2.4), (104.0, 38.0, 4.8))
-    b.box(steel, (0.0, 0.0, 5.0), (106.0, 40.0, 0.5))
-    for ix in range(-12, 13):
-        b.box(glass_dark, (ix * 4.0, -18.8, 2.4), (3.1, 0.4, 3.8))
-        b.box(glass_dark, (ix * 4.0, 18.8, 2.4), (3.1, 0.4, 3.8))
+    H = 192.0          # tower top (SkyPark soffit sits on it)
+    JOIN = 78.0        # legs fuse above this height
+    DEPTH = 24.0
+    tower_xs = [-92.0, 0.0, 92.0]
 
-    # Three iconic towers (X = -36, 0, +36), each with two splayed legs that merge upward
-    tower_xs = [-36.0, 0.0, 36.0]
-    tower_h = 104.0
-    floors = 29
+    def ring_xy(x0: float, x1: float, y0: float, y1: float, z: float) -> list:
+        return [(x0, y0, z), (x1, y0, z), (x1, y1, z), (x0, y1, z)]
+
     for t_idx, tx in enumerate(tower_xs):
-        # Leg 1 (South/East inclined leg) and Leg 2 (North/West steeper leg)
-        for leg_sign in (-1.0, 1.0):
-            sections = []
-            steps = 14
-            for s in range(steps + 1):
-                u = s / steps
-                z = 4.8 + u * (tower_h - 4.8)
-                # At base (u=0), legs are separated by y = +-8.6m; by u=0.58 they converge into the main slab
-                spread = max(0.0, (1.0 - u * 1.45)) * 7.8
-                # Characteristic lean in +Y as tower rises
-                lean_y = (1.0 - u) * (-3.2 if leg_sign < 0 else 4.8) + leg_sign * spread
-                half_w = 9.2 - u * 1.4
-                half_d = 4.6 - u * 1.1
-                sections.append([
-                    (tx - half_w, lean_y - half_d, z),
-                    (tx + half_w, lean_y - half_d, z),
-                    (tx + half_w, lean_y + half_d, z),
-                    (tx - half_w, lean_y + half_d, z),
-                ])
-            b.loft_quad_sections(glass_dark if leg_sign < 0 else glass_mid, sections)
+        half_top = 15.0
+        slit_x = tx + 3.0
+        left_sec, right_sec, upper_sec = [], [], []
+        steps = 18
+        for s in range(steps + 1):
+            z = 4.0 + (H - 4.0) * (s / steps)
+            u = min(1.0, (z - 4.0) / (H * 0.62))
+            # Curved east leg: concave flare toward the ground (~15 m wider at the base).
+            bulge = 15.0 * (1.0 - u) ** 1.8
+            # Slight inward lean of the whole tower above the join, as built.
+            lean = -2.2 * (z / H)
+            xl = tx - half_top + lean
+            xr = tx + half_top + bulge + lean
+            # The curved leg also rakes back in depth near the ground.
+            y0 = -DEPTH * 0.5 - 2.0 * (1.0 - u) ** 2
+            y1 = DEPTH * 0.5
+            if z <= JOIN:
+                g = 1.6 * (1.0 - z / JOIN) ** 0.8
+                left_sec.append(ring_xy(xl, slit_x - g + lean, y0 + 1.0, y1, z))
+                right_sec.append(ring_xy(slit_x + g + lean, xr, y0, y1, z))
+            if z >= JOIN - (H - 4.0) / steps:
+                upper_sec.append(ring_xy(xl, xr, y0, y1, z))
+        b.loft_quad_sections(glass, left_sec)
+        b.loft_quad_sections(glass, right_sec)
+        b.loft_quad_sections(glass, upper_sec)
+        # Dark atrium slit behind the gap so it reads as depth, not sky.
+        b.box(gap_dark, (slit_x - 0.6, 0.0, JOIN * 0.5), (2.6, DEPTH - 3.0, JOIN))
+        # Vertical steel fins on the bay face at the leg edges and slit.
+        for fx, top in ((tx - half_top, H), (slit_x, JOIN), (tx + half_top, H)):
+            b.strut(steel, (fx - 0.4, -DEPTH * 0.5 - 0.5, 4.0), (fx - 2.2 * (top / H), -DEPTH * 0.5 - 0.5, top), 0.45, sides=4)
+        # Crown band where the tower meets the SkyPark: a recessed dark reveal.
+        b.box(gap_dark, (tx - 2.2, 0.0, H - 1.2), (half_top * 2.0 - 1.0, DEPTH - 1.0, 2.4))
+        # Ground lobby canopy.
+        b.box(steel, (tx + 4.0, -DEPTH * 0.5 - 5.0, 9.0), (36.0, 10.0, 0.8))
 
-        # Horizontal balcony slabs, vertical spine fins, and warm illuminated hotel bays
-        for fl in range(floors):
-            u = fl / floors
-            z = 6.5 + fl * ((tower_h - 6.5) / floors)
-            spread = max(0.0, (1.0 - u * 1.45)) * 7.8
-            y_min = (1.0 - u) * (-3.2) - spread - (4.6 - u * 1.1)
-            y_max = (1.0 - u) * (4.8) + spread + (4.6 - u * 1.1)
-            yc = 0.5 * (y_min + y_max)
-            yd = (y_max - y_min) + 0.9
-            xw = (9.2 - u * 1.4) * 2.0 + 0.9
-            # Balcony edge band
-            b.box(steel, (tx, yc, z), (xw, yd, 0.28))
-            # Illuminated hotel rooms on alternating floors
-            if (fl + t_idx) % 3 == 0:
-                b.box(warm_win, (tx + ((fl % 3) - 1) * 4.2, yc, z + 1.4), (3.6, yd + 0.12, 1.9))
-
-        # Central structural spine fins on East/West faces of each tower
-        for fin_x in (-9.1, -3.0, 3.0, 9.1):
-            b.strut(steel, (tx + fin_x * 0.95, -1.0, 5.0), (tx + fin_x * 0.82, 0.2, tower_h), 0.32, sides=4)
-
-    # SkyPark ("Boat on top") spanning all 3 towers and cantilevering +28m past Tower 3
-    # X range: -50m (stern) to +66m (bow cantilever), total length 116m
-    hull_sections = []
-    deck_sections = []
-    xs = [-50.0, -44.0, -36.0, -18.0, 0.0, 18.0, 36.0, 48.0, 58.0, 64.0, 67.5]
-    half_ys = [4.5, 9.5, 13.0, 14.5, 14.8, 14.2, 13.2, 11.2, 7.8, 4.0, 1.2]
-    keel_zs = [106.2, 104.2, 103.2, 103.0, 103.0, 103.0, 103.2, 103.8, 104.6, 105.6, 106.8]
-    deck_z = 108.0
-
-    for x, hy, kz in zip(xs, half_ys, keel_zs):
-        keel_hy = max(0.6, hy * 0.58)
-        hull_sections.append([
-            (x, -keel_hy, kz),
-            (x, keel_hy, kz),
-            (x, hy, deck_z),
-            (x, -hy, deck_z),
-        ])
-        deck_sections.append([
-            (x, -hy * 0.96, deck_z),
-            (x, hy * 0.96, deck_z),
-            (x, hy * 0.96, deck_z + 0.55),
-            (x, -hy * 0.96, deck_z + 0.55),
-        ])
-    b.loft_quad_sections(hull_metal, hull_sections)
-    b.loft_quad_sections(deck_wood, deck_sections)
-
-    # Illuminated golden rim around the SkyPark boat hull so silhouette pops at dusk
-    for i in range(len(xs) - 1):
+    # ---------------------------------------------------------------- SkyPark
+    # Plan stations (x, half-width). The bow cantilevers west (-X) ~75 m past
+    # the west tower; the stern is rounded just past the east tower.
+    stations = [
+        (-185.0, 1.5), (-176.0, 7.0), (-160.0, 13.0), (-135.0, 17.0), (-100.0, 19.0),
+        (-40.0, 19.5), (20.0, 19.5), (80.0, 19.0), (106.0, 17.0), (116.0, 12.0), (120.0, 5.0),
+    ]
+    deck_z = H + 9.0
+    hull_rings, deck_rings, soffit_rings = [], [], []
+    for x, hy in stations:
+        # The keel rises toward the cantilever bow so it reads as a hull.
+        rise = max(0.0, (-110.0 - x) / 75.0)
+        keel_z = H + 0.2 + rise * 4.5
+        keel_hy = max(0.5, hy * 0.62)
+        hull_rings.append([(x, -keel_hy, keel_z), (x, keel_hy, keel_z), (x, hy, deck_z - 1.2), (x, -hy, deck_z - 1.2)])
+        soffit_rings.append([(x, -keel_hy - 0.05, keel_z - 0.15), (x, keel_hy + 0.05, keel_z - 0.15), (x, keel_hy * 0.8, keel_z - 0.6), (x, -keel_hy * 0.8, keel_z - 0.6)])
+        deck_rings.append([(x, -hy, deck_z - 1.2), (x, hy, deck_z - 1.2), (x, hy * 0.97, deck_z), (x, -hy * 0.97, deck_z)])
+    b.loft_quad_sections(hull_side, hull_rings)
+    b.loft_quad_sections(soffit, soffit_rings)
+    b.loft_quad_sections(deck_wood, deck_rings)
+    # Edge fascia line (thin dark band) along both long sides for a crisp read.
+    for i in range(len(stations) - 1):
         for side in (-1.0, 1.0):
-            p0 = (xs[i], side * half_ys[i], deck_z + 0.15)
-            p1 = (xs[i + 1], side * half_ys[i + 1], deck_z + 0.15)
-            b.strut(beacon_gold, p0, p1, 0.34, sides=6)
-
-    # SkyPark Infinity Pool along the bayside (-Y) edge & rooftop observation pavilion
-    b.box(pool_aqua, (-4.0, -8.2, deck_z + 0.65), (74.0, 6.2, 0.38))
-    b.box(hull_metal, (-18.0, 4.2, deck_z + 2.2), (26.0, 8.4, 3.4))
-    b.box(beacon_gold, (-18.0, 4.2, deck_z + 4.0), (27.2, 9.2, 0.45))
-
-    # Rooftop tropical palms/trees across the SkyPark garden
-    for tx in range(-42, 58, 9):
-        for ty in (-2.5, 6.5):
-            if abs(tx) > 48 and abs(ty) > 4.0:
+            x0, h0 = stations[i]
+            x1, h1 = stations[i + 1]
+            b.strut(soffit, (x0, side * (h0 + 0.1), deck_z - 1.4), (x1, side * (h1 + 0.1), deck_z - 1.4), 0.35, sides=4)
+            b.strut(steel, (x0, side * h0, deck_z + 0.7), (x1, side * h1, deck_z + 0.7), 0.18, sides=4)
+    # Infinity pool along the bay (-Y) edge, with a pale stone surround.
+    b.box(pavilion, (-10.0, -12.5, deck_z + 0.25), (150.0, 9.0, 0.5))
+    b.box(pool_aqua, (-10.0, -13.0, deck_z + 0.55), (146.0, 6.5, 0.3))
+    # Pavilions / restaurants along the spine.
+    for px, w, d, h in ((-140.0, 18.0, 14.0, 5.0), (-85.0, 24.0, 12.0, 6.0), (50.0, 30.0, 14.0, 6.5), (98.0, 14.0, 12.0, 5.0)):
+        b.box(pavilion, (px, 5.0, deck_z + h * 0.5), (w, d, h))
+        b.box(steel, (px, 5.0, deck_z + h + 0.3), (w + 2.0, d + 2.0, 0.6))
+    # Garden: dense palm/tree rows (round crowns, not cones) on the land side.
+    for tx in range(-168, 112, 7):
+        for ty in (3.0, 12.0):
+            if any(abs(tx - px) < w * 0.5 + 2 for px, w, _d, _h in ((-140.0, 18.0, 0, 0), (-85.0, 24.0, 0, 0), (50.0, 30.0, 0, 0), (98.0, 14.0, 0, 0))) and ty < 10:
                 continue
-            b.cylinder_z(deck_wood, (tx, ty, deck_z + 2.0), 0.28, 0.20, 3.0, sides=6)
-            b.cylinder_z(foliage, (tx, ty, deck_z + 4.1), 2.4, 0.8, 2.2, sides=8)
+            hy = next(h for x, h in stations if x >= tx) if tx < 120 else 5.0
+            if abs(ty) > hy - 2.0:
+                continue
+            b.cylinder_z(deck_wood, (tx, ty, deck_z + 1.6), 0.35, 0.25, 3.2, sides=5)
+            b.cylinder_z(foliage, (tx, ty, deck_z + 3.8), 2.6, 1.4, 2.0, sides=7)
+            b.cylinder_z(foliage, (tx, ty, deck_z + 5.0), 1.4, 0.2, 0.9, sides=7)
+
+    # ---------------------------------------------------------------- podium
+    # Low waterfront podium (shoppes/convention) in front of the towers, with
+    # three shallow vaulted roofs so the base is not one flat slab.
+    # Kept north of the far-shore road (Godot z > -665 is roadway).
+    b.box(podium_stone, (-20.0, -27.0, 6.0), (300.0, 20.0, 12.0))
+    b.box(podium_glass, (-20.0, -37.2, 5.0), (296.0, 0.6, 8.0))
+    for vx in (-130.0, -20.0, 90.0):
+        # shallow vault as stepped bands (cheap, reads at distance)
+        for k in range(5):
+            w = 92.0 - k * 10.0
+            b.box(podium_stone if k % 2 == 0 else steel, (vx, -27.0, 12.4 + k * 1.0), (w, 19.0 - k * 3.4, 1.0))
+    b.box(podium_stone, (0.0, 0.0, 2.0), (330.0, 50.0, 4.0))
 
     return b.finish("marina_bay_sands")
 
 
 def build_supertree_grove() -> dict:
-    """Gardens by the Bay Supertree Grove ('electric tree forest') + OCBC Skyway."""
+    """Supertree Grove: vertical-garden trunks, rust-purple steel exoskeletons,
+    and solid inverted-funnel canopies with a steel lattice, plus a skyway.
+
+    Wave A (Opus 5.5) rebuild. The wave-5 crowns were open wire rings in
+    emissive magenta and white, which read as cocktail glasses. Each canopy is
+    now a double-sided planted funnel shell (mass) dressed with radial ribs,
+    concentric hoops and diagonal bracing in a weathered rust-purple steel.
+    Daylight look, no emission. The layout is compacted so the grove stands
+    clear of the Marina Bay Sands silhouette from the street vista.
+    """
     bpy.ops.wm.read_factory_settings(use_empty=True)
     b = MeshBuilder()
 
-    trunk_green = make_material("st_living_trunk", (0.11, 0.34, 0.15), 0.86, 0.0)
-    canopy_purple = make_material("st_lattice_purple", (0.46, 0.16, 0.48), 0.38, 0.35, 0.65)
-    canopy_magenta = make_material("st_crown_magenta", (0.78, 0.22, 0.68), 0.30, 0.20, 2.4)
-    glow_gold = make_material("st_warm_gold_glow", (1.0, 0.74, 0.28), 0.25, 0.10, 3.2)
-    glow_cyan = make_material("st_solar_cap_cyan", (0.24, 0.78, 0.92), 0.25, 0.20, 1.8)
-    skyway_steel = make_material("st_skyway_steel", (0.78, 0.75, 0.70), 0.35, 0.65)
-    mound_stone = make_material("st_planter_stone", (0.38, 0.39, 0.36), 0.82, 0.0)
+    garden = make_material("st_vertical_garden", (0.20, 0.32, 0.16), 0.92, 0.0)
+    # Linear values: a weathered purple-brown steel that stays dark in warm light.
+    steel = make_material("st_steel_rust", (0.11, 0.045, 0.06), 0.55, 0.45)
+    steel_dark = make_material("st_steel_dark", (0.06, 0.03, 0.04), 0.60, 0.40)
+    canopy_shell = make_material("st_canopy_shell", (0.075, 0.035, 0.05), 0.80, 0.15)
+    canopy_plant = make_material("st_canopy_planting", (0.22, 0.30, 0.15), 0.92, 0.0)
+    skyway_steel = make_material("st_skyway_steel", (0.48, 0.46, 0.43), 0.40, 0.55)
+    mound_stone = make_material("st_planter_stone", (0.26, 0.25, 0.22), 0.85, 0.0)
 
-    # 7 Supertrees: (x, y, height, base_r, crown_r)
+    S = 0.82
     trees = [
-        (0.0, 0.0, 48.0, 4.4, 15.5),       # Central flagship Supertree
-        (-24.0, -8.0, 40.0, 3.6, 13.0),    # West Skyway anchor Supertree
-        (24.0, -6.0, 41.0, 3.7, 13.2),     # East Skyway anchor Supertree
-        (-16.0, 18.0, 33.0, 3.0, 10.8),    # North-West Supertree
-        (17.0, 19.0, 35.0, 3.1, 11.2),     # North-East Supertree
-        (-34.0, 12.0, 28.0, 2.6, 9.2),     # Outer West Supertree
-        (33.0, 14.0, 30.0, 2.8, 9.8),      # Outer East Supertree
+        (0.0, 0.0, 50.0, 4.6, 14.5),
+        (-22.0, -7.0, 42.0, 3.8, 12.5),
+        (22.0, -5.0, 43.0, 3.9, 12.8),
+        (-14.0, 17.0, 33.0, 3.1, 10.0),
+        (15.0, 18.0, 36.0, 3.3, 10.6),
+        (-31.0, 11.0, 27.0, 2.7, 8.6),
+        (30.0, 13.0, 29.0, 2.8, 9.0),
     ]
+    # Heights x0.85 (real Supertrees are 25-50 m): the tallest crown now fits
+    # the street-vista frame instead of being cut off by its top edge.
+    # The layout is mirrored north-south: the tall skyway pair stands on the far
+    # (bay) side, the short trees face the street, so the grove steps up.
+    trees = [(x * S, -y * S, h * 0.85, br * 0.92, cr * 0.9) for x, y, h, br, cr in trees]
+
+    def ring(cx, cy, z, r, sides, phase=0.0, wobble=0.0, seed=0):
+        pts = []
+        for s in range(sides):
+            ang = 2.0 * math.pi * s / sides + phase
+            rr = r * (1.0 + wobble * math.sin(ang * 5.0 + seed + z * 0.7) * math.cos(ang * 3.0 + z * 0.33 + seed))
+            pts.append((cx + math.cos(ang) * rr, cy + math.sin(ang) * rr, z))
+        return pts
 
     for idx, (cx, cy, h, br, cr) in enumerate(trees):
-        # Landscaped planter mound at base
-        b.cylinder_z(mound_stone, (cx, cy, 0.7), br + 3.2, br + 2.2, 1.4, sides=16)
-        b.cylinder_z(trunk_green, (cx, cy, 1.5), br + 2.0, br + 1.4, 0.6, sides=16)
+        # Planter mound and bench ring.
+        b.cylinder_z(mound_stone, (cx, cy, 0.6), br + 3.6, br + 2.8, 1.2, sides=20)
+        b.cylinder_z(garden, (cx, cy, 1.35), br + 2.6, br + 1.6, 0.4, sides=20)
 
-        # Tapered planted core trunk (waist narrows at 55% height, then flares into crown)
-        trunk_rings = []
-        sides = 14
-        levels = [
-            (0.0, br),
-            (0.22, br * 0.76),
-            (0.52, br * 0.58),
-            (0.74, br * 0.72),
-            (0.86, br * 1.15),
-        ]
-        for u, rad in levels:
-            z = 1.4 + u * (h - 1.4)
-            ring = []
-            for s in range(sides):
-                ang = (2.0 * math.pi * s) / sides
-                ring.append((cx + math.cos(ang) * rad, cy + math.sin(ang) * rad, z))
-            trunk_rings.append(ring)
-        b.loft_rings(trunk_green, trunk_rings, cap_bottom=True, cap_top=True)
+        # Trunk profile: base -> waist -> collar under the canopy.
+        prof = [(0.0, 1.00), (0.12, 0.90), (0.30, 0.74), (0.50, 0.62), (0.60, 0.64), (0.66, 0.74)]
+        z_of = lambda u: 1.4 + u * (h - 1.4)
+        sides = 20
+        rings_g = [ring(cx, cy, z_of(u), br * f, sides, wobble=0.10, seed=idx * 3.1) for u, f in prof]
+        b.loft_rings(garden, rings_g, cap_bottom=True, cap_top=True)
 
-        # Outer biomimetic exoskeleton ribs & glowing horizontal rings along trunk
-        rib_count = 12
-        for r_i in range(rib_count):
-            ang = (2.0 * math.pi * r_i) / rib_count
+        # Exoskeleton: 10 ribs following the trunk then flaring into the canopy.
+        ribs = 10
+        z_c0 = z_of(0.66)
+        r_c0 = br * 0.78 + 0.45
+        for r_i in range(ribs):
+            ang = 2.0 * math.pi * r_i / ribs
             ca, sa = math.cos(ang), math.sin(ang)
-            pts = []
-            for u, rad in levels:
-                z = 1.4 + u * (h - 1.4)
-                pts.append((cx + ca * (rad + 0.32), cy + sa * (rad + 0.32), z))
+            pts = [(cx + ca * (br * f + 0.45), cy + sa * (br * f + 0.45), z_of(u)) for u, f in prof]
             for k in range(len(pts) - 1):
-                b.strut(canopy_purple, pts[k], pts[k + 1], 0.18, sides=5)
+                b.strut(steel, pts[k], pts[k + 1], 0.20, sides=5)
+            # Spiral cross-bracing between neighbouring ribs (diamond lattice on the trunk).
+            ang_n = 2.0 * math.pi * (r_i + 1) / ribs
+            for k in range(len(prof) - 1):
+                u0, f0 = prof[k]
+                u1, f1 = prof[k + 1]
+                p0 = (cx + ca * (br * f0 + 0.45), cy + sa * (br * f0 + 0.45), z_of(u0))
+                p1 = (cx + math.cos(ang_n) * (br * f1 + 0.45), cy + math.sin(ang_n) * (br * f1 + 0.45), z_of(u1))
+                b.strut(steel_dark, p0, p1, 0.12, sides=4)
+        # Horizontal hoops on the trunk.
+        for u, f in prof[1:]:
+            pts = ring(cx, cy, z_of(u), br * f + 0.5, 16)
+            for k in range(16):
+                b.strut(steel_dark, pts[k], pts[(k + 1) % 16], 0.13, sides=4)
 
-            # Flared inverted-umbrella / trumpet canopy branches from 72% height to 100% height
-            z_branch0 = 1.4 + 0.72 * (h - 1.4)
-            r_branch0 = br * 0.72 + 0.32
-            z_mid = 1.4 + 0.88 * (h - 1.4)
-            r_mid = cr * 0.64
-            z_top = h
-            r_top = cr
-            p0 = (cx + ca * r_branch0, cy + sa * r_branch0, z_branch0)
-            pm = (cx + ca * r_mid, cy + sa * r_mid, z_mid)
-            pt = (cx + ca * r_top, cy + sa * r_top, z_top)
-            b.strut(canopy_purple, p0, pm, 0.22, sides=5)
-            b.strut(canopy_magenta if r_i % 2 == 0 else glow_gold, pm, pt, 0.20, sides=5)
-            # Secondary fork branch for dense organic canopy silhouette
-            ang2 = ang + math.pi / rib_count
-            pt2 = (cx + math.cos(ang2) * (r_top * 0.94), cy + math.sin(ang2) * (r_top * 0.94), z_top - 0.6)
-            b.strut(canopy_magenta, pm, pt2, 0.15, sides=4)
+        # Canopy: an inverted funnel. Inner planted shell + outer steel shell,
+        # both double-sided so the mass reads from above and below.
+        cz0 = z_c0
+        # Trumpet flare: narrow throat, then a wide shallow lip.
+        crown = [(0.0, r_c0), (0.35, cr * 0.30), (0.62, cr * 0.55), (0.86, cr * 0.84), (1.0, cr)]
+        cz = lambda t: cz0 + t * (h - cz0)
+        shell_sides = 24
+        outer = [ring(cx, cy, cz(t), r, shell_sides) for t, r in crown]
+        b.loft_rings(canopy_shell, outer)
+        b.loft_rings(canopy_shell, [list(reversed(rg)) for rg in outer])
+        inner = [ring(cx, cy, cz(t) + 0.6, r * 0.93, shell_sides, phase=0.05) for t, r in crown[1:]]
+        b.loft_rings(canopy_plant, [list(reversed(rg)) for rg in inner])
+        # Radial ribs on the outside of the funnel.
+        n_r = 16
+        for r_i in range(n_r):
+            ang = 2.0 * math.pi * r_i / n_r
+            ca, sa = math.cos(ang), math.sin(ang)
+            pts = [(cx + ca * (r + 0.35), cy + sa * (r + 0.35), cz(t) - 0.2) for t, r in crown]
+            for k in range(len(pts) - 1):
+                b.strut(steel, pts[k], pts[k + 1], 0.26, sides=5)
+            # Diagonal bracing between ribs: the lattice that gives the funnel texture.
+            ang_n = 2.0 * math.pi * (r_i + 1) / n_r
+            for k in range(1, len(crown) - 1):
+                t0, r0 = crown[k]
+                t1, r1 = crown[k + 1]
+                p0 = (cx + ca * (r0 + 0.4), cy + sa * (r0 + 0.4), cz(t0) - 0.2)
+                p1 = (cx + math.cos(ang_n) * (r1 + 0.4), cy + math.sin(ang_n) * (r1 + 0.4), cz(t1) - 0.2)
+                b.strut(steel_dark, p0, p1, 0.14, sides=4)
+                p2 = (cx + math.cos(ang_n) * (r0 + 0.4), cy + math.sin(ang_n) * (r0 + 0.4), cz(t0) - 0.2)
+                p3 = (cx + ca * (r1 + 0.4), cy + sa * (r1 + 0.4), cz(t1) - 0.2)
+                b.strut(steel_dark, p2, p3, 0.14, sides=4)
+        # Concentric hoops, with a heavy rim at the lip.
+        for k, (t, r) in enumerate(crown[1:]):
+            pts = ring(cx, cy, cz(t) - 0.2, r + 0.4, n_r * 2)
+            rad = 0.55 if k == len(crown) - 2 else 0.22
+            for j in range(n_r * 2):
+                b.strut(steel, pts[j], pts[(j + 1) % (n_r * 2)], rad, sides=5)
+        # Top rim planting tufts (irregular silhouette instead of a perfect ring).
+        for j in range(12):
+            a = 2.0 * math.pi * (j + 0.5) / 12
+            px, py = cx + math.cos(a) * cr * 0.9, cy + math.sin(a) * cr * 0.9
+            b.cylinder_z(canopy_plant, (px, py, h + 0.5), 1.4 + (j % 3) * 0.4, 0.4, 1.4 + (j % 2) * 0.6, sides=6)
 
-        # Concentric glowing canopy crown rings at the top of each Supertree
-        for frac, mat in [(0.62, glow_gold), (0.82, canopy_magenta), (1.0, glow_gold)]:
-            ring_r = cr * frac
-            ring_z = h - (1.0 - frac) * 3.8
-            for r_i in range(rib_count):
-                a0 = (2.0 * math.pi * r_i) / rib_count
-                a1 = (2.0 * math.pi * (r_i + 1)) / rib_count
-                b.strut(
-                    mat,
-                    (cx + math.cos(a0) * ring_r, cy + math.sin(a0) * ring_r, ring_z),
-                    (cx + math.cos(a1) * ring_r, cy + math.sin(a1) * ring_r, ring_z),
-                    0.22,
-                    sides=5,
-                )
-
-        # Glowing trunk collar rings + solar photovoltaics cap at center of crown
-        for collar_u in (0.35, 0.55, 0.74):
-            cz = 1.4 + collar_u * (h - 1.4)
-            crad = br * 0.78
-            b.cylinder_z(glow_gold if idx % 2 == 0 else canopy_magenta, (cx, cy, cz), crad, crad, 0.42, sides=12)
-        b.cylinder_z(glow_cyan, (cx, cy, h * 0.89), br * 1.35, br * 1.05, 0.65, sides=12)
-
-    # OCBC Skyway: curved elevated walkway at Z = 22m linking the main Supertrees
-    skyway_z = 22.0
-    skyway_pts = [
-        (-24.0, -8.0),
-        (-16.0, -4.5),
-        (-8.0, -1.5),
-        (0.0, 0.0),
-        (8.5, -1.0),
-        (16.5, -3.5),
-        (24.0, -6.0),
-        (21.0, 6.5),
-        (17.0, 19.0),
-        (0.0, 21.5),
-        (-16.0, 18.0),
-        (-21.0, 5.0),
-        (-24.0, -8.0),
-    ]
-    for i in range(len(skyway_pts) - 1):
-        x0, y0 = skyway_pts[i]
-        x1, y1 = skyway_pts[i + 1]
-        b.strut(skyway_steel, (x0, y0, skyway_z), (x1, y1, skyway_z), 0.65, sides=6)
-        b.strut(glow_gold, (x0, y0, skyway_z + 0.95), (x1, y1, skyway_z + 0.95), 0.18, sides=4)
+    # Skyway between the two flanking trees and the flagship, at 22 m.
+    sk = [(trees[1][0], trees[1][1]), (-9.0 * S, 3.0 * S), (trees[0][0], trees[0][1]), (9.0 * S, 2.0 * S), (trees[2][0], trees[2][1])]
+    skz = 22.0
+    for i in range(len(sk) - 1):
+        x0, y0 = sk[i]
+        x1, y1 = sk[i + 1]
+        b.strut(skyway_steel, (x0, y0, skz), (x1, y1, skz), 1.0, sides=4)
+        for side in (-1.0, 1.0):
+            dx, dy = x1 - x0, y1 - y0
+            ln = math.hypot(dx, dy) or 1.0
+            nx, ny = -dy / ln * side * 1.1, dx / ln * side * 1.1
+            b.strut(skyway_steel, (x0 + nx, y0 + ny, skz + 1.2), (x1 + nx, y1 + ny, skz + 1.2), 0.08, sides=4)
 
     return b.finish("supertree_grove")
 
@@ -468,70 +501,141 @@ def build_artscience_museum() -> dict:
 
 
 def build_merlion_landmark() -> dict:
-    """Waterfront Merlion statue on wave plinth with arching water jet."""
+    """Merlion: lion head with a heavy mane on an upright fish body that sits
+    on a curled tail, spouting an arc of water, on a wave-carved plinth.
+
+    Wave A (Opus 5.5) rebuild. The wave-5 figure was a lofted capsule, which
+    read as a white blob. The figure is now sculpted from metaballs (lion
+    head, muzzle, open mouth, ears, mane locks, chest, flippers, scaled body,
+    curled tail and fin) and converted to a smooth mesh, then scaled to the
+    real statue's ~8.6 m figure height. Facing +Y (Godot -Z before yaw).
+    """
     bpy.ops.wm.read_factory_settings(use_empty=True)
     b = MeshBuilder()
 
-    ivory = make_material("merlion_ivory_stone", (0.93, 0.91, 0.86), 0.48, 0.04)
-    plinth_stone = make_material("merlion_plinth_granite", (0.58, 0.57, 0.54), 0.74, 0.05)
-    wave_blue = make_material("merlion_wave_crest", (0.22, 0.56, 0.72), 0.32, 0.1)
-    water_jet = make_material("merlion_water_spray", (0.68, 0.94, 1.0), 0.12, 0.0, 2.2)
-    warm_spot = make_material("merlion_plinth_light", (1.0, 0.82, 0.48), 0.25, 0.0, 2.8)
+    ivory = make_material("merlion_ivory_stone", (0.74, 0.71, 0.64), 0.6, 0.0)
+    plinth_stone = make_material("merlion_plinth_granite", (0.24, 0.23, 0.22), 0.78, 0.05)
+    wave_stone = make_material("merlion_wave_stone", (0.52, 0.50, 0.46), 0.66, 0.0)
+    water_jet = make_material("merlion_water_spray", (0.80, 0.90, 0.94), 0.10, 0.0, 0.35)
 
-    # Stepped circular pier plinth & sculpted wave base
-    b.cylinder_z(plinth_stone, (0.0, 0.0, 0.5), 5.2, 4.8, 1.0, sides=18)
-    b.cylinder_z(plinth_stone, (0.0, 0.0, 1.35), 3.8, 3.4, 0.8, sides=18)
-    b.cylinder_z(wave_blue, (0.0, 0.0, 2.05), 2.9, 2.5, 0.7, sides=16)
-    for s in range(6):
-        ang = (2.0 * math.pi * s) / 6.0
-        b.box(warm_spot, (math.cos(ang) * 3.5, math.sin(ang) * 3.5, 1.82), (0.35, 0.35, 0.22))
+    mb = bpy.data.metaballs.new("merlion_figure")
+    mb.resolution = 0.075
+    mb.render_resolution = 0.075
+    mb.threshold = 0.6
 
-    # Merlion body: curving S-shaped fish-tail rising into muscular lion chest & head (facing +Y in Blender -> -Z North into bay in Godot)
-    spine = [
-        (0.0, -0.9, 2.2, 1.85, 2.10),  # Lower fish tail base
-        (0.0, -1.2, 3.4, 1.65, 1.90),  # Tail curve back
-        (0.0, -0.8, 4.8, 1.50, 1.75),  # Mid scaled torso
-        (0.0, -0.2, 6.2, 1.60, 1.85),  # Upper torso
-        (0.0, 0.25, 7.6, 1.78, 2.05),  # Broad lion chest
-        (0.0, 0.35, 9.0, 1.65, 1.90),  # Lion neck & mane collar
-        (0.0, 0.45, 10.2, 1.45, 1.68), # Lion head core
-        (0.0, 0.35, 11.1, 1.05, 1.20), # Crown of head
-    ]
-    rings = []
-    sides = 14
-    for _, cy, cz, rx, ry in spine:
-        ring = []
-        for s in range(sides):
-            ang = (2.0 * math.pi * s) / sides
-            ring.append((math.cos(ang) * rx, cy + math.sin(ang) * ry, cz))
-        rings.append(ring)
-    b.loft_rings(ivory, rings, cap_bottom=True, cap_top=True)
+    def ball(co, r, neg=False):
+        e = mb.elements.new(type="BALL")
+        e.co = co
+        e.radius = r
+        e.use_negative = neg
+        return e
 
-    # Sculpted tail fin curling up behind the lower back
-    b.strut(ivory, (0.0, -1.6, 2.6), (0.0, -2.5, 4.6), 0.65, sides=6)
-    b.box(ivory, (0.0, -2.7, 5.0), (1.9, 0.55, 1.3))
+    def ell(co, size, r=1.0, rot=(1.0, 0.0, 0.0, 0.0), neg=False):
+        e = mb.elements.new(type="ELLIPSOID")
+        e.co = co
+        e.radius = r
+        e.size_x, e.size_y, e.size_z = size
+        e.rotation = rot
+        e.use_negative = neg
+        return e
 
-    # Sculpted lion mane ridges around neck/head & snout facing +Y (bayward)
-    for z_mane in (8.2, 9.0, 9.8, 10.5):
-        b.cylinder_z(ivory, (0.0, 0.15, z_mane), 1.92, 1.72, 0.52, sides=12)
-    # Lion snout, lower jaw, and ears
-    b.box(ivory, (0.0, 1.65, 10.15), (1.35, 1.45, 0.82))
-    b.box(ivory, (0.0, 1.55, 9.45), (1.15, 1.25, 0.42))
-    for sx in (-1.05, 1.05):
-        b.box(ivory, (sx, 0.25, 11.15), (0.42, 0.45, 0.62))
+    def qx(deg):
+        a = math.radians(deg) * 0.5
+        return (math.cos(a), math.sin(a), 0.0, 0.0)
 
-    # Luminous water jet arching from mouth (0, 2.1, 9.8) out to (0, 13.5, 0.6) in the bay
-    jet_pts = []
-    for k in range(13):
-        u = k / 12.0
-        jy = 2.1 + u * 11.5
-        jz = 9.8 + u * 2.2 - (u * u) * 11.4
-        jet_pts.append((0.0, jy, jz))
-    for k in range(len(jet_pts) - 1):
-        rad = 0.22 + (k / len(jet_pts)) * 0.26
-        b.strut(water_jet, jet_pts[k], jet_pts[k + 1], rad, sides=8)
-    # Splash foam ring where jet hits the bay water
-    b.cylinder_z(water_jet, (0.0, 13.6, 0.45), 2.4, 1.6, 0.35, sides=14)
+    # Curled fish tail behind and below the body (spiral rising backward then up).
+    tail = [((0.0, -1.2, 1.25), 1.55), ((0.0, -2.2, 1.45), 1.30), ((0.0, -3.0, 2.0), 1.10),
+            ((0.0, -3.35, 2.8), 0.92), ((0.0, -3.25, 3.55), 0.78), ((0.0, -2.8, 4.05), 0.66)]
+    for co, r in tail:
+        ball(co, r)
+    # Tail fin: two flattened lobes flaring up and back from the curl tip.
+    ell((0.0, -2.75, 4.65), (0.16, 0.95, 0.75), 1.0, qx(-20))
+    # Upright scaled body rising from the tail to the chest.
+    body = [((0.0, -0.55, 1.6), 1.65), ((0.0, -0.30, 2.7), 1.55), ((0.0, -0.05, 3.8), 1.50), ((0.0, 0.25, 4.8), 1.62)]
+    for co, r in body:
+        ball(co, r)
+    # (Scale texture is left to shading: sculpted bumps read as knobs at range.)
+    # Front flippers / forelegs braced against the chest (kept inside the
+    # body's field so they merge instead of floating as separate blobs).
+    for sx in (-1.0, 1.0):
+        ell((sx * 0.7, 0.85, 3.4), (0.40, 0.60, 0.9), 1.15, qx(-18))
+    # Neck and the lion head.
+    ball((0.0, 0.35, 5.6), 1.55)
+    ell((0.0, 0.60, 6.40), (1.10, 1.0, 1.0), 1.40)
+    # Mane: one heavy ruff framing the face plus merged locks flowing down the
+    # back of the neck (separate small balls read as fingers at range).
+    ell((0.0, -0.10, 6.35), (1.65, 1.0, 1.45), 1.75)
+    # Mane fringe: a ring of heavy curls framing the face (the lion read from
+    # the front and three-quarter views), with a beard under the jaw.
+    for k in range(14):
+        a = 2.0 * math.pi * k / 14.0
+        ball((math.cos(a) * 1.55, 0.25, 6.35 + math.sin(a) * 1.45), 1.15)
+    ball((0.0, 0.9, 4.95), 1.05)
+    # Scalloped curls on the rim of the mane, so its silhouette is a lion's
+    # ruff rather than a smooth disc.
+    for k in range(20):
+        a = 2.0 * math.pi * (k + 0.5) / 20.0
+        ball((math.cos(a) * 2.35, 0.05 - 0.25 * abs(math.sin(a)), 6.35 + math.sin(a) * 2.2), 0.62)
+    for k in range(10):
+        a = 2.0 * math.pi * k / 10.0
+        ca, sa = math.cos(a), math.sin(a)
+        if sa > 0.4:  # leave the face open
+            continue
+        ball((ca * 1.25, 0.15 + sa * 0.6, 6.3 + 0.6 * math.cos(a)), 1.05)
+    for k, (yy, zz, rr) in enumerate(((-0.55, 7.0, 1.0), (-0.85, 6.2, 1.05), (-0.95, 5.4, 1.0), (-0.85, 4.7, 0.85))):
+        ball((0.0, yy, zz), rr)
+    # Ears.
+    for sx in (-1.0, 1.0):
+        ell((sx * 0.7, 0.55, 7.45), (0.34, 0.24, 0.40), 1.0)
+    # Muzzle pushed forward, nose bridge and tip, brow ridge.
+    ell((0.0, 1.80, 6.25), (0.75, 1.05, 0.62), 1.15)
+    ell((0.0, 1.40, 6.80), (0.50, 0.70, 0.30), 1.0)
+    ball((0.0, 2.35, 6.42), 0.42)
+    ell((0.0, 1.05, 7.05), (0.85, 0.45, 0.32), 1.0)
+    # Lower jaw, dropped open.
+    ell((0.0, 1.75, 5.50), (0.50, 0.78, 0.28), 1.0, qx(14))
+    # Open mouth (negative) between the jaws.
+    ell((0.0, 2.30, 5.90), (0.46, 0.85, 0.18), 1.0, neg=True)
+    # Eye sockets.
+    for sx in (-1.0, 1.0):
+        ball((sx * 0.45, 1.65, 6.75), 0.24, neg=True)
+
+    ob = bpy.data.objects.new("merlion_figure", mb)
+    bpy.context.collection.objects.link(ob)
+    deps = bpy.context.evaluated_depsgraph_get()
+    me = bpy.data.meshes.new_from_object(ob.evaluated_get(deps))
+    bpy.data.objects.remove(ob)
+    # Normalise: figure stands on z=2.4 (top of plinth + wave base) and its
+    # crown reaches 2.4 + 8.6 m.
+    zs = [v.co.z for v in me.vertices]
+    z0, z1 = min(zs), max(zs)
+    k = 8.6 / max(0.01, (z1 - z0))
+    for v in me.vertices:
+        v.co.x *= k
+        v.co.y *= k
+        v.co.z = (v.co.z - z0) * k + 2.2
+    for p in me.polygons:
+        p.use_smooth = True
+    me.materials.clear()
+    me.materials.append(ivory)
+    fig = bpy.data.objects.new("merlion_landmark_figure", me)
+    fig["authoring"] = "Original Blender metaball sculpt; Wave A Opus 5.5"
+    bpy.context.collection.objects.link(fig)
+    mouth = (0.0, 2.45 * k, (5.9 - z0) * k + 2.2)
+
+    # Stepped granite plinth and carved wave base.
+    b.cylinder_z(plinth_stone, (0.0, 0.0, 0.5), 5.4, 5.0, 1.0, sides=24)
+    b.cylinder_z(plinth_stone, (0.0, 0.0, 1.25), 4.2, 3.9, 0.5, sides=24)
+    for j in range(9):
+        a = 2.0 * math.pi * j / 9.0
+        b.cylinder_z(wave_stone, (math.cos(a) * 2.4, math.sin(a) * 2.4 - 0.6, 1.75), 1.35, 0.55, 0.9, sides=10)
+    # Water jet arcing from the mouth into the bay.
+    pts = []
+    for i in range(15):
+        u = i / 14.0
+        pts.append((0.0, mouth[1] + u * 12.0, mouth[2] + u * 2.6 - u * u * (mouth[2] + 2.0)))
+    for i in range(len(pts) - 1):
+        b.strut(water_jet, pts[i], pts[i + 1], 0.16 + 0.18 * i / 14.0, sides=8)
 
     return b.finish("merlion_landmark")
 
