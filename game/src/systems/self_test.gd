@@ -613,7 +613,7 @@ func _combat_q_checks(player: Player) -> void:
 	Events.interaction_prompt.disconnect(grab)
 	_check("no interaction prompt during a firefight", CombatFx.in_combat() and not prompts.is_empty() and prompts.all(func(t): return t == ""), str(prompts.slice(0, 3)))
 	var victim := NPC.new()
-	victim.is_hostile = true
+	victim.is_police = true
 	player.get_parent().add_child(victim)
 	victim.global_position = player.global_position + Vector3(2.5, 0.0, -3.5)
 	victim.state = NPC.State.IDLE
@@ -626,7 +626,10 @@ func _combat_q_checks(player: Player) -> void:
 	if victim.character_visual != null and victim.character_visual.skeleton != null:
 		pb = victim.character_visual.skeleton.get_node_or_null("Ragdoll/PB_pelvis") as Node3D
 	var rest_h := pb.global_position.y - victim.global_position.y if pb != null else 99.0
-	_check("lethal hit ragdolls the body to rest on the ground", Ragdoll.started > before_rag and pb != null and rest_h < 0.35, "pelvis_h=%.2f" % rest_h)
+	var drift := Vector2(pb.global_position.x - victim.global_position.x, pb.global_position.z - victim.global_position.z).length() if pb != null else 99.0
+	# The pelvis ends on the ground (ragdoll ~0.1 m; the guarded fallback to the
+	# authored fall pose ~0.36 m), never under the floor or flung away.
+	_check("lethal hit ragdolls the body; it ends on the ground, never under it or flung", Ragdoll.started > before_rag and pb != null and rest_h > -0.05 and rest_h < 0.42 and drift < 3.0, "pelvis_h=%.2f drift=%.2f guard=%s" % [rest_h, drift, Ragdoll.last_blowup])
 	victim.queue_free()
 
 ## Wave-5 additions: kerbside parking geometry, parked-car sleep, road-graph

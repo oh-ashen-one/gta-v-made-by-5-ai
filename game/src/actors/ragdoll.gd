@@ -4,19 +4,20 @@ extends RefCounted
 ## hands its skeleton to a physical skeleton built on the fly: 13 capsule
 ## bodies (pelvis, spine, chest, head, arms, legs) joined with cone joints
 ## at the spine, neck, shoulders and hips and limited hinges at the elbows
-## and knees. It starts from the pose of the moment (authored fall clip plus
+## and knees; a guard clamps runaway speeds and catches a blown-up solve. It starts from the pose of the moment (authored fall clip plus
 ## flinch), takes the round's push at the chest, then collapses, rolls and
 ## settles on the ground under gravity, conforming to kerbs and steps,
 ## instead of freezing in the clip's end pose. The held gun drops free.
-## Bodies live on their own collision layer (only the world collides), so
-## corpses never block the player, cars or bullets.
+## Bodies live on their own collision layer (they collide with the world and
+## vehicles; nothing collides with them), so corpses never block the player,
+## cars or bullets.
 
 const LAYER := 1 << 9          # ragdoll bodies (layer 10)
-const MASK := 1                # world only
+const MASK := 1 | 8            # world and vehicles (bodies never end up inside a parked car)
 ## bone -> [child bone for the capsule axis (or "" = fixed length), radius,
 ##          mass kg, joint, swing/upper deg, twist/-lower deg]. Hinge axis is
-## the character's left; + flexes the knee, - flexes the elbow (measured
-## against the authored run/seated clips).
+## the character's left; + flexes the knee and the elbow (checked headless:
+## the reverse elbow range made bodies launch from the aim pose).
 const BODIES := {
 	"pelvis": ["", 0.11, 11.0, "none", 0.0, 0.0],
 	"spine": ["chest", 0.12, 7.0, "cone", 22.0, 12.0],
@@ -24,8 +25,8 @@ const BODIES := {
 	"head": ["", 0.105, 5.0, "cone", 38.0, 30.0],
 	"upper_arm.l": ["forearm.l", 0.055, 2.4, "cone", 75.0, 35.0],
 	"upper_arm.r": ["forearm.r", 0.055, 2.4, "cone", 75.0, 35.0],
-	"forearm.l": ["hand.l", 0.04, 1.6, "hinge", 2.0, 120.0],
-	"forearm.r": ["hand.r", 0.04, 1.6, "hinge", 2.0, 120.0],
+	"forearm.l": ["hand.l", 0.04, 1.6, "hinge", 120.0, 2.0],
+	"forearm.r": ["hand.r", 0.04, 1.6, "hinge", 120.0, 2.0],
 	"thigh.l": ["shin.l", 0.07, 8.5, "cone", 50.0, 18.0],
 	"thigh.r": ["shin.r", 0.07, 8.5, "cone", 50.0, 18.0],
 	"shin.l": ["foot.l", 0.06, 4.0, "hinge", 45.0, 2.0],
@@ -33,6 +34,8 @@ const BODIES := {
 }
 static var active_count := 0
 static var started := 0
+static var blowups := 0
+static var last_blowup := ""
 
 ## Start the ragdoll on `visual` (a loaded CharacterVisual). `push` is the
 ## horizontal direction the killing round travelled; `strength` ~0.5..1.5.
@@ -42,6 +45,9 @@ static func start(visual: Node3D, push: Vector3, strength: float = 1.0) -> bool:
 	var sk: Skeleton3D = visual.get("skeleton")
 	if sk == null or sk.get_node_or_null("Ragdoll") != null:
 		return false
+	# Physics bodies cannot carry scale: civilians' stature scale (0.94-1.05)
+	# made the joint solve blow up, so the body returns to unit scale here.
+	visual.scale = Vector3.ONE
 	var sim := PhysicalBoneSimulator3D.new()
 	sim.name = "Ragdoll"
 	sk.add_child(sim)
@@ -71,6 +77,9 @@ static func _char_left(sk: Skeleton3D, visual: Node3D) -> Vector3:
 static func _make_body(sk: Skeleton3D, id: int, spec: Array, left_axis: Vector3) -> PhysicalBone3D:
 	var pb := PhysicalBone3D.new()
 	pb.name = "PB_" + sk.get_bone_name(id).replace(".", "_")
+	# World-space bodies: the dead actor's root may still be shoved or slide,
+	# and a parent transform change must never teleport simulated bodies.
+	pb.top_level = true
 	pb.bone_name = sk.get_bone_name(id)
 	pb.collision_layer = LAYER
 	pb.collision_mask = MASK
@@ -117,6 +126,9 @@ static func _make_body(sk: Skeleton3D, id: int, spec: Array, left_axis: Vector3)
 	match joint:
 		"none":
 			pb.joint_type = PhysicalBone3D.JOINT_TYPE_NONE
+		"pin":
+			pb.joint_type = PhysicalBone3D.JOINT_TYPE_PIN
+			pb.set("joint_constraints/damping", 1.0)
 		"cone":
 			pb.joint_type = PhysicalBone3D.JOINT_TYPE_CONE
 			pb.set("joint_constraints/swing_span", float(spec[4]))
@@ -141,26 +153,29 @@ static func _begin(sim: PhysicalBoneSimulator3D, bodies: Dictionary, push: Vecto
 	var p := push
 	p.y = 0.0
 	p = p.normalized() if p.length() > 0.01 else Vector3.ZERO
-	var s := clampf(strength, 0.4, 1.6)
+	var s := clampf(strength, 0.4, 1.0)   # stronger launches destabilise the joint solve
 	# The round's push at the chest and head, knees buckling forward, so the
 	# figure folds back and down rather than toppling like a plank.
 	for bone in bodies:
 		var pb: PhysicalBone3D = bodies[bone]
 		if not is_instance_valid(pb):
 			continue
-		var v := Vector3.ZERO
+		# One shared drift plus a modest extra at the chest and head (large
+		# relative velocities between jointed bodies destabilise the solve).
+		var v := p * 0.9 * s
 		match bone:
 			"chest", "head":
-				v = p * 2.6 * s + Vector3.UP * 0.2
-			"spine":
-				v = p * 1.8 * s
-			"pelvis":
-				v = p * 0.8 * s
-			"shin.l", "shin.r", "thigh.l", "thigh.r":
-				v = -p * 0.6 * s
-			_:
-				v = p * 1.2 * s
+				v += p * 0.9 * s
+			"spine", "upper_arm.l", "upper_arm.r":
+				v += p * 0.5 * s
+			"shin.l", "shin.r":
+				v -= p * 0.4 * s
 		pb.linear_velocity = v
+	# Watchdog: a joint fighting its limits must never launch the body.
+	var guard := RagdollGuard.new()
+	guard.bodies = bodies.values()
+	guard.origin = sim.get_skeleton().global_position   # feet / ground level
+	sim.add_child(guard)
 	# Stop simulating once settled; the bodies stay where they came to rest.
 	var tree := sim.get_tree()
 	tree.create_timer(9.0, true, true).timeout.connect(func() -> void:
@@ -223,3 +238,44 @@ static func clear(visual: Node3D) -> void:
 			visual.call("attach_weapon", gun, "pistol")
 		if body != null and is_instance_valid(body):
 			body.queue_free()
+
+## Clamps runaway body speeds for the first seconds of a ragdoll.
+class RagdollGuard extends Node:
+	var bodies: Array = []
+	var origin := Vector3.ZERO
+	var t := 0.0
+	var tripped := false
+	func _physics_process(delta: float) -> void:
+		t += delta
+		if t > 4.0:
+			set_physics_process(false)
+			return
+		# A blown-up solve (body flung or through the floor): kill the motion
+		# and let gravity settle it again from where it is.
+		for b in bodies:
+			var q := b as PhysicalBone3D
+			if q == null or not is_instance_valid(q):
+				continue
+			var off := q.global_position - origin
+			var core := q.name in [&"PB_pelvis", &"PB_chest", &"PB_head"]
+			if (core and off.y < -0.3) or off.y < -1.0 or Vector2(off.x, off.z).length() > 4.0:
+				Ragdoll.last_blowup = "y=%.2f h=%.2f %s" % [off.y, Vector2(off.x, off.z).length(), q.name]
+				# Fall back to the authored fall clip's end pose (the pre-wave-Q
+				# behaviour) rather than leave a body under the floor.
+				tripped = true
+				Ragdoll.blowups += 1
+				var sim := get_parent() as PhysicalBoneSimulator3D
+				if sim != null:
+					sim.physical_bones_stop_simulation()
+					sim.influence = 0.0
+				set_physics_process(false)
+				return
+		var cap := 7.0 if t > 0.1 else 9.0
+		for b in bodies:
+			var pb := b as PhysicalBone3D
+			if pb == null or not is_instance_valid(pb):
+				continue
+			if pb.linear_velocity.length() > cap:
+				pb.linear_velocity = pb.linear_velocity.normalized() * cap
+			if pb.angular_velocity.length() > 18.0:
+				pb.angular_velocity = pb.angular_velocity.normalized() * 18.0

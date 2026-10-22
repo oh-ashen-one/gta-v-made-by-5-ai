@@ -214,7 +214,9 @@ func stagger(actor: CharacterBody3D, from_position: Vector3, amount: float, leth
 		away = -actor.global_transform.basis.z
 	away = away.normalized()
 	var push := (3.0 if lethal else 2.2) * clampf(amount / 30.0, 0.6, 1.5)
-	_staggers.append({"actor": actor, "vel": away * push, "t": 0.36 if not lethal else 0.5})
+	var ragdolled := lethal and actor.get("character_visual") != null and bool((actor.get("character_visual") as Node).get("loaded"))
+	if not ragdolled:   # wave Q: a ragdolled body takes the push itself
+		_staggers.append({"actor": actor, "vel": away * push, "t": 0.36 if not lethal else 0.5})
 	var visual: Node = actor.get("character_visual")
 	if visual == null:
 		visual = actor.get("_visual")

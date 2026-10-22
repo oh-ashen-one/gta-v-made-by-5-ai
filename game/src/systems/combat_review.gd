@@ -161,8 +161,8 @@ func _corpse_still(name: String, n: NPC) -> void:
 	away.y = 0.0
 	away = away.normalized() if away.length() > 0.1 else Vector3.FORWARD
 	var side := away.cross(Vector3.UP).normalized()
-	await _close_still(name, c - away * 2.2 + side * 1.3 + Vector3.UP * 1.25, c, 45.0)
-	_note("%s pelvis %s height above ground %.2f" % [name, c, c.y - _ground(c).y + 0.05])
+	await _close_still(name, c - away * 1.7 + side * 0.9 + Vector3.UP * 2.1, c, 50.0)
+	_note("%s pelvis %s height above ground %.2f" % [name, c, c.y - (_ground(c).y - 0.05)])
 
 func _spawn(pos: Vector3, police: bool, health: float) -> NPC:
 	var n := NPC.new()
@@ -260,7 +260,7 @@ func _run() -> void:
 	await _close_still("aim_pose_close_r", head + hf * 1.15 + hr * 0.75 + Vector3.UP * 0.02, head + hf * 0.3 - Vector3.UP * 0.05)
 	await _close_still("aim_pose_close_l", head + hf * 1.15 - hr * 0.75 + Vector3.UP * 0.02, head + hf * 0.3 - Vector3.UP * 0.05)
 	await _close_still("aim_pose_side", head + hr * 1.35 + hf * 0.25, head + hf * 0.28 - Vector3.UP * 0.05)
-	await _close_still("aim_pose_over_shoulder", head - hf * 0.75 + hr * 0.38 + Vector3.UP * 0.12, head + hf * 4.0 - Vector3.UP * 0.1, 50.0)
+	await _close_still("aim_pose_over_shoulder", head - hf * 0.95 + hr * 0.55 + Vector3.UP * 0.12, head + hf * 4.0 + hr * 0.2 - Vector3.UP * 0.1, 50.0)
 	_phase = "burst_wall"
 	var spots := []
 	var tangent := wall_normal.cross(Vector3.UP).normalized()

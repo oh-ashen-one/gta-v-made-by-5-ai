@@ -14,11 +14,11 @@ extends Node
 ## Shots still resolve along the un-kicked camera ray (Player._fire runs in
 ## _process before this node applies the kick), so the reticle stays honest.
 
-const AIM_FOV := 47.0
+const AIM_FOV := 55.0
 ## Aim framing on the spring arm (base 0.85 m right of the body): toward the
 ## spine and a little lower, so the hero stands on the left third, head to
 ## waist, with both arms and the pistol reaching into the frame.
-const AIM_ARM_OFFSET := Vector3(-0.25, 0.02, 0.0)
+const AIM_ARM_OFFSET := Vector3(-0.13, 0.20, 0.0)
 var arm_offset := Vector3.ZERO
 var player: Node3D
 var hold := 0.0                 # seconds the gun stays raised after a shot

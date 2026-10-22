@@ -178,7 +178,8 @@ func _process_modification_with_delta(delta: float) -> void:
 	_orient("spine", _rot(yaw * 0.55, torso_pitch * 0.25, side), w)
 	_orient("chest", _rot(yaw, torso_pitch * 0.5, side), w)
 	_orient("neck", _rot(yaw, torso_pitch * 0.75, side), w)
-	var head_pitch := theta - 0.06
+	# Head pitched ~8 deg down onto the sights, which sit just under the eye line.
+	var head_pitch := theta - 0.15
 	var head_yaw := yaw
 	if reloading:
 		# Eyes on the magazine well: ~35 deg down and a little toward the gun.
@@ -196,9 +197,14 @@ func _process_modification_with_delta(delta: float) -> void:
 	var s_r: Vector3 = sk.get_bone_global_pose(_ids["upper_arm.r"]).origin
 	var reach := _arm_len("r") * 0.985
 	var og := Vector3.ZERO
-	var t := 0.50
+	# Gun ~0.5 m out, 7 cm right of the sighting eye and ~8 cm under it
+	# (head canted onto the sights, GTA-style): the barrel line still runs
+	# past the eye, and from the over-the-shoulder camera the pistol and
+	# right hand clear the head instead of hiding in front of the face.
+	var lat := (_R - D * _R.dot(D)).normalized()
+	var t := 0.52
 	while t > 0.24:
-		og = eye + D * t - ua * SIGHT_H
+		og = eye + D * t - ua * (SIGHT_H + 0.075) + lat * 0.11
 		var gb0 := _gun_basis(D, ua)
 		var wr := og - _hand_from_gun(gb0) * GRIP_POS - gb0 * GUN_SEAT
 		if wr.distance_to(s_r) <= reach:
@@ -206,7 +212,7 @@ func _process_modification_with_delta(delta: float) -> void:
 		t -= 0.025
 	var gb := _gun_basis(D, ua)
 	if reloading:
-		var hold_o := eye + flat * 0.30 - _U * 0.34 + L * 0.11
+		var hold_o := eye + flat * 0.22 - _U * 0.36 + L * 0.07
 		var bar := (flat * 0.80 + _U * 0.40 + L * 0.42).normalized()
 		var up2 := _U - bar * _U.dot(bar)
 		up2 = (up2.normalized() * 0.75 + _R * 0.66)
