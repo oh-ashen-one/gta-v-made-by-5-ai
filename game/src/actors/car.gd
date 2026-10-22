@@ -272,6 +272,9 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector3.ZERO
 		move_and_slide()
 		return
+	if not driver_is_player and _shove.length_squared() > 0.01:
+		_shoved_motion(delta)
+		return
 	if driver_is_player:
 		_player_control(delta)
 	elif has_ai:
@@ -306,6 +309,42 @@ func _physics_process(delta: float) -> void:
 	var before := velocity
 	move_and_slide()
 	_check_impact(before)
+	_spin_wheels(delta)
+
+var _shove := Vector3.ZERO
+var _shove_spin := 0.0
+var _rebound := 0.0
+var shoves_taken := 0
+
+## Struck by the player: slide away with the transferred momentum, spin about
+## the contact point, and scrub to a stop on the tyres (~9 m/s^2).
+func shove(v: Vector3, at: Vector3) -> void:
+	if driver_is_player or disabled: return
+	v.y = 0.0
+	_shove += v
+	var r := at - global_position
+	r.y = 0.0
+	_shove_spin = clampf(_shove_spin - r.cross(v).y * 0.07, -2.2, 2.2)
+	_forward = 0.0
+	shoves_taken += 1
+	set_physics_process(true)
+	health = maxf(1.0, health - clampf(v.length() * 1.2, 0.0, 30.0))
+	if fx != null and fx.has_method("impact_at"):
+		fx.impact_at(at, -v.normalized(), clampf(v.length() / 14.0, 0.25, 1.0))
+
+func _shoved_motion(delta: float) -> void:
+	velocity.x = _shove.x
+	velocity.z = _shove.z
+	velocity.y = -0.6 if is_on_floor() else velocity.y - 24.0 * delta
+	rotate_y(_shove_spin * delta)
+	move_and_slide()
+	_shove = _shove.move_toward(Vector3.ZERO, 9.0 * delta)
+	_shove_spin = move_toward(_shove_spin, 0.0, 3.0 * delta)
+	if get_slide_collision_count() > 0:
+		for i in get_slide_collision_count():
+			var n := get_slide_collision(i).get_normal()
+			if n.y < 0.65 and _shove.dot(n) < 0.0:
+				_shove = (_shove - n * _shove.dot(n) * 1.4) * 0.6
 	_spin_wheels(delta)
 
 ## Kinematic wheel contact: lift over a low kerb only when the complete car
@@ -354,11 +393,23 @@ func _check_impact(before: Vector3) -> void:
 				else:
 					person.scramble_from(global_position)
 			continue
+		# driving C2: momentum goes into the struck car (critic C1: an 84 km/h
+		# ram stopped dead and left the victim unmoved).
+		if struck is Car and approach > 3.0 and driver_is_player:
+			var other := struck as Car
+			var now_ms := Time.get_ticks_msec()
+			if now_ms - int(other.get_meta("shove_ms", -100000)) > 350:
+				other.set_meta("shove_ms", now_ms)
+				other.shove(-normal * approach * 0.62, collision.get_position())
+				_rebound = maxf(_rebound, approach * 0.34)
 		worst = maxf(worst, approach)
 	if blocked > 0.5:
 		# Match the drivetrain to the velocity the collision actually permits.
 		# Holding throttle against a wall must not invent a fresh 27 m/s crash.
 		_forward = signf(_forward) * minf(absf(_forward), Vector2(velocity.x, velocity.z).length())
+		if _rebound > 0.0:
+			_forward = (signf(_forward) if absf(_forward) > 0.01 else 1.0) * maxf(absf(_forward), _rebound)
+			_rebound = 0.0
 	if worst < 6.0 or _impact_cooldown > 0.0:
 		return
 	_impact_cooldown = 1.2

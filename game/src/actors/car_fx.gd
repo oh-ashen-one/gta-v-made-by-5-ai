@@ -100,6 +100,7 @@ func setup(owner_car: Car, provider_root: Node3D) -> void:
 		_aabb = AABB(Vector3(-0.92, 0.0, -2.2), Vector3(1.85, 1.45, 4.4))
 	_pivot = Vector3(0.0, _aabb.position.y + _aabb.size.y * 0.32, _aabb.get_center().z)
 	_build_coronas()
+	_build_contact_shadow()
 	_prev_yaw = car.rotation.y
 	if not _probe_prewarmed and not "--no-car-probe" in OS.get_cmdline_user_args():
 		_probe_prewarmed = true
@@ -178,11 +179,16 @@ func _upgrade_paint(root: Node3D) -> void:
 				coat = (src as StandardMaterial3D).duplicate()
 				coat.clearcoat_enabled = true
 				coat.clearcoat = 1.0
-				coat.clearcoat_roughness = 0.06
-				# The Tripo maps report metal 1 / rough 1 scaled by texture; pull
-				# roughness down so the coat and base read as polished paint.
-				coat.roughness = 0.55
-				coat.metallic_specular = 0.62
+				# C2: a 0.06 coat turned the sun into single-pixel fireflies and a
+				# blown roof hotspot; 0.16 keeps sharp sky/building reflections.
+				coat.clearcoat_roughness = 0.16
+				# The Tripo maps report metal 1 / rough 1 scaled by texture. Full
+				# metal read as a dark murky mass in shade (critic C1): a dielectric
+				# base under the coat keeps the body colour lit by sun and sky.
+				coat.metallic = minf(coat.metallic, 0.22)
+				coat.roughness = 0.42
+				coat.metallic_specular = 0.5
+				coat.albedo_color = coat.albedo_color * Color(1.18, 1.18, 1.18, 1.0)
 				_paint_cache[key] = coat
 			m.set_surface_override_material(i, coat)
 
@@ -233,8 +239,8 @@ func _build_coronas() -> void:
 		_smoke_tex = _make_smoke_tex()
 		_corona_mesh = QuadMesh.new()
 		_corona_mesh.size = Vector2(1.0, 1.0)
-		_tail_mat = _corona_material(Color(1.0, 0.10, 0.05), 0.55)
-		_brake_mat = _corona_material(Color(1.0, 0.16, 0.08), 1.7)
+		_tail_mat = _corona_material(Color(1.0, 0.10, 0.05), 0.42)
+		_brake_mat = _corona_material(Color(1.0, 0.16, 0.08), 0.95)
 		_head_mat = _corona_material(Color(1.0, 0.93, 0.80), 1.0)
 	var rear_z := _aabb.end.z - 0.16
 	var front_z := _aabb.position.z + 0.10
@@ -247,7 +253,7 @@ func _build_coronas() -> void:
 		t.material_override = _tail_mat
 		t.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		t.position = Vector3(hx * sx, tail_y, rear_z + 0.06)
-		t.scale = Vector3.ONE * 0.24
+		t.scale = Vector3.ONE * 0.17
 		t.visibility_range_end = 160.0
 		add_child(t)
 		_tail_coronas.append(t)
@@ -260,6 +266,36 @@ func _build_coronas() -> void:
 		h.visibility_range_end = 160.0
 		add_child(h)
 		_head_coronas.append(h)
+
+## C2: a soft ground-contact shadow (decal) so every car sits on the road
+## even where the sun shadow falls behind it (critic C1: no contact shadow).
+static var _contact_tex: Texture2D
+func _build_contact_shadow() -> void:
+	if _contact_tex == null:
+		var w := 32
+		var h := 64
+		var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+		for y in h:
+			for x in w:
+				var u := absf((x + 0.5) / w * 2.0 - 1.0)
+				var v := absf((y + 0.5) / h * 2.0 - 1.0)
+				var d := pow(pow(u, 4.0) + pow(v, 4.0), 0.25)
+				var a := clampf((1.0 - d) / 0.45, 0.0, 1.0)
+				img.set_pixel(x, y, Color(0.0, 0.0, 0.0, a * a * (3.0 - 2.0 * a)))
+		_contact_tex = ImageTexture.create_from_image(img)
+	var decal := Decal.new()
+	decal.name = "ContactShadow"
+	decal.texture_albedo = _contact_tex
+	decal.modulate = Color(1.0, 1.0, 1.0, 0.82)
+	decal.size = Vector3(_aabb.size.x * 1.22, 0.6, _aabb.size.z * 1.08)
+	decal.position = Vector3(_aabb.get_center().x, _aabb.position.y - 0.08, _aabb.get_center().z)
+	decal.upper_fade = 0.15
+	decal.lower_fade = 0.3
+	decal.distance_fade_enabled = true
+	decal.distance_fade_begin = 70.0
+	decal.distance_fade_length = 20.0
+	decal.cull_mask = 1
+	add_child(decal)
 
 func body_node() -> Node3D:
 	return _body_node
@@ -320,7 +356,7 @@ func _set_brake(on: bool) -> void:
 	_braking = on
 	for t in _tail_coronas:
 		t.material_override = _brake_mat if on else _tail_mat
-		t.scale = Vector3.ONE * (0.33 if on else 0.24)
+		t.scale = Vector3.ONE * (0.21 if on else 0.17)
 	if _brake_light != null:
 		_brake_light.visible = on
 
@@ -507,8 +543,10 @@ func _build_skids() -> void:
 	var m := StandardMaterial3D.new()
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.vertex_color_use_as_albedo = true
-	m.albedo_color = Color(0.008, 0.008, 0.009, 1.0)
-	m.roughness = 0.38
+	m.albedo_color = Color(0.012, 0.011, 0.010, 1.0)
+	# C2: at 0.38 the rubber mirrored the sky and read as a light-grey line.
+	m.roughness = 0.95
+	m.metallic_specular = 0.08
 	m.disable_receive_shadows = false
 	m.render_priority = -1
 	quad.material = m
@@ -638,7 +676,7 @@ func _lay_skids() -> void:
 		mm.set_instance_transform(_skid_head, Transform3D(b, mid))
 		# Patchy rubber: per-segment opacity jitter so the line is not a ruled stripe.
 		var patch := 0.72 + 0.28 * sin(float(skid_marks_laid) * 1.7 + float(i) * 2.3) * sin(float(skid_marks_laid) * 0.37)
-		mm.set_instance_color(_skid_head, Color(1.0, 1.0, 1.0, clampf((0.6 + _slip * 0.4) * patch, 0.0, 0.92)))
+		mm.set_instance_color(_skid_head, Color(1.0, 1.0, 1.0, clampf((0.78 + _slip * 0.3) * patch, 0.0, 0.95)))
 		_skid_head = (_skid_head + 1) % SKID_COUNT
 		mm.visible_instance_count = mini(SKID_COUNT, maxi(mm.visible_instance_count, _skid_head if mm.visible_instance_count < SKID_COUNT else SKID_COUNT))
 		if skid_marks_laid >= SKID_COUNT: mm.visible_instance_count = SKID_COUNT

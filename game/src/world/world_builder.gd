@@ -179,6 +179,8 @@ func _medians() -> void:
 			var centre := Vector3(x, 0.0, cz)
 			_box(Vector3(1.6, 0.26, span), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
 			_box(Vector3(1.2, 0.30, span - 1.0), centre + Vector3(0.0, 0.30, 0.0), median_turf)
+			# driving C2: the planted bed is solid (critic: cars drove through it)
+			_collision_box(Vector3(1.6, 0.9, span), centre + Vector3(0.0, 0.45, 0.0))
 			# planting is StreetDressing's median bed (lighting r4: the smooth
 			# green spheres read as placeholder domes, critic A3)
 	for z in Z_LINES:
@@ -187,6 +189,7 @@ func _medians() -> void:
 			var centre := Vector3(cx, 0.0, z)
 			_box(Vector3(span, 0.26, 1.6), centre + Vector3(0.0, 0.13, 0.0), median_kerb)
 			_box(Vector3(span - 1.0, 0.30, 1.2), centre + Vector3(0.0, 0.30, 0.0), median_turf)
+			_collision_box(Vector3(span, 0.9, 1.6), centre + Vector3(0.0, 0.45, 0.0))
 
 # ------------------------------------------------------------------- blocks
 func _build_grid() -> void:

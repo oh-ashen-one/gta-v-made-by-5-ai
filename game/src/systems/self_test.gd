@@ -156,6 +156,18 @@ func run(main: Node) -> void:
 	_check("car body rolls and pitches under load", car_fx != null and (absf(lean.x) > 0.004 or absf(lean.y) > 0.004), "roll=%.4f pitch=%.4f" % [lean.x, lean.y])
 	var chase_gap := car._camera.global_position - car.global_position
 	_check("chase camera trails behind the car", car._camera.current and car._camera.top_level and chase_gap.length() > 3.0 and chase_gap.length() < 9.0 and chase_gap.dot(-car.global_transform.basis.z) < 0.0, "gap=%.2f" % chase_gap.length())
+	# driving C2: contact shadow under every car; struck cars take the momentum.
+	_check("car carries a ground contact shadow", car_fx != null and car_fx.get_node_or_null("ContactShadow") is Decal)
+	var shove_probe := Car.new()
+	shove_probe.kind = "sedan"
+	main.add_child(shove_probe)
+	shove_probe.global_position = car.global_position + Vector3(30.0, 0.5, 30.0)
+	await _ticks(2)
+	var shove_from := shove_probe.global_position
+	shove_probe.shove(Vector3(8.0, 0.0, 0.0), shove_from + Vector3(-1.0, 0.0, 0.8))
+	await _ticks(20)
+	_check("a rammed car is shoved by the impact", shove_probe.global_position.distance_to(shove_from) > 1.0, "moved=%.2f" % shove_probe.global_position.distance_to(shove_from))
+	shove_probe.queue_free()
 
 	# Incoming weapon rays must hit the car body rather than its hidden occupant.
 	car._forward = 0.0
