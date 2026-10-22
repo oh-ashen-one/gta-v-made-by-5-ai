@@ -1,0 +1,58 @@
+<!doctype html><html lang=en><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=refresh content=120>
+<title>Opus 5.5 Loop</title><style>
+:root{--bg:#101114;--fg:#e9e7e2;--mute:#9a978f;--card:#191b20;--win:#3fd9a6;--lose:#e0685a;--line:#2a2d34}
+body{margin:0;padding:16px;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}
+main{max-width:1200px;margin:0 auto}h1{margin:.2em 0}h2{margin-top:1.6em;border-bottom:1px solid var(--line)}
+.meta,.notes,figcaption{color:var(--mute);font-size:13px}code{font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:13px;display:block;overflow-x:auto}
+td,th{border:1px solid var(--line);padding:4px 6px;vertical-align:top;text-align:left}
+article{background:var(--card);border-left:4px solid var(--line);padding:8px 12px;margin:10px 0;border-radius:4px}
+article.win{border-left-color:var(--win)}article.lose{border-left-color:var(--lose)}
+.badge{font-size:12px;padding:1px 6px;border-radius:3px;background:var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+figure{margin:0}img{width:100%;height:auto;display:block;border-radius:3px}pre{white-space:pre-wrap;font-size:12px}
+</style></head><body><main>
+<h1>Orchard Reach — Opus 5.5 enhancement loop</h1>
+<p class=meta>Bar: Grand Theft Auto V (GTA V references are linked by ID, never shown here). START 2026-10-22T06:28:30+00:00 · DEADLINE 2026-10-22T12:28:30+00:00 · <b>5h 57m left</b> · page built 2026-10-22T06:31:10Z</p>
+<p class=meta>Honest status: "best build so far" is not "north star accepted". A piece is accepted only when a blind critic prefers it to its GTA V reference and is wowed.</p>
+<h2>Pieces</h2><table>
+<tr><th>Piece</th><th>Wave</th><th>Matched refs</th><th>Capture spec / play scenario</th><th>Owns (files)</th><th>Current verdict</th><th>Open biggest gap</th></tr>
+<tr><td>street-life</td><td>A</td><td>GTAV traffic, on-foot street, driving chase; CONCEPT-01/02, SG-01</td><td>`--gameplay-photos` 01/03/05, route `05_car_entered`, `06_driving`; `--photos` 06_aerial_district</td><td>traffic_manager.gd, npc.gd, spawn/density parts of car.gd, new src/systems/crowd*.gd</td><td>inherited: empty streets (critic 5)</td><td>≥8 vehicles, ≥10 pedestrians, canopy over road in 06_driving and photo_06</td></tr>
+<tr><td>lighting</td><td>A</td><td>GTAV lighting / golden hour, on-foot street; CONCEPT-01</td><td>`--photos` 01/02/04, `--gameplay-photos` 01/02</td><td>`_environment()` → new src/world/lighting.gd, `_street_lamp`, new void-deck/arcade practicals</td><td>inherited: flat haze, 70 % dark void deck</td><td>warm directional sun, AO in five-foot ways, void deck readable</td></tr>
+<tr><td>water</td><td>A</td><td>GTAV coast/water, aerial; CONCEPT-03, SG-03</td><td>`--photos` 05/07/16, `--gameplay-photos` 06, route `09_aerial_view`</td><td>`_waterfront_edge()` water, assets/authored/shaders/*water*, boats, Merlion jet</td><td>inherited: water reads as paving, white glint</td><td>bay reads as water at low and aerial angles</td></tr>
+<tr><td>skyline</td><td>A</td><td>GTAV aerial helicopter / skyline; CONCEPT-03, SG-03</td><td>`--photos` 06/07/16, route `09_aerial_view`, `--gameplay-photos` 07</td><td>landmarks (build_landmarks.py, *.glb), `_infill_building` roofs, `_hdb_block` roofs, `_background_city`, `_perimeter`</td><td>inherited: beige box roofs, wireframe Supertrees, blob Merlion, Flyer lost</td><td>roofs + landmarks read as a real skyline</td></tr>
+<tr><td>driving</td><td>B</td><td>GTAV driving chase cam</td><td>route 05–07, driving scenario</td><td>car.gd handling/camera/visuals</td><td>not started</td><td>—</td></tr>
+<tr><td>on-foot</td><td>B</td><td>GTAV close character, on-foot</td><td>`--gameplay-photos`, character review</td><td>player.gd, character_visual.gd</td><td>not started</td><td>—</td></tr>
+<tr><td>helicopter</td><td>B</td><td>GTAV helicopter</td><td>route 08–10</td><td>helicopter.gd</td><td>not started</td><td>—</td></tr>
+<tr><td>hud</td><td>B</td><td>GTAV HUD readability (bar only, no copying)</td><td>route 09/11 HUD frames</td><td>hud.gd</td><td>98b41b2 fixes never rendered</td><td>—</td></tr>
+<tr><td>police</td><td>B</td><td>GTAV police</td><td>pursuit scenario</td><td>police parts of traffic/npc</td><td>not started</td><td>—</td></tr>
+<tr><td>missions</td><td>B</td><td>GTAV mission staging</td><td>13-gate route</td><td>mission.gd</td><td>not started</td><td>—</td></tr>
+<tr><td>perf</td><td>B</td><td>—</td><td>rendered route frame times, market hitch</td><td>export_presets.cfg, shader warmup</td><td>1.06 s market hitch</td><td>—</td></tr>
+</table>
+<h2>Critique rounds (latest first)</h2><p>No critique rounds yet.</p>
+<h2>Integrations</h2><p>None yet.</p>
+<h2>Baseline (inherited wave-5 build, rendered at loop start)</h2><p>Capturing…</p>
+<h2>Commits</h2><pre>0fc0c0b loop: use the shared ~/.cache/gpu-slot lease and progress port 8767
+f94edea Add Opus 5.5 overnight loop goal, critic profile and engine helpers
+2c66caa wave5: FINAL - capacity full (4 foreign renderers) at 03:44; idle render runner stopped, 98b41b2 not rendered
+9db5677 wave5: FINAL - release report and handoff final; soak #10 on 98b41b2 completed 1800.1 s (0 deaths, exit 0); 98b41b2 not rendered (capacity)
+857783b wave5: docs - soak #8 trap identified by soak #10 diagnostics; soak #10 missions 1-3 passed
+a52308e wave5: export-time source/asset/runtime-art hashes for both candidates
+c0e8237 wave5: docs - shader-baker lead for the render hitch; link critic review 5 from the rendered README
+d07448e wave5: final candidate 98b41b2 - packaged 97/97, save/relaunch, route 13/13 (147.6 s); d2a6cad kept as rendered-verified fallback
+595d39a wave5: docs - rendered evidence, critic review 5 (renders), soak #8/#9 aborts, baseline captured, 98b41b2 candidate in verification
+98b41b2 wave5: walk watchdog triggers after 12 s without progress, not 2.5 s (soak #9)
+859df8e wave5: HUD - ammo readout backing plate; minimap draws the whole bay, far shore, MBS footprint and promenade deck
+0a6b3bc wave5: real Metal renders - unchanged wave-4 baseline (6b51a26) and the d2a6cad candidate binary; rendered route 13/13
+a53cd19 wave5: route automation backs out of stalled walks and never presses interact far from the requested vehicle (soak #8)
+43af02c wave5: release candidate d2a6cad - hashes, 97/97 packaged regressions, packaged save/relaunch, route 147.6 s
+65e765b wave5: docs - soak #7 abort recorded, soak #8 running
+d2a6cad wave5: reboard automation tries each side of its own car before interacting
+89eb913 wave5: release-code mesh census log (cited by the report)
+804c873 wave5: capacity blocker update (02:22 UTC: veyr loop relaunched a session)
+a8a63f7 wave5: handoff and report point at release candidate c42425a
+4f754e9 wave5: release candidate c42425a (game == 2e38d8f) - hashes, 97/97 packaged regressions, packaged save/relaunch and route 147.5 s
+</pre>
+<h2>Run log</h2><pre>2026-10-22T06:28:30Z START. Branch synced with origin, tree clean, private assets present, 0 foreign renderers.</pre>
+</main></body></html>
