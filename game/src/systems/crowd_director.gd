@@ -112,6 +112,15 @@ func _process(_delta: float) -> void:
 ## People in the path of the player's moving car jump clear (GTA-style),
 ## instead of standing in a crossing as an immovable wall.
 func _dodge_player_vehicle() -> void:
+	if Game.mode == Game.MODE_FOOT:
+		# People step aside for the player on foot instead of standing as a
+		# wall in a five-foot way (a talking pair blocked a route walk).
+		var pp := Game.player_position
+		for p in traffic.peds:
+			if is_instance_valid(p) and not p.is_hostile and not p.is_police and p.state != NPC.State.DEAD and not p.has_meta("ambient_role") \
+					and absf(p.global_position.x - pp.x) < 1.3 and absf(p.global_position.z - pp.z) < 1.3:
+				p.scramble_from(pp)
+		return
 	if Game.mode != Game.MODE_CAR:
 		return
 	var player := get_tree().get_first_node_in_group("player")
@@ -169,8 +178,18 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 	var spine_share := 0.5 if _cam_pos.y > 30.0 else 0.15
 	if not loiter and _rng.randf() < spine_share and _seed_spine(p, hidden_only):
 		return true
+	# Street-level cameras: half the people go on the street being looked down.
+	var view_lines: Array[Dictionary] = []
+	if _cam_pos.y < 30.0 and _rng.randf() < 0.5:
+		var along_z := absf(_cam_fwd.z) > absf(_cam_fwd.x)
+		for ln2 in _lines:
+			var lat: float = _cam_pos.x if along_z else _cam_pos.z
+			if int(ln2["axis"]) == (0 if along_z else 1) and absf(float(ln2["line"]) - lat) < 30.0:
+				view_lines.append(ln2)
 	for attempt in 12:
 		var ln: Dictionary = _lines[_rng.randi_range(0, _lines.size() - 1)]
+		if not view_lines.is_empty():
+			ln = view_lines[_rng.randi_range(0, view_lines.size() - 1)]
 		var off: float = OFFSETS[_rng.randi_range(0, OFFSETS.size() - 1)]
 		var lateral: float = float(ln["line"]) + float(ln["side"]) * off
 		var focus_lat := _focus.x if int(ln["axis"]) == 0 else _focus.z

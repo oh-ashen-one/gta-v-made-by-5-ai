@@ -121,44 +121,66 @@ func _build_car() -> void:
 	_add_brake_lamps(dims.y * 0.55, dims.z * 0.5 + 0.02, dims.x * 0.36)
 	_add_driver()
 
-## Singapore double-decker: procedural, two glazed decks, livery band, wheels.
+## Singapore double-decker: procedural, two glazed decks with pillars, livery
+## band, front and rear detailing, wheel arches and wheels.
 func _build_bus() -> void:
 	if _bus_mats.is_empty():
 		_bus_mats = [
 			Palette.mat(Color(0.86, 0.86, 0.82), 0.45, 0.25),            # body
-			Palette.mat(Color(0.06, 0.08, 0.09), 0.08, 0.35),            # glazing
+			Palette.glass(),                                             # glazing
 			Palette.mat(Color(0.36, 0.55, 0.22), 0.5, 0.2),              # livery band
 			Palette.mat(Color(0.07, 0.07, 0.08), 0.9),                   # tyres / skirt
 			Palette.emissive(Color(1.0, 0.62, 0.18), 1.6),               # destination sign
+			Palette.mat(Color(0.18, 0.19, 0.2), 0.6, 0.4),               # pillars / grille
+			Palette.emissive(Color(1.0, 0.95, 0.85), 1.4),               # head lamps
 		]
 	var body_mat: Material = _bus_mats[0]
 	var glass_mat: Material = _bus_mats[1]
 	var band_mat: Material = _bus_mats[2]
 	var dark_mat: Material = _bus_mats[3]
+	var pillar_mat: Material = _bus_mats[5]
 	if paint != Color.WHITE:
-		body_mat = Palette.mat(paint, 0.45, 0.25)
-	_part(Vector3(dims.x, 0.55, dims.z), Vector3(0, 0.62, 0), dark_mat)
-	_part(Vector3(dims.x, dims.y - 0.9, dims.z), Vector3(0, 0.9 + (dims.y - 0.9) * 0.5, 0), body_mat)
-	for deck_y in [1.55, 2.62]:
-		_part(Vector3(dims.x + 0.04, 0.72, dims.z - 1.2), Vector3(0, deck_y, 0.15), glass_mat)
-	_part(Vector3(dims.x + 0.05, 0.18, dims.z - 0.4), Vector3(0, 2.08, 0), band_mat)
-	_part(Vector3(dims.x - 0.2, 1.4, 0.06), Vector3(0, 1.75, -dims.z * 0.5 - 0.01), glass_mat)
-	_part(Vector3(dims.x - 0.5, 0.26, 0.05), Vector3(0, 2.95, -dims.z * 0.5 - 0.03), _bus_mats[4])
-	_part(Vector3(dims.x + 0.02, 0.1, dims.z + 0.02), Vector3(0, dims.y + 0.02, 0), body_mat)
+		band_mat = Palette.mat(paint, 0.45, 0.25)
+	var half_z := dims.z * 0.5
+	_part(Vector3(dims.x - 0.1, 0.35, dims.z - 0.2), Vector3(0, 0.42, 0), dark_mat)
+	_part(Vector3(dims.x, dims.y - 0.62, dims.z), Vector3(0, 0.62 + (dims.y - 0.62) * 0.5, 0), body_mat)
+	# Two glazed decks broken by pillars, set just proud of the body.
+	for deck_y in [1.6, 2.68]:
+		_part(Vector3(dims.x + 0.03, 0.74, dims.z - 1.4), Vector3(0, deck_y, 0.1), glass_mat)
+		var n := int((dims.z - 1.4) / 1.25)
+		for k in n + 1:
+			var z := -((dims.z - 1.4) * 0.5) + 0.1 + k * ((dims.z - 1.4) / n)
+			_part(Vector3(dims.x + 0.06, 0.76, 0.12), Vector3(0, deck_y, z), pillar_mat)
+	_part(Vector3(dims.x + 0.05, 0.22, dims.z + 0.02), Vector3(0, 2.13, 0), band_mat)
+	_part(Vector3(dims.x + 0.05, 0.16, dims.z + 0.02), Vector3(0, 0.98, 0), band_mat)
+	# Front (-Z): split windscreen, destination blind, lamps, bumper.
+	_part(Vector3(dims.x - 0.25, 1.05, 0.06), Vector3(0, 1.62, -half_z - 0.02), glass_mat)
+	_part(Vector3(dims.x - 0.25, 0.72, 0.06), Vector3(0, 2.68, -half_z - 0.02), glass_mat)
+	_part(Vector3(0.08, 1.05, 0.08), Vector3(0, 1.62, -half_z - 0.04), pillar_mat)
+	_part(Vector3(dims.x - 0.6, 0.24, 0.05), Vector3(0, 2.2, -half_z - 0.04), _bus_mats[4])
+	for sx in [-1.0, 1.0]:
+		_part(Vector3(0.32, 0.16, 0.05), Vector3(sx * (dims.x * 0.5 - 0.32), 0.78, -half_z - 0.03), _bus_mats[6])
+	_part(Vector3(dims.x, 0.3, 0.12), Vector3(0, 0.45, -half_z - 0.05), pillar_mat)
+	# Rear (+Z): upper rear window, engine grille, bumper.
+	_part(Vector3(dims.x - 0.5, 0.6, 0.06), Vector3(0, 2.7, half_z + 0.02), glass_mat)
+	_part(Vector3(dims.x - 0.5, 0.55, 0.05), Vector3(0, 0.95, half_z + 0.02), pillar_mat)
+	_part(Vector3(dims.x, 0.3, 0.12), Vector3(0, 0.45, half_z + 0.05), pillar_mat)
+	_part(Vector3(dims.x + 0.02, 0.08, dims.z + 0.02), Vector3(0, dims.y + 0.02, 0), body_mat)
 	for z in [-dims.z * 0.33, dims.z * 0.3]:
+		_part(Vector3(dims.x + 0.04, 0.5, 1.25), Vector3(0, 0.66, z), dark_mat)
 		for sx in [-1.0, 1.0]:
 			var w := MeshInstance3D.new()
 			var cm := CylinderMesh.new()
 			cm.top_radius = 0.5
 			cm.bottom_radius = 0.5
 			cm.height = 0.32
-			cm.radial_segments = 12
+			cm.radial_segments = 14
 			w.mesh = cm
 			w.material_override = dark_mat
 			w.rotation_degrees = Vector3(0, 0, 90)
-			w.position = Vector3(sx * (dims.x * 0.5 - 0.1), 0.5, z)
+			w.position = Vector3(sx * (dims.x * 0.5 - 0.12), 0.5, z)
 			add_child(w)
-	_add_brake_lamps(0.9, dims.z * 0.5 + 0.03, dims.x * 0.4)
+	_add_brake_lamps(0.9, half_z + 0.03, dims.x * 0.4)
 
 func _part(size: Vector3, pos: Vector3, mat: Material) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
