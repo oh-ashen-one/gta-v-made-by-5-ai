@@ -117,7 +117,8 @@ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager) 
 			_record_cap_reason = "Could not open frames.jsonl"
 	Events.actor_died.connect(func(actor: Node, by_player: bool):
 		if by_player and actor is NPC and actor.is_hostile:
-			_combat_kills += 1)
+			_combat_kills += 1
+			_maybe_combat_shot())
 	_run()
 
 func _process(_delta: float) -> void:
@@ -365,7 +366,9 @@ func _run() -> void:
 			await _shoot_at(guard)
 		if _finished: return
 	if not _gate("combat damaged and killed a mission combatant", _combat_kills > _run_kills_start): return
-	await _shot("combat")
+	if not _combat_shot_taken:
+		await _shot("combat")
+	_combat_shot_taken = false
 	await _walk_to(world.locations["package"], 2.5, 25.0)
 	await _tap("interact")
 	if not _gate("package collected through interaction", mission.stage == Mission.Stage.TO_CAR and mission.package_taken): return
@@ -923,6 +926,19 @@ func _nearest_parked_car() -> Car:
 			distance = candidate
 			best = vehicle
 	return best
+
+## Combat piece: the gate's combat frame is taken on the frame of the final
+## kill shot (muzzle flash, tracer, impact, falling guard) rather than after
+## the gun is lowered. Same player camera; only the moment changes.
+var _combat_shot_taken := false
+func _maybe_combat_shot() -> void:
+	if _phase != "mission" or _combat_shot_taken or mission == null:
+		return
+	for guard in mission._hostiles:
+		if is_instance_valid(guard) and guard.state != NPC.State.DEAD:
+			return
+	_combat_shot_taken = true
+	await _shot("combat")
 
 func _shoot_at(hostile: NPC) -> void:
 	Input.action_press("aim")

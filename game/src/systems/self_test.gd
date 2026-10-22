@@ -546,8 +546,10 @@ func _weapon_input_checks(main: Node, player: Player) -> void:
 	_check("muzzle obstruction prevents damage through close cover", is_equal_approx(target.health, target_health))
 	cover.queue_free()
 	await _ticks(15)
+	var fx_before: Dictionary = CombatFx.stats.duplicate()
 	await _tap("fire")
 	_check("clearing muzzle obstruction permits target damage", target.health < target_health)
+	await _combat_fx_checks(player, fx_before)
 	if player._visual != null:
 		player._visual.set_paused(false)
 	Input.action_release("aim")
@@ -558,6 +560,25 @@ func _weapon_input_checks(main: Node, player: Player) -> void:
 	Game.wanted_heat = 0.0
 	Game.set_wanted(0)
 	await _ticks(3)
+
+## Combat piece: every shot shows a muzzle flash, tracer, impact and brass,
+## a hit target staggers, recoil recovers, and sustained fire stays bounded.
+func _combat_fx_checks(player: Player, before: Dictionary) -> void:
+	var st: Dictionary = CombatFx.stats
+	_check("shot produced muzzle flash, tracer, impact and ejected casing", st["muzzle"] > before["muzzle"] and st["tracer"] > before["tracer"] and st["impact"] > before["impact"] and st["casing"] > before["casing"], str(st))
+	_check("struck NPC staggers and flinches", st["flinch"] > before["flinch"])
+	var combat := player.get_node_or_null("PlayerCombat")
+	_check("player recoil layer present and kicked by the shot", combat != null and (absf(combat.cam_kick) > 0.0005 or absf(combat.cam_kick_v) > 0.01))
+	await _ticks(24)
+	_check("recoil recovers within ~0.4 s", combat != null and absf(combat.cam_kick) < 0.003 and absf(combat.gun_kick) < 0.05, "cam=%.4f gun=%.3f" % [combat.cam_kick if combat else -1.0, combat.gun_kick if combat else -1.0])
+	var fx := CombatFx.get_fx(get_tree())
+	for i in 150:
+		fx.shot(player.global_position + Vector3(0, 1.4, 0), Vector3.FORWARD, player.global_position + Vector3(0, 1.4, -12.0), true, Vector3.BACK, null, "pistol", true)
+	var live: Dictionary = fx.live_counts()
+	var bounded := true
+	for kind in CombatFx.MAX_PARTICLES:
+		if int(live[kind]) > int(CombatFx.MAX_PARTICLES[kind]): bounded = false
+	_check("sustained fire keeps effect pools bounded", bounded and int(live["casings"]) <= CombatFx.MAX_CASINGS, str(live))
 
 ## Wave-5 additions: kerbside parking geometry, parked-car sleep, road-graph
 ## pursuit, aircraft ditch recovery, landmark set and the outdoor opening.

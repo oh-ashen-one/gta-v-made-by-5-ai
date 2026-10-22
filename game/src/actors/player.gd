@@ -12,7 +12,7 @@ const ACCEL := 14.0
 const FRICTION := 12.0
 const JUMP_VELOCITY := 7.2
 const MOUSE_SENS := 0.0022
-const AIM_DISTANCE := 2.2
+const AIM_DISTANCE := 1.7  # combat piece: tighter over-the-shoulder aim
 const HIP_DISTANCE := 3.2
 const INTERACT_RANGE := 5.0
 const PICKUP_RANGE := 7.5
@@ -80,6 +80,7 @@ func _ready() -> void:
 	floor_max_angle = deg_to_rad(52.0)
 	_build_body()
 	_build_camera()
+	CombatFx.attach_player(self) # combat piece: FX, recoil/aim layer, hit markers
 	Events.health_changed.connect(_on_health_changed)
 	Events.state_restored.connect(_on_state_restored)
 	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
@@ -495,11 +496,11 @@ func _fire() -> void:
 		return
 	if Game.current_mag() <= 0:
 		Events.notify.emit("Out of ammo. Press R to reload.", "warn")
+		Sfx.play_at("dry_fire", global_position + Vector3.UP * 1.2, -8.0)
 		_fire_cooldown = 0.35
 		return
 	Game.consume_ammo()
 	_fire_cooldown = 0.16 if Game.carried_weapon == "pistol" else 0.085
-	_muzzle_flash.visible = true
 	_muzzle_flash.position = _weapon_mesh.position + Vector3(0.0, 0.02, -0.35 if Game.carried_weapon == "smg" else -0.22)
 	if _visual != null and _visual.loaded:
 		_muzzle_flash.global_position = _visual.weapon_muzzle_position()
@@ -526,19 +527,25 @@ func _fire() -> void:
 	if not hit.is_empty():
 		point = hit["position"]
 		hit_something = true
+	# Combat piece: muzzle flash/light/smoke, tracer, impact, decal, brass and
+	# recoil (CombatFx + PlayerCombat). Visuals before damage so a lethal hit
+	# still shows its impact on the falling body.
+	CombatFx.get_fx(get_tree()).shot(muzzle, (point - muzzle).normalized(), point, hit_something,
+		hit.get("normal", -dir), hit.get("collider"), Game.carried_weapon, true)
+	var combat := get_node_or_null("PlayerCombat")
+	if combat != null:
+		combat.on_shot(Game.carried_weapon)
+	if hit_something:
 		var collider = hit["collider"]
 		if collider and collider.has_method("take_damage"):
 			var dmg := 34.0 if Game.carried_weapon == "pistol" else 22.0
 			collider.take_damage(dmg, global_position, true)
 			Events.hit_landed.emit(collider, dmg, point, true)
-			hit_something = true
-		_spawn_impact(point, -dir)
 	Events.shot_fired.emit(origin, dir, Game.carried_weapon)
-	Sfx.play_at("gunshot", _muzzle_flash.global_position, -4.0, 1.0 if Game.carried_weapon == "pistol" else 0.88)
+	Sfx.play_at("gun_pistol" if Game.carried_weapon == "pistol" else "gun_smg", muzzle, -3.0, 1.0)
 	crosshair_hit.emit(point, hit_something)
 	# make noise: gunfire draws witnesses and police (LAW-02)
 	Game.add_heat(2.0)
-	get_tree().create_timer(0.05).timeout.connect(func(): _muzzle_flash.visible = false)
 
 func _spawn_impact(point: Vector3, normal: Vector3) -> void:
 	var mesh := MeshInstance3D.new()
@@ -612,7 +619,9 @@ func _process(_delta: float) -> void:
 	if Game.simulation_paused:
 		return
 	if current_vehicle == null and not busy:
-		aiming = Input.is_action_pressed("aim")
+		# Hip fire keeps the gun raised for a moment (combat piece).
+		var combat := get_node_or_null("PlayerCombat")
+		aiming = Input.is_action_pressed("aim") or (combat != null and float(combat.hold) > 0.0)
 	var fire_pressed := _consume_press("fire")
 	if fire_pressed or (Game.carried_weapon == "smg" and Input.is_action_pressed("fire")):
 		_fire()
