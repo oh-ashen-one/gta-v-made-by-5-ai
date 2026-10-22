@@ -52,6 +52,12 @@ func _run() -> void:
 	# Wave 5: helicopter-height view over the bayside garden toward the far-shore
 	# skyline (CONCEPT-03 composition), appended so earlier indices stay stable.
 	views.append({"name":"bay_skyline_aerial","pos":Vector3(120,110,-120),"look":Vector3(-60,40,-650),"fov":62.0})
+	# Opus 5.5 water piece: added views (earlier indices unchanged). A low
+	# water-level view across the bay with boats, and the Merlion jet up close.
+	views.append({"name":"bay_water_level","pos":Vector3(-62,1.6,-356),"look":Vector3(-140,8,-560),"fov":60.0})
+	# Integration A: re-aimed at the skyline piece's relocated statue (64,-371,
+	# yaw -135 deg); the old camera position is now inside the figure.
+	views.append({"name":"merlion_jet_close","pos":Vector3(86,3.4,-353),"look":Vector3(67,5.2,-367),"fov":58.0})
 	var cam := Camera3D.new()
 	cam.current = true
 	cam.far = 2000.0
