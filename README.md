@@ -6,7 +6,7 @@ A YouTube development experiment: **five AI coding setups collaborating in seque
 
 ## Status
 
-**Final wave 5 (Opus 5.5 via Claude Code) on `feature/wave-05-opus`: best available experimental build with unmet requirements; no visually accepted or public release exists.** Start with [`waves/05/RELEASE_REPORT.md`](waves/05/RELEASE_REPORT.md) and [`HANDOFF.md`](HANDOFF.md). Wave 5 opens the game outdoors on a heritage five-foot way facing the hawker hall, with Marina Bay Sands, the ArtScience Museum and the Singapore Flyer across the bay and the Supertree Grove beside the avenue; its evidence is headless (simulation, geometry, CPU) unless a rendered capture is explicitly linked.
+**Final wave 5 (Opus 5.5 via Claude Code) on `feature/wave-05-opus`: best available experimental build with unmet requirements; no visually accepted or public release exists.** Start with [`waves/05/RELEASE_REPORT.md`](waves/05/RELEASE_REPORT.md) and [`HANDOFF.md`](HANDOFF.md). Wave 5 opens the game outdoors on a heritage five-foot way facing the hawker hall, with Marina Bay Sands, the ArtScience Museum and the Singapore Flyer across the bay and the Supertree Grove beside the avenue; its first real renders, of the unchanged wave-4 baseline and the wave-5 candidate including a rendered 13/13 route, are in [`waves/05/evidence/rendered/`](waves/05/evidence/rendered/). Other wave-5 evidence is headless (simulation, geometry, CPU).
 
 The current build lives in [`game/`](game/): **Godot 4.7.1 stable** (Forward+, GDScript, native macOS export) with an authored Singapore-inspired district, third-person control, two firearms, car theft and arcade driving, left-hand traffic, police response, a flyable helicopter, a roofed hawker hub, a void-deck housing neighbourhood, a waterfront edge and the authored mission "Harbour Relay".
 
@@ -14,7 +14,7 @@ Read [HANDOFF.md](HANDOFF.md) for the current checkpoint, owned-engine/GPU proto
 
 - Run after obtaining the shared renderer slot: `godot --log-file /tmp/orchard-player.log --path game`
 - Export after a project import: `godot --headless --log-file /tmp/orchard-export.log --path game --export-release "macOS" build/mac/OrchardReach.zip` (the export path is relative to `game/`).
-- Run bounded regression checks using the commands in [gameplay notes](docs/wave-02/GAMEPLAY_NOTES.md). Headless numerical assertion passes do not certify a clean run: check the supervisor's exit and generic error scan. The last clean *rendered* (Metal) suite, from wave 3, has 85 assertions. Wave 5's suite has 97 checks and was run **headless only**: no wave-5 rendered suite exists.
+- Run bounded regression checks using the commands in [gameplay notes](docs/wave-02/GAMEPLAY_NOTES.md). Headless numerical assertion passes do not certify a clean run: check the supervisor's exit and generic error scan. The last clean *rendered* (Metal) suite, from wave 3, has 85 assertions. Wave 5's suite has 97 checks and was run **headless only**. Wave 5's rendered evidence is stills and one rendered scripted route, not a rendered suite.
 
 The three approved images in [docs/concepts](docs/concepts/) remain the visual target. [Evidence](docs/EVIDENCE.md) separates rendered automation, stills, tests, performance qualifications, packaging and human acceptance.
 

@@ -6,7 +6,7 @@ Reconciled **2026-10-21T15:29:16+00:00** by GPT-6 Astra documentation reviewer a
 
 ## Wave 5 (final) pointer
 
-Wave 5 evidence lives in [`waves/05/evidence/`](../waves/05/evidence/) and is summarized in [`waves/05/RELEASE_REPORT.md`](../waves/05/RELEASE_REPORT.md) and [`HANDOFF.md`](../HANDOFF.md). Wave 5 results are headless (simulation, geometry, CPU) unless a file under `waves/05/evidence/rendered/` is cited. The Wave 2–4 identities below do not certify the Wave 5 candidate.
+Wave 5 evidence lives in [`waves/05/evidence/`](../waves/05/evidence/) and is summarized in [`waves/05/RELEASE_REPORT.md`](../waves/05/RELEASE_REPORT.md) and [`HANDOFF.md`](../HANDOFF.md). Wave 5 results are headless (simulation, geometry, CPU) unless a file under `waves/05/evidence/rendered/` is cited. That folder holds real Metal renders made on a shared, non-exclusive GPU: the unchanged wave-4 baseline (`6b51a26`) and the `d2a6cad` candidate binary, including a rendered 13/13 route. See its README for identities and hashes. The Wave 2–4 identities below do not certify the Wave 5 candidate.
 
 ## Candidate identity and environment
 

@@ -1,0 +1,1354 @@
+{
+	"completed_runs": 2,
+	"elapsed_seconds": 452.393705,
+	"finished": true,
+	"fixture_checks": [],
+	"frame_stall_overflow": 0,
+	"frame_stalls_recorded": 1,
+	"free_roam_distance_m": {
+		"car": 0.0,
+		"foot": 0.0,
+		"helicopter": 0.0
+	},
+	"gates": [
+		{
+			"name": "market reached on foot",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 144.0,
+					"node_count": 15545.0,
+					"object_count": 28123.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1583837889.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -1.32609713077545,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					-118.842231750488,
+					0.380827844142914,
+					-87.0406112670898
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 19.62,
+				"stage": 0,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "combat damaged and killed a mission combatant",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15545.0,
+					"object_count": 28132.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1584601733.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": 0.0186767466366291,
+				"health": 89.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					-118.402809143066,
+					0.379584074020386,
+					-87.1503753662109
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 24.6,
+				"stage": 0,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "package collected through interaction",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15547.0,
+					"object_count": 28138.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1584760249.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -1.32104671001434,
+				"health": 89.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					-117.130706787109,
+					0.380839735269547,
+					-87.4680480957031
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 25.36,
+				"stage": 2,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "usable parked car found",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15547.0,
+					"object_count": 28138.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1584765033.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -1.32104671001434,
+				"health": 89.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					-117.130706787109,
+					0.380839735269547,
+					-87.4680480957031
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 25.36,
+				"stage": 2,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "car entered",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 144.0,
+					"node_count": 15561.0,
+					"object_count": 28157.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1584857661.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -3.14159250259399,
+				"health": 100.0,
+				"mode": 1,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					-153.350006103516,
+					0.0601302124559879,
+					-88.0
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 31.12,
+				"stage": 3,
+				"taa": true,
+				"vehicle_health": 100.0,
+				"wanted": 2
+			}
+		},
+		{
+			"name": "uninterrupted driving leg reached aviation compound",
+			"passed": true,
+			"state": {
+				"car_distance_m": 652.223567395471,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15575.0,
+					"object_count": 28188.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1584979349.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -1.56640565395355,
+				"health": 100.0,
+				"mode": 1,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					248.00114440918,
+					0.0609437078237534,
+					159.770599365234
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 69.19,
+				"stage": 4,
+				"taa": true,
+				"vehicle_health": 96.975,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "car exit restored walking",
+			"passed": true,
+			"state": {
+				"car_distance_m": 652.223567395471,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15576.0,
+					"object_count": 28192.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1585006001.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -1.56640565395355,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					257.128753662109,
+					0.0352799072861671,
+					161.630432128906
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 70.52,
+				"stage": 4,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "helicopter remains usable",
+			"passed": true,
+			"state": {
+				"car_distance_m": 652.223567395471,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15576.0,
+					"object_count": 28192.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1585010833.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -1.56640565395355,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					257.128753662109,
+					0.0352799072861671,
+					161.630432128906
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 70.52,
+				"stage": 4,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "helicopter boarded",
+			"passed": true,
+			"state": {
+				"car_distance_m": 652.223567395471,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15576.0,
+					"object_count": 28193.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1585132093.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": 0.0,
+				"health": 100.0,
+				"mode": 2,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					270.0,
+					0.160364598035812,
+					104.0
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 83.3,
+				"stage": 5,
+				"taa": true,
+				"vehicle_health": 100.0,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "flight reached waterfront pad airspace",
+			"passed": true,
+			"state": {
+				"car_distance_m": 652.223567395471,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15575.0,
+					"object_count": 28187.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1585482341.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 618.323767535388,
+				"heading": 0.664124548435211,
+				"health": 100.0,
+				"mode": 2,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					0.974729359149933,
+					109.237632751465,
+					-335.793182373047
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 113.24,
+				"stage": 5,
+				"taa": true,
+				"vehicle_health": 100.0,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "helicopter landed intact on destination pad",
+			"passed": true,
+			"state": {
+				"car_distance_m": 652.223567395471,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15575.0,
+					"object_count": 28191.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1586092821.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 727.806888435502,
+				"heading": 0.74703186750412,
+				"health": 100.0,
+				"mode": 2,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					0.404899269342422,
+					0.000241290312260389,
+					-336.574981689453
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 133.11,
+				"stage": 6,
+				"taa": true,
+				"vehicle_health": 100.0,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "landing exit restored walking",
+			"passed": true,
+			"state": {
+				"car_distance_m": 652.223567395471,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15576.0,
+					"object_count": 28199.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1586120221.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 727.806888435502,
+				"heading": 0.747031807899475,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					2.45928049087524,
+					0.275280058383942,
+					-338.477478027344
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 133.43,
+				"stage": 7,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "mission completed through delivery interaction",
+			"passed": true,
+			"state": {
+				"car_distance_m": 652.223567395471,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15575.0,
+					"object_count": 28194.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1586160961.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 727.806888435502,
+				"heading": -1.58653569221497,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					93.5465698242188,
+					0.275611370801926,
+					-337.038818359375
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 1,
+				"seconds": 147.56,
+				"stage": 8,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "market reached on foot",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15575.0,
+					"object_count": 28201.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1587577449.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -0.0691385939717293,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					-115.275901794434,
+					0.380732446908951,
+					-84.017578125
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 191.25,
+				"stage": 0,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "combat damaged and killed a mission combatant",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15575.0,
+					"object_count": 28203.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1587597737.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -0.00757414428517222,
+				"health": 94.5,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					-115.244728088379,
+					0.380833834409714,
+					-84.4694900512695
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 196.2,
+				"stage": 0,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "package collected through interaction",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 144.0,
+					"node_count": 15577.0,
+					"object_count": 28209.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1587647837.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -0.0689676403999329,
+				"health": 94.5,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					-115.154022216797,
+					0.380839556455612,
+					-85.7775039672852
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 196.97,
+				"stage": 2,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "usable parked car found",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 144.0,
+					"node_count": 15577.0,
+					"object_count": 28209.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1587652505.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -0.0689676403999329,
+				"health": 94.5,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					-115.154022216797,
+					0.380839556455612,
+					-85.7775039672852
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 196.97,
+				"stage": 2,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 1
+			}
+		},
+		{
+			"name": "car entered",
+			"passed": true,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15591.0,
+					"object_count": 28224.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1587677281.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": 0.0,
+				"health": 100.0,
+				"mode": 1,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 1,
+					"nearest_m": 92.6,
+					"stationary": 0
+				},
+				"position": [
+					-166.649993896484,
+					0.0601302124559879,
+					-64.0
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 205.61,
+				"stage": 3,
+				"taa": true,
+				"vehicle_health": 100.0,
+				"wanted": 2
+			}
+		},
+		{
+			"name": "uninterrupted driving leg reached aviation compound",
+			"passed": true,
+			"state": {
+				"car_distance_m": 640.003079654416,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15605.0,
+					"object_count": 28242.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1587578425.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -1.3107442855835,
+				"health": 100.0,
+				"mode": 1,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 2,
+					"nearest_m": 72.0,
+					"stationary": 0
+				},
+				"position": [
+					245.825622558594,
+					0.0609407871961594,
+					158.720779418945
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 244.36,
+				"stage": 4,
+				"taa": true,
+				"vehicle_health": 100.0,
+				"wanted": 2
+			}
+		},
+		{
+			"name": "car exit restored walking",
+			"passed": true,
+			"state": {
+				"car_distance_m": 640.003079654416,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15606.0,
+					"object_count": 28246.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1587614377.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -1.29933989048004,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 2,
+					"nearest_m": 49.0,
+					"stationary": 0
+				},
+				"position": [
+					253.59831237793,
+					0.0349869430065155,
+					158.545166015625
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 245.69,
+				"stage": 4,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 2
+			}
+		},
+		{
+			"name": "helicopter remains usable",
+			"passed": true,
+			"state": {
+				"car_distance_m": 640.003079654416,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15606.0,
+					"object_count": 28246.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1587618997.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": -1.29933989048004,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 2,
+					"nearest_m": 49.0,
+					"stationary": 0
+				},
+				"position": [
+					253.59831237793,
+					0.0349869430065155,
+					158.545166015625
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 245.69,
+				"stage": 4,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 2
+			}
+		},
+		{
+			"name": "helicopter boarded",
+			"passed": true,
+			"state": {
+				"car_distance_m": 640.003079654416,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 144.0,
+					"node_count": 15606.0,
+					"object_count": 28247.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1587797101.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": 0.0,
+				"health": 89.0,
+				"mode": 2,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 2,
+					"nearest_m": 18.4,
+					"stationary": 0
+				},
+				"position": [
+					270.0,
+					0.160364598035812,
+					104.0
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 257.31,
+				"stage": 5,
+				"taa": true,
+				"vehicle_health": 100.0,
+				"wanted": 2
+			}
+		},
+		{
+			"name": "flight reached waterfront pad airspace",
+			"passed": true,
+			"state": {
+				"car_distance_m": 640.003079654416,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 144.0,
+					"node_count": 15605.0,
+					"object_count": 28243.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1588764349.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 618.323682449758,
+				"heading": 0.664288997650146,
+				"health": 100.0,
+				"mode": 2,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					0.975020289421082,
+					109.237632751465,
+					-335.793212890625
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 287.25,
+				"stage": 5,
+				"taa": true,
+				"vehicle_health": 83.5,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "helicopter landed intact on destination pad",
+			"passed": true,
+			"state": {
+				"car_distance_m": 640.003079654416,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15605.0,
+					"object_count": 28242.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1588849837.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 727.806827627588,
+				"heading": 0.747030913829803,
+				"health": 100.0,
+				"mode": 2,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					0.405079126358032,
+					0.000241290312260389,
+					-336.575012207031
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 307.12,
+				"stage": 6,
+				"taa": true,
+				"vehicle_health": 83.5,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "landing exit restored walking",
+			"passed": true,
+			"state": {
+				"car_distance_m": 640.003079654416,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15606.0,
+					"object_count": 28249.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1588878581.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 727.806827627588,
+				"heading": 0.747030913829803,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					2.45945906639099,
+					0.275280058383942,
+					-338.477508544922
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 307.45,
+				"stage": 7,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "mission completed through delivery interaction",
+			"passed": true,
+			"state": {
+				"car_distance_m": 640.003079654416,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15605.0,
+					"object_count": 28244.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1588940565.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 727.806827627588,
+				"heading": -1.58655881881714,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					93.5468139648438,
+					0.275819897651672,
+					-337.038818359375
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 2,
+				"seconds": 321.58,
+				"stage": 8,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		},
+		{
+			"name": "market reached on foot",
+			"passed": false,
+			"state": {
+				"car_distance_m": 0.0,
+				"deaths": 0,
+				"engine_monitors": {
+					"draw_calls": null,
+					"fps": 145.0,
+					"node_count": 15605.0,
+					"object_count": 28248.0,
+					"orphan_node_count": 0.0,
+					"render_buffer_memory_bytes": null,
+					"render_texture_memory_bytes": null,
+					"render_video_memory_bytes": null,
+					"resource_count": 591.0,
+					"static_memory_bytes": 1591376197.0,
+					"static_memory_peak_bytes": 1631564581.0
+				},
+				"flight_distance_m": 0.0,
+				"heading": 0.349544763565063,
+				"health": 100.0,
+				"mode": 0,
+				"msaa_3d": 2,
+				"phase": "mission",
+				"police": {
+					"cars": 0,
+					"nearest_m": null,
+					"stationary": 0
+				},
+				"position": [
+					-102.32706451416,
+					0.135769814252853,
+					-52.6578521728516
+				],
+				"render_texture_pixels": [
+					3,
+					1
+				],
+				"run": 3,
+				"seconds": 452.37,
+				"stage": 0,
+				"taa": true,
+				"vehicle_health": null,
+				"wanted": 0
+			}
+		}
+	],
+	"latest": {
+		"car_distance_m": 0.0,
+		"deaths": 0,
+		"engine_monitors": {
+			"draw_calls": null,
+			"fps": 145.0,
+			"node_count": 15605.0,
+			"object_count": 28249.0,
+			"orphan_node_count": 0.0,
+			"render_buffer_memory_bytes": null,
+			"render_texture_memory_bytes": null,
+			"render_video_memory_bytes": null,
+			"resource_count": 591.0,
+			"static_memory_bytes": 1593466489.0,
+			"static_memory_peak_bytes": 1631564581.0
+		},
+		"flight_distance_m": 0.0,
+		"heading": 0.349544763565063,
+		"health": 100.0,
+		"mode": 0,
+		"msaa_3d": 2,
+		"phase": "mission",
+		"police": {
+			"cars": 0,
+			"nearest_m": null,
+			"stationary": 0
+		},
+		"position": [
+			-102.32706451416,
+			0.135769814252853,
+			-52.6578521728516
+		],
+		"render_texture_pixels": [
+			3,
+			1
+		],
+		"run": 3,
+		"seconds": 452.39,
+		"stage": 0,
+		"taa": true,
+		"vehicle_health": null,
+		"wanted": 0
+	},
+	"reboard_cycle_verified": false,
+	"recent_log": [
+		"391.46s walk stalled 35.5 m from target at (-118.5, 0.6, -52.7); backing out (6): no vehicle within 7 m",
+		"404.53s walk stalled 35.6 m from target at (-110.9, 0.1, -52.7); backing out (7): no vehicle within 7 m",
+		"417.49s walk stalled 35.5 m from target at (-118.6, 0.1, -52.7); backing out (8): no vehicle within 7 m",
+		"430.21s walk stalled 35.5 m from target at (-111.4, 0.4, -52.7); backing out (9): no vehicle within 7 m",
+		"443.39s walk stalled 35.6 m from target at (-118.9, 0.1, -52.7); backing out (10): no vehicle within 7 m",
+		"452.37s walk end at (-102.0, 0.0, -53.0); target=(-115.0, 0.0, -88.0) distance=37.5",
+		"452.37s FAIL market reached on foot",
+		"452.37s ABORT market reached on foot"
+	],
+	"runtime_log_scan": {
+		"checked": true,
+		"classified_nonfatal": [],
+		"fatal_errors": [],
+		"path": "/private/tmp/claude-501/-Users-midir-Documents-Codex-2026-10-21-https-github-com-oh-ashen-one-work-wave-05-opus/22a40311-c824-4c9d-9c53-4e0d93ef5209/scratchpad/ev/soak9/engine.log",
+		"seconds": 450.001631
+	},
+	"terminal_liveness": {
+		"aircraft_cycle_verified": false,
+		"current_horizontal_speed_mps": 2.49321460723877,
+		"final_observation_seconds": 0.0,
+		"foot_distance_last_60_seconds_m": 0.0,
+		"healthy_on_foot": true,
+		"reboard_cycle_verified": false,
+		"seconds_since_foot_motion": 1452.39375
+	}
+}

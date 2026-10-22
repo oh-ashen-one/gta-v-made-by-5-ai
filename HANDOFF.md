@@ -1,57 +1,53 @@
-# Singapore relay — wave 5 (final, Opus 5.5) — IN PROGRESS (release candidate built)
-
-> **BLOCKER — manager action requested:** wave 5 has had no shared renderer capacity for any render. The foreign `veyr-review-fable-20261021` loop holds the Blender renderers and refills its slots. See [`waves/05/BLOCKER_RENDER_CAPACITY.md`](waves/05/BLOCKER_RENDER_CAPACITY.md).
+# Singapore relay — wave 5 (final, Opus 5.5) — IN PROGRESS (final phase)
 
 - Builder: Opus 5.5 (`claude-opus-5-5`) through Claude Code, branch `feature/wave-05-opus`. No main merge, no public release. No sixth wave: [`NEXT_GOAL.md`](NEXT_GOAL.md) points to the release report.
 - Fixed window: 2026-10-21T23:56:42Z → 2026-10-22T03:56:42Z (final 30 min included).
-- Machine: Mac Studio M3 Ultra 256 GB (`Mac15,14`, verified). Engine: Godot 4.7.1.stable.official.a13da4feb, Forward+, native macOS.
+- Machine: Mac Studio M3 Ultra 256 GB (`Mac15,14`, verified). Engine: Godot 4.7.1.stable.official.a13da4feb, Forward+, native macOS (Metal 4.0 for renders).
 - Incoming: `6b51a26` (manager archive) over the Argon game tree `a5bf132`.
-- Read first: [`waves/05/RELEASE_REPORT.md`](waves/05/RELEASE_REPORT.md) (what was delivered, what is verified, what is not).
+- Read first: [`waves/05/RELEASE_REPORT.md`](waves/05/RELEASE_REPORT.md) (what was delivered, what is verified, what is not), then [`waves/05/evidence/rendered/README.md`](waves/05/evidence/rendered/README.md) (the real renders).
 
-## Release candidate (private, native macOS)
+## Release candidates (private, native macOS, git-ignored `package-wave05/`)
 
-- Built from **`d2a6cad1c948c5e32e0ee45924e7d5e325e73e5c`** with a clean `game/` tree. This is the commit soak #8 runs on. Later commits change documentation and evidence only; check with `git diff d2a6cad HEAD -- game`.
-- Files, git-ignored and local only: `package-wave05/OrchardReach-wave-05-final-signed.zip` (ad-hoc signed private copy), `package-wave05/OrchardReach.zip` (raw export), plus `hashes.txt`, `identity.txt` and `sign-report.json`.
-- SHA-256:
-  - signed zip `36c5132f3948ad465b4860ae9d9c166dd7eedfee99ade6120e578e988eb2198d`
-  - raw zip `04f2182845dba94326eabf43a8d43f55144db6861fe4e36f3d4e459fd695f6b6`
-  - PCK `233a76c68f3ca83207e9575790bb0c51ff674eeba6ed596fb07b9ee7036ffc64`
-  - signed executable `8cbba859c0de59f8f7169822aa05073676a6b92e3fb01e5dd463352873116548`
-- Packaged verification, run headless with the signed binary (`waves/05/evidence/final-package/`):
-  - 97/97 regressions, clean exit.
-  - Two-process save/relaunch: write in one PID, Continue in a fresh PID; position, health and weapon restored.
-  - Scripted route: 13/13 gates, 0 deaths, 147.6 s.
-- The signature is a local ad-hoc signature only: no Developer ID, no notarization, and no clearance for public redistribution of provider assets.
+PENDING: which of the two is final is decided in the release report once the `98b41b2` packaged route has finished.
 
-## Verified this wave (headless unless a rendered file is linked)
+1. **`98b41b2`**: `d2a6cad` plus HUD fixes (ammo backing plate; the minimap draws the bay and far shore) and route automation fixes.
+   - SHA-256: signed zip `129ecc4f15a6526dab241b231aad90bf18c977626acc248b4761cf1748fbb550`, raw zip `131aa64b2b3815bd3714129b7a6455e14def70a34d4ba862810ef668b716cd88`, PCK `5cb6c167ae883d9b4c242b184dfb49d9f7ad2608f054a840320103d3e095bd0a`, signed executable `8d071ddf0a9c358c0e4bc6e2a3b8ad16255c63eb8ea2378312a8196270f33000`.
+   - Packaged headless results: 97/97 regressions; save → relaunch → Continue PASS (position, health, weapon); route PENDING.
+   - Rendered: only if capacity frees before about 03:50 (the gated runner `scratchpad/bin/auto_render5.sh` is waiting).
+2. **`d2a6cad`**: the rendered-verified fallback, in `package-wave05/d2a6cad/`.
+   - SHA-256: signed zip `36c5132f3948ad465b4860ae9d9c166dd7eedfee99ade6120e578e988eb2198d`, raw zip `04f2182845dba94326eabf43a8d43f55144db6861fe4e36f3d4e459fd695f6b6`, PCK `233a76c68f3ca83207e9575790bb0c51ff674eeba6ed596fb07b9ee7036ffc64`, signed executable `8cbba859c0de59f8f7169822aa05073676a6b92e3fb01e5dd463352873116548`.
+   - Packaged headless results: 97/97 regressions, save/relaunch PASS, route 13/13 in 147.6 s.
+   - **Packaged rendered (Metal): route 13/13, 0 deaths, 149.1 s**, plus the opening, gameplay and fixed views.
 
-- Incoming checkpoint: import clean and 85/85 regressions, but `capture_director.gd:857` had a parse error, so the route could not run at all (`evidence/incoming-validation/`).
-- Mission route: all 11 source-build route runs after the recomposition (route3–13) and all 3 packaged route runs passed 13/13 gates with 0 deaths, in 147.6–153.0 s (`evidence/headless-route*/`, `final-package/`).
-- 30-minute soak **attempts** (`--capture --soak`): **none has completed yet.**
-  - #1 aborted at 231.9 s (carjack victim frozen in the road; fixed).
-  - #4 aborted at 819.4 s (U-turn wedge between opposite parked cars; fixed).
-  - #6 aborted at 1266.4 s (the automation carjacked passing traffic during a reboard; automation fixed).
-  - #7 aborted at 1590.6 s (the same reboard issue next to a car waiting at a signal; automation fixed again in `d2a6cad`).
-  - #8 is running on `d2a6cad`.
-  - Records: `evidence/soak*-failed*/`.
-- Opening identity: **headless geometric ray probe of the release code** (`evidence/sightlines-headless/release-code-2e38d8f/`; the images are stamped "NOT A RENDER").
-  - Opening camera: MBS is 77 % unoccluded, with a box 22–48 % of frame height. That this clears the HUD objective card is computed from `hud.gd`, not seen.
-  - Supertree crowns 36 %, Flyer 39 %, plus the hawker hall, heritage row and HDB.
-- CPU (shared, loaded machine; `perf_probe_release_2e38d8f.*`): physics tick ~11.3 → ~5.1 ms, process ~2.1 → ~1.8 ms, nodes 24,226 → 15,545.
-- Headless route CPU p95: 13.3 ms (route13), 12.5 ms (packaged). One start-up hitch of 240–274 ms on the first frame. `performance_acceptance_valid=false`.
-- Mesh census (not a renderer): district mesh instances 11,064 → 909; 10,118 static meshes merged into 1,107 MultiMesh draws.
-- Four fresh-context Opus critic code passes, with 21 findings (`evidence/critic_review_1..4.md`), and a documentation-accuracy pass, after which these docs were corrected.
+Both signatures are local ad-hoc signatures only: no Developer ID, no notarization, and no clearance for public redistribution of provider assets.
+
+## Verified this wave
+
+- **Real renders** (02:49–02:54 UTC, shared GPU, `evidence/rendered/`):
+  - The unchanged wave-4 baseline: 15 fixed views, including the owner's aerial camera, and 7 gameplay views.
+  - The `d2a6cad` candidate: 16 fixed views, 7 gameplay views and an 11-shot rendered route.
+  - Rendered route frame time: p50 7.73 ms, p95 11.65 ms, p99 15.30 ms, max 1,063 ms. Not acceptance-valid because of contamination.
+- Fresh-context critic of the renders (`evidence/critic_review_5_rendered.md`):
+  - The opening frame now reads as Singapore.
+  - Concept scores: on foot 4/10, driving 2/10, helicopter 3/10.
+  - Worst defects: the minimap and ammo contrast (fixed in `98b41b2`, rendered re-check pending); an empty world, a white glow by the helicopter, and water reading as paving (open).
+- Mission route: every source and packaged route after the recomposition passed 13/13 gates with 0 deaths, in 147.6–153.0 s headless and 149.1 s rendered.
+- 30-minute soak attempts: #1, #4, #6, #7, #8 and #9 all aborted; the reasons and fixes are in the release report. #10 is running on `98b41b2` (03:02–03:34 UTC).
+- CPU (shared machine): physics tick ~11.3 → ~5.1 ms. Mesh census: district mesh instances 11,064 → 909.
+- Critic code passes 1–4 (21 findings) were fixed or documented.
 
 ## Not verified / failing / open
 
-- **No rendered frame of the wave-5 game or of the wave-4 baseline exists yet** (capacity). The rendered look, rendered frame time and rendered route are all unmeasured.
-- The gated runner `scratchpad/bin/auto_render3.sh` is waiting. When capacity frees it captures, one engine at a time: the candidate opening, the unchanged wave-4 baseline, candidate fixed views, then a rendered candidate route. It launches nothing after 03:53 UTC. See `waves/05/BASELINE_W4.md`.
-- Visual fidelity (ART-01..08), ordinary OS-input human playtest, audio listening, public asset-rights clearance.
+- Visual fidelity (ART-01..08) is far from the concepts, and the world is sparse.
+- The 1.06 s render-side hitch on entering the market.
+- `photo_06_aerial_district` lost the Flyer compared with wave 4.
+- Not done: an exclusive-GPU frame-time measurement, an ordinary OS-input human playtest, an audio listening test, and public asset-rights clearance.
 
 ## Known incidents
 
 - At 00:55 UTC a save-probe run without `--qa-session` wrote the default user save slot (`~/Library/Application Support/Godot/app_userdata/Orchard Reach/orchard_reach_save.json`). The probe file was removed and the probe now refuses to run without a task-owned path. A pre-existing player save, if there was one, was overwritten at 00:55 and cannot be restored.
+- The `a53cd19` automation fix introduced a regression, soak #9's market-walk timeout. It was corrected in `98b41b2`.
 
 ## Safety
 
-Shared coordinator `GPU_SLOT_DIR=/Users/midir/sm2-n1/_scratch/gpu`, with `render_gate.py` inside the lease and `bounded_run.py` around every engine run. No foreign process or lock was touched. No provider credits were spent and nothing was generated externally. No main merge.
+Shared coordinator `GPU_SLOT_DIR=/Users/midir/sm2-n1/_scratch/gpu`, with `render_gate.py` inside the lease and `bounded_run.py` around every engine run. One rendered engine ran at a time, and only while the foreign renderer count was below the mixed cap of 2. No foreign process or lock was touched. No provider credits were spent and nothing was generated externally. No main merge.
