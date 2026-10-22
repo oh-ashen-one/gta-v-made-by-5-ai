@@ -88,10 +88,10 @@ bool in_car(vec2 uv, float d) {
 // driving-q rQ2: the Q1 judge saw roadside pedestrians, a cart and parked
 // bikes render as see-through doubles and the median smear to "green mush".
 // Streaking is now gated to what really streaks at speed in a chase view:
-// road surface, kerbs and low median planting close to the camera. A pixel
-// blurs fully only within ~7 m of the lens and below ~0.7 m above the road,
-// fading out by ~12 m / ~1.5 m; anything taller or further (people, carts,
-// bikes, shrubs past 15 m, facades) stays one sharp, opaque silhouette.
+// road surface, kerbs and the median's base close to the camera. A pixel
+// blurs fully only within ~7 m of the lens and below ~0.22 m above the road,
+// fading out by ~12 m / ~0.6 m; anything taller or further (people, carts,
+// share bikes, shrubs, facades) stays one sharp, opaque silhouette.
 float gate(vec2 uv, float d) {
 	if (d <= 0.0) {
 		return 0.0;
@@ -101,7 +101,7 @@ float gate(vec2 uv, float d) {
 	if (p.mask_on > 0.5 && g > 0.0) {
 		vec3 v = vec3((uv.x * 2.0 - 1.0) * p.tan_half.x, (1.0 - uv.y * 2.0) * p.tan_half.y, -1.0) * z;
 		float h = dot(p.m1.xyz, v) + p.m1.w - p.box_min.y;
-		g *= 1.0 - smoothstep(0.7, 1.5, h);
+		g *= 1.0 - smoothstep(0.22, 0.6, h);
 	}
 	return g;
 }

@@ -125,7 +125,6 @@ func _corner(a: Vector3, n: Vector3, c: Vector3, entry_kmh: float, handbrake: bo
 	f_out.y = 0.0
 	f_out = f_out.normalized()
 	var apex := _lane_point(n, c, 2.0) - f_in * 2.0
-	var exit := _lane_point(n, c, 34.0)
 	var t_end := _elapsed() + 8.0
 	var turned := false
 	var still_done := false
@@ -158,7 +157,10 @@ func _corner(a: Vector3, n: Vector3, c: Vector3, entry_kmh: float, handbrake: bo
 			# driving-q: a rolling lookahead (not a fixed point 34 m out) pulls
 			# a wide handbrake exit back into the lane before the median nose.
 			var along_out := (car.global_position - n).dot(f_out)
-			_steer_to(_lane_point(n, c, maxf(along_out + 11.0, 9.0)) if handbrake else exit, 3.2)
+			# rQ2: the grip corner aimed at a fixed point 34 m out and settled on the
+			# right-hand carriageway (wrong side for Singapore); it now uses the same
+			# rolling lookahead into the LEFT lane as the handbrake exit.
+			_steer_to(_lane_point(n, c, maxf(along_out + 11.0, 9.0)), 3.2)
 			Input.action_press("move_forward")
 			if await _unstick(f_out):
 				continue

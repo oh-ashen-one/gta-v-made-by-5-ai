@@ -79,6 +79,11 @@ flat grey-pink haze sky are retired.
   motion blur on the chase camera only (compositor effect on the engine's motion vectors, shutter 0.8 x 1/60 s faded in
   from ~11 to ~47 km/h, the player car masked out, distant pixels damped); it replaces the old frame-edge radial blur.
   Asphalt aggregate contrast is bounded (0.72-1.38x tone swing) and textures use 16x anisotropic filtering.
+- Driving rQ2: the motion blur only streaks near, low geometry (full within ~7 m of the lens and below ~0.7 m above
+  the road, gone by ~12 m / ~0.6 m; the 0.22-0.6 m band) and never gathers taps from tall or far geometry, so pedestrians, carts, bikes and
+  shrubs past ~15 m stay single, opaque silhouettes. Cars carry a grooved, blocky tyre with a bulged sidewall, a
+  polished ten-spoke alloy and a visible brake disc and caliper. Paint is an even base coat under a sharp clear-coat;
+  daylight lamp coronas stay small; skid marks are feathered, translucent rubber; wheelspin smoke is thin.
 - No camera shake by default; reduced-shake setting halves it further. The only vehicle shake is a short (~0.4 s) kick on a hard collision.
 - Capture convention: 16:9, 1280×720 internal, HUD visible for gameplay shots and hidden for beauty shots.
 

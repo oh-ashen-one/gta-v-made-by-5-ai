@@ -110,12 +110,19 @@ void fragment() {
 	} else {
 		paint = smoothstep(0.45, 0.65, sat) * smoothstep(0.10, 0.22, mx) * step(col.g, col.r);
 	}
-	paint *= 1.0 - glass;
 	// driving-q rQ2: the generated albedo carries texel-scale blotches that
 	// read as "mottled, dirty satin" under the clear-coat. On paint texels use
 	// a heavily mip-biased (panel-scale) sample instead, so the base coat is
-	// an even colour and the clear-coat reflection carries the detail.
+	// an even colour and the clear-coat reflection carries the detail. For the
+	// saturated-paint kind the mask also follows the panel colour, so dull
+	// blotches inside a painted panel are painted over instead of left as rust.
 	vec3 panel = texture(albedo_tex, UV, 5.5).rgb * albedo_tint.rgb;
+	if (paint_kind >= 0.5) {
+		float p_mx = max(panel.r, max(panel.g, panel.b));
+		float p_sat = (p_mx - min(panel.r, min(panel.g, panel.b))) / (p_mx + 0.001);
+		paint = max(paint, smoothstep(0.40, 0.60, p_sat) * smoothstep(0.08, 0.18, p_mx) * step(panel.g, panel.r) * (1.0 - upper * 0.6));
+	}
+	paint *= 1.0 - glass;
 	col = mix(col, panel, paint * 0.88);
 	lum = mix(lum, dot(panel, vec3(0.299, 0.587, 0.114)), paint * 0.88);
 	// Tail lamps: strongly red texels on the rear quarter.
