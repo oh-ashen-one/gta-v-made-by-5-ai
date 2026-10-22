@@ -118,8 +118,38 @@ func _build_car() -> void:
 		sign_mesh.material_override = _taxi_sign
 		sign_mesh.position = Vector3(0.0, dims.y + 0.02, 0.15)
 		add_child(sign_mesh)
-	_add_brake_lamps(dims.y * 0.55, dims.z * 0.5 + 0.02, dims.x * 0.36)
+	if root != null:
+		# Seat the lamps on the provider body's own rear face; the collider
+		# dims do not match the art, which left lamps floating beside it.
+		var bounds := _local_bounds(root)
+		if bounds.size.z > 0.5:
+			_add_brake_lamps(bounds.position.y + bounds.size.y * 0.5, bounds.end.z - 0.06, bounds.size.x * 0.3, bounds.get_center().x)
+	else:
+		_add_brake_lamps(dims.y * 0.55, dims.z * 0.5 + 0.02, dims.x * 0.36)
 	_add_driver()
+
+## Merged mesh bounds of a subtree, in this vehicle's local space.
+func _local_bounds(node: Node3D) -> AABB:
+	var out := AABB()
+	var first := true
+	var inv := global_transform.affine_inverse() if is_inside_tree() else Transform3D.IDENTITY
+	for mi in _all_meshes(node):
+		if mi.mesh == null or not (mi.is_visible_in_tree() if is_inside_tree() else mi.visible):
+			continue
+		var xf: Transform3D
+		if is_inside_tree():
+			xf = inv * mi.global_transform
+		else:
+			xf = Transform3D.IDENTITY
+			var n: Node = mi
+			while n != null and n != self:
+				if n is Node3D:
+					xf = (n as Node3D).transform * xf
+				n = n.get_parent()
+		var box: AABB = xf * mi.mesh.get_aabb()
+		out = box if first else out.merge(box)
+		first = false
+	return out
 
 ## Singapore double-decker: procedural, two glazed decks with pillars, livery
 ## band, front and rear detailing, wheel arches and wheels.
@@ -192,7 +222,7 @@ func _part(size: Vector3, pos: Vector3, mat: Material) -> MeshInstance3D:
 	add_child(mi)
 	return mi
 
-func _add_brake_lamps(height: float, back: float, half: float) -> void:
+func _add_brake_lamps(height: float, back: float, half: float, centre_x := 0.0) -> void:
 	if _brake_on == null:
 		_brake_on = Palette.emissive(Color(1.0, 0.08, 0.05), 3.2)
 		_brake_off = Palette.emissive(Color(0.55, 0.05, 0.04), 0.5)
@@ -202,7 +232,7 @@ func _add_brake_lamps(height: float, back: float, half: float) -> void:
 		lb.size = Vector3(0.3, 0.12, 0.05)
 		lamp.mesh = lb
 		lamp.material_override = _brake_off
-		lamp.position = Vector3(sx * half, height, back)
+		lamp.position = Vector3(centre_x + sx * half, height, back)
 		lamp.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		add_child(lamp)
 		_brake_lamps.append(lamp)
