@@ -677,6 +677,7 @@ func _helipad(pos: Vector3, radius: float) -> void:
 	label.pixel_size = 0.05
 	label.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
 	label.modulate = Color(0.95, 0.95, 0.92)
+	HelipadDressing.build(_world_root, pos, radius, radius >= 14.0)
 
 func _mixed_block(centre: Vector3) -> void:
 	_shophouse_row(centre + Vector3(-BLOCK / 2.0 + 8.0, 0.0, -BLOCK / 2.0 + 8.0), Vector3(1, 0, 0), 13)

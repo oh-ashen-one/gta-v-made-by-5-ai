@@ -211,6 +211,10 @@ func run(main: Node) -> void:
 	_check("lift input gains altitude", heli.global_position.y > 6.0)
 	await _ticks(45)
 	_check("neutral lift stabilizes hover", absf(heli.velocity.y) < 0.5)
+	var heli_fx := heli.presentation_state()
+	_check("rotor spools up to a motion-blurred disc in flight", heli_fx["rotor_spin"] > 0.95 and heli_fx["disc_visible"] and not heli_fx["blades_visible"], str(heli_fx))
+	_check("flight chase camera trails behind and above the aircraft", heli_fx["camera_current"] and heli_fx["camera_distance"] > 8.0 and heli_fx["camera_distance"] < 26.0 and heli_fx["camera_behind"] and heli_fx["camera_height"] > 1.0, str(heli_fx))
+	_check("rotor downwash kicks up the ground near the pad", heli_fx["wash"] > 0.2 and heli_fx["wash_visible"], str(heli_fx))
 	heli.exit_vehicle(player)
 	_check("airborne helicopter rejects exit", player.current_vehicle == heli)
 	Game.simulation_paused = true

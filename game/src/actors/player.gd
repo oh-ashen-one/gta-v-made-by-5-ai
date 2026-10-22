@@ -648,7 +648,9 @@ func _consume_press(action: String) -> bool:
 
 func _update_prompt() -> void:
 	if current_vehicle != null:
-		Events.interaction_prompt.emit("[E] Exit vehicle")
+		# an airborne helicopter cannot be left, so no exit prompt in flight
+		var airborne: bool = current_vehicle is Helicopter and not current_vehicle.is_landed()
+		Events.interaction_prompt.emit("" if airborne else "[E] Exit vehicle")
 		return
 	var target := _interaction_target()
 	var prompt := ""

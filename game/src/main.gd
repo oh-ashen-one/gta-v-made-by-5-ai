@@ -97,6 +97,19 @@ func _ready() -> void:
 		get_tree().quit(1 if tester.failures > 0 else 0)
 		return
 
+	if "--heli-review" in args:
+		var heli_dir := "user://heli_review"
+		for arg in args:
+			if arg.begins_with("--capture-dir="):
+				heli_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		Game.simulation_paused = false
+		var heli_review: Node = _qa_system("res://src/systems/heli_review.gd")
+		add_child(heli_review)
+		heli_review.setup(self, world, heli_dir)
+		return
+
 	if "--photos" in args or "--gameplay-photos" in args:
 		var photo_dir := "captures"
 		for arg in args:
