@@ -397,7 +397,7 @@ func _update_chase_camera(delta: float) -> void:
 func _chase_target(ground_speed: float) -> Vector3:
 	var back := Basis(Vector3.UP, _cam_yaw) * Vector3(0.0, 0.0, 1.0)
 	var distance := 10.5 + ground_speed * 0.06
-	var height := 4.3 + clampf(absf(velocity.y) * 0.10, 0.0, 1.6)
+	var height := 5.4 + clampf(absf(velocity.y) * 0.10, 0.0, 1.6)
 	return global_position + back * distance + Vector3.UP * height
 
 ## Snapshot of the presentation layer for regression checks.

@@ -58,6 +58,9 @@ void fragment() {
 	float tip = smoothstep(0.86, 0.90, r) * (1.0 - smoothstep(0.93, 0.965, r));
 	float body = (0.11 + 0.36 * smear) * band;
 	float alpha = spin * radial * (body + tip * (0.10 + 0.25 * smear));
+	// a thin disc seen at a grazing angle still reads (optical density grows)
+	float graze = 1.0 - abs(dot(NORMAL, VIEW));
+	alpha *= 1.0 + 2.2 * graze * graze;
 	float hubcap = 1.0 - smoothstep(hub * 0.55, hub * 0.75, r);
 	alpha = max(alpha, hubcap * 0.92);
 	ALBEDO = mix(tint, tip_tint, tip * 0.75 * (1.0 - hubcap));
@@ -89,12 +92,12 @@ void fragment() {
 	float ang = atan(lp.y, lp.x);
 	float n = noise(vec2(ang * 5.0, r * 9.0 - TIME * 3.2)) * 0.6 + noise(lp * 23.0 + TIME * 0.7) * 0.4;
 	// ripple trains running outward from under the rotor
-	float rings = pow(0.5 + 0.5 * sin(r * 46.0 - TIME * 13.0 + n * 3.0), 6.0);
+	float rings = pow(0.5 + 0.5 * sin(r * 38.0 - TIME * 11.0 + n * 7.0), 3.0) * smoothstep(0.25, 0.75, noise(vec2(ang * 9.0, r * 4.0 - TIME * 2.0)));
 	float edge = smoothstep(0.08, 0.30, r) * (1.0 - smoothstep(0.62, 1.0, r));
 	float core = 1.0 - smoothstep(0.0, 0.55, r);
 	// a broken foam crest where the wash meets still water
 	float crest = smoothstep(0.30, 0.42, r) * (1.0 - smoothstep(0.46, 0.70, r)) * smoothstep(0.35, 0.75, n);
-	float foam_amt = clamp(rings * edge * 0.55 + crest * 0.9, 0.0, 1.0);
+	float foam_amt = clamp(rings * edge * 0.40 + crest * 0.8, 0.0, 1.0);
 	vec3 water_col = mix(deep, foam, foam_amt);
 	float water_a = intensity * clamp(core * 0.45 + foam_amt * 0.85 + edge * 0.18, 0.0, 0.92);
 	float dust_a = intensity * clamp((rings * 0.25 + n * 0.35) * edge + crest * 0.35, 0.0, 0.55);
@@ -254,8 +257,8 @@ func _build_ground_fx() -> void:
 	_dust_mat.angle_max = 180.0
 	_dust_mat.angular_velocity_min = -40.0
 	_dust_mat.angular_velocity_max = 40.0
-	_dust_mat.scale_min = 2.2
-	_dust_mat.scale_max = 4.5
+	_dust_mat.scale_min = 0.8
+	_dust_mat.scale_max = 1.6
 	var curve := Curve.new()
 	curve.add_point(Vector2(0.0, 0.35))
 	curve.add_point(Vector2(1.0, 1.6))
@@ -272,7 +275,7 @@ func _build_ground_fx() -> void:
 	_dust_mat.color_ramp = gt
 	_dust.process_material = _dust_mat
 	var quad := QuadMesh.new()
-	quad.size = Vector2(1.0, 1.0)
+	quad.size = Vector2(3.2, 3.2)
 	_dust_draw = StandardMaterial3D.new()
 	_dust_draw.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_dust_draw.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
