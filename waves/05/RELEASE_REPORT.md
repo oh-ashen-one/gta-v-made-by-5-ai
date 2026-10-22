@@ -1,57 +1,62 @@
 # Wave 5 (final) release report — Opus 5.5 via Claude Code
 
-**Status: DRAFT, IN PROGRESS.** This report is updated during the wave. It becomes final only when this line says FINAL.
+**Status: DRAFT, IN PROGRESS.** The report is updated during the wave and becomes final only when this line says FINAL.
 
-- Builder: Opus 5.5 (`claude-opus-5-5`) through Claude Code, on branch `feature/wave-05-opus`. There is no main merge and no public release.
-- Fixed window: 2026-10-21T23:56:42Z to 2026-10-22T03:56:42Z. The final 30 minutes are included. There is no sixth wave.
+- Builder: Opus 5.5 (`claude-opus-5-5`) via Claude Code, branch `feature/wave-05-opus`. No main merge, no public release.
+- Fixed window: 2026-10-21T23:56:42Z → 2026-10-22T03:56:42Z (the final 30 minutes are included). There is no sixth wave.
 - Machine: Mac Studio M3 Ultra, 256 GB (`Mac15,14`). Engine: Godot 4.7.1.stable.official.a13da4feb, Forward+, native macOS.
-- Verdict: **best available experimental build, not north-star accepted** (GOV-02). The required capabilities are present and the scripted mission passes headless. Rendered visual fidelity and rendered performance remain unverified or below target.
+- Verdict: **best available experimental build; the north star is not accepted** (GOV-02). Every result below is **headless** (simulation, geometry or CPU) unless a file under `evidence/rendered/` is cited.
 
 ## What wave 5 inherited
 
-- Incoming source was `6b51a26`, the Argon `a5bf132` game tree. It imports cleanly and passes 85/85 headless regressions.
-- **Its route automation did not parse.** `capture_director.gd:857` failed to compile, so the mission route could not run at all. Argon's driving fix had never been exercised.
-- For the whole wave, shared renderer capacity was held by foreign Blender renders from the `veyr-review-fable-20261021` loop. There were four, with 4-hour leases. One was replaced at 01:14 UTC by a new session, which ended about 01:56 UTC; three hold leases until about 03:35–03:37 UTC. Under the mixed cap of 2, `render_gate.py` refused every Godot render. The builder escalated to the manager (`waves/05/BLOCKER_RENDER_CAPACITY.md`) and touched no foreign process. Rendered evidence is listed separately below.
+- Incoming source: `6b51a26`, which carries Argon's `a5bf132` game tree. It imported cleanly and passed 85/85 headless regressions.
+- **Its route automation did not parse.** A compile error at `capture_director.gd:857` meant the mission route could not run at all, so Argon's driving fix had never been exercised (`evidence/incoming-validation/`).
+- The `veyr-review-fable-20261021` loop held the shared renderer capacity with foreign Blender renders throughout:
+  - Four renders at the start, with 4-hour leases. The oldest was replaced at 01:14 UTC by a new session, which ended at about 01:56.
+  - Three remained, with leases running to about 03:35–03:37.
+  - `render_gate.py` therefore refused every Godot render under the mixed cap of 2. No foreign process was touched; the blocker was escalated in `BLOCKER_RENDER_CAPACITY.md`.
 
-## Delivered (all pushed)
+## Delivered and evidence
 
-| Area | Change | Evidence | Verified? |
+| Area | Change | Evidence | Status |
 | --- | --- | --- | --- |
-| Mission integrity | Repaired route automation. Landing and exit gates now wait for the mission's own tick. | `evidence/headless-route*/` | Headless scripted route: 13/13 gates, 0 deaths, about 149–153 s on every build since the recomposition |
-| Carjack / pedestrian safety | A 30-minute headless soak found that mission 2 wrecked its car. The displaced driver of an occupied car stood frozen in the carriageway, and cars could not hurt pedestrians, so the car rammed an invulnerable body. Vehicles now injure or scatter pedestrians; displaced drivers flee and rejoin a pavement. | `evidence/soak1-failed/`, `regressions_97.json` | Soak rerun pending (see below) |
-| Parking layout / U-turns | Soak #4 passed three missions, every fixture check and the same-car reboard cycle. In free roam, a car taken from a lot directly opposite another wedged mid-U-turn for 95 s: opposite parked bodies leave about 11 m, and a car needs about 13 m. Lots on the two kerbs are now staggered by 30 m, and the automation alternates its reverse steering. | `evidence/soak4-failed-freeroam/` | Soak rerun pending |
-| Driving / parking | Kerbside cars moved onto the carriageway; they had straddled the 16 cm platform edge in the pedestrian lane. Opposite lots are staggered 30 m apart. Traffic perception is a lane corridor, with stuck recovery that checks behind. | `regressions_97.json` | 85/91 kerbside cars pull out and drive 12 m unobstructed. Driving leg passes. |
-| **Opening Singapore identity** | The run opens outdoors on a new heritage shophouse five-foot way facing the inhabited hawker hall across the x=-160 avenue, with HDB slabs behind. Marina Bay Sands (real proportions, about 196 m), the lotus ArtScience Museum and the Singapore Flyer stand across the bay on the far shore (CONCEPT-03 geography). The Supertree Grove sits in the bayside garden beside the opening sightline. The Merlion is on the promenade pier facing the bay. | `evidence/sightlines-headless/` | Headless geometric probe of the real opening camera: all three MBS towers and the SkyPark visible (75–77 % of the silhouette), clear of the HUD card and the player; Supertree crowns and Flyer above the hawker roof. **The rendered look is pending capacity.** |
-| Performance | NPC/car simulation LOD and parked-car sleep. 10,118 static meshes merged into 1,107 MultiMesh draws (district mesh instances 11,064 → 909; unique materials 4,988 → 353). Ambient figures and their weapons are drawn within 150 m, with animation paused beyond that. | `perf_probe_release.json`, `batching/` | Headless CPU: physics tick about 11.3 → 4.9 ms, process about 2.1 → 1.7 ms, nodes 24,226 → 15,545; route CPU frame p95 18.0 → 12.0 ms. Batching is geometry-equivalent in five probe views. **No rendered frame-time measurement yet.** |
-| Vehicles | Spinning and steering overlay wheels at measured baked-tyre positions; seated drivers. | `wheel_probe.log` | Not rendered |
-| Pursuit | Police follow the junction grid with committed waypoints and close on mid-block goals. Pursuit telemetry added to route samples. | regression checks; route telemetry | Headless: a responder closed from 166 m with zero stationary samples. Live rendered pursuit not observed. |
-| Boundaries | Landable far shore, with no on-foot exit there (out of bounds); helicopter aerial envelope; ditch recovery. | regression checks | Headless |
-| Streetscape | Double yellow lines that stop at junctions; white kerbside lots; five-foot-way pedestrians; Tembusu Food Centre signboard and street-name blades. | probe | Not rendered |
-| Audio | Click-free engine and rotor loop seams, a whole-cycle siren, a soft-saturated gunshot. | `regressions_94_audio.json` | Objective metrics only. **Nobody has listened.** |
-| QA tooling | Sightline probe, perf probe, mesh census, wheel probe, two-process save/relaunch probe; QA entry points fail fast. | `evidence/` | — |
-| Independent review | Four fresh-context Opus critic subagent passes over the source diff, the last a whole-diff release review. 8 major/high and 11 minor/low findings were fixed or documented. | `evidence/critic_review_1.md` … `_4.md` | Code review only, not a visual review |
+| Mission integrity | Repaired the route automation. Landing and exit gates wait for the mission's own tick. | `evidence/headless-route*/` | All 11 source-build route runs after the recomposition (route3–route13) and all 3 packaged route runs passed 13/13 gates with 0 deaths, in 147.6–153.0 s. Scripted input, not a human run. |
+| **Opening Singapore identity** | The run opens outdoors on a new heritage shophouse five-foot way, facing the inhabited hawker hall across the x=-160 avenue, with HDB slabs behind. Marina Bay Sands (scaled to about 182 m towers and a 196 m SkyPark top), the ArtScience lotus and the Singapore Flyer stand across the bay on the far shore, matching the CONCEPT-03 geography. The Supertree Grove sits in the bayside garden beside the opening sightline. The Merlion stands on the promenade pier facing the bay. Signage: Tembusu Food Centre and street-name blades. | `evidence/sightlines-headless/release-code-2e38d8f/` | **Geometric probe of the release code (not a render).** Opening camera: MBS is 77 % unoccluded (2.1 % of frame, box 22–48 % of frame height); Supertree crowns 36 %, Flyer 39 %. Promenade: MBS 97 %, ArtScience 100 %, Merlion 98 %. Helicopter approach: Flyer 99 %, grove 92 %. That the MBS box clears the HUD objective card is computed from the `hud.gd` layout, not seen. **The rendered look is unverified.** |
+| Carjack and pedestrian safety | Soak #1 found a defect: the displaced driver of an occupied car stood frozen in the carriageway. Cars could not hurt pedestrians, so mission 2's car rammed an invulnerable body until wrecked. Now vehicles injure or scatter pedestrians (one impact per person per 0.6 s), and displaced drivers flee and rejoin a pavement. | `evidence/soak1-failed/`, regression checks | Fixed. The soak #4 and #6 rerun missions passed the same leg. |
+| Parking and U-turns | Kerbside cars moved off the 16 cm platform edge onto the carriageway. Soak #4 then found cars on opposite kerbs only about 11 m apart, less than the about 13 m a U-turn needs, so a free-roam car wedged for 95 s. Opposite lots are now staggered by 30 m. | `regressions_release_2e38d8f.json`, `evidence/soak4-failed-freeroam/` | **85/91 kerbside cars can pull out and drive 12 m**; 6 exceptions are listed in the check. The soak #4 leg that failed took 63 s in soak #6. |
+| Traffic | Lane-corridor perception at about 8 Hz. Stuck recovery checks behind before reversing. | regressions | Busy-junction behaviour not observed by a human. |
+| Pursuit | Police follow the junction grid with committed waypoints and close on goals in the middle of a block. Route samples record pursuit telemetry. | regression checks, `headless-route11-pursuit/` | Headless: a responder closed from 167 m to a minimum of 69 m, then fell back to 162 m once the wanted level dropped. In the packaged route, police were stationary near the player in 4 one-second samples. No rendered pursuit was observed. |
+| Performance (CPU) | NPC/car simulation LOD, parked-car sleep, 150 m NPC draw range with paused animation. | `perf_probe_release_2e38d8f.json` and `.log` | On a shared, loaded machine: physics tick about 11.3 → 5.1 ms, process time about 2.1 → 1.8 ms, scene nodes 24,226 → 15,545. Headless route CPU frame p95: 18.0 ms before → 13.3 ms (route13), 12.5 ms (packaged). Every route still has one start-up hitch above 100 ms: the first frame, 240–274 ms. Every log reports `performance_acceptance_valid=false`. |
+| Draw objects (census) | 10,118 static meshes merged into 1,107 MultiMesh draws. District mesh instances fell from 11,064 to 909 and unique materials from 4,988 to 353. | `batching/census_release_2e38d8f.log` | The counts come from a mesh census, not a renderer. The probe equivalence check (five views, within 0.3 percentage points per category) ran on an earlier 9,921 → 1,193 grouping. **No rendered frame time was measured.** |
+| Vehicles | Spinning and steering overlay wheels at the measured baked-tyre positions; seated drivers. | `wheel_probe.log` | Not rendered. The van's baked left wheels sit about 0.24 m inboard of its right wheels; overlay placement follows the measurement but is unverified. |
+| Boundaries | The far shore is landable, but on-foot exit there is refused, and a downed pilot is recovered. Helicopter aerial envelope and ditch recovery. | regression checks | Headless only. |
+| Audio | The engine and rotor loops are generated past their end and crossfaded into their heads; the siren loops on whole cycles; the gunshot uses soft saturation instead of clipping. | `regressions_94_audio.json` | Objective seam and peak metrics only. The metric cannot detect an engine-loop click below the sawtooth's own about 0.31 step, so a click-free engine loop is unproven. **No listening test was done.** |
+| QA tooling | Sightline probe, CPU probe, mesh census, wheel probe, two-process save/relaunch probe. QA entry points fail fast. | `evidence/` | — |
+| Independent review | Fresh-context Opus critic subagents: four code passes (21 findings: 7 major or high, 1 medium-high, 1 medium, 12 minor, low or uncertain), plus a documentation-accuracy pass that drove this rewrite. | `evidence/critic_review_1..4.md` | Code and document review only. There was no visual or human acceptance. |
+
+## 30-minute soak attempts (`--capture --soak`: three missions, fixture phase, mixed free roam)
+
+| Soak | Code | Result |
+| --- | --- | --- |
+| #1 | `2463cd3` | Aborted at 231.9 s, during mission 2's drive: the frozen carjack victim. Fixed. |
+| #4 | `86b5405` | Three missions, all fixture checks and the same-car reboard all passed. Aborted at 819.4 s: a free-roam car wedged mid-U-turn. Fixed. |
+| #6 | `584fb59` | Three missions, all fixtures, the failed #4 leg (63 s) and three reboard cycles all passed. Aborted at 1266.4 s: in a fourth reboard, at a busy junction, the automation pressed interact while a passing AI car was nearer, and carjacked it. Interaction picking the nearest car is intended; the automation was fixed in `2e38d8f`. |
+| #7 | `2e38d8f` | **Running** (02:12–02:43 UTC). Result recorded below. |
+
+**No 30-minute soak has completed yet.** Soaks #2, #3 and #5 were stopped early because newer fixes superseded them. They are not results.
 
 ## Release candidate
 
-- Built from `584fb590e34466d6103c22196381a686d1bf44d2` (clean `game/` tree). Private, git-ignored files in `package-wave05/`:
-  - signed zip `a493083299b1f592c0f7e113be94fe9d49399a3672d81eb61dbd6d654f2a2079`
-  - raw export zip `5025c0b34f3f895e08ddad77553d79ad12cab235ffd585e21a870326e355a786`
-  - PCK `ab713a8d8a7a0687022648a7eb78d16e5d2d5982efa32d9a328db4853d8b4ca6`
-- Packaged and headless, with the signed binary:
-  - **97/97 regressions**.
-  - **Two-process save → relaunch → Continue** restores position, health and weapon.
-  - **Scripted route 13/13 gates, 0 deaths, 147.6 s**.
-- The signature is local and ad-hoc only, with no notarization. Provider asset rights for public redistribution remain unverified.
-- Full evidence: `evidence/final-package/`.
+Pending a rebuild from the soak #7 commit. The previous candidate was `584fb59`: packaged 97/97 regressions, two-process save/relaunch, and the packaged route at 147.6 s (`evidence/final-package/`, superseded).
 
-## Not done / failing / untested (carry-forward for the owner)
+## Not done / failing / untested
 
-- Rendered captures of the final candidate and the wave-4 baseline depend on capacity freeing in the final window; see the section below.
-- GTA VI-level fidelity (ART-01..08): not accepted. Landmark meshes are original low-poly authored forms, with about 4.5k triangles for MBS.
-- Rendered 60 fps contract (PERF-02 / QA-020): not measured this wave. The wave-3 rendered p95 of about 73 ms is the last rendered figure, and it predates the batching and LOD work.
-- Ordinary OS-input human playtest, audio listening, the 30-minute soak and public asset rights clearance: not done.
-- One stray write: a save-probe run without `--qa-session` wrote the default user save slot once at 00:55 UTC. The probe file was removed and the probe now refuses to run without a task-owned path.
+- **Rendered captures:** not one rendered frame of the wave-5 game or of the wave-4 baseline exists unless `evidence/rendered/` is populated in the final minutes.
+- **Fidelity:** GTA VI-level fidelity (ART-01..08) is not accepted. The landmark meshes are original low-poly forms; the MBS mesh has 4,564 triangles according to `game/assets/authored/landmarks_manifest.json`.
+- **Frame rate:** the rendered 60 fps contract (PERF-02 / QA-020) was not measured this wave. The last rendered figure, about 73 ms p95 in wave 3, predates the LOD and batching work.
+- Not done: an ordinary OS-input human playtest, a listening test, and public asset-rights clearance.
+- **Incident:** at 00:55 UTC a save-probe run without `--qa-session` wrote the default user save slot once. The file was removed, and the probe now refuses to run without a task-owned path.
 
 ## Rendered evidence
 
-PENDING — filled from actual captures only.
+PENDING. This section will be filled only from actual captures.

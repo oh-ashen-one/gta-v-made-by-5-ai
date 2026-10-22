@@ -14,7 +14,7 @@ Read [HANDOFF.md](HANDOFF.md) for the current checkpoint, owned-engine/GPU proto
 
 - Run after obtaining the shared renderer slot: `godot --log-file /tmp/orchard-player.log --path game`
 - Export after a project import: `godot --headless --log-file /tmp/orchard-export.log --path game --export-release "macOS" build/mac/OrchardReach.zip` (the export path is relative to `game/`).
-- Run bounded regression checks using the commands in [gameplay notes](docs/wave-02/GAMEPLAY_NOTES.md). Headless numerical assertion passes do not certify a clean run: check the supervisor's exit and generic error scan. The latest clean Metal suite has 85 assertions.
+- Run bounded regression checks using the commands in [gameplay notes](docs/wave-02/GAMEPLAY_NOTES.md). Headless numerical assertion passes do not certify a clean run: check the supervisor's exit and generic error scan. The last clean *rendered* (Metal) suite, from wave 3, has 85 assertions. Wave 5's suite has 97 checks and was run **headless only**: no wave-5 rendered suite exists.
 
 The three approved images in [docs/concepts](docs/concepts/) remain the visual target. [Evidence](docs/EVIDENCE.md) separates rendered automation, stills, tests, performance qualifications, packaging and human acceptance.
 

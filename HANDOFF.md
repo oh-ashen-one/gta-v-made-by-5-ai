@@ -22,15 +22,20 @@
 ## Verified this wave (headless unless a rendered file is linked)
 
 - Incoming checkpoint: import clean and 85/85 regressions, but `capture_director.gd:857` had a parse error, so the route could not run at all (`evidence/incoming-validation/`).
-- Mission route: 13/13 gates, 0 deaths, on every build since the recomposition (`evidence/headless-route*/`).
-- 30-minute soaks (`--capture --soak`, three missions, fixture phase, mixed free roam):
-  - soak #1 (`soak1-failed`) found a carjack-victim defect.
-  - soak #4 (`soak4-failed-freeroam`) found a U-turn wedge between opposite parked cars.
-  - Both defects are fixed. Soak #6 on the fixed code: SEE FINAL UPDATE BELOW.
-- Opening identity: headless ray probe of the real opening camera (`evidence/sightlines-headless/`, including `opening_probe_vs_concept01.png`). All three MBS towers and the SkyPark are visible, clear of the HUD card and the player, with Supertree crowns, the Flyer, the hawker hall, the heritage row and HDB.
-- CPU (shared machine): physics tick ~11.3 → ~4.9 ms; process ~2.1 → ~1.7 ms; nodes 24,226 → 15,545.
-- Draw objects: district mesh instances 11,064 → 909, static meshes merged into 1,107 MultiMesh draws, geometry-equivalent in probe views.
-- Four fresh-context Opus critic passes (code review only): `evidence/critic_review_1..4.md`.
+- Mission route: all 11 source-build route runs after the recomposition (route3–13) and all 3 packaged route runs passed 13/13 gates with 0 deaths, in 147.6–153.0 s (`evidence/headless-route*/`, `final-package/`).
+- 30-minute soak **attempts** (`--capture --soak`): **none has completed yet.**
+  - #1 aborted at 231.9 s (carjack victim frozen in the road; fixed).
+  - #4 aborted at 819.4 s (U-turn wedge between opposite parked cars; fixed).
+  - #6 aborted at 1266.4 s (the automation carjacked passing traffic during a reboard; automation fixed).
+  - #7 is running on `2e38d8f`.
+  - Records: `evidence/soak*-failed*/`.
+- Opening identity: **headless geometric ray probe of the release code** (`evidence/sightlines-headless/release-code-2e38d8f/`; the images are stamped "NOT A RENDER").
+  - Opening camera: MBS is 77 % unoccluded, with a box 22–48 % of frame height. That this clears the HUD objective card is computed from `hud.gd`, not seen.
+  - Supertree crowns 36 %, Flyer 39 %, plus the hawker hall, heritage row and HDB.
+- CPU (shared, loaded machine; `perf_probe_release_2e38d8f.*`): physics tick ~11.3 → ~5.1 ms, process ~2.1 → ~1.8 ms, nodes 24,226 → 15,545.
+- Headless route CPU p95: 13.3 ms (route13), 12.5 ms (packaged). One start-up hitch of 240–274 ms on the first frame. `performance_acceptance_valid=false`.
+- Mesh census (not a renderer): district mesh instances 11,064 → 909; 10,118 static meshes merged into 1,107 MultiMesh draws.
+- Four fresh-context Opus critic code passes, with 21 findings (`evidence/critic_review_1..4.md`), and a documentation-accuracy pass, after which these docs were corrected.
 
 ## Not verified / failing / open
 

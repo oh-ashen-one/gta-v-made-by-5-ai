@@ -22,7 +22,12 @@
 
 ## Why it is late
 
-Shared renderer capacity was held by four foreign Blender renders from the start of wave 5. Their leases record a 4-hour maximum hold: one until about 01:58 UTC, three until about 03:35–03:37 UTC. The mixed cap of 2 forbids launching Godot while two or more renderers run. A gated runner (lease → `render_gate.py` → `bounded_run.py`) captures these views the moment capacity frees, interleaved with the final-candidate captures, and launches nothing after 03:50:30 UTC.
+Foreign `veyr-review-fable-20261021` Blender renders held the shared renderer capacity from the start of wave 5:
+
+- Four renders at the start, on 4-hour leases. The oldest was replaced at 01:14 UTC by a new session, which ended at about 01:56.
+- Three remain, with leases ending at about 03:35–03:37 UTC (see `BLOCKER_RENDER_CAPACITY.md`).
+
+The mixed cap of 2 forbids launching Godot while two or more renderers run. A gated runner (lease → `render_gate.py` → `bounded_run.py`) captures these views as soon as capacity frees, interleaved with the final-candidate captures. Each job has a latest start time, and the runner launches nothing after about 03:53 UTC.
 
 ## How to reproduce the baseline capture without wave 5 (manager)
 
