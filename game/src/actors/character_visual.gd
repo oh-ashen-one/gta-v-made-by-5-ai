@@ -290,9 +290,85 @@ func _apply_wardrobe(node: Node, tint: Color) -> void:
 const PLAYER_LIGHT_LAYER := 1 << 10
 ## The player's meshes also sit on render layer 11 so his own fill/rim lights
 ## (on the Player camera) touch only him.
+## The provider rig is shared with the black-shirted crowd, so the
+## protagonist's overshirt is re-dyed a washed olive-khaki in a shader: only the
+## near-black overshirt texels are recoloured, with their luminance compressed
+## (not multiplied) so baked fold shading survives without blowing out, and the
+## grey tee underneath keeps its texture. Cloth folds now read at close range.
+const PLAYER_CLOTH_SHADER := """
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx, sss_mode_skin;
+uniform sampler2D albedo_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D normal_tex : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D orm_tex : hint_default_white, filter_linear_mipmap, repeat_enable;
+uniform vec3 dye : source_color = vec3(0.29, 0.26, 0.19);
+uniform float normal_strength = 1.6;
+uniform float force_dye = 0.0;
+// Skin/details surface variant: it also carries the overshirt's hem and cuff
+// texels, so dark texels are dyed only between waist and shoulder height
+// (hair and shoes stay as authored) and the rest is shaded as skin.
+uniform bool skin_surface = false;
+varying float body_y;
+void vertex() {
+	body_y = VERTEX.y;
+}
+void fragment() {
+	vec3 c = texture(albedo_tex, UV).rgb;
+	float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+	float sat = (max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b))) / max(max(c.r, max(c.g, c.b)), 0.0001);
+	// Near-black overshirt texels, plus its brownish hem/cuff texels; the
+	// neutral grey tee stays as authored.
+	float dark = max(1.0 - smoothstep(0.08, 0.16, l), (1.0 - smoothstep(0.22, 0.34, l)) * smoothstep(0.10, 0.25, sat));
+	float shade = clamp(pow(max(l, 0.0005) / 0.016, 0.3), 0.72, 1.3);
+	if (skin_surface) {
+		dark *= step(0.82, body_y) * (1.0 - step(1.47, body_y)) * (1.0 - smoothstep(0.035, 0.07, l));
+	}
+	ALBEDO = mix(c, dye * shade, max(dark, force_dye));
+	vec4 orm = texture(orm_tex, UV);
+	ROUGHNESS = clamp(orm.g, 0.6, 1.0);
+	METALLIC = 0.0;
+	SPECULAR = 0.3;
+	AO = orm.r;
+	AO_LIGHT_AFFECT = 0.25;
+	NORMAL_MAP = texture(normal_tex, UV).rgb;
+	NORMAL_MAP_DEPTH = normal_strength;
+	RIM = skin_surface ? 0.22 : 0.45;
+	RIM_TINT = skin_surface ? 0.55 : 0.8;
+	if (skin_surface) {
+		ROUGHNESS = clamp(orm.g * 0.82, 0.3, 1.0);
+		SPECULAR = 0.42;
+		AO = 1.0; // the authored skin material had no occlusion term
+		SSS_STRENGTH = 0.32 * (1.0 - dark);
+	}
+}
+"""
+
 func _player_look(node: Node) -> void:
+	var shader := Shader.new()
+	shader.code = PLAYER_CLOTH_SHADER
 	for mesh_node in node.find_children("*", "MeshInstance3D", true, false):
-		(mesh_node as MeshInstance3D).layers = 1 | PLAYER_LIGHT_LAYER
+		var mi := mesh_node as MeshInstance3D
+		mi.layers = 1 | PLAYER_LIGHT_LAYER
+		if mi.mesh == null:
+			continue
+		for i in mi.mesh.get_surface_count():
+			var mat := mi.mesh.surface_get_material(i) as StandardMaterial3D
+			if mat == null or mat.albedo_texture == null:
+				continue
+			var is_skin := String(mat.resource_name).contains("Skin")
+			if not (is_skin or String(mat.resource_name).contains("CharacterClothing")):
+				continue
+			var cloth := ShaderMaterial.new()
+			cloth.shader = shader
+			cloth.set_shader_parameter("skin_surface", is_skin)
+			if is_skin:
+				cloth.set_shader_parameter("normal_strength", 1.15)
+			cloth.set_shader_parameter("albedo_tex", mat.albedo_texture)
+			if mat.normal_texture != null:
+				cloth.set_shader_parameter("normal_tex", mat.normal_texture)
+			if mat.roughness_texture != null:
+				cloth.set_shader_parameter("orm_tex", mat.roughness_texture)
+			mi.set_surface_override_material(i, cloth)
 
 ## Skeleton-space facing and left axes from the imported hierarchy, so the
 ## procedural layer leans the right way whatever the glTF root rotation is.
