@@ -75,11 +75,11 @@
 
 ## Run 2 (owner direction 2026-10-22: "go ahead and continue for another 5 hours")
 - START: 2026-10-22T17:23:57Z
-- DEADLINE: 2026-10-22T22:23:57Z (START + 5 h, hard stop)
-- FEATURE FREEZE: 2026-10-22T21:38:57Z (DEADLINE − 45 min)
+- DEADLINE: OPEN-ENDED. Owner update 2026-10-22 ~17:27Z: "just keep going until your critiques and judgements are met with the north star or until I stop you". The 5-hour window above is withdrawn; the run continues in rolling waves (build → blind critique → integrate) until a blind judge prefers ours to GTA V and is wowed, or the owner stops it.
 - Same GOAL.md rules, bar and guardrails. Starting point d2d4bc9 (game code 32e08ba): 7/8 pieces merged, 140/140, routes 13/13, 23/23 blind rounds lost.
 - Critics in run 2 compare against the end-of-run-1 build (progress/img/integration/C/), not the wave-5 baseline.
 - Wave D (4 builders): street-life (finish opus55/street-life-fix: deadlock-proof traffic + crowd variety), characters (player close-up fidelity + NPC variety), nearfield (blockout kerbs/sign bases/median plants/asphalt + placeholder props), aerial (tower light/shadow contrast, glass specular, far aerial perspective). Wave E: driving (hero car paint, collisions), helicopter (rotor visibility, airfield lots), plus continuing losers; then final integration.
 
 ## Log
 - 2026-10-22T17:23:57Z RUN 2 START. Branch synced (d2d4bc9), tree clean, 0 renderers, 202 GB free.
+- 2026-10-22T17:24:59Z Owner made the run open-ended (see top of Run 2). Wave D launching.

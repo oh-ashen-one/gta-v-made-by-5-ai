@@ -25,8 +25,9 @@ def esc(s):
 
 def run_times():
     text = (ROOT / "loop/RUN.md").read_text() if (ROOT / "loop/RUN.md").exists() else ""
+    window = text.rsplit("\n## Run ", 1)[-1] if "\n## Run " in text else text  # latest run window only
     def grab(key):
-        found = re.findall(r"^- %s:\s*(\S+Z)" % key, text, re.M)  # latest run window wins
+        found = re.findall(r"^- %s:\s*(\S+Z)" % key, window, re.M)  # latest run window wins
         return datetime.strptime(found[-1], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc) if found else None
     log = [l[2:] for l in text.split("## Log", 1)[-1].splitlines() if l.startswith("- ")] if "## Log" in text else []
     return grab("START"), grab("DEADLINE"), log
@@ -86,6 +87,8 @@ def main():
     if deadline:
         secs = int((deadline - now).total_seconds())
         remaining = "%dh %02dm left" % (secs // 3600, (secs % 3600) // 60) if secs > 0 else "DEADLINE reached"
+    elif start:
+        remaining = "open-ended run: continues until a blind judge prefers ours to GTA V and is wowed, or the owner stops it"
     verdict_class = {"OURS WINS": "win", "INDISTINGUISHABLE": "win", "OURS LOSES": "lose"}
     round_html = []
     for d in rounds():
