@@ -88,6 +88,15 @@ var _land_running := false
 const START_ACCEL_WALK := 2.6   # m/s^2: standstill -> walk in ~0.45 s (a real first step)
 const START_ACCEL_RUN := 5.2    # m/s^2 below 2 m/s when setting off at a jog
 const SKID_MIN_SPEED := 2.9     # reversals faster than this plant and skid
+# Locomotion-Q r2 (critic: the 180 froze the skid pose for 7 frames, then
+# flipped facing in one frame through a kneel): the skid now brakes in ~0.3 s
+# while the body already swings round over the planted heel, and the drive-out
+# continues that swing through the run cycle -- one continuous turn.
+const SKID_DECEL := 20.0        # m/s^2 while the heel is dug in
+const SKID_CLIP_RATE := 0.75    # 0.40 s clip over ~0.3 s brake: no held end pose
+const SKID_SWING_DELAY := 0.06  # s before the hips start to come round
+const SKID_SWING_RATE := 7.0    # rad/s body swing during the brake (~13 deg/frame @30)
+const FACE_MAX_RATE := 11.0     # rad/s hard cap on on-foot facing change (~21 deg/frame @30)
 const AIM_BACK_SPEED := 1.3
 const AIM_STRAFE_SPEED := 1.45
 const COLLIDE_MASK := 1 | 4 | 8 | StreetPropColliders.PROP_LAYER
@@ -413,7 +422,7 @@ func _physics_process(delta: float) -> void:
 				target_speed = 0.0
 				turn_rate = 0.0
 			elif absf(diff) > 2.3 and _speed > SKID_MIN_SPEED and is_on_floor() and _visual != null and _visual.loaded \
-					and _visual.play_action("skid", 0.07):
+					and _visual.play_action("skid", 0.07, SKID_CLIP_RATE):
 				_skid_t = 0.0
 				_skid_heading = want
 				target_speed = 0.0
@@ -431,7 +440,7 @@ func _physics_process(delta: float) -> void:
 		if _speed > target_speed:
 			rate = PIVOT_DECEL if target_speed <= 0.01 else DECEL
 			if _skid_t >= 0.0:
-				rate = 13.0 # a skid carries: ~0.45 s from a sprint
+				rate = SKID_DECEL # dug-in heel: ~0.3 s from a sprint
 		_speed = move_toward(_speed, target_speed, rate * delta)
 		_stop_armed = false
 		# Moving off during a standing landing's absorb: step out of it rather
@@ -492,9 +501,13 @@ func _physics_process(delta: float) -> void:
 		rotation.y = lerp_angle(rotation.y, atan2(-aim_dir.x, -aim_dir.z), clampf(delta * 12.0, 0.0, 1.0))
 		_heading = rotation.y if _speed < 0.25 else _heading
 	elif _skid_t >= 0.0:
-		pass # skidding: the body keeps facing its old line while it brakes
+		# Skidding: the feet slide along the old line while the hips swing
+		# round over the dug-in heel toward the new direction.
+		if _skid_t > SKID_SWING_DELAY:
+			rotation.y = rotate_toward(rotation.y, _skid_heading, SKID_SWING_RATE * delta)
 	elif _speed > 0.05 or basis_dir.length() > 0.05:
-		rotation.y = lerp_angle(rotation.y, _heading, clampf(delta * (26.0 if _pivot_t > 0.0 else 16.0), 0.0, 1.0))
+		var face := lerp_angle(rotation.y, _heading, clampf(delta * (26.0 if _pivot_t > 0.0 else 16.0), 0.0, 1.0))
+		rotation.y = rotate_toward(rotation.y, face, FACE_MAX_RATE * delta)
 	else:
 		_heading = rotation.y
 	arm.rotation.y = yaw - rotation.y
@@ -540,13 +553,17 @@ func _update_body_motion(delta: float, sprinting: bool) -> void:
 	# lean plus the acceleration lean here.
 	var pitch_target := clampf(_speed / SPRINT_SPEED, 0.0, 1.0) * ((0.04 if sprinting else 0.02) if _visual.gait_v2 else (0.17 if sprinting else 0.08))
 	if _skid_t >= 0.0:
-		pitch_target = -0.10 # thrown back over the braking heel (the clip leans too)
+		pitch_target = -0.02 # the clip already sits back over the heel; keep hands low
 	else:
 		# Lean into a start, rock back into a stop.
 		pitch_target += clampf(accel * 0.016, -0.08, 0.16)
 	_lean_pitch_vel += ((pitch_target - _lean_pitch) * 110.0 - _lean_pitch_vel * 13.0) * delta
 	_lean_pitch += _lean_pitch_vel * delta
 	var roll_target := clampf(_heading_rate * _speed * 0.045, -0.32, 0.32) - _avoid.brush * 0.10
+	if _pivot_t > 0.0 or _skid_t >= 0.0:
+		# Pivot out of a skid: the hips come round over the feet, not a
+		# banked lunge (critic r2: the drive-out read as a kneel).
+		roll_target = clampf(roll_target, -0.06, 0.06)
 	if not is_on_floor():
 		roll_target = 0.0
 	_lean_roll = lerpf(_lean_roll, roll_target, clampf(delta * 7.0, 0.0, 1.0))
@@ -601,7 +618,10 @@ func _update_camera_follow(delta: float, sprinting: bool) -> void:
 	if lag.length() > 0.7:
 		lag = lag.normalized() * 0.7
 		_cam_follow = global_position + lag
-	arm.position = Vector3(_safe_shoulder_x(delta), ARM_BASE.y, ARM_BASE.z) + global_transform.basis.inverse() * lag
+	# Shoulder offset lives in the camera's own yaw frame (not the body's), so
+	# a body pivot never swings the camera to the other shoulder.
+	var cam_off := Basis(Vector3.UP, yaw) * Vector3(_safe_shoulder_x(delta), 0.0, ARM_BASE.z)
+	arm.position = global_transform.basis.inverse() * (cam_off + lag) + Vector3(0.0, ARM_BASE.y, 0.0)
 	var sprint_amount := clampf((_speed - RUN_SPEED) / (SPRINT_SPEED - RUN_SPEED), 0.0, 1.0) if sprinting else 0.0
 	camera.fov = lerpf(camera.fov, 58.0 + 5.0 * sprint_amount, clampf(delta * 3.0, 0.0, 1.0))
 	_sprint_cam = sprint_amount
@@ -614,7 +634,7 @@ func _update_camera_follow(delta: float, sprinting: bool) -> void:
 func _safe_shoulder_x(delta: float) -> float:
 	var space := get_world_3d().direct_space_state
 	var head := global_position + Vector3.UP * ARM_BASE.y
-	var right := global_transform.basis.x
+	var right := Basis(Vector3.UP, yaw).x
 	var reach_r := _shoulder_room(space, head, right)
 	var want := ARM_BASE.x
 	if reach_r < ARM_BASE.x:
@@ -649,17 +669,20 @@ func _update_skid(delta: float, stick_held: bool) -> void:
 	_skid_t += delta
 	if _visual != null:
 		_visual.skidding = true
-	if _speed < 1.0 or _skid_t > 0.6 or not is_on_floor():
+	if _speed < 1.0 or _skid_t > 0.45 or not is_on_floor():
 		_skid_t = -1.0
 		if _visual != null:
 			_visual.skidding = false
 			_visual.cancel_action()
 		if stick_held:
-			_heading = _skid_heading
-			_pivot_t = 0.24
-			_speed = 1.4
-			if _visual != null:
-				_visual.play_action("jump_start", 0.06, 1.6)
+			# Drive out from where the hips already are: the heading keeps
+			# turning (normal turn rate) through the first run steps, so the
+			# facing never jumps. No crouch/jump clip -- straight into the run.
+			_heading = rotation.y
+			_pivot_t = 0.3
+			# Push off at a jog so the first steps are the run cycle (no
+			# walk-shuffle between the skid and the drive-out).
+			_speed = 2.4
 
 func _animate(delta: float, speed: float, sprinting: bool) -> void:
 	if _visual != null and _visual.loaded:

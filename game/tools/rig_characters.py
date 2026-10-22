@@ -672,10 +672,23 @@ def action_frame(arm, kind, t, h):
         # dug in far ahead with the toes up, trailing leg on its ball, hips
         # dropped and the trunk thrown back, arms out front for balance.
         k = smoothstep(0., .45, t)
-        z = .885 - .16*k
-        _arms(arm, 20. + 38.*k, 10. + 30.*k, 30. + 25.*k, 25. + 30.*k, out=10. + 16.*k)
-        _plant_feet(arm, s, {'l': (HIP_Y + .20 + .30*k, .10, 6. + 18.*k, 0.),
-                             'r': (HIP_Y - .14 - .20*k, .09, -18. - 14.*k, .01)}, z, lean=-8. + 20.*k, pitch=4.*k)
+        if SUFFIX in ('_v2', '_loco3'):
+            z = .885 - .16*k
+            _arms(arm, 20. + 38.*k, 10. + 30.*k, 30. + 25.*k, 25. + 30.*k, out=10. + 16.*k)
+            _plant_feet(arm, s, {'l': (HIP_Y + .20 + .30*k, .10, 6. + 18.*k, 0.),
+                                 'r': (HIP_Y - .14 - .20*k, .09, -18. - 14.*k, .01)}, z, lean=-8. + 20.*k, pitch=4.*k)
+        else:
+            # _loco4 (critic r2: the old brake read as a kneel with the hands
+            # at the face): an upright, weighted brake -- hips only a little
+            # lower, lead heel planted under the knee, trailing knee well off
+            # the ground, arms low and out for balance, and the pose keeps
+            # settling through the whole clip so it never holds still.
+            k2 = smoothstep(.45, 1., t)
+            z = .885 - .065*k + .015*k2
+            _arms(arm, 10. + 12.*k - 4.*k2, 2. + 10.*k - 3.*k2, 22. + 14.*k, 20. + 14.*k, out=8. + 16.*k + 4.*k2)
+            _plant_feet(arm, s, {'l': (HIP_Y + .14 + .16*k - .03*k2, .10, 4. + 12.*k - 4.*k2, 0.),
+                                 'r': (HIP_Y - .06 - .10*k + .03*k2, .09, -10. - 10.*k + 5.*k2, .01 + .02*k2)},
+                        z, lean=-4. + 12.*k - 3.*k2, pitch=3.*k)
     elif kind == 'stop':       # 0.55 s: plant the lead foot, brake, bring the trailing foot in
         # Body decelerates ~16 m/s^2 from a jog: lead heel slides back with the ground.
         tt = t*.55

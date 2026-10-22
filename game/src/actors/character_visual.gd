@@ -47,8 +47,8 @@ const RUN_THRESHOLD := 2.3       # walk <-> run (geometric mean of the clip spee
 const SPRINT_THRESHOLD := 5.0    # run <-> sprint
 const LOCOMOTION := ["walk", "run", "sprint", "aim_walk", "aim_run", "aim_back"]
 # Locomotion-Q: player-only re-export with weighted walk, aimed backpedal and
-# sprint skid clips (rig_characters.py --suffix _loco3); others keep _v2.
-const PLAYER_ASSET_VERSION := "_loco3"
+# sprint skid clips (rig_characters.py --suffix _loco4: upright r2 skid); others keep _v2.
+const PLAYER_ASSET_VERSION := "_loco4"
 const BACK_CLIP_SPEED := 1.3
 # Standstill -> gait starts on a step: walk from just after the right heel
 # strike (left foot pushes off first), run from late left stance.

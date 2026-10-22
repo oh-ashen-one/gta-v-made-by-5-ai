@@ -68,6 +68,7 @@ func run(main: Node) -> void:
 	_check("market diners are reactive damageable NPCs", diners == TrafficManager.DINER_COUNT)
 	_check("busy district walkers spawn along segments not junction piles", away_from_junction >= 34)
 	_check("gameplay camera belongs to player", player.camera.current)
+	_check("sprint 180 turns continuously (<=25 deg/frame at 30 fps, no facing flip)", Player.SKID_SWING_RATE / 30.0 <= deg_to_rad(25.0) and Player.FACE_MAX_RATE / 30.0 <= deg_to_rad(25.0) and Player.SKID_DECEL * 0.45 >= Player.SPRINT_SPEED - 1.0)
 	_check("mission publishes initial objective", mission.stage == Mission.Stage.TO_PACKAGE and not mission.current_objective().is_empty())
 	_check("initial objective marker survives HUD setup order", mission.get_meta("marker", Vector3.ZERO).distance_to(world.locations["package"]) < 0.01)
 	_check("mission registered for save and checkpoint restoration", mission.is_in_group("mission"))

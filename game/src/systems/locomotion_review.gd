@@ -131,7 +131,9 @@ func _record(player: Player, visual: CharacterVisual) -> void:
 		"pelvis_y": snappedf(_bone_pos(visual, "pelvis").y - _ground_y, 0.005),
 		"knee_l": snappedf(_knee_flex(visual, "l"), 0.1), "knee_r": snappedf(_knee_flex(visual, "r"), 0.1),
 		"foot_l": _v(_bone_pos(visual, "foot.l")), "hand_l": _v(_bone_pos(visual, "hand.l")),
-		"pos": _v(player.global_position)}))
+		"pos": _v(player.global_position), "yaw": snappedf(rad_to_deg(player.rotation.y), 0.1),
+		"cam": _v(player.camera.global_position), "cam_yaw": snappedf(rad_to_deg(player.camera.global_rotation.y), 0.1),
+		"hand_r": _v(_bone_pos(visual, "hand.r")), "head": _v(_bone_pos(visual, "head"))}))
 	_frame += 1
 
 # Locomotion-Q additions (run-2 critic spec): a low full-figure tracking shot
