@@ -72,3 +72,14 @@
 - 2026-10-22T11:42Z RENDERED --capture route on FINAL game code 32e08ba (loop/render.sh, 1280x720, alone; contaminated=no-exclusive-lock): 13/13, 0 deaths, 155.2 s, exit 0, 0 engine errors. Frame times excl. readback over 11869 frames: mean 12.8 / p50 12.7 / p95 18.5 / p99 21.4 / max 400 ms; only stalls are the 3 load frames. (The 1531 ms stall on 8017454 coincided with my concurrent photo renders and did not recur.) Route JPEGs -> progress/img/integration/C/.
 - 2026-10-22T11:43Z Done checklist on 32e08ba: headless --test 140/140, headless route 13/13, rendered route 13/13. All 23 critic rounds OURS LOSES, none wowed; no piece preferred over GTA V. HANDOFF.md rewritten, PIECES.md updated, progress page rebuilt.
 - 2026-10-22T11:46:41Z ORCHESTRATOR FINAL: all three workflows complete (wave A 59 agents, wave B 12, wave C 25, plus the pre-integrator; 0 agent errors). Final branch head 6d38ad1 (game code 32e08ba): 140/140 headless regressions, headless route 13/13, rendered route 13/13 (p95 18.5 ms, shared GPU). 7 of 8 pieces merged; street-life left unmerged on opus55/street-life-fix (headless route unreliable). 23/23 blind rounds OURS LOSES vs GTA V, none wowed: best build so far, north star NOT accepted. Feature freeze honoured; loop stopped at 11:46Z, ahead of DEADLINE, with nothing left to integrate. Removed this loop's stray QA outputs (game/captures/frame_stalls.jsonl, route_progress.json from an 11:06Z headless route). Progress server left running for the owner on 127.0.0.1:8767.
+
+## Run 2 (owner direction 2026-10-22: "go ahead and continue for another 5 hours")
+- START: 2026-10-22T17:23:57Z
+- DEADLINE: 2026-10-22T22:23:57Z (START + 5 h, hard stop)
+- FEATURE FREEZE: 2026-10-22T21:38:57Z (DEADLINE − 45 min)
+- Same GOAL.md rules, bar and guardrails. Starting point d2d4bc9 (game code 32e08ba): 7/8 pieces merged, 140/140, routes 13/13, 23/23 blind rounds lost.
+- Critics in run 2 compare against the end-of-run-1 build (progress/img/integration/C/), not the wave-5 baseline.
+- Wave D (4 builders): street-life (finish opus55/street-life-fix: deadlock-proof traffic + crowd variety), characters (player close-up fidelity + NPC variety), nearfield (blockout kerbs/sign bases/median plants/asphalt + placeholder props), aerial (tower light/shadow contrast, glass specular, far aerial perspective). Wave E: driving (hero car paint, collisions), helicopter (rotor visibility, airfield lots), plus continuing losers; then final integration.
+
+## Log
+- 2026-10-22T17:23:57Z RUN 2 START. Branch synced (d2d4bc9), tree clean, 0 renderers, 202 GB free.

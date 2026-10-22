@@ -26,8 +26,8 @@ def esc(s):
 def run_times():
     text = (ROOT / "loop/RUN.md").read_text() if (ROOT / "loop/RUN.md").exists() else ""
     def grab(key):
-        m = re.search(r"%s:\s*(\S+Z)" % key, text)
-        return datetime.strptime(m.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc) if m else None
+        found = re.findall(r"^- %s:\s*(\S+Z)" % key, text, re.M)  # latest run window wins
+        return datetime.strptime(found[-1], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc) if found else None
     log = [l[2:] for l in text.split("## Log", 1)[-1].splitlines() if l.startswith("- ")] if "## Log" in text else []
     return grab("START"), grab("DEADLINE"), log
 

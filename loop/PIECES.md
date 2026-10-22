@@ -41,3 +41,14 @@ Seam fixes on the integration branch: Merlion jet/pier follow the skyline piece'
 
 Final verification (game code `32e08ba`): headless `--test` 140/140; headless `--capture` route 13/13, 0 deaths, 153.4 s; rendered route, `--photos` (18) and `--gameplay-photos` (7) at 1280x720 through `loop/render.sh`. Images: `progress/img/integration/C/`. See `HANDOFF.md` and `loop/RUN.md`.
 
+
+## Run 2 pieces
+
+| Piece | Wave | Matched refs | Capture spec / play scenario | Owns (files) | Current verdict | Open biggest gap |
+| --- | --- | --- | --- | --- | --- | --- |
+| street-life | D | traffic, crowds, driving-chase, on-foot-street | junction/street views + route drive leg | traffic_manager.gd, npc.gd, avenue_dressing.gd, crowd code | run 1: OURS LOSES, unmerged | junctions empty; scripted drive unreliable with ambient traffic |
+| characters | D | close-character, crowds | --character-review, close third-person, crowd views | player.gd, character_visual.gd, character assets | run 1 (on-foot): OURS LOSES | hair/face/skin/cloth at close range; shirt shadow blotches; clone NPCs |
+| nearfield | D | on-foot-street, driving-chase | bottom-40% street views | palette.gd, surfaces/shaders, street props/placeholders | run 1 (materials): OURS LOSES | blockout kerbs, sign bases, median plants, asphalt mottling, placeholder props |
+| aerial | D | aerial-helicopter, skyline-aerial | photo_06/07/16, route 09 | lighting.gd sun/sky/fog, skyline far-shore materials | run 1: OURS LOSES | tower lit/shadow contrast, glass specular, aerial perspective beyond ~3 km |
+| driving-2 | E | driving-chase | route 05-07 + chase footage | car.gd visuals/collision | run 1: OURS LOSES | hero car paint grain, no clear-coat, dead-stop collisions |
+| helicopter-2 | E | aerial-helicopter | route 08-10 + flight footage | helicopter.gd, aviation block | run 1: OURS LOSES | rotor invisible in chase frames, bare dirt lots |
