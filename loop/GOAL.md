@@ -102,8 +102,8 @@ Everything shipped is original.
 
 ## Guardrails (house rules; these override "don't stop")
 - **Owner rule 2026-10-22 ~18:00Z — share the Studio, don't hog it:** other sessions use this machine. At most ONE of
-  this loop's rendered runs at a time (loop/render.sh pins us to shared capture slot 0, so the other slot stays free
-  for other sessions); everything heavy runs at lower CPU priority (bounded_run.py applies `nice 10`; prefix any other
+  this loop's rendered runs at a time (loop/render.sh serialises ours through loop/one_at_a_time.py BEFORE entering the
+  shared lease queue, so we hold at most one slot and never block the shared FIFO); everything heavy runs at lower CPU priority (bounded_run.py applies `nice 10`; prefix any other
   heavy command — Blender, ffmpeg, imports, big Python — with `nice -n 10`); no more than one headless engine run per
   agent at a time; don't loop renders back to back while others are waiting in the GPU queue.
 - At most 2 rendering engines on the whole machine (Godot, Blender, `Orchard Reach`), counting other
