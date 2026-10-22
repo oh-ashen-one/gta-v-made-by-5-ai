@@ -4,6 +4,10 @@ Reconciled **2026-10-21T15:29:16+00:00** by GPT-6 Astra documentation reviewer a
 
 **Current verdict: playable experimental build with unmet requirements.** The raw final-r3 native app passes **85/85** Metal fixture assertions and **24/24 write plus 23/23 fresh-process load checks**. An earlier identified 720p candidate completed **1800.007973 seconds, three scripted missions and zero deaths**, with clean native/wrapper exits and an independent resource review. The current package is source **`be6a8aa98b47735eb5b043db0860a0946767d1cd`**, with actual 1920×1080 UI captures. The current package completed **1800.008636 seconds, three uninterrupted scripted missions and zero deaths**, with clean native/wrapper exits and a reaped process. Its predecessor’s 30-second live-log failure is preserved separately. The latest visual verdict remains **REWORK, 3.7/10**. Repeated combat-associated >100 ms stalls already fail the current timing gate. The north star, human golden path, rights clearance and isolated performance remain unaccepted. The [complete ledger](REQUIREMENTS_LEDGER.md) retains 88 requirements and 20 QA gates. [test-index.json](wave-02/test-index.json) maps every current assertion to narrow requirement support and exact candidate identity.
 
+## Wave 5 (final) pointer
+
+Wave 5 evidence lives in [`waves/05/evidence/`](../waves/05/evidence/) and is summarized in [`waves/05/RELEASE_REPORT.md`](../waves/05/RELEASE_REPORT.md) and [`HANDOFF.md`](../HANDOFF.md). Wave 5 results are headless (simulation, geometry, CPU) unless a file under `waves/05/evidence/rendered/` is cited. The Wave 2–4 identities below do not certify the Wave 5 candidate.
+
 ## Candidate identity and environment
 
 | Evidence ID | Base checkpoint | Exact candidate identity and execution |
