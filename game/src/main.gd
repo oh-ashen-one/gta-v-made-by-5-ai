@@ -173,6 +173,18 @@ func _ready() -> void:
 		probe.setup(self, probe_dir)
 		return
 
+	if "--drive-showcase" in args:
+		# Chase-cam driving footage (opus55 driving piece, drive_showcase.gd).
+		var show_dir := "user://drive_showcase"
+		for arg in args:
+			if arg.begins_with("--capture-dir="): show_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		var showcase: Node = _qa_system("res://src/systems/drive_showcase.gd")
+		add_child(showcase)
+		showcase.setup(self, player, world, traffic, show_dir)
+		return
+
 	if "--capture" in args:
 		_capture_director = _qa_system("res://src/systems/capture_director.gd")
 		add_child(_capture_director)

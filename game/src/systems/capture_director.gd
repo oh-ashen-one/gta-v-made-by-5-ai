@@ -336,7 +336,7 @@ func _record_frame() -> void:
 		_record_log.store_line(JSON.stringify({"sequence": _record_index, "file": filename,
 			"timestamp_us": timestamp_us, "seconds": float(timestamp_us - _started_us) / 1000000.0,
 			"width": img.get_width(), "height": img.get_height(), "readback_encode_ms": capture_cost,
-			"state": _snapshot(float(timestamp_us - _started_us) / 1000000.0)}))
+			"state": _snapshot(float(timestamp_us - _started_us) / 1000000.0), "life": _life_counts()}))
 		_record_index += 1
 		if _record_index % 10 == 0: _record_log.flush()
 		if _record_index >= RECORD_MAX_FRAMES or _record_bytes >= RECORD_MAX_BYTES:
@@ -942,6 +942,30 @@ func _shoot_at(hostile: NPC) -> void:
 	player.pitch = -0.12
 	_log("combat target health=%.1f state=%d" % [hostile.health, hostile.state])
 
+## Per-frame life counter for the driving acceptance check (driving C2):
+## moving AI cars (>= 10 km/h) within 80 m of the player, and live pedestrians
+## within 40 m of the camera.
+func _life_counts() -> Dictionary:
+	var origin := Game.player_position
+	var moving := 0
+	var ahead := 0
+	var fwd := Vector3.ZERO
+	if player.current_vehicle is Car:
+		fwd = -(player.current_vehicle as Node3D).global_transform.basis.z
+	for v in get_tree().get_nodes_in_group("vehicles"):
+		if not v is Car or v.driver_is_player: continue
+		var c := v as Car
+		if absf(c.speed_kmh()) < 10.0 or c.global_position.distance_to(origin) > 80.0: continue
+		moving += 1
+		var rel := c.global_position - origin
+		if fwd != Vector3.ZERO and rel.dot(fwd) > 0.0 and (-c.global_transform.basis.z).dot(fwd) > 0.7: ahead += 1
+	var peds := 0
+	var cam := get_viewport().get_camera_3d()
+	for n in get_tree().get_nodes_in_group("npcs"):
+		if n is Node3D and cam != null and (n as Node3D).global_position.distance_to(cam.global_position) < 40.0 and not cam.is_position_behind((n as Node3D).global_position):
+			peds += 1
+	return {"traffic_moving_within_80m": moving, "traffic_ahead_same_dir": ahead, "peds_visible": peds}
+
 func _drive_route(target: Vector3, timeout: float) -> void:
 	if not player.current_vehicle is Car: return
 	var deadline := _elapsed() + timeout
@@ -954,11 +978,39 @@ func _drive_route(target: Vector3, timeout: float) -> void:
 		var seg := Vector2(p1.x - p0.x, p1.z - p0.z)
 		if to_p0.length() > 4.0 and seg.length() > 4.0 and to_p0.normalized().dot(seg.normalized()) < -0.35:
 			route.remove_at(0)
-	for index in route:
-		if _finished or _interrupt_free_action() or _elapsed() >= deadline: return
-		await _drive_to(world.traffic_nodes[index], 7.0, minf(35.0, deadline - _elapsed()))
-		if mission.stage == Mission.Stage.TO_HELI: return
+	# driving C2: keep left like real traffic. Each junction is driven as a lane
+	# entry point before the mouth and a lane exit point after it, so the car
+	# never runs down the planted median (critic C1: drove through the ferns).
+	var nodes: Array[Vector3] = []
+	for index in route: nodes.append(world.traffic_nodes[index])
+	var start := (player.current_vehicle as Node3D).global_position
+	var mouth := WorldBuilder.ROAD_HALF + 3.0
+	for k in nodes.size():
+		var node := nodes[k]
+		var from := start if k == 0 else nodes[k - 1]
+		var dir_in := Vector3(node.x - from.x, 0.0, node.z - from.z)
+		var targets: Array[Vector3] = []
+		if dir_in.length() > mouth + 4.0:
+			dir_in = dir_in.normalized()
+			targets.append(node - dir_in * mouth + Vector3.UP.cross(dir_in).normalized() * DRIVE_LANE)
+		if k + 1 < nodes.size():
+			var dir_out := Vector3(nodes[k + 1].x - node.x, 0.0, nodes[k + 1].z - node.z).normalized()
+			var left_out := Vector3.UP.cross(dir_out).normalized()
+			# A turn goes through the point where the two lane lines cross, so
+			# the car follows the lane round the corner instead of cutting the
+			# kerb (left turn) or the median nose (right turn).
+			if not targets.is_empty() and absf(dir_in.dot(dir_out)) < 0.5:
+				targets.append(node + (Vector3.UP.cross(dir_in).normalized() + left_out) * DRIVE_LANE)
+			targets.append(node + dir_out * mouth + left_out * DRIVE_LANE)
+		elif targets.is_empty():
+			targets.append(node)
+		for t in targets:
+			if _finished or _interrupt_free_action() or _elapsed() >= deadline: return
+			await _drive_to(t, 5.0, minf(35.0, deadline - _elapsed()))
+			if mission.stage == Mission.Stage.TO_HELI: return
 	await _drive_to(target, 48.0, maxf(1.0, deadline - _elapsed()))
+
+const DRIVE_LANE := 4.0
 
 var _reverse_side := -1.0
 
