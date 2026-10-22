@@ -111,19 +111,26 @@ void fragment() {
 		paint = smoothstep(0.45, 0.65, sat) * smoothstep(0.10, 0.22, mx) * step(col.g, col.r);
 	}
 	paint *= 1.0 - glass;
+	// driving-q rQ2: the generated albedo carries texel-scale blotches that
+	// read as "mottled, dirty satin" under the clear-coat. On paint texels use
+	// a heavily mip-biased (panel-scale) sample instead, so the base coat is
+	// an even colour and the clear-coat reflection carries the detail.
+	vec3 panel = texture(albedo_tex, UV, 5.5).rgb * albedo_tint.rgb;
+	col = mix(col, panel, paint * 0.88);
+	lum = mix(lum, dot(panel, vec3(0.299, 0.587, 0.114)), paint * 0.88);
 	// Tail lamps: strongly red texels on the rear quarter.
 	float red = smoothstep(0.22, 0.42, col.r - max(col.g, col.b)) * smoothstep(0.66, 0.86, v_car.z) * (1.0 - upper * 0.7);
 	red *= lamp_glow * (1.0 - step(0.5, paint_kind));
 	// The generated sedan carries a marque-like badge on the boot lid: paint it out.
 	float badge = badge_mask * (1.0 - smoothstep(0.07, 0.10, abs(v_car.x))) * smoothstep(0.86, 0.91, v_car.z) * smoothstep(0.36, 0.40, v_car.y) * (1.0 - smoothstep(0.62, 0.66, v_car.y));
-	vec3 badge_col = car_state.w > 0.0 ? paint_color.rgb : vec3(0.70, 0.71, 0.72) * albedo_tint.rgb;
+	vec3 badge_col = car_state.w > 0.0 ? paint_color.rgb : panel;  // rQ2: the flat grey fill read as a dark stripe down the boot
 	// ...and the ring on the grille: fill it with dark grille mesh colour.
 	float grille_badge = badge_mask * (1.0 - smoothstep(0.06, 0.09, abs(v_car.x))) * (1.0 - smoothstep(-0.93, -0.88, v_car.z)) * smoothstep(0.38, 0.42, v_car.y) * (1.0 - smoothstep(0.60, 0.64, v_car.y));
 	col = mix(col, vec3(0.045, 0.047, 0.05), grille_badge);
 	// Optional per-car paint colour (luminance-preserving).
 	if (car_state.w > 0.0) {
 		float ref_l = paint_kind < 0.5 ? 0.62 : 0.22;
-		vec3 recol = paint_color.rgb * clamp(lum / ref_l, 0.55, 1.25);
+		vec3 recol = paint_color.rgb * mix(1.0, clamp(lum / ref_l, 0.55, 1.25), 0.35);  // rQ2: even base coat
 		col = mix(col, recol, paint * car_state.w);
 	}
 	if (badge > 0.0) {
@@ -165,10 +172,10 @@ void fragment() {
 	METALLIC = clamp(metal, 0.0, 1.0);
 	SPECULAR = mix(mix(0.5, 0.62, paint), 0.7, glass);
 	CLEARCOAT = max(paint, glass) * (1.0 - smoothstep(0.08, 0.4, dmg));
-	CLEARCOAT_ROUGHNESS = 0.06;
+	CLEARCOAT_ROUGHNESS = 0.03;
 	// Glass reads darker and deeper so reflections dominate.
 	ALBEDO = mix(ALBEDO, ALBEDO * 0.35, glass);
 	// Lamp emission: tail lamps on when driven, flare under braking.
-	float lamp = red * (car_state.y * 0.9 + car_state.x * 5.5);
+	float lamp = red * (car_state.y * 0.9 + car_state.x * 3.0);  // rQ2: 5.5 bloomed into an orange blob
 	EMISSION = vec3(1.0, 0.07, 0.03) * lamp;
 }
