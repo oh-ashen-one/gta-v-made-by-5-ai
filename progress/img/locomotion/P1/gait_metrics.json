@@ -1,0 +1,150 @@
+{
+  "jump_run": {
+    "airborne_flight_frames": 3,
+    "clips": {
+      "jump": 18,
+      "land": 14,
+      "run": 5,
+      "walk": 5
+    },
+    "frames": 42,
+    "planted_slip_median_mps": 0.238795867189765,
+    "rate_max": 1.0,
+    "rate_min": 0.800000011920929,
+    "speed_max": 3.59999990463257,
+    "stance_width_median_m": 0.154555693268776
+  },
+  "jump_stand": {
+    "airborne_flight_frames": 0,
+    "clips": {
+      "idle": 12,
+      "jump": 15,
+      "jump_start": 7,
+      "land": 14
+    },
+    "frames": 48,
+    "planted_slip_median_mps": 0.0164794921875,
+    "rate_max": 0.0,
+    "rate_min": 99.0,
+    "speed_max": 0.0,
+    "stance_width_median_m": -1.0
+  },
+  "land_stop": {
+    "airborne_flight_frames": 0,
+    "clips": {
+      "idle": 41,
+      "walk": 1
+    },
+    "frames": 42,
+    "planted_slip_median_mps": 0.019683837890625,
+    "rate_max": 0.800000011920929,
+    "rate_min": 0.800000011920929,
+    "speed_max": 0.327249735593796,
+    "stance_width_median_m": 0.135284140706062
+  },
+  "run": {
+    "airborne_flight_frames": 30,
+    "clips": {
+      "run": 75,
+      "walk": 3
+    },
+    "frames": 78,
+    "planted_slip_median_mps": 0.295194229111075,
+    "rate_max": 1.25,
+    "rate_min": 0.800000011920929,
+    "speed_max": 3.59999990463257,
+    "stance_width_median_m": 0.10932894051075
+  },
+  "run_stop": {
+    "airborne_flight_frames": 0,
+    "clips": {
+      "idle": 30,
+      "run": 1,
+      "stop": 17
+    },
+    "frames": 48,
+    "planted_slip_median_mps": 0.0152206420898438,
+    "rate_max": 1.0,
+    "rate_min": 1.0,
+    "speed_max": 3.59999990463257,
+    "stance_width_median_m": 0.12258879840374
+  },
+  "run_up": {
+    "airborne_flight_frames": 8,
+    "clips": {
+      "idle": 1,
+      "run": 23,
+      "walk": 6
+    },
+    "frames": 30,
+    "planted_slip_median_mps": 0.595852956175804,
+    "rate_max": 1.25,
+    "rate_min": 0.800000011920929,
+    "speed_max": 3.59999990463257,
+    "stance_width_median_m": 0.111159943044186
+  },
+  "sprint": {
+    "airborne_flight_frames": 47,
+    "clips": {
+      "run": 7,
+      "sprint": 71
+    },
+    "frames": 78,
+    "planted_slip_median_mps": 0.214068554341793,
+    "rate_max": 1.25,
+    "rate_min": 0.850000023841858,
+    "speed_max": 6.80000019073486,
+    "stance_width_median_m": 0.0984494537115097
+  },
+  "stand": {
+    "airborne_flight_frames": 0,
+    "clips": {
+      "idle": 30
+    },
+    "frames": 30,
+    "planted_slip_median_mps": 0.00640869140625,
+    "rate_max": 0.0,
+    "rate_min": 99.0,
+    "speed_max": 0.0,
+    "stance_width_median_m": -1.0
+  },
+  "turn_180": {
+    "airborne_flight_frames": 19,
+    "clips": {
+      "run": 40,
+      "sprint": 3,
+      "walk": 5
+    },
+    "frames": 48,
+    "planted_slip_median_mps": 0.842675194144249,
+    "rate_max": 1.25,
+    "rate_min": 0.800000011920929,
+    "speed_max": 6.80000019073486,
+    "stance_width_median_m": 0.105298683047295
+  },
+  "walk_start": {
+    "airborne_flight_frames": 0,
+    "clips": {
+      "idle": 1,
+      "walk": 71
+    },
+    "frames": 72,
+    "planted_slip_median_mps": 0.155067443847656,
+    "rate_max": 1.0,
+    "rate_min": 0.800000011920929,
+    "speed_max": 1.5,
+    "stance_width_median_m": 0.125656113028526
+  },
+  "walk_weave": {
+    "airborne_flight_frames": 0,
+    "clips": {
+      "walk": 78
+    },
+    "frames": 78,
+    "planted_slip_median_mps": 0.172114921733737,
+    "rate_max": 1.00000011920929,
+    "rate_min": 0.999999940395355,
+    "speed_max": 1.50000011920929,
+    "stance_width_median_m": 0.124670512974262
+  }
+}

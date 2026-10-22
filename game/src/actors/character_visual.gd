@@ -43,7 +43,7 @@ var _driving_pose := false
 const WALK_CLIP_SPEED := 1.5
 const RUN_CLIP_SPEED := 3.6
 const SPRINT_CLIP_SPEED := 6.8
-const RUN_THRESHOLD := 2.45      # walk <-> run (midway, by ratio, between the clips)
+const RUN_THRESHOLD := 2.3       # walk <-> run (geometric mean of the clip speeds)
 const SPRINT_THRESHOLD := 5.0    # run <-> sprint
 const LOCOMOTION := ["walk", "run", "sprint", "aim_walk", "aim_run"]
 const ASSET_VERSION := "_v2"
@@ -143,16 +143,17 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 		crossfade = 0.16
 	elif gait_v2 and speed > 0.18:
 		# Three authored gaits; playback rate stays 1.0 at the game's own
-		# walk/run/sprint speeds and only bends while accelerating between them.
+		# walk/run/sprint speeds. While accelerating between them the rate is
+		# held near authored (0.8-1.25x) so no gait ever reads as a sped-up cycle.
 		if speed > SPRINT_THRESHOLD and not aiming:
 			clip = "sprint"
-			rate = clampf(speed / SPRINT_CLIP_SPEED, 0.72, 1.25)
+			rate = clampf(speed / SPRINT_CLIP_SPEED, 0.85, 1.2)
 		elif speed > RUN_THRESHOLD:
 			clip = "aim_run" if aiming else "run"
-			rate = clampf(speed / RUN_CLIP_SPEED, 0.68, 1.45)
+			rate = clampf(speed / RUN_CLIP_SPEED, 0.8, 1.25)
 		else:
 			clip = "aim_walk" if aiming else "walk"
-			rate = clampf(speed / WALK_CLIP_SPEED, 0.45, 1.6)
+			rate = clampf(speed / WALK_CLIP_SPEED, 0.8, 1.25)
 		crossfade = 0.22
 	elif speed > 2.1:
 		clip = "aim_run" if aiming else "run"
