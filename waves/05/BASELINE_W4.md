@@ -23,3 +23,24 @@
 ## Why it is late
 
 Shared renderer capacity was held by four foreign Blender renders from the start of wave 5. Their leases record a 4-hour maximum hold: one until about 01:58 UTC, three until about 03:35–03:37 UTC. The mixed cap of 2 forbids launching Godot while two or more renderers run. A gated runner (lease → `render_gate.py` → `bounded_run.py`) captures these views the moment capacity frees, interleaved with the final-candidate captures, and launches nothing after 03:50:30 UTC.
+
+## How to reproduce the baseline capture without wave 5 (manager)
+
+The wave-5 builder's scratch worktree is temporary. To capture the unchanged wave-4 views later from any checkout of `6b51a26` or `a5bf132`:
+
+1. Restore the private provider assets into `game/assets/providers` (see `waves/05/PRIVATE_TRANSFER.json`).
+2. Run a headless import: `godot --headless --path game --import`.
+3. Run both captures under the shared lease, with the render gate inside it:
+
+```sh
+GPU_SLOT_DIR=/Users/midir/sm2-n1/_scratch/gpu \
+  <claude-code-game-builder>/tools/gpu/gpu_slot.sh capture --label w4-baseline -- \
+  python3 game/tools/render_gate.py -- \
+  python3 game/tools/bounded_run.py --seconds 120 --log /ABS/w4-photos.log -- \
+  godot --log-file /ABS/w4-photos-engine.log --path game -- --photos --capture-dir=/ABS/w4-photos
+```
+
+Use the same command with `--gameplay-photos` for the wave-4 opening (`opening_start`).
+
+`photo_06_aerial_district.png` is the owner's requested view: camera (250, 95, 250), look (-40, 0, -60), FOV 62.
+
