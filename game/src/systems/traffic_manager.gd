@@ -551,6 +551,15 @@ func signal_allows(direction: Vector3) -> bool:
 	var east_west := absf(direction.x) > absf(direction.z)
 	return _signal_clock < 10.0 if east_west else (_signal_clock >= 14.0 and _signal_clock < 24.0)
 
+## Pedestrian phase for crossing a road whose traffic flows along `flow`:
+## walkers may step off only early in the cross street's green, so a 16 m
+## crossing is finished before that road's own green begins.
+func ped_may_cross(flow: Vector3) -> bool:
+	var road_east_west := absf(flow.x) > absf(flow.z)
+	if road_east_west:
+		return _signal_clock >= 14.0 and _signal_clock < 18.0
+	return _signal_clock < 4.0
+
 func _update_signal_lamps(force: bool = false) -> void:
 	var phase := 0 if _signal_clock < 10.0 else (1 if _signal_clock < 12.0 else (2 if _signal_clock < 14.0 else (3 if _signal_clock < 24.0 else (4 if _signal_clock < 26.0 else 5))))
 	if not force and phase == _signal_visual_phase: return

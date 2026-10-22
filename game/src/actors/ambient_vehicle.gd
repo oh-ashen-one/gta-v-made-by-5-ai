@@ -68,7 +68,7 @@ func setup_vehicle(vehicle_kind: String, color: Color) -> void:
 	else:
 		_build_car()
 	for mi in _all_meshes(self):
-		mi.visibility_range_end = 700.0
+		mi.visibility_range_end = 520.0
 
 func _build_car() -> void:
 	var file := "sedan_clean.glb"

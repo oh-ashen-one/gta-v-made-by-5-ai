@@ -37,7 +37,7 @@ var _home_lane := 0
 ## pursuing, hostile, police or near the player keeps per-tick move_and_slide.
 const SIM_NEAR := 70.0
 const SIM_FAR_TICKS := 4
-const FAR_DRAW_RANGE := 270.0
+const FAR_DRAW_RANGE := 240.0
 var _sim_accum := 0.0
 var _sim_slot := 0
 
@@ -278,9 +278,8 @@ func _crossing_hold(target: Vector3) -> bool:
 		_traffic_ref = get_tree().get_first_node_in_group("traffic_manager")
 	if _traffic_ref == null:
 		return false
-	# Cross only in the other axis's green: that road's traffic is held.
-	var cross := Vector3(flow.z, 0, flow.x)
-	return not _traffic_ref.signal_allows(cross)
+	# Step off only in the walk phase: that road's traffic is held long enough.
+	return not _traffic_ref.ped_may_cross(flow)
 
 ## Street life: jump clear of an approaching vehicle, sideways off its path.
 func dodge_vehicle(car_pos: Vector3, car_fwd: Vector3) -> void:

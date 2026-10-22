@@ -22,6 +22,9 @@ var traffic: TrafficManager
 var roamers: Array[NPC] = []
 var _rng := RandomNumberGenerator.new()
 var _focus := Vector3.INF
+var _pp_vel := Vector3.ZERO
+var _last_pp := Vector3.ZERO
+var _last_pp_ms := 0
 var _cam_pos := Vector3.ZERO
 var _cam_fwd := Vector3.FORWARD
 var _lines: Array[Dictionary] = []   # {axis, line, side}
@@ -77,14 +80,34 @@ func _process(_delta: float) -> void:
 	if flat.length() < 0.05:
 		flat = Vector3.FORWARD
 	_cam_fwd = flat.normalized()
-	var reach := clampf(_cam_pos.y * 1.3, 18.0, 130.0)
+	var reach := clampf(_cam_pos.y * 1.6, 18.0, 160.0)
 	var f := Vector3(_cam_pos.x, 0.0, _cam_pos.z) + _cam_fwd * reach
+	# Lead the focus along the player's motion so a driving player meets
+	# traffic and people that were seeded out of sight ahead of time.
+	var now_ms := Time.get_ticks_msec()
+	if _last_pp_ms > 0 and now_ms > _last_pp_ms:
+		var inst := (Game.player_position - _last_pp) / (float(now_ms - _last_pp_ms) / 1000.0)
+		inst.y = 0.0
+		if inst.length() < 60.0:
+			_pp_vel = _pp_vel.lerp(inst, 0.1)
+	_last_pp = Game.player_position
+	_last_pp_ms = now_ms
+	f += _pp_vel.limit_length(25.0) * 4.5
 	var cut := _focus == Vector3.INF or f.distance_to(_focus) > 45.0
 	_focus = f
 	if cut:
 		stats["cuts"] += 1
 	_recycle(cut)
 	_dodge_player_vehicle()
+	if cut and "--street-debug" in OS.get_cmdline_user_args():
+		var cnt := 0
+		var vis := 0
+		for r in roamers:
+			if r.global_position.distance_to(_focus) < SPAWN_RADIUS + 5.0:
+				cnt += 1
+				if r.global_position.distance_to(_cam_pos) < NPC.FAR_DRAW_RANGE:
+					vis += 1
+		print("[crowd-debug] cut focus=", _focus.round(), " cam=", _cam_pos.round(), " near=", cnt, " in_draw_range=", vis, " roamers=", roamers.size())
 
 ## People in the path of the player's moving car jump clear (GTA-style),
 ## instead of standing in a crossing as an immovable wall.
@@ -143,7 +166,8 @@ func _recycle(cut: bool) -> void:
 			budget -= 1
 
 func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
-	if not loiter and _rng.randf() < 0.3 and _seed_spine(p, hidden_only):
+	var spine_share := 0.5 if _cam_pos.y > 30.0 else 0.3
+	if not loiter and _rng.randf() < spine_share and _seed_spine(p, hidden_only):
 		return true
 	for attempt in 12:
 		var ln: Dictionary = _lines[_rng.randi_range(0, _lines.size() - 1)]

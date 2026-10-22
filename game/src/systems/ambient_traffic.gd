@@ -30,6 +30,9 @@ var vehicles: Array[AmbientVehicle] = []
 var _keys: Dictionary = {}                  # edge*2+lane -> Array[AmbientVehicle] sorted by s
 var _rng := RandomNumberGenerator.new()
 var _focus := Vector3.INF
+var _pp_vel := Vector3.ZERO
+var _last_pp := Vector3.ZERO
+var _last_pp_ms := 0
 var _cam_pos := Vector3.ZERO
 var _cam_fwd := Vector3.FORWARD
 var _grid: Dictionary = {}
@@ -150,6 +153,17 @@ func _update_focus() -> void:
 	_cam_fwd = flat
 	var reach := clampf(_cam_pos.y * 1.85, 30.0, 180.0)
 	var f := Vector3(_cam_pos.x, 0.0, _cam_pos.z) + flat * reach
+	# Lead the focus along the player's motion so a driving player meets
+	# traffic and people that were seeded out of sight ahead of time.
+	var now_ms := Time.get_ticks_msec()
+	if _last_pp_ms > 0 and now_ms > _last_pp_ms:
+		var inst := (Game.player_position - _last_pp) / (float(now_ms - _last_pp_ms) / 1000.0)
+		inst.y = 0.0
+		if inst.length() < 60.0:
+			_pp_vel = _pp_vel.lerp(inst, 0.1)
+	_last_pp = Game.player_position
+	_last_pp_ms = now_ms
+	f += _pp_vel.limit_length(25.0) * 2.5
 	var cut := _focus == Vector3.INF or f.distance_to(_focus) > 60.0
 	_focus = f
 	if cut:
@@ -197,7 +211,7 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 		if hidden_only:
 			var rel := p - _cam_pos
 			rel.y = 0.0
-			if rel.length() < 120.0 and rel.normalized().dot(_cam_fwd) > -0.2:
+			if rel.length() < 105.0 and rel.normalized().dot(_cam_fwd) > -0.2:
 				continue
 		if v.kind == "bus" and lane == 1:
 			lane = 0
@@ -298,7 +312,7 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 		elif not committed and v.next_edge >= 0 and _exit_room(v) < v.dims.z + 2.5:
 			target = minf(target, _stop_speed(to_line - 0.5))
 		# Give way to a player-driven vehicle crossing or about to cross.
-		elif not committed and to_line < 30.0 and _player_in_junction(ed["b"]):
+		elif not committed and to_line < 30.0 and _player_in_junction(ed["b"], v):
 			target = minf(target, _stop_speed(to_line - 0.5))
 		if v.next_edge >= 0 and to_line < 22.0 and (edges[v.next_edge]["dir"] as Vector3).dot(ed["dir"]) < 0.5:
 			target = minf(target, 6.5)
@@ -349,11 +363,15 @@ func _leader_gap(v: AmbientVehicle, s_end: float) -> float:
 	var through := 23.0
 	return (s_end - v.s) + through + (tail.s - ENTRY) - half - tail.dims.z * 0.5
 
-func _player_in_junction(node: Vector3) -> bool:
+func _player_in_junction(node: Vector3, v: AmbientVehicle) -> bool:
 	if Game.mode != Game.MODE_CAR:
 		return false
 	var p := Game.player_position
-	return absf(p.x - node.x) < 22.0 and absf(p.z - node.z) < 22.0
+	if absf(p.x - node.x) > 22.0 or absf(p.z - node.z) > 22.0:
+		return false
+	# A player queued behind this car is not crossing in front of it.
+	var rel := p - v.global_position
+	return rel.dot(-v.global_transform.basis.z) > 2.0
 
 func _exit_room(v: AmbientVehicle) -> float:
 	var nxt: Array = _keys.get(v.next_edge * 2 + v.lane, [])
@@ -470,8 +488,10 @@ func _scan_obstacles(v: AmbientVehicle) -> float:
 					if (node as Car).driver_is_player and (node.global_position - here).dot(fwd) < 0.0:
 						continue
 					var b := node.global_transform.basis
-					var bx := Vector3(b.x.x, 0, b.x.z).normalized() * 0.93
-					var bz := Vector3(b.z.x, 0, b.z.z).normalized() * 2.4
+					# The player's car gets extra room: it does not keep to lanes.
+					var pad := 0.6 if (node as Car).driver_is_player else 0.0
+					var bx := Vector3(b.x.x, 0, b.x.z).normalized() * (0.93 + pad)
+					var bz := Vector3(b.z.x, 0, b.z.z).normalized() * (2.4 + pad)
 					var c := node.global_position
 					points = [c, c + bx + bz, c + bx - bz, c - bx + bz, c - bx - bz]
 				elif node is Helicopter:
