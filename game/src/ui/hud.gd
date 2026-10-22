@@ -72,6 +72,9 @@ func _build() -> void:
 		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(206*Game.health_ratio(),6)),Color(.43,.76,.63)))
 	root.add_child(_health_bar)
 	_health_label=_mk_label(root,Vector2(24,678),12,Color(.88,.93,.88));_health_label.text="HEALTH 100"
+	# Wave 5 (rendered critic): the white ammo text was unreadable over bright
+	# sky and towers, so the readout gets the objective card's backing plate.
+	_panel(root,Vector2(1092,24),Vector2(164,66),Color(.025,.055,.058,.80))
 	_ammo_label=_mk_label(root,Vector2(1110,30),26,Color(.97,.95,.88));_ammo_label.text="12 / 96"
 	_weapon_label=_mk_label(root,Vector2(1112,64),12,Color(.65,.74,.74));_weapon_label.text="PISTOL"
 	_wanted_label=_mk_label(root,Vector2(815,110),16,Color(.97,.68,.36));_wanted_label.size=Vector2(430,45)
@@ -296,9 +299,14 @@ func _draw_minimap() -> void:
 			var centre_p := Vector3(bx, 0.0, bz)
 			var c0: Vector2 = to_map.call(centre_p - Vector3(72.0, 0.0, 72.0))
 			_minimap.draw_rect(Rect2(c0, Vector2(144.0 * scale, 144.0 * scale)), Color(0.20, 0.21, 0.23, 0.9), true)
-	# water
-	var wrect := Rect2(to_map.call(Vector3(-360, 0, -350.0)), Vector2(720.0 * scale, 30.0 * scale))
+	# water: the whole bay out to the far shore (wave 5). A 30 m strip left the
+	# bay as bare background, so the waterfront map was half black.
+	var wrect := Rect2(to_map.call(Vector3(-900.0, 0, -633.0)), Vector2(1800.0 * scale, 284.0 * scale))
 	_minimap.draw_rect(wrect, Color(0.16, 0.31, 0.36, 0.85), true)
+	# far-shore ground (Marina Bay Sands, ArtScience, Flyer) and the promenade deck
+	_minimap.draw_rect(Rect2(to_map.call(Vector3(-480.0, 0, -863.0)), Vector2(920.0 * scale, 230.0 * scale)), Color(0.22, 0.26, 0.21, 0.9), true)
+	_minimap.draw_rect(Rect2(to_map.call(Vector3(-205.0, 0, -738.0)), Vector2(234.0 * scale, 66.0 * scale)), Color(0.55, 0.57, 0.58, 0.95), true)
+	_minimap.draw_rect(Rect2(to_map.call(Vector3(-350.0, 0, -349.0)), Vector2(700.0 * scale, 22.0 * scale)), Color(0.42, 0.42, 0.40, 0.9), true)
 	# objective marker
 	if mission:
 		var obj: Vector3 = mission.get_meta("marker", Vector3.ZERO)
