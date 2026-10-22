@@ -15,6 +15,15 @@ const SIDEWALK := 10.0          # distance from road centre to walkable kerb ban
 ## Kerbside parking sits wholly on the carriageway. Wave 4 used SIDEWALK - 2.0
 ## (8.0 m), which put each parked car astride the 16 cm block-platform edge.
 const KERB_PARK_OFFSET := ROAD_HALF - 1.35
+## Opening composition (WORLD-03 opening-view acceptance, wave 5).
+const OPENING_ROW_X := -180.0
+const PLAYER_START := Vector3(-171.0, 0.45, -22.0)
+const PLAYER_START_YAW_DEG := -12.0
+const GROVE_POS := Vector3(-50.0, 0.16, -240.0)
+const MBS_POS := Vector3(-88.0, 0.0, -705.0)
+const MBS_SCALE := Vector3(2.2, 1.75, 1.6)
+const ASM_POS := Vector3(-318.0, 0.0, -645.0)
+const FLYER_POS := Vector3(390.0, 0.0, -652.0)
 const BLOCK := 144.0            # block platform edge-to-edge
 const PROMENADE_Z := -338.0
 const WORLD_MIN := Vector3(-330.0, 0.0, -350.0)
@@ -70,6 +79,8 @@ func build(seed_value: int = 20261021) -> void:
 	_waterfront_edge()
 	_background_city()
 	_perimeter()
+	_far_shore_landmarks()
+	locations["player_start"] = PLAYER_START
 	_build_lane_graph()
 	_scatter_props()
 	_landscape()
@@ -270,22 +281,12 @@ func _kit_for(col: int, row: int) -> String:
 
 ## Heritage shophouses: narrow frontages, five-foot-way arcades, pitched roofs.
 func _shophouse_block(centre: Vector3) -> void:
-	# Northern waterfront blocks (row 0) host the Supertree Groves on their
-	# bayfront side while keeping heritage shophouse frontage along the -160 street.
+	# Northern blocks (row 0) keep their heritage frontage on the -160 street;
+	# _block_plots() fills the bayside interior. Wave 4 put a Supertree Grove in
+	# each of these blocks; wave 5 consolidates one grove beside the opening
+	# sightline (see _waterfront_block) instead of two procedural clones.
 	if centre.z < -200.0:
 		_shophouse_row(centre + Vector3(BLOCK / 2.0 - 8.0, 0.0, BLOCK / 2.0 - 8.0), Vector3(-1, 0, 0), 13)
-		if centre.x > 0.0:
-			var grove_pos := Vector3(80.0, 0.16, -242.0)
-			_authored("supertree_grove.glb", grove_pos, 0.0, Vector3.ONE)
-			for tree_off in [Vector3(0.0, 0.0, 0.0), Vector3(-24.0, 0.0, 8.0), Vector3(24.0, 0.0, 6.0), Vector3(-16.0, 0.0, -18.0), Vector3(17.0, 0.0, -19.0)]:
-				_collision_box(Vector3(7.5, 10.0, 7.5), grove_pos + tree_off + Vector3(0.0, 5.0, 0.0))
-			_reserve(Vector3(112.0, 50.0, 96.0), grove_pos)
-			locations["supertree_grove"] = grove_pos
-		else:
-			var west_grove := Vector3(-228.0, 0.16, -236.0)
-			_authored("supertree_grove.glb", west_grove, deg_to_rad(18.0), Vector3(0.86, 0.94, 0.86))
-			_collision_box(Vector3(7.0, 10.0, 7.0), west_grove + Vector3(0.0, 5.0, 0.0))
-			_reserve(Vector3(100.0, 48.0, 90.0), west_grove)
 		return
 	# two street-facing rows plus a rear service lane
 	_shophouse_row(centre + Vector3(-BLOCK / 2.0 + 8.0, 0.0, -BLOCK / 2.0 + 8.0), Vector3(1, 0, 0), 13)
@@ -464,6 +465,11 @@ func _hdb_block(centre: Vector3) -> void:
 	# safe room interior (wave-1 mission origin)
 	if centre.x < -200.0 and centre.z > -100.0 and centre.z < 0.0:
 		_safe_room(centre + Vector3(0.0, 0.30, 10.0))
+		# Wave 5 opening street: a heritage shophouse row with its five-foot way
+		# faces the hawker hall across the x=-160 road, with the HDB slabs rising
+		# behind it -- the CONCEPT-01 arrangement, looking north to the bay.
+		_shophouse_row(Vector3(OPENING_ROW_X, 0.16, -151.3), Vector3(0, 0, 1), 11)
+		_reserve(Vector3(17.0, 12.0, 118.0), Vector3(OPENING_ROW_X - 1.0, 0.0, -93.0))
 
 func _safe_room(pos: Vector3) -> void:
 	_solid_box(Vector3(14.0, 0.2, 10.0), pos + Vector3(0.0, 0.1, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.9))
@@ -584,32 +590,72 @@ func _hawker_block(centre: Vector3) -> void:
 	# walked to and picked up without climbing over the counter
 	locations["package"] = centre + Vector3(-5.0, 0.25, -8.0)
 
-## Modern waterfront edge: Singapore's iconic waterfront landmarks (WORLD-03).
+## Modern waterfront edge (WORLD-02 #4, WORLD-03). The west block is a bayside
+## garden around the Supertree Grove; the east block keeps contemporary towers.
+## Marina Bay Sands, the ArtScience Museum and the Singapore Flyer stand across
+## the bay on the far shore (_far_shore_landmarks), as in CONCEPT-03.
 func _waterfront_block(centre: Vector3) -> void:
 	if centre.x < 0.0:
-		# Marina Bay Sands (3 splayed/tapered towers + cantilevered boat SkyPark)
-		var mbs_pos := Vector3(-82.0, 0.16, -256.0)
-		_authored("marina_bay_sands.glb", mbs_pos, 0.0, Vector3(0.92, 1.0, 0.92))
-		_collision_box(Vector3(96.0, 12.0, 36.0), mbs_pos + Vector3(0.0, 6.0, 0.0))
-		_reserve(Vector3(128.0, 112.0, 124.0), centre)
-		locations["marina_bay_sands"] = mbs_pos
-		# Lotus-shaped ArtScience Museum on the bayfront apron in front of MBS
-		var asm_pos := Vector3(-42.0, 0.16, -308.0)
-		_authored("artscience_museum.glb", asm_pos, 0.0, Vector3(0.95, 0.95, 0.95))
-		_collision_box(Vector3(24.0, 8.0, 24.0), asm_pos + Vector3(0.0, 4.0, 0.0))
-		_reserve(Vector3(36.0, 32.0, 36.0), asm_pos)
-		locations["artscience_museum"] = asm_pos
+		var grove_pos := GROVE_POS
+		_reserve(Vector3(128.0, 50.0, 124.0), centre)
+		var lawn := Palette.mat_textured(Color(0.25, 0.36, 0.17), "soil", Vector3.ONE, 0.95)
+		_box(Vector3(126.0, 0.10, 118.0), centre + Vector3(0.0, 0.06, 0.0), lawn)
+		var pavers := Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9)
+		_box(Vector3(5.0, 0.12, 118.0), centre + Vector3(0.0, 0.08, 0.0), pavers)
+		_box(Vector3(126.0, 0.12, 5.0), centre + Vector3(0.0, 0.08, 34.0), pavers)
+		_authored("supertree_grove.glb", grove_pos, 0.0, Vector3.ONE)
+		# Planted trunk colliders only: the crowns stay open sky for flight.
+		for tree_off in [Vector3(0, 0, 0), Vector3(-24, 0, 8), Vector3(24, 0, 6), Vector3(-16, 0, -18), Vector3(17, 0, -19), Vector3(-34, 0, -12), Vector3(33, 0, -14)]:
+			_collision_box(Vector3(7.0, 12.0, 7.0), grove_pos + tree_off + Vector3(0.0, 6.0, 0.0))
+		locations["supertree_grove"] = grove_pos
 		for i: int in 6:
-			_tree(centre + Vector3(-48.0 + i * 18.0, 0.0, 44.0), 1.05)
+			_tree(centre + Vector3(-48.0 + i * 18.0, 0.0, 50.0), 1.05)
+		# East edge only: west-edge canopies would sit on the opening view's
+		# line to the Marina Bay Sands towers (sightline probe, wave 5).
+		for i: int in 4:
+			_tree(centre + Vector3(60.0, 0.0, -40.0 + i * 24.0), 0.95)
 	else:
-		# Singapore Flyer giant observation wheel on the eastern waterfront
-		var flyer_pos := Vector3(236.0, 0.16, -256.0)
-		_authored("singapore_flyer.glb", flyer_pos, deg_to_rad(-18.0), Vector3.ONE)
-		_collision_box(Vector3(44.0, 9.0, 28.0), flyer_pos + Vector3(0.0, 4.5, 0.0), deg_to_rad(-18.0))
-		_reserve(Vector3(124.0, 114.0, 116.0), centre)
-		locations["singapore_flyer"] = flyer_pos
+		# Curtain-wall office towers: the near-shore commercial edge.
+		for i: int in 2:
+			var pos := centre + Vector3(-34.0 + i * 68.0, 0.0, -30.0)
+			var h := 70.0 + i * 18.0
+			_solid_box(Vector3(26.0, h, 26.0), pos + Vector3(0.0, h * 0.5, 0.0), Palette.facade("office"))
+			for f in int(h / 4.0):
+				_box(Vector3(26.6, 0.35, 26.6), pos + Vector3(0.0, 4.0 + f * 4.0, 0.0), Palette.mat(Palette.METAL, 0.4, 0.7))
+			_box(Vector3(28.0, 0.7, 28.0), pos + Vector3(0.0, h + 0.35, 0.0), Palette.mat(Palette.CONCRETE_LIGHT, 0.8))
+		_solid_box(Vector3(60.0, 5.0, 16.0), centre + Vector3(0.0, 2.5, 24.0), Palette.mat(Palette.CONCRETE, 0.8))
+		_box(Vector3(24.0, 0.4, 3.0), centre + Vector3(0.0, 5.3, 14.0), Palette.mat(Palette.METAL, 0.4, 0.6))
 		for i: int in 6:
-			_tree(centre + Vector3(-44.0 + i * 18.0, 0.0, 42.0), 1.0)
+			_tree(centre + Vector3(-40.0 + i * 16.0, 0.0, 40.0), 1.0)
+
+## Far shore of the bay (distant scenery reachable only by air; collision so the
+## helicopter cannot pass through). Marina Bay Sands sits just east of the x=-160
+## avenue axis so the opening street (whose heritage row hides everything west of
+## the axis) and the promenade both frame all three towers and the SkyPark; the ArtScience lotus sits at the water's edge to its west and the
+## Singapore Flyer to the east. Scale follows real proportions (towers ~180 m,
+## SkyPark ~260 m long, Flyer ~160 m).
+func _far_shore_landmarks() -> void:
+	var plaza := Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9)
+	var turf := Palette.mat_textured(Color(0.24, 0.33, 0.17), "soil", Vector3.ONE, 0.95)
+	_box(Vector3(920.0, 0.30, 70.0), Vector3(-20.0, 0.15, -668.0), plaza)
+	_box(Vector3(920.0, 0.20, 160.0), Vector3(-20.0, 0.10, -783.0), turf)
+	var mbs := MBS_POS
+	_authored("marina_bay_sands.glb", mbs, 0.0, MBS_SCALE)
+	_collision_box(Vector3(234.0, 196.0, 66.0), mbs + Vector3(0.0, 98.0, 0.0))
+	_collision_box(Vector3(260.0, 18.0, 52.0), mbs + Vector3(19.0, 188.0, 0.0))
+	locations["marina_bay_sands"] = mbs
+	var asm := ASM_POS
+	_authored("artscience_museum.glb", asm, deg_to_rad(12.0), Vector3.ONE * 1.6)
+	_collision_box(Vector3(46.0, 50.0, 46.0), asm + Vector3(0.0, 25.0, 0.0))
+	locations["artscience_museum"] = asm
+	var flyer := FLYER_POS
+	var flyer_yaw := deg_to_rad(-20.0)
+	_authored("singapore_flyer.glb", flyer, flyer_yaw, Vector3.ONE * 1.4)
+	_collision_box(Vector3(66.0, 12.0, 42.0), flyer + Vector3(0.0, 6.0, 0.0), flyer_yaw)
+	_collision_box(Vector3(150.0, 150.0, 22.0), flyer + Vector3(0.0, 87.0, 0.0), flyer_yaw)
+	locations["singapore_flyer"] = flyer
+	for i: int in 14:
+		_tree(Vector3(-400.0 + i * 52.0, 0.0, -640.0), 1.1)
 
 ## Aviation compound: hangar, helipads, perimeter fence.
 func _aviation_block(centre: Vector3) -> void:
@@ -950,6 +996,11 @@ func _background_city() -> void:
 				var variant: int = 2 if row == 0 and col % 3 != 0 else (row+cluster+col)%4
 				var x: float = -720+cluster*490+col*54+rng.randf_range(-7,7)+row*13
 				var z: float = -711-row*130+rng.randf_range(-18,18)
+				# Keep open sky behind the Marina Bay Sands silhouette and clear
+				# ground under the Flyer; draws stay cheap (the rng sequence is kept).
+				if (x > -265.0 and x < 115.0) or (row == 0 and x > 300.0 and x < 480.0):
+					rng.randf_range(.48,.73); rng.randf_range(.90,1.18); rng.randf_range(-.07,.07)
+					continue
 				var height_scale: float = rng.randf_range(.48,.73) if row == 0 else rng.randf_range(.70,1.22)+row*.08
 				var width_scale: float = rng.randf_range(.90,1.18)
 				var basis := Basis(Vector3.UP,rng.randf_range(-.07,.07)).scaled(Vector3(width_scale,height_scale,width_scale))
@@ -1141,7 +1192,11 @@ func _landscape() -> void:
 			for side in [-1.0,1.0]:
 				for j in 3:
 					var p := Vector3(road+side*14, .23, block-47+j*47)
-					_tree(p,.8+_rng.randf()*.2)
+					var tree_scale := .8+_rng.randf()*.2
+					# The opening heritage row's five-foot way occupies this verge.
+					if road == -160.0 and side < 0.0 and p.z > -156.0 and p.z < -28.0:
+						continue
+					_tree(p,tree_scale)
 					_box(Vector3(4.0,.12,5.4),p+Vector3(0,.04,0),turf)
 					for k in 2:
 						_authored("fern.glb",p+Vector3(side*.9,.12,-1.4+k*2.8),j+k,Vector3.ONE*.65)

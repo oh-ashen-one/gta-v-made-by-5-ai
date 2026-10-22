@@ -1,0 +1,439 @@
+{
+	"checks": [
+		{
+			"detail": "",
+			"name": "world builder present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "player spawned",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "traffic manager present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission running",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "helicopter present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "hud present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "district contains 3D geometry",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "junction graph has 25 connected reference nodes",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pedestrian paths present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "civilian traffic populated",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pedestrians populated",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "ambient population matches configured budget of 185 unique actors",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "market diners are reactive damageable NPCs",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "busy district walkers spawn along segments not junction piles",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "gameplay camera belongs to player",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission publishes initial objective",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "initial objective marker survives HUD setup order",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission registered for save and checkpoint restoration",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "package is a real interactable",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "road graph includes the fifth row",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "traffic target is near destination on the left lane",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "east-west signal excludes north-south movement",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "junction changeover clears both approaches",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "north-south signal excludes east-west movement",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "visible signal lamps agree with east-west right of way",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "visible signal lamps switch with north-south right of way",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "fire maps to a mouse button rather than a keyboard code",
+			"passed": true
+		},
+		{
+			"detail": "mag 12 -> 11",
+			"name": "real mouse-button event fires the equipped weapon",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission avenue has no static trunk obstruction",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "rapid native press and release is not dropped",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "close-cover fixture leaves camera sightline on target",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "muzzle obstruction prevents damage through close cover",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "clearing muzzle obstruction permits target damage",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "input interaction enters a car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "occupied player collision is disabled",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "driving input moves the car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "occupant follows the moving car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "authoritative position follows controlled vehicle",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "left driving input turns left",
+			"passed": true
+		},
+		{
+			"detail": "100.00 -> 96.97",
+			"name": "NPC weapon ray damages occupied car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "car body protects its occupant from that ray",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "normal exit returns control and camera",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "on-foot collision restored",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "blocked car exit preserves seated control without wall clipping",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "clearing blocked exit restores normal exit",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death is counted for honest golden-path evidence",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death in car releases both control owners",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death restores visible player and gameplay camera",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "walking still works after vehicle death",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "wanted escalation decays when unobserved",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "health regenerates out of fire",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "helicopter control is exclusive",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "lift input gains altitude",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "neutral lift stabilizes hover",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "airborne helicopter rejects exit",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pause freezes aircraft",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pause freezes pursuit heat",
+			"passed": true
+		},
+		{
+			"detail": "position=(270.0, 0.16092, 104.0) velocity=(0.0, 0.0, 0.0) health=100.0 floor=true",
+			"name": "controlled descent lands without disabling aircraft",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "landed helicopter exits to walking",
+			"passed": true
+		},
+		{
+			"detail": "moved=4.003 from=(2.461618, 0.28, -331.4723) to=(6.464641, 0.275935, -331.4723) velocity=(5.963103, 0.0, 0.0)",
+			"name": "waterfront helicopter exit permits actual on-foot movement",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "package input pickup advances and hides pickup",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "taking car starts the authored driving leg",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "on-foot arrival cannot bypass driving leg",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death restores package checkpoint and requires new drive",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "restoration rebuilds flags and objective",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "delivery cannot be triggered remotely",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "restart resets pickup checkpoint and prerequisites",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "restart retains exactly three mission guards",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save roundtrip restores health and mission checkpoint",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save restoration updates package and objective",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save restores sensitivity and accessibility settings",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "invalid live state cannot replace the last complete save",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "atomic replacement updates an existing save",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "successful save leaves no temporary checkpoint file",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "successful load publishes one state-restored event",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "saved SMG restores held model and clears transient actions",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects truncated position vector atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects unknown equipped weapon atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects out-of-range magazine atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects wrong health type atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects invalid checkpoint index atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects inconsistent pursuit state atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects wrong safe-position type atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects out-of-range mouse sensitivity atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects wrong accessibility-setting type atomically",
+			"passed": true
+		}
+	],
+	"duration_ms": 12674,
+	"engine": "4.7.1-stable (official)",
+	"failed": 0,
+	"finished_utc": "2026-10-22T00:21:55",
+	"fixture_repositioning": true,
+	"golden_path": false,
+	"passed": 85,
+	"suite": "wave2-regressions",
+	"timed_out": false,
+	"total": 85
+}

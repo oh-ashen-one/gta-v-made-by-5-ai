@@ -328,9 +328,7 @@ func _run() -> void:
 	_run_gate_start = _gates.size()
 	await get_tree().create_timer(0.75).timeout
 	_log("Route start; seed=%d; headless=%s; scripted-input-automation=true" % [Game.seed_value, _headless])
-	await _shot("safe_room")
-	if world.locations.has("safe_room_exit"):
-		await _walk_to(world.locations["safe_room_exit"], 2.0, 25.0)
+	await _shot("opening_street")
 	await _nav_to(world.locations["package"], 4.0, 130.0)
 	if not _gate("market reached on foot", _ground_distance(player.global_position, world.locations["package"]) < 8.0): return
 	await _shot("hawker_market")

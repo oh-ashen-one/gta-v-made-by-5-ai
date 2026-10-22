@@ -254,7 +254,7 @@ func restart() -> void:
 			h.queue_free()
 	_hostiles.clear()
 	_spawn_hostiles()
-	player.respawn_at(world.locations["safe_room"] + Vector3(0.0, 0.4, 0.0), deg_to_rad(-52.0))
+	player.respawn_at(world.locations["player_start"], deg_to_rad(WorldBuilder.PLAYER_START_YAW_DEG))
 	Game.health = Game.MAX_HEALTH
 	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
 	Game.wanted_heat = 0.0

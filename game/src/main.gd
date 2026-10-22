@@ -39,8 +39,10 @@ func _ready() -> void:
 	player = Player.new()
 	player.name = "Player"
 	add_child(player)
-	player.global_position = world.locations["safe_room"] + Vector3(0.0, 0.4, 0.0)
-	player.yaw = deg_to_rad(-52.0)
+	# Wave 5: the run opens outdoors on the heritage five-foot way opposite the
+	# hawker hall, looking up the avenue to the bay (WORLD-03 opening view).
+	player.global_position = world.locations["player_start"]
+	player.yaw = deg_to_rad(WorldBuilder.PLAYER_START_YAW_DEG)
 	player.rotation.y = player.yaw
 	Game.mark_safe_position(player.global_position, player.yaw)
 
@@ -96,6 +98,32 @@ func _ready() -> void:
 		# the frames are evidence of the district, not of the title screen
 		hud.show_title(false)
 		started = true
+		return
+
+	if "--perf-probe" in args:
+		var perf_dir := "user://perf"
+		for arg in args:
+			if arg.begins_with("--capture-dir="):
+				perf_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		Game.simulation_paused = false
+		var perf: Node = load("res://src/systems/perf_probe.gd").new()
+		add_child(perf)
+		perf.setup(self, perf_dir)
+		return
+
+	if "--sightline-probe" in args:
+		var probe_dir := "user://sightlines"
+		for arg in args:
+			if arg.begins_with("--capture-dir="):
+				probe_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		Game.simulation_paused = false
+		var probe: Node = load("res://src/systems/sightline_probe.gd").new()
+		add_child(probe)
+		probe.setup(self, probe_dir)
 		return
 
 	if "--capture" in args:

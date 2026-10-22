@@ -41,7 +41,7 @@ func _run() -> void:
 		{"name": "street_wide", "pos": Vector3(8.0, 5.5, -158.0), "look": Vector3(-150.0, 8.0, -160.0), "fov": 75.0},
 		{"name": "hawker_interior", "pos": Vector3(-80.0, 2.6, -70.0), "look": Vector3(-90.0, 1.8, -96.0), "fov": 66.0},
 		{"name": "housing_void_deck", "pos": Vector3(-214.0, 2.2, -104.0), "look": Vector3(-262.0, 12.0, -112.0), "fov": 68.0},
-		{"name": "waterfront", "pos": Vector3(68.0, 3.4, -342.0), "look": Vector3(-18.0, 26.0, -256.0), "fov": 72.0},
+		{"name": "waterfront", "pos": Vector3(30.0, 2.2, -330.0), "look": Vector3(-88.0, 60.0, -705.0), "fov": 64.0},
 		{"name": "aerial_district", "pos": Vector3(250.0, 95.0, 250.0), "look": Vector3(-40.0, 0.0, -60.0), "fov": 62.0},
 		{"name": "aerial_waterfront", "pos": Vector3(42.0, 68.0, -356.0), "look": Vector3(-24.0, 22.0, -242.0), "fov": 68.0},
 		{"name": "street_arcade", "pos": Vector3(-32, 2.0, -149), "look": Vector3(-130, 3.0, -146), "fov": 62.0},
@@ -75,15 +75,15 @@ func _run_gameplay() -> void:
 	var player: Node3D = main.player
 	player.visible = true
 	var spots := [
-		{"name": "opening_start", "pos": world.locations["safe_room"] + Vector3(0.0, 0.4, 0.0), "yaw": deg_to_rad(-52.0)},
+		{"name": "opening_start", "pos": world.locations["player_start"], "yaw": deg_to_rad(WorldBuilder.PLAYER_START_YAW_DEG)},
 		{"name": "heritage_arcade", "pos": Vector3(-150.0, 0.45, -148.0), "yaw": deg_to_rad(-56.0)},
 		{"name": "heritage_road", "pos": Vector3(-34.0, 0.45, -156.0), "yaw": deg_to_rad(-38.0)},
 		# Stand north of the pavilion looking south into it, so the hall reads as
 		# a place rather than a stall counter filling the frame.
 		{"name": "hawker_approach", "pos": Vector3(-100.0, 0.45, -122.0), "yaw": deg_to_rad(180.0)},
 		{"name": "junction_traffic", "pos": Vector3(-12.0, 0.45, -52.0), "yaw": deg_to_rad(-18.0)},
-		{"name": "waterfront_promenade", "pos": Vector3(64.0, 0.45, -338.0), "yaw": deg_to_rad(42.0)},
-		{"name": "supertree_grove_vista", "pos": Vector3(80.0, 0.45, -172.0), "yaw": deg_to_rad(0.0)},
+		{"name": "waterfront_promenade", "pos": Vector3(64.0, 0.45, -336.0), "yaw": deg_to_rad(22.0)},
+		{"name": "supertree_grove_vista", "pos": Vector3(-6.0, 0.45, -150.0), "yaw": deg_to_rad(18.0)},
 	]
 	for spot in spots:
 		_active_view = spot
