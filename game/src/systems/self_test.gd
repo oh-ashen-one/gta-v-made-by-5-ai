@@ -682,7 +682,13 @@ func _skyline_checks(world: WorldBuilder) -> void:
 	var sk: Dictionary = world.skyline_stats
 	_check("skyline: background city wears at least 5 distinct facade systems", int(sk.get("materials", 0)) >= 5, str(sk))
 	_check("skyline: no background tower stands in the bay", int(sk.get("over_water", -1)) == 0 and int(sk.get("placed", 0)) > 150, str(sk))
-	_check("skyline: every background tower casts a ground shadow", int(sk.get("ground_shadows", 0)) == int(sk.get("placed", -1)), str(sk))
+	# The shadow meshes must survive static batching with their shader intact.
+	var shadow_layers := 0
+	if root:
+		for child in root.get_children():
+			if String(child.name).begins_with("SkylineShadow_") and child is MeshInstance3D and (child as MeshInstance3D).mesh.surface_get_material(0) is ShaderMaterial:
+				shadow_layers += 1
+	_check("skyline: every background tower casts a ground shadow", int(sk.get("ground_shadows", 0)) == int(sk.get("placed", -1)) and shadow_layers >= 5, "%s layers %d" % [str(sk), shadow_layers])
 	# Aerial perspective: the CBD across the bay (800 m) must haze at
 	# least ~33% toward the pale sky colour (critic A2: far contrast was 95%).
 	var fsh: Shader = load("res://assets/authored/shaders/skyline_facade.gdshader")

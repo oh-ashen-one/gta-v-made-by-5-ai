@@ -186,10 +186,10 @@ func _add_ground_shadows(parent: Node3D, list: Array, kind: int) -> void:
 	for item in list:
 		var xf: Transform3D = item[0]
 		var h := xf.basis.y.length()
-		# Capped well short of the true 16-degree length (3.4 x height) so the
+		# Capped short of the true 16-degree length (3.4 x height) so the
 		# shadows read as separate sharp shapes with sunlit ground between them
 		# instead of merging into one dark sheet across the CBD.
-		var sweep := Vector3(sd.x, 0.0, sd.y) * minf(h * minf(len_per_h, 1.25), 150.0)
+		var sweep := Vector3(sd.x, 0.0, sd.y) * minf(h * minf(len_per_h, 2.0), 220.0)
 		var o := Vector3(xf.origin.x, xf.origin.y + 0.35, xf.origin.z)
 		var bx := Vector3(xf.basis.x.x, 0.0, xf.basis.x.z) * 0.5
 		var bz := Vector3(xf.basis.z.x, 0.0, xf.basis.z.z) * 0.5
@@ -207,8 +207,12 @@ func _add_ground_shadows(parent: Node3D, list: Array, kind: int) -> void:
 	mat.shader = load(SHADOW_SHADER)
 	var mi := MeshInstance3D.new()
 	mi.name = "SkylineShadow_%d" % kind
-	mi.mesh = st.commit()
-	mi.material_override = mat
+	# The material lives on the surface (not material_override): WorldBuilder's
+	# static batching merges ArrayMesh instances with no surface material and
+	# would drop an override.
+	var mesh := st.commit()
+	mesh.surface_set_material(0, mat)
+	mi.mesh = mesh
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	parent.add_child(mi)
 
