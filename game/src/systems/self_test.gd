@@ -48,6 +48,7 @@ func run(main: Node) -> void:
 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
 	_check("civilian traffic populated", traffic.cars.size() >= 8)
 	_check("pedestrians populated", traffic.peds.size() >= 20)
+	_lighting_checks(world)
 	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT
 	var unique_peds: Dictionary = {}
 	for pedestrian in traffic.peds:
@@ -299,6 +300,7 @@ func run(main: Node) -> void:
 	_check("saved SMG restores held model and clears transient actions", Game.carried_weapon == "smg" and player._weapon_model != null and String(player._weapon_model.scene_file_path).contains("smg") and not player._reloading and player._fire_cooldown == 0.0 and player._press_queue.is_empty())
 	_negative_save_checks(player, mission)
 	await _wave5_checks(world, traffic, heli)
+	await _water_checks(world)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
 	await _report()
 
@@ -631,6 +633,7 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 	for key in ["marina_bay_sands", "supertree_grove", "artscience_museum", "singapore_flyer", "merlion"]:
 		placed = placed and world.locations.has(key)
 	_check("all five required Singapore landmarks are placed", placed)
+	_skyline_checks(world)
 	_check("run opens outdoors on the heritage street, not inside the safe room", world.locations["player_start"].distance_to(world.locations["safe_room"]) > 40.0)
 	var audio := Sfx.loop_metrics()
 	var seam_ok := true
@@ -641,6 +644,78 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 		if row["peak"] > 0.995: clip_ok = false
 	_check("synthesized loops have continuous seams (objective, not listening)", seam_ok and audio.size() >= 5, str(audio))
 	_check("synthesized sounds stay below full-scale clipping", clip_ok)
+
+## Skyline piece (wave A, Opus 5.5): landmark footprints stay apart, the Flyer
+## sits inside the fixed photo_06 aerial frame, roofs are dressed and the
+## layered background city and landmark material upgrades are present.
+func _skyline_checks(world: WorldBuilder) -> void:
+	var mbs: Vector3 = world.locations["marina_bay_sands"]
+	var mbs_rect := Rect2(mbs.x - 122.0, mbs.z - 30.0, 307.0, 67.2)
+	var circles := {"artscience_museum": 26.4, "singapore_flyer": 40.0, "supertree_grove": 28.0, "merlion": 5.4}
+	var apart := true
+	var keys := circles.keys()
+	for i in keys.size():
+		var a: Vector3 = world.locations[keys[i]]
+		var ra: float = circles[keys[i]]
+		if mbs_rect.grow(ra).has_point(Vector2(a.x, a.z)): apart = false
+		for j in range(i + 1, keys.size()):
+			var b: Vector3 = world.locations[keys[j]]
+			if Vector2(a.x - b.x, a.z - b.z).length() < ra + float(circles[keys[j]]): apart = false
+	_check("skyline: landmark footprints do not overlap each other", apart)
+	# photo_06_aerial_district camera (fixed comparison view): 62 deg vertical FOV at 16:9.
+	var cam := Vector3(250.0, 95.0, 250.0)
+	var fwd := (Vector3(-40.0, 0.0, -60.0) - cam).normalized()
+	var to_flyer: Vector3 = world.locations["singapore_flyer"] + Vector3(0.0, 85.0, 0.0) - cam
+	var flat_fwd := Vector2(fwd.x, fwd.z).normalized()
+	var flat_to := Vector2(to_flyer.x, to_flyer.z).normalized()
+	var half_h := rad_to_deg(atan(tan(deg_to_rad(31.0)) * 16.0 / 9.0))
+	var off := rad_to_deg(flat_fwd.angle_to(flat_to))
+	_check("skyline: Singapore Flyer lies inside the photo_06 aerial frame", absf(off) < half_h - 5.0, "%.1f deg of %.1f" % [off, half_h])
+	var root := world.get_node_or_null("District")
+	var deck := root.get_node_or_null("RoofKit_deck") if root else null
+	_check("skyline: flat roofs carry weathered decks and roof plant", deck != null and world._roof_kit.roofs >= 100 and world._roof_kit.part_count("condenser") >= 200 and world._roof_kit.part_count("housing") >= 60,
+		"roofs %d condensers %d housings %d" % [world._roof_kit.roofs, world._roof_kit.part_count("condenser"), world._roof_kit.part_count("housing")])
+	var city_layers := 0
+	if root:
+		for child in root.get_children():
+			if String(child.name).begins_with("SkylineCity_"): city_layers += 1
+	_check("skyline: layered background city is built from batched tower archetypes", city_layers >= 5, str(city_layers))
+	var upgraded := LandmarkLooks.material_for("mbs_curtain_glass") is ShaderMaterial and LandmarkLooks.material_for("st_vertical_garden") is ShaderMaterial
+	_check("skyline: landmark facade and vertical-garden shaders are applied", upgraded)
+	var sk: Dictionary = world.skyline_stats
+	_check("skyline: background city wears at least 5 distinct facade systems", int(sk.get("materials", 0)) >= 5, str(sk))
+	_check("skyline: no background tower stands in the bay", int(sk.get("over_water", -1)) == 0 and int(sk.get("placed", 0)) > 150, str(sk))
+	# The shadow meshes must survive static batching with their shader intact.
+	var shadow_layers := 0
+	if root:
+		for child in root.get_children():
+			if String(child.name).begins_with("SkylineShadow_") and child is MeshInstance3D and (child as MeshInstance3D).mesh.surface_get_material(0) is ShaderMaterial:
+				shadow_layers += 1
+	_check("skyline: every background tower casts a ground shadow", int(sk.get("ground_shadows", 0)) == int(sk.get("placed", -1)) and shadow_layers >= 5, "%s layers %d" % [str(sk), shadow_layers])
+	# Aerial perspective: the CBD across the bay (800 m) must haze at
+	# least ~33% toward the pale sky colour (critic A2: far contrast was 95%).
+	var fsh: Shader = load("res://assets/authored/shaders/skyline_facade.gdshader")
+	var hre := RegEx.new()
+	hre.compile("uniform float (haze_start|haze_density|haze_max) = ([0-9.]+);")
+	var hv := {}
+	for m in hre.search_all(fsh.code):
+		hv[m.get_string(1)] = m.get_string(2).to_float()
+	var hs := float(hv.size())
+	var h_start: float = hv.get("haze_start", 1e9)
+	var h_den: float = hv.get("haze_density", 0.0)
+	var h_max: float = hv.get("haze_max", 0.0)
+	var haze_800 := (1.0 - exp(-maxf(800.0 - h_start, 0.0) * h_den)) * h_max
+	var haze_200 := (1.0 - exp(-maxf(200.0 - h_start, 0.0) * h_den)) * h_max
+	_check("skyline: far CBD hazes toward the sky, near district stays crisp", hs == 3.0 and haze_800 >= 0.33 and haze_200 <= 0.1, "haze@800m=%.2f haze@200m=%.2f" % [haze_800, haze_200])
+	# Round 4: land and city beyond the bay, and haze that stays below the sky.
+	_check("skyline: hinterland city carpet, low-rise blocks and third tower layer run past the bay", int(sk.get("lowrise", 0)) >= 2000 and float(sk.get("carpet_km2", 0.0)) >= 20.0 and int(sk.get("far_towers", 0)) >= 200 and int(sk.get("promenade_trees", 0)) >= 60, str(sk))
+	var hcol := RegEx.new()
+	hcol.compile("uniform vec3 (haze_col|horizon_col) : source_color = vec3\\(([0-9.]+), ([0-9.]+), ([0-9.]+)\\);")
+	var lum := {}
+	for m in hcol.search_all(fsh.code):
+		lum[m.get_string(1)] = 0.2126 * m.get_string(2).to_float() + 0.7152 * m.get_string(3).to_float() + 0.0722 * m.get_string(4).to_float()
+	var gap := float(lum.get("horizon_col", 0.0)) - float(lum.get("haze_col", 1.0))
+	_check("skyline: aerial haze is darker than the horizon sky so far towers keep silhouettes", lum.size() == 2 and gap >= 0.10 and int(sk.get("atmosphere", 0)) >= 2, "gap %.2f %s" % [gap, str(lum)])
 
 func _ticks(count: int) -> void:
 	for tick in count:
@@ -673,6 +748,89 @@ func _check(check_name: String, condition: bool, detail: String = "") -> void:
 		failures += 1
 	results.append({"name": check_name, "passed": condition, "detail": detail})
 	print("%s %s %s" % ["PASS" if condition else "FAIL", check_name, detail])
+
+## Lighting piece (Opus 5.5 wave A): golden-hour rig and practicals.
+func _lighting_checks(world: WorldBuilder) -> void:
+	var we: WorldEnvironment = null
+	var sun: DirectionalLight3D = null
+	for c in world.get_children():
+		if c is WorldEnvironment: we = c
+		if c is DirectionalLight3D and c.name == "Sun": sun = c
+	var env: Environment = we.environment if we != null else null
+	_check("golden-hour environment: sky ambient, SSAO+SSIL, glow, clear sky gradient",
+		env != null and env.background_mode == Environment.BG_SKY and env.ambient_light_source == Environment.AMBIENT_SOURCE_SKY
+		and env.ssao_enabled and env.ssil_enabled and env.glow_enabled and env.fog_sky_affect < 0.05 and env.adjustment_color_correction != null)
+	var sky_code := ""
+	if env != null and env.sky != null and env.sky.sky_material is ShaderMaterial:
+		sky_code = (env.sky.sky_material as ShaderMaterial).shader.code
+	_check("sky glow and clouds follow the sun light (LIGHT0)", sky_code.contains("LIGHT0_DIRECTION") and sky_code.contains("cloud"))
+	# Round 2 (critic A1): humid cumulus sky, not an empty cobalt gradient.
+	var sky_mat: ShaderMaterial = env.sky.sky_material if env != null and env.sky != null and env.sky.sky_material is ShaderMaterial else null
+	var zen := Color.BLUE
+	var cover := 0.0
+	if sky_mat != null:
+		var zv: Variant = sky_mat.get_shader_parameter("zenith_color")
+		if zv == null: zv = RenderingServer.shader_get_parameter_default(sky_mat.shader.get_rid(), "zenith_color")
+		if zv is Vector3: zen = Color(zv.x, zv.y, zv.z)
+		elif zv is Color: zen = zv
+		var cv: Variant = sky_mat.get_shader_parameter("cloud_coverage")
+		if cv == null: cv = RenderingServer.shader_get_parameter_default(sky_mat.shader.get_rid(), "cloud_coverage")
+		if cv != null: cover = float(cv)
+	_check("sky is pale humid blue under shaded cumulus (no cobalt)", sky_code.contains("puff(") and sky_code.contains("above")
+		and zen.s < 0.65 and cover >= 0.5, "zenith_s=%.2f coverage=%.2f" % [zen.s, cover])
+	# Round 2: shade must stay darker than sun (A1 shadow ratios 0.58-0.59) and
+	# the sun must not throw a warm veil across sun-facing frames.
+	# Round 4 (critic A3) asks for a warm golden-hour haze, so the scatter cap
+	# is a bounded veil (<= 0.25), not zero.
+	_check("shadow contrast and bounded haze (ambient, crisp sun, sun scatter <= 0.25)", env != null and sun != null
+		and env.ambient_light_energy <= 0.7 and sun.light_angular_distance <= 0.3 and env.fog_sun_scatter <= 0.25
+		and env.volumetric_fog_density <= 0.0015 and env.adjustment_saturation <= 1.02,
+		"" if env == null else "ambient=%.2f scatter=%.2f" % [env.ambient_light_energy, env.fog_sun_scatter])
+	var elevation := -sun.rotation_degrees.x if sun != null else 0.0
+	_check("warm low late-afternoon sun with soft shadows", sun != null and sun.shadow_enabled and elevation > 8.0 and elevation < 30.0
+		and sun.light_color.r > sun.light_color.b + 0.3 and sun.light_angular_distance > 0.0, "elevation=%.1f" % elevation)
+	var lit: WorldBuilder = world
+	var lighting: Lighting = lit.get("_lighting")
+	_check("void decks, arcades and street lamps carry practical lights", lighting != null and lighting.void_deck_lights >= 24
+		and lighting.arcade_lights >= 150 and lighting.lamp_lights >= 40,
+		"" if lighting == null else "void=%d arcade=%d lamps=%d" % [lighting.void_deck_lights, lighting.arcade_lights, lighting.lamp_lights])
+	var district := world.get_node_or_null("District")
+	var lights_node := district.get_node_or_null("PracticalLights") if district != null else null
+	var bounded := lights_node != null and lights_node.get_child_count() > 0
+	if bounded:
+		for l in lights_node.get_children():
+			if not (l is Light3D) or (l as Light3D).shadow_enabled or not (l as Light3D).distance_fade_enabled:
+				bounded = false
+				break
+	_check("practical lights are shadowless and distance-culled (cluster budget)", bounded)
+	var fixtures := 0
+	if district != null:
+		for c in district.get_children():
+			if c is MultiMeshInstance3D and String(c.name).begins_with("LightingFixtures_"):
+				fixtures += (c as MultiMeshInstance3D).multimesh.instance_count
+	_check("every practical has a modelled fixture", lighting != null and fixtures >= lighting.light_count, "fixtures=%d" % fixtures)
+	# Round 3 (critic A2): weathered surfaces and >= 8 clutter types at street level.
+	var dressing: StreetDressing = lighting.dressing if lighting != null else null
+	var kinds := 0
+	if dressing != null:
+		for k in dressing.counts:
+			if int(dressing.counts[k]) > 0: kinds += 1
+	_check("streets are weathered and dressed (wear volumes, >= 8 clutter types)", dressing != null and dressing.weather_volumes >= 16 and kinds >= 8,
+		"" if dressing == null else "volumes=%d kinds=%d" % [dressing.weather_volumes, kinds])
+	# Round 4 (critic A3): kerbed median planters with painted noses, no domes.
+	var domes := 0
+	if district != null:
+		for c in district.get_children():
+			if c is MultiMeshInstance3D and String(c.name).begins_with("StreetDressing_shrub"):
+				domes += 1
+	_check("median beds have painted noses and no dome shrubs", dressing != null and int(dressing.counts.get("median_nose", 0)) >= 32 and domes == 0,
+		"noses=%d dome_batches=%d" % [0 if dressing == null else int(dressing.counts.get("median_nose", 0)), domes])
+	# Round 4: the low sun disc sits inside the heritage-avenue toward-sun view.
+	if sun != null:
+		var to_sun := sun.global_transform.basis.z.normalized()
+		var fwd := (Vector3(-40.0, 5.0, -155.0) - Vector3(-150.0, 2.6, -157.0)).normalized()
+		var ang := rad_to_deg(Vector2(fwd.x, fwd.z).angle_to(Vector2(to_sun.x, to_sun.z)))
+		_check("low sun is in frame on the heritage avenue (toward-sun view)", absf(ang) < 40.0 and to_sun.y > 0.15, "azimuth_off=%.1f elev=%.2f" % [ang, to_sun.y])
 
 func _count_meshes(node: Node) -> int:
 	var count := 0
@@ -717,3 +875,51 @@ func _report(timed_out: bool = false) -> void:
 	print("%d/%d checks passed, %d failed; report=%s" % [results.size() - failures, results.size(), failures, _report_path])
 	finished.emit(failures)
 	get_tree().quit(124 if timed_out else (1 if failures > 0 else 0))
+
+## Water piece (Opus 5.5 loop): the bay must stay real water, not a tinted
+## plane, with moving boats and a falling-water Merlion jet.
+func _water_checks(world: WorldBuilder) -> void:
+	var bay: BayWater = world.bay
+	var shader_ok := bay != null and bay.water_material != null and bay.water_material.shader != null \
+		and bay.water_material.shader.resource_path.ends_with("bay_water.gdshader")
+	_check("bay water uses the animated water shader, not a flat material", shader_ok)
+	if bay == null:
+		return
+	var cap_value: Variant = bay.water_material.get_shader_parameter("spec_cap")
+	var cap: float = float(cap_value) if cap_value != null else -1.0
+	_check("water sun glint is capped so no light blows a white disc", cap > 0.0 and cap <= 0.5, "spec_cap=%s" % cap)
+	_check("water surface sits below the promenade deck with a seawall face", BayWater.LEVEL < -0.5 and bay.water.layers == BayWater.WATER_LAYER)
+	var before := bay.boat_positions()
+	await _ticks(30)
+	var after := bay.boat_positions()
+	var moved := 0
+	for i in mini(before.size(), after.size()):
+		if before[i].distance_to(after[i]) > 0.5:
+			moved += 1
+	_check("boats are on the bay and moving, ships ride at anchor offshore", bay.boat_count >= 12 and moved >= 10 and bay.anchored_ships >= 10, "boats=%d moved=%d anchored=%d" % [bay.boat_count, moved, bay.anchored_ships])
+	var jet_ok := bay.jet != null and bay.jet.material_override is ShaderMaterial and bay.legacy_spray_hidden >= 1
+	_check("Merlion jet is translucent falling water, opaque legacy strut hidden", jet_ok, "legacy_hidden=%d" % bay.legacy_spray_hidden)
+	# water round 2: the periodic sine-sum swell read as straight streaks from
+	# the air; the surface must stay a non-periodic multi-octave noise field
+	# with whitecaps, and the avenue ends must stay capped as railed jetties.
+	var code: String = bay.water_material.shader.code
+	var wc_value: Variant = bay.water_material.get_shader_parameter("whitecaps")
+	var wc: float = float(wc_value) if wc_value != null else 0.55
+	_check("bay water is a non-periodic multi-octave wave field with whitecaps", code.contains("sea_field") and not code.contains("swell_gradient") and wc > 0.0, "whitecaps=%s" % wc)
+	_check("avenue ends over the bay are railed jetty decks, not bare road slabs", bay.get_node_or_null("JettyRailPosts") != null)
+	_check("sea continues to the horizon through a skirt sharing the water material", bay.horizon_skirt != null and bay.horizon_skirt.material_override == bay.water_material and code.contains("horizon_colour"))
+	# water round 3: Marina Bay is a calm dammed reservoir. Whitecaps are gated
+	# to open sea, every moving hull carries a Kelvin wedge plus a widening
+	# turbulent stern trail, and the quays carry a lapping wet line.
+	_check("bay stays glassy; foam is event-driven (Kelvin wakes, stern trail, quay wet line)", code.contains("* open_sea;") and code.contains("trail_foam") and code.contains("0.354") and code.contains("wet_line") and bay.boat_count >= 17)
+	# water round 4: boats under way throw raised white water (bow spray
+	# sheets, churned stern mound, ballistic droplets), every foam source is
+	# rendered as lacy aerated foam, and the runabouts carry crew and rails.
+	var wash := bay.wash
+	var wash_ok := wash != null and wash.sheets != null and wash.sheets.instance_count == bay.moving_boats \
+		and wash.churns != null and wash.churns.instance_count == bay.moving_boats and wash.droplet_quads >= bay.moving_boats * 100
+	_check("moving boats throw raised spray sheets, stern churn and droplets", wash_ok, "moving=%d droplets=%d" % [bay.moving_boats, wash.droplet_quads if wash != null else 0])
+	_check("wake and quay foam is lacy coverage, not smooth strokes", code.contains("lace_foam(") and code.contains("cell_edge(") and not code.contains("ring = smoothstep(1.5, 1.0, e)"))
+	var launch_tris := BoatMeshes.launch().get_faces().size() / 3
+	_check("runabout hull is a detailed crewed model (rails, windshield, driver)", launch_tris >= 1500, "tris=%d" % launch_tris)
+
