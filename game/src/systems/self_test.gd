@@ -329,6 +329,7 @@ func run(main: Node) -> void:
 	_negative_save_checks(player, mission)
 	await _wave5_checks(world, traffic, heli)
 	await _water_checks(world)
+	_character_look_checks(player)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
 	await _report()
 
@@ -1094,3 +1095,27 @@ func _water_checks(world: WorldBuilder) -> void:
 	var launch_tris := BoatMeshes.launch().get_faces().size() / 3
 	_check("runabout hull is a detailed crewed model (rails, windshield, driver)", launch_tris >= 1500, "tris=%d" % launch_tris)
 
+
+
+## Characters piece (wave Q): rebuilt look mesh with all body regions, the
+## procedural weapon grip on the right hand, and a varied crowd wardrobe that
+## never repeats the player's outfit.
+func _character_look_checks(player: Player) -> void:
+	if not CharacterLook.enabled or not CharacterVisual.available("player"):
+		return
+	var info := CharacterLook.build_for_rig("player")
+	var regions: PackedInt32Array = info.get("regions", PackedInt32Array())
+	var all_regions := regions.size() == 8
+	for r in [CharacterLook.R_SKIN, CharacterLook.R_SHIRT, CharacterLook.R_HAIR, CharacterLook.R_PANTS, CharacterLook.R_SHOE, CharacterLook.R_FACE]:
+		all_regions = all_regions and regions.size() == 8 and regions[r] > 50
+	_check("character look mesh has skin, face, hair, shirt, trousers and shoes", all_regions, str(regions))
+	_check("right hand fingers are rigged for the procedural weapon grip", int(info.get("grip_verts", 0)) > 150, "grip_verts=%d" % int(info.get("grip_verts", 0)))
+	var player_sig := CharacterLook.outfit_signature(CharacterLook.player_outfit())
+	var sigs := {}
+	var clash := false
+	for i in 12:
+		var o := CharacterLook.civilian_outfit(1000 + i * 7919)
+		var sig := CharacterLook.outfit_signature(o)
+		sigs[sig] = true
+		clash = clash or sig == player_sig
+	_check("crowd wardrobe: >= 8 distinct civilians, none in the player's outfit", sigs.size() >= 8 and not clash, "distinct=%d" % sigs.size())

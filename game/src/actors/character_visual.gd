@@ -58,6 +58,7 @@ var _foot_ids := PackedInt32Array()
 ## Characters piece: the rebuilt skinned mesh and its wardrobe (empty when the
 ## rig could not be processed and the legacy materials are in use).
 var look_mesh: MeshInstance3D
+var _hand_bone := -1
 var outfit: Dictionary = {}
 
 static func available(role: String = "player") -> bool:
@@ -128,6 +129,7 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	weapon_socket = BoneAttachment3D.new()
 	weapon_socket.name = "WeaponSocket"
 	weapon_socket.bone_name = "hand.r"
+	_hand_bone = skeleton.find_bone("hand.r")
 	skeleton.add_child(weapon_socket)
 	loaded = true
 	_play("idle", 0.0)
@@ -333,6 +335,9 @@ func weapon_muzzle_position() -> Vector3:
 func _process(_delta: float) -> void:
 	_update_animation_activity()
 	_update_contact_shadows()
+	if look_mesh != null and asset_role == "player":
+		var held := _weapon_node != null and is_instance_valid(_weapon_node) and _weapon_node.is_visible_in_tree()
+		CharacterLook.set_grip(look_mesh, skeleton, _hand_bone, 1.0 if held else 0.0)
 	if _weapon_node == null or not is_instance_valid(_weapon_node):
 		return
 	if _last_aim or _last_reload:
