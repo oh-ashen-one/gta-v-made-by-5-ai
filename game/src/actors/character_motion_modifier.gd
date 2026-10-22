@@ -16,6 +16,7 @@ var look_yaw := 0.0            # radians relative to the body, + = left
 var look_pitch := 0.0          # radians, + = down
 var breath := 0.0              # 0..1 weight of idle breathing
 var arm_swing := 0.0           # 0..1 extra walking arm swing (round C2)
+var hip_yaw := 0.0             # radians, + = legs turned left of the chest (aim strafing)
 var _t := 0.0
 var _ids := {}
 # Character frame in skeleton space (set by CharacterVisual from the import
@@ -78,6 +79,12 @@ func _process_modification_with_delta(delta: float) -> void:
 		_rotate_model_space("upper_arm.r", forward_axis, 0.06 * arm_swing)
 		_rotate_model_space("forearm.l", left_axis, -0.26 * arm_swing)
 		_rotate_model_space("forearm.r", left_axis, -0.26 * arm_swing)
+	# Aim strafing: the hips and legs turn toward the travel direction while
+	# the spine counter-turns, so the chest, arms and weapon keep the aim.
+	if absf(hip_yaw) > 0.001:
+		_rotate_model_space("pelvis", Vector3.UP, hip_yaw)
+		_rotate_model_space("spine", Vector3.UP, -hip_yaw * 0.75)
+		_rotate_model_space("chest", Vector3.UP, -hip_yaw * 0.25)
 	# Lean: split pitch and roll over spine and chest so the back curves
 	# instead of hinging at one joint. Bone-local axes are unknown for this
 	# provider rig, so rotations are composed in model space.

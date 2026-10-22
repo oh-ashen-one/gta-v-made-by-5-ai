@@ -135,6 +135,7 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 	var rate := 1.0
 	var crossfade := 0.28
 	var amp := 1.0
+	var hip_target := 0.0
 	if not grounded:
 		clip = "jump"
 		crossfade = 0.14
@@ -155,6 +156,13 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 			clip = "aim_walk" if aiming else "walk"
 			rate = clampf(speed / WALK_CLIP_SPEED, 0.8, 1.25)
 		crossfade = 0.22
+		if aiming and clip in ["aim_walk", "aim_run"]:
+			var back := absf(_travel_rel) > PI * 0.62
+			# Legs face the travel line (or its reverse when backpedalling).
+			var leg_dir := wrapf(_travel_rel + PI, -PI, PI) if back else _travel_rel
+			hip_target = clampf(leg_dir, -1.25, 1.25)
+			if back:
+				rate = -rate
 	elif speed > 2.1:
 		clip = "aim_run" if aiming else "run"
 		if motion != null:
@@ -166,6 +174,8 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 	elif aiming:
 		clip = "aim"
 		crossfade = 0.18
+	if motion != null:
+		motion.hip_yaw = lerpf(motion.hip_yaw, hip_target, 0.18)
 	stride_amp = amp
 	walk_arm = 1.0 if clip == "walk" and not gait_v2 else 0.0
 	if motion != null:
@@ -175,11 +185,22 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 	if clip == "jump" and _air_phase >= 0.0 and _clips.has("jump"):
 		# Airborne pose follows the vertical velocity (take-off, tuck at the
 		# apex, legs reaching down before touch-down), not wall-clock time.
-		_play(clip, crossfade, 0.0)
+		# speed_scale must stay non-zero: AnimationPlayer advances the
+		# crossfade by delta * speed_scale, so a zero rate froze the blend on
+		# the take-off pose (the run-cycle or jump_start pose) for the whole
+		# flight. The seek below overrides the clip position every frame.
+		_play(clip, crossfade, 1.0)
 		var air_len := animator.get_animation(_clips["jump"]).length
 		animator.seek(clampf(_air_phase, 0.0, 0.999) * air_len, true)
 		return
 	_play(clip, crossfade, rate)
+
+## Aim locomotion: travel direction relative to the facing (radians, + = to
+## the character's left). Sideways travel turns the hips into the step;
+## backward travel plays the aim walk in reverse so planted feet stay put.
+var _travel_rel := 0.0
+func set_travel_direction(rel: float) -> void:
+	_travel_rel = wrapf(rel, -PI, PI)
 
 ## Vertical velocity -> airborne pose phase (player only; NPCs leave it unset).
 var _air_phase := -1.0
@@ -188,11 +209,13 @@ func set_air_velocity(vy: float, jump_speed: float = 7.2) -> void:
 
 ## Jump anticipation, landing absorption and the run stop are short one-shot
 ## clips (v2 assets); locomotion resumes when they finish or are cancelled.
-func play_action(clip: String, crossfade: float = 0.08) -> bool:
+func play_action(clip: String, crossfade: float = 0.08, rate: float = 1.0) -> bool:
 	if not loaded or _dead or _seated or not _clips.has(clip):
 		return false
 	_one_shot = true
-	_play(clip, crossfade, 1.0)
+	if _current == clip:
+		_current = ""
+	_play(clip, crossfade, rate)
 	return true
 
 ## QA stills: hold one locomotion pose (clip + cycle phase) until released.

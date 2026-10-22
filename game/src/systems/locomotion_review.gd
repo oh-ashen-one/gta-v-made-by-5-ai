@@ -12,7 +12,7 @@ extends Node
 
 const FPS := 30.0
 const START := Vector3(-171.0, 0.45, -30.0)
-const ACTIONS := ["move_forward", "move_back", "move_left", "move_right", "sprint", "walk", "jump"]
+const ACTIONS := ["move_forward", "move_back", "move_left", "move_right", "sprint", "walk", "jump", "aim"]
 var main: Node
 var out_dir := "/tmp/locomotion-review"
 var _frame := 0
@@ -60,6 +60,8 @@ func _run() -> void:
 		["run_up", 1.0, {"move_forward": 1.0}, 0.0, -1],
 		["jump_run", 1.4, {"move_forward": 1.0}, 0.0, 4],
 		["land_stop", 1.4, {}, 0.0, -1],
+		["aim_strafe", 2.0, {"aim": 1.0, "move_right": 1.0}, 0.0, -1],
+		["aim_back", 2.0, {"aim": 1.0, "move_back": 1.0}, 0.0, -1],
 	]
 	for step in script:
 		_phase = step[0]
@@ -84,7 +86,10 @@ func _run() -> void:
 			img.save_jpg(out_dir + "/" + file, 0.9)
 			_rows.append(JSON.stringify({"file": file, "seconds": _frame / FPS, "phase": _phase,
 				"clip": visual.current_clip() if visual else "", "rate": snappedf(visual.animator.speed_scale, 0.01) if visual else 0.0,
-				"speed": snappedf(Vector2(player.velocity.x, player.velocity.z).length(), 0.01)}))
+				"speed": snappedf(Vector2(player.velocity.x, player.velocity.z).length(), 0.01),
+				"pelvis_y": snappedf(_bone_pos(visual, "pelvis").y - _ground_y, 0.005),
+				"knee_l": snappedf(_knee_flex(visual, "l"), 0.1), "knee_r": snappedf(_knee_flex(visual, "r"), 0.1),
+				"foot_l": _v(_bone_pos(visual, "foot.l")), "hand_l": _v(_bone_pos(visual, "hand.l"))}))
 			_frame += 1
 	_release()
 	var fh := FileAccess.open(out_dir + "/frames.jsonl", FileAccess.WRITE)
@@ -108,6 +113,29 @@ func _run() -> void:
 	print("[locomotion-review] metrics ", JSON.stringify(report))
 	print("[locomotion-review] frames=", _frame)
 	get_tree().quit()
+
+func _bone_pos(visual: CharacterVisual, bone: String) -> Vector3:
+	if visual == null or visual.skeleton == null or visual.skeleton.find_bone(bone) < 0:
+		return Vector3.ZERO
+	var att: BoneAttachment3D = _attach.get(bone)
+	if att == null:
+		att = BoneAttachment3D.new()
+		att.bone_name = bone
+		visual.skeleton.add_child(att)
+		_attach[bone] = att
+	return att.global_position
+
+## Knee flexion in degrees (0 = straight leg): angle between thigh and shin.
+func _knee_flex(visual: CharacterVisual, side: String) -> float:
+	var hip := _bone_pos(visual, "thigh." + side)
+	var knee := _bone_pos(visual, "shin." + side)
+	var ankle := _bone_pos(visual, "foot." + side)
+	if (knee - hip).length() < 0.01 or (ankle - knee).length() < 0.01:
+		return -1.0
+	return rad_to_deg((knee - hip).angle_to(ankle - knee))
+
+func _v(p: Vector3) -> Array:
+	return [snappedf(p.x, 0.005), snappedf(p.y, 0.005), snappedf(p.z, 0.005)]
 
 func _foot_positions(visual: CharacterVisual) -> Dictionary:
 	var pos := {}

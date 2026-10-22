@@ -208,6 +208,8 @@ func run(main: Node) -> void:
 	Input.action_release("move_forward")
 	_check("walking still works after vehicle death", player.global_position.distance_to(walk_start) > 1.0)
 	_check("on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows", _gait_matches_speed(player))
+	var jump_apex: float = pow(Player.JUMP_VELOCITY, 2.0) / (2.0 * 24.0)
+	_check("on-foot jump is a human hop (0.40-0.70 m rise, under 0.5 s airtime)", jump_apex > 0.4 and jump_apex < 0.7 and 2.0 * Player.JUMP_VELOCITY / 24.0 < 0.5, "apex=%.2f" % jump_apex)
 
 	Game.wanted_heat = 46.0
 	Game.set_wanted(2)

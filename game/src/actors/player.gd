@@ -16,7 +16,9 @@ const JUMP_WINDUP := 0.12      # standing-jump anticipation before take-off
 const STOP_DECEL := 16.0       # m/s^2 braking when the stick is released from a run
 const ACCEL := 14.0
 const FRICTION := 12.0
-const JUMP_VELOCITY := 7.2
+# 5.0 m/s against 24 m/s^2 gravity: ~0.52 m rise, ~0.42 s airtime (a human
+# hop, not the old 1.08 m / 0.60 s superhuman float).
+const JUMP_VELOCITY := 5.0
 const MOUSE_SENS := 0.0022
 const AIM_DISTANCE := 2.2
 const HIP_DISTANCE := 3.2
@@ -471,8 +473,14 @@ func _update_body_motion(delta: float, sprinting: bool) -> void:
 		_land_dip_vel -= clampf(_fall_speed * 0.05, 0.05, 0.6)
 		# Weighted landing: a knee-bend absorb clip after a real jump/fall;
 		# at running speed the procedural dip carries it into the stride.
-		if _fall_speed > 3.0 and _speed < 0.8 and _airborne_time > 0.25:
-			_visual.play_action("land", 0.05)
+		if _fall_speed > 3.0 and _airborne_time > 0.25:
+			if _speed < 0.8:
+				_visual.play_action("land", 0.05)
+			# Running landing: a fast knee-absorb (land clip at ~1.7x, ~0.25 s)
+			# that bleeds a little speed, then the run picks up again.
+			elif _visual.play_action("land", 0.04, 1.7):
+				_speed *= 0.82
+				_land_dip_vel -= 0.25
 		_fall_speed = 0.0
 	_airborne_time = 0.0 if on_floor else _airborne_time + delta
 	_was_on_floor = on_floor
@@ -508,6 +516,7 @@ func _update_camera_follow(delta: float, sprinting: bool) -> void:
 func _animate(delta: float, speed: float, sprinting: bool) -> void:
 	if _visual != null and _visual.loaded:
 		_visual.set_air_velocity(velocity.y if not is_on_floor() else 99.0, JUMP_VELOCITY)
+		_visual.set_travel_direction(wrapf(_heading - rotation.y, -PI, PI))
 		_visual.set_motion(speed, aiming, is_on_floor(), _reloading)
 		_visual.set_aim_pitch(pitch)
 		# Footsteps on the authored heel strikes (cycle phase 0 and 0.5).
