@@ -1,4 +1,4 @@
-# Singapore relay — wave 5 (final, Opus 5.5) — IN PROGRESS (final phase)
+# Singapore relay — wave 5 (final, Opus 5.5) — FINAL
 
 - Builder: Opus 5.5 (`claude-opus-5-5`) through Claude Code, branch `feature/wave-05-opus`. No main merge, no public release. No sixth wave: [`NEXT_GOAL.md`](NEXT_GOAL.md) points to the release report.
 - Fixed window: 2026-10-21T23:56:42Z → 2026-10-22T03:56:42Z (final 30 min included).
@@ -12,7 +12,7 @@
    - SHA-256: signed zip `129ecc4f15a6526dab241b231aad90bf18c977626acc248b4761cf1748fbb550`, raw zip `131aa64b2b3815bd3714129b7a6455e14def70a34d4ba862810ef668b716cd88`, PCK `5cb6c167ae883d9b4c242b184dfb49d9f7ad2608f054a840320103d3e095bd0a`, signed executable `8d071ddf0a9c358c0e4bc6e2a3b8ad16255c63eb8ea2378312a8196270f33000`.
    - Packaged headless results (`waves/05/evidence/final-package-98b41b2/`): 97/97 regressions; save → relaunch → Continue PASS (position, health, weapon); route 13/13 with 0 deaths in 147.6 s.
    - It is in `package-wave05/`, and the zip hashes were re-checked after persisting.
-   - Rendered: only if capacity frees before about 03:50 (the gated runner `scratchpad/bin/auto_render5.sh` is waiting).
+   - **Not rendered.** Two foreign veyr Blender sessions have filled the shared cap since about 03:04 UTC, and the gated runner gives up at 03:49:30 UTC. The HUD change is verified only by review and headless regressions; the `d2a6cad` renders show the pre-fix HUD.
 2. **`d2a6cad`**: the rendered-verified fallback, in `package-wave05/d2a6cad/` (`waves/05/evidence/final-package/`). Its game code differs from `98b41b2` only in `hud.gd` and the QA automation.
    - SHA-256: signed zip `36c5132f3948ad465b4860ae9d9c166dd7eedfee99ade6120e578e988eb2198d`, raw zip `04f2182845dba94326eabf43a8d43f55144db6861fe4e36f3d4e459fd695f6b6`, PCK `233a76c68f3ca83207e9575790bb0c51ff674eeba6ed596fb07b9ee7036ffc64`, signed executable `8cbba859c0de59f8f7169822aa05073676a6b92e3fb01e5dd463352873116548`.
    - Packaged headless results: 97/97 regressions, save/relaunch PASS, route 13/13 in 147.6 s.
@@ -31,7 +31,7 @@ Both signatures are local ad-hoc signatures only: no Developer ID, no notarizati
   - Concept scores: on foot 4/10, driving 2/10, helicopter 3/10.
   - Worst defects: the minimap and ammo contrast (fixed in `98b41b2`, rendered re-check pending); an empty world, a white glow by the helicopter, and water reading as paving (open).
 - Mission route: every source and packaged route after the recomposition passed 13/13 gates with 0 deaths, in 147.6–153.0 s headless and 149.1 s rendered.
-- 30-minute soak attempts: #1, #4, #6, #7, #8 and #9 all aborted; the reasons and fixes are in the release report. #10 is running on `98b41b2` (03:02–03:34 UTC).
+- **30-minute soak #10 on `98b41b2` COMPLETED**: 1,800.1 s, 0 deaths, exit 0, 0 errors; three missions, 4/4 fixture checks, five reboard cycles, and 11.9 km of free roam (`waves/05/evidence/soak10-completed-98b41b2/`). It is headless and scripted. Earlier soaks #1, #4, #6, #7, #8 and #9 aborted; the reasons and fixes are in the release report.
 - CPU (shared machine): physics tick ~11.3 → ~5.1 ms. Mesh census: district mesh instances 11,064 → 909.
 - Critic code passes 1–4 (21 findings) were fixed or documented.
 

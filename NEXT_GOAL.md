@@ -15,4 +15,4 @@ If the owner continues the project later, these are the highest-value open items
 3. Re-shoot the HUD frames the critic named (`09_aerial_view`, `11_delivery`, and the waterfront and grove gameplay views) to confirm the `98b41b2` minimap and ammo fixes, unless the release report already links them.
 4. Measure rendered frame time on an exclusive GPU slot. Wave 5's rendered route (p95 11.65 ms) shared the GPU with a foreign Blender render. Also A/B the batching with `--no-static-batching`.
 5. Raise landmark and material fidelity (ART-01..08); the landmarks are original low-poly forms.
-6. Run an ordinary OS-input human playtest, a listening pass, and public asset-rights clearance. Check the soak table in the release report for whether a 30-minute soak completed.
+6. Run an ordinary OS-input human playtest, a listening pass, and public asset-rights clearance. Repeat the 30-minute soak rendered: wave 5 completed one, headless only (#10).
