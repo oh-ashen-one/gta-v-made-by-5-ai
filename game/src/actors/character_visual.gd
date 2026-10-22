@@ -50,6 +50,10 @@ var walk_arm := 0.0
 # a wider pelvis blob, so the shoes read as touching the paving in close shots.
 var contact_shadows: Array[Decal] = []
 var _foot_ids := PackedInt32Array()
+## Characters piece: the rebuilt skinned mesh and its wardrobe (empty when the
+## rig could not be processed and the legacy materials are in use).
+var look_mesh: MeshInstance3D
+var outfit: Dictionary = {}
 
 static func available(role: String = "player") -> bool:
 	return ResourceLoader.exists(PROVIDER_DIR + role + "_rigged.glb")
@@ -83,7 +87,18 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		clip.loop_mode = Animation.LOOP_LINEAR if key in LOOP_CLIPS else Animation.LOOP_NONE
 	animator.animation_finished.connect(_on_animation_finished)
 	_upgrade_materials(model)
-	if role == "civilian":
+	# Characters piece: region-aware rebuilt mesh + shared wardrobe shader for
+	# the player and civilian rigs (officers keep their authored uniform).
+	look_mesh = CharacterLook.apply(model) if role != "officer" else null
+	if look_mesh != null:
+		if role == "player":
+			outfit = CharacterLook.player_outfit()
+		else:
+			outfit = CharacterLook.civilian_outfit(get_instance_id() + wardrobe_variant * 7919)
+			var stature: float = outfit["height"]
+			scale = Vector3(stature, stature, stature)
+		CharacterLook.set_outfit(look_mesh, outfit)
+	elif role == "civilian":
 		_apply_wardrobe(model, WARDROBE[posmod(wardrobe_variant, WARDROBE.size())])
 		var stature := 0.94 + float(posmod(wardrobe_variant, 7)) * 0.017
 		scale = Vector3(stature, stature, stature)
@@ -362,7 +377,7 @@ func _player_look(node: Node) -> void:
 			continue
 		for i in mi.mesh.get_surface_count():
 			var mat := mi.mesh.surface_get_material(i) as StandardMaterial3D
-			if mat == null or mat.albedo_texture == null:
+			if look_mesh != null or mat == null or mat.albedo_texture == null:
 				continue
 			var is_skin := String(mat.resource_name).contains("Skin")
 			if not (is_skin or String(mat.resource_name).contains("CharacterClothing")):
