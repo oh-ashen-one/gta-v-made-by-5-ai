@@ -133,7 +133,9 @@ func _record(player: Player, visual: CharacterVisual) -> void:
 		"foot_l": _v(_bone_pos(visual, "foot.l")), "hand_l": _v(_bone_pos(visual, "hand.l")),
 		"pos": _v(player.global_position), "yaw": snappedf(rad_to_deg(player.rotation.y), 0.1),
 		"cam": _v(player.camera.global_position), "cam_yaw": snappedf(rad_to_deg(player.camera.global_rotation.y), 0.1),
-		"hand_r": _v(_bone_pos(visual, "hand.r")), "head": _v(_bone_pos(visual, "head"))}))
+		"hand_r": _v(_bone_pos(visual, "hand.r")), "head": _v(_bone_pos(visual, "head")),
+		"head_yaw_rel": _head_dir(player, visual).x, "head_pitch": _head_dir(player, visual).y,
+		"look_yaw": snappedf(rad_to_deg(float(player.get("_look_yaw"))), 0.1)}))
 	_frame += 1
 
 # Locomotion-Q additions (run-2 critic spec): a low full-figure tracking shot
@@ -292,6 +294,24 @@ func _prop_spot(player: Player, kind: String) -> Array:
 	start.y = best.origin.y + 0.4
 	print("[locomotion-review] %s spot " % kind, best.origin)
 	return [start, atan2(along.x, along.z)]
+
+## integ-Q: where the (final, post-modifier) head points, as degrees of yaw
+## off the line of travel (+ = left) and pitch (+ = up), measured against the
+## head's bind pose (which faces the body's forward).
+func _head_dir(player: Player, visual: CharacterVisual) -> Vector2:
+	_bone_pos(visual, "head")
+	var att: BoneAttachment3D = _attach.get("head")
+	var sk := visual.skeleton if visual != null else null
+	if att == null or sk == null:
+		return Vector2.ZERO
+	var facing := Vector3(-sin(player.rotation.y), 0.0, -cos(player.rotation.y))
+	var rest_b := sk.get_bone_global_rest(sk.find_bone("head")).basis.orthonormalized()
+	var skb := sk.global_basis.orthonormalized()
+	var hf := att.global_basis.orthonormalized() * (rest_b.inverse() * (skb.inverse() * facing))
+	var vel := Vector3(player.velocity.x, 0.0, player.velocity.z)
+	var travel := vel.normalized() if vel.length() > 0.3 else facing
+	var flat := Vector3(hf.x, 0.0, hf.z).normalized()
+	return Vector2(snappedf(rad_to_deg(travel.signed_angle_to(flat, Vector3.UP)), 0.1), snappedf(rad_to_deg(asin(clampf(hf.normalized().y, -1.0, 1.0))), 0.1))
 
 func _bone_pos(visual: CharacterVisual, bone: String) -> Vector3:
 	if visual == null or visual.skeleton == null or visual.skeleton.find_bone(bone) < 0:
