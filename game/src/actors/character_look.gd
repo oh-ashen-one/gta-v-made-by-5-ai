@@ -853,7 +853,7 @@ shader_type spatial;
 render_mode cull_front, diffuse_burley, specular_disabled;
 instance uniform vec4 skin_col = vec4(0.3, 0.18, 0.12, 0.0);
 void fragment() {
-	ALBEDO = (skin_col.x < 0.0 ? vec3(0.3, 0.18, 0.12) : skin_col.rgb) * 0.62;
+	ALBEDO = (skin_col.x < 0.0 ? vec3(0.3, 0.18, 0.12) : skin_col.rgb) * 0.88;
 	ROUGHNESS = 0.8;
 	// Lit as if facing the camera (it stands in for the missing front face).
 	NORMAL = VIEW;
