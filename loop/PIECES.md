@@ -46,8 +46,8 @@ Final verification (game code `32e08ba`): headless `--test` 140/140; headless `-
 
 | Piece | Wave | Matched refs | Capture spec / play scenario | Owns (files) | Current verdict | Open biggest gap |
 | --- | --- | --- | --- | --- | --- | --- |
-| street-life | D | traffic, crowds, driving-chase, on-foot-street | junction/street views + route drive leg | traffic_manager.gd, npc.gd, avenue_dressing.gd, crowd code | rM2 OURS LOSES (c8ec055); MERGED in wave-M integration (d6b8a46) + seams | Life near the camera. Within about 3-12 m of the camera, at least 6 pedestrians must be visible in at least 2 separate groups. Each needs a different outfit and a clearly readable action (talking or gesturing, holding a drink or phone, walking across the frame), instead of one clump in the distance behind the player. At least one vehicle must be visibly moving in the next lane. |
-| characters | D | close-character, crowds | --character-review, close third-person, crowd views | player.gd, character_visual.gd, character assets | rS1 OURS LOSES (6a4a45e) | Acceptance check for A: at about 2 m, waist-up, the character must pass as a real person. The skin must show specular breakup and subsurface warmth instead of uniform plastic albedo, and the hair must have a strand or clump silhouette with no solid shell edge. The arms must be anatomically proportioned, with the elbow near waist height. The fingers must fully wrap the held object, with a visible c |
+| street-life | D | traffic, crowds, driving-chase, on-foot-street | junction/street views + route drive leg | traffic_manager.gd, npc.gd, avenue_dressing.gd, crowd code | rM2 OURS LOSES (c8ec055); MERGED in wave-M integration (d6b8a46) + seams; downtown-life rS1 OURS LOSES (5e15dc5) MERGED in integration S (96113a3) | Life near the camera. Within about 3-12 m of the camera, at least 6 pedestrians must be visible in at least 2 separate groups. Each needs a different outfit and a clearly readable action (talking or gesturing, holding a drink or phone, walking across the frame), instead of one clump in the distance behind the player. At least one vehicle must be visibly moving in the next lane. |
+| characters | D | close-character, crowds | --character-review, close third-person, crowd views | player.gd, character_visual.gd, character assets | rS1 OURS LOSES, better=true (6a4a45e); MERGED in integration S (5913ed7) | Acceptance check for A: at about 2 m, waist-up, the character must pass as a real person. The skin must show specular breakup and subsurface warmth instead of uniform plastic albedo, and the hair must have a strand or clump silhouette with no solid shell edge. The arms must be anatomically proportioned, with the elbow near waist height. The fingers must fully wrap the held object, with a visible c |
 | nearfield | D | on-foot-street, driving-chase | bottom-40% street views | palette.gd, surfaces/shaders, street props/placeholders | rR1 OURS LOSES, better=true (d379434); R1 MERGED (d32e195), R2b 606b6df (unreviewed) MERGED (2419e38) in wave-M integration | A, bottom third, against the in-frame sun, must show three things. (1) The sign post, median shrubs, kerb and van cast long shadows running toward the camera over at least about 20% of frame height. (2) Shrub and grass edges glow with rim or translucent backlight. (3) The asphalt has a warm grazing specular sheen and visible aggregate and wear (patch repairs, oil and tyre staining, gutter grime, a |
 | aerial | D | aerial-helicopter, skyline-aerial | photo_06/07/16, route 09 | lighting.gd sun/sky/fog, skyline far-shore materials | rR1 OURS LOSES (58d64da) | A's distant city credibility. Check: the skyline beyond the helicopter must show at least 6 distinct tower silhouettes, with different heights, crowns or setbacks, and facade materials with readable lit and shadowed faces. They must recede through graded haze to a far landmark layer (hills, a bridge or a coastline). No two adjacent mid-ground buildings may share the same model. FAIL if the backgro |
 | driving-2 | E | driving-chase | route 05-07 + chase footage | car.gd visuals/collision | run 1: OURS LOSES | hero car paint grain, no clear-coat, dead-stop collisions |
@@ -122,3 +122,39 @@ Seam fixes:
 - `996e35c`: people 35-160 m from the lens advance their animation every 3rd frame.
 
 Verification on final game code `996e35c`: headless `--test` 234/234 (exit 0); headless `--capture` 13/13 after every merge (174.6 s street-life, 158.6 s nearfield, 187.5 s characters, final 156.1 s; 0 deaths). Rendered (1280x720, `loop/render.sh`, lease `contaminated=no-exclusive-lock`, GPU 43-81 % busy with other work before each run): `--photos` 29, `--gameplay-photos` 7, `--capture` 13/13, 0 deaths, 163.8 s, 0 engine errors; frame times excl. readback over 5,198 frames mean 30.8 / p50 30.4 / p95 47.7 / p99 60.1 ms, max draw calls 12,475 (16,635 before the perf fixes); load 13.6 s. Images: `progress/img/integration/M/`.
+
+
+## Wave S integration (2026-10-23 ~15:18-16:00Z, integrator Opus 5.5)
+
+All four S1 rounds: OURS LOSES vs GTA V, not wowed. Every piece was merged as a net visible gain; the regressions the critics named were fixed on the integration branch (below) or are listed as open in `HANDOFF.md`.
+
+| Piece | Round (verdict vs GTA V / better than baseline) | Decision | Merged commit | Merge commit |
+| --- | --- | --- | --- | --- |
+| characters | S1 OURS LOSES / better=true | merged: civilians on the baked look mesh, with the street-life person (skin, hair, skirt, legs, age) mapped to look-shader instance parameters. Varied heads, hair and skin tones replace the clone crowd. Bake `r1s` (git-ignored, already present) | `6a4a45e` | `5913ed7` |
+| performance | S1 OURS LOSES / better=false (felt fps not clearly better, startup stall 1.56 s, one in four `--test` runs flaked on traffic flow, drive-showcase still 12 camera inside the car) | merged as a net gain: occlusion culling, threaded start-up preload, render-budget director, packaged look-bake fix; draws -43 %, load -49 %, visuals unchanged. On the integrated line the startup stall is back to M's level (1124 + 758 ms) and `--test` passed 4/4 | `47280d2` | `45da451` |
+| downtown-life (`opus55/street-life-fix`) | S1 OURS LOSES / better=false (floating pedestrian over the river in photo_23, cars stopped on zebras, talking-group pose artifacts) | merged: people within 30 m went up at every downtown spot (Raffles Place 0->43, Boat Quay 2->46); plaza activities and talking groups added. The floating walker is fixed | `5e15dc5` | `96113a3` |
+| downtown-polish | S1 OURS LOSES / better=false (photo_29 / dtx_heli_bayfront had dark planes on the water and floating slabs; sunk cars, floating tail lamps, deadlocks) | merged: layered roadside, median and forecourt planting, altitude-aware sun shadows, denser Marina Centre, corner plaza, Helix plaza ramps, a review driver that walks to MBS. The aerial regression is fixed (rendered photo_29 now matches M, plus longer shadows) | `ae78533` | `35a03b9` (ledger conflicts: both sides kept) |
+
+Seam fixes:
+- `cb1b1d4`:
+  - Crowd seeding (`crowd_director.gd`): plaza cross-lines and the walk back to a walk line must stay on paving, checked every 2 m (`_path_on_ground`). The promenade plaza rect also covers river water, so a walker crossed the Singapore River in mid-air.
+  - The tower ground-shadow overlay is now a depth-tested ground decal, so it draws no dark planes on the bay.
+  - Downtown lane cars follow the bridges' cosine deck profile and pitch with it. The straight chord between graph nodes ran under the Esplanade and Bayfront decks.
+  - Brake lamps sit on the provider body surface, found from its own vertices. They were placed at the bumper's furthest z and hovered behind the boot.
+- `8b561f8`: the overlay fades out as the camera climbs. From the air the real shadow map reaches 1.1 km; the overlay showed torn dark fragments between the CBD blocks and dark bands under the MBFC podiums. Rendered A/B with `--tower-shadows-off` / `--aerial-light-off` confirmed the overlay as the source.
+
+Verification (game code `8b561f8`):
+- Headless:
+  - `--test` 255/255 on the merged head, then 3 of 3 runs after the seam fixes.
+  - `--capture` 13/13, 0 deaths, 155.2 s on the merged head and 205.5 s after the fixes. The second run ran alongside three suites; its drive leg lost 30 s to a car box-in at the aviation gate, and the driver backed out.
+  - The tests were run on the four-merge head, not after each merge.
+- Rendered (1280x720, `loop/render.sh`, lease contaminated=no-exclusive-lock, GPU 60-79 % busy with other work):
+  - `--capture` 13/13, 0 deaths, 161.9 s, 0 engine errors.
+  - Frame times excluding readback, over 6,209 frames: mean 25.5 / p50 23.2 / p95 34.5 / p99 64.8 ms (M: 30.8 / 30.4 / 47.7 / 60.1). Max draw calls 10,527 (M 12,786).
+  - `world_ui_ready` 7.9 s (M 13.6 s).
+  - `--photos` 29 and `--gameplay-photos` 7: exit 0, 0 script errors.
+- Images: `progress/img/integration/S/`.
+- Owner routes, `--downtown-review`:
+  - Rendered on `8b561f8`: the drive loop completed in 662.8 s, of which 317.5 s was spent waiting, with 4 tows (all ambient cars stalled at Collyer Quay) and 4 overtakes. The walk reached 36/36 to MBS. The helicopter landed at NS Square and the player got out. 0 script errors. Perf sweep p50 16.4-20.1 ms.
+  - Headless: the walk and the flight both passed. The drive leg did not finish: it ran out of time at the Raffles Avenue / Bayfront Avenue corner (-775, -799).
+  - Rendered fixed views: photo_29 and dtx_heli_bayfront match M again (no dark planes on the water, no floating podiums). Cars on the Esplanade and Bayfront decks sit on the deck.

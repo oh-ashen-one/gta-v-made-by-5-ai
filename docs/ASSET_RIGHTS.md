@@ -183,3 +183,5 @@ driver/walk changes in `downtown_review.gd`. It places existing project assets o
 `palm.glb`, and the provider plant-card atlas `foliage_median_atlas.png` through `NearField` (git-ignored, private build
 use; procedural shrub clumps replace it when absent). No new imported, generated or third-party assets; no Rockstar
 material; GTA V references set the quality bar only.
+
+opus55 wave-S integrator (2026-10-23): no new art assets. Original code/shader edits only: `crowd_director.gd` (walk/plaza lines checked for ground), `dt_ground_shadow.gdshader` (depth-tested ground decal; manifest hash updated), `aerial_light.gd` (overlay fades with altitude), `ambient_traffic.gd` (downtown lanes follow the bridge deck profile), `ambient_vehicle.gd` (brake lamps seated on the provider body surface from its own vertices; the provider car rows are unchanged).

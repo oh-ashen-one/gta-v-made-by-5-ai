@@ -150,3 +150,21 @@
 - 2026-10-23T15:06:35Z characters round S1 on 6a4a45eb2e: OURS LOSES. Gap: Acceptance check for A: at about 2 m, waist-up, the character must pass as a real person. The skin must show specular breakup and subsurface warmth instead of uniform plastic albedo, and the hair must have a strand or clump silhouette with no solid shell edge. The arms must be anatomically proportioned, with the elbow near waist height. The fingers must fully wrap the held object, with a visible contact shadow where the hand meets it.
 - 2026-10-23T15:12:08Z performance round S1 on 47280d29f0: OURS LOSES. Gap: B: The player car at the centre of the frame (about 15% of the image) must hold up as a hero asset. Its paint must show sharp clear-coat reflections of the sky, trees and buildings that move with the bodywork. It needs crisp panel gaps, badging and tail-lamp detail, rear glass that reflects the scene, and a plate that sits properly in the bumper recess. There must be no smeared texture and no stray stripe on the trunk. The paint quality should be at least that of A's black coupe.
 - 2026-10-23T15:12:32Z downtown-life round S1 on 5e15dc52d7: OURS LOSES. Gap: Acceptance check for A: in this sidewalk framing, the side away from the road must show continuous, lit ground-floor shopfronts (glazing with visible interior content) across at least 25% of the frame width. Within about 15 m of the camera there must be at least 3 distinct legible signs or practical light sources (blade/neon sign, awning, lit poster) and at least 3 pavement props (A-frame board, bin, bench, poster case or bollard), so the pavement reads as a downtown street rather than an empty path between trees.
+- 2026-10-23T15:18Z wave-S integrator (Opus 5.5) started on Opus-5.5-enhancements at ba27b69 (wave end 14:20Z had passed; run is open-ended); committed the pending S1 round records (f3ce6c7).
+- 2026-10-23T15:20-15:25Z MERGED (--no-ff), in order:
+  - characters S1 6a4a45e (5913ed7; better=true).
+  - performance S1 47280d2 (45da451; better=false, merged as a net gain: draws -43 %, load -49 %).
+  - downtown-life S1 5e15dc5 (96113a3; better=false, merged as a net gain: crowds at the lens downtown).
+  - downtown-polish S1 ae78533 (35a03b9; better=false, merged as a net gain: planting and aerial light). Ledger conflicts: both sides kept.
+  - Headless on the four-merge head: import clean, --test 255/255, --capture 13/13 155.2 s. Tests were not run after each merge separately.
+- 2026-10-23T15:25-15:45Z seam fixes:
+  - cb1b1d4: crowd plaza lines and walk-backs are checked for ground (fixes the photo_23 walker in mid-air over the river). The tower ground-shadow overlay became a depth-tested ground decal. Downtown lane cars follow the bridge cosine deck profile and pitch with it (fixes cars sunk in the decks). Brake lamps are seated on the provider body surface.
+  - 8b561f8: the overlay fades out with altitude. A rendered A/B with --tower-shadows-off pinned the torn dark fragments in photo_29 on the overlay.
+- 2026-10-23T15:30-16:00Z verified on 8b561f8:
+  - Headless: --test 255/255 x3; --capture 13/13 205.5 s (it ran alongside three suites; a box-in at the aviation gate cost 30 s).
+  - RENDERED, 1280x720, lease contaminated=no-exclusive-lock, GPU 48-79 % busy:
+    - --capture 13/13, 0 deaths, 161.9 s, 0 errors. Frame times mean 25.5 / p50 23.2 / p95 34.5 / p99 64.8 ms over 6,209 frames (M 30.8/30.4/47.7/60.1). Max draws 10,527 (M 12,786). Load 7.9 s (M 13.6 s). Startup stall 1124 + 758 ms (M 1020 + 822).
+    - --photos 29 and --gameplay-photos 7: exit 0.
+    - --downtown-review: drive loop done in 662.8 s (317.5 s waiting, 4 tows at Collyer Quay), walk 36/36, heli landed at NS Square and the player got out.
+  - Headless --downtown-review: walk and fly pass; the drive did not finish (stuck at the Raffles Ave / Bayfront corner).
+  - JPEGs -> progress/img/integration/S/.
