@@ -359,6 +359,7 @@ func _process(delta: float) -> void:
 	for car in cars:
 		if not is_instance_valid(car) or car.disabled or not car.has_ai:
 			continue
+		_ai_stall_check(car, delta)
 		var nxt = car.get_meta("next_node", null)
 		if nxt == null:
 			continue
@@ -386,6 +387,56 @@ func _process(delta: float) -> void:
 			var goal: Vector3 = _player.controlled_actor().global_position if Game.player_seen else Game.last_seen_position
 			pc.ai_target = _pursuit_waypoint(pc, goal)
 	_update_police(delta)
+
+## Street-life r1: a civilian AI car standing still for AI_STALL_RESET s
+## (wedged beside lane traffic, both waiting on each other: a headless route
+## sat 70 s behind one straddling both lanes) is moved to a lane spot the
+## camera cannot see. Police and the player's car are never touched.
+const AI_STALL_RESET := 9.0
+func _ai_stall_check(car: Car, delta: float) -> void:
+	if car.kind == "police" or car.driver_is_player:
+		return
+	# A car held by its red light (speed limit set) is waiting, not stalled.
+	if Vector2(car.velocity.x, car.velocity.z).length() > 0.3 or car.ai_speed_limit < INF:
+		car.set_meta("stall_s", 0.0)
+		return
+	var stall: float = float(car.get_meta("stall_s", 0.0)) + delta
+	car.set_meta("stall_s", stall)
+	var cam := get_viewport().get_camera_3d()
+	var seen := false
+	if cam != null:
+		var here := car.global_position - cam.global_position
+		here.y = 0.0
+		seen = here.length() < 140.0 and here.normalized().dot(-cam.global_transform.basis.z) > -0.2
+	# In view it takes a long stall (a visible pop is the lesser evil than a
+	# frozen street); out of view it goes sooner.
+	if stall < (AI_STALL_RESET * 2.2 if seen else AI_STALL_RESET):
+		return
+	for attempt in 20:
+		var edge := _random_edge()
+		if edge.is_empty():
+			return
+		var from: Vector3 = edge["from"]
+		var to: Vector3 = edge["to"]
+		var dir := (to - from).normalized()
+		var p := from.lerp(to, _rng.randf_range(0.3, 0.7)) + Vector3.UP.cross(dir).normalized() * LANE_OFFSET
+		p.y = car.global_position.y
+		if cam != null:
+			var rel := p - cam.global_position
+			rel.y = 0.0
+			if rel.length() < 130.0 and rel.normalized().dot(-cam.global_transform.basis.z) > -0.2:
+				continue
+		if Vector2(p.x - Game.player_position.x, p.z - Game.player_position.z).length() < 60.0:
+			continue
+		car.velocity = Vector3.ZERO
+		car.global_position = p
+		car.rotation.y = atan2(-(to.x - from.x), -(to.z - from.z))
+		car.set_meta("from_node", from)
+		car.set_meta("next_node", to)
+		car.ai_target = _lane_point(from, to)
+		car.set_meta("stall_s", 0.0)
+		car.set_meta("stall_resets", int(car.get_meta("stall_resets", 0)) + 1)
+		return
 
 ## Road-graph pursuit (wave 5). Wave 2-4 aimed responders straight at the
 ## player, so a car on the far side of a block drove into the buildings. Close
