@@ -224,12 +224,18 @@ func _preroll(seconds: float) -> void:
 	_rebuild_grid()
 	var step := 0.1
 	var t := 0.0
+	# r1: replay the signal history of the last `seconds` instead of holding
+	# the current phase (a held red piled every red approach into one long
+	# queue: 97 of 112 cars standing after a cut).
+	var clock_now: float = traffic._signal_clock
 	while t < seconds:
+		traffic._signal_clock = fposmod(clock_now - seconds + t, 28.0)
 		_rebuild_keys()
 		for v in vehicles:
 			if v.active:
 				_drive(v, step)
 		t += step
+	traffic._signal_clock = clock_now
 	_rebuild_keys()
 	stats["prerolls"] = int(stats.get("prerolls", 0)) + 1
 
@@ -649,6 +655,13 @@ func _scan_obstacles(v: AmbientVehicle) -> float:
 				if node is AmbientVehicle:
 					if node == v or (v.stuck_time > 6.0 and v.j_len > 0.0):
 						continue
+					# r1 gridlock fix: two cars inside the same junction box never
+					# hold each other (crossing paths formed hold cycles that froze
+					# whole approaches); same-lane order inside the box is kept by
+					# _leader_gap, which follows the exit lane's queue.
+					var na := node as AmbientVehicle
+					if v.j_len > 0.0 and v.s < ENTRY and na.j_len > 0.0 and na.s < ENTRY:
+						continue
 					var ab := node.global_transform.basis
 					var abx := Vector3(ab.x.x, 0, ab.x.z).normalized() * ((node as AmbientVehicle).dims.x * 0.5)
 					var abz := Vector3(ab.z.x, 0, ab.z.z).normalized() * ((node as AmbientVehicle).dims.z * 0.5)
@@ -744,3 +757,66 @@ func count_active() -> int:
 		if v.active:
 			n += 1
 	return n
+
+## QA: who is holding whom (follow obstacle_node through ambient cars).
+func chain_desc(v: AmbientVehicle) -> String:
+	var out: Array[String] = []
+	var cur: Node3D = v
+	for i in 6:
+		if cur == null or not is_instance_valid(cur):
+			break
+		if cur is AmbientVehicle:
+			var a := cur as AmbientVehicle
+			var ed: Dictionary = edges[a.edge]
+			out.append("%s[e%d l%d s%.0f/%.0f j%.0f v%.1f idle%.0f stuck%.0f sig%s next%d gap%.1f exit%.0f %s]" % [a.name.right(5), a.edge, a.lane, a.s, float(ed["len"]) - STOP, a.j_len, a.speed, a.idle_time, a.stuck_time,
+				traffic.signal_allows(ed["dir"]), a.next_edge, a.obstacle_gap, _exit_room(a) if a.next_edge >= 0 else -1.0, str(a.global_position.round())])
+			cur = a.obstacle_node
+		else:
+			var what := cur.get_class()
+			if cur is Car:
+				var c := cur as Car
+				what = "Car(%s ai=%s player=%s v=%.1f)" % [c.kind, c.has_ai, c.driver_is_player, c.velocity.length()]
+			elif cur is NPC:
+				what = "NPC(state=%d police=%s)" % [(cur as NPC).state, (cur as NPC).is_police]
+			out.append("%s:%s%s" % [what, cur.name.right(6), str(cur.global_position.round())])
+			break
+	return " -> ".join(out)
+
+## QA: why active cars are standing (histogram of reasons).
+func hold_reasons() -> Dictionary:
+	var out := {}
+	for v in vehicles:
+		if not v.active or v.speed >= 0.6:
+			continue
+		var ed: Dictionary = edges[v.edge]
+		var r := "other"
+		var n := v.obstacle_node
+		if n != null and is_instance_valid(n) and v.obstacle_gap < 3.0:
+			if n is AmbientVehicle:
+				r = "amb_box" if (n as AmbientVehicle).j_len > 0.0 and (n as AmbientVehicle).s < ENTRY else ("amb_idle" if (n as AmbientVehicle).idle_time > 5.0 else "amb")
+			elif n is Car:
+				r = "car_ai" if (n as Car).has_ai else ("car_player" if (n as Car).driver_is_player else "car_parked")
+			elif n is NPC:
+				r = "npc"
+			else:
+				r = "player"
+		elif v.j_len > 0.0 and v.s < ENTRY:
+			r = "in_box"
+		elif not traffic.signal_allows(ed["dir"]):
+			r = "red"
+		elif _leader_gap(v, float(ed["len"]) - STOP) < 4.0:
+			r = "queue"
+		elif v.next_edge >= 0 and _exit_room(v) < v.dims.z + 2.5:
+			r = "exit_full"
+		out[r] = int(out.get(r, 0)) + 1
+	return out
+
+## Any lane car moving inside (or about to cross) the junction box at `node`?
+func box_busy(node: Vector3) -> bool:
+	for v in vehicles:
+		if not v.active or v.speed < 1.0:
+			continue
+		var p := v.global_position
+		if absf(p.x - node.x) < 15.0 and absf(p.z - node.z) < 15.0:
+			return true
+	return false

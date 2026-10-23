@@ -1,9 +1,11 @@
 class_name NPC
 extends CharacterBody3D
+
 ## Civilian and police characters. Purposeful ambient life (NPC-01), visible
 ## reactions (NPC-02) and readable combatants (NPC-03) with real damage state
 ## (COMBAT-03).
 
+static var _officer_down_toast_ms := 0  # combat piece: debounce for the "Officer down." toast
 enum State { WALK, IDLE, FLEE, DEAD, PURSUE }
 
 const WALK_SPEED := 1.5
@@ -347,32 +349,28 @@ func _pursue(delta: float) -> void:
 	if dist > 42.0:
 		state = State.WALK
 		return
+	# Combat piece: armed NPCs hold and fire from range when they have a clear
+	# line (bursts, sidesteps, flinch), and close in otherwise.
 	if is_police and Game.wanted_level > 0:
-		if dist > 9.0:
+		if dist > NpcCombat.POLICE_RANGE or not NpcCombat.has_line(self, target_position):
 			_move_towards(target_position, PURSUE_SPEED, delta)
 		else:
-			velocity.x = 0.0
-			velocity.z = 0.0
-			fire_timer -= delta
-			if fire_timer <= 0.0:
-				fire_timer = 2.0
-				_shoot_at(player)
+			NpcCombat.engage(self, player, target_position, delta)
 	elif is_hostile:
-		if dist > 7.0:
+		if dist > NpcCombat.HOSTILE_RANGE or not NpcCombat.has_line(self, target_position):
 			_move_towards(target_position, PURSUE_SPEED, delta)
 		else:
-			fire_timer -= delta
-			if fire_timer <= 0.0:
-				fire_timer = 1.4
-				_shoot_at(player)
+			NpcCombat.engage(self, player, target_position, delta)
 
-func _shoot_at(player: Node) -> void:
+func _shoot_at(player: Node, spread: float = 0.0) -> void:
 	var target: Node3D = player.controlled_actor() if player.has_method("controlled_actor") else player
 	if target == null:
 		return
 	var origin := global_position + Vector3(0.0, 1.3, 0.0)
 	var aim_height := 1.1 if target == player else 1.0
 	var dir: Vector3 = (target.global_position + Vector3(0.0, aim_height, 0.0) - origin).normalized()
+	if spread > 0.0:
+		dir = dir.rotated(Vector3.UP, randf_range(-spread, spread)).rotated(dir.cross(Vector3.UP).normalized(), randf_range(-spread, spread) * 0.6).normalized()
 	Events.shot_fired.emit(origin, dir, "npc_pistol")
 	var params := PhysicsRayQueryParameters3D.create(origin, origin + dir * 60.0)
 	# Cars and aircraft are cover for their occupants. The ray stops on the
@@ -383,6 +381,9 @@ func _shoot_at(player: Node) -> void:
 		excluded.append(player.get_rid())
 	params.exclude = excluded
 	var hit := get_world_3d().direct_space_state.intersect_ray(params)
+	var muzzle := character_visual.weapon_muzzle_position() if character_visual != null and character_visual.loaded else origin + dir * 0.45
+	CombatFx.get_fx(get_tree()).shot(muzzle, dir, hit["position"] if not hit.is_empty() else origin + dir * 60.0, not hit.is_empty(),
+		hit.get("normal", Vector3.ZERO), hit.get("collider"), "npc_pistol", false)
 	if not hit.is_empty():
 		var collider = hit["collider"]
 		if collider and collider.has_method("take_damage"):
@@ -425,6 +426,9 @@ func take_damage(amount: float, from_position: Vector3, by_player: bool = true) 
 	health -= amount
 	if character_visual != null and character_visual.loaded and health > 0:
 		character_visual.play_hit()
+	# Combat piece: shove + skeletal flinch, and a short hold on firing.
+	CombatFx.get_fx(get_tree()).stagger(self, from_position, amount, health <= 0.0)
+	NpcCombat.flinch(self)
 	if by_player:
 		Game.add_heat(4.0 if not is_police else 8.0)
 	_panic(from_position)
@@ -465,7 +469,11 @@ func _die(by_player: bool) -> void:
 	Events.actor_died.emit(self, by_player)
 	if is_police:
 		Game.add_heat(12.0)
-		Events.toast("Officer down.", "bad")
+		# One toast per burst of police deaths (wave Q2: no stacked duplicates).
+		var now_ms := Time.get_ticks_msec()
+		if now_ms - _officer_down_toast_ms > 6000 or _officer_down_toast_ms == 0:
+			_officer_down_toast_ms = now_ms
+			Events.toast("Officer down.", "bad")
 
 func _on_shot_fired(origin: Vector3, _dir: Vector3, _weapon_id: String) -> void:
 	if state == State.DEAD:

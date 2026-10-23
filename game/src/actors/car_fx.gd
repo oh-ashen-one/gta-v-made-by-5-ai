@@ -17,8 +17,9 @@ const MAX_ROLL := 0.075
 const MAX_PITCH := 0.055
 const SPRING_K := 70.0            # body spring stiffness (1/s^2)
 const SPRING_D := 7.5             # damping (under-damped: one visible settle)
-const SKID_COUNT := 720
+const SKID_COUNT := 2400
 const VISUAL_LAYER_SELF := 1 << 19   # player car body, hidden from its own probe
+const CarDamageScript := preload("res://src/actors/car_damage.gd")
 
 var car: Car
 var _base_xform := Transform3D.IDENTITY
@@ -72,8 +73,11 @@ var _damage_smoke: GPUParticles3D
 var _skids: MultiMeshInstance3D
 var _skid_head := 0
 var _skid_last: Array[Vector3] = [Vector3.INF, Vector3.INF]
-var _blur: MeshInstance3D
-var _blur_mat: ShaderMaterial
+## driving-q: chase-camera motion blur (compositor effect) and its state.
+var motion_blur: CarMotionBlur = null
+var _blur_frames := 0             # frames since the chase camera went live
+var _blur_prev_cam := Transform3D.IDENTITY
+const SHUTTER_S := 0.8 / 60.0     # exposure: 0.8 of a 60 Hz frame (~290-degree shutter)
 var _slip := 0.0
 var _probe_timer := 0.0
 var _debris_t := 0.0
@@ -82,6 +86,12 @@ var _squeal: AudioStreamPlayer3D
 const GEARS := [8.5, 14.0, 19.5, 24.5, 30.0]
 const PROBE_STEP := 0.45
 var _impact_cool := 0.0
+## driving-p: on-foot -> chase camera blend on entry, lateral weight swing.
+var _entry_from := Transform3D.IDENTITY
+var _entry_fov := 68.0
+var _entry_t := 1.0
+var _cam_lat := 0.0
+var _cam_lat_v := 0.0
 ## QA readback (self_test / showcase): last values applied to the body.
 var last_roll := 0.0
 var last_pitch := 0.0
@@ -95,9 +105,14 @@ func setup(owner_car: Car, provider_root: Node3D) -> void:
 	if _body_node != null:
 		_base_xform = _body_node.transform
 		_aabb = _visual_aabb(_body_node)
-		_upgrade_paint(_body_node)
 	if _aabb.size == Vector3.ZERO:
 		_aabb = AABB(Vector3(-0.92, 0.0, -2.2), Vector3(1.85, 1.45, 4.4))
+	if _body_node != null:
+		# driving-p: clean clear-coat body shader, dents, debris and glass.
+		var dmg := CarDamageScript.new()
+		add_child(dmg)
+		dmg.setup(car, _body_node, _aabb, _base_xform)
+		car.damage = dmg
 	_pivot = Vector3(0.0, _aabb.position.y + _aabb.size.y * 0.32, _aabb.get_center().z)
 	_build_coronas()
 	_build_contact_shadow()
@@ -240,9 +255,9 @@ func _build_coronas() -> void:
 		_smoke_tex = _make_smoke_tex()
 		_corona_mesh = QuadMesh.new()
 		_corona_mesh.size = Vector2(1.0, 1.0)
-		_tail_mat = _corona_material(Color(1.0, 0.10, 0.05), 0.42)
-		_brake_mat = _corona_material(Color(1.0, 0.16, 0.08), 0.95)
-		_head_mat = _corona_material(Color(1.0, 0.93, 0.80), 1.0)
+		_tail_mat = _corona_material(Color(1.0, 0.10, 0.05), 0.55)
+		_brake_mat = _corona_material(Color(1.0, 0.16, 0.08), 1.5)  # rQ2: was 2.6 (100-150 px halo)
+		_head_mat = _corona_material(Color(1.0, 0.93, 0.80), 0.4)  # rQ2: daylight; 1.0 read as a floating white sprite
 	var rear_z := _aabb.end.z - 0.16
 	var front_z := _aabb.position.z + 0.10
 	var hx := _aabb.size.x * 0.33
@@ -254,7 +269,7 @@ func _build_coronas() -> void:
 		t.material_override = _tail_mat
 		t.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		t.position = Vector3(hx * sx, tail_y, rear_z + 0.06)
-		t.scale = Vector3.ONE * 0.17
+		t.scale = Vector3.ONE * 0.15
 		t.visibility_range_end = 160.0
 		add_child(t)
 		_tail_coronas.append(t)
@@ -263,7 +278,7 @@ func _build_coronas() -> void:
 		h.material_override = _head_mat
 		h.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		h.position = Vector3(hx * 0.98 * sx, head_y, front_z - 0.06)
-		h.scale = Vector3.ONE * 0.26
+		h.scale = Vector3.ONE * 0.11  # rQ2: 0.26 read as a floating white disc
 		h.visibility_range_end = 160.0
 		add_child(h)
 		_head_coronas.append(h)
@@ -287,8 +302,8 @@ func _build_contact_shadow() -> void:
 	var decal := Decal.new()
 	decal.name = "ContactShadow"
 	decal.texture_albedo = _contact_tex
-	decal.modulate = Color(1.0, 1.0, 1.0, 0.82)
-	decal.size = Vector3(_aabb.size.x * 1.22, 0.6, _aabb.size.z * 1.08)
+	decal.modulate = Color(1.0, 1.0, 1.0, 0.5)
+	decal.size = Vector3(_aabb.size.x * 1.12, 0.6, _aabb.size.z * 1.02)
 	decal.position = Vector3(_aabb.get_center().x, _aabb.position.y - 0.08, _aabb.get_center().z)
 	decal.upper_fade = 0.15
 	decal.lower_fade = 0.3
@@ -397,15 +412,17 @@ func _set_lights(on: bool) -> void:
 	_lights_on = on
 	for c in _tail_coronas + _head_coronas:
 		c.visible = on
+	if car.damage != null: car.damage.set_lamps(1.0 if _braking else 0.0, 1.0 if on else 0.0)
 
 func _set_brake(on: bool) -> void:
 	if on == _braking: return
 	_braking = on
 	for t in _tail_coronas:
 		t.material_override = _brake_mat if on else _tail_mat
-		t.scale = Vector3.ONE * (0.21 if on else 0.17)
+		if t.scale != Vector3.ZERO: t.scale = Vector3.ONE * (0.20 if on else 0.15)
 	if _brake_light != null:
 		_brake_light.visible = on
+	if car.damage != null: car.damage.set_lamps(1.0 if on else 0.0, 1.0 if _lights_on else 0.0)
 
 # ------------------------------------------------------------- player rig
 func build_player_rig() -> void:
@@ -441,8 +458,8 @@ func build_player_rig() -> void:
 	# Brake glow spilling on the road and the body behind the car.
 	_brake_light = OmniLight3D.new()
 	_brake_light.light_color = Color(1.0, 0.12, 0.06)
-	_brake_light.light_energy = 0.45
-	_brake_light.omni_range = 3.2
+	_brake_light.light_energy = 0.12  # rQ2: 0.9 / 4 m turned the yellow plate red
+	_brake_light.omni_range = 2.2
 	_brake_light.shadow_enabled = false
 	_brake_light.position = Vector3(0.0, _aabb.position.y + _aabb.size.y * 0.5, _aabb.end.z + 0.5)
 	_brake_light.visible = _braking
@@ -462,7 +479,7 @@ func build_player_rig() -> void:
 		_head_beams.append(beam)
 	# Rear-tyre smoke.
 	for sx in [-1.0, 1.0]:
-		var p := _make_smoke(Color(0.84, 0.84, 0.85, 0.34), 80)
+		var p := _make_smoke(Color(0.80, 0.80, 0.81, 0.17), 80)  # rQ2: 0.34 was an opaque blob
 		p.position = Vector3(_aabb.size.x * 0.42 * sx, 0.25, _aabb.end.z - _aabb.size.z * 0.22)
 		add_child(p)
 		_smoke.append(p)
@@ -553,11 +570,13 @@ func _make_sparks() -> GPUParticles3D:
 	var pm := ParticleProcessMaterial.new()
 	pm.direction = Vector3(0.0, 1.0, 0.0)
 	pm.spread = 62.0
-	pm.initial_velocity_min = 5.0
-	pm.initial_velocity_max = 12.0
+	pm.initial_velocity_min = 3.0
+	pm.initial_velocity_max = 8.0
 	pm.gravity = Vector3(0.0, -18.0, 0.0)
 	pm.scale_min = 0.5
 	pm.scale_max = 1.0
+	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	pm.emission_sphere_radius = 0.12
 	var grad := Gradient.new()
 	grad.set_color(0, Color(1.0, 0.85, 0.55, 1.0))
 	grad.set_color(1, Color(1.0, 0.28, 0.04, 0.0))
@@ -566,13 +585,13 @@ func _make_sparks() -> GPUParticles3D:
 	pm.color_ramp = gt
 	p.process_material = pm
 	var quad := QuadMesh.new()
-	quad.size = Vector2(0.022, 0.24)
+	quad.size = Vector2(0.010, 0.11)
 	var m := StandardMaterial3D.new()
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	m.vertex_color_use_as_albedo = true
-	m.albedo_color = Color(2.1, 1.05, 0.32)
+	m.albedo_color = Color(3.2, 1.5, 0.45)
 	m.cull_mode = BaseMaterial3D.CULL_DISABLED
 	# C2: streaks that reach the lens fade out instead of filling the frame.
 	m.distance_fade_mode = BaseMaterial3D.DISTANCE_FADE_PIXEL_ALPHA
@@ -581,6 +600,29 @@ func _make_sparks() -> GPUParticles3D:
 	quad.material = m
 	p.draw_pass_1 = quad
 	return p
+
+## rQ2: skid ribbons were hard-edged opaque black strips. A small generated
+## mask feathers both edges and breaks the rubber into streaky grain along the
+## direction of travel (v), so a mark reads as laid rubber, not a painted line.
+static var _skid_tex_cache: Texture2D
+static func _skid_tex() -> Texture2D:
+	if _skid_tex_cache != null: return _skid_tex_cache
+	var w := 32
+	var h := 64
+	var img := Image.create(w, h, true, Image.FORMAT_RGBA8)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7731
+	var streak := PackedFloat32Array()
+	for x in w: streak.append(rng.randf_range(0.55, 1.0))
+	for y in h:
+		for x in w:
+			var u := (x + 0.5) / w
+			var edge := smoothstep(0.0, 0.28, u) * smoothstep(1.0, 0.72, u)
+			var a := edge * streak[x] * rng.randf_range(0.8, 1.0)
+			img.set_pixel(x, y, Color(1.0, 1.0, 1.0, a))
+	img.generate_mipmaps()
+	_skid_tex_cache = ImageTexture.create_from_image(img)
+	return _skid_tex_cache
 
 func _build_skids() -> void:
 	_skids = MultiMeshInstance3D.new()
@@ -594,7 +636,8 @@ func _build_skids() -> void:
 	var m := StandardMaterial3D.new()
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.vertex_color_use_as_albedo = true
-	m.albedo_color = Color(0.012, 0.011, 0.010, 1.0)
+	m.albedo_color = Color(0.02, 0.019, 0.018, 1.0)
+	m.albedo_texture = _skid_tex()   # rQ2: soft feathered edges + rubber grain
 	# C2: at 0.38 the rubber mirrored the sky and read as a light-grey line.
 	m.roughness = 0.95
 	m.metallic_specular = 0.08
@@ -609,48 +652,26 @@ func _build_skids() -> void:
 	add_child(_skids)
 	_skids.global_transform = Transform3D.IDENTITY
 
+## driving-q: the old frame-edge radial blur (a screen-texture quad that only
+## touched the outer frame and left the lower-third road as static speckle)
+## is replaced by per-pixel motion blur along the engine's motion vectors, a
+## compositor effect on the chase camera only (car_motion_blur.gd).
 func _build_blur() -> void:
-	var sh := Shader.new()
-	sh.code = """
-shader_type spatial;
-render_mode unshaded, depth_test_disabled, cull_disabled, shadows_disabled, skip_vertex_transform, fog_disabled;
-uniform sampler2D screen_tex : hint_screen_texture, filter_linear_mipmap;
-uniform float strength = 0.0;
-void vertex() {
-	POSITION = vec4(VERTEX.xy * 2.0, 1.0, 1.0);
-}
-void fragment() {
-	vec2 uv = SCREEN_UV;
-	vec2 c = vec2(0.5, 0.56);
-	vec2 d = uv - c;
-	float r = length(d * vec2(1.6, 1.0));
-	float amt = strength * smoothstep(0.42, 1.0, r);
-	vec3 acc = vec3(0.0);
-	float w = 0.0;
-	for (int i = 0; i < 10; i++) {
-		float t = float(i) / 9.0;
-		vec2 suv = c + d * (1.0 - amt * 0.10 * t);
-		float wi = 1.0 - t * 0.5;
-		acc += textureLod(screen_tex, suv, amt * 1.5).rgb * wi;
-		w += wi;
-	}
-	ALBEDO = acc / w;
-	ALPHA = clamp(amt * 2.5, 0.0, 1.0);
-}
-"""
-	_blur_mat = ShaderMaterial.new()
-	_blur_mat.shader = sh
-	_blur_mat.render_priority = 100
-	var quad := QuadMesh.new()
-	quad.size = Vector2(1.0, 1.0)
-	_blur = MeshInstance3D.new()
-	_blur.mesh = quad
-	_blur.material_override = _blur_mat
-	_blur.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	_blur.extra_cull_margin = 16384.0
-	_blur.visible = false
-	camera.add_child(_blur)
-	_blur.position = Vector3(0.0, 0.0, -0.5)
+	if "--no-motion-blur" in OS.get_cmdline_user_args(): return
+	motion_blur = CarMotionBlur.new()
+	var comp := Compositor.new()
+	comp.compositor_effects = [motion_blur]
+	camera.compositor = comp
+
+## Start the chase camera from where the on-foot camera was (no hard cut).
+func begin_entry_blend(from_cam: Camera3D) -> void:
+	if from_cam == null or not from_cam.is_inside_tree(): return
+	# The route's fixed 05_car_entered comparison frame is shot on the entry
+	# tick; keep it the settled chase view there.
+	if "--capture" in OS.get_cmdline_user_args(): return
+	_entry_from = from_cam.global_transform
+	_entry_fov = from_cam.fov
+	_entry_t = 0.0
 
 ## Called by the car when the player takes or leaves it.
 func on_player_changed(driving: bool) -> void:
@@ -662,7 +683,8 @@ func on_player_changed(driving: bool) -> void:
 		_probe.visible = driving
 		_probe_timer = 0.0
 	for b in _head_beams: b.visible = driving
-	if _blur != null: _blur.visible = false
+	_blur_frames = 0
+	if motion_blur != null: motion_blur.shutter = 0.0
 	for p in _smoke: p.emitting = false
 	if _squeal != null and not driving: _squeal.stop()
 	if not driving and camera != null:
@@ -679,14 +701,15 @@ func _player_fx(delta: float, speed: float, pre_speed: float) -> void:
 	# Tyre slip: lateral load, hard braking, launch wheelspin and handbrake.
 	var lat := absf(_lat_acc)
 	var slip := clampf((lat - 15.0) / 12.0, 0.0, 1.0)
-	if _long_acc < -15.0 and aspeed > 6.0: slip = maxf(slip, clampf((-_long_acc - 15.0) / 6.0, 0.0, 1.0) * 0.9)
-	if Input.is_action_pressed("move_forward") and aspeed < 7.0 and aspeed > 0.3 and _long_acc > 8.0: slip = maxf(slip, 0.75)
+	# Hard braking only marks the road (ABS-style), with a wisp of smoke at most.
+	if _long_acc < -18.0 and aspeed > 8.0: slip = maxf(slip, clampf((-_long_acc - 18.0) / 6.0, 0.0, 1.0) * 0.3)
+	if Input.is_action_pressed("move_forward") and aspeed < 7.0 and aspeed > 0.3 and _long_acc > 8.0: slip = maxf(slip, 0.3)  # rQ2: launch marks the road, no smoke blob
 	slip = maxf(slip, car.drift_amount())
 	_slip = lerpf(_slip, slip, clampf(delta * 10.0, 0.0, 1.0))
-	var smoking := _slip > 0.28 and aspeed > 1.0
+	var smoking := _slip > 0.34 and aspeed > 1.0
 	for p in _smoke:
 		p.emitting = smoking
-		p.amount_ratio = clampf(_slip * 1.2, 0.2, 1.0)
+		p.amount_ratio = clampf((_slip - 0.3) * 1.3, 0.08, 1.0)
 	if _slip > 0.22 and aspeed > 2.0:
 		_lay_skids()
 	else:
@@ -695,7 +718,6 @@ func _player_fx(delta: float, speed: float, pre_speed: float) -> void:
 	_debris_t -= delta
 	_damage_smoke.emitting = car.health < 45.0 or _debris_t > 0.0
 	_audio(aspeed)
-	_check_contacts(pre_speed)
 
 func _lay_skids() -> void:
 	var mm := _skids.multimesh
@@ -727,7 +749,7 @@ func _lay_skids() -> void:
 		mm.set_instance_transform(_skid_head, Transform3D(b, mid))
 		# Patchy rubber: per-segment opacity jitter so the line is not a ruled stripe.
 		var patch := 0.72 + 0.28 * sin(float(skid_marks_laid) * 1.7 + float(i) * 2.3) * sin(float(skid_marks_laid) * 0.37)
-		mm.set_instance_color(_skid_head, Color(1.0, 1.0, 1.0, clampf((0.78 + _slip * 0.3) * patch, 0.0, 0.95)))
+		mm.set_instance_color(_skid_head, Color(1.0, 1.0, 1.0, clampf((0.40 + _slip * 0.22) * patch, 0.0, 0.62)))
 		_skid_head = (_skid_head + 1) % SKID_COUNT
 		mm.visible_instance_count = mini(SKID_COUNT, maxi(mm.visible_instance_count, _skid_head if mm.visible_instance_count < SKID_COUNT else SKID_COUNT))
 		if skid_marks_laid >= SKID_COUNT: mm.visible_instance_count = SKID_COUNT
@@ -770,6 +792,45 @@ func _audio(aspeed: float) -> void:
 		_squeal.volume_db = lerpf(-50.0, -9.0, level) if level > 0.01 else -80.0
 		_squeal.pitch_scale = 0.9 + clampf(aspeed / 30.0, 0.0, 1.0) * 0.25
 		if level <= 0.01 and _squeal.playing: _squeal.stop()
+
+## Player car contact (called by Car._player_collision_response): sparks scaled
+## to the closing speed, debris, glass, a body jolt, a camera kick and sound.
+func crash(where: Vector3, normal: Vector3, closing: float, struck_car: bool) -> void:
+	var energy := clampf((closing - 2.0) / 20.0, 0.05, 1.0)
+	_impact_cool = 0.25
+	sparks_fired += 1
+	if _sparks != null:
+		var spm := _sparks.process_material as ParticleProcessMaterial
+		spm.initial_velocity_min = 1.5 + energy * 3.0
+		spm.initial_velocity_max = 3.5 + energy * 7.0
+		spm.scale_min = 0.4 + energy * 0.3
+		spm.scale_max = 0.7 + energy * 0.6
+		spm.direction = (normal + Vector3.UP * 0.6).normalized()
+		_sparks.global_position = where + normal * 0.12
+		_sparks.amount_ratio = clampf(0.08 + energy * 0.92, 0.0, 1.0)
+		_sparks.restart()
+		_sparks.emitting = true
+	_debris_t = 0.3 + energy * 0.6
+	if _damage_smoke != null and energy > 0.35: _damage_smoke.emitting = true
+	var car_v := Vector3(car.velocity.x, 0.0, car.velocity.z)
+	if car.damage != null:
+		CarDamageScript.ensure_sounds()
+		if energy > 0.12: car.damage.spawn_debris(where, normal, energy, car_v)
+		if energy > 0.32: car.damage.glass_burst(where, normal, energy, car_v)
+	_trauma = minf(1.0, _trauma + (0.2 + energy * 0.7) * (0.5 if bool(Game.settings.get("reduced_shake", false)) else 1.0))
+	var local_n := car.global_transform.basis.inverse() * normal
+	# A hard hit on a corner kills the lamp there.
+	if energy > 0.45:
+		var lp := car.global_transform.affine_inverse() * where
+		var lamps := _head_coronas if lp.z < 0.0 else _tail_coronas
+		for c in lamps:
+			if signf(c.position.x) == signf(lp.x) or absf(lp.x) < 0.3:
+				c.scale = Vector3.ZERO
+	_pitch_v += clampf(local_n.z, -1.0, 1.0) * 2.2 * energy
+	_roll_v += clampf(-local_n.x, -1.0, 1.0) * 2.0 * energy
+	_heave_v += 0.6 * energy
+	Sfx.play_at("car_crash" if energy > 0.15 else "impact", where, lerpf(-8.0, 2.0, energy), 0.85 + randf() * 0.25)
+	if energy > 0.32: Sfx.play_at("glass_break", where, lerpf(-6.0, 0.0, energy), 0.9 + randf() * 0.2)
 
 ## Sparks, a body jolt and a short camera kick for one hard contact.
 func impact_at(where: Vector3, normal: Vector3, energy: float) -> void:
@@ -820,28 +881,47 @@ func _update_camera(delta: float) -> void:
 	_cam_yaw = lerp_angle(_cam_yaw, target_yaw, clampf(delta * yaw_k, 0.0, 1.0))
 	# Longitudinal spring: the car pulls away under throttle and the camera
 	# closes in under braking, then settles.
-	var long_target := clampf(_long_acc * 0.065, -0.9, 0.55)
+	# integ-P seam: closing in under hard braking/reverse is capped (critic: the
+	# van's rear filled 60-70% of the frame).
+	var long_target := clampf(_long_acc * 0.05, -0.35, 0.55)
 	_cam_long_v += ((long_target - _cam_long) * 26.0 - _cam_long_v * 7.0) * delta
 	_cam_long += _cam_long_v * delta
-	var dist := 4.7 + ratio * 0.3 + _cam_long
-	var height := 1.38 + ratio * 0.08
+	# Framing scales with the body (van is taller/longer than a coupe).
+	var size_k: float = {"van": 1.38, "coupe": 0.96, "police": 1.03}.get(car.kind, 1.0)
+	var dist := (4.7 + ratio * 0.3) * size_k + _cam_long
+	# driving-q: the lens settles lower as speed builds (1.93 m -> ~1.67 m
+	# above the road at top speed) for a lower, more cinematic chase angle
+	# with more grazing road in the lower third.
+	var height := (1.38 - 0.26 * smoothstep(0.25, 0.9, ratio)) * size_k
 	var fwd := Vector3(-sin(_cam_yaw), 0.0, -cos(_cam_yaw))
+	var cam_right := Vector3(cos(_cam_yaw), 0.0, -sin(_cam_yaw))
+	# Weight swing: the camera is thrown outward in a corner and settles back.
+	var lat_target := clampf(_lat_acc * 0.022, -0.55, 0.55)
+	_cam_lat_v += ((lat_target - _cam_lat) * 18.0 - _cam_lat_v * 6.5) * delta
+	_cam_lat += _cam_lat_v * delta
 	var base := car.global_position
-	var pivot := base + Vector3(0.0, 1.25, 0.0)
-	var desired := base - fwd * dist + Vector3(0.0, height + 0.55, 0.0)
+	var pivot := base + Vector3(0.0, 1.25 * size_k, 0.0)
+	var desired := base - fwd * dist + cam_right * _cam_lat + Vector3(0.0, height + 0.55, 0.0)
 	# Keep the lens out of walls: pull in along the pivot ray.
 	var space := car.get_world_3d().direct_space_state
-	var q := PhysicsRayQueryParameters3D.create(pivot, desired)
-	q.collision_mask = 1
-	q.exclude = [car.get_rid()]
-	var hit := space.intersect_ray(q)
-	if not hit.is_empty():
-		desired = (hit["position"] as Vector3) + (pivot - desired).normalized() * 0.35
+	# integ-P seam: a sphere sweep instead of a thin ray, so a wall beside the
+	# lens (not only one straight behind it) pulls the camera in.
+	var sq := PhysicsShapeQueryParameters3D.new()
+	var sph := SphereShape3D.new()
+	sph.radius = 0.38
+	sq.shape = sph
+	sq.transform = Transform3D(Basis.IDENTITY, pivot)
+	sq.motion = desired - pivot
+	sq.collision_mask = 1
+	sq.exclude = [car.get_rid()]
+	var frac: PackedFloat32Array = space.cast_motion(sq)
+	if frac.size() >= 1 and frac[0] < 1.0:
+		desired = pivot + (desired - pivot) * maxf(frac[0], 0.12)
 	if _cam_snap:
 		_cam_pos = desired
 	else:
 		_cam_pos = _cam_pos.lerp(desired, clampf(delta * 14.0, 0.0, 1.0))
-	var look := base + Vector3(0.0, 1.0, 0.0) + fwd * (2.6 + ratio * 3.5)
+	var look := base + Vector3(0.0, 1.0 * size_k, 0.0) + fwd * (2.6 + ratio * 3.5)
 	var xf := Transform3D(Basis.IDENTITY, _cam_pos).looking_at(look, Vector3.UP)
 	# Collision kick only (LOOK_DEV: no default shake); decays in ~0.4 s.
 	if _trauma > 0.001:
@@ -850,13 +930,37 @@ func _update_camera(delta: float) -> void:
 		xf.origin += xf.basis.x * sin(_shake_t * 1.3) * 0.07 * amp + xf.basis.y * sin(_shake_t * 1.7 + 1.0) * 0.05 * amp
 		xf.basis = xf.basis.rotated(xf.basis.z.normalized(), sin(_shake_t * 0.9) * 0.012 * amp)
 		_trauma = maxf(0.0, _trauma - delta * 2.4)
-	camera.global_transform = xf
 	# Speed FOV kick, eased so it breathes in rather than snapping.
 	var fov_target := 64.0 + 12.0 * pow(ratio, 1.4)
 	_cam_fov = lerpf(_cam_fov, fov_target, clampf(delta * 2.2, 0.0, 1.0))
-	camera.fov = _cam_fov
-	if _blur_mat != null:
-		var s := clampf((ratio - 0.55) / 0.45, 0.0, 1.0) * 0.55
-		_blur_mat.set_shader_parameter("strength", s)
-		_blur.visible = s > 0.02 and camera.current
+	var fov := _cam_fov
+	if _entry_t < 1.0:
+		_entry_t = minf(1.0, _entry_t + delta / 0.65)
+		var k := _entry_t * _entry_t * (3.0 - 2.0 * _entry_t)
+		xf = _entry_from.interpolate_with(xf, k)
+		fov = lerpf(_entry_fov, _cam_fov, k)
+	camera.global_transform = xf
+	camera.fov = fov
+	_update_motion_blur(delta, aspeed, xf)
 	_cam_snap = false
+
+## Exposure for the motion blur: a fixed shutter time expressed as a fraction
+## of this frame, faded in with speed. Off for the first frames on the chase
+## camera, during the entry blend and on any camera jump (a cut would smear
+## the whole frame along stale motion vectors).
+func _update_motion_blur(delta: float, aspeed: float, xf: Transform3D) -> void:
+	if motion_blur == null: return
+	var jump := xf.origin.distance_to(_blur_prev_cam.origin) > maxf(3.0, aspeed * delta * 3.0) \
+		or xf.basis.z.dot(_blur_prev_cam.basis.z) < 0.94
+	_blur_prev_cam = xf
+	_blur_frames = 0 if (jump or _cam_snap or not camera.current or _entry_t < 1.0) else _blur_frames + 1
+	var speed_k := smoothstep(3.0, 13.0, aspeed)
+	var frac := clampf(SHUTTER_S / maxf(delta, 1e-4), 0.0, 2.0)
+	var vp := camera.get_viewport()
+	var vs := vp.get_visible_rect().size if vp != null else Vector2(16.0, 9.0)
+	var box := _aabb.grow(0.1)
+	box.position.y = maxf(box.position.y, 0.04)
+	box.end.y = _aabb.end.y + 0.15
+	motion_blur.set_car_mask(camera, car.global_transform, box, vs.x / maxf(vs.y, 1.0))
+	motion_blur.debug_mask = "--motion-blur-debug" in OS.get_cmdline_user_args()
+	motion_blur.shutter = frac * speed_k if _blur_frames >= 2 else 0.0

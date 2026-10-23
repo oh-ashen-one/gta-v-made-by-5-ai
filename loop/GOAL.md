@@ -101,6 +101,11 @@ No Rockstar code, assets, UI, audio, maps or missions (END_GOAL GOV-03). The ref
 Everything shipped is original.
 
 ## Guardrails (house rules; these override "don't stop")
+- **Owner rule 2026-10-22 ~18:00Z — share the Studio, don't hog it:** other sessions use this machine. At most ONE of
+  this loop's rendered runs at a time (loop/render.sh serialises ours through loop/one_at_a_time.py BEFORE entering the
+  shared lease queue, so we hold at most one slot and never block the shared FIFO); everything heavy runs at lower CPU priority (bounded_run.py applies `nice 10`; prefix any other
+  heavy command — Blender, ffmpeg, imports, big Python — with `nice -n 10`); no more than one headless engine run per
+  agent at a time; don't loop renders back to back while others are waiting in the GPU queue.
 - At most 2 rendering engines on the whole machine (Godot, Blender, `Orchard Reach`), counting other
   sessions'. Never raise the cap, and never touch, signal or wait on other sessions' processes, files or locks.
 - After two crashes of the same run, do not auto-relaunch it; record and move on. To stop an engine,
@@ -108,6 +113,11 @@ Everything shipped is original.
 - Nothing may open a GUI app, OS dialog or new terminal window (`open`, `osascript` are denied). Background
   jobs stay headless.
 - No paid generation (Tripo, Meshy, Customuse, Higgsfield, etc.): there is no owner online to approve spend.
+  **Owner update 2026-10-22 ~17:30Z:** Higgsfield IMAGE generation is approved for this loop. Only the orchestrator
+  generates (one job at a time, reviewed before the next, per house rules); builders must NOT call generation tools.
+  Generated textures/cards live in the git-ignored `game/assets/providers/higgsfield/` (linked into every worktree) and are
+  catalogued in `loop/GENERATED_ASSETS.md`; request new ones by appending to the request list there. Use them freely; never
+  commit them (provider outputs, not MIT, not cleared for public redistribution); add a ledger row when you ship one.
   Use Blender (headless, through `loop/render.sh` if it renders), procedural Godot work and existing assets.
 - No package installs. Keep the asset provenance ledger (`docs/asset-manifest.csv`, `docs/ASSET_RIGHTS.md`)
   current for every new or changed asset. No public release or deployment.

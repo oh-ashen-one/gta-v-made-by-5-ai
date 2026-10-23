@@ -264,6 +264,13 @@ func _add_driver() -> void:
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		add_child(mi)
 
+## Ground velocity along the lane (m/s), for relative closing speeds.
+func planar_velocity() -> Vector3:
+	if not active:
+		return Vector3.ZERO
+	var f := -global_transform.basis.z
+	return Vector3(f.x, 0.0, f.z).normalized() * speed
+
 func set_braking(on: bool) -> void:
 	if on == _braking:
 		return
