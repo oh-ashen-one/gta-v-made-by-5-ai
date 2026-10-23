@@ -616,6 +616,7 @@ static func _hair_mesh(style: String) -> Mesh:
 		"cap": _cap(st)
 		"tudung":
 			_shell(st, 3.9, 3.25, 1.2, 1.1, 0.0)
+			_shell(st, 2.2, 2.0, 1.3, 1.0, 0.0)   # inner cap hugging the forehead (no gap under the scarf edge)
 			_cape(st)
 	# Wave S: weld shared corners so the hair shades smoothly (it was flat
 	# faceted, a stair of lit and dark quads round the head).
@@ -728,7 +729,7 @@ static func _cape(st: SurfaceTool) -> void:
 				var t := float(jj) / rows
 				var tt := sqrt(t)
 				var y0 := lerpf(-0.05, -0.162, w)        # under the chin at the front, under the scarf at the back
-				var y1 := lerpf(-0.23, -0.3, w)
+				var y1 := lerpf(-0.22, -0.29, w) + 0.012 * sin(a * 7.0)
 				var rx := lerpf(0.074, 0.18, tt)
 				var rz := lerpf(0.09, 0.145, tt)
 				var zc := lerpf(0.0, 0.012, t) - 0.006
