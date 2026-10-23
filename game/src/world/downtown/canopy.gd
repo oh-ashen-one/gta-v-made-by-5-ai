@@ -40,16 +40,24 @@ void fragment() {
 	float c1 = vn3(wp * 0.95);
 	float c2 = vn3(wp * 2.7 + 13.0);
 	float clump = c1 * 0.62 + c2 * 0.38;
-	// ragged leafy silhouette: holes where the crown is seen edge-on
+	// ragged leafy silhouette: holes where the crown is seen edge-on, and up
+	// close (< ~60 m) gaps through the whole crown so it reads as leaves
 	float rim = 1.0 - abs(dot(NORMAL, VIEW));
 	float tear = vn3(wp * 3.1 + 5.0);
 	if (is_bark < 0.5 && rim > 0.45 && tear < (rim - 0.45) * 1.6 * (1.0 - smoothstep(250.0, 600.0, dist))) { discard; }
+	float near_k = 1.0 - smoothstep(25.0, 60.0, dist);
+	float leaf_n = vn3(wp * 7.0) * 0.6 + vn3(wp * 17.0 + 2.0) * 0.4;
+	if (is_bark < 0.5 && near_k > 0.0 && leaf_n < 0.30 * near_k * (0.4 + 0.6 * (1.0 - ao))) { discard; }
 	vec3 base = leaf * tint.rgb;
 	float lit = 0.55 + 0.75 * smoothstep(0.30, 0.75, clump);
+	// individual leaf sparkle up close
+	lit *= mix(1.0, 0.7 + 0.6 * leaf_n, near_k);
 	vec3 col = base * lit * mix(0.45, 1.0, ao);
 	// flowering crowns: blossom patches on the upper surface
 	float fl = smoothstep(0.58, 0.70, vn3(wp * 0.7 + 3.0)) * tint.a * smoothstep(0.55, 0.9, ao);
-	col = mix(col, flower * (0.8 + 0.3 * c2), fl);
+	// up close the blossom breaks into flower clusters among the leaves
+	fl *= mix(1.0, smoothstep(0.45, 0.7, vn3(wp * 4.5 + 9.0)), near_k);
+	col = mix(col, flower * (0.8 + 0.3 * c2), fl * 0.85);
 	col = mix(col, bark * (0.8 + 0.3 * c2), is_bark);
 	ALBEDO = col;
 	ROUGHNESS = mix(0.82, 0.95, is_bark);

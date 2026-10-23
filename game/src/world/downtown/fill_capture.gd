@@ -21,6 +21,11 @@ const STREET := [
 	{"name": "air_marina_centre_110", "pos": Vector3(-450.0, 110.0, -640.0), "look": Vector3(-760.0, 0.0, -900.0), "fov": 62.0},
 	{"name": "air_dtx_heli_bayfront", "pos": Vector3(-650.0, 140.0, -560.0), "look": Vector3(-250.0, 0.0, -800.0), "fov": 62.0},
 	{"name": "air_dtx_heli_marina_centre", "pos": Vector3(-380.0, 165.0, -520.0), "look": Vector3(-770.0, 30.0, -780.0), "fov": 62.0},
+	# the plan's fixed downtown views that look over the new canopy (copies)
+	{"name": "street_gardens_to_mbs", "pos": Vector3(40.0, 1.7, -960.0), "look": Vector3(-118.0, 90.0, -705.0), "fov": 66.0},
+	{"name": "street_bayfront_drive", "pos": Vector3(100.0, 1.4, -772.0), "look": Vector3(-300.0, 10.0, -780.0), "fov": 70.0},
+	{"name": "street_esplanade_park", "pos": Vector3(-668.0, 1.7, -300.0), "look": Vector3(-625.0, 6.0, -200.0), "fov": 66.0},
+	{"name": "aerial_marina_bay_photo29", "pos": Vector3(-900.0, 260.0, -200.0), "look": Vector3(-150.0, 0.0, -650.0), "fov": 62.0},
 	# plan views for placement checks (not judged)
 	{"name": "dbg_top_esplanade", "pos": Vector3(-650.0, 70.0, -399.0), "look": Vector3(-650.0, 0.0, -400.0), "fov": 60.0},
 	{"name": "dbg_top_mbs", "pos": Vector3(-170.0, 150.0, -739.0), "look": Vector3(-170.0, 0.0, -740.0), "fov": 60.0},

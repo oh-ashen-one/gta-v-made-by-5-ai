@@ -1320,10 +1320,12 @@ func _opening_signage() -> void:
 	# each blade runs parallel to the street it names and reads from both sides.
 	var pole := Vector3(-169.2, 0.0, -14.2)
 	_cyl(Vector3(0.1, 3.1, 0.1), pole + Vector3(0.0, 1.55, 0.0), post_mat)
-	_street_blade(pole + Vector3(0.0, 2.95, 0.0), true, "Kampong Sirih Road")
-	_street_blade(pole + Vector3(0.0, 2.6, 0.0), false, "Tembusu Avenue")
+	_street_blade(pole + Vector3(0.0, 2.95, 0.0), true, "Kampong Sirih Road", true)
+	_street_blade(pole + Vector3(0.0, 2.6, 0.0), false, "Tembusu Avenue", true)
 
-func _street_blade(pos: Vector3, along_x: bool, text: String) -> void:
+## beside_pole (downtown-fill, wave T): `pos` is on the pole axis and the blade
+## hangs to one side of it on a bracket (the pole cut through the lettering).
+func _street_blade(pos: Vector3, along_x: bool, text: String, beside_pole: bool = false) -> void:
 	var blue := Palette.mat(Color(0.05, 0.12, 0.38), 0.6)
 	# nearfield R: size the blade to its name and fit the lettering inside the
 	# plate with a margin (critic: "Kampong Sirih Road" spilled past the plate)
@@ -1331,6 +1333,10 @@ func _street_blade(pos: Vector3, along_x: bool, text: String) -> void:
 	var text_w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 40).x if font != null else 40.0 * 0.6 * text.length()
 	var plate_len := clampf(text_w * 0.0052 + 0.36, 1.9, 2.6)
 	var pix := minf(0.0052, (plate_len - 0.34) / maxf(text_w, 1.0))
+	if beside_pole:
+		var axis := Vector3(1.0, 0.0, 0.0) if along_x else Vector3(0.0, 0.0, 1.0)
+		_box(Vector3(0.14, 0.05, 0.05) if along_x else Vector3(0.05, 0.05, 0.14), pos + axis * 0.07 + Vector3(0.0, 0.15, 0.0), Palette.mat(Color(0.2, 0.21, 0.22), 0.5, 0.6))
+		pos += axis * (plate_len * 0.5 + 0.07)
 	_box(Vector3(plate_len, 0.32, 0.05) if along_x else Vector3(0.05, 0.32, plate_len), pos, blue)
 	var rim := Palette.mat(Color(0.86, 0.86, 0.84), 0.5)
 	for dy: float in [-0.135, 0.135]:

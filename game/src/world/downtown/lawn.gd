@@ -58,6 +58,11 @@ void fragment() {
 	float fine = vn(p * 1.7) * 0.6 + vn(p * 5.3) * 0.4;
 	float fine_w = 1.0 - smoothstep(30.0, 120.0, dist);
 	col *= mix(1.0, 0.82 + 0.36 * fine, fine_w);
+	// blade-scale grain within a few metres (no smeared camouflage up close)
+	float blade = vn(p * 23.0) * 0.55 + vn(p * 61.0 + 3.0) * 0.45;
+	float blade_w = 1.0 - smoothstep(4.0, 22.0, dist);
+	col *= mix(1.0, 0.70 + 0.55 * blade, blade_w);
+	col = mix(col, col * vec3(1.12, 1.10, 0.86), blade_w * smoothstep(0.72, 0.9, blade) * 0.6);
 	ALBEDO = col;
 	ROUGHNESS = 0.93 - 0.06 * stripe * stripe_fade;
 	SPECULAR = 0.28;

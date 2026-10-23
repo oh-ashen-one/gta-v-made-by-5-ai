@@ -15,7 +15,7 @@ func run(world: WorldBuilder, suite: Node) -> void:
 		int(can.get("total", 0)) >= 3000 and species >= 4 and int(can.get("shrub", 0)) >= 300, str(can))
 	# 2. no open lawn block: every 48 m lawn cell carries trees
 	suite._check("downtown-fill: no flat lawn larger than a block (0 treeless 48 m lawn cells)",
-		int(fill.get("lawn_blocks", 0)) >= 40 and int(fill.get("empty_lawn_blocks", -1)) == 0, "blocks=%s empty=%s" % [fill.get("lawn_blocks"), fill.get("empty_lawn_blocks")])
+		int(fill.get("lawn_blocks", 0)) >= 25 and int(fill.get("empty_lawn_blocks", -1)) == 0, "blocks=%s empty=%s" % [fill.get("lawn_blocks"), fill.get("empty_lawn_blocks")])
 	# 3. shared procedural lawn material on the downtown turf
 	suite._check("downtown-fill: downtown turf uses the varied lawn shader (>= 50000 lawn cells)", int(fill.get("lawn_cells", 0)) >= 50000, "cells=%s" % fill.get("lawn_cells"))
 	# 4. roof plant on the podium / mid-rise roofs

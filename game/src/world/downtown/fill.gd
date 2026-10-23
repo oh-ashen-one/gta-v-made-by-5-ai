@@ -37,6 +37,7 @@ static func finish(world: WorldBuilder, root: Node3D) -> Dictionary:
 		stats["park_panels"] = _park_panels(holder, keep)
 		var lawn := _lawn_raster(world)
 		stats["lawn_cells"] = lawn[1]
+		stats["garden"] = _garden_features(holder, lawn[0], lawn[2])
 		stats["canopy"] = _plant(holder, lawn[0], lawn[2], keep)
 		stats["lawn_blocks"] = stats["canopy"].get("lawn_blocks", 0)
 		stats["empty_lawn_blocks"] = stats["canopy"].get("empty_lawn_blocks", -1)
@@ -234,6 +235,116 @@ static func _park_panels(holder: Node3D, keep: PackedByteArray) -> int:
 		kit.commit(holder, "DowntownFlyerPark", false, 0.0)
 	return n
 
+## Gardens by the Bay landscape: two lakes with planted shores and a loop of
+## curving garden walks through the canopy, so the gardens read from the air
+## as a designed park (water, paths, groves), not one blanket of trees. The
+## lake and path cells are cut out of the lawn raster before planting.
+const LAKES := [[Vector2(-215.0, -995.0), Vector2(62.0, 30.0), 0.35], [Vector2(95.0, -1022.0), Vector2(55.0, 22.0), -0.2]]
+const WALKS := [
+	[Vector2(-318.0, -812.0), Vector2(-240.0, -840.0), Vector2(-150.0, -870.0), Vector2(-80.0, -950.0), Vector2(10.0, -975.0), Vector2(90.0, -950.0), Vector2(150.0, -880.0), Vector2(230.0, -812.0), Vector2(370.0, -808.0)],
+	[Vector2(-300.0, -1045.0), Vector2(-250.0, -1030.0), Vector2(-150.0, -1035.0), Vector2(-110.0, -980.0), Vector2(-80.0, -950.0)],
+	[Vector2(10.0, -975.0), Vector2(40.0, -1040.0), Vector2(160.0, -1048.0), Vector2(300.0, -1040.0)],
+	[Vector2(-150.0, -870.0), Vector2(-120.0, -820.0), Vector2(-60.0, -805.0)],
+]
+
+static func _garden_features(holder: Node3D, lawn: PackedByteArray, hgt: PackedFloat32Array) -> Dictionary:
+	var Kit := preload("res://src/world/downtown/landmarks/kit.gd")
+	var Looks := preload("res://src/world/downtown/landmarks/looks.gd")
+	var kit = Kit.new()
+	var water := StandardMaterial3D.new()
+	water.albedo_color = Color(0.07, 0.14, 0.13)
+	water.roughness = 0.06
+	water.metallic_specular = 0.7
+	var rim: Material = Looks.get_mat("granite_light")
+	var walk: Material = Looks.get_mat("granite_paving")
+	var shore: Array = []
+	var cut := 0
+	for lk: Array in LAKES:
+		var c: Vector2 = lk[0]
+		var rad: Vector2 = lk[1]
+		var rot: float = lk[2]
+		var i0 := _idx(c.x, c.y)
+		if i0 < 0 or lawn[i0] == 0:
+			continue
+		var y := hgt[i0] + 0.03
+		var ring: Array[Vector3] = []
+		var n := 40
+		for k in n:
+			var a := TAU * k / n
+			var wob := 1.0 + 0.12 * sin(a * 3.0 + c.x) + 0.07 * sin(a * 5.0 + c.y)
+			var v := Vector2(cos(a) * rad.x * wob, sin(a) * rad.y * wob).rotated(rot)
+			ring.append(Vector3(c.x + v.x, y, c.y + v.y))
+		for k in n:
+			var a2 := ring[k]
+			var b2 := ring[(k + 1) % n]
+			kit.tri(water, Vector3(c.x, y, c.y), b2, a2)
+			# granite edge: a 1.2 m band just above the water
+			var oa := Vector3(c.x, 0, c.y).direction_to(Vector3(a2.x, 0, a2.z)) * 1.2
+			var ob := Vector3(c.x, 0, c.y).direction_to(Vector3(b2.x, 0, b2.z)) * 1.2
+			kit.quad(rim, a2 + Vector3(0, 0.05, 0), b2 + Vector3(0, 0.05, 0), b2 + ob + Vector3(0, 0.05, 0), a2 + oa + Vector3(0, 0.05, 0))
+			if k % 2 == 0:
+				shore.append(a2 + oa * 2.2)
+		# no trees in the lake (plus a 3 m shore)
+		var r_max := maxf(rad.x, rad.y) * 1.25 + 4.0
+		var cz := c.y - r_max
+		while cz <= c.y + r_max:
+			var cx := c.x - r_max
+			while cx <= c.x + r_max:
+				var q := Vector2(cx - c.x, cz - c.y).rotated(-rot)
+				var e := (q.x * q.x) / pow(rad.x * 1.2 + 3.0, 2.0) + (q.y * q.y) / pow(rad.y * 1.2 + 3.0, 2.0)
+				var j := _idx(cx, cz)
+				if e < 1.0 and j >= 0 and lawn[j] == 1:
+					lawn[j] = 0
+					cut += 1
+				cx += G
+			cz += G
+	# curving walks (Catmull-Rom through the control points), 4 m wide
+	var walk_m := 0.0
+	for pts: Array in WALKS:
+		var line: Array[Vector2] = []
+		for i in pts.size() - 1:
+			var p0: Vector2 = pts[maxi(i - 1, 0)]
+			var p1: Vector2 = pts[i]
+			var p2: Vector2 = pts[i + 1]
+			var p3: Vector2 = pts[mini(i + 2, pts.size() - 1)]
+			for st in 8:
+				var t := st / 8.0
+				line.append(0.5 * ((2.0 * p1) + (-p0 + p2) * t + (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t * t + (-p0 + 3.0 * p1 - 3.0 * p2 + p3) * t * t * t))
+		line.append(pts[pts.size() - 1])
+		for i in line.size() - 1:
+			var a3 := line[i]
+			var b3 := line[i + 1]
+			var ia := _idx(a3.x, a3.y)
+			var ib := _idx(b3.x, b3.y)
+			if ia < 0 or ib < 0 or lawn[ia] == 0 or lawn[ib] == 0:
+				continue
+			var side := (b3 - a3).normalized().orthogonal() * 2.0
+			var ya := hgt[ia] + 0.035
+			var yb := hgt[ib] + 0.035
+			var wq := [Vector3(a3.x - side.x, ya, a3.y - side.y), Vector3(b3.x - side.x, yb, b3.y - side.y), Vector3(b3.x + side.x, yb, b3.y + side.y), Vector3(a3.x + side.x, ya, a3.y + side.y)]
+			if (wq[1] - wq[0]).cross(wq[2] - wq[1]).y < 0.0:
+				wq.reverse()
+			kit.quad(walk, wq[0], wq[1], wq[2], wq[3])
+			walk_m += a3.distance_to(b3)
+		# keep the walks open to the sky: no crown centre within 5 m
+		for q2: Vector2 in line:
+			for oz in range(-3, 4):
+				for ox in range(-3, 4):
+					var j2 := _idx(q2.x + ox * G, q2.y + oz * G)
+					if j2 >= 0 and lawn[j2] == 1:
+						lawn[j2] = 0
+						cut += 1
+	kit.commit(holder, "DowntownGardenLakesWalks", false, 0.0)
+	# planted shores: low shrub masses on the lake edges
+	var items: Array = []
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 5150
+	for p3: Vector3 in shore:
+		var s := rng.randf_range(0.6, 1.0)
+		items.append(["shrub", Transform3D(Basis(Vector3.UP, rng.randf_range(-PI, PI)).scaled(Vector3(s, s * 0.8, s)), p3), Color(rng.randf_range(0.85, 1.1), rng.randf_range(0.95, 1.2), rng.randf_range(0.8, 1.0), 0.0)])
+	Canopy.emit(holder, items, "DowntownGardenShore", 1200.0)
+	return {"cut_cells": cut, "walk_m": int(walk_m), "shore_shrubs": items.size()}
+
 static func _lawn_at(lawn: PackedByteArray, x: float, z: float) -> bool:
 	var i := _idx(x, z)
 	return i >= 0 and lawn[i] == 1
@@ -279,6 +390,12 @@ static func _plant(holder: Node3D, lawn: PackedByteArray, hgt: PackedFloat32Arra
 					_add(items, counts, "shrub", Vector3(x, hgt[i], z), rng, 0.7, 1.2)
 				continue
 			var hp := false
+			# fixed street-level comparison views keep an open foreground: no
+			# crown within 32 m of their lens (they look over the canopy)
+			for v: Dictionary in DowntownPlan.VIEWS:
+				var vp: Vector3 = v["pos"]
+				if vp.y < 10.0 and Vector2(vp.x - x, vp.z - z).length() < 32.0:
+					hp = true
 			# the Supertree plazas stay open (the grove reads above the canopy)
 			var g: Vector3 = DowntownPlan.anchor("gardens_supertree_grove")
 			for gc: Vector3 in [g + Vector3(-54.0, 0, -14.0), g + Vector3(48.0, 0, 17.0), g]:
