@@ -20,6 +20,7 @@ const BLEND_HIGH := 80.0
 const AIR_SHADOW := 1100.0
 const AIR_SPLITS := Vector3(0.025, 0.09, 0.32)
 const AIR_VFOG_SCALE := 0.25
+const OVERLAY_STRENGTH := 0.62
 
 var env: Environment
 var sun: DirectionalLight3D
@@ -64,3 +65,9 @@ func _process(_delta: float) -> void:
 	for m in overlay:
 		m.set_shader_parameter("near_start", reach * 0.75)
 		m.set_shader_parameter("near_end", reach * 1.07)
+		# Integrator (wave S): from the air the real shadow map reaches 1.1 km
+		# and the swept-footprint overlay beyond it only showed as torn dark
+		# fragments between the CBD blocks and dark bands under the MBFC
+		# podiums (critic downtown-polish-S1, photo_29 / dtx_heli_bayfront);
+		# it fades out as the camera climbs and keeps the street-level views.
+		m.set_shader_parameter("strength", OVERLAY_STRENGTH * (1.0 - b))
