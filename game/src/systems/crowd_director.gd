@@ -153,7 +153,7 @@ func _process_crowd(_delta: float) -> void:
 				cnt += 1
 				if r.global_position.distance_to(_cam_pos) < NPC.FAR_DRAW_RANGE:
 					vis += 1
-		print("[crowd-debug] cut focus=", _focus.round(), " cam=", _cam_pos.round(), " near=", cnt, " in_draw_range=", vis, " roamers=", roamers.size())
+		print("[crowd-debug] cut focus=", _focus.round(), " cam=", _cam_pos.round(), " near=", cnt, " in_draw_range=", vis, " roamers=", roamers.size(), " near_fill=", stats.get("near_fill", -1))
 
 ## Street-life M2: soft contact shadows under the feet of the people nearest
 ## the camera (the player already has his own), from a small Decal pool, so
@@ -339,7 +339,45 @@ func _eligible(p: NPC) -> bool:
 		return false
 	return p.state == NPC.State.WALK or p.state == NPC.State.IDLE
 
+## M2: after a street-level cut, at least NEAR_MIN people stand or walk on
+## the viewed street within ~30 m of the lens (the busiest stretch varied a
+## lot from cut to cut); far roamers are brought in to make it up.
+const NEAR_MIN := 15
+var _force_near := false
+func _fill_near() -> void:
+	if _cam_pos.y > 30.0:
+		return
+	var near := 0
+	var far: Array[NPC] = []
+	for r in roamers:
+		if not _eligible(r) or r.has_meta("follower"):
+			continue
+		var rel := r.global_position - _cam_pos
+		rel.y = 0.0
+		if rel.length() < 24.0 and rel.length() > 4.0 and rel.normalized().dot(_cam_fwd) > 0.62:
+			near += 1
+		elif rel.length() > 70.0 and not r.has_meta("loiter_pair"):
+			far.append(r)
+	_force_near = true
+	var added := 0
+	for r in far:
+		if near + added >= NEAR_MIN:
+			break
+		if _seed(r, false, false):
+			added += 1
+			if r.has_meta("leads"):
+				_place_follower(r, r.get_meta("leads"))
+	_force_near = false
+	stats["near_fill"] = added
+
 func _recycle(cut: bool) -> void:
+	if cut:
+		_recycle_pass(true)
+		_fill_near()
+		return
+	_recycle_pass(false)
+
+func _recycle_pass(cut: bool) -> void:
 	var budget := 400 if cut else 2
 	var pending_pairs := {}
 	for p in roamers:
@@ -433,7 +471,7 @@ func _seed_poly(p: NPC, hidden_only: bool, near: Array) -> bool:
 	return false
 
 func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
-	if not _polys.is_empty() and not loiter:
+	if not _polys.is_empty() and not loiter and not _force_near:
 		var near := _near_polys()
 		# Outside the legacy district, people go on the downtown walks only;
 		# inside it, the downtown walks take a share in proportion.
@@ -441,11 +479,11 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 		if not near.is_empty() and (outside or _rng.randf() < 0.3) and _seed_poly(p, hidden_only, near):
 			return true
 	var spine_share := 0.5 if _cam_pos.y > 30.0 else 0.15
-	if not loiter and _rng.randf() < spine_share and _seed_spine(p, hidden_only):
+	if not loiter and not _force_near and _rng.randf() < spine_share and _seed_spine(p, hidden_only):
 		return true
 	# Street-level cameras: half the people go on the street being looked down.
 	var view_lines: Array[Dictionary] = []
-	if _cam_pos.y < 30.0 and (loiter or _rng.randf() < 0.7):
+	if _cam_pos.y < 30.0 and (loiter or _force_near or _rng.randf() < 0.7):
 		var along_z := absf(_cam_fwd.z) > absf(_cam_fwd.x)
 		for ln2 in _lines:
 			var lat: float = _cam_pos.x if along_z else _cam_pos.z
@@ -455,6 +493,8 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 		var ln: Dictionary = _lines[_rng.randi_range(0, _lines.size() - 1)]
 		if not view_lines.is_empty():
 			ln = view_lines[_rng.randi_range(0, view_lines.size() - 1)]
+		elif _force_near:
+			return false
 		# M1: a personal distance from the kerb (not three painted lines), so
 		# walkers seeded on one pavement do not form single-file columns.
 		var off_idx := _rng.randi_range(0, OFFSETS.size() - 1)
@@ -467,11 +507,11 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 		var along := clampf(focus_along + _rng.randf_range(-SPAWN_RADIUS, SPAWN_RADIUS), -326.0, 326.0)
 		# Street-life D: on the street the camera looks down, most people go in
 		# the 6-90 m in front of the lens, where they are actually seen.
-		if not view_lines.is_empty() and not hidden_only and (loiter or _rng.randf() < 0.65):
+		if not view_lines.is_empty() and not hidden_only and (loiter or _force_near or _rng.randf() < 0.65):
 			var cam_along := _cam_pos.z if int(ln["axis"]) == 0 else _cam_pos.x
 			var fwd_along := _cam_fwd.z if int(ln["axis"]) == 0 else _cam_fwd.x
 			# M2: half of those in the first ~35 m, where the eye reads people.
-			var reach_far := 35.0 if _rng.randf() < 0.5 else 90.0
+			var reach_far := 26.0 if _force_near else (35.0 if _rng.randf() < 0.5 else 90.0)
 			along = clampf(cam_along + signf(fwd_along) * _rng.randf_range(6.0, reach_far), -326.0, 326.0)
 		# Not on a crossing: people are seeded on the pavement, not mid-road.
 		var on_crossing := false
@@ -496,7 +536,7 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 		# M2: on a wide pavement or forecourt in view, some people (and the
 		# talking groups) stand out in the open space beyond the walking line
 		# instead of everyone sharing one column by the kerb.
-		if not view_lines.is_empty() and not hidden_only and (loiter or _rng.randf() < 0.3):
+		if not view_lines.is_empty() and not hidden_only and (loiter or _rng.randf() < (0.6 if _force_near else 0.3)):
 			var wide := _rng.randf_range(12.2, 16.0)
 			var lat2: float = float(ln["line"]) + float(ln["side"]) * wide
 			var pos2 := Vector3(lat2, 0.2, along) if int(ln["axis"]) == 0 else Vector3(along, 0.2, lat2)
