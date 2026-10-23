@@ -1,0 +1,149 @@
+{
+	"frame_ms": {
+		"max": 197.53,
+		"mean": 79.39,
+		"n": 8082,
+		"p50": 77.12,
+		"p95": 118.35,
+		"p99": 145.68
+	},
+	"frames_saved": 8082,
+	"log": [
+		"[downtown-review 4.40] drive start at (-60.0, 0.060156, -316.6)",
+		"[downtown-review 28.03] unstick at (-309.749, 0.060142, -316.6)",
+		"[downtown-review 33.60] unstick at (-309.749, 0.060142, -316.6)",
+		"[downtown-review 98.33] tow: ambient @AnimatableBody3D@25656 stalled 40 s ahead at (-449.6429, 0.17, -318.25)",
+		"[downtown-review 142.90] tow: ambient @AnimatableBody3D@25102 stalled 40 s ahead at (-457.1424, 0.17, -318.25)",
+		"[downtown-review 184.48] tow: ambient @AnimatableBody3D@25504 stalled 40 s ahead at (-464.642, 0.17, -318.25)",
+		"[downtown-review 226.32] tow: ambient @AnimatableBody3D@25252 stalled 40 s ahead at (-472.5923, 0.17, -319.327)",
+		"[downtown-review 267.80] tow: ambient @AnimatableBody3D@25616 stalled 40 s ahead at (-479.6014, 0.17, -321.9557)",
+		"[downtown-review 309.33] tow: ambient @AnimatableBody3D@25084 stalled 40 s ahead at (-486.5647, 0.17, -324.7411)",
+		"[downtown-review 334.58] still drive_esplanade_bridge at (-589.5284, 3.666379, -354.5896)",
+		"[downtown-review 385.58] still drive_raffles_avenue at (-795.188, 0.000941, -589.6517)",
+		"[downtown-review 414.92] overtake at (-780.446, 0.000141, -790.8394) (gap 0.0 m)",
+		"[downtown-review 457.01] overtake at (-492.4503, 0.133091, -786.6243) (gap 5.1 m)",
+		"[downtown-review 476.72] still drive_bayfront_bridge at (-431.3685, 3.170629, -782.5948)",
+		"[downtown-review 506.51] overtake at (-355.1177, 2.253327, -786.0609) (gap 0.0 m)",
+		"[downtown-review 536.79] still drive_bayfront_avenue at (-8.911853, 0.000941, -786.8859)",
+		"[downtown-review 664.71] still drive_marina_boulevard at (405.0355, 0.000941, -529.497)",
+		"[downtown-review 738.52] drive done=true at (258.9109, 0.060943, -317.2834), max deck y 3.88",
+		"[downtown-review 764.78] still walk_peninsula at (-459.6482, 1.235834, -369.2952)",
+		"[downtown-review 795.69] still walk_jubilee_bridge at (-654.6619, 0.265404, -399.9719)",
+		"[downtown-review 820.20] still walk_esplanade_waterfront at (-649.2096, 0.075791, -557.3254)",
+		"[downtown-review 855.13] still walk_marina_promenade at (-562.8715, 0.075826, -665.8874)",
+		"[downtown-review 898.50] still walk_helix_bridge at (-400.2816, 3.575838, -750.7153)",
+		"[downtown-review 922.17] still walk_mbs at (-242.7325, 0.075839, -755.0961)",
+		"[downtown-review 923.86] still walk_mbs_arrival at (-241.7976, 0.075765, -756.1232)",
+		"[downtown-review 923.86] walk reached 36/36 at (-241.7976, 0.075765, -756.1232) max y 3.58",
+		"[downtown-review 946.83] still fly_700m at (-53.4727, 106.6852, -159.4545)",
+		"[downtown-review 957.34] still fly_300m at (-360.8532, 106.6852, -414.8247)",
+		"[downtown-review 985.97] still fly_landed_ns_square at (-577.1616, 0.10012, -614.4191)",
+		"[downtown-review 986.47] fly landed=true on_foot=true at (-577.1616, 0.100454, -614.4191)",
+		"[downtown-review 992.54] still fly_walk_ns_square at (-585.5502, 0.375759, -617.4518)",
+		"[downtown-review 1013.25] perf street_raffles_avenue p50 18.99 p95 25.32 max 27.94 ms",
+		"[downtown-review 1017.13] perf bridge_esplanade p50 19.73 p95 27.89 max 30.20 ms",
+		"[downtown-review 1021.07] perf waterfront_merlion_park p50 20.20 p95 28.01 max 32.84 ms",
+		"[downtown-review 1025.79] perf street_shenton_way p50 21.41 p95 31.79 max 46.47 ms",
+		"[downtown-review 1029.84] perf heli_bayfront p50 18.94 p95 26.58 max 28.32 ms",
+		"[downtown-review 1034.04] perf heli_river_mouth p50 21.86 p95 28.78 max 32.23 ms"
+	],
+	"note": "frame_ms excludes frames that carried a JPEG readback (encoding still lands on neighbours); perf_sweep_ms has no readback at all",
+	"perf_sweep_ms": {
+		"all": {
+			"n": 900,
+			"p50": 20.23,
+			"p95": 28.25,
+			"p99": 32.23
+		},
+		"bridge_esplanade": {
+			"max": 30.2,
+			"p50": 19.73,
+			"p95": 27.89
+		},
+		"heli_bayfront": {
+			"max": 28.32,
+			"p50": 18.94,
+			"p95": 26.58
+		},
+		"heli_river_mouth": {
+			"max": 32.23,
+			"p50": 21.86,
+			"p95": 28.78
+		},
+		"street_raffles_avenue": {
+			"max": 27.94,
+			"p50": 18.99,
+			"p95": 25.32
+		},
+		"street_shenton_way": {
+			"max": 46.47,
+			"p50": 21.41,
+			"p95": 31.79
+		},
+		"waterfront_merlion_park": {
+			"max": 32.84,
+			"p50": 20.2,
+			"p95": 28.01
+		}
+	},
+	"results": {
+		"drive": {
+			"completed": true,
+			"end": "(258.9109, 0.060943, -317.2834)",
+			"max_y": 3.88,
+			"overtakes": 3,
+			"seconds": 738.5,
+			"tows": 6,
+			"waiting_s": 396.9
+		},
+		"fly": {
+			"allowed": true,
+			"completed": true,
+			"heli": "(-577.1616, 0.100454, -614.4191)",
+			"landed": true,
+			"on_foot": true
+		},
+		"walk": {
+			"completed": true,
+			"end": "(-241.7976, 0.075765, -756.1232)",
+			"max_y": 3.58,
+			"reached": 36
+		}
+	},
+	"stats": {
+		"aerial_light": true,
+		"behind_mbs_tall": 27,
+		"beyond_core_towers": 244,
+		"build_ms": 1064,
+		"carpets_cut": 10,
+		"draws": 331,
+		"flank_towers_collided": 0,
+		"flank_towers_freed": 13,
+		"flank_walls_hidden": 1,
+		"graph_edges": 72,
+		"graph_links": 10,
+		"graph_nodes": 64,
+		"lamps": 837,
+		"land_rects": 10,
+		"planting": {
+			"forecourt_beds": 1164,
+			"median_clumps": 898,
+			"palms": 168,
+			"shrub_kinds": [
+				"ixora",
+				"mondo",
+				"fern",
+				"croton"
+			],
+			"species": 6,
+			"strip_clumps": 21041
+		},
+		"promenade_tree_parts_dropped": 186,
+		"seawall_segments": 42,
+		"shapes": 1864,
+		"signals": 30,
+		"towers_kept_downtown": 0,
+		"towers_removed": 396,
+		"trees": 261
+	}
+}
