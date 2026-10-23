@@ -9,11 +9,11 @@ extends Node
 
 const SECONDS := 45.0
 const SPOTS := [
-	# name, junction centre, camera, look-at
-	{"name": "collyer_quay_cecil", "centre": Vector3(-430.0, 0.0, -320.0), "cam": Vector3(-447.0, 2.4, -301.0), "look": Vector3(-420.0, 1.0, -326.0)},
-	{"name": "raffles_bayfront_corner", "centre": Vector3(-790.0, 0.0, -780.0), "cam": Vector3(-808.0, 2.4, -756.0), "look": Vector3(-782.0, 1.0, -786.0)},
-	{"name": "esplanade_connaught", "centre": Vector3(-660.0, 0.0, -360.0), "cam": Vector3(-676.0, 2.4, -340.0), "look": Vector3(-652.0, 1.0, -366.0)},
-	{"name": "collyer_quay_legacy", "centre": Vector3(-320.0, 0.0, -320.0), "cam": Vector3(-338.0, 2.4, -302.0), "look": Vector3(-312.0, 1.0, -326.0)},
+	# name, junction centre, camera (pedestrian eye height on a corner), look-at
+	{"name": "collyer_quay_cecil", "centre": Vector3(-430.0, 0.0, -320.0), "cam": Vector3(-444.0, 1.8, -305.0), "look": Vector3(-412.0, 0.6, -323.0)},
+	{"name": "raffles_bayfront_corner", "centre": Vector3(-790.0, 0.0, -780.0), "cam": Vector3(-775.0, 1.8, -764.0), "look": Vector3(-794.0, 0.6, -792.0)},
+	{"name": "esplanade_connaught", "centre": Vector3(-660.0, 0.0, -360.0), "cam": Vector3(-647.0, 1.8, -344.0), "look": Vector3(-674.0, 0.6, -365.0)},
+	{"name": "collyer_quay_legacy", "centre": Vector3(-320.0, 0.0, -320.0), "cam": Vector3(-305.0, 1.8, -305.0), "look": Vector3(-332.0, 0.6, -324.0)},
 ]
 
 var main: Node
@@ -51,14 +51,17 @@ func _run() -> void:
 		# to a player in the road, so keep him out of it).
 		var back: Vector3 = (spot["cam"] as Vector3) - ((spot["look"] as Vector3) - (spot["cam"] as Vector3)).normalized() * 2.5
 		player.respawn_at(Vector3(back.x, 0.6, back.z), 0.0)
+		await get_tree().physics_frame
 		cam.global_position = spot["cam"]
 		cam.look_at(spot["look"], Vector3.UP)
+		cam.make_current()
 		await get_tree().create_timer(4.0).timeout   # let the camera cut settle
 		var near_sum := 0
 		var near_min := 999
 		var samples := 0
 		var zebra := 0
 		var boxed := 0
+		var yields := 0
 		var max_idle := 0.0
 		var seen := {}
 		var crossed := 0
@@ -66,6 +69,8 @@ func _run() -> void:
 		var k := 0
 		while t < SECONDS:
 			await get_tree().create_timer(0.5).timeout
+			if not cam.current:
+				cam.make_current()
 			t += 0.5
 			k += 1
 			var n := 0
@@ -80,8 +85,12 @@ func _run() -> void:
 					crossed += 1
 				if d > 60.0 or v.speed > 0.3:
 					continue
-				if v.j_len > 0.0 and v.s < amb._entry(v.edge):
-					boxed += 1
+				if v.j_len > 0.0 and v.s < amb._entry(v.edge) and amb.is_junction_node(int(amb.edges[v.edge]["from"])):
+					var on := v.obstacle_node
+					if on != null and is_instance_valid(on) and (on is NPC or on is Car or on.is_in_group("player")):
+						yields += 1
+					else:
+						boxed += 1
 				elif amb._on_zebra(v.edge, v.s, v.dims.z * 0.5):
 					zebra += 1
 				max_idle = maxf(max_idle, v.idle_time)
@@ -94,7 +103,7 @@ func _run() -> void:
 				if img != null:
 					img.save_jpg("%s/%s_%03d.jpg" % [out_dir, spot["name"], k], 0.88)
 		var r := {"mean_within_30m": snappedf(float(near_sum) / maxf(1, samples), 0.1), "min_within_30m": near_min, "zebra_stop_samples": zebra,
-			"box_stop_samples": boxed, "max_idle_s": snappedf(max_idle, 0.1), "cars_through_per_min": snappedf(crossed * 60.0 / SECONDS, 0.1)}
+			"box_stop_samples": boxed, "box_yield_samples": yields, "max_idle_s": snappedf(max_idle, 0.1), "cars_through_per_min": snappedf(crossed * 60.0 / SECONDS, 0.1)}
 		_results[spot["name"]] = r
 		print("[traffic-review] %s %s" % [spot["name"], JSON.stringify(r)])
 	var f := FileAccess.open(out_dir + "/traffic_review.json", FileAccess.WRITE)

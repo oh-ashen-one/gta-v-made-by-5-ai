@@ -201,6 +201,12 @@ func _gap_path(path: Array[Vector3], i: int, actor: Node3D, shift: float, look: 
 	if traffic.ambient != null:
 		for v in traffic.ambient.vehicles:
 			if is_instance_valid(v) and v.active and v.visible:
+				# traffic-flow (T): lane changes never cross the centre line, so
+				# oncoming lane traffic is never in our way (a crawling oncoming
+				# queue on Raffles Avenue held the drive 30 s).
+				var vf := -v.global_transform.basis.z
+				if vf.x * fwd.x + vf.z * fwd.z < -0.5 * fwd.length():
+					continue
 				obs.append([v.global_position, v.dims.x * 0.5, v.dims.z * 0.5, false, v])
 	for c in traffic.cars:
 		if is_instance_valid(c) and c != actor and not c.disabled:

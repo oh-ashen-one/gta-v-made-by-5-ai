@@ -17,7 +17,7 @@ static func run(t: Node, amb: AmbientTraffic) -> void:
 			continue
 		var length := float(ed["len"])
 		for iv: Vector2 in ed.get("clear", []):
-			if iv.y > length - 34.0:
+			if iv.y > length - 34.0 and iv.x > length * 0.5:
 				approaches += 1
 				if float(ed["hold"]) > iv.x - 0.4:
 					bad += 1
@@ -31,7 +31,7 @@ static func run(t: Node, amb: AmbientTraffic) -> void:
 		near += 1
 		if v.speed > 0.3:
 			continue
-		if v.j_len > 0.0 and v.s < amb._entry(v.edge):
+		if v.j_len > 0.0 and v.s < amb._entry(v.edge) and amb.is_junction_node(int(amb.edges[v.edge]["from"])):
 			boxed += 1
 		elif amb._on_zebra(v.edge, v.s, v.dims.z * 0.5):
 			zebra += 1
