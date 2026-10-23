@@ -10,6 +10,8 @@ Game files    -> game/assets/providers/higgsfield/<name>_albedo.png   (git-ignor
   --grid   for regular patterns (pavers, tiles, window grids): crop to whole repeat periods found by
            autocorrelation instead of cross-blending, so joints line up across the wrap
   --alpha  keep the alpha channel (cut-out cards, signs); implies no --tile
+  --crop x0,y0,x1,y1  crop the raw image to whole repeat periods measured by hand (e.g. mullion to mullion,
+           floor band to floor band) before any other step; the output keeps the crop's aspect
 Appends one record per output to loop/generated_assets.jsonl (paths, job id, prompt, sha256). The images
 themselves are never committed: they are provider outputs, not MIT, not cleared for public redistribution.
 """
@@ -67,6 +69,7 @@ def main():
     ap.add_argument("name"); ap.add_argument("url")
     ap.add_argument("--tile", action="store_true"); ap.add_argument("--maps", action="store_true")
     ap.add_argument("--alpha", action="store_true"); ap.add_argument("--grid", action="store_true")
+    ap.add_argument("--crop", default="")
     ap.add_argument("--job", default=""); ap.add_argument("--prompt", default="")
     a = ap.parse_args()
     RAW.mkdir(parents=True, exist_ok=True); OUT.mkdir(parents=True, exist_ok=True)
@@ -75,6 +78,8 @@ def main():
     req = urllib.request.Request(a.url, headers={"User-Agent": "Mozilla/5.0"})
     raw.write_bytes(urllib.request.urlopen(req, timeout=120).read())
     img = Image.open(raw)
+    if a.crop:
+        img = img.crop(tuple(int(v) for v in a.crop.split(",")))
     outputs = []
     if a.alpha:
         img = img.convert("RGBA")
