@@ -14,7 +14,9 @@ const Bridges := preload("res://src/world/downtown/bridges.gd")
 const STEP := 4.0
 const FOOTWAY := 3.0
 const ROAD_TOP := 0.06
-const FOOT_TOP := 0.16
+## Kerb height 0.10: the player capsule (r 0.36) climbs a 0.10 step but not
+## 0.16 (district kerbs are 0.10 above the 0.06 carriageway slab).
+const FOOT_TOP := 0.10
 const WALK_TOP := 0.30
 const LANE_W := 3.5
 
@@ -174,6 +176,9 @@ static func _ribbon(m, key: String, pts: Array, off: float, hw: float, top: floa
 			b0.y = Bridges.height_at(b0.x, b0.z) + top
 			b1.y = Bridges.height_at(b1.x, b1.z) + top
 			m.quad_up(key, a0, b0, b1, a1)
+			var elevated := ha > 0.05 or hb > 0.05
+			if elevated and key == "asphalt":
+				m.drive_quad(a0, b0, b1, a1)
 			var sk := skirt_key if skirt_key != "" else key
 			for edge: Array in [[a0, b0, 1.0], [a1, b1, -1.0]]:
 				var e0: Vector3 = edge[0]
@@ -190,8 +195,10 @@ static func _ribbon(m, key: String, pts: Array, off: float, hw: float, top: floa
 				var cb := b
 				ca.y = ha + top
 				cb.y = hb + top
-				m.pitched_box(ca, cb, hw * 2.0, thick, Vector3(0, -thick * 0.5, 0))
-			elif top > 0.1:
+				# carriageways ride on the smooth drive trimesh; their boxes sit lower
+				var sink := 0.25 if key == "asphalt" else 0.0
+				m.pitched_box(ca, cb, hw * 2.0, thick, Vector3(0, -thick * 0.5 - sink, 0))
+			elif top > 0.08:
 				# flat raised runs merge into one box per straight stretch
 				if flat_a != Vector3.INF and fa.dot(flat_f) > 0.999 and flat_b.distance_to(a) < 0.01:
 					flat_b = b
@@ -224,10 +231,12 @@ static func _ribbon(m, key: String, pts: Array, off: float, hw: float, top: floa
 			pb.y = Bridges.height_at(pb.x, pb.z) + top
 			cc.y = Bridges.height_at(cc.x, cc.z) + top + 0.002
 			m.quad_up(key, cc, pa, pb, cc)
+			if key == "asphalt" and cc.y > top + 0.05:
+				m.drive_quad(cc, pa, pb, cc)
 		if collide and Bridges.height_at(c2.x, c2.z) > 0.05:
 			var ctop := c2
 			ctop.y = Bridges.height_at(c2.x, c2.z) + top
-			m.col_box(Vector3(hw * 2.0, thick, hw * 2.0), ctop - Vector3(0, thick * 0.5, 0))
+			m.col_box(Vector3(hw * 2.0, thick, hw * 2.0), ctop - Vector3(0, thick * 0.5 + (0.5 if key == "asphalt" else 0.0), 0))
 
 ## Boundary between a kept point and a skipped one, to ~3 cm.
 static func _edge(good: Vector3, bad: Vector3, skip: Callable) -> Vector3:

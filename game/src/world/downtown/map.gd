@@ -33,6 +33,10 @@ var _st := {}
 var _lamps := {"modern": [], "heritage": []}
 var _posts: Array[Transform3D] = []
 var _trees: Array[Transform3D] = []
+## Driving surfaces above ground (ramps, bridge decks): one smooth trimesh, so
+## the pitched segment boxes (kept 0.25 m lower against tunnelling) never put
+## an internal edge under a tyre (a car stalled mid-deck on the Esplanade).
+var _drive_faces := PackedVector3Array()
 
 func replaces() -> PackedStringArray:
 	return PackedStringArray(["district_ground", "far_shore_ground", "boundary_rails_x"])
@@ -199,6 +203,9 @@ func pitched_box(a: Vector3, b: Vector3, width: float, height: float, offset: Ve
 	var basis := seg_basis(a, b)
 	col_box(Vector3(width, height, a.distance_to(b) + 0.3), (a + b) * 0.5 + offset, basis)
 
+func drive_quad(a: Vector3, b: Vector3, c: Vector3, d: Vector3) -> void:
+	_drive_faces.append_array([a, b, c, a, c, d])
+
 func col_box(size: Vector3, center: Vector3, basis: Basis = Basis.IDENTITY) -> void:
 	var shape := CollisionShape3D.new()
 	var bs := BoxShape3D.new()
@@ -301,6 +308,15 @@ func _mm(mesh: Mesh, xforms: Array, material: Material, shadow: bool, vis_end: f
 		stats["draws"] = int(stats.get("draws", 0)) + 1
 
 func _flush() -> void:
+	if not _drive_faces.is_empty():
+		var tri := ConcavePolygonShape3D.new()
+		tri.backface_collision = true
+		tri.set_faces(_drive_faces)
+		var cs := CollisionShape3D.new()
+		cs.name = "DowntownDriveSurface"
+		cs.shape = tri
+		body.add_child(cs)
+		shapes += 1
 	for k in _st:
 		var e: Dictionary = _st[k]
 		var st: SurfaceTool = e["st"]

@@ -206,11 +206,11 @@ static func _plots(m) -> void:
 		var blk: Dictionary = DowntownPlan.BLOCKS[key]
 		var r: Rect2 = blk["rect"]
 		var kind := String(blk["kind"])
-		var top := 0.16
+		var top := 0.10
 		var key_mat := "plot"
 		if kind == "park" or key in ["gardens_site", "civic_padang"]:
 			key_mat = "turf"
-			top = 0.2
+			top = 0.12
 		elif kind == "plaza":
 			key_mat = "plaza"
 		var c := r.get_center()
@@ -224,15 +224,15 @@ static func _plots(m) -> void:
 			_landscape_plot(m, key, r, top)
 		if key == "civic_padang":
 			# the Padang: a cricket green inside a paved rim with a pavilion terrace
-			m.box("pavers_warm", Vector3(c.x, 0.21, c.y - r.size.y * 0.5 + 9.0), Vector3(r.size.x - 4.0, 0.04, 14.0))
+			m.box("pavers_warm", Vector3(c.x, 0.13, c.y - r.size.y * 0.5 + 9.0), Vector3(r.size.x - 4.0, 0.04, 14.0))
 
 ## NS Square (the former Float@Marina Bay): a paved 120 x 83 m deck at +0.3
 ## with a stepped grandstand on the land side, doubling as a helipad.
 static func _ns_square(m) -> void:
 	var r: Rect2 = DowntownPlan.ISLANDS["ns_square_float"]
 	var c := r.get_center()
-	m.box("plaza", Vector3(c.x + 6.0, 0.15, c.y), Vector3(r.size.x - 12.0, 0.3, r.size.y))
-	m.col_box(Vector3(r.size.x - 12.0, 0.3, r.size.y), Vector3(c.x + 6.0, 0.15, c.y))
+	m.box("plaza", Vector3(c.x + 6.0, 0.05, c.y), Vector3(r.size.x - 12.0, 0.1, r.size.y))
+	m.col_box(Vector3(r.size.x - 12.0, 0.1, r.size.y), Vector3(c.x + 6.0, 0.05, c.y))
 	for i in 6:
 		var h := 0.3 + 0.45 * (i + 1)
 		var x := r.position.x + 12.0 - (i + 0.5) * 2.0

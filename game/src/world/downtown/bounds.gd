@@ -116,7 +116,7 @@ static func _interim_planting(m) -> void:
 		parks.append("gardens_site")
 	for key: String in parks:
 		var r: Rect2 = DowntownPlan.BLOCKS[key]["rect"]
-		var top := 0.2
+		var top := 0.12
 		if key == "gardens_site":
 			# loose groves across the Bay South garden
 			for i in 70:
@@ -205,7 +205,7 @@ static func _helipads(m) -> void:
 		if pad["status"] != "new":
 			continue
 		var pos: Vector3 = pad["pos"]
-		var base_y := 0.3 if key == "ns_square" else 0.0
+		var base_y := 0.1 if key == "ns_square" else 0.0
 		m.world._helipad(Vector3(pos.x, base_y, pos.z), float(pad["radius"]))
 		if not m.world.locations.has("helipad_" + key):
 			m.world.locations["helipad_" + key] = Vector3(pos.x, base_y + 0.3, pos.z)

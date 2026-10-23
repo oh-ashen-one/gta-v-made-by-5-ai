@@ -127,12 +127,13 @@ static func _bridge(m, p: Dictionary, struct_mat: String, spans: int, arched: bo
 		var tb := t0 + (t1 - t0) * float(i + 1) / steps
 		var cw := w - walk_w
 		m.quad_up(top_mat, deck_point(p, ta, cw, 0.065), deck_point(p, tb, cw, 0.065), deck_point(p, tb, -cw, 0.065), deck_point(p, ta, -cw, 0.065))
+		m.drive_quad(deck_point(p, ta, w, 0.065), deck_point(p, tb, w, 0.065), deck_point(p, tb, -w, 0.065), deck_point(p, ta, -w, 0.065))
 		if vehicle:
 			for side: float in [-1.0, 1.0]:
-				var a0 := deck_point(p, ta, side * cw, 0.22)
-				var b0 := deck_point(p, tb, side * cw, 0.22)
-				var a1 := deck_point(p, ta, side * w, 0.22)
-				var b1 := deck_point(p, tb, side * w, 0.22)
+				var a0 := deck_point(p, ta, side * cw, 0.165)
+				var b0 := deck_point(p, tb, side * cw, 0.165)
+				var a1 := deck_point(p, ta, side * w, 0.165)
+				var b1 := deck_point(p, tb, side * w, 0.165)
 				m.quad_up("pavers_bridge", a0, b0, b1, a1)
 				# kerb face
 				m.quad_side("kerb", a0, b0, deck_point(p, tb, side * cw, 0.065), deck_point(p, ta, side * cw, 0.065), -side)
@@ -144,10 +145,10 @@ static func _bridge(m, p: Dictionary, struct_mat: String, spans: int, arched: bo
 		var tb2 := t0 + (t1 - t0) * float(i + 1) / n_seg
 		var a := deck_point(p, ta2, 0.0, 0.065)
 		var b := deck_point(p, tb2, 0.0, 0.065)
-		m.pitched_box(a, b, w * 2.0, 0.6, Vector3(0, -0.3, 0))
+		m.pitched_box(a, b, w * 2.0, 0.6, Vector3(0, -0.55, 0))
 		if vehicle:
 			for side: float in [-1.0, 1.0]:
-				m.pitched_box(deck_point(p, ta2, side * (w - walk_w * 0.5), 0.22), deck_point(p, tb2, side * (w - walk_w * 0.5), 0.22), walk_w, 0.3, Vector3(0, -0.15, 0))
+				m.pitched_box(deck_point(p, ta2, side * (w - walk_w * 0.5), 0.165), deck_point(p, tb2, side * (w - walk_w * 0.5), 0.165), walk_w, 0.3, Vector3(0, -0.15, 0))
 	# side fascias + soffit: arches or a straight girder over the water
 	var water_top := DowntownPlan.WATER_LEVEL + 0.25
 	var bays := spans
@@ -192,8 +193,8 @@ static func _bridge(m, p: Dictionary, struct_mat: String, spans: int, arched: bo
 		for i in np:
 			var ta4 := pt0 + (pt1 - pt0) * float(i) / np
 			var tb4 := pt0 + (pt1 - pt0) * float(i + 1) / np
-			var a4 := deck_point(p, ta4, lat2, 0.22)
-			var b4 := deck_point(p, tb4, lat2, 0.22)
+			var a4 := deck_point(p, ta4, lat2, 0.165)
+			var b4 := deck_point(p, tb4, lat2, 0.165)
 			if arched:
 				m.pitched_box_visual(struct_mat, a4, b4, 0.4, par_h, Vector3(0, par_h * 0.5, 0))
 				m.pitched_box_visual("granite_coping", a4, b4, 0.5, 0.08, Vector3(0, par_h + 0.04, 0))
@@ -207,12 +208,12 @@ static func _bridge(m, p: Dictionary, struct_mat: String, spans: int, arched: bo
 		var lamp_step := 24.0
 		var t := -span + 6.0
 		while t < span - 2.0:
-			m.lamp(deck_point(p, t, side * (w - 0.6), 0.22), "heritage" if arched else "modern")
+			m.lamp(deck_point(p, t, side * (w - 0.6), 0.165), "heritage" if arched else "modern")
 			t += lamp_step
 		if not arched:
 			var tp := t0
 			while tp < t1:
-				m.post(deck_point(p, tp, lat2, 0.22), par_h)
+				m.post(deck_point(p, tp, lat2, 0.165), par_h)
 				tp += 2.5
 	m.label_name(p)
 
