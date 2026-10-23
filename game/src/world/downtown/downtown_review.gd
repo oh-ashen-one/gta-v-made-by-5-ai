@@ -183,6 +183,8 @@ static func _path_right(path: Array[Vector3], i: int) -> Vector3:
 ## corners: a straight-ahead probe saw the promenade crowd past a left turn
 ## and waited there for ever.
 var _gap_node: Node3D = null
+var _skip_walkers := false
+var _walkers_ignored_until := -1.0
 
 func _gap_path(path: Array[Vector3], i: int, actor: Node3D, shift: float, look: float, half_w: float) -> float:
 	var origin := actor.global_position + _path_right(path, i) * shift
@@ -201,12 +203,20 @@ func _gap_path(path: Array[Vector3], i: int, actor: Node3D, shift: float, look: 
 	if traffic.ambient != null:
 		for v in traffic.ambient.vehicles:
 			if is_instance_valid(v) and v.active and v.visible:
+				# traffic-flow (T): lane changes never cross the centre line, so
+				# oncoming lane traffic is never in our way (a crawling oncoming
+				# queue on Raffles Avenue held the drive 30 s).
+				var vf := -v.global_transform.basis.z
+				if vf.x * fwd.x + vf.z * fwd.z < -0.5 * fwd.length():
+					continue
 				obs.append([v.global_position, v.dims.x * 0.5, v.dims.z * 0.5, false, v])
 	for c in traffic.cars:
 		if is_instance_valid(c) and c != actor and not c.disabled:
 			obs.append([c.global_position, 0.95, 2.3, false, c])
 	for pd in traffic.peds:
-		if is_instance_valid(pd) and pd.visible:
+		# traffic-flow (T): a body on the road (knocked down / dead) is driven
+		# round, not waited behind for ever (rendered drive r2 stood 8 min).
+		if not _skip_walkers and is_instance_valid(pd) and pd.visible and not (pd is NPC and (pd as NPC).state == NPC.State.DEAD):
 			obs.append([pd.global_position, 0.35, 0.35, true, pd])
 	var best := INF
 	_gap_node = null
@@ -416,6 +426,7 @@ func _drive_leg() -> void:
 		var corner_kmh := 20.0 if _turn_sign(path, i, 52.0) < 0.0 else 22.0
 		var target_kmh := 72.0 if turn < 0.25 else (corner_kmh if turn > 0.9 else 40.0)
 		shift = move_toward(shift, shift_target, 2.2 * dt)
+		_skip_walkers = _elapsed() < _walkers_ignored_until
 		var gap := _gap_path(path, i, car, shift, 46.0, 1.6)
 		if gap < INF:
 			# brake to stop ~6 m behind whatever is ahead (4 m/s^2)
@@ -429,7 +440,25 @@ func _drive_leg() -> void:
 				stall_node = blocker
 				stall_for = 0.0
 			stall_for += dt
+			# traffic-flow (T): a person standing in the road is asked to move
+			# (as lane traffic does), and after 12 s driven round slowly.
+			if fmod(stall_for, 15.0) < dt and stall_for > 1.0:
+				_log("blocked %.0f s at %s by %s" % [stall_for, str(car.global_position.round()), (stall_node.get_class() + str(stall_node.global_position.round()) + " " + str(stall_node.get_script().resource_path.get_file() if stall_node.get_script() else "")) if is_instance_valid(stall_node) else "nothing"])
+			if is_instance_valid(stall_node) and stall_node is NPC:
+				if fmod(stall_for, 1.5) < dt:
+					var cf := -car.global_transform.basis.z
+					(stall_node as NPC).dodge_vehicle(car.global_position, Vector3(cf.x, 0.0, cf.z).normalized())
+				if stall_for > 12.0:
+					_walkers_ignored_until = _elapsed() + 4.0
+					_log("walker %s in the road for 12 s at %s: driving round" % [stall_node.name, str(stall_node.global_position.round())])
+					stall_for = 0.0
 		else:
+			# traffic-flow (T): log every wait of 5 s or more and what held us.
+			if stall_for > 5.0:
+				var why := "?"
+				if is_instance_valid(stall_node):
+					why = traffic.ambient.chain_desc(stall_node) if stall_node is AmbientVehicle and traffic.ambient != null else "%s%s" % [stall_node.get_class(), str(stall_node.global_position.round())]
+				_log("waited %.1f s at %s behind %s" % [stall_for, str(car.global_position.round()), why.left(400)])
 			blocked_t = 0.0
 			stall_for = 0.0
 		# A street-life car that has sat stalled in front of us for 40 s with

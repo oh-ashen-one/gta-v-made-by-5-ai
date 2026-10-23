@@ -1315,6 +1315,7 @@ func _street_life_checks(player: Player, traffic: TrafficManager) -> void:
 		if v.active and v.speed < 0.6 and v.s > AmbientTraffic.ENTRY:
 			held += 1
 	_check("ambient traffic flows and queues", total > 20 and moved >= int(total * 0.35) and held >= 1, "%d/%d moved, %d holding %s" % [moved, total, held, amb.hold_reasons()])
+	preload("res://src/systems/downtown_tests/traffic_flow_test.gd").run(self, amb)
 	var overlaps := 0
 	for i in amb.vehicles.size():
 		var a := amb.vehicles[i]
