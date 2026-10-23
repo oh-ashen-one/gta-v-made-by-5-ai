@@ -70,6 +70,43 @@ var skyline_stats := {}
 ## Practical lights and fixtures (street lamps, arcades, void decks, hawker).
 var _lighting := Lighting.new()
 
+# --- Downtown integration hooks (wave M, loop/DOWNTOWN_PLAN.md section 11) ----
+## Downtown road graph published by the downtown-map piece: {"nodes":
+## Array[Vector3], "edges": Array[Vector2i], "lanes": Array[int], "links":
+## Array[Vector2i] (downtown node -> traffic_nodes index)}. Empty until that
+## piece lands; traffic_nodes stays the legacy 5 x 5 grid either way.
+var downtown_graph: Dictionary = {}
+## Downtown pedestrian polylines, kept apart from ped_lanes so the legacy
+## crowd distribution is unchanged until street-life adopts them.
+var downtown_ped_lanes: Array = []
+## Present downtown piece instances (map, landmarks, blocks) and the legacy
+## builder sections they take over (DowntownPlan.LEGACY_KEYS).
+var _downtown: Array = []
+var _downtown_replaced: Dictionary = {}
+
+func _load_downtown_pieces() -> void:
+	for path: String in DowntownPlan.PIECE_SCRIPTS:
+		if not ResourceLoader.exists(path):
+			continue
+		var script := load(path) as Script
+		if script == null or not script.can_instantiate():
+			push_warning("[downtown] piece script failed to load: " + path)
+			continue
+		var piece: Object = script.new()
+		_downtown.append(piece)
+		if piece.has_method("replaces"):
+			for key in piece.call("replaces"):
+				_downtown_replaced[String(key)] = true
+		print("[downtown] piece loaded: ", path)
+
+func _replaced(key: String) -> bool:
+	return _downtown_replaced.has(key)
+
+func _downtown_call(method: String, args: Array = []) -> void:
+	for piece: Object in _downtown:
+		if piece.has_method(method):
+			piece.callv(method, [self] + args)
+
 func build(seed_value: int = 20261021) -> void:
 	_rng.seed = seed_value
 	_world_root = Node3D.new()
@@ -81,6 +118,7 @@ func build(seed_value: int = 20261021) -> void:
 	_collision_root.collision_mask = 0
 	_world_root.add_child(_collision_root)
 	_lighting.root = _world_root
+	_load_downtown_pieces()
 
 	_environment()
 	_ground()
@@ -100,14 +138,17 @@ func build(seed_value: int = 20261021) -> void:
 	_background_city()
 	_perimeter()
 	_far_shore_landmarks()
+	_downtown_call("build", [_world_root])
 	locations["player_start"] = PLAYER_START
 	_build_lane_graph()
+	_downtown_call("build_lanes")
 	_kerb_markings()
 	_scatter_props()
 	_landscape()
 	SurfaceDressing.dress(_world_root)   # wave B materials: grime, wall/roof clutter
 	_lighting.finish()
 	_batch_static_primitives()
+	_downtown_call("finish")
 
 # ---------------------------------------------------------------- environment
 ## Sky, sun, fog, tonemap and grade live in Lighting (src/world/lighting.gd).
@@ -116,6 +157,8 @@ func _environment() -> void:
 
 # -------------------------------------------------------------- ground/roads
 func _ground() -> void:
+	if _replaced("district_ground"):
+		return
 	var ground := StaticBody3D.new()
 	ground.collision_layer = 1
 	ground.collision_mask = 0
@@ -598,12 +641,15 @@ func _waterfront_block(centre: Vector3) -> void:
 func _far_shore_landmarks() -> void:
 	# Round 4: grey granite pavers; the warm CONCRETE_LIGHT read as a brown
 	# dirt strip under the far-shore trees from the aerial views (critic A3).
-	var plaza := Palette.mat_textured(Color(0.56, 0.57, 0.56), "pavers", Vector3.ONE, 0.9)
-	var turf := Palette.mat_textured(Color(0.24, 0.33, 0.17), "soil", Vector3.ONE, 0.95)
-	_box(Vector3(920.0, 0.30, 70.0), Vector3(-20.0, 0.15, -668.0), plaza)
-	_box(Vector3(920.0, 0.20, 160.0), Vector3(-20.0, 0.10, -783.0), turf)
-	# The far shore is landable ground for the helicopter (WORLD-06).
-	_collision_box(Vector3(1700.0, 2.0, 700.0), Vector3(0.0, -1.0, -970.0))
+	if not _replaced("far_shore_ground"):
+		var plaza := Palette.mat_textured(Color(0.56, 0.57, 0.56), "pavers", Vector3.ONE, 0.9)
+		var turf := Palette.mat_textured(Color(0.24, 0.33, 0.17), "soil", Vector3.ONE, 0.95)
+		_box(Vector3(920.0, 0.30, 70.0), Vector3(-20.0, 0.15, -668.0), plaza)
+		_box(Vector3(920.0, 0.20, 160.0), Vector3(-20.0, 0.10, -783.0), turf)
+		# The far shore is landable ground for the helicopter (WORLD-06).
+		_collision_box(Vector3(1700.0, 2.0, 700.0), Vector3(0.0, -1.0, -970.0))
+	if _replaced("far_shore_landmarks"):
+		return
 	var mbs := MBS_POS
 	_authored("marina_bay_sands.glb", mbs, 0.0, MBS_SCALE)
 	# Towers, SkyPark (cantilever east) and podium of the true-scale model.
@@ -1016,6 +1062,8 @@ func _background_city() -> void:
 	# Round 4: third tower layer, wing estates, city carpet, low-rise blocks,
 	# far ridges and the shared sun/haze sync (see SkylineHorizon).
 	# `--skyline-off=horizon` builds without it (perf / look A/B only).
+	# Downtown pieces clear their land of procedural background towers.
+	_downtown_call("skyline_clear", [city])
 	var horizon := SkylineHorizon.new()
 	var horizon_on := not ("--skyline-off=horizon" in OS.get_cmdline_user_args())
 	if horizon_on:
@@ -1068,12 +1116,13 @@ func _perimeter() -> void:
 	# One continuous far shoreline anchors the background skyline across a bay.
 	# Round 4: neutral made ground under the city carpet (the soil texture
 	# showed through as brown dirt at the far shore's edges).
-	var ground_mat:=Palette.mat(Color(.36,.37,.35),.95)
-	_box(Vector3(1700,8,700),Vector3(0,-4,-970),ground_mat)
-	# Round 4: grey granite seawall coping (the warm concrete read as a brown
-	# dirt band along the far shore from the aerial views, critic A3).
-	_box(Vector3(1700,2,18),Vector3(0,-.7,-624),Palette.mat(Color(0.47,0.48,0.48),.88))
-	_box(Vector3(1680,.08,16),Vector3(0,.05,-657),Palette.mat_textured(Palette.ASPHALT,"asphalt",Vector3.ONE,.85))
+	if not _replaced("far_shore_ground"):
+		var ground_mat:=Palette.mat(Color(.36,.37,.35),.95)
+		_box(Vector3(1700,8,700),Vector3(0,-4,-970),ground_mat)
+		# Round 4: grey granite seawall coping (the warm concrete read as a brown
+		# dirt band along the far shore from the aerial views, critic A3).
+		_box(Vector3(1700,2,18),Vector3(0,-.7,-624),Palette.mat(Color(0.47,0.48,0.48),.88))
+		_box(Vector3(1680,.08,16),Vector3(0,.05,-657),Palette.mat_textured(Palette.ASPHALT,"asphalt",Vector3.ONE,.85))
 	# Round 4: the far-shore rows are batched full-size rain trees now
 	# (SkylineHorizon.promenade_tree_transforms); the world RNG still advances
 	# once per old tree so every later random placement stays where it was.
@@ -1092,17 +1141,19 @@ func _perimeter() -> void:
 	# the same geometry; ordinary walking/driving meets real railings.
 	for i in 50:
 		var t: float=-367.5+i*15
-		for side in [-1.0,1.0]:
-			var p:=Vector3(side*375,.1,t)
-			_authored("boundary_railing.glb",p,PI*.5)
-			_collision_box(Vector3(.25,2.4,15),p+Vector3(0,1.2,0))
-		var south:=Vector3(t,.1,375)
-		_authored("boundary_railing.glb",south)
-		_collision_box(Vector3(15,2.4,.25),south+Vector3(0,1.2,0))
+		if not _replaced("boundary_rails_x"):
+			for side in [-1.0,1.0]:
+				var p:=Vector3(side*375,.1,t)
+				_authored("boundary_railing.glb",p,PI*.5)
+				_collision_box(Vector3(.25,2.4,15),p+Vector3(0,1.2,0))
+		if not _replaced("boundary_rails_south"):
+			var south:=Vector3(t,.1,375)
+			_authored("boundary_railing.glb",south)
+			_collision_box(Vector3(15,2.4,.25),south+Vector3(0,1.2,0))
 	# Waterfront rails have deliberate pad-side pedestrian access, but stop a
 	# normal sprint from falling into the bay.
 	for i in 46:
-		if i in [25, 26]:
+		if i in [25, 26] or _replaced("bay_rails"):
 			continue
 		var p:=Vector3(-337.5+i*15,.3,-348.5)
 		_authored("boundary_railing.glb",p,0,Vector3(1,.55,1))

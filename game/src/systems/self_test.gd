@@ -340,6 +340,7 @@ func run(main: Node) -> void:
 	_negative_save_checks(player, mission)
 	await _wave5_checks(world, traffic, heli)
 	await _water_checks(world)
+	await _downtown_plan_checks(world)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
 	await _report()
 
@@ -945,6 +946,27 @@ func _hard_standing_not_turf(node: Node) -> bool:
 		if not _hard_standing_not_turf(c):
 			return false
 	return true
+
+## Downtown plan (wave M, loop/DOWNTOWN_PLAN.md): the plan is self-consistent,
+## its copies of the fixed legacy values still match WorldBuilder, and every
+## downtown piece that has landed runs its own checks through this suite.
+func _downtown_plan_checks(world: WorldBuilder) -> void:
+	var problems := DowntownPlan.validate()
+	var legacy: Dictionary = DowntownPlan.LEGACY
+	var legacy_ok: bool = legacy["player_start"] == WorldBuilder.PLAYER_START and legacy["mbs_pos"] == WorldBuilder.MBS_POS \
+		and legacy["grove_pos"] == WorldBuilder.GROVE_POS and is_equal_approx(float(legacy["promenade_z"]), WorldBuilder.PROMENADE_Z) \
+		and is_equal_approx(float(legacy["player_start_yaw_deg"]), WorldBuilder.PLAYER_START_YAW_DEG)
+	_check("downtown plan is self-consistent and matches the fixed legacy anchors (%s)" % DowntownPlan.PLAN_VERSION, problems.is_empty() and legacy_ok, "; ".join(problems) + ("" if legacy_ok else " legacy mismatch"))
+	for path: String in DowntownPlan.PIECE_TESTS:
+		if not ResourceLoader.exists(path):
+			continue
+		var script := load(path) as Script
+		if script == null or not script.can_instantiate():
+			_check("downtown piece test loads: " + path, false)
+			continue
+		var piece_test: Object = script.new()
+		if piece_test.has_method("run"):
+			await piece_test.run(world, self)
 
 func _check(check_name: String, condition: bool, detail: String = "") -> void:
 	if _reported:
