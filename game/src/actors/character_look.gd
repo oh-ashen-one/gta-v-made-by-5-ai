@@ -314,9 +314,12 @@ void fragment() {
 			float sdir = abs(rel.x) * 1.0 + (rel.y - 0.056) * 2.4;
 			float strands = 0.5 + 0.5 * sin(sdir * 2900.0 + vnoise(vec3(rel.x * 400.0, rel.y * 120.0, 4.0)) * 4.0);
 			strands = mix(0.5, strands, mid_k);
-			vec3 brow_hair = mix(skin_tone * 0.42, hair_col.rgb * 1.4 + skin_tone * 0.06, 0.25 + 0.6 * strands);
 			float brow_gap = smoothstep(0.35, 0.75, vnoise(vec3(rel.x * 700.0, rel.y * 300.0, 1.0)));
-			tb = mix(tb, mix(brow_hair, skin_tone * 0.7, brow_gap * 0.35), browb * 0.72 * (1.0 - smoothstep(0.1, 0.3, lum(tb))));
+			// Skin shows between the hairs; thinner toward the tail and the edges.
+			float bcore = 1.0 - smoothstep(0.004, 0.014, abs(rel.y - 0.056 + 0.08 * (abs(rel.x) - 0.03)));
+			float hairy = smoothstep(0.3, 0.72, strands) * (1.0 - brow_gap * 0.6) * mix(0.55, 1.0, bcore) * (1.0 - smoothstep(0.045, 0.066, abs(rel.x)) * 0.5);
+			vec3 brow_hair = mix(skin_tone * 0.7, hair_col.rgb * 1.3 + skin_tone * 0.05, hairy);
+			tb = mix(tb, brow_hair, browb * 0.88 * (1.0 - smoothstep(0.1, 0.3, lum(tb))));
 			col = mix(col, tb, use_tex);
 			col = mix(col, col * vec3(0.93, 0.74, 0.72), mouth * 0.45 * face_k);
 			float fk = face_k * (1.0 - hairness);
@@ -326,7 +329,8 @@ void fragment() {
 			col *= mix(vec3(1.0), vec3(0.86, 0.84, 0.88), under_eye * 0.7 * fk);
 			// Eye sockets and upper lids: a soft occlusion band reads as a brow ridge.
 			float socket = (1.0 - smoothstep(0.008, 0.016, abs(rel.y - 0.047))) * smoothstep(0.008, 0.016, abs(rel.x)) * (1.0 - smoothstep(0.05, 0.06, abs(rel.x)));
-			ao *= 1.0 - 0.3 * socket * fk;
+			ao *= 1.0 - 0.5 * socket * fk;
+			col *= 1.0 - 0.16 * socket * fk; // reads in direct light too
 			// Stubble: jaw, chin and upper lip (lips themselves excluded).
 			float jy = -0.008 - 0.2 * abs(rel.x);
 			float jaw = (1.0 - smoothstep(jy - 0.014, jy + 0.004, rel.y)) * smoothstep(-0.1, -0.086, rel.y) * (1.0 - smoothstep(0.065, 0.085, abs(rel.x)));
@@ -473,7 +477,7 @@ void fragment() {
 		// broad drape, which blotched plain cotton.
 		float pcrease = clamp(-(f1 * waist + f3 * sleeve + f4 * armpit), 0.0, 1.0);
 		float pridge = clamp(f1 * waist + f3 * sleeve + f4 * armpit, 0.0, 1.0);
-		col *= (1.0 - 0.3 * pcrease * amp * (0.6 + bendk)) * (1.0 + 0.08 * pridge * amp);
+		col *= (1.0 - 0.42 * pcrease * amp * (0.6 + bendk)) * (1.0 + 0.12 * pridge * amp);
 		h = folds + (fab_h - 1.0) * 0.00022 * fine_k;
 		// Construction: hems with a stitch line along every garment border.
 		float hem = 1.0 - smoothstep(0.016, 0.021, e);
