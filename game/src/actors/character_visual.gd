@@ -373,7 +373,32 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 	if hands != null:
 		weapon.transform = CharacterHands.weapon_transform(weapon_kind)
 		hands.fit_weapon(weapon, weapon_kind)
+		if weapon_kind == "pistol":
+			_readable_gunmetal(weapon)
 	process_priority = 10
+
+## Characters piece (wave R2): the held pistol read as a noisy black blob in
+## shade. Lift it to a worn gunmetal grey with a tighter gloss so the slide
+## edges, trigger guard and grip catch highlights at 1.5-2.5 m.
+static func _readable_gunmetal(weapon: Node3D) -> void:
+	for mesh_node in weapon.find_children("*", "MeshInstance3D", true, false):
+		var mi := mesh_node as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		for i in mi.mesh.get_surface_count():
+			var mat := mi.get_active_material(i) as StandardMaterial3D
+			if mat == null or mat.has_meta("gunmetal"):
+				continue
+			var m := mat.duplicate() as StandardMaterial3D
+			m.set_meta("gunmetal", true)
+			m.albedo_color = Color(mat.albedo_color.r * 1.9, mat.albedo_color.g * 1.9, mat.albedo_color.b * 2.0, mat.albedo_color.a)
+			m.metallic = minf(mat.metallic, 0.45)
+			m.roughness = 0.34
+			m.metallic_specular = 0.7
+			m.rim_enabled = true
+			m.rim = 0.35
+			m.rim_tint = 0.2
+			mi.set_surface_override_material(i, m)
 
 func set_aim_pitch(value: float) -> void:
 	_aim_pitch = clampf(value, -1.1, 0.85)
