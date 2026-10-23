@@ -31,7 +31,7 @@ uniform sampler2D roof_tex : source_color, filter_linear_mipmap_anisotropic, rep
 uniform sampler2D roof_nrm : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform float has_roof_tex = 0.0;
 uniform float interior_energy = 0.20;
-uniform float lobby_energy = 0.55;
+uniform float lobby_energy = 0.42;
 uniform float reflect_metal = 0.08;
 uniform float reflect_strength = 1.0;
 
@@ -68,7 +68,7 @@ void vertex() {
 // Interior behind a pane. p = position inside the cell (0..1, 0..1), v = view
 // ray in room space (x across the bay, y up, z into the room, all in room
 // units). Returns rgb radiance (linear, unlit by the sun).
-vec3 room(vec2 p, vec3 v, float rs, float office, vec3 wall_c) {
+vec3 room(vec2 p, vec3 v, float rs, float office, vec3 wall_c, float shop) {
 	vec3 o = vec3(p, 0.0);
 	vec3 inv = 1.0 / max(abs(v), vec3(1e-4)) * sign(v + 1e-6);
 	float tx = ((v.x > 0.0 ? 1.0 : 0.0) - o.x) * inv.x;
@@ -91,12 +91,20 @@ vec3 room(vec2 p, vec3 v, float rs, float office, vec3 wall_c) {
 		c = wall_c;
 		float door = step(abs(hp.x - fract(rs * 3.3) * 0.6 - 0.2), 0.08) * step(hp.y, 0.75);
 		c = mix(c, c * 0.35, door);
+		// shops: shelving with coloured stock on the back wall
+		float shelf = band(hp.y * 7.0, 0.0, 0.18, 0.02) * step(hp.y, 0.62);
+		vec3 stock = vec3(h1(floor(hp.x * 9.0) + rs), h1(floor(hp.x * 9.0) + rs * 2.0), h1(floor(hp.x * 9.0) + rs * 3.0)) * 0.7 + 0.15;
+		c = mix(c, mix(stock, vec3(0.08), shelf), shop * step(hp.y, 0.62) * 0.85);
 	} else {
 		c = wall_c * 0.75;
+		// shops: shelving along the side walls too
+		float shelf2 = band(hp.y * 7.0, 0.0, 0.2, 0.02);
+		vec3 stock2 = vec3(h1(floor(hp.z * 14.0) + rs * 1.3), h1(floor(hp.z * 14.0) + rs * 2.9), h1(floor(hp.z * 14.0) + rs * 4.1)) * 0.65 + 0.12;
+		c = mix(c, mix(stock2, vec3(0.07), shelf2), shop * step(hp.y, 0.66) * 0.9);
 	}
 	// desks / furniture band in the lower third
 	float desk = step(hp.y, 0.30) * step(0.22, hp.y) * step(hp.z, 0.75) * step(0.15, hp.z);
-	c = mix(c, vec3(0.06, 0.06, 0.07), desk * 0.8 * office);
+	c = mix(c, vec3(0.06, 0.06, 0.07), desk * 0.8 * office * (1.0 - shop));
 	// light falloff into the room
 	c *= mix(1.0, 0.35, depth);
 	return c;
@@ -186,7 +194,7 @@ void fragment() {
 			frame_c = lin(vec3(0.66, 0.69, 0.70));
 			glass_frac_x = 0.95; glass_y0 = 0.24;
 		} else if (cid == 1) {
-			solid_c = lin(mix(vec3(0.60, 0.55, 0.50), vec3(0.50, 0.49, 0.48), tint));
+			solid_c = lin(mix(vec3(0.56, 0.54, 0.52), vec3(0.46, 0.47, 0.48), tint));
 			glass_c = lin(vec3(0.13, 0.16, 0.18));
 			frame_c = lin(vec3(0.25, 0.25, 0.26));
 			glass_frac_x = 0.55; glass_y0 = 0.30; glass_y1 = 0.86;
@@ -197,7 +205,7 @@ void fragment() {
 			glass_frac_x = 0.97; glass_y0 = 0.32; glass_y1 = 0.96;
 		} else if (cid == 3) {
 			solid_c = lin(vec3(0.16, 0.13, 0.11));
-			glass_c = lin(mix(vec3(0.24, 0.19, 0.14), vec3(0.20, 0.18, 0.16), tint));
+			glass_c = lin(mix(vec3(0.20, 0.18, 0.15), vec3(0.16, 0.16, 0.16), tint));
 			frame_c = lin(vec3(0.12, 0.11, 0.10));
 			glass_frac_x = 0.80; glass_y0 = 0.20;
 		} else if (cid == 4) {
@@ -279,8 +287,8 @@ void fragment() {
 		float rs = r + seed;
 		vec3 wr = wall_room * mix(0.7, 1.1, h1(rs * 5.7));
 		float lit = (is_lobby ? 1.0 : step(0.18, h1(rs * 2.3)));  // ~18% of rooms dark
-		vec3 interior = room(cf, vr, rs, office * lit, wr) * (is_lobby ? lobby_energy : interior_energy);
-		if (is_lobby) interior *= vec3(1.15, 0.95, 0.75);   // warm shop light
+		vec3 interior = room(cf, vr, rs, office * lit, is_lobby ? wr * 0.75 : wr, is_lobby ? 1.0 : 0.0) * (is_lobby ? lobby_energy : interior_energy);
+		if (is_lobby) interior *= mix(vec3(1.15, 0.95, 0.75), vec3(0.95, 1.0, 1.05), step(0.6, h1(rs * 6.1))) * mix(0.6, 1.3, h1(rs * 8.3));   // warm or cool shop light, per shop
 		// blinds: part-drawn per room (not in the lobby)
 		float blind_h = is_lobby ? 1.1 : mix(0.95, 0.35, step(0.55, h1(rs * 7.9)) * h1(rs * 3.1));
 		float blind = step(blind_h, cf.y) * (1.0 - float(is_lobby));
@@ -297,7 +305,7 @@ void fragment() {
 		vec3 nt = normalize(n + t * nmap_t.x + vec3(0.0, nmap_t.y, 0.0));
 		vec3 R = reflect(V, nt);
 		float az = atan(R.z, R.x);
-		float skyl = 0.03 + 0.16 * vnoise(vec2(az * 7.0 + seed * 3.0, 1.7)) * step(0.35, vnoise(vec2(az * 3.0 - seed, 4.1)));
+		float skyl = (is_lobby ? 0.22 : 0.03) + 0.16 * vnoise(vec2(az * 7.0 + seed * 3.0, 1.7)) * step(0.35, vnoise(vec2(az * 3.0 - seed, 4.1)));
 		vec3 sky_hi = vec3(0.30, 0.46, 0.80);
 		vec3 sky_hz = vec3(0.88, 0.87, 0.84);
 		vec3 env = mix(sky_hz, sky_hi, smoothstep(skyl, 0.75, R.y));

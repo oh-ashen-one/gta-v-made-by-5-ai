@@ -109,11 +109,20 @@ static func _road_dist(p: Vector2) -> float:
 	return best
 
 # ------------------------------------------------------------ hooks
+## `--blocks-off` builds nothing (perf / look A/B only; the capture still runs).
+static func _off() -> bool:
+	return "--blocks-off" in OS.get_cmdline_user_args()
+
 func skyline_clear(_world: WorldBuilder, city: SkylineCity) -> void:
+	if _off():
+		return
 	for n in my_blocks():
 		city.clear_zone((DowntownPlan.BLOCKS[n]["rect"] as Rect2).grow(10.0), 0.0)
 
 func build(world: WorldBuilder, parent: Node3D) -> void:
+	if _off():
+		print("[downtown-blocks] disabled by --blocks-off")
+		return
 	var t0 := Time.get_ticks_msec()
 	looks = BlockLooks.new()
 	root = Node3D.new()
@@ -123,6 +132,7 @@ func build(world: WorldBuilder, parent: Node3D) -> void:
 	labels.name = "DowntownBlockSigns"
 	root.add_child(labels)
 	_remove_legacy_towers(parent)
+	_clip_carpet(parent)
 	var landmarks_present := ResourceLoader.exists("res://src/world/downtown/landmarks.gd")
 	for n in my_blocks():
 		var b: Dictionary = DowntownPlan.BLOCKS[n]
@@ -175,8 +185,8 @@ func build(world: WorldBuilder, parent: Node3D) -> void:
 		stats["trees"] = _tree_xf.size()
 	_collision()
 	root.set_meta("blocks_stats", stats)
-	print("[downtown-blocks] built %d blocks, %d buildings (%d towers), %d collision boxes, %d trees, %.0f m linkway in %d ms" % [
-		stats["blocks"], stats["buildings"], stats["towers"], stats["boxes"], stats["trees"], stats["linkway_m"], Time.get_ticks_msec() - t0])
+	print("[downtown-blocks] built %d blocks, %d buildings (%d towers), %d collision boxes, %d trees, %.0f m linkway, carpet clipped %d, legacy towers removed %d in %d ms" % [
+		stats["blocks"], stats["buildings"], stats["towers"], stats["boxes"], stats["trees"], stats["linkway_m"], int(stats.get("carpet_clipped", 0)), stats["legacy_removed"], Time.get_ticks_msec() - t0])
 
 func finish(world: WorldBuilder) -> void:
 	if "--blocks-photos" in OS.get_cmdline_user_args():
@@ -204,6 +214,39 @@ func _remove_legacy_towers(parent: Node3D) -> void:
 				parent.remove_child(child)
 				stats["legacy_removed"] += 1
 				break
+
+## The skyline piece's procedural "city carpet" (painted streets and roofs at
+## y 0.04) covers the ground box beside the old district, i.e. the CBD and
+## Shenton strips this piece now builds. Seen from the street it showed as
+## orange fake roofs between real buildings. Keep it only beyond the
+## playable edge (z > 375): the street land inside is left to downtown-map.
+func _clip_carpet(parent: Node3D) -> void:
+	var edge_z := DowntownPlan.PLAYABLE.end.y
+	# (Repeated "SkylineCarpet" names are auto-renamed, so match the shader.)
+	for child in parent.get_children():
+		var mi := child as MeshInstance3D
+		if mi == null:
+			continue
+		var pm := mi.mesh as PlaneMesh
+		var sm := mi.material_override as ShaderMaterial
+		if pm == null or sm == null or sm.shader == null or not sm.shader.resource_path.ends_with("city_carpet.gdshader") or mi.position.y > 0.1:
+			continue
+		var r := Rect2(mi.position.x - pm.size.x * 0.5, mi.position.z - pm.size.y * 0.5, pm.size.x, pm.size.y)
+		var mine := false
+		for n in my_blocks():
+			if r.intersects(DowntownPlan.BLOCKS[n]["rect"]) and DowntownPlan.PLAYABLE.encloses(Rect2(r.position.x, r.position.y, r.size.x, maxf(0.0, edge_z - r.position.y))):
+				mine = true
+				break
+		if not mine or r.end.y <= edge_z:
+			continue
+		var keep := Rect2(r.position.x, edge_z, r.size.x, r.end.y - edge_z)
+		var npm := PlaneMesh.new()
+		npm.size = keep.size
+		npm.subdivide_width = int(keep.size.x / 400.0)
+		npm.subdivide_depth = int(keep.size.y / 400.0)
+		mi.mesh = npm
+		mi.position = Vector3(keep.get_center().x, mi.position.y, keep.get_center().y)
+		stats["carpet_clipped"] = int(stats.get("carpet_clipped", 0)) + 1
 
 func _collision() -> void:
 	var body := StaticBody3D.new()
@@ -298,16 +341,16 @@ func _building(block_name: String, det: Batch, k: MeshKit, lot: Rect2, rng: Rand
 	var clads := [0, 3, 0, 5, 2, 7, 1, 3]
 	match kind:
 		"mbfc_tower":
-			clads = [5, 0, 2, 3]
+			clads = [5, 0, 5, 2]
 			styles = [1, 3, 6, 0, 7]
 		"residential":
 			clads = [6]
 			styles = [0, 3, 5, 6]
 		"marina_centre":
-			clads = [4, 2, 0, 1, 7]
+			clads = [4, 2, 0, 5, 7]
 			styles = [0, 3, 5, 7, 1]
 		"mid_rise":
-			clads = [1, 4, 2, 7, 3, 0]
+			clads = [2, 0, 4, 7, 1, 5]
 			styles = [0, 1, 5, 7, 4]
 	var pick := _pick(rng, styles, clads)
 	var cid2: int = clads[(clads.find(pick.y) + 1) % clads.size()]
