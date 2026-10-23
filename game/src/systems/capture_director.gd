@@ -1046,6 +1046,13 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 	var deadline := _elapsed() + timeout
 	var stuck_for := 0.0
 	var previous := player.controlled_actor().global_position
+	# integ-Q (rendered route stalled 140 s at the (-156,156) corner, boxed in
+	# by two pursuing police cars that kept nudging it, so the per-frame
+	# stillness test never fired): also back out when the distance to the
+	# waypoint has not improved by 0.5 m for 3 s.
+	var best := INF
+	var best_t := _elapsed()
+	var force_back := false
 	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and player.current_vehicle is Car:
 		await get_tree().physics_frame
 		var car := player.current_vehicle as Car
@@ -1054,6 +1061,14 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		var offset := target - car.global_position
 		offset.y = 0.0
 		if offset.length() < stop_distance: break
+		if offset.length() < best - 0.5:
+			best = offset.length()
+			best_t = _elapsed()
+		elif _elapsed() - best_t > 3.0:
+			_log("drive no progress for 3 s at %s, backing out" % [car.global_position.round()])
+			force_back = true
+			best_t = _elapsed() + 1.2
+			best = INF
 		var forward := -car.global_transform.basis.z
 		var direction := offset.normalized()
 		var avoidance := _avoid_car_direction(car, forward)
@@ -1077,7 +1092,8 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		else:
 			stuck_for = 0.0
 		previous = car.global_position
-		if stuck_for > 0.9:
+		if stuck_for > 0.9 or force_back:
+			force_back = false
 			# Reverse and steer clear using the same inputs as a player; alternate
 			# the steering side so a symmetric trap (a U-turn wedged between kerbs
 			# and parked cars) cannot repeat the same failed manoeuvre (wave 5).
