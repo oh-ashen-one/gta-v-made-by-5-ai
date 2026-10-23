@@ -1048,8 +1048,8 @@ func _drive_route(target: Vector3, timeout: float) -> void:
 				# M2: the car understeers out of the turn along dir_in; aim the
 				# arc's end that much short so it lands in its lane, not on the
 				# median nose (headless M2 debug: exited 1.5 m wide and hit it).
-				exit_point -= dir_in * 1.1
-				corner -= dir_in * 0.6
+				exit_point -= dir_in * 0.7
+				corner -= dir_in * 0.35
 				var entry: Vector3 = targets[targets.size() - 1]
 				_approach_points[entry] = true
 				for t in [0.3, 0.55, 0.8]:

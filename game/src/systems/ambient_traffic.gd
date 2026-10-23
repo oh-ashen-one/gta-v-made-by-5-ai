@@ -623,7 +623,7 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 	# turning through the box and one standing at the next stop line, held
 	# the scripted drive 56 s) — the one already in the junction goes on.
 	var mutual := v.obstacle_gap < INF and v.obstacle_node is AmbientVehicle and is_instance_valid(v.obstacle_node) \
-			and (v.obstacle_node as AmbientVehicle).obstacle_node == v and v.j_len > 0.0 and v.s < _entry(v.edge) and v.idle_time > 1.5
+			and (v.obstacle_node as AmbientVehicle).obstacle_node == v and v.j_len > 0.0 and v.s < _entry(v.edge)
 	if v.obstacle_gap < INF and not mutual:
 		target = minf(target, _stop_speed(v.obstacle_gap - 1.6))
 		if v.obstacle_gap < 0.6:
