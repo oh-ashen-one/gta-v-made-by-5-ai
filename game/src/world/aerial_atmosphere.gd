@@ -43,7 +43,7 @@ static var fake_shadow_materials: Array[ShaderMaterial] = []
 ## is airborne (aerial R2): on the street their real shadows darkened the
 ## heritage road, and the parent never had them there.
 static var aerial_casters: Array[GeometryInstance3D] = []
-const CASTER_BLEND := 0.05
+const CASTER_BLEND := 2.0
 
 var env: Environment
 var sun: DirectionalLight3D
