@@ -118,7 +118,10 @@ func _one_fullerton(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 	kit.col_box(Vector3(pen.size.x, 1.2, pen.size.y), Vector3(pc.x, TOP - 0.6, pc.y))
 	# Two low dining pavilions: glass shopfronts, deep flat roofs, warm interiors.
 	var white := Looks.get_mat("steel_white")
-	for pv: Array in [[-524.0, -504.0], [-500.0, -480.0]]:
+	# Integration (wave M): narrower pavilions leave an 11 m landing plaza in
+	# front of the Jubilee Bridge (downtown-map; parapets reach x -526) and
+	# clear the terrace's west steps (x -482..-476).
+	for pv: Array in [[-515.0, -499.0], [-497.0, -483.0]]:
 		var vx0: float = pv[0]
 		var vx1: float = pv[1]
 		var vc := Vector3((vx0 + vx1) * 0.5, TOP, -396.0)
@@ -165,9 +168,9 @@ func _one_fullerton(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 	# A broad flight of steps (walkable ramp collision) now leads up onto it.
 	var step_w := px1 - t0 - 2.0
 	var step_x := t0 + step_w * 0.5
-	kit.col_beam(Vector3(step_x, TOP - 0.06, pz1 + 6.0), Vector3(step_x, deck_y, pz1), step_w, 0.5)
-	for s in 4:
-		kit.box(Looks.get_mat("granite_light"), Vector3(step_x, (deck_y - 0.22 * s) * 0.5, pz1 + 1.5 * (s + 0.5)), Vector3(step_w, deck_y - 0.22 * s, 1.5))
+	kit.col_beam(Vector3(step_x, -0.06, pz1 + 7.5), Vector3(step_x, deck_y, pz1), step_w, 0.5)
+	for s in 5:
+		kit.box(Looks.get_mat("granite_light"), Vector3(step_x, (deck_y - 0.25 * s) * 0.5, pz1 + 1.5 * (s + 0.5)), Vector3(step_w, deck_y - 0.25 * s, 1.5))
 	# Stepped seating down toward the water on the bay edge.
 	for s in 3:
 		kit.box(Looks.get_mat("granite_light"), Vector3(tc.x, deck_y - 0.3 * (s + 1), pz0 + 1.0 + s * 1.4), Vector3(px1 - t0 - 4.0, 0.3, 1.4))

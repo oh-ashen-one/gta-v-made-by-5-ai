@@ -64,6 +64,8 @@ func _process(_delta: float) -> void:
 		_max_h[_phase] = maxf(float(_max_h.get(_phase, -99.0)), actor.global_position.y)
 
 func _grab() -> void:
+	if _headless():
+		return
 	await RenderingServer.frame_post_draw
 	var img := get_viewport().get_texture().get_image()
 	if img == null:
@@ -74,7 +76,16 @@ func _grab() -> void:
 		var a := player.controlled_actor()
 		_jsonl.store_line(JSON.stringify({"file": "f%05d.jpg" % _frame, "seconds": snappedf(_elapsed(), 0.01), "phase": _phase, "pos": str(a.global_position.snapped(Vector3.ONE * 0.1)) if a else ""}))
 
+## Headless runs (no frames are drawn) skip stills, frame grabs, the fixed
+## views and the perf sweep, so the drive / walk / fly legs can be validated
+## without a GPU (integration, wave M).
+static func _headless() -> bool:
+	return DisplayServer.get_name() == "headless"
+
 func _still(label: String) -> void:
+	if _headless():
+		_log("still %s at %s (headless: no image)" % [label, player.controlled_actor().global_position])
+		return
 	await RenderingServer.frame_post_draw
 	var img := get_viewport().get_texture().get_image()
 	if img != null:
@@ -136,6 +147,16 @@ func _turn_ahead(path: Array[Vector3], i: int, dist: float) -> float:
 		return 0.0
 	return absf(a.normalized().signed_angle_to(b.normalized(), Vector3.UP))
 
+## Sign of the sharpest upcoming heading change (+ left, - right).
+func _turn_sign(path: Array[Vector3], i: int, dist: float) -> float:
+	var a := _ahead(path, i, 6.0) - path[i]
+	var b := _ahead(path, i, dist) - _ahead(path, i, maxf(dist - 12.0, 6.0))
+	a.y = 0.0
+	b.y = 0.0
+	if a.length() < 0.1 or b.length() < 0.1:
+		return 0.0
+	return signf(a.normalized().signed_angle_to(b.normalized(), Vector3.UP))
+
 func _steer(actor: Node3D, target: Vector3, gain: float = 2.2) -> void:
 	var fwd := -actor.global_transform.basis.z
 	var off := target - actor.global_position
@@ -160,8 +181,9 @@ func _run() -> void:
 	await _fly_leg()
 	_recording = false
 	_release()
-	await _views()
-	await _perf_sweep()
+	if not _headless():
+		await _views()
+		await _perf_sweep()
 	_finish()
 
 ## Frame-time sweep with no frame readback: 150 rendered frames at each of a
@@ -275,9 +297,12 @@ func _drive_leg() -> void:
 			break
 		var kmh := car.speed_kmh()
 		var turn := maxf(_turn_ahead(path, i, 34.0), _turn_ahead(path, i, 52.0))
-		# Integration (wave M): right-angle junctions are now framed by real
-		# block and landmark collision, so take them at 14 km/h (24 overshot).
-		var target_kmh := 72.0 if turn < 0.25 else (14.0 if turn > 0.9 else 40.0)
+		# Integration (wave M): right-angle RIGHT turns (the wide crossing turn
+		# in left-hand traffic) overshot at 24 km/h into the block / landmark
+		# collision now framing those corners; take them at 16 km/h. Left turns
+		# keep 24 km/h (slower oversteers into the kerb).
+		var corner_kmh := 16.0 if _turn_sign(path, i, 52.0) < 0.0 else 24.0
+		var target_kmh := 72.0 if turn < 0.25 else (corner_kmh if turn > 0.9 else 42.0)
 		_steer(car, _ahead(path, i, clampf(kmh * 0.32, 9.0, 22.0)), 2.6)
 		Input.action_release("move_forward")
 		Input.action_release("move_back")
@@ -325,11 +350,11 @@ func _walk_leg() -> void:
 	_recording = true
 	# Integration (wave M): with the landmarks present the route climbs the
 	# Merlion Park terrace steps from the promenade, crosses the terrace, then
-	# passes north of the One Fullerton pavilions to the Jubilee landing.
-	var pts: Array[Vector3] = [Vector3(-440, 0, -338), Vector3(-458, 0, -344), Vector3(-460, 0, -372), Vector3(-488, 0, -380), Vector3(-527, 0, -382), Vector3(-529, 0, -400), Vector3(-662, 0, -400), Vector3(-648, 0, -440), Vector3(-648, 0, -560)]
+	# passes the One Fullerton pavilions to the Jubilee landing plaza.
+	var pts: Array[Vector3] = [Vector3(-440, 0, -338), Vector3(-458, 0, -344), Vector3(-460, 0, -372), Vector3(-488, 0, -380), Vector3(-521, 0, -384), Vector3(-521, 0, -400), Vector3(-657.5, 0, -400), Vector3(-657, 0, -409), Vector3(-648, 0, -440), Vector3(-648, 0, -560)]
 	var k := 0
 	var t_end := _elapsed() + 120.0
-	var stills := {2: "walk_peninsula", 6: "walk_jubilee_bridge", 8: "walk_esplanade_waterfront"}
+	var stills := {2: "walk_peninsula", 6: "walk_jubilee_bridge", 9: "walk_esplanade_waterfront"}
 	var max_y := 0.0
 	while _elapsed() < t_end and k < pts.size():
 		await get_tree().physics_frame

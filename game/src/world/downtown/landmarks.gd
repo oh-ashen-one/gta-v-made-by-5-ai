@@ -73,6 +73,47 @@ func skyline_clear(world: WorldBuilder, city: SkylineCity) -> void:
 	report["skyline_dropped"] = dropped
 	city.placed = maxi(0, city.placed - dropped)
 
+## Integration (wave M): the landmark site decks stand at 0.34-0.36 m, built
+## for the plan's 0.3 m quay ground, but downtown-map lays the land at 0 with
+## 0.06 m roads and 0.10 m footways and walks. The player capsule has no
+## step-up, so every land edge of a raised deck was a lip that stopped a walk
+## onto the Marina Bay side. Each land side gets a 1.6 m granite edge ramp
+## with walkable collision (water sides keep their seawall).
+const RAISED_DECKS := {"esplanade_site": 0.36, "flyer_site": 0.36, "fullerton_site": 0.36, "gardens_site": 0.34}
+const EDGE_RAMP := 1.6
+
+func _edge_ramps(holder: Node3D) -> int:
+	const Kit = preload("res://src/world/downtown/landmarks/kit.gd")
+	const Looks = preload("res://src/world/downtown/landmarks/looks.gd")
+	var kit := Kit.new(holder, "LandmarkEdgeRampCollision")
+	var mat := Looks.get_mat("granite_paving")
+	var rects := {}
+	for key: String in RAISED_DECKS:
+		rects[key] = [DowntownPlan.block_rect(key), float(RAISED_DECKS[key])]
+	rects["fullerton_peninsula"] = [DowntownPlan.ISLANDS["fullerton_peninsula"] as Rect2, 0.36]
+	for key: String in rects:
+		var r: Rect2 = rects[key][0]
+		var top: float = rects[key][1]
+		var c := r.get_center()
+		var sides := [[Vector2(-1, 0), r.size.y], [Vector2(1, 0), r.size.y], [Vector2(0, -1), r.size.x], [Vector2(0, 1), r.size.x]]
+		for sd: Array in sides:
+			var n: Vector2 = sd[0]
+			var length: float = sd[1]
+			var edge := c + Vector2(n.x * r.size.x * 0.5, n.y * r.size.y * 0.5)
+			var probe := edge + n * 3.0
+			if DowntownPlan.is_water(Vector3(probe.x, 0.0, probe.y)):
+				continue
+			var p1 := Vector3(edge.x, top, edge.y)
+			var p0 := Vector3(edge.x + n.x * EDGE_RAMP, -0.02, edge.y + n.y * EDGE_RAMP)
+			kit.col_beam(p0, p1, length, 0.4)
+			var d := p1 - p0
+			var z := d.normalized()
+			var x := Vector3.UP.cross(z).normalized()
+			var y := z.cross(x).normalized()
+			kit.box(mat, (p0 + p1) * 0.5 - y * 0.05, Vector3(length, 0.1, d.length()), Basis(x, y, z))
+	kit.commit(holder, "LandmarkEdgeRamps", false)
+	return kit.shapes
+
 func build(world: WorldBuilder, root: Node3D) -> void:
 	if disabled():
 		return
@@ -96,6 +137,7 @@ func build(world: WorldBuilder, root: Node3D) -> void:
 		if st is Dictionary:
 			shapes += int(st.get("shapes", 0))
 			tris += int(st.get("tris", 0))
+	shapes += _edge_ramps(holder)
 	report["shapes"] = shapes
 	report["tris"] = tris
 	report["build_ms"] = Time.get_ticks_msec() - t0
