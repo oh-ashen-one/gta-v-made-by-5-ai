@@ -93,6 +93,29 @@ static func skyline_clear(m, city: SkylineCity) -> void:
 		city.clear_zone(wr.grow(8.0), 0.0)
 	m.stats["towers_removed"] = removed
 	m.stats["towers_kept_downtown"] = m.kept_towers.size()
+	m.stats["beyond_core_towers"] = _beyond_core_skyline(city)
+
+## Integration (wave M): the legacy far-shore tower layers stood where the low
+## Bayfront, the Lawn and the Gardens are now, so every view across the bay
+## lost its skyline behind MBS. Distant scenery beyond the east playable edge
+## (past the Gardens fence, z < -1080) restores that depth: three rows of
+## background towers, tallest in the middle row, with the Marina Channel
+## corridor kept open. No collision (beyond the walled playable edge, like
+## the rest of the background city); the legacy SkyPark wedge caps heights
+## straight behind MBS.
+static func _beyond_core_skyline(city: SkylineCity) -> int:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20261023
+	var before := city.placed
+	var rows := [[-1125.0, 44.0, 85.0, 185.0], [-1205.0, 40.0, 120.0, 240.0], [-1295.0, 48.0, 70.0, 160.0]]
+	for row: Array in rows:
+		var x := -1000.0 + rng.randf_range(0.0, float(row[1]))
+		while x < 1000.0:
+			if x < -480.0 or x > -320.0:
+				var z: float = float(row[0]) + rng.randf_range(-18.0, 18.0)
+				city.add_random(Vector3(x, 0.0, z), rng.randf_range(float(row[2]), float(row[3])), rng.randf() < 0.2)
+			x += float(row[1]) * rng.randf_range(0.75, 1.3)
+	return city.placed - before
 
 static func build(m) -> void:
 	_interim_planting(m)
