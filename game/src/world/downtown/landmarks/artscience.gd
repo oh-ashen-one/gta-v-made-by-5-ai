@@ -49,9 +49,9 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 	pad_kit.cyl(Looks.get_mat("shrub_light"), Vector3.ZERO, 0.55, 0.55, 0.03, 9)
 	Kit.multimesh(holder, "ArtScienceLilyPads", pad_kit.to_mesh(), pads, false, 260.0)
 	# Pedestal and the bowl the fingers spring from.
-	kit.cyl(Looks.get_mat("concrete_fair"), Vector3(c.x, TOP, c.z), 5.0, 7.5, 9.0, 16, false)
+	kit.cyl(Looks.get_mat("concrete_fair"), Vector3(c.x, TOP, c.z), 4.2, 5.8, 8.8, 16, false)
 	var bowl := []
-	for ring_def in [[8.0, 6.5], [10.0, 13.0], [13.0, 17.5], [16.5, 18.5], [19.0, 16.0]]:
+	for ring_def in [[8.6, 5.6], [10.2, 10.5], [12.0, 14.5], [13.8, 16.8], [15.2, 17.2], [16.0, 15.5]]:
 		var ring := PackedVector3Array()
 		for s in 24:
 			var ang := -TAU * s / 24.0
@@ -72,9 +72,9 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 		var tips := PackedVector3Array()
 		for s in steps + 1:
 			var t := float(s) / steps
-			var rad := 9.0 + (h * 0.48) * pow(t, 1.55)
-			var y := 12.0 + (h - 12.0) * t
-			var width := lerpf(15.5, 4.2, pow(t, 0.9))
+			var rad := 8.0 + (h * 0.5) * pow(t, 1.55)
+			var y := 12.5 + (h - 12.5) * t
+			var width := lerpf(13.0, 3.6, pow(t, 0.85))
 			var thick := lerpf(5.5, 1.6, t)
 			var lean := (dir * (h * 0.48 * 1.55 * pow(maxf(t, 0.01), 0.55)) + Vector3(0, h - 12.0, 0)).normalized()
 			var nrm := (dir - lean * dir.dot(lean)).normalized()

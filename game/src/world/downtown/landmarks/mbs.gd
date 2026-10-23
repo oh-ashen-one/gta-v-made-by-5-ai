@@ -176,7 +176,7 @@ func _skypark(kit: Kit, holder: Node3D) -> void:
 	var palm_x := []
 	var bed_x := m.x - 140.0
 	while bed_x < m.x + 110.0:
-		Realm.planter(kit, Vector3(bed_x, DECK_Y, zc - 9.0), Vector2(14.0, 4.0), 0.7)
+		Realm.planter(kit, Vector3(bed_x, DECK_Y, zc - 9.0), Vector2(14.0, 4.0), 0.7, false)
 		palm_x.append(Kit.xf(Vector3(bed_x - 4.0, DECK_Y + 0.7, zc - 9.0), bed_x * 0.13, Vector3.ONE * 0.95))
 		palm_x.append(Kit.xf(Vector3(bed_x + 4.0, DECK_Y + 0.7, zc - 9.0), bed_x * 0.29, Vector3.ONE * 0.85))
 		bed_x += 22.0
@@ -184,7 +184,7 @@ func _skypark(kit: Kit, holder: Node3D) -> void:
 		var px := m.x + dx
 		kit.box(Looks.get_mat("glass_dark"), Vector3(px, DECK_Y + 2.0, zc - 2.0), Vector3(24.0, 4.0, 8.0))
 		kit.box(Looks.get_mat("steel_white"), Vector3(px, DECK_Y + 4.2, zc - 2.0), Vector3(27.0, 0.4, 10.5))
-	Kit.multimesh(holder, "MBSSkyParkPalms", Realm.palm_mesh(), palm_x, false, 1400.0)
+	Realm.glb_multimesh(holder, "MBSSkyParkPalms", "palm.glb", palm_x, false, 1400.0)
 	# Landable deck for the helicopter (pad itself stays reserved; plan section 10).
 	var hx: float = m.x + (HULL_X[0] + HULL_X[1]) * 0.5
 	kit.col_box(Vector3(HULL_X[1] - HULL_X[0] - 20.0, 8.0, 30.0), Vector3(hx + 10.0, DECK_Y - 4.0, zc))
@@ -359,6 +359,7 @@ func _event_plaza(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 	Realm.lamps(holder, "MBSPlazaLamps", lamp_x)
 	Realm.benches(holder, "MBSPlazaBenches", bench_x)
 	Realm.bollards(holder, "MBSPlazaBollards", bollards)
+	Realm.flush_ferns(holder, "MBSPlazaFerns")
 	# Crystal pavilion on the water off the promenade, reached by a gangway.
 	var cp := Vector3(m.x + 78.0, prom_top, z_sea + 16.0)
 	var base_r := 13.0

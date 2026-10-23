@@ -83,11 +83,65 @@ static func bollards(parent: Node3D, node_name: String, pts: Array) -> void:
 static func benches(parent: Node3D, node_name: String, xforms: Array) -> void:
 	Kit.multimesh(parent, node_name, bench_mesh(), xforms, false, 220.0)
 
-## Granite planter with a clipped shrub bed (merged into kit).
-static func planter(kit: Kit, c: Vector3, size: Vector2, h: float = 0.55) -> void:
+## Granite planter: soil, low planted ground cover and authored ferns
+## (queued as MultiMesh transforms; call flush_ferns() once per module).
+static var _ferns: Array = []
+static func planter(kit: Kit, c: Vector3, size: Vector2, h: float = 0.55, ferns: bool = true) -> void:
 	kit.box(Looks.get_mat("granite_light"), c + Vector3(0, h * 0.5, 0), Vector3(size.x, h, size.y))
 	kit.box(Looks.get_mat("soil_bed"), c + Vector3(0, h + 0.01, 0), Vector3(size.x - 0.3, 0.04, size.y - 0.3))
-	kit.box(Looks.get_mat("planting"), c + Vector3(0, h + 0.35, 0), Vector3(size.x - 0.5, 0.7, size.y - 0.5))
+	kit.box(Looks.get_mat("planting"), c + Vector3(0, h + 0.12, 0), Vector3(size.x - 0.5, 0.22, size.y - 0.5))
+	if not ferns:
+		return
+	var n := clampi(int(size.x * size.y / 3.5), 2, 14)
+	var h1 := hash(c)
+	for i in n:
+		var u := fposmod(sin(float(h1 % 997) + i * 12.9898) * 43758.5453, 1.0)
+		var v := fposmod(sin(float(h1 % 991) + i * 78.233) * 12543.531, 1.0)
+		var p := c + Vector3((u - 0.5) * (size.x - 1.0), h + 0.1, (v - 0.5) * (size.y - 1.0))
+		_ferns.append(Kit.xf(p, u * TAU, Vector3.ONE * (0.55 + 0.35 * v)))
+
+static func flush_ferns(parent: Node3D, node_name: String) -> void:
+	glb_multimesh(parent, node_name, "fern.glb", _ferns, false, 260.0)
+	_ferns = []
+
+## MultiMesh copies of an authored GLB (every mesh part keeps its own node
+## transform and materials, with LandmarkLooks upgrades applied).
+static var _glb_parts := {}
+static func glb_multimesh(parent: Node3D, node_name: String, file: String, xforms: Array, shadows: bool = false, vis_end: float = 0.0) -> void:
+	if xforms.is_empty():
+		return
+	if not _glb_parts.has(file):
+		var parts := []
+		var path := "res://assets/authored/" + file
+		if ResourceLoader.exists(path):
+			var inst: Node = (load(path) as PackedScene).instantiate()
+			LandmarkLooks.apply(inst)
+			var stack: Array = [[inst, Transform3D.IDENTITY]]
+			while not stack.is_empty():
+				var item: Array = stack.pop_back()
+				var node: Node = item[0]
+				var xf: Transform3D = item[1]
+				if node is Node3D:
+					xf = xf * (node as Node3D).transform
+				if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
+					var mi := node as MeshInstance3D
+					var mesh := mi.mesh.duplicate() as Mesh
+					for si in mesh.get_surface_count():
+						var ov := mi.get_surface_override_material(si)
+						if ov != null:
+							mesh.surface_set_material(si, ov)
+					parts.append([mesh, xf])
+				for ch in node.get_children():
+					stack.append([ch, xf])
+			inst.free()
+		_glb_parts[file] = parts
+	var k := 0
+	for part: Array in _glb_parts[file]:
+		var list := []
+		for x: Transform3D in xforms:
+			list.append(x * (part[1] as Transform3D))
+		Kit.multimesh(parent, "%s_%d" % [node_name, k], part[0], list, shadows, vis_end)
+		k += 1
 
 ## Low-poly palm (trunk + frond fan) for decks and promenades.
 static var _palm_mesh: ArrayMesh

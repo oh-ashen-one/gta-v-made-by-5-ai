@@ -46,7 +46,7 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 			trees_world.append(w)
 			kit.col_box(Vector3(6.0, 14.0, 6.0) * sc_, w + Vector3(0, 7.0 * sc_, 0))
 			# Planted base ring round each trunk.
-			Realm.planter(kit, w, Vector2(6.5, 6.5) * sc_, 0.3)
+			Realm.planter(kit, w, Vector2(6.5, 6.5) * sc_, 0.3, false)
 	# OCBC-style skyway threading the first grove at ~22 m.
 	var path_ids := [5, 1, 0, 2, 6, 4, 3]
 	var ctrl: Array[Vector3] = []
@@ -116,6 +116,7 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 	var cf: Dictionary = DowntownPlan.ANCHORS["cloud_forest"]
 	_conservatory(kit, holder, fd["pos"], fd["size"], 0.85, false)
 	_conservatory(kit, holder, cf["pos"], cf["size"], 0.45, true)
+	Realm.flush_ferns(holder, "GardensFerns")
 	kit.commit(holder, "GardensMesh", true)
 	return {"shapes": kit.shapes, "tris": kit.tris, "supertrees": trees_world.size()}
 
@@ -194,7 +195,7 @@ func _conservatory(kit: Kit, holder: Node3D, pos: Vector3, size: Vector3, e: flo
 	for k in 10:
 		var ang := TAU * k / 10.0
 		palms.append(Kit.xf(c + Vector3(cos(ang) * a * 0.55, 0.0, sin(ang) * b * 0.5), ang, Vector3.ONE * 1.4))
-	Kit.multimesh(holder, "ConservatoryPalms", Realm.palm_mesh(), palms, false, 900.0)
+	Realm.glb_multimesh(holder, "ConservatoryPalms", "palm.glb", palms, false, 900.0)
 	kit.col_box(Vector3(a * 1.8, h * 0.6, b * 1.8), c + Vector3(0, h * 0.3, 0))
 	kit.col_box(Vector3(a * 1.1, h * 0.38, b * 1.1), c + Vector3(0, h * 0.78, 0))
 	var sign := Label3D.new()

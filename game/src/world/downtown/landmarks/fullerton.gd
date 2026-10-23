@@ -177,7 +177,8 @@ func _one_fullerton(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 		Realm.planter(kit, ppos, Vector2(5.0, 2.0), 0.5)
 		palms.append(Kit.xf(ppos + Vector3(0, 0.5, 0), k * 1.3, Vector3.ONE * (0.9 + 0.1 * k)))
 		lamps.append(Kit.xf(Vector3(t0 + 10.5 + k * 8.5, deck_y, pz0 + 6.2), 0.0))
-	Kit.multimesh(holder, "MerlionParkPalms", Realm.palm_mesh(), palms, true, 400.0)
+	Realm.glb_multimesh(holder, "MerlionParkPalms", "palm.glb", palms, true, 400.0)
+	Realm.flush_ferns(holder, "FullertonFerns")
 	Realm.lamps(holder, "MerlionParkLamps", lamps)
 	var benches := []
 	for k in 4:
