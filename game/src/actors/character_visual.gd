@@ -166,7 +166,7 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 			foot_lock.ground_ref = self
 			skeleton.add_child(foot_lock)
 		_build_contact_shadows()
-	elif role == "civilian":
+	elif role == "civilian" and not ("--no-crowd-contact" in OS.get_cmdline_user_args()): # QA A/B switch
 		_build_crowd_contact()
 	weapon_socket = BoneAttachment3D.new()
 	weapon_socket.name = "WeaponSocket"
@@ -752,7 +752,7 @@ func _build_contact_shadows() -> void:
 ## Characters T1: civilians stood on the paving with no contact darkening in
 ## shade (judges: "grounded contact shadows" missing). One soft ambient-
 ## occlusion blob per figure, a plain child decal (it follows the walker with
-## no per-frame script), faded out beyond ~22 m where it is not readable.
+## no per-frame script), faded out beyond ~12 m (perf: rendered route A/B).
 func _build_crowd_contact() -> void:
 	var d := Decal.new()
 	d.name = "CrowdContact"
@@ -764,8 +764,8 @@ func _build_crowd_contact() -> void:
 	d.upper_fade = 0.3
 	d.lower_fade = 0.6
 	d.distance_fade_enabled = true
-	d.distance_fade_begin = 16.0
-	d.distance_fade_length = 6.0
+	d.distance_fade_begin = 8.0
+	d.distance_fade_length = 4.0
 	d.cull_mask = ~PLAYER_LIGHT_LAYER & 0xFFFFF
 	add_child(d)
 	contact_shadows_crowd = d
