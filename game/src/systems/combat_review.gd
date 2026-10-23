@@ -25,6 +25,31 @@ func setup(m: Node) -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir + "/frames")
 	_run.call_deferred()
 
+## Integration QA: aim-pose bones in the gameplay camera's frame (x right,
+## y up, z forward from the lens), so the over-the-shoulder read of the gun
+## can be checked headless.
+func _note_aim_bones(tag: String) -> void:
+	var vis: Node = player.get("_visual")
+	if vis == null or vis.get("skeleton") == null:
+		return
+	var sk: Skeleton3D = vis.get("skeleton")
+	var cam := player.camera.global_transform
+	var parts := []
+	for b in ["head", "upper_arm.r", "forearm.r", "hand.r", "hand.l"]:
+		var id := sk.find_bone(b)
+		if id < 0:
+			continue
+		var p := cam.affine_inverse() * (sk.global_transform * sk.get_bone_global_pose(id).origin)
+		parts.append("%s=(%.2f,%.2f,%.2f)" % [b, p.x, p.y, -p.z])
+	var gun: Node3D = vis.get("_weapon_node")
+	if gun != null:
+		var g := cam.affine_inverse() * gun.global_position
+		parts.append("gun=(%.2f,%.2f,%.2f)" % [g.x, g.y, -g.z])
+	var layer := sk.get_node_or_null("AimIkLayer")
+	if layer != null:
+		parts.append("gun_out=%.3f" % float(layer.get("stats").get("gun_out", -1.0)))
+	_note("%s aim bones (cam frame) %s" % [tag, " ".join(parts)])
+
 func _note(text: String) -> void:
 	print("[combat-review] ", text)
 	_log.append(text)
@@ -127,6 +152,43 @@ func _has_mesh(collider: Object) -> bool:
 				return true
 	return false
 
+## Wave Q: a still from a temporary close camera (footage paused).
+func _close_still(name: String, cam_pos: Vector3, look: Vector3, fov: float = 40.0) -> void:
+	var was := _recording
+	_recording = false
+	var cam := Camera3D.new()
+	cam.fov = fov
+	main.add_child(cam)
+	cam.global_position = cam_pos
+	cam.look_at(look)
+	cam.current = true
+	await _frame_step()
+	_still(name)
+	player.camera.current = true
+	cam.queue_free()
+	_recording = was
+
+func _pelvis_of(n: NPC) -> Vector3:
+	var v: Node = n.character_visual
+	if v != null and v.get("skeleton") != null:
+		var sk: Skeleton3D = v.get("skeleton")
+		var pb := sk.get_node_or_null("Ragdoll/PB_pelvis") as Node3D
+		if pb != null:
+			return pb.global_position
+		var id := sk.find_bone("pelvis")
+		if id >= 0:
+			return sk.global_transform * sk.get_bone_global_pose(id).origin
+	return n.global_position + Vector3.UP * 0.3
+
+func _corpse_still(name: String, n: NPC) -> void:
+	var c := _pelvis_of(n)
+	var away := c - player.global_position
+	away.y = 0.0
+	away = away.normalized() if away.length() > 0.1 else Vector3.FORWARD
+	var side := away.cross(Vector3.UP).normalized()
+	await _close_still(name, c - away * 1.7 + side * 0.9 + Vector3.UP * 2.1, c, 50.0)
+	_note("%s pelvis %s height above ground %.2f" % [name, c, c.y - (_ground(c).y - 0.05)])
+
 func _spawn(pos: Vector3, police: bool, health: float) -> NPC:
 	var n := NPC.new()
 	n.is_police = police
@@ -201,6 +263,7 @@ func _run() -> void:
 			break
 	var hostile := _spawn(enemy_pos, false, 70.0)
 	hostile.rotation.y = atan2(fwd.x, fwd.z)   # facing the player
+	hostile.state = NPC.State.PURSUE   # wave Q: an armed hostile that fires back
 	_note("hostile at %s (%.1f m)" % [hostile.global_position, hostile.global_position.distance_to(player.global_position)])
 	for i in 20:
 		await get_tree().physics_frame
@@ -213,6 +276,17 @@ func _run() -> void:
 	await _aim_at(wall_point + Vector3.UP * 0.2, 0.55)
 	await _frames(0.45)
 	_still("aim_wall")
+	_note_aim_bones("aim_wall")
+	# Wave Q: the aim pose up close (head down the sights, two-hand grip).
+	var hf := -player.camera.global_basis.z
+	hf.y = 0.0
+	hf = hf.normalized()
+	var hr := hf.cross(Vector3.UP).normalized()
+	var head := player.global_position + Vector3.UP * 1.58
+	await _close_still("aim_pose_close_r", head + hf * 1.15 + hr * 0.75 + Vector3.UP * 0.02, head + hf * 0.3 - Vector3.UP * 0.05)
+	await _close_still("aim_pose_close_l", head + hf * 1.15 - hr * 0.75 + Vector3.UP * 0.02, head + hf * 0.3 - Vector3.UP * 0.05)
+	await _close_still("aim_pose_side", head + hr * 1.35 + hf * 0.25, head + hf * 0.28 - Vector3.UP * 0.05)
+	await _close_still("aim_pose_over_shoulder", head - hf * 0.95 + hr * 0.55 + Vector3.UP * 0.12, head + hf * 4.0 + hr * 0.2 - Vector3.UP * 0.1, 50.0)
 	_phase = "burst_wall"
 	var spots := []
 	var tangent := wall_normal.cross(Vector3.UP).normalized()
@@ -277,6 +351,7 @@ func _run() -> void:
 		await _frame_step()
 	_still("enemy_falling")
 	await _frames(0.9)
+	await _corpse_still("corpse_rest_close", hostile)
 	_phase = "reload"
 	Input.action_release("aim")
 	Input.action_press("reload")
@@ -317,6 +392,42 @@ func _run() -> void:
 	_still("police_aftermath")
 	Input.action_release("aim")
 	await _frames(0.6)
+	await _frames(1.5)
+	for c in cops:
+		if c.state == NPC.State.DEAD:
+			await _corpse_still("police_corpse_close_%d" % cops.find(c), c)
+	# Wave Q: magazine change up close (front-left quarter of the shooter).
+	_recording = false
+	if Game.current_mag() >= 12:
+		Game.consume_ammo()
+	var rf := -player.camera.global_basis.z
+	rf.y = 0.0
+	rf = rf.normalized()
+	var rr := rf.cross(Vector3.UP).normalized()
+	var chest_p := player.global_position + Vector3.UP * 1.3
+	Input.action_press("reload")
+	await _frame_step()
+	Input.action_release("reload")
+	var t0 := Time.get_ticks_msec()
+	var marks := [0.30, 0.52, 0.72, 0.95, 1.22]
+	var mi := 0
+	var cam2 := Camera3D.new()
+	cam2.fov = 42.0
+	main.add_child(cam2)
+	var sim_t := 0.0
+	while mi < marks.size() and sim_t < 2.0:
+		await get_tree().process_frame
+		sim_t += get_process_delta_time()
+		if sim_t >= float(marks[mi]):
+			cam2.global_position = chest_p + rf * 1.05 - rr * 0.85 + Vector3.UP * 0.12
+			cam2.look_at(chest_p + rf * 0.25)
+			cam2.current = true
+			await _frame_step()
+			_still("reload_close_%d" % mi)
+			player.camera.current = true
+			mi += 1
+	cam2.queue_free()
+	_note("reload close stills %d (%.0f ms)" % [mi, Time.get_ticks_msec() - t0])
 
 	var fh := FileAccess.open(out_dir + "/frames.jsonl", FileAccess.WRITE)
 	fh.store_string("\n".join(_rows) + "\n")

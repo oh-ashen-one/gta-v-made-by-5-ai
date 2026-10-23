@@ -1,9 +1,11 @@
 class_name NPC
 extends CharacterBody3D
+
 ## Civilian and police characters. Purposeful ambient life (NPC-01), visible
 ## reactions (NPC-02) and readable combatants (NPC-03) with real damage state
 ## (COMBAT-03).
 
+static var _officer_down_toast_ms := 0  # combat piece: debounce for the "Officer down." toast
 enum State { WALK, IDLE, FLEE, DEAD, PURSUE }
 
 const WALK_SPEED := 1.5
@@ -415,7 +417,11 @@ func _die(by_player: bool) -> void:
 	Events.actor_died.emit(self, by_player)
 	if is_police:
 		Game.add_heat(12.0)
-		Events.toast("Officer down.", "bad")
+		# One toast per burst of police deaths (wave Q2: no stacked duplicates).
+		var now_ms := Time.get_ticks_msec()
+		if now_ms - _officer_down_toast_ms > 6000 or _officer_down_toast_ms == 0:
+			_officer_down_toast_ms = now_ms
+			Events.toast("Officer down.", "bad")
 
 func _on_shot_fired(origin: Vector3, _dir: Vector3, _weapon_id: String) -> void:
 	if state == State.DEAD:

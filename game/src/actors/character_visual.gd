@@ -5,7 +5,7 @@ extends Node3D
 ## health, facing, weapon damage and vehicle transitions.
 
 const PROVIDER_DIR := "res://assets/providers/"
-const LOOP_CLIPS := ["idle", "walk", "run", "sprint", "aim", "aim_walk", "aim_run", "jump", "seated", "drive"]
+const LOOP_CLIPS := ["idle", "walk", "run", "sprint", "aim", "aim_walk", "aim_run", "aim_back", "jump", "seated", "drive"]
 const WARDROBE := [
 	Color(1.0, 1.0, 1.0), Color(1.20, 1.34, 1.12),
 	Color(1.26, 1.10, 1.02), Color(0.94, 1.14, 1.36),
@@ -45,7 +45,15 @@ const RUN_CLIP_SPEED := 3.6
 const SPRINT_CLIP_SPEED := 6.8
 const RUN_THRESHOLD := 2.3       # walk <-> run (geometric mean of the clip speeds)
 const SPRINT_THRESHOLD := 5.0    # run <-> sprint
-const LOCOMOTION := ["walk", "run", "sprint", "aim_walk", "aim_run"]
+const LOCOMOTION := ["walk", "run", "sprint", "aim_walk", "aim_run", "aim_back"]
+# Locomotion-Q: player-only re-export with weighted walk, aimed backpedal and
+# sprint skid clips (rig_characters.py --suffix _loco4: upright r2 skid); others keep _v2.
+const PLAYER_ASSET_VERSION := "_loco4"
+const BACK_CLIP_SPEED := 1.3
+# Standstill -> gait starts on a step: walk from just after the right heel
+# strike (left foot pushes off first), run from late left stance.
+const START_PHASE := {"walk": 0.55, "aim_walk": 0.55, "run": 0.24, "aim_run": 0.24, "sprint": 0.12, "aim_back": 0.55}
+var foot_lock: FootLockModifier
 const ASSET_VERSION := "_v2"
 var gait_v2 := false
 var motion: CharacterMotionModifier
@@ -69,6 +77,8 @@ static func available(role: String = "player") -> bool:
 
 ## Locomotion v2 exports sit beside the v1 provider files (never overwrite them).
 static func asset_path(role: String) -> String:
+	if role == "player" and ResourceLoader.exists(PROVIDER_DIR + role + "_rigged" + PLAYER_ASSET_VERSION + ".glb"):
+		return PROVIDER_DIR + role + "_rigged" + PLAYER_ASSET_VERSION + ".glb"
 	var v2 := PROVIDER_DIR + role + "_rigged" + ASSET_VERSION + ".glb"
 	return v2 if ResourceLoader.exists(v2) else PROVIDER_DIR + role + "_rigged.glb"
 
@@ -128,6 +138,11 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		motion.name = "MotionLayer"
 		skeleton.add_child(motion)
 		_set_motion_frame()
+		if not ("--no-foot-lock" in OS.get_cmdline_user_args()): # QA A/B switch
+			foot_lock = FootLockModifier.new()
+			foot_lock.name = "FootLock"
+			foot_lock.ground_ref = self
+			skeleton.add_child(foot_lock)
 		_build_contact_shadows()
 	weapon_socket = BoneAttachment3D.new()
 	weapon_socket.name = "WeaponSocket"
@@ -154,6 +169,8 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 	_last_aim = aiming
 	_last_grounded = grounded
 	_last_reload = reloading
+	if foot_lock != null:
+		foot_lock.lock_allowed = grounded and not _seated and not _dead and not skidding
 	if not loaded or _dead or _one_shot:
 		return
 	if _seated:
@@ -182,15 +199,23 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 			rate = clampf(speed / RUN_CLIP_SPEED, 0.8, 1.25)
 		else:
 			clip = "aim_walk" if aiming else "walk"
-			rate = clampf(speed / WALK_CLIP_SPEED, 0.8, 1.25)
+			# Low floor: a start from standstill plays a slow first step
+			# instead of a full-rate cycle over a creeping body.
+			rate = clampf(speed / WALK_CLIP_SPEED, 0.35, 1.25)
 		crossfade = 0.22
 		if aiming and clip in ["aim_walk", "aim_run"]:
-			var back := absf(_travel_rel) > PI * 0.62
-			# Legs face the travel line (or its reverse when backpedalling).
-			var leg_dir := wrapf(_travel_rel + PI, -PI, PI) if back else _travel_rel
-			hip_target = clampf(leg_dir, -1.25, 1.25)
+			var back := absf(_travel_rel) > PI * 0.6 and _clips.has("aim_back")
 			if back:
-				rate = -rate
+				# Locomotion-Q: an authored backpedal (short quick steps landing
+				# on the ball of the foot), never the walk played in reverse.
+				clip = "aim_back"
+				rate = clampf(speed / BACK_CLIP_SPEED, 0.4, 1.3)
+				hip_target = clampf(wrapf(_travel_rel + PI, -PI, PI), -0.9, 0.9)
+			else:
+				# Strafe: the legs walk the travel line, the chest keeps the aim.
+				hip_target = clampf(_travel_rel, -1.5, 1.5)
+		if clip in LOCOMOTION and not (_current in LOCOMOTION):
+			_start_from_rest = _current in ["idle", "aim", ""]
 	elif speed > 2.1:
 		clip = "aim_run" if aiming else "run"
 		if motion != null:
@@ -227,6 +252,8 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 ## the character's left). Sideways travel turns the hips into the step;
 ## backward travel plays the aim walk in reverse so planted feet stay put.
 var _travel_rel := 0.0
+var _start_from_rest := false
+var skidding := false            # player sprint-brake: feet may slide, no lock
 func set_travel_direction(rel: float) -> void:
 	_travel_rel = wrapf(rel, -PI, PI)
 
@@ -262,7 +289,7 @@ func release_pose() -> void:
 	set_motion(_last_speed, _last_aim, _last_grounded, _last_reload)
 
 func cancel_action() -> void:
-	if _one_shot and _current in ["jump_start", "land", "stop"]:
+	if _one_shot and _current in ["jump_start", "land", "stop", "skid"]:
 		_one_shot = false
 		_current = ""
 		set_motion(_last_speed, _last_aim, _last_grounded, _last_reload)
@@ -307,6 +334,7 @@ func play_death() -> void:
 	_play("fall", 0.08)
 
 func reset_alive() -> void:
+	Ragdoll.clear(self) # combat piece: pooled responders leave their ragdoll
 	_dead = false
 	_one_shot = false
 	_seated = false
@@ -324,6 +352,7 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 		weapon_socket.add_child(weapon)
 	_weapon_node = weapon
 	_weapon_kind = weapon_kind
+	AimIkLayer.ensure(self) # combat piece: aim/reload upper-body layer
 	if asset_role != "player":
 		for mesh_node in weapon.find_children("*", "MeshInstance3D", true, false):
 			(mesh_node as MeshInstance3D).visibility_range_end = NPC_DRAW_RANGE
@@ -404,6 +433,9 @@ func _play(clip: String, crossfade: float, rate: float = 1.0) -> void:
 			phase = fmod(animator.current_animation_position, cur_len) / cur_len
 	_current = clip
 	animator.play(_clips[clip], crossfade)
+	if phase < 0.0 and asset_role == "player" and START_PHASE.has(clip) and _start_from_rest:
+		phase = START_PHASE[clip]
+	_start_from_rest = false
 	if phase >= 0.0:
 		animator.seek(phase * animator.get_animation(_clips[clip]).length, false)
 	elif asset_role != "player" and clip in LOOP_CLIPS:

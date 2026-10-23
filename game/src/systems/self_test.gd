@@ -68,6 +68,7 @@ func run(main: Node) -> void:
 	_check("market diners are reactive damageable NPCs", diners == TrafficManager.DINER_COUNT)
 	_check("busy district walkers spawn along segments not junction piles", away_from_junction >= 34)
 	_check("gameplay camera belongs to player", player.camera.current)
+	_check("sprint 180 turns continuously (<=25 deg/frame at 30 fps, no facing flip)", Player.SKID_SWING_RATE / 30.0 <= deg_to_rad(25.0) and Player.FACE_MAX_RATE / 30.0 <= deg_to_rad(25.0) and Player.SKID_DECEL * 0.45 >= Player.SPRINT_SPEED - 1.0)
 	_check("mission publishes initial objective", mission.stage == Mission.Stage.TO_PACKAGE and not mission.current_objective().is_empty())
 	_check("initial objective marker survives HUD setup order", mission.get_meta("marker", Vector3.ZERO).distance_to(world.locations["package"]) < 0.01)
 	_check("mission registered for save and checkpoint restoration", mission.is_in_group("mission"))
@@ -151,6 +152,15 @@ func run(main: Node) -> void:
 	Input.action_release("move_forward")
 	Input.action_release("move_left")
 	_check("left driving input turns left", (-car.global_transform.basis.z).x < nose_before.x - 0.05)
+	# driving-q: chase-cam motion blur is wired and opens with speed; the road
+	# keeps 16x anisotropic filtering and a bounded aggregate contrast.
+	var mb: CarMotionBlur = car.fx.motion_blur if car.fx != null else null
+	var comp: Compositor = car._camera.compositor
+	_check("chase camera motion blur opens with speed", mb != null and comp != null and comp.compositor_effects.has(mb) and mb.shutter > 0.05 and car.speed_kmh() > 15.0, "shutter=%.2f speed=%.0f" % [mb.shutter if mb else -1.0, car.speed_kmh()])
+	# rQ2: streaks only on near, low geometry (road, kerbs, median) and ungated taps are not gathered, so people/carts never ghost.
+	_check("motion blur is gated to near road-level pixels (no ghosted pedestrians)", CarMotionBlur.GLSL.contains("float gate(") and CarMotionBlur.GLSL.contains("smoothstep(6.5, 12.0, z)") and CarMotionBlur.GLSL.contains("smoothstep(0.15, 0.6, gs)") and mb != null and mb.samples >= 20, "samples=%d" % [mb.samples if mb else -1])
+	var road_sh := (Palette.road_asphalt() as ShaderMaterial).shader if Palette.road_asphalt() is ShaderMaterial else null
+	_check("road filtering and aggregate contrast stay speckle-free", int(ProjectSettings.get_setting("rendering/textures/default_filters/anisotropic_filtering_level")) == 4 and road_sh != null and road_sh.code.contains("0.72, 1.38"))
 	# opus55 driving: the sprung body and the trailing chase camera stay wired.
 	var car_fx: Node = car.fx
 	var lean := Vector2(car_fx.last_roll, car_fx.last_pitch) if car_fx != null else Vector2.ZERO
@@ -209,6 +219,7 @@ func run(main: Node) -> void:
 	Input.action_release("move_forward")
 	_check("walking still works after vehicle death", player.global_position.distance_to(walk_start) > 1.0)
 	_check("on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows", _gait_matches_speed(player))
+	await _locomotion_q_checks(player)
 	var jump_apex: float = pow(Player.JUMP_VELOCITY, 2.0) / (2.0 * 24.0)
 	_check("on-foot jump is a human hop (0.40-0.70 m rise, under 0.5 s airtime)", jump_apex > 0.4 and jump_apex < 0.7 and 2.0 * Player.JUMP_VELOCITY / 24.0 < 0.5, "apex=%.2f" % jump_apex)
 
@@ -585,6 +596,54 @@ func _combat_fx_checks(player: Player, before: Dictionary) -> void:
 	for kind in CombatFx.MAX_PARTICLES:
 		if int(live[kind]) > int(CombatFx.MAX_PARTICLES[kind]): bounded = false
 	_check("sustained fire keeps effect pools bounded", bounded and int(live["casings"]) <= CombatFx.MAX_CASINGS, str(live))
+	await _combat_q_checks(player)
+
+## Wave Q combat: the aimed pistol sits at shoulder height (integ-Q: arms
+## extended under the sight line, readable from the OTS camera) with
+## the barrel on the aim, interaction prompts are hidden mid-firefight, and a
+## lethal hit hands the body to a ragdoll that comes to rest on the ground.
+func _combat_q_checks(player: Player) -> void:
+	var visual: Node = player._visual
+	var layer: Node = null
+	if visual != null and visual.get("skeleton") != null:
+		layer = (visual.get("skeleton") as Node).get_node_or_null("AimIkLayer")
+	var gun: Node3D = player.get("_weapon_model")
+	await _ticks(6)
+	var ok_gun := false
+	var detail := "no layer/gun"
+	if layer != null and gun != null and is_instance_valid(gun):
+		var aim_dir := Basis.from_euler(Vector3(player.pitch, player.yaw, 0.0)) * Vector3.FORWARD
+		var barrel := -gun.global_basis.z
+		var h := gun.global_position.y - player.global_position.y
+		ok_gun = float(layer.get("weight")) > 0.9 and h > 1.28 and h < 1.55 and barrel.normalized().dot(aim_dir.normalized()) > 0.96
+		detail = "weight=%.2f gun_h=%.2f barrel_dot=%.3f" % [float(layer.get("weight")), h, barrel.normalized().dot(aim_dir.normalized())]
+	_check("aim layer holds the pistol at shoulder height along the aim", ok_gun, detail)
+	CombatFx.mark_combat()
+	var prompts: Array[String] = []
+	var grab := func(text: String) -> void: prompts.append(text)
+	Events.interaction_prompt.connect(grab)
+	await _ticks(2)
+	Events.interaction_prompt.disconnect(grab)
+	_check("no interaction prompt during a firefight", CombatFx.in_combat() and not prompts.is_empty() and prompts.all(func(t): return t == ""), str(prompts.slice(0, 3)))
+	var victim := NPC.new()
+	victim.is_police = true
+	player.get_parent().add_child(victim)
+	victim.global_position = player.global_position + Vector3(2.5, 0.0, -3.5)
+	victim.state = NPC.State.IDLE
+	victim.idle_time = 100.0
+	await _ticks(10)
+	var before_rag := Ragdoll.started
+	victim.take_damage(500.0, player.global_position, true)
+	await _ticks(150)
+	var pb: Node3D = null
+	if victim.character_visual != null and victim.character_visual.skeleton != null:
+		pb = victim.character_visual.skeleton.get_node_or_null("Ragdoll/PB_pelvis") as Node3D
+	var rest_h := pb.global_position.y - victim.global_position.y if pb != null else 99.0
+	var drift := Vector2(pb.global_position.x - victim.global_position.x, pb.global_position.z - victim.global_position.z).length() if pb != null else 99.0
+	# The pelvis ends on the ground (ragdoll ~0.1 m; the guarded fallback to the
+	# authored fall pose ~0.36 m), never under the floor or flung away.
+	_check("lethal hit ragdolls the body; it ends on the ground, never under it or flung", Ragdoll.started > before_rag and pb != null and rest_h > -0.05 and rest_h < 0.42 and drift < 3.0, "pelvis_h=%.2f drift=%.2f guard=%s" % [rest_h, drift, Ragdoll.last_blowup])
+	victim.queue_free()
 
 ## Wave-5 additions: kerbside parking geometry, parked-car sleep, road-graph
 ## pursuit, aircraft ditch recovery, landmark set and the outdoor opening.
@@ -1094,6 +1153,64 @@ func _water_checks(world: WorldBuilder) -> void:
 	_check("wake and quay foam is lacy coverage, not smooth strokes", code.contains("lace_foam(") and code.contains("cell_edge(") and not code.contains("ring = smoothstep(1.5, 1.0, e)"))
 	var launch_tris := BoatMeshes.launch().get_faces().size() / 3
 	_check("runabout hull is a detailed crewed model (rails, windshield, driver)", launch_tris >= 1500, "tris=%d" % launch_tris)
+
+
+## Locomotion-Q (Opus 5.5): foot locking, weighted starts, the sprint skid,
+## authored backpedal, pedestrian personal space and street-prop collision.
+func _locomotion_q_checks(player: Player) -> void:
+	var cv: CharacterVisual = player.get("_visual")
+	if cv == null or not cv.loaded:
+		return
+	cv.set_travel_direction(PI)
+	cv.set_motion(1.3, true)
+	var back_ok := cv.current_clip() == "aim_back" and cv.animator.speed_scale > 0.0
+	cv.set_travel_direction(0.0)
+	cv.set_motion(0.0)
+	_check("locomotion-Q: planted-foot lock (leg IK) on the player; aimed backpedal is its own clip played forward, plus a skid clip",
+		cv.foot_lock != null and back_ok and cv._clips.has("skid"), "clip=%s rate=%.2f" % [cv.current_clip(), cv.animator.speed_scale])
+	_check("locomotion-Q: street props (scooters, bikes, planters...) collide with the on-foot player",
+		StreetPropColliders.shape_count > 100 and (player.collision_mask & StreetPropColliders.PROP_LAYER) != 0, "boxes=%d" % StreetPropColliders.shape_count)
+	# Standstill -> walk builds over a step, not in 0.14 s.
+	player.respawn_at(Vector3(160.0, 0.4, -300.0), 0.0)
+	await _ticks(10)
+	Input.action_press("move_forward")
+	Input.action_press("walk")
+	var ticks := 0
+	while ticks < 90 and player.velocity.length() < Player.WALK_SPEED - 0.05:
+		await _ticks(1)
+		ticks += 1
+	Input.action_release("walk")
+	_check("locomotion-Q: standstill to walk speed takes a real first step (>= 0.3 s)", ticks >= 18 and ticks < 90, "%.2f s" % (ticks / 60.0))
+	# Sprint, then a sharp reversal: plant and skid, then face the other way.
+	Input.action_press("sprint")
+	await _ticks(80)
+	var before := player.rotation.y
+	Input.action_release("move_forward")
+	Input.action_press("move_back")
+	var skidded := false
+	for i in 40:
+		await _ticks(1)
+		skidded = skidded or cv.current_clip() == "skid"
+	await _ticks(30)
+	Input.action_release("move_back")
+	Input.action_release("sprint")
+	var turned := absf(wrapf(player.rotation.y - before, -PI, PI)) > 2.6
+	_check("locomotion-Q: a sharp 180 at a sprint plants a skid, then pivots", skidded and turned,
+		"skid=%s turned=%.2f rad" % [skidded, absf(wrapf(player.rotation.y - before, -PI, PI))])
+	await _ticks(20)
+	# Pedestrians never share the player's space.
+	var dummy := CharacterBody3D.new()
+	dummy.collision_layer = 0
+	get_tree().current_scene.add_child(dummy)
+	dummy.collision_layer = 4
+	dummy.add_to_group("npcs")
+	dummy.global_position = player.global_position + Vector3(0.15, 0.0, 0.0)
+	var avoid := PlayerAvoidance.new()
+	for i in 6:
+		avoid.steer(player, Vector3.ZERO, 1.0 / 60.0)
+	var gap := Vector2(dummy.global_position.x - player.global_position.x, dummy.global_position.z - player.global_position.z).length()
+	dummy.queue_free()
+	_check("locomotion-Q: a pedestrian inside the player's personal space is shouldered clear", gap > 0.45, "gap=%.2f m" % gap)
 
 
 

@@ -81,20 +81,9 @@ func _run() -> void:
 				Input.action_press("jump")
 			elif f == step[4] + 2:
 				Input.action_release("jump")
-			await get_tree().physics_frame
-			_measure(player, visual)
-			var file := "frames/f%04d.jpg" % _frame
-			if not _metrics_only:
-				await RenderingServer.frame_post_draw
-				var img := get_viewport().get_texture().get_image()
-				img.save_jpg(out_dir + "/" + file, 0.9)
-			_rows.append(JSON.stringify({"file": file, "seconds": _frame / FPS, "phase": _phase,
-				"clip": visual.current_clip() if visual else "", "rate": snappedf(visual.animator.speed_scale, 0.01) if visual else 0.0,
-				"speed": snappedf(Vector2(player.velocity.x, player.velocity.z).length(), 0.01),
-				"pelvis_y": snappedf(_bone_pos(visual, "pelvis").y - _ground_y, 0.005),
-				"knee_l": snappedf(_knee_flex(visual, "l"), 0.1), "knee_r": snappedf(_knee_flex(visual, "r"), 0.1),
-				"foot_l": _v(_bone_pos(visual, "foot.l")), "hand_l": _v(_bone_pos(visual, "hand.l"))}))
-			_frame += 1
+			await _record(player, visual)
+	_release()
+	await _extra_phases(player, visual)
 	_release()
 	var fh := FileAccess.open(out_dir + "/frames.jsonl", FileAccess.WRITE)
 	fh.store_string("\n".join(_rows) + "\n")
@@ -118,6 +107,211 @@ func _run() -> void:
 	print("[locomotion-review] metrics ", JSON.stringify(report))
 	print("[locomotion-review] frames=", _frame)
 	get_tree().quit()
+
+## One captured frame: wait a simulated frame, measure, save the image.
+## Headless metrics: also wait the process frame so one sample is one
+## animation/skeleton update (2 physics ticks at --fixed-fps 30), like the
+## rendered run; sampling per physics tick mixed stale and fresh poses.
+func _record(player: Player, visual: CharacterVisual) -> void:
+	await get_tree().physics_frame
+	if _metrics_only:
+		await get_tree().process_frame
+		await get_tree().physics_frame
+	if _low_cam != null and _low_cam.current:
+		_follow_low_cam(player)
+	_measure(player, visual)
+	var file := "frames/f%04d.jpg" % _frame
+	if not _metrics_only:
+		await RenderingServer.frame_post_draw
+		var img := get_viewport().get_texture().get_image()
+		img.save_jpg(out_dir + "/" + file, 0.9)
+	_rows.append(JSON.stringify({"file": file, "seconds": _frame / FPS, "phase": _phase,
+		"clip": visual.current_clip() if visual else "", "rate": snappedf(visual.animator.speed_scale, 0.01) if visual else 0.0,
+		"speed": snappedf(Vector2(player.velocity.x, player.velocity.z).length(), 0.01),
+		"pelvis_y": snappedf(_bone_pos(visual, "pelvis").y - _ground_y, 0.005),
+		"knee_l": snappedf(_knee_flex(visual, "l"), 0.1), "knee_r": snappedf(_knee_flex(visual, "r"), 0.1),
+		"foot_l": _v(_bone_pos(visual, "foot.l")), "hand_l": _v(_bone_pos(visual, "hand.l")),
+		"pos": _v(player.global_position), "yaw": snappedf(rad_to_deg(player.rotation.y), 0.1),
+		"cam": _v(player.camera.global_position), "cam_yaw": snappedf(rad_to_deg(player.camera.global_rotation.y), 0.1),
+		"hand_r": _v(_bone_pos(visual, "hand.r")), "head": _v(_bone_pos(visual, "head")),
+		"head_yaw_rel": _head_dir(player, visual).x, "head_pitch": _head_dir(player, visual).y,
+		"look_yaw": snappedf(rad_to_deg(float(player.get("_look_yaw"))), 0.1)}))
+	_frame += 1
+
+# Locomotion-Q additions (run-2 critic spec): a low full-figure tracking shot
+# of the walk, aimed strafe and backpedal in the heritage five-foot way, and
+# walking into the crowd and into a kerbside scooter/bike row.
+var _low_cam: Camera3D
+const ARCADE := Vector3(-150.0, 0.45, -148.0)
+const ARCADE_YAW := -0.977 # -56 deg, the heritage_arcade gameplay view's line
+
+var _low_front := false
+var _obs := false
+func _follow_low_cam(player: Player) -> void:
+	var right := player.global_transform.basis.x
+	var fwd := -player.global_transform.basis.z
+	var target := player.global_position + right * 3.3 + fwd * 0.6 + Vector3.UP * 0.55
+	if _low_front:
+		# GTAV-02-style: a low camera ~4 m ahead, the figure walking at it.
+		target = player.global_position + fwd * 3.1 + right * 0.45 + Vector3.UP * 0.62
+		_low_cam.global_position = _low_cam.global_position.lerp(target, 0.35) if _low_cam.global_position.distance_to(target) < 2.0 else target
+		_low_cam.look_at(player.global_position + Vector3.UP * 0.95)
+		return
+	if _obs:
+		# Full-figure observer 3/4 in front of the aiming player.
+		target = player.global_position + right * 2.4 - player.global_transform.basis.z * 3.0 + Vector3.UP * 1.05
+		_low_cam.global_position = target
+		_low_cam.look_at(player.global_position + Vector3.UP * 0.85)
+		return
+	_low_cam.global_position = _low_cam.global_position.lerp(target, 0.35) if _low_cam.global_position.distance_to(target) < 2.0 else target
+	_low_cam.look_at(player.global_position + Vector3.UP * 0.8 + fwd * 0.3)
+
+func _hold(player: Player, visual: CharacterVisual, phase: String, seconds: float, actions: Dictionary, yaw_rate := 0.0) -> void:
+	_phase = phase
+	_release()
+	for action in actions:
+		Input.action_press(action, actions[action])
+	for f in int(seconds * FPS):
+		if yaw_rate != 0.0:
+			player.yaw += yaw_rate / FPS
+		await _record(player, visual)
+
+func _place(player: Player, pos: Vector3, yaw: float) -> void:
+	_release()
+	player.respawn_at(pos, yaw)
+	player.pitch = -0.10
+	for i in 20:
+		await get_tree().physics_frame
+
+func _extra_phases(player: Player, visual: CharacterVisual) -> void:
+	# 1. Low full-figure walk (side tracking camera ~0.55 m above the paving).
+	await _place(player, START + Vector3(0.0, 0.0, 3.0), 0.0)
+	_low_cam = Camera3D.new()
+	_low_cam.fov = 40.0
+	add_child(_low_cam)
+	_low_cam.current = true
+	_follow_low_cam(player)
+	await _hold(player, visual, "low_stand", 0.6, {})
+	await _hold(player, visual, "low_walk", 3.4, {"move_forward": 1.0, "walk": 1.0})
+	await _hold(player, visual, "low_stop", 0.8, {})
+	await _place(player, START + Vector3(0.0, 0.0, 3.0), 0.0)
+	_low_front = true
+	_low_cam.current = true
+	_follow_low_cam(player)
+	await _hold(player, visual, "low_front_walk", 3.0, {"move_forward": 1.0, "walk": 1.0})
+	_low_front = false
+	_low_cam.current = false
+	player.camera.current = true
+	# 2. Aimed strafe and backpedal in the five-foot way.
+	await _place(player, ARCADE, ARCADE_YAW)
+	player.pitch = -0.34 # look down the aim line enough to see the feet
+	await _hold(player, visual, "arcade_aim", 0.6, {"aim": 1.0})
+	await _hold(player, visual, "arcade_strafe_r", 1.6, {"aim": 1.0, "move_right": 1.0})
+	await _hold(player, visual, "arcade_strafe_l", 1.6, {"aim": 1.0, "move_left": 1.0})
+	await _hold(player, visual, "arcade_back", 2.0, {"aim": 1.0, "move_back": 1.0})
+	await _hold(player, visual, "arcade_fwd", 1.2, {"aim": 1.0, "move_forward": 1.0})
+	# The same moves seen full-figure from an observer camera (legs in frame).
+	await _place(player, ARCADE, ARCADE_YAW)
+	_obs = true
+	_low_cam.fov = 46.0
+	_low_cam.current = true
+	_follow_low_cam(player)
+	await _hold(player, visual, "obs_aim", 0.5, {"aim": 1.0})
+	await _hold(player, visual, "obs_strafe_r", 1.6, {"aim": 1.0, "move_right": 1.0})
+	await _hold(player, visual, "obs_strafe_l", 1.6, {"aim": 1.0, "move_left": 1.0})
+	await _hold(player, visual, "obs_back", 2.0, {"aim": 1.0, "move_back": 1.0})
+	_obs = false
+	_low_cam.current = false
+	player.camera.current = true
+	# 3. Into the crowd: start 7 m short of the densest knot of pedestrians.
+	var crowd := _crowd_spot(player)
+	if crowd.size() == 2:
+		await _place(player, crowd[0], crowd[1])
+		await _hold(player, visual, "crowd_walk", 4.0, {"move_forward": 1.0, "walk": 1.0})
+		await _hold(player, visual, "crowd_run", 2.0, {"move_forward": 1.0})
+	# 4. Into a kerbside scooter / bike row and a planter.
+	for kind in ["scooter", "bike"]:
+		var spot := _prop_spot(player, kind)
+		if spot.size() == 2:
+			await _place(player, spot[0], spot[1])
+			await _hold(player, visual, "%s_walk" % kind, 3.0, {"move_forward": 1.0, "walk": 1.0})
+			await _hold(player, visual, "%s_run" % kind, 1.6, {"move_forward": 1.0})
+
+## A standing spot 7 m from the pedestrian with the most neighbours (within
+## 8 m) near the opening street, facing them.
+func _crowd_spot(player: Player) -> Array:
+	var best: Node3D = null
+	var best_n := 0
+	var npcs := get_tree().get_nodes_in_group("npcs")
+	for a in npcs:
+		var na := a as Node3D
+		if na == null or not na.visible or na.global_position.distance_to(START) > 160.0:
+			continue
+		# Pavement walkers only (not diners seated in the hawker centre).
+		var va = na.get("velocity")
+		if va == null or Vector2(va.x, va.z).length() < 0.4:
+			continue
+		var n := 0
+		for b in npcs:
+			var nb := b as Node3D
+			if nb != null and nb != na and nb.visible and nb.global_position.distance_to(na.global_position) < 8.0:
+				n += 1
+		if n > best_n:
+			best_n = n
+			best = na
+	if best == null:
+		return []
+	var dir := Vector3(1, 0, 0)
+	var lane = best.get("lane_dir")
+	var p := best.global_position
+	# Approach along the pavement (the pedestrian's own lane line when known).
+	var vel := Vector3(best.get("velocity")) if best.get("velocity") != null else Vector3.ZERO
+	if Vector2(vel.x, vel.z).length() > 0.2:
+		dir = Vector3(vel.x, 0, vel.z).normalized()
+	var start := p + dir * 7.0
+	start.y = p.y + 0.05
+	print("[locomotion-review] crowd spot ", p, " neighbours ", best_n, " lane ", lane)
+	return [start, atan2(dir.x, dir.z)]
+
+func _prop_spot(player: Player, kind: String) -> Array:
+	var best_d := INF
+	var best: Transform3D
+	for node in get_tree().current_scene.find_children("StreetDressing_%s_*" % kind, "MultiMeshInstance3D", true, false):
+		var mmi := node as MultiMeshInstance3D
+		for local_xf in mmi.get_meta("instance_xforms", []):
+			var xf := mmi.global_transform * (local_xf as Transform3D)
+			var d := xf.origin.distance_to(START)
+			if d < best_d:
+				best_d = d
+				best = xf
+	if best_d == INF:
+		return []
+	# Walk at the row along its own line so the player meets the props.
+	var along := best.basis.x.normalized()
+	along.y = 0.0
+	along = along.normalized()
+	var start := best.origin + along * 4.5
+	start.y = best.origin.y + 0.4
+	print("[locomotion-review] %s spot " % kind, best.origin)
+	return [start, atan2(along.x, along.z)]
+
+## integ-Q: where the (final, post-modifier) head points, as degrees of yaw
+## off the line of travel (+ = left) and pitch (+ = up), measured against the
+## head's bind pose (which faces the body's forward).
+func _head_dir(player: Player, visual: CharacterVisual) -> Vector2:
+	_bone_pos(visual, "head")
+	var att: BoneAttachment3D = _attach.get("head")
+	var sk := visual.skeleton if visual != null else null
+	if att == null or sk == null:
+		return Vector2.ZERO
+	var facing := Vector3(-sin(player.rotation.y), 0.0, -cos(player.rotation.y))
+	var rest_b := sk.get_bone_global_rest(sk.find_bone("head")).basis.orthonormalized()
+	var skb := sk.global_basis.orthonormalized()
+	var hf := att.global_basis.orthonormalized() * (rest_b.inverse() * (skb.inverse() * facing))
+	var vel := Vector3(player.velocity.x, 0.0, player.velocity.z)
+	var travel := vel.normalized() if vel.length() > 0.3 else facing
+	var flat := Vector3(hf.x, 0.0, hf.z).normalized()
+	return Vector2(snappedf(rad_to_deg(travel.signed_angle_to(flat, Vector3.UP)), 0.1), snappedf(rad_to_deg(asin(clampf(hf.normalized().y, -1.0, 1.0))), 0.1))
 
 func _bone_pos(visual: CharacterVisual, bone: String) -> Vector3:
 	if visual == null or visual.skeleton == null or visual.skeleton.find_bone(bone) < 0:

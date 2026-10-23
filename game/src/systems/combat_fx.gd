@@ -100,6 +100,7 @@ func shot(muzzle: Vector3, aim_dir: Vector3, end: Vector3, hit: bool, normal: Ve
 	if _layers.is_empty():
 		return
 	stats["muzzle"] += 1
+	mark_combat()
 	if not by_player:
 		stats["npc_shots"] += 1
 	var dir := aim_dir.normalized()
@@ -145,6 +146,17 @@ func shot(muzzle: Vector3, aim_dir: Vector3, end: Vector3, hit: bool, normal: Ve
 		impact(end, normal, collider, dir)
 	_eject_casing(muzzle, dir, by_player)
 
+## Wave Q: firefight clock for HUD suppression (interaction prompts stay
+## hidden while shots were fired or someone was hit in the last few seconds).
+const COMBAT_HOLD := 4.0
+static var _last_combat := -100.0
+
+static func mark_combat() -> void:
+	_last_combat = NpcCombat.game_time()
+
+static func in_combat() -> bool:
+	return NpcCombat.game_time() - _last_combat < COMBAT_HOLD
+
 ## Impact at a resolved hit point.
 func impact(point: Vector3, normal: Vector3, collider: Object, shot_dir: Vector3) -> void:
 	if _layers.is_empty():
@@ -159,7 +171,7 @@ func impact(point: Vector3, normal: Vector3, collider: Object, shot_dir: Vector3
 		# carried along the round's direction.
 		for i in 5:
 			var v := (shot_dir.normalized() * 1.8 + n * 0.5 + Vector3(_rng.randf_range(-0.6, 0.6), _rng.randf_range(-0.2, 0.7), _rng.randf_range(-0.6, 0.6))) * _rng.randf_range(0.7, 1.5)
-			_emit("puff", point, v, _rng.randf_range(0.28, 0.45), 0.0, 0.08, _rng.randf_range(0.28, 0.4), Color(0.55, 0.06, 0.05, 0.85), _rng.randf() * TAU, 1.2, Vector3.ZERO, _rng.randf(), 0.0, 4.0)
+			_emit("puff", point, v * 0.7, _rng.randf_range(0.22, 0.34), 0.0, 0.05, _rng.randf_range(0.13, 0.19), Color(0.42, 0.04, 0.035, 0.75), _rng.randf() * TAU, 1.2, Vector3.ZERO, _rng.randf(), 0.0, 5.0)  # wave Q: compact
 		for i in 5:
 			var v2 := (shot_dir.normalized() * 2.0 + Vector3(_rng.randf_range(-1, 1), _rng.randf_range(0.0, 1.4), _rng.randf_range(-1, 1))) * _rng.randf_range(0.8, 2.0)
 			_emit("chip", point, v2, _rng.randf_range(0.3, 0.6), 0.0, 0.012, 0.010, Color(0.22, 0.04, 0.03, 1.0), _rng.randf() * TAU, 9.0, Vector3.ZERO, 0.0)
@@ -194,6 +206,7 @@ func impact(point: Vector3, normal: Vector3, collider: Object, shot_dir: Vector3
 func stagger(actor: CharacterBody3D, from_position: Vector3, amount: float, lethal: bool) -> void:
 	if actor == null or not is_instance_valid(actor):
 		return
+	mark_combat()
 	stats["flinch"] += 1
 	var away := actor.global_position - from_position
 	away.y = 0.0
@@ -201,7 +214,9 @@ func stagger(actor: CharacterBody3D, from_position: Vector3, amount: float, leth
 		away = -actor.global_transform.basis.z
 	away = away.normalized()
 	var push := (3.0 if lethal else 2.2) * clampf(amount / 30.0, 0.6, 1.5)
-	_staggers.append({"actor": actor, "vel": away * push, "t": 0.36 if not lethal else 0.5})
+	var ragdolled := lethal and actor.get("character_visual") != null and bool((actor.get("character_visual") as Node).get("loaded"))
+	if not ragdolled:   # wave Q: a ragdolled body takes the push itself
+		_staggers.append({"actor": actor, "vel": away * push, "t": 0.36 if not lethal else 0.5})
 	var visual: Node = actor.get("character_visual")
 	if visual == null:
 		visual = actor.get("_visual")
@@ -213,6 +228,9 @@ func stagger(actor: CharacterBody3D, from_position: Vector3, amount: float, leth
 			reaction.name = "CombatReaction"
 			sk.add_child(reaction)
 		reaction.call("kick", away, clampf(amount / 34.0, 0.5, 1.4), lethal, _rng.randf_range(-1.0, 1.0))
+		if lethal:
+			# Wave Q: a lethal hit hands the body to a physical ragdoll.
+			Ragdoll.start(visual, away, clampf(amount / 30.0, 0.6, 1.5))
 
 # ------------------------------------------------------------------ internals
 
@@ -488,7 +506,7 @@ func _build_decal_textures() -> void:
 	_metal_hole_tex = _hole_texture(true)
 	for i in MAX_DECALS:
 		var d := Decal.new()
-		d.size = Vector3(0.2, 0.22, 0.2)
+		d.size = Vector3(0.2, 0.5, 0.2)  # integ-Q: deep enough that a collider a few cm off the visual wall still receives the hole
 		d.texture_albedo = _hole_tex
 		d.albedo_mix = 1.0
 		d.upper_fade = 0.15
@@ -553,7 +571,7 @@ func _place_decal(point: Vector3, n: Vector3, collider: Object, metal: bool) -> 
 	var d := _decals[_decal_next]
 	if d == null or not is_instance_valid(d):
 		d = Decal.new()
-		d.size = Vector3(0.2, 0.22, 0.2)
+		d.size = Vector3(0.2, 0.5, 0.2)  # integ-Q: deep enough that a collider a few cm off the visual wall still receives the hole
 		d.albedo_mix = 1.0
 		d.upper_fade = 0.15
 		d.lower_fade = 0.35
