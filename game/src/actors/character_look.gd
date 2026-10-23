@@ -305,7 +305,12 @@ void fragment() {
 			// cheekbones, lips): blend it over the procedural tone, features fully.
 			float face_box = (1.0 - smoothstep(0.06, 0.085, abs(rel.x))) * smoothstep(-0.11, -0.09, rel.y) * (1.0 - smoothstep(0.1, 0.12, rel.y)) * (1.0 - smoothstep(0.05, 0.08, rel.z));
 			float use_tex = clamp(max(max(max(eyes * 0.9, mouth * 0.75), dark_feat), face_box * 0.55), 0.0, 1.0) * face_k * (1.0 - hairness);
-			col = mix(col, tex * ratio * 0.95, use_tex);
+			// Wave R: the painted brows are solid black bars; lift them toward
+			// the hair colour over skin so they read as hair, not ink.
+			float browb = (1.0 - smoothstep(0.008, 0.02, abs(rel.y - 0.056))) * (1.0 - smoothstep(0.055, 0.07, abs(rel.x)));
+			vec3 tb = tex * ratio * 0.95;
+			tb = mix(tb, mix(skin_tone * 0.55, hair_col.rgb * 1.6 + skin_tone * 0.1, 0.5) * (0.75 + 0.5 * vnoise(vec3(rel.x * 900.0, rel.y * 260.0, 0.0))), browb * 0.45 * (1.0 - smoothstep(0.1, 0.3, lum(tb))));
+			col = mix(col, tb, use_tex);
 			col = mix(col, col * vec3(0.93, 0.74, 0.72), mouth * 0.45 * face_k);
 			float fk = face_k * (1.0 - hairness);
 			float cheek = (1.0 - smoothstep(0.015, 0.035, length(vec2(abs(rel.x) - 0.045, rel.y - 0.01)))) + (1.0 - smoothstep(0.004, 0.016, length(rel.xy)));
