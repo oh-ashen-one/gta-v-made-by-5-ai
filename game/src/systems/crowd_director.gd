@@ -17,6 +17,8 @@ const SPAWN_RADIUS := 115.0
 const DESPAWN_RADIUS := 135.0
 ## Pavement lines: just behind the kerb, mid-pavement, and the five-foot way.
 const OFFSETS: Array[float] = [9.75, 10.5, 11.35]
+## Share of five-foot-way seeds that stand at a shopfront for a while.
+const SHOPFRONT_SHARE := 0.4
 
 var traffic: TrafficManager
 var roamers: Array[NPC] = []
@@ -258,7 +260,10 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 		var ln: Dictionary = _lines[_rng.randi_range(0, _lines.size() - 1)]
 		if not view_lines.is_empty():
 			ln = view_lines[_rng.randi_range(0, view_lines.size() - 1)]
-		var off: float = OFFSETS[_rng.randi_range(0, OFFSETS.size() - 1)]
+		# M1: a personal distance from the kerb (not three painted lines), so
+		# walkers seeded on one pavement do not form single-file columns.
+		var off_idx := _rng.randi_range(0, OFFSETS.size() - 1)
+		var off: float = OFFSETS[off_idx] + (_rng.randf_range(-0.35, 0.35) if off_idx < OFFSETS.size() - 1 else _rng.randf_range(-0.3, 0.15))
 		var lateral: float = float(ln["line"]) + float(ln["side"]) * off
 		var focus_lat := _focus.x if int(ln["axis"]) == 0 else _focus.z
 		var focus_along := _focus.z if int(ln["axis"]) == 0 else _focus.x
@@ -317,6 +322,14 @@ func _assign(p: NPC, ln: Dictionary, off: float, pos: Vector3, loiter: bool) -> 
 	if loiter:
 		p.state = NPC.State.IDLE
 		p.idle_time = _rng.randf_range(25.0, 70.0)
+	elif off > 11.0 and _rng.randf() < SHOPFRONT_SHARE:   # five-foot way
+		# M1: window-shoppers and people waiting at a shopfront in the
+		# five-foot way, facing the shop, before walking on.
+		var shop := Vector3(float(ln["side"]), 0.0, 0.0) if int(ln["axis"]) == 0 else Vector3(0.0, 0.0, float(ln["side"]))
+		p.rotation.y = atan2(-shop.x, -shop.z) + _rng.randf_range(-0.5, 0.5)
+		p.state = NPC.State.IDLE
+		p.idle_time = _rng.randf_range(8.0, 35.0)
+		stats["shopfront"] = int(stats.get("shopfront", 0)) + 1
 	else:
 		p.state = NPC.State.WALK
 		p.idle_time = 0.0

@@ -238,6 +238,7 @@ func _physics_step(delta: float) -> void:
 		_grid_timer = 0.1
 		_rebuild_grid()
 	_rebuild_keys()
+	_update_player_car()
 	for v in vehicles:
 		if v.active:
 			_drive(v, delta)
@@ -595,7 +596,20 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 	var rate := ACCEL if target > v.speed else DECEL * (1.6 if target < 0.5 else 1.0)
 	v.speed = move_toward(v.speed, target, rate * delta)
 	v.set_braking(target < v.speed - 0.4 or (v.speed < 0.3 and target < 0.5))
+	var s_before := v.s
 	v.s += v.speed * delta
+	# M1 route safety: lane traffic never drives into the player's car. A
+	# kinematic body moved into it shoved it sideways or pressed it through
+	# the road (a headless route ended with the car wedged at y = -1). If
+	# the step would overlap the player's car footprint, hold instead.
+	if _pc_active and v.speed > 0.0 and _pc_blocks(v, delta):
+		v.s = s_before
+		v.speed = 0.0
+		v.obstacle_node = _pc
+		v.obstacle_gap = 0.0
+		v.set_braking(true)
+		stats["pc_holds"] = int(stats.get("pc_holds", 0)) + 1
+		return
 	if v.j_len <= 0.0 and v.s >= s_end and v.next_edge >= 0:
 		_enter_junction(v)
 	elif v.j_len > 0.0 and v.s >= _entry(v.edge):
@@ -651,6 +665,51 @@ func _lane_change(v: AmbientVehicle, delta: float) -> void:
 	v.obstacle_gap = INF
 	v.obstacle_node = null
 	stats["lane_changes"] = int(stats.get("lane_changes", 0)) + 1
+
+var _pc: Car = null
+var _pc_active := false
+var _pc_pos := Vector3.ZERO
+var _pc_x := Vector3.RIGHT
+var _pc_z := Vector3.BACK
+const PC_HALF := Vector2(1.15, 2.6)   # player car half extents plus margin
+
+func _update_player_car() -> void:
+	_pc_active = false
+	var pl := get_tree().get_first_node_in_group("player")
+	if pl == null:
+		return
+	var cv = pl.get("current_vehicle")
+	if cv == null or not cv is Car or not is_instance_valid(cv):
+		return
+	_pc = cv as Car
+	_pc_active = true
+	_pc_pos = _pc.global_position
+	var b := _pc.global_transform.basis
+	_pc_x = Vector3(b.x.x, 0.0, b.x.z).normalized()
+	_pc_z = Vector3(b.z.x, 0.0, b.z.z).normalized()
+
+## Would this vehicle's footprint at its new lane position overlap the
+## player's car (2D separating-axis test on the two rectangles)?
+func _pc_blocks(v: AmbientVehicle, delta: float) -> bool:
+	var here := v.global_position
+	if absf(here.x - _pc_pos.x) > 16.0 or absf(here.z - _pc_pos.z) > 16.0:
+		return false
+	var fwd := -v.global_transform.basis.z
+	fwd.y = 0.0
+	fwd = fwd.normalized()
+	var c := here + fwd * (v.speed * delta + 0.35)
+	var ax := Vector3.UP.cross(fwd)
+	var ah := Vector2(v.dims.x * 0.5, v.dims.z * 0.5)
+	var d := c - _pc_pos
+	d.y = 0.0
+	for axis in [ax, fwd, _pc_x, _pc_z]:
+		var ra: float = ah.x * absf(ax.dot(axis)) + ah.y * absf(fwd.dot(axis))
+		var rb: float = PC_HALF.x * absf(_pc_x.dot(axis)) + PC_HALF.y * absf(_pc_z.dot(axis))
+		if absf(d.dot(axis)) > ra + rb:
+			return false
+	# Only a step toward the player's car is held; a car already touching it
+	# (the player drove into it) may still pull away.
+	return fwd.dot(_pc_pos - here) > 0.0
 
 func _stop_speed(distance: float) -> float:
 	if distance <= 0.0:
