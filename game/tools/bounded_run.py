@@ -32,8 +32,14 @@ def sample_process(pid):
    except Exception as error:
     if len(sampling_errors)<3: sampling_errors.append(str(error))
    stop.wait(5)
+def _lower_priority():
+ # Share the Studio (owner rule): lower CPU priority, but never fail the launch (e.g. already at the max niceness).
+ try:
+  want=int(os.environ.get('OPUS55_NICE','10'))
+  if os.getpriority(os.PRIO_PROCESS,0)<want:os.setpriority(os.PRIO_PROCESS,0,want)
+ except Exception:pass
 with log.open('w') as output:
- child=subprocess.Popen(cmd,stdout=output,stderr=subprocess.STDOUT,start_new_session=True,preexec_fn=lambda:os.nice(int(os.environ.get('OPUS55_NICE','10'))))
+ child=subprocess.Popen(cmd,stdout=output,stderr=subprocess.STDOUT,start_new_session=True,preexec_fn=_lower_priority)
  meta['pid']=child.pid
  def request_stop(signum,_frame):
   meta['requested_stop_signal']=signum
