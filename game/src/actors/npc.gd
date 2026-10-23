@@ -253,7 +253,16 @@ func _walk(delta: float) -> void:
 		velocity.x = 0.0
 		velocity.z = 0.0
 		return
-	_move_towards(target, WALK_SPEED, delta)
+	_move_towards(target, WALK_SPEED * _pace(), delta)
+
+## Street life r1: each walker keeps a personal pace (0.8-1.2x, stable per
+## person), so people seeded near each other drift apart instead of marching
+## along the pavement in lockstep columns.
+var _pace_scale := 0.0
+func _pace() -> float:
+	if _pace_scale == 0.0:
+		_pace_scale = 0.8 + 0.4 * float(posmod(hash(get_instance_id() * 7919), 1000)) / 1000.0
+	return _pace_scale
 
 ## Street life: wait at the kerb while the road about to be crossed has a
 ## green (or amber) for its traffic, instead of walking into moving cars.

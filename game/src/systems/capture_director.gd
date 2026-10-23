@@ -1045,6 +1045,7 @@ func _drive_route(target: Vector3, timeout: float) -> void:
 				# into the oncoming lanes, head-on into queued lane traffic.
 				var corner := node + (Vector3.UP.cross(dir_in).normalized() + left_out) * DRIVE_LANE
 				var entry: Vector3 = targets[targets.size() - 1]
+				_approach_points[entry] = true
 				for t in [0.3, 0.55, 0.8]:
 					targets.append(entry.lerp(corner, t).lerp(corner.lerp(exit_point, t), t))
 					_arc_points[targets[targets.size() - 1]] = true
@@ -1055,7 +1056,8 @@ func _drive_route(target: Vector3, timeout: float) -> void:
 		for t in targets:
 			if _finished or _interrupt_free_action() or _elapsed() >= deadline: return
 			_turn_cap = 4.0 if _arc_points.has(t) else 0.0
-			await _drive_to(t, 2.5 if _arc_points.has(t) else 5.0, minf(35.0, deadline - _elapsed()))
+			_approach_slow = _approach_points.has(t)
+			await _drive_to(t, 2.5 if _arc_points.has(t) or _approach_points.has(t) else 5.0, minf(35.0, deadline - _elapsed()))
 			_turn_cap = 0.0
 			if mission.stage == Mission.Stage.TO_HELI:
 				_log_drive_life()
@@ -1069,6 +1071,8 @@ func _log_drive_life() -> void:
 		100.0 * _drive_life["ahead"] / maxf(1.0, _drive_life["samples"]), _drive_life["min_health"], _drive_life["held"], _drive_life["bypass"]])
 
 var _arc_points := {}
+var _approach_points := {}
+var _approach_slow := false
 var _turn_cap := 0.0
 
 ## Street-life D: once-a-second traffic sample along the scripted drive, so a
@@ -1142,6 +1146,11 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 			if float(lead["gap"]) < 3.0: safe = minf(safe, lead_speed * 0.5)
 		if red_line < INF:
 			safe = minf(safe, sqrt(2.0 * 3.5 * maxf(0.0, red_line - 1.0)))
+		# r1 street-life: give way to a lane car whose path crosses ours in the
+		# next 1.6 s (a left turn out of the median lane across a kerb-lane car
+		# going straight on spun the car round in a headless run).
+		if _crossing_conflict(car, forward):
+			safe = 0.0
 		if safe < 1.0:
 			_held_for += get_physics_process_delta_time()
 			if _held_for > 3.0 and _elapsed() > _held_log_next:
@@ -1174,6 +1183,7 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		var desired_speed := clampf(offset.length() * 0.8, 5.0, 19.0)
 		if absf(angle) > 0.4: desired_speed = minf(desired_speed, 6.0)
 		if _turn_cap > 0.0: desired_speed = minf(desired_speed, _turn_cap)
+		if _approach_slow and offset.length() < 24.0: desired_speed = minf(desired_speed, 5.0)
 		desired_speed = minf(desired_speed, safe)
 		Input.action_release("move_forward")
 		Input.action_release("move_back")
@@ -1207,10 +1217,29 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 			await get_tree().create_timer(1.2).timeout
 			stuck_for = 0.0
 	_release_all()
-	_log("drive waypoint target=%s distance=%.1f" % [target.round(), _ground_distance(player.controlled_actor().global_position, target)])
+	var wc := player.controlled_actor()
+	_log("drive waypoint target=%s distance=%.1f speed=%.1f yaw=%.0f" % [target.round(), _ground_distance(wc.global_position, target), (wc as Car).forward_speed() if wc is Car else 0.0, rad_to_deg(wc.rotation.y)])
 
 var _held_for := 0.0
 var _held_log_next := 0.0
+
+func _crossing_conflict(car: Car, forward: Vector3) -> bool:
+	if traffic == null or traffic.ambient == null: return false
+	var my_speed := maxf(car.forward_speed(), 3.0)
+	for v in traffic.ambient.vehicles:
+		if not v.active or v.speed < 1.5: continue
+		var rel := v.global_position - car.global_position
+		rel.y = 0.0
+		if rel.length() > 22.0 or rel.dot(forward) < -2.5: continue
+		var vf := -v.global_transform.basis.z
+		vf.y = 0.0
+		vf = vf.normalized()
+		if vf.dot(forward) > 0.9 and absf(rel.dot(Vector3.UP.cross(forward))) < 1.6: continue   # same lane: _traffic_lead
+		for t in [0.4, 0.8, 1.2, 1.6]:
+			var a: Vector3 = car.global_position + forward * my_speed * t
+			var b: Vector3 = v.global_position + vf * v.speed * t
+			if Vector2(a.x - b.x, a.z - b.z).length() < 3.2: return true
+	return false
 
 ## Street-life D driver perception: the nearest vehicle (physics car or
 ## ambient lane traffic) whose footprint overlaps this car's corridor ahead.
