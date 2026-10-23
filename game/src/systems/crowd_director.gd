@@ -11,7 +11,7 @@ extends Node
 ## distance from the kerb, some pairs stop to talk, and everyone uses the
 ## junction crosswalks.
 
-const EXTRA_WALKERS := 64
+const EXTRA_WALKERS := 80
 const LOITER_PAIRS := 9
 const SPAWN_RADIUS := 115.0
 const DESPAWN_RADIUS := 135.0

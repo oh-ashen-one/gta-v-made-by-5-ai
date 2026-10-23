@@ -383,8 +383,9 @@ func _run() -> void:
 	await _shot("car_entered")
 	# Street-life r1: the drive now obeys red lights and queues behind lane
 	# traffic (held time is logged as "drive life ... held_s"), so the leg
-	# budget is 230 s instead of the empty-street 160 s.
-	await _drive_route(world.locations["helipad_primary"], 230.0)
+	# budget is longer than the empty-street 160 s. M1: 300 s (five headless
+	# routes took 93-202 s, held 28-111 s at signals and behind queues).
+	await _drive_route(world.locations["helipad_primary"], 300.0)
 	if not _gate("uninterrupted driving leg reached aviation compound", Game.mode == Game.MODE_CAR and mission.stage == Mission.Stage.TO_HELI and mission.car_driven_distance >= 80.0): return
 	await _shot("driving")
 	_release_all()
@@ -1295,10 +1296,14 @@ func _traffic_lead(car: Car, forward: Vector3) -> Dictionary:
 		if ahead < 0.0 or ahead > 14.0 or absf(rel.dot(left)) > 1.5:
 			continue
 		var gap := ahead - 2.35 - 0.4
+		# Ask them to step clear early (as a slow car edging through a busy
+		# crossing does), and only stop for someone right at the bumper, so
+		# a turn through a crossing is not abandoned half way round.
+		if gap < 9.0:
+			npc.dodge_vehicle(car.global_position, forward)
+		gap += 2.6
 		if gap < float(best["gap"]):
 			best = {"gap": maxf(0.0, gap), "speed": 0.0, "node": npc}
-		if _held_for > 1.5 and gap < 6.0:
-			npc.dodge_vehicle(car.global_position, forward)
 	return best
 
 ## Distance from the front bumper to a red stop line ahead (INF when the
