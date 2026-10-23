@@ -33,6 +33,7 @@ const GRIDLOCK_RESET := 18.0
 const WEDGE_RESET := 4.0
 const WEDGE_RADIUS := 7.0
 const DEADLOCK_RESET := 6.0
+const GIVE_UP := 10.0
 
 var traffic: TrafficManager
 var nodes: Array[Vector3] = []
@@ -484,6 +485,12 @@ func _lane_change(v: AmbientVehicle, delta: float) -> void:
 		v.blocked_time = 0.0
 		return
 	v.blocked_time += delta
+	# r1: a person standing in the carriageway in front of a waiting car steps
+	# clear (rendered route: walkers loitering at the stop line held a whole
+	# approach, and the car stuck in the box behind them, for over a minute).
+	if node is NPC and v.blocked_time > 2.0 and fmod(v.blocked_time, 1.5) < delta:
+		var fwd := -v.global_transform.basis.z
+		(node as NPC).dodge_vehicle(v.global_position, Vector3(fwd.x, 0.0, fwd.z).normalized())
 	if v.blocked_time < 0.9 or v.lat_shift != 0.0 or (v.j_len > 0.0 and v.s < ENTRY):
 		return
 	var ed: Dictionary = edges[v.edge]
@@ -672,6 +679,12 @@ func _scan_obstacles(v: AmbientVehicle) -> float:
 					# behind rather than waited for.
 					if (node as Car).driver_is_player and (node.global_position - here).dot(fwd) < 0.0:
 						continue
+					# r1 gridlock dissolver: after GIVE_UP s at a stand, a stopped
+					# non-player car (a police car parked across the box, a civilian
+					# wedged between lanes) no longer holds lane traffic; the lane
+					# car nudges past and physics pushes the stopped car aside.
+					if not (node as Car).driver_is_player and v.idle_time > GIVE_UP and (node as Car).velocity.length() < 0.5:
+						continue
 					var b := node.global_transform.basis
 					# The player's car gets extra room when it is off the lane
 					# axis; a player car driving straight in the next lane is
@@ -687,6 +700,8 @@ func _scan_obstacles(v: AmbientVehicle) -> float:
 				elif node is Helicopter:
 					continue
 				else:
+					if node is NPC and v.idle_time > GIVE_UP * 1.5:
+						continue   # a person who would not step clear (see _lane_change)
 					points = [node.global_position]
 					radius = 0.45
 				for p in points:
