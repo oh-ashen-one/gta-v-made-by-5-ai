@@ -833,6 +833,8 @@ func _skyline_checks(world: WorldBuilder) -> void:
 	_check("aerial: open block interiors are planted (>= 5 ha cover, >= 250 canopy trees, trunk collision)", float(af.get("area_m2", 0.0)) >= 50000.0 and int(af.get("trees", 0)) >= 250 and trunks != null and trunks.get_child_count() == int(af.get("trees", -1)), str(af))
 	var rs: Dictionary = AerialRoofscape.stats
 	var altered := int(rs.get("attic", 0)) + int(rs.get("rebuilt", 0)) + int(rs.get("tanks_solar", 0))
+	var lib := ResourceLoader.exists(AerialRoofscape.ROOF_TEX) and ResourceLoader.exists(AerialAtmosphere.GLASS_TEX)
+	_check("aerial: generated roof and curtain-wall sheets are applied when the private library is present", not lib or (AerialRoofscape.roof_textured and AerialAtmosphere.glass_materials >= 3), "library=%s roof=%s glass=%d" % [lib, AerialRoofscape.roof_textured, AerialAtmosphere.glass_materials])
 	_check("aerial: shophouse roofs are altered unit by unit (>= 50% of units, all three kinds)", int(rs.get("units", 0)) > 100 and altered * 2 >= int(rs.get("units", 0)) and int(rs.get("attic", 0)) > 0 and int(rs.get("rebuilt", 0)) > 0 and int(rs.get("tanks_solar", 0)) > 0 and int(rs.get("max_run", 99)) <= 3, str(rs))
 
 ## driving-p: handbrake rotation, momentum exchange in a rear-end crash, a

@@ -82,6 +82,12 @@ uniform bool satin_single = true;
 uniform float glass_reflect = 1.0;
 uniform float glint_strength = 1.0;
 uniform vec3 sun_col : source_color = vec3(1.0, 0.85, 0.67);
+// Aerial R1: optional photographic curtain-wall sheet (generated library
+// `tower_glass_bluegreen`, git-ignored; AerialAtmosphere.apply_glass_library
+// sets it on the background-city materials when present). Wraps every 8 bays
+// x 6 floors; its baked sky reflections replace part of the live mirror.
+uniform sampler2D glass_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform float glass_tex_amount = 0.0;
 
 varying vec3 wpos;
 varying vec3 wnorm;
@@ -176,6 +182,12 @@ void fragment() {
 			c = mix(g, lin(vec3(0.27, 0.31, 0.32)), max(band, mull) * 0.85);
 			glazing = 1.0 - max(band, mull);
 			metal = 0.0; rough = mix(0.6, 0.34, glazing); spec = mix(0.4, 0.3, glazing);
+			if (glass_tex_amount > 0.0) {
+				vec2 guv = vec2(hz / (mullion_m * 8.0), wpos.y / (fh * 6.0)) + vec2(fract(sd * 0.137), fract(sd * 0.291));
+				vec3 gt = texture(glass_tex, guv).rgb * mix(0.72, 0.95, tv);
+				c = mix(c, gt, glass_tex_amount);
+				glazing *= mix(1.0, 0.5, glass_tex_amount);
+			}
 		} else if (mat_id == 1) {
 			// Light limestone with paired, deep-set windows and string courses.
 			vec3 wall = lin(mix(vec3(0.72, 0.69, 0.63), vec3(0.67, 0.65, 0.61), tv));
@@ -198,6 +210,12 @@ void fragment() {
 			c = mix(g, frame_col, max(band, mull * 0.85));
 			glazing = 1.0 - max(band, mull);
 			metal = 0.0; rough = mix(0.55, 0.34, glazing); spec = 0.42;
+			if (glass_tex_amount > 0.0) {
+				vec2 guv = vec2(hz / (mullion_m * 8.0), wpos.y / (fh * 6.0)) + vec2(fract(sd * 0.137), fract(sd * 0.291));
+				vec3 gt = texture(glass_tex, guv).rgb * mix(0.72, 0.95, tv);
+				c = mix(c, gt, glass_tex_amount);
+				glazing *= mix(1.0, 0.5, glass_tex_amount);
+			}
 		} else if (mat_id == 3) {
 			// Bronze glass in a dark anodised frame.
 			vec3 g = lin(mix(vec3(0.27, 0.23, 0.17), vec3(0.32, 0.27, 0.19), tv)) * (0.8 + 0.4 * refl);

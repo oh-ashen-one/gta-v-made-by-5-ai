@@ -80,6 +80,29 @@ func apply_blend(k: float) -> void:
 		if is_instance_valid(m):
 			m.set_shader_parameter("real_shadow_range", sun.directional_shadow_max_distance)
 
+const GLASS_TEX := "res://assets/providers/higgsfield/tower_glass_bluegreen_albedo.png"
+static var glass_materials := 0
+
+## Aerial R1: give the background-city curtain walls (skyline facade
+## materials with per-instance data) the generated `tower_glass_bluegreen`
+## sheet when the private library is linked in; procedural glass otherwise.
+static func apply_glass_library() -> int:
+	glass_materials = 0
+	if not ResourceLoader.exists(GLASS_TEX):
+		return 0
+	var tex := load(GLASS_TEX) as Texture2D
+	if tex == null:
+		return 0
+	for m: ShaderMaterial in SkylineHorizon._materials:
+		if m == null or m.shader == null or not m.shader.resource_path.ends_with("skyline_facade.gdshader"):
+			continue
+		if m.get_shader_parameter("use_instance_custom") != true:
+			continue
+		m.set_shader_parameter("glass_tex", tex)
+		m.set_shader_parameter("glass_tex_amount", 0.8)
+		glass_materials += 1
+	return glass_materials
+
 ## Two tiling 64^3 noise volumes for the cumulus sky: Perlin fbm (cloud
 ## fields and billows) and inverted cellular fbm (round cumulus lobes).
 static func cloud_noise() -> Array:

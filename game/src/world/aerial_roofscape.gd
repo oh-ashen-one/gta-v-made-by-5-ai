@@ -85,7 +85,10 @@ static func build(world: Node, root: Node3D) -> Dictionary:
 				var panel := Basis.from_scale(Vector3(7.0, 0.08, 3.2) if along_x else Vector3(3.2, 0.08, 7.0))
 				_mesh(root, _box(), Transform3D(panel, sp), solar_mat)
 	kit.build(root)
-	stats = {"units": bays.size(), "untouched": counts[0], "attic": counts[1], "rebuilt": counts[2], "tanks_solar": counts[3], "roofs": kit.roofs, "max_run": max_run}
+	# The background city is built by now: hand its curtain walls the
+	# generated glass sheet too (kept here so world_builder needs no new hook).
+	var glass := AerialAtmosphere.apply_glass_library()
+	stats = {"glass_materials": glass, "units": bays.size(), "untouched": counts[0], "attic": counts[1], "rebuilt": counts[2], "tanks_solar": counts[3], "roofs": kit.roofs, "max_run": max_run}
 	print("[world] aerial roofscape: ", stats)
 	return stats
 
