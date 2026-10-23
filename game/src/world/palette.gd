@@ -129,7 +129,7 @@ static func weathered_surface(color: Color, kind: String, rough: float = 0.9, me
 				m.set_shader_parameter("photo_tex", ph)
 				m.set_shader_parameter("photo_nrm", NearField.prov("road_asphalt_normal.png"))
 				m.set_shader_parameter("photo_k", 0.85)
-				m.set_shader_parameter("grain_k", 0.22)
+				m.set_shader_parameter("grain_k", 0.30)
 				m.set_shader_parameter("litter", 0.5)
 		"pavers":
 			m.shader = load(SHADER_DIR + "paving.gdshader")

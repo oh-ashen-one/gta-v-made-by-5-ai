@@ -76,8 +76,24 @@ void fragment() {
 	// Sun-bleached, oxidised areas read slightly lighter and greyer.
 	tone *= 1.0 + 0.08 * smoothstep(0.55, 0.8, big.g);
 	tone *= 1.0 + grain_k * grain;
-	float rough = 0.90;
+	float rough = 0.80;
 	vec3 hue = vec3(1.0);
+	// nearfield R2: exposed aggregate chips. Pale quartz/granite stones and
+	// dark bitumen-coated ones at 1-3 cm, footprint-faded so they never alias;
+	// near the camera they give the crisp grain GTA-style asphalt has.
+	{
+		vec2 sc = p / 0.021;
+		vec2 si = floor(sc);
+		float sh = w_hash12(si + 2.3);
+		vec2 so = fract(sc) - 0.5 - (vec2(w_hash12(si + 7.1), w_hash12(si + 3.9)) - 0.5) * 0.5;
+		float stone = 1.0 - smoothstep(0.18, 0.34, length(so));
+		float chip_w = oct_w(0.021, px);
+		float pale = step(0.72, sh) * stone * chip_w;
+		float dark = step(sh, 0.22) * stone * chip_w;
+		tone *= 1.0 + 0.55 * pale - 0.28 * dark;
+		hue = mix(hue, vec3(1.04, 1.0, 0.94), pale * 0.5);
+		rough -= 0.10 * pale;
+	}
 
 	// Road frame: lateral offset from the carriageway centreline.
 	float d = mod(p.x + grid_period * 0.5, grid_period) - grid_period * 0.5;
@@ -109,29 +125,64 @@ void fragment() {
 	tracks += w_gauss(al - 5.15, 0.34);
 	tracks += w_gauss(al - 6.85, 0.34);
 	tracks = clamp(tracks, 0.0, 1.0) * tvar * lane * wear;
-	tone *= 1.0 - 0.20 * tracks;
-	rough = mix(rough, 0.76, tracks * 0.8);
+	tone *= 1.0 - 0.40 * tracks;
+	rough = mix(rough, 0.56, tracks * 0.85);
 	// Between the tracks the surface is dustier and lighter.
 	float between = lane * (w_gauss(al - 2.0, 0.55) + w_gauss(al - 6.0, 0.55));
-	tone *= 1.0 + 0.06 * between * (1.0 - tracks);
+	tone *= 1.0 + 0.10 * between * (1.0 - tracks);
 
 	// Oil drip line in each lane centre: blotchy dark, a little glossy.
 	float oil = lane * (w_gauss(al - 2.0, 0.42) + w_gauss(al - 6.0, 0.42));
-	oil *= smoothstep(0.50, 0.72, sml.r) * (0.6 + 0.4 * med.r);
+	oil *= (0.35 + 0.65 * smoothstep(0.38, 0.66, sml.r)) * (0.6 + 0.4 * med.r);
+	// discrete drips: dark droplets dotted along the lane centre line
+	{
+		float dc = floor(along / 0.55);
+		float dh = w_hash12(vec2(dc, floor(lat / 4.0)) + 9.1);
+		vec2 dq = vec2(mod(al, 4.0) - 2.0 - (dh - 0.5) * 0.6, mod(along, 0.55) - 0.27);
+		float drip = step(dh, 0.55) * (1.0 - smoothstep(0.03 + 0.06 * dh, 0.06 + 0.08 * dh, length(dq)));
+		oil = max(oil, lane * drip * oct_w(0.12, px));
+	}
 	// Generic lots: scattered oil stains where cars park.
 	float lot_oil = (1.0 - lane) * (1.0 - junction) * smoothstep(0.62, 0.80, w_mask(p / 9.0 + 0.13).r) * smoothstep(0.4, 0.7, sml.g);
 	oil = clamp(oil + lot_oil, 0.0, 1.0) * wear;
-	tone *= 1.0 - 0.22 * oil;
-	rough -= 0.10 * oil;
+	tone *= 1.0 - 0.45 * oil;
+	rough -= 0.22 * oil;
 	hue = mix(hue, vec3(0.92, 0.93, 1.02), oil * 0.5);
 
 	// Gutter: dust band then a dark damp algae edge against the kerb.
-	float gutter = lane * smoothstep(6.6, 7.9, al);
-	tone = mix(tone, tone * 1.10 + 0.02, gutter * 0.45 * (0.6 + 0.4 * med.g));
-	float wet = lane * smoothstep(7.55, 8.05, al) * (0.55 + 0.45 * big.g);
-	tone *= 1.0 - 0.38 * wet;
-	hue = mix(hue, vec3(0.90, 0.98, 0.86), wet * 0.6);
-	rough -= 0.06 * wet;
+	float gutter = lane * smoothstep(6.4, 7.9, al);
+	// nearfield R2: silt fan washed toward the kerb (warm grey-brown, uneven
+	// tide-marks), then a dark damp channel shadowed by the kerb face.
+	float silt_n = vnoise(vec2(along * 0.35, al * 1.7)) * 0.6 + vnoise(rf * 2.3) * 0.4;
+	float silt = lane * smoothstep(5.4 + 1.2 * silt_n, 7.6, al);
+	tone = mix(tone, tone * 1.10 + 0.05, silt * 0.75);
+	hue = mix(hue, vec3(1.10, 1.0, 0.82), silt * 0.75);
+	float tide = lane * w_gauss(al - (7.15 + 0.35 * (silt_n - 0.5)), 0.05) * step(0.4, silt_n);
+	tone *= 1.0 - 0.30 * tide;
+	float wet = lane * smoothstep(7.45, 8.0, al) * (0.65 + 0.35 * big.g);
+	tone *= 1.0 - 0.55 * wet;
+	hue = mix(hue, vec3(0.86, 0.95, 0.80), wet * 0.7);
+	rough -= 0.14 * wet;
+
+	// nearfield R2: lane-wide resurfacing panels (mill-and-pave of one lane
+	// at a time): straight longitudinal seams on the lane lines, ragged
+	// transverse joints, each panel a different age so its tone differs.
+	{
+		float lid = floor(lat / 4.0);
+		float seg_len = 14.0 + 18.0 * w_hash12(vec2(lid, 3.1));
+		float sid_ = floor((along + 7.0 * lid) / seg_len);
+		float ph_ = w_hash12(vec2(lid, sid_) + 61.0);
+		float on_p = lane * step(0.45, ph_) * step(al, road_half - 0.35);
+		float age = w_hash12(vec2(lid, sid_) + 77.0);
+		tone *= mix(1.0, age < 0.5 ? 0.80 + 0.08 * age : 1.08 + 0.10 * age, on_p);
+		rough = mix(rough, age < 0.5 ? 0.72 : 0.86, on_p * 0.6);
+		float lx = abs(fract(lat / 4.0) - 0.5) * 4.0;          // 0 at lane centre, 2 at lane line
+		float ly = abs(fract((along + 7.0 * lid) / seg_len) - 0.5) * seg_len;
+		float jag = (vnoise(vec2(lat * 3.0, sid_)) - 0.5) * 0.12;
+		float ps = lane * max(w_gauss(lx - 1.97, 0.03) * on_p, w_gauss(ly - seg_len * 0.5 + 0.04 + jag, 0.04) * max(on_p, step(0.45, w_hash12(vec2(lid, sid_ + 1.0) + 61.0)) * lane));
+		tone *= 1.0 - 0.45 * ps;
+		rough = mix(rough, 0.45, ps * 0.6);
+	}
 
 	// Junction box: heavier general wear, braking polish.
 	tone *= 1.0 - 0.10 * junction * smoothstep(0.35, 0.7, med.g);
@@ -151,19 +202,37 @@ void fragment() {
 	vec2 q = (lc - pc + warp * 0.9) / pr;
 	float blob = length(q * q * q * q) * 0.5 + length(q) * 0.5;   // squircle-ish
 	blob += (vnoise(rf * 3.1 + h2 * 9.0) - 0.5) * 0.35;
-	float patch_on = step(h0, 0.22 * wear);
-	float inside = (1.0 - smoothstep(0.82, 1.0, blob)) * patch_on;
-	float fresh = 0.74 + 0.10 * h2;
+	float patch_on = step(h0, 0.42 * wear);
+	float sawcut = step(0.5, w_hash12(cid + 91.7));
+	vec2 rq = abs(lc - pc) - pr * vec2(0.9, 1.0);
+	float rect_d = max(rq.x, rq.y);
+	float fw_r = max(fwidth(rect_d), 1e-4);
+	float inside_b = 1.0 - smoothstep(0.82, 1.0, blob);
+	float inside_r = 1.0 - smoothstep(-fw_r, fw_r, rect_d);
+	float inside = mix(inside_b, inside_r, sawcut) * patch_on;
+	// seam: bitumen crack-sealer band around the reinstatement
+	float seam_b = w_gauss(blob - 0.97, 0.05);
+	float seam_r = 1.0 - smoothstep(0.025, 0.025 + fw_r * 1.5, abs(rect_d - 0.01 * (vnoise(rf * 6.0) - 0.5)));
+	float seam = mix(seam_b, seam_r, sawcut) * patch_on;
+	// fresh dark binder or an older, greyer, more open-textured patch
+	float fresh = h2 < 0.55 ? 0.66 + 0.10 * h2 : 1.10 + 0.08 * h1;
 	tone = mix(tone, tone * fresh, inside);
-	rough = mix(rough, 0.82, inside * 0.6);
+	hue = mix(hue, vec3(0.97, 0.98, 1.02), inside * step(h2, 0.55));
+	rough = mix(rough, h2 < 0.55 ? 0.70 : 0.88, inside * 0.7);
+	tone *= 1.0 - 0.55 * seam;
+	rough = mix(rough, 0.45, seam * 0.7);
 
 	// Utility trench reinstatement strip across the carriageway.
 	float tc = floor(along / 37.0);
 	float th = w_hash12(vec2(tc, 5.0) + floor(lat / 40.0));
 	float tpos = 6.0 + w_hash12(vec2(tc, 9.0)) * 25.0;
 	float tl = abs(mod(along, 37.0) - tpos + (vnoise(vec2(lat * 0.8, tc)) - 0.5) * 0.35);
-	float trench = lane * step(th, 0.22 * wear) * (1.0 - smoothstep(0.36, 0.50, tl)) * step(al, road_half - 0.2);
-	tone = mix(tone, tone * 0.80, trench);
+	float tlane = lane * step(th, 0.40 * wear) * step(al, road_half - 0.2);
+	float trench = tlane * (1.0 - smoothstep(0.36, 0.50, tl));
+	float tseam = tlane * w_gauss(tl - 0.47, 0.035);
+	tone = mix(tone, tone * (th < 0.2 ? 0.74 : 1.12), trench);
+	tone *= 1.0 - 0.5 * tseam;
+	rough = mix(rough, 0.45, tseam * 0.6);
 
 	// Manhole / utility covers in lane centres.
 	float mc = floor(along / 29.0);
@@ -206,7 +275,7 @@ void fragment() {
 
 	vec3 alb = clamp(tint * tone * hue, vec3(0.0), vec3(1.0));
 	if (litter > 0.0) {
-		vec4 lf = leaf_litter(p, litter * (0.04 * lane + 0.55 * gutter + 0.08 * (1.0 - lane)) * (1.0 - cover), px);
+		vec4 lf = leaf_litter(p, litter * (0.55 * gutter * gutter + 0.08 * (1.0 - lane)) * (1.0 - cover), px);
 		alb = mix(alb, lf.rgb * 0.85, lf.a);
 		rough = mix(rough, 0.82, lf.a);
 	}
@@ -219,5 +288,5 @@ void fragment() {
 	vec3 n3 = texture(photo_nrm, pq + vec2(0.0, floor(along / 61.0) * 0.37)).rgb;
 	NORMAL_MAP = normalize(mix(mix(n1, n2, 0.42), n3, 0.5 * photo_k) * 2.0 - 1.0) * 0.5 + 0.5;
 	NORMAL_MAP_DEPTH = mix(0.9, 0.3, max(inside, cover)) * (1.0 - smoothstep(25.0, 90.0, dist) * 0.7);
-	SPECULAR = 0.32;
+	SPECULAR = 0.42;
 }
