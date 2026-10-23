@@ -170,7 +170,10 @@ void vertex() {
 		float bx = abs(r.x) - 0.075;
 		float bust = (1.0 - smoothstep(0.0, 0.06, length(vec2(bx * 1.2, r.y - 1.255)))) * smoothstep(0.0, 0.06, -r.z);
 		float hips = smoothstep(0.86, 0.94, r.y) * (1.0 - smoothstep(0.96, 1.04, r.y)) * smoothstep(0.08, 0.15, abs(r.x));
-		VERTEX += NORMAL * person.x * (0.042 * bust + 0.018 * hips);
+		// T2: under a fitted skirt the skirt itself carries the hip line (the
+		// widened body would poke through it).
+		float no_skirt = person.z > 0.5 ? 0.0 : 1.0;
+		VERTEX += NORMAL * person.x * (0.042 * bust + 0.018 * hips * no_skirt);
 		// T2: a woman's frame, not the male torso with a bust: the waist nips
 		// in, hips and seat widen lower down, the upper chest and deltoids
 		// narrow, the neck slims (critic T1: women kept the male shoulder
@@ -181,7 +184,8 @@ void vertex() {
 		float seat = (1.0 - smoothstep(0.0, 0.11, abs(r.y - 0.89))) * smoothstep(0.05, 0.12, abs(r.x)) * (1.0 - smoothstep(0.26, 0.32, abs(r.x)));
 		float delt = smoothstep(1.27, 1.36, r.y) * (1.0 - smoothstep(1.48, 1.52, r.y)) * smoothstep(0.12, 0.19, abs(r.x));
 		float neck = smoothstep(1.43, 1.47, r.y) * (1.0 - smoothstep(1.52, 1.56, r.y)) * (1.0 - smoothstep(0.07, 0.09, abs(r.x)));
-		VERTEX += NORMAL * person.x * (-0.026 * waist + 0.024 * seat - 0.022 * delt - 0.009 * neck);
+		waist *= mix(smoothstep(1.035, 1.08, r.y), 1.0, no_skirt); // the skirt's waistband hugs an un-nipped waist
+		VERTEX += NORMAL * person.x * (-0.026 * waist + 0.024 * seat * no_skirt - 0.022 * delt - 0.009 * neck);
 	}
 	// Head build: the skinned head moves rigidly, so a push along the
 	// skinned normal masked in rest space reshapes it per person (one mesh,
