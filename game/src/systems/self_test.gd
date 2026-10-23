@@ -593,6 +593,53 @@ func _combat_fx_checks(player: Player, before: Dictionary) -> void:
 	for kind in CombatFx.MAX_PARTICLES:
 		if int(live[kind]) > int(CombatFx.MAX_PARTICLES[kind]): bounded = false
 	_check("sustained fire keeps effect pools bounded", bounded and int(live["casings"]) <= CombatFx.MAX_CASINGS, str(live))
+	await _combat_q_checks(player)
+
+## Wave Q combat: the aimed pistol sits on the sight line at eye height with
+## the barrel on the aim, interaction prompts are hidden mid-firefight, and a
+## lethal hit hands the body to a ragdoll that comes to rest on the ground.
+func _combat_q_checks(player: Player) -> void:
+	var visual: Node = player._visual
+	var layer: Node = null
+	if visual != null and visual.get("skeleton") != null:
+		layer = (visual.get("skeleton") as Node).get_node_or_null("AimIkLayer")
+	var gun: Node3D = player.get("_weapon_model")
+	await _ticks(6)
+	var ok_gun := false
+	var detail := "no layer/gun"
+	if layer != null and gun != null and is_instance_valid(gun):
+		var aim_dir := Basis.from_euler(Vector3(player.pitch, player.yaw, 0.0)) * Vector3.FORWARD
+		var barrel := -gun.global_basis.z
+		var h := gun.global_position.y - player.global_position.y
+		ok_gun = float(layer.get("weight")) > 0.9 and h > 1.38 and h < 1.62 and barrel.normalized().dot(aim_dir.normalized()) > 0.96
+		detail = "weight=%.2f gun_h=%.2f barrel_dot=%.3f" % [float(layer.get("weight")), h, barrel.normalized().dot(aim_dir.normalized())]
+	_check("aim layer holds the pistol on the eye line along the aim", ok_gun, detail)
+	CombatFx.mark_combat()
+	var prompts: Array[String] = []
+	var grab := func(text: String) -> void: prompts.append(text)
+	Events.interaction_prompt.connect(grab)
+	await _ticks(2)
+	Events.interaction_prompt.disconnect(grab)
+	_check("no interaction prompt during a firefight", CombatFx.in_combat() and not prompts.is_empty() and prompts.all(func(t): return t == ""), str(prompts.slice(0, 3)))
+	var victim := NPC.new()
+	victim.is_police = true
+	player.get_parent().add_child(victim)
+	victim.global_position = player.global_position + Vector3(2.5, 0.0, -3.5)
+	victim.state = NPC.State.IDLE
+	victim.idle_time = 100.0
+	await _ticks(10)
+	var before_rag := Ragdoll.started
+	victim.take_damage(500.0, player.global_position, true)
+	await _ticks(150)
+	var pb: Node3D = null
+	if victim.character_visual != null and victim.character_visual.skeleton != null:
+		pb = victim.character_visual.skeleton.get_node_or_null("Ragdoll/PB_pelvis") as Node3D
+	var rest_h := pb.global_position.y - victim.global_position.y if pb != null else 99.0
+	var drift := Vector2(pb.global_position.x - victim.global_position.x, pb.global_position.z - victim.global_position.z).length() if pb != null else 99.0
+	# The pelvis ends on the ground (ragdoll ~0.1 m; the guarded fallback to the
+	# authored fall pose ~0.36 m), never under the floor or flung away.
+	_check("lethal hit ragdolls the body; it ends on the ground, never under it or flung", Ragdoll.started > before_rag and pb != null and rest_h > -0.05 and rest_h < 0.42 and drift < 3.0, "pelvis_h=%.2f drift=%.2f guard=%s" % [rest_h, drift, Ragdoll.last_blowup])
+	victim.queue_free()
 
 ## Wave-5 additions: kerbside parking geometry, parked-car sleep, road-graph
 ## pursuit, aircraft ditch recovery, landmark set and the outdoor opening.

@@ -14,7 +14,12 @@ extends Node
 ## Shots still resolve along the un-kicked camera ray (Player._fire runs in
 ## _process before this node applies the kick), so the reticle stays honest.
 
-const AIM_FOV := 47.0
+const AIM_FOV := 55.0
+## Aim framing on the spring arm (base 0.85 m right of the body): toward the
+## spine and a little lower, so the hero stands on the left third, head to
+## waist, with both arms and the pistol reaching into the frame.
+const AIM_ARM_OFFSET := Vector3(0.12, 0.06, 0.0)  # wave Q2: further right/lower so the head never hides the pistol
+var arm_offset := Vector3.ZERO
 var player: Node3D
 var hold := 0.0                 # seconds the gun stays raised after a shot
 var cam_kick := 0.0             # radians, + = view up
@@ -97,9 +102,10 @@ func _apply_camera() -> void:
 	# so the kick and offsets can never accumulate frame to frame.
 	var s := shake * shake
 	var offset := Vector3(_rng.randf_range(-1, 1) * 0.012 * s, _rng.randf_range(-1, 1) * 0.010 * s, 0.0)
-	# Aiming: nudge the view a little further over the right shoulder so the
-	# gun hand clears the torso.
-	offset += Vector3(0.12, 0.03, 0.0) * aim_blend
+	# Aiming (wave Q): the framing offset lives on the spring arm itself
+	# (`arm_offset`, read by Player._update_camera_follow) so the view and the
+	# shot ray share one origin; only shake and kick are applied here.
+	arm_offset = AIM_ARM_OFFSET * aim_blend
 	var length := camera.transform.origin.z
 	var b := Basis(Vector3.UP, cam_yaw_kick) * Basis(Vector3.RIGHT, cam_kick)
 	camera.transform = Transform3D(b, Vector3(offset.x, offset.y, length))
