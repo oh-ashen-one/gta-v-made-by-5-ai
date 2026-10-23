@@ -856,7 +856,7 @@ func _process(delta: float) -> void:
 	_update_camera(delta)
 	_probe_timer -= delta
 	if _probe != null and _probe_timer <= 0.0:
-		_probe_timer = PROBE_STEP
+		_probe_timer = PerfBudget.CAR_PROBE_STEP
 		_probe.global_position = car.global_position + Vector3(0.0, 1.4, 0.0) - car.global_transform.basis.z * clampf(car.forward_speed() * 0.4, -4.0, 10.0)
 
 func _update_camera(delta: float) -> void:

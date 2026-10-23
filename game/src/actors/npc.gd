@@ -217,7 +217,9 @@ func _physics_process(delta: float) -> void:
 			# Wave S: stride by distance and on-screen (PerfBudget.people_anim_stride).
 			var on_screen := d2 < 64.0 or cam.is_position_in_frustum(global_position + Vector3(0.0, 1.0, 0.0))
 			character_visual.set_anim_stride(1 if (is_hostile or is_police) else PerfBudget.people_anim_stride(d2, on_screen))
+			_glide_stride = PerfBudget.far_glide_stride(d2, on_screen)
 	if state == State.DEAD:
+		_flush_far()
 		velocity.x = 0.0
 		velocity.z = 0.0
 		if not is_on_floor():
@@ -227,6 +229,14 @@ func _physics_process(delta: float) -> void:
 	if state == State.IDLE and is_on_floor() and not is_hostile and not is_police:
 		# Settled: no collision solve while standing or seated.
 		velocity = Vector3.ZERO
+		_flush_far()
+		# Wave T perf: a settled idler only needs its timer and pose blend
+		# every PerfBudget.IDLE_TICKS ticks (summed delta).
+		_idle_acc += delta
+		if (Engine.get_physics_frames() + _sim_slot) % PerfBudget.IDLE_TICKS != 0:
+			return
+		delta = _idle_acc
+		_idle_acc = 0.0
 		idle_time -= delta
 		if idle_time <= 0.0:
 			# Seated diners keep their seat until something startles them.
@@ -240,13 +250,34 @@ func _physics_process(delta: float) -> void:
 			global_position.distance_squared_to(Game.player_position) > _sim_near_sq():
 		_sim_accum += delta
 		_sim_slot = (_sim_slot + 1) % SIM_FAR_TICKS
+		# Wave T perf: the physics body follows on the decision ticks only;
+		# in between, the visual root glides by the same per-tick motion, so
+		# the figure still moves every tick on screen without a broadphase
+		# update for ~200 far walkers per tick.
+		_far_off += Vector3(velocity.x, 0.0, velocity.z) * delta
 		if _sim_slot == 0:
+			_flush_far()
 			_walk(_sim_accum)
 			_animate(_sim_accum, Vector2(velocity.x, velocity.z).length())
 			_sim_accum = 0.0
-		global_position += Vector3(velocity.x, 0.0, velocity.z) * delta
+		elif (_sim_slot % _glide_stride) == 0:
+			if _root_base == Vector3.INF:
+				_root_base = body_root.position
+			body_root.position = _root_base + global_transform.basis.inverse() * _far_off
 		return
 	_sim_accum = 0.0
+	_flush_far()
+	# Wave T perf: a calm walker on the floor more than WALK_FULL_RATE_M from
+	# the player decides and solves collisions every 2nd tick (summed delta);
+	# on the other tick it only advances by its velocity.
+	if state == State.WALK and not is_hostile and not is_police and is_on_floor() \
+			and global_position.distance_squared_to(Game.player_position) > PerfBudget.WALK_FULL_RATE_M * PerfBudget.WALK_FULL_RATE_M:
+		_half_acc += delta
+		if (Engine.get_physics_frames() + _sim_slot) % 2 == 1:
+			global_position += Vector3(velocity.x, 0.0, velocity.z) * delta
+			return
+		delta = _half_acc
+	_half_acc = 0.0
 	if not is_on_floor():
 		velocity.y -= 24.0 * delta
 	else:
@@ -266,6 +297,20 @@ func _physics_process(delta: float) -> void:
 			_pursue(delta)
 	move_and_slide()
 	_animate(delta, Vector2(velocity.x, velocity.z).length())
+
+## Wave T perf: deferred far-walker motion (see the far branch above).
+var _far_off := Vector3.ZERO
+var _root_base := Vector3.INF
+var _idle_acc := 0.0
+var _glide_stride := 1
+var _half_acc := 0.0
+func _flush_far() -> void:
+	if _far_off == Vector3.ZERO:
+		return
+	global_position += _far_off
+	_far_off = Vector3.ZERO
+	if _root_base != Vector3.INF and body_root != null:
+		body_root.position = _root_base
 
 func _walk(delta: float) -> void:
 	# Street-life M2: walking together (couples, a parent with a child).
@@ -668,6 +713,7 @@ func _panic(from_position: Vector3) -> void:
 			Events.toast("Civilian fleeing!", "info")
 
 func _die(by_player: bool) -> void:
+	_flush_far()
 	state = State.DEAD
 	velocity = Vector3.ZERO
 	if character_visual != null and character_visual.loaded:

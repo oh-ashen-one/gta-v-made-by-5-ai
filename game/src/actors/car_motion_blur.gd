@@ -181,35 +181,71 @@ func _init() -> void:
 	access_resolved_depth = true
 	RenderingServer.call_on_render_thread(_init_compute)
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE and _rd != null:
-		if _sampler.is_valid(): _rd.free_rid(_sampler)
-		if _shader.is_valid(): _rd.free_rid(_shader)   # frees the pipeline too
+## Wave T perf: the GLSL -> SPIR-V compile and compute pipeline are built
+## once per run and shared (static). Building them inside the car-entry frame
+## was a ~100 ms render hitch; PerfDirector calls prewarm() during loading.
+static var _s_shader := RID()
+static var _s_pipeline := RID()
+static var _s_sampler := RID()
+static var _s_state := 0   # 0 not built, 1 built, -1 failed
 
-func _init_compute() -> void:
-	_rd = RenderingServer.get_rendering_device()
-	if _rd == null:
-		_failed = true
+static func prewarm() -> void:
+	if DisplayServer.get_name() == "headless" or "--no-motion-blur" in OS.get_cmdline_user_args():
+		return
+	RenderingServer.call_on_render_thread(_build_shared)
+
+static func _build_shared() -> void:
+	if _s_state != 0:
+		return
+	_s_state = -1
+	var rd := RenderingServer.get_rendering_device()
+	if rd == null:
 		return
 	var src := RDShaderSource.new()
 	src.language = RenderingDevice.SHADER_LANGUAGE_GLSL
 	src.source_compute = GLSL
-	var spirv: RDShaderSPIRV = _rd.shader_compile_spirv_from_source(src)
+	var spirv: RDShaderSPIRV = rd.shader_compile_spirv_from_source(src)
 	if spirv == null or spirv.compile_error_compute != "":
 		push_error("car motion blur shader: %s" % (spirv.compile_error_compute if spirv else "no spirv"))
-		_failed = true
 		return
-	_shader = _rd.shader_create_from_spirv(spirv)
-	if not _shader.is_valid():
-		_failed = true
+	_s_shader = rd.shader_create_from_spirv(spirv)
+	if not _s_shader.is_valid():
 		return
-	_pipeline = _rd.compute_pipeline_create(_shader)
+	_s_pipeline = rd.compute_pipeline_create(_s_shader)
 	var ss := RDSamplerState.new()
 	ss.min_filter = RenderingDevice.SAMPLER_FILTER_NEAREST
 	ss.mag_filter = RenderingDevice.SAMPLER_FILTER_NEAREST
 	ss.repeat_u = RenderingDevice.SAMPLER_REPEAT_MODE_CLAMP_TO_EDGE
 	ss.repeat_v = RenderingDevice.SAMPLER_REPEAT_MODE_CLAMP_TO_EDGE
-	_sampler = _rd.sampler_create(ss)
+	_s_sampler = rd.sampler_create(ss)
+	_s_state = 1
+
+## Frees the shared RIDs at shutdown (PerfDirector._exit_tree).
+static func release_shared() -> void:
+	if _s_state != 1:
+		return
+	_s_state = 0
+	RenderingServer.call_on_render_thread(_free_shared.bind(_s_shader, _s_sampler))
+	_s_shader = RID()
+	_s_pipeline = RID()
+	_s_sampler = RID()
+
+static func _free_shared(shader: RID, sampler: RID) -> void:
+	var rd := RenderingServer.get_rendering_device()
+	if rd == null:
+		return
+	if sampler.is_valid(): rd.free_rid(sampler)
+	if shader.is_valid(): rd.free_rid(shader)   # frees the pipeline too
+
+func _init_compute() -> void:
+	_build_shared()
+	_rd = RenderingServer.get_rendering_device()
+	if _rd == null or _s_state != 1:
+		_failed = true
+		return
+	_shader = _s_shader
+	_pipeline = _s_pipeline
+	_sampler = _s_sampler
 
 func _render_callback(callback_type: int, render_data: RenderData) -> void:
 	if _failed or _rd == null or not _pipeline.is_valid(): return
