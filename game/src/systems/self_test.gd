@@ -1568,6 +1568,7 @@ func _character_look_checks(player: Player) -> void:
 		builds[int(((o["skin_col"] as Vector4).w + 0.3) * 3.0)] = true
 	_check("characters-R2: the crowd spans heights (>=15 cm at 1.8 m), builds and older adults", (hmax - hmin) * 1.8 >= 0.15 and builds.size() >= 3 and elders >= 4, "spread=%.2fm builds=%d elders=%d/40" % [(hmax - hmin) * 1.8, builds.size(), elders])
 	_character_people_checks()
+	_character_stance_checks(player)
 
 ## Wave S (characters S1): civilians on the look mesh keep street-life's
 ## people (women, elders, children, skirts, skin tones) via instance params.
@@ -1614,3 +1615,55 @@ func _character_people_checks() -> void:
 	_check("characters-S: street-life people map onto the look outfit (women unstubbled, skirt legs, grey elders, >=5 skin tones, >=50/60 distinct)",
 		bad_face == 0 and bad_legs == 0 and women > 10 and elders_grey == elders and tones.size() >= 5 and sigs.size() >= 50,
 		"women=%d bad_face=%d bad_legs=%d elders=%d/%d tones=%d distinct=%d" % [women, bad_face, bad_legs, elders_grey, elders, tones.size(), sigs.size()])
+
+## Characters T1: weight-shifted idle (soles planted, one knee soft, mirrored
+## for half the crowd), adult head scale, skinned skirts and attached parts
+## that hide with their carrier.
+func _character_stance_checks(player: Player) -> void:
+	var cv: CharacterVisual = player.get("_visual")
+	if cv == null or not cv.loaded or "--legacy-idle" in OS.get_cmdline_user_args():
+		return
+	var sk := cv.skeleton
+	var head := sk.find_bone("head")
+	var anim := cv.animator.get_animation(cv._clips.get("idle", ""))
+	var ok_anim := anim != null and anim.has_meta("idle_stance") and cv._clips.has("idle_b")
+	var detail := "anim=%s" % ok_anim
+	var planted := false
+	var knees := false
+	var shift := 0.0
+	if ok_anim:
+		var prefix := IdleStance._track_prefix(anim)
+		var g := IdleStance._globals(anim, prefix, sk)
+		var rest_foot_l := sk.get_bone_global_rest(sk.find_bone("foot.l")).origin
+		var rest_foot_r := sk.get_bone_global_rest(sk.find_bone("foot.r")).origin
+		var fl := g[sk.find_bone("foot.l")].origin
+		var fr := g[sk.find_bone("foot.r")].origin
+		planted = absf(fl.y - rest_foot_l.y) < 0.02 and absf(fr.y - rest_foot_r.y) < 0.02
+		var kl := (g[sk.find_bone("shin.l")].origin - g[sk.find_bone("thigh.l")].origin).normalized().angle_to((fl - g[sk.find_bone("shin.l")].origin).normalized())
+		var kr := (g[sk.find_bone("shin.r")].origin - g[sk.find_bone("thigh.r")].origin).normalized().angle_to((fr - g[sk.find_bone("shin.r")].origin).normalized())
+		knees = absf(kl - kr) > 0.08
+		shift = absf(g[sk.find_bone("pelvis")].origin.x - sk.get_bone_global_rest(sk.find_bone("pelvis")).origin.x)
+		detail = "feet dy=%.3f/%.3f knees=%.2f/%.2f rad pelvis shift=%.3f" % [fl.y - rest_foot_l.y, fr.y - rest_foot_r.y, kl, kr, shift]
+	_check("characters-T: weight-shifted idle (pelvis over one leg, one soft knee, both soles planted, mirrored idle_b)",
+		ok_anim and planted and knees and shift > 0.025, detail)
+	var hs := sk.get_bone_pose_scale(head).x if head >= 0 else 1.0
+	_check("characters-T: adult head proportion (head bone scaled to ~1:7.5 of height)", hs > 0.85 and hs < 0.95, "head scale=%.2f" % hs)
+	var holder := Node3D.new()
+	add_child(holder)
+	var v := CharacterVisual.new()
+	holder.add_child(v)
+	if v.configure("civilian", 4):
+		var pp := CrowdPeople.person(CrowdPeople.Kind.WOMAN, 9001)
+		pp["skirt"] = true
+		pp["prop"] = "shopping"
+		CrowdPeople.dress(holder, v, pp)
+		var skirt := v.skeleton.find_child("PeopleSkirt", true, false) as MeshInstance3D
+		var bag := v.skeleton.find_child("PeopleShopping", true, false) as MeshInstance3D
+		var centre_err := INF
+		if bag != null and bag.custom_aabb.size != Vector3.ZERO:
+			var rest_xf := v.skeleton.get_bone_global_rest(v.skeleton.find_bone("hand.r")) * bag.transform
+			centre_err = (rest_xf * bag.custom_aabb.get_center()).distance_to(CrowdPeople.BODY_CENTRE)
+		_check("characters-T: skirts are skinned to the legs and a carried bag hides with its carrier (shared visibility centre)",
+			skirt != null and skirt.skin != null and centre_err < 0.01, "skirt_skinned=%s bag_centre_err=%.3f" % [skirt != null and skirt.skin != null, centre_err])
+	holder.queue_free()
+

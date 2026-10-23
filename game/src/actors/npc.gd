@@ -610,7 +610,12 @@ func _move_towards(target: Vector3, speed: float, delta: float) -> void:
 
 func _animate(delta: float, speed: float) -> void:
 	if character_visual != null and character_visual.loaded:
-		character_visual.set_motion(speed, (is_police or is_hostile) and state == State.PURSUE, is_on_floor())
+		# Characters T1: the airborne clip only for a real fall. The far-sim walk
+		# moves without move_and_slide (is_on_floor() stays stale), so civilians
+		# walked in the tucked jump pose (critic S1: 100% at Raffles Place); downtown
+		# plazas have no floor body under the walkers either. Civilians never jump.
+		character_visual.set_motion(speed, (is_police or is_hostile) and state == State.PURSUE,
+				true if not (is_police or is_hostile) else (is_on_floor() or velocity.y > -4.0))
 		return
 	var stride: float = clampf(speed / 2.2, 0.0, 1.4)
 	_walk_phase += delta * (5.0 + speed * 3.0)

@@ -47,6 +47,12 @@ func _run() -> void:
 		cam.global_position=player.global_position+shot[1]
 		cam.look_at(player.global_position+shot[2])
 		await _save(shot[0], .6)
+	# Characters T1: player full figure, 3/4 front at ~3.2 m (stance, head
+	# to body proportion, contact shadow).
+	cam.fov = 40
+	cam.global_position = player.global_position + Vector3(-1.3, 1.15, -2.9)
+	cam.look_at(player.global_position + Vector3(0, 0.9, 0))
+	await _save("player_full_34", .5)
 	# Diagnostic: the same portrait with sun shadows off (shadow-acne check).
 	cam.fov=30
 	cam.global_position=player.global_position+Vector3(0.55,1.62,-1.05)
@@ -168,6 +174,20 @@ func _people_review(base: Vector3) -> void:
 		cam.look_at(hp + Vector3(0, 1.22, 0))
 		await _save("person_%02d_%s" % [i, String((people[i].get_meta("people") as Dictionary)["name"])], 0.45)
 		shown += 1
+	# Characters T1: full-body 3/4 shots at ~3 m (proportions, the weight-
+	# shifted stance, skirts, bags, contact shadows).
+	shown = 0
+	for i in people.size():
+		if shown >= 8:
+			break
+		var hpf := people[i].global_position
+		var fwdf := -people[i].global_basis.z
+		var sidef := people[i].global_basis.x
+		cam.fov = 42
+		cam.global_position = hpf + fwdf * 3.0 + sidef * 0.9 + Vector3(0, 1.15, 0)
+		cam.look_at(hpf + Vector3(0, 0.88, 0))
+		await _save("person_full_%02d_%s" % [i, String((people[i].get_meta("people") as Dictionary)["name"])], 0.35)
+		shown += 1
 	# Face crop at ~1.2 m of two of them (skin breakup, eyes, brows).
 	for i in [0, 2, 3, 6]:
 		if i >= people.size():
@@ -197,7 +217,8 @@ func _people_review(base: Vector3) -> void:
 	# Live crowd stills (the real crowd director, not fixtures).
 	var player: Player = main.player
 	for spot in [["crowd_raffles_place", Vector3(-377.0, 0.3, -40.0), Vector3(-372.0, 1.5, -46.0), Vector3(-385.0, 1.1, -95.0)],
-			["crowd_mbs_event_plaza", Vector3(-150.0, 0.5, -640.0), Vector3(-146.0, 1.5, -636.0), Vector3(-90.0, 1.1, -648.0)]]:
+			["crowd_mbs_event_plaza", Vector3(-150.0, 0.5, -640.0), Vector3(-146.0, 1.5, -636.0), Vector3(-90.0, 1.1, -648.0)],
+			["crowd_five_foot_way", Vector3(-62.0, 0.25, -149.0), Vector3(-58.0, 1.5, -150.0), Vector3(-100.0, 1.1, -147.0)]]:
 		player.global_position = spot[1]
 		player.visible = false
 		Game.simulation_paused = false

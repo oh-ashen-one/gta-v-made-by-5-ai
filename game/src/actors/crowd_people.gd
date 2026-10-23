@@ -87,7 +87,7 @@ static func person(kind: int, h: int) -> Dictionary:
 		Kind.WOMAN:
 			var hh := lerpf(0.9, 0.97, u.call(3))
 			p["scale"] = Vector3(lerpf(0.86, 0.93, u.call(4)), hh, lerpf(0.88, 0.95, u.call(5)))
-			p["hair"] = ["bob", "long", "pony", "bun", "pixie", "long", "bob_bangs"][int(u.call(6) * 7.0) % 7]
+			p["hair"] = ["long", "long", "pony", "bun", "bob", "long", "pony"][int(u.call(6) * 7.0) % 7]   # T1: mostly long (bob/bangs read as a man's cut)
 			p["hair_colour"] = HAIR_COLOURS[int(u.call(7) * HAIR_COLOURS.size()) % HAIR_COLOURS.size()]
 			p["skirt"] = u.call(8) < 0.5
 			p["dress"] = p["skirt"] and u.call(9) < 0.45
@@ -128,9 +128,21 @@ static func person(kind: int, h: int) -> Dictionary:
 			p["pace"] = lerpf(0.95, 1.15, u.call(10))
 			p["prop"] = "backpack" if u.call(11) < 0.55 else "none"
 	p["dress_colour"] = DRESS_COLOURS[int(u.call(13) * DRESS_COLOURS.size()) % DRESS_COLOURS.size()]
+	# Characters T1: office workers (critic S1: the CBD at office hours read as
+	# a holiday crowd in loud prints). Shirts/blouses and slacks or a dark
+	# skirt come from CharacterLook.person_outfit(); no caps or umbrellas.
+	if kind == Kind.MAN or kind == Kind.WOMAN:
+		p["office"] = u.call(17) < 0.4
+		if p["office"]:
+			p["dress"] = false
+			p["dress_colour"] = [Color(0.08, 0.08, 0.09), Color(0.1, 0.12, 0.2), Color(0.22, 0.22, 0.24), Color(0.3, 0.26, 0.22)][int(u.call(18) * 4.0) % 4]
+			if String(p.get("hair", "")) == "cap":
+				p["hair"] = ""
+			if String(p.get("prop", "none")) in ["umbrella", "backpack", "shopping"]:
+				p["prop"] = ["phone", "cup", "none"][int(u.call(19) * 3.0) % 3]
 	p["prop_colour"] = PROP_COLOURS[int(u.call(14) * PROP_COLOURS.size()) % PROP_COLOURS.size()]
 	p["umbrella_colour"] = UMBRELLA_COLOURS[int(u.call(15) * UMBRELLA_COLOURS.size()) % UMBRELLA_COLOURS.size()]
-	p["legs"] = Color(0.07, 0.065, 0.07) if u.call(16) < 0.3 else Color(-1, 0, 0)   # dark tights, else bare
+	p["legs"] = Color(0.07, 0.065, 0.07) if u.call(16) < 0.12 else Color(-1, 0, 0)   # dark tights (T1: rarer, sheer), else bare
 	return p
 
 ## Turn an NPC's provider figure into the person `p` (pick() if omitted).
@@ -166,7 +178,9 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 		hn.name = "PeopleHair"
 	if skirt:
 		var col: Color = p["dress_colour"]
-		var sn := _attach(sk, "pelvis", _misc("skirt"), _cloth_material(col), Transform3D(), GHOST_FREE_RANGE, false)
+		var sn := _skinned_skirt(sk, _cloth_material(col))
+		if sn == null:
+			sn = _attach(sk, "pelvis", _misc("skirt"), _cloth_material(col), Transform3D(), GHOST_FREE_RANGE, false)
 		sn.name = "PeopleSkirt"
 	var pose := ""
 	match prop:
@@ -203,8 +217,12 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 			var hb := _attach(sk, "chest", _misc("handbag"), _plain(p["prop_colour"], 0.45, 0.0), Transform3D(Basis(), Vector3(0.0, 0.0, 0.0)), 45.0, false)
 			hb.name = "PeopleHandbag"
 		"backpack":
-			var bp := _attach(sk, "chest", _misc("backpack"), _cloth_material(p["prop_colour"]), Transform3D(), 60.0, false)
+			var bp := _attach(sk, "chest", _misc("backpack"), null, Transform3D(), 60.0, false)
 			bp.name = "PeopleBackpack"
+			# T1: dark webbing straps (white straps read as paper bars, critic S1).
+			bp.set_surface_override_material(0, _cloth_material(p["prop_colour"]))
+			if bp.mesh.get_surface_count() > 1:
+				bp.set_surface_override_material(1, _plain(Color(0.05, 0.05, 0.055), 0.7, 0.0))
 		"shopping":
 			var sb := _attach(sk, "hand.r", _misc("shopping"), _plain(Color(0.93, 0.92, 0.88) if posmod(int(p["seed"]), 2) == 0 else Color(0.85, 0.3, 0.18), 0.7, 0.0),
 				Transform3D(Basis(), Vector3(-0.255, 0.74, 0.02)), 45.0, false)
@@ -222,6 +240,80 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 	# applies to the new parts.
 	for mi in cv.find_children("People*", "GeometryInstance3D", true, false):
 		(mi as GeometryInstance3D).visibility_range_begin = NPC.NEAR_HIDE
+		_share_body_centre(sk, mi as GeometryInstance3D)
+
+## Characters T1: the skirt is skinned to the pelvis and both thighs (more
+## thigh toward the hem), so it swings with the stride and drapes over the
+## free knee of the weight-shifted idle instead of a rigid cone the legs pass
+## through (critic S1: "flat apron or cone shells", "bare leg poking through").
+static var _skirt_skinned_mesh: ArrayMesh
+static var _skirt_skin: Skin
+static func _skinned_skirt(sk: Skeleton3D, mat: Material) -> MeshInstance3D:
+	var ids := [sk.find_bone("pelvis"), sk.find_bone("thigh.l"), sk.find_bone("thigh.r")]
+	if -1 in ids:
+		return null
+	if _skirt_skinned_mesh == null:
+		var src := _misc("skirt") as ArrayMesh
+		if src == null:
+			return null
+		var arr := src.surface_get_arrays(0)
+		var v: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+		var bones := PackedInt32Array()
+		var weights := PackedFloat32Array()
+		bones.resize(v.size() * 4)
+		weights.resize(v.size() * 4)
+		var lx := sk.get_bone_global_rest(ids[1]).origin.x
+		for i in v.size():
+			var t := clampf((WAIST_Y - v[i].y) / (WAIST_Y - HEM_Y), 0.0, 1.0)
+			var k := 0.7 * smoothstep(0.05, 1.0, t)
+			var sx := clampf(v[i].x / 0.22 * signf(lx), -1.0, 1.0)
+			var bl := clampf(0.5 + 0.75 * sx, 0.0, 1.0)
+			bones[i * 4] = 0
+			bones[i * 4 + 1] = 1
+			bones[i * 4 + 2] = 2
+			bones[i * 4 + 3] = 0
+			weights[i * 4] = 1.0 - k
+			weights[i * 4 + 1] = k * bl
+			weights[i * 4 + 2] = k * (1.0 - bl)
+			weights[i * 4 + 3] = 0.0
+		arr[Mesh.ARRAY_BONES] = bones
+		arr[Mesh.ARRAY_WEIGHTS] = weights
+		_skirt_skinned_mesh = ArrayMesh.new()
+		_skirt_skinned_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
+		_skirt_skin = Skin.new()
+		for j in ids.size():
+			_skirt_skin.add_named_bind(sk.get_bone_name(ids[j]), sk.get_bone_global_rest(ids[j]).affine_inverse())
+	var mi := MeshInstance3D.new()
+	mi.mesh = _skirt_skinned_mesh
+	mi.skin = _skirt_skin
+	mi.material_override = mat
+	mi.visibility_range_end = GHOST_FREE_RANGE
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	sk.add_child(mi)
+	mi.skeleton = NodePath("..")
+	return mi
+
+## Characters T1: the visibility range is measured to each instance's AABB
+## centre, so a bag in the hand (or hair on the head) stayed drawn when its
+## carrier's body was already hidden by the near-lens cull (critic S1: a red
+## shopping bag floating with no carrier). Every attached part gets a custom
+## AABB around the whole figure, centred on the body's own centre, so the
+## parts and the body appear and hide together.
+const BODY_CENTRE := Vector3(0.0, 0.875, 0.0)
+static func _share_body_centre(sk: Skeleton3D, gi: GeometryInstance3D) -> void:
+	var local := Transform3D()
+	var att := gi.get_parent() as BoneAttachment3D
+	if att != null:
+		var id := sk.find_bone(att.bone_name)
+		if id < 0:
+			return
+		local = (sk.get_bone_global_rest(id) * gi.transform).affine_inverse()
+	elif gi.get_parent() != sk:
+		return
+	var c := local * BODY_CENTRE
+	var sc := local.basis.get_scale().abs()
+	var half := Vector3.ONE * 1.0 * maxf(sc.x, maxf(sc.y, sc.z))
+	gi.custom_aabb = AABB(c - half, half * 2.0)
 
 # ------------------------------------------------------------------ helpers
 static func _attach(sk: Skeleton3D, bone: String, mesh: Mesh, mat: Material, char_xf: Transform3D, range_end: float, shadow: bool = false) -> MeshInstance3D:
@@ -480,7 +572,7 @@ static func _hair_mesh(style: String) -> Mesh:
 		"pixie": _shell(st, 2.05, 1.62, 1.0, 1.04, 0.0)
 		"bob": _shell(st, 3.05, 2.95, 1.05, 1.05, 0.0)
 		"bob_bangs": _shell(st, 3.0, 2.9, 1.42, 1.05, 0.0)
-		"long": _shell(st, 4.6, 2.95, 1.05, 1.05, 0.0)
+		"long": _shell(st, 4.6, 2.95, 0.88, 1.05, 0.0)   # T1: swept back off the face (fringe tips read as jagged strands)
 		"pony":
 			_shell(st, 2.0, 1.64, 1.0, 1.03, 0.0)
 			_tube(st, Vector3(0.0, 0.07, 0.1), Vector3(0.0, -0.2, 0.17), 0.04, 0.012)
@@ -650,8 +742,8 @@ static func _skirt_mesh() -> Mesh:
 		var t := float(j) / rows
 		var a := float(i) / seg * TAU
 		var y := lerpf(WAIST_Y, HEM_Y, t)
-		var rx := lerpf(0.19, 0.29, t)
-		var rz := lerpf(0.165, 0.27, t)
+		var rx := lerpf(0.205, 0.29, t)   # T1: the waist sits over the shirt hem (a tucked-in top, no jagged hem through the skirt)
+		var rz := lerpf(0.18, 0.27, t)
 		var fold := 1.0 + 0.045 * t * sin(a * 9.0) + 0.02 * t * sin(a * 4.0 + 1.3)
 		return Vector3(sin(a) * rx * fold, y, 0.04 + cos(a) * rz * fold)
 	for i in seg:
@@ -700,49 +792,104 @@ static func _umbrella_mesh() -> Mesh:
 	st.generate_normals()
 	return st.commit()
 
+## Characters T1: soft rounded volumes (a superellipsoid from a sphere) for
+## bags, so a backpack or shopping bag no longer reads as a flat card/box.
+static func _rounded_box(st: SurfaceTool, half: Vector3, xf: Transform3D, e: float = 0.32, bulge: float = 0.0) -> void:
+	var sph := SphereMesh.new()
+	sph.radius = 1.0
+	sph.height = 2.0
+	sph.radial_segments = 18
+	sph.rings = 12
+	var arr := sph.get_mesh_arrays()
+	var v: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+	var idx: PackedInt32Array = arr[Mesh.ARRAY_INDEX]
+	var out := PackedVector3Array()
+	out.resize(v.size())
+	for i in v.size():
+		var q := v[i]
+		var r := Vector3(signf(q.x) * pow(absf(q.x), e), signf(q.y) * pow(absf(q.y), e), signf(q.z) * pow(absf(q.z), e))
+		# Bags bulge in the middle of their faces (filled, not a crate).
+		var b := 1.0 + bulge * (1.0 - q.y * q.y) * (1.0 - q.x * q.x)
+		out[i] = xf * Vector3(r.x * half.x, r.y * half.y, r.z * half.z * b)
+	for k in range(0, idx.size(), 3):
+		var a := out[idx[k]]
+		var bb := out[idx[k + 1]]
+		var c := out[idx[k + 2]]
+		st.set_uv(Vector2(0.5, 0.5))
+		st.add_vertex(a)
+		st.add_vertex(bb)
+		st.add_vertex(c)
+
+## A strap as a thin flat band along a polyline (character space).
+static func _band(st: SurfaceTool, pts: Array, width: float, thick: float, side: Vector3) -> void:
+	for i in pts.size() - 1:
+		var p0: Vector3 = pts[i]
+		var p1: Vector3 = pts[i + 1]
+		var d := (p1 - p0).normalized()
+		var w := side.normalized() * width * 0.5
+		var n := d.cross(side).normalized() * thick * 0.5
+		var c0 := [p0 - w - n, p0 + w - n, p0 + w + n, p0 - w + n]
+		var c1 := [p1 - w - n, p1 + w - n, p1 + w + n, p1 - w + n]
+		var mid := (p0 + p1) * 0.5
+		for f in 4:
+			var g := (f + 1) % 4
+			var a: Vector3 = c0[f]
+			var b: Vector3 = c1[f]
+			var c: Vector3 = c1[g]
+			var e: Vector3 = c0[g]
+			# Outward winding (Godot front faces are clockwise).
+			var fn := (c - a).cross(b - a)
+			if fn.dot((a + c) * 0.5 - mid) < 0.0:
+				_tri(st, a, c, b, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO)
+				_tri(st, a, e, c, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO)
+			else:
+				_tri(st, a, b, c, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO)
+				_tri(st, a, c, e, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO)
+
 ## Cross-body bag at the hip (chest-bone space; chest rest origin
 ## (0, 1.22, 0.065)) with a strap from the opposite shoulder.
 static func _handbag_mesh() -> Mesh:
 	# M2r: a slim bag carried at the front of the hip on a short strap that
 	# runs up the body's side (a long free-standing strap read as a stick).
+	# T1: a soft rounded bag with a flap and a strap over the shoulder.
 	var st := SurfaceTool.new()
-	var bag := BoxMesh.new()
-	bag.size = Vector3(0.2, 0.15, 0.06)
-	st.append_from(bag, 0, Transform3D(Basis(Vector3.UP, 0.5), Vector3(-0.135, 0.96, -0.115)))
-	var flap := BoxMesh.new()
-	flap.size = Vector3(0.205, 0.06, 0.065)
-	st.append_from(flap, 0, Transform3D(Basis(Vector3.UP, 0.5), Vector3(-0.135, 1.01, -0.117)))
-	var strap := BoxMesh.new()
-	strap.size = Vector3(0.016, 0.2, 0.012)
-	st.append_from(strap, 0, Transform3D(Basis(Vector3.FORWARD, 0.25), Vector3(-0.19, 1.1, -0.09)))
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var bxf := Transform3D(Basis(Vector3.UP, 0.5), Vector3(-0.15, 0.96, -0.1))
+	_rounded_box(st, Vector3(0.1, 0.075, 0.03), bxf, 0.3, 0.25)
+	_rounded_box(st, Vector3(0.102, 0.035, 0.032), bxf * Transform3D(Basis(), Vector3(0.0, 0.045, -0.004)), 0.25)
+	_band(st, [Vector3(-0.2, 1.0, -0.07), Vector3(-0.215, 1.18, -0.02), Vector3(-0.17, 1.38, 0.03), Vector3(-0.1, 1.44, 0.07)], 0.022, 0.006, Vector3(0, 0, 1))
 	st.generate_normals()
 	return st.commit()
 
 static func _backpack_mesh() -> Mesh:
 	var st := SurfaceTool.new()
-	var body := BoxMesh.new()
-	body.size = Vector3(0.25, 0.36, 0.12)
-	st.append_from(body, 0, Transform3D(Basis(Vector3.RIGHT, -0.08), Vector3(0.0, 1.17, 0.215)))
-	var pocket := BoxMesh.new()
-	pocket.size = Vector3(0.22, 0.15, 0.05)
-	st.append_from(pocket, 0, Transform3D(Basis(Vector3.RIGHT, -0.08), Vector3(0.0, 1.06, 0.3)))
-	for sx: float in [-0.09, 0.09]:
-		var strap := BoxMesh.new()
-		strap.size = Vector3(0.045, 0.34, 0.02)
-		st.append_from(strap, 0, Transform3D(Basis(Vector3.RIGHT, 0.25), Vector3(sx, 1.27, -0.095)))
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var tilt := Basis(Vector3.RIGHT, -0.08)
+	_rounded_box(st, Vector3(0.14, 0.2, 0.075), Transform3D(tilt, Vector3(0.0, 1.17, 0.235)), 0.3, 0.3)
+	_rounded_box(st, Vector3(0.115, 0.08, 0.035), Transform3D(tilt, Vector3(0.0, 1.06, 0.315)), 0.3, 0.3)
 	st.generate_normals()
-	return st.commit()
+	var pack := st.commit()
+	# Top grab handle and shoulder straps from the top of the pack over the
+	# shoulders and down the chest to the bottom corners (second surface).
+	st = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	_band(st, [Vector3(-0.04, 1.37, 0.215), Vector3(0.0, 1.405, 0.215), Vector3(0.04, 1.37, 0.215)], 0.018, 0.008, Vector3(0, 0, 1))
+	for sx: float in [-0.095, 0.095]:
+		_band(st, [Vector3(sx * 0.8, 1.34, 0.17), Vector3(sx, 1.43, 0.08), Vector3(sx * 1.05, 1.42, -0.04),
+			Vector3(sx * 1.1, 1.3, -0.105), Vector3(sx * 1.15, 1.12, -0.09), Vector3(sx * 1.3, 1.02, 0.03), Vector3(sx * 1.2, 1.0, 0.17)],
+			0.042, 0.012, Vector3(1, 0, 0))
+	st.generate_normals()
+	return st.commit(pack)
 
 ## Shopping bag hanging from the hand (hand rest origin (-0.247, 0.88, 0.024)).
 static func _shopping_mesh() -> Mesh:
 	var st := SurfaceTool.new()
-	var bag := BoxMesh.new()
-	bag.size = Vector3(0.11, 0.3, 0.32)
-	st.append_from(bag, 0, Transform3D(Basis(), Vector3(0.0, -0.06, 0.0)))
-	var handle := BoxMesh.new()
-	handle.size = Vector3(0.012, 0.12, 0.012)
-	for sz: float in [-0.06, 0.06]:
-		st.append_from(handle, 0, Transform3D(Basis(Vector3.RIGHT, sz * 4.0), Vector3(0.0, 0.14, sz * 0.5)))
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	# T1: a filled carrier bag (rounded, bulging) with two loop handles.
+	_rounded_box(st, Vector3(0.06, 0.15, 0.16), Transform3D(Basis(), Vector3(0.0, -0.08, 0.0)), 0.42, 0.35)
+	for sz: float in [-0.045, 0.045]:
+		_band(st, [Vector3(0.0, 0.06, sz - 0.03), Vector3(0.0, 0.13, sz - 0.012), Vector3(0.0, 0.15, sz), Vector3(0.0, 0.13, sz + 0.012), Vector3(0.0, 0.06, sz + 0.03)],
+			0.012, 0.004, Vector3(1, 0, 0))
 	st.generate_normals()
 	return st.commit()
 

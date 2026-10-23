@@ -182,7 +182,17 @@ void vertex() {
 	VERTEX += NORMAL * headk * expr.x * (0.0026 * knit - 0.0014 * glab + 0.0014 * squint - 0.0016 * corner);
 	float hairm = smoothstep(0.4, 0.8, CUSTOM2.z) * smoothstep(1.56, 1.62, r.y);
 	VERTEX += NORMAL * headk * (head_shape.x * (0.0085 * jaw + 0.0045 * cheek * facing) + head_shape.y * 0.0042 * nose
-		+ head_shape.z * 0.0032 * brow + (hv - 1.0) * 0.006 * hairm);
+		+ head_shape.z * 0.0032 * brow + (hv - 1.0) * (hv < 1.0 ? 0.034 : 0.006) * hairm);
+	// T1: hv < 1 (a woman's generated hairstyle sits over the authored cut) packs
+	// the authored short-back-and-sides quiff down to the scalp (critic S1: women
+	// wore the male pompadour under their own hair).
+	// T1: legs under a skirt are bare legs or tights, not baggy trousers: the
+	// trouser region slims to a leg (calf and ankle taper) so it no longer
+	// reads as trousers worn under the skirt, and stays inside the hem.
+	if (person.z > 0.5) {
+		float legk = smoothstep(0.35, 0.75, CUSTOM2.w) * smoothstep(0.15, 0.22, r.y) * (1.0 - smoothstep(0.93, 0.99, r.y));
+		VERTEX -= NORMAL * legk * mix(0.03, 0.013, smoothstep(0.22, 0.6, r.y));
+	}
 	if (CUSTOM0.y > 0.5) {
 		VERTEX += NORMAL * CUSTOM0.y * shell_step * hv;
 	}
@@ -284,6 +294,12 @@ void fragment() {
 	} else if (reg == 2) {
 		reg = 0;
 	}
+	// T1: under a woman's generated hairstyle (head_shape.w < 1) the authored
+	// short cut's shells are not drawn (they poked through the fringe as dark
+	// jagged strands on the forehead).
+	if (shell > 0.5 && head_shape.w > 0.01 && head_shape.w < 0.95) {
+		discard;
+	}
 	if (shell > 0.5 && reg != 2) {
 		discard;
 	}
@@ -302,6 +318,9 @@ void fragment() {
 	}
 	if (reg == 4 && person.z > 0.5 && person.z < 1.5) {
 		reg = 0; // wave S: bare legs under a skirt
+	}
+	if (reg == 2 && head_shape.w > 0.01 && head_shape.w < 0.95 && (p - head_centre).z < -0.035 && p.y < 1.715) {
+		reg = 0; // T1: a woman's forehead under her swept-back hair is skin, not the short cut's fringe
 	}
 	bool tee_only = false;
 	if (reg == 1 && tee_col.w > 0.5) {
@@ -364,6 +383,9 @@ void fragment() {
 			float hairy = smoothstep(0.3, 0.72, strands) * (1.0 - brow_gap * 0.6) * mix(0.55, 1.0, bcore) * (1.0 - smoothstep(0.045, 0.066, abs(rel.x)) * 0.5);
 			vec3 brow_hair = mix(skin_tone * 0.7, hair_col.rgb * 1.3 + skin_tone * 0.05, hairy);
 			tb = mix(tb, brow_hair, browb * 0.88 * (1.0 - smoothstep(0.1, 0.3, lum(tb))) * mix(1.0, 0.65 * bcore, person.x));
+			// T1: women's brows are a thin groomed arch, not the provider's heavy
+			// male bar: outside the brow core line the paint returns to skin.
+			tb = mix(tb, skin_tone * 0.93, person.x * browb * (1.0 - bcore) * 0.9);
 			col = mix(col, tb, use_tex);
 			col = mix(col, col * vec3(0.93, 0.74, 0.72), mouth * 0.45 * face_k);
 			float fk = face_k * (1.0 - hairness);
@@ -447,6 +469,12 @@ void fragment() {
 			// Short fade into the skin at the hairline and the nape.
 			// (wave R: from near-skin, so the hairline is a soft gradient, not a cut)
 			col = mix(mix(skin_tone * 0.82, hair_col.rgb, 0.22), col, smoothstep(0.0, 0.75, edge));
+		}
+		if (head_shape.w > 0.01 && head_shape.w < 0.95) {
+			// T1: under a woman's own hairstyle the authored short cut is a plain
+			// dark under-layer in her hair colour (no skin-fade hairline, which
+			// read as jagged dark strands across the forehead).
+			col = hc * (0.62 + 0.3 * strand) * (0.85 + 0.2 * clump);
 		}
 		rough = 0.36 + 0.28 * (1.0 - strand);
 		spec = 0.5;
@@ -596,7 +624,7 @@ void fragment() {
 		// Wave S: sheer tights under a skirt: the skin shows through at the
 		// knees and shins where the fabric stretches, a soft satin sheen.
 		float stretch = smoothstep(0.35, 0.55, p.y) * (1.0 - smoothstep(0.55, 0.7, p.y));
-		col = mix(pants_col.rgb, skin_tone * 0.45, 0.18 + 0.2 * stretch) * (0.94 + 0.12 * vnoise(p * 300.0));
+		col = mix(pants_col.rgb, skin_tone * 0.55, 0.34 + 0.24 * stretch) * (0.94 + 0.12 * vnoise(p * 300.0));
 		rough = 0.42;
 		spec = 0.45;
 		rim = 0.3;
@@ -2008,6 +2036,20 @@ static func person_outfit(p: Dictionary, base: Dictionary) -> Dictionary:
 		if int(sc.w + 0.5) in [5, 7] or rng.randf() < 0.55:
 			o["tee_col"] = Vector4(sc.x, sc.y, sc.z, 1.0)
 			o["shirt_col"] = Vector4(sc.x, sc.y, sc.z, 1.0 if rng.randf() < 0.25 else 0.0)
+	if bool(p.get("office", false)):
+		# T1: office wear: a plain or fine-striped business shirt / blouse,
+		# dark slacks, black leather shoes.
+		const OFFICE_SHIRTS := [Color(0.93, 0.93, 0.91), Color(0.72, 0.81, 0.92), Color(0.86, 0.88, 0.92), Color(0.93, 0.84, 0.84), Color(0.95, 0.94, 0.88), Color(0.6, 0.7, 0.84)]
+		const SLACKS := [Color(0.11, 0.11, 0.12), Color(0.08, 0.09, 0.15), Color(0.05, 0.05, 0.055), Color(0.2, 0.2, 0.22), Color(0.36, 0.32, 0.25)]
+		var oc: Color = OFFICE_SHIRTS[rng.randi() % OFFICE_SHIRTS.size()]
+		var striped := rng.randf() < 0.25 and not female
+		o["shirt_col"] = _v4(oc, 1.0 if striped else 0.0)
+		o["shirt_col2"] = _v4(oc.darkened(0.25), rng.randf_range(11.0, 15.0))
+		o["tee_col"] = _v4(oc, 1.0 if female else 0.0)
+		o["pants_col"] = _v4(SLACKS[rng.randi() % SLACKS.size()], 0.0)
+		o["shoe_col"] = _v4(Color(0.035, 0.028, 0.024), 0.12)
+		var fcx: Vector4 = o["face_col"]
+		o["face_col"] = Vector4(fcx.x, fcx.y, fcx.z, 0.0 if female else fcx.w)
 	if bool(p.get("dress", false)):
 		var dc: Color = p.get("dress_colour", Color(0.5, 0.5, 0.5))
 		o["shirt_col"] = _v4(dc, 0.0)
