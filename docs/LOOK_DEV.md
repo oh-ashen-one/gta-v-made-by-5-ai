@@ -75,6 +75,15 @@ flat grey-pink haze sky are retired.
 
 - Third-person over-the-shoulder: camera 1.62 m, lateral offset 0.85 m, arm 4.6 m (2.2 m aiming), so the character never sits on the reticle.
 - FOV 68° on foot, 75° flight. Driving (opus55): 64° at rest easing to 76° at top speed; the chase camera sits ~4.8 m behind and ~1.9 m up, lags the car's yaw and springs fore/aft with acceleration.
+- Driving (opus55 driving-q): the chase lens settles from ~1.9 m to ~1.67 m above the road as speed builds. Per-pixel
+  motion blur on the chase camera only (compositor effect on the engine's motion vectors, shutter 0.8 x 1/60 s faded in
+  from ~11 to ~47 km/h, the player car masked out, distant pixels damped); it replaces the old frame-edge radial blur.
+  Asphalt aggregate contrast is bounded (0.72-1.38x tone swing) and textures use 16x anisotropic filtering.
+- Driving rQ2: the motion blur only streaks near, low geometry (full within ~7 m of the lens and below ~0.22 m above
+  the road, gone by ~12 m / ~0.6 m) and never gathers taps from tall or far geometry, so pedestrians, carts, share
+  bikes and median shrubs stay single, opaque silhouettes. Cars carry a grooved, blocky tyre with a bulged sidewall, a
+  polished ten-spoke alloy and a visible brake disc and caliper. Paint is an even base coat under a sharp clear-coat;
+  daylight lamp coronas stay small; skid marks are feathered, translucent rubber; wheelspin smoke is thin.
 - No camera shake by default; reduced-shake setting halves it further. The only vehicle shake is a short (~0.4 s) kick on a hard collision.
 - Capture convention: 16:9, 1280×720 internal, HUD visible for gameplay shots and hidden for beauty shots.
 

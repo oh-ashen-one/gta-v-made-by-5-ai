@@ -644,6 +644,7 @@ func _emit() -> void:
 		var mmi := MultiMeshInstance3D.new()
 		mmi.name = "StreetDressing_%s" % key.replace("@", "_")
 		mmi.multimesh = mm
+		mmi.set_meta("instance_xforms", xforms) # locomotion-Q: StreetPropColliders reads these
 		if not nf_two:
 			mmi.material_override = _material(kind)
 		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if g["shadow"] else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

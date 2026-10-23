@@ -6,13 +6,21 @@ extends CharacterBody3D
 
 signal crosshair_hit(point: Vector3, hit_something: bool)
 
-const WALK_SPEED := 3.6
+# Locomotion piece: GTA-style on-foot speeds, each matching an authored gait
+# (CharacterVisual WALK/RUN/SPRINT_CLIP_SPEED): default movement is the run
+# (jog), holding Walk (Left Alt) or a light stick tilt walks, Sprint sprints.
+const WALK_SPEED := 1.5
+const RUN_SPEED := 3.6
 const SPRINT_SPEED := 6.8
+const JUMP_WINDUP := 0.12      # standing-jump anticipation before take-off
+const STOP_DECEL := 16.0       # m/s^2 braking when the stick is released from a run
 const ACCEL := 14.0
 const FRICTION := 12.0
-const JUMP_VELOCITY := 7.2
+# 5.0 m/s against 24 m/s^2 gravity: ~0.52 m rise, ~0.42 s airtime (a human
+# hop, not the old 1.08 m / 0.60 s superhuman float).
+const JUMP_VELOCITY := 5.0
 const MOUSE_SENS := 0.0022
-const AIM_DISTANCE := 2.2
+const AIM_DISTANCE := 1.85  # combat piece: over-the-shoulder aim (wave Q: hero, arms and gun in frame)
 const HIP_DISTANCE := 3.2
 const INTERACT_RANGE := 5.0
 const PICKUP_RANGE := 7.5
@@ -70,16 +78,46 @@ var _cam_follow := Vector3.ZERO
 var _cam_ready := false
 var _contact_shadow: Decal
 var _sprint_cam := 0.0
+var _jump_windup := -1.0
+var _walk_toggle := false
+var _stop_armed := false
+var _airborne_time := 0.0
+var _land_running := false
+# Locomotion-Q: weighted starts, the sprint skid-and-pivot, shoulder-safe
+# camera and pedestrian/prop avoidance.
+const START_ACCEL_WALK := 2.6   # m/s^2: standstill -> walk in ~0.45 s (a real first step)
+const START_ACCEL_RUN := 5.2    # m/s^2 below 2 m/s when setting off at a jog
+const SKID_MIN_SPEED := 2.9     # reversals faster than this plant and skid
+# Locomotion-Q r2 (critic: the 180 froze the skid pose for 7 frames, then
+# flipped facing in one frame through a kneel): the skid now brakes in ~0.3 s
+# while the body already swings round over the planted heel, and the drive-out
+# continues that swing through the run cycle -- one continuous turn.
+const SKID_DECEL := 20.0        # m/s^2 while the heel is dug in
+const SKID_CLIP_RATE := 0.75    # 0.40 s clip over ~0.3 s brake: no held end pose
+const SKID_SWING_DELAY := 0.06  # s before the hips start to come round
+const SKID_SWING_RATE := 7.0    # rad/s body swing during the brake (~13 deg/frame @30)
+const FACE_MAX_RATE := 11.0     # rad/s hard cap on on-foot facing change (~21 deg/frame @30)
+const AIM_BACK_SPEED := 1.3
+const AIM_STRAFE_SPEED := 1.45
+const COLLIDE_MASK := 1 | 4 | 8 | StreetPropColliders.PROP_LAYER
+var _skid_t := -1.0
+var _skid_heading := 0.0
+var _pivot_t := 0.0
+var _shoulder_x := ARM_BASE.x
+var _avoid := PlayerAvoidance.new()
 
 func _ready() -> void:
 	_rng.seed = 771
 	add_to_group("player")
 	add_to_group("actors")
 	collision_layer = 2
-	collision_mask = 1 | 4 | 8
+	collision_mask = COLLIDE_MASK
 	floor_max_angle = deg_to_rad(52.0)
 	_build_body()
 	_build_camera()
+	_ensure_walk_action()
+	CombatFx.attach_player(self) # combat piece: FX, recoil/aim layer, hit markers
+	StreetPropColliders.ensure.call_deferred(get_tree())
 	Events.health_changed.connect(_on_health_changed)
 	Events.state_restored.connect(_on_state_restored)
 	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
@@ -269,9 +307,25 @@ func _build_character_lights() -> void:
 	rim.basis = Basis.looking_at(Vector3(0.45, -0.55, 1.0).normalized(), Vector3.UP)
 	camera.add_child(rim)
 
+## Walk input (locomotion piece) is added at runtime so project.godot stays
+## untouched: hold Left Alt to walk, Caps Lock toggles walking.
+func _ensure_walk_action() -> void:
+	if not InputMap.has_action("walk"):
+		InputMap.add_action("walk")
+		var alt := InputEventKey.new()
+		alt.physical_keycode = KEY_ALT
+		InputMap.action_add_event("walk", alt)
+	if not InputMap.has_action("walk_toggle"):
+		InputMap.add_action("walk_toggle")
+		var caps := InputEventKey.new()
+		caps.physical_keycode = KEY_CAPSLOCK
+		InputMap.action_add_event("walk_toggle", caps)
+
 func _unhandled_input(event: InputEvent) -> void:
 	if Game.simulation_paused:
 		return
+	if event.is_action_pressed("walk_toggle"):
+		_walk_toggle = not _walk_toggle
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		var mm := event as InputEventMouseMotion
 		var sens: float = MOUSE_SENS * float(Game.settings.get("mouse_sensitivity", 1.0))
@@ -309,7 +363,7 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector3.ZERO
 		return
 	collision_layer = 2
-	collision_mask = 1 | 4 | 8
+	collision_mask = COLLIDE_MASK
 	if busy:
 		velocity = Vector3.ZERO
 		return
@@ -333,10 +387,21 @@ func _physics_process(delta: float) -> void:
 		input_dir = input_dir.normalized()
 	var basis_dir := Vector3(input_dir.x, 0.0, input_dir.y).rotated(Vector3.UP, yaw)
 	var sprinting := Input.is_action_pressed("sprint") and not aiming and input_dir.y < 0.0
-	var target_speed := SPRINT_SPEED if sprinting else WALK_SPEED
+	var stick := clampf(input_dir.length(), 0.0, 1.0)
+	# Gait speeds are quantised (walk / run / sprint) so the authored cycles
+	# always play at their own rate; a light stick tilt walks.
+	var walking := (Input.is_action_pressed("walk") or _walk_toggle or stick < 0.55) and not sprinting
+	var target_speed := SPRINT_SPEED if sprinting else (WALK_SPEED if walking else RUN_SPEED)
 	if aiming:
-		target_speed *= 0.55
-	target_speed *= clampf(input_dir.length(), 0.0, 1.0)
+		target_speed = WALK_SPEED if walking else WALK_SPEED * 1.15
+		# Backpedal and strafe have their own (slower) authored gaits.
+		var rel_in := absf(atan2(-input_dir.x, -input_dir.y)) if stick > 0.08 else 0.0
+		if rel_in > PI * 0.6:
+			target_speed = minf(target_speed, AIM_BACK_SPEED)
+		elif rel_in > PI * 0.3:
+			target_speed = minf(target_speed, AIM_STRAFE_SPEED)
+	if stick < 0.08:
+		target_speed = 0.0
 
 	# Heading + speed locomotion: the body turns at a speed-dependent rate
 	# (tight at a walk, wide arcs at a sprint) and a sharp reversal brakes
@@ -351,16 +416,46 @@ func _physics_process(delta: float) -> void:
 		else:
 			var diff := wrapf(want - _heading, -PI, PI)
 			var turn_rate := lerpf(11.0, 4.6, clampf(_speed / SPRINT_SPEED, 0.0, 1.0))
-			if absf(diff) > 1.75 and _speed > 2.0:
+			if _skid_t >= 0.0:
+				# Skidding: heading frozen, the body brakes over the dug-in heel.
+				_skid_heading = want
+				target_speed = 0.0
+				turn_rate = 0.0
+			elif absf(diff) > 2.3 and _speed > SKID_MIN_SPEED and is_on_floor() and _visual != null and _visual.loaded \
+					and _visual.play_action("skid", 0.07, SKID_CLIP_RATE):
+				_skid_t = 0.0
+				_skid_heading = want
+				target_speed = 0.0
+				turn_rate = 0.0
+			elif absf(diff) > 1.75 and _speed > 2.0:
 				target_speed = 0.0
 				turn_rate *= 0.35
 			_heading += clampf(diff, -turn_rate * delta, turn_rate * delta)
-		var rate := ACCEL_WALK if _speed < WALK_SPEED else ACCEL_SPRINT
+		var rate := ACCEL_WALK if _speed < RUN_SPEED else ACCEL_SPRINT
+		# Setting off from a stand builds speed over a real first step.
+		if target_speed <= WALK_SPEED + 0.3:
+			rate = minf(rate, START_ACCEL_WALK + _speed * 1.5)
+		elif _speed < 2.0:
+			rate = lerpf(START_ACCEL_RUN, ACCEL_WALK, clampf(_speed / 2.0, 0.0, 1.0))
 		if _speed > target_speed:
 			rate = PIVOT_DECEL if target_speed <= 0.01 else DECEL
+			if _skid_t >= 0.0:
+				rate = SKID_DECEL # dug-in heel: ~0.3 s from a sprint
 		_speed = move_toward(_speed, target_speed, rate * delta)
+		_stop_armed = false
+		# Moving off during a standing landing's absorb: step out of it rather
+		# than sliding the planted feet.
+		if _visual != null and _visual.current_clip() == "land" and not _land_running and _speed > 1.0:
+			_visual.cancel_action()
+		if _visual != null and _visual.current_clip() == "stop":
+			_visual.cancel_action()
 	else:
-		_speed = move_toward(_speed, 0.0, DECEL * delta)
+		# Releasing the stick from a run plants a braking step (stop clip)
+		# and brakes hard enough that the planted foot does not skate.
+		if _speed > 2.8 and _speed < 4.2 and is_on_floor() and not aiming and not _stop_armed and _visual != null and _visual.loaded:
+			_stop_armed = _visual.play_action("stop", 0.1)
+		_speed = move_toward(_speed, 0.0, (STOP_DECEL if _stop_armed or _speed > 4.2 or _skid_t >= 0.0 else DECEL) * delta)
+	_update_skid(delta, basis_dir.length() > 0.05)
 	if delta > 0.0:
 		_heading_rate = lerpf(_heading_rate, wrapf(_heading - prev_heading, -PI, PI) / delta, clampf(delta * 10.0, 0.0, 1.0))
 	horizontal = Vector3(-sin(_heading), 0.0, -cos(_heading)) * _speed
@@ -371,8 +466,25 @@ func _physics_process(delta: float) -> void:
 		_fall_speed = maxf(_fall_speed, -velocity.y)
 	else:
 		velocity.y = -0.5
-		if Input.is_action_just_pressed("jump"):
-			velocity.y = JUMP_VELOCITY
+		if _jump_windup >= 0.0:
+			# Standing jump: a short crouch (jump_start clip) then take-off.
+			_jump_windup -= delta
+			if _jump_windup < 0.0:
+				velocity.y = _jump_speed()
+		elif Input.is_action_just_pressed("jump"):
+			if _speed < 1.0 and _visual != null and _visual.loaded and _visual.play_action("jump_start", 0.06):
+				_jump_windup = JUMP_WINDUP
+			else:
+				velocity.y = _jump_speed()
+	if is_on_floor() and _skid_t < 0.0:
+		var steered := _avoid.steer(self, velocity, delta)
+		velocity.x = steered.x
+		velocity.z = steered.z
+		# A real detour turns the body onto the new line (not a crab-walk).
+		if not aiming and Vector2(steered.x, steered.z).length() > 0.5:
+			var new_h := atan2(-steered.x, -steered.z)
+			if absf(wrapf(new_h - _heading, -PI, PI)) > 0.12:
+				_heading = lerp_angle(_heading, new_h, clampf(delta * 6.0, 0.0, 1.0))
 	if has_meta("_qa_motion_probe"):
 		get_meta("_qa_motion_state")["requested"] = velocity
 	move_and_slide()
@@ -388,18 +500,46 @@ func _physics_process(delta: float) -> void:
 		var aim_dir := -camera.global_transform.basis.z
 		rotation.y = lerp_angle(rotation.y, atan2(-aim_dir.x, -aim_dir.z), clampf(delta * 12.0, 0.0, 1.0))
 		_heading = rotation.y if _speed < 0.25 else _heading
+	elif _skid_t >= 0.0:
+		# Skidding: the feet slide along the old line while the hips swing
+		# round over the dug-in heel toward the new direction.
+		if _skid_t > SKID_SWING_DELAY:
+			rotation.y = rotate_toward(rotation.y, _skid_heading, SKID_SWING_RATE * delta)
 	elif _speed > 0.05 or basis_dir.length() > 0.05:
-		rotation.y = lerp_angle(rotation.y, _heading, clampf(delta * 16.0, 0.0, 1.0))
+		var face := lerp_angle(rotation.y, _heading, clampf(delta * (26.0 if _pivot_t > 0.0 else 16.0), 0.0, 1.0))
+		rotation.y = rotate_toward(rotation.y, face, FACE_MAX_RATE * delta)
 	else:
 		_heading = rotation.y
 	arm.rotation.y = yaw - rotation.y
 	arm.rotation.x = pitch
 	_update_body_motion(delta, sprinting)
 	_update_camera_follow(delta, sprinting)
+	_avoid.hide_near_camera(camera, global_position + Vector3.UP * 1.2)
 	_animate(delta, horizontal.length(), sprinting)
 	var actor := controlled_actor()
 	Game.player_position = actor.global_position
 	Game.player_rotation = yaw
+
+## Take-off speed: a human hop on open ground; facing a kerb, planter, bench
+## or low wall (0.35-1.25 m) the take-off scales up just enough to clear its
+## top (a vault), so the lower jump never traps the player.
+func _jump_speed() -> float:
+	var space := get_world_3d().direct_space_state
+	var fwd := -global_transform.basis.z
+	if _speed > 0.25:
+		fwd = Vector3(-sin(_heading), 0.0, -cos(_heading))
+	var top := 0.0
+	for reach: float in [0.55, 0.85]:
+		var from := global_position + fwd * reach + Vector3.UP * 1.45
+		var q := PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 1.35)
+		q.exclude = [get_rid()]
+		var hit := space.intersect_ray(q)
+		if not hit.is_empty():
+			var hit_pos: Vector3 = hit["position"]
+			top = maxf(top, hit_pos.y - global_position.y)
+	if top < 0.35 or top > 1.25:
+		return JUMP_VELOCITY
+	return maxf(JUMP_VELOCITY, sqrt(2.0 * 24.0 * (top + 0.2)))
 
 ## Weight cues: forward lean with acceleration and sprint, a damped rock when
 ## stopping, roll into turns, a knee dip on landing and head look toward the
@@ -409,25 +549,57 @@ func _update_body_motion(delta: float, sprinting: bool) -> void:
 		return
 	var accel := (_speed - _prev_speed) / delta
 	_prev_speed = _speed
-	var pitch_target := clampf(_speed / SPRINT_SPEED, 0.0, 1.0) * (0.17 if sprinting else 0.08)
-	pitch_target += clampf(absf(accel) * 0.014, 0.0, 0.16)
+	# The v2 run/sprint clips carry their own trunk lean; keep a light speed
+	# lean plus the acceleration lean here.
+	var pitch_target := clampf(_speed / SPRINT_SPEED, 0.0, 1.0) * ((0.04 if sprinting else 0.02) if _visual.gait_v2 else (0.17 if sprinting else 0.08))
+	if _skid_t >= 0.0:
+		pitch_target = -0.02 # the clip already sits back over the heel; keep hands low
+	else:
+		# Lean into a start, rock back into a stop.
+		pitch_target += clampf(accel * 0.016, -0.08, 0.16)
 	_lean_pitch_vel += ((pitch_target - _lean_pitch) * 110.0 - _lean_pitch_vel * 13.0) * delta
 	_lean_pitch += _lean_pitch_vel * delta
-	var roll_target := clampf(_heading_rate * _speed * 0.045, -0.32, 0.32)
+	var roll_target := clampf(_heading_rate * _speed * 0.045, -0.32, 0.32) - _avoid.brush * 0.10
+	if _pivot_t > 0.0 or _skid_t >= 0.0:
+		# Pivot out of a skid: the hips come round over the feet, not a
+		# banked lunge (critic r2: the drive-out read as a kneel).
+		roll_target = clampf(roll_target, -0.06, 0.06)
 	if not is_on_floor():
 		roll_target = 0.0
 	_lean_roll = lerpf(_lean_roll, roll_target, clampf(delta * 7.0, 0.0, 1.0))
 	var on_floor := is_on_floor()
 	if on_floor and not _was_on_floor:
 		_land_dip_vel -= clampf(_fall_speed * 0.05, 0.05, 0.6)
+		# Weighted landing: a knee-bend absorb clip after a real jump/fall;
+		# at running speed the procedural dip carries it into the stride.
+		if _fall_speed > 3.0 and _airborne_time > 0.25:
+			_land_running = _speed >= 0.8
+			if not _land_running:
+				_visual.play_action("land", 0.05)
+			# integ-P seam (locomotion-P2: feet slid ~3.5 m/s under the planted
+			# 'land' crouch): at jog/sprint speed the stride simply continues and
+			# the procedural knee dip carries the impact; only a slow landing
+			# plays the fast knee-absorb clip.
+			elif _speed >= 2.2:
+				_speed *= 0.9
+				_land_dip_vel -= 0.38
+			# Slow running landing: a fast knee-absorb (land clip at 2x, ~0.21 s)
+			# that bleeds speed, then the run picks up again.
+			elif _visual.play_action("land", 0.04, 2.0):
+				_speed *= 0.72
+				_land_dip_vel -= 0.25
 		_fall_speed = 0.0
+	_airborne_time = 0.0 if on_floor else _airborne_time + delta
 	_was_on_floor = on_floor
 	_land_dip_vel += (-_land_dip * 160.0 - _land_dip_vel * 16.0) * delta
 	_land_dip = clampf(_land_dip + _land_dip_vel * delta, -0.16, 0.05)
 	_visual.rotation = Vector3(-_lean_pitch * 0.35, 0.0, _lean_roll * 0.55)
 	_visual.position.y = _land_dip
 	var rel := wrapf(yaw - rotation.y, -PI, PI)
-	var look_target := clampf(rel, -1.05, 1.05) if absf(rel) < 2.0 and not aiming else 0.0
+	# Locomotion-Q (critic: head ~60 deg off the line of travel): the head
+	# glances toward the camera's view only a little, less the faster he goes.
+	var look_lim := lerpf(0.55, 0.22, clampf(_speed / RUN_SPEED, 0.0, 1.0))
+	var look_target := clampf(rel, -look_lim, look_lim) if absf(rel) < 1.6 and not aiming else 0.0
 	_look_yaw = lerpf(_look_yaw, look_target, clampf(delta * 5.0, 0.0, 1.0))
 	_look_pitch = lerpf(_look_pitch, clampf(-pitch * 0.55, -0.35, 0.45), clampf(delta * 5.0, 0.0, 1.0))
 	_visual.set_body_motion(_lean_pitch * 0.65, _lean_roll * 0.45, _look_yaw, _look_pitch)
@@ -446,17 +618,86 @@ func _update_camera_follow(delta: float, sprinting: bool) -> void:
 	if lag.length() > 0.7:
 		lag = lag.normalized() * 0.7
 		_cam_follow = global_position + lag
-	arm.position = ARM_BASE + global_transform.basis.inverse() * lag
-	var sprint_amount := clampf((_speed - WALK_SPEED) / (SPRINT_SPEED - WALK_SPEED), 0.0, 1.0) if sprinting else 0.0
+	# Shoulder offset lives in the camera's own yaw frame (not the body's), so
+	# a body pivot never swings the camera to the other shoulder. integ-Q: the
+	# combat aim framing offset (PlayerCombat.arm_offset) rides on the same
+	# frame and follows a swapped (left) shoulder.
+	var pc := get_node_or_null("PlayerCombat")
+	var aim_off: Vector3 = pc.get("arm_offset") if pc != null else Vector3.ZERO
+	var sx := _safe_shoulder_x(delta)
+	var cam_off := Basis(Vector3.UP, yaw) * Vector3(sx + signf(sx) * aim_off.x, aim_off.y, ARM_BASE.z + aim_off.z)
+	arm.position = global_transform.basis.inverse() * (cam_off + lag) + Vector3(0.0, ARM_BASE.y, 0.0)
+	var sprint_amount := clampf((_speed - RUN_SPEED) / (SPRINT_SPEED - RUN_SPEED), 0.0, 1.0) if sprinting else 0.0
 	camera.fov = lerpf(camera.fov, 58.0 + 5.0 * sprint_amount, clampf(delta * 3.0, 0.0, 1.0))
 	_sprint_cam = sprint_amount
 
+## Locomotion-Q (critic: the aim camera jams behind arcade pillars and shop
+## walls): the over-the-shoulder pivot is probed from the head before the
+## spring arm casts back from it. A pillar or wall at the right shoulder pulls
+## the pivot in; when the right side is boxed in and the left is open (five-foot
+## way colonnade), the camera swaps to the left shoulder.
+func _safe_shoulder_x(delta: float) -> float:
+	var space := get_world_3d().direct_space_state
+	var head := global_position + Vector3.UP * ARM_BASE.y
+	var right := Basis(Vector3.UP, yaw).x
+	var reach_r := _shoulder_room(space, head, right)
+	var want := ARM_BASE.x
+	if reach_r < ARM_BASE.x:
+		var reach_l := _shoulder_room(space, head, -right)
+		if reach_r < 0.4 and reach_l > 0.7:
+			want = -minf(reach_l, ARM_BASE.x)
+		else:
+			want = maxf(reach_r, 0.12)
+	elif _shoulder_x < 0.0:
+		# Hold the left shoulder until the right is clearly open again.
+		var reach_l2 := _shoulder_room(space, head, -right)
+		if reach_l2 > 0.5 and reach_r < ARM_BASE.x + 0.3:
+			want = -minf(reach_l2, ARM_BASE.x)
+	var k := clampf(delta * 7.0, 0.0, 1.0)
+	_shoulder_x = lerpf(_shoulder_x, want, k)
+	return _shoulder_x
+
+func _shoulder_room(space: PhysicsDirectSpaceState3D, head: Vector3, dir: Vector3) -> float:
+	var q := PhysicsRayQueryParameters3D.create(head, head + dir * (ARM_BASE.x + 0.3), 1 | 8)
+	q.exclude = [get_rid()]
+	var hit := space.intersect_ray(q)
+	if hit.is_empty():
+		return ARM_BASE.x + 0.3
+	return maxf(head.distance_to(hit["position"]) - 0.3, 0.0)
+
+## Sprint/run 180: plant and skid over the dug-in heel, then pivot on the
+## spot and drive out the other way.
+func _update_skid(delta: float, stick_held: bool) -> void:
+	_pivot_t = maxf(0.0, _pivot_t - delta)
+	if _skid_t < 0.0:
+		return
+	_skid_t += delta
+	if _visual != null:
+		_visual.skidding = true
+	if _speed < 1.0 or _skid_t > 0.45 or not is_on_floor():
+		_skid_t = -1.0
+		if _visual != null:
+			_visual.skidding = false
+			_visual.cancel_action()
+		if stick_held:
+			# Drive out from where the hips already are: the heading keeps
+			# turning (normal turn rate) through the first run steps, so the
+			# facing never jumps. No crouch/jump clip -- straight into the run.
+			_heading = rotation.y
+			_pivot_t = 0.3
+			# Push off at a jog so the first steps are the run cycle (no
+			# walk-shuffle between the skid and the drive-out).
+			_speed = 2.4
+
 func _animate(delta: float, speed: float, sprinting: bool) -> void:
 	if _visual != null and _visual.loaded:
+		_visual.set_air_velocity(velocity.y if not is_on_floor() else 99.0, JUMP_VELOCITY)
+		_visual.set_travel_direction(wrapf(_heading - rotation.y, -PI, PI))
 		_visual.set_motion(speed, aiming, is_on_floor(), _reloading)
 		_visual.set_aim_pitch(pitch)
-		_walk_phase += delta * speed * 1.9
-		var contact := int(_walk_phase / PI)
+		# Footsteps on the authored heel strikes (cycle phase 0 and 0.5).
+		var gait := _visual.gait_phase()
+		var contact := int(gait * 2.0) if gait >= 0.0 else _last_stride_phase
 		if contact != _last_stride_phase and speed > .5 and is_on_floor():
 			_last_stride_phase = contact
 			Sfx.play_at("footstep", global_position, -18.0, _rng.randf_range(.9, 1.1))
@@ -495,11 +736,11 @@ func _fire() -> void:
 		return
 	if Game.current_mag() <= 0:
 		Events.notify.emit("Out of ammo. Press R to reload.", "warn")
+		Sfx.play_at("dry_fire", global_position + Vector3.UP * 1.2, -8.0)
 		_fire_cooldown = 0.35
 		return
 	Game.consume_ammo()
 	_fire_cooldown = 0.16 if Game.carried_weapon == "pistol" else 0.085
-	_muzzle_flash.visible = true
 	_muzzle_flash.position = _weapon_mesh.position + Vector3(0.0, 0.02, -0.35 if Game.carried_weapon == "smg" else -0.22)
 	if _visual != null and _visual.loaded:
 		_muzzle_flash.global_position = _visual.weapon_muzzle_position()
@@ -526,19 +767,25 @@ func _fire() -> void:
 	if not hit.is_empty():
 		point = hit["position"]
 		hit_something = true
+	# Combat piece: muzzle flash/light/smoke, tracer, impact, decal, brass and
+	# recoil (CombatFx + PlayerCombat). Visuals before damage so a lethal hit
+	# still shows its impact on the falling body.
+	CombatFx.get_fx(get_tree()).shot(muzzle, (point - muzzle).normalized(), point, hit_something,
+		hit.get("normal", -dir), hit.get("collider"), Game.carried_weapon, true)
+	var combat := get_node_or_null("PlayerCombat")
+	if combat != null:
+		combat.on_shot(Game.carried_weapon)
+	if hit_something:
 		var collider = hit["collider"]
 		if collider and collider.has_method("take_damage"):
 			var dmg := 34.0 if Game.carried_weapon == "pistol" else 22.0
 			collider.take_damage(dmg, global_position, true)
 			Events.hit_landed.emit(collider, dmg, point, true)
-			hit_something = true
-		_spawn_impact(point, -dir)
 	Events.shot_fired.emit(origin, dir, Game.carried_weapon)
-	Sfx.play_at("gunshot", _muzzle_flash.global_position, -4.0, 1.0 if Game.carried_weapon == "pistol" else 0.88)
+	Sfx.play_at("gun_pistol" if Game.carried_weapon == "pistol" else "gun_smg", muzzle, -3.0, 1.0)
 	crosshair_hit.emit(point, hit_something)
 	# make noise: gunfire draws witnesses and police (LAW-02)
 	Game.add_heat(2.0)
-	get_tree().create_timer(0.05).timeout.connect(func(): _muzzle_flash.visible = false)
 
 func _spawn_impact(point: Vector3, normal: Vector3) -> void:
 	var mesh := MeshInstance3D.new()
@@ -612,7 +859,9 @@ func _process(_delta: float) -> void:
 	if Game.simulation_paused:
 		return
 	if current_vehicle == null and not busy:
-		aiming = Input.is_action_pressed("aim")
+		# Hip fire keeps the gun raised for a moment (combat piece).
+		var combat := get_node_or_null("PlayerCombat")
+		aiming = Input.is_action_pressed("aim") or (combat != null and float(combat.hold) > 0.0)
 	var fire_pressed := _consume_press("fire")
 	if fire_pressed or (Game.carried_weapon == "smg" and Input.is_action_pressed("fire")):
 		_fire()
@@ -654,6 +903,8 @@ func _update_prompt() -> void:
 		return
 	var target := _interaction_target()
 	var prompt := ""
+	if CombatFx.in_combat():
+		target = null # combat piece: no interaction prompts mid-firefight
 	if target != null:
 		if target is Helicopter:
 			prompt="[E] Board helicopter"
@@ -668,7 +919,12 @@ func take_damage(amount: float, from_position: Vector3, _by_player: bool = false
 		return
 	Game.damage_player(amount)
 	_damage_flash = 0.3
-	if _visual != null and _visual.loaded and Game.health > 0:
+	# integ-P seam: while aiming (or the gun is still raised from a shot) a hit
+	# must not drop the gun arm via the full-body 'hit' clip; the damage flash
+	# and camera shake carry the feedback instead.
+	var pc := get_node_or_null("PlayerCombat")
+	var gun_up := aiming or (pc != null and float(pc.get("hold")) > 0.0)
+	if _visual != null and _visual.loaded and Game.health > 0 and not gun_up:
 		_visual.play_hit()
 
 func _on_health_changed(value: float, _max_value: float) -> void:
@@ -683,13 +939,14 @@ func respawn_at(pos: Vector3, rot: float) -> void:
 			vehicle.force_exit()
 	current_vehicle = null
 	collision_layer = 2
-	collision_mask = 1 | 4 | 8
+	collision_mask = COLLIDE_MASK
 	global_position = pos
 	yaw = rot
 	rotation.y = rot
 	velocity = Vector3.ZERO
 	_speed = 0.0
 	_heading = rot
+	_skid_t = -1.0
 	_cam_ready = false
 	visible = true
 	alive = true

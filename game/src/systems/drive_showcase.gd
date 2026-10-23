@@ -51,6 +51,8 @@ func _grab() -> void:
 	if img == null: return
 	_frame += 1
 	img.save_jpg("%s/frames/f%05d.jpg" % [out_dir, _frame], 0.9)
+	if _jsonl:
+		_jsonl.store_line(JSON.stringify({"file": "f%05d.jpg" % _frame, "seconds": _elapsed(), "phase": _phase, "kmh": snappedf(car.speed_kmh(), 0.1) if car else 0.0}))
 
 func _still(label: String) -> void:
 	await RenderingServer.frame_post_draw
@@ -58,7 +60,7 @@ func _still(label: String) -> void:
 	if img != null:
 		img.save_jpg("%s/%s.jpg" % [out_dir, label], 0.95)  # C2: PNG encode hitched 250-300 ms
 		var fx = car.fx
-		_log("still %s speed=%.1f km/h roll=%.3f pitch=%.3f fov=%.1f skids=%d sparks=%d" % [label, car.speed_kmh(), fx.last_roll, fx.last_pitch, car._camera.fov, fx.skid_marks_laid, fx.sparks_fired])
+		_log("still %s speed=%.1f km/h roll=%.3f pitch=%.3f fov=%.1f skids=%d sparks=%d yaw_rate=%.2f slip=%.2f" % [label, car.speed_kmh(), fx.last_roll, fx.last_pitch, car._camera.fov, fx.skid_marks_laid, fx.sparks_fired, car._yaw_rate, car.drift_amount()])
 
 func _release() -> void:
 	for a in ["move_forward", "move_back", "move_left", "move_right", "jump"]:
@@ -76,40 +78,149 @@ func _steer_to(target: Vector3, gain: float = 2.2) -> float:
 		Input.action_press("move_left" if angle > 0.0 else "move_right", clampf(absf(angle) * gain, 0.12, 1.0))
 	return off.length()
 
-func _lane_point(a: Vector3, b: Vector3, along: float) -> Vector3:
+func _lane_point(a: Vector3, b: Vector3, along: float, side: float = 1.0) -> Vector3:
 	var f := (b - a)
 	f.y = 0.0
 	f = f.normalized()
 	var left := Vector3.UP.cross(f).normalized()
-	return a + f * along + left * 3.4
+	return a + f * along + left * 3.4 * side
+
+## Which carriageway the car is on relative to the a->b centre line (+1 left).
+func _side_of(a: Vector3, b: Vector3) -> float:
+	var f := (b - a)
+	f.y = 0.0
+	var left := Vector3.UP.cross(f.normalized())
+	return 1.0 if (car.global_position - a).dot(left) >= 0.0 else -1.0
+
+var _jsonl: FileAccess
+
+func _node(row: int, col: int) -> Vector3:
+	return world.traffic_nodes[row * 5 + col]
+
+## Drive along a lane from `a` toward `b`, holding a speed, until `stop_before`
+## metres before `b`'s junction centre.
+func _leg(a: Vector3, b: Vector3, kmh: float, stop_before: float, timeout: float) -> void:
+	var f := (b - a)
+	f.y = 0.0
+	f = f.normalized()
+	var t_end := _elapsed() + timeout
+	var side := _side_of(a, b)
+	while _elapsed() < t_end:
+		await get_tree().physics_frame
+		var along := (car.global_position - a).dot(f)
+		_steer_to(_lane_point(a, b, along + 14.0, side))
+		Input.action_release("move_forward")
+		Input.action_release("move_back")
+		if car.speed_kmh() < kmh: Input.action_press("move_forward")
+		elif car.speed_kmh() > kmh + 8.0: Input.action_press("move_back")
+		await _unstick(f, a, b, side)
+		if (b - car.global_position).dot(f) < stop_before: break
+
+## Take the junction at `n` from the a->n lane into the n->c lane.
+func _corner(a: Vector3, n: Vector3, c: Vector3, entry_kmh: float, handbrake: bool, still_label: String) -> void:
+	var f_in := (n - a)
+	f_in.y = 0.0
+	f_in = f_in.normalized()
+	var f_out := (c - n)
+	f_out.y = 0.0
+	f_out = f_out.normalized()
+	var apex := _lane_point(n, c, 2.0) - f_in * 2.0
+	var t_end := _elapsed() + 8.0
+	var turned := false
+	var still_done := false
+	var hb_t := 0.0
+	while _elapsed() < t_end:
+		await get_tree().physics_frame
+		var heading := -car.global_transform.basis.z
+		heading.y = 0.0
+		heading = heading.normalized()
+		var d_apex := car.global_position.distance_to(apex)
+		if not turned and (d_apex < (17.0 if handbrake else 13.0) or (car.global_position - n).dot(f_in) > -4.0):
+			turned = true
+		Input.action_release("move_forward")
+		Input.action_release("move_back")
+		if not turned:
+			_steer_to(_lane_point(a, n, (car.global_position - a).dot(f_in) + 12.0))
+			if car.speed_kmh() > entry_kmh + 4.0: Input.action_press("move_back")
+			else: Input.action_press("move_forward")
+			continue
+		if handbrake and hb_t < 1.1 and heading.dot(f_out) < 0.93:
+			hb_t += get_physics_process_delta_time()
+			Input.action_press("jump")
+			var side := f_in.cross(f_out).y
+			Input.action_release("move_left")
+			Input.action_release("move_right")
+			Input.action_press("move_left" if side > 0.0 else "move_right", 1.0)
+			if hb_t > 0.35: Input.action_press("move_forward", 0.6)
+		else:
+			Input.action_release("jump")
+			# driving-q: a rolling lookahead (not a fixed point 34 m out) pulls
+			# a wide handbrake exit back into the lane before the median nose.
+			var along_out := (car.global_position - n).dot(f_out)
+			# rQ2: the grip corner aimed at a fixed point 34 m out and settled on the
+			# right-hand carriageway (wrong side for Singapore); it now uses the same
+			# rolling lookahead into the LEFT lane as the handbrake exit.
+			_steer_to(_lane_point(n, c, maxf(along_out + 11.0, 9.0)), 3.2)
+			# rQ2: full throttle through the grip corner swung the car wide onto
+			# the right-hand carriageway; coast until the nose is lined up.
+			if handbrake or heading.dot(f_out) > 0.9 or car.speed_kmh() < entry_kmh:
+				Input.action_press("move_forward")
+			if await _unstick(f_out):
+				continue
+		if not still_done and heading.dot(f_out) > 0.55 and heading.dot(f_out) < 0.9:
+			still_done = true
+			await _still(still_label)
+		if heading.dot(f_out) > 0.97 and (car.global_position - n).dot(f_out) > 16.0: break
+	Input.action_release("jump")
+
+## driving-q: a scripted car pinned against a median nose or kerb (throttle
+## held, no speed for 0.7 s) backs out for a second, steering away, and then
+## carries on, so the footage reaches the collision phases.
+var _stuck_t := 0.0
+func _unstick(f: Vector3, a: Vector3 = Vector3.INF, b: Vector3 = Vector3.INF, side: float = 1.0) -> bool:
+	if not Input.is_action_pressed("move_forward") or car.speed_kmh() > 3.0:
+		_stuck_t = 0.0
+		return false
+	_stuck_t += get_physics_process_delta_time()
+	if _stuck_t < 0.7: return false
+	_stuck_t = 0.0
+	_log("unstick at %s" % [car.global_position])
+	var target := car.global_position + f * 12.0
+	if a != Vector3.INF: target = _lane_point(a, b, (car.global_position - a).dot(f) + 12.0, side)
+	var fwd := -car.global_transform.basis.z
+	var off := target - car.global_position
+	var steer_left := (fwd.z * off.x - fwd.x * off.z) > 0.0
+	Input.action_release("move_forward")
+	Input.action_release("move_left")
+	Input.action_release("move_right")
+	Input.action_press("move_back")
+	# Reversing: opposite lock swings the nose toward the target.
+	Input.action_press("move_right" if steer_left else "move_left", 1.0)
+	var t_end := _elapsed() + 1.1
+	while _elapsed() < t_end:
+		await get_tree().physics_frame
+	Input.action_release("move_back")
+	Input.action_release("move_left")
+	Input.action_release("move_right")
+	return true
 
 func _run() -> void:
 	_t0 = Time.get_ticks_usec()
 	await get_tree().create_timer(1.5).timeout
 	Game.simulation_paused = false
-	# Pick the route's own boulevard: package -> aviation compound, which has a
-	# long straight and a right-angle junction.
-	var from := _nearest_node(world.locations["package"])
-	var to := _nearest_node(world.locations["helipad_primary"])
-	var path := _grid_path(from, to)
-	if path.size() < 3:
-		path = [0, 1, 6]
-	# The junction where the path turns: n0 -> n1 straight, n1 -> n2 turned.
-	var k := 1
-	for i in range(1, path.size() - 1):
-		var da: Vector3 = (world.traffic_nodes[path[i]] - world.traffic_nodes[path[i - 1]]).normalized()
-		var db: Vector3 = (world.traffic_nodes[path[i + 1]] - world.traffic_nodes[path[i]]).normalized()
-		if da.dot(db) < 0.5:
-			k = i
-			break
-	var n0: Vector3 = world.traffic_nodes[path[k - 1]]
-	var n1: Vector3 = world.traffic_nodes[path[k]]
-	var n2: Vector3 = world.traffic_nodes[path[k + 1]]
-	_log("path %s nodes %s %s %s" % [path, n0, n1, n2])
+	# Zig-zag through two junctions near the package: (r,c)->(r,c+1)->(r+1,c+1)->(r+1,c+2).
+	var pk := _nearest_node(world.locations["package"])
+	var r := clampi(pk / 5, 0, (world.traffic_nodes.size() / 5) - 2)
+	var c := clampi(pk % 5, 0, 2)
+	var n0 := _node(r, c)
+	var n1 := _node(r, c + 1)
+	var n2 := _node(r + 1, c + 1)
+	var n3 := _node(r + 1, c + 2)
+	_log("nodes %s %s %s %s" % [n0, n1, n2, n3])
 	car = null
-	for c in traffic.cars:
-		if c is Car and not c.has_ai and not c.disabled:
-			car = c
+	for cc in traffic.cars:
+		if cc is Car and not cc.has_ai and not cc.disabled and cc.kind == "sedan":
+			car = cc
 			break
 	if car == null:
 		car = traffic.cars[0]
@@ -117,157 +228,212 @@ func _run() -> void:
 	car.occupied_by_npc = false
 	car.max_speed = Car.MAX_SPEED
 	car.accel = Car.ACCEL
-	var start := _lane_point(n0, n1, 18.0)
-	car.global_position = start + Vector3(0.0, 0.3, 0.0)
 	var f01 := (n1 - n0).normalized()
+	car.global_position = _lane_point(n0, n1, 22.0) + Vector3(0.0, 0.3, 0.0)
 	car.rotation = Vector3(0.0, atan2(-f01.x, -f01.z), 0.0)
 	car.velocity = Vector3.ZERO
 	player.global_position = car.global_position + car.global_transform.basis.x * 2.0
 	await get_tree().create_timer(0.6).timeout
+	_jsonl = FileAccess.open(out_dir + "/frames/frames.jsonl", FileAccess.WRITE)
+	_recording = true
 	_phase = "enter"
 	car.interact(player)
-	await get_tree().create_timer(1.2).timeout
-	_recording = true
+	await get_tree().create_timer(1.0).timeout
 	_log("recording start")
-	# 1. Launch + accelerate down the boulevard.
-	_phase = "accelerate"
-	var corner := _lane_point(n1, n2, -2.0)
+	# 1. Launch down the first street.
+	_phase = "launch"
 	Input.action_press("move_forward")
-	var stills := {}
-	var t_end := _elapsed() + 14.0
-	while _elapsed() < t_end:
+	var t_launch := _elapsed() + 2.2
+	var launched := false
+	while _elapsed() < t_launch:
 		await get_tree().physics_frame
 		_steer_to(_lane_point(n0, n1, (car.global_position - n0).dot(f01) + 14.0))
-		var to_corner := car.global_position.distance_to(corner)
-		if not stills.has("a") and car.speed_kmh() > 45.0:
-			stills["a"] = true
-			await _still("01_launch_accelerating")
-		if to_corner < 34.0: break
-	# 2. Hard cornering into the junction at speed.
-	_phase = "corner"
-	_log("corner entry speed %.1f km/h" % car.speed_kmh())
-	var exit := _lane_point(n1, n2, 40.0)
-	t_end = _elapsed() + 6.0
-	var turned := false
-	while _elapsed() < t_end:
-		await get_tree().physics_frame
-		var d_corner := car.global_position.distance_to(corner)
-		var target := corner if (d_corner > 16.0 and not turned) else exit
-		if d_corner < 16.0: turned = true
-		_steer_to(target, 3.5)
-		# Late, hard brake into the junction, then back on the throttle.
-		if not turned and car.speed_kmh() > 62.0:
-			Input.action_release("move_forward")
-			Input.action_press("move_back")
-		else:
-			Input.action_release("move_back")
-			Input.action_press("move_forward")
-		if turned and not stills.has("c"):
-			if car.speed_kmh() > 55.0: Input.action_press("jump")
-			else: Input.action_release("jump")
-		if turned and car.global_position.distance_to(_lane_point(n1, n2, 6.0)) < 9.0 and not stills.has("c"):
-			stills["c"] = true
-			await _still("02_hard_cornering")
-		var f12 := (n2 - n1).normalized()
-		if turned and (-car.global_transform.basis.z).dot(f12) > 0.97 and (car.global_position - n1).dot(f12) > 22.0: break
-	Input.action_release("jump")
-	await _still("03_corner_exit_marks")
-	# 3. Accelerate down the cross street.
-	_phase = "accelerate2"
-	var f12b := (n2 - n1).normalized()
-	t_end = _elapsed() + 6.0
-	while _elapsed() < t_end:
-		await get_tree().physics_frame
-		_steer_to(_lane_point(n1, n2, (car.global_position - n1).dot(f12b) + 16.0))
-		if car.speed_kmh() > 92.0: break
-	await _still("04_top_speed")
-	# 4. Hard braking to a stop.
+		if not launched and car.speed_kmh() > 35.0:
+			launched = true
+			await _still("01_launch")
+	await _leg(n0, n1, 84.0, 46.0, 10.0)
+	await _still("02_at_speed")
+	# 2. Junction one: brake late, roll into the corner on grip.
+	_phase = "corner1"
+	await _corner(n0, n1, n2, 40.0, false, "03_corner_grip")
+	# 3. Accelerate, then a handbrake turn at junction two.
+	_phase = "straight2"
+	await _leg(n1, n2, 66.0, 34.0, 10.0)
+	_phase = "handbrake"
+	await _corner(n1, n2, n3, 55.0, true, "04_handbrake_turn")
+	await _still("05_handbrake_exit")
+	# 4. Accelerate and brake hard to a stop.
 	_phase = "brake"
+	var f23 := (n3 - n2).normalized()
+	await _leg(n2, n3, 80.0, -1e9, 4.5)
 	Input.action_release("move_forward")
 	Input.action_press("move_back")
 	var braked := false
-	t_end = _elapsed() + 4.0
+	var t_end := _elapsed() + 4.0
+	var bside := _side_of(n2, n3)
 	while _elapsed() < t_end:
 		await get_tree().physics_frame
-		_steer_to(_lane_point(n1, n2, (car.global_position - n1).dot(f12b) + 16.0))
-		if not braked and car.speed_kmh() < 70.0:
+		_steer_to(_lane_point(n2, n3, (car.global_position - n2).dot(f23) + 14.0, bside))
+		if not braked and car.speed_kmh() < 60.0:
 			braked = true
-			await _still("05_hard_braking")
+			await _still("06_hard_braking")
 		if car.forward_speed() < 0.4: break
 	Input.action_release("move_back")
-	await get_tree().create_timer(0.8).timeout
-	await _still("06_stopped_settle")
-	# 5. Collision: a stationary car in our lane 30 m ahead, hit at speed.
+	await get_tree().create_timer(0.7).timeout
+	await _still("07_stopped_settle")
+	# 5. Ram a parked car standing in the lane 34 m ahead.
 	_phase = "collision"
+	# A traffic car (prefer a coupe) is stopped and parked in the lane ahead.
 	var victim: Car = null
-	for c in traffic.cars:
-		if c != car and c is Car and not c.disabled and not c.has_ai:
-			victim = c
-			break
-	if victim == null:
-		for c in traffic.cars:
-			if c != car and c is Car and not c.disabled:
-				victim = c
-				break
+	var best := INF
+	for cc in traffic.cars:
+		if cc == car or not cc is Car or cc.disabled or cc.driver_is_player: continue
+		if cc.kind == "van" or cc.kind == "police": continue
+		var dd: float = (cc as Car).global_position.distance_to(car.global_position) + (0.0 if cc.kind == "coupe" else 400.0)
+		if dd < best:
+			best = dd
+			victim = cc
+	var victim_from := Vector3.ZERO
 	if victim != null:
 		victim.has_ai = false
 		victim.occupied_by_npc = false
-		var vp := _lane_point(n1, n2, (car.global_position - n1).dot(f12b) + 32.0)
+		var vp := car.global_position + f23 * 34.0
+		vp.y = car.global_position.y
 		victim.global_position = vp + Vector3(0.0, 0.3, 0.0)
-		victim.rotation = Vector3(0.0, atan2(-f12b.x, -f12b.z) + 0.35, 0.0)
+		victim.rotation = Vector3(0.0, atan2(-f23.x, -f23.z) + 0.3, 0.0)
 		victim.velocity = Vector3.ZERO
 		victim.visible = true
 		victim.set_physics_process(true)
+		await get_tree().create_timer(0.4).timeout
+		victim_from = victim.global_position
 		_log("victim %s at %s kind=%s" % [victim.name, victim.global_position, victim.kind])
 		Input.action_press("move_forward")
-		var sparks_before: int = car.fx.sparks_fired
 		var hit_time := -1.0
 		t_end = _elapsed() + 7.0
 		while _elapsed() < t_end:
 			await get_tree().physics_frame
-			_steer_to(victim.global_position, 2.0)
-			if Engine.get_physics_frames() % 20 == 0:
-				_log("ram: speed=%.1f dist=%.1f contacts=%d" % [car.speed_kmh(), car.global_position.distance_to(victim.global_position), car.get_slide_collision_count()])
-			if hit_time < 0.0 and car.fx.sparks_fired > sparks_before:
+			if hit_time < 0.0: _steer_to(victim.global_position, 2.0)
+			if hit_time < 0.0 and not car.last_impact.is_empty() and car.last_impact.get("car", false):
 				hit_time = _elapsed()
+				_log("ram impact %s" % [car.last_impact])
 				_release()
-				await get_tree().create_timer(0.12).timeout
-				await _still("07_collision_sparks")
-			if hit_time > 0.0 and _elapsed() - hit_time > 1.6: break
+				await _still("08_collision_impact")
+			if hit_time > 0.0 and _elapsed() - hit_time > 0.25 and _elapsed() - hit_time < 0.4:
+				await _still("09_collision_follow")
+			if hit_time > 0.0 and _elapsed() - hit_time > 2.0: break
 		_release()
-		await get_tree().create_timer(0.5).timeout
-		await _still("08_after_collision")
+		_log("victim moved %.2f m, speed now %.1f km/h, victim dents=%d debris=%d" % [victim.global_position.distance_to(victim_from), car.speed_kmh(), victim.damage.dent_count() if victim.damage else -1, car.damage.debris_spawned if car.damage else -1])
+		await _still("10_after_collision")
+	# 6. Into a wall: find the building line beside the lane and hit it at an angle.
+	_phase = "wall"
+	var left := Vector3.UP.cross(f23).normalized() * _side_of(n2, n3)
+	var wall_point := Vector3.INF
+	var space := car.get_world_3d().direct_space_state
+	car.last_impact = {}
+	var avoid := victim.global_position if victim != null else Vector3.INF
+	for ahead in [14.0, 20.0, 26.0, 32.0, 38.0, 44.0, 50.0, 56.0, 62.0]:
+		for sd in [1.0]:
+			if wall_point != Vector3.INF: break
+			for hgt in [1.2]:
+				var o: Vector3 = car.global_position + f23 * float(ahead) + Vector3.UP * float(hgt)
+				var q := PhysicsRayQueryParameters3D.create(o, o + left * float(sd) * 22.0)
+				q.collision_mask = 1
+				q.exclude = [car.get_rid()]
+				var hit := space.intersect_ray(q)
+				_log("wall ray ahead=%.0f side=%.0f h=%.1f hit=%s" % [ahead, sd, hgt, (str(hit["position"]) + " n=" + str(hit["normal"]) + " " + str(hit["collider"])) if not hit.is_empty() else "none"])
+				# The struck car must not sit on the line to the wall.
+				var clear := true
+				if avoid != Vector3.INF and not hit.is_empty():
+					var seg: Vector3 = hit["position"] - car.global_position
+					seg.y = 0.0
+					var rel := avoid - car.global_position
+					rel.y = 0.0
+					var tt := clampf(rel.dot(seg) / maxf(seg.length_squared(), 0.01), 0.0, 1.0)
+					clear = (rel - seg * tt).length() > 3.5
+				if not hit.is_empty() and absf((hit["normal"] as Vector3).y) < 0.5 and clear:
+					wall_point = hit["position"]
+					break
+		if wall_point != Vector3.INF: break
+	_log("wall point %s" % [wall_point])
+	if wall_point != Vector3.INF:
+		var impacts_before: int = car.fx.sparks_fired
+		Input.action_press("move_forward")
+		var wall_hit := -1.0
+		t_end = _elapsed() + 7.0
+		while _elapsed() < t_end:
+			await get_tree().physics_frame
+			if wall_hit < 0.0: _steer_to(wall_point, 2.4)
+			if wall_hit < 0.0 and not car.last_impact.is_empty() and not car.last_impact.get("car", true):
+				wall_hit = _elapsed()
+				_log("wall impact %s" % [car.last_impact])
+				_release()
+				await _still("11_wall_impact")
+			if wall_hit > 0.0 and _elapsed() - wall_hit > 1.8: break
+		_release()
+	await get_tree().create_timer(0.8).timeout
 	_recording = false
-	# Added review view (not a fixed comparison camera): a kerbside camera at
-	# the junction looking back over the cornering line, for the tyre marks.
+	# Added review views (not fixed comparison cameras).
 	var look_cam := Camera3D.new()
 	add_child(look_cam)
-	var f12c := (n2 - n1).normalized()
-	var side := Vector3.UP.cross(f12c).normalized()
-	# Aim at the centroid of the marks laid through the corner.
+	var fwd := -car.global_transform.basis.z
+	fwd.y = 0.0
+	fwd = fwd.normalized()
+	var side := Vector3.UP.cross(fwd).normalized()
+	look_cam.fov = 55.0
+	look_cam.current = true
+	look_cam.global_position = _clear_view(car, [fwd * 4.6 + side * 1.6, fwd * 4.6 - side * 1.6, fwd * 5.0, fwd * 3.6 + side * 3.0, fwd * 3.6 - side * 3.0, side * 4.6, -side * 4.6]) - Vector3.UP * 0.3
+	look_cam.look_at(car.global_position + fwd * 1.2 + Vector3.UP * 0.55, Vector3.UP)
+	await get_tree().create_timer(0.4).timeout
+	await _still("12_damage_front_quarter")
+	look_cam.global_position = _clear_view(car, [-fwd * 4.4 - side * 2.4, -fwd * 4.4 + side * 2.4, -side * 4.4, side * 4.4, -fwd * 5.0])
+	look_cam.look_at(car.global_position + Vector3.UP * 0.6, Vector3.UP)
+	await get_tree().create_timer(0.4).timeout
+	await _still("13_damage_rear_quarter")
+	if victim != null:
+		look_cam.global_position = victim.global_position + (victim_from - victim.global_position).normalized() * 6.0 + side * 3.0 + Vector3.UP * 2.0
+		look_cam.look_at(victim.global_position + Vector3.UP * 0.6, Vector3.UP)
+		await get_tree().create_timer(0.4).timeout
+		await _still("14_struck_car")
+	# Tyre marks through the handbrake junction, from a road-level camera.
 	var mm: MultiMesh = car.fx._skids.multimesh
 	var centre := Vector3.ZERO
 	var count := 0
-	for i in range(60, mini(200, mm.visible_instance_count)):
-		centre += mm.get_instance_transform(i).origin
-		count += 1
-	if count > 0: centre /= count
-	else: centre = n1 + f12c * 6.0
-	_log("skid centroid %s (car y %.2f) first=%s" % [centre, car.global_position.y, mm.get_instance_transform(70)])
-	look_cam.global_position = centre - f12c * 4.0 + side * 6.0 + Vector3(0.0, 7.5, 0.0)
+	for i in mm.visible_instance_count:
+		var o: Vector3 = mm.get_instance_transform(i).origin
+		if o.distance_to(n2) < 26.0:
+			centre += o
+			count += 1
+	centre = centre / count if count > 0 else n2
+	var f12 := (n2 - n1).normalized()
+	look_cam.global_position = n2 - f12 * 15.0 + Vector3.UP * 4.5
 	look_cam.look_at(centre, Vector3.UP)
 	look_cam.fov = 60.0
-	look_cam.current = true
-	await get_tree().create_timer(0.5).timeout
-	await _still("09_junction_tyre_marks")
+	await get_tree().create_timer(0.4).timeout
+	await _still("15_junction_tyre_marks")
 	await get_tree().create_timer(0.3).timeout
-	var dur := _elapsed()
-	_log("frames=%d done" % _frame)
+	_log("frames=%d done marks_near_junction=%d" % [_frame, count])
+	if _jsonl: _jsonl.close()
 	var f := FileAccess.open(out_dir + "/showcase.log", FileAccess.WRITE)
 	if f:
 		f.store_string("\n".join(_log_lines) + "\n")
 		f.close()
 	get_tree().quit(0)
+
+## A review-camera spot around `target` with a clear line to it (not inside a
+## shopfront or awning).
+func _clear_view(target: Node3D, offsets: Array) -> Vector3:
+	var space := target.get_world_3d().direct_space_state
+	var aim: Vector3 = target.global_position + Vector3.UP * 0.8
+	for off in offsets:
+		var p: Vector3 = target.global_position + (off as Vector3) + Vector3.UP * 1.45
+		var q := PhysicsRayQueryParameters3D.create(aim, p + ((p - aim).normalized() * 0.6))
+		q.collision_mask = 1
+		q.exclude = [(target as CollisionObject3D).get_rid()]
+		var up := PhysicsRayQueryParameters3D.create(p, p + Vector3.UP * 4.0)
+		up.collision_mask = 1
+		if space.intersect_ray(q).is_empty() and space.intersect_ray(up).is_empty():
+			return p
+	return target.global_position + (offsets[0] as Vector3) + Vector3.UP * 1.45
 
 func _nearest_node(position: Vector3) -> int:
 	var best := 0

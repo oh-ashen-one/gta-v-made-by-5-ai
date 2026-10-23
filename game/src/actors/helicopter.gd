@@ -6,7 +6,7 @@ extends CharacterBody3D
 const MAX_TILT := 0.45
 const LIFT := 26.0
 const GRAVITY := 12.0
-const MAX_FORWARD := 34.0
+const MAX_FORWARD := 38.0
 
 var pilot_is_player := false
 var health := 100.0
@@ -41,6 +41,14 @@ var _cam_look := Vector3.ZERO
 var _prev_forward_speed := 0.0
 var _accel_pitch := 0.0
 var _hover_clock := 0.0
+var _yaw_rate := 0.0
+var _agl := 0.0
+var _touch_dip := 0.0
+var _was_on_floor := true
+var last_touchdown_speed := 0.0 ## vertical speed (m/s) at the last skid contact
+var _cam_vel := Vector3.ZERO
+var _cam_yaw_vel := 0.0
+var _cam_drag := Vector3.ZERO
 
 func _ready() -> void:
 	add_to_group("vehicles")
@@ -173,7 +181,7 @@ func _build() -> void:
 	# positional and yaw lag and leans into banks (see _update_chase_camera).
 	_camera = Camera3D.new()
 	_camera.name = "ChaseCamera"
-	_camera.fov = 72.0
+	_camera.fov = 64.0
 	_camera.top_level = true
 	add_child(_camera)
 
@@ -213,8 +221,41 @@ func _try_provider_asset() -> void:
 		_provider_tail_rotor = tail_rotor
 	_paint_finish(root)
 
-## Lift the provider airframe from flat black to a lacquered gunmetal with a
-## clearcoat, so close frames read as painted aluminium rather than plastic.
+## Factory paint for the provider airframe. Its generated texture atlas is
+## a patchwork of noisy chunks and its ORM map scatters fully-metallic
+## patches, which read as camouflage blotches in sunlit chase frames. The body
+## is repainted with a clean, clear-coated dark-navy finish: the atlas only
+## modulates it softly (sampled at a coarse mip) and keeps its darkest areas
+## (glazing, rubber, intakes) dark and glossy; the normal map and AO stay.
+const PAINT_SHADER := """
+shader_type spatial;
+render_mode blend_mix, cull_back;
+uniform sampler2D albedo_tex : source_color, filter_linear_mipmap, repeat_enable;
+uniform sampler2D orm_tex : hint_default_white, filter_linear_mipmap, repeat_enable;
+uniform sampler2D normal_tex : hint_normal, filter_linear_mipmap, repeat_enable;
+uniform vec3 paint : source_color = vec3(0.075, 0.095, 0.13);
+uniform vec3 trim : source_color = vec3(0.55, 0.57, 0.60);
+void fragment() {
+	vec3 t = texture(albedo_tex, UV, 2.5).rgb;
+	float l = dot(t, vec3(0.299, 0.587, 0.114));
+	float dark = 1.0 - smoothstep(0.07, 0.17, l);
+	float light = smoothstep(0.62, 0.82, l);
+	vec3 c = paint * (0.85 + 0.35 * smoothstep(0.15, 0.6, l));
+	c = mix(c, trim, light * 0.55);
+	c = mix(c, vec3(0.018, 0.02, 0.024), dark * 0.85);
+	ALBEDO = c;
+	METALLIC = mix(0.45, 0.1, dark);
+	ROUGHNESS = mix(0.30, 0.14, dark);
+	SPECULAR = 0.55;
+	CLEARCOAT = 0.9;
+	CLEARCOAT_ROUGHNESS = 0.07;
+	NORMAL_MAP = texture(normal_tex, UV).rgb;
+	NORMAL_MAP_DEPTH = 0.55;
+	AO = texture(orm_tex, UV).r;
+	AO_LIGHT_AFFECT = 0.35;
+}
+"""
+
 func _paint_finish(node: Node) -> void:
 	if node is MeshInstance3D and node != _provider_main_rotor and node != _provider_tail_rotor:
 		var mi := node as MeshInstance3D
@@ -222,12 +263,18 @@ func _paint_finish(node: Node) -> void:
 			for i in mi.mesh.get_surface_count():
 				var mat := mi.get_active_material(i)
 				if mat is StandardMaterial3D and (mat as StandardMaterial3D).transparency == BaseMaterial3D.TRANSPARENCY_DISABLED:
-					var m := (mat as StandardMaterial3D).duplicate() as StandardMaterial3D
-					m.albedo_color = Color(1.55, 1.62, 1.72)
-					m.clearcoat_enabled = true
-					m.clearcoat = 0.85
-					m.clearcoat_roughness = 0.12
-					m.roughness = minf(m.roughness, 1.0) * 0.75
+					var sm := mat as StandardMaterial3D
+					if sm.albedo_texture == null:
+						continue
+					var shader := Shader.new()
+					shader.code = PAINT_SHADER
+					var m := ShaderMaterial.new()
+					m.shader = shader
+					m.set_shader_parameter("albedo_tex", sm.albedo_texture)
+					if sm.roughness_texture != null:
+						m.set_shader_parameter("orm_tex", sm.roughness_texture)
+					if sm.normal_texture != null:
+						m.set_shader_parameter("normal_tex", sm.normal_texture)
 					mi.set_surface_override_material(i, m)
 	for child in node.get_children():
 		if child != _provider_main_rotor and child != _provider_tail_rotor:
@@ -306,50 +353,96 @@ func _physics_process(delta: float) -> void:
 			_impact_cooldown = 1.0
 			take_damage((impact_speed - 9.0) * 4.0, global_position, false)
 	if is_on_floor():
+		if not _was_on_floor:
+			last_touchdown_speed = maxf(-before.y, 0.0)
+		if not _was_on_floor and before.y < -0.4:
+			# skids compress and the airframe settles on touchdown
+			_touch_dip = clampf(-before.y * 0.07, 0.03, 0.16)
 		if velocity.length() < 2.0:
 			_landed = true
 		_last_good_position = global_position
 	else:
 		_landed = false
+	_was_on_floor = is_on_floor()
 
 func _pilot_input(delta: float) -> void:
 	var yaw_in := Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
 	var pitch_in := Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
 	var lift_in := Input.get_action_strength("jump") - Input.get_action_strength("sprint")
-	_yaw_input = lerpf(_yaw_input, yaw_in, clampf(delta * 6.0, 0.0, 1.0))
-	_pitch_input = lerpf(_pitch_input, pitch_in, clampf(delta * 5.0, 0.0, 1.0))
+	_yaw_input = lerpf(_yaw_input, yaw_in, clampf(delta * 5.0, 0.0, 1.0))
+	_pitch_input = lerpf(_pitch_input, pitch_in, clampf(delta * 3.5, 0.0, 1.0))
 	_lift_input = lerpf(_lift_input, lift_in, clampf(delta * 6.0, 0.0, 1.0))
-	# a node that faces -Z turns left when its yaw increases: pressing left
-	# has to yaw left, or the aircraft flies away from the target
-	rotation.y += _yaw_input * 1.5 * delta
-	# Attitude with inertia: the nose dips while the aircraft is accelerating
-	# and flares up while it brakes; it banks into yaw in proportion to
-	# forward speed (a coordinated turn), and the airframe settles slowly.
 	var basis_now := global_transform.basis
-	var forward_speed := Vector3(velocity.x, 0.0, velocity.z).dot(-basis_now.z)
-	var lateral_speed := Vector3(velocity.x, 0.0, velocity.z).dot(basis_now.x)
-	var accel := (forward_speed - _prev_forward_speed) / maxf(delta, 0.001)
-	_prev_forward_speed = forward_speed
-	_accel_pitch = lerpf(_accel_pitch, clampf(-accel * 0.035, -0.22, 0.22), clampf(delta * 2.5, 0.0, 1.0))
-	var target_pitch := -_pitch_input * 0.24 + _accel_pitch
+	var flat_vel := Vector3(velocity.x, 0.0, velocity.z)
+	var forward_speed := flat_vel.dot(-basis_now.z)
+	var lateral_speed := flat_vel.dot(basis_now.x)
 	var speed_frac := clampf(absf(forward_speed) / MAX_FORWARD, 0.0, 1.0)
-	var target_bank := _yaw_input * (0.16 + 0.34 * speed_frac) - lateral_speed * 0.012
-	_body.rotation.x = lerp_angle(_body.rotation.x, target_pitch, clampf(delta * 2.6, 0.0, 1.0))
-	_body.rotation.z = lerp_angle(_body.rotation.z, target_bank, clampf(delta * 2.2, 0.0, 1.0))
-	# gentle hover bob while airborne (visual only)
-	_hover_clock += delta
-	var bob := (sin(_hover_clock * 1.3) * 0.06 + sin(_hover_clock * 2.9) * 0.025) if not is_on_floor() else 0.0
-	_body.position.y = lerpf(_body.position.y, bob, clampf(delta * 3.0, 0.0, 1.0))
+	# Yaw has angular inertia: the turn rate builds and decays instead of
+	# snapping, and a fast aircraft turns a little wider than a hovering one.
+	# (A node that faces -Z turns left when its yaw increases.)
+	var yaw_target := _yaw_input * lerpf(1.55, 1.15, speed_frac)
+	_yaw_rate = lerpf(_yaw_rate, yaw_target, clampf(delta * 3.2, 0.0, 1.0))
+	rotation.y += _yaw_rate * delta
+	# Ground proximity (skids / water) for the landing cushion and auto-level.
+	_agl = _probe_agl()
+	var near_ground := clampf(1.0 - (_agl - 0.6) / 4.0, 0.0, 1.0)
+	# Momentum: horizontal velocity eases toward the commanded velocity along
+	# the current heading, so the aircraft carries speed through turns (it
+	# drifts wide, then the new heading takes over) and needs room to stop.
 	var dir := -global_transform.basis.z
 	var target_speed := _pitch_input * MAX_FORWARD
-	velocity.x = lerpf(velocity.x, dir.x * target_speed, clampf(delta * 2.2, 0.0, 1.0))
-	velocity.z = lerpf(velocity.z, dir.z * target_speed, clampf(delta * 2.2, 0.0, 1.0))
-	# Assisted hover is part of the arcade controls: neutral lift holds
-	# altitude, while intentional descent stays within a safe landing speed.
-	var target_vertical_speed := _lift_input * (12.0 if _lift_input >= 0.0 else 6.0)
-	velocity.y = move_toward(velocity.y, target_vertical_speed, 18.0 * delta)
+	var commanded := dir * target_speed
+	var braking := flat_vel.length() > commanded.length() + 0.5
+	var response := 1.85 if braking else 1.35
+	velocity.x = lerpf(velocity.x, commanded.x, clampf(delta * response, 0.0, 1.0))
+	velocity.z = lerpf(velocity.z, commanded.z, clampf(delta * response, 0.0, 1.0))
+	# Attitude follows the physics: the rotor disc tilts the way the aircraft
+	# is accelerating. Cruise flies nose-down, throttle-up dips the nose
+	# further, braking flares the nose up; turns are coordinated, banking by
+	# atan(v * yaw_rate / g), so a fast turn is a steep, dramatic bank.
+	var accel := (forward_speed - _prev_forward_speed) / maxf(delta, 0.001)
+	_prev_forward_speed = forward_speed
+	# a slow aircraft barely flares: the dip/flare scales with airspeed
+	var flare_scale := 0.3 + 0.7 * speed_frac
+	_accel_pitch = lerpf(_accel_pitch, clampf(-accel * 0.045, -0.26, 0.24) * flare_scale, clampf(delta * 3.0, 0.0, 1.0))
+	var cruise_pitch := -0.17 * clampf(forward_speed / MAX_FORWARD, -0.5, 1.0)
+	var target_pitch := clampf(cruise_pitch + _accel_pitch - _pitch_input * 0.04, -0.38, 0.30)
+	var coordinated := atan(forward_speed * _yaw_rate / 9.8) * 0.85
+	var target_bank := clampf(coordinated + _yaw_input * 0.07 - lateral_speed * 0.018, -0.62, 0.62)
+	target_pitch *= 1.0 - near_ground * 0.85
+	target_bank *= 1.0 - near_ground * 0.9
+	_body.rotation.x = lerp_angle(_body.rotation.x, target_pitch, clampf(delta * 2.4, 0.0, 1.0))
+	_body.rotation.z = lerp_angle(_body.rotation.z, target_bank, clampf(delta * 2.0, 0.0, 1.0))
+	# gentle hover bob while airborne (visual only); skids compress on touchdown
+	_hover_clock += delta
+	var bob := (sin(_hover_clock * 1.3) * 0.06 + sin(_hover_clock * 2.9) * 0.025) * (1.0 - near_ground) if not is_on_floor() else 0.0
+	_touch_dip = move_toward(_touch_dip, 0.0, delta * 0.45)
+	_body.position.y = lerpf(_body.position.y, bob - _touch_dip, clampf(delta * 6.0, 0.0, 1.0))
+	# Collective with inertia. Neutral lift holds altitude; descent is capped
+	# by a ground cushion so the last few metres always settle gently.
+	var target_vertical_speed := _lift_input * (12.0 if _lift_input >= 0.0 else 7.0)
+	if target_vertical_speed < 0.0:
+		target_vertical_speed = maxf(target_vertical_speed, -lerpf(0.9, 7.0, clampf((_agl - 0.5) / 9.0, 0.0, 1.0)))
+	# the collective arrests a climb or sink faster than it builds one, so a
+	# released stick settles into a hover without bouncing
+	var arresting := absf(target_vertical_speed) < absf(velocity.y)
+	velocity.y = move_toward(velocity.y, target_vertical_speed, (22.0 if arresting else 15.0) * delta)
 	if is_on_floor() and _lift_input <= 0.0:
 		velocity.y = minf(velocity.y, 0.0)
+
+## Height of the skids above the ground or water below (metres).
+func _probe_agl() -> float:
+	var origin := global_position + Vector3.UP * 0.8
+	var space := get_world_3d().direct_space_state
+	var query := PhysicsRayQueryParameters3D.create(origin, origin + Vector3.DOWN * 40.0, 1)
+	query.exclude = [get_rid()]
+	var hit := space.intersect_ray(query)
+	var ground_y := -0.4
+	if not hit.is_empty():
+		ground_y = maxf((hit["position"] as Vector3).y, -0.4)
+	elif global_position.y > 39.0:
+		return 99.0
+	return maxf(global_position.y - ground_y, 0.0)
 
 func _process(delta: float) -> void:
 	if pilot_is_player:
@@ -359,45 +452,62 @@ func _process(delta: float) -> void:
 	else:
 		_cam_ready = false
 
-## Chase camera with inertia: trails behind along a lagged heading, sits a
-## little higher when descending, pulls back and widens with speed and rolls
-## with a fraction of the airframe bank. A ray keeps it out of buildings.
+## Chase camera with weight. Position and heading ride damped springs
+## (slightly under-damped), so in a banking turn the camera swings wide,
+## lags, then settles back in behind; it sits high enough above the rotor
+## plane that the blurred disc always reads, pulls back and widens with
+## speed, rolls with part of the bank and dips on a hard touchdown.
+## A ray keeps it out of buildings.
 func _update_chase_camera(delta: float) -> void:
 	var ground_speed := Vector2(velocity.x, velocity.z).length()
 	var speed_frac := clampf(ground_speed / MAX_FORWARD, 0.0, 1.0)
 	if not _cam_ready:
 		_cam_yaw = rotation.y
+		_cam_yaw_vel = 0.0
 		_cam_ready = true
-		_cam_pos = _chase_target(ground_speed)
-		_cam_look = global_position + Vector3.UP * 2.4
+		_cam_pos = _chase_target(ground_speed) - global_position
+		_cam_vel = Vector3.ZERO
+		_cam_drag = Vector3.ZERO
+		_cam_look = global_position + Vector3.UP * 3.4
 		_cam_roll = 0.0
-	_cam_yaw = lerp_angle(_cam_yaw, rotation.y, clampf(delta * 2.6, 0.0, 1.0))
-	var desired := _chase_target(ground_speed)
-	# horizontal lag gives the inertia; height tracks faster so climbs and
-	# descents never leave the camera looking up at the belly
-	var flat := Vector3(_cam_pos.x, 0.0, _cam_pos.z).lerp(Vector3(desired.x, 0.0, desired.z), clampf(delta * 6.0, 0.0, 1.0))
-	_cam_pos = Vector3(flat.x, lerpf(_cam_pos.y, desired.y, clampf(delta * 7.0, 0.0, 1.0)), flat.z)
-	var pivot := global_position + Vector3.UP * 3.0
-	var cam_pos := _cam_pos
+	var steps := clampi(int(ceil(delta / 0.0167)), 1, 6)
+	var h := minf(delta, 0.1) / float(steps)
+	for _i in steps:
+		# heading spring: omega 4.5 rad/s, damping 0.65 (swings wide, settles)
+		var yaw_err := wrapf(rotation.y - _cam_yaw, -PI, PI)
+		_cam_yaw_vel += (yaw_err * 20.0 - _cam_yaw_vel * 5.8) * h
+		_cam_yaw += _cam_yaw_vel * h
+		# offset spring in the aircraft frame (no steady-state lag at speed):
+		# omega 3.4 rad/s, damping 0.78, height stiffer
+		var err := (_chase_target(ground_speed) - global_position) - _cam_pos
+		var acc := Vector3(err.x * 11.56, err.y * 20.0, err.z * 11.56) - Vector3(_cam_vel.x * 5.3, _cam_vel.y * 7.2, _cam_vel.z * 5.3)
+		_cam_vel += acc * h
+		_cam_pos += _cam_vel * h
+	# a touch of world-space drag: the camera trails a little further when the
+	# aircraft accelerates hard and catches up as speed settles
+	_cam_drag = _cam_drag.lerp(Vector3(velocity.x, velocity.y * 0.5, velocity.z) * -0.025, clampf(delta * 1.5, 0.0, 1.0))
+	var pivot := global_position + Vector3.UP * 3.2
+	var cam_pos := global_position + _cam_pos + _cam_drag
 	var space := get_world_3d().direct_space_state
 	var query := PhysicsRayQueryParameters3D.create(pivot, cam_pos, 1)
 	query.exclude = [get_rid()]
 	var hit := space.intersect_ray(query)
 	if not hit.is_empty():
 		cam_pos = (hit["position"] as Vector3) + (pivot - cam_pos).normalized() * 0.6
-	var look := global_position + Vector3.UP * 2.0 + Vector3(velocity.x, 0.0, velocity.z) * 0.35
-	_cam_look = _cam_look.lerp(look, clampf(delta * 5.0, 0.0, 1.0))
-	_camera.global_position = cam_pos
+	var look := global_position + Vector3.UP * 3.4 + Vector3(velocity.x, 0.0, velocity.z) * 0.12
+	_cam_look = _cam_look.lerp(look, clampf(delta * 4.5, 0.0, 1.0))
+	_camera.global_position = cam_pos + Vector3.DOWN * _touch_dip * 0.6
 	if cam_pos.distance_to(_cam_look) > 0.5:
 		_camera.look_at(_cam_look, Vector3.UP)
-	_cam_roll = lerpf(_cam_roll, _body.rotation.z * 0.45, clampf(delta * 2.5, 0.0, 1.0))
+	_cam_roll = lerpf(_cam_roll, _body.rotation.z * 0.38, clampf(delta * 2.0, 0.0, 1.0))
 	_camera.rotate_object_local(Vector3.FORWARD, -_cam_roll)
-	_camera.fov = lerpf(_camera.fov, 68.0 + 8.0 * speed_frac, clampf(delta * 1.5, 0.0, 1.0))
+	_camera.fov = lerpf(_camera.fov, 62.0 + 8.0 * speed_frac, clampf(delta * 1.2, 0.0, 1.0))
 
 func _chase_target(ground_speed: float) -> Vector3:
 	var back := Basis(Vector3.UP, _cam_yaw) * Vector3(0.0, 0.0, 1.0)
-	var distance := 10.5 + ground_speed * 0.06
-	var height := 5.4 + clampf(absf(velocity.y) * 0.10, 0.0, 1.6)
+	var distance := 10.2 + ground_speed * 0.03
+	# rises with speed so the forward-tilted rotor disc is still seen from above
+	var height := 6.8 + ground_speed * 0.085 + clampf(absf(velocity.y) * 0.08, 0.0, 1.2)
 	return global_position + back * distance + Vector3.UP * height
 
 ## Snapshot of the presentation layer for regression checks.

@@ -117,7 +117,8 @@ func setup(m: Node, p: Player, w: WorldBuilder, mi: Mission, t: TrafficManager) 
 			_record_cap_reason = "Could not open frames.jsonl"
 	Events.actor_died.connect(func(actor: Node, by_player: bool):
 		if by_player and actor is NPC and actor.is_hostile:
-			_combat_kills += 1)
+			_combat_kills += 1
+			_maybe_combat_shot(actor as NPC))
 	_run()
 
 func _process(_delta: float) -> void:
@@ -365,7 +366,9 @@ func _run() -> void:
 			await _shoot_at(guard)
 		if _finished: return
 	if not _gate("combat damaged and killed a mission combatant", _combat_kills > _run_kills_start): return
-	await _shot("combat")
+	if not _combat_shot_taken:
+		await _shot("combat")
+	_combat_shot_taken = false
 	await _walk_to(world.locations["package"], 2.5, 25.0)
 	await _tap("interact")
 	if not _gate("package collected through interaction", mission.stage == Mission.Stage.TO_CAR and mission.package_taken): return
@@ -924,6 +927,31 @@ func _nearest_parked_car() -> Car:
 			best = vehicle
 	return best
 
+## Combat piece: the gate's combat frame is taken on the frame of the final
+## kill shot (muzzle flash, tracer, impact, falling guard) rather than after
+## the gun is lowered. Same player camera; only the moment changes.
+var _combat_shot_taken := false
+func _maybe_combat_shot(victim: NPC) -> void:
+	if _phase != "mission" or _combat_shot_taken or mission == null:
+		return
+	# The first kill whose victim is in clear view of the player camera (a
+	# guard hidden behind a stall reads as nothing); otherwise the last kill.
+	var alive := 0
+	for guard in mission._hostiles:
+		if is_instance_valid(guard) and guard.state != NPC.State.DEAD:
+			alive += 1
+	var cam: Camera3D = player.camera
+	var visible_victim := true
+	for h in [1.2, 1.6]:
+		var q := PhysicsRayQueryParameters3D.create(cam.global_position, victim.global_position + Vector3.UP * h)
+		q.collision_mask = 1 | 8
+		if not player.get_world_3d().direct_space_state.intersect_ray(q).is_empty():
+			visible_victim = false
+	if not visible_victim and alive > 0:
+		return
+	_combat_shot_taken = true
+	await _shot("combat")
+
 func _shoot_at(hostile: NPC) -> void:
 	Input.action_press("aim")
 	for shot in 8:
@@ -1018,6 +1046,13 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 	var deadline := _elapsed() + timeout
 	var stuck_for := 0.0
 	var previous := player.controlled_actor().global_position
+	# integ-Q (rendered route stalled 140 s at the (-156,156) corner, boxed in
+	# by two pursuing police cars that kept nudging it, so the per-frame
+	# stillness test never fired): also back out when the distance to the
+	# waypoint has not improved by 0.5 m for 3 s.
+	var best := INF
+	var best_t := _elapsed()
+	var force_back := false
 	while _elapsed() < deadline and not _finished and not _interrupt_free_action() and player.current_vehicle is Car:
 		await get_tree().physics_frame
 		var car := player.current_vehicle as Car
@@ -1026,6 +1061,14 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		var offset := target - car.global_position
 		offset.y = 0.0
 		if offset.length() < stop_distance: break
+		if offset.length() < best - 0.5:
+			best = offset.length()
+			best_t = _elapsed()
+		elif _elapsed() - best_t > 3.0:
+			_log("drive no progress for 3 s at %s, backing out" % [car.global_position.round()])
+			force_back = true
+			best_t = _elapsed() + 1.2
+			best = INF
 		var forward := -car.global_transform.basis.z
 		var direction := offset.normalized()
 		var avoidance := _avoid_car_direction(car, forward)
@@ -1049,7 +1092,8 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		else:
 			stuck_for = 0.0
 		previous = car.global_position
-		if stuck_for > 0.9:
+		if stuck_for > 0.9 or force_back:
+			force_back = false
 			# Reverse and steer clear using the same inputs as a player; alternate
 			# the steering side so a symmetric trap (a U-turn wedged between kerbs
 			# and parked cars) cannot repeat the same failed manoeuvre (wave 5).
