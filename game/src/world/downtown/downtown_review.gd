@@ -102,8 +102,11 @@ static func _left(f: Vector3) -> Vector3:
 
 ## Lane path along a list of road / bridge centreline points, offset into the
 ## left-hand lane of travel.
+var _path_off: Array[float] = []
+
 func _lane_path(centre: Array, offsets: Array) -> Array[Vector3]:
 	var out: Array[Vector3] = []
+	_path_off.clear()
 	for i in centre.size() - 1:
 		var a: Vector3 = centre[i]
 		var b: Vector3 = centre[i + 1]
@@ -115,8 +118,10 @@ func _lane_path(centre: Array, offsets: Array) -> Array[Vector3]:
 		for k in n:
 			var q := a.lerp(b, float(k) / n) + _left(f) * off
 			out.append(Vector3(q.x, 0.0, q.z))
+			_path_off.append(off)
 	var last: Vector3 = centre[centre.size() - 1]
 	out.append(last)
+	_path_off.append(float(offsets[offsets.size() - 1]))
 	return out
 
 func _closest(path: Array[Vector3], p: Vector3, from_i: int) -> int:
@@ -375,7 +380,7 @@ func _drive_leg() -> void:
 	_recording = true
 	_log("drive start at %s" % car.global_position)
 	var i := 0
-	var t_end := _elapsed() + 900.0
+	var t_end := _elapsed() + 1200.0
 	var stills := {"esplanade_bridge": Vector3(-600, 0, -360), "raffles_avenue": Vector3(-790, 0, -600), "bayfront_bridge": Vector3(-420, 0, -780), "bayfront_avenue": Vector3(0, 0, -780), "marina_boulevard": Vector3(400, 0, -520)}
 	var stuck_t := 0.0
 	var max_deck := 0.0
@@ -427,21 +432,27 @@ func _drive_leg() -> void:
 		else:
 			blocked_t = 0.0
 			stall_for = 0.0
-		# A street-life car that has sat stalled in front of us for 45 s with
+		# A street-life car that has sat stalled in front of us for 40 s with
 		# every lane around it blocked is recycled the way the traffic system
 		# recycles its own gridlocked cars (logged as a tow; footage shows it).
-		if stall_for > 45.0 and is_instance_valid(stall_node) and stall_node is AmbientVehicle and traffic.ambient != null:
-			_log("tow: ambient %s stalled 45 s ahead at %s" % [stall_node.name, stall_node.global_position])
+		if stall_for > 40.0 and is_instance_valid(stall_node) and stall_node is AmbientVehicle and traffic.ambient != null:
+			_log("tow: ambient %s stalled 40 s ahead at %s" % [stall_node.name, stall_node.global_position])
 			if not traffic.ambient._seed_vehicle(stall_node, true):
 				traffic.ambient._park_offscreen(stall_node)
 			traffic.ambient._rebuild_keys()
 			tows += 1
 			stall_for = 0.0
 			stall_node = null
+		# lane changes stay on our own carriageway: only from an outer lane
+		# (offset >= 5 m: two or three lanes each way), never across the
+		# centre line or a median
+		var can_shift := _path_off[mini(i, _path_off.size() - 1)] >= 5.0
+		if not can_shift and shift_target != 0.0:
+			shift_target = 0.0
 		if blocked_t > 12.0:
 			# still boxed in (a stalled queue, or the lane we moved to stopped):
 			# take whichever lane offset has the clearest corridor, own lane first
-			for cand: float in [0.0, LANE_SHIFT, LANE_SHIFT * 2.0]:
+			for cand: float in ([0.0, LANE_SHIFT] if can_shift else [0.0]):
 				if is_equal_approx(cand, shift_target):
 					continue
 				if _gap_path(path, i, car, cand, 34.0, 1.6) > 28.0:
@@ -453,7 +464,7 @@ func _drive_leg() -> void:
 			blocked_t = 0.0
 		# overtake on straights after 5 s; anywhere short of a right-angle
 		# corner after 10 s (a queue that never moves is a stalled car)
-		elif shift_target == 0.0 and ((blocked_t > 5.0 and turn < 0.5) or (blocked_t > 10.0 and turn < 0.9)) and _gap_path(path, i, car, LANE_SHIFT, 40.0, 1.6) > 34.0:
+		elif can_shift and shift_target == 0.0 and ((blocked_t > 5.0 and turn < 0.5) or (blocked_t > 10.0 and turn < 0.9)) and _gap_path(path, i, car, LANE_SHIFT, 40.0, 1.6) > 34.0:
 			shift_target = LANE_SHIFT
 			shift_hold = i + 14
 			overtakes += 1
