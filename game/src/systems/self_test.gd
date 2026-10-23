@@ -1030,12 +1030,48 @@ func _lighting_checks(world: WorldBuilder) -> void:
 				domes += 1
 	_check("median beds have painted noses and no dome shrubs", dressing != null and int(dressing.counts.get("median_nose", 0)) >= 32 and domes == 0,
 		"noses=%d dome_batches=%d" % [0 if dressing == null else int(dressing.counts.get("median_nose", 0)), domes])
+	_nearfield_checks(world)
 	# Round 4: the low sun disc sits inside the heritage-avenue toward-sun view.
 	if sun != null:
 		var to_sun := sun.global_transform.basis.z.normalized()
 		var fwd := (Vector3(-40.0, 5.0, -155.0) - Vector3(-150.0, 2.6, -157.0)).normalized()
 		var ang := rad_to_deg(Vector2(fwd.x, fwd.z).angle_to(Vector2(to_sun.x, to_sun.z)))
 		_check("low sun is in frame on the heritage avenue (toward-sun view)", absf(ang) < 40.0 and to_sun.y > 0.15, "azimuth_off=%.1f elev=%.2f" % [ang, to_sun.y])
+
+## Nearfield R (opus55): modelled, collidable street props, legible sign
+## faces, photo plant cards and a street-name blade that fits its text.
+func _nearfield_checks(world: Node) -> void:
+	if not NearField.enabled():
+		return
+	var found := {}
+	for n in world.find_children("StreetDressing_*", "MultiMeshInstance3D", true, false):
+		var mmi := n as MultiMeshInstance3D
+		var kind := String(mmi.name).trim_prefix("StreetDressing_").get_slice("_", 0)
+		if kind in NearFieldProps.KINDS and mmi.multimesh != null and mmi.multimesh.mesh == NearFieldProps.mesh(kind) and mmi.multimesh.instance_count > 0:
+			found[kind] = int(found.get(kind, 0)) + mmi.multimesh.instance_count
+	var have := ["tcone", "bin", "crate", "aframe"].all(func(k: String) -> bool: return found.has(k))
+	_check("nearfield: cones, bins, crates and A-frame menus are modelled props (no primitive stand-ins)", have and ["tcone", "bin", "crate", "aframe"].all(func(k: String) -> bool: return k in StreetPropColliders.SOLID_KINDS), str(found))
+	var two_ok := found.size() >= 0 and ["bike", "scooter"].all(func(k: String) -> bool: return k in StreetPropColliders.SOLID_KINDS)
+	var two_models := world.find_children("StreetDressing_scooter*", "MultiMeshInstance3D", true, false)
+	two_ok = two_ok and not two_models.is_empty() and (two_models[0] as MultiMeshInstance3D).multimesh.mesh == NearField.two_wheeler_mesh(true)
+	_check("nearfield: parked bikes and scooters are multi-part models with on-foot collision", two_ok and StreetPropColliders.shape_count >= 500, "prop_boxes=%d" % StreetPropColliders.shape_count)
+	# Godot front faces wind clockwise: the face side's (b - a) x (c - a) points away from its normal.
+	var plate := NearField.plate_mesh().surface_get_arrays(0)
+	var pv: PackedVector3Array = plate[Mesh.ARRAY_VERTEX]
+	var pn: PackedVector3Array = plate[Mesh.ARRAY_NORMAL]
+	_check("nearfield: sign plates show their pictogram face to the viewer", pv.size() >= 6 and (pv[1] - pv[0]).cross(pv[2] - pv[0]).dot(pn[0]) < 0.0)
+	var cards_ok := true
+	if NearField.cards_available():
+		var shrubs := world.find_children("NearfieldShrub_*", "MultiMeshInstance3D", true, false)
+		cards_ok = not shrubs.is_empty() and shrubs.all(func(n: Node) -> bool: return (n as GeometryInstance3D).material_override == NearField.card_material())
+	_check("nearfield: median beds use photo plant cards when the generated atlas is present", cards_ok and int(NearField.stats.get("median_shrub", 0)) > 2000)
+	var blade_ok := false
+	for l in world.find_children("*", "Label3D", true, false):
+		var lab := l as Label3D
+		if lab.text == "Kampong Sirih Road":
+			var w := ThemeDB.fallback_font.get_string_size(lab.text, HORIZONTAL_ALIGNMENT_LEFT, -1, lab.font_size).x * lab.pixel_size
+			blade_ok = w > 1.0 and w <= 2.3
+	_check("nearfield: street-name lettering fits inside its blade", blade_ok)
 
 func _count_meshes(node: Node) -> int:
 	var count := 0

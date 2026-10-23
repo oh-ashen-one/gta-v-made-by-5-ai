@@ -73,6 +73,32 @@ static func concrete_mat(tint: Color = Color(0.86, 0.85, 0.82), tile_m: float = 
 	_cache[key] = m
 	return m
 
+## Grey interlocking pavers (provider footpath_pavers, ~3 m tile, texture
+## is ~0.88 aspect-stretched) for the paved median noses.
+static func pavers_mat(tint: Color = Color(0.92, 0.91, 0.88)) -> Material:
+	var key := "pavers_mat:" + tint.to_html()
+	if _cache.has(key):
+		return _cache[key]
+	var alb := prov("footpath_pavers_albedo.png")
+	var m: Material
+	if alb == null:
+		m = concrete_mat()
+	else:
+		var sm := StandardMaterial3D.new()
+		sm.albedo_texture = alb
+		sm.albedo_color = tint
+		sm.normal_enabled = true
+		sm.normal_texture = prov("footpath_pavers_normal.png")
+		sm.roughness_texture = prov("footpath_pavers_rough.png")
+		sm.uv1_triplanar = true
+		sm.uv1_world_triplanar = true
+		sm.uv1_triplanar_sharpness = 6.0
+		sm.uv1_scale = Vector3(1.0 / 3.0, 1.0 / 3.0, 0.88 / 3.0)
+		sm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+		m = sm
+	_cache[key] = m
+	return m
+
 ## Photographic plant cards (provider foliage_median_atlas, 2 x 2 cells:
 ## 0 mondo grass + spider lily, 1 ixora, 2 croton, 3 bird's-nest fern).
 static func card_material() -> ShaderMaterial:
@@ -322,14 +348,14 @@ static func build_median(root: Node3D, centre: Vector3, along_z: bool, span: flo
 		nm.height = 0.3
 		nm.radial_segments = 24
 		nose.mesh = nm
-		nose.material_override = concrete_mat(Color(0.70, 0.69, 0.66), 1.6)
+		nose.material_override = pavers_mat()
 		nose.position = centre + ax * e * straight + Vector3(0, 0.155, 0)
 		root.add_child(nose)
 		var deck := MeshInstance3D.new()
 		var dm := BoxMesh.new()
 		dm.size = Vector3(1.24, 0.3, 1.2) if along_z else Vector3(1.2, 0.3, 1.24)
 		deck.mesh = dm
-		deck.material_override = nose.material_override
+		deck.material_override = pavers_mat()
 		deck.position = centre + ax * e * (straight - 0.6) + Vector3(0, 0.155, 0)
 		root.add_child(deck)
 		# keep-left sign faces oncoming traffic on the nose
@@ -343,10 +369,10 @@ static func build_median(root: Node3D, centre: Vector3, along_z: bool, span: flo
 	# plus a sparse centre row, kept off the nose decks. Photo cards when the
 	# generated atlas is present, else the authored leaf-card clumps.
 	var cards := cards_available()
-	var t := -straight + 1.5
+	var t := -straight + 1.3
 	var drift_left := 0.0
 	var kind := "ixora"
-	while t < straight - 1.5:
+	while t < straight - 1.3:
 		if drift_left <= 0.0:
 			var roll := rng.randf()
 			if cards:
@@ -838,6 +864,91 @@ static func two_wheeler_collision(root: Node3D, xforms: Array, motor: bool) -> v
 		shape.transform = Transform3D(flat, xf.origin + Vector3(0, bs.size.y * 0.5 + 0.02, 0))
 		(cells[c] as StaticBody3D).add_child(shape)
 		_count("scooter_collider" if motor else "bike_collider")
+
+# ------------------------------------------------------- canvas awning
+## A shopfront awning: sagging canvas sloping 12 deg out from the wall over
+## a 1.9 m projection, a 0.27 m scalloped valance on the front bar, steel
+## front bar and two drop arms back to the facade. centre = old slab centre,
+## yaw = shophouse yaw (outward = Basis(UP, yaw) * -Z).
+static func canvas_awning(root: Node3D, centre: Vector3, yaw: float, colour: Color, seed_i: int) -> void:
+	var b := Basis(Vector3.UP, yaw)
+	var along := b * Vector3.RIGHT
+	var out := b * Vector3(0, 0, -1)
+	var width := 7.4
+	var depth := 1.9
+	var slope := tan(deg_to_rad(12.0))
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var nu := 24
+	var nv := 6
+	var pt := func(i: int, j: int) -> Vector3:
+		var x := (float(i) / nu - 0.5) * width
+		var d := float(j) / nv * depth
+		var sag := 0.07 * sin(PI * float(j) / nv) * (0.7 + 0.3 * absf(sin(PI * float(i) / nu * 4.0)))
+		return centre + along * x + out * (d - depth * 0.5) + Vector3.UP * (slope * depth * 0.5 - slope * d - sag)
+	for i in nu:
+		for j in nv:
+			var a: Vector3 = pt.call(i, j)
+			var bb: Vector3 = pt.call(i + 1, j)
+			var c: Vector3 = pt.call(i + 1, j + 1)
+			var d: Vector3 = pt.call(i, j + 1)
+			var n := (bb - a).cross(d - a).normalized()
+			if n.y < 0.0:
+				n = -n
+			var uvs := [Vector2(float(i) / nu * width, float(j) / nv), Vector2(float(i + 1) / nu * width, float(j) / nv), Vector2(float(i + 1) / nu * width, float(j + 1) / nv), Vector2(float(i) / nu * width, float(j + 1) / nv)]
+			var vs := [a, bb, c, d]
+			for idx in [0, 1, 2, 0, 2, 3]:
+				st.set_normal(n)
+				st.set_uv(uvs[idx])
+				st.add_vertex(vs[idx])
+	# valance hanging from the front edge
+	for i in nu:
+		var a: Vector3 = pt.call(i, nv)
+		var bb: Vector3 = pt.call(i + 1, nv)
+		var drop := Vector3.UP * -0.30
+		var uvs := [Vector2(float(i) / nu * width, 1.0), Vector2(float(i + 1) / nu * width, 1.0), Vector2(float(i + 1) / nu * width, 1.3), Vector2(float(i) / nu * width, 1.3)]
+		var vs := [a, bb, bb + drop, a + drop]
+		for idx in [0, 1, 2, 0, 2, 3]:
+			st.set_normal(out)
+			st.set_uv(uvs[idx])
+			st.add_vertex(vs[idx])
+	var mi := MeshInstance3D.new()
+	mi.name = "NearfieldAwning"
+	mi.mesh = st.commit()
+	var m := ShaderMaterial.new()
+	m.shader = load(SHADERS + "canvas_awning.gdshader")
+	var c2 := colour.darkened(0.22)
+	m.set_shader_parameter("stripe_col", Vector3(c2.r, c2.g, c2.b))
+	m.set_shader_parameter("plain", 1.0 if seed_i % 3 == 0 else 0.0)
+	mi.material_override = m
+	mi.set_meta("nearfield", true)
+	root.add_child(mi)
+	# steel front bar and drop arms
+	var p0: Vector3 = pt.call(0, nv)
+	var p1: Vector3 = pt.call(nu, nv)
+	var bars := [[p0, p1, 0.022]]
+	for e: float in [0.0, 1.0]:
+		var wall: Vector3 = pt.call(int(e * nu), 0) + Vector3.UP * -0.55
+		var front: Vector3 = pt.call(int(e * nu), nv)
+		bars.append([wall, front, 0.016])
+	for bar in bars:
+		var a: Vector3 = bar[0]
+		var c: Vector3 = bar[1]
+		var cyl := MeshInstance3D.new()
+		var cm := CylinderMesh.new()
+		cm.top_radius = bar[2]
+		cm.bottom_radius = bar[2]
+		cm.height = a.distance_to(c)
+		cm.radial_segments = 8
+		cm.rings = 1
+		cyl.mesh = cm
+		cyl.material_override = galvanised()
+		var y := (c - a).normalized()
+		var x := y.cross(Vector3.UP if absf(y.y) < 0.9 else Vector3.RIGHT).normalized()
+		cyl.transform = Transform3D(Basis(x, y, x.cross(y)), (a + c) * 0.5)
+		cyl.set_meta("nearfield", true)
+		root.add_child(cyl)
+	_count("awning")
 
 # ----------------------------------------------------------- bus shelter
 ## Framed bus shelter: twin posts, cantilevered roof with fascia, framed

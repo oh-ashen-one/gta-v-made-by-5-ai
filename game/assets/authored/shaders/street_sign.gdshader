@@ -22,13 +22,27 @@ void fragment() {
 	ALPHA = t.a;
 	ALPHA_SCISSOR_THRESHOLD = 0.5;
 	if (v_front > 0.5) {
-		ALBEDO = t.rgb * 0.94;
+		// nearfield R: road film and sun fade so faces read as outdoor
+		// retro-reflective sheeting, not clean decals: dust settles toward
+		// the bottom edge, rain streaks run down, reds fade a little.
+		vec2 q = UV * vec2(23.0, 7.0) + v_cell * 13.0;
+		float n = fract(sin(dot(floor(q), vec2(12.9898, 78.233))) * 43758.5453);
+		float dust = smoothstep(0.35, 1.0, UV.y) * 0.10 + n * 0.04;
+		vec3 c = t.rgb;
+		c.r = mix(c.r, dot(c, vec3(0.333)) + 0.05, 0.12);
+		ALBEDO = c * (0.94 - dust);
 		ROUGHNESS = 0.32;
 		SPECULAR = 0.55;
 		EMISSION = t.rgb * 0.05;
 	} else {
-		ALBEDO = vec3(0.56, 0.57, 0.57);
-		METALLIC = 0.7;
-		ROUGHNESS = 0.48;
+		// galvanised back: darker zinc with two riveted stiffener rails and
+		// mottled spangle, so a sign seen from behind reads as a sign back,
+		// not a blank pale placard (critic, route 05)
+		float rail = smoothstep(0.0, 0.01, 0.03 - abs(UV.y - 0.30)) + smoothstep(0.0, 0.01, 0.03 - abs(UV.y - 0.70));
+		vec2 q = UV * 31.0;
+		float spang = fract(sin(dot(floor(q), vec2(12.9898, 78.233))) * 43758.5453);
+		ALBEDO = vec3(0.30, 0.31, 0.31) * (0.9 + 0.12 * spang) * (1.0 - 0.35 * rail);
+		METALLIC = 0.65;
+		ROUGHNESS = 0.55 + 0.1 * rail;
 	}
 }

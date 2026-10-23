@@ -10,7 +10,7 @@ extends RefCounted
 ## crowd lanes and the chase camera are unchanged. No visual change.
 
 const PROP_LAYER := 1 << 12
-const SOLID_KINDS := ["bike", "scooter", "box", "cyl", "cone", "tcone", "bin", "crate", "aframe"]   # nearfield R: modelled props
+const SOLID_KINDS := ["bike", "scooter", "box", "cyl", "cone", "tcone", "bin", "crate", "aframe", "cabinet"]   # nearfield R: modelled props
 static var built := false
 static var shape_count := 0
 

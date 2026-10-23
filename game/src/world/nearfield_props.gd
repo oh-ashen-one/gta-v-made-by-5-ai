@@ -13,10 +13,12 @@ extends RefCounted
 ##   crate   slatted plastic produce crate, open top, handle slots
 ##   produce a heaped crate fill of round fruit/veg (instance colour tints)
 ##   aframe  timber A-frame chalkboard with legible chalk menus (two faces)
+##   cabinet green steel telecom/power cabinet: plinth, twin doors, louvres,
+##           drip cap, handles
 ## Kind names carry no "_" (StreetPropColliders derives the kind from the
 ## MultiMesh name) and are listed in its SOLID_KINDS so the player bumps them.
 
-const KINDS := ["tcone", "bin", "crate", "produce", "aframe"]
+const KINDS := ["tcone", "bin", "crate", "produce", "aframe", "cabinet"]
 static var _cache := {}
 
 static func has(kind: String) -> bool:
@@ -57,6 +59,7 @@ static func mesh(kind: String) -> Mesh:
 		"crate": m = _crate()
 		"produce": m = _produce()
 		"aframe": m = _aframe()
+		"cabinet": m = _cabinet()
 	_cache[kind] = m
 	return m
 
@@ -203,6 +206,26 @@ static func _produce() -> Mesh:
 		_sphere(st, Vector3(x, rad * 0.8 + maxf(mound, 0.0), z), Vector3(rad, rad * 0.92, rad), Color(shade, shade, shade * r.randf_range(0.9, 1.05)), 8, 5)
 	return st.commit()
 
+static func _cabinet() -> Mesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var green := Color(0.15, 0.29, 0.20)
+	var dark := Color(0.05, 0.08, 0.06)
+	var conc := Color(0.55, 0.54, 0.51)
+	var steel := Color(0.60, 0.61, 0.60)
+	_box(st, Vector3(0, 0.06, 0), Vector3(1.20, 0.12, 0.54), conc)
+	_box(st, Vector3(0, 0.12 + 0.62, 0), Vector3(1.10, 1.24, 0.45), green)
+	_box(st, Vector3(0, 1.39, 0), Vector3(1.18, 0.05, 0.52), green * 0.85)
+	for side: float in [-1.0, 1.0]:
+		var z := side * 0.228
+		_box(st, Vector3(0, 0.74, z), Vector3(0.012, 1.10, 0.006), dark)   # door seam
+		for dx: float in [-0.27, 0.27]:
+			for k in 5:
+				_box(st, Vector3(dx, 1.05 + k * 0.045, z), Vector3(0.30, 0.012, 0.008), dark)   # louvres
+			_box(st, Vector3(dx + (0.2 if dx > 0.0 else -0.2), 0.70, z + side * 0.01), Vector3(0.025, 0.12, 0.02), steel)   # handles
+		_box(st, Vector3(-0.30, 0.55, z), Vector3(0.18, 0.12, 0.005), Color(0.82, 0.80, 0.70))   # id plate
+	return st.commit()
+
 static func _aframe() -> Mesh:
 	var frame := SurfaceTool.new()
 	frame.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -258,3 +281,51 @@ static func _aframe() -> Mesh:
 	cm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
 	mesh.surface_set_material(1, cm)
 	return mesh
+
+# ------------------------------------------------- standalone placement
+## One modelled prop as its own MeshInstance3D (world_builder five-foot-way
+## fittings), tinted, with an on-foot-only collision box (StreetPropColliders
+## layer: cars, NPCs and the camera arm ignore it).
+static func place(root: Node3D, kind: String, xf: Transform3D, tint: Color = Color.WHITE, solid: bool = true) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.name = "NearfieldProp_" + kind
+	mi.mesh = mesh(kind)
+	if not own_materials(kind):
+		var m := (material(kind) as StandardMaterial3D).duplicate() as StandardMaterial3D
+		m.albedo_color = tint
+		mi.material_override = m
+	mi.transform = xf
+	mi.set_meta("nearfield", true)
+	root.add_child(mi)
+	if solid:
+		var aabb := mi.mesh.get_aabb()
+		var body := StaticBody3D.new()
+		body.collision_layer = StreetPropColliders.PROP_LAYER
+		body.collision_mask = 0
+		var cs := CollisionShape3D.new()
+		var bs := BoxShape3D.new()
+		bs.size = aabb.size * 0.92
+		cs.shape = bs
+		cs.position = aabb.get_center()
+		body.add_child(cs)
+		body.transform = xf
+		root.add_child(body)
+	return mi
+
+## A five-foot-way stack of produce crates and cartons (replaces the two
+## brown blockout boxes): 3-5 slatted crates, some filled, plus a carton.
+static func goods_stack(root: Node3D, origin: Vector3, yaw: float, seed_i: int) -> void:
+	var r := RandomNumberGenerator.new()
+	r.seed = seed_i
+	var b := Basis(Vector3.UP, yaw)
+	var cols: Array[Color] = [Color(0.22, 0.34, 0.55), Color(0.55, 0.16, 0.12), Color(0.18, 0.38, 0.26), Color(0.30, 0.30, 0.30)]
+	var fills: Array[Color] = [Color(0.85, 0.45, 0.08), Color(0.75, 0.12, 0.08), Color(0.45, 0.62, 0.12), Color(0.90, 0.78, 0.20)]
+	var n := r.randi_range(3, 5)
+	for k in n:
+		var lx := (k % 2) * 0.6 - 0.3
+		var ly := (k / 2) * 0.30
+		var cb := b * Basis(Vector3.UP, r.randf_range(-0.12, 0.12))
+		var p := origin + b * Vector3(lx, ly, r.randf_range(-0.04, 0.04))
+		place(root, "crate", Transform3D(cb, p), cols[r.randi() % cols.size()], k < 2)
+		if k >= n - 2:
+			place(root, "produce", Transform3D(cb, p + Vector3(0, 0.20, 0)), fills[r.randi() % fills.size()], false)

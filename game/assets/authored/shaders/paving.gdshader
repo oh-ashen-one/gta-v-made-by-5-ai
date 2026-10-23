@@ -13,6 +13,9 @@ uniform float base_rough = 0.9;
 uniform float grid_period = 160.0;
 uniform float road_half = 8.0;
 uniform float wear = 1.0;
+// nearfield R: value lift toward the LOOK_DEV pale-concrete footway (the
+// stacked grime/damp/zone factors left pavements near-black in shade).
+uniform float lift = 1.0;
 
 varying vec3 v_world;
 varying vec3 v_wn;
@@ -81,7 +84,7 @@ void fragment() {
 		// Platform edge faces: splashback grime.
 		col *= vec3(0.70, 0.72, 0.64);
 	}
-	ALBEDO = clamp(col, vec3(0.0), vec3(1.0));
+	ALBEDO = clamp(col * lift, vec3(0.0), vec3(1.0));
 	ROUGHNESS = clamp(rough, 0.35, 1.0);
 	NORMAL_MAP = texture(normal_tex, p / tile_m).rgb;
 	NORMAL_MAP_DEPTH = 0.32;

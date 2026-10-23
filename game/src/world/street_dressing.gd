@@ -370,8 +370,11 @@ func _kerb_run(line: float, side: float, along_z: bool, r: RandomNumberGenerator
 				_count("bicycle")
 		elif roll < 0.15:
 			# green telecom / power cabinet
-			_boxf(b, o, Vector3(0, py + 0.65, pv + 1.6), Vector3(1.1, 1.3, 0.45), Color(0.16, 0.30, 0.20))
-			_boxf(b, o, Vector3(0, py + 1.32, pv + 1.6), Vector3(1.16, 0.05, 0.5), Color(0.12, 0.20, 0.14))
+			if NearFieldProps.has("cabinet"):
+				_add("cabinet", Transform3D(b, o + b * Vector3(0, py, pv + 1.6)), Color.WHITE)
+			else:
+				_boxf(b, o, Vector3(0, py + 0.65, pv + 1.6), Vector3(1.1, 1.3, 0.45), Color(0.16, 0.30, 0.20))
+				_boxf(b, o, Vector3(0, py + 1.32, pv + 1.6), Vector3(1.16, 0.05, 0.5), Color(0.12, 0.20, 0.14))
 			_count("utility_cabinet")
 		elif roll < 0.20:
 			# bollard run
@@ -664,7 +667,9 @@ func _emit() -> void:
 		if nf_two:
 			# nearfield: multi-material two-wheeler models with collision
 			mesh = NearField.two_wheeler_mesh(kind == "scooter")
-			NearField.two_wheeler_collision(root, xforms, kind == "scooter")
+			# collision: StreetPropColliders boxes every bike/scooter on its
+			# on-foot-only layer (wave D's layer-1 bodies boxed in the route
+			# car once it mounted the pavement: rendered route R1 stalled)
 		var mm := MultiMesh.new()
 		mm.transform_format = MultiMesh.TRANSFORM_3D
 		mm.use_colors = true
