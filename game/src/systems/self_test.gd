@@ -1676,7 +1676,7 @@ func _character_stance_checks(player: Player) -> void:
 				part_cull += 1
 		var npc_code := (load("res://src/actors/npc.gd") as Script).source_code
 		_check("characters-T2: fitted skirt, women's narrower shoulders, near-lens cull hides body and parts together",
-			sb.size.x < 0.5 and sb.size.x > 0.3 and narrow and part_cull == 0 and npc_code.contains("func _near_hide"),
+			sb.size.x < 0.56 and sb.size.x > 0.3 and narrow and part_cull == 0 and npc_code.contains("func _near_hide"),
 			"skirt width=%.2f narrow=%s part_cull=%d" % [sb.size.x, narrow, part_cull])
 	holder.queue_free()
 

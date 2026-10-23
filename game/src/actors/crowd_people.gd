@@ -756,10 +756,10 @@ static func _skirt_mesh() -> Mesh:
 		# 0.58 m cone shell with a hard top edge): the waistband tucks in under
 		# the top's hem, widest at the seat, a gentle flare to the hem.
 		var hip := smoothstep(0.0, 0.32, t)
-		var rx := lerpf(0.15, 0.192, hip) + 0.03 * smoothstep(0.32, 1.0, t)
-		var rz := lerpf(0.118, 0.152, hip) + 0.026 * smoothstep(0.32, 1.0, t)
+		var rx := lerpf(0.178, 0.218, hip) + 0.03 * smoothstep(0.32, 1.0, t)
+		var rz := lerpf(0.16, 0.19, hip) + 0.026 * smoothstep(0.32, 1.0, t)
 		var fold := 1.0 + 0.03 * t * t * sin(a * 7.0) + 0.012 * t * sin(a * 3.0 + 1.3)
-		return Vector3(sin(a) * rx * fold, y, 0.04 + cos(a) * rz * fold)
+		return Vector3(sin(a) * rx * fold, y, 0.02 + cos(a) * rz * fold)
 	for i in seg:
 		for j in rows:
 			var u0 := float(i) / seg

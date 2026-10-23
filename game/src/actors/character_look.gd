@@ -328,9 +328,12 @@ void fragment() {
 		// the strands (critic T1 person_face_03), forehead skin below it.
 		if (head_shape.w > 0.01 && head_shape.w < 0.95) {
 			float backk = smoothstep(-0.035, 0.015, p.z - head_centre.z);
-			float line_y = mix(nose_tip.y + 0.088 + 0.004 * sin(rel.x * 60.0), 1.575, backk);
+			// Bangs (w 0.45) cover the forehead: the scalp line sits just over
+			// the brows so no skin shows between the fringe strands.
+			float fringe = step(0.425, head_shape.w);
+			float line_y = mix(nose_tip.y + mix(0.1, 0.074, fringe) + 0.004 * sin(rel.x * 60.0), 1.575, backk);
 			float side_k = smoothstep(0.055, 0.075, abs(rel.x)) * smoothstep(1.6, 1.64, p.y);
-			hairness = max(smoothstep(line_y - 0.004, line_y + 0.004, p.y), side_k);
+			hairness = max(smoothstep(line_y - 0.006, line_y + 0.006, p.y), side_k);
 		}
 		reg = hairness > 0.38 ? 2 : 0;
 	} else if (reg == 2) {
@@ -395,7 +398,7 @@ void fragment() {
 			float face_box = (1.0 - smoothstep(0.06, 0.085, abs(rel.x))) * smoothstep(-0.11, -0.09, rel.y) * (1.0 - smoothstep(0.1, 0.12, rel.y)) * (1.0 - smoothstep(0.05, 0.08, rel.z));
 			// T2: a woman's forehead is procedural skin (the atlas there is the
 			// male cut's painted hairline: a stretched band over the brow).
-			face_box *= 1.0 - person.x * smoothstep(0.066, 0.078, rel.y);
+			face_box *= 1.0 - person.x * smoothstep(0.07, 0.085, rel.y);
 			// Wave R: the painted brows are solid black bars; lift them toward
 			// the hair colour over skin so they read as hair, not ink.
 			float browb = (1.0 - smoothstep(0.008, 0.02, abs(rel.y - 0.056))) * (1.0 - smoothstep(0.055, 0.07, abs(rel.x)));
@@ -2073,7 +2076,7 @@ static func person_outfit(p: Dictionary, base: Dictionary) -> Dictionary:
 	var hs: Vector4 = o["head_shape"]
 	if female or child:
 		# Hair volume low: the generated street-life hairstyle sits over it.
-		hs = Vector4(rng.randf_range(-1.0, -0.45), rng.randf_range(-0.9, -0.3), rng.randf_range(-0.8, -0.3), 0.4 if (female and String(p.get("hair", "")) != "") else 1.0)
+		hs = Vector4(rng.randf_range(-1.0, -0.45), rng.randf_range(-0.9, -0.3), rng.randf_range(-0.8, -0.3), (0.45 if String(p.get("hair", "")) == "bob_bangs" else 0.4) if (female and String(p.get("hair", "")) != "") else 1.0)
 	o["head_shape"] = hs
 	# Clothes: women mostly wear a plain or striped top (no chest pockets),
 	# a dress is one colour top and skirt; bare legs or tights under a skirt.
