@@ -121,9 +121,18 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	# player's; civilians keep the street-life crowd wardrobe (crowd_wardrobe.gd
 	# + crowd_people.gd retint the provider surfaces by material name, which the
 	# rebuilt look mesh does not carry).
-	look_mesh = CharacterLook.apply(model, role) if role == "player" else null
+	# Wave S (characters S1): civilians are on the look mesh too. Their
+	# street-life person (crowd_people.gd: kind, skin, hair, skirt, legs, age)
+	# is written as look-shader instance parameters by CrowdPeople.dress()
+	# instead of material-name retints (CharacterLook.person_outfit()).
+	look_mesh = CharacterLook.apply(model, role) if role == "player" or role == "civilian" else null
 	if look_mesh != null:
-		outfit = CharacterLook.player_outfit()
+		if role == "player":
+			outfit = CharacterLook.player_outfit()
+		else:
+			outfit = CharacterLook.civilian_outfit(wardrobe_variant * 7919 + 101)
+			var stature: float = outfit["height"]
+			scale = Vector3(stature, stature, stature)
 		CharacterLook.set_outfit(look_mesh, outfit)
 	elif role == "civilian":
 		_wardrobe_variant = wardrobe_variant

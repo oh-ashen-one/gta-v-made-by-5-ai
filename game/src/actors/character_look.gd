@@ -66,6 +66,10 @@ uniform vec3 nose_tip = vec3(-0.016, 1.575, -0.089);
 uniform float placket_x = 0.004;
 uniform float shell_step = 0.0022;
 uniform float near_fade = 0.6;
+// Wave S: 1 on the civilian rig's material: its face atlas islands carry
+// mismatched paint and normals (white glints, dark cheek dots), so the face
+// uses the luminance-only, features-only mapping and a flat face normal.
+uniform float civ_face = 0.0;
 uniform int debug_mode = 0; // QA only: 1 flat grey albedo, 2 region colours, 4 normals
 
 // Per-instance wardrobe (linear colours). w channels carry extra parameters.
@@ -83,6 +87,10 @@ instance uniform vec4 head_shape = vec4(0.0, 0.0, 0.0, 0.0);
 // x: focus/frown (0 calm .. 1 aiming): brows knit and lower, a crease
 // between them, cheeks lift into a squint, the mouth corners flatten.
 instance uniform vec4 expr = vec4(0.0);
+// Wave S: street-life person on the look mesh. x feminine (0..1: no stubble,
+// finer brows, lash line, softer jaw), y lip colour amount, z legs below a
+// skirt (0 trousers, 1 bare legs, 2 tights in pants_col), w age (0..1).
+instance uniform vec4 person = vec4(0.0);
 
 varying flat int v_kind;
 varying vec3 v_rest;
@@ -147,6 +155,14 @@ void vertex() {
 	float core = 1.0 - smoothstep(0.15, 0.25, abs(r.x));
 	float front = mix(0.55, 1.0, smoothstep(-0.02, 0.10, -r.z));
 	VERTEX += NORMAL * skin_col.w * 0.055 * band * core * front;
+	// Wave S: women's silhouette: a bust (front of the chest either side of
+	// the sternum) and fuller hips, so a woman does not read as a man in a skirt.
+	if (person.x > 0.0) {
+		float bx = abs(r.x) - 0.075;
+		float bust = (1.0 - smoothstep(0.0, 0.06, length(vec2(bx * 1.2, r.y - 1.255)))) * smoothstep(0.0, 0.06, -r.z);
+		float hips = smoothstep(0.86, 0.94, r.y) * (1.0 - smoothstep(0.96, 1.04, r.y)) * smoothstep(0.08, 0.15, abs(r.x));
+		VERTEX += NORMAL * person.x * (0.042 * bust + 0.018 * hips);
+	}
 	// Head build: the skinned head moves rigidly, so a push along the
 	// skinned normal masked in rest space reshapes it per person (one mesh,
 	// many faces): jaw and cheeks, nose, brow ridge, hair mass.
@@ -181,7 +197,15 @@ vec3 bump(vec3 n, vec3 pos, float h) {
 	vec3 r2 = cross(n, dpdx);
 	float det = dot(dpdx, r1);
 	vec3 g = sign(det) * (dFdx(h) * r1 + dFdy(h) * r2);
-	return normalize(abs(det) * n - g);
+	vec3 r = abs(det) * n - g;
+	// Wave S: sliver triangles of the remeshed head (tiny det) gave NaN or
+	// flipped normals: white glints and black dots on civilians' faces.
+	float len2 = dot(r, r);
+	if (!(len2 > 1e-20) || isnan(len2) || isinf(len2)) {
+		return n;
+	}
+	r *= inversesqrt(len2);
+	return dot(r, n) > 0.25 ? r : n;
 }
 
 void fragment() {
@@ -240,7 +264,10 @@ void fragment() {
 	float hairness = 0.0;
 	if ((reg == 0 || reg == 2) && p.y > 1.46) {
 		float dark = 1.0 - smoothstep(0.22 * sl, 0.5 * sl, tl);
-		float facebox = (1.0 - smoothstep(0.052, 0.062, abs(rel.x))) * (1.0 - smoothstep(0.072, 0.082, rel.y)) * (1.0 - smoothstep(0.04, 0.05, rel.z));
+		// Wave S: deep enough to hold the mouth and eye-socket interiors (dark
+		// texels behind the face surface were classed hair and pushed shell
+		// shards out through the lips and eye corners).
+		float facebox = (1.0 - smoothstep(0.052, 0.062, abs(rel.x))) * (1.0 - smoothstep(0.072, 0.082, rel.y)) * (1.0 - smoothstep(0.085, 0.1, rel.z));
 		hairness = dark * (1.0 - facebox) * smoothstep(1.46, 1.50, p.y);
 		hairness = max(hairness, smoothstep(1.695, 1.72, p.y));
 		if (p.z - head_centre.z > 0.02) {
@@ -269,8 +296,12 @@ void fragment() {
 	float ao = 1.0;
 	vec3 nmap = vec3(0.5, 0.5, 1.0);
 	float nmap_depth = 0.0;
+	float wet_eye = 0.0;
 	if (reg == 4 && abs(pants_col.w - 1.0) < 0.5 && p.y < 0.50) {
 		reg = 0; // shorts: bare lower legs
+	}
+	if (reg == 4 && person.z > 0.5 && person.z < 1.5) {
+		reg = 0; // wave S: bare legs under a skirt
 	}
 	bool tee_only = false;
 	if (reg == 1 && tee_col.w > 0.5) {
@@ -304,11 +335,24 @@ void fragment() {
 			// The authored face paint carries its modelled shading (sockets,
 			// cheekbones, lips): blend it over the procedural tone, features fully.
 			float face_box = (1.0 - smoothstep(0.06, 0.085, abs(rel.x))) * smoothstep(-0.11, -0.09, rel.y) * (1.0 - smoothstep(0.1, 0.12, rel.y)) * (1.0 - smoothstep(0.05, 0.08, rel.z));
-			float use_tex = clamp(max(max(max(eyes * 0.9, mouth * 0.75), dark_feat), face_box * 0.55), 0.0, 1.0) * face_k * (1.0 - hairness);
 			// Wave R: the painted brows are solid black bars; lift them toward
 			// the hair colour over skin so they read as hair, not ink.
 			float browb = (1.0 - smoothstep(0.008, 0.02, abs(rel.y - 0.056))) * (1.0 - smoothstep(0.055, 0.07, abs(rel.x)));
-			vec3 tb = tex * ratio * 0.95;
+			// Wave S: a tone far from the authored one (most civilians) maps the
+			// face paint by LUMINANCE only: tex * ratio blew bright atlas islands
+			// to white shards and left dark islands as dots on the cheeks. Dark
+			// paint is kept only where features are (eyes, brows, nostrils, mouth).
+			float far_tone = max(smoothstep(0.06, 0.25, length(ratio - vec3(1.0))), civ_face);
+			float rl = tl / max(sl, 0.001);
+			float nostril = (1.0 - smoothstep(0.012, 0.024, abs(rel.x))) * (1.0 - smoothstep(0.006, 0.012, abs(rel.y + 0.006)));
+			float feat_mask = clamp(max(max(eyes, browb), max(mouth, nostril)), 0.0, 1.0);
+			dark_feat *= mix(1.0, feat_mask, far_tone);
+			float use_tex = clamp(max(max(max(eyes * 0.9, mouth * 0.75), dark_feat), face_box * 0.55), 0.0, 1.0) * face_k * (1.0 - hairness);
+			vec3 tb = mix(tex * ratio, skin_tone * clamp(mix(1.0, rl, mix(1.0, 0.75, (1.0 - feat_mask) * far_tone)), 0.28, 1.1), far_tone) * 0.95;
+			// Defined eyes: painted lashes and irises stay a deep brown-black
+			// (finer and darker for women: a lash line), not tone-scaled skin.
+			float eye_dark = eyes * (1.0 - smoothstep(0.38, 0.7, rl)) * (1.0 - hairness);
+			tb = mix(tb, vec3(0.016, 0.011, 0.008) * (0.7 + 0.6 * rl), eye_dark * (0.75 + 0.25 * person.x));
 			// Wave R2: brows as combed strands (fine slanted hairs over skin),
 			// not a painted bar: each strand runs up and out from the nose.
 			float sdir = abs(rel.x) * 1.0 + (rel.y - 0.056) * 2.4;
@@ -319,7 +363,7 @@ void fragment() {
 			float bcore = 1.0 - smoothstep(0.004, 0.014, abs(rel.y - 0.056 + 0.08 * (abs(rel.x) - 0.03)));
 			float hairy = smoothstep(0.3, 0.72, strands) * (1.0 - brow_gap * 0.6) * mix(0.55, 1.0, bcore) * (1.0 - smoothstep(0.045, 0.066, abs(rel.x)) * 0.5);
 			vec3 brow_hair = mix(skin_tone * 0.7, hair_col.rgb * 1.3 + skin_tone * 0.05, hairy);
-			tb = mix(tb, brow_hair, browb * 0.88 * (1.0 - smoothstep(0.1, 0.3, lum(tb))));
+			tb = mix(tb, brow_hair, browb * 0.88 * (1.0 - smoothstep(0.1, 0.3, lum(tb))) * mix(1.0, 0.65 * bcore, person.x));
 			col = mix(col, tb, use_tex);
 			col = mix(col, col * vec3(0.93, 0.74, 0.72), mouth * 0.45 * face_k);
 			float fk = face_k * (1.0 - hairness);
@@ -335,7 +379,9 @@ void fragment() {
 			float jy = -0.008 - 0.2 * abs(rel.x);
 			float jaw = (1.0 - smoothstep(jy - 0.014, jy + 0.004, rel.y)) * smoothstep(-0.1, -0.086, rel.y) * (1.0 - smoothstep(0.065, 0.085, abs(rel.x)));
 			float lips = (1.0 - smoothstep(0.022, 0.03, abs(rel.x))) * (1.0 - smoothstep(0.006, 0.01, abs(rel.y + 0.029)));
-			float stub_mask = jaw * (1.0 - lips) * face_col.x * fk;
+			float stub_mask = jaw * (1.0 - lips) * face_col.x * fk * (1.0 - person.x);
+			// Wave S: lip colour (women), a rose tint over the authored lips.
+			col = mix(col, col * vec3(1.02, 0.66, 0.7), lips * person.y * fk * 0.8);
 			float dots = smoothstep(0.45, 0.75, hash13(floor(p * 1400.0)));
 			float stub = stub_mask * mix(0.5, 0.25 + 0.75 * dots, fine_k);
 			col = mix(col, col * vec3(0.30, 0.29, 0.32), stub * 0.88);
@@ -358,9 +404,13 @@ void fragment() {
 			rough = mix(rough, mix(0.6, 0.38 + 0.22 * vnoise(p * 180.0), sk), face_k);
 			rough = mix(rough, 0.32, (1.0 - smoothstep(0.0, 0.03, length(rel.xy))) * 0.6 * fk); // oily nose
 			spec = mix(spec, 0.42, face_k);
+			// Wave S: wet eyes catch a highlight (glossy where the lashes/irises are).
+			wet_eye = eye_dark * fk * (1.0 - smoothstep(0.004, 0.012, abs(rel.y - 0.04)));
+			rough = mix(rough, 0.18, wet_eye);
+			spec = mix(spec, 0.6, wet_eye);
 			sss = mix(sss, 0.38 * sk, face_k);
 			nmap = texture(normal_tex, UV).rgb;
-			nmap_depth = 0.45 * smoothstep(1.53, 1.57, p.y) * (1.0 - hairness);
+			nmap_depth = 0.45 * smoothstep(1.53, 1.57, p.y) * (1.0 - hairness) * (1.0 - 0.9 * civ_face);
 			h += stub * (dots - 0.5) * 0.00025 * fine_k + (vnoise(p * 900.0) - 0.5) * 0.00012 * fine_k * face_k - crease * 0.0009 - flines * 0.0003;
 		}
 	} else if (reg == 2) {
@@ -455,7 +505,9 @@ void fragment() {
 		vec2 ap = vec2(abs(p.x) - 0.17, p.y - 1.30);
 		float ar = length(ap);
 		float ang = atan(ap.y, ap.x);
-		float armpit = smoothstep(0.015, 0.04, ar) * (1.0 - smoothstep(0.10, 0.17, ar)) * step(abs(p.x), 0.19);
+		// Wave S: the radial armpit drag lines read as a sunburst on the chest
+		// from the front; they stay on the side panels near the armpit.
+		float armpit = smoothstep(0.015, 0.04, ar) * (1.0 - smoothstep(0.06, 0.1, ar)) * step(abs(p.x), 0.19) * smoothstep(0.25, 0.6, tw3.x);
 		float f1 = sin(p.y * 80.0 + nz * 6.0 + az * 3.0) * waist;
 		float f2 = sin(u * 70.0 + nz * 5.0 + p.y * 9.0) * drape;
 		float f3 = sin(p.y * 85.0 - abs(p.x) * 40.0 + nz * 4.0) * sleeve;
@@ -540,6 +592,14 @@ void fragment() {
 		rough = reg == 1 ? 0.86 + 0.08 * vnoise(p * 90.0) : 0.9;
 		spec = 0.26;
 		rim = 0.16;
+	} else if (reg == 4 && person.z > 1.5) {
+		// Wave S: sheer tights under a skirt: the skin shows through at the
+		// knees and shins where the fabric stretches, a soft satin sheen.
+		float stretch = smoothstep(0.35, 0.55, p.y) * (1.0 - smoothstep(0.55, 0.7, p.y));
+		col = mix(pants_col.rgb, skin_tone * 0.45, 0.18 + 0.2 * stretch) * (0.94 + 0.12 * vnoise(p * 300.0));
+		rough = 0.42;
+		spec = 0.45;
+		rim = 0.3;
 	} else if (reg == 4) {
 		float dl = 1.0;
 		if (has_fabrics) {
@@ -597,24 +657,46 @@ void fragment() {
 	} else if (debug_mode == 2) {
 		col = vec3(float(reg & 1), float((reg >> 1) & 1), float((reg >> 2) & 1)) * 0.6 + 0.1;
 	}
+	if (civ_face > 0.5 && p.y > 1.44) {
+		// Wave S: the civilian head's remeshed slivers carry vertex normals
+		// that disagree with their own triangle (white glints and dark
+		// specks over the nose and cheeks); trust the true surface there.
+		vec3 geo = normalize(cross(dFdx(VERTEX), dFdy(VERTEX)));
+		if (dot(geo, VIEW) < 0.0) {
+			geo = -geo;
+		}
+		float agree = dot(normalize(NORMAL), geo);
+		NORMAL = normalize(mix(geo, NORMAL, smoothstep(0.55, 0.85, agree)));
+	}
 	NORMAL = bump(NORMAL, VERTEX, h);
 	if (debug_mode == 4) {
 		EMISSION = NORMAL * 0.5 + 0.5;
 		col = vec3(0.0);
 	}
 	ALBEDO = col;
-	ROUGHNESS = clamp(rough, 0.05, 1.0);
+	// Wave S: ROUGHNESS only drives the ambient/GI reflection here (light()
+	// below uses l_rough for the sun and lamps). Glossy skin sampled the
+	// SDFGI/sky reflection as white glints and specks over civilians' noses,
+	// lids and lips; reflections stay broad, direct highlights stay sharp.
+	ROUGHNESS = clamp(max(rough, 0.6), 0.05, 1.0);
 	SPECULAR = spec;
 	METALLIC = 0.0;
 	AO = ao;
 	AO_LIGHT_AFFECT = 0.45;
 	NORMAL_MAP = nmap;
 	NORMAL_MAP_DEPTH = nmap_depth;
-	SSS_STRENGTH = sss;
+	// Wave S: Godot's screen-space skin scattering smeared the lit cheek over
+	// the nose and lid edges of the coarse civilian head (white flecks and
+	// brown specks at every depth step); civilians keep the wrapped-Lambert
+	// soft terminator from light() instead.
+	SSS_STRENGTH = sss * (1.0 - civ_face);
 	RIM = rim;
 	RIM_TINT = 0.75;
 	l_wrap = reg == 0 ? 0.45 : (reg == 2 ? 0.25 : 0.3);
-	l_rough = clamp(rough, 0.05, 1.0);
+	// Wave S: the civilian remesh's facial micro-facets threw pin-sharp sun
+	// and lamp glints (white shards over the nose, cheeks and lids): its skin
+	// keeps a broad sheen, only the wet eye line stays glossy.
+	l_rough = clamp(reg == 0 ? mix(rough, max(rough, 0.55), civ_face * (1.0 - wet_eye)) : rough, 0.05, 1.0);
 	l_spec = spec;
 }
 
@@ -754,7 +836,100 @@ static func _apply(model: Node, role: String) -> MeshInstance3D:
 	for i in target.get_surface_override_material_count():
 		target.set_surface_override_material(i, null)
 	target.material_override = null
+	if role == "civilian":
+		_add_head_backfill(target, entry)
 	return target
+
+# --- Civilian head backfill (wave S) ----------------------------------------
+# The decimated civilian head is a cracked soup (T-junction gaps of 2-4 mm
+# that the 1.6 mm weld cannot close; about half its face edges are open).
+# Through the cracks the camera saw the background: white flecks against a
+# bright shopfront, black specks against a dark one. The head's back faces,
+# drawn once more in a dim skin tone, fill every crack with the inside of
+# the head instead. Head triangles only (~1.5k), near people only.
+const BACKFILL_RANGE := 14.0
+const BACKFILL_SHADER := """
+shader_type spatial;
+render_mode cull_front, diffuse_burley, specular_disabled;
+instance uniform vec4 skin_col = vec4(0.3, 0.18, 0.12, 0.0);
+void fragment() {
+	ALBEDO = (skin_col.x < 0.0 ? vec3(0.3, 0.18, 0.12) : skin_col.rgb) * 0.88;
+	ROUGHNESS = 0.8;
+	// Lit as if facing the camera (it stands in for the missing front face).
+	NORMAL = VIEW;
+}
+"""
+static var _backfill_mat: ShaderMaterial
+
+static func _backfill_mesh(entry: Dictionary) -> ArrayMesh:
+	if entry.has("backfill"):
+		return entry["backfill"]
+	var mesh: ArrayMesh = entry["mesh"]
+	var a := mesh.surface_get_arrays(0)
+	var v: PackedVector3Array = a[Mesh.ARRAY_VERTEX]
+	var n: PackedVector3Array = a[Mesh.ARRAY_NORMAL]
+	var bones: PackedInt32Array = a[Mesh.ARRAY_BONES]
+	var weights: PackedFloat32Array = a[Mesh.ARRAY_WEIGHTS]
+	var idx: PackedInt32Array = a[Mesh.ARRAY_INDEX]
+	var c0: PackedFloat32Array = a[Mesh.ARRAY_CUSTOM0]
+	var bpv := bones.size() / maxi(v.size(), 1)
+	var remap := {}
+	var ov := PackedVector3Array()
+	var on := PackedVector3Array()
+	var ob := PackedInt32Array()
+	var ow := PackedFloat32Array()
+	var oi := PackedInt32Array()
+	for t in idx.size() / 3:
+		var keep := true
+		for k in 3:
+			var i := idx[t * 3 + k]
+			if v[i].y < 1.43 or (c0.size() > i * 4 + 1 and c0[i * 4 + 1] > 0.5):
+				keep = false
+				break
+		if not keep:
+			continue
+		for k in 3:
+			var i := idx[t * 3 + k]
+			if not remap.has(i):
+				remap[i] = ov.size()
+				ov.append(v[i])
+				on.append(n[i])
+				ob.append_array(bones.slice(i * bpv, i * bpv + bpv))
+				ow.append_array(weights.slice(i * bpv, i * bpv + bpv))
+			oi.append(remap[i])
+	var out := ArrayMesh.new()
+	if oi.size() >= 3:
+		var arrays := []
+		arrays.resize(Mesh.ARRAY_MAX)
+		arrays[Mesh.ARRAY_VERTEX] = ov
+		arrays[Mesh.ARRAY_NORMAL] = on
+		arrays[Mesh.ARRAY_BONES] = ob
+		arrays[Mesh.ARRAY_WEIGHTS] = ow
+		arrays[Mesh.ARRAY_INDEX] = oi
+		out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {}, Mesh.ARRAY_FLAG_USE_8_BONE_WEIGHTS if bpv == 8 else 0)
+	entry["backfill"] = out
+	return out
+
+static func _add_head_backfill(target: MeshInstance3D, entry: Dictionary) -> void:
+	var bm := _backfill_mesh(entry)
+	if bm.get_surface_count() == 0 or target.get_parent() == null:
+		return
+	if _backfill_mat == null:
+		var sh := Shader.new()
+		sh.code = BACKFILL_SHADER
+		_backfill_mat = ShaderMaterial.new()
+		_backfill_mat.shader = sh
+	var mi := MeshInstance3D.new()
+	mi.name = "LookHeadBackfill"
+	mi.mesh = bm
+	mi.material_override = _backfill_mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mi.visibility_range_end = BACKFILL_RANGE
+	target.get_parent().add_child(mi)
+	mi.transform = target.transform
+	mi.skin = target.skin
+	mi.skeleton = target.skeleton
+	target.set_meta("backfill", mi)
 
 static func _surface_kind(mat: Material) -> int:
 	var n := String(mat.resource_name) if mat != null else ""
@@ -1342,6 +1517,24 @@ static func _build(src: ArrayMesh, rig: Dictionary = {}) -> Dictionary:
 				c3.append_array(c3.slice(i * 4, i * 4 + 4))
 			for i in hair_tris:
 				indices.append(remap[i])
+	# Wave S (bake r1s): the decimated civilian remesh has a few triangles
+	# wound against their neighbours (folds round the nose, lids and lips).
+	# Back-face culling dropped them, so the face showed holes: the bright
+	# background and the inside of the head read as white shards and brown
+	# specks at 1-3 m. Rewind every triangle whose winding disagrees with its
+	# smoothed vertex normals (Godot front faces wind clockwise).
+	var rewound := 0
+	for t in indices.size() / 3:
+		var ia: int = indices[t * 3]
+		var ib: int = indices[t * 3 + 1]
+		var ic: int = indices[t * 3 + 2]
+		var fnrm := (verts[ib] - verts[ia]).cross(verts[ic] - verts[ia])
+		var vn := norms[ia] + norms[ib] + norms[ic]
+		if fnrm.length_squared() > 1e-14 and fnrm.normalized().dot(vn.normalized()) > 0.15:
+			indices[t * 3 + 1] = ic
+			indices[t * 3 + 2] = ib
+			rewound += 1
+	print("[character-look] rewound ", rewound, " of ", indices.size() / 3, " triangles")
 	var arrays := []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = verts
@@ -1406,7 +1599,7 @@ static func _make_material(albedo: Texture2D, normal: Texture2D, params: Diction
 # stored next to the provider rigs under a new filename. The game only loads
 # it; a missing or stale bake falls back to the runtime build with a warning.
 ## Bump whenever _build/_classify/_rig change what they produce.
-const BAKE_VERSION := "r1e"
+const BAKE_VERSION := "r1s"
 const BAKE_DIR := "res://assets/providers/baked_characters/"
 
 static func baked_path(src_path: String) -> String:
@@ -1473,6 +1666,8 @@ static func _load_baked(src: ArrayMesh, src_path: String) -> Dictionary:
 	for k in info["params"]:
 		var a: Array = info["params"][k]
 		params[k] = Vector3(a[0], a[1], a[2]) if float(a[3]) > 0.5 else float(a[0])
+	if src_path.get_file().begins_with("civilian"):
+		params["civ_face"] = 1.0
 	var material := _make_material(albedo, normal, params)
 	mesh.surface_set_material(0, material)
 	var regions := PackedInt32Array(info["regions"])
@@ -1728,6 +1923,105 @@ static func civilian_outfit(seed_value: int) -> Dictionary:
 		"head_shape": Vector4(rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0), rng.randf_range(-0.8, 1.0), rng.randf_range(0.5, 1.9)),
 	}
 
+## Wave S: absolute skin tones (sRGB) for CrowdPeople.SKIN_TONES, which are
+## multipliers on the provider texture (Chinese x3, Malay x2, Indian x2, Eurasian).
+const PEOPLE_SKINS := [
+	Color(0.90, 0.75, 0.63), Color(0.86, 0.69, 0.56), Color(0.80, 0.62, 0.49),
+	Color(0.68, 0.49, 0.36), Color(0.60, 0.42, 0.30),
+	Color(0.47, 0.31, 0.21), Color(0.39, 0.25, 0.17),
+	Color(0.92, 0.77, 0.67),
+]
+const PEOPLE_GREY := Color(0.46, 0.45, 0.44)
+
+## Wave S: the street-life person `p` (CrowdPeople.person()) on top of a
+## civilian look outfit: skin tone, hair colour and grey, women's faces (no
+## stubble, lip colour, finer features), dresses, bare legs or tights under a
+## skirt, elders' creases, children's shorts. Returns a new outfit.
+static func person_outfit(p: Dictionary, base: Dictionary) -> Dictionary:
+	var o := base.duplicate()
+	var h := int(p.get("seed", 0))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(h * 7 + 3)
+	var kind := int(p.get("kind", 0))
+	var female := bool(p.get("female", false))
+	var elder := kind == 2 or kind == 3
+	var child := kind == 4
+	# Skin: the same ethnic mix street-life picked, as an absolute tone.
+	var tone: Color = p.get("skin", Color(1, 1, 1))
+	var si := 1
+	for i in CrowdPeople.SKIN_TONES.size():
+		if (CrowdPeople.SKIN_TONES[i] as Color).is_equal_approx(tone):
+			si = i
+			break
+	var skin: Color = PEOPLE_SKINS[si]
+	var j := rng.randf_range(0.96, 1.03)
+	skin = Color(skin.r * j, skin.g * j, skin.b * j)
+	var girth: float = (o["skin_col"] as Vector4).w
+	if female or child:
+		girth = minf(girth, 0.15) - 0.1
+	var sl := skin.srgb_to_linear()
+	o["skin_col"] = Vector4(sl.r, sl.g, sl.b, girth)
+	# Hair: women and elders carry the colour of their generated hair.
+	var hc: Vector4 = o["hair_col"]
+	var hair_rgb := Color(hc.x, hc.y, hc.z).linear_to_srgb()
+	var grey := 0.0
+	if female or child:
+		hair_rgb = p.get("hair_colour", hair_rgb)
+	if elder:
+		grey = rng.randf_range(0.6, 1.0)
+		if female:
+			hair_rgb = p.get("hair_colour", PEOPLE_GREY)
+	var buzz := 2.0 if (not female and not elder and hc.w >= 1.5) else 0.0
+	o["hair_col"] = _v4(hair_rgb, grey + buzz)
+	var fc: Vector4 = o["face_col"]
+	var stubble := fc.x
+	var creases := fc.y
+	if female or child:
+		stubble = 0.0
+	if child:
+		creases = 0.0
+	elif elder:
+		creases = rng.randf_range(0.75, 1.0)
+	o["face_col"] = Vector4(stubble, creases, rng.randf_range(0.4, 0.9) if female else fc.z, 0.0 if female else fc.w)
+	var hs: Vector4 = o["head_shape"]
+	if female or child:
+		# Hair volume low: the generated street-life hairstyle sits over it.
+		hs = Vector4(rng.randf_range(-1.0, -0.45), rng.randf_range(-0.9, -0.3), rng.randf_range(-0.8, -0.3), 0.4 if (female and String(p.get("hair", "")) != "") else 1.0)
+	o["head_shape"] = hs
+	# Clothes: women mostly wear a plain or striped top (no chest pockets),
+	# a dress is one colour top and skirt; bare legs or tights under a skirt.
+	var legs := 0.0
+	if female and not child:
+		var sc: Vector4 = o["shirt_col"]
+		if int(sc.w + 0.5) in [5, 7] or rng.randf() < 0.55:
+			o["tee_col"] = Vector4(sc.x, sc.y, sc.z, 1.0)
+			o["shirt_col"] = Vector4(sc.x, sc.y, sc.z, 1.0 if rng.randf() < 0.25 else 0.0)
+	if bool(p.get("dress", false)):
+		var dc: Color = p.get("dress_colour", Color(0.5, 0.5, 0.5))
+		o["shirt_col"] = _v4(dc, 0.0)
+		o["tee_col"] = _v4(dc, 1.0)
+	var skirt := bool(p.get("skirt", false))
+	if skirt:
+		var lc: Color = p.get("legs", Color(-1, 0, 0))
+		if lc.r < 0.0:
+			legs = 1.0
+		else:
+			legs = 2.0
+			o["pants_col"] = _v4(lc, 0.0)
+	elif child and rng.randf() < 0.5:
+		var pc: Vector4 = o["pants_col"]
+		o["pants_col"] = Vector4(pc.x, pc.y, pc.z, 1.0)
+	var lips := 0.0
+	if female:
+		lips = 0.25 if (elder or child) else rng.randf_range(0.4, 0.85)
+	var age := 0.0
+	if elder:
+		age = rng.randf_range(0.6, 1.0)
+	elif not child:
+		age = rng.randf_range(0.0, 0.35)
+	o["person"] = Vector4(1.0 if female else 0.0, lips, legs, age)
+	return o
+
 ## The headless (dummy) renderer re-parses the shader on every per-instance
 ## parameter write (~45 ms each), so headless runs keep the outfit data on the
 ## CharacterVisual only; nothing is drawn there anyway.
@@ -1736,9 +2030,13 @@ static var _headless := DisplayServer.get_name() == "headless"
 static func set_outfit(mi: MeshInstance3D, outfit: Dictionary) -> void:
 	if _headless:
 		return
-	for key in ["shirt_col", "shirt_col2", "tee_col", "pants_col", "shoe_col", "skin_col", "hair_col", "face_col", "head_shape"]:
+	for key in ["shirt_col", "shirt_col2", "tee_col", "pants_col", "shoe_col", "skin_col", "hair_col", "face_col", "head_shape", "person"]:
 		if outfit.has(key):
 			mi.set_instance_shader_parameter(key, outfit[key])
+	if mi.has_meta("backfill") and outfit.has("skin_col"):
+		var bf := mi.get_meta("backfill") as MeshInstance3D
+		if is_instance_valid(bf):
+			bf.set_instance_shader_parameter("skin_col", outfit["skin_col"])
 
 ## A short signature of an outfit, used by the regression to count distinct looks.
 static func outfit_signature(outfit: Dictionary) -> String:

@@ -154,7 +154,10 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 	var range_hair := 60.0
 	if hair != "":
 		var hmat: Material = _cloth_material(p["hair_colour"]) if hair == "cap" else _hair_material(p["hair_colour"], int(p["seed"]))
-		var hn := _attach(sk, "head", _hair_mesh(hair), hmat, Transform3D(Basis(), HEAD_C), range_hair, false)
+		# Wave S: over the look mesh's own hair shells the style sits a little
+		# fuller, or a pixie/bob vanished inside the short authored cut.
+		var hb := Basis().scaled(Vector3(1.08, 1.05, 1.08)) if cv.look_mesh != null and hair != "cap" else Basis()
+		var hn := _attach(sk, "head", _hair_mesh(hair), hmat, Transform3D(hb, HEAD_C + (Vector3(0, 0.004, 0.003) if cv.look_mesh != null else Vector3.ZERO)), range_hair, false)
 		hn.name = "PeopleHair"
 	if skirt:
 		var col: Color = p["dress_colour"]
@@ -188,6 +191,9 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 			var canopy := _attach_posed(sk, "hand.l", _misc("umbrella"), _cloth_material(col_u, true),
 				Basis(Vector3.BACK, 0.22) * Basis(Vector3.RIGHT, 0.3), Vector3(-0.015, 0.0, 0.0), 40.0, true)
 			canopy.name = "PeopleUmbrella"
+			# Wave S: a zero-thickness canopy leaked sun through its shadow
+			# (bright flecks on the face beneath); both sides now cast.
+			canopy.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
 		"handbag":
 			var hb := _attach(sk, "chest", _misc("handbag"), _plain(p["prop_colour"], 0.45, 0.0), Transform3D(Basis(), Vector3(0.0, 0.0, 0.0)), 45.0, false)
 			hb.name = "PeopleHandbag"
@@ -241,6 +247,19 @@ static func _attach_posed(sk: Skeleton3D, bone: String, mesh: Mesh, mat: Materia
 	return mi
 
 static func _retint(cv: CharacterVisual, p: Dictionary, skirt: bool) -> void:
+	# Wave S (characters): a civilian on the region-aware look mesh has no
+	# named provider surfaces; the person is written as look-shader instance
+	# parameters (skin, hair, face, dress, legs under a skirt, age).
+	if cv.look_mesh != null:
+		var q := p.duplicate()
+		q["skirt"] = skirt
+		cv.outfit = CharacterLook.person_outfit(q, cv.outfit)
+		CharacterLook.set_outfit(cv.look_mesh, cv.outfit)
+		# The NPC widened every mesh's draw range; the head backfill stays near.
+		var bf = cv.look_mesh.get_meta("backfill", null)
+		if bf is MeshInstance3D and is_instance_valid(bf):
+			(bf as MeshInstance3D).visibility_range_end = CharacterLook.BACKFILL_RANGE
+		return
 	if _skin_shader == null:
 		_skin_shader = Shader.new()
 		_skin_shader.code = SKIN_SHADER
@@ -465,6 +484,9 @@ static func _hair_mesh(style: String) -> Mesh:
 			_blob(st, Vector3(0.0, 0.085, 0.085), 0.052)
 		"perm": _shell(st, 1.95, 1.7, 1.02, 1.14, 1.0)
 		"cap": _cap(st)
+	# Wave S: weld shared corners so the hair shades smoothly (it was flat
+	# faceted, a stair of lit and dark quads round the head).
+	st.index()
 	st.generate_normals()
 	var m := st.commit()
 	_hair_meshes[style] = m
@@ -617,8 +639,8 @@ static func _misc(id: String) -> Mesh:
 static func _skirt_mesh() -> Mesh:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var seg := 32
-	var rows := 6
+	var seg := 48
+	var rows := 10
 	var q := func(i: int, j: int) -> Vector3:
 		var t := float(j) / rows
 		var a := float(i) / seg * TAU
@@ -641,6 +663,7 @@ static func _skirt_mesh() -> Mesh:
 		var a1 := q.call(i + 1, 0) as Vector3
 		var cc := Vector3(0.0, WAIST_Y, 0.04)
 		_tri(st, cc, a1, a0, Vector2(0.5, 0.0), Vector2(0.5, 0.0), Vector2(0.5, 0.0))
+	st.index()
 	st.generate_normals()
 	return st.commit()
 
