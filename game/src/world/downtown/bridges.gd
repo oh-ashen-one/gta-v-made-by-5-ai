@@ -61,7 +61,10 @@ static func height_at(x: float, z: float) -> float:
 		var excess := absf(-rx * d.z + rz * d.x) - float(p["w"])
 		var k := 1.0
 		if excess > 0.0:
-			if excess >= FALLOFF:
+			# downtown-fill (wave T): the Jubilee footbridge lands on the
+			# Esplanade waterfront without lifting the paving beside it (the
+			# lateral blend twisted the promenade setts into a warped hump)
+			if excess >= FALLOFF or p["name"] == "jubilee_bridge":
 				continue
 			k = 0.5 * (1.0 + cos(PI * excess / FALLOFF))
 		best = maxf(best, profile_h(p, t) * k)

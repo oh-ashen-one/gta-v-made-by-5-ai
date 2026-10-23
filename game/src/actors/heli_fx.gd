@@ -46,45 +46,56 @@ var _shadow_ground_ok := false  # integ-P: solid ground (not the bay) within dow
 
 const DISC_SHADER := """
 shader_type spatial;
-// Wave P round 2: the swept disc is an UNSHADED light-grey veil (alpha
-// 0.15-0.40) so it can never turn into a dark wedge/ellipse over the water or
-// a sunlit cream plate in low sun. Its pattern depends on radius only (fine
-// concentric blade-tip streaks plus a very soft 2-lobe blade hint), so there
-// is no straight radial edge and no frame-to-frame strobing.
+// downtown-fill (wave T): the swept disc reads as a motion-blurred rotor with
+// blade streaks in every chase frame (critic S: "the rotor is nearly
+// invisible, flat translucent discs"). Each blade is a dark leading smear with
+// an exponential motion-blur trail behind it (a camera shutter's view of a
+// fast rotor), over a faint swept veil with fine concentric tip streaks and a
+// brighter tip-path ring. The pattern rotates slowly (phase) like a filmed
+// rotor; edge-on the disc keeps a visible swept arc.
 render_mode blend_mix, unshaded, depth_draw_never, cull_disabled, shadows_disabled;
 uniform float spin = 1.0;
 uniform float phase = 0.0;
 uniform float blades = 4.0;
 uniform vec3 tint : source_color = vec3(0.10, 0.10, 0.11);
-uniform vec3 veil_col : source_color = vec3(0.80, 0.82, 0.84);
+uniform vec3 veil_col : source_color = vec3(0.66, 0.68, 0.70);
+uniform vec3 blade_col : source_color = vec3(0.13, 0.135, 0.145);
 uniform float hub = 0.08;
 uniform float near_fade = 2.5;
+uniform float trail = 0.32;
 varying vec2 lp;
 void vertex() { lp = VERTEX.xz; }
 float hash(float x) { return fract(sin(x * 127.1) * 43758.5453); }
 void fragment() {
 	float r = length(lp);
 	if (r > 1.0) { discard; }
-	float span = smoothstep(hub + 0.02, hub + 0.18, r) * (1.0 - smoothstep(0.93, 1.0, r));
+	float span = smoothstep(hub + 0.02, hub + 0.16, r) * (1.0 - smoothstep(0.95, 1.0, r));
 	// concentric motion streaks: thin rings of slightly varying density
 	float ring = r * 46.0;
 	float rs = hash(floor(ring)) * (1.0 - abs(fract(ring) - 0.5) * 2.0);
 	float streak = 0.05 * rs * smoothstep(0.25, 0.9, r);
-	// soft blade hint: a smooth cosine, never a hard edge (amplitude < 0.03)
-	float a = atan(lp.y, lp.x) + phase;
-	float hint = 0.025 * (0.5 + 0.5 * cos(a * blades * 0.5)) * smoothstep(0.3, 0.9, r);
+	// blade smears: leading edge sharp-ish, blur trail behind it
+	float a = atan(lp.y, lp.x) - phase;
+	float rel = fract(-a * blades / 6.2831853);   // body at the leading edge, trail behind
+	float chord = 0.085 / max(r, 0.2);           // blade chord as a period fraction (wider at the root)
+	float body = 1.0 - smoothstep(chord * 0.6, chord * 1.4, rel);
+	float smear = exp(-rel / trail) * (1.0 - body);
+	float lead = smoothstep(0.985, 1.0, rel);      // soft leading edge
+	float blade = clamp(body * 0.95 + smear * 0.80 + lead * 0.35, 0.0, 1.0);
+	blade *= smoothstep(hub, hub + 0.1, r) * (1.0 - smoothstep(0.96, 1.0, r));
+	// streaks within the smear follow the radius (blade surface detail)
+	blade *= 0.85 + 0.3 * rs;
 	// tip-path band where the blade tips run
-	float tip = 0.06 * smoothstep(0.82, 0.92, r) * (1.0 - smoothstep(0.95, 1.0, r));
-	// integ-P seam: lighter veil (helicopter-P2: 0.15-0.40 washed the airframe out
-	// 2-3.5x and read as a milky slab edge-on) and thinner when seen edge-on.
-	float alpha = clamp(0.08 + 0.04 * r + streak + hint + tip, 0.06, 0.24) * span * spin;
-	alpha *= mix(0.22, 1.0, smoothstep(0.04, 0.40, abs(dot(NORMAL, VIEW))));
+	float tip = 0.08 * smoothstep(0.86, 0.93, r) * (1.0 - smoothstep(0.96, 1.0, r));
+	float veil = clamp(0.04 + 0.03 * r + streak * 0.7 + tip, 0.04, 0.16);
+	float alpha = clamp(veil + blade * 0.72, 0.0, 0.82) * span * spin;
+	alpha *= mix(0.35, 1.0, smoothstep(0.04, 0.40, abs(dot(NORMAL, VIEW))));
 	// a blade sweeping past the camera must not fill the lens
 	alpha *= mix(0.35, 1.0, smoothstep(near_fade, near_fade + 3.0, length(VERTEX)));
 	// visible rotor head
 	float hubcap = 1.0 - smoothstep(hub * 0.75, hub * 1.02, r);
 	alpha = max(alpha, hubcap * 0.97 * step(0.02, spin));
-	vec3 c = veil_col * (0.92 + 0.10 * rs);
+	vec3 c = mix(veil_col * (0.92 + 0.10 * rs), blade_col, clamp(blade * 1.4, 0.0, 1.0));
 	ALBEDO = mix(c, tint, hubcap);
 	ALPHA = clamp(alpha, 0.0, 0.97);
 }

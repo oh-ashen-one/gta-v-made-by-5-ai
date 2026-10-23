@@ -89,6 +89,15 @@ thins to a quarter (`downtown/aerial_light.gd`). Downtown glass dims its sky ref
 towers keep a lit and a shade side from the air. Marina Centre wears dark glass, bronze and granite first.
 `--planting-off`, `--tower-shadows-off`, `--aerial-light-off`, `--facade-sun-off` restore the wave-M look for A/B.
 
+Downtown fill (opus55 downtown-fill, wave T): every downtown lawn shares one procedural lawn shader (4.5 m mowing stripes
+whose direction changes per 90 m tile, sun-dried and worn patches, fine mottling up close); the lawns carry a mixed park
+canopy (rain tree, angsana, tembusu, flowering flame tree and shrub masses) planted from a world-space density field, so
+groves alternate with glades no wider than a block (no treeless 48 m lawn cell); the Flyer forecourt becomes lawn panels
+between paved walks; podium and mid-rise roofs get coloured membranes and plant (condensers, cooling towers, tanks, solar
+arrays, roof gardens). Arrival points are dressed: MBS drop-off courts with fountains and royal palms, NS Square masts,
+cafe terrace and kiosks, a Merlion Park cart. The helicopter rotor disc draws four dark blade smears with a motion-blur
+trail over a faint swept veil. `--fill-off` restores the wave-S lawn and removes canopy, roofs and plaza dressing for A/B.
+
 ## Camera treatment
 
 - Third-person over-the-shoulder: camera 1.62 m, lateral offset 0.85 m, arm 4.6 m (2.2 m aiming), so the character never sits on the reticle.

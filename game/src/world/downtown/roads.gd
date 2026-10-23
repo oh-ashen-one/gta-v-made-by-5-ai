@@ -412,6 +412,12 @@ static func _signals(m) -> void:
 		m.world._traffic_light(Vector3(p.x + r, 0.16, p.z + r), 1)
 	m.stats["signals"] = done.size() * 2
 
+## Plate length world_builder._street_blade() gives a name (same formula).
+static func _blade_len(text: String) -> float:
+	var font: Font = ThemeDB.fallback_font
+	var text_w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 40).x if font != null else 40.0 * 0.6 * text.length()
+	return clampf(text_w * 0.0052 + 0.36, 1.9, 2.6)
+
 ## Street-name blades (white on blue, real road names as public wayfinding
 ## facts) at every downtown junction, and bus shelters on the arterials.
 static func street_furniture(m) -> void:
@@ -436,7 +442,13 @@ static func street_furniture(m) -> void:
 			var road_key: String = j["roads"][n]
 			var d: Vector3 = j["dirs"][n]
 			var text := road_key.replace("_", " ").capitalize().replace("Quay", "Quay")
-			m.world._street_blade(pole + Vector3(0.0, 2.95 - n * 0.35, 0.0), absf(d.x) > absf(d.z), text)
+			# downtown-fill (wave T): the blade hangs beside the pole (the pole ran
+			# through the middle of the plate and cut the lettering)
+			var along_x := absf(d.x) > absf(d.z)
+			var hang := _blade_len(text) * 0.5 + 0.07
+			var off := Vector3(hang, 0.0, 0.0) if along_x else Vector3(0.0, 0.0, hang)
+			m.world._street_blade(pole + Vector3(0.0, 2.95 - n * 0.35, 0.0) + off, along_x, text)
+			m.world._box(Vector3(0.14, 0.05, 0.05) if along_x else Vector3(0.05, 0.05, 0.14), pole + Vector3(0.0, 3.1 - n * 0.35, 0.0) + off.normalized() * 0.07, post_mat)
 	# bus shelters on the bay-side footways of the arterials running along x
 	for key: String in ["bayfront_avenue", "bayfront_avenue_north", "esplanade_drive", "collyer_quay", "marina_way", "anson_road"]:
 		var pts: Array = DowntownPlan.ROADS[key]["pts"]

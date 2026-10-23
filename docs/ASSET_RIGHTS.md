@@ -185,3 +185,19 @@ use; procedural shrub clumps replace it when absent). No new imported, generated
 material; GTA V references set the quality bar only.
 
 opus55 wave-S integrator (2026-10-23): no new art assets. Original code/shader edits only: `crowd_director.gd` (walk/plaza lines checked for ground), `dt_ground_shadow.gdshader` (depth-tested ground decal; manifest hash updated), `aerial_light.gd` (overlay fades with altitude), `ambient_traffic.gd` (downtown lanes follow the bridge deck profile), `ambient_vehicle.gd` (brake lamps seated on the provider body surface from its own vertices; the provider car rows are unchanged).
+
+## Wave T downtown-fill (Opus 5.5, 2026-10-23)
+
+New original code and procedural geometry only: `game/src/world/downtown/fill.gd` (lawn/keep-out rasters, park canopy
+placement, Flyer forecourt lawn panels), `canopy.gd` (generated lobed-crown tree meshes in five species with a near and a
+far LOD and a procedural foliage shader), `lawn.gd` (procedural lawn shader: mowing stripes, dry/worn patches, mottling),
+`roofs.gd` (roof membranes, condensers, cooling towers, tanks, solar arrays, penthouses, roof gardens from box/cylinder
+primitives), `plazas.gd` (MBS arrival courts with fountains, NS Square masts / cafe terrace / kiosks, Merlion Park cart,
+Esplanade planters: generated primitives and an eight-panel parasol, flat colours; the only text is generic wayfinding
+"TAXI" and "MERLION PARK / WATERFRONT"), `fill_capture.gd` (QA views), `downtown_tests/fill_test.gd`, and a rewritten rotor
+disc shader in `game/src/actors/heli_fx.gd` (blade smears). It reuses existing project assets only: the authored
+`palm.glb` and `fern.glb` (see their rows). Shop and tower names that echoed real chains or buildings were renamed to
+original fictional ones (e.g. "SALAD STOP" -> "GREEN BOWL CO", "BOOKS KINOKUNI" -> "LANTERN BOOKS", "OCEAN FINANCIAL
+HOUSE" -> "TIDEWATER HOUSE"); real place and landmark names stay as geography. No imported, generated-by-provider or
+third-party assets; no Rockstar material; GTA V references set the quality bar only. Recorded in `docs/asset-manifest.csv`
+under `OPUS55-DOWNTOWN-FILL`.

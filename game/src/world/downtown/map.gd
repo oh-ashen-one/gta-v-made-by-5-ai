@@ -87,6 +87,8 @@ func finish(w: WorldBuilder) -> void:
 	if ts != null and ts.mesh != null and ts.mesh.surface_get_material(0) is ShaderMaterial:
 		overlay.append(ts.mesh.surface_get_material(0) as ShaderMaterial)
 	stats["aerial_light"] = load("res://src/world/downtown/aerial_light.gd").attach(w, overlay) != null
+	# downtown-fill (wave T): park canopy, roof plant, plaza dressing
+	stats["fill"] = load("res://src/world/downtown/fill.gd").finish(w, root)
 	w.set_meta("downtown_map_stats", stats)
 
 # ------------------------------------------------------------ materials
@@ -104,7 +106,7 @@ func mat(key: String) -> Material:
 		"pavers_bridge": m = Palette.mat_textured(Color(0.60, 0.58, 0.55), "pavers", Vector3.ONE, 0.9)
 		"plaza": m = Palette.mat_textured(Color(0.50, 0.52, 0.55), "pavers", Vector3.ONE, 0.9)
 		"plot": m = Palette.mat_textured(Color(0.60, 0.62, 0.64), "pavers", Vector3.ONE, 0.9, 0.0, false)   # cool granite setts (weathered tint read as dirt from the air)
-		"turf": m = Palette.mat_textured(Color(0.24, 0.33, 0.16), "soil", Vector3.ONE, 0.95)
+		"turf": m = DowntownLawn.or_default(Palette.mat_textured(Color(0.24, 0.33, 0.16), "soil", Vector3.ONE, 0.95))
 		"kerb": m = Palette.mat_textured(Color(0.72, 0.70, 0.65), "concrete", Vector3.ONE, 0.88)
 		"granite": m = Palette.mat_textured(Color(0.43, 0.42, 0.40), "concrete", Vector3.ONE, 0.9)
 		"granite_coping": m = Palette.mat_textured(Color(0.52, 0.51, 0.48), "concrete", Vector3.ONE, 0.85)

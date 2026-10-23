@@ -27,6 +27,18 @@ static func _label(parent: Node3D, text: String, pos: Vector3, facing: Vector2, 
 	parent.add_child(l)
 	return l
 
+## downtown-fill (wave T): rendered width of a label in font pixels, and the
+## largest pixel size (<= want) that keeps it inside `room` metres.
+static func text_width(text: String, size_px: int) -> float:
+	var font: Font = ThemeDB.fallback_font
+	var w := 0.0
+	for line in text.split("\n"):
+		w = maxf(w, font.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, size_px).x if font != null else size_px * 0.62 * line.length())
+	return w
+
+static func fit_pixel(text: String, size_px: int, want: float, room: float) -> float:
+	return minf(want, room / maxf(text_width(text, size_px), 1.0))
+
 ## Covered walkway along segment a->b. out = unit normal toward the road.
 ## attached: canopy cantilevers from a facade (columns only on the kerb
 ## side); free: a stand-alone linkway with columns on both sides.
@@ -78,10 +90,10 @@ static func entrance(det: Batch, labels: Node3D, c: Vector2, out: Vector2, gy: f
 	# name monolith beside the drop-off
 	var m := c + out * (depth + 3.0) + along * (w * 0.5 + 3.0)
 	det.box("granite", Vector3(4.6, 1.5, 0.7), Transform3D(basis, Vector3(m.x, gy + 0.75, m.y)))
-	_label(labels, title, Vector3(m.x + out.x * 0.37, gy + 0.85, m.y + out.y * 0.37), out, 64, 0.0105, Color(0.93, 0.86, 0.66))
+	_label(labels, title, Vector3(m.x + out.x * 0.37, gy + 0.85, m.y + out.y * 0.37), out, 64, fit_pixel(title, 64, 0.0105, 4.1), Color(0.93, 0.86, 0.66))
 	# name on the canopy fascia too (readable from the road)
 	var f := c + out * (depth + 0.02)
-	_label(labels, title, Vector3(f.x, gy + hh + 0.02, f.y), out, 72, 0.012, Color(0.95, 0.95, 0.93), true)
+	_label(labels, title, Vector3(f.x, gy + hh + 0.02, f.y), out, 72, fit_pixel(title, 72, 0.012, w - 1.2), Color(0.95, 0.95, 0.93), true)
 
 ## Shop signs along a facade a->b (above the canopy) with lit lettering.
 static func shop_signs(det: Batch, labels: Node3D, a: Vector2, b: Vector2, out: Vector2, gy: float, y: float, names: Array, rng: RandomNumberGenerator, start: int) -> int:
@@ -100,8 +112,11 @@ static func shop_signs(det: Batch, labels: Node3D, a: Vector2, b: Vector2, out: 
 		var t := (float(i) + 0.5) / float(n)
 		var q := a + dir * L * t + out * 0.18
 		var sw := rng.randf_range(4.0, 7.0)
+		# downtown-fill (wave T): the plate always holds its lettering
+		var shop_name := String(names[used % names.size()])
+		sw = maxf(sw, text_width(shop_name, 56) * 0.0085 + 0.8)
 		det.box("sign_dark", Vector3(sw, 0.85, 0.14), Transform3D(basis, Vector3(q.x, gy + y, q.y)))
-		_label(labels, String(names[used % names.size()]), Vector3(q.x + out.x * 0.09, gy + y, q.y + out.y * 0.09), out, 56, 0.0085,
+		_label(labels, shop_name, Vector3(q.x + out.x * 0.09, gy + y, q.y + out.y * 0.09), out, 56, 0.0085,
 			[Color(1.0, 0.92, 0.75), Color(0.85, 0.95, 1.0), Color(1.0, 0.55, 0.40), Color(0.75, 1.0, 0.82)][used % 4], true)
 		used += 1
 	return used

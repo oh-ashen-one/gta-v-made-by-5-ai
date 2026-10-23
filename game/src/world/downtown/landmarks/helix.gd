@@ -224,7 +224,8 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 		var sign := Label3D.new()
 		sign.text = "HELIX BRIDGE"
 		sign.font_size = 96
-		sign.pixel_size = 0.01
+		# downtown-fill (wave T): lettering fits the 2.6 m plate
+		sign.pixel_size = load("res://src/world/downtown/block_kits/frontage_kit.gd").fit_pixel("HELIX BRIDGE", 96, 0.01, 2.3)
 		sign.modulate = Color(0.9, 0.88, 0.82)
 		sign.position = end_p + Vector3(off * 0.35, 3.2, 0.0)
 		sign.rotation.y = -PI * 0.5 if off < 0.0 else PI * 0.5

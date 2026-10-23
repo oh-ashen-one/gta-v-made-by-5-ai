@@ -323,6 +323,7 @@ const PIECE_TESTS := [
 	"res://src/systems/downtown_tests/blocks_test.gd",
 	"res://src/systems/downtown_tests/street_life_test.gd",
 	"res://src/systems/downtown_tests/polish_test.gd",
+	"res://src/systems/downtown_tests/fill_test.gd",
 ]
 ## Legacy builder sections a piece may take over via replaces(). WorldBuilder
 ## skips a section only when some present piece lists its key.
