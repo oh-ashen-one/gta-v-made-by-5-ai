@@ -30,9 +30,10 @@ render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_sc
 uniform sampler2D roof_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D roof_nrm : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform float has_roof_tex = 0.0;
-uniform float interior_energy = 0.55;
-uniform float lobby_energy = 1.6;
-uniform float reflect_metal = 0.55;
+uniform float interior_energy = 0.20;
+uniform float lobby_energy = 0.55;
+uniform float reflect_metal = 0.08;
+uniform float reflect_strength = 1.0;
 
 varying vec3 wpos;
 varying vec3 wn;
@@ -80,7 +81,7 @@ vec3 room(vec2 p, vec3 v, float rs, float office, vec3 wall_c) {
 	if (t == ty && v.y > 0.0) {
 		// ceiling: office panel lights in a grid, dark in between
 		float grid = band(hp.x * 2.0, 0.15, 0.85, 0.02) * band(hp.z * 3.0, 0.2, 0.8, 0.02);
-		c = mix(vec3(0.20, 0.20, 0.21), vec3(1.0, 0.97, 0.90) * (1.2 + office), grid * office);
+		c = mix(vec3(0.16, 0.16, 0.17), vec3(1.0, 0.97, 0.90) * (0.9 + office * 0.8), grid * office);
 		c = mix(c, vec3(0.55, 0.52, 0.47), 1.0 - office);
 	} else if (t == ty) {
 		// floor: carpet, a desk silhouette near the window
@@ -185,13 +186,13 @@ void fragment() {
 			frame_c = lin(vec3(0.66, 0.69, 0.70));
 			glass_frac_x = 0.95; glass_y0 = 0.24;
 		} else if (cid == 1) {
-			solid_c = lin(mix(vec3(0.70, 0.64, 0.56), vec3(0.62, 0.60, 0.58), tint));
+			solid_c = lin(mix(vec3(0.60, 0.55, 0.50), vec3(0.50, 0.49, 0.48), tint));
 			glass_c = lin(vec3(0.13, 0.16, 0.18));
 			frame_c = lin(vec3(0.25, 0.25, 0.26));
 			glass_frac_x = 0.55; glass_y0 = 0.30; glass_y1 = 0.86;
 		} else if (cid == 2) {
-			solid_c = lin(vec3(0.80, 0.81, 0.80));
-			glass_c = lin(mix(vec3(0.24, 0.32, 0.40), vec3(0.30, 0.36, 0.42), tint));
+			solid_c = lin(vec3(0.70, 0.72, 0.73));
+			glass_c = lin(mix(vec3(0.20, 0.28, 0.38), vec3(0.26, 0.32, 0.40), tint));
 			frame_c = lin(vec3(0.78, 0.79, 0.79));
 			glass_frac_x = 0.97; glass_y0 = 0.32; glass_y1 = 0.96;
 		} else if (cid == 3) {
@@ -200,7 +201,7 @@ void fragment() {
 			frame_c = lin(vec3(0.12, 0.11, 0.10));
 			glass_frac_x = 0.80; glass_y0 = 0.20;
 		} else if (cid == 4) {
-			solid_c = lin(mix(vec3(0.84, 0.84, 0.82), vec3(0.76, 0.78, 0.80), tint));
+			solid_c = lin(mix(vec3(0.74, 0.75, 0.75), vec3(0.64, 0.67, 0.70), tint));
 			glass_c = lin(vec3(0.17, 0.22, 0.26));
 			frame_c = lin(vec3(0.55, 0.56, 0.57));
 			glass_frac_x = 0.72; glass_y0 = 0.30; glass_y1 = 0.90;
@@ -290,13 +291,31 @@ void fragment() {
 		float see = (1.0 - fres) * (1.0 - cell_far * 0.6) * 0.85;
 		// pillowed panes: each pane tilts a little so the sky reflection breaks up
 		nmap_t = vec3((h2(cell * 1.7 + seed) - 0.5) * 0.06, (h2(cell * 3.1 - seed) - 0.5) * 0.05, 0.0) * pane;
+		// ---- reflection of sky, haze and the surrounding city (emissive, so
+		// glass stays bright at grazing angles instead of mirroring the dark
+		// below-horizon sky); per-pane tilt breaks it up
+		vec3 nt = normalize(n + t * nmap_t.x + vec3(0.0, nmap_t.y, 0.0));
+		vec3 R = reflect(V, nt);
+		float az = atan(R.z, R.x);
+		float skyl = 0.03 + 0.16 * vnoise(vec2(az * 7.0 + seed * 3.0, 1.7)) * step(0.35, vnoise(vec2(az * 3.0 - seed, 4.1)));
+		vec3 sky_hi = vec3(0.30, 0.46, 0.80);
+		vec3 sky_hz = vec3(0.88, 0.87, 0.84);
+		vec3 env = mix(sky_hz, sky_hi, smoothstep(skyl, 0.75, R.y));
+		// reflected towers / street below the reflected skyline
+		float bstripe = vnoise(vec2(az * 40.0, R.y * 60.0 + seed));
+		vec3 city = mix(vec3(0.20, 0.23, 0.26), vec3(0.55, 0.53, 0.50), vnoise(vec2(az * 11.0 + seed, 2.0))) * (0.75 + 0.35 * bstripe);
+		env = mix(city, env, smoothstep(skyl - 0.02, skyl + 0.02, R.y));
+		env = mix(env, vec3(0.18, 0.18, 0.19), smoothstep(-0.05, -0.4, R.y));
+		float refl_w = (0.16 + 0.70 * fres) * reflect_strength * (is_lobby ? 0.45 : 1.0);
+		vec3 refl = env * mix(vec3(1.0), glass_c * 3.2, 0.35) * refl_w;
 		// ---- combine
 		vec3 frame_mix = mix(base, frame_c, clamp(mull + transom + slab, 0.0, 1.0));
 		alb = mix(frame_mix, glass_c, pane);
 		rough = mix(cid == 1 || cid == 7 ? 0.75 : (cid >= 8 ? 0.88 : 0.45), 0.06 + 0.04 * r, pane);
 		metal = mix((cid == 2 || cid == 4 || cid == 5) ? 0.35 : 0.0, reflect_metal, pane);
-		spec = mix(0.5, 0.9, pane);
-		emis = interior * pane * see;
+		spec = mix(0.5, 0.6, pane);
+		alb = mix(alb, alb * 0.45, pane);
+		emis = (interior * see + refl) * pane;
 		// lobby: dark bronze kick plate + plinth
 		if (y < 0.45) {
 			alb = lin(vec3(0.20, 0.19, 0.18)); rough = 0.6; metal = 0.0; emis = vec3(0.0);

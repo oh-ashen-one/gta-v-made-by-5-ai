@@ -295,7 +295,7 @@ func _building(block_name: String, det: Batch, k: MeshKit, lot: Rect2, rng: Rand
 	for s in sides:
 		lot_sides.append(s)
 	var styles := [0, 1, 2, 3, 4, 5, 6, 7]
-	var clads := [0, 1, 2, 3, 7, 4, 5]
+	var clads := [0, 3, 0, 5, 2, 7, 1, 3]
 	match kind:
 		"mbfc_tower":
 			clads = [5, 0, 2, 3]
@@ -415,7 +415,7 @@ func _plaza(det: Batch, k: MeshKit, r: Rect2, rng: RandomNumberGenerator) -> voi
 	det.box_at("shrub_light", Vector3(33.0, 0.12, 61.0), Vector3(c.x, GY + 0.48, c.y + 6.0))
 	# ring of rain trees in tree grates
 	for i in 12:
-		var a := TAU * float(i) / 12.0
+		var a := TAU * (float(i) + 0.5) / 12.0
 		var q := c + Vector2(cos(a) * 30.0, sin(a) * 52.0)
 		_tree_xf.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * rng.randf_range(0.85, 1.05)), FrontageKit.planter_tree(det, q, GY)))
 	# MRT entrance pavilions (glass canopy over a stair down, red roundel)
