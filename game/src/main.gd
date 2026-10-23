@@ -265,6 +265,18 @@ func _ready() -> void:
 		dt_review.setup(self, player, world, traffic, dt_dir)
 		return
 
+	if "--traffic-review" in args:
+		# traffic-flow (wave T): live junction footage + junction metrics.
+		var tr_dir := "user://traffic_review"
+		for arg in args:
+			if arg.begins_with("--capture-dir="): tr_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		var tr_review: Node = _qa_system("res://src/systems/traffic_review.gd")
+		add_child(tr_review)
+		tr_review.setup(self, player, traffic, tr_dir)
+		return
+
 	if "--drive-showcase" in args:
 		# Chase-cam driving footage (opus55 driving piece, drive_showcase.gd).
 		var show_dir := "user://drive_showcase"

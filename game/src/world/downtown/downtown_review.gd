@@ -430,6 +430,12 @@ func _drive_leg() -> void:
 				stall_for = 0.0
 			stall_for += dt
 		else:
+			# traffic-flow (T): log every wait of 5 s or more and what held us.
+			if stall_for > 5.0:
+				var why := "?"
+				if is_instance_valid(stall_node):
+					why = traffic.ambient.chain_desc(stall_node) if stall_node is AmbientVehicle and traffic.ambient != null else "%s%s" % [stall_node.get_class(), str(stall_node.global_position.round())]
+				_log("waited %.1f s at %s behind %s" % [stall_for, str(car.global_position.round()), why.left(400)])
 			blocked_t = 0.0
 			stall_for = 0.0
 		# A street-life car that has sat stalled in front of us for 40 s with

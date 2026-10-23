@@ -13,6 +13,7 @@ extends Node3D
 
 const POOL := 112
 const DtBridges := preload("res://src/world/downtown/bridges.gd")
+const Rules := preload("res://src/systems/traffic_rules.gd")
 const LANE_OFFSETS: Array[float] = [4.6, 2.3]   # kerb lane (slow), median lane
 const ENTRY := 11.0      # lane starts this far past a junction centre
 const STOP := 12.0       # stop line this far before the next junction centre
@@ -65,8 +66,10 @@ func setup(t: TrafficManager) -> void:
 	nodes = t.nodes.duplicate()
 	_rng.seed = Game.seed_value + 77
 	_build_edges()
+	_legacy_count = nodes.size()
 	if t.world != null:
 		adopt_downtown(t.world.downtown_graph)
+	annotate_rules()
 	# Street-life D: no procedural box buses (critic: "box-primitive buses read
 	# as blockouts"); the stream is the provider sedan/coupe/van art.
 	var kinds := ["sedan", "taxi", "sedan", "coupe", "van", "sedan", "taxi", "coupe", "sedan", "van", "taxi", "sedan"]
@@ -213,7 +216,149 @@ func _lane_for(e: int, lane: int) -> int:
 	return mini(lane, (edges[e]["offs"] as Array).size() - 1)
 
 func _signal_ok(e: int) -> bool:
-	return not bool(edges[e]["signal"]) or traffic.signal_allows(edges[e]["dir"])
+	if int(edges[e].get("control", Rules.CONTROL_SIGNAL if edges[e]["signal"] else Rules.CONTROL_NONE)) != Rules.CONTROL_SIGNAL:
+		return true
+	return traffic.signal_allows(edges[e]["dir"])
+
+# ------------------------------------------------- road rules (traffic-flow T)
+## See traffic_rules.gd. Per directed edge: "clear" keep-clear intervals
+## (zebras) in s, "hold" (front-bumper hold line just behind the painted stop
+## line), "exit_clear" (the rear of a car that stops after entering this edge
+## must be past it: past the exit-side zebra), "control" (none / signal /
+## major / give way). Per node: "box" half size of the junction box.
+var _legacy_count := 25
+var _node_box: Dictionary = {}       # node index -> junction box half size (m)
+var _in_edges: Dictionary = {}       # node index -> Array[int] of incoming edges
+var _yield_t: Dictionary = {}        # AmbientVehicle -> seconds waiting at a give-way line
+var _last_leader: AmbientVehicle = null
+## QA A/B switch: `--traffic-rules=off` restores the wave-S behaviour (the
+## zebras are still mapped, so the census audit can count stops on them).
+var rules_on := not ("--traffic-rules=off" in OS.get_cmdline_user_args())
+
+func annotate_rules() -> void:
+	var zs: Array = Rules.zebras()
+	var lit: Array[Vector3] = Rules.signalled_points()
+	_in_edges.clear()
+	for e in edges.size():
+		var to := int(edges[e]["to"])
+		if not _in_edges.has(to):
+			_in_edges[to] = []
+		(_in_edges[to] as Array).append(e)
+	var rank: Array[float] = []
+	for e in edges.size():
+		var ed: Dictionary = edges[e]
+		rank.append(Rules.road_rank(ed["a"], ed["b"]) if ed.get("dt", false) else 116.0)
+	var counts := {"signal": 0, "major": 0, "yield": 0, "none": 0, "zebra_edges": 0}
+	for e in edges.size():
+		var ed: Dictionary = edges[e]
+		var length := float(ed["len"])
+		var clear: Array[Vector2] = Rules.clear_intervals(ed["a"], ed["dir"], ed["left"], length, zs)
+		# Keep only zebras on the drivable stretch (not inside the junction boxes).
+		var kept: Array[Vector2] = []
+		for iv in clear:
+			if iv.y > 0.5 and iv.x < length - 0.5:
+				kept.append(iv)
+		ed["clear"] = kept
+		if not kept.is_empty():
+			counts["zebra_edges"] += 1
+		var s_end := _s_end(e)
+		var hold := s_end + 1.75
+		var exit_clear := _entry(e)
+		for iv in kept:
+			if iv.y > length - 34.0 and iv.x - 0.6 < hold:
+				hold = maxf(_entry(e) + 4.0, iv.x - 0.6)
+			if iv.x < _entry(e) + 14.0 and iv.y < length * 0.5:
+				exit_clear = maxf(exit_clear, iv.y + 0.4)
+		if not rules_on:
+			hold = s_end + 1.75
+			exit_clear = _entry(e)
+		ed["hold"] = hold
+		ed["exit_clear"] = exit_clear
+		var control := Rules.CONTROL_NONE
+		if bool(ed["signal"]):
+			var to := int(ed["to"])
+			control = Rules.CONTROL_YIELD
+			if to < _legacy_count:
+				control = Rules.CONTROL_SIGNAL
+			else:
+				for p in lit:
+					if Vector2(p.x - nodes[to].x, p.z - nodes[to].z).length() < 8.0:
+						control = Rules.CONTROL_SIGNAL
+						break
+			if control == Rules.CONTROL_YIELD:
+				var best_other := -1.0
+				for o in _in_edges.get(to, []):
+					if int(o) != e and int(edges[o]["from"]) != int(ed["from"]):
+						best_other = maxf(best_other, rank[o])
+				if rank[e] >= best_other:
+					control = Rules.CONTROL_MAJOR
+		if not rules_on and control != Rules.CONTROL_NONE:
+			control = Rules.CONTROL_SIGNAL
+		ed["control"] = control
+		counts[["none", "signal", "major", "yield"][control]] += 1
+	# Short links into a junction (a bridge end or bend 10-20 m before the
+	# junction, e.g. the Esplanade Bridge -> Connaught Drive): there is no
+	# room to queue on the link itself, so the straight bend edge feeding it
+	# holds instead (its own stop line or zebra), and the link is driven
+	# through like part of the junction.
+	if rules_on:
+		for e in edges.size():
+			var ed: Dictionary = edges[e]
+			if int(ed["control"]) == Rules.CONTROL_NONE or float(ed["len"]) > 24.0:
+				continue
+			var link_control := int(ed["control"])
+			for i in _in_edges.get(int(ed["from"]), []):
+				var ei: Dictionary = edges[i]
+				if int(ei["control"]) != Rules.CONTROL_NONE or int(ei["from"]) == int(ed["to"]):
+					continue
+				if (ei["dir"] as Vector3).dot(ed["dir"]) < 0.9:
+					continue
+				ei["control"] = link_control
+				ei["proxy_to"] = int(ed["to"])
+				var h := _s_end(i) + 1.75
+				for iv: Vector2 in ei["clear"]:
+					if iv.y > float(ei["len"]) - 20.0:
+						h = minf(h, iv.x - 0.6)
+				ei["hold"] = h
+				ed["control"] = Rules.CONTROL_NONE
+				counts["proxied"] = int(counts.get("proxied", 0)) + 1
+	# Junction box half size: the widest road meeting at the node.
+	for n in _in_edges:
+		var w := 8.0
+		for e in _in_edges[n]:
+			var offs: Array = edges[e]["offs"]
+			w = maxf(w, float(offs[0]) + DT_LANE_W * 0.5 + 1.0)
+		_node_box[n] = w + 1.5
+	stats["rules"] = counts
+
+## Front-bumper hold line of edge e (just behind its stop line and zebra).
+func _hold(e: int) -> float:
+	return float(edges[e].get("hold", _s_end(e) + 1.75))
+
+## Give way: may a car at the line of a minor road enter the junction?
+## Not while another car is in the box or a priority-road car is about to
+## arrive. After GIVE_WAY_PATIENCE s only the box itself has to be clear.
+const GIVE_WAY_PATIENCE := 7.0
+func _give_way_blocked(v: AmbientVehicle, delta: float) -> bool:
+	var to := int(edges[v.edge].get("proxy_to", edges[v.edge]["to"]))
+	var node: Vector3 = nodes[to]
+	var box := float(_node_box.get(to, 10.0)) + 2.0
+	var waited: float = float(_yield_t.get(v, 0.0)) + delta
+	_yield_t[v] = waited
+	for u in vehicles:
+		if not u.active or u == v:
+			continue
+		var d := Vector2(u.global_position.x - node.x, u.global_position.z - node.z)
+		if absf(d.x) < box and absf(d.y) < box and u.edge != v.edge:
+			return true
+		if waited > GIVE_WAY_PATIENCE or u.speed < 1.5 or u.j_len > 0.0 and u.s < _entry(u.edge):
+			continue
+		if int(edges[u.edge]["to"]) == to and int(edges[u.edge].get("control", 0)) == Rules.CONTROL_MAJOR and u.edge != v.edge:
+			var to_line := _s_end(u.edge) - u.s
+			if to_line > -2.0 and to_line < 10.0 + u.speed * 2.6:
+				return true
+	_yield_t.erase(v)
+	return false
 
 func lane_point(e: int, lane: int, s: float) -> Vector3:
 	var ed: Dictionary = edges[e]
@@ -301,6 +446,35 @@ func _census() -> void:
 			near30 += 1
 		if d < 80.0 and v.speed > 1.0 and (d < 8.0 or rel.normalized().dot(_cam_fwd) > 0.25):
 			moving80 += 1
+	# traffic-flow (T): rule audit over every car the lens can see (120 m):
+	# standing on a zebra, standing inside a junction box, and the longest
+	# standstill that is not a red-light / give-way wait.
+	var zebra := 0
+	var boxed := 0
+	var stalled := 0.0
+	for v in vehicles:
+		if not v.active or v.speed > 0.3:
+			continue
+		var rel := v.global_position - _cam_pos
+		rel.y = 0.0
+		if rel.length() > 120.0:
+			continue
+		var in_box := v.j_len > 0.0 and v.s < _entry(v.edge)
+		if in_box:
+			boxed += 1
+		elif _on_zebra(v.edge, v.s, v.dims.z * 0.5):
+			zebra += 1
+			if _jam_debug:
+				print("[traffic-debug] ZEBRA %s" % chain_desc(v))
+		if v.idle_time > stalled:
+			stalled = v.idle_time
+	stats["zebra_stops"] = int(stats.get("zebra_stops", 0)) + zebra
+	stats["box_stops"] = int(stats.get("box_stops", 0)) + boxed
+	stats["max_idle_seen"] = maxf(float(stats.get("max_idle_seen", 0.0)), stalled)
+	if _jam_debug and stalled > 20.0:
+		for v in vehicles:
+			if v.active and v.idle_time > 20.0 and v.global_position.distance_to(_cam_pos) < 160.0 and int(v.idle_time) % 5 == 0:
+				print("[traffic-debug] JAM idle=%.0f %s" % [v.idle_time, chain_desc(v)])
 	stats["census_samples"] = int(stats.get("census_samples", 0)) + 1
 	if moving80 > 0:
 		stats["census_moving80"] = int(stats.get("census_moving80", 0)) + 1
@@ -311,11 +485,13 @@ func _census() -> void:
 		print("[traffic-census] t=%.0f cam=%s moving80=%d near30=%d active=%d" % [Time.get_ticks_msec() / 1000.0, str(_cam_pos.round()), moving80, near30, count_active()])
 
 var _census_log := "--traffic-census" in OS.get_cmdline_user_args()
+var _jam_debug := "--traffic-debug" in OS.get_cmdline_user_args()
 func _exit_tree() -> void:
 	if _census_log:
 		var n := maxi(1, int(stats.get("census_samples", 0)))
 		print("[traffic-census] summary samples=%d moving_within_80m=%.0f%% three_within_30m=%.0f%% mean_moving80=%.1f relocated=%d" % [n,
 			100.0 * int(stats.get("census_moving80", 0)) / n, 100.0 * int(stats.get("census_near30_3", 0)) / n, float(stats.get("census_moving80_sum", 0)) / n, int(stats["relocated"])])
+		print("[traffic-census] rules zebra_stops=%d box_stops=%d max_idle_seen=%.0f unstuck=%d rules=%s" % [int(stats.get("zebra_stops", 0)), int(stats.get("box_stops", 0)), float(stats.get("max_idle_seen", 0.0)), int(stats["unstuck"]), str(stats.get("rules", {}))])
 
 var _debug := "--street-debug" in OS.get_cmdline_user_args()
 var _prof := "--street-prof" in OS.get_cmdline_user_args()
@@ -518,7 +694,7 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 		var e := _pick_edge()
 		var ed: Dictionary = edges[e]
 		var lo: float = _entry(e) + 2.0
-		var hi: float = _s_end(e) - 4.0
+		var hi: float = minf(_s_end(e) - 4.0, _hold(e) - 3.5)
 		# Street-life D: half of the seeds of a cut go straight into the lane
 		# stretches the street-level lens is looking at.
 		if not hidden_only and not _view_spans.is_empty() and attempt < 12 and _rng.randf() < 0.5:
@@ -556,7 +732,7 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 		if v.kind == "bus" and lane == 1:
 			lane = 0
 			p = lane_point(e, lane, s)
-		if not _gap_free(e, lane, s):
+		if not _gap_free(e, lane, s) or _on_zebra(e, s, v.dims.z * 0.5):
 			continue
 		if _player_near(p, 18.0) or _in_opening_clear(p):
 			continue
@@ -590,6 +766,13 @@ func _gap_free(e: int, lane: int, s: float) -> bool:
 		if absf((other as AmbientVehicle).s - s) < MIN_GAP + 3.0:
 			return false
 	return true
+
+## Does a body centred at s (half length `half`) overlap a zebra of edge e?
+func _on_zebra(e: int, s: float, half: float) -> bool:
+	for iv: Vector2 in edges[e].get("clear", []):
+		if s + half > iv.x + 0.25 and s - half < iv.y - 0.25:
+			return true
+	return false
 
 func _in_opening_clear(p: Vector3) -> bool:
 	if traffic == null or traffic.world == null or not traffic.world.locations.has("player_start"):
@@ -718,24 +901,46 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 	var gap := _leader_gap(v, s_end)
 	target = minf(target, _stop_speed(gap - 3.0))
 	# 2. Signals: hold at the stop line unless already committed.
+	# traffic-flow (T): the hold line is the front bumper just behind the
+	# painted stop line and zebra (was the car centre 12.5 m from the junction
+	# centre on every road, which put queue heads on the crossing).
 	if v.s <= s_end:
 		var to_line := s_end - v.s
-		var committed := to_line < 3.5 and v.speed > 5.0
+		var front := v.s + v.dims.z * 0.5
+		var to_hold := _hold(v.edge) - front
+		var in_box := v.j_len > 0.0 and v.s < _entry(v.edge)
+		var committed := (to_hold < 1.2 and v.speed > 4.0) or to_hold < -0.6
 		# M2: a queue standing at a red light in front of a player-driven car
 		# is released (the light "changes" for the player's approach, as in
 		# GTA); cross traffic then holds for the player (_player_in_junction).
 		var release := _pc_active and _in_player_path(v.global_position, -v.global_transform.basis.z, 110.0)
+		var control := int(ed.get("control", 0))
 		if not _signal_ok(v.edge) and not committed and not release:
-			target = minf(target, _stop_speed(to_line - 0.5))
+			target = minf(target, _stop_speed(to_hold - 0.25))
 		# Keep the box clear: do not enter the junction unless the exit lane
-		# has room for this car on the far side.
+		# has room for this car past its exit-side zebra.
 		elif not committed and not release and v.next_edge >= 0 and _exit_room(v) < v.dims.z + 2.5:
-			target = minf(target, _stop_speed(to_line - 0.5))
+			target = minf(target, _stop_speed(to_hold - 0.25))
 		# Give way to a player-driven vehicle crossing or about to cross.
 		elif not committed and to_line < 30.0 and _player_in_junction(ed["b"], v):
-			target = minf(target, _stop_speed(to_line - 0.5))
+			target = minf(target, _stop_speed(to_hold - 0.25))
+		# A car ahead of us standing in the box (turning elsewhere, held by its
+		# own exit or a pedestrian): wait at the line, not on the zebra.
+		elif rules_on and not committed and not in_box and to_hold < 30.0 and _box_ahead_blocked(v, to_hold):
+			target = minf(target, _stop_speed(to_hold - 0.25))
+		# People on the crossing on the far side of the junction.
+		elif rules_on and not committed and not in_box and to_hold < 18.0 and _exit_zebra_busy(v):
+			target = minf(target, _stop_speed(to_hold - 0.25))
+		# Unsignalled junction, minor road: give way at the line.
+		elif control == Rules.CONTROL_YIELD and not committed and not release and not in_box and to_hold < 14.0 and _give_way_blocked(v, delta):
+			target = minf(target, _stop_speed(to_hold - 0.25))
 		if v.next_edge >= 0 and to_line < 22.0 and (edges[v.next_edge]["dir"] as Vector3).dot(ed["dir"]) < 0.5:
 			target = minf(target, 6.5)
+		# Keep zebras clear: never stop with the body on a crossing. A car
+		# whose leader is standing (or crawling) does not roll onto a zebra
+		# unless there is room for its whole length beyond it.
+		if not in_box:
+			target = minf(target, _keep_clear_target(v, front, gap))
 	else:
 		target = minf(target, 6.5 if v.j_len > 0.0 and absf((v.j_p2 - v.j_c).normalized().dot((v.j_c - v.j_p0).normalized())) < 0.5 else v.vmax)
 	# 3. People, the player and physics cars in the lane corridor ahead.
@@ -940,8 +1145,10 @@ func _leader_gap(v: AmbientVehicle, s_end: float) -> float:
 	var list: Array = _keys.get(v.edge * 2 + v.lane, [])
 	var idx := list.find(v)
 	var half := v.dims.z * 0.5
+	_last_leader = null
 	if idx >= 0 and idx < list.size() - 1:
 		var lead: AmbientVehicle = list[idx + 1]
+		_last_leader = lead
 		return lead.s - v.s - half - lead.dims.z * 0.5
 	if v.next_edge < 0:
 		return INF
@@ -949,6 +1156,7 @@ func _leader_gap(v: AmbientVehicle, s_end: float) -> float:
 	if nxt.is_empty():
 		return INF
 	var tail: AmbientVehicle = nxt[0]
+	_last_leader = tail
 	var through := float(edges[v.edge]["stop"]) + _entry(v.next_edge)
 	return (s_end - v.s) + through + (tail.s - _entry(v.next_edge)) - half - tail.dims.z * 0.5
 
@@ -972,14 +1180,114 @@ func _player_in_junction(node: Vector3, v: AmbientVehicle) -> bool:
 		return false
 	# A player queued behind this car is not crossing in front of it.
 	var rel := p - v.global_position
-	return rel.dot(-v.global_transform.basis.z) > 2.0
+	rel.y = 0.0
+	var fwd := -v.global_transform.basis.z
+	fwd.y = 0.0
+	fwd = fwd.normalized()
+	if rel.dot(fwd) <= 2.0:
+		return false
+	# traffic-flow (T): only a player in the box or in this car's own path
+	# (a player passing on the far carriageway held whole approaches for a
+	# minute: Esplanade Drive / Connaught Drive, Collyer Quay).
+	if absf(p.x - node.x) < 12.0 and absf(p.z - node.z) < 12.0:
+		return true
+	return absf(rel.dot(Vector3.UP.cross(fwd))) < 3.0
 
 func _exit_room(v: AmbientVehicle) -> float:
-	var nxt: Array = _keys.get(v.next_edge * 2 + _lane_for(v.next_edge, v.lane), [])
+	var ne := v.next_edge
+	var nxt: Array = _keys.get(ne * 2 + _lane_for(ne, v.lane), [])
+	var clear_from := maxf(_entry(ne), float(edges[ne].get("exit_clear", 0.0)))
 	if nxt.is_empty():
-		return INF
+		# A short link (<= 24 m): the room is what the road beyond it has left.
+		# Every way out of the link must have room (the onward turn is chosen
+		# only on the link, where there is no room left to wait).
+		var room := INF
+		if rules_on and float(edges[ne]["len"]) <= 24.0:
+			for n2 in _out_edges.get(int(edges[ne]["to"]), []):
+				if int(edges[n2]["to"]) == int(edges[ne]["from"]):
+					continue
+				var l2: Array = _keys.get(int(n2) * 2 + _lane_for(int(n2), v.lane), [])
+				if l2.is_empty():
+					continue
+				var t2: AmbientVehicle = l2[0]
+				room = minf(room, float(edges[ne]["len"]) + t2.s - t2.dims.z * 0.5 - maxf(clear_from, float(edges[n2].get("exit_clear", 0.0))))
+		return room
 	var tail: AmbientVehicle = nxt[0]
-	return tail.s - _entry(v.next_edge) - tail.dims.z * 0.5
+	return tail.s - clear_from - tail.dims.z * 0.5
+
+func _box_ahead_blocked(v: AmbientVehicle, to_hold: float) -> bool:
+	var n := v.obstacle_node
+	if v.obstacle_gap == INF or n == null or not is_instance_valid(n) or not n is AmbientVehicle:
+		return false
+	var a := n as AmbientVehicle
+	return a.speed < 3.0 and a.j_len > 0.0 and a.s < _entry(a.edge) and v.obstacle_gap > to_hold - 1.0
+
+## Speed cap that keeps the body of v off the next zebra ahead while the
+## traffic in front stands (see _drive).
+func _keep_clear_target(v: AmbientVehicle, front: float, gap: float) -> float:
+	var clear: Array = edges[v.edge].get("clear", [])
+	if not rules_on or clear.is_empty():
+		return INF
+	var lead := _last_leader
+	for iv: Vector2 in clear:
+		if iv.y <= front - v.dims.z:
+			continue          # already behind us
+		if front > iv.x + 0.05:
+			return INF        # already rolling over it: clear it
+		if iv.x - front > 45.0:
+			return INF
+		if gap < INF and (lead == null or lead.speed <= 3.0) and front + gap - iv.y < v.dims.z + 1.2:
+			return _stop_speed(iv.x - front - 0.35)
+		# Somebody on (or stepping onto) the crossing in our half of the road:
+		# stop at the zebra, not on it.
+		if iv.x - front < 22.0 and _person_on_zebra(v, v.edge, v.lane, iv):
+			return _stop_speed(iv.x - front - 0.35)
+		return INF
+	return INF
+
+## Is a pedestrian on the zebra interval iv of v's edge, within the half of
+## the carriageway v drives on (plus a step either side)?
+func _person_on_zebra(v: AmbientVehicle, e: int, lane: int, iv: Vector2) -> bool:
+	# A person who will not step clear stops counting after GIVE_UP * 1.5 s
+	# (as in _scan_obstacles), so a loiterer never freezes an approach.
+	if v.idle_time > GIVE_UP * 1.5:
+		return false
+	var ed: Dictionary = edges[e]
+	var mid := lane_point(e, lane, (iv.x + iv.y) * 0.5)
+	var cx := floori(mid.x / CELL)
+	var cz := floori(mid.z / CELL)
+	var a: Vector3 = ed["a"]
+	var lat0 := _off(e, lane)
+	for dx in [-1, 0, 1]:
+		for dz in [-1, 0, 1]:
+			for n in _grid.get(Vector2i(cx + dx, cz + dz), []):
+				if not is_instance_valid(n) or not n is NPC:
+					continue
+				var rel: Vector3 = (n as Node3D).global_position - a
+				var along: float = rel.dot(ed["dir"])
+				if along < iv.x - 0.6 or along > iv.y + 0.6:
+					continue
+				if absf(rel.dot(ed["left"]) - lat0) < 3.2:
+					# Waiting on them: they finish crossing briskly.
+					if v.speed < 0.5 and v.idle_time > 2.5 and fmod(v.idle_time, 1.5) < 0.05:
+						var fwd: Vector3 = ed["dir"]
+						(n as NPC).dodge_vehicle(v.global_position, fwd)
+					return true
+	return false
+
+## The zebra just past the junction on the way out (the start of the next
+## edge): is somebody on it in our lane? Then wait at the line, not on it.
+func _exit_zebra_busy(v: AmbientVehicle) -> bool:
+	var ne := v.next_edge
+	if ne < 0:
+		return false
+	var lane := _lane_for(ne, v.lane)
+	for iv: Vector2 in edges[ne].get("clear", []):
+		if iv.x > float(edges[ne].get("exit_clear", 0.0)) + 1.0:
+			break
+		if _person_on_zebra(v, ne, lane, iv):
+			return true
+	return false
 
 func _enter_junction(v: AmbientVehicle) -> void:
 	var overflow := v.s - _s_end(v.edge)
@@ -1105,6 +1413,18 @@ func _scan_obstacles(v: AmbientVehicle) -> float:
 					# _leader_gap, which follows the exit lane's queue.
 					var na := node as AmbientVehicle
 					if v.j_len > 0.0 and v.s < _entry(v.edge) and na.j_len > 0.0 and na.s < _entry(na.edge):
+						continue
+					# traffic-flow (T): a lane car whose centre is behind ours is
+					# never "ahead" (a follower nosed into our rear bumper held us
+					# while it waited for us: the Esplanade Bridge hold cycle).
+					var rel_c: Vector3 = node.global_position - here
+					if rel_c.x * fwd.x + rel_c.z * fwd.z < 0.3:
+						continue
+					# Oncoming lane traffic never holds us: on the Fullerton Road bends
+					# the two directions' corridors touch, and a westbound and an
+					# eastbound car each waited on the other (Collyer Quay tows, wave S).
+					var ob := -node.global_transform.basis.z
+					if ob.x * fwd.x + ob.z * fwd.z < -0.5:
 						continue
 					var ab := node.global_transform.basis
 					var abx := Vector3(ab.x.x, 0, ab.x.z).normalized() * ((node as AmbientVehicle).dims.x * 0.5)
