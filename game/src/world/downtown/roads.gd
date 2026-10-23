@@ -86,7 +86,7 @@ static func build(m) -> void:
 		var pts: Array = road["pts"]
 		var hw := half_width(key)
 		var skip := func(p: Vector3) -> bool:
-			return on_legacy_road(p.x, p.z, 0.5) or in_water(p.x, p.z)
+			return on_legacy_road(p.x, p.z, -0.2) or in_water(p.x, p.z)
 		_ribbon(m, "asphalt", pts, 0.0, hw, ROAD_TOP, skip, true, 0.6)
 		# footways both sides, open at the mouths of crossing roads
 		for side: float in [-1.0, 1.0]:
@@ -120,23 +120,34 @@ static func build(m) -> void:
 	_batch_marks(m, yellow, "paint_yellow")
 	_walks(m, rng)
 	_signals(m)
+	street_furniture(m)
 
 ## A surface ribbon along pts, offset `off` to the left of travel, half width
 ## hw, top `top` above Bridges.height_at(). Skipped samples split it into runs.
 ## Skirts drop each edge to the ground (they are the kerb faces of footways).
 static func _ribbon(m, key: String, pts: Array, off: float, hw: float, top: float, skip: Callable, collide: bool, thick: float, skirt_key: String = "") -> void:
 	var ss := samples(pts)
-	var prev: Array = []
 	var run: Array = []
 	var runs: Array = []
+	var last_bad := Vector3.INF
+	var last_bad_f := Vector3.ZERO
 	for s: Array in ss:
 		var p: Vector3 = s[0]
 		var f: Vector3 = s[1]
 		var c := p + left_of(f) * off
 		if skip.call(c):
+			if not run.is_empty():
+				# close the run exactly at the boundary (bisection), not on the 4 m grid
+				var good: Vector3 = run[run.size() - 1][0]
+				if good.distance_to(c) < STEP * 1.5 and f.dot(run[run.size() - 1][1]) > 0.99:
+					run.append([_edge(good, c, skip), f])
 			if run.size() >= 2: runs.append(run)
 			run = []
+			last_bad = c
+			last_bad_f = f
 			continue
+		if run.is_empty() and last_bad != Vector3.INF and last_bad.distance_to(c) < STEP * 1.5 and f.dot(last_bad_f) > 0.99:
+			run.append([_edge(c, last_bad, skip), f])
 		run.append([c, f])
 	if run.size() >= 2: runs.append(run)
 	for r: Array in runs:
@@ -217,6 +228,18 @@ static func _ribbon(m, key: String, pts: Array, off: float, hw: float, top: floa
 			var ctop := c2
 			ctop.y = Bridges.height_at(c2.x, c2.z) + top
 			m.col_box(Vector3(hw * 2.0, thick, hw * 2.0), ctop - Vector3(0, thick * 0.5, 0))
+
+## Boundary between a kept point and a skipped one, to ~3 cm.
+static func _edge(good: Vector3, bad: Vector3, skip: Callable) -> Vector3:
+	var a := good
+	var b := bad
+	for i in 7:
+		var mid := (a + b) * 0.5
+		if skip.call(mid):
+			b = mid
+		else:
+			a = mid
+	return a
 
 static func _flat_col(m, a: Vector3, b: Vector3, hw: float, top: float) -> void:
 	var ca := Vector3(a.x, top, a.z)
@@ -325,7 +348,7 @@ static func _walks(m, rng: RandomNumberGenerator) -> void:
 		var hw := float(walk["width"]) * 0.5
 		var legacy: Vector2 = walk.get("legacy_span_x", Vector2.ZERO)
 		var skip := func(p: Vector3) -> bool:
-			if legacy != Vector2.ZERO and p.x > legacy.x - 1.0 and p.x < legacy.y + 1.0:
+			if legacy != Vector2.ZERO and p.x > legacy.x + 0.4 and p.x < legacy.y - 0.4:
 				return true
 			return in_water(p.x, p.z) or on_road(p.x, p.z, "", 0.5) or on_legacy_road(p.x, p.z, 0.5)
 		_ribbon(m, "pavers_warm", pts, 0.0, hw, WALK_TOP, skip, true, 0.3, "granite_coping")
@@ -365,6 +388,46 @@ static func _signals(m) -> void:
 		m.world._traffic_light(Vector3(p.x - r, 0.16, p.z - r), 0)
 		m.world._traffic_light(Vector3(p.x + r, 0.16, p.z + r), 1)
 	m.stats["signals"] = done.size() * 2
+
+## Street-name blades (white on blue, real road names as public wayfinding
+## facts) at every downtown junction, and bus shelters on the arterials.
+static func street_furniture(m) -> void:
+	var post_mat := Palette.mat_textured(Palette.METAL_DARK, "metal", Vector3.ONE, 0.6, 0.4)
+	var done := {}
+	for j: Dictionary in junctions():
+		var p: Vector3 = j["pos"]
+		if on_legacy_road(p.x, p.z, 12.0) or not DowntownPlan.ROADS.has(j["roads"][0]) or not DowntownPlan.ROADS.has(j["roads"][1]):
+			continue
+		var k := Vector2i(roundi(p.x), roundi(p.z))
+		if done.has(k):
+			continue
+		done[k] = true
+		var r := float(j["r"]) + 2.0
+		var pole := Vector3(p.x + r, FOOT_TOP, p.z - r)
+		if in_water(pole.x, pole.z) or on_road(pole.x, pole.z, "", 0.3):
+			pole = Vector3(p.x - r, FOOT_TOP, p.z + r)
+		if in_water(pole.x, pole.z) or on_road(pole.x, pole.z, "", 0.3):
+			continue
+		m.world._cyl(Vector3(0.1, 3.1, 0.1), pole + Vector3(0.0, 1.55, 0.0), post_mat)
+		for n in 2:
+			var road_key: String = j["roads"][n]
+			var d: Vector3 = j["dirs"][n]
+			var text := road_key.replace("_", " ").capitalize().replace("Quay", "Quay")
+			m.world._street_blade(pole + Vector3(0.0, 2.95 - n * 0.35, 0.0), absf(d.x) > absf(d.z), text)
+	# bus shelters on the bay-side footways of the arterials running along x
+	for key: String in ["bayfront_avenue", "bayfront_avenue_north", "esplanade_drive", "collyer_quay", "marina_way", "anson_road"]:
+		var pts: Array = DowntownPlan.ROADS[key]["pts"]
+		var hw := half_width(key)
+		var n2 := 0
+		for s: Array in samples(pts, 90.0):
+			var q: Vector3 = s[0]
+			n2 += 1
+			if n2 % 2 == 0:
+				continue
+			var at := Vector3(q.x, FOOT_TOP, q.z - hw - FOOTWAY * 0.5 - 0.2)
+			if on_legacy_road(at.x, at.z, 6.0) or on_road(at.x, at.z, key, 8.0) or in_water(at.x, at.z) or Bridges.height_at(at.x, at.z) > 0.0:
+				continue
+			m.world._bus_shelter(at)
 
 # ------------------------------------------------------------ graph
 ## Directed-free segment list: road and vehicle-bridge centrelines.
@@ -419,7 +482,8 @@ static func junctions() -> Array:
 				continue
 			var h: Vector2 = hit
 			var r := maxf(half_width(segs[i]["road"]) if DowntownPlan.ROADS.has(segs[i]["road"]) else 12.0, half_width(segs[j]["road"]) if DowntownPlan.ROADS.has(segs[j]["road"]) else 12.0)
-			out.append({"pos": Vector3(h.x, 0, h.y), "arterial": bool(segs[i].get("arterial", false)) or bool(segs[j].get("arterial", false)), "r": r})
+			out.append({"pos": Vector3(h.x, 0, h.y), "arterial": bool(segs[i].get("arterial", false)) or bool(segs[j].get("arterial", false)), "r": r,
+				"roads": [segs[i]["road"], segs[j]["road"]], "dirs": [(b - a).normalized(), (d - c).normalized()]})
 	return out
 
 static func build_lanes(m, w: WorldBuilder) -> void:

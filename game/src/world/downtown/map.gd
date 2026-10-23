@@ -76,12 +76,12 @@ func mat(key: String) -> Material:
 	var m: Material
 	match key:
 		"asphalt": m = Palette.weathered_surface(Palette.ASPHALT, "asphalt", 0.9, 0.0, true)
-		"ground": m = Palette.mat_textured(Color(0.44, 0.44, 0.43), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
-		"pavers": m = Palette.mat_textured(Color(0.63, 0.62, 0.59), "pavers", Vector3.ONE, 0.9)
-		"pavers_warm": m = Palette.mat_textured(Color(0.70, 0.64, 0.56), "pavers", Vector3.ONE, 0.88)
+		"ground": m = Palette.mat_textured(Color(0.38, 0.40, 0.42), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
+		"pavers": m = Palette.mat_textured(Color(0.52, 0.54, 0.57), "pavers", Vector3.ONE, 0.9)
+		"pavers_warm": m = Palette.mat_textured(Color(0.62, 0.60, 0.58), "pavers", Vector3.ONE, 0.88)
 		"pavers_bridge": m = Palette.mat_textured(Color(0.60, 0.58, 0.55), "pavers", Vector3.ONE, 0.9)
-		"plaza": m = Palette.mat_textured(Color(0.57, 0.57, 0.55), "pavers", Vector3.ONE, 0.9)
-		"plot": m = Palette.mat_textured(Color(0.52, 0.52, 0.50), "pavers", Vector3.ONE, 0.92)
+		"plaza": m = Palette.mat_textured(Color(0.50, 0.52, 0.55), "pavers", Vector3.ONE, 0.9)
+		"plot": m = Palette.mat_textured(Color(0.42, 0.45, 0.49), "pavers", Vector3.ONE, 0.92)
 		"turf": m = Palette.mat_textured(Color(0.24, 0.33, 0.16), "soil", Vector3.ONE, 0.95)
 		"kerb": m = Palette.mat_textured(Color(0.72, 0.70, 0.65), "concrete", Vector3.ONE, 0.88)
 		"granite": m = Palette.mat_textured(Color(0.43, 0.42, 0.40), "concrete", Vector3.ONE, 0.9)
@@ -335,6 +335,42 @@ func _flush() -> void:
 	_mm(_unit_mesh("head"), heads, mat("lamp_head"), false, 600.0, "DowntownLampHeads")
 	_mm(_unit_mesh("globe"), globes, mat("lamp_head"), false, 600.0, "DowntownLampGlobes")
 	_mm(_unit_mesh("box"), _posts, mat("steel_rail"), false, 300.0, "DowntownRailPosts")
-	if not _trees.is_empty():
-		world._batch_background("res://assets/authored/rain_tree.glb", _trees)
+	_batch_trees()
 	stats["trees"] = _trees.size()
+
+## Rain trees (the existing project GLB, ~32k tris each) batched per 400 m
+## cell with a visibility range, so only nearby groves are drawn.
+func _batch_trees() -> void:
+	if _trees.is_empty():
+		return
+	var packed: PackedScene = load("res://assets/authored/rain_tree.glb")
+	var source: Node = packed.instantiate()
+	var parts: Array[Dictionary] = []
+	world._background_mesh_parts(source, Transform3D.IDENTITY, parts)
+	var by_cell := {}
+	for xf: Transform3D in _trees:
+		var cell := Vector2i(floori(xf.origin.x / CELL), floori(xf.origin.z / CELL))
+		if not by_cell.has(cell):
+			by_cell[cell] = []
+		by_cell[cell].append(xf)
+	for cell in by_cell:
+		var list: Array = by_cell[cell]
+		for part in parts:
+			var mm := MultiMesh.new()
+			mm.transform_format = MultiMesh.TRANSFORM_3D
+			mm.mesh = part["mesh"]
+			mm.instance_count = list.size()
+			for i in list.size():
+				mm.set_instance_transform(i, (list[i] as Transform3D) * (part["transform"] as Transform3D))
+			var mmi := MultiMeshInstance3D.new()
+			mmi.name = "DowntownTrees"
+			mmi.multimesh = mm
+			mmi.material_override = part["override"]
+			mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			mmi.visibility_range_end = 650.0
+			mmi.visibility_range_end_margin = 60.0
+			mmi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+			mmi.set_meta("downtown_map", true)
+			root.add_child(mmi)
+			stats["draws"] = int(stats.get("draws", 0)) + 1
+	source.free()

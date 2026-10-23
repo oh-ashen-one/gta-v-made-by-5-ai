@@ -105,8 +105,9 @@ func run(world: WorldBuilder, suite: Node) -> void:
 		edge_detail += "%s:%s " % [probe[1], not hit.is_empty()]
 	suite._check("downtown-map: every playable edge has a physical barrier (hoarding, railing, fence)", edge_ok, edge_detail)
 	# 6. the old district side railings no longer wall the district off from downtown
-	var open_q := PhysicsRayQueryParameters3D.create(Vector3(360, 1.2, -240), Vector3(395, 1.2, -240), 1)
-	var open_q2 := PhysicsRayQueryParameters3D.create(Vector3(-360, 1.2, 80), Vector3(-395, 1.2, 80), 1)
+	# along Robinson Road and Market Street, where the old x = +-375 rails stood
+	var open_q := PhysicsRayQueryParameters3D.create(Vector3(340, 1.2, -163.4), Vector3(420, 1.2, -163.4), 1)
+	var open_q2 := PhysicsRayQueryParameters3D.create(Vector3(-340, 1.2, 3.4), Vector3(-420, 1.2, 3.4), 1)
 	suite._check("downtown-map: the district opens onto downtown (no x = +-375 rail wall)", space.intersect_ray(open_q).is_empty() and space.intersect_ray(open_q2).is_empty())
 	# 7. budgets
 	suite._check("downtown-map: collision and draw budgets (shapes, mesh draws)", int(stats.get("shapes", 99999)) <= 2600 and int(stats.get("draws", 9999)) <= 600 and int(stats.get("build_ms", 9999)) < 4000,

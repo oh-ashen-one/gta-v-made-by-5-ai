@@ -44,10 +44,10 @@ static func tower_ok(x: float, z: float, r: float) -> bool:
 		return false
 	if ResourceLoader.exists("res://src/world/downtown/blocks.gd"):
 		return false   # the blocks piece builds every downtown plot
-	if ResourceLoader.exists("res://src/world/downtown/landmarks.gd"):
-		for key: String in DowntownPlan.BLOCKS:
-			if DowntownPlan.BLOCKS[key]["kind"] == "landmark_site" and (DowntownPlan.BLOCKS[key]["rect"] as Rect2).grow(r).has_point(Vector2(x, z)):
-				return false
+	# landmark sites stay clear of generic towers (Gardens, MBS, Flyer, Esplanade, Fullerton)
+	for key: String in DowntownPlan.BLOCKS:
+		if DowntownPlan.BLOCKS[key]["kind"] == "landmark_site" and (DowntownPlan.BLOCKS[key]["rect"] as Rect2).grow(r).has_point(Vector2(x, z)):
+			return false
 	if Roads.on_road(x, z, "", Roads.FOOTWAY + 1.0 + r) or Roads.on_legacy_road(x, z, 4.0 + r):
 		return false
 	if _on_walk(x, z, r + 1.0) or Bridges.height_at(x, z) > 0.0:
@@ -95,6 +95,7 @@ static func skyline_clear(m, city: SkylineCity) -> void:
 	m.stats["towers_kept_downtown"] = m.kept_towers.size()
 
 static func build(m) -> void:
+	_interim_planting(m)
 	_edges(m)
 	_helipads(m)
 	_tower_collision(m)
@@ -102,6 +103,47 @@ static func build(m) -> void:
 
 static func finish(_m, _w: WorldBuilder) -> void:
 	pass
+
+## Interim planting on the park plots and the Gardens site until the blocks /
+## landmarks pieces dress them (skipped as soon as those pieces exist).
+static func _interim_planting(m) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 6611
+	var parks: Array = []
+	if not ResourceLoader.exists("res://src/world/downtown/blocks.gd"):
+		parks.append_array(["esplanade_park", "the_lawn", "civic_padang"])
+	if not ResourceLoader.exists("res://src/world/downtown/landmarks.gd"):
+		parks.append("gardens_site")
+	for key: String in parks:
+		var r: Rect2 = DowntownPlan.BLOCKS[key]["rect"]
+		var top := 0.2
+		if key == "gardens_site":
+			# loose groves across the Bay South garden
+			for i in 70:
+				var c := Vector2(rng.randf_range(r.position.x + 12.0, r.end.x - 12.0), rng.randf_range(r.position.y + 12.0, r.end.y - 12.0))
+				if not _pad_clear(c, 26.0):
+					continue
+				m.tree(Vector3(c.x, top, c.y), rng.randf_range(0.9, 1.5), rng)
+			continue
+		# perimeter rows, 4 m inside the kerb
+		var inner := r.grow(-4.0)
+		var corners := [inner.position, Vector2(inner.end.x, inner.position.y), inner.end, Vector2(inner.position.x, inner.end.y), inner.position]
+		for k in 4:
+			var a: Vector2 = corners[k]
+			var b: Vector2 = corners[k + 1]
+			var n := maxi(1, int(a.distance_to(b) / 19.0))
+			for j in n:
+				var c2 := a.lerp(b, (j + 0.5) / n)
+				if not _pad_clear(c2, 24.0):
+					continue
+				m.tree(Vector3(c2.x, top, c2.y), rng.randf_range(0.85, 1.2), rng)
+
+static func _pad_clear(c: Vector2, d: float) -> bool:
+	for key: String in DowntownPlan.HELIPADS:
+		var pos: Vector3 = DowntownPlan.HELIPADS[key]["pos"]
+		if Vector2(pos.x, pos.z).distance_to(c) < d:
+			return false
+	return true
 
 # ------------------------------------------------------------ edges
 static func _hoarding(m, a: Vector3, b: Vector3) -> void:

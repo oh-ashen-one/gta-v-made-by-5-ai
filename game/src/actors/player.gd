@@ -491,8 +491,11 @@ func _physics_process(delta: float) -> void:
 	if has_meta("_qa_motion_probe"):
 		get_meta("_qa_motion_state")["resolved"] = velocity
 
-	if global_position.y < -8.0 or absf(global_position.x)>400.0 or global_position.z>410.0 or global_position.z < -370.0:
-		Events.toast("Beyond the district. Returning to your checkpoint.","warn")
+	# Wave M (downtown-map): on foot the whole Marina Bay downtown is playable
+	# (DowntownPlan.PLAYABLE, physically walled); only beyond it or deep in the
+	# water does the checkpoint return apply.
+	if global_position.y < -8.0 or not DowntownPlan.PLAYABLE.grow(30.0).has_point(Vector2(global_position.x, global_position.z)):
+		Events.toast("Beyond the city. Returning to your checkpoint.","warn")
 		Game.damage_player(Game.MAX_HEALTH)
 		return
 	# face the travel heading (or the camera direction when aiming/firing)

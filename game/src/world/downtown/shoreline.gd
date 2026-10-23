@@ -177,7 +177,7 @@ static func _seawalls(m) -> void:
 
 static func _rail_gap(p: Vector3) -> bool:
 	var Bridges := preload("res://src/world/downtown/bridges.gd")
-	if Bridges.on_deck(p.x, p.z, 3.0):
+	if Bridges.on_deck(p.x, p.z, 0.4):
 		return true
 	var helix: Dictionary = DowntownPlan.BRIDGES["helix_bridge"]
 	for end: Vector3 in [helix["from"], helix["to"]]:
@@ -207,6 +207,8 @@ static func _plots(m) -> void:
 			m.box("kerb", Vector3(c.x, top * 0.5 + 0.01, c.y + side * (r.size.y * 0.5 - 0.15)), Vector3(r.size.x, top + 0.02, 0.3))
 			m.box("kerb", Vector3(c.x + side * (r.size.x * 0.5 - 0.15), top * 0.5 + 0.01, c.y), Vector3(0.3, top + 0.02, r.size.y))
 		m.col_box(Vector3(r.size.x, top, r.size.y), Vector3(c.x, top * 0.5, c.y))
+		if key_mat == "plot" and not ResourceLoader.exists("res://src/world/downtown/blocks.gd"):
+			_landscape_plot(m, key, r, top)
 		if key == "civic_padang":
 			# the Padang: a cricket green inside a paved rim with a pavilion terrace
 			m.box("pavers_warm", Vector3(c.x, 0.21, c.y - r.size.y * 0.5 + 9.0), Vector3(r.size.x - 4.0, 0.04, 14.0))
@@ -251,3 +253,35 @@ static func _adjust_bay(m) -> void:
 		bay.water_material.set_shader_parameter("far_shore_z", float(DowntownPlan.LEGACY["far_seawall_z"]) - 0.9)
 		bay.water_material.set_shader_parameter("near_shore_span", Vector2(LEGACY_NEAR.x - 90.0, LEGACY_NEAR.y))
 		bay.water_material.set_shader_parameter("far_shore_span", Vector2(-330.0, 350.0))
+
+## Interim landscaping on the paved plot pads (until the blocks piece builds
+## them): a grid of kerbed turf beds with shade trees, so an empty plot reads as
+## a planted city plaza from the street and the air, not bare hard-standing.
+static func _landscape_plot(m, key: String, r: Rect2, top: float) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(key)
+	var Bounds := preload("res://src/world/downtown/bounds.gd")
+	var step := 26.0
+	var bed := 9.0
+	var nx := maxi(1, int((r.size.x - 8.0) / step))
+	var nz := maxi(1, int((r.size.y - 8.0) / step))
+	var ox := r.position.x + (r.size.x - (nx - 1) * step) * 0.5
+	var oz := r.position.y + (r.size.y - (nz - 1) * step) * 0.5
+	var k := 0
+	for i in nx:
+		for j in nz:
+			var c := Vector2(ox + i * step, oz + j * step)
+			# keep clear of the stand-in towers kept on this plot
+			var blocked := false
+			for xf: Transform3D in m.kept_towers:
+				var rad := maxf(xf.basis.x.length(), xf.basis.z.length()) * 0.75 + bed
+				if Vector2(xf.origin.x, xf.origin.z).distance_to(c) < rad:
+					blocked = true
+					break
+			if blocked or not Bounds._pad_clear(c, 30.0):
+				continue
+			m.box("kerb", Vector3(c.x, top + 0.12, c.y), Vector3(bed + 0.5, 0.24, bed + 0.5))
+			m.box("turf", Vector3(c.x, top + 0.14, c.y), Vector3(bed - 0.3, 0.26, bed - 0.3))
+			k += 1
+			if k % 4 == 0:
+				m.tree(Vector3(c.x, top + 0.27, c.y), rng.randf_range(0.8, 1.2), rng)

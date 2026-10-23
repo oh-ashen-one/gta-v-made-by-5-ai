@@ -182,11 +182,16 @@ static func _bridge(m, p: Dictionary, struct_mat: String, spans: int, arched: bo
 	_pier(m, p, span, struct_mat, arched)
 	# parapets / railings (with collision) and lamp standards
 	var par_h := 1.1
+	# vehicle-bridge parapets start just past the banks, so a car turning onto
+	# the deck from a diagonal approach (Fullerton Road) never meets their ends
+	var pt0 := -span + 1.5 if vehicle else t0
+	var pt1 := span - 1.5 if vehicle else t1
+	var np := maxi(1, int(ceil((pt1 - pt0) / seg)))
 	for side: float in [-1.0, 1.0]:
 		var lat2 := side * (w - 0.2)
-		for i in n_seg:
-			var ta4 := t0 + (t1 - t0) * float(i) / n_seg
-			var tb4 := t0 + (t1 - t0) * float(i + 1) / n_seg
+		for i in np:
+			var ta4 := pt0 + (pt1 - pt0) * float(i) / np
+			var tb4 := pt0 + (pt1 - pt0) * float(i + 1) / np
 			var a4 := deck_point(p, ta4, lat2, 0.22)
 			var b4 := deck_point(p, tb4, lat2, 0.22)
 			if arched:

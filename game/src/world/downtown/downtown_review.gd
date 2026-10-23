@@ -160,7 +160,40 @@ func _run() -> void:
 	await _fly_leg()
 	_recording = false
 	_release()
+	await _views()
 	_finish()
+
+## Fixed stills: the plan's downtown views plus street-level and helicopter
+## height views of the new roads and bridges (free camera, fixture-assisted).
+const EXTRA_VIEWS := [
+	{"name": "dtx_esplanade_bridge_street", "pos": Vector3(-470.0, 1.7, -327.0), "look": Vector3(-650.0, 3.0, -362.0), "fov": 64.0},
+	{"name": "dtx_raffles_avenue_street", "pos": Vector3(-783.0, 1.6, -420.0), "look": Vector3(-790.0, 6.0, -760.0), "fov": 66.0},
+	{"name": "dtx_bayfront_bridge_street", "pos": Vector3(-560.0, 1.6, -793.0), "look": Vector3(-300.0, 8.0, -780.0), "fov": 64.0},
+	{"name": "dtx_shenton_way_street", "pos": Vector3(392.0, 1.6, 300.0), "look": Vector3(400.0, 20.0, -200.0), "fov": 64.0},
+	{"name": "dtx_heli_river_mouth", "pos": Vector3(-380.0, 120.0, -200.0), "look": Vector3(-600.0, 0.0, -420.0), "fov": 62.0},
+	{"name": "dtx_heli_bayfront", "pos": Vector3(-650.0, 140.0, -560.0), "look": Vector3(-250.0, 0.0, -800.0), "fov": 62.0},
+	{"name": "dtx_heli_marina_south", "pos": Vector3(150.0, 150.0, -420.0), "look": Vector3(450.0, 0.0, -650.0), "fov": 62.0},
+]
+
+func _views() -> void:
+	_phase = "views"
+	if main.get("hud") != null:
+		main.hud.set_gameplay_visible(false)
+	var cam := Camera3D.new()
+	cam.far = 2000.0
+	add_child(cam)
+	cam.make_current()
+	var views: Array = DowntownPlan.VIEWS.duplicate()
+	views.append_array(EXTRA_VIEWS)
+	for v: Dictionary in views:
+		cam.global_position = v["pos"]
+		cam.fov = float(v["fov"])
+		cam.look_at(v["look"], Vector3.UP)
+		await get_tree().create_timer(0.6).timeout
+		await RenderingServer.frame_post_draw
+		var img := get_viewport().get_texture().get_image()
+		if img != null:
+			img.save_png("%s/view_%s.png" % [out_dir, String(v["name"])])
 
 func _drive_leg() -> void:
 	_phase = "drive"
