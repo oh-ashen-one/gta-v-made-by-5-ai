@@ -262,6 +262,16 @@ func _people_review(base: Vector3) -> void:
 		if i == 3:
 			p["skirt"] = true
 			p["dress"] = true
+		# T3: the review always shows a tudung and a school uniform.
+		if i == 6:
+			p["hair"] = "tudung"
+			p["tudung"] = true
+			p["hair_colour"] = CrowdPeople.TUDUNG_COLOURS[0]
+		if i == 7:
+			p["uniform"] = true
+			p["dress"] = false
+			p["dress_colour"] = Color(0.10, 0.14, 0.32)
+			p["prop"] = "backpack"
 		CrowdPeople.dress(holder, v, p)
 		# Review fixture: the in-game near-lens cull (NPC.NEAR_HIDE) would hide
 		# the hair/props in the 1-2.5 m shots.

@@ -2078,7 +2078,7 @@ static func _build(src: ArrayMesh, rig: Dictionary = {}) -> Dictionary:
 	var eyes := _eye_patches(wpos, wnorm, nose_tip, head_bind, bpv)
 	var eye_verts: int = (eyes["v"] as PackedVector3Array).size()
 	_append_extra(eyes, acc_d)
-	var cards := _hair_cards(wpos, wnorm, rw, region, wvert, bones, weights, bpv, head_centre, nose_tip, 0.0062 if wn > 30000 else 0.0078)
+	var cards := _hair_cards(wpos, wnorm, rw, region, wvert, bones, weights, bpv, head_centre, nose_tip, 0.0078 if rig.has("hand_r") else 0.0095)  # player denser; civilians lighter (crowd triangle budget)
 	_append_extra(cards, acc_d)
 	verts = acc_d["v"]; norms = acc_d["n"]; tangs = acc_d["t"]; uvs = acc_d["uv"]; bones = acc_d["b"]; weights = acc_d["w"]
 	c0 = acc_d["c0"]; c1 = acc_d["c1"]; c2 = acc_d["c2"]; c3 = acc_d["c3"]; indices = acc_d["i"]
@@ -2577,6 +2577,13 @@ static func person_outfit(p: Dictionary, base: Dictionary) -> Dictionary:
 		o["shoe_col"] = _v4(Color(0.035, 0.028, 0.024), 0.12)
 		var fcx: Vector4 = o["face_col"]
 		o["face_col"] = Vector4(fcx.x, fcx.y, fcx.z, 0.0 if female else fcx.w)
+	if bool(p.get("uniform", false)):
+		# T3: school uniform: plain white shirt, navy shorts (or the skirt in
+		# the pinafore colour), black shoes, white socks read as sole value.
+		o["shirt_col"] = _v4(Color(0.92, 0.92, 0.9), 0.0)
+		o["tee_col"] = _v4(Color(0.92, 0.92, 0.9), 1.0)
+		o["pants_col"] = _v4(p.get("dress_colour", Color(0.1, 0.14, 0.32)), 1.0)
+		o["shoe_col"] = _v4(Color(0.05, 0.05, 0.055), 0.8)
 	if bool(p.get("dress", false)):
 		var dc: Color = p.get("dress_colour", Color(0.5, 0.5, 0.5))
 		o["shirt_col"] = _v4(dc, 0.0)

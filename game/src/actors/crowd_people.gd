@@ -35,6 +35,11 @@ const HAIR_COLOURS: Array[Color] = [
 	Color(0.022, 0.018, 0.016), Color(0.03, 0.022, 0.018), Color(0.055, 0.035, 0.025),
 	Color(0.10, 0.06, 0.035), Color(0.16, 0.09, 0.05), Color(0.035, 0.028, 0.026),
 ]
+## T3: tudung fabrics: soft pastels, navy, black, maroon, beige.
+const TUDUNG_COLOURS: Array[Color] = [
+	Color(0.85, 0.72, 0.74), Color(0.12, 0.14, 0.26), Color(0.07, 0.07, 0.08), Color(0.45, 0.12, 0.16),
+	Color(0.82, 0.76, 0.64), Color(0.55, 0.68, 0.78), Color(0.62, 0.55, 0.72), Color(0.30, 0.42, 0.36),
+]
 const GREY_HAIR: Array[Color] = [Color(0.42, 0.41, 0.4), Color(0.6, 0.59, 0.57), Color(0.28, 0.27, 0.27)]
 ## Multipliers on the provider skin texture (a warm light-medium tone).
 const SKIN_TONES: Array[Color] = [
@@ -140,6 +145,22 @@ static func person(kind: int, h: int) -> Dictionary:
 				p["hair"] = ""
 			if String(p.get("prop", "none")) in ["umbrella", "backpack", "shopping"]:
 				p["prop"] = ["phone", "cup", "none"][int(u.call(19) * 3.0) % 3]
+	# Characters T3: local dress the critic found missing (T2: "no tudung,
+	# no school uniforms"). Most Malay women and some others wear a tudung
+	# (head scarf framing the face, draped over the shoulders); about half the
+	# children are in school uniform (white shirt, navy shorts or pinafore).
+	var tone_i := int(u.call(2) * SKIN_TONES.size()) % SKIN_TONES.size()
+	if (kind == Kind.WOMAN or kind == Kind.ELDER_F) and ((tone_i in [3, 4] and u.call(20) < 0.7) or u.call(20) < 0.06):
+		p["hair"] = "tudung"
+		p["hair_colour"] = TUDUNG_COLOURS[int(u.call(22) * TUDUNG_COLOURS.size()) % TUDUNG_COLOURS.size()]
+		p["tudung"] = true
+		if String(p.get("prop", "none")) == "umbrella":
+			p["prop"] = "handbag"
+	if kind == Kind.CHILD and u.call(21) < 0.55:
+		p["uniform"] = true
+		p["dress_colour"] = [Color(0.10, 0.14, 0.32), Color(0.16, 0.30, 0.42), Color(0.12, 0.12, 0.14)][int(u.call(23) * 3.0) % 3]
+		p["dress"] = false
+		p["prop"] = "backpack"
 	p["prop_colour"] = PROP_COLOURS[int(u.call(14) * PROP_COLOURS.size()) % PROP_COLOURS.size()]
 	p["umbrella_colour"] = UMBRELLA_COLOURS[int(u.call(15) * UMBRELLA_COLOURS.size()) % UMBRELLA_COLOURS.size()]
 	p["legs"] = Color(0.07, 0.065, 0.07) if u.call(16) < 0.12 else Color(-1, 0, 0)   # dark tights (T1: rarer, sheer), else bare
@@ -177,10 +198,10 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 	# critic saw fading in at 40-60 m.
 	var range_hair := GHOST_FREE_RANGE
 	if hair != "":
-		var hmat: Material = _cloth_material(p["hair_colour"]) if hair == "cap" else _hair_material(p["hair_colour"], int(p["seed"]))
+		var hmat: Material = _cloth_material(p["hair_colour"]) if hair in ["cap", "tudung"] else _hair_material(p["hair_colour"], int(p["seed"]))
 		# Wave S: over the look mesh's own hair shells the style sits a little
 		# fuller, or a pixie/bob vanished inside the short authored cut.
-		var hb := Basis().scaled(Vector3(1.08, 1.05, 1.08)) if cv.look_mesh != null and hair != "cap" else Basis()
+		var hb := Basis().scaled(Vector3(1.08, 1.05, 1.08)) if cv.look_mesh != null and not (hair in ["cap", "tudung"]) else Basis()
 		var hn := _attach(sk, "head", _hair_mesh(hair), hmat, Transform3D(hb, HEAD_C + (Vector3(0, 0.004, 0.003) if cv.look_mesh != null else Vector3.ZERO)), range_hair, false)
 		hn.name = "PeopleHair"
 	if skirt:
@@ -593,6 +614,9 @@ static func _hair_mesh(style: String) -> Mesh:
 			_blob(st, Vector3(0.0, 0.085, 0.085), 0.052)
 		"perm": _shell(st, 1.95, 1.7, 1.02, 1.14, 1.0)
 		"cap": _cap(st)
+		"tudung":
+			_shell(st, 3.9, 3.25, 1.2, 1.1, 0.0)
+			_cape(st)
 	# Wave S: weld shared corners so the hair shades smoothly (it was flat
 	# faceted, a stair of lit and dark quads round the head).
 	st.index()
@@ -687,6 +711,30 @@ static func _blob(st: SurfaceTool, c: Vector3, r: float) -> void:
 				return c + Vector3(sin(th) * cos(ph), cos(th) * 0.85, sin(th) * sin(ph)) * r
 			var uv := Vector2(float(i) / seg, float(j) / rows * 0.8)
 			var uv2 := Vector2(float(i + 1) / seg, float(j + 1) / rows * 0.8)
+			_tri(st, q.call(i, j), q.call(i, j + 1), q.call(i + 1, j + 1), uv, Vector2(uv.x, uv2.y), uv2)
+			_tri(st, q.call(i, j), q.call(i + 1, j + 1), q.call(i + 1, j), uv, uv2, Vector2(uv2.x, uv.y))
+
+## T3: the tudung's neck and chest drape: a skirt of cloth from under the
+## chin (low at the front, up under the scarf at the back) flaring over the
+## shoulders and upper chest; head-bone space like the scarf shell above.
+static func _cape(st: SurfaceTool) -> void:
+	var seg := 28
+	var rows := 6
+	for i in seg:
+		for j in rows:
+			var q := func(ii: int, jj: int) -> Vector3:
+				var a := float(ii) / seg * TAU          # 0 = back (+Z), PI = front (-Z)
+				var w := absf(wrapf(a, -PI, PI)) / PI   # 0 back .. 1 front
+				var t := float(jj) / rows
+				var tt := sqrt(t)
+				var y0 := lerpf(-0.05, -0.162, w)        # under the chin at the front, under the scarf at the back
+				var y1 := lerpf(-0.23, -0.3, w)
+				var rx := lerpf(0.074, 0.18, tt)
+				var rz := lerpf(0.09, 0.145, tt)
+				var zc := lerpf(0.0, 0.012, t) - 0.006
+				return Vector3(sin(a) * rx, lerpf(y0, y1, t), cos(a) * rz + zc)
+			var uv := Vector2(float(i) / seg, 0.45 + float(j) / rows * 0.5)
+			var uv2 := Vector2(float(i + 1) / seg, 0.45 + float(j + 1) / rows * 0.5)
 			_tri(st, q.call(i, j), q.call(i, j + 1), q.call(i + 1, j + 1), uv, Vector2(uv.x, uv2.y), uv2)
 			_tri(st, q.call(i, j), q.call(i + 1, j + 1), q.call(i + 1, j), uv, uv2, Vector2(uv2.x, uv.y))
 

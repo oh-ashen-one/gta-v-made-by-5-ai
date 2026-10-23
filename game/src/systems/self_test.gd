@@ -1715,6 +1715,19 @@ func _character_stance_checks(player: Player) -> void:
 			if (r as Rect2).has_point(Vector2(-377.0, -74.5)):
 				lawn_kept = true
 		_check("characters-T3: crowd seeding keeps out of the Raffles Place lawn bed (no knee-deep walkers)", lawn_kept, "rects=%d" % keep.size())
+		var tud := 0
+		var uni := 0
+		var women := 0
+		for k in 600:
+			var pk := CrowdPeople.pick(31337 + k * 7919)
+			if bool(pk.get("female", false)) and int(pk["kind"]) != 4:
+				women += 1
+			if String(pk.get("hair", "")) == "tudung":
+				tud += 1
+			if bool(pk.get("uniform", false)):
+				uni += 1
+		_check("characters-T3: local dress in the crowd (tudung on some women, school uniforms on some children)",
+			tud >= women / 12 and tud <= women / 2 and uni >= 8, "tudung=%d of %d women, uniforms=%d" % [tud, women, uni])
 		_check("characters-T2: fitted skirt, women's narrower shoulders, near-lens cull hides body and parts together",
 			sb.size.x < 0.56 and sb.size.x > 0.3 and narrow and part_cull == 0 and npc_code.contains("func _near_hide"),
 			"skirt width=%.2f narrow=%s part_cull=%d" % [sb.size.x, narrow, part_cull])
