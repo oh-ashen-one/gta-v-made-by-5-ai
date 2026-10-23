@@ -89,10 +89,10 @@ static var _ferns: Array = []
 static func planter(kit: Kit, c: Vector3, size: Vector2, h: float = 0.55, ferns: bool = true) -> void:
 	kit.box(Looks.get_mat("granite_light"), c + Vector3(0, h * 0.5, 0), Vector3(size.x, h, size.y))
 	kit.box(Looks.get_mat("soil_bed"), c + Vector3(0, h + 0.01, 0), Vector3(size.x - 0.3, 0.04, size.y - 0.3))
-	kit.box(Looks.get_mat("planting"), c + Vector3(0, h + 0.12, 0), Vector3(size.x - 0.5, 0.22, size.y - 0.5))
+	kit.box(Looks.get_mat("planting"), c + Vector3(0, h + 0.06, 0), Vector3(size.x - 0.5, 0.1, size.y - 0.5))
 	if not ferns:
 		return
-	var n := clampi(int(size.x * size.y / 3.5), 2, 14)
+	var n := clampi(int(size.x * size.y / 2.2), 3, 20)
 	var h1 := hash(c)
 	for i in n:
 		var u := fposmod(sin(float(h1 % 997) + i * 12.9898) * 43758.5453, 1.0)

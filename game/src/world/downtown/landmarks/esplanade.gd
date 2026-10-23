@@ -124,6 +124,15 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 	kit.box(Looks.get_mat("render_cream"), lc + Vector3(0, TOP + 7.0, 0), Vector3(lx1 - lx0, 10.0, lz1 - lz0))
 	kit.box(Looks.get_mat("glass_dark"), lc + Vector3(0, TOP + 1.0, 0), Vector3(lx1 - lx0 + 0.2, 2.0, lz1 - lz0 + 0.2))
 	kit.col_box(Vector3(lx1 - lx0, 12.0, lz1 - lz0), lc + Vector3(0, TOP + 6.0, 0))
+	# Bay-facing facade of the link: glazed band and aluminium sunshade louvres.
+	var fx := lx1 + 0.05
+	kit.box(Looks.get_mat("glass_green"), Vector3(fx, TOP + 6.2, lc.z), Vector3(0.1, 3.4, lz1 - lz0 - 2.0))
+	for k in 9:
+		kit.box(Looks.get_mat("aluminium_shade"), Vector3(fx + 0.5, TOP + 3.6 + k * 0.62, lc.z), Vector3(1.0, 0.08, lz1 - lz0 - 1.0))
+	var fz := lz0 + 1.5
+	while fz < lz1 - 1.0:
+		kit.box(Looks.get_mat("steel_satin"), Vector3(fx + 0.3, TOP + 6.0, fz), Vector3(0.6, 9.0, 0.18))
+		fz += 3.0
 	# Bay frontage canopy walk: slim columns, thin roof, lit soffit.
 	var cx := site.end.x - 3.0
 	var cz0 := site.position.y + 8.0
