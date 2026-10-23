@@ -1523,6 +1523,7 @@ func _scan_obstacles(v: AmbientVehicle) -> float:
 				var node := n as Node3D
 				var points: Array[Vector3] = []
 				var radius := 0.0
+				var person := false
 				if node is AmbientVehicle:
 					if node == v or (v.stuck_time > 6.0 and v.j_len > 0.0):
 						continue
@@ -1584,10 +1585,17 @@ func _scan_obstacles(v: AmbientVehicle) -> float:
 						continue
 					points = [node.global_position]
 					radius = 0.45
+					person = true
 				for p in points:
 					var d: Vector3 = p - here
 					var ahead := d.dot(fwd)
 					if ahead < -half_len or ahead > 20.0:
+						continue
+					# integration T: a person (or the on-foot player) already beside
+					# the body, behind the front bumper, is not in our way: driving
+					# on moves the car clear. Holding there boxed the on-foot player
+					# in between two lanes of stopped cars for ~14 s (opening walk).
+					if person and ahead < half_len - 0.5:
 						continue
 					if absf(d.dot(left)) > half_w + radius:
 						continue
