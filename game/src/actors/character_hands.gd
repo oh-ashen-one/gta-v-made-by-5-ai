@@ -1,5 +1,5 @@
 class_name CharacterHands
-extends SkeletonModifier3D
+extends Node3D
 ## Characters piece (wave Q2): real hands for the player.
 ##
 ## The provider body has mitten hands (one finger block). CharacterLook folds
@@ -8,31 +8,30 @@ extends SkeletonModifier3D
 ## hand.r / hand.l, in two poses: a fist closed round the pistol grip and a
 ## relaxed curl. The pistol sits inside the gun hand's finger loop.
 ##
-## While aiming a pistol it also runs last in the skeleton's modifier stack:
-## two-bone IK raises both arms so the pistol sits at eye line, the gun
-## hand's wrist turns the slide onto the aim direction, and the support hand
-## cups the grip from the other side with its thumb forward along the frame.
+## Wave R: no IK of its own. The combat aim layer (AimIkLayer) places both
+## arms; this node only publishes where the gun sits in each hand
+## (grip_frames(), read by the layer through CharacterVisual.grip_frames) and
+## wraps the fingers round the real pistol grip, measured from the held
+## weapon's mesh: gun hand palm on the frame's near side, three fingers
+## closed round the front strap, index on the trigger, thumb along the far
+## side; the support hand over them, thumb forward under the slide.
+## Hand-bone frame on this rig: +Y wrist -> knuckles, +X palm normal on
+## hand.r (-X on hand.l), +Z thumb side. hand.r is the gun hand.
 
 ## Hand-bone-local frame (both hands): +Y wrist -> knuckles, +Z thumb side,
 ## palm normal = +X on hand.r and -X on hand.l.
 const KNUCKLE_Y := 0.082
 # [name, knuckle z, knuckle y, segment lengths, base radius, grip curl (MCP, PIP, DIP) deg, relaxed curl]
 const FINGERS := [
-	["index", 0.028, 0.080, [0.040, 0.024, 0.019], 0.0102, [62.0, 78.0, 30.0], [18.0, 26.0, 14.0]],
-	["middle", 0.009, 0.083, [0.043, 0.027, 0.020], 0.0105, [86.0, 92.0, 22.0], [22.0, 30.0, 16.0]],
-	["ring", -0.010, 0.080, [0.040, 0.025, 0.019], 0.0098, [90.0, 92.0, 22.0], [26.0, 34.0, 18.0]],
-	["pinky", -0.027, 0.073, [0.032, 0.019, 0.017], 0.0088, [94.0, 90.0, 24.0], [30.0, 38.0, 20.0]],
+	["index", 0.026, 0.080, [0.040, 0.024, 0.019], 0.0102, [62.0, 78.0, 30.0], [22.0, 34.0, 18.0]],
+	["middle", 0.008, 0.083, [0.043, 0.027, 0.020], 0.0105, [86.0, 92.0, 22.0], [30.0, 42.0, 22.0]],
+	["ring", -0.009, 0.080, [0.040, 0.025, 0.019], 0.0098, [90.0, 92.0, 22.0], [36.0, 48.0, 24.0]],
+	["pinky", -0.025, 0.073, [0.032, 0.019, 0.017], 0.0088, [94.0, 90.0, 24.0], [44.0, 52.0, 26.0]],
 ]
 ## Knuckles sit this far toward the palm from the bone axis.
 const KNUCKLE_X := 0.020
 ## Pistol pose inside the gun hand's fist (bone-local), see attach_weapon().
-const PISTOL_POS := Vector3(0.040, 0.052, 0.030)
-const PISTOL_TILT := 0.20 # radians: the grip rakes back like a real frame
-## Support palm centre in the gun hand's frame, and the palm centre's offset
-## from the support wrist in its own frame.
-const SUPPORT_PALM := Vector3(0.040, 0.070, -0.070)
 const SUPPORT_CURL := [70.0, 80.0, 35.0]
-const SUPPORT_WRIST := Vector3(-0.030, 0.050, 0.0)
 
 var skin_linear := Color(0.55, 0.33, 0.22)
 var holding := false
@@ -41,7 +40,7 @@ var weapon_kind := "pistol"
 var aim_pitch := 0.0
 var actor: Node3D
 var weapon: Node3D
-## 0..1 blend of the aim IK (eased in and out by the owner's frames).
+## 0..1 weight of the combat aim layer (support hand on the gun above 0.5).
 var ik_weight := 0.0
 
 var _meshes := {}   # "r_grip", "r_relax", "l_grip", "l_relax" -> MeshInstance3D
@@ -144,12 +143,12 @@ func update_pose() -> void:
 		_meshes["l_grip"].visible = l_grip
 		_meshes["l_relax"].visible = not l_grip
 
-## Places a pistol in the closed gun hand (bone-local transform).
+## The held pistol's pose in the gun hand (bone-local), same seat the aim
+## layer uses, so the fingers stay closed on it aimed or not.
 static func weapon_transform(kind: String) -> Transform3D:
 	if kind != "pistol":
 		return Transform3D(Basis(Vector3.RIGHT, PI * 0.5), Vector3(0.0, 0.055, -0.012))
-	var b := Basis(Vector3.RIGHT, PI * 0.5) * Basis(Vector3.RIGHT, -PISTOL_TILT)
-	return Transform3D(b, PISTOL_POS)
+	return grip_frames()["pistol_r"]
 
 # --- Mesh generation ----------------------------------------------------------
 
@@ -165,7 +164,7 @@ static func build_hand(s: float, grip: bool) -> ArrayMesh:
 		var pos := Vector3(s * KNUCKLE_X, f[2], f[1])
 		var dir := Vector3.UP
 		# Slight fan: the outer fingers splay away from the middle one.
-		var splay: float = (float(f[1]) - 0.010) * 1.6
+		var splay: float = (float(f[1]) - 0.008) * (1.6 if grip else 0.45)
 		dir = dir.rotated(Vector3.RIGHT, splay)
 		var ang := 0.0
 		for k in 3:
@@ -180,7 +179,7 @@ static func build_hand(s: float, grip: bool) -> ArrayMesh:
 	# grip it lies along the far side of the frame pointing forward.
 	var tb := Vector3(s * 0.016, 0.018, 0.030)
 	var t_dirs := [Vector3(s * 0.35, 0.62, 0.55), Vector3(s * 0.62, 0.70, 0.10), Vector3(s * 0.55, 0.78, -0.20)] if grip \
-		else [Vector3(s * 0.32, 0.62, 0.60), Vector3(s * 0.38, 0.80, 0.42), Vector3(s * 0.40, 0.85, 0.30)]
+		else [Vector3(s * 0.40, 0.66, 0.50), Vector3(s * 0.50, 0.80, 0.22), Vector3(s * 0.52, 0.84, 0.10)]
 	if grip and s < 0.0:
 		# Support thumb lies forward along the frame, over the gun thumb.
 		t_dirs = [Vector3(s * 0.30, 0.45, 0.85), Vector3(s * 0.25, 0.20, 1.0), Vector3(s * 0.20, 0.05, 1.0)]
@@ -268,104 +267,173 @@ static func _capsule(st: Dictionary, a: Vector3, b: Vector3, ra: float, rb: floa
 	st["c"] = c
 	st["i"] = idx
 
-# --- Aim IK -------------------------------------------------------------------
+# --- Grip fitted to the held pistol -------------------------------------------
 
-func _cache_ids() -> void:
-	var sk := get_skeleton()
-	if sk == null:
+## Hand poses on the gun, in the GUN frame (X right, Y up, -Z barrel, origin
+## at the grip): the gun hand's palm lies on the frame's -X side with its
+## metacarpals raked 25 degrees down from the bore; the support palm fills
+## the +X side, angled steeper, under it.
+const GUN_TILT := 0.44
+static func hand_in_gun(side_r: bool) -> Transform3D:
+	if side_r:
+		var t := GUN_TILT
+		var y := Vector3(0.0, -sin(t), -cos(t))
+		var x := Vector3(1.0, 0.0, 0.0)
+		return Transform3D(Basis(x, y, x.cross(y)), Vector3(-0.047, 0.026, 0.066))
+	var y2 := Vector3(0.0, -0.62, -0.78).normalized()
+	var x2 := Vector3(1.0, 0.0, 0.0)
+	return Transform3D(Basis(x2, y2, x2.cross(y2)), Vector3(0.056, -0.004, 0.070))
+
+## Gun pose in each hand's bone space, for AimIkLayer (see its _grip_frame).
+static func grip_frames() -> Dictionary:
+	return {"pistol_r": hand_in_gun(true).affine_inverse(), "pistol_l": hand_in_gun(false).affine_inverse()}
+
+## Grip cross-section of the held gun: for 6 heights between the bottom of
+## the grip and the trigger guard, [y, x half width, z front, z back].
+static func grip_profile(weapon: Node3D) -> Array:
+	var pts := PackedVector3Array()
+	for node in weapon.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		var xf := Transform3D.IDENTITY
+		var n: Node = mi
+		while n != null and n != weapon:
+			if n is Node3D:
+				xf = (n as Node3D).transform * xf
+			n = n.get_parent()
+		for s in mi.mesh.get_surface_count():
+			var a := mi.mesh.surface_get_arrays(s)
+			for v in (a[Mesh.ARRAY_VERTEX] as PackedVector3Array):
+				pts.append(xf * v)
+	var lo := 1e9
+	for p in pts:
+		lo = minf(lo, p.y)
+	var out := []
+	if pts.is_empty():
+		for k in 6:
+			out.append([-0.035 + k * 0.012, 0.015, -0.022, 0.028])
+		return out
+	# Rear 55 % of the gun only (the trigger guard and barrel sit forward).
+	var zmin := 1e9
+	var zmax := -1e9
+	for p in pts:
+		zmin = minf(zmin, p.z)
+		zmax = maxf(zmax, p.z)
+	var zcut := zmax - (zmax - zmin) * 0.36
+	for k in 6:
+		var y := lo + 0.008 + k * 0.012
+		var hx := 0.0
+		var zf := 1e9
+		var zb := -1e9
+		for p in pts:
+			if absf(p.y - y) < 0.006 and p.z > zcut:
+				hx = maxf(hx, absf(p.x))
+				zf = minf(zf, p.z)
+				zb = maxf(zb, p.z)
+		if zf > zb:
+			zf = -0.02
+			zb = 0.028
+			hx = 0.015
+		out.append([y, clampf(hx, 0.009, 0.022), zf, zb])
+	return out
+
+static func _profile_at(profile: Array, y: float) -> Array:
+	var best: Array = profile[0]
+	for row in profile:
+		if absf(float(row[0]) - y) < absf(float(best[0]) - y):
+			best = row
+	return best
+
+## One finger wrapped round an ellipse (x half A, z half B, centre cx/cz) at
+## height y, starting from the knuckle, in the gun frame. dir: +1 wraps from
+## the -X side round the front to +X, -1 the other way.
+static func _wrap_finger(st: Dictionary, to_hand: Transform3D, knuckle: Vector3, y: float, ax: float, bz: float, cz: float, lens: Array, r0: float, dir: float) -> void:
+	var ang := atan2((knuckle.z - cz) / bz, knuckle.x / ax)
+	var pts := [knuckle]
+	var prev: Vector3 = knuckle
+	for k in lens.size():
+		var target_len: float = lens[k]
+		var p := prev
+		var guard := 0
+		while prev.distance_to(p) < target_len and guard < 400:
+			ang += dir * 0.01
+			p = Vector3(ax * cos(ang), y, cz + bz * sin(ang))
+			guard += 1
+		pts.append(p)
+		prev = p
+	for k in lens.size():
+		var a: Vector3 = pts[k]
+		var b: Vector3 = pts[k + 1]
+		var mid := (a + b) * 0.5
+		var outward := Vector3(mid.x / (ax * ax), 0.0, (mid.z - cz) / (bz * bz)).normalized()
+		var ra := r0 * (1.0 - 0.09 * k)
+		var rb := r0 * (0.91 - 0.09 * k) * (0.92 if k == lens.size() - 1 else 1.0)
+		_capsule(st, to_hand * a, to_hand * b, ra, rb, to_hand.basis * outward, k == lens.size() - 1, k > 0)
+
+## Polyline finger/thumb through gun-frame points (dorsal side `out`).
+static func _path_finger(st: Dictionary, to_hand: Transform3D, pts: Array, r0: float, out: Vector3) -> void:
+	for k in pts.size() - 1:
+		var ra := r0 * (1.0 - 0.08 * k)
+		var rb := r0 * (0.92 - 0.08 * k)
+		_capsule(st, to_hand * (pts[k] as Vector3), to_hand * (pts[k + 1] as Vector3), ra, rb, to_hand.basis * out, k == pts.size() - 2, k > 0)
+
+## Gun hand (side_r) or support hand closed on the pistol grip `profile`
+## (grip_profile()), in that hand's bone space.
+static func build_grip(side_r: bool, profile: Array) -> ArrayMesh:
+	var st := {"v": PackedVector3Array(), "n": PackedVector3Array(), "c": PackedColorArray(), "i": PackedInt32Array()}
+	var hg := hand_in_gun(side_r)
+	var to_hand := hg.affine_inverse()
+	var s := 1.0 if side_r else -1.0
+	var top: Array = profile[profile.size() - 1]
+	for fi in FINGERS.size():
+		var f: Array = FINGERS[fi]
+		var knuckle := hg * Vector3(s * KNUCKLE_X * 0.8, float(f[2]), float(f[1]))
+		var lens: Array = f[3]
+		var r0: float = f[4]
+		if side_r and fi == 0:
+			# Index: along the frame into the trigger guard, tip on the trigger.
+			var ty := float(top[0]) + 0.004
+			var zf := float(top[2])
+			_path_finger(st, to_hand, [knuckle, Vector3(-float(top[1]) - 0.006, ty + 0.004, zf - 0.016),
+				Vector3(-0.006, ty + 0.002, zf - 0.034), Vector3(0.002, ty - 0.012, zf - 0.036)], r0, Vector3(-1.0, 0.3, 0.0))
+			continue
+		var row := _profile_at(profile, knuckle.y)
+		var y := clampf(knuckle.y, float(profile[0][0]), float(top[0]))
+		var hx: float = row[1]
+		var zf2: float = row[2]
+		var zb: float = row[3]
+		var cz := (zf2 + zb) * 0.5
+		var bz := (zb - zf2) * 0.5
+		var pad := r0 * 0.95 + (0.0 if side_r else 0.021)
+		_wrap_finger(st, to_hand, knuckle, y, hx + pad, bz + pad, cz, lens, r0 * (1.0 if side_r else 1.04), s)
+	# Thumb.
+	var tb := hg * Vector3(s * 0.016, 0.018, 0.030)
+	var hx_top := float(top[1])
+	if side_r:
+		# Over the web behind the back strap, then forward along the far side.
+		var ty := float(top[0]) + 0.012
+		_path_finger(st, to_hand, [tb, Vector3(-0.004, ty + 0.010, float(top[3]) + 0.018), Vector3(hx_top + 0.012, ty + 0.002, float(top[3]) - 0.006),
+			Vector3(hx_top + 0.012, ty, float(top[2]) + 0.004)], 0.0115, Vector3(1.0, 0.4, 0.0))
+	else:
+		var ty2 := float(top[0]) - 0.006
+		_path_finger(st, to_hand, [tb, Vector3(hx_top + 0.026, ty2 - 0.002, float(top[3]) - 0.012), Vector3(hx_top + 0.024, ty2, float(top[2]) + 0.004),
+			Vector3(hx_top + 0.021, ty2 + 0.002, float(top[2]) - 0.020)], 0.0118, Vector3(1.0, 0.3, 0.0))
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = st["v"]
+	arrays[Mesh.ARRAY_NORMAL] = st["n"]
+	arrays[Mesh.ARRAY_COLOR] = st["c"]
+	arrays[Mesh.ARRAY_INDEX] = st["i"]
+	var m := ArrayMesh.new()
+	m.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return m
+
+## Re-fits both grip meshes to a newly held pistol.
+func fit_weapon(weapon: Node3D, kind: String) -> void:
+	if kind != "pistol" or weapon == null:
 		return
-	for b in ["upper_arm.r", "forearm.r", "hand.r", "upper_arm.l", "forearm.l", "hand.l", "head", "chest"]:
-		_ids[b] = sk.find_bone(b)
-
-func _process_modification() -> void:
-	var sk := get_skeleton()
-	if sk == null or actor == null or ik_weight <= 0.001 or weapon_kind != "pistol":
-		return
-	if _ids.is_empty():
-		_cache_ids()
-	for k in _ids:
-		if _ids[k] < 0:
-			return
-	var sx := sk.global_transform
-	var inv := sx.affine_inverse()
-	var ab := actor.global_basis.orthonormalized()
-	var fwd := -ab.z
-	var up := ab.y
-	var right := ab.x
-	var wb := ab * Basis(Vector3.RIGHT, aim_pitch)
-	var wfwd := -wb.z
-	var wup := wb.y
-	# Eye line: the rear sight sits ~3 cm under the eye, ~0.45 m ahead.
-	var head := sx * sk.get_bone_global_pose(_ids["head"]).origin
-	var eye := head + up * 0.095 + fwd * 0.075
-	var wt := weapon_transform("pistol")
-	var grip_world := eye + wfwd * 0.43 - wup * 0.115 + right * 0.0
-	# Gun hand: hand basis so the weapon's local basis lands on the aim basis.
-	var hand_b := wb * wt.basis.inverse()
-	var wrist_world := grip_world - hand_b * wt.origin
-	_solve_arm(sk, sx, inv, "r", wrist_world, hand_b, right, up, fwd)
-	# Support hand: cups the gun hand from below on the far side of the grip,
-	# palm up and inward, fingers wrapping over the gun hand's fingers, thumb
-	# forward along the frame.
-	var xg := wb.x
-	var n_palm := (-xg * 0.72 + wup * 0.69).normalized()
-	var xl := -n_palm
-	var yl := -xg - xl * (-xg).dot(xl)
-	yl = yl.normalized()
-	var zl := xl.cross(yl).normalized()
-	var l_b := Basis(xl, yl, zl)
-	var support_palm := grip_world + hand_b * SUPPORT_PALM
-	var wrist_l := support_palm - l_b * SUPPORT_WRIST
-	_solve_arm(sk, sx, inv, "l", wrist_l, l_b, right, up, fwd)
-
-## Two-bone IK in skeleton space (shortest-arc swings keep the clip's twist),
-## then the hand orientation, blended by ik_weight.
-func _solve_arm(sk: Skeleton3D, sx: Transform3D, inv: Transform3D, side: String, wrist_world: Vector3, hand_world: Basis, right: Vector3, up: Vector3, fwd: Vector3) -> void:
-	var iu: int = _ids["upper_arm." + side]
-	var i_f: int = _ids["forearm." + side]
-	var ih: int = _ids["hand." + side]
-	var pu := sk.get_bone_global_pose(iu)
-	var pf := sk.get_bone_global_pose(i_f)
-	var ph := sk.get_bone_global_pose(ih)
-	var s := pu.origin
-	var e := pf.origin
-	var w := ph.origin
-	var l1 := s.distance_to(e)
-	var l2 := e.distance_to(w)
-	var t := inv * wrist_world
-	t = w.lerp(t, ik_weight)
-	var st := t - s
-	var dist := clampf(st.length(), absf(l1 - l2) + 0.01, (l1 + l2) * 0.995)
-	var dir := st.normalized()
-	t = s + dir * dist
-	# Elbows drop down and out.
-	var side_sign := 1.0 if (sx * s - sx * sk.get_bone_global_pose(_ids["chest"]).origin).dot(right) > 0.0 else -1.0
-	var pole_world := sx * s + (-up * 0.6 + right * side_sign * 0.45 - fwd * 0.15)
-	var pole := inv * pole_world - s
-	var a := (l1 * l1 - l2 * l2 + dist * dist) / (2.0 * dist)
-	var h := sqrt(maxf(l1 * l1 - a * a, 0.0))
-	var pd := (pole - dir * pole.dot(dir))
-	pd = pd.normalized() if pd.length_squared() > 1e-8 else up
-	var e2 := s + dir * a + pd * h
-	var q1 := _arc(e - s, e2 - s)
-	sk.set_bone_global_pose(iu, Transform3D(Basis(q1) * pu.basis, s))
-	pf = sk.get_bone_global_pose(i_f)
-	ph = sk.get_bone_global_pose(ih)
-	var q2 := _arc(ph.origin - pf.origin, t - pf.origin)
-	sk.set_bone_global_pose(i_f, Transform3D(Basis(q2) * pf.basis, pf.origin))
-	ph = sk.get_bone_global_pose(ih)
-	var hb := (inv.basis * hand_world).orthonormalized()
-	var cur := ph.basis.orthonormalized()
-	var blended := Basis(cur.get_rotation_quaternion().slerp(hb.get_rotation_quaternion(), ik_weight))
-	sk.set_bone_global_pose(ih, Transform3D(blended.scaled(ph.basis.get_scale()), ph.origin))
-
-static func _arc(from: Vector3, to: Vector3) -> Quaternion:
-	var a := from.normalized()
-	var b := to.normalized()
-	var d := a.dot(b)
-	if d > 0.99999:
-		return Quaternion.IDENTITY
-	var ax := a.cross(b)
-	if ax.length_squared() < 1e-10:
-		return Quaternion.IDENTITY
-	return Quaternion(ax.normalized(), acos(clampf(d, -1.0, 1.0)))
+	var prof := grip_profile(weapon)
+	for side in ["r", "l"]:
+		if _meshes.has(side + "_grip"):
+			(_meshes[side + "_grip"] as MeshInstance3D).mesh = build_grip(side == "r", prof)

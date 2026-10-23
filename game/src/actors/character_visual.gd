@@ -68,9 +68,14 @@ var _foot_ids := PackedInt32Array()
 var look_mesh: MeshInstance3D
 var _hand_bone := -1
 var outfit: Dictionary = {}
-## Player only: jointed fingers + aim IK (CharacterHands), when the look mesh
-## folded the provider's mitten hands.
+## Player only: jointed fingers closed on the held pistol (CharacterHands),
+## when the look mesh folded the provider's mitten hands.
 var hands: CharacterHands
+## Gun poses in hand-bone space, read by the combat AimIkLayer (empty: the
+## layer's own mitten grip).
+var grip_frames := {}
+
+static var _PROF := {}
 
 static func available(role: String = "player") -> bool:
 	return ResourceLoader.exists(asset_path(role))
@@ -115,7 +120,9 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	_upgrade_materials(model)
 	# Characters piece: region-aware rebuilt mesh + shared wardrobe shader for
 	# the player and civilian rigs (officers keep their authored uniform).
+	var _t0 := Time.get_ticks_usec()
 	look_mesh = CharacterLook.apply(model, role) if role != "officer" else null
+	var _t1 := Time.get_ticks_usec()
 	if look_mesh != null:
 		if role == "player":
 			outfit = CharacterLook.player_outfit()
@@ -124,6 +131,11 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 			var stature: float = outfit["height"]
 			scale = Vector3(stature, stature, stature)
 		CharacterLook.set_outfit(look_mesh, outfit)
+		_PROF["apply"] = int(_PROF.get("apply", 0)) + _t1 - _t0
+		_PROF["outfit"] = int(_PROF.get("outfit", 0)) + Time.get_ticks_usec() - _t1
+		_PROF["n"] = int(_PROF.get("n", 0)) + 1
+		if int(_PROF["n"]) % 20 == 0:
+			print("[character-look] profile ", _PROF)
 	elif role == "civilian":
 		_apply_wardrobe(model, WARDROBE[posmod(wardrobe_variant, WARDROBE.size())])
 		var stature := 0.94 + float(posmod(wardrobe_variant, 7)) * 0.017
@@ -160,6 +172,7 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		hands.name = "Hands"
 		hands.actor = self
 		skeleton.add_child(hands)
+		grip_frames = CharacterHands.grip_frames()
 		var sc: Vector4 = outfit.get("skin_col", Vector4(0.55, 0.33, 0.22, 0.0))
 		hands.setup(skeleton, Color(sc.x, sc.y, sc.z).linear_to_srgb())
 	return true
@@ -363,6 +376,7 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 	weapon.rotation = Vector3(PI * 0.5, 0.0, 0.0)
 	if hands != null:
 		weapon.transform = CharacterHands.weapon_transform(weapon_kind)
+		hands.fit_weapon(weapon, weapon_kind)
 	process_priority = 10
 
 func set_aim_pitch(value: float) -> void:
@@ -382,14 +396,14 @@ func _process(_delta: float) -> void:
 		hands.holding = held
 		hands.aiming = _last_aim and not _last_reload and not _seated and not _dead
 		hands.weapon_kind = _weapon_kind
-		hands.aim_pitch = _aim_pitch
-		var target := 1.0 if held and hands.aiming and _weapon_kind == "pistol" else 0.0
-		hands.ik_weight = move_toward(hands.ik_weight, target, _delta * 6.0)
+		var layer := skeleton.get_node_or_null(AimIkLayer.LAYER_NAME) as AimIkLayer
+		hands.ik_weight = layer.weight if layer != null else 0.0
 		hands.update_pose()
 		if held and _weapon_kind == "pistol":
-			# The hand itself is turned onto the aim line by the IK, so the
-			# pistol stays seated in the fist.
-			_weapon_node.transform = CharacterHands.weapon_transform("pistol")
+			# The combat aim layer seats the gun in the hand while it is
+			# active; otherwise it stays in the same closed grip.
+			if layer == null or layer.weight <= 0.001:
+				_weapon_node.transform = CharacterHands.weapon_transform("pistol")
 			return
 	if _weapon_node == null or not is_instance_valid(_weapon_node):
 		return

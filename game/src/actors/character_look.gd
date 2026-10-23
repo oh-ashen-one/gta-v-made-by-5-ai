@@ -76,12 +76,18 @@ instance uniform vec4 shoe_col = vec4(0.030, 0.014, 0.007, 0.25); // w: sole val
 instance uniform vec4 skin_col = vec4(-1.0, 0.0, 0.0, 0.0);      // x<0: authored tone; w: girth
 instance uniform vec4 hair_col = vec4(0.004, 0.003, 0.0025, 0.0); // w: grey amount (+2 = clipper cut)
 instance uniform vec4 face_col = vec4(0.0, 0.5, 0.5, 0.0);       // x: stubble, y: creases, z: flush, w: pockets
+// Wave R: per-person head build (-1..1): x jaw + cheek fullness, y nose
+// size, z brow ridge / forehead; w hair volume (0 = authored, else 0.4..2).
+instance uniform vec4 head_shape = vec4(0.0, 0.0, 0.0, 0.0);
 
 varying flat int v_kind;
 varying vec3 v_rest;
 varying vec4 v_data;
 varying vec4 v_rw;
 varying vec3 v_rn;
+// Wave R: how far the skinned normal has turned from the rest normal (0 at
+// rest): bent shoulders, hips and knees bunch their cloth into deeper folds.
+varying float v_bend;
 // Fragment -> light(): wrap (skin translucency), gloss and specular level.
 varying float l_wrap;
 varying float l_rough;
@@ -130,14 +136,30 @@ void vertex() {
 	v_data = CUSTOM0;
 	v_rw = CUSTOM2;
 	v_rn = CUSTOM3.xyz;
+	v_bend = clamp(1.0 - dot(normalize(NORMAL), normalize(CUSTOM3.xyz + vec3(0.0, 0.0, 0.00001))), 0.0, 1.0);
 	// Body build: belly/chest girth pushes the torso out along its normal.
 	vec3 r = CUSTOM1.xyz;
 	float band = smoothstep(0.84, 1.02, r.y) * (1.0 - smoothstep(1.20, 1.44, r.y));
 	float core = 1.0 - smoothstep(0.15, 0.25, abs(r.x));
 	float front = mix(0.55, 1.0, smoothstep(-0.02, 0.10, -r.z));
 	VERTEX += NORMAL * skin_col.w * 0.055 * band * core * front;
+	// Head build: the skinned head moves rigidly, so a push along the
+	// skinned normal masked in rest space reshapes it per person (one mesh,
+	// many faces): jaw and cheeks, nose, brow ridge, hair mass.
+	vec3 rl = r - nose_tip;
+	float headk = smoothstep(1.44, 1.48, r.y);
+	float facing = 1.0 - smoothstep(0.03, 0.09, rl.z);
+	float ax = abs(rl.x);
+	float jaw = smoothstep(-0.115, -0.085, rl.y) * (1.0 - smoothstep(-0.035, -0.005, rl.y)) * smoothstep(0.015, 0.05, ax) * (1.0 - smoothstep(0.06, 0.11, rl.z));
+	float cheek = 1.0 - smoothstep(0.012, 0.034, length(vec2(ax - 0.044, rl.y + 0.004)));
+	float nose = (1.0 - smoothstep(0.006, 0.026, length(vec2(rl.x, rl.y + 0.008)))) * facing;
+	float brow = (1.0 - smoothstep(0.006, 0.016, abs(rl.y - 0.056))) * (1.0 - smoothstep(0.045, 0.068, ax)) * facing;
+	float hv = head_shape.w > 0.0 ? head_shape.w : 1.0;
+	float hairm = smoothstep(0.4, 0.8, CUSTOM2.z) * smoothstep(1.56, 1.62, r.y);
+	VERTEX += NORMAL * headk * (head_shape.x * (0.0085 * jaw + 0.0045 * cheek * facing) + head_shape.y * 0.0042 * nose
+		+ head_shape.z * 0.0032 * brow + (hv - 1.0) * 0.006 * hairm);
 	if (CUSTOM0.y > 0.5) {
-		VERTEX += NORMAL * CUSTOM0.y * shell_step;
+		VERTEX += NORMAL * CUSTOM0.y * shell_step * hv;
 	}
 }
 
@@ -218,6 +240,9 @@ void fragment() {
 		}
 		// No long sideburn spikes down the cheek in front of the ear.
 		hairness *= 1.0 - (1.0 - smoothstep(1.585, 1.615, p.y)) * (1.0 - smoothstep(0.085, 0.10, rel.z));
+		// Wave R: dark atlas texels on the front and sides of the neck are the
+		// collar's shadow, not hair (they cut a black notch above the collar).
+		hairness *= mix(smoothstep(1.515, 1.55, p.y), 1.0, smoothstep(0.01, 0.05, p.z - head_centre.z));
 		hairness = clamp(hairness + (vnoise(p * 260.0) - 0.5) * 0.25, 0.0, 1.0);
 		reg = hairness > 0.5 ? 2 : 0;
 	} else if (reg == 2) {
@@ -251,9 +276,14 @@ void fragment() {
 		col = skin_tone * (0.95 + 0.08 * tone);
 		col *= mix(vec3(1.0), vec3(1.04, 0.97, 0.95), smoothstep(0.55, 0.85, vnoise(p * 26.0)) * 0.5);
 		col *= 0.96 + 0.08 * vnoise(p * 140.0);
-		rough = 0.5 + 0.2 * vnoise(p * 160.0);
-		spec = 0.36;
-		sss = 0.24;
+		// Wave R: uneven living skin, not one waxy tone: mottled redness,
+		// freckle-scale pigment and a broken-up sheen.
+		float blot = fbm(p * 55.0);
+		col *= mix(vec3(1.0), vec3(1.07, 0.93, 0.92), smoothstep(0.5, 0.78, blot) * 0.7);
+		col *= 1.0 - 0.07 * smoothstep(0.62, 0.8, vnoise(p * 320.0)) * mid_k;
+		rough = 0.46 + 0.26 * fbm(p * 120.0);
+		spec = 0.33;
+		sss = 0.2;
 		h = (vnoise(p * 520.0) - 0.5) * 0.0002 * fine_k + (vnoise(p * 140.0) - 0.5) * 0.00025 * mid_k;
 		rim = 0.12;
 		if (face_k > 0.0) {
@@ -402,9 +432,18 @@ void fragment() {
 		float f4 = sin(ang * 11.0 + nz * 3.0) * armpit;
 		float f5 = sin(e * 260.0 + nz * 3.0) * (1.0 - smoothstep(0.0, 0.035, e)) * step(1.38, p.y);
 		float amp = reg == 1 ? 1.0 : 0.7;
+		float bendk = smoothstep(0.02, 0.35, v_bend);
+		// Pose: a raised or swung arm drags deeper creases from the armpit
+		// and across the sleeve; a twisted torso folds at the waist.
+		float pose_amp = 1.0 + 1.6 * bendk;
+		f3 *= pose_amp;
+		f4 *= pose_amp;
 		float folds = (f1 * 0.0034 + f2 * 0.0026 + f3 * 0.0024 + f4 * 0.0026 + f5 * 0.0012) * amp * mid_k;
 		float cavity = clamp(-(f1 * waist + f2 * drape * 0.8 + f3 * sleeve + f4 * armpit), 0.0, 1.0);
+		float ridge = clamp(f1 * waist + f2 * drape * 0.8 + f3 * sleeve + f4 * armpit, 0.0, 1.0);
 		ao *= 1.0 - 0.32 * cavity * amp;
+		// Folds must read in direct sun too (AO only darkens ambient light).
+		col *= (1.0 - 0.26 * cavity * amp) * (1.0 + 0.08 * ridge * amp);
 		h = folds + (fab_h - 1.0) * 0.00022 * fine_k;
 		// Construction: hems with a stitch line along every garment border.
 		float hem = 1.0 - smoothstep(0.016, 0.021, e);
@@ -490,8 +529,16 @@ void fragment() {
 		float ankle = 1.0 - smoothstep(0.0, 0.1, abs(p.y - 0.20));
 		float crotch = 1.0 - smoothstep(0.0, 0.08, abs(p.y - 0.80));
 		float fl = sin(p.y * 95.0 + nz * 6.0 + az * 2.0);
-		h = fl * (knee * 0.0028 + ankle * 0.0032 + crotch * 0.002) * mid_k;
-		ao *= 1.0 - 0.3 * clamp(-fl, 0.0, 1.0) * (knee + ankle + crotch);
+		// Hip whiskers: diagonal creases fanning from the crotch over the thighs.
+		float lat = abs(p.x) - 0.02;
+		float whisk_k = (1.0 - smoothstep(0.0, 0.07, abs(p.y - 0.84))) * smoothstep(0.0, 0.03, lat) * (1.0 - smoothstep(0.08, 0.14, lat)) * smoothstep(0.3, 0.7, tw3.z);
+		float whisk = sin((p.y + lat * 0.9) * 140.0 + nz * 3.0) * whisk_k;
+		float bendk = smoothstep(0.02, 0.4, v_bend);
+		float kpose = knee * (0.8 + 1.8 * bendk) + ankle + crotch * (0.8 + 1.2 * bendk);
+		h = (fl * (knee * 0.0028 * (0.8 + 1.8 * bendk) + ankle * 0.0032 + crotch * 0.002 * (0.8 + 1.2 * bendk)) + whisk * 0.0016) * mid_k;
+		float pcav = clamp(-fl, 0.0, 1.0) * kpose + clamp(-whisk, 0.0, 1.0) * 0.8;
+		ao *= 1.0 - 0.3 * clamp(pcav, 0.0, 1.0);
+		col *= (1.0 - 0.24 * clamp(pcav, 0.0, 1.2)) * (1.0 + 0.10 * clamp(fl, 0.0, 1.0) * kpose + 0.12 * clamp(whisk, 0.0, 1.0));
 		h += (dl - 1.0) * 0.00018 * fine_k;
 		float hem = 1.0 - smoothstep(0.016, 0.02, e);
 		float dash = step(0.38, fract((p.x + p.y * 1.3 + p.z) / 0.0045));
@@ -611,15 +658,23 @@ static func _rig(model: Node, role: String) -> Dictionary:
 		var skin := (mi as MeshInstance3D).skin
 		if skin == null:
 			continue
+		var names := PackedStringArray()
 		for i in skin.get_bind_count():
 			var bn := String(skin.get_bind_name(i))
 			if bn == "" and skin.get_bind_bone(i) >= 0:
 				bn = sk.get_bone_name(skin.get_bind_bone(i))
+			names.append(bn)
 			if bn == "upper_arm.r":
 				out["bind_ua_r"] = i
 			elif bn == "upper_arm.l":
 				out["bind_ua_l"] = i
+		out["bind_names"] = names
 		break
+	if not out.has("bind_names"):
+		var names2 := PackedStringArray()
+		for i in sk.get_bone_count():
+			names2.append(sk.get_bone_name(i))
+		out["bind_names"] = names2
 	if not out.has("bind_ua_r"):
 		# No Skin resource: binds follow the skeleton order.
 		out["bind_ua_r"] = sk.find_bone("upper_arm.r")
@@ -646,8 +701,14 @@ static func _apply(model: Node, role: String) -> MeshInstance3D:
 	var key := _key(src)
 	if not _cache.has(key):
 		var t0 := Time.get_ticks_msec()
-		_cache[key] = _build(src, _rig(model, role))
-		print("[character-look] built ", key.get_file(), " in ", Time.get_ticks_msec() - t0, " ms")
+		var baked := _load_baked(src, CharacterVisual.asset_path(role))
+		if not baked.is_empty():
+			_cache[key] = baked
+			print("[character-look] loaded bake for ", key.get_file(), " in ", Time.get_ticks_msec() - t0, " ms")
+		else:
+			push_warning("character-look: no offline bake for " + CharacterVisual.asset_path(role) + " (run tools/bake_character_look.tscn); building at runtime")
+			_cache[key] = _build(src, _rig(model, role))
+			print("[character-look] built ", key.get_file(), " in ", Time.get_ticks_msec() - t0, " ms")
 	var entry: Dictionary = _cache[key]
 	if entry.is_empty():
 		return null
@@ -874,6 +935,7 @@ static func _build(src: ArrayMesh, rig: Dictionary = {}) -> Dictionary:
 	_majority(region, indices, weld, wn)
 	_majority(region, indices, weld, wn)
 	_majority(region, indices, weld, wn)
+	var dressed := _dress_hidden_skin(region, wpos, wkind, merged_b, bpv, rig, neck_c, neck_r)
 	# Unique welded edges.
 	var edge_set := {}
 	var ea := PackedInt32Array()
@@ -896,35 +958,48 @@ static func _build(src: ArrayMesh, rig: Dictionary = {}) -> Dictionary:
 		for k in bpv:
 			bones[i * bpv + k] = merged_b[w * bpv + k]
 			weights[i * bpv + k] = merged_w[w * bpv + k]
-	# Sleeves ride the upper arm: the provider weighted the short sleeves to
-	# the chest, so a raised arm (aim) slid out of its sleeve.
-	if rig.has("bind_ua_r") and int(rig["bind_ua_r"]) >= 0 and int(rig.get("bind_ua_l", -1)) >= 0:
-		var ua_sign := signf(float(rig.get("ua_r_x", -0.2)))
-		for i in nv:
-			# Every copy of a welded sleeve corner, or the seams crack open.
-			if wkind[weld[i]] != 1:
+	# Sleeves ride the arm: the provider weighted the short sleeves to the
+	# chest, so a raised arm (aim) slid out of its sleeve and the skin under it
+	# poked through. In the sleeve zone every overshirt vertex now takes the
+	# bone weights of the nearest body (arm) vertex under it, blended in from
+	# the shoulder seam, so sleeve and arm deform as one.
+	var bgrid := _spatial_grid(wpos, 0.04)
+	for i in nv:
+		if wkind[weld[i]] != 1:
+			continue
+		var v := verts[i]
+		var t := smoothstep(0.150, 0.200, absf(v.x)) * smoothstep(1.02, 1.10, v.y) * (1.0 - smoothstep(1.40, 1.46, v.y))
+		if t <= 0.0:
+			continue
+		var best := -1
+		var best_d := 0.05
+		for o in _neighbours(bgrid, wpos, v, 0.04, 0.04):
+			if wkind[o] != 0:
 				continue
-			var v := verts[i]
-			var t := smoothstep(0.155, 0.205, absf(v.x)) * smoothstep(1.08, 1.16, v.y) * (1.0 - smoothstep(1.40, 1.46, v.y))
-			if t <= 0.0:
-				continue
-			var ub: int = int(rig["bind_ua_r"]) if signf(v.x) == ua_sign else int(rig["bind_ua_l"])
-			var wsum := {}
-			for k in bpv:
-				var wt := weights[i * bpv + k]
-				if wt > 0.0:
-					wsum[bones[i * bpv + k]] = float(wsum.get(bones[i * bpv + k], 0.0)) + wt * (1.0 - t)
-			wsum[ub] = float(wsum.get(ub, 0.0)) + t
-			var pairs := []
-			for b in wsum:
-				pairs.append([float(wsum[b]), int(b)])
-			pairs.sort_custom(func(x, y): return x[0] > y[0])
-			var tot := 0.0
-			for k in mini(bpv, pairs.size()):
-				tot += pairs[k][0]
-			for k in bpv:
-				bones[i * bpv + k] = pairs[k][1] if k < pairs.size() else 0
-				weights[i * bpv + k] = pairs[k][0] / tot if k < pairs.size() else 0.0
+			var dd := wpos[o].distance_to(v)
+			if dd < best_d:
+				best_d = dd
+				best = o
+		if best < 0:
+			continue
+		var wsum := {}
+		for k in bpv:
+			var wt := weights[i * bpv + k]
+			if wt > 0.0:
+				wsum[bones[i * bpv + k]] = float(wsum.get(bones[i * bpv + k], 0.0)) + wt * (1.0 - t)
+			var wb2 := merged_w[best * bpv + k]
+			if wb2 > 0.0:
+				wsum[merged_b[best * bpv + k]] = float(wsum.get(merged_b[best * bpv + k], 0.0)) + wb2 * t
+		var pairs := []
+		for bb in wsum:
+			pairs.append([float(wsum[bb]), int(bb)])
+		pairs.sort_custom(func(x, y): return x[0] > y[0])
+		var tot := 0.0
+		for k in mini(bpv, pairs.size()):
+			tot += pairs[k][0]
+		for k in bpv:
+			bones[i * bpv + k] = pairs[k][1] if k < pairs.size() else 0
+			weights[i * bpv + k] = pairs[k][0] / tot if k < pairs.size() else 0.0
 	# Player only: the provider hand is a mitten. Its finger block is folded
 	# flat onto the knuckle line, and CharacterHands draws real jointed fingers.
 	var folded := 0
@@ -1247,25 +1322,9 @@ static func _build(src: ArrayMesh, rig: Dictionary = {}) -> Dictionary:
 		| (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM2_SHIFT) | (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM3_SHIFT)
 	if bpv == 8:
 		flags |= Mesh.ARRAY_FLAG_USE_8_BONE_WEIGHTS
-	var material := ShaderMaterial.new()
-	material.shader = shader()
-	material.set_shader_parameter("albedo_tex", albedo)
-	if normal != null:
-		material.set_shader_parameter("normal_tex", normal)
+	var params := {"src_skin": src_skin, "src_hair_lum": src_hair_lum, "head_centre": head_centre, "nose_tip": nose_tip}
+	var material := _make_material(albedo, normal, params)
 	var fab := _fabrics()
-	if fab.size() == 4:
-		material.set_shader_parameter("flannel_tex", fab[0])
-		material.set_shader_parameter("denim_tex", fab[1])
-		material.set_shader_parameter("batik_tex", fab[2])
-		material.set_shader_parameter("jersey_tex", fab[3])
-		material.set_shader_parameter("has_fabrics", true)
-	material.set_shader_parameter("src_skin", src_skin)
-	material.set_shader_parameter("src_hair_lum", src_hair_lum)
-	material.set_shader_parameter("head_centre", head_centre)
-	material.set_shader_parameter("nose_tip", nose_tip)
-	var dbg := OS.get_environment("ORCHARD_LOOK_DEBUG")
-	if dbg != "":
-		material.set_shader_parameter("debug_mode", int(dbg))
 	var out: ArrayMesh = null
 	var im := ImporterMesh.new()
 	im.add_surface(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {}, material, "Character", flags)
@@ -1279,7 +1338,108 @@ static func _build(src: ArrayMesh, rig: Dictionary = {}) -> Dictionary:
 	counts.resize(8)
 	for w in wn:
 		counts[region[w]] += 1
-	return {"mesh": out, "material": material, "regions": counts, "shell_tris": hair_tris.size() / 3 * SHELLS, "src_skin": src_skin, "grip_verts": folded, "fabrics": fab.size() == 4}
+	return {"mesh": out, "material": material, "regions": counts, "shell_tris": hair_tris.size() / 3 * SHELLS, "src_skin": src_skin, "grip_verts": folded, "fabrics": fab.size() == 4, "params": params, "dressed": dressed}
+
+## The shared character material for one provider atlas (also rebuilt for a
+## baked mesh, which is stored without it).
+static func _make_material(albedo: Texture2D, normal: Texture2D, params: Dictionary) -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = shader()
+	material.set_shader_parameter("albedo_tex", albedo)
+	if normal != null:
+		material.set_shader_parameter("normal_tex", normal)
+	var fab := _fabrics()
+	if fab.size() == 4:
+		material.set_shader_parameter("flannel_tex", fab[0])
+		material.set_shader_parameter("denim_tex", fab[1])
+		material.set_shader_parameter("batik_tex", fab[2])
+		material.set_shader_parameter("jersey_tex", fab[3])
+		material.set_shader_parameter("has_fabrics", true)
+	for k in params:
+		material.set_shader_parameter(k, params[k])
+	var dbg := OS.get_environment("ORCHARD_LOOK_DEBUG")
+	if dbg != "":
+		material.set_shader_parameter("debug_mode", int(dbg))
+	return material
+
+# --- Offline bake ---------------------------------------------------------------
+# The rebuild above takes tens of seconds of GDScript per rig, so it runs
+# OFFLINE (res://tools/bake_character_look.tscn, headless) and the result is
+# stored next to the provider rigs under a new filename. The game only loads
+# it; a missing or stale bake falls back to the runtime build with a warning.
+## Bump whenever _build/_classify/_rig change what they produce.
+const BAKE_VERSION := "r1e"
+const BAKE_DIR := "res://assets/providers/baked_characters/"
+
+static func baked_path(src_path: String) -> String:
+	return BAKE_DIR + src_path.get_file().get_basename() + "_look_" + BAKE_VERSION + ".res"
+
+static func _src_stamp(src_path: String) -> int:
+	var f := FileAccess.open(src_path, FileAccess.READ)
+	if f == null:
+		return -1
+	var n := f.get_length()
+	f.close()
+	return n
+
+## Bakes one role's look mesh (tool use). Returns the saved path or "".
+static func bake(role: String) -> String:
+	var path := CharacterVisual.asset_path(role)
+	var entry := build_for_rig(role)
+	if entry.is_empty():
+		return ""
+	var mesh: ArrayMesh = entry["mesh"]
+	var mat := mesh.surface_get_material(0)
+	mesh.surface_set_material(0, null)
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(BAKE_DIR))
+	var out := baked_path(path)
+	var err := ResourceSaver.save(mesh, out, ResourceSaver.FLAG_COMPRESS)
+	mesh.surface_set_material(0, mat)
+	if err != OK:
+		return ""
+	var info := {"source": path, "source_bytes": _src_stamp(path), "version": BAKE_VERSION, "role": role,
+		"regions": Array(entry["regions"]), "shell_tris": entry["shell_tris"], "grip_verts": entry["grip_verts"],
+		"fabrics": entry["fabrics"], "params": {}}
+	var params: Dictionary = entry["params"]
+	for k in params:
+		var v: Vector3 = params[k] if params[k] is Vector3 else Vector3(float(params[k]), 0.0, 0.0)
+		info["params"][k] = [v.x, v.y, v.z, 1.0 if params[k] is Vector3 else 0.0]
+	var f := FileAccess.open(out.get_basename() + ".json", FileAccess.WRITE)
+	f.store_string(JSON.stringify(info, "  "))
+	f.close()
+	return out
+
+## Loads a baked look mesh for `src` (from `src_path`) and binds a fresh
+## material; {} when there is no valid bake.
+static func _load_baked(src: ArrayMesh, src_path: String) -> Dictionary:
+	var out := baked_path(src_path)
+	var jpath := out.get_basename() + ".json"
+	if not ResourceLoader.exists(out) or not FileAccess.file_exists(jpath):
+		return {}
+	var info = JSON.parse_string(FileAccess.get_file_as_string(jpath))
+	if not (info is Dictionary) or String(info.get("version", "")) != BAKE_VERSION or int(info.get("source_bytes", -2)) != _src_stamp(src_path):
+		push_warning("character-look: stale bake " + out)
+		return {}
+	var mesh := load(out) as ArrayMesh
+	if mesh == null or mesh.get_surface_count() != 1:
+		return {}
+	var albedo: Texture2D = null
+	var normal: Texture2D = null
+	for s in src.get_surface_count():
+		var m := src.surface_get_material(s)
+		if _surface_kind(m) <= 1 and m is StandardMaterial3D and (m as StandardMaterial3D).albedo_texture != null:
+			albedo = (m as StandardMaterial3D).albedo_texture
+			normal = (m as StandardMaterial3D).normal_texture
+			break
+	var params := {}
+	for k in info["params"]:
+		var a: Array = info["params"][k]
+		params[k] = Vector3(a[0], a[1], a[2]) if float(a[3]) > 0.5 else float(a[0])
+	var material := _make_material(albedo, normal, params)
+	mesh.surface_set_material(0, material)
+	var regions := PackedInt32Array(info["regions"])
+	return {"mesh": mesh, "material": material, "regions": regions, "shell_tris": int(info["shell_tris"]),
+		"grip_verts": int(info["grip_verts"]), "fabrics": bool(info["fabrics"]), "params": params, "baked": true}
 
 const FABRIC_DIR := "res://assets/providers/higgsfield/"
 static var _fabric_cache: Array = []
@@ -1362,6 +1522,46 @@ static func _classify(c: Color, p: Vector3, kind: int, neck_c: Vector2 = Vector2
 		return R_SHIRT
 	return R_PANTS
 
+## Body skin that belongs under the clothes is dressed, so a pose that pushes
+## it through a garment shows cloth, not a skin shard: the thigh and hip
+## (dominant leg/pelvis bone) become trousers, the waist and torso (spine /
+## chest away from the neck opening) shirt, and body skin within 2 cm of
+## the overshirt surface (upper arm under the sleeve, armpit, waistband)
+## shirt. Returns how many vertices were dressed.
+static func _dress_hidden_skin(region: PackedByteArray, wpos: PackedVector3Array, wkind: PackedByteArray, mb: PackedInt32Array, bpv: int, rig: Dictionary, neck_c: Vector2, neck_r: float) -> int:
+	var names: PackedStringArray = rig.get("bind_names", PackedStringArray())
+	var wn := wpos.size()
+	var shirt_pts := PackedVector3Array()
+	for w in wn:
+		if wkind[w] == 1 and region[w] == R_SHIRT:
+			shirt_pts.append(wpos[w])
+	var sg := _spatial_grid(shirt_pts, 0.02)
+	var n := 0
+	for w in wn:
+		if wkind[w] != 0 or region[w] != R_SKIN:
+			continue
+		var p := wpos[w]
+		var dom := ""
+		var bi := mb[w * bpv]
+		if bi >= 0 and bi < names.size():
+			dom = names[bi]
+		var at_neck := p.y > 1.34 and Vector2(p.x, p.z).distance_to(neck_c) < neck_r + 0.035
+		if p.y > 1.44 or at_neck:
+			continue
+		var to := -1
+		if dom.begins_with("thigh") or dom.begins_with("shin") or dom == "pelvis":
+			to = R_PANTS if p.y < 0.99 else R_SHIRT
+		elif dom.begins_with("spine") or dom == "chest" or dom.begins_with("clavicle"):
+			to = R_SHIRT if p.y > 0.95 else R_PANTS
+		elif dom.begins_with("upper_arm") and p.y > 1.16:
+			to = R_SHIRT
+		elif not _neighbours(sg, shirt_pts, p, 0.02, 0.02).is_empty():
+			to = R_SHIRT
+		if to >= 0:
+			region[w] = to
+			n += 1
+	return n
+
 ## One majority pass: an isolated vertex takes its neighbours' region.
 static func _majority(region: PackedByteArray, indices: PackedInt32Array, weld: PackedInt32Array, wn: int) -> void:
 	var votes := PackedInt32Array()
@@ -1433,6 +1633,7 @@ static func player_outfit() -> Dictionary:
 		"skin_col": Vector4(skin.r, skin.g, skin.b, 0.0),
 		"hair_col": _v4(Color(0.12, 0.09, 0.07), 0.0),
 		"face_col": Vector4(0.85, 0.8, 0.6, 1.0),
+		"head_shape": Vector4(0.35, 0.15, 0.8, 1.0),
 	}
 
 ## Deterministic civilian outfit and build for a seed. Never the player's
@@ -1486,6 +1687,7 @@ static func civilian_outfit(seed_value: int) -> Dictionary:
 		"hair_col": _v4(hair, (rng.randf_range(0.55, 1.0) if elder else 0.0) + (2.0 if rng.randf() < 0.2 else 0.0)),
 		"face_col": Vector4(stubble, rng.randf_range(0.3, 1.0) if elder else rng.randf_range(0.1, 0.5), rng.randf_range(0.3, 0.9), 1.0 if rng.randf() < 0.5 else 0.0),
 		"height": rng.randf_range(0.93, 1.06) * (0.97 if elder else 1.0),
+		"head_shape": Vector4(rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0), rng.randf_range(-0.8, 1.0), rng.randf_range(0.5, 1.9)),
 	}
 
 ## The headless (dummy) renderer re-parses the shader on every per-instance
@@ -1496,7 +1698,7 @@ static var _headless := DisplayServer.get_name() == "headless"
 static func set_outfit(mi: MeshInstance3D, outfit: Dictionary) -> void:
 	if _headless:
 		return
-	for key in ["shirt_col", "shirt_col2", "tee_col", "pants_col", "shoe_col", "skin_col", "hair_col", "face_col"]:
+	for key in ["shirt_col", "shirt_col2", "tee_col", "pants_col", "shoe_col", "skin_col", "hair_col", "face_col", "head_shape"]:
 		if outfit.has(key):
 			mi.set_instance_shader_parameter(key, outfit[key])
 

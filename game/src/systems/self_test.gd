@@ -1241,3 +1241,32 @@ func _character_look_checks(player: Player) -> void:
 		sigs[sig] = true
 		clash = clash or sig == player_sig
 	_check("crowd wardrobe: >= 8 distinct civilians, none in the player's outfit", sigs.size() >= 8 and not clash, "distinct=%d" % sigs.size())
+	# Wave R: the look mesh is baked OFFLINE (load time) and matches a fresh build.
+	var path := CharacterVisual.asset_path("player")
+	var src_mesh: ArrayMesh = null
+	var pm := (load(path) as PackedScene).instantiate()
+	for node in pm.find_children("*", "MeshInstance3D", true, false):
+		if (node as MeshInstance3D).mesh is ArrayMesh and (node as MeshInstance3D).mesh.get_surface_count() >= 2:
+			src_mesh = (node as MeshInstance3D).mesh
+			break
+	var baked := CharacterLook._load_baked(src_mesh, path) if src_mesh != null else {}
+	pm.free()
+	_check("characters-R: player look mesh is baked offline and matches a fresh build (no runtime rebuild at load)",
+		not baked.is_empty() and baked["regions"] == regions, "bake=%s" % CharacterLook.baked_path(path))
+	_check("characters-R: hidden body skin under the clothes is dressed (no skin shards through the shirt/jeans)",
+		int(info.get("dressed", 0)) > 50, "dressed=%d" % int(info.get("dressed", 0)))
+	# Wave R: the combat aim layer seats the pistol by the characters' grip frames.
+	var gf := CharacterHands.grip_frames()
+	var prof := [[-0.03, 0.015, -0.02, 0.028], [-0.018, 0.015, -0.02, 0.028], [-0.006, 0.015, -0.02, 0.028], [0.006, 0.015, -0.02, 0.028], [0.018, 0.015, -0.02, 0.028], [0.03, 0.015, -0.02, 0.028]]
+	var grip_r := CharacterHands.build_grip(true, prof)
+	var grip_l := CharacterHands.build_grip(false, prof)
+	_check("characters-R: gun and support hands publish grip frames and close fingers round the grip", gf.has("pistol_r") and gf.has("pistol_l")
+		and grip_r.surface_get_array_len(0) > 2000 and grip_l.surface_get_array_len(0) > 2000, "verts=%d/%d" % [grip_r.surface_get_array_len(0), grip_l.surface_get_array_len(0)])
+	var cv: CharacterVisual = player.get("_visual")
+	if cv != null and cv.hands != null:
+		_check("characters-R: the player's visual hands its grip frames to the aim layer (no second arm IK)", cv.grip_frames.has("pistol_r"), "")
+	var heads := {}
+	for i in 12:
+		var hs: Vector4 = CharacterLook.civilian_outfit(500 + i * 7919)["head_shape"]
+		heads["%d,%d,%d" % [int(hs.x * 4.0), int(hs.y * 4.0), int(hs.z * 4.0)]] = true
+	_check("characters-R: civilians get their own head build (jaw, nose, brow, hair volume)", heads.size() >= 10, "distinct=%d" % heads.size())
