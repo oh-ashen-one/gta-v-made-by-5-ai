@@ -824,6 +824,16 @@ func _skyline_checks(world: WorldBuilder) -> void:
 		lum[m.get_string(1)] = 0.2126 * m.get_string(2).to_float() + 0.7152 * m.get_string(3).to_float() + 0.0722 * m.get_string(4).to_float()
 	var gap := float(lum.get("horizon_col", 0.0)) - float(lum.get("haze_col", 1.0))
 	_check("skyline: aerial haze is darker than the horizon sky so far towers keep silhouettes", lum.size() == 2 and gap >= 0.10 and int(sk.get("atmosphere", 0)) >= 2, "gap %.2f %s" % [gap, str(lum)])
+	# Aerial R1 (helicopter-P2 "miniature city"): open block interiors are
+	# planted (ground cover + canopy trees with trunk collision), and the
+	# shophouse terraces are altered unit by unit with no run of more than
+	# three identical treatments.
+	var af: Dictionary = AerialFill.stats
+	var trunks := root.get_node_or_null("AerialFillTrunks") if root else null
+	_check("aerial: open block interiors are planted (>= 5 ha cover, >= 250 canopy trees, trunk collision)", float(af.get("area_m2", 0.0)) >= 50000.0 and int(af.get("trees", 0)) >= 250 and trunks != null and trunks.get_child_count() == int(af.get("trees", -1)), str(af))
+	var rs: Dictionary = AerialRoofscape.stats
+	var altered := int(rs.get("attic", 0)) + int(rs.get("rebuilt", 0)) + int(rs.get("tanks_solar", 0))
+	_check("aerial: shophouse roofs are altered unit by unit (>= 50% of units, all three kinds)", int(rs.get("units", 0)) > 100 and altered * 2 >= int(rs.get("units", 0)) and int(rs.get("attic", 0)) > 0 and int(rs.get("rebuilt", 0)) > 0 and int(rs.get("tanks_solar", 0)) > 0 and int(rs.get("max_run", 99)) <= 3, str(rs))
 
 ## driving-p: handbrake rotation, momentum exchange in a rear-end crash, a
 ## wall rebound that keeps some speed, and visible damage. Disclosed fixture

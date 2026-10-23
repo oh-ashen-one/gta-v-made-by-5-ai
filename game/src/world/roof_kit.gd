@@ -156,6 +156,7 @@ func build(parent: Node3D) -> void:
 			mm.set_instance_color(i, _deck[i][1])
 		var mat := ShaderMaterial.new()
 		mat.shader = load(DECK_SHADER)
+		AerialRoofscape.apply_roof_texture(mat)   # aerial R1: photographic roof plant when the library is present
 		var mmi := MultiMeshInstance3D.new()
 		mmi.name = "RoofKit_deck"
 		mmi.multimesh = mm

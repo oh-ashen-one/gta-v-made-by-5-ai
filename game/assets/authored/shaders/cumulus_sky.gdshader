@@ -28,12 +28,12 @@ uniform vec3 horizon_cool : source_color = vec3(0.76, 0.81, 0.87);
 uniform vec3 horizon_warm : source_color = vec3(1.0, 0.84, 0.66);
 uniform vec3 ground_color : source_color = vec3(0.34, 0.33, 0.31);
 uniform float sky_energy = 1.0;
-uniform float cloud_coverage = 0.52;
-uniform float cloud_bottom = 1100.0;
-uniform float cloud_top = 2900.0;
+uniform float cloud_coverage = 0.6;
+uniform float cloud_bottom = 950.0;
+uniform float cloud_top = 3300.0;
 // World metres per tile of the shape volume (cumulus cells ~0.8-1.6 km).
-uniform float shape_scale = 5200.0;
-uniform float detail_scale = 900.0;
+uniform float shape_scale = 7600.0;
+uniform float detail_scale = 1150.0;
 uniform float cloud_density = 0.022;
 uniform float cloud_sun_scale = 0.62;
 uniform float cloud_amb_scale = 1.0;

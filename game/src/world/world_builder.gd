@@ -105,6 +105,8 @@ func build(seed_value: int = 20261021) -> void:
 	_kerb_markings()
 	_scatter_props()
 	_landscape()
+	AerialRoofscape.build(self, _world_root)   # aerial R1: unit-by-unit shophouse roof alterations
+	AerialFill.build(self, _world_root)   # aerial R1: plant the open block-interior ground
 	SurfaceDressing.dress(_world_root)   # wave B materials: grime, wall/roof clutter
 	_lighting.finish()
 	_batch_static_primitives()

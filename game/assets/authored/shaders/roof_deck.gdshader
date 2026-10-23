@@ -8,10 +8,18 @@ shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back;
 
 uniform vec3 parapet_col : source_color = vec3(0.62, 0.60, 0.56);
+// Aerial R1: optional photographic roof-plant sheet (generated library
+// `rooftop_flat`, git-ignored; AerialRoofscape.apply_roof_texture sets it when
+// present). One ~30 m sheet per roof with a random offset and 90-degree turn,
+// coloured by the membrane tint. Off (amount 0) without the file.
+uniform sampler2D roof_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform float roof_tex_amount = 0.0;
+uniform float roof_tex_metres = 30.0;
 
 varying vec3 wpos;
 varying vec3 wnorm;
 varying vec4 tint;
+varying vec3 iorig;
 
 float hash2(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float vnoise(vec2 p) {
@@ -30,6 +38,7 @@ void vertex() {
 	wnorm = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
 	// Instance colours arrive as sRGB values; shade in linear.
 	tint = vec4(pow(COLOR.rgb, vec3(2.2)), COLOR.a);
+	iorig = MODEL_MATRIX[3].xyz;
 }
 
 void fragment() {
@@ -63,6 +72,19 @@ void fragment() {
 			c = mix(c, lin(vec3(0.16, 0.16, 0.17)), dark_patch * 0.75);
 			ROUGHNESS = 0.93;
 			METALLIC = 0.0;
+		}
+		if (roof_tex_amount > 0.0 && !metal_sheet) {
+			float h = hash2(iorig.xz * 0.37 + 1.3);
+			vec2 lq = (q - iorig.xz) / roof_tex_metres;
+			int turn = int(h * 4.0);
+			if (turn == 1) lq = vec2(-lq.y, lq.x);
+			else if (turn == 2) lq = -lq;
+			else if (turn == 3) lq = vec2(lq.y, -lq.x);
+			lq += vec2(fract(h * 7.31), fract(h * 13.7));
+			vec3 t = texture(roof_tex, lq).rgb;
+			float bl = max(dot(base, vec3(0.3333)), 0.02);
+			vec3 tinted = mix(t, t * clamp(base / bl, vec3(0.4), vec3(2.0)), 0.55) * clamp(bl / 0.16, 0.55, 1.35);
+			c = mix(c, tinted * (0.88 + 0.24 * big), roof_tex_amount);
 		}
 		// Dark ponding / algae marks after rain.
 		c = mix(c, c * 0.45 + lin(vec3(0.03, 0.05, 0.03)), pond * 0.75);
