@@ -8,10 +8,10 @@ shader_type spatial;
 // little translucency where the low sun comes through the cloth.
 render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_burley, specular_schlick_ggx;
 
-uniform vec3 stripe_col : source_color = vec3(0.45, 0.40, 0.52);
+// Per awning (merged per 160 m cell): COLOR.rgb = stripe colour, COLOR.a = 1
+// for a plain single-colour canvas.
 uniform vec3 cream : source_color = vec3(0.86, 0.82, 0.72);
 uniform float stripe_w = 0.32;
-uniform float plain = 0.0;   // 1 = solid colour canvas (no stripes)
 
 float h21(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float vn(vec2 x) {
@@ -28,8 +28,8 @@ void fragment() {
 	ALPHA_SCISSOR_THRESHOLD = 0.5;
 	float fw = max(fwidth(u), 1e-4);
 	float sw = sin(PI * u / stripe_w);
-	float s = mix(smoothstep(-1.0, 1.0, sw / max(fw * PI / stripe_w * 1.5, 1e-4)), 1.0, plain);
-	vec3 col = mix(cream, stripe_col, s);
+	float s = mix(smoothstep(-1.0, 1.0, sw / max(fw * PI / stripe_w * 1.5, 1e-4)), 1.0, COLOR.a);
+	vec3 col = mix(cream, pow(COLOR.rgb, vec3(2.2)), s);   // vertex colour is sRGB
 	// weave and slight unevenness of the dye
 	float weave = 0.94 + 0.06 * vn(vec2(u * 140.0, v * 140.0)) + 0.04 * (vn(vec2(u * 3.0, v * 4.0)) - 0.5);
 	col *= weave;

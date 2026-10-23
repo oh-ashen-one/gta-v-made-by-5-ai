@@ -379,8 +379,11 @@ func _kerb_run(line: float, side: float, along_z: bool, r: RandomNumberGenerator
 		elif roll < 0.20:
 			# bollard run
 			for k in 4:
-				_add("cyl", Transform3D(b * Basis.from_scale(Vector3(0.16, 0.9, 0.16)), o + b * Vector3(-1.5 + k * 1.0, py + 0.45, pv - 0.55)), Color(0.82, 0.80, 0.74))
-				_add("cyl", Transform3D(b * Basis.from_scale(Vector3(0.17, 0.08, 0.17)), o + b * Vector3(-1.5 + k * 1.0, py + 0.75, pv - 0.55)), Color(0.85, 0.65, 0.10))
+				if NearFieldProps.has("bollard"):
+					_add("bollard", Transform3D(b, o + b * Vector3(-1.5 + k * 1.0, py, pv - 0.55)), Color.WHITE)
+				else:
+					_add("cyl", Transform3D(b * Basis.from_scale(Vector3(0.16, 0.9, 0.16)), o + b * Vector3(-1.5 + k * 1.0, py + 0.45, pv - 0.55)), Color(0.82, 0.80, 0.74))
+					_add("cyl", Transform3D(b * Basis.from_scale(Vector3(0.17, 0.08, 0.17)), o + b * Vector3(-1.5 + k * 1.0, py + 0.75, pv - 0.55)), Color(0.85, 0.65, 0.10))
 			_count("bollard", 4)
 		elif roll < 0.24:
 			# signpost: pictogram plate facing the traffic on this side

@@ -13,12 +13,14 @@ extends RefCounted
 ##   crate   slatted plastic produce crate, open top, handle slots
 ##   produce a heaped crate fill of round fruit/veg (instance colour tints)
 ##   aframe  timber A-frame chalkboard with legible chalk menus (two faces)
+##   bollard painted steel pedestrian bollard: base flange, two reflective
+##           collars, domed cap
 ##   cabinet green steel telecom/power cabinet: plinth, twin doors, louvres,
 ##           drip cap, handles
 ## Kind names carry no "_" (StreetPropColliders derives the kind from the
 ## MultiMesh name) and are listed in its SOLID_KINDS so the player bumps them.
 
-const KINDS := ["tcone", "bin", "crate", "produce", "aframe", "cabinet"]
+const KINDS := ["tcone", "bin", "crate", "produce", "aframe", "cabinet", "bollard"]
 static var _cache := {}
 
 static func has(kind: String) -> bool:
@@ -60,6 +62,7 @@ static func mesh(kind: String) -> Mesh:
 		"produce": m = _produce()
 		"aframe": m = _aframe()
 		"cabinet": m = _cabinet()
+		"bollard": m = _bollard()
 	_cache[kind] = m
 	return m
 
@@ -206,6 +209,21 @@ static func _produce() -> Mesh:
 		_sphere(st, Vector3(x, rad * 0.8 + maxf(mound, 0.0), z), Vector3(rad, rad * 0.92, rad), Color(shade, shade, shade * r.randf_range(0.9, 1.05)), 8, 5)
 	return st.commit()
 
+static func _bollard() -> Mesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var paint := Color(0.80, 0.79, 0.74)
+	var band := Color(0.92, 0.70, 0.08)
+	var dark := Color(0.10, 0.10, 0.10)
+	_frustum(st, 0.0, 0.03, 0.12, 0.12, dark, 14, true)
+	_frustum(st, 0.03, 0.66, 0.075, 0.07, paint, 14)
+	_frustum(st, 0.66, 0.72, 0.071, 0.071, band, 14)
+	_frustum(st, 0.72, 0.75, 0.07, 0.07, dark, 14)
+	_frustum(st, 0.75, 0.80, 0.07, 0.07, band, 14)
+	_frustum(st, 0.80, 0.86, 0.07, 0.07, paint, 14)
+	_sphere(st, Vector3(0, 0.86, 0), Vector3(0.07, 0.04, 0.07), paint, 14, 4)
+	return st.commit()
+
 static func _cabinet() -> Mesh:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -283,34 +301,65 @@ static func _aframe() -> Mesh:
 	return mesh
 
 # ------------------------------------------------- standalone placement
-## One modelled prop as its own MeshInstance3D (world_builder five-foot-way
-## fittings), tinted, with an on-foot-only collision box (StreetPropColliders
+## One modelled prop for world_builder's five-foot-way fittings. Instances
+## are batched: queued per kind and 160 m cell, then emitted as MultiMeshes in
+## one deferred flush (one draw per kind per cell, not one per crate). Each
+## gets an on-foot-only collision box on one shared body (StreetPropColliders
 ## layer: cars, NPCs and the camera arm ignore it).
-static func place(root: Node3D, kind: String, xf: Transform3D, tint: Color = Color.WHITE, solid: bool = true) -> MeshInstance3D:
-	var mi := MeshInstance3D.new()
-	mi.name = "NearfieldProp_" + kind
-	mi.mesh = mesh(kind)
-	if not own_materials(kind):
-		var m := (material(kind) as StandardMaterial3D).duplicate() as StandardMaterial3D
-		m.albedo_color = tint
-		mi.material_override = m
-	mi.transform = xf
-	mi.set_meta("nearfield", true)
-	root.add_child(mi)
+static var _pending := {}
+static var _flush_queued := false
+static var _body: StaticBody3D = null
+
+static func place(root: Node3D, kind: String, xf: Transform3D, tint: Color = Color.WHITE, solid: bool = true) -> void:
+	var cell := Vector2i(floori((xf.origin.x + 400.0) / 160.0), floori((xf.origin.z + 400.0) / 160.0))
+	var key := "%s@%d_%d" % [kind, cell.x, cell.y]
+	if not _pending.has(key):
+		_pending[key] = {"kind": kind, "xf": [], "col": []}
+	_pending[key]["xf"].append(xf)
+	_pending[key]["col"].append(tint)
+	if not _flush_queued:
+		_flush_queued = true
+		_flush.call_deferred(root)
 	if solid:
-		var aabb := mi.mesh.get_aabb()
-		var body := StaticBody3D.new()
-		body.collision_layer = StreetPropColliders.PROP_LAYER
-		body.collision_mask = 0
+		if _body == null or not is_instance_valid(_body):
+			_body = StaticBody3D.new()
+			_body.name = "NearfieldPropBodies"
+			_body.collision_layer = StreetPropColliders.PROP_LAYER
+			_body.collision_mask = 0
+			root.add_child(_body)
+		var aabb := mesh(kind).get_aabb()
 		var cs := CollisionShape3D.new()
 		var bs := BoxShape3D.new()
 		bs.size = aabb.size * 0.92
 		cs.shape = bs
-		cs.position = aabb.get_center()
-		body.add_child(cs)
-		body.transform = xf
-		root.add_child(body)
-	return mi
+		cs.transform = Transform3D(xf.basis, xf * aabb.get_center())
+		_body.add_child(cs)
+
+static func _flush(root: Node3D) -> void:
+	_flush_queued = false
+	if not is_instance_valid(root):
+		_pending.clear()
+		return
+	for key in _pending:
+		var g: Dictionary = _pending[key]
+		var kind: String = g["kind"]
+		var xfs: Array = g["xf"]
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.use_colors = true
+		mm.mesh = mesh(kind)
+		mm.instance_count = xfs.size()
+		for i in xfs.size():
+			mm.set_instance_transform(i, xfs[i])
+			mm.set_instance_color(i, g["col"][i])
+		var mmi := MultiMeshInstance3D.new()
+		mmi.name = "NearfieldProps_" + String(key).replace("@", "_")
+		mmi.multimesh = mm
+		if not own_materials(kind):
+			mmi.material_override = material(kind)
+		mmi.visibility_range_end = 220.0
+		root.add_child(mmi)
+	_pending.clear()
 
 ## A five-foot-way stack of produce crates and cartons (replaces the two
 ## brown blockout boxes): 3-5 slatted crates, some filled, plus a carton.

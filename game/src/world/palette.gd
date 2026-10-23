@@ -138,7 +138,9 @@ static func weathered_surface(color: Color, kind: String, rough: float = 0.9, me
 			m.set_shader_parameter("tint", Vector3(color.r, color.g, color.b))
 			m.set_shader_parameter("base_rough", rough)
 			if NearField.enabled():
-				m.set_shader_parameter("lift", 1.16)
+				m.set_shader_parameter("lift", 1.28)
+				m.set_shader_parameter("sat", 0.78)
+				m.set_shader_parameter("fittings", 1.0)
 		_:
 			m.shader = load(SHADER_DIR + "weathered_wall.gdshader")
 			m.set_shader_parameter("albedo_tex", load(SURF_DIR + kind + "_albedo.png"))

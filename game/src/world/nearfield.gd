@@ -545,7 +545,7 @@ static func emit_shrubs(root: Node3D, shrubs: Dictionary) -> void:
 			mmi.name = "NearfieldShrub_%s_%d_%d" % [kind, c.x, c.y]
 			mmi.multimesh = mm
 			mmi.material_override = card_material() if cards else leaf_material()
-			mmi.visibility_range_end = 260.0
+			mmi.visibility_range_end = 200.0
 			mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 			root.add_child(mmi)
 
@@ -870,6 +870,9 @@ static func two_wheeler_collision(root: Node3D, xforms: Array, motor: bool) -> v
 ## a 1.9 m projection, a 0.27 m scalloped valance on the front bar, steel
 ## front bar and two drop arms back to the facade. centre = old slab centre,
 ## yaw = shophouse yaw (outward = Basis(UP, yaw) * -Z).
+static var _awn := {}   # cell -> {canvas: SurfaceTool, bars: SurfaceTool}
+static var _awn_queued := false
+
 static func canvas_awning(root: Node3D, centre: Vector3, yaw: float, colour: Color, seed_i: int) -> void:
 	var b := Basis(Vector3.UP, yaw)
 	var along := b * Vector3.RIGHT
@@ -877,8 +880,18 @@ static func canvas_awning(root: Node3D, centre: Vector3, yaw: float, colour: Col
 	var width := 7.4
 	var depth := 1.9
 	var slope := tan(deg_to_rad(12.0))
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var cell := Vector2i(floori((centre.x + 400.0) / 160.0), floori((centre.z + 400.0) / 160.0))
+	if not _awn.has(cell):
+		var c0 := SurfaceTool.new()
+		c0.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var b0 := SurfaceTool.new()
+		b0.begin(Mesh.PRIMITIVE_TRIANGLES)
+		_awn[cell] = {"canvas": c0, "bars": b0}
+	var st: SurfaceTool = _awn[cell]["canvas"]
+	var bst: SurfaceTool = _awn[cell]["bars"]
+	# per-awning stripe colour in COLOR.rgb, plain (no stripes) flag in COLOR.a
+	var c2 := colour.darkened(0.22)
+	var vcol := Color(c2.r, c2.g, c2.b, 1.0 if seed_i % 3 == 0 else 0.0)
 	var nu := 24
 	var nv := 6
 	var pt := func(i: int, j: int) -> Vector3:
@@ -898,6 +911,7 @@ static func canvas_awning(root: Node3D, centre: Vector3, yaw: float, colour: Col
 			var uvs := [Vector2(float(i) / nu * width, float(j) / nv), Vector2(float(i + 1) / nu * width, float(j) / nv), Vector2(float(i + 1) / nu * width, float(j + 1) / nv), Vector2(float(i) / nu * width, float(j + 1) / nv)]
 			var vs := [a, bb, c, d]
 			for idx in [0, 1, 2, 0, 2, 3]:
+				st.set_color(vcol)
 				st.set_normal(n)
 				st.set_uv(uvs[idx])
 				st.add_vertex(vs[idx])
@@ -909,46 +923,53 @@ static func canvas_awning(root: Node3D, centre: Vector3, yaw: float, colour: Col
 		var uvs := [Vector2(float(i) / nu * width, 1.0), Vector2(float(i + 1) / nu * width, 1.0), Vector2(float(i + 1) / nu * width, 1.3), Vector2(float(i) / nu * width, 1.3)]
 		var vs := [a, bb, bb + drop, a + drop]
 		for idx in [0, 1, 2, 0, 2, 3]:
+			st.set_color(vcol)
 			st.set_normal(out)
 			st.set_uv(uvs[idx])
 			st.add_vertex(vs[idx])
-	var mi := MeshInstance3D.new()
-	mi.name = "NearfieldAwning"
-	mi.mesh = st.commit()
-	var m := ShaderMaterial.new()
-	m.shader = load(SHADERS + "canvas_awning.gdshader")
-	var c2 := colour.darkened(0.22)
-	m.set_shader_parameter("stripe_col", Vector3(c2.r, c2.g, c2.b))
-	m.set_shader_parameter("plain", 1.0 if seed_i % 3 == 0 else 0.0)
-	mi.material_override = m
-	mi.set_meta("nearfield", true)
-	root.add_child(mi)
 	# steel front bar and drop arms
-	var p0: Vector3 = pt.call(0, nv)
-	var p1: Vector3 = pt.call(nu, nv)
-	var bars := [[p0, p1, 0.022]]
+	var bars := [[pt.call(0, nv), pt.call(nu, nv), 0.022]]
 	for e: float in [0.0, 1.0]:
-		var wall: Vector3 = pt.call(int(e * nu), 0) + Vector3.UP * -0.55
-		var front: Vector3 = pt.call(int(e * nu), nv)
-		bars.append([wall, front, 0.016])
+		bars.append([(pt.call(int(e * nu), 0) as Vector3) + Vector3.UP * -0.55, pt.call(int(e * nu), nv), 0.016])
 	for bar in bars:
 		var a: Vector3 = bar[0]
 		var c: Vector3 = bar[1]
-		var cyl := MeshInstance3D.new()
 		var cm := CylinderMesh.new()
 		cm.top_radius = bar[2]
 		cm.bottom_radius = bar[2]
 		cm.height = a.distance_to(c)
 		cm.radial_segments = 8
 		cm.rings = 1
-		cyl.mesh = cm
-		cyl.material_override = galvanised()
 		var y := (c - a).normalized()
 		var x := y.cross(Vector3.UP if absf(y.y) < 0.9 else Vector3.RIGHT).normalized()
-		cyl.transform = Transform3D(Basis(x, y, x.cross(y)), (a + c) * 0.5)
-		cyl.set_meta("nearfield", true)
-		root.add_child(cyl)
+		bst.append_from(cm, 0, Transform3D(Basis(x, y, x.cross(y)), (a + c) * 0.5))
 	_count("awning")
+	if not _awn_queued:
+		_awn_queued = true
+		_flush_awnings.call_deferred(root)
+
+## Emit the queued awnings: one canvas mesh and one bar mesh per 160 m cell.
+static func _flush_awnings(root: Node3D) -> void:
+	_awn_queued = false
+	if not is_instance_valid(root):
+		_awn.clear()
+		return
+	var m := ShaderMaterial.new()
+	m.shader = load(SHADERS + "canvas_awning.gdshader")
+	for cell in _awn:
+		var mi := MeshInstance3D.new()
+		mi.name = "NearfieldAwnings_%d_%d" % [cell.x, cell.y]
+		mi.mesh = (_awn[cell]["canvas"] as SurfaceTool).commit()
+		mi.material_override = m
+		mi.set_meta("nearfield", true)
+		root.add_child(mi)
+		var bi := MeshInstance3D.new()
+		bi.name = "NearfieldAwningBars_%d_%d" % [cell.x, cell.y]
+		bi.mesh = (_awn[cell]["bars"] as SurfaceTool).commit()
+		bi.material_override = galvanised()
+		bi.set_meta("nearfield", true)
+		root.add_child(bi)
+	_awn.clear()
 
 # ----------------------------------------------------------- bus shelter
 ## Framed bus shelter: twin posts, cantilevered roof with fascia, framed
