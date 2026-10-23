@@ -146,6 +146,8 @@ func _people_review(base: Vector3) -> void:
 			(g as GeometryInstance3D).visibility_range_begin = 0.0
 		if OS.get_environment("ORCHARD_LOOK_LODBIAS") != "" and v.look_mesh != null:
 			v.look_mesh.lod_bias = float(OS.get_environment("ORCHARD_LOOK_LODBIAS"))
+		if OS.get_environment("ORCHARD_LOOK_FLATHEAD") != "" and v.look_mesh != null and i == 3:
+			v.look_mesh.set_instance_shader_parameter("head_shape", Vector4(0, 0, 0, 1))
 		holder.global_position = base + Vector3(-12.0 + i * 3.0, 0.0, 0.0)
 		holder.rotation.y = 0.35 if i % 2 == 0 else -0.3
 		v.set_motion(0.0, false, true, false)

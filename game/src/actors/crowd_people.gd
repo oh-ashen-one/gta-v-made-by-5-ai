@@ -255,6 +255,10 @@ static func _retint(cv: CharacterVisual, p: Dictionary, skirt: bool) -> void:
 		q["skirt"] = skirt
 		cv.outfit = CharacterLook.person_outfit(q, cv.outfit)
 		CharacterLook.set_outfit(cv.look_mesh, cv.outfit)
+		# The NPC widened every mesh's draw range; the head backfill stays near.
+		var bf = cv.look_mesh.get_meta("backfill", null)
+		if bf is MeshInstance3D and is_instance_valid(bf):
+			(bf as MeshInstance3D).visibility_range_end = CharacterLook.BACKFILL_RANGE
 		return
 	if _skin_shader == null:
 		_skin_shader = Shader.new()

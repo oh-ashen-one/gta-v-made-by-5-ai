@@ -836,7 +836,100 @@ static func _apply(model: Node, role: String) -> MeshInstance3D:
 	for i in target.get_surface_override_material_count():
 		target.set_surface_override_material(i, null)
 	target.material_override = null
+	if role == "civilian":
+		_add_head_backfill(target, entry)
 	return target
+
+# --- Civilian head backfill (wave S) ----------------------------------------
+# The decimated civilian head is a cracked soup (T-junction gaps of 2-4 mm
+# that the 1.6 mm weld cannot close; about half its face edges are open).
+# Through the cracks the camera saw the background: white flecks against a
+# bright shopfront, black specks against a dark one. The head's back faces,
+# drawn once more in a dim skin tone, fill every crack with the inside of
+# the head instead. Head triangles only (~1.5k), near people only.
+const BACKFILL_RANGE := 14.0
+const BACKFILL_SHADER := """
+shader_type spatial;
+render_mode cull_front, diffuse_burley, specular_disabled;
+instance uniform vec4 skin_col = vec4(0.3, 0.18, 0.12, 0.0);
+void fragment() {
+	ALBEDO = (skin_col.x < 0.0 ? vec3(0.3, 0.18, 0.12) : skin_col.rgb) * 0.62;
+	ROUGHNESS = 0.8;
+	// Lit as if facing the camera (it stands in for the missing front face).
+	NORMAL = VIEW;
+}
+"""
+static var _backfill_mat: ShaderMaterial
+
+static func _backfill_mesh(entry: Dictionary) -> ArrayMesh:
+	if entry.has("backfill"):
+		return entry["backfill"]
+	var mesh: ArrayMesh = entry["mesh"]
+	var a := mesh.surface_get_arrays(0)
+	var v: PackedVector3Array = a[Mesh.ARRAY_VERTEX]
+	var n: PackedVector3Array = a[Mesh.ARRAY_NORMAL]
+	var bones: PackedInt32Array = a[Mesh.ARRAY_BONES]
+	var weights: PackedFloat32Array = a[Mesh.ARRAY_WEIGHTS]
+	var idx: PackedInt32Array = a[Mesh.ARRAY_INDEX]
+	var c0: PackedFloat32Array = a[Mesh.ARRAY_CUSTOM0]
+	var bpv := bones.size() / maxi(v.size(), 1)
+	var remap := {}
+	var ov := PackedVector3Array()
+	var on := PackedVector3Array()
+	var ob := PackedInt32Array()
+	var ow := PackedFloat32Array()
+	var oi := PackedInt32Array()
+	for t in idx.size() / 3:
+		var keep := true
+		for k in 3:
+			var i := idx[t * 3 + k]
+			if v[i].y < 1.43 or (c0.size() > i * 4 + 1 and c0[i * 4 + 1] > 0.5):
+				keep = false
+				break
+		if not keep:
+			continue
+		for k in 3:
+			var i := idx[t * 3 + k]
+			if not remap.has(i):
+				remap[i] = ov.size()
+				ov.append(v[i])
+				on.append(n[i])
+				ob.append_array(bones.slice(i * bpv, i * bpv + bpv))
+				ow.append_array(weights.slice(i * bpv, i * bpv + bpv))
+			oi.append(remap[i])
+	var out := ArrayMesh.new()
+	if oi.size() >= 3:
+		var arrays := []
+		arrays.resize(Mesh.ARRAY_MAX)
+		arrays[Mesh.ARRAY_VERTEX] = ov
+		arrays[Mesh.ARRAY_NORMAL] = on
+		arrays[Mesh.ARRAY_BONES] = ob
+		arrays[Mesh.ARRAY_WEIGHTS] = ow
+		arrays[Mesh.ARRAY_INDEX] = oi
+		out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {}, Mesh.ARRAY_FLAG_USE_8_BONE_WEIGHTS if bpv == 8 else 0)
+	entry["backfill"] = out
+	return out
+
+static func _add_head_backfill(target: MeshInstance3D, entry: Dictionary) -> void:
+	var bm := _backfill_mesh(entry)
+	if bm.get_surface_count() == 0 or target.get_parent() == null:
+		return
+	if _backfill_mat == null:
+		var sh := Shader.new()
+		sh.code = BACKFILL_SHADER
+		_backfill_mat = ShaderMaterial.new()
+		_backfill_mat.shader = sh
+	var mi := MeshInstance3D.new()
+	mi.name = "LookHeadBackfill"
+	mi.mesh = bm
+	mi.material_override = _backfill_mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mi.visibility_range_end = BACKFILL_RANGE
+	target.get_parent().add_child(mi)
+	mi.transform = target.transform
+	mi.skin = target.skin
+	mi.skeleton = target.skeleton
+	target.set_meta("backfill", mi)
 
 static func _surface_kind(mat: Material) -> int:
 	var n := String(mat.resource_name) if mat != null else ""
@@ -1940,6 +2033,10 @@ static func set_outfit(mi: MeshInstance3D, outfit: Dictionary) -> void:
 	for key in ["shirt_col", "shirt_col2", "tee_col", "pants_col", "shoe_col", "skin_col", "hair_col", "face_col", "head_shape", "person"]:
 		if outfit.has(key):
 			mi.set_instance_shader_parameter(key, outfit[key])
+	if mi.has_meta("backfill") and outfit.has("skin_col"):
+		var bf := mi.get_meta("backfill") as MeshInstance3D
+		if is_instance_valid(bf):
+			bf.set_instance_shader_parameter("skin_col", outfit["skin_col"])
 
 ## A short signature of an outfit, used by the regression to count distinct looks.
 static func outfit_signature(outfit: Dictionary) -> String:

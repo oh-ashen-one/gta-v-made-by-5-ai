@@ -1580,6 +1580,10 @@ func _character_people_checks() -> void:
 	var cbaked := CharacterLook._load_baked(cm, cpath) if cm != null else {}
 	cmodel.free()
 	_check("characters-S: the civilian look mesh is baked offline (crowd load needs no runtime rebuild)", not cbaked.is_empty(), CharacterLook.baked_path(cpath))
+	if not cbaked.is_empty():
+		var bf := CharacterLook._backfill_mesh(cbaked)
+		var bf_tris := bf.surface_get_array_index_len(0) / 3 if bf.get_surface_count() == 1 else 0
+		_check("characters-S: civilian head backfill closes the cracked face (head-only back faces, skinned)", bf_tris > 300 and bf_tris < 8000, "tris=%d" % bf_tris)
 	var sigs := {}
 	var tones := {}
 	var bad_face := 0
