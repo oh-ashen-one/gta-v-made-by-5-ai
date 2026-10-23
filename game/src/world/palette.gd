@@ -130,6 +130,7 @@ static func weathered_surface(color: Color, kind: String, rough: float = 0.9, me
 				m.set_shader_parameter("photo_nrm", NearField.prov("road_asphalt_normal.png"))
 				m.set_shader_parameter("photo_k", 0.85)
 				m.set_shader_parameter("grain_k", 0.22)
+				m.set_shader_parameter("litter", 0.5)
 		"pavers":
 			m.shader = load(SHADER_DIR + "paving.gdshader")
 			m.set_shader_parameter("albedo_tex", load(SURF_DIR + "pavers_albedo.png"))
@@ -141,6 +142,7 @@ static func weathered_surface(color: Color, kind: String, rough: float = 0.9, me
 				m.set_shader_parameter("lift", 1.28)
 				m.set_shader_parameter("sat", 0.78)
 				m.set_shader_parameter("fittings", 1.0)
+				m.set_shader_parameter("litter", 0.10)
 		_:
 			m.shader = load(SHADER_DIR + "weathered_wall.gdshader")
 			m.set_shader_parameter("albedo_tex", load(SURF_DIR + kind + "_albedo.png"))

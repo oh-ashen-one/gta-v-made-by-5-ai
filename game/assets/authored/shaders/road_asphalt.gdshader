@@ -4,6 +4,7 @@ shader_type spatial;
 // in real lane positions (left-hand traffic, two lanes each way).
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
 #include "res://assets/authored/shaders/weathering.gdshaderinc"
+#include "res://assets/authored/shaders/leaf_litter.gdshaderinc"
 
 uniform sampler2D albedo_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D normal_tex : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
@@ -23,6 +24,7 @@ uniform float grain_k = 0.42;
 uniform sampler2D photo_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D photo_nrm : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform float photo_k = 0.0;
+uniform float litter = 0.0;   // nearfield R: fallen leaves gathered in the gutters
 uniform float photo_tile = 7.0;
 uniform vec3 photo_mean = vec3(0.318, 0.315, 0.31);
 
@@ -202,7 +204,13 @@ void fragment() {
 	// Weeds/grime seeping from cracks near the gutter (tropical).
 	hue = mix(hue, vec3(0.86, 0.96, 0.80), cr * gutter * 0.6);
 
-	ALBEDO = clamp(tint * tone * hue, vec3(0.0), vec3(1.0));
+	vec3 alb = clamp(tint * tone * hue, vec3(0.0), vec3(1.0));
+	if (litter > 0.0) {
+		vec4 lf = leaf_litter(p, litter * (0.04 * lane + 0.55 * gutter + 0.08 * (1.0 - lane)) * (1.0 - cover), px);
+		alb = mix(alb, lf.rgb * 0.85, lf.a);
+		rough = mix(rough, 0.82, lf.a);
+	}
+	ALBEDO = alb;
 	ROUGHNESS = clamp(rough, 0.3, 1.0);
 	// Fine aggregate relief only; the old 4 m normal tile carried broad
 	// undulations that rippled the sky reflection ("navy and wavy" shade).

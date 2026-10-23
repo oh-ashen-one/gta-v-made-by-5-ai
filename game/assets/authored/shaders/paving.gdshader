@@ -3,6 +3,7 @@ shader_type spatial;
 // patches, dark joints, gum spots and kerb-side dirt. World-space.
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
 #include "res://assets/authored/shaders/weathering.gdshaderinc"
+#include "res://assets/authored/shaders/leaf_litter.gdshaderinc"
 
 uniform sampler2D albedo_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D normal_tex : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
@@ -18,6 +19,7 @@ uniform float wear = 1.0;
 uniform float lift = 1.0;
 uniform float sat = 1.0;   // < 1 pulls the warm tint toward neutral concrete grey
 uniform float fittings = 0.0;   // nearfield R: inspection covers + tactile strips in the footway band
+uniform float litter = 0.0;     // nearfield R: fallen leaf density (0 = off)
 
 varying vec3 v_world;
 varying vec3 v_wn;
@@ -110,6 +112,14 @@ void fragment() {
 		vec3 tactile = vec3(0.78, 0.60, 0.10) * (0.82 + 0.25 * blister) * (0.85 + 0.15 * med.r);
 		col = mix(col, tactile, corner);
 		rough = mix(rough, 0.7, corner);
+	}
+	if (top && litter > 0.0) {
+		float lpx = max(length(fwidth(v_world.xz)), 1e-4);
+		// denser in drifts and along the kerb band, under the avenue trees
+		float drift = smoothstep(0.45, 0.75, w_mask(v_world.xz / 9.0 + 0.41).g);
+		vec4 lf = leaf_litter(v_world.xz, litter * (0.35 + 0.9 * drift + 0.6 * kerb), lpx);
+		col = mix(col, lf.rgb / max(lift, 1e-3), lf.a * (1.0 - metal_k));
+		rough = mix(rough, 0.8, lf.a);
 	}
 	if (!top) {
 		// Platform edge faces: splashback grime.
