@@ -3,27 +3,35 @@ extends RefCounted
 ## Characters piece (wave D): close-range fidelity and crowd variety for the
 ## provider humanoid (player + civilian rigs).
 ##
-## The provider atlas packs hundreds of tiny per-triangle UV islands whose
-## baked colours disagree, so mip-filtered sampling paints the shirt and the
-## trousers with a triangle mosaic that reads as stair-stepped shadow blotches
-## at close range. At load time this rebuilds the skinned mesh once per rig:
+## The provider body is a voxel remesh with an auto-UV atlas of hundreds of
+## tiny islands whose baked colours disagree. At load time this rebuilds the
+## skinned mesh once per rig:
 ##   * every vertex is classified into a body region (skin, face, hair,
-##     overshirt, tee, trousers, shoe, sole) from mip-0 samples of the atlas
-##     plus its rest height;
-##   * the baked albedo is resampled at mip 0, welded across UV seams and
-##     smoothed inside each region, leaving only its low-frequency fold / AO
-##     shading (COLOR + CUSTOM0.z);
-##   * the rest position goes to CUSTOM1 so the shader can draw stable,
-##     UV-free cloth weave, folds, skin pores and hair strands;
-##   * the hair gets three skinned shells (CUSTOM0.y) whose strand-clump
-##     dither gives a broken, soft silhouette instead of a solid helmet;
+##     overshirt, tee, trousers, shoe, sole) from mip-0 atlas samples, the
+##     provider surface and its rest position;
+##   * the body is a triangle soup (corners not shared), so copies are
+##     tolerance-welded, and normals, garment weights and skin weights are
+##     smoothed SPATIALLY (radius kernels), not over the broken topology;
+##   * region weights are diffused across the mesh (CUSTOM2) and the shader
+##     picks the dominant one per FRAGMENT, so every garment border is a
+##     smooth curve, never a stair of whole triangles; hair follows the
+##     atlas's own painted hairline and nape taper;
+##   * the rest position (CUSTOM1) and rest normal (CUSTOM3) drive UV-free
+##     triplanar fabric scans (flannel, denim, batik, jersey), folds, seams,
+##     skin pores and hair strands; hair shells break up the silhouette;
+##   * player only: the mitten finger block is folded onto the knuckle line
+##     and CharacterHands draws jointed fingers;
 ##   * all surfaces merge into one draw call with generated LODs.
 ## Outfits, skin tone, hair colour and body build are per-instance shader
 ## parameters on one shared material, so a crowd of 140 stays one material.
 
 const SHELLS := 4
-## Wrist-to-knuckle length (m) on the provider hand.
-const GRIP_PALM := 0.085
+## Wrist-to-knuckle distance (m) along the provider hand bone.
+const KNUCKLE_Y := 0.082
+const THUMB_Z := 0.042
+const WELD_TOL := 0.0016
+const NORMAL_RADIUS := 0.014
+const WEIGHT_RADIUS := 0.02
 const R_SKIN := 0
 const R_SHIRT := 1
 const R_HAIR := 2
@@ -39,38 +47,45 @@ static var enabled := OS.get_environment("ORCHARD_LEGACY_CHARACTERS") == ""
 const SHADER_CODE := """
 shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx, sss_mode_skin;
+stencil_mode write, compare_always, 8; // street weathering volumes skip people
 
 uniform sampler2D albedo_tex : source_color, filter_linear_mipmap_anisotropic, repeat_disable;
 uniform sampler2D normal_tex : hint_normal, filter_linear_mipmap_anisotropic, repeat_disable;
+// Woven fabric detail (Higgsfield set, private build), mapped triplanar in
+// rest space so the pattern sticks to the body through every pose.
+uniform sampler2D flannel_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D denim_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D batik_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D jersey_tex : hint_default_white, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform bool has_fabrics = false;
 uniform vec3 src_skin = vec3(0.5, 0.3, 0.2);
+uniform float src_hair_lum = 0.02;
 uniform vec3 head_centre = vec3(0.0, 1.62, 0.0);
 uniform vec3 nose_tip = vec3(-0.016, 1.575, -0.089);
 uniform float placket_x = 0.004;
-uniform float shell_step = 0.0034;
+uniform float shell_step = 0.0022;
 uniform float near_fade = 0.6;
-uniform vec3 grip_centre = vec3(0.0, -10.0, 0.0);
-uniform float grip_len = 0.075;
-uniform float grip_max = 2.0;
-uniform int debug_mode = 0; // QA only: 1 flat grey albedo, 2 region colours
+uniform int debug_mode = 0; // QA only: 1 flat grey albedo, 2 region colours, 4 normals
 
 // Per-instance wardrobe (linear colours). w channels carry extra parameters.
 instance uniform vec4 shirt_col = vec4(0.07, 0.065, 0.035, 0.0); // w: pattern id
 instance uniform vec4 shirt_col2 = vec4(0.2, 0.2, 0.2, 9.0);   // w: pattern scale
 instance uniform vec4 tee_col = vec4(0.33, 0.33, 0.31, 0.0);    // w: 1 = no overshirt (plain tee)
-instance uniform vec4 pants_col = vec4(0.010, 0.016, 0.040, 0.0); // w: 1 = shorts
+instance uniform vec4 pants_col = vec4(0.010, 0.016, 0.040, 0.0); // w: 1 = shorts, 2 = authored denim
 instance uniform vec4 shoe_col = vec4(0.030, 0.014, 0.007, 0.25); // w: sole value
 instance uniform vec4 skin_col = vec4(-1.0, 0.0, 0.0, 0.0);      // x<0: authored tone; w: girth
-instance uniform vec4 hair_col = vec4(0.004, 0.003, 0.0025, 0.0); // w: grey amount
+instance uniform vec4 hair_col = vec4(0.004, 0.003, 0.0025, 0.0); // w: grey amount (+2 = clipper cut)
 instance uniform vec4 face_col = vec4(0.0, 0.5, 0.5, 0.0);       // x: stubble, y: creases, z: flush, w: pockets
-// Procedural right-hand grip: x = curl amount; hand_* = hand bone rest->pose rotation columns.
-instance uniform vec4 grip = vec4(0.0);
-instance uniform vec4 hand_x = vec4(1.0, 0.0, 0.0, 0.0);
-instance uniform vec4 hand_y = vec4(0.0, 1.0, 0.0, 0.0);
-instance uniform vec4 hand_z = vec4(0.0, 0.0, 1.0, 0.0);
 
-varying flat int v_region;
+varying flat int v_kind;
 varying vec3 v_rest;
 varying vec4 v_data;
+varying vec4 v_rw;
+varying vec3 v_rn;
+// Fragment -> light(): wrap (skin translucency), gloss and specular level.
+varying float l_wrap;
+varying float l_rough;
+varying float l_spec;
 
 float hash13(vec3 p) {
 	p = fract(p * 0.1031);
@@ -87,44 +102,34 @@ float vnoise(vec3 p) {
 float fbm(vec3 p) {
 	return vnoise(p) * 0.55 + vnoise(p * 2.13 + 7.1) * 0.3 + vnoise(p * 4.37 + 3.3) * 0.15;
 }
+float lum(vec3 c) {
+	return dot(c, vec3(0.2126, 0.7152, 0.0722));
+}
 // Anti-aliased thin line at |d| < w (d in metres).
 float line_aa(float d, float w) {
 	float fw = max(fwidth(d), 0.00001);
 	return 1.0 - smoothstep(w - fw, w + fw, abs(d));
 }
-// Periodic band of width w (metres) centred at offset*period.
 float tband(float t, float period, float off, float w) {
 	float d = abs(fract(t / period - off + 0.5) - 0.5) * period;
 	float fw = max(fwidth(t), 0.00001);
 	return 1.0 - smoothstep(w * 0.5 - fw, w * 0.5 + fw, d);
 }
-// Woven tartan / flannel check (q in metres). Single-band areas alternate
-// warp and weft colour along the twill diagonal at close range.
-vec3 tartan(vec2 q, vec3 base, vec3 accent, float scale, float fine_k) {
-	float P = 0.105 * scale;
-	float a1 = tband(q.x, P, 0.0, 0.036 * scale);
-	float b1 = tband(q.y, P, 0.0, 0.036 * scale);
-	float a2 = tband(q.x, P, 0.5, 0.011 * scale);
-	float b2 = tband(q.y, P, 0.5, 0.011 * scale);
-	float a3 = tband(q.x, P, 0.25, 0.0035);
-	float b3 = tband(q.y, P, 0.25, 0.0035);
-	float tw = step(0.5, fract((q.x + q.y) / 0.0026));
-	float half_tone = mix(0.5, tw, fine_k);
-	vec3 dark = base * vec3(0.30, 0.32, 0.36);
-	vec3 warp = mix(base, dark, a1);
-	vec3 weft = mix(base, dark, b1);
-	warp = mix(warp, accent, a2);
-	weft = mix(weft, accent, b2);
-	vec3 light = mix(base, vec3(0.55, 0.52, 0.42), 0.5);
-	warp = mix(warp, light, a3 * 0.8);
-	weft = mix(weft, light, b3 * 0.8);
-	return mix(warp, weft, half_tone);
+// Triplanar fabric sample in rest space; tile in metres, hs stretches the
+// horizontal axis (the flannel period crop is 1.72x wide).
+vec3 tri(sampler2D t, vec3 p, vec3 w, float tile, float hs) {
+	vec3 a = texture(t, vec2(p.z * hs, -p.y) / tile).rgb;
+	vec3 b = texture(t, vec2(p.x * hs, p.z) / tile).rgb;
+	vec3 c = texture(t, vec2(p.x * hs, -p.y) / tile).rgb;
+	return a * w.x + b * w.y + c * w.z;
 }
 
 void vertex() {
-	v_region = int(CUSTOM0.x + 0.5);
+	v_kind = int(CUSTOM0.x + 0.5);
 	v_rest = CUSTOM1.xyz;
 	v_data = CUSTOM0;
+	v_rw = CUSTOM2;
+	v_rn = CUSTOM3.xyz;
 	// Body build: belly/chest girth pushes the torso out along its normal.
 	vec3 r = CUSTOM1.xyz;
 	float band = smoothstep(0.84, 1.02, r.y) * (1.0 - smoothstep(1.20, 1.44, r.y));
@@ -133,21 +138,6 @@ void vertex() {
 	VERTEX += NORMAL * skin_col.w * 0.055 * band * core * front;
 	if (CUSTOM0.y > 0.5) {
 		VERTEX += NORMAL * CUSTOM0.y * shell_step;
-	}
-	// Fingers wrap the weapon grip: each finger vertex rotates about the
-	// knuckle line by an angle growing with its distance past the knuckles
-	// (a bend deformer in rest space, carried into pose by the hand rotation).
-	if (CUSTOM1.w > 0.5 && grip.x > 0.001) {
-		float t = grip_centre.y - r.y;
-		float phi = -grip_centre.z * clamp(t / grip_len, 0.0, 1.0) * grip_max * grip.x;
-		float cs = cos(phi);
-		float sn = sin(phi);
-		vec2 o = r.xy - grip_centre.xy;
-		vec2 o2 = vec2(cs * o.x - sn * o.y, sn * o.x + cs * o.y);
-		mat3 R = mat3(hand_x.xyz, hand_y.xyz, hand_z.xyz);
-		VERTEX += R * vec3(o2 - o, 0.0);
-		mat3 Rz = mat3(vec3(cs, sn, 0.0), vec3(-sn, cs, 0.0), vec3(0.0, 0.0, 1.0));
-		NORMAL = normalize(R * (Rz * (transpose(R) * NORMAL)));
 	}
 }
 
@@ -170,21 +160,72 @@ void fragment() {
 	if (d < near_fade && ign > smoothstep(near_fade * 0.4, near_fade, d)) {
 		discard;
 	}
-	int reg = v_region;
 	vec3 p = v_rest;
 	float shell = v_data.y;
 	float shade = clamp(v_data.z, 0.7, 1.25);
-	float e = v_data.w; // distance (m) to the nearest garment / region border
 	float px = length(fwidth(p));
 	float fine_k = 1.0 - smoothstep(0.0012, 0.004, px);
 	float mid_k = 1.0 - smoothstep(0.004, 0.014, px);
 	vec3 skin_tone = skin_col.x < 0.0 ? src_skin : skin_col.rgb;
 	float az = atan(p.x, p.z);
 	float u = az * 0.17;
-	// Rest-space facet normal -> triplanar weights for UV-free cloth patterns.
-	vec3 nr = normalize(cross(dFdx(p), dFdy(p)));
-	vec3 tw3 = pow(abs(nr), vec3(4.0));
+	vec3 rn = normalize(v_rn + vec3(0.0, 0.0, 0.00001));
+	vec3 tw3 = pow(abs(rn), vec3(4.0));
 	tw3 /= max(tw3.x + tw3.y + tw3.z, 0.0001);
+	// Region per FRAGMENT: the dominant of the smoothly interpolated
+	// (pre-diffused) garment weights, so every border is a smooth curve
+	// through the triangles instead of a stair of whole triangles.
+	int reg = v_kind;
+	float e = v_data.w;
+	if (reg < 5) {
+		float ws[5] = float[](v_rw.x, v_rw.y, v_rw.z, v_rw.w, max(1.0 - v_rw.x - v_rw.y - v_rw.z - v_rw.w, 0.0));
+		int ra = 0;
+		float wa = -1.0;
+		float wb = -1.0;
+		for (int i = 0; i < 5; i++) {
+			if (ws[i] > wa) {
+				wb = wa;
+				wa = ws[i];
+				ra = i;
+			} else if (ws[i] > wb) {
+				wb = ws[i];
+			}
+		}
+		int map5[5] = int[](0, 1, 2, 4, 3);
+		reg = map5[ra];
+		float m = wa - wb;
+		e = m < 0.98 ? m * 0.03 : max(v_data.w, 0.03);
+	}
+	// Authored atlas at a low mip only (island colours bleed in the mip chain).
+	vec2 tsz = vec2(textureSize(albedo_tex, 0));
+	vec2 duv = max(abs(dFdx(UV)), abs(dFdy(UV))) * tsz;
+	float lod = clamp(log2(max(max(duv.x, duv.y), 1.0)), 0.0, 1.5);
+	vec3 tex = textureLod(albedo_tex, UV, lod).rgb;
+	float tl = lum(tex);
+	float sl = lum(src_skin);
+	vec3 rel = p - nose_tip;
+	// Head: hair follows the authored atlas (its painted hairline, sideburns
+	// and the nape taper), never a geometric cap.
+	float hairness = 0.0;
+	if ((reg == 0 || reg == 2) && p.y > 1.46) {
+		float dark = 1.0 - smoothstep(0.22 * sl, 0.5 * sl, tl);
+		float facebox = (1.0 - smoothstep(0.052, 0.062, abs(rel.x))) * (1.0 - smoothstep(0.072, 0.082, rel.y)) * (1.0 - smoothstep(0.04, 0.05, rel.z));
+		hairness = dark * (1.0 - facebox) * smoothstep(1.46, 1.50, p.y);
+		hairness = max(hairness, smoothstep(1.695, 1.72, p.y));
+		if (p.z - head_centre.z > 0.02) {
+			// Back of the head: no stray skin islands inside the hair mass.
+			hairness = max(hairness, smoothstep(1.60, 1.63, p.y));
+		}
+		// No long sideburn spikes down the cheek in front of the ear.
+		hairness *= 1.0 - (1.0 - smoothstep(1.585, 1.615, p.y)) * (1.0 - smoothstep(0.085, 0.10, rel.z));
+		hairness = clamp(hairness + (vnoise(p * 260.0) - 0.5) * 0.25, 0.0, 1.0);
+		reg = hairness > 0.5 ? 2 : 0;
+	} else if (reg == 2) {
+		reg = 0;
+	}
+	if (shell > 0.5 && reg != 2) {
+		discard;
+	}
 	vec3 col = vec3(0.5);
 	float rough = 0.85;
 	float spec = 0.3;
@@ -194,7 +235,7 @@ void fragment() {
 	float ao = 1.0;
 	vec3 nmap = vec3(0.5, 0.5, 1.0);
 	float nmap_depth = 0.0;
-	if (reg == 4 && pants_col.w > 0.5 && p.y < 0.50) {
+	if (reg == 4 && abs(pants_col.w - 1.0) < 0.5 && p.y < 0.50) {
 		reg = 0; // shorts: bare lower legs
 	}
 	bool tee_only = false;
@@ -202,71 +243,67 @@ void fragment() {
 		reg = 3; // plain tee, no overshirt
 		tee_only = true;
 	}
-	vec3 rel = p - nose_tip;
 	if (reg == 0) {
-		// Arms, hands, neck: uneven tone, fine grain, knuckle/elbow redness.
+		// Skin (body and face share one tone model; the face features fade in
+		// above the jaw so there is no seam at the neck).
+		float face_k = smoothstep(1.47, 1.52, p.y);
 		float tone = fbm(p * 14.0);
-		col = skin_tone * (0.9 + 0.18 * tone);
-		col *= mix(vec3(1.0), vec3(1.08, 0.93, 0.90), smoothstep(0.55, 0.85, vnoise(p * 26.0)) * 0.7);
-		col *= 0.95 + 0.1 * vnoise(p * 140.0);
-		rough = 0.48 + 0.25 * vnoise(p * 160.0);
+		col = skin_tone * (0.95 + 0.08 * tone);
+		col *= mix(vec3(1.0), vec3(1.04, 0.97, 0.95), smoothstep(0.55, 0.85, vnoise(p * 26.0)) * 0.5);
+		col *= 0.96 + 0.08 * vnoise(p * 140.0);
+		rough = 0.5 + 0.2 * vnoise(p * 160.0);
 		spec = 0.36;
-		sss = 0.2;
-		h = (vnoise(p * 520.0) - 0.5) * 0.00022 * fine_k + (vnoise(p * 140.0) - 0.5) * 0.0003 * mid_k;
-		rim = 0.1;
-	} else if (reg == 7) {
-		// The provider face texture is split into many auto-UV islands whose
-		// tones disagree (blotchy cheeks). Skin is procedural; the texture is
-		// used only for the features: eyes + brows, lips, and dark details
-		// (nostrils, lash line) inside the face box.
-		vec3 tex = texture(albedo_tex, UV).rgb;
-		vec3 ratio = skin_tone / max(src_skin, vec3(0.002));
-		float tl = dot(tex, vec3(0.2126, 0.7152, 0.0722));
-		float sl = dot(src_skin, vec3(0.2126, 0.7152, 0.0722));
-		float feature = (1.0 - smoothstep(0.05, 0.06, abs(rel.x))) * step(-0.045, rel.y) * step(rel.y, 0.078) * step(rel.z, 0.035);
-		float eyes = (1.0 - smoothstep(0.05, 0.06, abs(rel.x))) * smoothstep(0.028, 0.036, rel.y) * (1.0 - smoothstep(0.046, 0.054, rel.y)) * step(rel.z, 0.03);
-		float mouth = (1.0 - smoothstep(0.024, 0.032, abs(rel.x))) * (1.0 - smoothstep(0.007, 0.012, abs(rel.y + 0.029)));
-		float dark_feat = feature * (1.0 - smoothstep(0.45, 0.8, tl / max(sl, 0.001))) * (1.0 - smoothstep(0.072, 0.078, rel.y));
-		float use_tex = clamp(max(max(eyes, mouth * 0.8), dark_feat), 0.0, 1.0);
-		vec3 base = skin_tone * mix(1.0, clamp(shade, 0.85, 1.15), 0.5);
-		col = mix(base, tex * ratio * 0.95, use_tex);
-		col = mix(col, col * vec3(0.95, 0.74, 0.72), mouth * 0.5);
-		float sk = smoothstep(0.02, 0.07, dot(tex, vec3(0.33)));
-		// Uneven tone: flushed cheeks / nose / ears, cooler under-eyes.
-		float tone = fbm(p * 40.0);
-		col *= 0.92 + 0.14 * tone;
-		float cheek = (1.0 - smoothstep(0.015, 0.035, length(vec2(abs(rel.x) - 0.045, rel.y - 0.01)))) + (1.0 - smoothstep(0.004, 0.016, length(rel.xy)));
-		col *= mix(vec3(1.0), vec3(1.08, 0.92, 0.90), clamp(cheek, 0.0, 1.0) * face_col.z);
-		float under_eye = (1.0 - smoothstep(0.006, 0.012, abs(rel.y - 0.036))) * smoothstep(0.012, 0.02, abs(rel.x)) * (1.0 - smoothstep(0.045, 0.055, abs(rel.x)));
-		col *= mix(vec3(1.0), vec3(0.86, 0.84, 0.88), under_eye * 0.8);
-		// Stubble: jaw, chin and upper lip (lips themselves excluded).
-		float jy = -0.008 - 0.2 * abs(rel.x);
-		float jaw = (1.0 - smoothstep(jy - 0.014, jy + 0.004, rel.y)) * smoothstep(-0.1, -0.086, rel.y) * (1.0 - smoothstep(0.065, 0.085, abs(rel.x)));
-		float lips = (1.0 - smoothstep(0.022, 0.03, abs(rel.x))) * (1.0 - smoothstep(0.006, 0.01, abs(rel.y + 0.029)));
-		float stub_mask = jaw * (1.0 - lips) * face_col.x;
-		float dots = smoothstep(0.45, 0.75, hash13(floor(p * 1400.0)));
-		float stub = stub_mask * mix(0.55, 0.25 + 0.75 * dots, fine_k);
-		col = mix(col, col * vec3(0.30, 0.30, 0.34), stub * 0.85);
-		h += stub * (dots - 0.5) * 0.00025 * fine_k;
-		// Expression creases: nasolabial folds and forehead lines.
-		vec2 a = vec2(0.022, -0.004);
-		vec2 b = vec2(0.033, -0.036);
-		vec2 q = vec2(abs(rel.x), rel.y);
-		float tseg = clamp(dot(q - a, b - a) / dot(b - a, b - a), 0.0, 1.0);
-		float dl = length(q - (a + (b - a) * tseg));
-		float crease = (1.0 - smoothstep(0.0012, 0.0045, dl)) * face_col.y;
-		float fh = (1.0 - smoothstep(0.03, 0.05, abs(rel.x))) * step(0.085, rel.y) * step(rel.y, 0.125);
-		float flines = fh * line_aa(fract((rel.y - 0.085) / 0.012) - 0.5, 0.08) * face_col.y * 0.5;
-		ao *= 1.0 - 0.35 * crease - 0.2 * flines;
-		col *= 1.0 - 0.18 * crease - 0.1 * flines;
-		rough = mix(0.6, 0.38 + 0.25 * vnoise(p * 180.0), sk);
-		rough = mix(rough, 0.32, (1.0 - smoothstep(0.0, 0.03, length(rel.xy))) * 0.6); // oily nose
-		spec = 0.4;
-		sss = 0.38 * sk;
-		nmap = texture(normal_tex, UV).rgb;
-		nmap_depth = 0.75;
-		h = (vnoise(p * 900.0) - 0.5) * 0.00016 * fine_k + (vnoise(p * 300.0) - 0.5) * 0.0002 * mid_k - crease * 0.0009 - flines * 0.0003;
-		rim = 0.08;
+		sss = 0.24;
+		h = (vnoise(p * 520.0) - 0.5) * 0.0002 * fine_k + (vnoise(p * 140.0) - 0.5) * 0.00025 * mid_k;
+		rim = 0.12;
+		if (face_k > 0.0) {
+			vec3 ratio = skin_tone / max(src_skin, vec3(0.002));
+			float feature = (1.0 - smoothstep(0.05, 0.06, abs(rel.x))) * step(-0.045, rel.y) * step(rel.y, 0.078) * step(rel.z, 0.035);
+			float eyes = (1.0 - smoothstep(0.05, 0.06, abs(rel.x))) * smoothstep(0.028, 0.036, rel.y) * (1.0 - smoothstep(0.046, 0.054, rel.y)) * step(rel.z, 0.03);
+			float mouth = (1.0 - smoothstep(0.024, 0.032, abs(rel.x))) * (1.0 - smoothstep(0.007, 0.012, abs(rel.y + 0.029)));
+			float dark_feat = feature * (1.0 - smoothstep(0.45, 0.8, tl / max(sl, 0.001))) * (1.0 - smoothstep(0.072, 0.078, rel.y));
+			// The authored face paint carries its modelled shading (sockets,
+			// cheekbones, lips): blend it over the procedural tone, features fully.
+			float face_box = (1.0 - smoothstep(0.06, 0.085, abs(rel.x))) * smoothstep(-0.11, -0.09, rel.y) * (1.0 - smoothstep(0.1, 0.12, rel.y)) * (1.0 - smoothstep(0.05, 0.08, rel.z));
+			float use_tex = clamp(max(max(max(eyes * 0.9, mouth * 0.75), dark_feat), face_box * 0.55), 0.0, 1.0) * face_k * (1.0 - hairness);
+			col = mix(col, tex * ratio * 0.95, use_tex);
+			col = mix(col, col * vec3(0.93, 0.74, 0.72), mouth * 0.45 * face_k);
+			float fk = face_k * (1.0 - hairness);
+			float cheek = (1.0 - smoothstep(0.015, 0.035, length(vec2(abs(rel.x) - 0.045, rel.y - 0.01)))) + (1.0 - smoothstep(0.004, 0.016, length(rel.xy)));
+			col *= mix(vec3(1.0), vec3(1.07, 0.93, 0.91), clamp(cheek, 0.0, 1.0) * face_col.z * fk);
+			float under_eye = (1.0 - smoothstep(0.006, 0.012, abs(rel.y - 0.036))) * smoothstep(0.012, 0.02, abs(rel.x)) * (1.0 - smoothstep(0.045, 0.055, abs(rel.x)));
+			col *= mix(vec3(1.0), vec3(0.86, 0.84, 0.88), under_eye * 0.7 * fk);
+			// Eye sockets and upper lids: a soft occlusion band reads as a brow ridge.
+			float socket = (1.0 - smoothstep(0.008, 0.016, abs(rel.y - 0.047))) * smoothstep(0.008, 0.016, abs(rel.x)) * (1.0 - smoothstep(0.05, 0.06, abs(rel.x)));
+			ao *= 1.0 - 0.3 * socket * fk;
+			// Stubble: jaw, chin and upper lip (lips themselves excluded).
+			float jy = -0.008 - 0.2 * abs(rel.x);
+			float jaw = (1.0 - smoothstep(jy - 0.014, jy + 0.004, rel.y)) * smoothstep(-0.1, -0.086, rel.y) * (1.0 - smoothstep(0.065, 0.085, abs(rel.x)));
+			float lips = (1.0 - smoothstep(0.022, 0.03, abs(rel.x))) * (1.0 - smoothstep(0.006, 0.01, abs(rel.y + 0.029)));
+			float stub_mask = jaw * (1.0 - lips) * face_col.x * fk;
+			float dots = smoothstep(0.45, 0.75, hash13(floor(p * 1400.0)));
+			float stub = stub_mask * mix(0.5, 0.25 + 0.75 * dots, fine_k);
+			col = mix(col, col * vec3(0.34, 0.33, 0.36), stub * 0.8);
+			// Expression creases: nasolabial folds and forehead lines.
+			vec2 a = vec2(0.022, -0.004);
+			vec2 b = vec2(0.033, -0.036);
+			vec2 q = vec2(abs(rel.x), rel.y);
+			float tseg = clamp(dot(q - a, b - a) / dot(b - a, b - a), 0.0, 1.0);
+			float dl = length(q - (a + (b - a) * tseg));
+			float crease = (1.0 - smoothstep(0.0012, 0.0045, dl)) * face_col.y * fk;
+			float fh = (1.0 - smoothstep(0.03, 0.05, abs(rel.x))) * step(0.085, rel.y) * step(rel.y, 0.125);
+			float flines = fh * line_aa(fract((rel.y - 0.085) / 0.012) - 0.5, 0.08) * face_col.y * 0.5 * fk;
+			ao *= 1.0 - 0.35 * crease - 0.2 * flines;
+			col *= 1.0 - 0.18 * crease - 0.1 * flines;
+			float sk = smoothstep(0.02, 0.07, dot(tex, vec3(0.33)));
+			rough = mix(rough, mix(0.6, 0.38 + 0.22 * vnoise(p * 180.0), sk), face_k);
+			rough = mix(rough, 0.32, (1.0 - smoothstep(0.0, 0.03, length(rel.xy))) * 0.6 * fk); // oily nose
+			spec = mix(spec, 0.42, face_k);
+			sss = mix(sss, 0.38 * sk, face_k);
+			nmap = texture(normal_tex, UV).rgb;
+			nmap_depth = 0.45 * smoothstep(1.53, 1.57, p.y) * (1.0 - hairness);
+			h += stub * (dots - 0.5) * 0.00025 * fine_k + (vnoise(p * 900.0) - 0.5) * 0.00012 * fine_k * face_k - crease * 0.0009 - flines * 0.0003;
+		}
 	} else if (reg == 2) {
 		vec3 q = p - head_centre;
 		float qa = atan(q.x, q.z);
@@ -276,9 +313,9 @@ void fragment() {
 		float strand = vnoise(vec3(qa * 170.0 + warp * 9.0, pol * 6.0, 9.7));
 		float strand2 = vnoise(vec3(qa * 420.0 + warp * 20.0, pol * 9.0, 2.3));
 		float m = strand * 0.45 + strand2 * 0.2 + clump * 0.35;
-		float edge = smoothstep(0.0, 0.03, e); // 0 at the hairline
+		float edge = smoothstep(0.5, 0.95, hairness);
 		if (shell > 0.5) {
-			float cut = 0.26 + 0.14 * shell + (ign - 0.5) * 0.16 + (1.0 - edge) * 0.4;
+			float cut = 0.3 + 0.13 * shell + (ign - 0.5) * 0.16 + (1.0 - edge) * 0.5;
 			if (m < cut) {
 				discard;
 			}
@@ -289,32 +326,47 @@ void fragment() {
 			discard;
 		}
 		vec3 hc = mix(hair_col.rgb, vec3(0.32, 0.31, 0.30), grey * smoothstep(0.25, 0.75, vnoise(vec3(qa * 60.0, pol * 3.0, 5.0)) + grey * 0.35));
-		hc *= mix(vec3(1.0), vec3(1.5, 1.25, 1.0), smoothstep(0.6, 0.9, clump) * 0.6); // warm sun-bleached clumps
-		col = hc * (0.4 + 0.8 * strand) * (0.7 + 0.5 * clump) * (0.8 + 0.3 * strand2) * mix(0.75, 1.15, shell / 4.0);
+		// The authored strand shading survives as a luminance ratio.
+		float authored = clamp(tl / max(src_hair_lum, 0.0005), 0.6, 1.7);
+		hc *= mix(vec3(1.0), vec3(1.45, 1.22, 1.0), smoothstep(0.6, 0.9, clump) * 0.5); // warm sun-bleached clumps
+		col = hc * mix(1.0, authored, 0.6) * (0.55 + 0.6 * strand) * (0.8 + 0.35 * clump) * (0.85 + 0.25 * strand2) * mix(0.8, 1.12, shell / 4.0);
 		if (buzz > 0.5) {
 			// Clipper cut: scalp tone under dense short stubble.
 			float sd = smoothstep(0.35, 0.7, hash13(floor(p * 1300.0)));
-			col = mix(skin_tone * 0.7, hair_col.rgb, mix(0.55, 0.3 + 0.6 * sd, fine_k) * smoothstep(0.0, 0.02, e));
+			col = mix(skin_tone * 0.7, hair_col.rgb, mix(0.55, 0.3 + 0.6 * sd, fine_k) * edge);
 		} else if (shell < 0.5) {
-			// Scalp shows through a thinning hairline instead of a hard shell edge.
-			col = mix(skin_tone * 0.55, col, mix(0.25, 1.0, edge));
+			// Short fade into the skin at the hairline and the nape.
+			col = mix(mix(skin_tone * 0.6, hair_col.rgb, 0.55), col, edge);
 		}
-		rough = 0.34 + 0.3 * (1.0 - strand);
+		rough = 0.36 + 0.28 * (1.0 - strand);
 		spec = 0.5;
-		h = (strand * 0.5 + strand2 * 0.2 + clump * 0.3) * 0.0018 * mid_k;
-		rim = 0.25;
-		ao = mix(0.7, 1.0, shell / 4.0);
+		h = (strand * 0.5 + strand2 * 0.2 + clump * 0.3) * 0.0014 * mid_k;
+		rim = 0.3;
+		ao = mix(0.75, 1.0, shell / 4.0);
 	} else if (reg == 1 || reg == 3) {
 		int pat = int(shirt_col.w + 0.5);
 		float s = shirt_col2.w;
 		vec3 base = reg == 1 ? shirt_col.rgb : tee_col.rgb;
 		col = base;
-		vec2 qf = vec2(p.x, p.y);
-		vec2 qs = vec2(p.z, p.y);
-		vec2 qt = vec2(p.x, p.z);
+		float fab_h = 0.0;
 		if (reg == 1 || tee_only) {
-			if (pat == 5) {
-				col = tartan(qf, base, shirt_col2.rgb, s, fine_k) * tw3.z + tartan(qs, base, shirt_col2.rgb, s, fine_k) * tw3.x + tartan(qt, base, shirt_col2.rgb, s, fine_k) * tw3.y;
+			if (has_fabrics && (pat == 5 || pat == 7)) {
+				vec3 fl = tri(flannel_tex, p, tw3, 0.30, 1.72);
+				if (pat == 7) {
+					col = fl * 0.95;
+				} else {
+					// Recoloured flannel: dark/light bands take the wardrobe pair,
+					// the authored red over-check stays as an accent.
+					float l = lum(fl) / 0.126;
+					float red = smoothstep(0.03, 0.09, fl.r - fl.g);
+					col = mix(base * 0.55, shirt_col2.rgb, smoothstep(0.9, 1.9, l)) * clamp(l, 0.55, 1.5);
+					col = mix(col, vec3(0.32, 0.05, 0.03), red * 0.7);
+				}
+				fab_h = lum(fl) / 0.126;
+			} else if (has_fabrics && pat == 3) {
+				vec3 bt = tri(batik_tex, p, tw3, 0.34, 1.0);
+				col = bt * mix(vec3(1.0), base / max(lum(base), 0.02) * 0.2, 0.35);
+				fab_h = lum(bt) / 0.148;
 			} else if (pat == 1) {
 				float fu = fract(u * s);
 				float st = smoothstep(0.55, 0.6, fu) - smoothstep(0.85, 0.9, fu);
@@ -323,18 +375,17 @@ void fragment() {
 				float ga = tband(p.x * tw3.z + p.z * tw3.x, 1.0 / s, 0.0, 0.5 / s);
 				float gb = tband(p.y, 1.0 / s, 0.0, 0.5 / s);
 				col = mix(col, shirt_col2.rgb, (ga * 0.5 + gb * 0.5));
-			} else if (pat == 3) {
-				vec3 bp = vec3(u * s, p.y * s, 0.0);
-				float f = vnoise(bp * 1.0) * 0.65 + vnoise(bp * 2.7) * 0.35;
-				float petal = smoothstep(0.58, 0.62, f) - smoothstep(0.72, 0.76, f) * 0.6;
-				float dots = smoothstep(0.80, 0.84, vnoise(bp * 6.0));
-				col = mix(col, shirt_col2.rgb, clamp(petal + dots * 0.7, 0.0, 1.0));
 			} else if (pat == 4) {
 				col = mix(col, shirt_col2.rgb, smoothstep(1.43, 1.46, p.y));
 			}
 		}
-		// Brushed-cotton fuzz.
-		col *= 0.94 + 0.12 * vnoise(p * 260.0) * mid_k + 0.06 * (vnoise(p * 40.0) - 0.5);
+		if (has_fabrics && fab_h == 0.0) {
+			// Plain cotton: knit detail from the neutral jersey map.
+			float jn = lum(tri(jersey_tex, p, tw3, 0.16, 1.0)) / 0.618;
+			col *= mix(1.0, jn, 0.55);
+			fab_h = jn;
+		}
+		col *= 0.97 + 0.06 * (vnoise(p * 40.0) - 0.5);
 		float nz = vnoise(p * 9.0);
 		// Load folds (metres of displacement): waist bunching, lower-torso
 		// drape, armpit drag lines, short-sleeve creases, collar roll.
@@ -354,15 +405,14 @@ void fragment() {
 		float folds = (f1 * 0.0034 + f2 * 0.0026 + f3 * 0.0024 + f4 * 0.0026 + f5 * 0.0012) * amp * mid_k;
 		float cavity = clamp(-(f1 * waist + f2 * drape * 0.8 + f3 * sleeve + f4 * armpit), 0.0, 1.0);
 		ao *= 1.0 - 0.32 * cavity * amp;
-		float weave = (vnoise(p * 360.0) - 0.5) * 0.00018 * fine_k;
-		h = folds + weave;
+		h = folds + (fab_h - 1.0) * 0.00022 * fine_k;
 		// Construction: hems with a stitch line along every garment border.
 		float hem = 1.0 - smoothstep(0.016, 0.021, e);
 		float dash = step(0.38, fract((p.x + p.y * 1.3 + p.z) / 0.0042));
 		float stitch = line_aa(e - 0.011, 0.0006) * dash * fine_k;
 		h += hem * 0.0007 + (1.0 - smoothstep(0.0, 0.004, e)) * 0.0008;
 		ao *= 1.0 - 0.12 * hem;
-		vec3 thread = mix(col, col * 1.7 + vec3(0.015), 0.6);
+		vec3 thread = mix(col, col * 1.6 + vec3(0.015), 0.6);
 		if (reg == 1) {
 			float front = smoothstep(0.35, 0.65, tw3.z) * step(p.z, -0.02);
 			float back = smoothstep(0.35, 0.65, tw3.z) * step(0.03, p.z);
@@ -375,8 +425,6 @@ void fragment() {
 			float yb = 1.0 + clamp(round((p.y - 1.0) / 0.075), 0.0, 5.0) * 0.075;
 			float bd = length(vec2(xp + 0.0005, p.y - yb));
 			float btn = front * step(0.92, p.y) * (1.0 - smoothstep(0.0048, 0.0058, bd));
-			// Chest pockets with flap, stitching and a flap button.
-			float pk = 0.0;
 			float pk_st = 0.0;
 			float flap_sh = 0.0;
 			if (face_col.w > 0.5) {
@@ -384,7 +432,6 @@ void fragment() {
 					float dx = xp - float(side) * 0.088;
 					float inside = step(abs(dx), 0.05) * step(1.235, p.y) * step(p.y, 1.36);
 					float de = min(0.05 - abs(dx), min(p.y - 1.235, 1.36 - p.y));
-					pk += inside;
 					pk_st += inside * line_aa(de - 0.004, 0.0005);
 					float flap = step(abs(dx), 0.053) * step(1.322, p.y) * step(p.y, 1.37);
 					float fde = min(0.053 - abs(dx), min(p.y - 1.322, 1.37 - p.y));
@@ -392,24 +439,21 @@ void fragment() {
 					flap_sh += step(abs(dx), 0.053) * (1.0 - smoothstep(0.0, 0.007, 1.322 - p.y)) * step(p.y, 1.322);
 					h += flap * 0.0011 + inside * 0.0005;
 					float pbd = length(vec2(dx, p.y - 1.331));
-					btn = max(btn, (1.0 - smoothstep(0.0042, 0.0052, pbd)));
+					btn = max(btn, (1.0 - smoothstep(0.0042, 0.0052, pbd)) * front);
 				}
-				pk *= front;
 				pk_st *= front * mid_k;
 				flap_sh *= front;
 			}
 			ao *= 1.0 - 0.45 * flap_sh;
 			col *= 1.0 - 0.25 * flap_sh;
-			// Armhole, side and back-yoke seams.
 			float arm_seam = line_aa(abs(p.x) - 0.188, 0.0009) * step(1.2, p.y);
 			float side_seam = line_aa(p.z - 0.025, 0.0009) * smoothstep(0.5, 0.8, tw3.x) * step(abs(p.x), 0.18);
 			float yoke = line_aa(p.y - 1.395, 0.0009) * back;
 			float seams = clamp(arm_seam + side_seam + yoke, 0.0, 1.0);
 			ao *= 1.0 - 0.35 * seams;
 			h -= seams * 0.0006;
-			stitch = clamp(stitch + (plk_st + pk_st) + seams * dash * 0.0, 0.0, 1.0);
+			stitch = clamp(stitch + (plk_st + pk_st), 0.0, 1.0);
 			col = mix(col, thread, stitch * 0.8);
-			// Buttons: dark horn discs with two thread holes, slight dome.
 			vec3 bcol = vec3(0.13, 0.09, 0.055);
 			float holes = (1.0 - smoothstep(0.0006, 0.0011, length(vec2(abs(xp + 0.0005) - 0.0016, p.y - yb)))) * front;
 			col = mix(col, bcol, btn);
@@ -419,18 +463,28 @@ void fragment() {
 		} else {
 			col = mix(col, thread, stitch * 0.6);
 		}
-		col = min(col * mix(1.0, shade, 0.25), vec3(0.6));
-		rough = reg == 1 ? 0.88 + 0.08 * vnoise(p * 90.0) : 0.9;
-		spec = 0.24;
-		rim = 0.12;
+		col = min(col * mix(1.0, shade, 0.2), vec3(0.6));
+		rough = reg == 1 ? 0.86 + 0.08 * vnoise(p * 90.0) : 0.9;
+		spec = 0.26;
+		rim = 0.16;
 	} else if (reg == 4) {
-		col = pants_col.rgb * mix(1.0, shade, 0.25);
-		// Denim twill on the leg's own planes and soft wear on thighs/knees.
-		float tw = sin(((p.x * tw3.z + p.z * tw3.x) + p.y) * 1900.0) * 0.5 + 0.5;
-		col *= mix(1.0, 0.86 + 0.24 * tw, fine_k);
-		col *= 0.93 + 0.14 * vnoise(vec3(p.x * 300.0, p.y * 30.0, p.z * 300.0)) * mid_k; // slub yarn streaks
+		float dl = 1.0;
+		if (has_fabrics) {
+			vec3 dn = tri(denim_tex, p, tw3, 0.2, 1.0);
+			dl = lum(dn) / 0.133;
+			if (pants_col.w > 1.5) {
+				col = dn * 0.95;
+			} else {
+				col = pants_col.rgb * clamp(mix(1.0, dl, 0.75), 0.55, 1.5);
+			}
+		} else {
+			col = pants_col.rgb;
+			float tw = sin(((p.x * tw3.z + p.z * tw3.x) + p.y) * 1900.0) * 0.5 + 0.5;
+			col *= mix(1.0, 0.86 + 0.24 * tw, fine_k);
+		}
+		col *= mix(1.0, shade, 0.2);
 		float wear = smoothstep(0.45, 0.85, vnoise(vec3(p.x * 30.0, p.y * 5.0, p.z * 30.0))) * (smoothstep(0.35, 0.55, p.y) - smoothstep(0.62, 0.8, p.y) * 0.5);
-		col = mix(col, col * 1.5 + vec3(0.012), wear * 0.4);
+		col = mix(col, col * 1.45 + vec3(0.01), wear * 0.35);
 		float nz = vnoise(p * 9.0);
 		float knee = 1.0 - smoothstep(0.0, 0.1, abs(p.y - 0.50));
 		float ankle = 1.0 - smoothstep(0.0, 0.1, abs(p.y - 0.20));
@@ -438,12 +492,12 @@ void fragment() {
 		float fl = sin(p.y * 95.0 + nz * 6.0 + az * 2.0);
 		h = fl * (knee * 0.0028 + ankle * 0.0032 + crotch * 0.002) * mid_k;
 		ao *= 1.0 - 0.3 * clamp(-fl, 0.0, 1.0) * (knee + ankle + crotch);
-		h += (tw - 0.5) * 0.00007 * fine_k;
+		h += (dl - 1.0) * 0.00018 * fine_k;
 		float hem = 1.0 - smoothstep(0.016, 0.02, e);
 		float dash = step(0.38, fract((p.x + p.y * 1.3 + p.z) / 0.0045));
 		col = mix(col, vec3(0.62, 0.45, 0.22), line_aa(e - 0.01, 0.0006) * dash * fine_k * 0.8); // orange denim thread
 		h += hem * 0.0008;
-		rough = 0.82;
+		rough = 0.84;
 		spec = 0.25;
 		rim = 0.2;
 	} else if (reg == 5) {
@@ -463,6 +517,10 @@ void fragment() {
 		col = vec3(float(reg & 1), float((reg >> 1) & 1), float((reg >> 2) & 1)) * 0.6 + 0.1;
 	}
 	NORMAL = bump(NORMAL, VERTEX, h);
+	if (debug_mode == 4) {
+		EMISSION = NORMAL * 0.5 + 0.5;
+		col = vec3(0.0);
+	}
 	ALBEDO = col;
 	ROUGHNESS = clamp(rough, 0.05, 1.0);
 	SPECULAR = spec;
@@ -474,6 +532,24 @@ void fragment() {
 	SSS_STRENGTH = sss;
 	RIM = rim;
 	RIM_TINT = 0.75;
+	l_wrap = reg == 0 ? 0.45 : (reg == 2 ? 0.25 : 0.3);
+	l_rough = clamp(rough, 0.05, 1.0);
+	l_spec = spec;
+}
+
+// Own light model: wrapped Lambert (soft terminator, skin and cloth read
+// as soft materials) and a normalised Blinn-Phong lobe.
+void light() {
+	float ndl = dot(NORMAL, LIGHT);
+	float d = clamp((ndl + l_wrap) / ((1.0 + l_wrap) * (1.0 + l_wrap)), 0.0, 1.0);
+	DIFFUSE_LIGHT += LIGHT_COLOR * ATTENUATION * d / PI;
+	vec3 hv = normalize(VIEW + LIGHT);
+	float a = max(l_rough * l_rough, 0.003);
+	float shin = 2.0 / (a * a) - 2.0;
+	float nh = max(dot(NORMAL, hv), 0.0);
+	float spec = pow(nh, shin) * (shin + 8.0) / (8.0 * PI) * clamp(ndl, 0.0, 1.0);
+	float fres = l_spec * 0.08 + (1.0 - l_spec * 0.08) * pow(1.0 - max(dot(VIEW, hv), 0.0), 5.0);
+	SPECULAR_LIGHT += LIGHT_COLOR * ATTENUATION * spec * fres;
 }
 """
 
@@ -488,13 +564,13 @@ static func shader() -> Shader:
 ## Rebuilds the rig's skinned mesh with the region/rest/shell data (cached per
 ## source mesh) and binds the shared material. Returns the MeshInstance3D, or
 ## null when the rig cannot be processed (the caller keeps the old look).
-static func apply(model: Node) -> MeshInstance3D:
+static func apply(model: Node, role: String = "civilian") -> MeshInstance3D:
 	# Headless runs draw nothing, and the dummy renderer re-parses this shader
 	# for every instance that binds it (~0.3 s each, ~60 s for the crowd), so
 	# they keep the legacy materials; the regression builds the mesh directly.
 	if not enabled or _headless:
 		return null
-	return _apply(model)
+	return _apply(model, role)
 
 ## Builds (or reuses) the look data for a rig's provider mesh without binding
 ## it to an instance (regression use; works headless).
@@ -514,7 +590,7 @@ static func build_for_rig(role: String) -> Dictionary:
 	if target != null:
 		var key := _key(target.mesh as ArrayMesh)
 		if not _cache.has(key):
-			_cache[key] = _build(target.mesh as ArrayMesh, _wrist(model))
+			_cache[key] = _build(target.mesh as ArrayMesh, _rig(model, role))
 		entry = _cache[key]
 	model.free()
 	return entry
@@ -522,16 +598,22 @@ static func build_for_rig(role: String) -> Dictionary:
 static func _key(src: ArrayMesh) -> String:
 	return src.resource_path if src.resource_path != "" else str(src.get_instance_id())
 
-static func _wrist(model: Node) -> Vector3:
+## Hand bone rests (skeleton rest = mesh bind space for these rigs). Only the
+## player gets the folded mitten + procedural fingers (one extra draw each).
+static func _rig(model: Node, role: String) -> Dictionary:
+	var out := {}
+	if role != "player":
+		return out
 	var skel := model.find_children("*", "Skeleton3D", true, false)
 	if not skel.is_empty():
 		var sk := skel[0] as Skeleton3D
-		var hid := sk.find_bone("hand.r")
-		if hid >= 0:
-			return sk.get_bone_global_rest(hid).origin
-	return Vector3.INF
+		for b in [["hand.r", "hand_r"], ["hand.l", "hand_l"]]:
+			var hid := sk.find_bone(b[0])
+			if hid >= 0:
+				out[b[1]] = sk.get_bone_global_rest(hid)
+	return out
 
-static func _apply(model: Node) -> MeshInstance3D:
+static func _apply(model: Node, role: String) -> MeshInstance3D:
 	var target: MeshInstance3D = null
 	for node in model.find_children("*", "MeshInstance3D", true, false):
 		var mi := node as MeshInstance3D
@@ -541,13 +623,10 @@ static func _apply(model: Node) -> MeshInstance3D:
 	if target == null:
 		return null
 	var src := target.mesh as ArrayMesh
-	# Right wrist (skeleton rest = mesh bind space for these rigs): the finger
-	# vertices below its knuckle line get the procedural weapon grip.
-	var wrist := _wrist(model)
 	var key := _key(src)
 	if not _cache.has(key):
 		var t0 := Time.get_ticks_msec()
-		_cache[key] = _build(src, wrist)
+		_cache[key] = _build(src, _rig(model, role))
 		print("[character-look] built ", key.get_file(), " in ", Time.get_ticks_msec() - t0, " ms")
 	var entry: Dictionary = _cache[key]
 	if entry.is_empty():
@@ -568,7 +647,7 @@ static func _surface_kind(mat: Material) -> int:
 		return 1
 	return 0
 
-static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
+static func _build(src: ArrayMesh, rig: Dictionary = {}) -> Dictionary:
 	var verts := PackedVector3Array()
 	var norms := PackedVector3Array()
 	var tangs := PackedFloat32Array()
@@ -635,39 +714,91 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 	var ih := img.get_height()
 	var data := img.get_data()
 	var nv := verts.size()
-	# Weld vertices split at UV seams.
+	# Weld vertices split at UV seams (and across surfaces, so smoothing never
+	# opens a crack between the shirt and the skin).
 	var weld := PackedInt32Array()
 	weld.resize(nv)
+	# Tolerance weld (WELD_TOL): the decimated civilian rig is a triangle soup
+	# whose shared corners differ by up to ~1 mm, so an exact weld left every
+	# triangle on its own (shard-like regions and normals).
 	var lookup := {}
+	var reps := PackedVector3Array()
 	var wn := 0
+	var inv_cell := 1.0 / WELD_TOL
 	for i in nv:
 		var v := verts[i]
-		var k := Vector3i(roundi(v.x * 4000.0), roundi(v.y * 4000.0), roundi(v.z * 4000.0))
-		var w = lookup.get(k)
-		if w == null:
-			lookup[k] = wn
-			weld[i] = wn
+		var c := Vector3i(floori(v.x * inv_cell), floori(v.y * inv_cell), floori(v.z * inv_cell))
+		var found := -1
+		for dx in 3:
+			for dy in 3:
+				for dz in 3:
+					var lst = lookup.get(c + Vector3i(dx - 1, dy - 1, dz - 1))
+					if lst != null:
+						for o in lst:
+							if reps[o].distance_squared_to(v) <= WELD_TOL * WELD_TOL:
+								found = o
+								break
+					if found >= 0:
+						break
+				if found >= 0:
+					break
+			if found >= 0:
+				break
+		if found < 0:
+			found = wn
+			reps.append(v)
+			if not lookup.has(c):
+				lookup[c] = PackedInt32Array()
+			var arr: PackedInt32Array = lookup[c]
+			arr.append(wn)
+			lookup[c] = arr
 			wn += 1
-		else:
-			weld[i] = w
-	# The provider splits vertices at every auto-UV island with its own
-	# normal, which shades skin and cloth as a faceted triangle mosaic.
-	# Average the normals of each welded position (smooth shading).
-	var wnorm := PackedVector3Array()
-	wnorm.resize(wn)
+		weld[i] = found
+	# The provider split vertices at every UV island and skinned each copy on
+	# its own, so copies at one position carry different bone weights: in any
+	# pose neighbouring triangles drift apart and shade as hard-edged facets
+	# (with or without textures, shadows or AO). Every copy now shares the
+	# summed, renormalised weights of its welded position.
+	var wb_acc: Array = []
+	wb_acc.resize(wn)
 	for i in nv:
-		wnorm[weld[i]] += norms[i]
+		var w: int = weld[i]
+		var dct: Dictionary = wb_acc[w] if wb_acc[w] != null else {}
+		for k in bpv:
+			var wt := weights[i * bpv + k]
+			if wt > 0.0:
+				var b := bones[i * bpv + k]
+				dct[b] = float(dct.get(b, 0.0)) + wt
+		wb_acc[w] = dct
+	var merged_b := PackedInt32Array()
+	merged_b.resize(wn * bpv)
+	var merged_w := PackedFloat32Array()
+	merged_w.resize(wn * bpv)
+	for w in wn:
+		var dct: Dictionary = wb_acc[w] if wb_acc[w] != null else {}
+		var pairs := []
+		for b in dct:
+			pairs.append([float(dct[b]), int(b)])
+		pairs.sort_custom(func(x, y): return x[0] > y[0])
+		var tot := 0.0
+		for k in mini(bpv, pairs.size()):
+			tot += pairs[k][0]
+		for k in bpv:
+			if k < pairs.size() and tot > 0.0:
+				merged_b[w * bpv + k] = pairs[k][1]
+				merged_w[w * bpv + k] = pairs[k][0] / tot
 	for i in nv:
-		var nn := wnorm[weld[i]]
-		if nn.length_squared() > 0.000001:
-			norms[i] = nn.normalized()
+		var w: int = weld[i]
+		for k in bpv:
+			bones[i * bpv + k] = merged_b[w * bpv + k]
+			weights[i * bpv + k] = merged_w[w * bpv + k]
 	var wpos := PackedVector3Array()
 	wpos.resize(wn)
 	var wkind := PackedByteArray()
 	wkind.resize(wn)
 	for i in nv:
-		wpos[weld[i]] = verts[i]
-		wkind[weld[i]] = kinds[i]
+		wpos[weld[i]] = reps[weld[i]]
+		wkind[weld[i]] = maxi(wkind[weld[i]], kinds[i])
 	# Mip-0 samples pulled toward each triangle's UV centroid (inside its island).
 	var acc := PackedFloat32Array()
 	acc.resize(wn * 3)
@@ -693,10 +824,6 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 			cnt[wv] += 1.0
 	var col := PackedFloat32Array()
 	col.resize(wn * 3)
-	var region := PackedByteArray()
-	region.resize(wn)
-	var head_sum := Vector3.ZERO
-	var head_n := 0.0
 	for w in wn:
 		var c := Color(0.2, 0.2, 0.2)
 		if cnt[w] > 0.0:
@@ -720,59 +847,14 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 		if v.y > 1.45 and v.y < 1.50 and absf(v.x) < 0.12 and _skinlike(Color(col[w * 3], col[w * 3 + 1], col[w * 3 + 2])):
 			neck_r += Vector2(v.x, v.z).distance_to(neck_c)
 	neck_r = neck_r / maxf(neck_n, 1.0) + 0.004
-	print("[character-look] neck centre ", neck_c, " radius ", neck_r)
+	var region := PackedByteArray()
+	region.resize(wn)
 	for w in wn:
 		region[w] = _classify(Color(col[w * 3], col[w * 3 + 1], col[w * 3 + 2]), wpos[w], wkind[w], neck_c, neck_r)
 	_majority(region, indices, weld, wn)
 	_majority(region, indices, weld, wn)
 	_majority(region, indices, weld, wn)
-	# Hair/head centre for the strand flow.
-	for w in wn:
-		if region[w] == R_HAIR:
-			head_sum += wpos[w]
-			head_n += 1.0
-	var head_centre := Vector3(0.0, 1.62, 0.0)
-	if head_n > 0.0:
-		head_centre = head_sum / head_n
-		head_centre.y -= 0.06
-	# Nose tip (most forward face vertex at nose height): anchor for stubble,
-	# creases and the facial-feature box in the shader.
-	var nose_tip := Vector3(-0.016, 1.575, -0.089)
-	var best_z := 1.0
-	for w in wn:
-		var v := wpos[w]
-		if (region[w] == R_FACE or region[w] == R_SKIN) and v.y > 1.54 and v.y < 1.60 and absf(v.x) < 0.07 and v.z < best_z:
-			best_z = v.z
-			nose_tip = v
-	# Smooth the baked colour inside each region (removes the island mosaic).
-	for it in 3:
-		var nacc := PackedFloat32Array()
-		nacc.resize(wn * 3)
-		var ncnt := PackedFloat32Array()
-		ncnt.resize(wn)
-		for w in wn:
-			nacc[w * 3] = col[w * 3] * 2.0
-			nacc[w * 3 + 1] = col[w * 3 + 1] * 2.0
-			nacc[w * 3 + 2] = col[w * 3 + 2] * 2.0
-			ncnt[w] = 2.0
-		for t in nt:
-			var wa := weld[indices[t * 3]]
-			var wb := weld[indices[t * 3 + 1]]
-			var wc := weld[indices[t * 3 + 2]]
-			for pair in [[wa, wb], [wb, wc], [wc, wa]]:
-				var x: int = pair[0]
-				var y: int = pair[1]
-				if region[x] != region[y]:
-					continue
-				nacc[x * 3] += col[y * 3]; nacc[x * 3 + 1] += col[y * 3 + 1]; nacc[x * 3 + 2] += col[y * 3 + 2]
-				nacc[y * 3] += col[x * 3]; nacc[y * 3 + 1] += col[x * 3 + 1]; nacc[y * 3 + 2] += col[x * 3 + 2]
-				ncnt[x] += 1.0
-				ncnt[y] += 1.0
-		for w in wn:
-			col[w * 3] = nacc[w * 3] / ncnt[w]
-			col[w * 3 + 1] = nacc[w * 3 + 1] / ncnt[w]
-			col[w * 3 + 2] = nacc[w * 3 + 2] / ncnt[w]
-	# Unique welded edges, built once for the smoothing and distance passes.
+	# Unique welded edges.
 	var edge_set := {}
 	var ea := PackedInt32Array()
 	var eb := PackedInt32Array()
@@ -789,32 +871,193 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 				ea.append(x)
 				eb.append(y)
 	var ne := ea.size()
-	# The provider surface carries voxel-remesh stair-steps that every light
-	# turned into rectangular blotches on skin and cloth. Laplacian-smooth the
-	# welded normals within each region: strongly on skin (8 passes), lightly
-	# on cloth (2 passes, keeps the real folds). Positions stay authored
-	# (smoothing them broke the shared civilian rig's LOD/skinning).
-	for it in 8:
-		var nacc := PackedVector3Array()
-		nacc.resize(wn)
+	for i in nv:
+		var w: int = weld[i]
+		for k in bpv:
+			bones[i * bpv + k] = merged_b[w * bpv + k]
+			weights[i * bpv + k] = merged_w[w * bpv + k]
+	# Player only: the provider hand is a mitten. Its finger block is folded
+	# flat onto the knuckle line, and CharacterHands draws real jointed fingers.
+	var folded := 0
+	for side in [["hand_r", 1.0], ["hand_l", -1.0]]:
+		if not rig.has(side[0]):
+			continue
+		var rest: Transform3D = rig[side[0]]
+		var inv := rest.affine_inverse()
 		for w in wn:
-			nacc[w] = wnorm[w] * 2.0
+			if region[w] != R_SKIN:
+				continue
+			var q := inv * wpos[w]
+			if q.y > KNUCKLE_Y - 0.004 and q.y < 0.24 and absf(q.x) < 0.075 and absf(q.z) < 0.09:
+				q.y = KNUCKLE_Y - 0.004 + (q.y - KNUCKLE_Y + 0.004) * 0.06
+				q.x *= 0.85
+				wpos[w] = rest * q
+				folded += 1
+			elif q.z > THUMB_Z and q.y > -0.01 and q.y < KNUCKLE_Y and absf(q.x) < 0.075 and q.z < 0.13:
+				# The mitten thumb folds into the palm edge (a jointed one replaces it).
+				q.z = THUMB_Z + (q.z - THUMB_Z) * 0.15
+				wpos[w] = rest * q
+				folded += 1
+	# Smooth vertex normals from the smoothed surface (area weighted). The
+	# provider's winding is not consistent (decimated civilian rig), so each
+	# face normal is oriented by the authored vertex normals it replaces.
+	var anorm := PackedVector3Array()
+	anorm.resize(wn)
+	for i in nv:
+		anorm[weld[i]] += norms[i]
+	var wnorm := PackedVector3Array()
+	wnorm.resize(wn)
+	for t in nt:
+		var ia := indices[t * 3]
+		var ib := indices[t * 3 + 1]
+		var ic := indices[t * 3 + 2]
+		var wa := weld[ia]
+		var wb := weld[ib]
+		var wc := weld[ic]
+		var fnrm := (wpos[wb] - wpos[wa]).cross(wpos[wc] - wpos[wa])
+		if fnrm.dot(norms[ia] + norms[ib] + norms[ic]) < 0.0:
+			fnrm = -fnrm
+		wnorm[wa] += fnrm
+		wnorm[wb] += fnrm
+		wnorm[wc] += fnrm
+	for w in wn:
+		if wnorm[w].length_squared() > 1e-14:
+			wnorm[w] = wnorm[w].normalized()
+		elif anorm[w].length_squared() > 1e-10:
+			wnorm[w] = anorm[w].normalized()
+		else:
+			wnorm[w] = Vector3.UP
+	# The provider body is a triangle soup: neighbouring triangles do not
+	# share corners (gaps of a few millimetres), so topology-based smoothing
+	# left every triangle with its own flat normal: the faceted, posterised
+	# skin and cloth. Normals are smoothed SPATIALLY instead: every vertex
+	# takes the kernel-weighted area normals of all vertices within
+	# NORMAL_RADIUS that face the same way (thin parts keep two sides).
+	var sgrid := _spatial_grid(wpos, NORMAL_RADIUS)
+	var raw := wnorm.duplicate()
+	var area := PackedVector3Array()
+	area.resize(wn)
+	for t in nt:
+		var ia := indices[t * 3]
+		var ib := indices[t * 3 + 1]
+		var ic := indices[t * 3 + 2]
+		var fnrm := (wpos[weld[ib]] - wpos[weld[ia]]).cross(wpos[weld[ic]] - wpos[weld[ia]])
+		if fnrm.dot(norms[ia] + norms[ib] + norms[ic]) < 0.0:
+			fnrm = -fnrm
+		area[weld[ia]] += fnrm
+		area[weld[ib]] += fnrm
+		area[weld[ic]] += fnrm
+	for w in wn:
+		if wkind[w] >= 2:
+			continue
+		var p := wpos[w]
+		var own := raw[w]
+		var radius := NORMAL_RADIUS * (0.6 if region[w] == R_FACE else 1.0)
+		var acc_n := Vector3.ZERO
+		for o in _neighbours(sgrid, wpos, p, radius, NORMAL_RADIUS):
+			if wkind[o] >= 2:
+				continue
+			var a_n: Vector3 = area[o]
+			if a_n.normalized().dot(own) < 0.25:
+				continue
+			var dd := wpos[o].distance_to(p) / radius
+			acc_n += a_n * (1.0 - dd * dd)
+		if acc_n.length_squared() > 1e-16:
+			wnorm[w] = acc_n.normalized()
+	# Shoes and soles keep their authored (crisp) normals.
+	for i in nv:
+		verts[i] = wpos[weld[i]]
+		if kinds[i] < 2:
+			norms[i] = wnorm[weld[i]]
+	# Tangents re-orthogonalised against the new normals (Godot packs normal
+	# and tangent together; a skewed provider tangent corrupts the pair).
+	for i in nv:
+		var nn := norms[i]
+		var tg := Vector3(tangs[i * 4], tangs[i * 4 + 1], tangs[i * 4 + 2])
+		tg = tg - nn * nn.dot(tg)
+		if tg.length_squared() < 1e-8:
+			tg = nn.cross(Vector3.UP if absf(nn.y) < 0.9 else Vector3.RIGHT)
+		tg = tg.normalized()
+		tangs[i * 4] = tg.x
+		tangs[i * 4 + 1] = tg.y
+		tangs[i * 4 + 2] = tg.z
+		tangs[i * 4 + 3] = 1.0 if tangs[i * 4 + 3] >= 0.0 else -1.0
+	# Garment weights (skin, shirt, hair, trousers, tee) diffused across the
+	# mesh: the fragment shader takes the dominant one, so region borders are
+	# smooth iso-curves rather than whole-triangle stairs.
+	var rw := PackedFloat32Array()
+	rw.resize(wn * 5)
+	const CH := [0, 1, 2, 4, 3, 9, 9, 0] # region -> channel (face -> skin)
+	for w in wn:
+		var ch: int = CH[region[w]]
+		if ch < 5:
+			rw[w * 5 + ch] = 1.0
+	# Spatial (not topological: the body is a triangle soup) kernel average
+	# within WEIGHT_RADIUS among same-facing vertices.
+	var rgrid := _spatial_grid(wpos, WEIGHT_RADIUS)
+	var rw2 := rw.duplicate()
+	for w in wn:
+		if wkind[w] >= 2:
+			continue
+		var p := wpos[w]
+		var acc5 := [0.0, 0.0, 0.0, 0.0, 0.0]
+		var ksum := 0.0
+		for o in _neighbours(rgrid, wpos, p, WEIGHT_RADIUS, WEIGHT_RADIUS):
+			if wkind[o] >= 2 or wnorm[o].dot(wnorm[w]) < 0.2:
+				continue
+			var dd := wpos[o].distance_to(p) / WEIGHT_RADIUS
+			var kk := 1.0 - dd * dd
+			for c in 5:
+				acc5[c] += rw[o * 5 + c] * kk
+			ksum += kk
+		if ksum > 0.0:
+			for c in 5:
+				rw2[w * 5 + c] = acc5[c] / ksum
+	rw = rw2
+	# Hair/head centre for the strand flow.
+	var head_sum := Vector3.ZERO
+	var head_n := 0.0
+	for w in wn:
+		if region[w] == R_HAIR:
+			head_sum += wpos[w]
+			head_n += 1.0
+	var head_centre := Vector3(0.0, 1.62, 0.0)
+	if head_n > 0.0:
+		head_centre = head_sum / head_n
+		head_centre.y -= 0.06
+	# Nose tip (most forward face vertex at nose height).
+	var nose_tip := Vector3(-0.016, 1.575, -0.089)
+	var best_z := 1.0
+	for w in wn:
+		var v := wpos[w]
+		if (region[w] == R_FACE or region[w] == R_SKIN) and v.y > 1.54 and v.y < 1.60 and absf(v.x) < 0.07 and v.z < best_z:
+			best_z = v.z
+			nose_tip = v
+	# Smooth the baked colour inside each region (low-frequency fold shading).
+	for it in 3:
+		var nacc := PackedFloat32Array()
+		nacc.resize(wn * 3)
+		var ncnt := PackedFloat32Array()
+		ncnt.resize(wn)
+		for w in wn:
+			nacc[w * 3] = col[w * 3] * 2.0
+			nacc[w * 3 + 1] = col[w * 3 + 1] * 2.0
+			nacc[w * 3 + 2] = col[w * 3 + 2] * 2.0
+			ncnt[w] = 2.0
 		for k in ne:
 			var x := ea[k]
 			var y := eb[k]
 			if region[x] != region[y]:
 				continue
-			if it >= 2 and region[x] != R_SKIN and region[x] != R_FACE:
-				continue
-			nacc[x] += wnorm[y]
-			nacc[y] += wnorm[x]
+			nacc[x * 3] += col[y * 3]; nacc[x * 3 + 1] += col[y * 3 + 1]; nacc[x * 3 + 2] += col[y * 3 + 2]
+			nacc[y * 3] += col[x * 3]; nacc[y * 3 + 1] += col[x * 3 + 1]; nacc[y * 3 + 2] += col[x * 3 + 2]
+			ncnt[x] += 1.0
+			ncnt[y] += 1.0
 		for w in wn:
-			if nacc[w].length_squared() > 0.0000001:
-				wnorm[w] = nacc[w].normalized()
-	for i in nv:
-		norms[i] = wnorm[weld[i]]
-	# Distance (m) from every vertex to the nearest region border: drives hems,
-	# stitch lines, collar roll and the soft hairline in the shader.
+			col[w * 3] = nacc[w * 3] / ncnt[w]
+			col[w * 3 + 1] = nacc[w * 3 + 1] / ncnt[w]
+			col[w * 3 + 2] = nacc[w * 3 + 2] / ncnt[w]
+	# Distance (m) from every vertex to the nearest region border (hems).
 	var edist := PackedFloat32Array()
 	edist.resize(wn)
 	edist.fill(0.08)
@@ -847,6 +1090,8 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 	lcnt.resize(8)
 	var skin_sum := Vector3.ZERO
 	var skin_n := 0.0
+	var hair_l := 0.0
+	var hair_ln := 0.0
 	var lum := PackedFloat32Array()
 	lum.resize(wn)
 	for w in wn:
@@ -854,25 +1099,27 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 		lum[w] = l
 		lsum[region[w]] += l
 		lcnt[region[w]] += 1.0
-		if region[w] == R_FACE:
-			var lin := Color(col[w * 3], col[w * 3 + 1], col[w * 3 + 2]).srgb_to_linear()
-			if lin.r > lin.b * 1.2:
-				skin_sum += Vector3(lin.r, lin.g, lin.b)
-				skin_n += 1.0
+		var lin := Color(col[w * 3], col[w * 3 + 1], col[w * 3 + 2]).srgb_to_linear()
+		if region[w] == R_FACE and lin.r > lin.b * 1.2:
+			skin_sum += Vector3(lin.r, lin.g, lin.b)
+			skin_n += 1.0
+		elif region[w] == R_HAIR:
+			hair_l += lin.get_luminance()
+			hair_ln += 1.0
 	var src_skin := Vector3(0.55, 0.30, 0.19)
 	if skin_n > 0.0:
 		src_skin = skin_sum / skin_n
-	# Output arrays (per original vertex) plus the hair shells.
-	var grip_verts := 0
-	var knuckle_x := 0.0
-	var knuckle_n := 0.0
-	var grip_centre := Vector3(0.0, -10.0, 0.0)
+	var src_hair_lum := hair_l / maxf(hair_ln, 1.0)
 	var colors := PackedColorArray()
 	colors.resize(nv)
 	var c0 := PackedFloat32Array()
 	c0.resize(nv * 4)
 	var c1 := PackedFloat32Array()
 	c1.resize(nv * 4)
+	var c2 := PackedFloat32Array()
+	c2.resize(nv * 4)
+	var c3 := PackedFloat32Array()
+	c3.resize(nv * 4)
 	for i in nv:
 		var w := weld[i]
 		var r := int(region[w])
@@ -880,10 +1127,10 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 			r = R_SHOE
 		elif kinds[i] == 3:
 			r = R_SOLE
-		var mean := lsum[r] / maxf(lcnt[r], 1.0) if r < 8 else 1.0
+		var mean := lsum[r] / maxf(lcnt[r], 1.0)
 		var shade := clampf(lum[w] / maxf(mean, 0.01), 0.55, 1.35) if r != R_SHOE and r != R_SOLE else 1.0
 		colors[i] = Color(col[w * 3], col[w * 3 + 1], col[w * 3 + 2]).srgb_to_linear()
-		c0[i * 4] = float(r)
+		c0[i * 4] = float(r) if r == R_SHOE or r == R_SOLE else 0.0
 		c0[i * 4 + 1] = 0.0
 		c0[i * 4 + 2] = shade
 		c0[i * 4 + 3] = edist[w]
@@ -891,22 +1138,25 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 		c1[i * 4] = v.x
 		c1[i * 4 + 1] = v.y
 		c1[i * 4 + 2] = v.z
-		c1[i * 4 + 3] = 0.0
-		if wrist != Vector3.INF and r == R_SKIN and v.x * signf(wrist.x) > 0.19 and v.y < wrist.y - GRIP_PALM and v.y > wrist.y - 0.26:
-			c1[i * 4 + 3] = 1.0
-			grip_verts += 1
-			if v.y > wrist.y - GRIP_PALM - 0.015:
-				knuckle_x += v.x
-				knuckle_n += 1.0
-	if knuckle_n > 0.0:
-		grip_centre = Vector3(knuckle_x / knuckle_n - signf(wrist.x) * 0.016, wrist.y - GRIP_PALM, signf(wrist.x))
-		print("[character-look] wrist ", wrist, " grip centre ", grip_centre, " knuckle verts ", knuckle_n)
+		c2[i * 4] = rw[w * 5]
+		c2[i * 4 + 1] = rw[w * 5 + 1]
+		c2[i * 4 + 2] = rw[w * 5 + 2]
+		c2[i * 4 + 3] = rw[w * 5 + 3]
+		var nn := wnorm[w]
+		c3[i * 4] = nn.x
+		c3[i * 4 + 1] = nn.y
+		c3[i * 4 + 2] = nn.z
+	# Hair shells: every triangle touching the hair mass (the fragment shader
+	# decides strand by strand where hair really is).
 	var hair_tris := PackedInt32Array()
 	for t in nt:
 		var ia := indices[t * 3]
 		var ib := indices[t * 3 + 1]
 		var ic := indices[t * 3 + 2]
-		if int(c0[ia * 4]) == R_HAIR and int(c0[ib * 4]) == R_HAIR and int(c0[ic * 4]) == R_HAIR:
+		if kinds[ia] >= 2:
+			continue
+		var hw := rw[weld[ia] * 5 + 2] + rw[weld[ib] * 5 + 2] + rw[weld[ic] * 5 + 2]
+		if hw > 0.6:
 			hair_tris.append_array(PackedInt32Array([ia, ib, ic]))
 	if hair_tris.size() > 0:
 		var used := {}
@@ -924,8 +1174,10 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 				bones.append_array(bones.slice(i * bpv, i * bpv + bpv))
 				weights.append_array(weights.slice(i * bpv, i * bpv + bpv))
 				colors.append(colors[i])
-				c0.append_array(PackedFloat32Array([float(R_HAIR), float(s), c0[i * 4 + 2], c0[i * 4 + 3]]))
+				c0.append_array(PackedFloat32Array([0.0, float(s), c0[i * 4 + 2], c0[i * 4 + 3]]))
 				c1.append_array(c1.slice(i * 4, i * 4 + 4))
+				c2.append_array(c2.slice(i * 4, i * 4 + 4))
+				c3.append_array(c3.slice(i * 4, i * 4 + 4))
 			for i in hair_tris:
 				indices.append(remap[i])
 	var arrays := []
@@ -937,10 +1189,13 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 	arrays[Mesh.ARRAY_TEX_UV] = uvs
 	arrays[Mesh.ARRAY_CUSTOM0] = c0
 	arrays[Mesh.ARRAY_CUSTOM1] = c1
+	arrays[Mesh.ARRAY_CUSTOM2] = c2
+	arrays[Mesh.ARRAY_CUSTOM3] = c3
 	arrays[Mesh.ARRAY_BONES] = bones
 	arrays[Mesh.ARRAY_WEIGHTS] = weights
 	arrays[Mesh.ARRAY_INDEX] = indices
-	var flags := (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT) | (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM1_SHIFT)
+	var flags := (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT) | (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM1_SHIFT) \
+		| (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM2_SHIFT) | (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM3_SHIFT)
 	if bpv == 8:
 		flags |= Mesh.ARRAY_FLAG_USE_8_BONE_WEIGHTS
 	var material := ShaderMaterial.new()
@@ -948,10 +1203,17 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 	material.set_shader_parameter("albedo_tex", albedo)
 	if normal != null:
 		material.set_shader_parameter("normal_tex", normal)
+	var fab := _fabrics()
+	if fab.size() == 4:
+		material.set_shader_parameter("flannel_tex", fab[0])
+		material.set_shader_parameter("denim_tex", fab[1])
+		material.set_shader_parameter("batik_tex", fab[2])
+		material.set_shader_parameter("jersey_tex", fab[3])
+		material.set_shader_parameter("has_fabrics", true)
 	material.set_shader_parameter("src_skin", src_skin)
+	material.set_shader_parameter("src_hair_lum", src_hair_lum)
 	material.set_shader_parameter("head_centre", head_centre)
 	material.set_shader_parameter("nose_tip", nose_tip)
-	material.set_shader_parameter("grip_centre", grip_centre)
 	var dbg := OS.get_environment("ORCHARD_LOOK_DEBUG")
 	if dbg != "":
 		material.set_shader_parameter("debug_mode", int(dbg))
@@ -968,7 +1230,45 @@ static func _build(src: ArrayMesh, wrist: Vector3 = Vector3.INF) -> Dictionary:
 	counts.resize(8)
 	for w in wn:
 		counts[region[w]] += 1
-	return {"mesh": out, "material": material, "regions": counts, "shell_tris": hair_tris.size() / 3 * SHELLS, "src_skin": src_skin, "grip_verts": grip_verts, "grip_centre": grip_centre}
+	return {"mesh": out, "material": material, "regions": counts, "shell_tris": hair_tris.size() / 3 * SHELLS, "src_skin": src_skin, "grip_verts": folded, "fabrics": fab.size() == 4}
+
+const FABRIC_DIR := "res://assets/providers/higgsfield/"
+static var _fabric_cache: Array = []
+static func _fabrics() -> Array:
+	if _fabric_cache.is_empty():
+		for f in ["fabric_flannel_plaid_albedo.png", "fabric_denim_albedo.png", "fabric_batik_single_albedo.png", "fabric_cotton_jersey_neutral.png"]:
+			if not ResourceLoader.exists(FABRIC_DIR + f):
+				_fabric_cache = [null]
+				return []
+			_fabric_cache.append(load(FABRIC_DIR + f))
+	return [] if _fabric_cache.size() != 4 else _fabric_cache
+
+static func _spatial_grid(pos: PackedVector3Array, cell: float) -> Dictionary:
+	var g := {}
+	for i in pos.size():
+		var c := Vector3i(floori(pos[i].x / cell), floori(pos[i].y / cell), floori(pos[i].z / cell))
+		if not g.has(c):
+			g[c] = PackedInt32Array()
+		var arr: PackedInt32Array = g[c]
+		arr.append(i)
+		g[c] = arr
+	return g
+
+## Indices of points within `radius` of p (grid built with cell >= radius).
+static func _neighbours(g: Dictionary, pos: PackedVector3Array, p: Vector3, radius: float, cell: float) -> PackedInt32Array:
+	var out := PackedInt32Array()
+	var c := Vector3i(floori(p.x / cell), floori(p.y / cell), floori(p.z / cell))
+	var r2 := radius * radius
+	for dx in 3:
+		for dy in 3:
+			for dz in 3:
+				var lst = g.get(c + Vector3i(dx - 1, dy - 1, dz - 1))
+				if lst == null:
+					continue
+				for o in lst:
+					if pos[o].distance_squared_to(p) <= r2:
+						out.append(o)
+	return out
 
 static func _skinlike(c: Color) -> bool:
 	var l := c.r * 0.2126 + c.g * 0.7152 + c.b * 0.0722
@@ -987,7 +1287,7 @@ static func _classify(c: Color, p: Vector3, kind: int, neck_c: Vector2 = Vector2
 		return R_SOLE
 	var skin := _skinlike(c)
 	if kind == 1:
-		if skin and absf(p.x) > 0.2 and p.y < 1.25:
+		if skin and absf(p.x) > 0.2 and p.y < 1.19:
 			return R_SKIN
 		if p.y > 1.36 and Vector2(p.x, p.z).distance_to(neck_c) < neck_r and (skin or p.y > 1.44):
 			return R_SKIN
@@ -1001,8 +1301,12 @@ static func _classify(c: Color, p: Vector3, kind: int, neck_c: Vector2 = Vector2
 		return R_FACE
 	if skin:
 		return R_SKIN
-	if absf(p.x) > 0.215 and p.y > 0.95 and p.y < 1.35:
-		return R_SKIN # bare arms and hands (sleeves live on the overshirt surface)
+	if absf(p.x) > 0.19 and p.y >= 1.19 and p.y < 1.42:
+		return R_SHIRT # the body's upper arm runs just under the sleeve: dress it
+	if absf(p.x) > 0.215 and p.y > 0.95 and p.y < 1.19:
+		return R_SKIN # bare forearms (sleeves live on the overshirt surface)
+	if absf(p.x) > 0.205 and p.y > 0.6 and p.y <= 0.95:
+		return R_SKIN # hands hang outside the thighs in the rest pose
 	if p.y > 1.30:
 		return R_SKIN # neck: the collar is authored on the overshirt surface
 	if p.y > 0.95:
@@ -1055,6 +1359,7 @@ const SKINS := [
 	Color(0.90, 0.74, 0.62), Color(0.84, 0.64, 0.50), Color(0.74, 0.54, 0.40), Color(0.64, 0.44, 0.31),
 	Color(0.54, 0.36, 0.25), Color(0.43, 0.28, 0.19), Color(0.33, 0.21, 0.14),
 ]
+const SKIN_WEIGHTS := [0.24, 0.30, 0.18, 0.12, 0.08, 0.05, 0.03]
 const HAIRS := [Color(0.05, 0.045, 0.04), Color(0.10, 0.07, 0.05), Color(0.20, 0.13, 0.08), Color(0.03, 0.03, 0.03), Color(0.30, 0.13, 0.07)]
 const SHOES := [Color(0.88, 0.88, 0.86), Color(0.07, 0.07, 0.08), Color(0.30, 0.18, 0.10), Color(0.45, 0.45, 0.47), Color(0.12, 0.16, 0.30), Color(0.70, 0.14, 0.12)]
 
@@ -1065,18 +1370,19 @@ static func _v4(c: Color, w: float) -> Vector4:
 	var l := c.srgb_to_linear()
 	return Vector4(l.r, l.g, l.b, w)
 
-## Player: olive brushed-flannel check overshirt (dark bands, rust and
-## cream over-check, chest pockets), dark indigo jeans, brown leather shoes,
-## a warm tan (not orange) skin tone, short black hair and two-day stubble.
+## Player: woven navy/green flannel overshirt (the authored fabric scan,
+## chest pockets), faded mid-blue denim, brown leather shoes, a warm tan skin
+## tone, short dark-brown hair and two-day stubble.
 static func player_outfit() -> Dictionary:
+	var skin := _lin(Color(0.76, 0.58, 0.46))
 	return {
-		"shirt_col": _v4(Color(0.36, 0.37, 0.26), 5.0),
+		"shirt_col": _v4(Color(0.20, 0.27, 0.24), 7.0),
 		"shirt_col2": _v4(Color(0.40, 0.15, 0.09), 1.0),
-		"tee_col": _v4(Color(0.66, 0.66, 0.64), 0.0),
-		"pants_col": _v4(Color(0.11, 0.14, 0.24), 0.0),
+		"tee_col": _v4(Color(0.62, 0.62, 0.60), 0.0),
+		"pants_col": _v4(Color(0.27, 0.36, 0.50), 2.0),
 		"shoe_col": _v4(Color(0.26, 0.16, 0.09), 0.16),
-		"skin_col": Vector4(_lin(Color(0.74, 0.56, 0.45)).r, _lin(Color(0.74, 0.56, 0.45)).g, _lin(Color(0.74, 0.56, 0.45)).b, 0.0),
-		"hair_col": _v4(Color(0.05, 0.045, 0.04), 0.0),
+		"skin_col": Vector4(skin.r, skin.g, skin.b, 0.0),
+		"hair_col": _v4(Color(0.12, 0.09, 0.07), 0.0),
 		"face_col": Vector4(0.85, 0.8, 0.6, 1.0),
 	}
 
@@ -1091,7 +1397,7 @@ static func civilian_outfit(seed_value: int) -> Dictionary:
 		shirt2 = Color(0.95, 0.95, 0.93) if shirt.get_luminance() < 0.5 else Color(0.08, 0.10, 0.18)
 	var roll := rng.randf()
 	var pattern := 0
-	if roll < 0.14: pattern = 1
+	if roll < 0.10: pattern = 1
 	elif roll < 0.26: pattern = 2
 	elif roll < 0.40: pattern = 3
 	elif roll < 0.52: pattern = 4
@@ -1103,7 +1409,17 @@ static func civilian_outfit(seed_value: int) -> Dictionary:
 		tee = shirt
 	var pants: Color = PANTS[rng.randi() % PANTS.size()]
 	var shorts := 1.0 if rng.randf() < 0.16 else 0.0
-	var skin: Color = SKINS[rng.randi() % SKINS.size()]
+	# Singapore's street mix: mostly light-to-medium (Chinese majority),
+	# then tan/brown (Malay), then deep brown (Indian) complexions.
+	var sr := rng.randf()
+	var si := 0
+	var acc := 0.0
+	for k in SKIN_WEIGHTS.size():
+		acc += SKIN_WEIGHTS[k]
+		if sr <= acc:
+			si = k
+			break
+	var skin: Color = SKINS[si]
 	var elder := rng.randf() < 0.18
 	var hair: Color = HAIRS[rng.randi() % HAIRS.size()]
 	var shoe: Color = SHOES[rng.randi() % SHOES.size()]
@@ -1134,17 +1450,6 @@ static func set_outfit(mi: MeshInstance3D, outfit: Dictionary) -> void:
 	for key in ["shirt_col", "shirt_col2", "tee_col", "pants_col", "shoe_col", "skin_col", "hair_col", "face_col"]:
 		if outfit.has(key):
 			mi.set_instance_shader_parameter(key, outfit[key])
-
-## Per-frame grip update (player): curl amount and the hand bone's
-## rest->pose rotation in skeleton (= mesh) space.
-static func set_grip(mi: MeshInstance3D, skeleton: Skeleton3D, bone: int, amount: float) -> void:
-	if _headless or mi == null or skeleton == null or bone < 0:
-		return
-	var b := skeleton.get_bone_global_pose(bone).basis * skeleton.get_bone_global_rest(bone).basis.inverse()
-	mi.set_instance_shader_parameter("grip", Vector4(amount, 0.0, 0.0, 0.0))
-	mi.set_instance_shader_parameter("hand_x", Vector4(b.x.x, b.x.y, b.x.z, 0.0))
-	mi.set_instance_shader_parameter("hand_y", Vector4(b.y.x, b.y.y, b.y.z, 0.0))
-	mi.set_instance_shader_parameter("hand_z", Vector4(b.z.x, b.z.y, b.z.z, 0.0))
 
 ## A short signature of an outfit, used by the regression to count distinct looks.
 static func outfit_signature(outfit: Dictionary) -> String:

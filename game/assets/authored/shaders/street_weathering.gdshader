@@ -7,6 +7,9 @@ shader_type spatial;
 // dirt band and rain streaks at the base of every wall and column. Original,
 // procedural; no textures.
 render_mode unshaded, blend_mul, cull_front, depth_test_disabled, depth_draw_never, shadows_disabled, fog_disabled;
+// Characters piece: people mark the stencil (8) and are skipped, or the
+// grime (rebuilt from depth, so per triangle) printed facets onto skin/cloth.
+stencil_mode read, compare_not_equal, 8;
 
 uniform sampler2D depth_tex : hint_depth_texture, filter_nearest;
 uniform vec3 box_min = vec3(-80.0, -0.5, -80.0);

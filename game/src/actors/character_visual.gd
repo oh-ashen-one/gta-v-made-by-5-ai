@@ -60,6 +60,9 @@ var _foot_ids := PackedInt32Array()
 var look_mesh: MeshInstance3D
 var _hand_bone := -1
 var outfit: Dictionary = {}
+## Player only: jointed fingers + aim IK (CharacterHands), when the look mesh
+## folded the provider's mitten hands.
+var hands: CharacterHands
 
 static func available(role: String = "player") -> bool:
 	return ResourceLoader.exists(asset_path(role))
@@ -102,7 +105,7 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	_upgrade_materials(model)
 	# Characters piece: region-aware rebuilt mesh + shared wardrobe shader for
 	# the player and civilian rigs (officers keep their authored uniform).
-	look_mesh = CharacterLook.apply(model) if role != "officer" else null
+	look_mesh = CharacterLook.apply(model, role) if role != "officer" else null
 	if look_mesh != null:
 		if role == "player":
 			outfit = CharacterLook.player_outfit()
@@ -136,6 +139,14 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	if motion != null:
 		animator.seek(0.0, true)
 		motion.capture_reference()
+	if look_mesh != null and role == "player":
+		# Added after the motion layer so it runs last in the modifier stack.
+		hands = CharacterHands.new()
+		hands.name = "Hands"
+		hands.actor = self
+		skeleton.add_child(hands)
+		var sc: Vector4 = outfit.get("skin_col", Vector4(0.55, 0.33, 0.22, 0.0))
+		hands.setup(skeleton, Color(sc.x, sc.y, sc.z).linear_to_srgb())
 	return true
 
 func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloading: bool = false) -> void:
@@ -321,6 +332,8 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 	# on the body's forward axis while its grip follows the animated wrist.
 	weapon.position = Vector3(0.0, 0.055, -0.012)
 	weapon.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+	if hands != null:
+		weapon.transform = CharacterHands.weapon_transform(weapon_kind)
 	process_priority = 10
 
 func set_aim_pitch(value: float) -> void:
@@ -335,9 +348,20 @@ func weapon_muzzle_position() -> Vector3:
 func _process(_delta: float) -> void:
 	_update_animation_activity()
 	_update_contact_shadows()
-	if look_mesh != null and asset_role == "player":
+	if hands != null:
 		var held := _weapon_node != null and is_instance_valid(_weapon_node) and _weapon_node.is_visible_in_tree()
-		CharacterLook.set_grip(look_mesh, skeleton, _hand_bone, 1.0 if held else 0.0)
+		hands.holding = held
+		hands.aiming = _last_aim and not _last_reload and not _seated and not _dead
+		hands.weapon_kind = _weapon_kind
+		hands.aim_pitch = _aim_pitch
+		var target := 1.0 if held and hands.aiming and _weapon_kind == "pistol" else 0.0
+		hands.ik_weight = move_toward(hands.ik_weight, target, _delta * 6.0)
+		hands.update_pose()
+		if held and _weapon_kind == "pistol":
+			# The hand itself is turned onto the aim line by the IK, so the
+			# pistol stays seated in the fist.
+			_weapon_node.transform = CharacterHands.weapon_transform("pistol")
+			return
 	if _weapon_node == null or not is_instance_valid(_weapon_node):
 		return
 	if _last_aim or _last_reload:

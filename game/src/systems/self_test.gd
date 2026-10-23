@@ -1109,7 +1109,12 @@ func _character_look_checks(player: Player) -> void:
 	for r in [CharacterLook.R_SKIN, CharacterLook.R_SHIRT, CharacterLook.R_HAIR, CharacterLook.R_PANTS, CharacterLook.R_SHOE, CharacterLook.R_FACE]:
 		all_regions = all_regions and regions.size() == 8 and regions[r] > 50
 	_check("character look mesh has skin, face, hair, shirt, trousers and shoes", all_regions, str(regions))
-	_check("right hand fingers are rigged for the procedural weapon grip", int(info.get("grip_verts", 0)) > 150, "grip_verts=%d" % int(info.get("grip_verts", 0)))
+	_check("player mitten fingers fold away for the jointed procedural hands", int(info.get("grip_verts", 0)) > 150, "folded=%d" % int(info.get("grip_verts", 0)))
+	var fist := CharacterHands.build_hand(1.0, true)
+	var relaxed := CharacterHands.build_hand(-1.0, false)
+	_check("procedural hands: 4 jointed fingers + thumb in fist and relaxed poses", fist.get_surface_count() == 1 and fist.surface_get_array_len(0) > 2500 and relaxed.surface_get_array_len(0) == fist.surface_get_array_len(0), "verts=%d" % fist.surface_get_array_len(0))
+	if ResourceLoader.exists("res://assets/providers/higgsfield/fabric_denim_albedo.png"):
+		_check("character cloth uses the woven fabric set (flannel, denim, batik, jersey)", bool(info.get("fabrics", false)), str(info.get("fabrics", false)))
 	var player_sig := CharacterLook.outfit_signature(CharacterLook.player_outfit())
 	var sigs := {}
 	var clash := false
