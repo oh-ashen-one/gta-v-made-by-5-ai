@@ -159,6 +159,15 @@ func _one_fullerton(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 	kit.col_box(Vector3(px1 - t0, deck_y, pz1 - pz0), Vector3(tc.x, deck_y * 0.5, tc.z))
 	for s in 4:
 		kit.box(Looks.get_mat("granite_light"), Vector3(t0 - 1.5 * (s + 0.5), (deck_y - 0.22 * s) * 0.5, tc.z), Vector3(1.5, deck_y - 0.22 * s, pz1 - pz0 - 2.0))
+	# Integration (wave M): the terrace's promenade edge (+z, facing the west
+	# shore promenade the downtown-map piece builds at y 0.3) was a 0.9 m wall,
+	# so walking straight from the promenade into Merlion Park stalled there.
+	# A broad flight of steps (walkable ramp collision) now leads up onto it.
+	var step_w := px1 - t0 - 2.0
+	var step_x := t0 + step_w * 0.5
+	kit.col_beam(Vector3(step_x, TOP - 0.06, pz1 + 6.0), Vector3(step_x, deck_y, pz1), step_w, 0.5)
+	for s in 4:
+		kit.box(Looks.get_mat("granite_light"), Vector3(step_x, (deck_y - 0.22 * s) * 0.5, pz1 + 1.5 * (s + 0.5)), Vector3(step_w, deck_y - 0.22 * s, 1.5))
 	# Stepped seating down toward the water on the bay edge.
 	for s in 3:
 		kit.box(Looks.get_mat("granite_light"), Vector3(tc.x, deck_y - 0.3 * (s + 1), pz0 + 1.0 + s * 1.4), Vector3(px1 - t0 - 4.0, 0.3, 1.4))

@@ -264,7 +264,7 @@ func _drive_leg() -> void:
 	_recording = true
 	_log("drive start at %s" % car.global_position)
 	var i := 0
-	var t_end := _elapsed() + 330.0
+	var t_end := _elapsed() + 420.0
 	var stills := {"esplanade_bridge": Vector3(-600, 0, -360), "raffles_avenue": Vector3(-790, 0, -600), "bayfront_bridge": Vector3(-420, 0, -780), "bayfront_avenue": Vector3(0, 0, -780), "marina_boulevard": Vector3(400, 0, -520)}
 	var stuck_t := 0.0
 	var max_deck := 0.0
@@ -275,7 +275,9 @@ func _drive_leg() -> void:
 			break
 		var kmh := car.speed_kmh()
 		var turn := maxf(_turn_ahead(path, i, 34.0), _turn_ahead(path, i, 52.0))
-		var target_kmh := 72.0 if turn < 0.25 else (24.0 if turn > 0.9 else 42.0)
+		# Integration (wave M): right-angle junctions are now framed by real
+		# block and landmark collision, so take them at 14 km/h (24 overshot).
+		var target_kmh := 72.0 if turn < 0.25 else (14.0 if turn > 0.9 else 40.0)
 		_steer(car, _ahead(path, i, clampf(kmh * 0.32, 9.0, 22.0)), 2.6)
 		Input.action_release("move_forward")
 		Input.action_release("move_back")
@@ -321,10 +323,13 @@ func _walk_leg() -> void:
 		main.hud.clear_notifications()
 	player.camera.current = true
 	_recording = true
-	var pts: Array[Vector3] = [Vector3(-440, 0, -338), Vector3(-485, 0, -378), Vector3(-522, 0, -400), Vector3(-662, 0, -400), Vector3(-648, 0, -440), Vector3(-648, 0, -560)]
+	# Integration (wave M): with the landmarks present the route climbs the
+	# Merlion Park terrace steps from the promenade, crosses the terrace, then
+	# passes north of the One Fullerton pavilions to the Jubilee landing.
+	var pts: Array[Vector3] = [Vector3(-440, 0, -338), Vector3(-458, 0, -344), Vector3(-460, 0, -372), Vector3(-488, 0, -380), Vector3(-527, 0, -382), Vector3(-529, 0, -400), Vector3(-662, 0, -400), Vector3(-648, 0, -440), Vector3(-648, 0, -560)]
 	var k := 0
 	var t_end := _elapsed() + 120.0
-	var stills := {1: "walk_peninsula", 3: "walk_jubilee_bridge", 5: "walk_esplanade_waterfront"}
+	var stills := {2: "walk_peninsula", 6: "walk_jubilee_bridge", 8: "walk_esplanade_waterfront"}
 	var max_y := 0.0
 	while _elapsed() < t_end and k < pts.size():
 		await get_tree().physics_frame
