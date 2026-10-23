@@ -17,6 +17,7 @@ const Shoreline := preload("res://src/world/downtown/shoreline.gd")
 const Roads := preload("res://src/world/downtown/roads.gd")
 const Bridges := preload("res://src/world/downtown/bridges.gd")
 const Bounds := preload("res://src/world/downtown/bounds.gd")
+const Planting := preload("res://src/world/downtown/planting.gd")
 const CELL := 400.0
 
 var world: WorldBuilder
@@ -55,8 +56,12 @@ func build(w: WorldBuilder, r: Node3D) -> void:
 	body.collision_layer = 1
 	body.collision_mask = 0
 	root.add_child(body)
+	Planting.reset()
 	Shoreline.build(self)
 	Roads.build(self)
+	if not Planting.off():
+		Planting.kerb_strips(self)
+		Planting.corner_gardens(self)
 	Bridges.build(self)
 	Bounds.build(self)
 	_flush()
@@ -70,6 +75,11 @@ func build_lanes(w: WorldBuilder) -> void:
 
 func finish(w: WorldBuilder) -> void:
 	Bounds.finish(self, w)
+	# downtown-polish: layered planting collected by map (kerb strips, tree
+	# pits, medians) and blocks (forecourt beds) is emitted once here.
+	Planting.flush(root)
+	stats["planting"] = Planting.stats.duplicate()
+	w.set_meta("downtown_map_stats", stats)
 
 # ------------------------------------------------------------ materials
 func mat(key: String) -> Material:

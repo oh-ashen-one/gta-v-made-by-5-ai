@@ -11,6 +11,7 @@ extends RefCounted
 ## world.downtown_ped_lanes; legacy traffic_nodes are never touched.
 
 const Bridges := preload("res://src/world/downtown/bridges.gd")
+const Planting := preload("res://src/world/downtown/planting.gd")
 const STEP := 4.0
 const FOOTWAY := 3.0
 const ROAD_TOP := 0.06
@@ -326,6 +327,9 @@ static func _median(m, key: String, pts: Array, width: float, rng: RandomNumberG
 		if k % 3 != 0 or skip.call(p):
 			continue
 		m.tree(Vector3(p.x, 0.3, p.z), rng.randf_range(0.85, 1.15), rng)
+	# downtown-polish: shrubs and palms under the median rain trees
+	if not Planting.off():
+		Planting.median(m, key, pts, width, rng)
 
 ## Lamps on both kerbs every ~32 m, street trees on the arterials' footways.
 static func _street_dressing(m, key: String, road: Dictionary, rng: RandomNumberGenerator) -> void:
@@ -333,6 +337,7 @@ static func _street_dressing(m, key: String, road: Dictionary, rng: RandomNumber
 	var hw := half_width(key)
 	var arterial := String(road["kind"]) == "arterial"
 	var i := 0
+	var pits := {-1.0: [], 1.0: []}
 	for s: Array in samples(pts, 16.0):
 		var p: Vector3 = s[0]
 		var f: Vector3 = s[1]
@@ -347,7 +352,12 @@ static func _street_dressing(m, key: String, road: Dictionary, rng: RandomNumber
 				m.lamp(Vector3(lp.x, h + FOOT_TOP, lp.z), "modern")
 			elif arterial and h < 0.05:
 				var tp := p + l * side * (hw + FOOTWAY - 0.6)
-				m.tree(Vector3(tp.x, FOOT_TOP, tp.z), rng.randf_range(0.75, 1.05), rng)
+				# downtown-polish: the pit's species varies (rain tree or palm),
+				# never three of one kind in a row; trees jitter along the kerb
+				if not Planting.off() and Planting.pit_is_palm(key, i, side, pits[side]):
+					Planting.palm(m, Vector3(tp.x, FOOT_TOP, tp.z) + f * rng.randf_range(-1.5, 1.5), rng)
+				else:
+					m.tree(Vector3(tp.x, FOOT_TOP, tp.z) + f * (rng.randf_range(-2.0, 2.0) if not Planting.off() else 0.0), rng.randf_range(0.7, 1.12), rng)
 
 ## Promenades, river walks and plazas (pavers at +0.3, raised with collision).
 static func _walks(m, rng: RandomNumberGenerator) -> void:

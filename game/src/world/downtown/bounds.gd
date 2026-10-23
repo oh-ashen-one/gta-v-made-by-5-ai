@@ -94,6 +94,7 @@ static func skyline_clear(m, city: SkylineCity) -> void:
 	m.stats["towers_removed"] = removed
 	m.stats["towers_kept_downtown"] = m.kept_towers.size()
 	m.stats["beyond_core_towers"] = _beyond_core_skyline(city)
+	m.stats["behind_mbs_tall"] = m_tall_behind_mbs
 
 ## Integration (wave M): the legacy far-shore tower layers stood where the low
 ## Bayfront, the Lawn and the Gardens are now, so every view across the bay
@@ -103,18 +104,40 @@ static func skyline_clear(m, city: SkylineCity) -> void:
 ## corridor kept open. No collision (beyond the walled playable edge, like
 ## the rest of the background city); the legacy SkyPark wedge caps heights
 ## straight behind MBS.
+static var m_tall_behind_mbs := 0
 static func _beyond_core_skyline(city: SkylineCity) -> int:
+	m_tall_behind_mbs = 0
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 20261023
 	var before := city.placed
 	var rows := [[-1125.0, 44.0, 85.0, 185.0], [-1205.0, 40.0, 120.0, 240.0], [-1295.0, 48.0, 70.0, 160.0]]
+	# downtown-polish (wave S): the legacy 70 m SkyPark wedge (WorldBuilder
+	# _background_city) was sized for the old far shore 300 m closer; these
+	# rows stand 420-590 m behind MBS, where a 190 m tower still sits well
+	# under the SkyPark deck in every bay view (the deck at 200 m, 400-500 m
+	# from the camera, subtends twice the angle). The wedge is relaxed to
+	# 190 m for these rows only and restored afterwards.
+	var relaxed: Array[Dictionary] = []
+	for c: Dictionary in city._clear:
+		if is_equal_approx(float(c["max_h"]), 70.0):
+			c["max_h"] = 190.0
+			relaxed.append(c)
 	for row: Array in rows:
 		var x := -1000.0 + rng.randf_range(0.0, float(row[1]))
 		while x < 1000.0:
 			if x < -480.0 or x > -320.0:
 				var z: float = float(row[0]) + rng.randf_range(-18.0, 18.0)
-				city.add_random(Vector3(x, 0.0, z), rng.randf_range(float(row[2]), float(row[3])), rng.randf() < 0.2)
+				var h := rng.randf_range(float(row[2]), float(row[3]))
+				# directly behind MBS: a dense mid-height cluster, not stubs
+				if x > -330.0 and x < 120.0:
+					h = maxf(h, rng.randf_range(110.0, 185.0))
+				var placed_before := city.placed
+				city.add_random(Vector3(x, 0.0, z), h, rng.randf() < 0.2)
+				if x > -330.0 and x < 120.0 and h > 100.0 and city.placed > placed_before:
+					m_tall_behind_mbs += 1
 			x += float(row[1]) * rng.randf_range(0.75, 1.3)
+	for c2: Dictionary in relaxed:
+		c2["max_h"] = 70.0
 	return city.placed - before
 
 static func build(m) -> void:

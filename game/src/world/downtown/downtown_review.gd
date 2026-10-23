@@ -157,6 +157,72 @@ func _turn_sign(path: Array[Vector3], i: int, dist: float) -> float:
 		return 0.0
 	return signf(a.normalized().signed_angle_to(b.normalized(), Vector3.UP))
 
+const LANE_SHIFT := 3.5
+
+## Right of the path's travel direction at index i (ground plane).
+static func _path_right(path: Array[Vector3], i: int) -> Vector3:
+	var j := clampi(i, 0, path.size() - 2)
+	var f := path[j + 1] - path[j]
+	f.y = 0.0
+	if f.length() < 0.01:
+		return Vector3.ZERO
+	f = f.normalized()
+	return Vector3(-f.z, 0.0, f.x)
+
+## Distance along the route to the nearest vehicle or pedestrian inside a
+## corridor of half width `half_w` that FOLLOWS THE PATH (shifted `shift`
+## metres to the right of travel) for `look` metres from the car, INF when
+## clear. Street-life ambient vehicles, legacy AI cars and walkers count;
+## vehicles in either direction count, so the overtake check also sees
+## oncoming traffic in the lane it moves into. Following the path matters at
+## corners: a straight-ahead probe saw the promenade crowd past a left turn
+## and waited there for ever.
+func _gap_path(path: Array[Vector3], i: int, actor: Node3D, shift: float, look: float, half_w: float) -> float:
+	var origin := actor.global_position + _path_right(path, i) * shift
+	var poly: Array[Vector3] = [Vector3(origin.x, 0.0, origin.z)]
+	var cum: Array[float] = [0.0]
+	var k := i + 1
+	while k < path.size() and cum[cum.size() - 1] < look:
+		var q := path[k] + _path_right(path, mini(k, path.size() - 2)) * shift
+		q.y = 0.0
+		cum.append(cum[cum.size() - 1] + poly[poly.size() - 1].distance_to(q))
+		poly.append(q)
+		k += 1
+	var fwd := -actor.global_transform.basis.z
+	fwd.y = 0.0
+	var obs: Array = []
+	if traffic.ambient != null:
+		for v in traffic.ambient.vehicles:
+			if is_instance_valid(v) and v.active and v.visible:
+				obs.append([v.global_position, v.dims.x * 0.5, v.dims.z * 0.5, false])
+	for c in traffic.cars:
+		if is_instance_valid(c) and c != actor and not c.disabled:
+			obs.append([c.global_position, 0.95, 2.3, false])
+	for pd in traffic.peds:
+		if is_instance_valid(pd) and pd.visible:
+			obs.append([pd.global_position, 0.35, 0.35, true])
+	var best := INF
+	for e: Array in obs:
+		var o: Vector3 = e[0]
+		var rel := o - actor.global_position
+		rel.y = 0.0
+		if rel.length() > look + 8.0 or rel.dot(fwd) < -1.0:
+			continue
+		if absf(o.y - actor.global_position.y) > 2.5:
+			continue
+		var o2 := Vector2(o.x, o.z)
+		for sgi in poly.size() - 1:
+			var a2 := Vector2(poly[sgi].x, poly[sgi].z)
+			var b2 := Vector2(poly[sgi + 1].x, poly[sgi + 1].z)
+			var cp := Geometry2D.get_closest_point_to_segment(o2, a2, b2)
+			if cp.distance_to(o2) < half_w + float(e[1]):
+				var along := cum[sgi] + a2.distance_to(cp) - float(e[2]) - 2.3
+				if bool(e[3]) and along > 14.0:
+					break   # walkers only matter close in
+				best = minf(best, maxf(along, 0.0))
+				break
+	return best
+
 func _steer(actor: Node3D, target: Vector3, gain: float = 2.2) -> void:
 	var fwd := -actor.global_transform.basis.z
 	var off := target - actor.global_position
@@ -176,12 +242,21 @@ func _run() -> void:
 	if main.get("hud") != null:
 		main.hud.clear_notifications()
 	_jsonl = FileAccess.open(out_dir + "/frames/frames.jsonl", FileAccess.WRITE)
-	await _drive_leg()
-	await _walk_leg()
-	await _fly_leg()
+	# `--downtown-legs=drive,walk,fly,views` picks legs (iteration only; the
+	# default runs everything).
+	var legs := "drive,walk,fly,views"
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--downtown-legs="):
+			legs = arg.trim_prefix("--downtown-legs=")
+	if "drive" in legs:
+		await _drive_leg()
+	if "walk" in legs:
+		await _walk_leg()
+	if "fly" in legs:
+		await _fly_leg()
 	_recording = false
 	_release()
-	if not _headless():
+	if not _headless() and "views" in legs:
 		await _views()
 		await _perf_sweep()
 	_finish()
@@ -231,6 +306,12 @@ const EXTRA_VIEWS := [
 	{"name": "dtx_heli_river_mouth", "pos": Vector3(-380.0, 120.0, -200.0), "look": Vector3(-600.0, 0.0, -420.0), "fov": 62.0},
 	{"name": "dtx_heli_bayfront", "pos": Vector3(-650.0, 140.0, -560.0), "look": Vector3(-250.0, 0.0, -800.0), "fov": 62.0},
 	{"name": "dtx_heli_marina_south", "pos": Vector3(150.0, 150.0, -420.0), "look": Vector3(450.0, 0.0, -650.0), "fov": 62.0},
+	# downtown-polish (wave S): Marina Centre, the skyline behind MBS and the
+	# CBD from helicopter height, and the opened Raffles / Bayfront corner
+	{"name": "dtx_heli_marina_centre", "pos": Vector3(-380.0, 165.0, -520.0), "look": Vector3(-770.0, 30.0, -780.0), "fov": 62.0},
+	{"name": "dtx_heli_behind_mbs", "pos": Vector3(-430.0, 175.0, -330.0), "look": Vector3(-110.0, 60.0, -1000.0), "fov": 62.0},
+	{"name": "dtx_heli_cbd", "pos": Vector3(-760.0, 170.0, -580.0), "look": Vector3(-420.0, 70.0, -90.0), "fov": 62.0},
+	{"name": "dtx_raffles_bayfront_corner", "pos": Vector3(-786.0, 1.6, -690.0), "look": Vector3(-770.0, 4.0, -800.0), "fov": 66.0},
 ]
 
 func _views() -> void:
@@ -290,8 +371,22 @@ func _drive_leg() -> void:
 	var stills := {"esplanade_bridge": Vector3(-600, 0, -360), "raffles_avenue": Vector3(-790, 0, -600), "bayfront_bridge": Vector3(-420, 0, -780), "bayfront_avenue": Vector3(0, 0, -780), "marina_boulevard": Vector3(400, 0, -520)}
 	var stuck_t := 0.0
 	var max_deck := 0.0
+	# downtown-polish (wave S): the rendered drive now shares the road with the
+	# street-life traffic (queues at signals, platoons, turning cars). The
+	# driver behaves like a player: it follows the car ahead at a safe gap,
+	# waits behind queues, and after a few seconds blocked overtakes one lane
+	# toward the centre (across the centre line on two-lane streets when the
+	# corridor ahead is clear), returning to its lane once past. Reversing is
+	# kept only for being stuck on geometry with nothing ahead.
+	var shift := 0.0
+	var shift_target := 0.0
+	var blocked_t := 0.0
+	var shift_hold := 0
+	var overtakes := 0
+	var waits := 0.0
 	while _elapsed() < t_end:
 		await get_tree().physics_frame
+		var dt := get_physics_process_delta_time()
 		i = _closest(path, car.global_position, i)
 		if i >= path.size() - 2:
 			break
@@ -300,15 +395,39 @@ func _drive_leg() -> void:
 		# Integration (wave M): right-angle RIGHT turns (the wide crossing turn
 		# in left-hand traffic) overshot at 24 km/h into the block / landmark
 		# collision now framing those corners; take them at 16 km/h. Left turns
-		# keep 24 km/h (slower oversteers into the kerb).
-		var corner_kmh := 16.0 if _turn_sign(path, i, 52.0) < 0.0 else 24.0
-		var target_kmh := 72.0 if turn < 0.25 else (corner_kmh if turn > 0.9 else 42.0)
-		_steer(car, _ahead(path, i, clampf(kmh * 0.32, 9.0, 22.0)), 2.6)
+		# keep 24 km/h (slower oversteers into the kerb). Wave S: the corners
+		# were opened up (corner plazas, kerb returns), so 20 km/h holds.
+		var corner_kmh := 20.0 if _turn_sign(path, i, 52.0) < 0.0 else 22.0
+		var target_kmh := 72.0 if turn < 0.25 else (corner_kmh if turn > 0.9 else 40.0)
+		shift = move_toward(shift, shift_target, 2.2 * dt)
+		var gap := _gap_path(path, i, car, shift, 46.0, 1.6)
+		if gap < INF:
+			# brake to stop ~6 m behind whatever is ahead (4 m/s^2)
+			var allow := sqrt(2.0 * 4.0 * maxf(gap - 6.5, 0.0)) * 3.6
+			target_kmh = minf(target_kmh, allow)
+		if gap < 14.0 and kmh < 6.0:
+			blocked_t += dt
+			waits += dt
+		else:
+			blocked_t = 0.0
+		if blocked_t > 5.0 and shift_target == 0.0 and turn < 0.5:
+			var gap2 := _gap_path(path, i, car, LANE_SHIFT, 40.0, 1.6)
+			if gap2 > 34.0:
+				shift_target = LANE_SHIFT
+				shift_hold = i + 14
+				overtakes += 1
+				blocked_t = 0.0
+				_log("overtake at %s (gap %.1f m)" % [car.global_position, gap])
+		elif shift_target != 0.0 and i > shift_hold:
+			if _gap_path(path, i, car, 0.0, 26.0, 1.6) > 24.0 or turn > 0.5:
+				shift_target = 0.0
+		var tgt := _ahead(path, i, clampf(kmh * 0.32, 9.0, 22.0)) + _path_right(path, mini(i + 2, path.size() - 2)) * shift
+		_steer(car, tgt, 2.6)
 		Input.action_release("move_forward")
 		Input.action_release("move_back")
 		if kmh < target_kmh:
 			Input.action_press("move_forward")
-		elif kmh > target_kmh + 6.0:
+		elif kmh > target_kmh + 5.0:
 			Input.action_press("move_back")
 		max_deck = maxf(max_deck, car.global_position.y)
 		for key: String in stills.keys():
@@ -316,8 +435,8 @@ func _drive_leg() -> void:
 				stills.erase(key)
 				await _still("drive_" + key)
 				break
-		if Input.is_action_pressed("move_forward") and kmh < 3.0:
-			stuck_t += get_physics_process_delta_time()
+		if Input.is_action_pressed("move_forward") and kmh < 3.0 and gap > 14.0:
+			stuck_t += dt
 			if stuck_t > 2.0:
 				_log("unstick at %s" % car.global_position)
 				Input.action_release("move_forward")
@@ -329,7 +448,8 @@ func _drive_leg() -> void:
 			stuck_t = 0.0
 	_release()
 	var done := i >= path.size() - 3
-	_results["drive"] = {"completed": done, "seconds": snappedf(_elapsed(), 0.1), "max_y": snappedf(max_deck, 0.01), "end": str(car.global_position)}
+	_results["drive"] = {"completed": done, "seconds": snappedf(_elapsed(), 0.1), "max_y": snappedf(max_deck, 0.01), "end": str(car.global_position),
+		"overtakes": overtakes, "waiting_s": snappedf(waits, 0.1)}
 	_log("drive done=%s at %s, max deck y %.2f" % [done, car.global_position, max_deck])
 	# stop and get out on Collyer Quay
 	Input.action_press("move_back")
@@ -352,12 +472,32 @@ func _walk_leg() -> void:
 	# Merlion Park terrace steps from the promenade, crosses the terrace, then
 	# passes the One Fullerton pavilions to the Jubilee landing plaza.
 	var pts: Array[Vector3] = [Vector3(-440, 0, -338), Vector3(-458, 0, -344), Vector3(-460, 0, -372), Vector3(-488, 0, -380), Vector3(-521, 0, -384), Vector3(-521, 0, -400), Vector3(-657.5, 0, -400), Vector3(-657, 0, -409), Vector3(-648, 0, -440), Vector3(-648, 0, -560)]
+	# downtown-polish (wave S): the owner's full walk continues down the
+	# Esplanade waterfront, along the Marina Promenade, up the Helix Bridge
+	# landing ramp, over the channel on the helix deck and down to the foot of
+	# Marina Bay Sands (tower 1's east leg).
+	pts.append_array([Vector3(-648, 0, -630), Vector3(-648, 0, -666), Vector3(-560, 0, -666), Vector3(-500, 0, -666), Vector3(-488, 0, -668), Vector3(-489, 0, -700), Vector3(-492, 0, -733), Vector3(-498, 0, -741), Vector3(-497, 0, -745.2), Vector3(-487, 0, -745.4)])
+	var helix_from: int = pts.size()
+	for u: float in [0.04, 0.12, 0.22, 0.32, 0.42, 0.5, 0.58, 0.68, 0.78, 0.88, 0.96, 1.0]:
+		var hb: Dictionary = DowntownPlan.BRIDGES["helix_bridge"]
+		var a: Vector3 = hb["from"]
+		var b: Vector3 = hb["to"]
+		pts.append(Vector3(lerpf(a.x, b.x, u), 0.0, lerpf(a.z, b.z, u) - 6.0 * sin(PI * u)))
+	pts.append_array([Vector3(-258, 0, -745), Vector3(-247, 0, -749), Vector3(-241, 0, -757)])
 	var k := 0
-	var t_end := _elapsed() + 120.0
-	var stills := {2: "walk_peninsula", 6: "walk_jubilee_bridge", 9: "walk_esplanade_waterfront"}
+	var t_end := _elapsed() + 240.0
+	var stills := {2: "walk_peninsula", 6: "walk_jubilee_bridge", 9: "walk_esplanade_waterfront", 12: "walk_marina_promenade", helix_from + 4: "walk_helix_bridge", pts.size() - 1: "walk_mbs"}
 	var max_y := 0.0
+	var stall_p := player.global_position
+	var stall_t := _elapsed()
 	while _elapsed() < t_end and k < pts.size():
 		await get_tree().physics_frame
+		if player.global_position.distance_to(stall_p) > 1.0:
+			stall_p = player.global_position
+			stall_t = _elapsed()
+		elif _elapsed() - stall_t > 4.0:
+			_log("walk stalled before waypoint %d %s at %s" % [k, pts[k], player.global_position])
+			stall_t = _elapsed()
 		var d := pts[k] - player.global_position
 		d.y = 0.0
 		if d.length() < 3.0:

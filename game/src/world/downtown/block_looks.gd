@@ -21,6 +21,9 @@ func _init() -> void:
 	if ResourceLoader.exists(HF + "rooftop_flat_albedo.png"):
 		facade.set_shader_parameter("roof_tex", load(HF + "rooftop_flat_albedo.png"))
 		facade.set_shader_parameter("has_roof_tex", 1.0)
+	# downtown-polish: shade-side reflection falloff (see dt_facade sun_to)
+	if not ("--facade-sun-off" in OS.get_cmdline_user_args()):
+		facade.set_shader_parameter("sun_to", -preload("res://src/world/downtown/tower_shadows.gd").sun_dir())
 	# `--blocks-emit=K` scales glass reflection / interior emission (look A/B only).
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--blocks-emit="):

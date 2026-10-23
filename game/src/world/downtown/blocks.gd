@@ -22,6 +22,8 @@ const BuildingKit := preload("res://src/world/downtown/block_kits/building_kit.g
 const FrontageKit := preload("res://src/world/downtown/block_kits/frontage_kit.gd")
 const BoatQuayKit := preload("res://src/world/downtown/block_kits/boat_quay_kit.gd")
 const BlockLooks := preload("res://src/world/downtown/block_looks.gd")
+const Planting := preload("res://src/world/downtown/planting.gd")
+const TowerShadows := preload("res://src/world/downtown/tower_shadows.gd")
 
 const GY := 0.16                 # building ground floor (district platform height)
 const SKIP_KINDS := ["landmark_site", "park"]
@@ -155,7 +157,9 @@ func build(world: WorldBuilder, parent: Node3D) -> void:
 			"podium":
 				_expo(det, k, r, rng, max_h, landmarks_present)
 			"marina_centre":
-				_lots(n, det, k, r, rng, kind, max_h, 95.0)
+				# downtown-polish: denser Marina Centre (hotels and the Suntec /
+				# Millenia office cluster stand shoulder to shoulder)
+				_lots(n, det, k, r, rng, kind, max_h, 64.0)
 			"mbfc_tower":
 				_lots(n, det, k, r, rng, kind, max_h, 200.0)
 			"residential":
@@ -164,6 +168,13 @@ func build(world: WorldBuilder, parent: Node3D) -> void:
 				_lots(n, det, k, r, rng, kind, max_h, 64.0)
 			_:
 				_lots(n, det, k, r, rng, kind, max_h, 72.0)
+		# downtown-polish (wave S): the open forecourt ground between the
+		# buildings read as bare beige paving from the street and the air;
+		# it becomes lawn beds edged with shrubs and specimen palms.
+		if kind in ["marina_centre", "mbfc_tower", "residential", "mid_rise", "cbd_tower", "podium"] and not Planting.off():
+			for bed: Rect2 in Planting.forecourt_beds(r, k.footprints, road_sides(r), rng):
+				det.box_at("turf", Vector3(bed.size.x, 0.1, bed.size.y), Vector3(bed.get_center().x, GY + 0.03, bed.get_center().y))
+				det.box_at("granite_light", Vector3(bed.size.x + 0.3, 0.06, bed.size.y + 0.3), Vector3(bed.get_center().x, GY + 0.02, bed.get_center().y))
 		var shell := k.commit()
 		if shell != null:
 			var mi := MeshInstance3D.new()
@@ -184,6 +195,12 @@ func build(world: WorldBuilder, parent: Node3D) -> void:
 		world._batch_background("res://assets/authored/rain_tree.glb", _tree_xf)
 		stats["trees"] = _tree_xf.size()
 	_collision()
+	# downtown-polish (wave S): ground shadows of every building (and MBS)
+	# beyond the sun's shadow-map range
+	var shadow_boxes: Array = _boxes.duplicate()
+	if landmarks_present:
+		shadow_boxes.append_array(TowerShadows.mbs_boxes())
+	stats["ground_shadows"] = TowerShadows.build(root, shadow_boxes)
 	root.set_meta("blocks_stats", stats)
 	print("[downtown-blocks] built %d blocks, %d buildings (%d towers), %d collision boxes, %d trees, %.0f m linkway, carpet clipped %d, legacy towers removed %d in %d ms" % [
 		stats["blocks"], stats["buildings"], stats["towers"], stats["boxes"], stats["trees"], stats["linkway_m"], int(stats.get("carpet_clipped", 0)), stats["legacy_removed"], Time.get_ticks_msec() - t0])
@@ -314,6 +331,9 @@ func _lots(block_name: String, det: Batch, k: MeshKit, r: Rect2, rng: RandomNumb
 		var h := max_h * (rng.randf_range(0.86, 1.0) if i == tallest else rng.randf_range(0.5, 0.82))
 		if kind == "mid_rise":
 			h = max_h * rng.randf_range(0.55, 1.0)
+		elif kind == "marina_centre":
+			# downtown-polish: a real tower cluster, not podiums with stubs
+			h = max_h * (rng.randf_range(0.9, 1.0) if i == tallest else rng.randf_range(0.6, 0.92))
 		elif kind == "residential":
 			h = max_h * rng.randf_range(0.72, 1.0)
 		_building(block_name, det, k, lot, rng, kind, h, sides, podium_block, i == 0)
@@ -347,8 +367,10 @@ func _building(block_name: String, det: Batch, k: MeshKit, lot: Rect2, rng: Rand
 			clads = [6]
 			styles = [0, 3, 5, 6]
 		"marina_centre":
-			clads = [4, 2, 0, 5, 7]
-			styles = [0, 3, 5, 7, 1]
+			# downtown-polish: the white-panel / silver mix read pale and flat
+			# from the bay and the air; dark glass, bronze and granite now lead
+			clads = [0, 3, 7, 1, 0, 2, 3]
+			styles = [0, 3, 5, 7, 1, 6]
 		"mid_rise":
 			clads = [2, 0, 4, 7, 1, 5]
 			styles = [0, 1, 5, 7, 4]
