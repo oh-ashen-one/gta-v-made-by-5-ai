@@ -1156,7 +1156,7 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		var safe := 99.0
 		if lead["gap"] < INF:
 			var lead_speed := maxf(0.0, float(lead["speed"]))
-			safe = lead_speed + maxf(0.0, float(lead["gap"]) - 5.0) * 0.55
+			safe = lead_speed + maxf(0.0, float(lead["gap"]) - 4.0) * 0.8
 			if float(lead["gap"]) < 3.0: safe = minf(safe, lead_speed * 0.5)
 		if red_line < INF:
 			safe = minf(safe, sqrt(2.0 * 3.5 * maxf(0.0, red_line - 1.0)))
@@ -1268,7 +1268,9 @@ func _crossing_conflict(car: Car, forward: Vector3) -> bool:
 		var vf := -v.global_transform.basis.z
 		vf.y = 0.0
 		vf = vf.normalized()
-		if vf.dot(forward) > 0.9 and absf(rel.dot(Vector3.UP.cross(forward))) < 1.6: continue   # same lane: _traffic_lead
+		# Same direction (our lane: _traffic_lead; the next lane: alongside, not
+		# crossing). M2: lane cars running beside the car held it for 17 s.
+		if vf.dot(forward) > 0.9: continue
 		for t in [0.4, 0.8, 1.2, 1.6]:
 			var a: Vector3 = car.global_position + forward * my_speed * t
 			var b: Vector3 = v.global_position + vf * v.speed * t
