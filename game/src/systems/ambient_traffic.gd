@@ -263,11 +263,48 @@ func _physics_step(delta: float) -> void:
 				_unstick(v, dt)
 	_recycle(false)
 	_tidy_promoted()
+	_census_t -= delta
+	if _census_t <= 0.0:
+		_census_t = 1.0
+		_census()
 	if _debug:
 		_debug_timer -= delta
 		if _debug_timer <= 0.0:
 			_debug_timer = 0.5
 			_debug_dump()
+
+## downtown-life QA: once a second, how much lane traffic the lens sees
+## (moving cars within 80 m in front of it, any car within 30 m). Printed at
+## exit with --traffic-census; also kept in stats for the self-test.
+var _census_t := 1.0
+func _census() -> void:
+	var moving80 := 0
+	var near30 := 0
+	for v in vehicles:
+		if not v.active:
+			continue
+		var rel := v.global_position - _cam_pos
+		rel.y = 0.0
+		var d := rel.length()
+		if d < 30.0:
+			near30 += 1
+		if d < 80.0 and v.speed > 1.0 and (d < 8.0 or rel.normalized().dot(_cam_fwd) > 0.25):
+			moving80 += 1
+	stats["census_samples"] = int(stats.get("census_samples", 0)) + 1
+	if moving80 > 0:
+		stats["census_moving80"] = int(stats.get("census_moving80", 0)) + 1
+	if near30 >= 3:
+		stats["census_near30_3"] = int(stats.get("census_near30_3", 0)) + 1
+	stats["census_moving80_sum"] = int(stats.get("census_moving80_sum", 0)) + moving80
+	if _census_log:
+		print("[traffic-census] t=%.0f cam=%s moving80=%d near30=%d active=%d" % [Time.get_ticks_msec() / 1000.0, str(_cam_pos.round()), moving80, near30, count_active()])
+
+var _census_log := "--traffic-census" in OS.get_cmdline_user_args()
+func _exit_tree() -> void:
+	if _census_log:
+		var n := maxi(1, int(stats.get("census_samples", 0)))
+		print("[traffic-census] summary samples=%d moving_within_80m=%.0f%% three_within_30m=%.0f%% mean_moving80=%.1f relocated=%d" % [n,
+			100.0 * int(stats.get("census_moving80", 0)) / n, 100.0 * int(stats.get("census_near30_3", 0)) / n, float(stats.get("census_moving80_sum", 0)) / n, int(stats["relocated"])])
 
 var _debug := "--street-debug" in OS.get_cmdline_user_args()
 var _prof := "--street-prof" in OS.get_cmdline_user_args()
@@ -330,6 +367,7 @@ func _update_focus() -> void:
 	if cut:
 		var t0 := Time.get_ticks_usec()
 		stats["cuts"] += 1
+		_refresh_near_edges(true)
 		_build_view_spans()
 		_rebuild_keys()
 		_recycle(true)
@@ -421,7 +459,11 @@ func _recycle(cut: bool) -> void:
 		if v.active:
 			var d := Vector2(v.global_position.x - _focus.x, v.global_position.z - _focus.z).length()
 			if cut:
-				if d < SPAWN_RADIUS:
+				# downtown-life: with seeding near the focus most of the pool is
+				# already inside the radius at a cut, so it stayed spread round
+				# the camera and the viewed street got few cars. Most cars the
+				# new lens cannot see are re-seeded (half into its view).
+				if d < SPAWN_RADIUS and (not _hidden_from_camera(v.global_position) or _rng.randf() < 0.3):
 					continue
 			elif d < DESPAWN_RADIUS:
 				continue
@@ -429,9 +471,40 @@ func _recycle(cut: bool) -> void:
 			budget -= 1
 			stats["relocated"] += 1
 
+## downtown-life (wave S): seeds are drawn from the lane edges that pass
+## within SPAWN_RADIUS of the focus. With the downtown graph adopted (about
+## four times the legacy grid, spread over 1.6 x 1.4 km) a uniformly random
+## edge was almost always too far away: most of the 24 attempts failed and
+## stranded cars stayed active kilometres from the camera, which is why the
+## Cecil St and Bayfront views showed 0-1 cars.
+var _near_edges: PackedInt32Array = PackedInt32Array()
+var _near_focus := Vector3.INF
+func _refresh_near_edges(force: bool = false) -> void:
+	if not force and _near_focus != Vector3.INF and Vector2(_focus.x - _near_focus.x, _focus.z - _near_focus.z).length() < 20.0:
+		return
+	_near_focus = _focus
+	_near_edges.clear()
+	var f2 := Vector2(_focus.x, _focus.z)
+	for e in edges.size():
+		var ed: Dictionary = edges[e]
+		var a: Vector3 = ed["a"]
+		var b: Vector3 = ed["b"]
+		var ab := Vector2(b.x - a.x, b.z - a.z)
+		var t := clampf((f2 - Vector2(a.x, a.z)).dot(ab) / maxf(0.01, ab.length_squared()), 0.0, 1.0)
+		if f2.distance_to(Vector2(a.x, a.z) + ab * t) < SPAWN_RADIUS:
+			_near_edges.append(e)
+	stats["near_edges"] = _near_edges.size()
+
+func _pick_edge() -> int:
+	if _near_edges.is_empty() or _rng.randf() < 0.08:
+		return _rng.randi_range(0, edges.size() - 1)
+	return _near_edges[_rng.randi_range(0, _near_edges.size() - 1)]
+
 func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
+	_refresh_near_edges()
+	_spacing_cap = hidden_only
 	for attempt in 24:
-		var e := _rng.randi_range(0, edges.size() - 1)
+		var e := _pick_edge()
 		var ed: Dictionary = edges[e]
 		var lo: float = _entry(e) + 2.0
 		var hi: float = _s_end(e) - 4.0
@@ -446,6 +519,14 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 		if hi <= lo:
 			continue
 		var s := _rng.randf_range(lo, hi)
+		# On a long edge only the stretch near the focus can qualify.
+		if float(ed["len"]) > 2.0 * SPAWN_RADIUS and (hidden_only or _view_spans.is_empty() or attempt >= 12):
+			var a: Vector3 = ed["a"]
+			var along := (_focus - a).dot(ed["dir"])
+			var lo2 := maxf(lo, along - SPAWN_RADIUS)
+			var hi2 := minf(hi, along + SPAWN_RADIUS)
+			if hi2 > lo2:
+				s = _rng.randf_range(lo2, hi2)
 		var lane := _lane_for(e, 0 if _rng.randf() < 0.55 else 1)
 		var p := lane_point(e, lane, s)
 		var dist := Vector2(p.x - _focus.x, p.z - _focus.z).length()
@@ -482,8 +563,18 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 		return true
 	return false
 
+## downtown-life: at most one car per LANE_SPACING m of a lane at seeding
+## time. Concentrating the pool near the focus (near-edge seeding) otherwise
+## packed short downtown links and district approaches solid, and most of
+## the street stood in queues instead of flowing.
+const LANE_SPACING := 26.0
+## Only out-of-sight seeding in continuous play is capped; a camera cut still
+## packs the viewed lanes (their red-light queues are the point of the view).
+var _spacing_cap := false
 func _gap_free(e: int, lane: int, s: float) -> bool:
 	var list: Array = _keys.get(e * 2 + lane, [])
+	if _spacing_cap and list.size() >= maxi(1, int((_s_end(e) - _entry(e)) / LANE_SPACING)):
+		return false
 	for other in list:
 		if absf((other as AmbientVehicle).s - s) < MIN_GAP + 3.0:
 			return false

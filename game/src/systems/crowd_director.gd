@@ -11,7 +11,8 @@ extends Node
 ## distance from the kerb, some pairs stop to talk, and everyone uses the
 ## junction crosswalks.
 
-const EXTRA_WALKERS := 96
+## downtown-life: 96 -> 84; the plaza activity units (PlazaLife) add 22.
+const EXTRA_WALKERS := 84
 ## M2: conversation groups of two or three (ids 0..LOITER_GROUPS-1).
 const LOITER_GROUPS := 10
 const LOITER_SLOTS := 27
@@ -140,6 +141,8 @@ func _process_crowd(_delta: float) -> void:
 	if cut:
 		stats["cuts"] += 1
 	_recycle(cut)
+	if not cut:
+		_trickle_near(_delta)
 	_dodge_player_vehicle()
 	# Perf: separation steering at 30 Hz is plenty for walking people.
 	if Engine.get_process_frames() % 2 == 0:
@@ -154,7 +157,7 @@ func _process_crowd(_delta: float) -> void:
 				cnt += 1
 				if r.global_position.distance_to(_cam_pos) < NPC.FAR_DRAW_RANGE:
 					vis += 1
-		print("[crowd-debug] cut focus=", _focus.round(), " cam=", _cam_pos.round(), " near=", cnt, " in_draw_range=", vis, " roamers=", roamers.size(), " near_fill=", stats.get("near_fill", -1))
+		print("[crowd-debug] cut focus=", _focus.round(), " cam=", _cam_pos.round(), " fwd=", _cam_fwd.snapped(Vector3.ONE * 0.01), " near=", cnt, " in_draw_range=", vis, " roamers=", roamers.size(), " near_fill=", stats.get("near_fill", -1), " close=", stats.get("near_close", -1), " cone=", stats.get("dt_cone", 0))
 
 ## Wave-M integration perf: people beyond PEOPLE_SHADOW_RANGE of the lens stop
 ## casting sun shadows (each figure drew its 4 surfaces into up to 4 cascades out
@@ -278,6 +281,17 @@ func _build_obstacles() -> void:
 		_obs_grid[key].append(q)
 	stats["ped_obstacles"] = pts.size()
 
+## downtown-life: plaza benches and carts (x, z, radius) join the walkers'
+## avoidance grid.
+func add_obstacles(pts: Array[Vector3]) -> void:
+	for q in pts:
+		AvenueDressing.ped_obstacles.append(q)
+		if _obs_built:
+			var key := Vector2i(floori(q.x / 2.0), floori(q.y / 2.0))
+			if not _obs_grid.has(key):
+				_obs_grid[key] = []
+			_obs_grid[key].append(q)
+
 func _separate() -> void:
 	if not _obs_built and Engine.get_process_frames() > 30:
 		_build_obstacles()
@@ -345,7 +359,7 @@ func _dodge_player_vehicle() -> void:
 		# wall in a five-foot way (a talking pair blocked a route walk).
 		var pp := Game.player_position
 		for p in traffic.peds:
-			if is_instance_valid(p) and not p.is_hostile and not p.is_police and p.state != NPC.State.DEAD and not p.has_meta("ambient_role") \
+			if is_instance_valid(p) and not p.is_hostile and not p.is_police and p.state != NPC.State.DEAD and not p.has_meta("ambient_role") and not p.has_meta("plaza_activity") \
 					and absf(p.global_position.x - pp.x) < 1.3 and absf(p.global_position.z - pp.z) < 1.3:
 				p.scramble_from(pp)
 		return
@@ -381,6 +395,9 @@ func _eligible(p: NPC) -> bool:
 ## the viewed street within ~30 m of the lens (the busiest stretch varied a
 ## lot from cut to cut); far roamers are brought in to make it up.
 const NEAR_MIN := 15
+## downtown-life: plazas and promenades want a crowd at the lens (GTA V
+## reference: ~20 distinct people 3-15 m away).
+const NEAR_MIN_DOWNTOWN := 18
 var _force_near := false
 func _fill_near() -> void:
 	if _cam_pos.y > 30.0:
@@ -398,8 +415,12 @@ func _fill_near() -> void:
 			far.append(r)
 	_force_near = true
 	var added := 0
+	if _downtown_focus():
+		added = _fill_near_downtown(far)
+		far.clear()
+	var want := NEAR_MIN
 	for r in far:
-		if near + added >= NEAR_MIN:
+		if near + added >= want:
 			break
 		if _seed(r, false, false):
 			added += 1
@@ -407,6 +428,118 @@ func _fill_near() -> void:
 				_place_follower(r, r.get_meta("leads"))
 	_force_near = false
 	stats["near_fill"] = added
+
+## A walker seeded beside the frame walks toward the middle of the view.
+func _head_into_view(p: NPC) -> void:
+	if p.lane.size() < 2:
+		return
+	var best := -INF
+	for d: int in [1, -1]:
+		var idx := clampi(p.lane_index if d == p.lane_dir else p.lane_index - p.lane_dir, 0, p.lane.size() - 1)
+		var rel := (p.lane[idx] as Vector3) - _cam_pos
+		rel.y = 0.0
+		var score := rel.normalized().dot(_cam_fwd) if rel.length() > 0.5 else -1.0
+		if score > best:
+			best = score
+			p.lane_dir = d
+			p.lane_index = idx
+
+## downtown-life: in continuous play on foot downtown, keep the close band
+## topped up from out of sight: people step in from just beside the frame
+## (65-105 degrees off the lens axis, 4-14 m) and walk into view, or stand
+## there and are met when the camera turns. Never seeded inside the view.
+var _trickle_t := 0.0
+func _trickle_near(delta: float) -> void:
+	_trickle_t -= delta
+	if _trickle_t > 0.0:
+		return
+	_trickle_t = 1.2
+	if _cam_pos.y > 30.0 or not _downtown_focus() or Game.mode == Game.MODE_CAR:
+		return
+	var close := 0
+	var far: Array[NPC] = []
+	for r in roamers:
+		if not _eligible(r) or r.has_meta("follower"):
+			continue
+		var rel := r.global_position - _cam_pos
+		rel.y = 0.0
+		var d := rel.length()
+		if d > 3.5 and d < 16.0 and r.visible and rel.normalized().dot(_cam_fwd) > 0.3:
+			close += 1
+		elif d > 90.0 and not r.has_meta("loiter_pair"):
+			far.append(r)
+	if close >= CLOSE_MIN or far.is_empty():
+		return
+	var near_polys := _near_polys()
+	if near_polys.is_empty():
+		return
+	var n := 0
+	for r in far:
+		if n >= 2:
+			break
+		if _seed_cone(r, false, near_polys, Vector2(4.5, 14.0), 0.3, Vector2(1.1, 1.8)):
+			n += 1
+			stats["trickle"] = int(stats.get("trickle", 0)) + 1
+			if r.has_meta("leads"):
+				_place_follower(r, r.get_meta("leads"))
+
+## downtown-life (wave S): the 3-14 m in front of the lens is where people
+## read (critics: "people within 3-12 m of the camera doing readable things";
+## M2 crowds sat at 15-30 m). After a downtown cut: CLOSE_MIN people in the
+## close band, most standing (talking in pairs, on the phone, with a drink,
+## waiting), then the rest of NEAR_MIN_DOWNTOWN out to 28 m.
+const CLOSE_MIN := 9
+func _fill_near_downtown(far: Array[NPC]) -> int:
+	var near_polys := _near_polys()
+	if near_polys.is_empty():
+		return 0
+	var close := 0
+	var mid := 0
+	for r in roamers:
+		if not _eligible(r) or not r.visible:
+			continue
+		var rel := r.global_position - _cam_pos
+		rel.y = 0.0
+		var d := rel.length()
+		if d < 3.5 or rel.normalized().dot(_cam_fwd) < 0.5:
+			continue
+		if d < 14.0:
+			close += 1
+		elif d < 28.0:
+			mid += 1
+	var added := 0
+	var i := 0
+	for pass_i in 2:
+		var band := Vector2(4.0, 13.5) if pass_i == 0 else Vector2(13.5, 28.0)
+		while i < far.size() and ((pass_i == 0 and close < CLOSE_MIN) or (pass_i == 1 and close + mid < NEAR_MIN_DOWNTOWN)):
+			var r: NPC = far[i]
+			i += 1
+			if not _seed_cone(r, false, near_polys, band, 0.75 if pass_i == 0 else 0.45):
+				continue
+			added += 1
+			if pass_i == 0:
+				close += 1
+			else:
+				mid += 1
+			if r.has_meta("leads"):
+				_place_follower(r, r.get_meta("leads"))
+			elif r.state == NPC.State.IDLE and i < far.size() and _rng.randf() < 0.6:
+				# A talking pair: the next far roamer faces this one.
+				var mate: NPC = far[i]
+				i += 1
+				mate.remove_meta("chatting")
+				_place_partner(mate, r, 1)
+				if StreetRaster.at(mate.global_position.x, mate.global_position.z) == 0:
+					mate.set_meta("chatting", true)
+					r.set_meta("chatting", true)
+					mate.idle_time = r.idle_time + _rng.randf_range(-3.0, 3.0)
+					added += 1
+					if pass_i == 0:
+						close += 1
+					else:
+						mid += 1
+	stats["near_close"] = close
+	return added
 
 func _recycle(cut: bool) -> void:
 	if cut:
@@ -456,10 +589,19 @@ func adopt_downtown(lanes: Array) -> int:
 	_polys.clear()
 	for poly in lanes:
 		if poly is Array and (poly as Array).size() >= 2:
+			# downtown-life: a walk vertex on a live carriageway (between
+			# junctions) splits the line, so nobody is routed along a lane.
 			var pts: Array[Vector3] = []
 			for q in poly:
-				pts.append(Vector3((q as Vector3).x, (q as Vector3).y + 0.2, (q as Vector3).z))
-			_polys.append(pts)
+				var v := q as Vector3
+				if StreetRaster.at(v.x, v.z) == 1:
+					if pts.size() >= 2:
+						_polys.append(pts)
+					pts = []
+					continue
+				pts.append(Vector3(v.x, v.y + 0.2, v.z))
+			if pts.size() >= 2:
+				_polys.append(pts)
 	return _polys.size()
 
 ## Polylines with a vertex inside the spawn radius of the focus.
@@ -483,6 +625,8 @@ func _seed_poly(p: NPC, hidden_only: bool, near: Array) -> bool:
 		if seg.length() > 0.1:
 			pos += Vector3.UP.cross(seg.normalized()) * _rng.randf_range(-1.4, 1.4)
 		if Vector2(pos.x - _focus.x, pos.z - _focus.z).length() > SPAWN_RADIUS:
+			continue
+		if StreetRaster.at(pos.x, pos.z) != 0:
 			continue
 		if hidden_only:
 			var rel := pos - _cam_pos
@@ -508,7 +652,192 @@ func _seed_poly(p: NPC, hidden_only: bool, near: Array) -> bool:
 		return true
 	return false
 
+func _downtown_focus() -> bool:
+	return absf(_focus.x) > 330.0 or absf(_focus.z) > 330.0
+
+## downtown-life (wave S): a spot on a downtown walk (or the open plaza
+## beside it) in front of the street-level lens: 5-28 m for the near fill,
+## 8-60 m for talking groups. Groups and about half the fill stand out in the
+## open, idle, facing a random way (talking, phoning, waiting); the rest walk
+## the line.
+## Open public spaces where people stand about (plan rects, x/z): Raffles
+## Place, the MBS Event Plaza, Merlion Park / One Fullerton, NS Square, the
+## Esplanade park strip, the Lawn, and the promenades' full widths.
+const PLAZAS: Array[Rect2] = [
+	Rect2(-420.0, -150.0, 86.0, 139.0), Rect2(-324.0, -660.0, 674.0, 36.0), Rect2(-530.0, -412.0, 90.0, 63.0),
+	Rect2(-640.0, -660.0, 120.0, 83.0), Rect2(-650.0, -347.0, 50.0, 336.0), Rect2(60.0, -700.0, 290.0, 74.0),
+	Rect2(-440.0, -349.0, 790.0, 22.0), Rect2(350.0, -640.0, 36.0, 302.0), Rect2(-654.0, -666.0, 14.0, 294.0),
+]
+func _in_plaza(x: float, z: float) -> bool:
+	for r in PLAZAS:
+		if r.has_point(Vector2(x, z)):
+			return true
+	return false
+
+## Nearest walk polyline point to `pos` among `polys`: [pts, index, dist].
+func _nearest_walk(pos: Vector3, polys: Array) -> Array:
+	var best: Array = [null, 0, INF]
+	for poly in polys:
+		var pts: Array[Vector3] = poly
+		for i in pts.size():
+			var d := Vector2(pts[i].x - pos.x, pts[i].z - pos.z).length()
+			if d < float(best[2]):
+				best = [pts, i, d]
+	return best
+
+## Street-level lens: sample the view cone directly and keep spots on a
+## plaza or within a few metres of a walk (Raffles Place and the plazas have
+## no walk line through them, so line-only seeding left them empty).
+func _seed_cone(p: NPC, loiter: bool, near: Array, band: Vector2 = Vector2.ZERO, idle_share: float = 0.5, ang: Vector2 = Vector2(0.0, 0.62)) -> bool:
+	p.remove_meta("chatting")
+	for attempt in 14:
+		var lo := 5.0 if _force_near else 8.0
+		var hi := 28.0 if _force_near else 55.0
+		if band != Vector2.ZERO:
+			lo = band.x
+			hi = band.y
+		var d := lerpf(lo, hi, sqrt(_rng.randf()))
+		var dir := _cam_fwd.rotated(Vector3.UP, _rng.randf_range(ang.x, ang.y) * (1.0 if _rng.randf() < 0.5 else -1.0))
+		var pos := Vector3(_cam_pos.x, 0.0, _cam_pos.z) + dir * d
+		if StreetRaster.at(pos.x, pos.z) != 0:
+			continue
+		if Vector2(pos.x - Game.player_position.x, pos.z - Game.player_position.z).length() < 3.0:
+			continue
+		var walk := _nearest_walk(pos, near)
+		var plaza := _in_plaza(pos.x, pos.z)
+		if not plaza and float(walk[2]) > 9.0:
+			continue
+		var ground := _ground_at(Vector3(pos.x, _cam_pos.y, pos.z))
+		if ground == INF or absf(ground - (_cam_pos.y - 1.6)) > 4.0:
+			continue
+		pos.y = ground + 0.2
+		var open := loiter or _rng.randf() < idle_share
+		if not _open_ground(pos, ground):
+			continue
+		if plaza and float(walk[2]) > 4.0:
+			# Out on a plaza: a straight line across it through this spot,
+			# roughly across the lens, so walkers cross the frame instead of
+			# all heading back to the walk line (a single column in M2).
+			var across := _cam_fwd.rotated(Vector3.UP, PI * 0.5 + _rng.randf_range(-0.7, 0.7))
+			var a := pos - across * _rng.randf_range(10.0, 22.0)
+			var b := pos + across * _rng.randf_range(10.0, 22.0)
+			if StreetRaster.at(a.x, a.z) != 0 or StreetRaster.at(b.x, b.z) != 0 or not _in_plaza(a.x, a.z) or not _in_plaza(b.x, b.z):
+				a = pos - across * 4.0
+				b = pos + across * 4.0
+			var line: Array[Vector3] = [Vector3(a.x, pos.y, a.z), Vector3(b.x, pos.y, b.z)]
+			p.lane = line
+			p.lane_dir = 1 if _rng.randf() < 0.5 else -1
+			p.lane_index = 1 if p.lane_dir > 0 else 0
+		elif walk[0] != null:
+			var pts: Array[Vector3] = walk[0]
+			p.lane = pts
+			p.lane_dir = 1 if _rng.randf() < 0.5 else -1
+			p.lane_index = clampi(int(walk[1]), 0, pts.size() - 1)
+		p.velocity = Vector3.ZERO
+		p.global_position = pos
+		p.visible = true
+		if open or p.lane.is_empty():
+			p.state = NPC.State.IDLE
+			p.idle_time = _rng.randf_range(25.0, 70.0) if loiter else _rng.randf_range(20.0, 60.0)
+			p.rotation.y = _rng.randf_range(-PI, PI)
+			stats["dt_open"] = int(stats.get("dt_open", 0)) + 1
+		else:
+			if ang.x > 0.5:
+				_head_into_view(p)
+			var face: Vector3 = (p.lane[p.lane_index] as Vector3) - pos
+			face.y = 0.0
+			p.rotation.y = atan2(-face.x, -face.z) if face.length() > 0.3 else _rng.randf_range(-PI, PI)
+			p.state = NPC.State.WALK
+			p.idle_time = 0.0
+		stats["relocated"] += 1
+		stats["dt_cone"] = int(stats.get("dt_cone", 0)) + 1
+		return true
+	return false
+
+func _seed_poly_view(p: NPC, hidden_only: bool, loiter: bool) -> bool:
+	var near := _near_polys()
+	if near.is_empty():
+		return false
+	var street := _cam_pos.y < 30.0
+	if street and not hidden_only and _seed_cone(p, loiter, near):
+		return true
+	for attempt in 16:
+		var pts: Array[Vector3] = near[_rng.randi_range(0, near.size() - 1)]
+		var k := _rng.randi_range(0, pts.size() - 2)
+		var seg := pts[k + 1] - pts[k]
+		seg.y = 0.0
+		if seg.length() < 0.1:
+			continue
+		var pos: Vector3 = pts[k].lerp(pts[k + 1], _rng.randf_range(0.0, 1.0))
+		var side := Vector3.UP.cross(seg.normalized())
+		var open := loiter or _rng.randf() < 0.5
+		if open:
+			pos += side * _rng.randf_range(2.0, 7.0) * (1.0 if _rng.randf() < 0.5 else -1.0)
+		else:
+			pos += side * _rng.randf_range(-1.3, 1.3)
+		var rel := pos - _cam_pos
+		rel.y = 0.0
+		var d := rel.length()
+		if hidden_only:
+			if d < 95.0 and rel.normalized().dot(_cam_fwd) > -0.25:
+				continue
+		elif street:
+			var lo := 5.0 if _force_near else 8.0
+			var hi := 28.0 if _force_near else 60.0
+			if d < lo or d > hi or rel.normalized().dot(_cam_fwd) < 0.55:
+				continue
+		if Vector2(pos.x - Game.player_position.x, pos.z - Game.player_position.z).length() < 3.0:
+			continue
+		if StreetRaster.at(pos.x, pos.z) != 0:
+			continue
+		if open:
+			var ground := _ground_at(pos)
+			if ground == INF:
+				continue
+			pos.y = ground + 0.2
+			if not _open_ground(pos, ground):
+				continue
+		p.lane = pts
+		p.lane_dir = 1 if _rng.randf() < 0.5 else -1
+		p.lane_index = k + 1 if p.lane_dir > 0 else k
+		p.velocity = Vector3.ZERO
+		p.global_position = pos
+		p.visible = true
+		if open:
+			p.state = NPC.State.IDLE
+			p.idle_time = _rng.randf_range(25.0, 70.0) if loiter else _rng.randf_range(10.0, 35.0)
+			p.rotation.y = _rng.randf_range(-PI, PI)
+			stats["dt_open"] = int(stats.get("dt_open", 0)) + 1
+		else:
+			var face: Vector3 = pts[p.lane_index] - pos
+			face.y = 0.0
+			if face.length() > 0.1:
+				p.rotation.y = atan2(-face.x, -face.z)
+			p.state = NPC.State.WALK
+			p.idle_time = 0.0
+		stats["relocated"] += 1
+		stats["dt_view"] = int(stats.get("dt_view", 0)) + 1
+		return true
+	return false
+
+## Floor height under a point (walkable surfaces: plazas, decks, terraces).
+func _ground_at(pos: Vector3) -> float:
+	var space := traffic.get_world_3d().direct_space_state
+	if space == null:
+		return INF
+	var q := PhysicsRayQueryParameters3D.create(Vector3(pos.x, pos.y + 3.0, pos.z), Vector3(pos.x, pos.y - 4.0, pos.z), 1)
+	var hit := space.intersect_ray(q)
+	if hit.is_empty() or (hit["normal"] as Vector3).y < 0.85:
+		return INF
+	return (hit["position"] as Vector3).y
+
 func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
+	p.remove_meta("chatting")
+	# downtown-life (wave S): outside the legacy district, talking groups and
+	# the near fill go onto the downtown walks and plazas in front of the lens
+	# (they used the district kerb lines only, so downtown had neither).
+	if not _polys.is_empty() and (loiter or _force_near) and _downtown_focus():
+		return _seed_poly_view(p, hidden_only, loiter)
 	if not _polys.is_empty() and not loiter and not _force_near:
 		var near := _near_polys()
 		# Outside the legacy district, people go on the downtown walks only;
@@ -591,7 +920,7 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 
 ## Nothing solid (buildings, walls, planters) within ~1.2 m at body height.
 var _probe: PhysicsShapeQueryParameters3D
-func _open_ground(pos: Vector3) -> bool:
+func _open_ground(pos: Vector3, ground: float = 0.2) -> bool:
 	if _probe == null:
 		_probe = PhysicsShapeQueryParameters3D.new()
 		var sph := SphereShape3D.new()
@@ -607,7 +936,7 @@ func _open_ground(pos: Vector3) -> bool:
 	# Standing on paving at street level, not on a roof or in a void.
 	var q := PhysicsRayQueryParameters3D.create(pos + Vector3(0.0, 2.0, 0.0), pos + Vector3(0.0, -1.5, 0.0), 1)
 	var hit := space.intersect_ray(q)
-	return not hit.is_empty() and absf((hit["position"] as Vector3).y - 0.2) < 0.5
+	return not hit.is_empty() and absf((hit["position"] as Vector3).y - ground) < 0.5
 
 func _assign(p: NPC, ln: Dictionary, off: float, pos: Vector3, loiter: bool, lane_off: float = -1.0) -> void:
 	var pts: Array[Vector3] = []
@@ -704,6 +1033,8 @@ func _place_partner(p: NPC, partner: NPC, index: int = 1) -> void:
 	if index >= 2:
 		var c := partner.global_position + fwd * 0.6
 		var pos3 := c + side * (0.95 if posmod(partner.get_instance_id(), 2) == 0 else -0.95) + fwd * 0.05
+		if StreetRaster.at(pos3.x, pos3.z) != 0:
+			pos3 = c - side * (0.95 if posmod(partner.get_instance_id(), 2) == 0 else -0.95) + fwd * 0.05
 		p.lane = partner.lane
 		p.lane_dir = partner.lane_dir
 		p.lane_index = partner.lane_index
@@ -716,6 +1047,11 @@ func _place_partner(p: NPC, partner: NPC, index: int = 1) -> void:
 		stats["relocated"] += 1
 		return
 	var pos := partner.global_position + fwd * 1.15 + side * 0.25
+	# downtown-life: never step a talking partner out into a live lane.
+	if StreetRaster.at(pos.x, pos.z) != 0:
+		fwd = -fwd
+		partner.rotation.y += PI
+		pos = partner.global_position + fwd * 1.15 + side * 0.25
 	p.lane = partner.lane
 	p.lane_dir = -partner.lane_dir
 	p.lane_index = clampi(partner.lane_index - partner.lane_dir, 0, partner.lane.size() - 1)

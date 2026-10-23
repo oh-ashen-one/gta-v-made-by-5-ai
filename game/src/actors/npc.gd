@@ -160,7 +160,7 @@ func _dress_people() -> void:
 			p["prop"] = String(get_meta("people_prop"))
 	else:
 		p = CrowdPeople.pick(seed_value)
-	CrowdPeople.dress(self, character_visual, p, has_meta("ambient_role"))
+	CrowdPeople.dress(self, character_visual, p, has_meta("ambient_role") or has_meta("people_seated"))
 	_pace_scale = float(p.get("pace", _pace()))
 
 func _limb(hip: Vector3, size: Vector3, cloth: Material) -> Node3D:
@@ -365,6 +365,10 @@ func _walk_with_companion(delta: float) -> bool:
 func _pavement_return() -> Vector3:
 	var p := global_position
 	if absf(p.x) > 330.0 or absf(p.z) > 330.0:
+		# downtown-life (wave S): the downtown carriageways (StreetRaster);
+		# junction boxes and crossing mouths are left to _crossing_hold.
+		if StreetRaster.at(p.x, p.z) == 1:
+			return StreetRaster.kerb_point(p)
 		return Vector3.INF
 	var band := WorldBuilder.ROAD_HALF - 0.2
 	for x in WorldBuilder.X_LINES:
@@ -416,6 +420,8 @@ func _kerb_wait(target: Vector3, delta: float) -> void:
 		for z in WorldBuilder.Z_LINES:
 			if absf(spot.z - z) < band:
 				spot.z = z + signf(global_position.z - z) * band
+		if StreetRaster.at(spot.x, spot.z) != 0:
+			spot = global_position - dir * 0.4
 		_kerb_spot = spot
 	var off := _kerb_spot - global_position
 	off.y = 0.0
@@ -438,6 +444,16 @@ func _crossing_hold(target: Vector3) -> bool:
 	var probe := global_position + dir * 0.9
 	var band := WorldBuilder.ROAD_HALF + 0.35
 	var flow := Vector3.ZERO
+	var gp := global_position
+	if absf(gp.x) > 330.0 or absf(gp.z) > 330.0:
+		# downtown-life (wave S): stepping off a downtown kerb waits for the
+		# walk phase of the road being crossed (the road runs across `dir`).
+		if StreetRaster.at(probe.x, probe.z) == 0 or StreetRaster.at(gp.x, gp.z) != 0:
+			return false
+		flow = Vector3(0, 0, 1) if absf(dir.x) > absf(dir.z) else Vector3(1, 0, 0)
+		if _traffic_ref == null or not is_instance_valid(_traffic_ref):
+			_traffic_ref = get_tree().get_first_node_in_group("traffic_manager")
+		return _traffic_ref != null and not _traffic_ref.ped_may_cross(flow)
 	for x in WorldBuilder.X_LINES:
 		if absf(probe.x - x) < band and absf(global_position.x - x) >= band:
 			flow = Vector3(0, 0, 1)
