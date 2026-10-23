@@ -442,6 +442,8 @@ func _drive_leg() -> void:
 			stall_for += dt
 			# traffic-flow (T): a person standing in the road is asked to move
 			# (as lane traffic does), and after 12 s driven round slowly.
+			if fmod(stall_for, 15.0) < dt and stall_for > 1.0:
+				_log("blocked %.0f s at %s by %s" % [stall_for, str(car.global_position.round()), (stall_node.get_class() + str(stall_node.global_position.round()) + " " + str(stall_node.get_script().resource_path.get_file() if stall_node.get_script() else "")) if is_instance_valid(stall_node) else "nothing"])
 			if is_instance_valid(stall_node) and stall_node is NPC:
 				if fmod(stall_for, 1.5) < dt:
 					var cf := -car.global_transform.basis.z

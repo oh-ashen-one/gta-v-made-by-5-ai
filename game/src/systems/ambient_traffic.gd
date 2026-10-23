@@ -1368,6 +1368,10 @@ func _person_on_zebra(v: AmbientVehicle, e: int, lane: int, iv: Vector2) -> bool
 			for n in _grid.get(Vector2i(cx + dx, cz + dz), []):
 				if not is_instance_valid(n) or not n is NPC:
 					continue
+				# Someone standing about on the crossing (a crowd that gathered at
+				# the bridge foot) is not crossing: no indefinite wait for them.
+				if (n as NPC).state == NPC.State.IDLE and v.idle_time > 4.0:
+					continue
 				var rel: Vector3 = (n as Node3D).global_position - a
 				var along: float = rel.dot(ed["dir"])
 				if along < iv.x - 0.6 or along > iv.y + 0.6:
@@ -1569,6 +1573,10 @@ func _scan_obstacles(v: AmbientVehicle) -> float:
 				else:
 					if node is NPC and v.idle_time > GIVE_UP * 1.5:
 						continue   # a person who would not step clear (see _lane_change)
+					# traffic-flow (T): a person standing still in the road (not
+					# walking across it) holds a car for 6 s, not 15.
+					if node is NPC and (node as NPC).state == NPC.State.IDLE and v.idle_time > 6.0:
+						continue
 					points = [node.global_position]
 					radius = 0.45
 				for p in points:
