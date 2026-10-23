@@ -11,11 +11,16 @@ func run(world: WorldBuilder, suite: Node) -> void:
 	for sp: String in ["rain", "angsana", "tembusu", "flame"]:
 		if int(can.get(sp, 0)) >= 300:
 			species += 1
-	suite._check("downtown-fill: varied park canopy (>= 3000 crowns, >= 4 species with >= 300 each, shrub masses)",
-		int(can.get("total", 0)) >= 3000 and species >= 4 and int(can.get("shrub", 0)) >= 300, str(can))
+	# (round 2: the Padang went back to an open field, ~600 fewer crowns)
+	suite._check("downtown-fill: varied park canopy (>= 2200 crowns, >= 4 species with >= 300 each, shrub masses)",
+		int(can.get("total", 0)) >= 2200 and species >= 4 and int(can.get("shrub", 0)) >= 300, str(can))
 	# 2. no open lawn block: every 48 m lawn cell carries trees
 	suite._check("downtown-fill: no flat lawn larger than a block (0 treeless 48 m lawn cells)",
-		int(fill.get("lawn_blocks", 0)) >= 25 and int(fill.get("empty_lawn_blocks", -1)) == 0, "blocks=%s empty=%s" % [fill.get("lawn_blocks"), fill.get("empty_lawn_blocks")])
+		int(fill.get("lawn_blocks", 0)) >= 12 and int(fill.get("empty_lawn_blocks", -1)) == 0, "blocks=%s empty=%s" % [fill.get("lawn_blocks"), fill.get("empty_lawn_blocks")])
+	# 2b. the Padang stays an open field and the comparison-view wedges stay
+	# clear of near crowns (wave T critic: forest on the Padang, blob crowns at
+	# dt_gardens_to_mbs, canopy hiding the Supertrees at dt_bayfront_drive)
+	suite._check("downtown-fill: Padang field and view wedges keep no tree crowns", can.has("crowns_in_kept_open") and int(can.get("crowns_in_kept_open", -1)) == 0, "kept=%s" % can.get("crowns_in_kept_open"))
 	# 3. shared procedural lawn material on the downtown turf
 	suite._check("downtown-fill: downtown turf uses the varied lawn shader (>= 50000 lawn cells)", int(fill.get("lawn_cells", 0)) >= 50000, "cells=%s" % fill.get("lawn_cells"))
 	# 4. roof plant on the podium / mid-rise roofs
@@ -25,6 +30,10 @@ func run(world: WorldBuilder, suite: Node) -> void:
 	var pz: Dictionary = fill.get("plazas", {})
 	suite._check("downtown-fill: MBS arrival, NS Square and Merlion Park dressed (palms, cafe umbrellas, kiosks)",
 		int(pz.get("mbs", 0)) >= 10 and int(pz.get("ns_square", 0)) >= 15 and int(pz.get("merlion", 0)) >= 3 and int(pz.get("umbrella_tables", 0)) >= 12 and int(pz.get("palms", 0)) >= 30, str(pz))
+	# 5b. near-field fill in front of the arrival street cameras
+	var nf: Dictionary = pz.get("nearfield", {})
+	suite._check("downtown-fill: arrival street cameras have a paving layout (>= 800 joints) and >= 40 furniture clusters in front",
+		int(nf.get("joints", 0)) >= 800 and int(nf.get("clusters", 0)) >= 40 and int(nf.get("planters", 0)) >= 8 and int(nf.get("bench_bins", 0)) >= 6, str(nf))
 	# 6. rotor reads as blades: the disc shader draws blade smears
 	var heli := world.get_tree().current_scene.get_node_or_null("Helicopter")
 	var fx: Node = heli.get_node_or_null("HeliFX") if heli != null else null

@@ -21,6 +21,7 @@ extends RefCounted
 const Kit = preload("res://src/world/downtown/landmarks/kit.gd")
 const Looks = preload("res://src/world/downtown/landmarks/looks.gd")
 const Realm = preload("res://src/world/downtown/landmarks/realm.gd")
+const NearField = preload("res://src/world/downtown/plaza_nearfield.gd")
 
 ## Ground slabs (flat collision boxes) for prop heights: [AABB, ...]
 static var _slabs: Array = []
@@ -53,6 +54,23 @@ static func _mat(key: String) -> Material:
 
 static func set_slabs(slabs: Array) -> void:
 	_slabs = slabs
+
+## Keep-out raster from fill.gd (buildings / standing volumes, 2 m cells).
+static var _keep := PackedByteArray()
+static func set_keep(keep: PackedByteArray) -> void:
+	_keep = keep
+
+static func _free(p: Vector3) -> bool:
+	if not _clear(p):
+		return false
+	if _keep.is_empty():
+		return true
+	for o: Vector2 in [Vector2.ZERO, Vector2(1.8, 1.8), Vector2(-1.8, 1.8), Vector2(1.8, -1.8), Vector2(-1.8, -1.8)]:
+		var cx := int(floor((p.x + o.x + 920.0) / 2.0))
+		var cz := int(floor((p.z + o.y + 1080.0) / 2.0))
+		if cx >= 0 and cz >= 0 and cx < 860 and cz < 740 and _keep[cz * 860 + cx] == 1:
+			return false
+	return true
 
 ## Finished ground height at (x, z): the highest flat slab top under it.
 static func ground_y(x: float, z: float, fallback: float = 0.3) -> float:
@@ -193,6 +211,16 @@ static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 	stats["ns_square"] = _ns_square(kit, rng, palms, benches, umbrellas, kiosks, masts)
 	stats["merlion"] = _merlion(kit, rng, palms, benches, umbrellas, kiosks)
 	stats["esplanade"] = _esplanade(kit, rng, palms, benches)
+	var avoid: Array = []
+	for t: Transform3D in palms:
+		avoid.append(t.origin)
+	for t: Transform3D in benches:
+		avoid.append(t.origin)
+	for f: String in umbrellas:
+		for t: Transform3D in umbrellas[f]:
+			avoid.append(t.origin)
+	var mb: Vector3 = DowntownPlan.ANCHORS["marina_bay_sands"]["pos"]
+	stats["nearfield"] = NearField.build(kit, rng, avoid, [Vector3(mb.x - 49.0, 0, -746.0), Vector3(mb.x + 49.0, 0, -746.0)], benches, bollards, umbrellas)
 	kit.commit(node, "DowntownPlazaMesh", true, 900.0)
 	Realm.flush_ferns(node, "DowntownPlazaFerns")
 	Realm.glb_multimesh(node, "DowntownPlazaPalms", "palm.glb", palms, true, 520.0)

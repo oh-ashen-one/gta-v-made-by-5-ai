@@ -33,6 +33,7 @@ static func finish(world: WorldBuilder, root: Node3D) -> Dictionary:
 		root.add_child(holder)
 		var keep := _keepout(world)
 		Plazas.set_slabs(_slabs)
+		Plazas.set_keep(keep)
 		stats["plazas"] = Plazas.build(world, holder)
 		stats["park_panels"] = _park_panels(holder, keep)
 		var lawn := _lawn_raster(world)
@@ -396,6 +397,11 @@ static func _plant(holder: Node3D, lawn: PackedByteArray, hgt: PackedFloat32Arra
 				var vp: Vector3 = v["pos"]
 				if vp.y < 10.0 and Vector2(vp.x - x, vp.z - z).length() < 32.0:
 					hp = true
+				elif VIEW_CONES.has(v["name"]) and _in_cone(v, VIEW_CONES[v["name"]], x, z):
+					hp = true
+			# the Padang is an open field: only a perimeter row of rain trees
+			if PADANG.grow(-9.0).has_point(Vector2(x, z)):
+				hp = true
 			# the Supertree plazas stay open (the grove reads above the canopy)
 			var g: Vector3 = DowntownPlan.anchor("gardens_supertree_grove")
 			for gc: Vector3 in [g + Vector3(-54.0, 0, -14.0), g + Vector3(48.0, 0, 17.0), g]:
@@ -466,15 +472,48 @@ static func _plant(holder: Node3D, lawn: PackedByteArray, hgt: PackedFloat32Arra
 					var j := _idx(bx * 48.0 + sx * 2.0 + 1.0, bz * 48.0 + sz * 2.0 + 1.0)
 					if j >= 0 and lawn[j] == 1 and keep[j] == 0:
 						open_cells += 1
+			var bc := Vector2(bx * 48.0 + 24.0, bz * 48.0 + 24.0)
+			if _kept_open(bc.x, bc.y):
+				continue   # deliberately open: the Padang field, a view wedge
 			if open_cells >= total * 0.9:
 				lawn_blocks += 1
 				if int(trees_in.get(Vector2i(bx, bz), 0)) == 0:
 					empty += 1
+	var kept := 0
+	for it in items:
+		var o2: Vector3 = (it[1] as Transform3D).origin
+		if it[0] != "shrub" and _kept_open(o2.x, o2.z):
+			kept += 1
+	counts["crowns_in_kept_open"] = kept
 	counts["lawn_blocks"] = lawn_blocks
 	counts["empty_lawn_blocks"] = empty
 	counts["draws"] = Canopy.emit(holder, items, "DowntownCanopy")
 	counts["total"] = items.size()
 	return counts
+
+## Comparison views whose subject sits behind the park: the canopy keeps a
+## forward wedge open (half-angle deg, reach m) so near crowns never fill the
+## lower frame (wave T critic: blob crowns at dt_gardens_to_mbs, canopy hiding
+## the Supertrees at dt_bayfront_drive).
+const VIEW_CONES := {"dt_gardens_to_mbs": Vector2(42.0, 85.0), "dt_bayfront_drive": Vector2(26.0, 170.0)}
+const PADANG := Rect2(-900.0, -347.0, 230.0, 336.0)
+
+static func _kept_open(x: float, z: float) -> bool:
+	if PADANG.grow(-9.0).has_point(Vector2(x, z)):
+		return true
+	for v: Dictionary in DowntownPlan.VIEWS:
+		if VIEW_CONES.has(v["name"]) and _in_cone(v, VIEW_CONES[v["name"]], x, z):
+			return true
+	return false
+
+static func _in_cone(v: Dictionary, cone: Vector2, x: float, z: float) -> bool:
+	var vp: Vector3 = v["pos"]
+	var lk: Vector3 = v["look"]
+	var d := Vector2(x - vp.x, z - vp.z)
+	if d.length() > cone.y:
+		return false
+	var f := Vector2(lk.x - vp.x, lk.z - vp.z).normalized()
+	return rad_to_deg(absf(f.angle_to(d))) < cone.x
 
 static func _add(items: Array, counts: Dictionary, sp: String, p: Vector3, rng: RandomNumberGenerator, s0: float, s1: float) -> void:
 	var s := rng.randf_range(s0, s1)
