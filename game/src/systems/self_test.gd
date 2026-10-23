@@ -6,7 +6,9 @@ extends Node
 signal finished(failures: int)
 
 const TEST_SAVE := "/tmp/orchard_reach_wave2_fixture_save.json"
-const WATCHDOG_SECONDS := 40.0
+## Wave-M integration: downtown + street-life checks took the combined suite
+## past 40 s of engine time; this is a hang guard, not a speed budget.
+const WATCHDOG_SECONDS := 90.0
 var failures := 0
 var results: Array[Dictionary] = []
 var _started_ms := 0
@@ -563,7 +565,20 @@ func _weapon_input_checks(main: Node, player: Player) -> void:
 	await _tap("fire")
 	_check("muzzle obstruction prevents damage through close cover", is_equal_approx(target.health, target_health))
 	cover.queue_free()
-	await _ticks(15)
+	# The first (blocked) shot panics the target; since street-life M2 a
+	# civilian flees on a randomised heading, so it would leave the aim line.
+	# Hold it on its mark and keep the aim on it: this fixture tests the
+	# muzzle obstruction, not tracking a runner.
+	var target_mark := Vector3(0.0, 20.35, -252.0)
+	for frame in 15:
+		target.state = NPC.State.IDLE
+		target.idle_time = 100.0
+		target.velocity = Vector3.ZERO
+		target.global_position = target_mark
+		await _ticks(1)
+		var re_aim := target.global_position + Vector3.UP * 1.15 - player.camera.global_position
+		player.yaw = atan2(-re_aim.x, -re_aim.z)
+		player.pitch = atan2(re_aim.y, Vector2(re_aim.x, re_aim.z).length())
 	var fx_before: Dictionary = CombatFx.stats.duplicate()
 	await _tap("fire")
 	_check("clearing muzzle obstruction permits target damage", target.health < target_health)
@@ -1077,7 +1092,7 @@ func _count_meshes(node: Node) -> int:
 func _watchdog() -> void:
 	if _reported:
 		return
-	_check("suite finished before watchdog deadline", false, "40-second in-engine watchdog expired")
+	_check("suite finished before watchdog deadline", false, "%d-second in-engine watchdog expired" % int(WATCHDOG_SECONDS))
 	await _report(true)
 
 func _report(timed_out: bool = false) -> void:
