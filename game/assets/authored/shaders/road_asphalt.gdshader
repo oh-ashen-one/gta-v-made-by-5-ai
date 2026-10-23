@@ -16,6 +16,15 @@ uniform float wear = 1.0;
 uniform sampler2D agg_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D agg_nrm : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform float grain_k = 0.42;
+// nearfield R: photographic carriageway map (provider road_asphalt, ~7 m tile,
+// wheel-track bands along V) laid in the lane frame so its bands follow the
+// lanes; two offset samples and macro noise hide the repeat. photo_k = 0
+// (no provider file) keeps the procedural surface only.
+uniform sampler2D photo_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D photo_nrm : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform float photo_k = 0.0;
+uniform float photo_tile = 7.0;
+uniform vec3 photo_mean = vec3(0.318, 0.315, 0.31);
 
 varying vec3 v_world;
 
@@ -79,6 +88,16 @@ void fragment() {
 	float along = on_z > 0.5 ? p.y : p.x;
 	float al = abs(lat);
 	vec2 rf = lane > 0.5 ? vec2(lat, along) : p;   // patch frame
+
+	// Photographic surface detail: luminance ratio against the map mean, so
+	// the tint and the lane-aware wear below keep the LOOK_DEV value. The
+	// detail swing stays bounded (driving-q: no salt-and-pepper frosting).
+	vec2 pq = rf / photo_tile;
+	float ph1 = dot(texture(photo_tex, pq + vec2(0.0, floor(along / 61.0) * 0.37)).rgb, vec3(0.333));
+	float ph2 = dot(texture(photo_tex, w_rot(p, 0.61) / (photo_tile * 1.61) + 0.29).rgb, vec3(0.333));
+	float pmix = smoothstep(0.35, 0.65, w_mask(p / 23.0 + 0.17).g);
+	float pl = mix(ph1, ph2, pmix * 0.6) / dot(photo_mean, vec3(0.333));
+	tone *= mix(1.0, clamp(pow(pl, 0.85), 0.72, 1.38), photo_k);
 
 	// Tyre tracks: polished, darker, smoother rubber lines in every lane.
 	float tvar = 0.70 + 0.30 * w_mask(vec2(along / 41.0, lat / 13.0 + 0.3)).g;
@@ -189,7 +208,8 @@ void fragment() {
 	// undulations that rippled the sky reflection ("navy and wavy" shade).
 	vec3 n1 = texture(agg_nrm, p / 2.0).rgb;
 	vec3 n2 = texture(agg_nrm, w_rot(p, 0.73) / 3.3 + 0.37).rgb;
-	NORMAL_MAP = normalize(mix(n1, n2, 0.42) * 2.0 - 1.0) * 0.5 + 0.5;
+	vec3 n3 = texture(photo_nrm, pq + vec2(0.0, floor(along / 61.0) * 0.37)).rgb;
+	NORMAL_MAP = normalize(mix(mix(n1, n2, 0.42), n3, 0.5 * photo_k) * 2.0 - 1.0) * 0.5 + 0.5;
 	NORMAL_MAP_DEPTH = mix(0.9, 0.3, max(inside, cover)) * (1.0 - smoothstep(25.0, 90.0, dist) * 0.7);
 	SPECULAR = 0.32;
 }

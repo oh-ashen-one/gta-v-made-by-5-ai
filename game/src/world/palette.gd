@@ -123,6 +123,13 @@ static func weathered_surface(color: Color, kind: String, rough: float = 0.9, me
 			# nearfield (opus55 D): graded aggregate tile for fine grain
 			m.set_shader_parameter("agg_tex", load(SURF_DIR + "asphalt_aggregate_albedo.png"))
 			m.set_shader_parameter("agg_nrm", load(SURF_DIR + "asphalt_aggregate_normal.png"))
+			# nearfield R: photographic asphalt from the generated library
+			var ph := NearField.prov("road_asphalt_albedo.png") if NearField.enabled() else null
+			if ph != null:
+				m.set_shader_parameter("photo_tex", ph)
+				m.set_shader_parameter("photo_nrm", NearField.prov("road_asphalt_normal.png"))
+				m.set_shader_parameter("photo_k", 0.85)
+				m.set_shader_parameter("grain_k", 0.22)
 		"pavers":
 			m.shader = load(SHADER_DIR + "paving.gdshader")
 			m.set_shader_parameter("albedo_tex", load(SURF_DIR + "pavers_albedo.png"))

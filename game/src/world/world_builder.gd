@@ -1247,14 +1247,23 @@ func _opening_signage() -> void:
 
 func _street_blade(pos: Vector3, along_x: bool, text: String) -> void:
 	var blue := Palette.mat(Color(0.05, 0.12, 0.38), 0.6)
-	_box(Vector3(1.9, 0.32, 0.05) if along_x else Vector3(0.05, 0.32, 1.9), pos, blue)
+	# nearfield R: size the blade to its name and fit the lettering inside the
+	# plate with a margin (critic: "Kampong Sirih Road" spilled past the plate)
+	var font: Font = ThemeDB.fallback_font
+	var text_w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 40).x if font != null else 40.0 * 0.6 * text.length()
+	var plate_len := clampf(text_w * 0.0052 + 0.36, 1.9, 2.6)
+	var pix := minf(0.0052, (plate_len - 0.34) / maxf(text_w, 1.0))
+	_box(Vector3(plate_len, 0.32, 0.05) if along_x else Vector3(0.05, 0.32, plate_len), pos, blue)
+	var rim := Palette.mat(Color(0.86, 0.86, 0.84), 0.5)
+	for dy: float in [-0.135, 0.135]:
+		_box(Vector3(plate_len - 0.04, 0.018, 0.056) if along_x else Vector3(0.056, 0.018, plate_len - 0.04), pos + Vector3(0, dy, 0), rim)
 	for side: float in [1.0, -1.0]:
 		var offset := Vector3(0.0, 0.0, 0.035 * side) if along_x else Vector3(0.035 * side, 0.0, 0.0)
 		var label := _label3d(text, pos + offset)
 		# Label3D reads toward +Z; turn each copy to face away from its blade face.
 		label.rotation.y = (0.0 if side > 0.0 else PI) if along_x else (PI * 0.5 if side > 0.0 else -PI * 0.5)
 		label.font_size = 40
-		label.pixel_size = 0.0085
+		label.pixel_size = pix
 		label.outline_size = 0
 		label.modulate = Color(0.97, 0.97, 0.97)
 

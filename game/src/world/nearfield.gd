@@ -30,6 +30,63 @@ static func _count(k: String, n: int = 1) -> void:
 static func enabled() -> bool:
 	return not "--nearfield-off" in OS.get_cmdline_user_args()
 
+## Generated library (loop/GENERATED_ASSETS.md; git-ignored provider files,
+## private build use). Every caller falls back to the authored maps when a
+## provider file is absent, so a clean public checkout still builds.
+const PROV := "res://assets/providers/higgsfield/"
+
+static func prov(file: String) -> Texture2D:
+	var key := "prov:" + file
+	if _cache.has(key):
+		return _cache[key]
+	var t: Texture2D = null
+	if ResourceLoader.exists(PROV + file) and not "--nearfield-no-provider" in OS.get_cmdline_user_args():
+		t = load(PROV + file)
+	_cache[key] = t
+	return t
+
+## Weathered cast concrete (provider concrete_weathered: streaks, pores,
+## algae) on world triplanar UVs: median noses, planter walls, sign bases.
+static func concrete_mat(tint: Color = Color(0.86, 0.85, 0.82), tile_m: float = 2.4) -> Material:
+	var key := "concrete_mat:%s:%.2f" % [tint.to_html(), tile_m]
+	if _cache.has(key):
+		return _cache[key]
+	var alb := prov("concrete_weathered_albedo.png")
+	var m: Material
+	if alb == null:
+		m = Palette.weathered_surface(Color(0.60, 0.59, 0.56), "concrete", 0.9)
+	else:
+		var sm := StandardMaterial3D.new()
+		sm.albedo_texture = alb
+		sm.albedo_color = tint
+		sm.normal_enabled = true
+		sm.normal_texture = prov("concrete_weathered_normal.png")
+		sm.normal_scale = 0.9
+		sm.roughness_texture = prov("concrete_weathered_rough.png")
+		sm.roughness = 1.0
+		sm.uv1_triplanar = true
+		sm.uv1_world_triplanar = true
+		sm.uv1_triplanar_sharpness = 4.0
+		sm.uv1_scale = Vector3.ONE / tile_m
+		sm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+		m = sm
+	_cache[key] = m
+	return m
+
+## Photographic plant cards (provider foliage_median_atlas, 2 x 2 cells:
+## 0 mondo grass + spider lily, 1 ixora, 2 croton, 3 bird's-nest fern).
+static func card_material() -> ShaderMaterial:
+	if _cache.has("card_mat"):
+		return _cache["card_mat"]
+	var m := ShaderMaterial.new()
+	m.shader = load(SHADERS + "foliage_card.gdshader")
+	m.set_shader_parameter("leaf_tex", prov("foliage_median_atlas.png"))
+	_cache["card_mat"] = m
+	return m
+
+static func cards_available() -> bool:
+	return prov("foliage_median_atlas.png") != null
+
 # ------------------------------------------------------------ materials
 static func kerb_material() -> ShaderMaterial:
 	if _cache.has("kerb_mat"):
@@ -37,8 +94,18 @@ static func kerb_material() -> ShaderMaterial:
 	var m := ShaderMaterial.new()
 	m.shader = load(SHADERS + "kerb_stone.gdshader")
 	m.set_shader_parameter("weather_masks", Palette.weather_masks())
-	m.set_shader_parameter("grain_tex", load(SURF + "concrete_albedo.png"))
-	m.set_shader_parameter("grain_nrm", load(SURF + "concrete_normal.png"))
+	var pc := prov("concrete_weathered_albedo.png")
+	if pc != null:
+		# provider concrete: mean albedo (0.59, 0.564, 0.516); the shader
+		# normalises by it so the tint keeps the LOOK_DEV granite value
+		m.set_shader_parameter("grain_tex", pc)
+		m.set_shader_parameter("grain_nrm", prov("concrete_weathered_normal.png"))
+		m.set_shader_parameter("grain_mean", Vector3(0.59, 0.564, 0.516))
+		m.set_shader_parameter("grain_scale", 0.42)
+		m.set_shader_parameter("grain_colour", 0.55)
+	else:
+		m.set_shader_parameter("grain_tex", load(SURF + "concrete_albedo.png"))
+		m.set_shader_parameter("grain_nrm", load(SURF + "concrete_normal.png"))
 	_cache["kerb_mat"] = m
 	return m
 
@@ -138,7 +205,6 @@ static func sweep(st: SurfaceTool, path: PackedVector3Array, profile: Array, arr
 				var pr: Vector2 = profile[b]
 				var o: Vector3 = outs[a]
 				# face normal from the profile segment (flat shading per band)
-				var j0 := mini(b, profile.size() - 2) if b == j else j
 				var seg: Vector2 = (profile[j + 1] as Vector2) - (profile[j] as Vector2)
 				var pn := Vector2(-seg.y, seg.x).normalized()
 				# rounded arris gets a smooth normal from neighbouring segments
@@ -154,7 +220,6 @@ static func sweep(st: SurfaceTool, path: PackedVector3Array, profile: Array, arr
 				st.set_uv(Vector2(along[a], plen[b]))
 				st.set_uv2(Vector2(float(arris[b]), float(faces[b])))
 				st.add_vertex(path[a] + o * pr.x + Vector3.UP * pr.y)
-			j0 = j0
 
 static func _kerb_mi(root: Node3D, st: SurfaceTool, name: String) -> MeshInstance3D:
 	var mesh := st.commit()
@@ -257,7 +322,7 @@ static func build_median(root: Node3D, centre: Vector3, along_z: bool, span: flo
 		nm.height = 0.3
 		nm.radial_segments = 24
 		nose.mesh = nm
-		nose.material_override = Palette.weathered_surface(Color(0.60, 0.59, 0.56), "concrete", 0.9)
+		nose.material_override = concrete_mat(Color(0.70, 0.69, 0.66), 1.6)
 		nose.position = centre + ax * e * straight + Vector3(0, 0.155, 0)
 		root.add_child(nose)
 		var deck := MeshInstance3D.new()
@@ -270,30 +335,102 @@ static func build_median(root: Node3D, centre: Vector3, along_z: bool, span: flo
 		# keep-left sign faces oncoming traffic on the nose
 		var facing := ax * e
 		signs.append({"pos": centre + ax * e * (straight - 0.15), "face": facing, "cell": 0, "h": 1.45, "size": 0.62})
+		# back-to-back twin plate: an island sign reads from both approaches
+		# (critic: blank placard backs read as blockout)
+		signs.append({"pos": centre + ax * e * (straight - 0.15), "face": -facing, "cell": 0, "h": 1.45, "size": 0.62, "nopost": true})
 		_count("median_nose")
-	# shrubs: two staggered rows along the bed, kept off the nose decks
-	var t := -straight + 1.6
-	while t < straight - 1.6:
-		for row: float in [-0.28, 0.28]:
-			if rng.randf() < 0.12:
+	# planting: designed drifts (3-9 m) of one species, two staggered rows
+	# plus a sparse centre row, kept off the nose decks. Photo cards when the
+	# generated atlas is present, else the authored leaf-card clumps.
+	var cards := cards_available()
+	var t := -straight + 1.5
+	var drift_left := 0.0
+	var kind := "ixora"
+	while t < straight - 1.5:
+		if drift_left <= 0.0:
+			var roll := rng.randf()
+			if cards:
+				kind = "fern" if roll < 0.30 else ("ixora" if roll < 0.58 else ("croton" if roll < 0.82 else "mondo"))
+			else:
+				kind = "ixora" if roll < 0.32 else ("broad" if roll < 0.7 else "hedge")
+			drift_left = rng.randf_range(3.0, 9.0)
+		var rows: Array[float] = [-0.32, 0.32]
+		if rng.randf() < 0.35:
+			rows.append(0.0)
+		for row: float in rows:
+			if rng.randf() < 0.06:
 				continue
-			var p := centre + ax * (t + rng.randf_range(-0.2, 0.2)) + lat * (row + rng.randf_range(-0.08, 0.08)) + Vector3(0, 0.29, 0)
-			var kind := "ixora" if rng.randf() < 0.32 else ("broad" if rng.randf() < 0.55 else "hedge")
+			var p := centre + ax * (t + rng.randf_range(-0.15, 0.15) + (0.22 if row > 0.1 else 0.0)) + lat * (row + rng.randf_range(-0.07, 0.07)) + Vector3(0, 0.29, 0)
 			var sc := rng.randf_range(0.82, 1.12)
-			var xf := Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(sc, sc * rng.randf_range(0.85, 1.1), sc)), p)
-			var tint := Color(1, 1, 1).darkened(rng.randf_range(0.0, 0.18))
-			tint = tint.lerp(Color(1.05, 1.0, 0.85), rng.randf() * 0.3)
+			var hs := sc
+			if cards:
+				match kind:
+					"mondo": sc = rng.randf_range(0.62, 0.80); hs = sc * rng.randf_range(0.9, 1.1)
+					"fern": sc = rng.randf_range(0.72, 0.92); hs = sc
+					"croton": sc = rng.randf_range(0.70, 0.92); hs = sc * rng.randf_range(0.9, 1.05)
+					_: sc = rng.randf_range(0.70, 0.90); hs = sc * rng.randf_range(0.88, 1.02)
+				p.y -= 0.03
+			var xf := Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(sc, hs, sc)), p)
+			var tint := Color(1, 1, 1).darkened(rng.randf_range(0.0, 0.16))
+			tint = tint.lerp(Color(1.04, 1.0, 0.86), rng.randf() * 0.3)
 			if not shrubs.has(kind):
 				shrubs[kind] = []
 			shrubs[kind].append([xf, tint])
 			_count("median_shrub")
-		t += rng.randf_range(0.55, 0.75)
+		var step := rng.randf_range(0.48, 0.62) if cards else rng.randf_range(0.55, 0.75)
+		t += step
+		drift_left -= step
 
 ## The sweep's profile foot sits on the outline; nothing to inset.
 static func _inset(path: PackedVector3Array, _c: Vector3, _ax: Vector3, _lat: Vector3, _s: float, _w: float) -> PackedVector3Array:
 	return path
 
 # --------------------------------------------------------------- shrubs
+## Photo plant clump: `cards` vertical cards crossed about the stem, each
+## textured with one atlas cell (bottom edge on the ground, 1 m tall and wide
+## at scale 1), emitted in both windings so cull_back keeps one consistent
+## hemispherical normal per side. A low inner skirt card fills the base.
+const CARD_CELL := {"mondo": 0, "ixora": 1, "croton": 2, "fern": 3}
+
+static func card_mesh(kind: String) -> Mesh:
+	var key := "card_" + kind
+	if _cache.has(key):
+		return _cache[key]
+	var cell: int = CARD_CELL.get(kind, 1)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var u0 := Vector2((cell % 2) * 0.5, (cell / 2) * 0.5)
+	var pivot := Vector3(0, -0.45, 0)
+	var r := RandomNumberGenerator.new()
+	r.seed = hash(kind) & 0xffff
+	var cards := 3 if kind != "mondo" else 4
+	for k in cards:
+		var a := PI * float(k) / cards + r.randf_range(-0.12, 0.12)
+		var dir := Vector3(cos(a), 0.0, sin(a))
+		var w := 0.5 * r.randf_range(0.92, 1.06)
+		var h := r.randf_range(0.94, 1.04)
+		var tilt := Vector3(-dir.z, 0.0, dir.x) * r.randf_range(-0.06, 0.06)
+		var vs := [-dir * w + Vector3(0, -0.03, 0), dir * w + Vector3(0, -0.03, 0), dir * w + Vector3(0, h, 0) + tilt, -dir * w + Vector3(0, h, 0) + tilt]
+		var flip := k % 2 == 1
+		var uvs := [Vector2(0.006, 0.494), Vector2(0.494, 0.494), Vector2(0.494, 0.006), Vector2(0.006, 0.006)]
+		for side in 2:
+			var order := [0, 1, 2, 0, 2, 3] if side == 0 else [0, 2, 1, 0, 3, 2]
+			for idx in order:
+				var v: Vector3 = vs[idx]
+				var uv: Vector2 = uvs[idx]
+				if flip:
+					uv.x = 0.5 - uv.x
+				var nrm := (v - pivot).normalized()
+				nrm = (nrm + Vector3.UP * 0.25).normalized()
+				st.set_normal(nrm)
+				var occ := clampf(0.30 + 0.75 * (v.y / h), 0.3, 1.0)
+				st.set_color(Color(1, 1, 1, occ))
+				st.set_uv(u0 + uv)
+				st.add_vertex(v)
+	var mesh := st.commit()
+	_cache[key] = mesh
+	return mesh
+
 ## A dense shrub clump of crossed leaf cards (atlas cells: 0 broad dark,
 ## 1 broad light, 2 small hedge, 3 flowering). Normals are spherical from the
 ## clump centre so the mass shades like a canopy; vertex colour carries an
@@ -372,7 +509,8 @@ static func emit_shrubs(root: Node3D, shrubs: Dictionary) -> void:
 			var mm := MultiMesh.new()
 			mm.transform_format = MultiMesh.TRANSFORM_3D
 			mm.use_colors = true
-			mm.mesh = shrub_mesh(kind)
+			var cards := cards_available() and CARD_CELL.has(kind)
+			mm.mesh = card_mesh(kind) if cards else shrub_mesh(kind)
 			mm.instance_count = arr.size()
 			for i in arr.size():
 				mm.set_instance_transform(i, arr[i][0])
@@ -380,7 +518,7 @@ static func emit_shrubs(root: Node3D, shrubs: Dictionary) -> void:
 			var mmi := MultiMeshInstance3D.new()
 			mmi.name = "NearfieldShrub_%s_%d_%d" % [kind, c.x, c.y]
 			mmi.multimesh = mm
-			mmi.material_override = leaf_material()
+			mmi.material_override = card_material() if cards else leaf_material()
 			mmi.visibility_range_end = 260.0
 			mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 			root.add_child(mmi)
@@ -388,8 +526,13 @@ static func emit_shrubs(root: Node3D, shrubs: Dictionary) -> void:
 ## One standalone shrub (planters, shelters).
 static func shrub_instance(root: Node3D, pos: Vector3, scale: float = 1.0, kind: String = "broad") -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
-	mi.mesh = shrub_mesh(kind)
-	mi.material_override = leaf_material()
+	if cards_available() and CARD_CELL.has(kind):
+		mi.mesh = card_mesh(kind)
+		mi.material_override = card_material()
+		pos.y -= 0.12
+	else:
+		mi.mesh = shrub_mesh(kind)
+		mi.material_override = leaf_material()
 	mi.position = pos
 	mi.scale = Vector3.ONE * scale
 	mi.set_meta("nearfield", true)
@@ -409,12 +552,14 @@ static func plate_mesh() -> Mesh:
 	var q := [Vector3(-0.5, -0.5, 0), Vector3(0.5, -0.5, 0), Vector3(0.5, 0.5, 0), Vector3(-0.5, 0.5, 0)]
 	var uv := [Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)]
 	# front (+z), back (-z) offset 6 mm
-	for idx in [0, 1, 2, 0, 2, 3]:
+	# Godot front faces wind clockwise on screen (wave D had both faces
+	# reversed, so the galvanised back showed through from the front)
+	for idx in [0, 2, 1, 0, 3, 2]:
 		st.set_normal(Vector3.BACK)
 		st.set_uv(uv[idx])
 		st.set_uv2(Vector2(1, 0))
 		st.add_vertex(q[idx] + Vector3(0, 0, 0.003))
-	for idx in [0, 2, 1, 0, 3, 2]:
+	for idx in [0, 1, 2, 0, 2, 3]:
 		st.set_normal(Vector3.FORWARD)
 		st.set_uv(uv[idx])
 		st.set_uv2(Vector2(0, 0))
@@ -462,10 +607,11 @@ static func emit_signs(root: Node3D, signs: Array) -> void:
 		var h: float = s["h"]
 		var sz: float = s["size"]
 		var top := h + sz * 0.5 + 0.02
-		posts.append(Transform3D(Basis.from_scale(Vector3(1, top, 1)), pos))
 		var b := Basis.looking_at(-face, Vector3.UP)   # local +z faces `face`
-		for dy: float in [-0.28, 0.28]:
-			clamps.append(Transform3D(b * Basis.from_scale(Vector3(0.10, 0.035, 0.09)), pos + Vector3(0, h + dy * sz, 0) + face * 0.0))
+		if not s.get("nopost", false):
+			posts.append(Transform3D(Basis.from_scale(Vector3(1, top, 1)), pos))
+			for dy: float in [-0.28, 0.28]:
+				clamps.append(Transform3D(b * Basis.from_scale(Vector3(0.10, 0.035, 0.09)), pos + Vector3(0, h + dy * sz, 0) + face * 0.0))
 		plates.append(Transform3D(b * Basis.from_scale(Vector3(sz, sz, 1.0)), pos + Vector3(0, h, 0) + face * 0.05))
 		cellv.append(int(s["cell"]))
 		_count("sign_plate")

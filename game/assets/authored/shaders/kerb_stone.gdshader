@@ -18,6 +18,12 @@ uniform vec3 tint : source_color = vec3(0.66, 0.65, 0.62);
 uniform float unit_len = 0.915;
 uniform float band_len = 0.915;
 uniform float wear = 1.0;
+// Grain source normalisation: authored concrete (grey 0.72) or the provider
+// weathered concrete (warm, mean 0.59/0.564/0.516). grain_colour keeps part
+// of the map's own hue (algae, rust and tannin stains) on top of the tint.
+uniform vec3 grain_mean = vec3(0.72);
+uniform float grain_scale = 0.55;
+uniform float grain_colour = 0.0;
 
 float vn(vec2 x) {
 	vec2 i = floor(x);
@@ -37,9 +43,11 @@ void fragment() {
 	float u = fract(along / unit_len);
 	float jd = min(u, 1.0 - u) * unit_len;
 	// concrete grain (authored 4 m tile, sampled at kerb scale)
-	float g = texture(grain_tex, vec2(along, prof) * 0.55 + vec2(0.0, unit * 0.37)).r / 0.72;
+	vec3 gt = texture(grain_tex, vec2(along, prof) * grain_scale + vec2(unit * 0.29, unit * 0.37)).rgb / grain_mean;
+	float g = dot(gt, vec3(0.333));
 	float h = w_hash12(vec2(unit, 3.1));
 	float tone = g * (0.90 + 0.18 * h);
+	vec3 ghue = mix(vec3(1.0), gt / max(g, 1e-3), grain_colour);
 	vec4 m1 = w_mask(vec2(along / 5.3, prof * 0.7 + h));
 	vec4 m2 = w_mask(vec2(along / 1.1 + 0.3, prof * 3.0));
 	// unit joints: a dark mortar line with a soft footprint-aware edge
@@ -49,7 +57,7 @@ void fragment() {
 	float chips = arris * smoothstep(0.55, 0.75, chip_n * 0.7 + m2.r * 0.5) * wear;
 	// near-joint corner spalls
 	chips = max(chips, arris * (1.0 - smoothstep(0.0, 0.05, jd)) * step(0.55, h));
-	vec3 col = tint * tone;
+	vec3 col = tint * tone * ghue;
 	col *= mix(1.0, 1.16, chips);
 	// grime: road-side foot (spray, silt), tyre scuffs, algae at the gutter
 	float foot = (1.0 - smoothstep(0.0, 0.10, prof)) * step(face, 0.5);
@@ -85,7 +93,7 @@ void fragment() {
 	ALBEDO = clamp(col, vec3(0.0), vec3(1.0));
 	ROUGHNESS = clamp(rough + 0.08 * joint, 0.3, 1.0);
 	SPECULAR = 0.45;
-	NORMAL_MAP = texture(grain_nrm, vec2(along, prof) * 0.55).rgb;
+	NORMAL_MAP = texture(grain_nrm, vec2(along, prof) * grain_scale + vec2(unit * 0.29, unit * 0.37)).rgb;
 	NORMAL_MAP_DEPTH = 0.8 + 0.8 * chips;
 	// ambient occlusion in the joint and at the foot
 	AO = 1.0 - 0.5 * joint - 0.25 * foot;
