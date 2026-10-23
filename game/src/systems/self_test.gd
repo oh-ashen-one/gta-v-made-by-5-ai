@@ -1110,11 +1110,54 @@ func _report(timed_out: bool = false) -> void:
 
 ## Street life (Opus wave A): camera-centred lane traffic, crowds, avenue
 ## canopy and taking a stopped ambient car.
+## Wave M street-life: lane traffic and crowds adopt the downtown-map graph
+## (synthetic graph here; the real one lands with the downtown-map piece).
+func _downtown_adoption_checks(traffic: TrafficManager) -> void:
+	var probe := AmbientTraffic.new()
+	probe.traffic = traffic
+	probe.nodes = traffic.world.traffic_nodes.duplicate()
+	probe._build_edges()
+	var legacy_edges := probe.edges.size()
+	var legacy_nodes := probe.nodes.size()
+	var corner := traffic.world.traffic_nodes.find(Vector3(320.0, 0.1, -320.0))
+	var g := {"nodes": [Vector3(320.0, 0.0, -320.0), Vector3(400.0, 0.0, -320.0), Vector3(400.0, 0.0, -480.0), Vector3(560.0, 0.0, -320.0), Vector3(400.0, 3.6, -560.0)],
+		"edges": [Vector2i(0, 1), Vector2i(1, 2), Vector2i(1, 3), Vector2i(2, 4)], "lanes": [1, 2, 1, 2], "links": [Vector2i(0, corner)]}
+	var added := probe.adopt_downtown(g)
+	var two_lane := -1
+	var bridge := -1
+	var signals_ok := true
+	for e in range(legacy_edges, probe.edges.size()):
+		var ed: Dictionary = probe.edges[e]
+		# Signals hold at the 3-road junction (and the legacy corner), not at bends.
+		var to_junction := int(ed["to"]) == legacy_nodes or int(ed["to"]) == corner
+		if bool(ed["signal"]) != to_junction:
+			signals_ok = false
+		if (ed["offs"] as Array).size() == 2 and two_lane < 0 and int(ed["to"]) == legacy_nodes + 1:
+			two_lane = e
+		if float(ed["y1"]) > 3.0:
+			bridge = e
+	var lat := -1.0
+	var lift := -1.0
+	if two_lane >= 0:
+		var ed2: Dictionary = probe.edges[two_lane]
+		lat = (probe.lane_point(two_lane, 0, 20.0) - (ed2["a"] as Vector3)).dot(ed2["left"])
+	if bridge >= 0:
+		lift = probe.lane_point(bridge, 0, float(probe.edges[bridge]["len"])).y
+	_check("downtown road graph adopted by lane traffic (left-hand, merged, deck height)", corner >= 0 and added == 8 and probe.nodes.size() == legacy_nodes + 4 \
+			and absf(lat - 5.25) < 0.05 and lift > 3.6 and signals_ok and probe.edges[0]["offs"] == AmbientTraffic.LANE_OFFSETS,
+			"added=%d nodes=%d lat=%.2f lift=%.2f" % [added, probe.nodes.size(), lat, lift])
+	probe.free()
+	var crowd_probe := CrowdDirector.new()
+	var walks := crowd_probe.adopt_downtown([[Vector3(400.0, 0.3, -330.0), Vector3(400.0, 0.3, -470.0)], [Vector3.ZERO]])
+	crowd_probe.free()
+	_check("downtown walks adopted by the crowd director", walks == 1, "walks=%d" % walks)
+
 func _street_life_checks(player: Player, traffic: TrafficManager) -> void:
 	var amb := traffic.ambient
 	_check("street life systems present", amb != null and traffic.crowd != null and traffic.dressing != null)
 	if amb == null or traffic.crowd == null or traffic.dressing == null:
 		return
+	_downtown_adoption_checks(traffic)
 	print("[street-test] mode=", Game.mode, " vehicle=", player.current_vehicle)
 	if player.current_vehicle != null:
 		await _tap("interact")

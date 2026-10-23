@@ -32,6 +32,9 @@ var _lines: Array[Dictionary] = []   # {axis, line, side}
 ## so crowds also read from the air where avenue canopy hides the pavement.
 var _spines: Array[Dictionary] = []  # {a, b}
 var stats := {"relocated": 0, "cuts": 0}
+## Wave M: downtown pedestrian polylines (world.downtown_ped_lanes, published
+## by the downtown-map piece): promenades, bridges and new-road footways.
+var _polys: Array = []
 
 func setup(t: TrafficManager) -> void:
 	name = "CrowdDirector"
@@ -57,6 +60,7 @@ func setup(t: TrafficManager) -> void:
 			for off: float in [-4.6, 4.6]:
 				_spines.append({"a": c + Vector3(-56.0, 0.0, off), "b": c + Vector3(56.0, 0.0, off)})
 				_spines.append({"a": c + Vector3(off, 0.0, -56.0), "b": c + Vector3(off, 0.0, 56.0)})
+	adopt_downtown(t.world.downtown_ped_lanes)
 	for ped in t.peds:
 		if is_instance_valid(ped) and ped.has_meta("roamer"):
 			roamers.append(ped)
@@ -174,7 +178,71 @@ func _recycle(cut: bool) -> void:
 		if _seed(p, not cut, false):
 			budget -= 1
 
+## Keep every downtown polyline with at least two points; returns the count.
+func adopt_downtown(lanes: Array) -> int:
+	_polys.clear()
+	for poly in lanes:
+		if poly is Array and (poly as Array).size() >= 2:
+			var pts: Array[Vector3] = []
+			for q in poly:
+				pts.append(Vector3((q as Vector3).x, (q as Vector3).y + 0.2, (q as Vector3).z))
+			_polys.append(pts)
+	return _polys.size()
+
+## Polylines with a vertex inside the spawn radius of the focus.
+func _near_polys() -> Array:
+	var out: Array = []
+	for poly in _polys:
+		for q in poly:
+			if Vector2((q as Vector3).x - _focus.x, (q as Vector3).z - _focus.z).length() < SPAWN_RADIUS:
+				out.append(poly)
+				break
+	return out
+
+func _seed_poly(p: NPC, hidden_only: bool, near: Array) -> bool:
+	for attempt in 8:
+		var pts: Array[Vector3] = near[_rng.randi_range(0, near.size() - 1)]
+		var k := _rng.randi_range(0, pts.size() - 2)
+		var pos: Vector3 = pts[k].lerp(pts[k + 1], _rng.randf_range(0.05, 0.95))
+		var seg := pts[k + 1] - pts[k]
+		seg.y = 0.0
+		# Spread across the walk, not on one painted line.
+		if seg.length() > 0.1:
+			pos += Vector3.UP.cross(seg.normalized()) * _rng.randf_range(-1.4, 1.4)
+		if Vector2(pos.x - _focus.x, pos.z - _focus.z).length() > SPAWN_RADIUS:
+			continue
+		if hidden_only:
+			var rel := pos - _cam_pos
+			rel.y = 0.0
+			if rel.length() < 95.0 and rel.normalized().dot(_cam_fwd) > -0.25:
+				continue
+		if Vector2(pos.x - _cam_pos.x, pos.z - _cam_pos.z).length() < 7.0:
+			continue
+		p.lane = pts
+		p.lane_dir = 1 if _rng.randf() < 0.5 else -1
+		p.lane_index = k + 1 if p.lane_dir > 0 else k
+		p.velocity = Vector3.ZERO
+		p.global_position = pos
+		p.visible = true
+		var face: Vector3 = pts[p.lane_index] - pos
+		face.y = 0.0
+		if face.length() > 0.1:
+			p.rotation.y = atan2(-face.x, -face.z)
+		p.state = NPC.State.WALK
+		p.idle_time = 0.0
+		stats["relocated"] += 1
+		stats["downtown"] = int(stats.get("downtown", 0)) + 1
+		return true
+	return false
+
 func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
+	if not _polys.is_empty() and not loiter:
+		var near := _near_polys()
+		# Outside the legacy district, people go on the downtown walks only;
+		# inside it, the downtown walks take a share in proportion.
+		var outside := absf(_focus.x) > 330.0 or absf(_focus.z) > 330.0
+		if not near.is_empty() and (outside or _rng.randf() < 0.3) and _seed_poly(p, hidden_only, near):
+			return true
 	var spine_share := 0.5 if _cam_pos.y > 30.0 else 0.15
 	if not loiter and _rng.randf() < spine_share and _seed_spine(p, hidden_only):
 		return true

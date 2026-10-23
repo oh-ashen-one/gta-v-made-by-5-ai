@@ -56,9 +56,13 @@ var stats := {"relocated": 0, "cuts": 0, "promoted": 0, "unstuck": 0}
 func setup(t: TrafficManager) -> void:
 	name = "AmbientTraffic"
 	traffic = t
-	nodes = t.nodes
+	# A copy: the downtown graph appends nodes here, never to the legacy
+	# 5 x 5 traffic_nodes that tests and the route driver index.
+	nodes = t.nodes.duplicate()
 	_rng.seed = Game.seed_value + 77
 	_build_edges()
+	if t.world != null:
+		adopt_downtown(t.world.downtown_graph)
 	# Street-life D: no procedural box buses (critic: "box-primitive buses read
 	# as blockouts"); the stream is the provider sedan/coupe/van art.
 	var kinds := ["sedan", "taxi", "sedan", "coupe", "van", "sedan", "taxi", "coupe", "sedan", "van", "taxi", "sedan"]
@@ -93,18 +97,139 @@ func _build_edges() -> void:
 			d.y = 0.0
 			if not ((absf(d.x) < 0.5 and absf(absf(d.z) - 160.0) < 0.5) or (absf(d.z) < 0.5 and absf(absf(d.x) - 160.0) < 0.5)):
 				continue
-			var dir := d.normalized()
-			edges.append({"a": nodes[i], "b": nodes[j], "dir": dir, "left": Vector3.UP.cross(dir).normalized(), "len": d.length(), "from": i, "to": j})
-			_out_edges[i].append(edges.size() - 1)
+			_add_edge(i, j, LANE_OFFSETS, true, ENTRY, STOP, 0.0, 0.0)
+
+## One directed lane edge. offs: lane-centre offsets left of the centreline,
+## kerb lane first; entry/stop: lane start past the from-node and stop line
+## before the to-node; y0/y1: road surface height at each end (bridge decks).
+func _add_edge(i: int, j: int, offs: Array, signal_held: bool, entry: float, stop: float, y0: float, y1: float) -> void:
+	var d := nodes[j] - nodes[i]
+	d.y = 0.0
+	var dir := d.normalized()
+	edges.append({"a": Vector3(nodes[i].x, 0.0, nodes[i].z), "b": Vector3(nodes[j].x, 0.0, nodes[j].z), "dir": dir, "left": Vector3.UP.cross(dir).normalized(),
+		"len": d.length(), "from": i, "to": j, "offs": offs, "signal": signal_held, "entry": entry, "stop": stop, "y0": y0, "y1": y1})
+	_out_edges[i].append(edges.size() - 1)
+
+# ------------------------------------------------------- downtown (wave M)
+## Adopt the downtown-map road graph (loop/DOWNTOWN_PLAN.md section 5):
+## {"nodes": Array[Vector3], "edges": Array[Vector2i] (undirected),
+## "lanes": Array[int] (per direction), "links": Array[Vector2i] (downtown
+## node -> legacy traffic_nodes index)}. Every downtown edge becomes two
+## directed lane edges; linked or coincident nodes merge with the legacy
+## grid, so lane traffic flows between the district and the new roads.
+## Signals hold only at real junctions (3+ roads); bends are driven through.
+## Returns the number of directed edges added (0 for an empty graph).
+const DT_LANE_W := 3.5
+func adopt_downtown(g: Dictionary) -> int:
+	if g.is_empty() or not g.has("nodes") or not g.has("edges"):
+		return 0
+	var dn: Array = g["nodes"]
+	var link := {}
+	for l in g.get("links", []):
+		link[int((l as Vector2i).x)] = int((l as Vector2i).y)
+	var legacy := nodes.size()
+	var index: Array[int] = []
+	for i in dn.size():
+		var p: Vector3 = dn[i]
+		var found := -1
+		if link.has(i) and int(link[i]) >= 0 and int(link[i]) < legacy:
+			found = int(link[i])
+		else:
+			for k in nodes.size():
+				if Vector2(nodes[k].x - p.x, nodes[k].z - p.z).length() < 1.5:
+					found = k
+					break
+		if found < 0:
+			nodes.append(p)
+			found = nodes.size() - 1
+			_out_edges[found] = []
+		index.append(found)
+	var degree := {}
+	for e in g["edges"]:
+		var ev := e as Vector2i
+		for k in [index[ev.x], index[ev.y]]:
+			degree[k] = int(degree.get(k, 0)) + 1
+	var lanes: Array = g.get("lanes", [])
+	var before := edges.size()
+	for n in g["edges"].size():
+		var ev: Vector2i = g["edges"][n]
+		var a := index[ev.x]
+		var b := index[ev.y]
+		if a == b:
+			continue
+		var per_dir := clampi(int(lanes[n]) if n < lanes.size() else 1, 1, 4)
+		var median := _plan_median(dn[ev.x], dn[ev.y])
+		var offs: Array[float] = [(per_dir - 0.5) * DT_LANE_W + median * 0.5]
+		if per_dir >= 2:
+			offs.append((per_dir - 1.5) * DT_LANE_W + median * 0.5)
+		var flat := Vector2(nodes[b].x - nodes[a].x, nodes[b].z - nodes[a].z).length()
+		for pair in [[a, b, (dn[ev.x] as Vector3).y, (dn[ev.y] as Vector3).y], [b, a, (dn[ev.y] as Vector3).y, (dn[ev.x] as Vector3).y]]:
+			var junction_from := int(degree.get(pair[0], 0)) >= 3 or int(pair[0]) < legacy
+			var junction_to := int(degree.get(pair[1], 0)) >= 3 or int(pair[1]) < legacy
+			var entry := ENTRY if junction_from else 3.0
+			var stop := STOP if junction_to else 3.0
+			# Short links keep a drivable stretch between the two ends.
+			var room := flat - entry - stop
+			if room < 8.0:
+				var k := maxf(0.2, (flat - 8.0) / maxf(1.0, entry + stop))
+				entry *= k
+				stop *= k
+			_add_edge(int(pair[0]), int(pair[1]), offs, junction_to, entry, stop, float(pair[2]), float(pair[3]))
+	stats["downtown_edges"] = edges.size() - before
+	return edges.size() - before
+
+## Median width of the DowntownPlan road this segment lies on (0 if none).
+func _plan_median(p: Vector3, q: Vector3) -> float:
+	var mid := (p + q) * 0.5
+	for road_name in DowntownPlan.ROADS:
+		var road: Dictionary = DowntownPlan.ROADS[road_name]
+		var pts: Array = road["pts"]
+		for k in pts.size() - 1:
+			var a: Vector3 = pts[k]
+			var b: Vector3 = pts[k + 1]
+			var ab := Vector2(b.x - a.x, b.z - a.z)
+			var t := clampf(Vector2(mid.x - a.x, mid.z - a.z).dot(ab) / maxf(0.01, ab.length_squared()), 0.0, 1.0)
+			if Vector2(mid.x - a.x, mid.z - a.z).distance_to(ab * t) < 2.0:
+				return float(road.get("median", 0.0))
+	return 0.0
+
+func _entry(e: int) -> float:
+	return float(edges[e]["entry"])
+
+func _s_end(e: int) -> float:
+	return float(edges[e]["len"]) - float(edges[e]["stop"])
+
+func _off(e: int, lane: int) -> float:
+	var offs: Array = edges[e]["offs"]
+	return float(offs[mini(lane, offs.size() - 1)])
+
+## Lane index valid on edge e (a two-lane approach feeding a one-lane road).
+func _lane_for(e: int, lane: int) -> int:
+	return mini(lane, (edges[e]["offs"] as Array).size() - 1)
+
+func _signal_ok(e: int) -> bool:
+	return not bool(edges[e]["signal"]) or traffic.signal_allows(edges[e]["dir"])
 
 func lane_point(e: int, lane: int, s: float) -> Vector3:
 	var ed: Dictionary = edges[e]
-	var p: Vector3 = ed["a"] + ed["dir"] * s + ed["left"] * LANE_OFFSETS[lane]
-	p.y = 0.07
+	var p: Vector3 = ed["a"] + ed["dir"] * s + ed["left"] * _off(e, lane)
+	p.y = 0.07 + lerpf(float(ed["y0"]), float(ed["y1"]), clampf(s / maxf(0.01, float(ed["len"])), 0.0, 1.0))
 	return p
 
 # ----------------------------------------------------------------- update
 func _physics_process(delta: float) -> void:
+	var pt0 := Time.get_ticks_usec()
+	_physics_step(delta)
+	if _prof:
+		_prof_us += Time.get_ticks_usec() - pt0
+		_prof_frames += 1
+		if _prof_frames % 300 == 0:
+			print("[street-prof] ambient physics avg %.2f ms/frame over 300 frames" % [_prof_us / 300000.0])
+			_prof_us = 0
+
+var _prof_us := 0
+var _prof_frames := 0
+func _physics_step(delta: float) -> void:
 	_update_focus()
 	if Game.simulation_paused:
 		return
@@ -127,13 +252,14 @@ func _physics_process(delta: float) -> void:
 			_debug_dump()
 
 var _debug := "--street-debug" in OS.get_cmdline_user_args()
+var _prof := "--street-prof" in OS.get_cmdline_user_args()
 var _debug_timer := 0.0
 func _debug_dump() -> void:
 	var p := Game.player_position
 	var near: Array = []
 	for v in vehicles:
 		if v.active and v.global_position.distance_to(p) < 14.0:
-			near.append("%s e%d l%d s%.1f v%.1f gap%.1f lead%.1f sig%s" % [str(v.global_position.round()), v.edge, v.lane, v.s, v.speed, v.obstacle_gap, _leader_gap(v, float(edges[v.edge]["len"]) - STOP), traffic.signal_allows(edges[v.edge]["dir"])])
+			near.append("%s e%d l%d s%.1f v%.1f gap%.1f lead%.1f sig%s" % [str(v.global_position.round()), v.edge, v.lane, v.s, v.speed, v.obstacle_gap, _leader_gap(v, _s_end(v.edge)), _signal_ok(v.edge)])
 	var others: Array = []
 	for g in ["vehicles", "npcs"]:
 		for n in get_tree().get_nodes_in_group(g):
@@ -184,12 +310,16 @@ func _update_focus() -> void:
 	var cut := _focus == Vector3.INF or f.distance_to(_focus) > 60.0
 	_focus = f
 	if cut:
+		var t0 := Time.get_ticks_usec()
 		stats["cuts"] += 1
 		_build_view_spans()
 		_rebuild_keys()
 		_recycle(true)
 		_rebuild_keys()
 		_preroll(PREROLL_SECONDS)
+		stats["cut_ms"] = float(stats.get("cut_ms", 0.0)) + (Time.get_ticks_usec() - t0) / 1000.0
+		if _prof:
+			print("[street-prof] cut %d took %.1f ms (total %.0f ms)" % [stats["cuts"], (Time.get_ticks_usec() - t0) / 1000.0, stats["cut_ms"]])
 
 ## Street-life D: lane stretches (edge, s_lo, s_hi) that lie 10-140 m inside
 ## the street-level camera's forward cone; the pre-roll then carries the cars
@@ -203,8 +333,8 @@ func _build_view_spans() -> void:
 		var ed: Dictionary = edges[e]
 		var lo := INF
 		var hi := -INF
-		var s := ENTRY + 2.0
-		while s < float(ed["len"]) - STOP - 4.0:
+		var s := _entry(e) + 2.0
+		while s < _s_end(e) - 4.0:
 			var p := lane_point(e, 0, s)
 			var rel := p - _cam_pos
 			rel.y = 0.0
@@ -263,8 +393,8 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 	for attempt in 24:
 		var e := _rng.randi_range(0, edges.size() - 1)
 		var ed: Dictionary = edges[e]
-		var lo: float = ENTRY + 2.0
-		var hi: float = float(ed["len"]) - STOP - 4.0
+		var lo: float = _entry(e) + 2.0
+		var hi: float = _s_end(e) - 4.0
 		# Street-life D: half of the seeds of a cut go straight into the lane
 		# stretches the street-level lens is looking at.
 		if not hidden_only and not _view_spans.is_empty() and attempt < 12 and _rng.randf() < 0.5:
@@ -273,8 +403,10 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 			ed = edges[e]
 			lo = span.y
 			hi = span.z
+		if hi <= lo:
+			continue
 		var s := _rng.randf_range(lo, hi)
-		var lane := 0 if _rng.randf() < 0.55 else 1
+		var lane := _lane_for(e, 0 if _rng.randf() < 0.55 else 1)
 		var p := lane_point(e, lane, s)
 		var dist := Vector2(p.x - _focus.x, p.z - _focus.z).length()
 		# Bias towards the near field and towards what the camera faces.
@@ -423,7 +555,7 @@ func _rebuild_keys() -> void:
 
 func _drive(v: AmbientVehicle, delta: float) -> void:
 	var ed: Dictionary = edges[v.edge]
-	var s_end: float = float(ed["len"]) - STOP
+	var s_end: float = _s_end(v.edge)
 	var target := v.vmax
 	# 1. Car following, including the tail of the lane we are about to enter.
 	var gap := _leader_gap(v, s_end)
@@ -432,7 +564,7 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 	if v.s <= s_end:
 		var to_line := s_end - v.s
 		var committed := to_line < 3.5 and v.speed > 5.0
-		if not traffic.signal_allows(ed["dir"]) and not committed:
+		if not _signal_ok(v.edge) and not committed:
 			target = minf(target, _stop_speed(to_line - 0.5))
 		# Keep the box clear: do not enter the junction unless the exit lane
 		# has room for this car on the far side.
@@ -456,7 +588,7 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 			v.speed = 0.0
 	_lane_change(v, delta)
 	# Junction deadlock breaker: a car held inside the box for long creeps on.
-	if v.speed < 0.2 and v.j_len > 0.0 and v.s < ENTRY:
+	if v.speed < 0.2 and v.j_len > 0.0 and v.s < _entry(v.edge):
 		v.stuck_time += delta
 	else:
 		v.stuck_time = 0.0 if v.speed > 1.0 else v.stuck_time
@@ -466,7 +598,7 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 	v.s += v.speed * delta
 	if v.j_len <= 0.0 and v.s >= s_end and v.next_edge >= 0:
 		_enter_junction(v)
-	elif v.j_len > 0.0 and v.s >= ENTRY:
+	elif v.j_len > 0.0 and v.s >= _entry(v.edge):
 		v.j_len = 0.0
 	if v.lat_shift != 0.0:
 		v.lat_shift = move_toward(v.lat_shift, 0.0, LANE_CHANGE_RATE * delta)
@@ -491,15 +623,15 @@ func _lane_change(v: AmbientVehicle, delta: float) -> void:
 	if node is NPC and v.blocked_time > 2.0 and fmod(v.blocked_time, 1.5) < delta:
 		var fwd := -v.global_transform.basis.z
 		(node as NPC).dodge_vehicle(v.global_position, Vector3(fwd.x, 0.0, fwd.z).normalized())
-	if v.blocked_time < 0.9 or v.lat_shift != 0.0 or (v.j_len > 0.0 and v.s < ENTRY):
+	if v.blocked_time < 0.9 or v.lat_shift != 0.0 or (v.j_len > 0.0 and v.s < _entry(v.edge)):
 		return
 	var ed: Dictionary = edges[v.edge]
-	if v.s > float(ed["len"]) - STOP - 6.0:
+	if v.s > _s_end(v.edge) - 6.0 or (ed["offs"] as Array).size() < 2:
 		return
 	var other := 1 - v.lane
 	# The obstacle must not also block the other lane.
 	var lat: float = (node.global_position - (ed["a"] as Vector3)).dot(ed["left"])
-	if absf(lat - LANE_OFFSETS[other]) < 2.1:
+	if absf(lat - _off(v.edge, other)) < 2.1:
 		return
 	for o in _keys.get(v.edge * 2 + other, []):
 		var ds: float = (o as AmbientVehicle).s - v.s
@@ -508,7 +640,7 @@ func _lane_change(v: AmbientVehicle, delta: float) -> void:
 	var old_key := v.edge * 2 + v.lane
 	if _keys.has(old_key):
 		_keys[old_key].erase(v)
-	v.lat_shift = LANE_OFFSETS[v.lane] - LANE_OFFSETS[other]
+	v.lat_shift = _off(v.edge, v.lane) - _off(v.edge, other)
 	v.lane = other
 	var key := v.edge * 2 + other
 	if not _keys.has(key):
@@ -534,12 +666,12 @@ func _leader_gap(v: AmbientVehicle, s_end: float) -> float:
 		return lead.s - v.s - half - lead.dims.z * 0.5
 	if v.next_edge < 0:
 		return INF
-	var nxt: Array = _keys.get(v.next_edge * 2 + v.lane, [])
+	var nxt: Array = _keys.get(v.next_edge * 2 + _lane_for(v.next_edge, v.lane), [])
 	if nxt.is_empty():
 		return INF
 	var tail: AmbientVehicle = nxt[0]
-	var through := 23.0
-	return (s_end - v.s) + through + (tail.s - ENTRY) - half - tail.dims.z * 0.5
+	var through := float(edges[v.edge]["stop"]) + _entry(v.next_edge)
+	return (s_end - v.s) + through + (tail.s - _entry(v.next_edge)) - half - tail.dims.z * 0.5
 
 func _player_in_junction(node: Vector3, v: AmbientVehicle) -> bool:
 	if Game.mode != Game.MODE_CAR:
@@ -552,18 +684,18 @@ func _player_in_junction(node: Vector3, v: AmbientVehicle) -> bool:
 	return rel.dot(-v.global_transform.basis.z) > 2.0
 
 func _exit_room(v: AmbientVehicle) -> float:
-	var nxt: Array = _keys.get(v.next_edge * 2 + v.lane, [])
+	var nxt: Array = _keys.get(v.next_edge * 2 + _lane_for(v.next_edge, v.lane), [])
 	if nxt.is_empty():
 		return INF
 	var tail: AmbientVehicle = nxt[0]
-	return tail.s - ENTRY - tail.dims.z * 0.5
+	return tail.s - _entry(v.next_edge) - tail.dims.z * 0.5
 
 func _enter_junction(v: AmbientVehicle) -> void:
-	var overflow := v.s - (float(edges[v.edge]["len"]) - STOP)
-	var p0 := lane_point(v.edge, v.lane, float(edges[v.edge]["len"]) - STOP)
+	var overflow := v.s - _s_end(v.edge)
+	var p0 := lane_point(v.edge, v.lane, _s_end(v.edge))
 	var ne := v.next_edge
-	var lane := v.lane
-	var p2 := lane_point(ne, lane, ENTRY)
+	var lane := _lane_for(ne, v.lane)
+	var p2 := lane_point(ne, lane, _entry(ne))
 	var d1: Vector3 = edges[v.edge]["dir"]
 	var d2: Vector3 = edges[ne]["dir"]
 	var c: Vector3
@@ -572,21 +704,22 @@ func _enter_junction(v: AmbientVehicle) -> void:
 	else:
 		# Intersection of the incoming and outgoing lane lines.
 		var b: Vector3 = edges[v.edge]["b"]
-		c = b + (edges[v.edge]["left"] as Vector3) * LANE_OFFSETS[lane] + (edges[ne]["left"] as Vector3) * LANE_OFFSETS[lane]
-		c.y = p0.y
+		c = b + (edges[v.edge]["left"] as Vector3) * _off(v.edge, v.lane) + (edges[ne]["left"] as Vector3) * _off(ne, lane)
+		c.y = (p0.y + p2.y) * 0.5
 	v.j_p0 = p0
 	v.j_c = c
 	v.j_p2 = p2
 	v.j_len = maxf(4.0, (p0.distance_to(c) + c.distance_to(p2) + p0.distance_to(p2)) * 0.5)
 	v.edge = ne
-	v.s = ENTRY - v.j_len + overflow
+	v.lane = lane
+	v.s = _entry(ne) - v.j_len + overflow
 	v.next_edge = _choose_next(ne)
 
 func _apply_transform(v: AmbientVehicle) -> void:
 	var pos: Vector3
 	var fwd: Vector3
-	if v.j_len > 0.0 and v.s < ENTRY:
-		var t := clampf(1.0 - (ENTRY - v.s) / v.j_len, 0.0, 1.0)
+	if v.j_len > 0.0 and v.s < _entry(v.edge):
+		var t := clampf(1.0 - (_entry(v.edge) - v.s) / v.j_len, 0.0, 1.0)
 		var a := v.j_p0.lerp(v.j_c, t)
 		var b := v.j_c.lerp(v.j_p2, t)
 		pos = a.lerp(b, t)
@@ -667,7 +800,7 @@ func _scan_obstacles(v: AmbientVehicle) -> float:
 					# whole approaches); same-lane order inside the box is kept by
 					# _leader_gap, which follows the exit lane's queue.
 					var na := node as AmbientVehicle
-					if v.j_len > 0.0 and v.s < ENTRY and na.j_len > 0.0 and na.s < ENTRY:
+					if v.j_len > 0.0 and v.s < _entry(v.edge) and na.j_len > 0.0 and na.s < _entry(na.edge):
 						continue
 					var ab := node.global_transform.basis
 					var abx := Vector3(ab.x.x, 0, ab.x.z).normalized() * ((node as AmbientVehicle).dims.x * 0.5)
@@ -783,8 +916,8 @@ func chain_desc(v: AmbientVehicle) -> String:
 		if cur is AmbientVehicle:
 			var a := cur as AmbientVehicle
 			var ed: Dictionary = edges[a.edge]
-			out.append("%s[e%d l%d s%.0f/%.0f j%.0f v%.1f idle%.0f stuck%.0f sig%s next%d gap%.1f exit%.0f %s]" % [a.name.right(5), a.edge, a.lane, a.s, float(ed["len"]) - STOP, a.j_len, a.speed, a.idle_time, a.stuck_time,
-				traffic.signal_allows(ed["dir"]), a.next_edge, a.obstacle_gap, _exit_room(a) if a.next_edge >= 0 else -1.0, str(a.global_position.round())])
+			out.append("%s[e%d l%d s%.0f/%.0f j%.0f v%.1f idle%.0f stuck%.0f sig%s next%d gap%.1f exit%.0f %s]" % [a.name.right(5), a.edge, a.lane, a.s, _s_end(a.edge), a.j_len, a.speed, a.idle_time, a.stuck_time,
+				_signal_ok(a.edge), a.next_edge, a.obstacle_gap, _exit_room(a) if a.next_edge >= 0 else -1.0, str(a.global_position.round())])
 			cur = a.obstacle_node
 		else:
 			var what := cur.get_class()
@@ -808,18 +941,18 @@ func hold_reasons() -> Dictionary:
 		var n := v.obstacle_node
 		if n != null and is_instance_valid(n) and v.obstacle_gap < 3.0:
 			if n is AmbientVehicle:
-				r = "amb_box" if (n as AmbientVehicle).j_len > 0.0 and (n as AmbientVehicle).s < ENTRY else ("amb_idle" if (n as AmbientVehicle).idle_time > 5.0 else "amb")
+				r = "amb_box" if (n as AmbientVehicle).j_len > 0.0 and (n as AmbientVehicle).s < _entry((n as AmbientVehicle).edge) else ("amb_idle" if (n as AmbientVehicle).idle_time > 5.0 else "amb")
 			elif n is Car:
 				r = "car_ai" if (n as Car).has_ai else ("car_player" if (n as Car).driver_is_player else "car_parked")
 			elif n is NPC:
 				r = "npc"
 			else:
 				r = "player"
-		elif v.j_len > 0.0 and v.s < ENTRY:
+		elif v.j_len > 0.0 and v.s < _entry(v.edge):
 			r = "in_box"
-		elif not traffic.signal_allows(ed["dir"]):
+		elif not _signal_ok(v.edge):
 			r = "red"
-		elif _leader_gap(v, float(ed["len"]) - STOP) < 4.0:
+		elif _leader_gap(v, _s_end(v.edge)) < 4.0:
 			r = "queue"
 		elif v.next_edge >= 0 and _exit_room(v) < v.dims.z + 2.5:
 			r = "exit_full"

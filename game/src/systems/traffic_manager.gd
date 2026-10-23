@@ -56,6 +56,9 @@ func setup(w: WorldBuilder, player: Node) -> void:
 	_setup_street_life()
 
 func _setup_street_life() -> void:
+	# QA A/B switch: the legacy population only (street-life off).
+	if "--street-life=off" in OS.get_cmdline_user_args():
+		return
 	ambient = AmbientTraffic.new()
 	add_child(ambient)
 	ambient.setup(self)
