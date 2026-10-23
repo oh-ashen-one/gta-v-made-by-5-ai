@@ -836,6 +836,12 @@ func _skyline_checks(world: WorldBuilder) -> void:
 	var lib := ResourceLoader.exists(AerialRoofscape.ROOF_TEX) and ResourceLoader.exists(AerialAtmosphere.GLASS_TEX)
 	_check("aerial: generated roof and curtain-wall sheets are applied when the private library is present", not lib or (AerialRoofscape.roof_textured and AerialAtmosphere.glass_materials >= 3), "library=%s roof=%s glass=%d" % [lib, AerialRoofscape.roof_textured, AerialAtmosphere.glass_materials])
 	_check("aerial: shophouse roofs are altered unit by unit (>= 50% of units, all three kinds)", int(rs.get("units", 0)) > 100 and altered * 2 >= int(rs.get("units", 0)) and int(rs.get("attic", 0)) > 0 and int(rs.get("rebuilt", 0)) > 0 and int(rs.get("tanks_solar", 0)) > 0 and int(rs.get("max_run", 99)) <= 3, str(rs))
+	# Aerial R2: far towers keep graded silhouettes (haze capped well below a
+	# white wash) and background towers cast real shadows only from the air.
+	var hz: Dictionary = AerialAtmosphere.HAZE
+	_check("aerial: skyline haze is capped (<= 0.65) and darker than the horizon so far towers stay silhouettes", float(hz["haze_max"]) <= 0.65 and (hz["haze_col"] as Color).get_luminance() <= 0.56, str(hz))
+	var casters := AerialAtmosphere.aerial_casters.filter(func(g): return is_instance_valid(g))
+	_check("aerial: background towers registered as airborne-only shadow casters", casters.size() >= 4, "casters=%d" % casters.size())
 
 ## driving-p: handbrake rotation, momentum exchange in a rear-end crash, a
 ## wall rebound that keeps some speed, and visible damage. Disclosed fixture

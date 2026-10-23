@@ -24,17 +24,26 @@ const BLEND_HIGH := 75.0
 
 ## Aerial perspective shared by every skyline-piece shader (pushed through
 ## SkylineHorizon.sync; the shader defaults match so the self-test can read them).
+## Aerial R2: darker, thinner haze (critic aerial-R1: far band p5 193 / std 14
+## read as a milky wash; GTA V far towers sit at p5 ~133 / std 26). A deeper
+## blue-grey in-scatter capped lower keeps the 0.8-3 km towers as graded
+## silhouettes instead of fading them into the horizon.
 const HAZE := {
-	"haze_col": Color(0.60, 0.67, 0.77),
-	"haze_sun_col": Color(0.98, 0.86, 0.70),
-	"haze_start": 150.0,
-	"haze_density": 0.0022,
-	"haze_max": 0.82,
+	"haze_col": Color(0.47, 0.54, 0.64),
+	"haze_sun_col": Color(0.92, 0.76, 0.58),
+	"haze_start": 220.0,
+	"haze_density": 0.0015,
+	"haze_max": 0.62,
 }
 
 ## Fake ground-shadow materials of the background towers: they fade out
 ## inside the real shadow range so the two never stack.
 static var fake_shadow_materials: Array[ShaderMaterial] = []
+## Background towers / low-rise that cast real shadows only while the camera
+## is airborne (aerial R2): on the street their real shadows darkened the
+## heritage road, and the parent never had them there.
+static var aerial_casters: Array[GeometryInstance3D] = []
+const CASTER_BLEND := 0.05
 
 var env: Environment
 var sun: DirectionalLight3D
@@ -76,9 +85,15 @@ func apply_blend(k: float) -> void:
 	sun.directional_shadow_split_2 = lerpf(0.15, 0.11, k)
 	sun.directional_shadow_split_3 = lerpf(0.40, 0.33, k)
 	env.volumetric_fog_density = lerpf(ground_vfog, AIR_VFOG_DENSITY, k)
+	var airborne := k > CASTER_BLEND
+	var mode := GeometryInstance3D.SHADOW_CASTING_SETTING_ON if airborne else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for g in aerial_casters:
+		if is_instance_valid(g):
+			g.cast_shadow = mode
+	# The fake ground shadows step aside only where real tower shadows exist.
 	for m in fake_shadow_materials:
 		if is_instance_valid(m):
-			m.set_shader_parameter("real_shadow_range", sun.directional_shadow_max_distance)
+			m.set_shader_parameter("real_shadow_range", sun.directional_shadow_max_distance if airborne else 0.0)
 
 const GLASS_TEX := "res://assets/providers/higgsfield/tower_glass_bluegreen_albedo.png"
 static var glass_materials := 0

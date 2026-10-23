@@ -12,20 +12,18 @@ extends RefCounted
 ##   --lighting-tonemap=aces|agx    tonemapper (default aces)
 ##   --lighting-off=vfog,ssil,ssao,lut,pcss   disable features for A/B
 
-# Aerial D1: the sun swings ~14 deg further round (azimuth 61 -> 75) so the
-# aerial views (photo_06/07/16, route 09) are side-lit: the east (+x) faces of
-# every tower take the sun and the faces turned to the camera fall into shade,
-# instead of front light that left both visible faces lit. The disc stays in
-# the heritage-avenue toward-sun frame (15 deg off its axis).
-const SUN_ROTATION_DEG := Vector3(-20.0, 75.0, 0.0)
-# Aerial D1: a cleaner late-afternoon key (less orange) so the aerials stop
-# reading beige; still warm against the blue sky fill.
-const SUN_COLOR := Color(1.0, 0.85, 0.67)
-const SUN_ENERGY := 2.7
-const SKY_ZENITH := Color(0.30, 0.44, 0.66)
-const CLOUD_COVERAGE := 0.6
-const SKY_SHADER := "res://assets/authored/shaders/cumulus_sky.gdshader"
-const HORIZON_COOL := Color(0.76, 0.81, 0.87)
+# Aerial R2: back to the parent's warm late-afternoon key (critic aerial-R1:
+# the D1 swing to 75 deg / cooler key bleached the heritage road to luma 142
+# vs 61 and turned the whole grade milky midday). The azimuth stays 61.
+const SUN_ROTATION_DEG := Vector3(-19.0, 61.0, 0.0)
+const SUN_COLOR := Color(1.0, 0.77, 0.54)
+const SUN_ENERGY := 2.55
+const SKY_ZENITH := Color(0.38, 0.48, 0.64)
+const CLOUD_COVERAGE := 0.55
+# Aerial R2: the parent's golden-hour dome; cumulus_sky.gdshader (wave D WIP)
+# is kept on disk but its bright radiance fed the bleached street grade.
+const SKY_SHADER := "res://assets/authored/shaders/golden_hour_sky.gdshader"
+const HORIZON_COOL := Color(0.88, 0.85, 0.80)
 const LAMP_COLOR := Color(1.0, 0.78, 0.52)
 const TUBE_COLOR := Color(0.86, 0.94, 1.0)
 
@@ -52,12 +50,8 @@ static func _arg(prefix: String, fallback: String) -> String:
 static func build_environment(parent: Node) -> Dictionary:
 	var env := Environment.new()
 	var sky_mat := ShaderMaterial.new()
-	# Aerial D1: ray-marched volumetric cumulus (cumulus_sky.gdshader) replaces
-	# the 2D cloud dome of golden_hour_sky.gdshader.
+	# SKY_SHADER: see the constant (aerial R2 restored the golden-hour dome).
 	sky_mat.shader = load(SKY_SHADER)
-	var noise := AerialAtmosphere.cloud_noise()
-	sky_mat.set_shader_parameter("cloud_perlin", noise[0])
-	sky_mat.set_shader_parameter("cloud_cells", noise[1])
 	# Humid tropical sky under a cumulus deck (round 2, critic A1). Set here so
 	# the self-test can read them; the shader defaults match.
 	sky_mat.set_shader_parameter("zenith_color", SKY_ZENITH)
@@ -76,11 +70,11 @@ static func build_environment(parent: Node) -> Dictionary:
 	# 75 % sky, 25 % warm pavement grey: shade reads blue-lifted, not violet.
 	# Wave A integration: lighting-A4 measured the shade as sepia (blue/red
 	# 0.51-0.63 vs 0.72-1.23 in the references); lean the fill toward the sky.
-	# Aerial D1: less fill (0.52 -> 0.42) and more of it from the blue sky, so
-	# shaded tower faces sit clearly below the sunlit ones and read cool.
-	env.ambient_light_sky_contribution = 0.82
-	env.ambient_light_color = Color(0.60, 0.64, 0.70)
-	env.ambient_light_energy = 0.42
+	# Aerial R2: reverted (the bluer fill cast the enclosed workshop floor
+	# cold blue, RGB 30,40,57 vs 60,59,61).
+	env.ambient_light_sky_contribution = 0.72
+	env.ambient_light_color = Color(0.62, 0.65, 0.70)
+	env.ambient_light_energy = 0.52
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 
 	var tonemap := _arg("--lighting-tonemap", "aces")
@@ -101,14 +95,13 @@ static func build_environment(parent: Node) -> Dictionary:
 	# vs 44 baseline) and glass towers washed to cream. The skyline piece's
 	# shader haze already layers the far city, so the global fog is thinner and
 	# less warm, and the sun-side warmth comes from sun scatter instead.
-	# Aerial D1: cool blue-grey in-scatter (the beige fog made aerials milky)
-	# that builds with distance; aerial perspective pulls its colour from the
-	# sky, so far landmarks sink into the horizon band.
-	env.fog_light_color = Color(0.70, 0.77, 0.86)
+	# Aerial R2: reverted to the parent; the far-city depth now comes from the
+	# darker graded skyline haze (AerialAtmosphere.HAZE) instead of thicker fog.
+	env.fog_light_color = Color(0.88, 0.85, 0.80)
 	env.fog_light_energy = 1.0
-	env.fog_sun_scatter = 0.2
-	env.fog_density = 0.00046
-	env.fog_aerial_perspective = 0.55
+	env.fog_sun_scatter = 0.22
+	env.fog_density = 0.00038
+	env.fog_aerial_perspective = 0.35
 	env.fog_sky_affect = 0.0
 	env.fog_height = 24.0
 	env.fog_height_density = 0.0009
@@ -248,9 +241,8 @@ static func _grade_lut() -> ImageTexture3D:
 				var l := c.dot(Vector3(0.2126, 0.7152, 0.0722))
 				var shadow_w := pow(1.0 - l, 2.2)
 				var high_w := pow(l, 1.8)
-				# Aerial D1: cooler shade, gentler warm highlights (less beige).
-				c += Vector3(-0.016, 0.002, 0.020) * shadow_w
-				c += Vector3(0.030, 0.010, -0.030) * high_w
+				c += Vector3(-0.012, 0.004, 0.014) * shadow_w
+				c += Vector3(0.042, 0.012, -0.045) * high_w
 				# gentle S-curve around mid-grey
 				var s := Vector3(_smooth(c.x), _smooth(c.y), _smooth(c.z))
 				c = c.lerp(s, 0.22)

@@ -165,7 +165,10 @@ func build(parent: Node3D) -> void:
 		# Aerial D1: towers cast real shadows inside the sun's shadow range
 		# (1.3 km from the air, AerialAtmosphere); the swept ground polygons
 		# below only cover what lies beyond it.
-		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		# Aerial R2: only while airborne (AerialAtmosphere toggles it); on the
+		# street they shaded the heritage road (critic aerial-R1, photo_01).
+		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		AerialAtmosphere.aerial_casters.append(mmi)
 		if "--sightline-probe" in OS.get_cmdline_user_args():
 			var xforms: Array = []
 			for item in list:

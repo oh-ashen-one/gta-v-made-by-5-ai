@@ -349,7 +349,8 @@ func _lowrise(parent: Node3D, city: SkylineCity) -> void:
 	mmi.multimesh = mm
 	mmi.material_override = mat
 	# Aerial D1: real shadows inside the long aerial shadow range.
-	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	AerialAtmosphere.aerial_casters.append(mmi)   # aerial R2: airborne only
 	parent.add_child(mmi)
 	lowrise = xforms.size()
 

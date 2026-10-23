@@ -15,6 +15,7 @@ extends RefCounted
 ## back from the street front, so the five-foot ways are untouched.
 
 const OPENING_ROW_X := -180.0
+const HERITAGE_AVENUE_Z := -157.0   # photo_01 / photo_02 look along this street
 
 static var stats := {}
 const ROOF_TEX := "res://assets/providers/higgsfield/rooftop_flat_albedo.png"
@@ -55,6 +56,11 @@ static func build(world: Node, root: Node3D) -> Dictionary:
 		var weights := [0.34, 0.30, 0.18, 0.18]
 		if absf(pos.x - OPENING_ROW_X) < 6.0 or absf(pos.x - (OPENING_ROW_X + 10.0)) < 6.0:
 			weights = [0.55, 0.30, 0.0, 0.15]   # the street-photo heritage row keeps its fronts
+		elif absf(pos.z - HERITAGE_AVENUE_Z) < 22.0:
+			# Aerial R2: no raised rebuilds along the heritage avenue; one stood
+			# in the low sun's path down the street (photo_01/02) and shaded
+			# the road (critic aerial-R1: road luma must stay within 10 %).
+			weights = [0.40, 0.40, 0.0, 0.20]
 		var pick := _weighted(rng.randf(), weights)
 		if pick == prev and run >= 2:
 			pick = (pick + 1 + rng.randi_range(0, 1)) % 4

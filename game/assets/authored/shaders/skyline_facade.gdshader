@@ -42,19 +42,19 @@ uniform vec3 frame_col : source_color = vec3(0.72, 0.73, 0.72);
 // Aerial D1: denser, cooler aerial perspective (critics: far skyline as
 // contrasty as the near district). AerialAtmosphere.HAZE pushes the same
 // values into every skyline-piece material through SkylineHorizon.sync.
-uniform vec3 haze_col : source_color = vec3(0.60, 0.67, 0.77);
-uniform vec3 haze_sun_col : source_color = vec3(0.98, 0.86, 0.70);
+uniform vec3 haze_col : source_color = vec3(0.47, 0.54, 0.64);
+uniform vec3 haze_sun_col : source_color = vec3(0.92, 0.76, 0.58);
 uniform vec3 horizon_col : source_color = vec3(0.80, 0.83, 0.87);
 uniform vec3 sun_dir = vec3(0.91, 0.34, 0.24);
-uniform float haze_start = 150.0;
-uniform float haze_density = 0.0022;
-uniform float haze_max = 0.82;
+uniform float haze_start = 220.0;
+uniform float haze_density = 0.0015;
+uniform float haze_max = 0.62;
 uniform float horizon_start = 1700.0;
 uniform float horizon_end = 3600.0;
-uniform float far_full = 0.55;
+uniform float far_full = 0.42;   // aerial R2: far towers keep more silhouette (was 0.55)
 // Environment-fog stand-in (match WorldBuilder/lighting fog colour + density).
-uniform vec3 fog_col : source_color = vec3(0.70, 0.77, 0.86);
-uniform float fog_density_ref = 0.00046;
+uniform vec3 fog_col : source_color = vec3(0.88, 0.85, 0.80);
+uniform float fog_density_ref = 0.00038;
 uniform float fog_scale = 1.0;
 uniform vec3 roof_col : source_color = vec3(0.32, 0.31, 0.30);
 // Round 4: low-rise hinterland roofs vary per instance (terracotta, grey,
