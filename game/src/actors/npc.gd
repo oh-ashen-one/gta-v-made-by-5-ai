@@ -50,6 +50,7 @@ func _sim_near_sq() -> float:
 		_roamer = 1 if has_meta("roamer") else 0
 	return SIM_NEAR_ROAMER * SIM_NEAR_ROAMER if _roamer == 1 else SIM_NEAR * SIM_NEAR
 const FAR_DRAW_RANGE := 240.0
+const NEAR_HIDE := 2.3
 var _sim_accum := 0.0
 var _sim_slot := 0
 
@@ -137,6 +138,9 @@ func _build() -> void:
 			# animating (set_lod_far), so a distant figure costs one draw.
 			for mesh_node in character_visual.find_children("*", "MeshInstance3D", true, false):
 				(mesh_node as MeshInstance3D).visibility_range_end = FAR_DRAW_RANGE
+				# M1: a passer-by right at the lens is not drawn (a face filled
+				# a corner of the rendered route's car-entered frame).
+				(mesh_node as MeshInstance3D).visibility_range_begin = NEAR_HIDE
 
 func _limb(hip: Vector3, size: Vector3, cloth: Material) -> Node3D:
 	var pivot := Node3D.new()
@@ -268,7 +272,10 @@ func _walk(delta: float) -> void:
 		if _pace() > 1.0 and lane.size() > 1:
 			lane_dir = -lane_dir
 			lane_index = clampi(lane_index + lane_dir, 0, lane.size() - 1)
+		else:
+			_kerb_wait(target, delta)
 		return
+	_kerb_spot = Vector3.INF
 	_move_towards(target, WALK_SPEED * _pace(), delta)
 
 ## Street life r1: each walker keeps a personal pace (0.8-1.2x, stable per
@@ -279,6 +286,36 @@ func _pace() -> float:
 	if _pace_scale == 0.0:
 		_pace_scale = 0.8 + 0.4 * float(posmod(hash(get_instance_id() * 7919), 1000)) / 1000.0
 	return _pace_scale
+
+## Street-life M1: people waiting at a red crossing spread into a loose
+## group along and back from the kerb (rendered route: a dozen waiting
+## walkers stood in one single-file line along the pavement).
+var _kerb_spot := Vector3.INF
+func _kerb_wait(target: Vector3, delta: float) -> void:
+	var dir := target - global_position
+	dir.y = 0.0
+	if dir.length() < 0.1:
+		return
+	dir = dir.normalized()
+	if _kerb_spot == Vector3.INF:
+		var side := Vector3.UP.cross(dir)
+		var h := float(posmod(hash(get_instance_id() * 31 + lane_index), 1000)) / 1000.0
+		var spot := global_position + side * lerpf(-1.7, 1.7, h) - dir * fmod(h * 7.0, 1.0) * 1.4
+		# Keep the spot on the pavement of the road being walked along.
+		var band := WorldBuilder.ROAD_HALF + 0.7
+		for x in WorldBuilder.X_LINES:
+			if absf(spot.x - x) < band:
+				spot.x = x + signf(global_position.x - x) * band
+		for z in WorldBuilder.Z_LINES:
+			if absf(spot.z - z) < band:
+				spot.z = z + signf(global_position.z - z) * band
+		_kerb_spot = spot
+	var off := _kerb_spot - global_position
+	off.y = 0.0
+	if off.length() > 0.3:
+		_move_towards(_kerb_spot, 0.75, delta)
+	else:
+		rotation.y = lerp_angle(rotation.y, atan2(-dir.x, -dir.z), clampf(delta * 4.0, 0.0, 1.0))
 
 ## Street life: wait at the kerb while the road about to be crossed has a
 ## green (or amber) for its traffic, instead of walking into moving cars.
