@@ -23,6 +23,9 @@ uniform vec3 foam_color : source_color = vec3(0.86, 0.88, 0.86);
 uniform float water_level = -0.9;
 uniform float near_shore_z = -350.7;
 uniform float far_shore_z = -615.0;
+// x extent of each quay line (downtown-map, wave M; defaults = the old map)
+uniform vec2 near_shore_span = vec2(-750.0, 750.0);
+uniform vec2 far_shore_span = vec2(-850.0, 850.0);
 // xmin, zmin, xmax, zmax of the Merlion pier base and the boat pontoon
 uniform vec4 pier_rect = vec4(38.0, -354.0, 52.0, -340.0);
 uniform vec4 pontoon_rect = vec4(-44.0, -357.2, -22.0, -351.8);
@@ -225,8 +228,8 @@ void fragment() {
 	// ---------------- shoreline distance (seawalls, pier, pontoon)
 	// The surface is one sea plane under the whole map; quay lines only exist
 	// where the district (|x| < 750) and the far shore (|x| < 850) are.
-	float d_near = max(abs(near_shore_z - p.y), abs(p.x) - 750.0);
-	float d_far = max(abs(p.y - far_shore_z), abs(p.x) - 850.0);
+	float d_near = max(abs(near_shore_z - p.y), max(near_shore_span.x - p.x, p.x - near_shore_span.y));
+	float d_far = max(abs(p.y - far_shore_z), max(far_shore_span.x - p.x, p.x - far_shore_span.y));
 	float d_pier = rect_distance(p, pier_rect);
 	float d_pont = rect_distance(p, pontoon_rect);
 	float shore = min(min(d_near, d_far), min(d_pier, d_pont));
