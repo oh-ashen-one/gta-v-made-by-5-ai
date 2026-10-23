@@ -21,6 +21,13 @@ func _init() -> void:
 	if ResourceLoader.exists(HF + "rooftop_flat_albedo.png"):
 		facade.set_shader_parameter("roof_tex", load(HF + "rooftop_flat_albedo.png"))
 		facade.set_shader_parameter("has_roof_tex", 1.0)
+	# `--blocks-emit=K` scales glass reflection / interior emission (look A/B only).
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--blocks-emit="):
+			var k := float(arg.trim_prefix("--blocks-emit="))
+			facade.set_shader_parameter("reflect_strength", k)
+			facade.set_shader_parameter("interior_energy", 0.20 * k)
+			facade.set_shader_parameter("lobby_energy", 0.42 * k)
 	mats["paving"] = Palette.mat_textured(Color(0.66, 0.63, 0.58), "pavers", Vector3.ONE, 0.88)
 	mats["paving_dark"] = Palette.mat_textured(Color(0.46, 0.45, 0.43), "pavers", Vector3.ONE, 0.85)
 	mats["granite"] = Palette.mat(Color(0.30, 0.29, 0.28), 0.42)

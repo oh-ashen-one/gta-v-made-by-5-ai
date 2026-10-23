@@ -322,7 +322,8 @@ void fragment() {
 		rough = mix(cid == 1 || cid == 7 ? 0.75 : (cid >= 8 ? 0.88 : 0.45), 0.06 + 0.04 * r, pane);
 		metal = mix((cid == 2 || cid == 4 || cid == 5) ? 0.35 : 0.0, reflect_metal, pane);
 		spec = mix(0.5, 0.6, pane);
-		alb = mix(alb, alb * 0.45, pane);
+		// glass keeps a light diffuse share so shaded panes pick up sky ambient
+		alb = mix(alb, glass_c * 1.8 + vec3(0.02), pane);
 		emis = (interior * see + refl) * pane;
 		// lobby: dark bronze kick plate + plinth
 		if (y < 0.45) {
@@ -340,6 +341,11 @@ void fragment() {
 		// side instead of going uniformly black glass
 		alb = mix(alb, alb * 1.15 + vec3(0.01), cell_far * 0.5);
 	}
+	// guards: never hand the renderer NaN/negative values (a NaN pane renders black)
+	if (any(isnan(alb)) || any(isinf(alb))) alb = vec3(0.05, 0.07, 0.09);
+	if (any(isnan(emis)) || any(isinf(emis))) emis = vec3(0.0);
+	alb = clamp(alb, vec3(0.0), vec3(1.0));
+	emis = max(emis, vec3(0.0));
 	ALBEDO = alb;
 	ROUGHNESS = rough;
 	METALLIC = metal;
@@ -349,6 +355,7 @@ void fragment() {
 	if (length(nmap_t) > 0.0) {
 		vec3 tw = normalize(vec3(n.z, 0.0, -n.x));
 		vec3 nw = normalize(n + tw * nmap_t.x + vec3(0.0, 1.0, 0.0) * nmap_t.y);
-		NORMAL = normalize((VIEW_MATRIX * vec4(nw, 0.0)).xyz);
+		vec3 nv = normalize((VIEW_MATRIX * vec4(nw, 0.0)).xyz);
+		if (!any(isnan(nv))) NORMAL = nv;
 	}
 }
