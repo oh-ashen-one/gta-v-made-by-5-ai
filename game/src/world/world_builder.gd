@@ -1110,13 +1110,13 @@ func _background_city() -> void:
 	city.build(_world_root)
 	if horizon_on:
 		horizon.build(_world_root, city)
-		_batch_background("res://assets/authored/rain_tree.glb", horizon.promenade_tree_transforms(_far_shore_tree_clear))
+		_batch_background("res://assets/authored/rain_tree.glb", horizon.promenade_tree_transforms(_far_shore_tree_clear), Color.WHITE, "promenade_trees")
 	SkylineHorizon.sync(self)
 	skyline_stats = {"materials": city.materials_used.size(), "over_water": city.over_water, "placed": city.placed, "ground_shadows": city.ground_shadows,
 		"lowrise": horizon.lowrise, "far_towers": horizon.far_towers, "carpet_km2": horizon.carpet_area / 1.0e6, "promenade_trees": horizon.promenade_trees, "atmosphere": SkylineHorizon.params().size()}
 	print("[world] skyline city: ", city.placed, " towers; roof kit: ", _roof_kit.roofs, " roofs")
 
-func _batch_background(path: String, transforms: Array, tint: Color = Color.WHITE) -> void:
+func _batch_background(path: String, transforms: Array, tint: Color = Color.WHITE, tag: String = "") -> void:
 	var packed: PackedScene = load(path)
 	var source: Node = packed.instantiate()
 	var parts: Array[Dictionary] = []
@@ -1144,6 +1144,8 @@ func _batch_background(path: String, transforms: Array, tint: Color = Color.WHIT
 			instance.multimesh=mm
 			instance.material_override=override
 			instance.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			if tag != "":
+				instance.set_meta("bg_tree_batch", tag)   # downtown bounds finds the chunks by this tag
 			_world_root.add_child(instance)
 	source.free()
 
