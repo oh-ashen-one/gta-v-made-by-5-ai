@@ -309,7 +309,14 @@ void fragment() {
 			// the hair colour over skin so they read as hair, not ink.
 			float browb = (1.0 - smoothstep(0.008, 0.02, abs(rel.y - 0.056))) * (1.0 - smoothstep(0.055, 0.07, abs(rel.x)));
 			vec3 tb = tex * ratio * 0.95;
-			tb = mix(tb, mix(skin_tone * 0.55, hair_col.rgb * 1.6 + skin_tone * 0.1, 0.5) * (0.75 + 0.5 * vnoise(vec3(rel.x * 900.0, rel.y * 260.0, 0.0))), browb * 0.45 * (1.0 - smoothstep(0.1, 0.3, lum(tb))));
+			// Wave R2: brows as combed strands (fine slanted hairs over skin),
+			// not a painted bar: each strand runs up and out from the nose.
+			float sdir = abs(rel.x) * 1.0 + (rel.y - 0.056) * 2.4;
+			float strands = 0.5 + 0.5 * sin(sdir * 2900.0 + vnoise(vec3(rel.x * 400.0, rel.y * 120.0, 4.0)) * 4.0);
+			strands = mix(0.5, strands, mid_k);
+			vec3 brow_hair = mix(skin_tone * 0.42, hair_col.rgb * 1.4 + skin_tone * 0.06, 0.25 + 0.6 * strands);
+			float brow_gap = smoothstep(0.35, 0.75, vnoise(vec3(rel.x * 700.0, rel.y * 300.0, 1.0)));
+			tb = mix(tb, mix(brow_hair, skin_tone * 0.7, brow_gap * 0.35), browb * 0.72 * (1.0 - smoothstep(0.1, 0.3, lum(tb))));
 			col = mix(col, tb, use_tex);
 			col = mix(col, col * vec3(0.93, 0.74, 0.72), mouth * 0.45 * face_k);
 			float fk = face_k * (1.0 - hairness);

@@ -126,7 +126,11 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		else:
 			outfit = CharacterLook.civilian_outfit(get_instance_id() + wardrobe_variant * 7919)
 			var stature: float = outfit["height"]
-			scale = Vector3(stature, stature, stature)
+			# Wave R2: build as well as height. Heavier people are broader
+			# across the shoulders and hips, not only taller (girth -0.25..1).
+			var girth: float = (outfit["skin_col"] as Vector4).w
+			var breadth := stature * (1.0 + clampf(girth, -0.3, 1.0) * 0.13)
+			scale = Vector3(breadth, stature, breadth)
 		CharacterLook.set_outfit(look_mesh, outfit)
 	elif role == "civilian":
 		_apply_wardrobe(model, WARDROBE[posmod(wardrobe_variant, WARDROBE.size())])

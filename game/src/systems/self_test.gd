@@ -1281,3 +1281,14 @@ func _character_look_checks(player: Player) -> void:
 		var hs: Vector4 = CharacterLook.civilian_outfit(500 + i * 7919)["head_shape"]
 		heads["%d,%d,%d" % [int(hs.x * 4.0), int(hs.y * 4.0), int(hs.z * 4.0)]] = true
 	_check("characters-R: civilians get their own head build (jaw, nose, brow, hair volume)", heads.size() >= 10, "distinct=%d" % heads.size())
+	var hmin := 9.0
+	var hmax := 0.0
+	var elders := 0
+	var builds := {}
+	for i in 40:
+		var o: Dictionary = CharacterLook.civilian_outfit(900 + i * 7919)
+		hmin = minf(hmin, o["height"])
+		hmax = maxf(hmax, o["height"])
+		elders += 1 if (o["hair_col"] as Vector4).w > 0.4 and fmod((o["hair_col"] as Vector4).w, 2.0) > 0.4 else 0
+		builds[int(((o["skin_col"] as Vector4).w + 0.3) * 3.0)] = true
+	_check("characters-R2: the crowd spans heights (>=15 cm at 1.8 m), builds and older adults", (hmax - hmin) * 1.8 >= 0.15 and builds.size() >= 3 and elders >= 4, "spread=%.2fm builds=%d elders=%d/40" % [(hmax - hmin) * 1.8, builds.size(), elders])
