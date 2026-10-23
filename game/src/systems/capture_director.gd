@@ -1281,6 +1281,24 @@ func _traffic_lead(car: Car, forward: Vector3) -> Dictionary:
 		if Vector3(heading.x, 0, heading.z).normalized().dot(forward) < -0.3 and (gap > 3.0 or absf(other_speed) < 0.5): continue
 		if gap < float(best["gap"]):
 			best = {"gap": maxf(0.0, gap), "speed": other_speed, "node": node}
+	# Street-life M1: give way to people in the car's path (a walker on the
+	# side-road crossing during a left turn was struck, spun the car and sent
+	# it off the road in two headless routes). A walker that keeps standing
+	# in front of the held car steps aside, as lane traffic asks them to.
+	for n in get_tree().get_nodes_in_group("npcs"):
+		var npc := n as NPC
+		if npc == null or not npc.visible or npc.state == NPC.State.DEAD or npc.is_hostile:
+			continue
+		var rel := npc.global_position - car.global_position
+		rel.y = 0.0
+		var ahead := rel.dot(forward)
+		if ahead < 0.0 or ahead > 14.0 or absf(rel.dot(left)) > 1.5:
+			continue
+		var gap := ahead - 2.35 - 0.4
+		if gap < float(best["gap"]):
+			best = {"gap": maxf(0.0, gap), "speed": 0.0, "node": npc}
+		if _held_for > 1.5 and gap < 6.0:
+			npc.dodge_vehicle(car.global_position, forward)
 	return best
 
 ## Distance from the front bumper to a red stop line ahead (INF when the

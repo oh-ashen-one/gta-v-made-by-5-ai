@@ -108,7 +108,10 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	if role == "civilian":
 		_wardrobe_variant = wardrobe_variant
 		_wardrobe_surface = 0
-		_apply_wardrobe(model, WARDROBE[posmod(wardrobe_variant, WARDROBE.size())])
+		# Street-life M1: real outfit colours (crowd_wardrobe.gd); the old
+		# near-white tint stays as the fallback.
+		if _CROWD_WARDROBE.apply(model, wardrobe_variant) == 0:
+			_apply_wardrobe(model, WARDROBE[posmod(wardrobe_variant, WARDROBE.size())])
 		var stature := 0.94 + float(posmod(wardrobe_variant, 7)) * 0.017
 		scale = Vector3(stature, stature, stature)
 	if role != "player":
@@ -420,6 +423,7 @@ func _find_type(node: Node, type_name: String) -> Node:
 ## of the same rig no longer reads as clones.
 var _wardrobe_variant := 0
 var _wardrobe_surface := 0
+const _CROWD_WARDROBE := preload("res://src/actors/crowd_wardrobe.gd")
 func _apply_wardrobe(node: Node, tint: Color) -> void:
 	if node is MeshInstance3D:
 		var mesh_instance := node as MeshInstance3D
