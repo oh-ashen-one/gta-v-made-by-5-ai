@@ -1569,6 +1569,7 @@ func _character_look_checks(player: Player) -> void:
 		builds[int(((o["skin_col"] as Vector4).w + 0.3) * 3.0)] = true
 	_check("characters-R2: the crowd spans heights (>=15 cm at 1.8 m), builds and older adults", (hmax - hmin) * 1.8 >= 0.15 and builds.size() >= 3 and elders >= 4, "spread=%.2fm builds=%d elders=%d/40" % [(hmax - hmin) * 1.8, builds.size(), elders])
 	_character_people_checks()
+	_character_stance_checks(player)
 
 ## Wave S (characters S1): civilians on the look mesh keep street-life's
 ## people (women, elders, children, skirts, skin tones) via instance params.
@@ -1587,6 +1588,39 @@ func _character_people_checks() -> void:
 		var bf := CharacterLook._backfill_mesh(cbaked)
 		var bf_tris := bf.surface_get_array_index_len(0) / 3 if bf.get_surface_count() == 1 else 0
 		_check("characters-S: civilian head backfill closes the cracked face (head-only back faces, skinned)", bf_tris > 300 and bf_tris < 8000, "tris=%d" % bf_tris)
+		# Characters T3: eyes, hair cards and a forward-facing head in both bakes.
+		var t3_ok := true
+		var t3_detail := ""
+		var ppath := CharacterVisual.asset_path("player")
+		var pmodel := (load(ppath) as PackedScene).instantiate()
+		var pbaked := {}
+		for node in pmodel.find_children("*", "MeshInstance3D", true, false):
+			if (node as MeshInstance3D).mesh is ArrayMesh and (node as MeshInstance3D).mesh.get_surface_count() >= 2:
+				pbaked = CharacterLook._load_baked((node as MeshInstance3D).mesh, ppath)
+				break
+		pmodel.free()
+		for e in [pbaked, cbaked]:
+			var d: Dictionary = e
+			if d.is_empty():
+				t3_ok = false
+				continue
+			var prm: Dictionary = d.get("params", {})
+			var nose: Vector3 = prm.get("nose_tip", Vector3(-1, 0, 0))
+			var hc: Vector3 = prm.get("head_centre", Vector3.ZERO)
+			t3_ok = t3_ok and int(d.get("eye_verts", 0)) >= 200 and int(d.get("hair_cards", 0)) >= 300 and absf(nose.x - hc.x) < 0.012
+			t3_detail += "eyes=%d cards=%d nose-centre dx=%.3f; " % [int(d.get("eye_verts", 0)), int(d.get("hair_cards", 0)), nose.x - hc.x]
+		_check("characters-T3: eye patches, strand hair cards and a forward-facing head in the player and civilian bakes", t3_ok, t3_detail)
+		var ca := (cbaked["mesh"] as ArrayMesh).surface_get_arrays(0)
+		var cv3: PackedVector3Array = ca[Mesh.ARRAY_VERTEX]
+		var cc0: PackedFloat32Array = ca[Mesh.ARRAY_CUSTOM0]
+		var cix: PackedInt32Array = ca[Mesh.ARRAY_INDEX]
+		var extra_head := 0
+		for t in cix.size() / 3:
+			var i0 := cix[t * 3]
+			if cv3[i0].y >= 1.43 and cc0[i0 * 4] > 7.5:
+				extra_head += 1
+		_check("characters-T3: backfill skips eye patches and hair cards (no skin flakes over hair)", bf_tris > 300 and extra_head > 1000 and bf_tris < 8000,
+			"backfill tris=%d, eye/card tris left out=%d" % [bf_tris, extra_head])
 	var sigs := {}
 	var tones := {}
 	var bad_face := 0
@@ -1615,3 +1649,88 @@ func _character_people_checks() -> void:
 	_check("characters-S: street-life people map onto the look outfit (women unstubbled, skirt legs, grey elders, >=5 skin tones, >=50/60 distinct)",
 		bad_face == 0 and bad_legs == 0 and women > 10 and elders_grey == elders and tones.size() >= 5 and sigs.size() >= 50,
 		"women=%d bad_face=%d bad_legs=%d elders=%d/%d tones=%d distinct=%d" % [women, bad_face, bad_legs, elders_grey, elders, tones.size(), sigs.size()])
+
+## Characters T1: weight-shifted idle (soles planted, one knee soft, mirrored
+## for half the crowd), adult head scale, skinned skirts and attached parts
+## that hide with their carrier.
+func _character_stance_checks(player: Player) -> void:
+	var cv: CharacterVisual = player.get("_visual")
+	if cv == null or not cv.loaded or "--legacy-idle" in OS.get_cmdline_user_args():
+		return
+	var sk := cv.skeleton
+	var head := sk.find_bone("head")
+	var anim := cv.animator.get_animation(cv._clips.get("idle", ""))
+	var ok_anim := anim != null and anim.has_meta("idle_stance") and cv._clips.has("idle_b")
+	var detail := "anim=%s" % ok_anim
+	var planted := false
+	var knees := false
+	var shift := 0.0
+	if ok_anim:
+		var prefix := IdleStance._track_prefix(anim)
+		var g := IdleStance._globals(anim, prefix, sk)
+		var rest_foot_l := sk.get_bone_global_rest(sk.find_bone("foot.l")).origin
+		var rest_foot_r := sk.get_bone_global_rest(sk.find_bone("foot.r")).origin
+		var fl := g[sk.find_bone("foot.l")].origin
+		var fr := g[sk.find_bone("foot.r")].origin
+		planted = absf(fl.y - rest_foot_l.y) < 0.02 and absf(fr.y - rest_foot_r.y) < 0.02
+		var kl := (g[sk.find_bone("shin.l")].origin - g[sk.find_bone("thigh.l")].origin).normalized().angle_to((fl - g[sk.find_bone("shin.l")].origin).normalized())
+		var kr := (g[sk.find_bone("shin.r")].origin - g[sk.find_bone("thigh.r")].origin).normalized().angle_to((fr - g[sk.find_bone("shin.r")].origin).normalized())
+		knees = absf(kl - kr) > 0.08
+		shift = absf(g[sk.find_bone("pelvis")].origin.x - sk.get_bone_global_rest(sk.find_bone("pelvis")).origin.x)
+		detail = "feet dy=%.3f/%.3f knees=%.2f/%.2f rad pelvis shift=%.3f" % [fl.y - rest_foot_l.y, fr.y - rest_foot_r.y, kl, kr, shift]
+	_check("characters-T: weight-shifted idle (pelvis over one leg, one soft knee, both soles planted, mirrored idle_b)",
+		ok_anim and planted and knees and shift > 0.025, detail)
+	var hs := sk.get_bone_pose_scale(head).x if head >= 0 else 1.0
+	_check("characters-T: adult head proportion (head bone scaled to ~1:7.5 of height)", hs > 0.85 and hs < 0.95, "head scale=%.2f" % hs)
+	var holder := Node3D.new()
+	add_child(holder)
+	var v := CharacterVisual.new()
+	holder.add_child(v)
+	if v.configure("civilian", 4):
+		var pp := CrowdPeople.person(CrowdPeople.Kind.WOMAN, 9001)
+		pp["skirt"] = true
+		pp["prop"] = "shopping"
+		CrowdPeople.dress(holder, v, pp)
+		var skirt := v.skeleton.find_child("PeopleSkirt", true, false) as MeshInstance3D
+		var bag := v.skeleton.find_child("PeopleShopping", true, false) as MeshInstance3D
+		var centre_err := INF
+		if bag != null and bag.custom_aabb.size != Vector3.ZERO:
+			var rest_xf := v.skeleton.get_bone_global_rest(v.skeleton.find_bone("hand.r")) * bag.transform
+			centre_err = (rest_xf * bag.custom_aabb.get_center()).distance_to(CrowdPeople.BODY_CENTRE)
+		_check("characters-T: skirts are skinned to the legs and a carried bag hides with its carrier (shared visibility centre)",
+			skirt != null and skirt.skin != null and centre_err < 0.01, "skirt_skinned=%s bag_centre_err=%.3f" % [skirt != null and skirt.skin != null, centre_err])
+		# T2: a fitted skirt (no 0.58 m cone), women's shoulders narrower than
+		# men's, and no per-part near cull (the NPC hides the figure as one unit).
+		var sb := skirt.mesh.get_aabb() if skirt != null else AABB()
+		var ua := v.skeleton.find_bone("upper_arm.l")
+		var narrow := ua >= 0 and v.skeleton.get_bone_pose_position(ua).length() < v.skeleton.get_bone_rest(ua).origin.length() * 0.95
+		var part_cull := 0
+		for g in v.find_children("People*", "GeometryInstance3D", true, false):
+			if (g as GeometryInstance3D).visibility_range_begin > 0.0:
+				part_cull += 1
+		var npc_code := (load("res://src/actors/npc.gd") as Script).source_code
+		var cd_script := load("res://src/systems/crowd_director.gd") as Script
+		var keep: Array = cd_script.get_script_constant_map().get("KEEP_OUT", [])
+		var lawn_kept := false
+		for r in keep:
+			if (r as Rect2).has_point(Vector2(-377.0, -74.5)):
+				lawn_kept = true
+		_check("characters-T3: crowd seeding keeps out of the Raffles Place lawn bed (no knee-deep walkers)", lawn_kept, "rects=%d" % keep.size())
+		var tud := 0
+		var uni := 0
+		var women := 0
+		for k in 600:
+			var pk := CrowdPeople.pick(31337 + k * 7919)
+			if bool(pk.get("female", false)) and int(pk["kind"]) != 4:
+				women += 1
+			if String(pk.get("hair", "")) == "tudung":
+				tud += 1
+			if bool(pk.get("uniform", false)):
+				uni += 1
+		_check("characters-T3: local dress in the crowd (tudung on some women, school uniforms on some children)",
+			tud >= women / 12 and tud <= women / 2 and uni >= 8, "tudung=%d of %d women, uniforms=%d" % [tud, women, uni])
+		_check("characters-T2: fitted skirt, women's narrower shoulders, near-lens cull hides body and parts together",
+			sb.size.x < 0.56 and sb.size.x > 0.3 and narrow and part_cull == 0 and npc_code.contains("func _near_hide"),
+			"skirt width=%.2f narrow=%s part_cull=%d" % [sb.size.x, narrow, part_cull])
+	holder.queue_free()
+

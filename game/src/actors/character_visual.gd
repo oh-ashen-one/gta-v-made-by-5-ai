@@ -116,6 +116,13 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		var clip := animator.get_animation(full_name)
 		clip.loop_mode = Animation.LOOP_LINEAR if key in LOOP_CLIPS else Animation.LOOP_NONE
 	animator.animation_finished.connect(_on_animation_finished)
+	# Characters T1: weight-shifted idle (baked once into the shared clip, plus
+	# a mirrored copy for half the crowd) and adult head proportions.
+	if not ("--legacy-idle" in OS.get_cmdline_user_args()): # QA A/B switch
+		IdleStance.apply(animator, skeleton, _clips)
+		IdleStance.set_head_scale(skeleton)
+		if role != "player" and _clips.has("idle_b") and posmod(wardrobe_variant, 2) == 1:
+			_clips["idle"] = _clips["idle_b"]
 	_upgrade_materials(model)
 	# Wave-M integration: the characters piece's region-aware look mesh is the
 	# player's; civilians keep the street-life crowd wardrobe (crowd_wardrobe.gd
@@ -159,6 +166,8 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 			foot_lock.ground_ref = self
 			skeleton.add_child(foot_lock)
 		_build_contact_shadows()
+	elif role == "civilian" and not ("--no-crowd-contact" in OS.get_cmdline_user_args()): # QA A/B switch
+		_build_crowd_contact()
 	weapon_socket = BoneAttachment3D.new()
 	weapon_socket.name = "WeaponSocket"
 	weapon_socket.bone_name = "hand.r"
@@ -333,6 +342,12 @@ func set_body_motion(lean_pitch: float, lean_roll: float, look_yaw: float, look_
 func set_seated(seated: bool, driving: bool = false) -> void:
 	_seated = seated
 	_driving_pose = driving
+	# Characters T2: seats place an adult's sit pose (pelvis 0.445 m above the
+	# visual origin); a scaled-down child sat that much lower, through her
+	# stool (critic T1 E_live02_full_3m). Lift the model by the difference.
+	if model != null:
+		var s := maxf(scale.y, 0.3)
+		model.position.y = (0.445 * (1.0 - s) / s) if (seated and not driving and s < 0.99) else 0.0
 	set_motion(_last_speed, _last_aim, _last_grounded, _last_reload)
 
 func play_hit() -> void:
@@ -387,25 +402,100 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 ## Characters piece (wave R2): the held pistol read as a noisy black blob in
 ## shade. Lift it to a worn gunmetal grey with a tighter gloss so the slide
 ## edges, trigger guard and grip catch highlights at 1.5-2.5 m.
+static var _smooth_guns := {}
+static var _gun_mat: ShaderMaterial
+const GUN_SHADER := """
+shader_type spatial;
+// cull_disabled: about half the scanned gun's triangles are wound inward, so
+// back-face culling punched crack-shaped holes through which the dark inside
+// of the far wall showed: the "glitchy camouflage mosaic" (critic T2).
+render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_burley, specular_schlick_ggx;
+stencil_mode write, compare_always, 8; // street weathering volumes skip it (as they skip people)
+varying vec3 lp;
+void vertex() { lp = VERTEX; }
+float h3(vec3 p) { p = fract(p * 0.1031); p += dot(p, p.zyx + 31.32); return fract((p.x + p.y) * p.z); }
+void fragment() {
+	// Slide (upper part) satin steel-black; frame and grip matte polymer with
+	// a fine stipple.
+	if (dot(NORMAL, VIEW) < 0.0) {
+		NORMAL = -NORMAL; // inward-wound faces shade like their neighbours
+	}
+	float slide = smoothstep(0.02, 0.03, lp.y);
+	float stip = h3(floor(lp * 2200.0));
+	ALBEDO = mix(vec3(0.045, 0.045, 0.05) * (0.92 + 0.12 * stip), vec3(0.055, 0.056, 0.06), slide);
+	METALLIC = mix(0.0, 0.55, slide);
+	ROUGHNESS = mix(0.62, 0.36, slide);
+	SPECULAR = 0.45;
+	RIM = 0.2;
+	RIM_TINT = 0.3;
+}
+"""
 static func _readable_gunmetal(weapon: Node3D) -> void:
 	for mesh_node in weapon.find_children("*", "MeshInstance3D", true, false):
 		var mi := mesh_node as MeshInstance3D
 		if mi.mesh == null:
 			continue
+		if mi.mesh is ArrayMesh and not mi.has_meta("gun_smoothed"):
+			mi.set_meta("gun_smoothed", true)
+			var key := str(mi.mesh.get_instance_id())
+			if not _smooth_guns.has(key):
+				_smooth_guns[key] = _smooth_normals(mi.mesh as ArrayMesh)
+			mi.mesh = _smooth_guns[key]
+		# T3: one clean, double-sided material for the whole gun (the scan's
+		# inward-wound triangles were culled into crack-shaped holes: the
+		# "glitchy chrome-camouflage mosaic" of critic T2 aim_hand_close). It
+		# writes the people stencil (8) so the street-weathering volumes never
+		# paint grime on it. Satin steel-black slide, matte polymer frame.
+		if _gun_mat == null:
+			var sh := Shader.new()
+			sh.code = GUN_SHADER
+			_gun_mat = ShaderMaterial.new()
+			_gun_mat.shader = sh
+		mi.material_override = _gun_mat
 		for i in mi.mesh.get_surface_count():
-			var mat := mi.get_active_material(i) as StandardMaterial3D
-			if mat == null or mat.has_meta("gunmetal"):
+			mi.set_surface_override_material(i, null)
+		print_verbose("[character-visual] clean gun material on ", mi.name)
+
+## T3: the provider pistol is a remeshed triangle soup whose faces disagree
+## (some wound inward). Normals are rebuilt per welded position (0.4 mm),
+## each face oriented by the authored normals it replaces, so the slide and
+## frame shade as smooth surfaces; the shape is unchanged.
+static func _smooth_normals(src: ArrayMesh) -> ArrayMesh:
+	var out := ArrayMesh.new()
+	for s in src.get_surface_count():
+		var a := src.surface_get_arrays(s)
+		var v: PackedVector3Array = a[Mesh.ARRAY_VERTEX]
+		var n0 = a[Mesh.ARRAY_NORMAL]
+		var idx = a[Mesh.ARRAY_INDEX]
+		if n0 == null or v.is_empty():
+			out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, a)
+			continue
+		var nn: PackedVector3Array = n0
+		var ii: PackedInt32Array = idx if idx != null else PackedInt32Array(range(v.size()))
+		var key_of := func(p: Vector3) -> Vector3i: return Vector3i(roundi(p.x / 0.0004), roundi(p.y / 0.0004), roundi(p.z / 0.0004))
+		var acc := {}
+		for t in ii.size() / 3:
+			var ia := ii[t * 3]
+			var ib := ii[t * 3 + 1]
+			var ic := ii[t * 3 + 2]
+			var fn := (v[ib] - v[ia]).cross(v[ic] - v[ia])
+			if fn.length_squared() < 1e-16:
 				continue
-			var m := mat.duplicate() as StandardMaterial3D
-			m.set_meta("gunmetal", true)
-			m.albedo_color = Color(mat.albedo_color.r * 1.9, mat.albedo_color.g * 1.9, mat.albedo_color.b * 2.0, mat.albedo_color.a)
-			m.metallic = minf(mat.metallic, 0.45)
-			m.roughness = 0.34
-			m.metallic_specular = 0.7
-			m.rim_enabled = true
-			m.rim = 0.35
-			m.rim_tint = 0.2
-			mi.set_surface_override_material(i, m)
+			if fn.dot(nn[ia] + nn[ib] + nn[ic]) < 0.0:
+				fn = -fn
+			for c in [ia, ib, ic]:
+				var k: Vector3i = key_of.call(v[c])
+				acc[k] = (acc.get(k, Vector3.ZERO) as Vector3) + fn
+		var nn2 := PackedVector3Array()
+		nn2.resize(v.size())
+		for i in v.size():
+			var sum: Vector3 = acc.get(key_of.call(v[i]), nn[i])
+			nn2[i] = sum.normalized() if sum.length_squared() > 1e-20 else nn[i]
+		a[Mesh.ARRAY_NORMAL] = nn2
+		a[Mesh.ARRAY_TANGENT] = null
+		out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, a)
+		out.surface_set_material(s, src.surface_get_material(s))
+	return out
 
 func set_aim_pitch(value: float) -> void:
 	_aim_pitch = clampf(value, -1.1, 0.85)
@@ -739,6 +829,29 @@ func _build_contact_shadows() -> void:
 		add_child(d)
 		contact_shadows.append(d)
 	_update_contact_shadows()
+
+## Characters T1: civilians stood on the paving with no contact darkening in
+## shade (judges: "grounded contact shadows" missing). One soft ambient-
+## occlusion blob per figure, a plain child decal (it follows the walker with
+## no per-frame script), faded out beyond ~12 m (perf: rendered route A/B).
+func _build_crowd_contact() -> void:
+	var d := Decal.new()
+	d.name = "CrowdContact"
+	d.texture_albedo = _contact_texture()
+	d.size = Vector3(0.72, 0.6, 0.62)
+	d.position = Vector3(0.0, 0.05, 0.02)
+	d.modulate = Color(1, 1, 1, 0.7)
+	d.albedo_mix = 1.0
+	d.upper_fade = 0.3
+	d.lower_fade = 0.6
+	d.distance_fade_enabled = true
+	d.distance_fade_begin = 8.0
+	d.distance_fade_length = 4.0
+	d.cull_mask = ~PLAYER_LIGHT_LAYER & 0xFFFFF
+	add_child(d)
+	contact_shadows_crowd = d
+
+var contact_shadows_crowd: Decal
 
 func _update_contact_shadows() -> void:
 	if contact_shadows.is_empty() or skeleton == null:

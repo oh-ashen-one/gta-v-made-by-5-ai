@@ -145,7 +145,9 @@ func _build() -> void:
 				(mesh_node as MeshInstance3D).visibility_range_end = FAR_DRAW_RANGE
 				# M1: a passer-by right at the lens is not drawn (a face filled
 				# a corner of the rendered route's car-entered frame).
-				(mesh_node as MeshInstance3D).visibility_range_begin = NEAR_HIDE
+				# T2: as one unit in _near_hide (body, hair and props together).
+				(mesh_node as MeshInstance3D).visibility_range_begin = 0.0
+				_near_cull = true
 
 ## Street-life M2: women, elders and children with hair, skirts, props and
 ## poses (crowd_people.gd); a forced kind comes from meta "people_kind".
@@ -202,7 +204,20 @@ func become_displaced_pedestrian(pos: Vector3, threat: Vector3 = Vector3.INF) ->
 	_flee_dir = away.normalized()
 	lane = []
 
+## Characters T2: a passer-by right at the lens is hidden as one unit (body,
+## hair, skirt and props together); per-mesh visibility ranges disagreed
+## about the distance and left bodiless hair floating.
+var _near_cull := false
+func _near_hide() -> void:
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return
+	var c := global_position + Vector3(0.0, 0.9 * character_visual.scale.y, 0.0)
+	character_visual.visible = c.distance_squared_to(cam.global_position) > NEAR_HIDE * NEAR_HIDE
+
 func _physics_process(delta: float) -> void:
+	if _near_cull and character_visual != null:
+		_near_hide()
 	if Game.simulation_paused:
 		return
 	# Render LOD on a fixed per-NPC phase (critic pass 2: the old gate reused
@@ -655,7 +670,12 @@ func _move_towards(target: Vector3, speed: float, delta: float) -> void:
 
 func _animate(delta: float, speed: float) -> void:
 	if character_visual != null and character_visual.loaded:
-		character_visual.set_motion(speed, (is_police or is_hostile) and state == State.PURSUE, is_on_floor())
+		# Characters T1: the airborne clip only for a real fall. The far-sim walk
+		# moves without move_and_slide (is_on_floor() stays stale), so civilians
+		# walked in the tucked jump pose (critic S1: 100% at Raffles Place); downtown
+		# plazas have no floor body under the walkers either. Civilians never jump.
+		character_visual.set_motion(speed, (is_police or is_hostile) and state == State.PURSUE,
+				true if not (is_police or is_hostile) else (is_on_floor() or velocity.y > -4.0))
 		return
 	var stride: float = clampf(speed / 2.2, 0.0, 1.4)
 	_walk_phase += delta * (5.0 + speed * 3.0)

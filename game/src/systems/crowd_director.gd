@@ -724,6 +724,8 @@ func _seed_cone(p: NPC, loiter: bool, near: Array, band: Vector2 = Vector2.ZERO,
 		var open := loiter or _rng.randf() < idle_share
 		if not _open_ground(pos, ground):
 			continue
+		if _crowded(pos, p):
+			continue
 		if plaza and float(walk[2]) > 4.0:
 			# Out on a plaza: a straight line across it through this spot,
 			# roughly across the lens, so walkers cross the frame instead of
@@ -844,7 +846,16 @@ func _seed_poly_view(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 	return false
 
 ## Floor height under a point (walkable surfaces: plazas, decks, terraces).
+## Characters T3: raised planted beds with no collider (the Raffles Place
+## lawn planter, 34 x 62 m, 0.54 m tall: blocks.gd _plaza). The ground ray
+## went through them, so people were seeded and walked on the plaza paving
+## INSIDE the bed, sunk knee-deep in the lawn (critic characters-T2).
+const KEEP_OUT: Array[Rect2] = [Rect2(-395.0, -106.5, 36.0, 64.0)]
+
 func _ground_at(pos: Vector3) -> float:
+	for r in KEEP_OUT:
+		if r.has_point(Vector2(pos.x, pos.z)):
+			return INF
 	var space := traffic.get_world_3d().direct_space_state
 	if space == null:
 		return INF
@@ -945,6 +956,20 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 var _probe: PhysicsShapeQueryParameters3D
 ## Integrator (wave S): every ~2 m from a to b there is walkable ground within
 ## 0.7 m of `ground` (no water, quay drop or void on the way).
+## Characters T3: no seeding into someone else's body (critic T2: two
+## civilians merged into one another behind the five-foot-way subject, a
+## packed MBS step crowd with arms through neighbours): 1.1 m personal space.
+func _crowded(pos: Vector3, me: Node) -> bool:
+	if traffic == null:
+		return false
+	for o in traffic.peds:
+		if o == me or not (o is Node3D) or not is_instance_valid(o) or not (o as Node3D).visible:
+			continue
+		var q := (o as Node3D).global_position
+		if absf(q.y - pos.y) < 2.0 and Vector2(q.x - pos.x, q.z - pos.z).length_squared() < 1.21:
+			return true
+	return false
+
 func _path_on_ground(a: Vector3, b: Vector3, ground: float) -> bool:
 	var flat := Vector2(b.x - a.x, b.z - a.z).length()
 	var n := maxi(1, ceili(flat / 2.0))

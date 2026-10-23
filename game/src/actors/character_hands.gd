@@ -23,10 +23,13 @@ extends Node3D
 const KNUCKLE_Y := 0.082
 # [name, knuckle z, knuckle y, segment lengths, base radius, grip curl (MCP, PIP, DIP) deg, relaxed curl]
 const FINGERS := [
-	["index", 0.026, 0.080, [0.040, 0.024, 0.019], 0.0102, [62.0, 78.0, 30.0], [26.0, 36.0, 16.0]],
-	["middle", 0.008, 0.083, [0.043, 0.027, 0.020], 0.0105, [86.0, 92.0, 22.0], [33.0, 44.0, 20.0]],
-	["ring", -0.009, 0.080, [0.040, 0.025, 0.019], 0.0098, [90.0, 92.0, 22.0], [40.0, 50.0, 22.0]],
-	["pinky", -0.025, 0.073, [0.032, 0.019, 0.017], 0.0088, [94.0, 90.0, 24.0], [47.0, 54.0, 24.0]],
+	# T3: the relaxed hand hangs in a natural soft curl (critic T2: the free
+	# hand read as a stiff splay); each finger curls a little more than the one
+	# before it, the tips gathering toward the thumb.
+	["index", 0.026, 0.080, [0.040, 0.024, 0.019], 0.0102, [62.0, 78.0, 30.0], [40.0, 48.0, 24.0]],
+	["middle", 0.008, 0.083, [0.043, 0.027, 0.020], 0.0105, [86.0, 92.0, 22.0], [48.0, 56.0, 26.0]],
+	["ring", -0.009, 0.080, [0.040, 0.025, 0.019], 0.0098, [90.0, 92.0, 22.0], [55.0, 60.0, 28.0]],
+	["pinky", -0.025, 0.073, [0.032, 0.019, 0.017], 0.0088, [94.0, 90.0, 24.0], [62.0, 62.0, 30.0]],
 ]
 ## Knuckles sit this far toward the palm from the bone axis.
 const KNUCKLE_X := 0.020
@@ -164,7 +167,7 @@ static func build_hand(s: float, grip: bool) -> ArrayMesh:
 		var pos := Vector3(s * KNUCKLE_X, f[2], f[1])
 		var dir := Vector3.UP
 		# Slight fan: the outer fingers splay away from the middle one.
-		var splay: float = (float(f[1]) - 0.008) * (1.6 if grip else 0.18)
+		var splay: float = (float(f[1]) - 0.008) * (1.6 if grip else -0.35)   # relaxed: tips gather, no fan
 		dir = dir.rotated(Vector3.RIGHT, splay)
 		var ang := 0.0
 		for k in 3:
@@ -179,7 +182,7 @@ static func build_hand(s: float, grip: bool) -> ArrayMesh:
 	# grip it lies along the far side of the frame pointing forward.
 	var tb := Vector3(s * 0.016, 0.018, 0.030)
 	var t_dirs := [Vector3(s * 0.35, 0.62, 0.55), Vector3(s * 0.62, 0.70, 0.10), Vector3(s * 0.55, 0.78, -0.20)] if grip \
-		else [Vector3(s * 0.30, 0.78, 0.40), Vector3(s * 0.40, 0.88, 0.12), Vector3(s * 0.42, 0.90, -0.02)]
+		else [Vector3(s * 0.55, 0.72, 0.30), Vector3(s * 0.68, 0.72, 0.02), Vector3(s * 0.70, 0.66, -0.14)] # T1/T3: thumb rests in along the index (no splayed thumb)
 	if grip and s < 0.0:
 		# Support thumb lies forward along the frame, over the gun thumb.
 		t_dirs = [Vector3(s * 0.30, 0.45, 0.85), Vector3(s * 0.25, 0.20, 1.0), Vector3(s * 0.20, 0.05, 1.0)]
