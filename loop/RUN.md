@@ -168,3 +168,7 @@
     - --downtown-review: drive loop done in 662.8 s (317.5 s waiting, 4 tows at Collyer Quay), walk 36/36, heli landed at NS Square and the player got out.
   - Headless --downtown-review: walk and fly pass; the drive did not finish (stuck at the Raffles Ave / Bayfront corner).
   - JPEGs -> progress/img/integration/S/.
+- 2026-10-23T16:00:46Z Wave S integrated and pushed: ff749a8, game code 8b561f8.
+  - Removed the merged worktrees perf-s, street-life-fix and downtown-polish. Their only untracked content was symlinks to this checkout's private assets, plus .import.log. The symlinks were unlinked first; the targets are intact. The branches are kept and pushed.
+  - KEPT .worktrees/characters: it holds ~2,002 untracked Finder ' 2' duplicates, which include private-asset copies such as 'art/source/characters 2'. Removing it would delete untracked data, so that is left to the owner. Branch opus55/characters 6a4a45e is merged and pushed.
+  - Nothing of ours is running.
