@@ -93,13 +93,13 @@ vec3 room(vec2 p, vec3 v, float rs, float office, vec3 wall_c, float shop) {
 		c = mix(c, c * 0.35, door);
 		// shops: shelving with coloured stock on the back wall
 		float shelf = band(hp.y * 7.0, 0.0, 0.18, 0.02) * step(hp.y, 0.62);
-		vec3 stock = vec3(h1(floor(hp.x * 9.0) + rs), h1(floor(hp.x * 9.0) + rs * 2.0), h1(floor(hp.x * 9.0) + rs * 3.0)) * 0.7 + 0.15;
+		vec3 stock = mix(vec3(0.30, 0.28, 0.26), vec3(h1(floor(hp.x * 9.0) + rs), h1(floor(hp.x * 9.0) + rs * 2.0), h1(floor(hp.x * 9.0) + rs * 3.0)), 0.45) * mix(0.35, 0.9, h1(floor(hp.x * 9.0) - rs));
 		c = mix(c, mix(stock, vec3(0.08), shelf), shop * step(hp.y, 0.62) * 0.85);
 	} else {
 		c = wall_c * 0.75;
 		// shops: shelving along the side walls too
 		float shelf2 = band(hp.y * 7.0, 0.0, 0.2, 0.02);
-		vec3 stock2 = vec3(h1(floor(hp.z * 14.0) + rs * 1.3), h1(floor(hp.z * 14.0) + rs * 2.9), h1(floor(hp.z * 14.0) + rs * 4.1)) * 0.65 + 0.12;
+		vec3 stock2 = mix(vec3(0.30, 0.28, 0.26), vec3(h1(floor(hp.z * 14.0) + rs * 1.3), h1(floor(hp.z * 14.0) + rs * 2.9), h1(floor(hp.z * 14.0) + rs * 4.1)), 0.45) * mix(0.35, 0.9, h1(floor(hp.z * 14.0) - rs));
 		c = mix(c, mix(stock2, vec3(0.07), shelf2), shop * step(hp.y, 0.66) * 0.9);
 	}
 	// desks / furniture band in the lower third
@@ -296,7 +296,7 @@ void fragment() {
 		// fresnel: more reflection at grazing angles
 		float ndv = clamp(dot(-V, n), 0.0, 1.0);
 		float fres = pow(1.0 - ndv, 4.0);
-		float see = (1.0 - fres) * (1.0 - cell_far * 0.6) * 0.85;
+		float see = max(1.0 - fres, 0.3) * (1.0 - cell_far * 0.6) * 0.85;
 		// pillowed panes: each pane tilts a little so the sky reflection breaks up
 		nmap_t = vec3((h2(cell * 1.7 + seed) - 0.5) * 0.06, (h2(cell * 3.1 - seed) - 0.5) * 0.05, 0.0) * pane;
 		// ---- reflection of sky, haze and the surrounding city (emissive, so
@@ -311,10 +311,10 @@ void fragment() {
 		vec3 env = mix(sky_hz, sky_hi, smoothstep(skyl, 0.75, R.y));
 		// reflected towers / street below the reflected skyline
 		float bstripe = vnoise(vec2(az * 40.0, R.y * 60.0 + seed));
-		vec3 city = mix(vec3(0.20, 0.23, 0.26), vec3(0.55, 0.53, 0.50), vnoise(vec2(az * 11.0 + seed, 2.0))) * (0.75 + 0.35 * bstripe);
+		vec3 city = mix(vec3(0.34, 0.38, 0.42), vec3(0.78, 0.74, 0.68), vnoise(vec2(az * 11.0 + seed, 2.0))) * (0.75 + 0.35 * bstripe);
 		env = mix(city, env, smoothstep(skyl - 0.02, skyl + 0.02, R.y));
-		env = mix(env, vec3(0.18, 0.18, 0.19), smoothstep(-0.05, -0.4, R.y));
-		float refl_w = (0.16 + 0.70 * fres) * reflect_strength * (is_lobby ? 0.45 : 1.0);
+		env = mix(env, vec3(0.30, 0.29, 0.28), smoothstep(-0.05, -0.4, R.y));
+		float refl_w = (0.16 + 0.70 * fres) * reflect_strength * (is_lobby ? 0.6 : 1.0);
 		vec3 refl = env * mix(vec3(1.0), glass_c * 3.2, 0.35) * refl_w;
 		// ---- combine
 		vec3 frame_mix = mix(base, frame_c, clamp(mull + transom + slab, 0.0, 1.0));
