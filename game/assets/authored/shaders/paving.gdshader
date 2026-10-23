@@ -36,7 +36,7 @@ void fragment() {
 	float lum = dot(base, vec3(0.333));
 	// Pull individual stones toward the sheet mean: weathering evens them out.
 	vec3 mean = textureLod(albedo_tex, p / tile_m, 9.0).rgb;
-	base = mix(base, mean, 0.72);
+	base = mix(base, mean, 0.50);
 	vec4 big = w_mask(p / 61.0);
 	vec4 med = w_mask(w_rot(p, 0.9) / 13.0 + 0.4);
 	vec4 sml = w_mask(p / 3.7 + 0.2);
@@ -53,7 +53,30 @@ void fragment() {
 	float srow = floor(p.y / tile_m * 8.0);
 	vec2 sid = vec2(floor((p.x / tile_m * 1024.0 + mod(srow, 2.0) * 128.0) / 256.0), srow);
 	float sh = w_hash12(sid + 7.7);
-	col *= 0.90 + 0.18 * sh;
+	col *= 0.82 + 0.34 * sh;
+	// nearfield R2: unit-by-unit character. Slab-local coords (0..1).
+	vec2 su = vec2(fract((p.x / tile_m * 1024.0 + mod(srow, 2.0) * 128.0) / 256.0), fract(p.y / tile_m * 8.0));
+	float sh2 = w_hash12(sid + 21.3);
+	float sh3 = w_hash12(sid + 37.9);
+	// warm/cool batch cast
+	col *= mix(vec3(1.04, 1.0, 0.94), vec3(0.96, 0.99, 1.03), sh2);
+	// stained slabs: spreading dark blot from one corner
+	float sstain = step(0.86, sh3) * (1.0 - smoothstep(0.2, 0.9, length((su - vec2(sh2, sh)) * vec2(2.0, 1.0))));
+	col = mix(col, col * vec3(0.58, 0.55, 0.48), sstain * wear);
+	// sunken / rocking slabs: darker, dirty, with a shadowed high edge
+	float sunk = step(sh3, 0.10) * wear;
+	float sedge = sunk * (1.0 - smoothstep(0.0, 0.12, sh2 < 0.5 ? su.y : 1.0 - su.y));
+	col *= 1.0 - 0.18 * sunk - 0.35 * sedge;
+	// cracked slabs: one jagged crack across the unit
+	float crk_on = step(0.10, sh3) * step(sh3, 0.17);
+	float cxs = su.x * 11.0;
+	float cj = mix(w_hash12(vec2(floor(cxs), sh * 97.0)), w_hash12(vec2(floor(cxs) + 1.0, sh * 97.0)), fract(cxs)) - 0.5;
+	float cy = su.y - (0.3 + 0.4 * sh2) - (su.x - 0.5) * (sh - 0.5) * 1.2 - 0.07 * cj;
+	float crk = crk_on * (1.0 - smoothstep(0.012, 0.04, abs(cy)));
+	col *= 1.0 - 0.55 * crk * wear;
+	// chipped arrises: dark at slab corners
+	vec2 sc = min(su, 1.0 - su) * vec2(4.0, 2.0);
+	col *= 1.0 - 0.25 * (1.0 - smoothstep(0.0, 0.10, min(sc.x, sc.y))) * step(0.5, sh2 + 0.3 * sh3);
 	col *= 0.90 + 0.20 * med.g;
 	// Traffic-worn grime blotches (warm grey-brown).
 	float grime = smoothstep(0.50, 0.78, med.g * 0.65 + big.g * 0.55) * wear;
@@ -128,7 +151,11 @@ void fragment() {
 	col = mix(vec3(dot(col, vec3(0.333))), col, sat);
 	ALBEDO = clamp(col * lift, vec3(0.0), vec3(1.0));
 	ROUGHNESS = clamp(rough, 0.35, 1.0);
-	NORMAL_MAP = texture(normal_tex, p / tile_m).rgb;
+	// nearfield R2: each slab sits at its own slight tilt, so the raking sun
+	// picks units out one by one (uneven, height-varied paving).
+	vec3 nm = texture(normal_tex, p / tile_m).rgb * 2.0 - 1.0;
+	nm.xy += (vec2(sh2, sh3) - 0.5) * 0.40 + vec2(0.0, sunk * 0.5);
+	NORMAL_MAP = normalize(nm) * 0.5 + 0.5;
 	NORMAL_MAP_DEPTH = 0.32;
 	METALLIC = metal_k;
 }

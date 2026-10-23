@@ -1060,6 +1060,15 @@ func _nearfield_checks(world: Node) -> void:
 	var pv: PackedVector3Array = plate[Mesh.ARRAY_VERTEX]
 	var pn: PackedVector3Array = plate[Mesh.ARRAY_NORMAL]
 	_check("nearfield: sign plates show their pictogram face to the viewer", pv.size() >= 6 and (pv[1] - pv[0]).cross(pv[2] - pv[0]).dot(pn[0]) < 0.0)
+	# R2 layered ground wear: lane resurfacing seams, saw-cut patch seams, kerb silt,
+	# chipped markings, per-unit paver/tile variation (guards against merge reverts).
+	var sh_dir := "res://assets/authored/shaders/"
+	var wear_ok := true
+	for pair in [["road_asphalt", "resurfacing panels"], ["road_asphalt", "silt fan"], ["road_asphalt", "sawcut"], ["road_paint", "chipped thermoplastic"], ["paving", "sunken / rocking slabs"], ["encaustic_tiles", "chipped corners"], ["leaf_litter", "curled leaves"]]:
+		var path: String = sh_dir + pair[0] + (".gdshaderinc" if pair[0] == "leaf_litter" else ".gdshader")
+		var f := FileAccess.open(path, FileAccess.READ)
+		wear_ok = wear_ok and f != null and f.get_as_text().contains(pair[1])
+	_check("nearfield: ground shaders carry layered wear (patch seams, resurfacing, silt, chipped paint, unit variation)", wear_ok)
 	var cards_ok := true
 	if NearField.cards_available():
 		var shrubs := world.find_children("NearfieldShrub_*", "MultiMeshInstance3D", true, false)
