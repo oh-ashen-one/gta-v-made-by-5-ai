@@ -36,6 +36,8 @@ scale) — every tile repeats visibly if sampled at one scale.
 | fabric_denim | `_albedo` `_normal` `_rough` | jeans/trousers | seamless; twill runs diagonally; ~0.6 tiles per trouser leg width; add darker AO in creases |
 | fabric_batik | `_albedo` `_normal` `_rough`, `fabric_batik_single_albedo` | batik shirts for NPC variety (Singapore identity) | the seamless version ghosts flowers in blend zones — prefer `fabric_batik_single_albedo` (unblended) when one tile covers the garment |
 | fabric_cotton_jersey | `_albedo` `_normal` `_rough`, `_neutral` | T-shirts; `_neutral` is tintable for crowd colour variety | seamless; multiply `_neutral` by any tee colour; normal strength low (knit is fine) |
+| skin_detail_male / skin_detail_neutral | `skin_detail_male_albedo/_normal/_rough`, `skin_detail_neutral` (mid-grey overlay) | character face/skin micro-detail (judges: pores, stubble, creases, uneven shine) | seamless; tile ~4-6x across a face as a DETAIL layer over the base skin albedo (overlay blend with `_neutral` so any skin tone works); use `_normal` at low strength for pores and `_rough` to break up uniform shine; keep stubble to the jaw/upper lip with a mask |
+| hair cards | `hair_card_black_straight`, `hair_card_brown_straight`, `hair_card_black_wavy`, `hair_card_brown_short_coarse` (RGBA) + `hair_cards_atlas` | strand-detail hair cards to replace sculpted-shell hair | alpha-hash or alpha-scissor (~0.35) with soft depth; layer 20-60 cards following the scalp; top = root, bottom = tips; anisotropic sheen along V |
 
 ## Requests
 Priority note (owner, ~17:45Z): playable mechanics first (locomotion, combat, driving, helicopter), then the world.
