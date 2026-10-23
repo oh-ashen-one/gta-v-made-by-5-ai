@@ -41,6 +41,12 @@ const PEOPLE_STRIDE_OFFSCREEN := 15
 ## blurred and the probe already leads the car by its speed, so 1 s is enough.
 const CAR_PROBE_STEP := 1.0
 
+## Wave T (CPU): failed crowd re-seeds allowed per frame (x20 on a camera
+## cut). A roamer whose seed fails stays where it is and retries next frame.
+const CROWD_SEED_FAILS := 3
+## Same for lane cars (per physics tick).
+const TRAFFIC_SEED_FAILS := 3
+
 ## Wave T (CPU): physics ticks between updates of a settled idle civilian
 ## (standing, seated, browsing); its pose blend and idle timer use the summed
 ## delta. Startles (shots, cars, panic) switch state and act on the next tick.

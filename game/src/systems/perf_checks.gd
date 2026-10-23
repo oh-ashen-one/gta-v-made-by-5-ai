@@ -101,4 +101,11 @@ static func _wave_t(main: Node) -> Array:
 	out.append(["perf-T: no per-frame render-server readback in boat wash; car probe re-placed on the budget cadence; blur shader shared and prewarmed",
 		wash != "" and not wash.contains("get_instance_custom_data") and fx.contains("PerfBudget.CAR_PROBE_STEP") and PerfBudget.CAR_PROBE_STEP >= 0.9
 		and blur.contains("static func prewarm") and blur.contains("static var _s_pipeline"), ""])
+	# Crowd / lane-car re-seeding: failed seeds are capped per frame / tick (over
+	# the bay every far roamer and car retried every frame: 10-20 fps flight).
+	var crowd := FileAccess.get_file_as_string("res://src/systems/crowd_director.gd")
+	var amb := FileAccess.get_file_as_string("res://src/systems/ambient_traffic.gd")
+	out.append(["perf-T: failed crowd and lane-car re-seeds are capped per frame (no retry storm when the focus is over water)",
+		PerfBudget.CROWD_SEED_FAILS >= 1 and PerfBudget.TRAFFIC_SEED_FAILS >= 1 and crowd.contains("PerfBudget.CROWD_SEED_FAILS") and amb.contains("PerfBudget.TRAFFIC_SEED_FAILS")
+		and crowd.contains("fails -= 1") and amb.contains("fails -= 1"), "crowd=%d traffic=%d" % [PerfBudget.CROWD_SEED_FAILS, PerfBudget.TRAFFIC_SEED_FAILS]])
 	return out

@@ -29,6 +29,10 @@ const VIEWS := [
 	{"name": "aerial_district", "pos": Vector3(250.0, 95.0, 250.0), "look": Vector3(-40.0, 0.0, -60.0)},
 	# Wave S: over the Marina Bay downtown itself (CBD + MBS + bay).
 	{"name": "aerial_downtown", "pos": Vector3(-150.0, 120.0, -260.0), "look": Vector3(-420.0, 20.0, -720.0)},
+	# Wave T: the route's slowest stretch (rendered route 120-127 s, 10-20 fps):
+	# hovering at ~110 m over the bay on the approach to the waterfront pad.
+	{"name": "heli_bay_hover", "pos": Vector3(25.0, 118.0, -296.0), "look": Vector3(-79.0, 40.0, -468.0)},
+	{"name": "heli_bay_down", "pos": Vector3(10.0, 112.0, -320.0), "look": Vector3(-25.0, 0.0, -400.0)},
 ]
 const DEFAULT_PHASES := ["all", "no_occlusion", "perf_director_off", "no_shadows", "no_ssao", "no_ssil", "no_vfog", "no_msaa", "no_taa", "no_trees",
 	"no_people", "people_frozen", "lane_traffic_sim_off", "no_lane_cars", "no_parked_cars", "no_dressing_signals",
@@ -258,6 +262,16 @@ func _run() -> void:
 						traffic.ambient.process_mode = Node.PROCESS_MODE_DISABLED
 						await _sample(name_v, phase, secs)
 						traffic.ambient.process_mode = Node.PROCESS_MODE_INHERIT
+				"no_bay_reflection":
+					var bw: Node = null
+					for n in main.world.find_children("*", "", true, false):
+						if n.get("reflection_enabled") != null and n.get("reflection_viewport") != null:
+							bw = n
+							break
+					if bw != null:
+						bw.set("reflection_enabled", false)
+						await _sample(name_v, phase, secs)
+						bw.set("reflection_enabled", true)
 				"no_lane_cars":
 					_show(cars, false)
 					await _sample(name_v, phase, secs)

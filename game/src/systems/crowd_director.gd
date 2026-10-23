@@ -550,9 +550,15 @@ func _recycle(cut: bool) -> void:
 
 func _recycle_pass(cut: bool) -> void:
 	var budget := 400 if cut else 2
+	# Wave T perf: failed seeds count too. Over the bay (helicopter approach to
+	# the waterfront pad) no walk is near the focus, every out-of-range roamer
+	# failed its seed every frame and the pass cost ~24 ms per frame
+	# (rendered route: 10-20 fps for ~6 s). PerfBudget.CROWD_SEED_FAILS caps
+	# the failed attempts per pass; the rest retry next frame.
+	var fails := PerfBudget.CROWD_SEED_FAILS * (20 if cut else 1)
 	var pending_pairs := {}
 	for p in roamers:
-		if budget <= 0:
+		if budget <= 0 or fails <= 0:
 			break
 		if not _eligible(p):
 			continue
@@ -578,11 +584,15 @@ func _recycle_pass(cut: bool) -> void:
 			if _seed(p, not cut, true):
 				pending_pairs[pair] = [p]
 				budget -= 1
+			else:
+				fails -= 1
 			continue
 		if _seed(p, not cut, false):
 			budget -= 1
 			if p.has_meta("leads"):
 				_place_follower(p, p.get_meta("leads"))
+		else:
+			fails -= 1
 
 ## Keep every downtown polyline with at least two points; returns the count.
 func adopt_downtown(lanes: Array) -> int:

@@ -41,6 +41,7 @@ const VIEWS := [
 	{"name": "downtown_street", "pos": Vector3(-360.0, 2.0, -300.0), "look": Vector3(-360.0, 4.0, -200.0)},
 	{"name": "aerial_district", "pos": Vector3(250.0, 95.0, 250.0), "look": Vector3(-40.0, 0.0, -60.0)},
 	{"name": "aerial_downtown", "pos": Vector3(-150.0, 120.0, -260.0), "look": Vector3(-420.0, 20.0, -720.0)},
+	{"name": "heli_bay_down", "pos": Vector3(10.0, 112.0, -320.0), "look": Vector3(-25.0, 0.0, -400.0)},
 ]
 
 class _Stamp extends Node:
