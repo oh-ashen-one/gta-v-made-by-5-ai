@@ -151,14 +151,14 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 	# Surfaces: skin tone / grey hair / softer lower face; dress colour; legs.
 	_retint(cv, p, skirt)
 	var hair := String(p.get("hair", ""))
-	var range_hair := 75.0
+	var range_hair := 60.0
 	if hair != "":
 		var hmat: Material = _cloth_material(p["hair_colour"]) if hair == "cap" else _hair_material(p["hair_colour"], int(p["seed"]))
 		var hn := _attach(sk, "head", _hair_mesh(hair), hmat, Transform3D(Basis(), HEAD_C), range_hair, false)
 		hn.name = "PeopleHair"
 	if skirt:
 		var col: Color = p["dress_colour"]
-		var sn := _attach(sk, "pelvis", _misc("skirt"), _cloth_material(col), Transform3D(), 75.0, false)
+		var sn := _attach(sk, "pelvis", _misc("skirt"), _cloth_material(col), Transform3D(), 60.0, false)
 		sn.name = "PeopleSkirt"
 	var pose := ""
 	match prop:
@@ -183,10 +183,10 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 			pose = "umbrella"
 			var col_u: Color = p["umbrella_colour"]
 			var shaft := _attach_posed(sk, "hand.l", _misc("umbrella_shaft"), _plain(Color(0.12, 0.12, 0.12), 0.35, 0.6),
-				Basis(Vector3.BACK, 0.22) * Basis(Vector3.RIGHT, 0.3), Vector3(-0.015, 0.0, 0.0), 60.0)
+				Basis(Vector3.BACK, 0.22) * Basis(Vector3.RIGHT, 0.3), Vector3(-0.015, 0.0, 0.0), 40.0)
 			shaft.name = "PeopleUmbrellaShaft"
 			var canopy := _attach_posed(sk, "hand.l", _misc("umbrella"), _cloth_material(col_u, true),
-				Basis(Vector3.BACK, 0.22) * Basis(Vector3.RIGHT, 0.3), Vector3(-0.015, 0.0, 0.0), 60.0, true)
+				Basis(Vector3.BACK, 0.22) * Basis(Vector3.RIGHT, 0.3), Vector3(-0.015, 0.0, 0.0), 40.0, true)
 			canopy.name = "PeopleUmbrella"
 		"handbag":
 			var hb := _attach(sk, "chest", _misc("handbag"), _plain(p["prop_colour"], 0.45, 0.0), Transform3D(Basis(), Vector3(0.0, 0.0, 0.0)), 45.0, false)

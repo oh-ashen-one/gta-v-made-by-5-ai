@@ -99,7 +99,20 @@ func setup(t: TrafficManager) -> void:
 			else:
 				leaders.append(npc)
 
-func _process(_delta: float) -> void:
+var _prof := "--street-prof" in OS.get_cmdline_user_args()
+var _prof_us := 0
+var _prof_n := 0
+func _process(delta: float) -> void:
+	var t0 := Time.get_ticks_usec()
+	_process_crowd(delta)
+	if _prof:
+		_prof_us += Time.get_ticks_usec() - t0
+		_prof_n += 1
+		if _prof_n % 300 == 0:
+			print("[street-prof] crowd director avg %.2f ms/frame over 300 frames" % [_prof_us / 300000.0])
+			_prof_us = 0
+
+func _process_crowd(_delta: float) -> void:
 	var cam := get_viewport().get_camera_3d()
 	if cam == null:
 		return

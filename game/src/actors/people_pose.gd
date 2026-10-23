@@ -45,13 +45,13 @@ func _process_modification_with_delta(_delta: float) -> void:
 	var sk := get_skeleton()
 	if sk == null:
 		return
-	# Perf: beyond 60 m (where the props are no longer drawn) the pose is
+	# Perf: beyond 40 m (where the props are no longer drawn) the pose is
 	# not worth a GDScript pass every frame; re-checked every 16 frames.
 	_far_check -= 1
 	if _far_check <= 0:
 		_far_check = 16
 		var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
-		_far = cam != null and cam.global_position.distance_squared_to(sk.global_position) > 3600.0
+		_far = cam != null and cam.global_position.distance_squared_to(sk.global_position) > 1600.0
 	if _far:
 		return
 	if stoop > 0.0:
