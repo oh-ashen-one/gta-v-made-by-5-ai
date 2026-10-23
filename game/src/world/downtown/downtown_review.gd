@@ -177,6 +177,8 @@ static func _path_right(path: Array[Vector3], i: int) -> Vector3:
 ## oncoming traffic in the lane it moves into. Following the path matters at
 ## corners: a straight-ahead probe saw the promenade crowd past a left turn
 ## and waited there for ever.
+var _gap_node: Node3D = null
+
 func _gap_path(path: Array[Vector3], i: int, actor: Node3D, shift: float, look: float, half_w: float) -> float:
 	var origin := actor.global_position + _path_right(path, i) * shift
 	var poly: Array[Vector3] = [Vector3(origin.x, 0.0, origin.z)]
@@ -194,14 +196,15 @@ func _gap_path(path: Array[Vector3], i: int, actor: Node3D, shift: float, look: 
 	if traffic.ambient != null:
 		for v in traffic.ambient.vehicles:
 			if is_instance_valid(v) and v.active and v.visible:
-				obs.append([v.global_position, v.dims.x * 0.5, v.dims.z * 0.5, false])
+				obs.append([v.global_position, v.dims.x * 0.5, v.dims.z * 0.5, false, v])
 	for c in traffic.cars:
 		if is_instance_valid(c) and c != actor and not c.disabled:
-			obs.append([c.global_position, 0.95, 2.3, false])
+			obs.append([c.global_position, 0.95, 2.3, false, c])
 	for pd in traffic.peds:
 		if is_instance_valid(pd) and pd.visible:
-			obs.append([pd.global_position, 0.35, 0.35, true])
+			obs.append([pd.global_position, 0.35, 0.35, true, pd])
 	var best := INF
+	_gap_node = null
 	for e: Array in obs:
 		var o: Vector3 = e[0]
 		var rel := o - actor.global_position
@@ -219,7 +222,9 @@ func _gap_path(path: Array[Vector3], i: int, actor: Node3D, shift: float, look: 
 				var along := cum[sgi] + a2.distance_to(cp) - float(e[2]) - 2.3
 				if bool(e[3]) and along > 14.0:
 					break   # walkers only matter close in
-				best = minf(best, maxf(along, 0.0))
+				if maxf(along, 0.0) < best:
+					best = maxf(along, 0.0)
+					_gap_node = e[4]
 				break
 	return best
 
@@ -387,6 +392,9 @@ func _drive_leg() -> void:
 	var shift_hold := 0
 	var overtakes := 0
 	var waits := 0.0
+	var tows := 0
+	var stall_node: Node3D = null
+	var stall_for := 0.0
 	while _elapsed() < t_end:
 		await get_tree().physics_frame
 		var dt := get_physics_process_delta_time()
@@ -408,11 +416,28 @@ func _drive_leg() -> void:
 			# brake to stop ~6 m behind whatever is ahead (4 m/s^2)
 			var allow := sqrt(2.0 * 4.0 * maxf(gap - 6.5, 0.0)) * 3.6
 			target_kmh = minf(target_kmh, allow)
+		var blocker := _gap_node
 		if gap < 14.0 and kmh < 6.0:
 			blocked_t += dt
 			waits += dt
+			if blocker != stall_node:
+				stall_node = blocker
+				stall_for = 0.0
+			stall_for += dt
 		else:
 			blocked_t = 0.0
+			stall_for = 0.0
+		# A street-life car that has sat stalled in front of us for 45 s with
+		# every lane around it blocked is recycled the way the traffic system
+		# recycles its own gridlocked cars (logged as a tow; footage shows it).
+		if stall_for > 45.0 and is_instance_valid(stall_node) and stall_node is AmbientVehicle and traffic.ambient != null:
+			_log("tow: ambient %s stalled 45 s ahead at %s" % [stall_node.name, stall_node.global_position])
+			if not traffic.ambient._seed_vehicle(stall_node, true):
+				traffic.ambient._park_offscreen(stall_node)
+			traffic.ambient._rebuild_keys()
+			tows += 1
+			stall_for = 0.0
+			stall_node = null
 		if blocked_t > 12.0:
 			# still boxed in (a stalled queue, or the lane we moved to stopped):
 			# take whichever lane offset has the clearest corridor, own lane first
@@ -465,7 +490,7 @@ func _drive_leg() -> void:
 	_release()
 	var done := i >= path.size() - 3
 	_results["drive"] = {"completed": done, "seconds": snappedf(_elapsed(), 0.1), "max_y": snappedf(max_deck, 0.01), "end": str(car.global_position),
-		"overtakes": overtakes, "waiting_s": snappedf(waits, 0.1)}
+		"overtakes": overtakes, "tows": tows, "waiting_s": snappedf(waits, 0.1)}
 	_log("drive done=%s at %s, max deck y %.2f" % [done, car.global_position, max_deck])
 	# stop and get out on Collyer Quay
 	Input.action_press("move_back")

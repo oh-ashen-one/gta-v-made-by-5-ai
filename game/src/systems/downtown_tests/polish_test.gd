@@ -54,3 +54,8 @@ func run(world: WorldBuilder, suite: Node) -> void:
 		if y < 0.05 or y > 0.34:
 			ramp_ok = false
 	suite._check("downtown-polish: Helix landing plazas have walkable edge ramps", ramp_ok, ",".join(detail))
+	# 7. altitude-aware sun shadows / froxel veil node is live and tied to the
+	#    ground-shadow overlay
+	var al := world.find_child("DowntownAerialLight", true, false)
+	suite._check("downtown-polish: aerial light (long sun shadows from the air) attached with its overlay", al != null and (al.get("overlay") as Array).size() == 1,
+		"node=%s" % [al != null])
