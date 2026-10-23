@@ -141,6 +141,19 @@ func _ready() -> void:
 		started = true
 		return
 
+	if "--landmark-review" in args:
+		# downtown-landmarks piece: landmark stills + Helix Bridge walk footage.
+		var lm_dir := "user://landmark_review"
+		for arg in args:
+			if arg.begins_with("--capture-dir="):
+				lm_dir = arg.trim_prefix("--capture-dir=")
+		var lm_review: Node = _qa_system("res://src/systems/landmark_review.gd")
+		add_child(lm_review)
+		lm_review.setup(self, world, lm_dir)
+		hud.show_title(false)
+		started = true
+		return
+
 	if "--water-footage" in args:
 		var footage_dir := "user://water_footage"
 		for arg in args:

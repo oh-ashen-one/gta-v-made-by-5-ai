@@ -491,7 +491,10 @@ func _physics_process(delta: float) -> void:
 	if has_meta("_qa_motion_probe"):
 		get_meta("_qa_motion_state")["resolved"] = velocity
 
-	if global_position.y < -8.0 or absf(global_position.x)>400.0 or global_position.z>410.0 or global_position.z < -370.0:
+	# Wave M (downtown-landmarks): the on-foot bound is the downtown PLAYABLE
+	# rect (plus the old 35 m grace), not the legacy district box, so the
+	# Marina Bay landmarks are reachable on foot.
+	if global_position.y < -8.0 or not DowntownPlan.PLAYABLE.grow(35.0).has_point(Vector2(global_position.x, global_position.z)):
 		Events.toast("Beyond the district. Returning to your checkpoint.","warn")
 		Game.damage_player(Game.MAX_HEALTH)
 		return
