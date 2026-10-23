@@ -1,13 +1,20 @@
 # Orchard Reach — Opus 5.5 enhancement loop (rolling handoff)
 
-- Branch: `Opus-5.5-enhancements` (remote `origin/Opus-5.5-enhancements`). Never merge or push `main`; that needs the owner.
-- Run: run 2 is **open-ended** (owner, 2026-10-22 ~17:27Z). It goes in waves of build -> blind critique -> integrate until a blind
-  judge prefers ours to GTA V and is wowed, or until the owner stops it. Owner direction since 2026-10-23 04:40Z: play IN central
-  Singapore (Marina Bay core) and keep everything already made (`GOAL.md`).
-- Records: [`loop/RUN.md`](loop/RUN.md) (run log), [`loop/PIECES.md`](loop/PIECES.md) (pieces, verdicts, merges), progress
-  page `progress/index.html` (rebuild with `python3 loop/make_progress.py`).
-- Machine: Mac Studio, Godot 4.7.1 Forward+, Metal for renders. Render only through `loop/render.sh` (shared GPU lease).
-- Last update: **wave-S integration**, 2026-10-23 ~16:00Z. Game code **`8b561f8`** (the branch head adds only docs on top).
+## Run 2 STOPPED and merged to `main` (owner, 2026-10-23 ~20:55Z)
+- The owner stopped the loop (usage limit) and asked for everything to go to `main` with old branches cleaned up.
+  `Opus-5.5-enhancements` was fast-forwarded into `main` (main had not moved since `2c66caa`).
+- Wave T (performance T1, traffic-flow T1, downtown-fill T2, characters T3) is merged with integrator seam fixes
+  (lane cars vs. people beside the body, downtown-fill view wedges + near-field turf, zebra holds give up after 8 s).
+  **The wave T integration checks were stopped by the owner before they ran** (he tests himself): the last fully verified
+  state is wave S (`8b561f8`, below). Wave T is NOT regression-tested or rendered.
+- Every blind A/B round vs GTA V so far is a loss; none wowed. Best build so far, north star not accepted.
+- Next biggest gaps (wave T critics): hero character close-up (skin detail, expression, hair strands, cloth folds, hand
+  poses); near-field plaza floor + props (use `plaza_granite_pavers`); near-tower facades (use `tower_curtainwall_mullion`
+  and `tower_stone_punched`); reflective car paint, long sun shadows, skyline haze layers. Generated textures are listed in
+  `loop/GENERATED_ASSETS.md` (git-ignored images, Mac Studio only).
+- Unmerged piece branches were archived as tags `archive/opus55-*` before their branches were deleted.
+- Records: [`loop/RUN.md`](loop/RUN.md), [`loop/PIECES.md`](loop/PIECES.md), `progress/index.html`. Render only through
+  `loop/render.sh` (shared GPU lease). Machine: Mac Studio, Godot 4.7.1 Forward+.
 
 ## What is merged now (wave S, 2026-10-23)
 

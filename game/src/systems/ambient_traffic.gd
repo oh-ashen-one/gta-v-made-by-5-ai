@@ -1360,7 +1360,11 @@ func _keep_clear_target(v: AmbientVehicle, front: float, gap: float) -> float:
 func _person_on_zebra(v: AmbientVehicle, e: int, lane: int, iv: Vector2) -> bool:
 	# A person who will not step clear stops counting after GIVE_UP * 1.5 s
 	# (as in _scan_obstacles), so a loiterer never freezes an approach.
-	if v.idle_time > GIVE_UP * 1.5:
+	# integration T: 8 s for the zebra holds. A steady stream of crowd walkers
+	# over a junction-exit zebra held cars in the box at the route's first
+	# right turn (Tembusu / heritage road) and the rendered drive leg backed
+	# out over the corner pavement for ~80 s. Walkers still get dodge prompts.
+	if v.idle_time > 8.0:
 		return false
 	var ed: Dictionary = edges[e]
 	var mid := lane_point(e, lane, (iv.x + iv.y) * 0.5)
