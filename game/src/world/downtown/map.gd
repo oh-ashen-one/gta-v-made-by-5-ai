@@ -76,12 +76,12 @@ func mat(key: String) -> Material:
 	var m: Material
 	match key:
 		"asphalt": m = Palette.weathered_surface(Palette.ASPHALT, "asphalt", 0.9, 0.0, true)
-		"ground": m = Palette.mat_textured(Color(0.38, 0.40, 0.42), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)
+		"ground": m = Palette.mat_textured(Color(0.44, 0.44, 0.43), "concrete", Vector3(70.0, 1.0, 70.0), 0.95)   # = legacy district slab
 		"pavers": m = Palette.mat_textured(Color(0.52, 0.54, 0.57), "pavers", Vector3.ONE, 0.9)
 		"pavers_warm": m = Palette.mat_textured(Color(0.62, 0.60, 0.58), "pavers", Vector3.ONE, 0.88)
 		"pavers_bridge": m = Palette.mat_textured(Color(0.60, 0.58, 0.55), "pavers", Vector3.ONE, 0.9)
 		"plaza": m = Palette.mat_textured(Color(0.50, 0.52, 0.55), "pavers", Vector3.ONE, 0.9)
-		"plot": m = Palette.mat_textured(Color(0.42, 0.45, 0.49), "pavers", Vector3.ONE, 0.92)
+		"plot": m = Palette.mat_textured(Color(0.60, 0.62, 0.64), "pavers", Vector3.ONE, 0.9, 0.0, false)   # cool granite setts (weathered tint read as dirt from the air)
 		"turf": m = Palette.mat_textured(Color(0.24, 0.33, 0.16), "soil", Vector3.ONE, 0.95)
 		"kerb": m = Palette.mat_textured(Color(0.72, 0.70, 0.65), "concrete", Vector3.ONE, 0.88)
 		"granite": m = Palette.mat_textured(Color(0.43, 0.42, 0.40), "concrete", Vector3.ONE, 0.9)

@@ -351,7 +351,11 @@ static func _walks(m, rng: RandomNumberGenerator) -> void:
 			if legacy != Vector2.ZERO and p.x > legacy.x + 0.4 and p.x < legacy.y - 0.4:
 				return true
 			return in_water(p.x, p.z) or on_road(p.x, p.z, "", 0.5) or on_legacy_road(p.x, p.z, 0.5)
-		_ribbon(m, "pavers_warm", pts, 0.0, hw, WALK_TOP, skip, true, 0.3, "granite_coping")
+		# walks sit at kerb height (0.16) so they are stepped onto from the
+		# ground anywhere; only the west shore extension matches the legacy
+		# promenade deck it continues (0.30)
+		var walk_top := WALK_TOP if legacy != Vector2.ZERO else FOOT_TOP
+		_ribbon(m, "pavers_warm", pts, 0.0, hw, walk_top, skip, true, 0.3, "granite_coping")
 		# trees + lamps along the inland edge of the wider walks
 		var i := 0
 		for s: Array in samples(pts, 14.0):
@@ -365,13 +369,13 @@ static func _walks(m, rng: RandomNumberGenerator) -> void:
 				var q := p + l * side * (hw - 1.4)
 				if in_water(q.x, q.z) or skip.call(q):
 					continue
-				var h := maxf(Bridges.height_at(q.x, q.z) + 0.065, WALK_TOP)
+				var h := maxf(Bridges.height_at(q.x, q.z) + 0.065, WALK_TOP if legacy != Vector2.ZERO else FOOT_TOP)
 				if i % 2 == 0:
 					m.lamp(Vector3(q.x, h, q.z), "heritage")
 				elif hw >= 6.0 and i % 4 == 1 and Bridges.height_at(q.x, q.z) < 0.05:
 					var tq := p + l * side * (hw - 3.5)
 					if not in_water(tq.x, tq.z):
-						m.tree(Vector3(tq.x, WALK_TOP, tq.z), rng.randf_range(0.9, 1.3), rng)
+						m.tree(Vector3(tq.x, WALK_TOP if legacy != Vector2.ZERO else FOOT_TOP, tq.z), rng.randf_range(0.9, 1.3), rng)
 
 ## Signals at every junction where an arterial meets another road.
 static func _signals(m) -> void:

@@ -113,13 +113,26 @@ static func shore_segments() -> Array:
 static func build(m) -> void:
 	var lands := land_rects()
 	m.stats["land_rects"] = lands.size()
+	# One seamless trimesh for the land surface: separate coplanar boxes left
+	# internal edges at every rect seam (z -577, -660...) that caught car
+	# bodies dead in the rendered drive. Boxes 0.5 m below catch tunnelling.
+	var faces := PackedVector3Array()
 	for r: Rect2 in lands:
 		var a := Vector3(r.position.x, 0.0, r.position.y)
 		var b := Vector3(r.end.x, 0.0, r.position.y)
 		var c := Vector3(r.end.x, 0.0, r.end.y)
 		var d := Vector3(r.position.x, 0.0, r.end.y)
 		m.quad_up("ground", a, b, c, d)
-		m.col_box(Vector3(r.size.x, 4.0, r.size.y), Vector3(r.get_center().x, -2.0, r.get_center().y))
+		faces.append_array([a, b, c, a, c, d])
+		m.col_box(Vector3(r.size.x, 4.0, r.size.y), Vector3(r.get_center().x, -2.5, r.get_center().y))
+	var tri := ConcavePolygonShape3D.new()
+	tri.backface_collision = true
+	tri.set_faces(faces)
+	var shape := CollisionShape3D.new()
+	shape.name = "DowntownLandSurface"
+	shape.shape = tri
+	m.body.add_child(shape)
+	m.shapes += 1
 	_seawalls(m)
 	_plots(m)
 	_ns_square(m)

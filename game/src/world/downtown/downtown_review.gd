@@ -161,7 +161,43 @@ func _run() -> void:
 	_recording = false
 	_release()
 	await _views()
+	await _perf_sweep()
 	_finish()
+
+## Frame-time sweep with no frame readback: 150 rendered frames at each of a
+## street, bridge, waterfront and helicopter-height downtown view.
+var _perf := {}
+func _perf_sweep() -> void:
+	_phase = "perf"
+	_recording = false
+	var cam := get_viewport().get_camera_3d()
+	var spots := [
+		["street_raffles_avenue", Vector3(-783.0, 1.6, -420.0), Vector3(-790.0, 6.0, -760.0)],
+		["bridge_esplanade", Vector3(-560.0, 5.4, -355.0), Vector3(-790.0, 4.0, -360.0)],
+		["waterfront_merlion_park", Vector3(-470.0, 1.7, -395.0), Vector3(-118.0, 90.0, -705.0)],
+		["street_shenton_way", Vector3(392.0, 1.6, 300.0), Vector3(400.0, 20.0, -200.0)],
+		["heli_bayfront", Vector3(-650.0, 140.0, -560.0), Vector3(-250.0, 0.0, -800.0)],
+		["heli_river_mouth", Vector3(-380.0, 120.0, -200.0), Vector3(-600.0, 0.0, -420.0)],
+	]
+	var all: Array[float] = []
+	for sp: Array in spots:
+		cam.global_position = sp[1]
+		cam.look_at(sp[2], Vector3.UP)
+		for w in 20:
+			await get_tree().process_frame
+		var times: Array[float] = []
+		var last := Time.get_ticks_usec()
+		for k in 150:
+			await get_tree().process_frame
+			var now := Time.get_ticks_usec()
+			times.append((now - last) / 1000.0)
+			last = now
+		times.sort()
+		all.append_array(times)
+		_perf[sp[0]] = {"p50": snappedf(times[75], 0.01), "p95": snappedf(times[142], 0.01), "max": snappedf(times[149], 0.01)}
+		_log("perf %s p50 %.2f p95 %.2f max %.2f ms" % [sp[0], times[75], times[142], times[149]])
+	all.sort()
+	_perf["all"] = {"n": all.size(), "p50": snappedf(all[all.size() / 2], 0.01), "p95": snappedf(all[int(all.size() * 0.95)], 0.01), "p99": snappedf(all[int(all.size() * 0.99)], 0.01)}
 
 ## Fixed stills: the plan's downtown views plus street-level and helicopter
 ## height views of the new roads and bridges (free camera, fixture-assisted).
@@ -228,7 +264,7 @@ func _drive_leg() -> void:
 	_recording = true
 	_log("drive start at %s" % car.global_position)
 	var i := 0
-	var t_end := _elapsed() + 260.0
+	var t_end := _elapsed() + 330.0
 	var stills := {"esplanade_bridge": Vector3(-600, 0, -360), "raffles_avenue": Vector3(-790, 0, -600), "bayfront_bridge": Vector3(-420, 0, -780), "bayfront_avenue": Vector3(0, 0, -780), "marina_boulevard": Vector3(400, 0, -520)}
 	var stuck_t := 0.0
 	var max_deck := 0.0
@@ -238,8 +274,8 @@ func _drive_leg() -> void:
 		if i >= path.size() - 2:
 			break
 		var kmh := car.speed_kmh()
-		var turn := _turn_ahead(path, i, 34.0)
-		var target_kmh := 72.0 if turn < 0.25 else (34.0 if turn > 0.9 else 48.0)
+		var turn := maxf(_turn_ahead(path, i, 34.0), _turn_ahead(path, i, 52.0))
+		var target_kmh := 72.0 if turn < 0.25 else (24.0 if turn > 0.9 else 42.0)
 		_steer(car, _ahead(path, i, clampf(kmh * 0.32, 9.0, 22.0)), 2.6)
 		Input.action_release("move_forward")
 		Input.action_release("move_back")
@@ -394,7 +430,7 @@ func _finish() -> void:
 		mean += v
 	mean /= maxf(1.0, sorted.size())
 	var report := {"results": _results, "frames_saved": _frame, "frame_ms": {"n": sorted.size(), "mean": snappedf(mean, 0.01), "p50": snappedf(pct.call(0.5), 0.01), "p95": snappedf(pct.call(0.95), 0.01), "p99": snappedf(pct.call(0.99), 0.01), "max": snappedf(pct.call(1.0), 0.01)},
-		"note": "frame_ms excludes frames that carried a JPEG readback", "stats": world.get_meta("downtown_map_stats", {}), "log": _log_lines}
+		"perf_sweep_ms": _perf, "note": "frame_ms excludes frames that carried a JPEG readback (encoding still lands on neighbours); perf_sweep_ms has no readback at all", "stats": world.get_meta("downtown_map_stats", {}), "log": _log_lines}
 	var f := FileAccess.open(out_dir + "/review.json", FileAccess.WRITE)
 	if f:
 		f.store_string(JSON.stringify(report, "\t"))
