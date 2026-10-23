@@ -4,9 +4,73 @@
 - Run: run 2 is **open-ended** (owner, ~17:27Z on 2026-10-22). It continues in waves (build, then blind critique, then integrate) until a blind judge prefers ours to GTA V and is wowed, or until the owner stops it. Owner priority since 17:43Z: playable mechanics first (walking/running, shooting, jumping, driving, flying), then the rest of the world.
 - Records: [`loop/RUN.md`](loop/RUN.md) (run log), [`loop/PIECES.md`](loop/PIECES.md) (pieces, verdicts, merges), and the progress page, built with `python3 loop/make_progress.py` into `progress/index.html`.
 - Machine: Mac Studio, Godot 4.7.1 Forward+, Metal for renders. Render only through `loop/render.sh` (shared GPU lease; at most one of our renders at a time).
-- Last update: wave-Q integration, 2026-10-23 ~02:50Z. Last game-code commit: `359fa91`.
+- Last update: wave-M downtown pre-integration, 2026-10-23 ~10:40Z. Game code `5c30e70`. Owner build: `/Users/midir/Builds/OrchardReach-5c30e70.zip` (private macOS package; packaged headless `--test` 203/203).
 
-## What is merged (wave Q, this integration)
+## Downtown Marina Bay is playable (wave M pre-integration, 2026-10-23)
+
+The owner's direction (play IN central Singapore around Marina Bay) is now on `Opus-5.5-enhancements`. Merged `--no-ff`:
+downtown-map `9cccdda` (`83d3af2`), downtown-landmarks `266842a` (`bf99f7f`), downtown-blocks `eeaf5a4` (`a6085a6`), plus
+seam fixes `85d359e`, `926bed2`, `c430037`, `5c30e70`. All blind critic rounds for these pieces were OURS LOSES (not wowed).
+
+### What you can do downtown and how to get there
+- **Drive the Marina Bay loop:** from the opening street (Telok Ayer side) go north up the avenue, left onto Collyer Quay,
+  Fullerton Road, over the **Esplanade Bridge**, Esplanade Drive, Raffles Avenue, Bayfront Avenue North, over the
+  **Bayfront Bridge**, Bayfront Avenue past MBS and the Gardens, Marina Boulevard, back to Collyer Quay (left-hand lanes).
+- **Walk onto the Marina Bay side:** along the west shore promenade, up the new steps into **Merlion Park**, across the
+  peninsula past One Fullerton, over the **Jubilee footbridge** to the **Esplanade** waterfront, then on along the
+  Marina Promenade and over the walkable **Helix Bridge** to the MBS Event Plaza.
+- **Fly:** take the helicopter from the aviation pad; downtown pads at NS Square (the old Float), the Lawn, Esplanade Park
+  and Gardens East. Land and get out anywhere `DowntownPlan.heli_exit_allowed` permits.
+- Full-scale landmarks: MBS (three towers, SkyPark cantilevered north, Shoppes, Event Plaza), ArtScience, Helix,
+  Esplanade domes, Flyer + terminal, Supertree grove + domes, Fullerton Hotel / One Fullerton / Merlion Park. Built
+  blocks: Raffles Place CBD towers and plaza, Boat Quay row, Cecil St, Shenton Way, MBFC, Marina South, civic north
+  bank, Marina Centre. The existing heritage district is the adjoining Chinatown / Tanjong Pagar side.
+
+### Owner asks, checked in real play (scripted player input, `--downtown-review`, no teleports inside a leg)
+| Ask | Final code 5c30e70 (headless physics) | Rendered (Metal) |
+| --- | --- | --- |
+| Drive from the opening street over a bridge around the Marina Bay loop | **PASS**: loop completed in 309 s, deck height 3.89 m on the bridges | PASS on the deck/bridges in run 1 (`r_dtreview`, 926bed2) until the scripted driver overshot the Raffles Ave right turn into the new Flyer-site edge; not re-rendered on the final code |
+| Walk from the promenade onto the Marina Bay side | **PASS**: 10/10 waypoints, promenade -> Merlion Park terrace (y 1.24) -> Jubilee Bridge (y 2.64) -> Esplanade waterfront | failed in both rendered runs on earlier code (0.3 m lips at the landmark decks, pavilion in front of the Jubilee landing): both fixed after; not re-rendered on the final code |
+| Land the helicopter downtown and get out | **PASS**: landed at NS Square, exit allowed, walked away | **PASS** in both rendered runs |
+
+The rendered review takes ~10 min of shared GPU; the orchestrator asked to stop iterating, so the drive/walk legs on the
+final code are verified with the same scripted input headless only. Next wave: one rendered `--downtown-review` on 5c30e70+.
+
+### Seam fixes (integration)
+- Helix ramps were blocked by the map's channel seawall railing (rail gap at the plan ends, 20 m from the real crossing).
+- Opaque black "crystal pavilion" pyramid in the bay removed; MBS curtain glass shows a fine per-floor grid again (new
+  `refuge_bands` uniform in `skyline_facade.gdshader`, 0 for MBS only; default unchanged elsewhere).
+- Skyline: downtown-blocks now fills every non-landmark, non-park plot; the bay views lost their skyline beside and behind
+  MBS (old far-shore layers stood on today's Bayfront/Gardens), so three distant background rows were added beyond the
+  east playable edge (z -1125/-1205/-1295). Rendered `--photos` vs `integration/Q`: CBD-facing views (02, 06, 07, 08, 09,
+  11) are denser than Q; bay views (05, 15, 16, 17, 18) have skyline right and behind MBS again; the north (Marina Centre)
+  side reads pale/hazy; heritage interiors unchanged.
+- Walkability: landmark site decks (0.34-0.36 m) vs map ground (0-0.10 m) left lips the capsule could not climb; 1.6 m
+  granite edge ramps on every land side; steps from the promenade into Merlion Park; One Fullerton pavilions narrowed so
+  the Jubilee landing has an 11 m plaza.
+
+### Verified (game code 5c30e70 unless noted)
+- Headless: `--import` clean; `--test` **203/203**; `--capture` route **13/13**, 0 deaths, 157.8 s.
+- Rendered (1280x720, `loop/render.sh`, lease `contaminated=no-exclusive-lock`, another session had the GPU at 60-72 %):
+  `--capture` route **13/13**, 0 deaths, 164.0 s, 0 engine errors on `926bed2` (world changes after it are walk ramps and
+  pavilion sizes only). `world_ui_ready_ms` **11,516** rendered (Q: 9,960), 8,193 headless editor, **7,108 packaged**.
+  Route frame times excl. readback over 8,459 frames: mean **19.0** / p50 **17.7** / p95 **27.0** / p99 **35.2** ms
+  (Q: 14.5/14.5/20.5/23.4 — a real regression from the downtown geometry plus a busy GPU). Downtown perf sweep without
+  readback (900 frames, 6 views): p50 16.3 / p95 21.0 / p99 25.1 ms; worst Shenton Way street p95 25.1 ms.
+- Rendered `--photos` (29 views, 0 errors) and `--gameplay-photos` (7) on 5c30e70; JPEGs in `progress/img/integration/M/`
+  (same names as Q, plus `photos_photo_19..29_dt_*` downtown views and `downtown_*` helicopter / street stills).
+- Packaged build `OrchardReach-5c30e70.zip` (826 MB): unzipped with `ditto`, packaged binary headless `--test` 203/203.
+
+### Open issues (downtown)
+- Frame time p95 27 ms vs 20.5 ms in Q; load 11.5 s vs 10.0 s. Draw-call/LOD work on blocks + landmarks is needed.
+- Downtown streets are empty of traffic and pedestrians (street-life M2 is still building; blocks-M1 gap).
+- Marina Centre (north) blocks read pale and flat at distance; behind MBS the legacy SkyPark wedge caps towers at 70 m.
+- The scripted downtown driver overshoots right-angle right turns at speed (it is a QA driver, but the Raffles Ave /
+  Bayfront Ave North corners are tight against the Flyer and Marina Centre plots).
+- Landmark critics' gaps stand: no crisp long tower shadows / aerial depth layering, helicopter hero framing.
+- `--downtown-review` stills, views and perf sweep only run rendered (headless skips them).
+
+## What is merged (wave Q integration, 2026-10-23 ~02:50Z)
 
 | Piece | Merged (merge) | Critic vs GTA V | Better than baseline (critic) | Integrator seam fixes |
 | --- | --- | --- | --- | --- |
