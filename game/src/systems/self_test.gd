@@ -345,6 +345,8 @@ func run(main: Node) -> void:
 	await _water_checks(world)
 	await _downtown_plan_checks(world)
 	_character_look_checks(player)
+	for c in load("res://src/systems/perf_checks.gd").run(main):   # wave S performance piece
+		_check(c[0], c[1], c[2])
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
 	await _report()
 

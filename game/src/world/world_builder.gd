@@ -119,13 +119,16 @@ func build(seed_value: int = 20261021) -> void:
 	_world_root.add_child(_collision_root)
 	_lighting.root = _world_root
 	_load_downtown_pieces()
+	PerfBudget.lap("world_start")
 
 	_environment()
 	_ground()
 	_roads()
+	PerfBudget.lap("roads")
 	_junctions()
 	_street_furniture()
 	_build_grid()
+	PerfBudget.lap("build_grid")
 	_opening_signage()
 	var interior_data: Dictionary = InteriorDetail.build(_world_root, locations["safe_room"] - Vector3(0,.2,0))
 	locations["convenience_shop"] = interior_data["convenience_shop"]
@@ -136,9 +139,11 @@ func build(seed_value: int = 20261021) -> void:
 	_block_plots()
 	_waterfront_edge()
 	_background_city()
+	PerfBudget.lap("background_city")
 	_perimeter()
 	_far_shore_landmarks()
 	_downtown_call("build", [_world_root])
+	PerfBudget.lap("downtown_build")
 	locations["player_start"] = PLAYER_START
 	_build_lane_graph()
 	_downtown_call("build_lanes")
@@ -148,7 +153,10 @@ func build(seed_value: int = 20261021) -> void:
 	SurfaceDressing.dress(_world_root)   # wave B materials: grime, wall/roof clutter
 	_lighting.finish()
 	_batch_static_primitives()
+	PerfBudget.lap("batch_static_primitives")
 	_downtown_call("finish")
+	PerfBudget.build_occluders(_world_root)   # wave S: occlusion culling volumes
+	PerfBudget.lap("occluders")
 
 # ---------------------------------------------------------------- environment
 ## Sky, sun, fog, tonemap and grade live in Lighting (src/world/lighting.gd).
@@ -334,6 +342,7 @@ func _shophouse_row(origin: Vector3, dir: Vector3, count: int) -> void:
 		_lighting.arcade_bay(pos, yaw, front_dir)
 		# Building envelope and rear wall are solid; arcade remains walkable.
 		_collision_box(Vector3(10.1,7.3,9.5),pos+Vector3(0,7.6,0),yaw)
+		PerfBudget.add_building_volume(Vector3(10.1,5.0,9.5),pos+Vector3(0,6.5,0),yaw,pos.y,4.0)   # wave S occluder (below the eaves)
 		_collision_box(Vector3(10.1,3.7,6.5),pos+Vector3(0,1.85,0)+Vector3(0,0,1.4).rotated(Vector3.UP,yaw),yaw)
 		# A sheltered tiled footway physically joins the modules.
 		var path := _box(Vector3(unit_w,.08,3.3),pos+front_dir*6.2+Vector3(0,.10,0),Palette.five_foot_tiles())
@@ -443,6 +452,7 @@ func _hdb_block(centre: Vector3) -> void:
 				AssetLibrary.tint(slab, Palette.HDB_TINTS[block_key])
 				_asset_collision(slab)
 				_lighting.void_deck(slab)
+				PerfBudget.add_node_aabb(slab)   # wave S occluder (above the void deck)
 				_reserve(size + Vector3(16.0, 0.0, 16.0), pos)
 				_roof_kit.add_hdb_roof(pos, h, rot == 90.0)
 				used_provider = true
@@ -1111,15 +1121,11 @@ func _batch_background(path: String, transforms: Array, tint: Color = Color.WHIT
 	var source: Node = packed.instantiate()
 	var parts: Array[Dictionary] = []
 	_background_mesh_parts(source,Transform3D.IDENTITY,parts)
+	# Wave S (performance): one MultiMesh per (200 m cell, part). A map-wide
+	# MultiMesh is never frustum culled and always draws its closest mesh LOD
+	# (430 promenade rain trees = 13.7 M triangles every frame).
+	var cells: Array = PerfBudget.cell_groups(transforms, PerfBudget.TREE_CELL_M)
 	for part in parts:
-		var mm := MultiMesh.new()
-		mm.transform_format=MultiMesh.TRANSFORM_3D
-		mm.mesh=part["mesh"]
-		mm.instance_count=transforms.size()
-		for i in transforms.size():
-			mm.set_instance_transform(i,transforms[i]*part["transform"])
-		var instance := MultiMeshInstance3D.new()
-		instance.multimesh=mm
 		# One duplicated material per skyline variant: the far shore needs
 		# variety, and four extra materials cost nothing next to 2000 instances.
 		var override: Material = part["override"]
@@ -1127,9 +1133,18 @@ func _batch_background(path: String, transforms: Array, tint: Color = Color.WHIT
 			var dup := (override as StandardMaterial3D).duplicate() as StandardMaterial3D
 			dup.albedo_color = dup.albedo_color.lerp(tint, 0.55)
 			override = dup
-		instance.material_override=override
-		instance.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		_world_root.add_child(instance)
+		for list: Array in cells:
+			var mm := MultiMesh.new()
+			mm.transform_format=MultiMesh.TRANSFORM_3D
+			mm.mesh=part["mesh"]
+			mm.instance_count=list.size()
+			for i in list.size():
+				mm.set_instance_transform(i,(list[i] as Transform3D)*part["transform"])
+			var instance := MultiMeshInstance3D.new()
+			instance.multimesh=mm
+			instance.material_override=override
+			instance.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			_world_root.add_child(instance)
 	source.free()
 
 func _background_mesh_parts(node: Node, parent_transform: Transform3D, result: Array[Dictionary]) -> void:

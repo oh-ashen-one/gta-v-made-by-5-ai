@@ -1420,6 +1420,18 @@ static func _src_stamp(src_path: String) -> int:
 	f.close()
 	return n
 
+## Wave S (performance): an exported build ships the imported rig, not the
+## source .glb, so the byte stamp cannot be read there (it returned -1 and every
+## packaged launch rejected the bake as stale and rebuilt the look mesh at load,
+## ~4 s). The source tree still validates the byte stamp (and --test checks it);
+## a packaged build is exported from that validated tree, so when the source
+## file is absent it accepts a bake of the same version made from the same path.
+static func _source_matches(info: Dictionary, src_path: String) -> bool:
+	var stamp := _src_stamp(src_path)
+	if stamp >= 0:
+		return int(info.get("source_bytes", -2)) == stamp
+	return String(info.get("source", "")) == src_path and int(info.get("source_bytes", -2)) > 0
+
 ## Bakes one role's look mesh (tool use). Returns the saved path or "".
 static func bake(role: String) -> String:
 	var path := CharacterVisual.asset_path(role)
@@ -1455,7 +1467,7 @@ static func _load_baked(src: ArrayMesh, src_path: String) -> Dictionary:
 	if not ResourceLoader.exists(out) or not FileAccess.file_exists(jpath):
 		return {}
 	var info = JSON.parse_string(FileAccess.get_file_as_string(jpath))
-	if not (info is Dictionary) or String(info.get("version", "")) != BAKE_VERSION or int(info.get("source_bytes", -2)) != _src_stamp(src_path):
+	if not (info is Dictionary) or String(info.get("version", "")) != BAKE_VERSION or not _source_matches(info, src_path):
 		push_warning("character-look: stale bake " + out)
 		return {}
 	var mesh := load(out) as ArrayMesh

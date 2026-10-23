@@ -214,7 +214,9 @@ func _physics_process(delta: float) -> void:
 			var d2 := global_position.distance_squared_to(cam.global_position)
 			character_visual.set_lod_far(state != State.DEAD and d2 > limit * limit)
 			# Wave-M integration perf: mid-range figures animate every 3rd frame.
-			character_visual.set_lod_mid(d2 > 35.0 * 35.0 and not is_hostile and not is_police)
+			# Wave S: stride by distance and on-screen (PerfBudget.people_anim_stride).
+			var on_screen := d2 < 64.0 or cam.is_position_in_frustum(global_position + Vector3(0.0, 1.0, 0.0))
+			character_visual.set_anim_stride(1 if (is_hostile or is_police) else PerfBudget.people_anim_stride(d2, on_screen))
 	if state == State.DEAD:
 		velocity.x = 0.0
 		velocity.z = 0.0
