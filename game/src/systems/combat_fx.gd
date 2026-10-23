@@ -506,7 +506,7 @@ func _build_decal_textures() -> void:
 	_metal_hole_tex = _hole_texture(true)
 	for i in MAX_DECALS:
 		var d := Decal.new()
-		d.size = Vector3(0.2, 0.22, 0.2)
+		d.size = Vector3(0.2, 0.5, 0.2)  # integ-Q: deep enough that a collider a few cm off the visual wall still receives the hole
 		d.texture_albedo = _hole_tex
 		d.albedo_mix = 1.0
 		d.upper_fade = 0.15
@@ -571,7 +571,7 @@ func _place_decal(point: Vector3, n: Vector3, collider: Object, metal: bool) -> 
 	var d := _decals[_decal_next]
 	if d == null or not is_instance_valid(d):
 		d = Decal.new()
-		d.size = Vector3(0.2, 0.22, 0.2)
+		d.size = Vector3(0.2, 0.5, 0.2)  # integ-Q: deep enough that a collider a few cm off the visual wall still receives the hole
 		d.albedo_mix = 1.0
 		d.upper_fade = 0.15
 		d.lower_fade = 0.35

@@ -25,6 +25,31 @@ func setup(m: Node) -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir + "/frames")
 	_run.call_deferred()
 
+## Integration QA: aim-pose bones in the gameplay camera's frame (x right,
+## y up, z forward from the lens), so the over-the-shoulder read of the gun
+## can be checked headless.
+func _note_aim_bones(tag: String) -> void:
+	var vis: Node = player.get("_visual")
+	if vis == null or vis.get("skeleton") == null:
+		return
+	var sk: Skeleton3D = vis.get("skeleton")
+	var cam := player.camera.global_transform
+	var parts := []
+	for b in ["head", "upper_arm.r", "forearm.r", "hand.r", "hand.l"]:
+		var id := sk.find_bone(b)
+		if id < 0:
+			continue
+		var p := cam.affine_inverse() * (sk.global_transform * sk.get_bone_global_pose(id).origin)
+		parts.append("%s=(%.2f,%.2f,%.2f)" % [b, p.x, p.y, -p.z])
+	var gun: Node3D = vis.get("_weapon_node")
+	if gun != null:
+		var g := cam.affine_inverse() * gun.global_position
+		parts.append("gun=(%.2f,%.2f,%.2f)" % [g.x, g.y, -g.z])
+	var layer := sk.get_node_or_null("AimIkLayer")
+	if layer != null:
+		parts.append("gun_out=%.3f" % float(layer.get("stats").get("gun_out", -1.0)))
+	_note("%s aim bones (cam frame) %s" % [tag, " ".join(parts)])
+
 func _note(text: String) -> void:
 	print("[combat-review] ", text)
 	_log.append(text)
@@ -251,6 +276,7 @@ func _run() -> void:
 	await _aim_at(wall_point + Vector3.UP * 0.2, 0.55)
 	await _frames(0.45)
 	_still("aim_wall")
+	_note_aim_bones("aim_wall")
 	# Wave Q: the aim pose up close (head down the sights, two-hand grip).
 	var hf := -player.camera.global_basis.z
 	hf.y = 0.0

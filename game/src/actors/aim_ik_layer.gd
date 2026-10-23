@@ -21,12 +21,14 @@ const GRIP_POS := Vector3(0.0, 0.055, -0.012)   # CharacterVisual's held-gun off
 const SIGHT_H := 0.09                            # sight line above the grip origin (pistol_held AABB top)
 const GUN_SEAT := Vector3(0.0, -0.04, 0.015)     # gun frame: grip seated deeper in the fist, slide just above it
 const EYE_OFF := Vector3(0.032, 0.095, 0.088)    # (toward .r side, up, forward) from head bone
+const AIM_DROP := 0.15     # integ-Q: grip this far under the sight line below the eye
+const AIM_ACROSS := 0.0   # integ-Q: gun across the eye toward the camera (".l") side
 
 var visual: Node3D
 var weight := 0.0
 var reload_t := -1.0
 var reload_len := 1.5
-var stats := {"aim_frames": 0, "reload_frames": 0, "mags_dropped": 0, "sight_err": 0.0}
+var stats := {"aim_frames": 0, "reload_frames": 0, "mags_dropped": 0, "sight_err": 0.0, "gun_out": 0.0}
 
 var _ids := {}
 var _rest := {}
@@ -202,14 +204,21 @@ func _process_modification_with_delta(delta: float) -> void:
 	# past the eye, and from the over-the-shoulder camera the pistol and
 	# right hand clear the head instead of hiding in front of the face.
 	var lat := (_R - D * _R.dot(D)).normalized()
-	var t := 0.52
+	var t := 0.62
 	while t > 0.24:
-		og = eye + D * t - ua * (SIGHT_H + 0.13) + lat * 0.19   # wave Q2: clear of the head from the OTS camera
+		# integ-Q: the rig's ".r" side is screen-left from the right-shoulder
+		# camera, so a gun pushed toward ".r" sat exactly behind the head
+		# (cam-frame probe: head x/z -0.52, gun -0.52) and the raised arm read
+		# as a phone held to the ear. The gun now sits just across the
+		# centreline toward the camera side and a little under the chin, so
+		# from the OTS camera it shows beside the head, arms reaching to it.
+		og = eye + D * t - ua * (SIGHT_H + AIM_DROP) - lat * AIM_ACROSS
 		var gb0 := _gun_basis(D, ua)
 		var wr := og - _hand_from_gun(gb0) * GRIP_POS - gb0 * GUN_SEAT
 		if wr.distance_to(s_r) <= reach:
 			break
 		t -= 0.025
+	stats["gun_out"] = t
 	var gb := _gun_basis(D, ua)
 	if reloading:
 		var hold_o := eye + flat * 0.22 - _U * 0.36 + L * 0.07

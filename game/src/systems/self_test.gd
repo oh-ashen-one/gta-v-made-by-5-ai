@@ -595,7 +595,8 @@ func _combat_fx_checks(player: Player, before: Dictionary) -> void:
 	_check("sustained fire keeps effect pools bounded", bounded and int(live["casings"]) <= CombatFx.MAX_CASINGS, str(live))
 	await _combat_q_checks(player)
 
-## Wave Q combat: the aimed pistol sits on the sight line at eye height with
+## Wave Q combat: the aimed pistol sits at shoulder height (integ-Q: arms
+## extended under the sight line, readable from the OTS camera) with
 ## the barrel on the aim, interaction prompts are hidden mid-firefight, and a
 ## lethal hit hands the body to a ragdoll that comes to rest on the ground.
 func _combat_q_checks(player: Player) -> void:
@@ -611,9 +612,9 @@ func _combat_q_checks(player: Player) -> void:
 		var aim_dir := Basis.from_euler(Vector3(player.pitch, player.yaw, 0.0)) * Vector3.FORWARD
 		var barrel := -gun.global_basis.z
 		var h := gun.global_position.y - player.global_position.y
-		ok_gun = float(layer.get("weight")) > 0.9 and h > 1.38 and h < 1.62 and barrel.normalized().dot(aim_dir.normalized()) > 0.96
+		ok_gun = float(layer.get("weight")) > 0.9 and h > 1.28 and h < 1.55 and barrel.normalized().dot(aim_dir.normalized()) > 0.96
 		detail = "weight=%.2f gun_h=%.2f barrel_dot=%.3f" % [float(layer.get("weight")), h, barrel.normalized().dot(aim_dir.normalized())]
-	_check("aim layer holds the pistol on the eye line along the aim", ok_gun, detail)
+	_check("aim layer holds the pistol at shoulder height along the aim", ok_gun, detail)
 	CombatFx.mark_combat()
 	var prompts: Array[String] = []
 	var grab := func(text: String) -> void: prompts.append(text)
