@@ -477,6 +477,7 @@ void fragment() {
 const HAIR_SHADER := """
 shader_type spatial;
 render_mode cull_disabled, depth_draw_opaque, diffuse_burley, specular_schlick_ggx;
+stencil_mode write, compare_always, 8; // T3: street weathering volumes skip people's hair and carried cloth
 uniform vec3 base : source_color = vec3(0.03, 0.025, 0.02);
 uniform float seed = 0.0;
 float h1(float x) { return fract(sin(x * 12.9898 + seed * 78.233) * 43758.5453); }
@@ -504,6 +505,7 @@ void fragment() {
 const CLOTH_SHADER := """
 shader_type spatial;
 render_mode cull_disabled, diffuse_burley;
+stencil_mode write, compare_always, 8; // T3: street weathering volumes skip people's hair and carried cloth
 uniform vec3 base : source_color = vec3(0.5);
 uniform float gloss = 0.0;
 varying vec3 lp;
@@ -608,8 +610,11 @@ static func _shell(st: SurfaceTool, back_len: float, side_len: float, front_len:
 		var length := back_len
 		if w > 0.2:
 			length = lerpf(back_len, side_len, smoothstep(0.2, 0.42, w))
-		if w > 0.62:
-			length = lerpf(side_len, front_len, smoothstep(0.66, 0.84, w))
+		if w > 0.58:
+			# T3: the face-side columns reach the short front length before they
+			# pass in front of the cheeks (they hung across the face as black
+			# slivers: critic characters-T2 person_face_03).
+			length = lerpf(side_len, front_len, smoothstep(0.6, 0.72, w))
 		var col: Array = []
 		for j in NR + 1:
 			var t := float(j) / NR

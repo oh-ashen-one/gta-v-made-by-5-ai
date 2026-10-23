@@ -1587,6 +1587,39 @@ func _character_people_checks() -> void:
 		var bf := CharacterLook._backfill_mesh(cbaked)
 		var bf_tris := bf.surface_get_array_index_len(0) / 3 if bf.get_surface_count() == 1 else 0
 		_check("characters-S: civilian head backfill closes the cracked face (head-only back faces, skinned)", bf_tris > 300 and bf_tris < 8000, "tris=%d" % bf_tris)
+		# Characters T3: eyes, hair cards and a forward-facing head in both bakes.
+		var t3_ok := true
+		var t3_detail := ""
+		var ppath := CharacterVisual.asset_path("player")
+		var pmodel := (load(ppath) as PackedScene).instantiate()
+		var pbaked := {}
+		for node in pmodel.find_children("*", "MeshInstance3D", true, false):
+			if (node as MeshInstance3D).mesh is ArrayMesh and (node as MeshInstance3D).mesh.get_surface_count() >= 2:
+				pbaked = CharacterLook._load_baked((node as MeshInstance3D).mesh, ppath)
+				break
+		pmodel.free()
+		for e in [pbaked, cbaked]:
+			var d: Dictionary = e
+			if d.is_empty():
+				t3_ok = false
+				continue
+			var prm: Dictionary = d.get("params", {})
+			var nose: Vector3 = prm.get("nose_tip", Vector3(-1, 0, 0))
+			var hc: Vector3 = prm.get("head_centre", Vector3.ZERO)
+			t3_ok = t3_ok and int(d.get("eye_verts", 0)) >= 200 and int(d.get("hair_cards", 0)) >= 300 and absf(nose.x - hc.x) < 0.012
+			t3_detail += "eyes=%d cards=%d nose-centre dx=%.3f; " % [int(d.get("eye_verts", 0)), int(d.get("hair_cards", 0)), nose.x - hc.x]
+		_check("characters-T3: eye patches, strand hair cards and a forward-facing head in the player and civilian bakes", t3_ok, t3_detail)
+		var ca := (cbaked["mesh"] as ArrayMesh).surface_get_arrays(0)
+		var cv3: PackedVector3Array = ca[Mesh.ARRAY_VERTEX]
+		var cc0: PackedFloat32Array = ca[Mesh.ARRAY_CUSTOM0]
+		var cix: PackedInt32Array = ca[Mesh.ARRAY_INDEX]
+		var extra_head := 0
+		for t in cix.size() / 3:
+			var i0 := cix[t * 3]
+			if cv3[i0].y >= 1.43 and cc0[i0 * 4] > 7.5:
+				extra_head += 1
+		_check("characters-T3: backfill skips eye patches and hair cards (no skin flakes over hair)", bf_tris > 300 and extra_head > 1000 and bf_tris < 8000,
+			"backfill tris=%d, eye/card tris left out=%d" % [bf_tris, extra_head])
 	var sigs := {}
 	var tones := {}
 	var bad_face := 0
@@ -1675,6 +1708,13 @@ func _character_stance_checks(player: Player) -> void:
 			if (g as GeometryInstance3D).visibility_range_begin > 0.0:
 				part_cull += 1
 		var npc_code := (load("res://src/actors/npc.gd") as Script).source_code
+		var cd_script := load("res://src/systems/crowd_director.gd") as Script
+		var keep: Array = cd_script.get_script_constant_map().get("KEEP_OUT", [])
+		var lawn_kept := false
+		for r in keep:
+			if (r as Rect2).has_point(Vector2(-377.0, -74.5)):
+				lawn_kept = true
+		_check("characters-T3: crowd seeding keeps out of the Raffles Place lawn bed (no knee-deep walkers)", lawn_kept, "rects=%d" % keep.size())
 		_check("characters-T2: fitted skirt, women's narrower shoulders, near-lens cull hides body and parts together",
 			sb.size.x < 0.56 and sb.size.x > 0.3 and narrow and part_cull == 0 and npc_code.contains("func _near_hide"),
 			"skirt width=%.2f narrow=%s part_cull=%d" % [sb.size.x, narrow, part_cull])

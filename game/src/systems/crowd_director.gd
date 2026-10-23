@@ -834,7 +834,16 @@ func _seed_poly_view(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 	return false
 
 ## Floor height under a point (walkable surfaces: plazas, decks, terraces).
+## Characters T3: raised planted beds with no collider (the Raffles Place
+## lawn planter, 34 x 62 m, 0.54 m tall: blocks.gd _plaza). The ground ray
+## went through them, so people were seeded and walked on the plaza paving
+## INSIDE the bed, sunk knee-deep in the lawn (critic characters-T2).
+const KEEP_OUT: Array[Rect2] = [Rect2(-395.0, -106.5, 36.0, 64.0)]
+
 func _ground_at(pos: Vector3) -> float:
+	for r in KEEP_OUT:
+		if r.has_point(Vector2(pos.x, pos.z)):
+			return INF
 	var space := traffic.get_world_3d().direct_space_state
 	if space == null:
 		return INF

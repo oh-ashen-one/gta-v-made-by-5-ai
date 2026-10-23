@@ -25,8 +25,9 @@ const DROP := 0.008       # m, pelvis lowers just enough that the standing leg s
 const ROLL := 0.09        # rad, pelvis tilt (free hip drops)
 const YAW := 0.07          # rad, pelvis turns toward the free leg
 const FREE_FWD := 0.09    # m, free foot a little forward
-const FREE_OUT := 0.035    # m, and out
+const FREE_OUT := 0.012    # m, and out (T3: narrower, no wide-legged stance)
 const FREE_TOE_OUT := 0.2  # rad, free foot turned out
+const HAND_TWIST := 0.6    # rad (T3), palm toward the thigh
 
 const LEG := {"l": ["thigh.l", "shin.l", "foot.l"], "r": ["thigh.r", "shin.r", "foot.r"]}
 
@@ -196,7 +197,8 @@ static func _bake(anim: Animation, sk: Skeleton3D, prefix: String, side: float) 
 		var cos_a := clampf((la * la + d * d - lb * lb) / (2.0 * la * d), -1.0, 1.0)
 		var alpha := acos(cos_a)
 		# Knees bend forward (pole: forward, a touch outward).
-		var pole := fwd + Vector3(signf(ankle0.x) * 0.1, 0.0, 0.0)
+		# T3: no outward knee pole (critic T2: "bow-legged"): knees track the toes.
+		var pole := fwd + Vector3(signf(ankle0.x) * -0.03, 0.0, 0.0)
 		var perp := (pole - dir * pole.dot(dir))
 		if perp.length() < 0.0001:
 			perp = fwd
@@ -224,7 +226,14 @@ static func _bake(anim: Animation, sk: Skeleton3D, prefix: String, side: float) 
 		# About skeleton +X, + lifts the arm forward (PeoplePose convention).
 		_delta_all(anim, prefix, sk, ua, g2[sk.get_bone_parent(ua)].basis, Vector3.RIGHT, 0.03 if is_free else -0.02)
 		# Tuck: rotate about the forward axis so the elbow comes in.
-		_delta_all(anim, prefix, sk, ua, g2[sk.get_bone_parent(ua)].basis, fwd, 0.035 * out_x)
+		# T3: tucked further (critic T2: arms "held away from the body").
+		_delta_all(anim, prefix, sk, ua, g2[sk.get_bone_parent(ua)].basis, fwd, 0.095 * out_x)
 		g2 = _globals(anim, prefix, sk)
 		_delta_all(anim, prefix, sk, fa, g2[ua].basis, Vector3.RIGHT, 0.12 if is_free else 0.05)
 		g2 = _globals(anim, prefix, sk)
+		# T3: the hanging hand turns its palm in toward the thigh (the clip
+		# held it palm-forward, which read as a stiff splayed wave).
+		var hd: int = b.call("hand." + s)
+		if hd >= 0:
+			_delta_all(anim, prefix, sk, hd, g2[fa].basis, Vector3.UP, HAND_TWIST * out_x)
+			g2 = _globals(anim, prefix, sk)
