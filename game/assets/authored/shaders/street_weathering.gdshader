@@ -14,6 +14,7 @@ uniform vec3 box_max = vec3(80.0, 12.0, 80.0);
 uniform float strength = 1.0;
 uniform float fade_start = 70.0;
 uniform float fade_end = 170.0;
+uniform float asphalt_k = 0.0;
 
 float h21(vec2 p) {
 	p = fract(p * vec2(123.34, 456.21));
@@ -221,18 +222,29 @@ void fragment() {
 			bool along_z = abs(lat_x) < abs(lat_z);
 			float lat = along_z ? lat_x : lat_z;
 			float along = along_z ? w.z : w.x;
-			m = asphalt_wear(w.xz, lat, along, aa);
+			// Nearfield (opus55 wave D): the carriageway shader owns its own
+			// lane-aware wear; multiplying a second wear pass on top produced
+			// the blotchy camouflage mottle and, against the MSAA-resolved
+			// depth, a dotted zipper along kerbs and double-yellow lines.
+			m = mix(vec3(1.0), asphalt_wear(w.xz, lat, along, aa), asphalt_k);
 		} else if (w.y < 0.5 || (w.y < 3.0 && min(abs(lat_x), abs(lat_z)) > 8.4)) {
 			// pavers, void-deck slabs and forecourts: anything on the
 			// carriageway above kerb height (car hoods, roofs) stays clean
 			// (critic A3: cracks on a parked sedan's hood)
 			float kd = min(abs(lat_x), abs(lat_z)) - 8.3;
 			m = paver_wear(w.xz, max(kd, 0.0), aa);
+			// kerb stones and median kerbs carry their own wear (nearfield);
+			// fade in behind the kerb so there is no seam at the arris
+			float med = min(abs(lat_x), abs(lat_z));
+			m = mix(vec3(1.0), m, smoothstep(0.05, 0.6, kd) * step(1.2, med));
 		} else if (w.y > 3.0) {
 			m = mix(vec3(0.9), vec3(1.0), fbm(w.xz * 0.3));
 		}
 	} else if (abs(n.y) < 0.3) {
 		m = wall_wear(w, normalize(vec3(n.x, 0.0, n.z) + vec3(1e-4)), 0.16);
+		// kerb faces (road side, under 0.35 m) are dressed by the kerb shader
+		float kl = min(abs(road_lateral(w.x)), abs(road_lateral(w.z)));
+		if (w.y < 0.35 && (kl > 7.6 && kl < 8.6 || kl < 1.2)) { m = vec3(1.0); }
 	}
 	m = mix(vec3(1.0), m, fade * strength * planar);
 	ALBEDO = m;

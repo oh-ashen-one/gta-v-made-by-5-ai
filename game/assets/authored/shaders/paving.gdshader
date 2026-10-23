@@ -3,6 +3,7 @@ shader_type spatial;
 // patches, dark joints, gum spots and kerb-side dirt. World-space.
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
 #include "res://assets/authored/shaders/weathering.gdshaderinc"
+#include "res://assets/authored/shaders/leaf_litter.gdshaderinc"
 
 uniform sampler2D albedo_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D normal_tex : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
@@ -13,6 +14,12 @@ uniform float base_rough = 0.9;
 uniform float grid_period = 160.0;
 uniform float road_half = 8.0;
 uniform float wear = 1.0;
+// nearfield R: value lift toward the LOOK_DEV pale-concrete footway (the
+// stacked grime/damp/zone factors left pavements near-black in shade).
+uniform float lift = 1.0;
+uniform float sat = 1.0;   // < 1 pulls the warm tint toward neutral concrete grey
+uniform float fittings = 0.0;   // nearfield R: inspection covers + tactile strips in the footway band
+uniform float litter = 0.0;     // nearfield R: fallen leaf density (0 = off)
 
 varying vec3 v_world;
 varying vec3 v_wn;
@@ -77,12 +84,51 @@ void fragment() {
 	// Hairline cracking in a few areas.
 	float cr = w_mask(p / 9.0 + 0.33).b * smoothstep(0.55, 0.75, big.g) * wear;
 	col *= 1.0 - 0.4 * cr;
+	// nearfield R: footway fittings in the band behind the kerb. Cast-iron
+	// inspection covers (frame + raised diamond tread) every few slabs, and
+	// yellow blister tactile strips at the block corners where people cross.
+	float metal_k = 0.0;
+	if (top && fittings > 0.5) {
+		bool on_x = abs(d) < abs(e);
+		float along_f = on_x ? v_world.z : v_world.x;
+		float side_f = on_x ? sign(d) : sign(e);
+		float other = on_x ? abs(e) : abs(d);
+		float band = step(road_half + 0.3, kd) * step(kd, road_half + 2.6);
+		float cid = floor(along_f / 8.5);
+		float ch = w_hash12(vec2(cid, side_f * 7.0 + 3.0));
+		vec2 cq = vec2(along_f - (cid * 8.5 + 1.5 + ch * 5.5), kd - (road_half + 1.3 + ch * 0.9));
+		float cov = band * step(0.45, ch) * step(abs(cq.x), 0.32) * step(abs(cq.y), 0.32) * step(road_half + 6.0, other);
+		float frame_ring = cov * (1.0 - step(abs(cq.x), 0.27) * step(abs(cq.y), 0.27));
+		vec2 dq = fract(w_rot(cq, 0.785) * 18.0) - 0.5;
+		float tread = step(abs(dq.x) + abs(dq.y), 0.32);
+		vec3 iron = vec3(0.16, 0.155, 0.15) * (0.85 + 0.3 * tread) * (0.9 + 0.2 * med.g);
+		col = mix(col, mix(iron, vec3(0.30, 0.29, 0.27), frame_ring), cov);
+		rough = mix(rough, 0.55 + 0.2 * tread, cov);
+		metal_k = cov * 0.6;
+		// tactile strip: 0.6 m deep across the crossing approach at each corner
+		float corner = step(road_half + 0.35, other) * step(other, road_half + 0.95) * band * step(kd, road_half + 2.3);
+		vec2 bq = fract(vec2(along_f, kd) / 0.075) - 0.5;
+		float blister = 1.0 - smoothstep(0.18, 0.26, length(bq));
+		vec3 tactile = vec3(0.78, 0.60, 0.10) * (0.82 + 0.25 * blister) * (0.85 + 0.15 * med.r);
+		col = mix(col, tactile, corner);
+		rough = mix(rough, 0.7, corner);
+	}
+	if (top && litter > 0.0) {
+		float lpx = max(length(fwidth(v_world.xz)), 1e-4);
+		// denser in drifts and along the kerb band, under the avenue trees
+		float drift = smoothstep(0.45, 0.75, w_mask(v_world.xz / 9.0 + 0.41).g);
+		vec4 lf = leaf_litter(v_world.xz, litter * (0.35 + 0.9 * drift + 0.6 * kerb), lpx);
+		col = mix(col, lf.rgb / max(lift, 1e-3), lf.a * (1.0 - metal_k));
+		rough = mix(rough, 0.8, lf.a);
+	}
 	if (!top) {
 		// Platform edge faces: splashback grime.
 		col *= vec3(0.70, 0.72, 0.64);
 	}
-	ALBEDO = clamp(col, vec3(0.0), vec3(1.0));
+	col = mix(vec3(dot(col, vec3(0.333))), col, sat);
+	ALBEDO = clamp(col * lift, vec3(0.0), vec3(1.0));
 	ROUGHNESS = clamp(rough, 0.35, 1.0);
 	NORMAL_MAP = texture(normal_tex, p / tile_m).rgb;
 	NORMAL_MAP_DEPTH = 0.32;
+	METALLIC = metal_k;
 }

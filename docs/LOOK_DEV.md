@@ -71,6 +71,14 @@ flat grey-pink haze sky are retired.
 | Foliage | 0.95 | 0 | dimensional canopy, leaf cards only inside the crown |
 | Vehicle paint | 0.35 | 0.55 | clearcoat feel, road dust near the sill |
 
+Near field (opus55 nearfield R): kerbs are swept precast units (rounded arris, 0.915 m joints, foot grime, painted
+black/white island ends) on the generated weathered-concrete map; median noses are paved; median beds hold drifts of
+photographic plant cards (fern, ixora, croton, mondo grass) pulled 30 % toward luminance so foliage stays deep; island
+keep-left signs are back-to-back plates; cones, bins, crates, produce, A-frame chalk menus, telecom cabinets, bikes
+and scooters are modelled and collidable; shop awnings are sagging striped canvas with a scalloped valance; footway
+paving carries a 1.16 value lift toward the pale-concrete row above; asphalt adds bounded (0.72-1.38) photographic
+detail in the lane frame. `--nearfield-off` restores the wave-5 near field; `--nearfield-no-provider` uses authored maps only.
+
 ## Camera treatment
 
 - Third-person over-the-shoulder: camera 1.62 m, lateral offset 0.85 m, arm 4.6 m (2.2 m aiming), so the character never sits on the reticle.
