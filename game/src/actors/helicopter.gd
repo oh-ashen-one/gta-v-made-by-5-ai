@@ -324,11 +324,11 @@ func _physics_process(delta: float) -> void:
 		_body.position.y = lerpf(_body.position.y, 0.0, clampf(delta * 3.0, 0.0, 1.0))
 	# Aerial envelope (WORLD-06, wave 5): beyond the far-shore skyline the
 	# aircraft is turned back rather than flying into empty scenery.
-	var off_x := absf(global_position.x) - AIR_LIMIT_X
-	var off_n := AIR_LIMIT_NORTH - global_position.z
-	var off_s := global_position.z - AIR_LIMIT_SOUTH
-	if off_x > 0.0 or off_n > 0.0 or off_s > 0.0 or global_position.y > AIR_CEILING:
-		var home := Vector3(-global_position.x, 0.0, -150.0 - global_position.z).normalized()
+	# Wave M (downtown-map): the envelope is DowntownPlan.AIR around the whole
+	# Marina Bay downtown; the turn-back heads for the middle of the playable map.
+	if not DowntownPlan.in_air_envelope(global_position):
+		var home_c := DowntownPlan.PLAYABLE.get_center()
+		var home := Vector3(home_c.x - global_position.x, 0.0, home_c.y - global_position.z).normalized()
 		velocity.x = lerpf(velocity.x, home.x * 18.0, clampf(delta * 1.5, 0.0, 1.0))
 		velocity.z = lerpf(velocity.z, home.z * 18.0, clampf(delta * 1.5, 0.0, 1.0))
 		velocity.y = minf(velocity.y, 0.0) if global_position.y > AIR_CEILING else velocity.y
@@ -561,16 +561,20 @@ func exit_vehicle(player: Node) -> void:
 	if not is_on_floor():
 		Events.notify.emit("Land before exiting.", "warn")
 		return
-	# The far shore is landable scenery, not walkable district (on foot beyond
-	# the district is out of bounds), so exits stay inside the playable area.
-	if absf(global_position.x) > 395.0 or global_position.z < -365.0 or global_position.z > 405.0:
+	# Wave M (downtown-map): exits anywhere on playable land at street, plaza
+	# or bridge-deck level, or on a downtown helipad (DowntownPlan rule);
+	# rooftops, water and land outside the map stay refused.
+	if not DowntownPlan.heli_exit_allowed(global_position):
 		if disabled:
 			# A downed aircraft out of bounds cannot fly back: recover the pilot
 			# to the last safe point instead of trapping them (release critic).
-			Events.notify.emit("Aircraft down outside the district - recovered to your last safe point.", "warn")
+			Events.notify.emit("Aircraft down outside the city - recovered to your last safe point.", "warn")
 			player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
 			return
-		Events.notify.emit("Restricted landing area - fly back over the district to exit.", "warn")
+		if DowntownPlan.is_land(global_position):
+			Events.notify.emit("Land at street level or on a helipad to exit.", "warn")
+		else:
+			Events.notify.emit("Restricted landing area - fly back over the city to exit.", "warn")
 		return
 	var side := global_transform.basis.x
 	var forward := -global_transform.basis.z

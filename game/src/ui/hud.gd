@@ -284,6 +284,12 @@ func _draw_minimap() -> void:
 	var scale := 0.38
 	var to_map := func(p: Vector3) -> Vector2:
 		return Vector2((p.x - centre.x) * scale, (p.z - centre.z) * scale) + _minimap.size * 0.5
+	# Wave M (downtown-map): the Marina Bay downtown layer (land, water, plots,
+	# roads and bridges) under the district; the old bay/far-shore rects below
+	# are only drawn without it.
+	var downtown_layer := ResourceLoader.exists("res://src/world/downtown/map.gd")
+	if downtown_layer:
+		preload("res://src/world/downtown/minimap.gd").draw(_minimap, to_map, scale)
 	# roads
 	for x in WorldBuilder.X_LINES:
 		var p0: Vector2 = to_map.call(Vector3(x, 0, -340.0))
@@ -301,10 +307,11 @@ func _draw_minimap() -> void:
 			_minimap.draw_rect(Rect2(c0, Vector2(144.0 * scale, 144.0 * scale)), Color(0.20, 0.21, 0.23, 0.9), true)
 	# water: the whole bay out to the far shore (wave 5). A 30 m strip left the
 	# bay as bare background, so the waterfront map was half black.
-	var wrect := Rect2(to_map.call(Vector3(-900.0, 0, -633.0)), Vector2(1800.0 * scale, 284.0 * scale))
-	_minimap.draw_rect(wrect, Color(0.16, 0.31, 0.36, 0.85), true)
-	# far-shore ground (Marina Bay Sands, ArtScience, Flyer) and the promenade deck
-	_minimap.draw_rect(Rect2(to_map.call(Vector3(-480.0, 0, -863.0)), Vector2(920.0 * scale, 230.0 * scale)), Color(0.22, 0.26, 0.21, 0.9), true)
+	if not downtown_layer:
+		var wrect := Rect2(to_map.call(Vector3(-900.0, 0, -633.0)), Vector2(1800.0 * scale, 284.0 * scale))
+		_minimap.draw_rect(wrect, Color(0.16, 0.31, 0.36, 0.85), true)
+		# far-shore ground (Marina Bay Sands, ArtScience, Flyer) and the promenade deck
+		_minimap.draw_rect(Rect2(to_map.call(Vector3(-480.0, 0, -863.0)), Vector2(920.0 * scale, 230.0 * scale)), Color(0.22, 0.26, 0.21, 0.9), true)
 	_minimap.draw_rect(Rect2(to_map.call(Vector3(-205.0, 0, -738.0)), Vector2(234.0 * scale, 66.0 * scale)), Color(0.55, 0.57, 0.58, 0.95), true)
 	_minimap.draw_rect(Rect2(to_map.call(Vector3(-350.0, 0, -349.0)), Vector2(700.0 * scale, 22.0 * scale)), Color(0.42, 0.42, 0.40, 0.9), true)
 	# objective marker

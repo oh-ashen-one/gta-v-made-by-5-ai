@@ -191,6 +191,18 @@ func _ready() -> void:
 		probe.setup(self, probe_dir)
 		return
 
+	if "--downtown-review" in args:
+		# Wave M (downtown-map): drive / walk / fly into the Marina Bay downtown.
+		var dt_dir := "user://downtown_review"
+		for arg in args:
+			if arg.begins_with("--capture-dir="): dt_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		var dt_review: Node = _qa_system("res://src/world/downtown/downtown_review.gd")
+		add_child(dt_review)
+		dt_review.setup(self, player, world, traffic, dt_dir)
+		return
+
 	if "--drive-showcase" in args:
 		# Chase-cam driving footage (opus55 driving piece, drive_showcase.gd).
 		var show_dir := "user://drive_showcase"

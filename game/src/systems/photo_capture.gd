@@ -58,6 +58,11 @@ func _run() -> void:
 	# Integration A: re-aimed at the skyline piece's relocated statue (64,-371,
 	# yaw -135 deg); the old camera position is now inside the figure.
 	views.append({"name":"merlion_jet_close","pos":Vector3(86,3.4,-353),"look":Vector3(67,5.2,-367),"fov":58.0})
+	# Wave M (downtown-map): the plan's downtown comparison views, appended
+	# after every fixed view (earlier indices unchanged), once the map exists.
+	if ResourceLoader.exists("res://src/world/downtown/map.gd"):
+		for dt_view: Dictionary in DowntownPlan.VIEWS:
+			views.append(dt_view)
 	var cam := Camera3D.new()
 	cam.current = true
 	cam.far = 2000.0
