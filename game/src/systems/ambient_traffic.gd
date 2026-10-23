@@ -34,6 +34,9 @@ const WEDGE_RESET := 4.0
 const WEDGE_RADIUS := 7.0
 const DEADLOCK_RESET := 6.0
 const GIVE_UP := 10.0
+const FAR_SIM := 130.0
+const FAR_TICKS := 3
+var _tick := 0
 
 var traffic: TrafficManager
 var nodes: Array[Vector3] = []
@@ -239,11 +242,24 @@ func _physics_step(delta: float) -> void:
 		_rebuild_grid()
 	_rebuild_keys()
 	_update_player_car()
+	_tick += 1
+	var i := 0
 	for v in vehicles:
+		i += 1
 		if v.active:
-			_drive(v, delta)
+			# M1 perf: lane cars far from the camera and the player step every
+			# FAR_TICKS physics frames with the summed delta (nobody sees them;
+			# queues and signals still evolve).
+			var dt := delta
+			var far := Vector2(v.global_position.x - _cam_pos.x, v.global_position.z - _cam_pos.z).length_squared() > FAR_SIM * FAR_SIM \
+					and not _player_near(v.global_position, FAR_SIM)
+			if far:
+				if (i + _tick) % FAR_TICKS != 0:
+					continue
+				dt = delta * FAR_TICKS
+			_drive(v, dt)
 			if v.active:
-				_unstick(v, delta)
+				_unstick(v, dt)
 	_recycle(false)
 	_tidy_promoted()
 	if _debug:

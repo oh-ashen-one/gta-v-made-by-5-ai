@@ -39,6 +39,16 @@ var _home_lane := 0
 ## pursuing, hostile, police or near the player keeps per-tick move_and_slide.
 const SIM_NEAR := 70.0
 const SIM_FAR_TICKS := 4
+## Street-life M1: camera-side roamers (CrowdDirector) keep the cheap ticked
+## walk beyond SIM_NEAR_ROAMER of the player; the crowd concentrates them
+## round the camera, and full per-tick move_and_slide for ~150 walkers cost
+## ~5 ms of physics per tick (headless perf probe).
+const SIM_NEAR_ROAMER := 26.0
+var _roamer := -1
+func _sim_near_sq() -> float:
+	if _roamer < 0:
+		_roamer = 1 if has_meta("roamer") else 0
+	return SIM_NEAR_ROAMER * SIM_NEAR_ROAMER if _roamer == 1 else SIM_NEAR * SIM_NEAR
 const FAR_DRAW_RANGE := 240.0
 var _sim_accum := 0.0
 var _sim_slot := 0
@@ -197,7 +207,7 @@ func _physics_process(delta: float) -> void:
 		_animate(delta, 0.0)
 		return
 	if state == State.WALK and not is_hostile and not is_police and \
-			global_position.distance_squared_to(Game.player_position) > SIM_NEAR * SIM_NEAR:
+			global_position.distance_squared_to(Game.player_position) > _sim_near_sq():
 		_sim_accum += delta
 		_sim_slot = (_sim_slot + 1) % SIM_FAR_TICKS
 		if _sim_slot == 0:
