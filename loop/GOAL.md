@@ -26,6 +26,16 @@ Build a fully playable, customized open-world action game set in Singapore at th
 It should be utterly perfect, alive and cinematic, with every single thing done at that quality: driving,
 movement, interactive characters, the city, sky, missions, and anything else you can think of.
 
+## Owner direction 2026-10-23 ~04:45Z — the game is played IN central Singapore (supersedes END_GOAL WORLD-01's "one district, skyline as backdrop")
+"The whole point is that you're playing in Singapore, not the outskirts of it" + "keep what was made". The playable map
+must be central Singapore around Marina Bay — Marina Bay Sands and the Bayfront, the ArtScience Museum, Helix Bridge,
+the Esplanade, the Singapore Flyer / Marina Centre, Merlion Park and the Fullerton waterfront, the CBD towers, Gardens by
+the Bay — with real streets, bridges, plazas and promenades you can walk, drive and fly through, at street-level fidelity
+and with collision (no painted backdrops for the core). KEEP everything already built: the existing heritage district
+(shophouses, hawker centre, HDB, promenade, aviation compound, missions) becomes the adjoining Chinatown/Tanjong
+Pagar-style heritage side of the same contiguous city. Distant scenery is only for what lies beyond this core.
+The authoritative layout is loop/DOWNTOWN_PLAN.md.
+
 ## Run window and model
 - **Owner update 2026-10-22 ~17:27Z (supersedes the hard 6-hour limit below):** keep going until the critiques and blind judgements meet the north star (a blind judge prefers ours to GTA V, or cannot tell, and is genuinely wowed) or until the owner stops the run. Work in rolling waves; integrate and push after each wave. All guardrails still apply. Current run state: `loop/RUN.md`.
 - One unattended overnight run with a **hard 6-hour wall-clock limit**. First action: write START and
