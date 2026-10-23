@@ -27,7 +27,7 @@ const KIND_NAMES := ["man", "woman", "elder_m", "elder_f", "child"]
 ## mesh: crown 1.753 m, head bone origin (0, 1.54, 0.02), pelvis 0.90 m).
 const HEAD_C := Vector3(0.0, 1.645, 0.016)
 const HEAD_R := Vector3(0.094, 0.112, 0.113)
-const WAIST_Y := 0.985
+const WAIST_Y := 1.0
 const HEM_Y := 0.56
 const GHOST_FREE_RANGE := 110.0
 
@@ -161,6 +161,13 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 	if seated and prop in ["umbrella", "backpack", "shopping"]:
 		prop = "none"
 	var skirt := bool(p.get("skirt", false)) and not seated
+	# T2: women's shoulder joints sit closer in than men's (IdleStance widens
+	# adult men's by 10%); no clip keys upper-arm positions.
+	if female and kind != Kind.CHILD:
+		for side in ["l", "r"]:
+			var ua := sk.find_bone("upper_arm." + side)
+			if ua >= 0:
+				sk.set_bone_pose_position(ua, sk.get_bone_rest(ua).origin * 0.9)
 	# Surfaces: skin tone / grey hair / softer lower face; dress colour; legs.
 	_retint(cv, p, skirt)
 	var hair := String(p.get("hair", ""))
@@ -238,8 +245,11 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 		sk.add_child(mod)
 	# Hidden-near rule from the NPC (the lens must not fill with a face) also
 	# applies to the new parts.
+	# T2: the NPC hides its whole visual at once (NPC._near_hide): per-mesh
+	# range culls measured to different AABB centres left hair or an umbrella
+	# floating with no body (critic T1 D_mbs_crowd_seq f0030).
 	for mi in cv.find_children("People*", "GeometryInstance3D", true, false):
-		(mi as GeometryInstance3D).visibility_range_begin = NPC.NEAR_HIDE
+		(mi as GeometryInstance3D).visibility_range_begin = 0.0
 		_share_body_centre(sk, mi as GeometryInstance3D)
 
 ## Characters T1: the skirt is skinned to the pelvis and both thighs (more
@@ -742,9 +752,13 @@ static func _skirt_mesh() -> Mesh:
 		var t := float(j) / rows
 		var a := float(i) / seg * TAU
 		var y := lerpf(WAIST_Y, HEM_Y, t)
-		var rx := lerpf(0.205, 0.29, t)   # T1: the waist sits over the shirt hem (a tucked-in top, no jagged hem through the skirt)
-		var rz := lerpf(0.18, 0.27, t)
-		var fold := 1.0 + 0.045 * t * sin(a * 9.0) + 0.02 * t * sin(a * 4.0 + 1.3)
+		# T2: a fitted A-line that follows the hips and thighs (critic T1: a
+		# 0.58 m cone shell with a hard top edge): the waistband tucks in under
+		# the top's hem, widest at the seat, a gentle flare to the hem.
+		var hip := smoothstep(0.0, 0.32, t)
+		var rx := lerpf(0.15, 0.192, hip) + 0.03 * smoothstep(0.32, 1.0, t)
+		var rz := lerpf(0.118, 0.152, hip) + 0.026 * smoothstep(0.32, 1.0, t)
+		var fold := 1.0 + 0.03 * t * t * sin(a * 7.0) + 0.012 * t * sin(a * 3.0 + 1.3)
 		return Vector3(sin(a) * rx * fold, y, 0.04 + cos(a) * rz * fold)
 	for i in seg:
 		for j in rows:

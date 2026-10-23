@@ -1665,5 +1665,18 @@ func _character_stance_checks(player: Player) -> void:
 			centre_err = (rest_xf * bag.custom_aabb.get_center()).distance_to(CrowdPeople.BODY_CENTRE)
 		_check("characters-T: skirts are skinned to the legs and a carried bag hides with its carrier (shared visibility centre)",
 			skirt != null and skirt.skin != null and centre_err < 0.01, "skirt_skinned=%s bag_centre_err=%.3f" % [skirt != null and skirt.skin != null, centre_err])
+		# T2: a fitted skirt (no 0.58 m cone), women's shoulders narrower than
+		# men's, and no per-part near cull (the NPC hides the figure as one unit).
+		var sb := skirt.mesh.get_aabb() if skirt != null else AABB()
+		var ua := v.skeleton.find_bone("upper_arm.l")
+		var narrow := ua >= 0 and v.skeleton.get_bone_pose_position(ua).length() < v.skeleton.get_bone_rest(ua).origin.length() * 0.95
+		var part_cull := 0
+		for g in v.find_children("People*", "GeometryInstance3D", true, false):
+			if (g as GeometryInstance3D).visibility_range_begin > 0.0:
+				part_cull += 1
+		var npc_code := (load("res://src/actors/npc.gd") as Script).source_code
+		_check("characters-T2: fitted skirt, women's narrower shoulders, near-lens cull hides body and parts together",
+			sb.size.x < 0.5 and sb.size.x > 0.3 and narrow and part_cull == 0 and npc_code.contains("func _near_hide"),
+			"skirt width=%.2f narrow=%s part_cull=%d" % [sb.size.x, narrow, part_cull])
 	holder.queue_free()
 

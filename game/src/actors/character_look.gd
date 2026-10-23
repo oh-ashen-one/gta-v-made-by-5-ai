@@ -142,6 +142,15 @@ vec3 tri(sampler2D t, vec3 p, vec3 w, float tile, float hs) {
 	return a * w.x + b * w.y + c * w.z;
 }
 
+// T2: the same triplanar sample at a fixed coarse mip (the fabric's mean
+// colour and broad wear), blended in where single threads would alias.
+vec3 tri_lod(sampler2D t, vec3 p, vec3 w, float tile, float hs, float lod) {
+	vec3 a = textureLod(t, vec2(p.z * hs, -p.y) / tile, lod).rgb;
+	vec3 b = textureLod(t, vec2(p.x * hs, p.z) / tile, lod).rgb;
+	vec3 c = textureLod(t, vec2(p.x * hs, -p.y) / tile, lod).rgb;
+	return a * w.x + b * w.y + c * w.z;
+}
+
 void vertex() {
 	v_kind = int(CUSTOM0.x + 0.5);
 	v_rest = CUSTOM1.xyz;
@@ -162,6 +171,17 @@ void vertex() {
 		float bust = (1.0 - smoothstep(0.0, 0.06, length(vec2(bx * 1.2, r.y - 1.255)))) * smoothstep(0.0, 0.06, -r.z);
 		float hips = smoothstep(0.86, 0.94, r.y) * (1.0 - smoothstep(0.96, 1.04, r.y)) * smoothstep(0.08, 0.15, abs(r.x));
 		VERTEX += NORMAL * person.x * (0.042 * bust + 0.018 * hips);
+		// T2: a woman's frame, not the male torso with a bust: the waist nips
+		// in, hips and seat widen lower down, the upper chest and deltoids
+		// narrow, the neck slims (critic T1: women kept the male shoulder
+		// silhouette). Masks are rest-space; the push is along the skinned normal.
+		float side = smoothstep(0.07, 0.13, abs(r.x));
+		float torso = 1.0 - smoothstep(0.24, 0.30, abs(r.x));
+		float waist = (1.0 - smoothstep(0.0, 0.085, abs(r.y - 1.06))) * side * torso;
+		float seat = (1.0 - smoothstep(0.0, 0.11, abs(r.y - 0.89))) * smoothstep(0.05, 0.12, abs(r.x)) * (1.0 - smoothstep(0.26, 0.32, abs(r.x)));
+		float delt = smoothstep(1.27, 1.36, r.y) * (1.0 - smoothstep(1.48, 1.52, r.y)) * smoothstep(0.12, 0.19, abs(r.x));
+		float neck = smoothstep(1.43, 1.47, r.y) * (1.0 - smoothstep(1.52, 1.56, r.y)) * (1.0 - smoothstep(0.07, 0.09, abs(r.x)));
+		VERTEX += NORMAL * person.x * (-0.026 * waist + 0.024 * seat - 0.022 * delt - 0.009 * neck);
 	}
 	// Head build: the skinned head moves rigidly, so a push along the
 	// skinned normal masked in rest space reshapes it per person (one mesh,
@@ -183,6 +203,14 @@ void vertex() {
 	float hairm = smoothstep(0.4, 0.8, CUSTOM2.z) * smoothstep(1.56, 1.62, r.y);
 	VERTEX += NORMAL * headk * (head_shape.x * (0.0085 * jaw + 0.0045 * cheek * facing) + head_shape.y * 0.0042 * nose
 		+ head_shape.z * 0.0032 * brow + (hv - 1.0) * (hv < 1.0 ? 0.034 : 0.006) * hairm);
+	// T2: women's faces: a narrower, shorter jaw and chin, no brow ridge, a
+	// smaller nose, rounder cheeks and fuller lips (critic T1: the male jaw
+	// and brow read on every woman).
+	if (person.x > 0.0) {
+		float chin = (1.0 - smoothstep(0.01, 0.03, ax)) * smoothstep(-0.13, -0.10, rl.y) * (1.0 - smoothstep(-0.07, -0.05, rl.y)) * facing;
+		float lip = (1.0 - smoothstep(0.018, 0.028, ax)) * (1.0 - smoothstep(0.004, 0.011, abs(rl.y + 0.029))) * facing;
+		VERTEX += NORMAL * headk * person.x * (-0.0095 * jaw - 0.004 * chin - 0.003 * brow - 0.0025 * nose + 0.0035 * cheek * facing + 0.0016 * lip);
+	}
 	// T1: hv < 1 (a woman's generated hairstyle sits over the authored cut) packs
 	// the authored short-back-and-sides quiff down to the scalp (critic S1: women
 	// wore the male pompadour under their own hair).
@@ -290,6 +318,16 @@ void fragment() {
 		// collar's shadow, not hair (they cut a black notch above the collar).
 		hairness *= mix(smoothstep(1.515, 1.55, p.y), 1.0, smoothstep(0.01, 0.05, p.z - head_centre.z));
 		hairness = clamp(hairness + (vnoise(p * 260.0) - 0.5) * 0.25, 0.0, 1.0);
+		// T2: under a woman's generated hairstyle the authored male cut's
+		// atlas hairline (jagged, with skin islands) is replaced by a smooth
+		// scalp line in her hair colour: no skin shards or scalp holes between
+		// the strands (critic T1 person_face_03), forehead skin below it.
+		if (head_shape.w > 0.01 && head_shape.w < 0.95) {
+			float backk = smoothstep(-0.035, 0.015, p.z - head_centre.z);
+			float line_y = mix(nose_tip.y + 0.088 + 0.004 * sin(rel.x * 60.0), 1.575, backk);
+			float side_k = smoothstep(0.055, 0.075, abs(rel.x)) * smoothstep(1.6, 1.64, p.y);
+			hairness = max(smoothstep(line_y - 0.004, line_y + 0.004, p.y), side_k);
+		}
 		reg = hairness > 0.38 ? 2 : 0;
 	} else if (reg == 2) {
 		reg = 0;
@@ -318,9 +356,6 @@ void fragment() {
 	}
 	if (reg == 4 && person.z > 0.5 && person.z < 1.5) {
 		reg = 0; // wave S: bare legs under a skirt
-	}
-	if (reg == 2 && head_shape.w > 0.01 && head_shape.w < 0.95 && (p - head_centre).z < -0.035 && p.y < 1.715) {
-		reg = 0; // T1: a woman's forehead under her swept-back hair is skin, not the short cut's fringe
 	}
 	bool tee_only = false;
 	if (reg == 1 && tee_col.w > 0.5) {
@@ -354,6 +389,9 @@ void fragment() {
 			// The authored face paint carries its modelled shading (sockets,
 			// cheekbones, lips): blend it over the procedural tone, features fully.
 			float face_box = (1.0 - smoothstep(0.06, 0.085, abs(rel.x))) * smoothstep(-0.11, -0.09, rel.y) * (1.0 - smoothstep(0.1, 0.12, rel.y)) * (1.0 - smoothstep(0.05, 0.08, rel.z));
+			// T2: a woman's forehead is procedural skin (the atlas there is the
+			// male cut's painted hairline: a stretched band over the brow).
+			face_box *= 1.0 - person.x * smoothstep(0.066, 0.078, rel.y);
 			// Wave R: the painted brows are solid black bars; lift them toward
 			// the hair colour over skin so they read as hair, not ink.
 			float browb = (1.0 - smoothstep(0.008, 0.02, abs(rel.y - 0.056))) * (1.0 - smoothstep(0.055, 0.07, abs(rel.x)));
@@ -632,11 +670,16 @@ void fragment() {
 		float dl = 1.0;
 		if (has_fabrics) {
 			vec3 dn = tri(denim_tex, p, tw3, 0.2, 1.0);
+			vec3 dn_lo = tri_lod(denim_tex, p, tw3, 0.2, 1.0, 5.0);
+			dn = mix(dn_lo, dn, mix(0.3, 0.75, fine_k));
 			dl = lum(dn) / 0.133;
 			if (pants_col.w > 1.5) {
 				col = dn * 0.95;
 			} else {
-				col = pants_col.rgb * clamp(mix(1.0, dl, 0.75), 0.55, 1.5);
+				// T2: the scan's white weft texels sparkled as speckle noise at
+				// 2-5 m (critic T1); contrast eases off once a pixel spans
+				// several threads, and bright outliers are clamped.
+				col = pants_col.rgb * clamp(mix(1.0, dl, mix(0.3, 0.7, fine_k)), 0.72, 1.28);
 			}
 		} else {
 			col = pants_col.rgb;
@@ -661,7 +704,7 @@ void fragment() {
 		float pcav = clamp(-fl, 0.0, 1.0) * kpose + clamp(-whisk, 0.0, 1.0) * 0.8;
 		ao *= 1.0 - 0.3 * clamp(pcav, 0.0, 1.0);
 		col *= (1.0 - 0.24 * clamp(pcav, 0.0, 1.2)) * (1.0 + 0.10 * clamp(fl, 0.0, 1.0) * kpose + 0.12 * clamp(whisk, 0.0, 1.0));
-		h += (dl - 1.0) * 0.00018 * fine_k;
+		h += (dl - 1.0) * 0.00018 * (1.0 - smoothstep(0.0004, 0.0011, px));
 		float hem = 1.0 - smoothstep(0.016, 0.02, e);
 		float dash = step(0.38, fract((p.x + p.y * 1.3 + p.z) / 0.0045));
 		col = mix(col, vec3(0.62, 0.45, 0.22), line_aa(e - 0.01, 0.0006) * dash * fine_k * 0.8); // orange denim thread

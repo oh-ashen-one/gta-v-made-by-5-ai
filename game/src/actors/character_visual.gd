@@ -342,6 +342,12 @@ func set_body_motion(lean_pitch: float, lean_roll: float, look_yaw: float, look_
 func set_seated(seated: bool, driving: bool = false) -> void:
 	_seated = seated
 	_driving_pose = driving
+	# Characters T2: seats place an adult's sit pose (pelvis 0.445 m above the
+	# visual origin); a scaled-down child sat that much lower, through her
+	# stool (critic T1 E_live02_full_3m). Lift the model by the difference.
+	if model != null:
+		var s := maxf(scale.y, 0.3)
+		model.position.y = (0.445 * (1.0 - s) / s) if (seated and not driving and s < 0.99) else 0.0
 	set_motion(_last_speed, _last_aim, _last_grounded, _last_reload)
 
 func play_hit() -> void:
