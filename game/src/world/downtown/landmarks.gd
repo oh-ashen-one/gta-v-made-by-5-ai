@@ -48,6 +48,8 @@ func skyline_clear(world: WorldBuilder, city: SkylineCity) -> void:
 	for key: String in DowntownPlan.WATER:
 		rects.append(DowntownPlan.WATER[key] as Rect2)
 	rects.append(Rect2(-560.0, -800.0, 310.0, 110.0))
+	# Bayfront Avenue strip between the MBS towers and the Gardens.
+	rects.append(Rect2(-330.0, -800.0, 730.0, 40.0))
 	for r in rects:
 		city.clear_zone(r, 0.0)
 	# Towers placed before this hook ran (near flank rows) are dropped too, so

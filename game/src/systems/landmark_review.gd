@@ -40,7 +40,7 @@ func _views() -> Array:
 		{"name": "esplanade_under_durians", "pos": Vector3(-662.0, 1.8, -505.0), "look": Vector3(-700.0, 28.0, -545.0), "fov": 74.0},
 		{"name": "esplanade_waterfront", "pos": Vector3(-650.0, 1.7, -390.0), "look": Vector3(-712.0, 15.0, -500.0), "fov": 64.0},
 		{"name": "flyer_terminal", "pos": fl + fb * Vector3(18.0, 1.8, -78.0), "look": fl + Vector3(0, 55.0, 0), "fov": 70.0},
-		{"name": "supertree_grove_inside", "pos": g + Vector3(-8.0, 1.8, 12.0), "look": g + Vector3(-46.0, 22.0, -12.0), "fov": 74.0},
+		{"name": "supertree_grove_inside", "pos": g + Vector3(14.0, 1.8, 30.0), "look": g + Vector3(-34.0, 17.0, -10.0), "fov": 72.0},
 		{"name": "gardens_to_mbs", "pos": Vector3(40.0, 1.7, -960.0), "look": Vector3(-118.0, 90.0, -705.0), "fov": 66.0},
 		{"name": "artscience_pond", "pos": Vector3(-262.0, 1.9, -618.0), "look": Vector3(-292.0, 22.0, -595.0), "fov": 70.0},
 		{"name": "heli_mbs_bay", "pos": Vector3(60.0, 150.0, -500.0), "look": mbs + Vector3(0, 110.0, 0), "fov": 62.0},
