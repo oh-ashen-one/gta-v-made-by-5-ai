@@ -7,6 +7,8 @@ var processed := 0
 var stoop := 0.0
 var head_scale := 1.0
 var _ids := {}
+var _far := false
+var _far_check := 0
 
 ## Upper-arm lift and elbow flex (radians about character +X) for each pose.
 const ARM := {"phone": Vector2(0.3, 1.27), "cup": Vector2(0.2, 1.2), "umbrella": Vector2(0.05, 1.32)}
@@ -42,6 +44,15 @@ func _process_modification_with_delta(_delta: float) -> void:
 	processed += 1
 	var sk := get_skeleton()
 	if sk == null:
+		return
+	# Perf: beyond 60 m (where the props are no longer drawn) the pose is
+	# not worth a GDScript pass every frame; re-checked every 16 frames.
+	_far_check -= 1
+	if _far_check <= 0:
+		_far_check = 16
+		var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
+		_far = cam != null and cam.global_position.distance_squared_to(sk.global_position) > 3600.0
+	if _far:
 		return
 	if stoop > 0.0:
 		_rot(sk, _id(sk, "spine"), -stoop * 0.35)

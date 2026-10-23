@@ -151,14 +151,14 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 	# Surfaces: skin tone / grey hair / softer lower face; dress colour; legs.
 	_retint(cv, p, skirt)
 	var hair := String(p.get("hair", ""))
-	var range_hair := 120.0
+	var range_hair := 75.0
 	if hair != "":
 		var hmat: Material = _cloth_material(p["hair_colour"]) if hair == "cap" else _hair_material(p["hair_colour"], int(p["seed"]))
-		var hn := _attach(sk, "head", _hair_mesh(hair), hmat, Transform3D(Basis(), HEAD_C), range_hair, true)
+		var hn := _attach(sk, "head", _hair_mesh(hair), hmat, Transform3D(Basis(), HEAD_C), range_hair, false)
 		hn.name = "PeopleHair"
 	if skirt:
 		var col: Color = p["dress_colour"]
-		var sn := _attach(sk, "pelvis", _misc("skirt"), _cloth_material(col), Transform3D(), 110.0, true)
+		var sn := _attach(sk, "pelvis", _misc("skirt"), _cloth_material(col), Transform3D(), 75.0, false)
 		sn.name = "PeopleSkirt"
 	var pose := ""
 	match prop:
@@ -183,20 +183,20 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 			pose = "umbrella"
 			var col_u: Color = p["umbrella_colour"]
 			var shaft := _attach_posed(sk, "hand.l", _misc("umbrella_shaft"), _plain(Color(0.12, 0.12, 0.12), 0.35, 0.6),
-				Basis(Vector3.BACK, 0.22) * Basis(Vector3.RIGHT, 0.3), Vector3(-0.015, 0.0, 0.0), 90.0)
+				Basis(Vector3.BACK, 0.22) * Basis(Vector3.RIGHT, 0.3), Vector3(-0.015, 0.0, 0.0), 60.0)
 			shaft.name = "PeopleUmbrellaShaft"
 			var canopy := _attach_posed(sk, "hand.l", _misc("umbrella"), _cloth_material(col_u, true),
-				Basis(Vector3.BACK, 0.22) * Basis(Vector3.RIGHT, 0.3), Vector3(-0.015, 0.0, 0.0), 140.0, true)
+				Basis(Vector3.BACK, 0.22) * Basis(Vector3.RIGHT, 0.3), Vector3(-0.015, 0.0, 0.0), 60.0, true)
 			canopy.name = "PeopleUmbrella"
 		"handbag":
-			var hb := _attach(sk, "chest", _misc("handbag"), _plain(p["prop_colour"], 0.45, 0.0), Transform3D(Basis(), Vector3(0.0, 0.0, 0.0)), 70.0, true)
+			var hb := _attach(sk, "chest", _misc("handbag"), _plain(p["prop_colour"], 0.45, 0.0), Transform3D(Basis(), Vector3(0.0, 0.0, 0.0)), 45.0, false)
 			hb.name = "PeopleHandbag"
 		"backpack":
-			var bp := _attach(sk, "chest", _misc("backpack"), _cloth_material(p["prop_colour"]), Transform3D(), 90.0, true)
+			var bp := _attach(sk, "chest", _misc("backpack"), _cloth_material(p["prop_colour"]), Transform3D(), 60.0, false)
 			bp.name = "PeopleBackpack"
 		"shopping":
 			var sb := _attach(sk, "hand.r", _misc("shopping"), _plain(Color(0.93, 0.92, 0.88) if posmod(int(p["seed"]), 2) == 0 else Color(0.85, 0.3, 0.18), 0.7, 0.0),
-				Transform3D(Basis(), Vector3(-0.255, 0.74, 0.02)), 60.0, true)
+				Transform3D(Basis(), Vector3(-0.255, 0.74, 0.02)), 45.0, false)
 			sb.name = "PeopleShopping"
 	var stoop := float(p.get("stoop", 0.0))
 	var head_scale := float(p.get("head_scale", 1.0))

@@ -619,7 +619,12 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 	if v.scan_timer <= 0.0:
 		v.scan_timer = 0.15
 		v.obstacle_gap = _scan_obstacles(v)
-	if v.obstacle_gap < INF:
+	# M2: two lane cars that each see the other as the obstacle (a car
+	# turning through the box and one standing at the next stop line, held
+	# the scripted drive 56 s) — the one already in the junction goes on.
+	var mutual := v.obstacle_gap < INF and v.obstacle_node is AmbientVehicle and is_instance_valid(v.obstacle_node) \
+			and (v.obstacle_node as AmbientVehicle).obstacle_node == v and v.j_len > 0.0 and v.s < _entry(v.edge) and v.idle_time > 1.5
+	if v.obstacle_gap < INF and not mutual:
 		target = minf(target, _stop_speed(v.obstacle_gap - 1.6))
 		if v.obstacle_gap < 0.6:
 			v.speed = 0.0

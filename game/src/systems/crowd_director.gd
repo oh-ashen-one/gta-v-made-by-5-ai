@@ -128,7 +128,9 @@ func _process(_delta: float) -> void:
 		stats["cuts"] += 1
 	_recycle(cut)
 	_dodge_player_vehicle()
-	_separate()
+	# Perf: separation steering at 30 Hz is plenty for walking people.
+	if Engine.get_process_frames() % 2 == 0:
+		_separate()
 	_contact_shadows()
 	if cut and "--street-debug" in OS.get_cmdline_user_args():
 		var cnt := 0
