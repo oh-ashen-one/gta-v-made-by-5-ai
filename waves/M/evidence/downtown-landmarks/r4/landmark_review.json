@@ -1,0 +1,68 @@
+{
+	"note": "fixture camera stills (HUD hidden); helix_walk = real player controller",
+	"stills": [
+		{
+			"draw_calls": 1138.0,
+			"fov": 70.0,
+			"fps": 2.0,
+			"look": "(-118.0, 42.0, -690.0)",
+			"name": "mbs_podium_entrance",
+			"pos": "(-96.0, 2.06, -634.0)",
+			"primitives": 3530191.0
+		},
+		{
+			"draw_calls": 4896.0,
+			"fov": 66.0,
+			"fps": 69.0,
+			"look": "(-230.0, 30.36, -725.0)",
+			"name": "helix_on_bridge",
+			"pos": "(-398.0, 5.3, -750.8029)",
+			"primitives": 16781049.0
+		},
+		{
+			"draw_calls": 2836.0,
+			"fov": 60.0,
+			"fps": 46.0,
+			"look": "(-118.0, 90.0, -705.0)",
+			"name": "merlion_park_to_mbs",
+			"pos": "(-470.0, 2.96, -395.0)",
+			"primitives": 9097014.0
+		},
+		{
+			"draw_calls": 2000.0,
+			"fov": 74.0,
+			"fps": 46.0,
+			"look": "(-700.0, 28.0, -545.0)",
+			"name": "esplanade_under_durians",
+			"pos": "(-662.0, 1.8, -505.0)",
+			"primitives": 6392856.0
+		},
+		{
+			"draw_calls": 1289.0,
+			"fov": 70.0,
+			"fps": 52.0,
+			"look": "(-650.0, 55.0, -880.0)",
+			"name": "flyer_terminal",
+			"pos": "(-590.5163, 1.8, -933.5695)",
+			"primitives": 3450586.0
+		},
+		{
+			"draw_calls": 891.0,
+			"fov": 72.0,
+			"fps": 52.0,
+			"look": "(-44.0, 17.0, -915.0)",
+			"name": "supertree_grove_inside",
+			"pos": "(4.0, 1.8, -875.0)",
+			"primitives": 3027550.0
+		},
+		{
+			"draw_calls": 2769.0,
+			"fov": 62.0,
+			"fps": 58.0,
+			"look": "(-158.0, 150.0, -705.0)",
+			"name": "heli_mbs_north",
+			"pos": "(-480.0, 220.0, -560.0)",
+			"primitives": 10228376.0
+		}
+	]
+}

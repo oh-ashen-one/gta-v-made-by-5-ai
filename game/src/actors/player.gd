@@ -491,10 +491,11 @@ func _physics_process(delta: float) -> void:
 	if has_meta("_qa_motion_probe"):
 		get_meta("_qa_motion_state")["resolved"] = velocity
 
-	# Wave M (downtown-map): on foot the whole Marina Bay downtown is playable
-	# (DowntownPlan.PLAYABLE, physically walled); only beyond it or deep in the
-	# water does the checkpoint return apply.
-	if global_position.y < -8.0 or not DowntownPlan.PLAYABLE.grow(30.0).has_point(Vector2(global_position.x, global_position.z)):
+	# Wave M (downtown-map + downtown-landmarks): on foot the whole Marina Bay
+	# downtown is playable (DowntownPlan.PLAYABLE, physically walled, plus the
+	# old 35 m grace), so the landmarks are reachable on foot; only beyond it
+	# or deep in the water does the checkpoint return apply.
+	if global_position.y < -8.0 or not DowntownPlan.PLAYABLE.grow(35.0).has_point(Vector2(global_position.x, global_position.z)):
 		Events.toast("Beyond the city. Returning to your checkpoint.","warn")
 		Game.damage_player(Game.MAX_HEALTH)
 		return

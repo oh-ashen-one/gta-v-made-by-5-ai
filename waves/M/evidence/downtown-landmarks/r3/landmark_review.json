@@ -1,0 +1,149 @@
+{
+	"note": "fixture camera stills (HUD hidden); helix_walk = real player controller",
+	"stills": [
+		{
+			"draw_calls": 1138.0,
+			"fov": 70.0,
+			"fps": 60.0,
+			"look": "(-118.0, 42.0, -690.0)",
+			"name": "mbs_podium_entrance",
+			"pos": "(-96.0, 2.06, -634.0)",
+			"primitives": 3531135.0
+		},
+		{
+			"draw_calls": 2097.0,
+			"fov": 68.0,
+			"fps": 60.0,
+			"look": "(-170.0, 42.0, -690.0)",
+			"name": "mbs_event_plaza_promenade",
+			"pos": "(-20.0, 2.0, -627.0)",
+			"primitives": 7149373.0
+		},
+		{
+			"draw_calls": 4893.0,
+			"fov": 66.0,
+			"fps": 50.0,
+			"look": "(-230.0, 30.36, -725.0)",
+			"name": "helix_on_bridge",
+			"pos": "(-398.0, 5.3, -750.8029)",
+			"primitives": 16756278.0
+		},
+		{
+			"draw_calls": 1801.0,
+			"fov": 64.0,
+			"fps": 50.0,
+			"look": "(-400.0, 7.0, -747.0)",
+			"name": "helix_from_quay",
+			"pos": "(-262.0, 2.1, -768.0)",
+			"primitives": 6509563.0
+		},
+		{
+			"draw_calls": 2833.0,
+			"fov": 60.0,
+			"fps": 46.0,
+			"look": "(-118.0, 90.0, -705.0)",
+			"name": "merlion_park_to_mbs",
+			"pos": "(-470.0, 2.96, -395.0)",
+			"primitives": 9008073.0
+		},
+		{
+			"draw_calls": 1689.0,
+			"fov": 66.0,
+			"fps": 62.0,
+			"look": "(-500.0, 16.0, -280.0)",
+			"name": "fullerton_frontage",
+			"pos": "(-452.0, 1.8, -335.0)",
+			"primitives": 8803131.0
+		},
+		{
+			"draw_calls": 1976.0,
+			"fov": 74.0,
+			"fps": 62.0,
+			"look": "(-700.0, 28.0, -545.0)",
+			"name": "esplanade_under_durians",
+			"pos": "(-662.0, 1.8, -505.0)",
+			"primitives": 6391800.0
+		},
+		{
+			"draw_calls": 1303.0,
+			"fov": 64.0,
+			"fps": 49.0,
+			"look": "(-712.0, 15.0, -500.0)",
+			"name": "esplanade_waterfront",
+			"pos": "(-650.0, 1.7, -390.0)",
+			"primitives": 4698489.0
+		},
+		{
+			"draw_calls": 1273.0,
+			"fov": 70.0,
+			"fps": 49.0,
+			"look": "(-650.0, 55.0, -880.0)",
+			"name": "flyer_terminal",
+			"pos": "(-590.5163, 1.8, -933.5695)",
+			"primitives": 3390426.0
+		},
+		{
+			"draw_calls": 1044.0,
+			"fov": 74.0,
+			"fps": 57.0,
+			"look": "(-56.0, 22.0, -917.0)",
+			"name": "supertree_grove_inside",
+			"pos": "(-18.0, 1.8, -893.0)",
+			"primitives": 3295265.0
+		},
+		{
+			"draw_calls": 6411.0,
+			"fov": 66.0,
+			"fps": 57.0,
+			"look": "(-118.0, 90.0, -705.0)",
+			"name": "gardens_to_mbs",
+			"pos": "(40.0, 1.7, -960.0)",
+			"primitives": 22337328.0
+		},
+		{
+			"draw_calls": 2833.0,
+			"fov": 70.0,
+			"fps": 45.0,
+			"look": "(-292.0, 22.0, -595.0)",
+			"name": "artscience_pond",
+			"pos": "(-262.0, 1.9, -618.0)",
+			"primitives": 11726471.0
+		},
+		{
+			"draw_calls": 1452.0,
+			"fov": 62.0,
+			"fps": 59.0,
+			"look": "(-118.0, 110.0, -705.0)",
+			"name": "heli_mbs_bay",
+			"pos": "(60.0, 150.0, -500.0)",
+			"primitives": 4901921.0
+		},
+		{
+			"draw_calls": 2769.0,
+			"fov": 62.0,
+			"fps": 59.0,
+			"look": "(-158.0, 150.0, -705.0)",
+			"name": "heli_mbs_north",
+			"pos": "(-480.0, 220.0, -560.0)",
+			"primitives": 10229543.0
+		},
+		{
+			"draw_calls": 1672.0,
+			"fov": 60.0,
+			"fps": 51.0,
+			"look": "(-158.0, 196.0, -705.0)",
+			"name": "heli_skypark_deck",
+			"pos": "(-330.0, 270.0, -650.0)",
+			"primitives": 6586842.0
+		},
+		{
+			"draw_calls": 7191.0,
+			"fov": 62.0,
+			"fps": 51.0,
+			"look": "(-150.0, 0.0, -650.0)",
+			"name": "aerial_marina_bay",
+			"pos": "(-900.0, 260.0, -200.0)",
+			"primitives": 26665047.0
+		}
+	]
+}

@@ -130,3 +130,17 @@ opus55 driving-q (2026-10-22): new original code `game/src/actors/car_motion_blu
 opus55 driving-q round 2 (2026-10-22): edited original sources only. `car.gd` builds a new procedural tyre, ten-spoke alloy and brake disc/caliper mesh at runtime (SurfaceTool geometry, engine materials). `car_fx.gd` generates a feathered skid-mark mask texture at runtime from code and a seeded RNG. `car_body.gdshader` and `car_motion_blur.gd` are shader edits. No external assets, references, samples or third-party code; no rights status changed.
 
 opus55 downtown-map (wave M, 2026-10-23): new original code under `game/src/world/downtown/` (`map.gd`, `shoreline.gd`, `roads.gd`, `bridges.gd`, `bounds.gd`, `minimap.gd`, `downtown_review.gd`) and `game/src/systems/downtown_tests/map_test.gd` builds the Marina Bay downtown ground, seawalls, roads, markings, bridges, edges and helipads as generated geometry with the existing project Palette surface materials, the existing `rain_tree.glb` (batched) and the existing `boundary_railing.glb`. `bay_water.gdshader` gains two span uniforms (quay foam limited to the real seawalls). Real Singapore place and road names are public facts used for wayfinding; the layout follows real geography with compressed distances (loop/DOWNTOWN_PLAN.md). No imported, generated or third-party assets, no map data, no Rockstar material; GTA V references set the quality bar only.
+
+## Wave M downtown-landmarks (Opus 5.5, 2026-10-23)
+
+The downtown-landmarks piece builds the Marina Bay landmarks at true scale from code (`game/src/world/downtown/landmarks.gd`
+and `game/src/world/downtown/landmarks/*.gd`): Marina Bay Sands (curved-leg towers, a boat-hull SkyPark cantilevered north,
+the Shoppes podium and the Event Plaza), the Helix Bridge, the ArtScience lotus, the Esplanade domes with MultiMesh sunshade
+hoods, the Singapore Flyer terminal, the Gardens by the Bay grove plaza, skyway and conservatories, the Fullerton Hotel,
+One Fullerton and the Merlion Park terrace. All geometry is original and generated at runtime from `DowntownPlan` numbers;
+it evokes real public landmarks through generic shapes only (no scans, photogrammetry, logos, downloaded models, textures or
+reference images). Existing listed assets are reused unchanged: `singapore_flyer.glb` (moved to its plan anchor),
+`supertree_grove.glb` (two instances), `merlion_landmark.glb` (a small cub statue at Merlion Park), `rain_tree.glb`, and the
+project surface textures through `Palette`. `marina_bay_sands.glb` and `artscience_museum.glb` remain on disk but are not
+instanced while the piece is present. Signage text uses real place names for wayfinding only, in the default font, with no
+logos or trademarked lettering. GTA V reference images were used only to judge quality and are not in the repository or build.

@@ -1,0 +1,60 @@
+{
+ "note": "Rendered 1280x720 on the shared Mac Studio; same fixture cameras with the piece on (r3, commit 868de49) and with --landmarks-off (legacy far shore). fps is Godot's 1 s average on a shared machine and is noisy; draw calls and primitives are per-frame engine monitors.",
+ "views": {
+  "mbs_event_plaza_promenade": {
+   "draw_calls_on": 2097.0,
+   "draw_calls_off": 1318.0,
+   "draw_delta": 779.0,
+   "primitives_on": 7149373.0,
+   "primitives_off": 5744032.0,
+   "fps_on": 60.0,
+   "fps_off": 29.0
+  },
+  "merlion_park_to_mbs": {
+   "draw_calls_on": 2833.0,
+   "draw_calls_off": 2170.0,
+   "draw_delta": 663.0,
+   "primitives_on": 9008073.0,
+   "primitives_off": 8502089.0,
+   "fps_on": 46.0,
+   "fps_off": 29.0
+  },
+  "esplanade_waterfront": {
+   "draw_calls_on": 1303.0,
+   "draw_calls_off": 761.0,
+   "draw_delta": 542.0,
+   "primitives_on": 4698489.0,
+   "primitives_off": 3941389.0,
+   "fps_on": 49.0,
+   "fps_off": 71.0
+  },
+  "gardens_to_mbs": {
+   "draw_calls_on": 6411.0,
+   "draw_calls_off": 5718.0,
+   "draw_delta": 693.0,
+   "primitives_on": 22337328.0,
+   "primitives_off": 20492548.0,
+   "fps_on": 57.0,
+   "fps_off": 40.0
+  },
+  "heli_mbs_bay": {
+   "draw_calls_on": 1452.0,
+   "draw_calls_off": 971.0,
+   "draw_delta": 481.0,
+   "primitives_on": 4901921.0,
+   "primitives_off": 4237343.0,
+   "fps_on": 59.0,
+   "fps_off": 40.0
+  },
+  "aerial_marina_bay": {
+   "draw_calls_on": 7191.0,
+   "draw_calls_off": 6632.0,
+   "draw_delta": 559.0,
+   "primitives_on": 26665047.0,
+   "primitives_off": 26001669.0,
+   "fps_on": 51.0,
+   "fps_off": 52.0
+  }
+ },
+ "budget_extra_draw_calls": 1200
+}
