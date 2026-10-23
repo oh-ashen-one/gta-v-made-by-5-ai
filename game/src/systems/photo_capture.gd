@@ -123,7 +123,21 @@ func _run_gameplay() -> void:
 			stride_visual.release_pose()
 	_write_log()
 
+## Wave-M integration: keep lane cars off the lens before a still (see
+## AmbientTraffic.clear_lens). Fixed cameras are not moved.
+func _clear_lens(gameplay: bool) -> void:
+	var tm := get_tree().get_first_node_in_group("traffic_manager")
+	if tm == null or tm.get("ambient") == null:
+		return
+	var cam := get_viewport().get_camera_3d()
+	if cam == null or cam.global_position.y > 30.0:
+		return
+	if tm.ambient.clear_lens(cam.global_position, 5.5, 3.2 if gameplay else 0.0) > 0:
+		await get_tree().process_frame
+		await get_tree().process_frame
+
 func _shot(view_name: String) -> void:
+	await _clear_lens(view_name.begins_with("gameplay_"))
 	await RenderingServer.frame_post_draw
 	var img := get_viewport().get_texture().get_image()
 	if img == null:

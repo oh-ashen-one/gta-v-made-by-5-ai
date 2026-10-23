@@ -339,6 +339,28 @@ func _update_focus() -> void:
 		if _prof:
 			print("[street-prof] cut %d took %.1f ms (total %.0f ms)" % [stats["cuts"], (Time.get_ticks_usec() - t0) / 1000.0, stats["cut_ms"]])
 
+## Wave-M integration: still-photo lens hygiene. Lane cars whose body comes
+## within `radius` of the lens (or `player_radius` of the on-foot player) are
+## re-seeded out of sight: fixed views opened on a bus roof (photo_01) or two
+## door panels (dt_bayfront_drive), and a queued sedan stopped against the
+## player in the grove vista. Stills only; live play is untouched.
+func clear_lens(cam_pos: Vector3, radius: float, player_radius: float = 0.0) -> int:
+	var cleared := 0
+	for v in vehicles:
+		if not v.active:
+			continue
+		var half := v.dims.z * 0.5
+		var near_cam := Vector2(v.global_position.x - cam_pos.x, v.global_position.z - cam_pos.z).length() < radius + half
+		var near_player := player_radius > 0.0 and _player_near(v.global_position, player_radius + half)
+		if near_cam or near_player:
+			if not _seed_vehicle(v, true):
+				_park_offscreen(v)
+			cleared += 1
+	if cleared > 0:
+		_rebuild_keys()
+		stats["lens_cleared"] = int(stats.get("lens_cleared", 0)) + cleared
+	return cleared
+
 ## Street-life D: lane stretches (edge, s_lo, s_hi) that lie 10-140 m inside
 ## the street-level camera's forward cone; the pre-roll then carries the cars
 ## seeded there into queues and platoons.

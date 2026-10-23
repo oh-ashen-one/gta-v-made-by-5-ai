@@ -266,21 +266,36 @@ static func _retint(cv: CharacterVisual, p: Dictionary, skirt: bool) -> void:
 				sm.set_shader_parameter("feminine", 1.0 if bool(p["female"]) else 0.0)
 				var hc: Color = p.get("hair_colour", Color(0.03, 0.025, 0.02))
 				sm.set_shader_parameter("hair_col", Vector3(hc.r, hc.g, hc.b))
+				# Wave-M integration: the trousers live in this skin atlas (the
+				# "CharcoalTextile" surface is the shoes, y 0.03-0.18 m), so every
+				# civilian wore the same grey camo cargo trousers (critic
+				# street-life-M2). Dye the leg texels per person; under a skirt
+				# they become bare legs or tights.
+				var tc := _trouser_colour(p, skirt)
+				sm.set_shader_parameter("trouser_col", Vector3(tc.r, tc.g, tc.b))
 				mi.set_surface_override_material(i, sm)
 			elif mname.contains("CharacterClothing") and dress:
 				var cur := mi.get_surface_override_material(i) as ShaderMaterial
 				if cur != null:
 					var dc: Color = p["dress_colour"]
 					cur.set_shader_parameter("tint", dc)
-			elif mname.contains("CharcoalTextile") and skirt:
-				var cur2 := mi.get_surface_override_material(i) as ShaderMaterial
-				if cur2 != null:
-					var legs: Color = p["legs"]
-					if legs.r < 0.0:
-						var t: Color = p["skin"]
-						legs = Color(0.62 * t.r, 0.44 * t.g, 0.34 * t.b)
-					cur2.set_shader_parameter("tint", legs)
-					cur2.set_shader_parameter("roughness", 0.7)
+
+const TROUSERS: Array[Color] = [
+	Color(0.16, 0.24, 0.42), Color(0.07, 0.07, 0.08), Color(0.55, 0.49, 0.36), Color(0.1, 0.12, 0.22),
+	Color(0.46, 0.47, 0.48), Color(0.7, 0.66, 0.57), Color(0.27, 0.29, 0.19), Color(0.3, 0.39, 0.57),
+	Color(0.22, 0.22, 0.24), Color(0.84, 0.82, 0.76), Color(0.38, 0.25, 0.16), Color(0.21, 0.31, 0.5),
+]
+static func _trouser_colour(p: Dictionary, skirt: bool) -> Color:
+	if skirt:
+		var legs: Color = p["legs"]
+		if legs.r < 0.0:
+			var t: Color = p["skin"]
+			legs = Color(0.62 * t.r, 0.44 * t.g, 0.34 * t.b)
+		return legs
+	var h := posmod(hash(int(p.get("seed", 0)) * 40503 + 7), 1 << 30)
+	var c: Color = TROUSERS[h % TROUSERS.size()]
+	var j := 0.86 + float((h / 131) % 28) / 100.0
+	return Color(c.r * j, c.g * j, c.b * j)
 
 const SKIN_SHADER := """
 shader_type spatial;
@@ -292,6 +307,7 @@ uniform vec3 skin_mul = vec3(1.0);
 uniform vec3 hair_col = vec3(0.03, 0.025, 0.02);
 uniform float grey_hair = 0.0;
 uniform float feminine = 0.0;
+uniform vec3 trouser_col = vec3(-1.0);
 varying vec3 lp;
 void vertex() { lp = VERTEX; }
 void fragment() {
@@ -302,6 +318,12 @@ void fragment() {
 	// Skin texels: warm, red over green over blue, mid luminance.
 	float skin = step(c.b, c.g) * step(c.g, c.r) * smoothstep(0.035, 0.07, l) * (1.0 - smoothstep(0.55, 0.7, l)) * smoothstep(0.12, 0.25, sat);
 	vec3 col = mix(c, c * skin_mul, skin);
+	// Trousers (non-skin texels on the legs): one dye per person, the weave's
+	// shading kept at low contrast so it no longer reads as camo.
+	float legs = (1.0 - skin) * step(0.0, trouser_col.r) * smoothstep(0.13, 0.18, lp.y)
+			* (1.0 - smoothstep(0.92, 0.97, lp.y)) * (1.0 - smoothstep(0.2, 0.26, abs(lp.x)));
+	float weave = clamp(mix(1.0, l / 0.1, 0.3), 0.72, 1.25);
+	col = mix(col, trouser_col * weave, legs);
 	// Women: soften the stubbled lower face toward the cheek tone; a lip tint.
 	float face = smoothstep(1.50, 1.53, lp.y) * (1.0 - smoothstep(1.595, 1.615, lp.y)) * smoothstep(-0.03, -0.07, lp.z);
 	vec3 cheek = vec3(0.42, 0.25, 0.17) * skin_mul;

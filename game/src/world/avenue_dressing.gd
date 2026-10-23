@@ -88,9 +88,22 @@ func _tree_candidates() -> Array[Dictionary]:
 						continue
 					if _near_legacy_tree(pos):
 						continue
+					# Wave-M integration: keep the Supertree grove sightline
+					# from the gameplay grove-vista spot open (an avenue crown at
+					# (-18.5, -168.9) hid the grove crowns; critic street-life-M2).
+					if _blocks_grove_vista(pos):
+						continue
 					var away := Vector3(side, 0, 0) if axis == 0 else Vector3(0, 0, side)
 					out.append({"pos": pos, "away": away, "axis": axis, "along": along})
 	return out
+
+const GROVE_VISTA_SPOT := Vector2(-6.0, -150.0)
+func _blocks_grove_vista(pos: Vector3) -> bool:
+	var a := GROVE_VISTA_SPOT
+	var b := Vector2(WorldBuilder.GROVE_POS.x, WorldBuilder.GROVE_POS.z)
+	var q := Vector2(pos.x, pos.z)
+	var t := clampf((q - a).dot(b - a) / (b - a).length_squared(), 0.0, 1.0)
+	return t < 0.6 and q.distance_to(a.lerp(b, t)) < 9.0
 
 func _near_legacy_tree(pos: Vector3) -> bool:
 	for road in LEGACY_ROADS:

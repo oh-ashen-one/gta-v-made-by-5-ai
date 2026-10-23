@@ -75,8 +75,11 @@ func setup_vehicle(vehicle_kind: String, color: Color) -> void:
 		_build_bus()
 	else:
 		_build_car()
+	# Wave-M integration perf: 520 -> 380 m; small parts (lamps, driver, taxi
+	# sign) to 120 m.
 	for mi in _all_meshes(self):
-		mi.visibility_range_end = 520.0
+		var small := mi.get_aabb().size.length() < 1.2
+		mi.visibility_range_end = 120.0 if small else 380.0
 
 func _build_car() -> void:
 	var file := "sedan_clean.glb"

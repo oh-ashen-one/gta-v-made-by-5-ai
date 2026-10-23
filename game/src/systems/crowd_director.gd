@@ -145,6 +145,7 @@ func _process_crowd(_delta: float) -> void:
 	if Engine.get_process_frames() % 2 == 0:
 		_separate()
 	_contact_shadows()
+	_people_shadow_lod(_delta, cut)
 	if cut and "--street-debug" in OS.get_cmdline_user_args():
 		var cnt := 0
 		var vis := 0
@@ -154,6 +155,43 @@ func _process_crowd(_delta: float) -> void:
 				if r.global_position.distance_to(_cam_pos) < NPC.FAR_DRAW_RANGE:
 					vis += 1
 		print("[crowd-debug] cut focus=", _focus.round(), " cam=", _cam_pos.round(), " near=", cnt, " in_draw_range=", vis, " roamers=", roamers.size(), " near_fill=", stats.get("near_fill", -1))
+
+## Wave-M integration perf: people beyond PEOPLE_SHADOW_RANGE of the lens stop
+## casting sun shadows (each figure drew its 4 surfaces into up to 4 cascades out
+## to 280 m; a far figure's shadow is a few pixels). Rendered attribution: the
+## crowd was 1.3-2.8k of 6.5-15k draw calls per view. Near figures, and the
+## contact-shadow decals, are unchanged.
+const PEOPLE_SHADOW_RANGE := 45.0
+var _shadow_t := 0.0
+var _shadow_far := {}      # instance id -> true while shadows are off
+var _shadow_meshes := {}   # instance id -> [[GeometryInstance3D, original setting], ...]
+func _people_shadow_lod(delta: float, force: bool) -> void:
+	_shadow_t -= delta
+	if _shadow_t > 0.0 and not force:
+		return
+	_shadow_t = 0.25
+	var r2 := PEOPLE_SHADOW_RANGE * PEOPLE_SHADOW_RANGE
+	for p in traffic.peds:
+		var npc := p as NPC
+		if npc == null or not is_instance_valid(npc) or npc.character_visual == null:
+			continue
+		var id := npc.get_instance_id()
+		var far := npc.global_position.distance_squared_to(_cam_pos) > r2
+		if far == _shadow_far.has(id):
+			continue
+		if not _shadow_meshes.has(id):
+			var list: Array = []
+			for g in npc.character_visual.find_children("*", "GeometryInstance3D", true, false):
+				list.append([g, (g as GeometryInstance3D).cast_shadow])
+			_shadow_meshes[id] = list
+		for e in _shadow_meshes[id]:
+			var g := e[0] as GeometryInstance3D
+			if is_instance_valid(g):
+				g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF if far else e[1]
+		if far:
+			_shadow_far[id] = true
+		else:
+			_shadow_far.erase(id)
 
 ## Street-life M2: soft contact shadows under the feet of the people nearest
 ## the camera (the player already has his own), from a small Decal pool, so

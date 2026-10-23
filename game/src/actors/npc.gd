@@ -49,7 +49,9 @@ func _sim_near_sq() -> float:
 	if _roamer < 0:
 		_roamer = 1 if has_meta("roamer") else 0
 	return SIM_NEAR_ROAMER * SIM_NEAR_ROAMER if _roamer == 1 else SIM_NEAR * SIM_NEAR
-const FAR_DRAW_RANGE := 240.0
+## Wave-M integration perf: 240 -> 160 m (a figure past 160 m is a few
+## pixels even from the helicopter; the crowd was the largest draw family).
+const FAR_DRAW_RANGE := 160.0
 const NEAR_HIDE := 2.3
 var _sim_accum := 0.0
 var _sim_slot := 0

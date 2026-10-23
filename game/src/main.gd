@@ -190,6 +190,20 @@ func _ready() -> void:
 			probe_node.setup(self, arg.trim_prefix("--save-probe="), report)
 			return
 
+	if "--render-budget" in args:
+		# Wave-M integration: rendered draw-call attribution per street-life family.
+		var budget_dir := "user://render_budget"
+		for arg in args:
+			if arg.begins_with("--capture-dir="):
+				budget_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		Game.simulation_paused = false
+		var budget: Node = _qa_system("res://src/systems/render_budget_probe.gd")
+		add_child(budget)
+		budget.setup(self, budget_dir)
+		return
+
 	if "--perf-probe" in args:
 		var perf_dir := "user://perf"
 		for arg in args:
