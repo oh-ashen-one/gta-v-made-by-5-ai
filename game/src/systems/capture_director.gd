@@ -1079,6 +1079,10 @@ func _log_drive_life() -> void:
 	_log("drive life: samples=%d moving_within_80m=%.0f%% same_dir_ahead=%.0f%% min_car_health=%.0f held_s=%.1f bypass_s=%.1f" % [
 		_drive_life["samples"], 100.0 * _drive_life["moving"] / maxf(1.0, _drive_life["samples"]),
 		100.0 * _drive_life["ahead"] / maxf(1.0, _drive_life["samples"]), _drive_life["min_health"], _drive_life["held"], _drive_life["bypass"]])
+	var parts: Array[String] = []
+	for k in _hold_why:
+		parts.append("%s=%.1f" % [k, _hold_why[k]])
+	_log("drive slow (<6 m/s allowed) by reason: " + ", ".join(parts))
 
 var _arc_points := {}
 var _approach_points := {}
@@ -1159,8 +1163,13 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		# r1 street-life: give way to a lane car whose path crosses ours in the
 		# next 1.6 s (a left turn out of the median lane across a kerb-lane car
 		# going straight on spun the car round in a headless run).
-		if _crossing_conflict(car, forward):
+		var conflict := _crossing_conflict(car, forward)
+		if conflict:
 			safe = 0.0
+		if safe < 6.0:
+			# Where the slow time goes (headless tuning): per-reason seconds.
+			var why := "crossing" if conflict else ("red" if red_line < INF and sqrt(2.0 * 3.5 * maxf(0.0, red_line - 1.0)) <= safe + 0.01 else ("person" if lead["node"] is NPC else ("car" if lead["node"] != null else "other")))
+			_hold_why[why] = float(_hold_why.get(why, 0.0)) + get_physics_process_delta_time()
 		if safe < 1.0:
 			_held_for += get_physics_process_delta_time()
 			if _held_for > 3.0 and _elapsed() > _held_log_next:
@@ -1245,6 +1254,7 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 
 var _held_for := 0.0
 var _held_log_next := 0.0
+var _hold_why := {}
 var _drive_debug := "--drive-debug" in OS.get_cmdline_user_args()
 
 func _crossing_conflict(car: Car, forward: Vector3) -> bool:

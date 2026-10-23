@@ -587,7 +587,8 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 	var target := v.vmax
 	# M2: traffic in front of a player-driven car moves at the player's pace
 	# (the M1 drive crawled behind 9-13 m/s lane cars for most of its leg).
-	if _pc_active and _pc_speed > 4.0 and _in_player_path(v.global_position, -v.global_transform.basis.z, 130.0):
+	var boosted := _pc_active and _pc_speed > 4.0 and _in_player_path(v.global_position, -v.global_transform.basis.z, 130.0)
+	if boosted:
 		target = maxf(target, 20.0)
 	# 1. Car following, including the tail of the lane we are about to enter.
 	var gap := _leader_gap(v, s_end)
@@ -628,7 +629,7 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 		v.stuck_time += delta
 	else:
 		v.stuck_time = 0.0 if v.speed > 1.0 else v.stuck_time
-	var rate := ACCEL if target > v.speed else DECEL * (1.6 if target < 0.5 else 1.0)
+	var rate := (ACCEL * (1.6 if boosted else 1.0)) if target > v.speed else DECEL * (1.6 if target < 0.5 else 1.0)
 	v.speed = move_toward(v.speed, target, rate * delta)
 	v.set_braking(target < v.speed - 0.4 or (v.speed < 0.3 and target < 0.5))
 	var s_before := v.s
@@ -856,6 +857,12 @@ func _enter_junction(v: AmbientVehicle) -> void:
 	var p0 := lane_point(v.edge, v.lane, _s_end(v.edge))
 	var ne := v.next_edge
 	var lane := _lane_for(ne, v.lane)
+	# M2: a car turning into the road ahead of a player-driven car takes the
+	# lane the player is not in.
+	if _pc_active and (edges[ne]["offs"] as Array).size() >= 2:
+		var probe := lane_point(ne, lane, _entry(ne) + 6.0)
+		if _in_player_path(probe, edges[ne]["dir"], 140.0):
+			lane = 1 - lane
 	var p2 := lane_point(ne, lane, _entry(ne))
 	var d1: Vector3 = edges[v.edge]["dir"]
 	var d2: Vector3 = edges[ne]["dir"]
