@@ -559,6 +559,16 @@ func _walk_leg() -> void:
 		Input.action_press("sprint")
 		max_y = maxf(max_y, player.global_position.y)
 	_release()
+	if k >= pts.size():
+		# arrival: turn to look up at Marina Bay Sands (tower 1)
+		var mbs: Vector3 = DowntownPlan.ANCHORS["marina_bay_sands"]["pos"] + Vector3(-98.0, 0.0, -10.0)
+		var dm := mbs - player.global_position
+		var want_m := atan2(-dm.x, -dm.z)
+		var t_turn := _elapsed() + 1.6
+		while _elapsed() < t_turn:
+			await get_tree().physics_frame
+			player.yaw = lerp_angle(player.yaw, want_m, 0.08)
+		await _still("walk_mbs_arrival")
 	_results["walk"] = {"completed": k >= pts.size(), "reached": k, "end": str(player.global_position), "max_y": snappedf(max_y, 0.01)}
 	_log("walk reached %d/%d at %s max y %.2f" % [k, pts.size(), player.global_position, max_y])
 
