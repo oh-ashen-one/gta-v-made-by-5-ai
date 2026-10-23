@@ -1262,6 +1262,17 @@ func _character_look_checks(player: Player) -> void:
 	var grip_l := CharacterHands.build_grip(false, prof)
 	_check("characters-R: gun and support hands publish grip frames and close fingers round the grip", gf.has("pistol_r") and gf.has("pistol_l")
 		and grip_r.surface_get_array_len(0) > 2000 and grip_l.surface_get_array_len(0) > 2000, "verts=%d/%d" % [grip_r.surface_get_array_len(0), grip_l.surface_get_array_len(0)])
+	var probe_cv := CharacterVisual.new()
+	probe_cv.grip_frames = gf
+	var probe_layer := AimIkLayer.new()
+	probe_layer.visual = probe_cv
+	var gb_t := Basis.looking_at(Vector3(0.3, -0.2, -1.0).normalized(), Vector3.UP)
+	var hb_t := probe_layer._hand_basis(gb_t, "pistol", "r")
+	var seat_err := ((hb_t * (gf["pistol_r"] as Transform3D).basis).get_rotation_quaternion().angle_to(gb_t.get_rotation_quaternion()))
+	var off_err := (probe_layer._wrist_from_gun(gb_t, "pistol", "r") - hb_t * (gf["pistol_r"] as Transform3D).origin).length()
+	probe_layer.free()
+	probe_cv.free()
+	_check("characters-R: the aim layer seats the pistol by the published grip frame (gun pose recovered exactly)", seat_err < 0.001 and off_err < 0.0001, "ang=%.4f off=%.5f" % [seat_err, off_err])
 	var cv: CharacterVisual = player.get("_visual")
 	if cv != null and cv.hands != null:
 		_check("characters-R: the player's visual hands its grip frames to the aim layer (no second arm IK)", cv.grip_frames.has("pistol_r"), "")

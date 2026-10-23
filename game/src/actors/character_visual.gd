@@ -74,6 +74,7 @@ var hands: CharacterHands
 ## Gun poses in hand-bone space, read by the combat AimIkLayer (empty: the
 ## layer's own mitten grip).
 var grip_frames := {}
+var _focus := -1.0
 
 static func available(role: String = "player") -> bool:
 	return ResourceLoader.exists(asset_path(role))
@@ -389,6 +390,11 @@ func _process(_delta: float) -> void:
 		hands.weapon_kind = _weapon_kind
 		var layer := skeleton.get_node_or_null(AimIkLayer.LAYER_NAME) as AimIkLayer
 		hands.ik_weight = layer.weight if layer != null else 0.0
+		# The face focuses with the aim (brows knit, squint).
+		var focus := snappedf(hands.ik_weight, 0.05)
+		if look_mesh != null and absf(focus - _focus) > 0.001:
+			_focus = focus
+			look_mesh.set_instance_shader_parameter("expr", Vector4(focus, 0.0, 0.0, 0.0))
 		hands.update_pose()
 		if held and _weapon_kind == "pistol":
 			# The combat aim layer seats the gun in the hand while it is

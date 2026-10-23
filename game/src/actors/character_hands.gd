@@ -89,7 +89,7 @@ void fragment() {
 	float wr = smoothstep(0.35, 0.75, vnoise(vec3(p.x * 2600.0, p.y * 300.0, p.z * 2600.0)));
 	float lines = crease * wr;
 	col *= 1.0 - 0.28 * lines;
-	vec3 nail_col = mix(skin * 1.25 + vec3(0.07, 0.05, 0.05), vec3(0.86, 0.74, 0.70), 0.35);
+	vec3 nail_col = mix(skin * 1.12 + vec3(0.025, 0.012, 0.012), vec3(0.62, 0.45, 0.42), 0.12);
 	float lunula = smoothstep(0.55, 0.75, COLOR.r) * 0.0;
 	col = mix(col, nail_col, smoothstep(0.35, 0.6, nail));
 	float h = (vnoise(p * 900.0) - 0.5) * 0.00008 - lines * 0.00025 + smoothstep(0.35, 0.6, nail) * 0.0003;
@@ -280,9 +280,9 @@ static func hand_in_gun(side_r: bool) -> Transform3D:
 		var y := Vector3(0.0, -sin(t), -cos(t))
 		var x := Vector3(1.0, 0.0, 0.0)
 		return Transform3D(Basis(x, y, x.cross(y)), Vector3(-0.047, 0.026, 0.066))
-	var y2 := Vector3(0.0, -0.62, -0.78).normalized()
+	var y2 := Vector3(0.0, -0.52, -0.85).normalized()
 	var x2 := Vector3(1.0, 0.0, 0.0)
-	return Transform3D(Basis(x2, y2, x2.cross(y2)), Vector3(0.056, -0.004, 0.070))
+	return Transform3D(Basis(x2, y2, x2.cross(y2)), Vector3(0.047, 0.006, 0.062))
 
 ## Gun pose in each hand's bone space, for AimIkLayer (see its _grip_frame).
 static func grip_frames() -> Dictionary:

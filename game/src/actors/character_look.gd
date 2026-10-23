@@ -80,6 +80,9 @@ instance uniform vec4 face_col = vec4(0.0, 0.5, 0.5, 0.0);       // x: stubble, 
 // Wave R: per-person head build (-1..1): x jaw + cheek fullness, y nose
 // size, z brow ridge / forehead; w hair volume (0 = authored, else 0.4..2).
 instance uniform vec4 head_shape = vec4(0.0, 0.0, 0.0, 0.0);
+// x: focus/frown (0 calm .. 1 aiming): brows knit and lower, a crease
+// between them, cheeks lift into a squint, the mouth corners flatten.
+instance uniform vec4 expr = vec4(0.0);
 
 varying flat int v_kind;
 varying vec3 v_rest;
@@ -156,6 +159,11 @@ void vertex() {
 	float nose = (1.0 - smoothstep(0.006, 0.026, length(vec2(rl.x, rl.y + 0.008)))) * facing;
 	float brow = (1.0 - smoothstep(0.006, 0.016, abs(rl.y - 0.056))) * (1.0 - smoothstep(0.045, 0.068, ax)) * facing;
 	float hv = head_shape.w > 0.0 ? head_shape.w : 1.0;
+	float knit = (1.0 - smoothstep(0.012, 0.03, ax)) * (1.0 - smoothstep(0.006, 0.014, abs(rl.y - 0.052))) * facing;
+	float glab = (1.0 - smoothstep(0.003, 0.008, ax)) * (1.0 - smoothstep(0.008, 0.016, abs(rl.y - 0.064))) * facing;
+	float squint = (1.0 - smoothstep(0.004, 0.01, abs(rl.y - 0.026))) * smoothstep(0.016, 0.024, ax) * (1.0 - smoothstep(0.042, 0.05, ax)) * facing;
+	float corner = (1.0 - smoothstep(0.004, 0.009, length(vec2(ax - 0.026, rl.y + 0.029)))) * facing;
+	VERTEX += NORMAL * headk * expr.x * (0.0026 * knit - 0.0014 * glab + 0.0014 * squint - 0.0016 * corner);
 	float hairm = smoothstep(0.4, 0.8, CUSTOM2.z) * smoothstep(1.56, 1.62, r.y);
 	VERTEX += NORMAL * headk * (head_shape.x * (0.0085 * jaw + 0.0045 * cheek * facing) + head_shape.y * 0.0042 * nose
 		+ head_shape.z * 0.0032 * brow + (hv - 1.0) * 0.006 * hairm);
@@ -245,7 +253,7 @@ void fragment() {
 		// collar's shadow, not hair (they cut a black notch above the collar).
 		hairness *= mix(smoothstep(1.515, 1.55, p.y), 1.0, smoothstep(0.01, 0.05, p.z - head_centre.z));
 		hairness = clamp(hairness + (vnoise(p * 260.0) - 0.5) * 0.25, 0.0, 1.0);
-		reg = hairness > 0.5 ? 2 : 0;
+		reg = hairness > 0.38 ? 2 : 0;
 	} else if (reg == 2) {
 		reg = 0;
 	}
@@ -325,6 +333,10 @@ void fragment() {
 			float fh = (1.0 - smoothstep(0.03, 0.05, abs(rel.x))) * step(0.085, rel.y) * step(rel.y, 0.125);
 			float flines = fh * line_aa(fract((rel.y - 0.085) / 0.012) - 0.5, 0.08) * face_col.y * 0.5 * fk;
 			ao *= 1.0 - 0.35 * crease - 0.2 * flines;
+			// Focus frown: a short vertical crease between the brows.
+			float gl = (1.0 - smoothstep(0.0012, 0.003, abs(abs(rel.x) - 0.004))) * (1.0 - smoothstep(0.008, 0.014, abs(rel.y - 0.064))) * expr.x * fk;
+			col *= 1.0 - 0.16 * gl;
+			ao *= 1.0 - 0.3 * gl;
 			col *= 1.0 - 0.18 * crease - 0.1 * flines;
 			float sk = smoothstep(0.02, 0.07, dot(tex, vec3(0.33)));
 			rough = mix(rough, mix(0.6, 0.38 + 0.22 * vnoise(p * 180.0), sk), face_k);
@@ -344,7 +356,7 @@ void fragment() {
 		float strand = vnoise(vec3(qa * 170.0 + warp * 9.0, pol * 6.0, 9.7));
 		float strand2 = vnoise(vec3(qa * 420.0 + warp * 20.0, pol * 9.0, 2.3));
 		float m = strand * 0.45 + strand2 * 0.2 + clump * 0.35;
-		float edge = smoothstep(0.5, 0.95, hairness);
+		float edge = smoothstep(0.38, 0.9, hairness);
 		if (shell > 0.5) {
 			float cut = 0.3 + 0.13 * shell + (ign - 0.5) * 0.16 + (1.0 - edge) * 0.5;
 			if (m < cut) {
@@ -367,7 +379,8 @@ void fragment() {
 			col = mix(skin_tone * 0.7, hair_col.rgb, mix(0.55, 0.3 + 0.6 * sd, fine_k) * edge);
 		} else if (shell < 0.5) {
 			// Short fade into the skin at the hairline and the nape.
-			col = mix(mix(skin_tone * 0.6, hair_col.rgb, 0.55), col, edge);
+			// (wave R: from near-skin, so the hairline is a soft gradient, not a cut)
+			col = mix(mix(skin_tone * 0.82, hair_col.rgb, 0.22), col, smoothstep(0.0, 0.75, edge));
 		}
 		rough = 0.36 + 0.28 * (1.0 - strand);
 		spec = 0.5;
