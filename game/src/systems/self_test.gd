@@ -1565,3 +1565,46 @@ func _character_look_checks(player: Player) -> void:
 		elders += 1 if (o["hair_col"] as Vector4).w > 0.4 and fmod((o["hair_col"] as Vector4).w, 2.0) > 0.4 else 0
 		builds[int(((o["skin_col"] as Vector4).w + 0.3) * 3.0)] = true
 	_check("characters-R2: the crowd spans heights (>=15 cm at 1.8 m), builds and older adults", (hmax - hmin) * 1.8 >= 0.15 and builds.size() >= 3 and elders >= 4, "spread=%.2fm builds=%d elders=%d/40" % [(hmax - hmin) * 1.8, builds.size(), elders])
+	_character_people_checks()
+
+## Wave S (characters S1): civilians on the look mesh keep street-life's
+## people (women, elders, children, skirts, skin tones) via instance params.
+func _character_people_checks() -> void:
+	var cpath := CharacterVisual.asset_path("civilian")
+	var cm: ArrayMesh = null
+	var cmodel := (load(cpath) as PackedScene).instantiate()
+	for node in cmodel.find_children("*", "MeshInstance3D", true, false):
+		if (node as MeshInstance3D).mesh is ArrayMesh and (node as MeshInstance3D).mesh.get_surface_count() >= 2:
+			cm = (node as MeshInstance3D).mesh
+			break
+	var cbaked := CharacterLook._load_baked(cm, cpath) if cm != null else {}
+	cmodel.free()
+	_check("characters-S: the civilian look mesh is baked offline (crowd load needs no runtime rebuild)", not cbaked.is_empty(), CharacterLook.baked_path(cpath))
+	var sigs := {}
+	var tones := {}
+	var bad_face := 0
+	var bad_legs := 0
+	var women := 0
+	var elders_grey := 0
+	var elders := 0
+	for i in 60:
+		var pp := CrowdPeople.pick(31 + i * 104729)
+		var o := CharacterLook.person_outfit(pp, CharacterLook.civilian_outfit(77 + i * 7919))
+		var per: Vector4 = o["person"]
+		var fc: Vector4 = o["face_col"]
+		sigs[CharacterLook.outfit_signature(o) + "|%d" % int(per.x)] = true
+		var sk: Vector4 = o["skin_col"]
+		tones["%d" % int(sk.x * 40.0)] = true
+		if bool(pp["female"]):
+			women += 1
+			if fc.x > 0.0 or per.x < 0.5:
+				bad_face += 1
+		if bool(pp.get("skirt", false)) != (per.z > 0.5):
+			bad_legs += 1
+		if int(pp["kind"]) in [CrowdPeople.Kind.ELDER_M, CrowdPeople.Kind.ELDER_F]:
+			elders += 1
+			if fmod((o["hair_col"] as Vector4).w, 2.0) > 0.5:
+				elders_grey += 1
+	_check("characters-S: street-life people map onto the look outfit (women unstubbled, skirt legs, grey elders, >=5 skin tones, >=50/60 distinct)",
+		bad_face == 0 and bad_legs == 0 and women > 10 and elders_grey == elders and tones.size() >= 5 and sigs.size() >= 50,
+		"women=%d bad_face=%d bad_legs=%d elders=%d/%d tones=%d distinct=%d" % [women, bad_face, bad_legs, elders_grey, elders, tones.size(), sigs.size()])
