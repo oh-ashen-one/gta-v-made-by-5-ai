@@ -602,15 +602,35 @@ static func _key(src: ArrayMesh) -> String:
 ## player gets the folded mitten + procedural fingers (one extra draw each).
 static func _rig(model: Node, role: String) -> Dictionary:
 	var out := {}
+	var skel := model.find_children("*", "Skeleton3D", true, false)
+	if skel.is_empty():
+		return out
+	var sk := skel[0] as Skeleton3D
+	# Skin bind indices of the upper arms (sleeves are re-weighted onto them).
+	for mi in model.find_children("*", "MeshInstance3D", true, false):
+		var skin := (mi as MeshInstance3D).skin
+		if skin == null:
+			continue
+		for i in skin.get_bind_count():
+			var bn := String(skin.get_bind_name(i))
+			if bn == "" and skin.get_bind_bone(i) >= 0:
+				bn = sk.get_bone_name(skin.get_bind_bone(i))
+			if bn == "upper_arm.r":
+				out["bind_ua_r"] = i
+			elif bn == "upper_arm.l":
+				out["bind_ua_l"] = i
+		break
+	if not out.has("bind_ua_r"):
+		# No Skin resource: binds follow the skeleton order.
+		out["bind_ua_r"] = sk.find_bone("upper_arm.r")
+		out["bind_ua_l"] = sk.find_bone("upper_arm.l")
+	out["ua_r_x"] = sk.get_bone_global_rest(sk.find_bone("upper_arm.r")).origin.x if sk.find_bone("upper_arm.r") >= 0 else -0.2
 	if role != "player":
 		return out
-	var skel := model.find_children("*", "Skeleton3D", true, false)
-	if not skel.is_empty():
-		var sk := skel[0] as Skeleton3D
-		for b in [["hand.r", "hand_r"], ["hand.l", "hand_l"]]:
-			var hid := sk.find_bone(b[0])
-			if hid >= 0:
-				out[b[1]] = sk.get_bone_global_rest(hid)
+	for b in [["hand.r", "hand_r"], ["hand.l", "hand_l"]]:
+		var hid := sk.find_bone(b[0])
+		if hid >= 0:
+			out[b[1]] = sk.get_bone_global_rest(hid)
 	return out
 
 static func _apply(model: Node, role: String) -> MeshInstance3D:
@@ -876,6 +896,35 @@ static func _build(src: ArrayMesh, rig: Dictionary = {}) -> Dictionary:
 		for k in bpv:
 			bones[i * bpv + k] = merged_b[w * bpv + k]
 			weights[i * bpv + k] = merged_w[w * bpv + k]
+	# Sleeves ride the upper arm: the provider weighted the short sleeves to
+	# the chest, so a raised arm (aim) slid out of its sleeve.
+	if rig.has("bind_ua_r") and int(rig["bind_ua_r"]) >= 0 and int(rig.get("bind_ua_l", -1)) >= 0:
+		var ua_sign := signf(float(rig.get("ua_r_x", -0.2)))
+		for i in nv:
+			# Every copy of a welded sleeve corner, or the seams crack open.
+			if wkind[weld[i]] != 1:
+				continue
+			var v := verts[i]
+			var t := smoothstep(0.155, 0.205, absf(v.x)) * smoothstep(1.08, 1.16, v.y) * (1.0 - smoothstep(1.40, 1.46, v.y))
+			if t <= 0.0:
+				continue
+			var ub: int = int(rig["bind_ua_r"]) if signf(v.x) == ua_sign else int(rig["bind_ua_l"])
+			var wsum := {}
+			for k in bpv:
+				var wt := weights[i * bpv + k]
+				if wt > 0.0:
+					wsum[bones[i * bpv + k]] = float(wsum.get(bones[i * bpv + k], 0.0)) + wt * (1.0 - t)
+			wsum[ub] = float(wsum.get(ub, 0.0)) + t
+			var pairs := []
+			for b in wsum:
+				pairs.append([float(wsum[b]), int(b)])
+			pairs.sort_custom(func(x, y): return x[0] > y[0])
+			var tot := 0.0
+			for k in mini(bpv, pairs.size()):
+				tot += pairs[k][0]
+			for k in bpv:
+				bones[i * bpv + k] = pairs[k][1] if k < pairs.size() else 0
+				weights[i * bpv + k] = pairs[k][0] / tot if k < pairs.size() else 0.0
 	# Player only: the provider hand is a mitten. Its finger block is folded
 	# flat onto the knuckle line, and CharacterHands draws real jointed fingers.
 	var folded := 0
