@@ -51,7 +51,7 @@ func run(main: Node) -> void:
 	_check("civilian traffic populated", traffic.cars.size() >= 8)
 	_check("pedestrians populated", traffic.peds.size() >= 20)
 	_lighting_checks(world)
-	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT + CrowdDirector.EXTRA_WALKERS
+	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT + CrowdDirector.EXTRA_WALKERS + PlazaLife.pool_size()
 	var unique_peds: Dictionary = {}
 	for pedestrian in traffic.peds:
 		if is_instance_valid(pedestrian): unique_peds[pedestrian.get_instance_id()] = true

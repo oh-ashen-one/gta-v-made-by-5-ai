@@ -40,6 +40,7 @@ var ambient: AmbientTraffic
 var crowd: CrowdDirector
 var dressing: AvenueDressing
 var signals: JunctionSignals
+var plaza: PlazaLife
 
 func setup(w: WorldBuilder, player: Node) -> void:
 	add_to_group("traffic_manager")
@@ -65,6 +66,10 @@ func _setup_street_life() -> void:
 	crowd = CrowdDirector.new()
 	add_child(crowd)
 	crowd.setup(self)
+	# downtown-life (wave S): benches, an ice-cream cart queue and photo groups.
+	plaza = PlazaLife.new()
+	add_child(plaza)
+	plaza.setup(self)
 	dressing = AvenueDressing.new()
 	add_child(dressing)
 	dressing.build(world)

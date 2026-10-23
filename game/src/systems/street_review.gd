@@ -33,11 +33,36 @@ func setup(m: Node, dir: String) -> void:
 
 ## (name, junction centre, player spot, player yaw deg, fixed cam, fixed look, seconds)
 func _shots() -> Array:
+	if "--downtown" in OS.get_cmdline_user_args():
+		return _downtown_shots()
 	return [
 		{"name": "junction_player", "junction": Vector3(0.0, 0.0, -160.0), "player": Vector3(-13.5, 0.45, -146.5), "yaw": -45.0, "seconds": 14.0},
 		{"name": "junction_eye", "junction": Vector3(0.0, 0.0, -160.0), "cam": Vector3(-13.0, 1.65, -133.0), "look": Vector3(2.0, 1.2, -170.0), "fov": 62.0, "seconds": 14.0},
 		{"name": "junction_raised", "junction": Vector3(-160.0, 0.0, 0.0), "cam": Vector3(-178.0, 7.5, 18.0), "look": Vector3(-157.0, 0.5, -6.0), "fov": 60.0, "seconds": 12.0},
 	]
+
+## downtown-life (wave S): normal play on foot at the downtown junctions and
+## plazas the critics shoot. The player stands on the pavement or plaza with
+## the real third-person camera looking at the spot `junction`.
+func _downtown_shots() -> Array:
+	var spots := [
+		["dt_cecil_market", Vector3(-430.0, 0.0, 0.0), Vector3(-439.5, 0.5, 17.0)],
+		["dt_cecil_collyer", Vector3(-430.0, 0.0, -320.0), Vector3(-421.5, 0.5, -306.0)],
+		["dt_raffles_place", Vector3(-380.0, 0.0, -40.0), Vector3(-400.0, 0.5, -70.0)],
+		["dt_esplanade_drive", Vector3(-662.0, 0.0, -358.0), Vector3(-646.0, 0.5, -372.5)],
+		["dt_bayfront_avenue", Vector3(-118.0, 0.0, -780.0), Vector3(-100.0, 0.5, -763.0)],
+		["dt_marina_blvd", Vector3(400.0, 0.0, -480.0), Vector3(389.0, 0.5, -466.0)],
+		["dt_mbs_event_plaza", Vector3(-122.0, 0.3, -648.0), Vector3(-103.0, 0.8, -633.0)],
+		["dt_merlion_terrace", Vector3(-478.0, 1.3, -392.0), Vector3(-462.0, 1.9, -378.0)],
+		["dt_boat_quay", Vector3(-525.0, 0.3, 60.0), Vector3(-524.0, 0.8, 84.0)],
+	]
+	var out: Array = []
+	for sp in spots:
+		var j: Vector3 = sp[1]
+		var pl: Vector3 = sp[2]
+		var d := j - pl
+		out.append({"name": sp[0], "junction": j, "player": pl, "yaw": rad_to_deg(atan2(-d.x, -d.z)), "seconds": 9.0})
+	return out
 
 func _run() -> void:
 	await get_tree().create_timer(0.8).timeout
@@ -228,9 +253,69 @@ func _sample(junction: Vector3) -> Dictionary:
 		peds += 1
 		if npc.character_visual != null:
 			outfits[npc.character_visual.get("_wardrobe_variant")] = true
+	# downtown-life: what the lens sees. People within 30 m of the camera,
+	# what they are doing, anyone standing on a live carriageway, and moving
+	# lane cars within 80 m in front of it.
+	var cam := get_viewport().get_camera_3d()
+	var cp := cam.global_position if cam != null else junction
+	var cf := -cam.global_transform.basis.z if cam != null else Vector3.FORWARD
+	cf.y = 0.0
+	cf = cf.normalized()
+	var cam_peds := 0
+	var acts := {}
+	var in_lane := 0
+	for n in get_tree().get_nodes_in_group("npcs"):
+		var npc := n as NPC
+		if npc == null or not npc.visible or npc.state == NPC.State.DEAD:
+			continue
+		var gp := npc.global_position
+		if StreetRaster.at(gp.x, gp.z) == 1 and npc.state != NPC.State.FLEE and Vector2(gp.x - cp.x, gp.z - cp.z).length() < 80.0:
+			in_lane += 1
+			if "--street-debug" in OS.get_cmdline_user_args():
+				print("[street-review] in-lane: %s state=%d lane=%d roamer=%s act=%s" % [str(gp.snapped(Vector3.ONE * 0.1)), npc.state, npc.lane.size(), npc.has_meta("roamer"), activities(npc)])
+		if Vector2(gp.x - cp.x, gp.z - cp.z).length() > RADIUS:
+			continue
+		cam_peds += 1
+		for a in activities(npc):
+			acts[a] = int(acts.get(a, 0)) + 1
+	var moving80 := 0
+	if amb != null:
+		for v in amb.vehicles:
+			if not v.active or v.speed < 1.0:
+				continue
+			var rel := v.global_position - cp
+			rel.y = 0.0
+			if rel.length() < 80.0 and (rel.length() < 8.0 or rel.normalized().dot(cf) > 0.25):
+				moving80 += 1
 	return {"vehicles_moving": moving, "vehicles_queued": queued, "pedestrians": peds, "distinct_outfits": outfits.size(),
+		"cam_peds_30": cam_peds, "activities": acts, "peds_in_live_lane": in_lane, "moving_80_in_view": moving80,
 		"ew_green": traffic.signal_allows(Vector3(1, 0, 0)), "ns_green": traffic.signal_allows(Vector3(0, 0, 1)),
 		"lit_signal_lenses": _lit_lenses()}
+
+## Readable activities of one person (downtown-life QA census).
+static func activities(npc: NPC) -> Array:
+	var out: Array = []
+	if npc.has_meta("plaza_activity"):
+		out.append(String(npc.get_meta("plaza_activity")))
+	elif npc.state == NPC.State.IDLE and (npc.has_meta("loiter_pair") or npc.has_meta("chatting")):
+		out.append("talking")
+	elif npc.state == NPC.State.IDLE:
+		out.append("standing")
+	elif npc.companion != null or npc.has_meta("leads"):
+		out.append("walking_together")
+	else:
+		out.append("walking")
+	if npc.has_meta("people"):
+		var prop := String((npc.get_meta("people") as Dictionary).get("prop", "none"))
+		if prop == "phone":
+			out.append("phone")
+		elif prop == "cup":
+			out.append("drink")
+		elif prop in ["handbag", "shopping", "backpack"]:
+			out.append("bags")
+		elif prop == "umbrella":
+			out.append("umbrella")
+	return out
 
 func _lit_lenses() -> int:
 	var lit := 0
@@ -246,7 +331,8 @@ func _write_report() -> void:
 	for s in _samples:
 		var k: String = s["shot"]
 		if not by_shot.has(k):
-			by_shot[k] = {"samples": 0, "min_vehicles": 999, "mean_vehicles": 0.0, "min_peds": 999, "mean_peds": 0.0, "min_lit": 999}
+			by_shot[k] = {"samples": 0, "min_vehicles": 999, "mean_vehicles": 0.0, "min_peds": 999, "mean_peds": 0.0, "min_lit": 999,
+				"min_cam_peds_30": 999, "max_in_lane": 0, "moving80_share": 0.0, "activity_kinds": {}}
 		var b: Dictionary = by_shot[k]
 		var veh := int(s["vehicles_moving"]) + int(s["vehicles_queued"])
 		b["samples"] = int(b["samples"]) + 1
@@ -255,11 +341,18 @@ func _write_report() -> void:
 		b["min_peds"] = mini(int(b["min_peds"]), int(s["pedestrians"]))
 		b["mean_peds"] = float(b["mean_peds"]) + int(s["pedestrians"])
 		b["min_lit"] = mini(int(b["min_lit"]), int(s["lit_signal_lenses"]))
+		b["min_cam_peds_30"] = mini(int(b["min_cam_peds_30"]), int(s.get("cam_peds_30", 0)))
+		b["max_in_lane"] = maxi(int(b["max_in_lane"]), int(s.get("peds_in_live_lane", 0)))
+		b["moving80_share"] = float(b["moving80_share"]) + (1.0 if int(s.get("moving_80_in_view", 0)) > 0 else 0.0)
+		for a in (s.get("activities", {}) as Dictionary):
+			b["activity_kinds"][a] = maxi(int(b["activity_kinds"].get(a, 0)), int(s["activities"][a]))
 	for k in by_shot:
 		var b: Dictionary = by_shot[k]
 		b["mean_vehicles"] = snappedf(float(b["mean_vehicles"]) / maxf(1.0, b["samples"]), 0.1)
 		b["mean_peds"] = snappedf(float(b["mean_peds"]) / maxf(1.0, b["samples"]), 0.1)
+		b["moving80_share"] = snappedf(float(b["moving80_share"]) / maxf(1.0, b["samples"]), 0.01)
 		print("[street-review] %s: vehicles within %d m min=%d mean=%.1f; pedestrians min=%d mean=%.1f; lit lens sets min=%d" % [k, int(RADIUS), b["min_vehicles"], b["mean_vehicles"], b["min_peds"], b["mean_peds"], b["min_lit"]])
+		print("[street-review] %s: lens people within 30 m min=%d; moving car within 80 m in %.0f%% of samples; people in live lanes max=%d; activities=%s" % [k, b["min_cam_peds_30"], 100.0 * float(b["moving80_share"]), b["max_in_lane"], str(b["activity_kinds"])])
 	var f := FileAccess.open(out_dir.path_join("street_review.json"), FileAccess.WRITE)
 	if f:
 		f.store_string(JSON.stringify({"radius_m": RADIUS, "frames": _index, "summary": by_shot, "samples": _samples,
