@@ -19,7 +19,7 @@ static func _label(parent: Node3D, text: String, pos: Vector3, facing: Vector2, 
 	l.position = pos
 	# Label3D faces +z by default; turn it to face along `facing`.
 	l.rotation.y = atan2(facing.x, facing.y)
-	l.visibility_range_end = 260.0
+	l.visibility_range_end = 170.0
 	l.visibility_range_end_margin = 30.0
 	l.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
 	l.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -95,7 +95,7 @@ static func shop_signs(det: Batch, labels: Node3D, a: Vector2, b: Vector2, out: 
 	var n := int(L / 13.0)
 	var used := start
 	for i in n:
-		if rng.randf() < 0.25:
+		if rng.randf() < 0.45:
 			continue
 		var t := (float(i) + 0.5) / float(n)
 		var q := a + dir * L * t + out * 0.18

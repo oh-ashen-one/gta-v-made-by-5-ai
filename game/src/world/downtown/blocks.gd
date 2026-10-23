@@ -172,7 +172,7 @@ func build(world: WorldBuilder, parent: Node3D) -> void:
 			mi.material_override = looks.facade
 			mi.set_meta("downtown_blocks", true)
 			root.add_child(mi)
-		det.commit(root, "Frontage_" + n, looks.mats, 320.0 if kind != "boat_quay_row" else 700.0, kind == "boat_quay_row" or kind == "plaza")
+		det.commit(root, "Frontage_" + n, looks.mats, 240.0 if kind != "boat_quay_row" else 450.0, kind == "boat_quay_row" or kind == "plaza")
 		for fp in k.footprints:
 			if not r.grow(0.6).encloses(fp):
 				stats["footprint_violations"] += 1

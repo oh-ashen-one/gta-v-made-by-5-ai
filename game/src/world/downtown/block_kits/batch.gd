@@ -4,11 +4,17 @@ extends RefCounted
 ## one surface per material, so a whole block's street frontage (canopies,
 ## columns, signs, planters, railings) costs a handful of draw calls.
 
+## Visually close materials share one surface (fewer draw calls per block).
+const ALIAS := {"metal_white": "metal_light", "umbrella_white": "metal_light", "sign_dark": "metal_dark", "table": "metal_dark",
+	"chair": "timber", "soil": "timber", "shrub_light": "shrub", "light_cool": "light_strip", "ad_panel": "light_strip",
+	"bus_sign": "shutter_green", "mrt_red": "awning_red", "shelter_glass": "canopy_glass", "granite_light": "planter"}
+
 var _tools := {}      # material key -> SurfaceTool
 var _counts := {}     # material key -> vertex count
 var parts := 0
 
 func _tool(key: String) -> SurfaceTool:
+	key = ALIAS.get(key, key)
 	if not _tools.has(key):
 		var s := SurfaceTool.new()
 		s.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -27,7 +33,7 @@ func _quad(s: SurfaceTool, key: String, a: Vector3, b: Vector3, c: Vector3, d: V
 			s.set_normal(n)
 			s.set_uv(uvs[k])
 			s.add_vertex(p[k])
-	_counts[key] += 6
+	_counts[ALIAS.get(key, key)] += 6
 
 ## Axis-aligned (in its own frame) box; xf places its centre.
 func box(key: String, size: Vector3, xf: Transform3D, uv_scale := Vector2.ONE) -> void:
@@ -81,7 +87,7 @@ func plane(key: String, centre: Vector3, right: Vector3, up: Vector3, size: Vect
 			s.set_normal(n)
 			s.set_uv(uvs[k])
 			s.add_vertex(p[k])
-	_counts[key] += 6
+	_counts[ALIAS.get(key, key)] += 6
 	parts += 1
 
 ## Builds one MeshInstance3D holding a surface per material key.
