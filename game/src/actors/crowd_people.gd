@@ -37,8 +37,10 @@ const HAIR_COLOURS: Array[Color] = [
 ]
 ## T3: tudung fabrics: soft pastels, navy, black, maroon, beige.
 const TUDUNG_COLOURS: Array[Color] = [
-	Color(0.85, 0.72, 0.74), Color(0.12, 0.14, 0.26), Color(0.07, 0.07, 0.08), Color(0.45, 0.12, 0.16),
-	Color(0.82, 0.76, 0.64), Color(0.55, 0.68, 0.78), Color(0.62, 0.55, 0.72), Color(0.30, 0.42, 0.36),
+	# integration T: the pastels muted to dusty mid tones (critic T3: the near-white
+	# pink scarf read as a flat, self-lit shell around the face).
+	Color(0.58, 0.44, 0.47), Color(0.12, 0.14, 0.26), Color(0.07, 0.07, 0.08), Color(0.45, 0.12, 0.16),
+	Color(0.60, 0.53, 0.43), Color(0.34, 0.45, 0.56), Color(0.42, 0.36, 0.52), Color(0.30, 0.42, 0.36),
 ]
 const GREY_HAIR: Array[Color] = [Color(0.42, 0.41, 0.4), Color(0.6, 0.59, 0.57), Color(0.28, 0.27, 0.27)]
 ## Multipliers on the provider skin texture (a warm light-medium tone).
