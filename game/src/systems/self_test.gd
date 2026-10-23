@@ -68,6 +68,7 @@ func run(main: Node) -> void:
 	_check("market diners are reactive damageable NPCs", diners == TrafficManager.DINER_COUNT)
 	_check("busy district walkers spawn along segments not junction piles", away_from_junction >= 34)
 	_check("gameplay camera belongs to player", player.camera.current)
+	_check("sprint 180 turns continuously (<=25 deg/frame at 30 fps, no facing flip)", Player.SKID_SWING_RATE / 30.0 <= deg_to_rad(25.0) and Player.FACE_MAX_RATE / 30.0 <= deg_to_rad(25.0) and Player.SKID_DECEL * 0.45 >= Player.SPRINT_SPEED - 1.0)
 	_check("mission publishes initial objective", mission.stage == Mission.Stage.TO_PACKAGE and not mission.current_objective().is_empty())
 	_check("initial objective marker survives HUD setup order", mission.get_meta("marker", Vector3.ZERO).distance_to(world.locations["package"]) < 0.01)
 	_check("mission registered for save and checkpoint restoration", mission.is_in_group("mission"))
@@ -218,6 +219,7 @@ func run(main: Node) -> void:
 	Input.action_release("move_forward")
 	_check("walking still works after vehicle death", player.global_position.distance_to(walk_start) > 1.0)
 	_check("on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows", _gait_matches_speed(player))
+	await _locomotion_q_checks(player)
 	var jump_apex: float = pow(Player.JUMP_VELOCITY, 2.0) / (2.0 * 24.0)
 	_check("on-foot jump is a human hop (0.40-0.70 m rise, under 0.5 s airtime)", jump_apex > 0.4 and jump_apex < 0.7 and 2.0 * Player.JUMP_VELOCITY / 24.0 < 0.5, "apex=%.2f" % jump_apex)
 
@@ -1151,3 +1153,60 @@ func _water_checks(world: WorldBuilder) -> void:
 	var launch_tris := BoatMeshes.launch().get_faces().size() / 3
 	_check("runabout hull is a detailed crewed model (rails, windshield, driver)", launch_tris >= 1500, "tris=%d" % launch_tris)
 
+
+## Locomotion-Q (Opus 5.5): foot locking, weighted starts, the sprint skid,
+## authored backpedal, pedestrian personal space and street-prop collision.
+func _locomotion_q_checks(player: Player) -> void:
+	var cv: CharacterVisual = player.get("_visual")
+	if cv == null or not cv.loaded:
+		return
+	cv.set_travel_direction(PI)
+	cv.set_motion(1.3, true)
+	var back_ok := cv.current_clip() == "aim_back" and cv.animator.speed_scale > 0.0
+	cv.set_travel_direction(0.0)
+	cv.set_motion(0.0)
+	_check("locomotion-Q: planted-foot lock (leg IK) on the player; aimed backpedal is its own clip played forward, plus a skid clip",
+		cv.foot_lock != null and back_ok and cv._clips.has("skid"), "clip=%s rate=%.2f" % [cv.current_clip(), cv.animator.speed_scale])
+	_check("locomotion-Q: street props (scooters, bikes, planters...) collide with the on-foot player",
+		StreetPropColliders.shape_count > 100 and (player.collision_mask & StreetPropColliders.PROP_LAYER) != 0, "boxes=%d" % StreetPropColliders.shape_count)
+	# Standstill -> walk builds over a step, not in 0.14 s.
+	player.respawn_at(Vector3(160.0, 0.4, -300.0), 0.0)
+	await _ticks(10)
+	Input.action_press("move_forward")
+	Input.action_press("walk")
+	var ticks := 0
+	while ticks < 90 and player.velocity.length() < Player.WALK_SPEED - 0.05:
+		await _ticks(1)
+		ticks += 1
+	Input.action_release("walk")
+	_check("locomotion-Q: standstill to walk speed takes a real first step (>= 0.3 s)", ticks >= 18 and ticks < 90, "%.2f s" % (ticks / 60.0))
+	# Sprint, then a sharp reversal: plant and skid, then face the other way.
+	Input.action_press("sprint")
+	await _ticks(80)
+	var before := player.rotation.y
+	Input.action_release("move_forward")
+	Input.action_press("move_back")
+	var skidded := false
+	for i in 40:
+		await _ticks(1)
+		skidded = skidded or cv.current_clip() == "skid"
+	await _ticks(30)
+	Input.action_release("move_back")
+	Input.action_release("sprint")
+	var turned := absf(wrapf(player.rotation.y - before, -PI, PI)) > 2.6
+	_check("locomotion-Q: a sharp 180 at a sprint plants a skid, then pivots", skidded and turned,
+		"skid=%s turned=%.2f rad" % [skidded, absf(wrapf(player.rotation.y - before, -PI, PI))])
+	await _ticks(20)
+	# Pedestrians never share the player's space.
+	var dummy := CharacterBody3D.new()
+	dummy.collision_layer = 0
+	get_tree().current_scene.add_child(dummy)
+	dummy.collision_layer = 4
+	dummy.add_to_group("npcs")
+	dummy.global_position = player.global_position + Vector3(0.15, 0.0, 0.0)
+	var avoid := PlayerAvoidance.new()
+	for i in 6:
+		avoid.steer(player, Vector3.ZERO, 1.0 / 60.0)
+	var gap := Vector2(dummy.global_position.x - player.global_position.x, dummy.global_position.z - player.global_position.z).length()
+	dummy.queue_free()
+	_check("locomotion-Q: a pedestrian inside the player's personal space is shouldered clear", gap > 0.45, "gap=%.2f m" % gap)
