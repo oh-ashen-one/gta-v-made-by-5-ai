@@ -111,6 +111,7 @@ func _make_unit(kind: String, roster: Array, roles: Array) -> Dictionary:
 func _park(n: NPC) -> void:
 	if n.character_visual != null:
 		n.character_visual.set_lod_far(true)
+		n.character_visual.set_process(false)
 	n.visible = false
 	n.collision_layer = 0
 	n.collision_mask = 0
@@ -242,6 +243,7 @@ func _assign(u: Dictionary, si: int) -> void:
 		n.lane = []
 		if n.character_visual != null:
 			n.character_visual.set_lod_far(false)
+			n.character_visual.set_process(true)
 		if n.character_visual != null and n.character_visual.loaded:
 			if String(n.get_meta("plaza_activity", "")) == "sitting":
 				n.character_visual.position = Vector3(0.0, BENCH_TOP - 0.445, 0.0)

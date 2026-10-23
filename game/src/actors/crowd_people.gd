@@ -29,7 +29,7 @@ const HEAD_C := Vector3(0.0, 1.645, 0.016)
 const HEAD_R := Vector3(0.094, 0.112, 0.113)
 const WAIST_Y := 0.985
 const HEM_Y := 0.56
-const GHOST_FREE_RANGE := 130.0
+const GHOST_FREE_RANGE := 110.0
 
 const HAIR_COLOURS: Array[Color] = [
 	Color(0.022, 0.018, 0.016), Color(0.03, 0.022, 0.018), Color(0.055, 0.035, 0.025),
@@ -153,7 +153,7 @@ static func dress(npc: Node3D, cv: CharacterVisual, p: Dictionary, seated: bool 
 	_retint(cv, p, skirt)
 	var hair := String(p.get("hair", ""))
 	# downtown-life (wave S): hair and skirts draw as far as the body does
-	# for a street view (130 m). At 60 m a woman lost her hair and her skirt,
+	# for a street view (110 m). At 60 m a woman lost her hair and her skirt,
 	# leaving a bald head and skin-dyed legs: the pale "ghost" figures the
 	# critic saw fading in at 40-60 m.
 	var range_hair := GHOST_FREE_RANGE

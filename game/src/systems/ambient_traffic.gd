@@ -459,7 +459,11 @@ func _recycle(cut: bool) -> void:
 		if v.active:
 			var d := Vector2(v.global_position.x - _focus.x, v.global_position.z - _focus.z).length()
 			if cut:
-				if d < SPAWN_RADIUS:
+				# downtown-life: with seeding near the focus most of the pool is
+				# already inside the radius at a cut, so it stayed spread round
+				# the camera and the viewed street got few cars. Most cars the
+				# new lens cannot see are re-seeded (half into its view).
+				if d < SPAWN_RADIUS and (not _hidden_from_camera(v.global_position) or _rng.randf() < 0.3):
 					continue
 			elif d < DESPAWN_RADIUS:
 				continue
@@ -498,6 +502,7 @@ func _pick_edge() -> int:
 
 func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 	_refresh_near_edges()
+	_spacing_cap = hidden_only
 	for attempt in 24:
 		var e := _pick_edge()
 		var ed: Dictionary = edges[e]
@@ -563,9 +568,12 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 ## packed short downtown links and district approaches solid, and most of
 ## the street stood in queues instead of flowing.
 const LANE_SPACING := 26.0
+## Only out-of-sight seeding in continuous play is capped; a camera cut still
+## packs the viewed lanes (their red-light queues are the point of the view).
+var _spacing_cap := false
 func _gap_free(e: int, lane: int, s: float) -> bool:
 	var list: Array = _keys.get(e * 2 + lane, [])
-	if list.size() >= maxi(1, int((_s_end(e) - _entry(e)) / LANE_SPACING)):
+	if _spacing_cap and list.size() >= maxi(1, int((_s_end(e) - _entry(e)) / LANE_SPACING)):
 		return false
 	for other in list:
 		if absf((other as AmbientVehicle).s - s) < MIN_GAP + 3.0:
