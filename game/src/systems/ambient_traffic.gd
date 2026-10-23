@@ -464,8 +464,11 @@ func _preroll(seconds: float) -> void:
 ## far behind are moved, and only to spots the camera cannot see.
 func _recycle(cut: bool) -> void:
 	var budget := POOL if cut else 3
+	# Wave T perf: failed seeds count too (over the bay no lane is near the
+	# focus and every far car retried every tick, ~4 ms per tick).
+	var fails := PerfBudget.TRAFFIC_SEED_FAILS * (20 if cut else 1)
 	for v in vehicles:
-		if budget <= 0:
+		if budget <= 0 or fails <= 0:
 			break
 		if v.active:
 			var d := Vector2(v.global_position.x - _focus.x, v.global_position.z - _focus.z).length()
@@ -481,6 +484,8 @@ func _recycle(cut: bool) -> void:
 		if _seed_vehicle(v, not cut):
 			budget -= 1
 			stats["relocated"] += 1
+		else:
+			fails -= 1
 
 ## downtown-life (wave S): seeds are drawn from the lane edges that pass
 ## within SPAWN_RADIUS of the focus. With the downtown graph adopted (about

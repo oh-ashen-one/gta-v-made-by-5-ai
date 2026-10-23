@@ -68,7 +68,10 @@ func _build(boats: Array[Dictionary]) -> void:
 		var b: Dictionary = moving[i]
 		b["wash"] = _entries.size()
 		var d: Dictionary = _droplets[b["type"]]
-		var e := {"boat": b, "slot": i, "dslot": d["next"]}
+		# Wave T perf: the custom data is kept here too; reading it back from
+		# the MultiMesh every frame forced a render-server sync.
+		var e := {"boat": b, "slot": i, "dslot": d["next"], "cd": Color(0.0, float(i) * 0.137, 0.0, 0.0),
+			"cc": Color(0.0, float(i) * 0.211, 0.0, 0.0), "dc": Color(0.0, float(i) * 0.173, 0.0, 0.0)}
 		d["next"] = int(d["next"]) + 1
 		sheets.set_instance_custom_data(i, Color(0.0, float(i) * 0.137, 0.0, 0.0))
 		churns.set_instance_custom_data(i, Color(0.0, float(i) * 0.211, 0.0, 0.0))
@@ -109,15 +112,15 @@ func update_boat(b: Dictionary, xf: Transform3D, speed: float) -> void:
 		sheets.set_instance_transform(e["slot"], level * Transform3D(Basis.from_scale(Vector3(half.x, sheet_h, half.y)), Vector3.ZERO))
 		var churn_h := (0.15 + 0.35 * s) if planing else (0.05 + 0.12 * s)
 		churns.set_instance_transform(e["slot"], level * Transform3D(Basis.from_scale(Vector3(half.x, churn_h, half.y)), Vector3.ZERO))
-		var cd := sheets.get_instance_custom_data(e["slot"])
+		var cd: Color = e["cd"]
 		cd.r = s
 		sheets.set_instance_custom_data(e["slot"], cd)
-		var cc := churns.get_instance_custom_data(e["slot"])
+		var cc: Color = e["cc"]
 		cc.r = s
 		churns.set_instance_custom_data(e["slot"], cc)
 		var dmm: MultiMesh = _droplets[b["type"]]["mm"]
 		dmm.set_instance_transform(e["dslot"], level)
-		var dc := dmm.get_instance_custom_data(e["dslot"])
+		var dc: Color = e["dc"]
 		dc.r = s
 		dc.b = speed
 		dmm.set_instance_custom_data(e["dslot"], dc)

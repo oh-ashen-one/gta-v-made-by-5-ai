@@ -35,6 +35,38 @@ const PEOPLE_STRIDE_MID := 3
 const PEOPLE_STRIDE_FAR := 6
 const PEOPLE_STRIDE_OFFSCREEN := 15
 
+## Wave T: the player car's moving reflection probe re-renders its six faces
+## (one per frame) each time it is re-placed. At 0.45 s it was rendering a
+## face of the street on almost every driving frame; the paint reflection is
+## blurred and the probe already leads the car by its speed, so 1 s is enough.
+const CAR_PROBE_STEP := 1.0
+
+## Wave T (CPU): failed crowd re-seeds allowed per frame (x20 on a camera
+## cut). A roamer whose seed fails stays where it is and retries next frame.
+const CROWD_SEED_FAILS := 3
+## Same for lane cars (per physics tick).
+const TRAFFIC_SEED_FAILS := 3
+
+## Wave T (CPU): physics ticks between updates of a settled idle civilian
+## (standing, seated, browsing); its pose blend and idle timer use the summed
+## delta. Startles (shots, cars, panic) switch state and act on the next tick.
+const IDLE_TICKS := 4
+
+## Wave T (CPU): a calm walker far from the player moves its physics body on
+## its decision ticks only (NPC.SIM_FAR_TICKS); in between its visual root
+## glides every `far_glide_stride` ticks: every tick within FAR_GLIDE_NEAR_M
+## of the lens, every 2nd tick on screen beyond it, only on the decision tick
+## off screen. Each glide re-transforms every mesh of the figure.
+const FAR_GLIDE_NEAR_M := 45.0
+## Calm walkers farther than this from the player run their walk logic and
+## collision solve every 2nd physics tick (they still move every tick).
+const WALK_FULL_RATE_M := 9.0
+
+static func far_glide_stride(dist_sq: float, on_screen: bool) -> int:
+	if not on_screen:
+		return 4
+	return 1 if dist_sq < FAR_GLIDE_NEAR_M * FAR_GLIDE_NEAR_M else 2
+
 static func people_anim_stride(dist_sq: float, on_screen: bool) -> int:
 	if not on_screen:
 		return PEOPLE_STRIDE_OFFSCREEN

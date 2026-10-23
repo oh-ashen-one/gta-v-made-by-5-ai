@@ -363,12 +363,21 @@ func body_node() -> Node3D:
 	return _body_node
 
 # ------------------------------------------------------------------ simulation
+## Wave T perf: a parked car whose body has settled re-checks every
+## SETTLED_TICKS ticks instead of every tick (133 cars ran this callback).
+const SETTLED_TICKS := 6
+var _settled := false
+
 func _physics_process(delta: float) -> void:
+	if _settled and (Engine.get_physics_frames() + get_instance_id()) % SETTLED_TICKS != 0:
+		return
 	if car == null or delta <= 0.0: return
 	var active := car.driver_is_player or car.has_ai
 	_set_lights(active or car.occupied_by_npc)
+	_settled = false
 	if not active and absf(_roll) + absf(_pitch) + absf(_heave) < 0.0005 and absf(_roll_v) + absf(_pitch_v) < 0.001:
 		_set_brake(false)
+		_settled = not car.occupied_by_npc
 		return
 	if car.has_ai and not car.driver_is_player and car.global_position.distance_squared_to(Game.player_position) > 120.0 * 120.0:
 		return
@@ -856,7 +865,7 @@ func _process(delta: float) -> void:
 	_update_camera(delta)
 	_probe_timer -= delta
 	if _probe != null and _probe_timer <= 0.0:
-		_probe_timer = PROBE_STEP
+		_probe_timer = PerfBudget.CAR_PROBE_STEP
 		_probe.global_position = car.global_position + Vector3(0.0, 1.4, 0.0) - car.global_transform.basis.z * clampf(car.forward_speed() * 0.4, -4.0, 10.0)
 
 func _update_camera(delta: float) -> void:

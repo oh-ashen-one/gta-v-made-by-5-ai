@@ -38,12 +38,48 @@ var _acc := 0.0
 var _box: BoxMesh
 var _reflection_cam: Camera3D
 
+## Wave T: the first ReflectionProbe render (the player car's moving probe)
+## allocated the reflection atlas and compiled the probe-pass pipelines inside
+## the car-entry frames (two ~105 ms frames in the rendered route). One probe
+## with the car probe's settings renders its faces at the start position while
+## the title / first gameplay seconds play, then is freed.
+const WARM_PROBE_SECONDS := 2.5
+func _warm_probe(m: Node) -> void:
+	if DisplayServer.get_name() == "headless" or "--no-car-probe" in OS.get_cmdline_user_args():
+		return
+	var p := ReflectionProbe.new()
+	p.name = "PerfWarmProbe"
+	p.update_mode = ReflectionProbe.UPDATE_ONCE
+	p.size = Vector3(90.0, 40.0, 90.0)
+	p.origin_offset = Vector3(0.0, 1.2, 0.0)
+	p.max_distance = 160.0
+	p.box_projection = false
+	p.enable_shadows = false
+	p.mesh_lod_threshold = 12.0
+	p.ambient_mode = ReflectionProbe.AMBIENT_DISABLED
+	p.intensity = 0.0
+	p.cull_mask = 0xFFFFF & ~(1 << 19) & ~NO_REFLECT_LAYER
+	m.add_child(p)
+	var start: Variant = m.world.locations.get("player_start", Vector3.ZERO) if m.world != null else Vector3.ZERO
+	p.global_position = (start as Vector3) + Vector3(0.0, 1.4, 0.0)
+	get_tree().create_timer(WARM_PROBE_SECONDS, true).timeout.connect(p.queue_free)
+
+func _exit_tree() -> void:
+	CarMotionBlur.release_shared()
+
 static func off() -> bool:
 	return "--perf-off" in OS.get_cmdline_user_args()
 
 func setup(m: Node) -> void:
 	main = m
 	name = "PerfDirector"
+	# Wave T: compile the car-camera motion blur while loading, not on entry.
+	CarMotionBlur.prewarm()
+	_warm_probe(m)
+	if HitchMonitor.path_arg() != "":
+		var hm := HitchMonitor.new()
+		m.add_child(hm)
+		hm.setup(HitchMonitor.path_arg())
 	if off():
 		enabled = false
 		print("[perf] director disabled (--perf-off)")

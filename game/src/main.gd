@@ -214,6 +214,20 @@ func _ready() -> void:
 		budget.setup(self, budget_dir)
 		return
 
+	if "--cpu-budget" in args:
+		# Wave-T performance piece: per-tick physics / script attribution (headless OK).
+		var cpu_dir := "user://cpu_budget"
+		for arg in args:
+			if arg.begins_with("--capture-dir="):
+				cpu_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		Game.simulation_paused = false
+		var cpu: Node = _qa_system("res://src/systems/cpu_budget_probe.gd")
+		add_child(cpu)
+		cpu.setup(self, cpu_dir)
+		return
+
 	if "--scene-stats" in args:
 		# Wave-S performance piece: static draw/triangle census per family (headless OK).
 		var stats_dir := "user://scene_stats"

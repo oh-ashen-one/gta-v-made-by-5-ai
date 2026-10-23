@@ -132,7 +132,16 @@ func _clear_lens(gameplay: bool) -> void:
 	var cam := get_viewport().get_camera_3d()
 	if cam == null or cam.global_position.y > 30.0:
 		return
-	if tm.ambient.clear_lens(cam.global_position, 5.5, 3.2 if gameplay else 0.0) > 0:
+	var cleared: int = tm.ambient.clear_lens(cam.global_position, 5.5, 3.2 if gameplay else 0.0)
+	# Wave T: physics cars (legacy AI traffic, promoted lane cars) that drove
+	# up to the lens are hidden for the still too (a van filled the right third
+	# of dt_bayfront_drive in one rendered run); clear_lens only knows lane cars.
+	for c in get_tree().get_nodes_in_group("vehicles"):
+		if c is Car and not (c as Car).driver_is_player and (c as Car).visible \
+				and Vector2((c as Car).global_position.x - cam.global_position.x, (c as Car).global_position.z - cam.global_position.z).length() < 6.5:
+			(c as Car).visible = false
+			cleared += 1
+	if cleared > 0:
 		await get_tree().process_frame
 		await get_tree().process_frame
 
