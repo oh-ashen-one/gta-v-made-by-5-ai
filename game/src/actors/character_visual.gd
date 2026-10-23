@@ -606,13 +606,15 @@ func _build_contact_shadows() -> void:
 		if id < 0:
 			id = skeleton.find_bone(bone.replace("foot", "toe"))
 		_foot_ids.append(id)
-	var sizes := [Vector3(0.34, 0.7, 0.46), Vector3(0.34, 0.7, 0.46), Vector3(0.85, 0.7, 0.68)]
+	# Street-life M2: a smaller, fainter pelvis term (critic M1: "a dark disc
+	# under the feet"); the per-foot shadows carry the contact.
+	var sizes := [Vector3(0.34, 0.7, 0.46), Vector3(0.34, 0.7, 0.46), Vector3(0.52, 0.7, 0.4)]
 	for i in 3:
 		var d := Decal.new()
 		d.name = "ContactShadow%d" % i
 		d.texture_albedo = _contact_texture()
 		d.size = sizes[i]
-		d.modulate = Color(1, 1, 1, 0.85 if i < 2 else 0.5)
+		d.modulate = Color(1, 1, 1, 0.85 if i < 2 else 0.3)
 		d.albedo_mix = 1.0
 		d.upper_fade = 0.25
 		d.lower_fade = 0.6
@@ -644,5 +646,5 @@ func _update_contact_shadows() -> void:
 			lift = maxf(p.y - ground - 0.12, 0.0)
 		# A raised foot casts a fainter, softer contact shadow.
 		var k := clampf(1.0 - lift / 0.25, 0.0, 1.0)
-		d.modulate.a = (0.85 if i < 2 else 0.5) * (0.25 + 0.75 * k)
+		d.modulate.a = (0.85 if i < 2 else 0.3) * (0.25 + 0.75 * k)
 		d.global_transform = Transform3D(Basis(Vector3.UP, yaw), Vector3(p.x, ground + 0.05, p.z))

@@ -117,15 +117,7 @@ func _build_car() -> void:
 		cabin.position.y = dims.y * 0.8
 		add_child(cabin)
 	if kind == "taxi":
-		if _taxi_sign == null:
-			_taxi_sign = Palette.emissive(Color(1.0, 0.86, 0.35), 1.2)
-		var sign_mesh := MeshInstance3D.new()
-		var sb := BoxMesh.new()
-		sb.size = Vector3(0.62, 0.2, 0.26)
-		sign_mesh.mesh = sb
-		sign_mesh.material_override = _taxi_sign
-		sign_mesh.position = Vector3(0.0, dims.y + 0.02, 0.15)
-		add_child(sign_mesh)
+		_build_taxi_sign()
 	if root != null:
 		# Seat the lamps on the provider body's own rear face; the collider
 		# dims do not match the art, which left lamps floating beside it.
@@ -230,14 +222,51 @@ func _part(size: Vector3, pos: Vector3, mat: Material) -> MeshInstance3D:
 	add_child(mi)
 	return mi
 
+## Street-life M2: tail-lamp clusters with a glossy red lens over an inner
+## ring and a row of LED cells (critic M1: "flat glowing orange rectangles";
+## the bloom swallowed the lamp). Only the inner elements emit, so a braking
+## car shows lit structure behind a reflective lens, not a blob.
+const LAMP_SHADER := """
+shader_type spatial;
+render_mode diffuse_burley, specular_schlick_ggx;
+uniform float brake = 0.0;
+varying vec3 lp;
+void vertex() { lp = VERTEX; }
+float rr(vec2 p, vec2 b, float r) { vec2 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r; }
+void fragment() {
+	vec2 p = lp.xy;
+	float ring = smoothstep(0.0075, 0.0025, abs(rr(p, vec2(0.135, 0.04), 0.022)));
+	float inner = smoothstep(0.004, 0.0, rr(p, vec2(0.11, 0.022), 0.012));
+	vec2 cell = vec2(fract(p.x / 0.024) - 0.5, p.y / 0.024);
+	float dots = smoothstep(0.32, 0.18, length(cell)) * inner;
+	float rim = smoothstep(0.004, 0.0, rr(p, vec2(0.17, 0.056), 0.02));
+	vec3 red = vec3(1.0, 0.06, 0.03);
+	ALBEDO = mix(vec3(0.03), vec3(0.22, 0.012, 0.01), rim);
+	ROUGHNESS = mix(0.4, 0.06, rim);
+	SPECULAR = 0.9;
+	CLEARCOAT = 1.0;
+	CLEARCOAT_ROUGHNESS = 0.05;
+	float glow = ring * 1.0 + dots * 0.9 + inner * 0.12;
+	EMISSION = red * (glow * mix(0.55, 2.3, brake) + rim * 0.05);
+}
+"""
+static var _lamp_shader: Shader
 func _add_brake_lamps(height: float, back: float, half: float, centre_x := 0.0) -> void:
 	if _brake_on == null:
-		_brake_on = Palette.emissive(Color(1.0, 0.08, 0.05), 3.2)
-		_brake_off = Palette.emissive(Color(0.55, 0.05, 0.04), 0.5)
+		_lamp_shader = Shader.new()
+		_lamp_shader.code = LAMP_SHADER
+		var on := ShaderMaterial.new()
+		on.shader = _lamp_shader
+		on.set_shader_parameter("brake", 1.0)
+		var off := ShaderMaterial.new()
+		off.shader = _lamp_shader
+		off.set_shader_parameter("brake", 0.0)
+		_brake_on = on
+		_brake_off = off
 	for sx in [-1.0, 1.0]:
 		var lamp := MeshInstance3D.new()
 		var lb := BoxMesh.new()
-		lb.size = Vector3(0.3, 0.12, 0.05)
+		lb.size = Vector3(0.36, 0.12, 0.05)
 		lamp.mesh = lb
 		lamp.material_override = _brake_off
 		lamp.position = Vector3(centre_x + sx * half, height, back)
@@ -246,6 +275,88 @@ func _add_brake_lamps(height: float, back: float, half: float, centre_x := 0.0) 
 		_brake_lamps.append(lamp)
 
 static var _driver_mats: Array = []
+## Street-life M2: a Singapore-style lit roof sign (critic M1: "taxi roof
+## signs are blank glowing boxes"): a dark plastic base, a rounded sign body
+## whose front and back faces carry a lit TAXI legend (drawn in the shader,
+## no font asset), and a small green "for hire" lamp.
+const TAXI_SIGN_SHADER := """
+shader_type spatial;
+render_mode diffuse_burley;
+varying vec3 lp;
+void vertex() { lp = VERTEX; }
+float seg(vec2 p, vec2 a, vec2 b) { vec2 pa = p - a, ba = b - a; float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0); return length(pa - ba * h); }
+void fragment() {
+	// Face plane: x across (-0.31..0.31 m), y up (-0.09..0.09 m).
+	vec2 p = vec2(abs(lp.z) > 0.105 ? (lp.z > 0.0 ? lp.x : -lp.x) : lp.z, lp.y);
+	float d = 1.0;
+	float h = 0.05;
+	// T A X I, 0.1 m tall, centred.
+	d = min(d, seg(p, vec2(-0.2, h), vec2(-0.125, h)));
+	d = min(d, seg(p, vec2(-0.1625, h), vec2(-0.1625, -h)));
+	d = min(d, seg(p, vec2(-0.095, -h), vec2(-0.06, h)));
+	d = min(d, seg(p, vec2(-0.06, h), vec2(-0.025, -h)));
+	d = min(d, seg(p, vec2(-0.082, -0.012), vec2(-0.038, -0.012)));
+	d = min(d, seg(p, vec2(0.01, h), vec2(0.075, -h)));
+	d = min(d, seg(p, vec2(0.01, -h), vec2(0.075, h)));
+	d = min(d, seg(p, vec2(0.12, h), vec2(0.12, -h)));
+	d = min(d, seg(p, vec2(0.1, h), vec2(0.14, h)));
+	d = min(d, seg(p, vec2(0.1, -h), vec2(0.14, -h)));
+	float ink = smoothstep(0.011, 0.007, d) * step(0.105, abs(lp.z));
+	float border = smoothstep(0.004, 0.0, abs(max(abs(p.x) - 0.285, abs(p.y) - 0.072))) * step(0.105, abs(lp.z));
+	vec3 lit = vec3(1.0, 0.86, 0.4);
+	vec3 legend = vec3(0.05, 0.12, 0.38);
+	vec3 face = mix(lit, legend, max(ink, border));
+	ALBEDO = face * 0.6;
+	ROUGHNESS = 0.25;
+	SPECULAR = 0.6;
+	EMISSION = mix(lit * 1.35, legend * 0.15, max(ink, border));
+}
+"""
+static var _taxi_sign_mat: ShaderMaterial
+func _build_taxi_sign() -> void:
+	if _taxi_sign_mat == null:
+		var sh := Shader.new()
+		sh.code = TAXI_SIGN_SHADER
+		_taxi_sign_mat = ShaderMaterial.new()
+		_taxi_sign_mat.shader = sh
+		_taxi_sign = Palette.mat(Color(0.06, 0.06, 0.07), 0.45, 0.1)
+	var top := dims.y + 0.0
+	var base := MeshInstance3D.new()
+	var bb := BoxMesh.new()
+	bb.size = Vector3(0.7, 0.05, 0.3)
+	base.mesh = bb
+	base.material_override = _taxi_sign
+	base.position = Vector3(0.0, top + 0.025, 0.15)
+	add_child(base)
+	var body := MeshInstance3D.new()
+	var b2 := BoxMesh.new()
+	b2.size = Vector3(0.62, 0.18, 0.22)
+	body.mesh = b2
+	body.material_override = _taxi_sign_mat
+	body.position = Vector3(0.0, top + 0.14, 0.15)
+	body.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(body)
+	var cap := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = 0.11
+	cm.bottom_radius = 0.11
+	cm.height = 0.62
+	cm.radial_segments = 12
+	cap.mesh = cm
+	cap.material_override = _taxi_sign
+	cap.rotation = Vector3(0.0, 0.0, PI * 0.5)
+	cap.scale = Vector3(0.5, 1.0, 1.0)
+	cap.position = Vector3(0.0, top + 0.23, 0.15)
+	add_child(cap)
+	var hire := MeshInstance3D.new()
+	var hm := SphereMesh.new()
+	hm.radius = 0.035
+	hm.height = 0.05
+	hire.mesh = hm
+	hire.material_override = Palette.emissive(Color(0.15, 1.0, 0.3), 2.0)
+	hire.position = Vector3(0.22, top + 0.255, 0.15)
+	add_child(hire)
+
 func _add_driver() -> void:
 	if _driver_mats.is_empty():
 		var torso := CapsuleMesh.new()

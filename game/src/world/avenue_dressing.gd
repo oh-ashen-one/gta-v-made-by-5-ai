@@ -23,6 +23,7 @@ var _rng := RandomNumberGenerator.new()
 var _world: WorldBuilder
 
 func build(world: WorldBuilder) -> void:
+	ped_obstacles.clear()
 	name = "AvenueDressing"
 	_world = world
 	_rng.seed = Game.seed_value + 911
@@ -157,6 +158,7 @@ func _trunk_colliders() -> void:
 		cyl.height = 4.8 * s
 		shape.shape = cyl
 		shape.position = xf.origin + Vector3(0, 2.4 * s, 0)
+		ped_obstacles.append(Vector3(xf.origin.x, xf.origin.z, 0.5 * s))
 		body.add_child(shape)
 
 # ------------------------------------------------------------ kerb clutter
@@ -164,6 +166,9 @@ func _trunk_colliders() -> void:
 ## cabinets, bollards and parking signs between the avenue trees. Every part
 ## is a primitive batched into one MultiMesh per (mesh, material).
 var _batches: Dictionary = {}
+## Street-life M2: footprints walkers steer round (x, z, radius), read by
+## CrowdDirector (people walked through bike racks and bins in M1).
+static var ped_obstacles: Array[Vector3] = []
 
 func _kerb_clutter(space: PhysicsDirectSpaceState3D) -> void:
 	var probe := PhysicsShapeQueryParameters3D.new()
@@ -272,24 +277,32 @@ func _put(mesh_id: String, mat_id: String, xf: Transform3D, shadow: bool = true)
 	_batches[key]["xfs"].append(xf)
 
 func _bin(p: Vector3) -> void:
+	ped_obstacles.append(Vector3(p.x, p.z, 0.4))
 	_put("bin", "bin_green", Transform3D(Basis(), p + Vector3(0, 0.475, 0)))
 	_put("lid", "bin_lid", Transform3D(Basis(), p + Vector3(0, 1.0, 0)))
 
 func _bollards(p: Vector3, along_dir: Vector3) -> void:
 	for k in 3:
+		var bp := p + along_dir * (k * 1.3)
+		ped_obstacles.append(Vector3(bp.x, bp.z, 0.22))
 		_put("bollard", "bollard", Transform3D(Basis(), p + along_dir * (k * 1.3) + Vector3(0, 0.45, 0)), false)
 
 func _hydrant(p: Vector3) -> void:
+	ped_obstacles.append(Vector3(p.x, p.z, 0.3))
 	_put("hydrant", "hydrant_red", Transform3D(Basis(), p + Vector3(0, 0.375, 0)), false)
 	_put("cap", "hydrant_cap", Transform3D(Basis(), p + Vector3(0, 0.78, 0)), false)
 
 func _sign(p: Vector3) -> void:
+	ped_obstacles.append(Vector3(p.x, p.z, 0.18))
 	_put("post", "steel", Transform3D(Basis().scaled(Vector3(0.7, 2.6, 0.7)), p + Vector3(0, 1.3, 0)), false)
 	_put("box", "sign_blue", Transform3D(Basis().scaled(Vector3(0.62, 0.62, 0.05)), p + Vector3(0, 2.55, 0)), false)
 	_put("box", "sign_white", Transform3D(Basis().scaled(Vector3(0.3, 0.38, 0.052)), p + Vector3(0, 2.55, 0)), false)
 
 func _cabinet(p: Vector3, yaw: float) -> void:
 	var b := Basis(Vector3.UP, yaw)
+	for k: float in [0.0, 0.6, 1.2]:
+		var cp := p + b * Vector3(k, 0, 0)
+		ped_obstacles.append(Vector3(cp.x, cp.z, 0.55))
 	_put("box", "cabinet", Transform3D(b * Basis.from_scale(Vector3(1.1, 1.25, 0.5)), p + Vector3(0, 0.625, 0)))
 	_put("box", "cabinet", Transform3D(b * Basis.from_scale(Vector3(0.7, 0.9, 0.35)), p + b * Vector3(1.2, 0, 0) + Vector3(0, 0.45, 0)))
 
@@ -300,6 +313,7 @@ func _bike_rack(p: Vector3, yaw: float, along_dir: Vector3) -> void:
 	for k in count:
 		var c: String = colors[(int(absf(p.x + p.z)) + k) % colors.size()]
 		var origin := p + along_dir * (k * 0.75 - count * 0.35)
+		ped_obstacles.append(Vector3(origin.x, origin.z, 0.62))
 		# Bike axis points across the pavement (away from the kerb).
 		var axis_b := Basis(Vector3.UP, yaw + PI * 0.5 + (k % 2) * 0.12)
 		var fwd := axis_b * Vector3(1, 0, 0)

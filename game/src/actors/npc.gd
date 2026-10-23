@@ -63,6 +63,9 @@ func _ready() -> void:
 	_build()
 	_spawn_position = global_position
 	_sim_slot = int(get_instance_id() % SIM_FAR_TICKS)
+	# Street-life M2: who this person is (after the spawner set its metas).
+	if not is_police:
+		call_deferred("_dress_people")
 	Events.shot_fired.connect(_on_shot_fired)
 	Events.hit_landed.connect(_on_hit_landed)
 
@@ -141,6 +144,22 @@ func _build() -> void:
 				# M1: a passer-by right at the lens is not drawn (a face filled
 				# a corner of the rendered route's car-entered frame).
 				(mesh_node as MeshInstance3D).visibility_range_begin = NEAR_HIDE
+
+## Street-life M2: women, elders and children with hair, skirts, props and
+## poses (crowd_people.gd); a forced kind comes from meta "people_kind".
+func _dress_people() -> void:
+	if is_police or is_hostile or character_visual == null or not character_visual.loaded:
+		return
+	var seed_value := posmod(hash(get_instance_id()), 1 << 30)
+	var p: Dictionary
+	if has_meta("people_kind"):
+		p = CrowdPeople.person(int(get_meta("people_kind")), seed_value)
+		if has_meta("people_prop"):
+			p["prop"] = String(get_meta("people_prop"))
+	else:
+		p = CrowdPeople.pick(seed_value)
+	CrowdPeople.dress(self, character_visual, p, has_meta("ambient_role"))
+	_pace_scale = float(p.get("pace", _pace()))
 
 func _limb(hip: Vector3, size: Vector3, cloth: Material) -> Node3D:
 	var pivot := Node3D.new()
@@ -242,6 +261,18 @@ func _physics_process(delta: float) -> void:
 	_animate(delta, Vector2(velocity.x, velocity.z).length())
 
 func _walk(delta: float) -> void:
+	# Street-life M2: walking together (couples, a parent with a child).
+	if companion != null:
+		if _walk_with_companion(delta):
+			return
+	# Off the pavement outside a crossing (after a dodge or a scramble):
+	# straight back to the nearest pavement, never along the traffic lane.
+	if not is_hostile and not is_police:
+		var back := _pavement_return()
+		if back != Vector3.INF:
+			_kerb_spot = Vector3.INF
+			_move_towards(back, WALK_SPEED * maxf(_pace(), 1.0), delta)
+			return
 	if lane.is_empty() and not is_hostile and not is_police:
 		# A displaced driver or other lane-less civilian rejoins the nearest
 		# pavement instead of standing frozen in a carriageway (wave 5 soak).
@@ -258,11 +289,10 @@ func _walk(delta: float) -> void:
 		if lane_index < 0 or lane_index >= lane.size():
 			lane_dir = -lane_dir
 			lane_index = clampi(lane_index, 0, lane.size() - 1)
-			if randf() < 0.35:
-				state = State.IDLE
-				idle_time = randf_range(2.0, 7.0)
-				return
+			# M2: no pause at a lane end; everyone turning at the same point
+			# stood in a single-file line there (rendered M1 route, t=25-31 s).
 		target = lane[lane_index]
+	target = _personal_target(target)
 	if _crossing_hold(target):
 		velocity.x = 0.0
 		velocity.z = 0.0
@@ -277,6 +307,76 @@ func _walk(delta: float) -> void:
 		return
 	_kerb_spot = Vector3.INF
 	_move_towards(target, WALK_SPEED * _pace(), delta)
+
+## Street-life M2: a stable personal offset across the walk (keep-left of
+## the direction of travel), so walkers bound for the same lane points do not
+## converge into one file; opposing flows pass side by side.
+var _lat_off := INF
+func _personal_target(target: Vector3) -> Vector3:
+	if lane.size() < 2:
+		return target
+	if _lat_off == INF:
+		_lat_off = lerpf(-0.45, 0.6, float(posmod(hash(get_instance_id() * 104729), 1000)) / 1000.0)
+	var prev: Vector3 = lane[clampi(lane_index - lane_dir, 0, lane.size() - 1)]
+	var seg: Vector3 = target - prev
+	seg.y = 0.0
+	if seg.length() < 0.5:
+		return target
+	return target + Vector3.UP.cross(seg.normalized()) * _lat_off
+
+## Street-life M2: walking with someone (set by CrowdDirector). Returns true
+## when this step was handled.
+var companion: NPC = null
+var companion_side := 0.62
+func _walk_with_companion(delta: float) -> bool:
+	if not is_instance_valid(companion) or companion.state == State.DEAD or companion.state == State.FLEE \
+			or companion.global_position.distance_to(global_position) > 9.0:
+		companion = null
+		return false
+	var lb := companion.global_transform.basis
+	var lfwd := Vector3(-lb.z.x, 0.0, -lb.z.z).normalized()
+	var lright := Vector3(lb.x.x, 0.0, lb.x.z).normalized()
+	var spot := companion.global_position + lright * companion_side - lfwd * 0.12
+	var lspeed := Vector2(companion.velocity.x, companion.velocity.z).length()
+	if companion.state == State.IDLE or lspeed < 0.15:
+		var off := spot - global_position
+		off.y = 0.0
+		if off.length() > 0.35:
+			_move_towards(spot, 1.2, delta)
+		else:
+			velocity.x = 0.0
+			velocity.z = 0.0
+			rotation.y = lerp_angle(rotation.y, companion.rotation.y, clampf(delta * 4.0, 0.0, 1.0))
+		return true
+	var gap := (spot - global_position).dot(lfwd)
+	var speed := clampf(lspeed + gap * 0.8, 0.0, lspeed * 1.6 + 0.4)
+	_move_towards(spot + lfwd * 1.2, speed, delta)
+	return true
+
+## Legacy-grid carriageway test: the nearest pavement point when this person
+## stands in a traffic lane outside the junction crossings, else INF.
+func _pavement_return() -> Vector3:
+	var p := global_position
+	if absf(p.x) > 330.0 or absf(p.z) > 330.0:
+		return Vector3.INF
+	var band := WorldBuilder.ROAD_HALF - 0.2
+	for x in WorldBuilder.X_LINES:
+		if absf(p.x - x) < band:
+			var near_cross := false
+			for z in WorldBuilder.Z_LINES:
+				if absf(p.z - z) < WorldBuilder.ROAD_HALF + 4.5:
+					near_cross = true
+			if not near_cross:
+				return Vector3(x + signf(p.x - x + 0.001) * (WorldBuilder.ROAD_HALF + 1.6), p.y, p.z)
+	for z in WorldBuilder.Z_LINES:
+		if absf(p.z - z) < band:
+			var near_cross2 := false
+			for x in WorldBuilder.X_LINES:
+				if absf(p.x - x) < WorldBuilder.ROAD_HALF + 4.5:
+					near_cross2 = true
+			if not near_cross2:
+				return Vector3(p.x, p.y, z + signf(p.z - z + 0.001) * (WorldBuilder.ROAD_HALF + 1.6))
+	return Vector3.INF
 
 ## Street life r1: each walker keeps a personal pace (0.8-1.2x, stable per
 ## person), so people seeded near each other drift apart instead of marching
@@ -353,9 +453,18 @@ func dodge_vehicle(car_pos: Vector3, car_fwd: Vector3) -> void:
 	var side := Vector3.UP.cross(car_fwd).normalized()
 	if (global_position - car_pos).dot(side) < 0.0:
 		side = -side
-	_flee_dir = (side + car_fwd * 0.25).normalized()
+	# M2: in the carriageway, always toward the nearer pavement (M1 dodgers
+	# ran across into the next live lane and stayed there).
+	var kerb := _pavement_return()
+	if kerb != Vector3.INF:
+		var to_kerb := kerb - global_position
+		to_kerb.y = 0.0
+		if to_kerb.length() > 0.2:
+			side = to_kerb.normalized()
+	_flee_dir = (side + car_fwd * 0.15).normalized()
+	_flee_speed = 3.6 * clampf(_pace(), 0.7, 1.15)
 	state = State.FLEE
-	panic_time = 1.6
+	panic_time = 1.3
 
 ## Step out of the way of a slow vehicle: a short, quiet flee for civilians.
 func scramble_from(from_position: Vector3) -> void:
@@ -366,8 +475,11 @@ func scramble_from(from_position: Vector3) -> void:
 	if away.length() < 0.2:
 		away = Vector3(randf_range(-1, 1), 0.0, randf_range(-1, 1))
 	_flee_dir = away.normalized()
+	# M2: a quick step aside at walking pace, not a sprint (M1: packs of
+	# people sprinting away from a player who only brushed past them).
+	_flee_speed = 1.7
 	state = State.FLEE
-	panic_time = 2.5
+	panic_time = 1.1
 
 func _adopt_nearest_lane() -> void:
 	var traffic := get_tree().get_first_node_in_group("traffic_manager")
@@ -390,12 +502,20 @@ func _adopt_nearest_lane() -> void:
 
 func _flee(delta: float) -> void:
 	panic_time -= delta
-	velocity.x = move_toward(velocity.x, _flee_dir.x * FLEE_SPEED, 12.0 * delta)
-	velocity.z = move_toward(velocity.z, _flee_dir.z * FLEE_SPEED, 12.0 * delta)
+	var fs := _flee_speed if _flee_speed > 0.0 else FLEE_SPEED
+	velocity.x = move_toward(velocity.x, _flee_dir.x * fs, 12.0 * delta)
+	velocity.z = move_toward(velocity.z, _flee_dir.z * fs, 12.0 * delta)
+	var fl := Vector3(velocity.x, 0.0, velocity.z)
+	if fl.length() > 0.3:
+		rotation.y = lerp_angle(rotation.y, atan2(-fl.x, -fl.z), clampf(delta * 8.0, 0.0, 1.0))
 	if panic_time <= 0.0:
 		state = State.WALK
+		_flee_speed = 0.0
 
 var _flee_dir := Vector3.ZERO
+var _flee_speed := 0.0
+## Street-life M2: crowd separation and prop avoidance (CrowdDirector).
+var avoid := Vector3.ZERO
 
 func _pursue(delta: float) -> void:
 	var player: Node = get_tree().get_first_node_in_group("player")
@@ -458,6 +578,8 @@ func _move_towards(target: Vector3, speed: float, delta: float) -> void:
 	if dir.length() < 0.4:
 		return
 	dir = dir.normalized()
+	if avoid != Vector3.ZERO and not is_hostile and not is_police:
+		dir = (dir + avoid).normalized()
 	velocity.x = move_toward(velocity.x, dir.x * speed, 10.0 * delta)
 	velocity.z = move_toward(velocity.z, dir.z * speed, 10.0 * delta)
 	var yaw := atan2(-dir.x, -dir.z)
@@ -515,6 +637,10 @@ func _panic(from_position: Vector3) -> void:
 		var was_fleeing := state == State.FLEE
 		state = State.FLEE
 		panic_time = randf_range(6.0, 12.0)
+		# M2: everyone runs their own way at their own speed (M1: a pack of
+		# ten identical men sprinting in step), elders can only hurry.
+		_flee_dir = _flee_dir.rotated(Vector3.UP, randf_range(-0.75, 0.75))
+		_flee_speed = randf_range(3.2, 5.4) * clampf(_pace(), 0.55, 1.1)
 		if not was_fleeing:
 			Events.toast("Civilian fleeing!", "info")
 

@@ -257,6 +257,7 @@ func _physics_step(delta: float) -> void:
 				if (i + _tick) % FAR_TICKS != 0:
 					continue
 				dt = delta * FAR_TICKS
+			_yield_lane(v, dt)
 			_drive(v, dt)
 			if v.active:
 				_unstick(v, dt)
@@ -445,6 +446,16 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 			continue
 		if _player_near(p, 18.0) or _in_opening_clear(p):
 			continue
+		# Street-life M2: never seed into the player's own lane ahead of a
+		# player-driven car (the scripted drive queued behind seeded cars for
+		# most of a 166 s leg).
+		if _in_player_path(p, lane_point(e, lane, s + 1.0) - p, 140.0):
+			if (ed["offs"] as Array).size() < 2:
+				continue
+			lane = 1 - lane
+			p = lane_point(e, lane, s)
+			if _in_player_path(p, lane_point(e, lane, s + 1.0) - p, 140.0) or not _gap_free(e, lane, s):
+				continue
 		_place(v, e, lane, s)
 		return true
 	return false
@@ -574,6 +585,10 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 	var ed: Dictionary = edges[v.edge]
 	var s_end: float = _s_end(v.edge)
 	var target := v.vmax
+	# M2: traffic in front of a player-driven car moves at the player's pace
+	# (the M1 drive crawled behind 9-13 m/s lane cars for most of its leg).
+	if _pc_active and _pc_speed > 4.0 and _in_player_path(v.global_position, -v.global_transform.basis.z, 130.0):
+		target = maxf(target, 20.0)
 	# 1. Car following, including the tail of the lane we are about to enter.
 	var gap := _leader_gap(v, s_end)
 	target = minf(target, _stop_speed(gap - 3.0))
@@ -581,11 +596,15 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 	if v.s <= s_end:
 		var to_line := s_end - v.s
 		var committed := to_line < 3.5 and v.speed > 5.0
-		if not _signal_ok(v.edge) and not committed:
+		# M2: a queue standing at a red light in front of a player-driven car
+		# is released (the light "changes" for the player's approach, as in
+		# GTA); cross traffic then holds for the player (_player_in_junction).
+		var release := _pc_active and _in_player_path(v.global_position, -v.global_transform.basis.z, 110.0)
+		if not _signal_ok(v.edge) and not committed and not release:
 			target = minf(target, _stop_speed(to_line - 0.5))
 		# Keep the box clear: do not enter the junction unless the exit lane
 		# has room for this car on the far side.
-		elif not committed and v.next_edge >= 0 and _exit_room(v) < v.dims.z + 2.5:
+		elif not committed and not release and v.next_edge >= 0 and _exit_room(v) < v.dims.z + 2.5:
 			target = minf(target, _stop_speed(to_line - 0.5))
 		# Give way to a player-driven vehicle crossing or about to cross.
 		elif not committed and to_line < 30.0 and _player_in_junction(ed["b"], v):
@@ -688,6 +707,60 @@ var _pc_pos := Vector3.ZERO
 var _pc_x := Vector3.RIGHT
 var _pc_z := Vector3.BACK
 const PC_HALF := Vector2(1.15, 2.6)   # player car half extents plus margin
+var _pc_speed := 0.0
+
+## Street-life M2: is point p (travelling along dir) in the player car's own
+## lane, ahead of it and within `reach` m, going the same way?
+func _in_player_path(p: Vector3, dir: Vector3, reach: float) -> bool:
+	if not _pc_active:
+		return false
+	var fwd := -_pc_z
+	dir.y = 0.0
+	if dir.length() < 0.01 or dir.normalized().dot(fwd) < 0.8:
+		return false
+	var rel := p - _pc_pos
+	rel.y = 0.0
+	var ahead := rel.dot(fwd)
+	return ahead > -3.0 and ahead < reach and absf(rel.dot(_pc_x)) < 1.9
+
+## Street-life M2: lane traffic ahead of the player's car in his lane moves
+## over to the other lane when it is clear (keep-left courtesy), so a player
+## is not stuck behind queues; a car that cannot move over stays put.
+func _yield_lane(v: AmbientVehicle, _delta: float) -> void:
+	if not _pc_active or v.lat_shift != 0.0 or (v.j_len > 0.0 and v.s < _entry(v.edge)):
+		return
+	if absf(v.global_position.x - _pc_pos.x) > 135.0 or absf(v.global_position.z - _pc_pos.z) > 135.0:
+		return
+	var fwd := -v.global_transform.basis.z
+	if not _in_player_path(v.global_position, fwd, 130.0):
+		return
+	# A car standing at a light does not slide sideways in view.
+	if v.speed < 0.5 and not _hidden_from_camera(v.global_position) and v.global_position.distance_to(_pc_pos) < 28.0:
+		return
+	var ed: Dictionary = edges[v.edge]
+	if (ed["offs"] as Array).size() < 2 or v.s > _s_end(v.edge) - 4.0:
+		return
+	var other := 1 - v.lane
+	var lat_other: float = _off(v.edge, other)
+	var here_other := lane_point(v.edge, other, v.s)
+	# Moving over must actually leave the player's path.
+	if _in_player_path(here_other, fwd, 130.0):
+		return
+	for o in _keys.get(v.edge * 2 + other, []):
+		var ds: float = (o as AmbientVehicle).s - v.s
+		if ds > -10.0 and ds < 9.0:
+			return
+	var old_key := v.edge * 2 + v.lane
+	if _keys.has(old_key):
+		_keys[old_key].erase(v)
+	v.lat_shift = _off(v.edge, v.lane) - lat_other
+	v.lane = other
+	var key := v.edge * 2 + other
+	if not _keys.has(key):
+		_keys[key] = []
+	_keys[key].append(v)
+	(_keys[key] as Array).sort_custom(func(a, b): return a.s < b.s)
+	stats["yields"] = int(stats.get("yields", 0)) + 1
 
 func _update_player_car() -> void:
 	_pc_active = false
@@ -700,6 +773,7 @@ func _update_player_car() -> void:
 	_pc = cv as Car
 	_pc_active = true
 	_pc_pos = _pc.global_position
+	_pc_speed = Vector2(_pc.velocity.x, _pc.velocity.z).length()
 	var b := _pc.global_transform.basis
 	_pc_x = Vector3(b.x.x, 0.0, b.x.z).normalized()
 	_pc_z = Vector3(b.z.x, 0.0, b.z.z).normalized()
@@ -752,6 +826,18 @@ func _player_in_junction(node: Vector3, v: AmbientVehicle) -> bool:
 	if Game.mode != Game.MODE_CAR:
 		return false
 	var p := Game.player_position
+	# Street-life M2: a player car driving toward this junction (within ~45 m,
+	# heading for the box) has priority, like GTA traffic yielding to the
+	# player, so cross traffic holds at its line instead of filling the box.
+	if _pc_active and _pc_speed > 2.0 and absf(p.x - node.x) < 48.0 and absf(p.z - node.z) < 48.0:
+		var to_node := node - _pc_pos
+		to_node.y = 0.0
+		if to_node.length() > 4.0 and to_node.normalized().dot(-_pc_z) > 0.85:
+			var vf := -v.global_transform.basis.z
+			vf.y = 0.0
+			# Only traffic crossing or turning across the player's road.
+			if absf(vf.normalized().dot(-_pc_z)) < 0.6:
+				return true
 	if absf(p.x - node.x) > 22.0 or absf(p.z - node.z) > 22.0:
 		return false
 	# A player queued behind this car is not crossing in front of it.

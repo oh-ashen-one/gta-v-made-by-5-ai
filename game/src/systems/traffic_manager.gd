@@ -314,9 +314,18 @@ func _spawn_peds() -> void:
 			path = focused_lanes[index % focused_lanes.size()]
 		else:
 			path = _ped_lanes[_rng.randi_range(0, _ped_lanes.size() - 1)]
+		if index < FOCUSED_PED_COUNT and path.size() == 2:
+			# Street-life M2: each walker of the focused block lanes keeps its
+			# own distance from the kerb (one shared line made single-file
+			# columns along the hawker pavements).
+			var seg: Vector3 = (path[1] - path[0])
+			var side := Vector3.UP.cross(seg.normalized())
+			var off := _rng.randf_range(-0.35, 0.35) if index % focused_lanes.size() == 4 else _rng.randf_range(-0.7, 0.9)
+			path = [path[0] + side * off, path[1] + side * off]
 		_spawn_on_segment(ped, path)
-		if index >= FOCUSED_PED_COUNT:
-			ped.set_meta("roamer", true)
+		# M2: everyone outside the hawker hall is a camera-side roamer, so the
+		# director can bring them to the street being looked at.
+		ped.set_meta("roamer", true)
 		peds.append(ped)
 	# Damageable/reactive diners and queueing customers. Keep the package and
 	# combat aisle (local z=-8 and north of it) clear for actual mission play.
@@ -373,6 +382,11 @@ func _process(delta: float) -> void:
 		car.ai_speed_limit = INF
 		if not green and distance_to_stop < 34.0:
 			car.ai_speed_limit = maxf(0.0, (distance_to_stop - 3.0) * 0.75)
+		# Street-life M2: AI cars give way at the junction a player-driven car
+		# is about to cross (lane traffic already does; an AI sedan crossing
+		# on its green spun the route car at the (-156,156) corner).
+		elif distance_to_stop < 34.0 and _player_car_crossing(nxt, car):
+			car.ai_speed_limit = maxf(0.0, (distance_to_stop - 3.0) * 0.75)
 		if distance_to_stop < 7.0 and green:
 			var from := Vector3(nxt.x, car.global_position.y, nxt.z)
 			var edge: Vector3 = _pick_next_edge(car)
@@ -389,7 +403,28 @@ func _process(delta: float) -> void:
 			# last known position (LAW-04 search phase).
 			var goal: Vector3 = _player.controlled_actor().global_position if Game.player_seen else Game.last_seen_position
 			pc.ai_target = _pursuit_waypoint(pc, goal)
+			# M2: close in, box in, but do not ram at speed (route car health
+			# 100 -> 71 in M1 from pursuit contact at walking pace).
+			var gap := pc.global_position.distance_to(_player.controlled_actor().global_position)
+			pc.ai_speed_limit = INF if gap > 16.0 else maxf(2.5, (gap - 5.0) * 0.9)
 	_update_police(delta)
+
+func _player_car_crossing(node: Vector3, car: Car) -> bool:
+	if Game.mode != Game.MODE_CAR or _player == null:
+		return false
+	var pc: Node3D = _player.controlled_actor()
+	if pc == null or pc == car:
+		return false
+	var rel := node - pc.global_position
+	rel.y = 0.0
+	if rel.length() > 45.0:
+		return false
+	var pf := -pc.global_transform.basis.z
+	pf.y = 0.0
+	var cf := -car.global_transform.basis.z
+	cf.y = 0.0
+	# Heading for (or in) that junction, and the AI car crosses its path.
+	return (rel.length() < 12.0 or rel.normalized().dot(pf.normalized()) > 0.8) and absf(cf.normalized().dot(pf.normalized())) < 0.6
 
 ## Street-life r1: a civilian AI car standing still for AI_STALL_RESET s
 ## (wedged beside lane traffic, both waiting on each other: a headless route
@@ -601,6 +636,19 @@ func _update_police(delta: float) -> void:
 		var nearest := _nearest_node(actor.global_position)
 		var candidates := _neighbours(nearest)
 		var spawn_node := nodes[candidates[_rng.randi_range(0, candidates.size() - 1)]] if not candidates.is_empty() else nodes[nearest]
+		# Street-life M2: the pursuit car comes up from behind (GTA-style),
+		# never from the junction ahead, where it parked across the player's
+		# path (route corner (-156,156); M1 drive leg 166 s, car shot at).
+		var heading := -actor.global_transform.basis.z
+		heading.y = 0.0
+		var best_back := -INF
+		for c in candidates:
+			var rel: Vector3 = nodes[c] - actor.global_position
+			rel.y = 0.0
+			var score := -rel.normalized().dot(heading.normalized()) if rel.length() > 1.0 else -1.0
+			if score > best_back:
+				best_back = score
+				spawn_node = nodes[c]
 		var pc := _take_police_car(spawn_node + Vector3(4.0, 0.4, 4.0), actor.global_position)
 		police_cars.append(pc)
 

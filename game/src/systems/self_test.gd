@@ -1152,12 +1152,65 @@ func _downtown_adoption_checks(traffic: TrafficManager) -> void:
 	crowd_probe.free()
 	_check("downtown walks adopted by the crowd director", walks == 1, "walks=%d" % walks)
 
+## Street-life M2: the crowd is women, men, elders and children with hair,
+## skirts and props, not one recoloured young man; walkers off the pavement
+## head back to it; taxis carry a legend sign; tail lamps are lens clusters.
+func _people_checks(traffic: TrafficManager) -> void:
+	var walkers: Array = []
+	for p in traffic.peds:
+		if is_instance_valid(p) and not p.is_police and not p.is_hostile:
+			walkers.append(p)
+	var c := CrowdPeople.census(walkers)
+	var total := 0
+	for k in ["man", "woman", "elder_m", "elder_f", "child"]:
+		total += int(c.get(k, 0))
+	var women := int(c.get("woman", 0)) + int(c.get("elder_f", 0))
+	_check("crowd is women, men, elders and children (M2)", total >= walkers.size() * 0.9 and women >= total * 0.35 and int(c.get("child", 0)) >= 5 \
+		and int(c.get("elder_m", 0)) + int(c.get("elder_f", 0)) >= 8, str(c))
+	var hair := 0
+	var skirts := 0
+	var props := 0
+	var posed := 0
+	for p in walkers:
+		var cv: CharacterVisual = p.character_visual
+		if cv == null or cv.skeleton == null:
+			continue
+		if cv.skeleton.find_child("PeopleHair", true, false) != null: hair += 1
+		if cv.skeleton.find_child("PeopleSkirt", true, false) != null: skirts += 1
+		if cv.skeleton.find_child("People*", true, false) != null and String((p as Node).get_meta("people", {}).get("prop", "none")) != "none": props += 1
+		if cv.skeleton.get_node_or_null("PeoplePose") != null: posed += 1
+	_check("people carry hair, skirts, props and poses (M2)", hair >= walkers.size() * 0.3 and skirts >= 15 and props >= walkers.size() * 0.35 and posed >= 20,
+		"hair=%d skirts=%d props=%d posed=%d of %d" % [hair, skirts, props, posed, walkers.size()])
+	var probe := NPC.new()
+	traffic.add_child(probe)
+	probe.global_position = Vector3(0.0, 0.3, -80.0)    # mid-block, in the road
+	var back := probe._pavement_return()
+	probe.global_position = Vector3(0.0, 0.3, -158.0)   # on the junction crossing
+	var cross := probe._pavement_return()
+	probe.global_position = Vector3(10.6, 0.3, -80.0)   # on the pavement
+	var pave := probe._pavement_return()
+	probe.queue_free()
+	_check("walkers off the pavement return to it, crossings allowed (M2)", back != Vector3.INF and absf(back.x) > WorldBuilder.ROAD_HALF and cross == Vector3.INF and pave == Vector3.INF, str(back))
+	var taxi_ok := false
+	var lamp_ok := false
+	for v in get_tree().get_nodes_in_group("ambient_vehicles"):
+		var av := v as AmbientVehicle
+		if av == null:
+			continue
+		for mi in av.find_children("*", "MeshInstance3D", true, false):
+			var sm := (mi as MeshInstance3D).material_override as ShaderMaterial
+			if sm != null and sm.shader != null:
+				if sm.shader.code.contains("T A X I"): taxi_ok = true
+				if sm.shader.code.contains("uniform float brake"): lamp_ok = true
+	_check("taxi roof signs carry a legend; tail lamps are lens clusters (M2)", taxi_ok and lamp_ok)
+
 func _street_life_checks(player: Player, traffic: TrafficManager) -> void:
 	var amb := traffic.ambient
 	_check("street life systems present", amb != null and traffic.crowd != null and traffic.dressing != null)
 	if amb == null or traffic.crowd == null or traffic.dressing == null:
 		return
 	_downtown_adoption_checks(traffic)
+	_people_checks(traffic)
 	print("[street-test] mode=", Game.mode, " vehicle=", player.current_vehicle)
 	if player.current_vehicle != null:
 		await _tap("interact")

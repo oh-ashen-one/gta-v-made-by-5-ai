@@ -44,6 +44,9 @@ func _run() -> void:
 	Game.simulation_paused = false
 	if main.has_method("_start_game"):
 		main._start_game()
+	if "--people-review" in OS.get_cmdline_user_args():
+		await _people_review()
+		return
 	var player: Node3D = main.player
 	player.visible = true
 	var cam := Camera3D.new()
@@ -108,6 +111,88 @@ func _run() -> void:
 		_log.close()
 	_write_report()
 	Game.simulation_paused = true
+	Sfx.shutdown_audio()
+	await get_tree().create_timer(.15, true, false, true).timeout
+	get_tree().quit(0)
+
+## --street-review --people-review: every kind of person with every prop in
+## a lineup on a mid-block pavement (simulation paused, lineup animating),
+## front, walking side-on and from behind. PNG stills only.
+func _people_review() -> void:
+	var player: Node3D = main.player
+	var base := Vector3(-10.6, 0.25, -60.0)
+	player.respawn_at(base + Vector3(30.0, 0.2, 40.0), 0.0)
+	var specs := [
+		[CrowdPeople.Kind.WOMAN, "phone"], [CrowdPeople.Kind.WOMAN, "cup"], [CrowdPeople.Kind.WOMAN, "umbrella"],
+		[CrowdPeople.Kind.WOMAN, "handbag"], [CrowdPeople.Kind.MAN, "backpack"], [CrowdPeople.Kind.ELDER_F, "shopping"],
+		[CrowdPeople.Kind.ELDER_M, "cup"], [CrowdPeople.Kind.CHILD, "backpack"], [CrowdPeople.Kind.WOMAN, "none"],
+		[CrowdPeople.Kind.MAN, "phone"], [CrowdPeople.Kind.CHILD, "none"], [CrowdPeople.Kind.WOMAN, "shopping"],
+	]
+	var lineup: Array[NPC] = []
+	for i in specs.size():
+		var n := NPC.new()
+		n.set_meta("people_kind", int(specs[i][0]))
+		n.set_meta("people_prop", String(specs[i][1]))
+		traffic.add_child(n)
+		n.global_position = base + Vector3(0.0, 0.0, -float(i) * 1.15)
+		n.state = NPC.State.IDLE
+		n.idle_time = 9999.0
+		lineup.append(n)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	Game.simulation_paused = true
+	for n in get_tree().get_nodes_in_group("npcs"):
+		if not (n in lineup):
+			(n as Node3D).visible = false
+	for v in get_tree().get_nodes_in_group("ambient_vehicles"):
+		(v as Node3D).visible = false
+	for n in lineup:
+		n.character_visual.ignore_simulation_pause = true
+		n.character_visual.set_paused(false)
+		for mi in n.character_visual.find_children("*", "GeometryInstance3D", true, false):
+			(mi as GeometryInstance3D).visibility_range_begin = 0.0
+	var cam := Camera3D.new()
+	cam.far = 2000.0
+	add_child(cam)
+	cam.fov = 50.0
+	cam.make_current()
+	var mid := base + Vector3(0.0, 0.0, -float(specs.size() - 1) * 0.575)
+	var views := [
+		["people_front", 0.0, Vector3(7.2, 1.45, 0.0), -PI * 0.5],
+		["people_front_close", 0.0, Vector3(2.0, 1.4, 3.6), -PI * 0.5],
+		["people_walk_side", 1.5, Vector3(7.2, 1.3, 0.0), 0.0],
+		["people_back", 0.0, Vector3(7.2, 1.45, 0.0), PI * 0.5],
+	]
+	for v in views:
+		for n in lineup:
+			n.rotation.y = float(v[3])
+			n.character_visual.set_motion(float(v[1]))
+		cam.global_position = mid + (v[2] as Vector3) + (Vector3(0.0, 0.0, 0.0))
+		var look := mid + Vector3(0.0, 1.0, 0.0)
+		if String(v[0]) == "people_front_close":
+			look = base + Vector3(0.0, 1.15, -2.3)
+			cam.global_position = base + Vector3(2.6, 1.45, -1.0)
+		cam.look_at(look, Vector3.UP)
+		for f in 40:
+			await get_tree().process_frame
+		if "--people-debug" in OS.get_cmdline_user_args():
+			for n in [lineup[0], lineup[1], lineup[2], lineup[9]]:
+				var sk: Skeleton3D = n.character_visual.skeleton
+				var hid: int = sk.find_bone("hand.l")
+				print("[people-debug] ", v[0], " prop=", n.get_meta("people")["prop"], " hand.l=", sk.get_bone_global_pose(hid).origin.snapped(Vector3.ONE * 0.01),
+					" forearm=", sk.get_bone_global_pose(sk.find_bone("forearm.l")).origin.snapped(Vector3.ONE * 0.01),
+					" expected=", PeoplePose.posed_hand_rest(sk, "hand.l").origin.snapped(Vector3.ONE * 0.01), " processed=", (sk.get_node("PeoplePose") as PeoplePose).processed)
+		if not _headless:
+			await RenderingServer.frame_post_draw
+			var img := get_viewport().get_texture().get_image()
+			if img != null:
+				img.save_png(out_dir.path_join("%s.png" % v[0]))
+	var census := CrowdPeople.census(lineup)
+	print("[people-review] census=", census)
+	var f := FileAccess.open(out_dir.path_join("people_review.json"), FileAccess.WRITE)
+	if f:
+		f.store_string(JSON.stringify({"census": census, "kinds": CrowdPeople.stats}, "\t"))
+		f.close()
 	Sfx.shutdown_audio()
 	await get_tree().create_timer(.15, true, false, true).timeout
 	get_tree().quit(0)
