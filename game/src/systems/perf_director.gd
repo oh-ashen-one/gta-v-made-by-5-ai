@@ -53,6 +53,7 @@ func setup(m: Node) -> void:
 	_box.size = Vector3.ONE
 	_tag_no_reflect(_traffic)
 	get_tree().node_added.connect(_on_node_added)
+	_tree_lod(m)
 	var district: Node = m.world.get_node_or_null("District")
 	if district != null:
 		_small_props(district)
@@ -151,6 +152,19 @@ func _clip_reflection_near(cam: Camera3D) -> void:
 		best = minf(best, t * dir.dot(fwd))
 	if best < INF:
 		_reflection_cam.near = maxf(cam.near, best * 0.97 - 2.0)
+
+func _tree_lod(m: Node) -> void:
+	var n := 0
+	for g in m.find_children("*", "GeometryInstance3D", true, false):
+		var mesh: Mesh = null
+		if g is MultiMeshInstance3D and g.multimesh != null:
+			mesh = g.multimesh.mesh
+		elif g is MeshInstance3D:
+			mesh = g.mesh
+		if mesh != null and "rain_tree" in mesh.resource_path:
+			(g as GeometryInstance3D).lod_bias = PerfBudget.TREE_LOD_BIAS
+			n += 1
+	stats["tree_lod_biased"] = n
 
 # ---------------------------------------------------------------- props
 static func _is_tree(mmi: MultiMeshInstance3D) -> bool:

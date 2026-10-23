@@ -11,6 +11,10 @@ extends RefCounted
 ## distance LOD per cell, big enough to keep the draw count low.
 const TREE_CELL_M := 200.0
 
+## Rain-tree canopies (32 k triangles at LOD 0) pick their generated LODs at
+## this bias (< 1 = coarser sooner); near trees stay at full detail.
+const TREE_LOD_BIAS := 0.6
+
 ## Pedestrians: drawn to this distance (m); sun shadows only inside the near
 ## distance. Lane cars: whole car to CAR_DRAW_M, small parts to CAR_PARTS_M.
 const PEOPLE_DRAW_M := 160.0
@@ -28,8 +32,8 @@ const PARKED_CAR_SHADOW_M := 90.0
 const PEOPLE_ANIM_NEAR_M := 35.0
 const PEOPLE_ANIM_FAR_M := 80.0
 const PEOPLE_STRIDE_MID := 3
-const PEOPLE_STRIDE_FAR := 5
-const PEOPLE_STRIDE_OFFSCREEN := 8
+const PEOPLE_STRIDE_FAR := 6
+const PEOPLE_STRIDE_OFFSCREEN := 15
 
 static func people_anim_stride(dist_sq: float, on_screen: bool) -> int:
 	if not on_screen:
