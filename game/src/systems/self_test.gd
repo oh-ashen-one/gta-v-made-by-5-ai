@@ -49,7 +49,7 @@ func run(main: Node) -> void:
 	_check("civilian traffic populated", traffic.cars.size() >= 8)
 	_check("pedestrians populated", traffic.peds.size() >= 20)
 	_lighting_checks(world)
-	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT
+	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT + CrowdDirector.EXTRA_WALKERS
 	var unique_peds: Dictionary = {}
 	for pedestrian in traffic.peds:
 		if is_instance_valid(pedestrian): unique_peds[pedestrian.get_instance_id()] = true
@@ -83,8 +83,8 @@ func run(main: Node) -> void:
 	_check("junction changeover clears both approaches", not traffic.signal_allows(Vector3.RIGHT) and not traffic.signal_allows(Vector3.FORWARD))
 	traffic._signal_clock = 20.0
 	_check("north-south signal excludes east-west movement", traffic.signal_allows(Vector3.FORWARD) and not traffic.signal_allows(Vector3.RIGHT))
-	var ew_green: MeshInstance3D
-	var ns_green: MeshInstance3D
+	var ew_green: GeometryInstance3D   # MeshInstance3D post lamp or JunctionSignals MultiMesh
+	var ns_green: GeometryInstance3D
 	for lamp in get_tree().get_nodes_in_group("traffic_lamps"):
 		if int(lamp.get_meta("lamp_index", -1)) == 2:
 			if int(lamp.get_meta("signal_axis", 0)) == 0: ew_green = lamp
@@ -339,6 +339,7 @@ func run(main: Node) -> void:
 	_check("saved SMG restores held model and clears transient actions", Game.carried_weapon == "smg" and player._weapon_model != null and String(player._weapon_model.scene_file_path).contains("smg") and not player._reloading and player._fire_cooldown == 0.0 and player._press_queue.is_empty())
 	_negative_save_checks(player, mission)
 	await _wave5_checks(world, traffic, heli)
+	await _street_life_checks(player, traffic)
 	await _water_checks(world)
 	await _downtown_plan_checks(world)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
@@ -664,6 +665,9 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 	var drivable := 0
 	var probed := 0
 	var blocked_at: Array[String] = []
+	# Static layout check: moving lane traffic is not a parking obstruction.
+	var lane_traffic: Array = get_tree().get_nodes_in_group("ambient_vehicles")
+	for body in lane_traffic: (body as CollisionObject3D).collision_layer = 0
 	for v in get_tree().get_nodes_in_group("vehicles"):
 		if not v is Car or v.has_ai or v.driver_is_player or not v.visible or v.get_meta("courtyard_only", false): continue
 		var car_body := v as Car
@@ -677,6 +681,7 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 		elif blocked_at.size() < 6:
 			blocked_at.append(str(car_body.global_position.round()))
 	_check("kerbside parked cars can pull out and drive 12 m unobstructed", probed > 0 and drivable >= int(probed * 0.9), "%d/%d blocked=%s" % [drivable, probed, blocked_at])
+	for body in lane_traffic: if (body as AmbientVehicle).active: (body as CollisionObject3D).collision_layer = 8
 	var sleeping := 0
 	for v in get_tree().get_nodes_in_group("vehicles"):
 		if v is Car and not v.has_ai and not v.driver_is_player and v.visible and not v.is_physics_processing():
@@ -1105,6 +1110,190 @@ func _report(timed_out: bool = false) -> void:
 	finished.emit(failures)
 	get_tree().quit(124 if timed_out else (1 if failures > 0 else 0))
 
+## Street life (Opus wave A): camera-centred lane traffic, crowds, avenue
+## canopy and taking a stopped ambient car.
+## Wave M street-life: lane traffic and crowds adopt the downtown-map graph
+## (synthetic graph here; the real one lands with the downtown-map piece).
+func _downtown_adoption_checks(traffic: TrafficManager) -> void:
+	var probe := AmbientTraffic.new()
+	probe.traffic = traffic
+	probe.nodes = traffic.world.traffic_nodes.duplicate()
+	probe._build_edges()
+	var legacy_edges := probe.edges.size()
+	var legacy_nodes := probe.nodes.size()
+	var corner := traffic.world.traffic_nodes.find(Vector3(320.0, 0.1, -320.0))
+	var g := {"nodes": [Vector3(320.0, 0.0, -320.0), Vector3(400.0, 0.0, -320.0), Vector3(400.0, 0.0, -480.0), Vector3(560.0, 0.0, -320.0), Vector3(400.0, 3.6, -560.0)],
+		"edges": [Vector2i(0, 1), Vector2i(1, 2), Vector2i(1, 3), Vector2i(2, 4)], "lanes": [1, 2, 1, 2], "links": [Vector2i(0, corner)]}
+	var added := probe.adopt_downtown(g)
+	var two_lane := -1
+	var bridge := -1
+	var signals_ok := true
+	for e in range(legacy_edges, probe.edges.size()):
+		var ed: Dictionary = probe.edges[e]
+		# Signals hold at the 3-road junction (and the legacy corner), not at bends.
+		var to_junction := int(ed["to"]) == legacy_nodes or int(ed["to"]) == corner
+		if bool(ed["signal"]) != to_junction:
+			signals_ok = false
+		if (ed["offs"] as Array).size() == 2 and two_lane < 0 and int(ed["to"]) == legacy_nodes + 1:
+			two_lane = e
+		if float(ed["y1"]) > 3.0:
+			bridge = e
+	var lat := -1.0
+	var lift := -1.0
+	if two_lane >= 0:
+		var ed2: Dictionary = probe.edges[two_lane]
+		lat = (probe.lane_point(two_lane, 0, 20.0) - (ed2["a"] as Vector3)).dot(ed2["left"])
+	if bridge >= 0:
+		lift = probe.lane_point(bridge, 0, float(probe.edges[bridge]["len"])).y
+	_check("downtown road graph adopted by lane traffic (left-hand, merged, deck height)", corner >= 0 and added == 8 and probe.nodes.size() == legacy_nodes + 4 \
+			and absf(lat - 5.25) < 0.05 and lift > 3.6 and signals_ok and probe.edges[0]["offs"] == AmbientTraffic.LANE_OFFSETS,
+			"added=%d nodes=%d lat=%.2f lift=%.2f" % [added, probe.nodes.size(), lat, lift])
+	probe.free()
+	var crowd_probe := CrowdDirector.new()
+	var walks := crowd_probe.adopt_downtown([[Vector3(400.0, 0.3, -330.0), Vector3(400.0, 0.3, -470.0)], [Vector3.ZERO]])
+	crowd_probe.free()
+	_check("downtown walks adopted by the crowd director", walks == 1, "walks=%d" % walks)
+
+## Street-life M2: the crowd is women, men, elders and children with hair,
+## skirts and props, not one recoloured young man; walkers off the pavement
+## head back to it; taxis carry a legend sign; tail lamps are lens clusters.
+func _people_checks(traffic: TrafficManager) -> void:
+	var walkers: Array = []
+	for p in traffic.peds:
+		if is_instance_valid(p) and not p.is_police and not p.is_hostile:
+			walkers.append(p)
+	var c := CrowdPeople.census(walkers)
+	var total := 0
+	for k in ["man", "woman", "elder_m", "elder_f", "child"]:
+		total += int(c.get(k, 0))
+	var women := int(c.get("woman", 0)) + int(c.get("elder_f", 0))
+	_check("crowd is women, men, elders and children (M2)", total >= walkers.size() * 0.9 and women >= total * 0.35 and int(c.get("child", 0)) >= 5 \
+		and int(c.get("elder_m", 0)) + int(c.get("elder_f", 0)) >= 8, str(c))
+	var hair := 0
+	var skirts := 0
+	var props := 0
+	var posed := 0
+	for p in walkers:
+		var cv: CharacterVisual = p.character_visual
+		if cv == null or cv.skeleton == null:
+			continue
+		if cv.skeleton.find_child("PeopleHair", true, false) != null: hair += 1
+		if cv.skeleton.find_child("PeopleSkirt", true, false) != null: skirts += 1
+		if cv.skeleton.find_child("People*", true, false) != null and String((p as Node).get_meta("people", {}).get("prop", "none")) != "none": props += 1
+		if cv.skeleton.get_node_or_null("PeoplePose") != null: posed += 1
+	_check("people carry hair, skirts, props and poses (M2)", hair >= walkers.size() * 0.3 and skirts >= 15 and props >= walkers.size() * 0.35 and posed >= 20,
+		"hair=%d skirts=%d props=%d posed=%d of %d" % [hair, skirts, props, posed, walkers.size()])
+	var probe := NPC.new()
+	traffic.add_child(probe)
+	probe.global_position = Vector3(0.0, 0.3, -80.0)    # mid-block, in the road
+	var back := probe._pavement_return()
+	probe.global_position = Vector3(0.0, 0.3, -158.0)   # on the junction crossing
+	var cross := probe._pavement_return()
+	probe.global_position = Vector3(10.6, 0.3, -80.0)   # on the pavement
+	var pave := probe._pavement_return()
+	probe.queue_free()
+	_check("walkers off the pavement return to it, crossings allowed (M2)", back != Vector3.INF and absf(back.x) > WorldBuilder.ROAD_HALF and cross == Vector3.INF and pave == Vector3.INF, str(back))
+	var taxi_ok := false
+	var lamp_ok := false
+	for v in get_tree().get_nodes_in_group("ambient_vehicles"):
+		var av := v as AmbientVehicle
+		if av == null:
+			continue
+		for mi in av.find_children("*", "MeshInstance3D", true, false):
+			var sm := (mi as MeshInstance3D).material_override as ShaderMaterial
+			if sm != null and sm.shader != null:
+				if sm.shader.code.contains("T A X I"): taxi_ok = true
+				if sm.shader.code.contains("uniform float brake"): lamp_ok = true
+	_check("taxi roof signs carry a legend; tail lamps are lens clusters (M2)", taxi_ok and lamp_ok)
+
+func _street_life_checks(player: Player, traffic: TrafficManager) -> void:
+	var amb := traffic.ambient
+	_check("street life systems present", amb != null and traffic.crowd != null and traffic.dressing != null)
+	if amb == null or traffic.crowd == null or traffic.dressing == null:
+		return
+	_downtown_adoption_checks(traffic)
+	_people_checks(traffic)
+	print("[street-test] mode=", Game.mode, " vehicle=", player.current_vehicle)
+	if player.current_vehicle != null:
+		await _tap("interact")
+		await _ticks(5)
+	player.respawn_at(Vector3(-171.0, 0.45, -60.0), PI)
+	if player.camera != null:
+		player.camera.current = true
+	await _ticks(12)
+	var near := amb.count_near(amb._focus, AmbientTraffic.SPAWN_RADIUS + 5.0)
+	_check("camera-centred lane traffic is dense", near >= 45, "%d within %d m of %s" % [near, int(AmbientTraffic.SPAWN_RADIUS), amb._focus.round()])
+	var wrong := 0
+	var checked := 0
+	for v in amb.vehicles:
+		if not v.active or v.s < AmbientTraffic.ENTRY:
+			continue
+		var ed: Dictionary = amb.edges[v.edge]
+		var lateral: float = (v.global_position - (ed["a"] as Vector3)).dot(ed["left"])
+		checked += 1
+		if lateral < 1.0 or lateral > 5.5:
+			wrong += 1
+	_check("ambient traffic keeps to the left-hand lanes", checked > 20 and wrong == 0, "%d/%d off-lane" % [wrong, checked])
+	var before := {}
+	for v in amb.vehicles:
+		if v.active:
+			before[v] = v.global_position
+	await _ticks(150)
+	var moved := 0
+	var total := 0
+	var held := 0
+	for v in before:
+		if not is_instance_valid(v) or not v.active:
+			continue
+		total += 1
+		if (v as Node3D).global_position.distance_to(before[v]) > 3.0:
+			moved += 1
+	for v in amb.vehicles:
+		if v.active and v.speed < 0.6 and v.s > AmbientTraffic.ENTRY:
+			held += 1
+	_check("ambient traffic flows and queues", total > 20 and moved >= int(total * 0.35) and held >= 1, "%d/%d moved, %d holding %s" % [moved, total, held, amb.hold_reasons()])
+	var overlaps := 0
+	for i in amb.vehicles.size():
+		var a := amb.vehicles[i]
+		if not a.active:
+			continue
+		for j in range(i + 1, amb.vehicles.size()):
+			var b := amb.vehicles[j]
+			if b.active and a.global_position.distance_to(b.global_position) < 2.2:
+				overlaps += 1
+	_check("ambient vehicles never overlap", overlaps == 0, "%d overlapping pairs" % overlaps)
+	var walkers := traffic.crowd.count_near(traffic.crowd._focus, 130.0)
+	_check("camera-centred crowd on the pavements", walkers >= 40, "%d roamers within 130 m" % walkers)
+	var overhang := 0
+	for xf in traffic.dressing.trees:
+		# Rain-tree crown radius is ~10.5 m at unit scale.
+		if 10.5 * xf.basis.get_scale().x - (AvenueDressing.TRUNK_OFFSET - WorldBuilder.ROAD_HALF) >= 3.0:
+			overhang += 1
+	_check("avenue tree crowns overhang the carriageway", traffic.dressing.trees.size() >= 150 and overhang == traffic.dressing.trees.size(), "%d trees, %d overhang" % [traffic.dressing.trees.size(), overhang])
+	# Take a stopped ambient car through the normal interaction input.
+	var target: AmbientVehicle = null
+	var best := INF
+	for v in amb.vehicles:
+		if v.active and v.kind != "bus" and v.s > AmbientTraffic.ENTRY + 6.0:
+			var d := v.global_position.distance_to(player.global_position)
+			if d < best:
+				best = d
+				target = v
+	var taken := false
+	if target != null and Game.mode == Game.MODE_FOOT:
+		target.vmax = 0.0
+		target.speed = 0.0
+		var side := target.global_transform.basis.x
+		player.respawn_at(target.global_position + side * 2.3 + Vector3(0, 0.45, 0), 0.0)
+		await _ticks(4)
+		var promoted_before: int = amb.stats["promoted"]
+		await _tap("interact")
+		await _ticks(2)
+		taken = Game.mode == Game.MODE_CAR and player.current_vehicle is Car and int(amb.stats["promoted"]) == promoted_before + 1
+		if taken:
+			await _tap("interact")
+			await _ticks(5)
+	_check("a stopped ambient car can be taken with interact", taken, "mode=%d promoted=%d" % [Game.mode, int(amb.stats["promoted"])])
 
 ## On-foot piece: the walk clip plays at walking pace and the run clip's rate
 ## and stride scale with sprint speed, so planted feet do not slide.

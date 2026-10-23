@@ -210,10 +210,13 @@ func _build() -> void:
 
 	_arm = SpringArm3D.new()
 	_arm.spring_length = 5.4
-	_arm.collision_mask = 1
+	# World (1) and vehicles (8): the chase camera must not pass inside a
+	# parked or ambient bus. The car's own body is excluded below.
+	_arm.collision_mask = 1 | 8
 	_arm.position = Vector3(0.0, dims.y + 0.5, 0.0)
 	_arm.rotation_degrees = Vector3(-12.0, 0.0, 0.0)
 	add_child(_arm)
+	_arm.add_excluded_object(get_rid())
 	_camera = Camera3D.new()
 	_camera.fov = 62.0
 	_arm.add_child(_camera)
@@ -495,15 +498,19 @@ func _player_collision_response(before: Vector3) -> void:
 				other.set_meta("shove_ms", now_ms)
 				other.shove(-n * (j / m2), contact)
 		else:
-			var vn := v.dot(n)
+			# Street-life r1: lane traffic is kinematic but moving; closing speed
+			# is relative to it, so following a car at 12 m/s is not a 12 m/s wall.
+			var sv: Vector3 = (struck as AmbientVehicle).planar_velocity() if struck is AmbientVehicle else Vector3.ZERO
+			var vn := (v - sv).dot(n)
 			if vn >= -0.05: continue
 			closing = -vn
 			var low := contact.y - global_position.y < 0.3
 			var e := 0.0 if (low and closing < 6.0) else WALL_RESTITUTION
 			impulse = (1.0 + e) * closing
 			# Scraping along a wall bleeds speed.
-			var tangent := v - n * vn
-			v = n * vn + tangent * (1.0 - clampf(closing * 0.014, 0.0, 0.35))
+			var va := v.dot(n)
+			var tangent := v - n * va
+			v = n * va + tangent * (1.0 - clampf(closing * 0.014, 0.0, 0.35))
 		v += n * impulse
 		changed = true
 		_yaw_rate = clampf(_yaw_rate + r.cross(n * impulse).y * SPIN_PER_IMPULSE, -3.0, 3.0)

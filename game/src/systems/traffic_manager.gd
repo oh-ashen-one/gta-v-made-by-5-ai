@@ -3,11 +3,11 @@ extends Node3D
 ## Population and traffic simulation: lane graph, left-hand traffic, civilian
 ## pedestrians, parked cars, and police response (TRAFFIC-01/02, LAW-02/03).
 
-const LANE_OFFSET := 4.0        # lane centre is 4 m to the LEFT of the road centre
+const LANE_OFFSET := 4.6        # kerb-lane centre, 4.6 m LEFT of the road centre (shared with AmbientTraffic)
 const PED_COUNT := 140
 const FOCUSED_PED_COUNT := 58
 const DINER_COUNT := 45
-const TRAFFIC_COUNT := 26
+const TRAFFIC_COUNT := 14
 const POLICE_SPAWN_DISTANCE := 55.0
 
 var world: WorldBuilder
@@ -33,6 +33,13 @@ var _officer_pool_ready := false
 var _officer_activation_us: Array[int] = []
 var _police_car_pool: Array[Car] = []
 const POLICE_CAR_POOL_SIZE := 2
+## Street life (Opus wave A): camera-centred lane traffic, pedestrian density
+## and avenue trees. Physics cars above remain for police, carjacking targets
+## and kerbside parking.
+var ambient: AmbientTraffic
+var crowd: CrowdDirector
+var dressing: AvenueDressing
+var signals: JunctionSignals
 
 func setup(w: WorldBuilder, player: Node) -> void:
 	add_to_group("traffic_manager")
@@ -45,6 +52,25 @@ func setup(w: WorldBuilder, player: Node) -> void:
 	_spawn_traffic()
 	_spawn_peds()
 	_warm_officer_pool()
+	_update_signal_lamps(true)
+	_setup_street_life()
+
+func _setup_street_life() -> void:
+	# QA A/B switch: the legacy population only (street-life off).
+	if "--street-life=off" in OS.get_cmdline_user_args():
+		return
+	ambient = AmbientTraffic.new()
+	add_child(ambient)
+	ambient.setup(self)
+	crowd = CrowdDirector.new()
+	add_child(crowd)
+	crowd.setup(self)
+	dressing = AvenueDressing.new()
+	add_child(dressing)
+	dressing.build(world)
+	signals = JunctionSignals.new()
+	add_child(signals)
+	signals.build(world)
 	_update_signal_lamps(true)
 
 ## Build the officer responders during world load, then keep them inert and
@@ -288,7 +314,18 @@ func _spawn_peds() -> void:
 			path = focused_lanes[index % focused_lanes.size()]
 		else:
 			path = _ped_lanes[_rng.randi_range(0, _ped_lanes.size() - 1)]
+		if index < FOCUSED_PED_COUNT and path.size() == 2:
+			# Street-life M2: each walker of the focused block lanes keeps its
+			# own distance from the kerb (one shared line made single-file
+			# columns along the hawker pavements).
+			var seg: Vector3 = (path[1] - path[0])
+			var side := Vector3.UP.cross(seg.normalized())
+			var off := _rng.randf_range(-0.35, 0.35) if index % focused_lanes.size() == 4 else _rng.randf_range(-0.7, 0.9)
+			path = [path[0] + side * off, path[1] + side * off]
 		_spawn_on_segment(ped, path)
+		# M2: everyone outside the hawker hall is a camera-side roamer, so the
+		# director can bring them to the street being looked at.
+		ped.set_meta("roamer", true)
 		peds.append(ped)
 	# Damageable/reactive diners and queueing customers. Keep the package and
 	# combat aisle (local z=-8 and north of it) clear for actual mission play.
@@ -334,6 +371,7 @@ func _process(delta: float) -> void:
 	for car in cars:
 		if not is_instance_valid(car) or car.disabled or not car.has_ai:
 			continue
+		_ai_stall_check(car, delta)
 		var nxt = car.get_meta("next_node", null)
 		if nxt == null:
 			continue
@@ -343,6 +381,11 @@ func _process(delta: float) -> void:
 		var green := signal_allows(nxt - from_node)
 		car.ai_speed_limit = INF
 		if not green and distance_to_stop < 34.0:
+			car.ai_speed_limit = maxf(0.0, (distance_to_stop - 3.0) * 0.75)
+		# Street-life M2: AI cars give way at the junction a player-driven car
+		# is about to cross (lane traffic already does; an AI sedan crossing
+		# on its green spun the route car at the (-156,156) corner).
+		elif distance_to_stop < 34.0 and _player_car_crossing(nxt, car):
 			car.ai_speed_limit = maxf(0.0, (distance_to_stop - 3.0) * 0.75)
 		if distance_to_stop < 7.0 and green:
 			var from := Vector3(nxt.x, car.global_position.y, nxt.z)
@@ -360,7 +403,78 @@ func _process(delta: float) -> void:
 			# last known position (LAW-04 search phase).
 			var goal: Vector3 = _player.controlled_actor().global_position if Game.player_seen else Game.last_seen_position
 			pc.ai_target = _pursuit_waypoint(pc, goal)
+			# M2: close in, box in, but do not ram at speed (route car health
+			# 100 -> 71 in M1 from pursuit contact at walking pace).
+			var gap := pc.global_position.distance_to(_player.controlled_actor().global_position)
+			pc.ai_speed_limit = INF if gap > 16.0 else maxf(2.5, (gap - 5.0) * 0.9)
 	_update_police(delta)
+
+func _player_car_crossing(node: Vector3, car: Car) -> bool:
+	if Game.mode != Game.MODE_CAR or _player == null:
+		return false
+	var pc: Node3D = _player.controlled_actor()
+	if pc == null or pc == car:
+		return false
+	var rel := node - pc.global_position
+	rel.y = 0.0
+	if rel.length() > 45.0:
+		return false
+	var pf := -pc.global_transform.basis.z
+	pf.y = 0.0
+	var cf := -car.global_transform.basis.z
+	cf.y = 0.0
+	# Heading for (or in) that junction, and the AI car crosses its path.
+	return (rel.length() < 12.0 or rel.normalized().dot(pf.normalized()) > 0.8) and absf(cf.normalized().dot(pf.normalized())) < 0.6
+
+## Street-life r1: a civilian AI car standing still for AI_STALL_RESET s
+## (wedged beside lane traffic, both waiting on each other: a headless route
+## sat 70 s behind one straddling both lanes) is moved to a lane spot the
+## camera cannot see. Police and the player's car are never touched.
+const AI_STALL_RESET := 9.0
+func _ai_stall_check(car: Car, delta: float) -> void:
+	if car.kind == "police" or car.driver_is_player:
+		return
+	# A car held by its red light (speed limit set) is waiting, not stalled.
+	if Vector2(car.velocity.x, car.velocity.z).length() > 0.3 or car.ai_speed_limit < INF:
+		car.set_meta("stall_s", 0.0)
+		return
+	var stall: float = float(car.get_meta("stall_s", 0.0)) + delta
+	car.set_meta("stall_s", stall)
+	var cam := get_viewport().get_camera_3d()
+	var seen := false
+	if cam != null:
+		var here := car.global_position - cam.global_position
+		here.y = 0.0
+		seen = here.length() < 140.0 and here.normalized().dot(-cam.global_transform.basis.z) > -0.2
+	# In view it takes a long stall (a visible pop is the lesser evil than a
+	# frozen street); out of view it goes sooner.
+	if stall < (AI_STALL_RESET * 2.2 if seen else AI_STALL_RESET):
+		return
+	for attempt in 20:
+		var edge := _random_edge()
+		if edge.is_empty():
+			return
+		var from: Vector3 = edge["from"]
+		var to: Vector3 = edge["to"]
+		var dir := (to - from).normalized()
+		var p := from.lerp(to, _rng.randf_range(0.3, 0.7)) + Vector3.UP.cross(dir).normalized() * LANE_OFFSET
+		p.y = car.global_position.y
+		if cam != null:
+			var rel := p - cam.global_position
+			rel.y = 0.0
+			if rel.length() < 130.0 and rel.normalized().dot(-cam.global_transform.basis.z) > -0.2:
+				continue
+		if Vector2(p.x - Game.player_position.x, p.z - Game.player_position.z).length() < 60.0:
+			continue
+		car.velocity = Vector3.ZERO
+		car.global_position = p
+		car.rotation.y = atan2(-(to.x - from.x), -(to.z - from.z))
+		car.set_meta("from_node", from)
+		car.set_meta("next_node", to)
+		car.ai_target = _lane_point(from, to)
+		car.set_meta("stall_s", 0.0)
+		car.set_meta("stall_resets", int(car.get_meta("stall_resets", 0)) + 1)
+		return
 
 ## Road-graph pursuit (wave 5). Wave 2-4 aimed responders straight at the
 ## player, so a car on the far side of a block drove into the buildings. Close
@@ -522,6 +636,19 @@ func _update_police(delta: float) -> void:
 		var nearest := _nearest_node(actor.global_position)
 		var candidates := _neighbours(nearest)
 		var spawn_node := nodes[candidates[_rng.randi_range(0, candidates.size() - 1)]] if not candidates.is_empty() else nodes[nearest]
+		# Street-life M2: the pursuit car comes up from behind (GTA-style),
+		# never from the junction ahead, where it parked across the player's
+		# path (route corner (-156,156); M1 drive leg 166 s, car shot at).
+		var heading := -actor.global_transform.basis.z
+		heading.y = 0.0
+		var best_back := -INF
+		for c in candidates:
+			var rel: Vector3 = nodes[c] - actor.global_position
+			rel.y = 0.0
+			var score := -rel.normalized().dot(heading.normalized()) if rel.length() > 1.0 else -1.0
+			if score > best_back:
+				best_back = score
+				spawn_node = nodes[c]
 		var pc := _take_police_car(spawn_node + Vector3(4.0, 0.4, 4.0), actor.global_position)
 		police_cars.append(pc)
 
@@ -530,6 +657,15 @@ func _update_police(delta: float) -> void:
 func signal_allows(direction: Vector3) -> bool:
 	var east_west := absf(direction.x) > absf(direction.z)
 	return _signal_clock < 10.0 if east_west else (_signal_clock >= 14.0 and _signal_clock < 24.0)
+
+## Pedestrian phase for crossing a road whose traffic flows along `flow`:
+## walkers may step off only early in the cross street's green, so a 16 m
+## crossing is finished before that road's own green begins.
+func ped_may_cross(flow: Vector3) -> bool:
+	var road_east_west := absf(flow.x) > absf(flow.z)
+	if road_east_west:
+		return _signal_clock >= 14.0 and _signal_clock < 18.0
+	return _signal_clock < 4.0
 
 func _update_signal_lamps(force: bool = false) -> void:
 	var phase := 0 if _signal_clock < 10.0 else (1 if _signal_clock < 12.0 else (2 if _signal_clock < 14.0 else (3 if _signal_clock < 24.0 else (4 if _signal_clock < 26.0 else 5))))
@@ -541,7 +677,7 @@ func _update_signal_lamps(force: bool = false) -> void:
 		_signal_materials.append(Palette.emissive(Color(0.025, 1.0, 0.12), 3.0))
 		_signal_unlit = Palette.mat(Color(0.025, 0.035, 0.03), 0.35, 0.15)
 	for lamp in get_tree().get_nodes_in_group("traffic_lamps"):
-		if not lamp is MeshInstance3D: continue
+		if not lamp is GeometryInstance3D: continue   # MeshInstance3D or JunctionSignals MultiMesh
 		var axis := int(lamp.get_meta("signal_axis", 0))
 		var lens := int(lamp.get_meta("lamp_index", 0))
 		var active_lens := 0

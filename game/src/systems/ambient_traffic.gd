@@ -1,0 +1,1143 @@
+class_name AmbientTraffic
+extends Node3D
+## Dense, camera-centred civilian traffic (street-life, Opus wave A).
+##
+## Critic 5: "In 06_driving the boulevard has zero traffic ... it reads as a
+## test map." Twenty-six physics cars spread over a 640 m grid leave any one
+## street empty. This system keeps a pool of lightweight AmbientVehicles on the
+## left-hand lane graph *around the active camera* (the way open-world games
+## stream traffic): two lanes each way, car following, red-light queues, left
+## and straight turns through junctions, braking for people and other cars.
+## Vehicles that fall far behind the camera are re-seeded ahead of it, out of
+## view, so the street the player is looking at is always busy.
+
+const POOL := 112
+const LANE_OFFSETS: Array[float] = [4.6, 2.3]   # kerb lane (slow), median lane
+const ENTRY := 11.0      # lane starts this far past a junction centre
+const STOP := 12.0       # stop line this far before the next junction centre
+const SPAWN_RADIUS := 175.0
+const DESPAWN_RADIUS := 245.0
+const MIN_GAP := 8.0
+const ACCEL := 2.6
+const DECEL := 6.5
+const CELL := 16.0
+## Integration fixes (pre-integrator, wave B):
+## - the opening five-foot-way spawn stretch stays clear of ambient vehicles
+##   so the player is never wedged between a parked car and a stopped bus;
+## - a vehicle stalled for GRIDLOCK_RESET s is re-seeded out of sight, which
+##   dissolves junction gridlock without a visible pop;
+## - a vehicle stalled next to the player on foot is moved away after
+##   WEDGE_RESET s even if visible (safety over continuity).
+const OPENING_CLEAR := 34.0
+const GRIDLOCK_RESET := 18.0
+const WEDGE_RESET := 4.0
+const WEDGE_RADIUS := 7.0
+const DEADLOCK_RESET := 6.0
+const GIVE_UP := 10.0
+const FAR_SIM := 130.0
+const FAR_TICKS := 3
+var _tick := 0
+
+var traffic: TrafficManager
+var nodes: Array[Vector3] = []
+var edges: Array[Dictionary] = []          # directed: a, b, dir, left, len, from, to
+var _out_edges: Dictionary = {}            # node index -> Array[int]
+var vehicles: Array[AmbientVehicle] = []
+var _keys: Dictionary = {}                  # edge*2+lane -> Array[AmbientVehicle] sorted by s
+var _rng := RandomNumberGenerator.new()
+var _focus := Vector3.INF
+var _pp_vel := Vector3.ZERO
+var _last_pp := Vector3.ZERO
+var _last_pp_ms := 0
+var _cam_pos := Vector3.ZERO
+var _cam_fwd := Vector3.FORWARD
+var _grid: Dictionary = {}
+var _grid_timer := 0.0
+var _promoted: Array[Car] = []
+var stats := {"relocated": 0, "cuts": 0, "promoted": 0, "unstuck": 0}
+
+func setup(t: TrafficManager) -> void:
+	name = "AmbientTraffic"
+	traffic = t
+	# A copy: the downtown graph appends nodes here, never to the legacy
+	# 5 x 5 traffic_nodes that tests and the route driver index.
+	nodes = t.nodes.duplicate()
+	_rng.seed = Game.seed_value + 77
+	_build_edges()
+	if t.world != null:
+		adopt_downtown(t.world.downtown_graph)
+	# Street-life D: no procedural box buses (critic: "box-primitive buses read
+	# as blockouts"); the stream is the provider sedan/coupe/van art.
+	var kinds := ["sedan", "taxi", "sedan", "coupe", "van", "sedan", "taxi", "coupe", "sedan", "van", "taxi", "sedan"]
+	# Car paint: original texture plus restrained multiplies (silver, white,
+	# charcoal, navy, deep red); Singapore taxis in blue and yellow.
+	var paints := [Color.WHITE, Color(0.78, 0.8, 0.84), Color(0.35, 0.36, 0.4), Color(0.46, 0.55, 0.78), Color(0.9, 0.9, 0.88), Color(0.62, 0.3, 0.28), Color(0.55, 0.6, 0.55)]
+	for i in POOL:
+		var v := AmbientVehicle.new()
+		var kind: String = kinds[i % kinds.size()]
+		var color: Color = paints[(i * 5 + i / 7) % paints.size()]
+		if kind == "taxi":
+			color = Color(0.35, 0.55, 1.0) if i % 2 == 0 else Color(1.0, 0.85, 0.3)
+		elif kind == "bus":
+			color = Color.WHITE if i % 24 < 12 else Color(0.62, 0.42, 0.62)
+		v.manager = self
+		v.setup_vehicle(kind, color)
+		v.vmax = _rng.randf_range(9.0, 13.5) if kind != "bus" else 8.5
+		add_child(v)
+		v.global_position = Vector3(0, -60.0 - i * 0.1, 0)
+		v.active = false
+		v.visible = false
+		vehicles.append(v)
+
+func _build_edges() -> void:
+	for i in nodes.size():
+		_out_edges[i] = []
+	for i in nodes.size():
+		for j in nodes.size():
+			if i == j:
+				continue
+			var d := nodes[j] - nodes[i]
+			d.y = 0.0
+			if not ((absf(d.x) < 0.5 and absf(absf(d.z) - 160.0) < 0.5) or (absf(d.z) < 0.5 and absf(absf(d.x) - 160.0) < 0.5)):
+				continue
+			_add_edge(i, j, LANE_OFFSETS, true, ENTRY, STOP, 0.0, 0.0)
+
+## One directed lane edge. offs: lane-centre offsets left of the centreline,
+## kerb lane first; entry/stop: lane start past the from-node and stop line
+## before the to-node; y0/y1: road surface height at each end (bridge decks).
+func _add_edge(i: int, j: int, offs: Array, signal_held: bool, entry: float, stop: float, y0: float, y1: float) -> void:
+	var d := nodes[j] - nodes[i]
+	d.y = 0.0
+	var dir := d.normalized()
+	edges.append({"a": Vector3(nodes[i].x, 0.0, nodes[i].z), "b": Vector3(nodes[j].x, 0.0, nodes[j].z), "dir": dir, "left": Vector3.UP.cross(dir).normalized(),
+		"len": d.length(), "from": i, "to": j, "offs": offs, "signal": signal_held, "entry": entry, "stop": stop, "y0": y0, "y1": y1})
+	_out_edges[i].append(edges.size() - 1)
+
+# ------------------------------------------------------- downtown (wave M)
+## Adopt the downtown-map road graph (loop/DOWNTOWN_PLAN.md section 5):
+## {"nodes": Array[Vector3], "edges": Array[Vector2i] (undirected),
+## "lanes": Array[int] (per direction), "links": Array[Vector2i] (downtown
+## node -> legacy traffic_nodes index)}. Every downtown edge becomes two
+## directed lane edges; linked or coincident nodes merge with the legacy
+## grid, so lane traffic flows between the district and the new roads.
+## Signals hold only at real junctions (3+ roads); bends are driven through.
+## Returns the number of directed edges added (0 for an empty graph).
+const DT_LANE_W := 3.5
+func adopt_downtown(g: Dictionary) -> int:
+	if g.is_empty() or not g.has("nodes") or not g.has("edges"):
+		return 0
+	var dn: Array = g["nodes"]
+	var link := {}
+	for l in g.get("links", []):
+		link[int((l as Vector2i).x)] = int((l as Vector2i).y)
+	var legacy := nodes.size()
+	var index: Array[int] = []
+	for i in dn.size():
+		var p: Vector3 = dn[i]
+		var found := -1
+		if link.has(i) and int(link[i]) >= 0 and int(link[i]) < legacy:
+			found = int(link[i])
+		else:
+			for k in nodes.size():
+				if Vector2(nodes[k].x - p.x, nodes[k].z - p.z).length() < 1.5:
+					found = k
+					break
+		if found < 0:
+			nodes.append(p)
+			found = nodes.size() - 1
+			_out_edges[found] = []
+		index.append(found)
+	var degree := {}
+	for e in g["edges"]:
+		var ev := e as Vector2i
+		for k in [index[ev.x], index[ev.y]]:
+			degree[k] = int(degree.get(k, 0)) + 1
+	var lanes: Array = g.get("lanes", [])
+	var before := edges.size()
+	for n in g["edges"].size():
+		var ev: Vector2i = g["edges"][n]
+		var a := index[ev.x]
+		var b := index[ev.y]
+		if a == b:
+			continue
+		var per_dir := clampi(int(lanes[n]) if n < lanes.size() else 1, 1, 4)
+		var median := _plan_median(dn[ev.x], dn[ev.y])
+		var offs: Array[float] = [(per_dir - 0.5) * DT_LANE_W + median * 0.5]
+		if per_dir >= 2:
+			offs.append((per_dir - 1.5) * DT_LANE_W + median * 0.5)
+		var flat := Vector2(nodes[b].x - nodes[a].x, nodes[b].z - nodes[a].z).length()
+		for pair in [[a, b, (dn[ev.x] as Vector3).y, (dn[ev.y] as Vector3).y], [b, a, (dn[ev.y] as Vector3).y, (dn[ev.x] as Vector3).y]]:
+			var junction_from := int(degree.get(pair[0], 0)) >= 3 or int(pair[0]) < legacy
+			var junction_to := int(degree.get(pair[1], 0)) >= 3 or int(pair[1]) < legacy
+			var entry := ENTRY if junction_from else 3.0
+			var stop := STOP if junction_to else 3.0
+			# Short links keep a drivable stretch between the two ends.
+			var room := flat - entry - stop
+			if room < 8.0:
+				var k := maxf(0.2, (flat - 8.0) / maxf(1.0, entry + stop))
+				entry *= k
+				stop *= k
+			_add_edge(int(pair[0]), int(pair[1]), offs, junction_to, entry, stop, float(pair[2]), float(pair[3]))
+	stats["downtown_edges"] = edges.size() - before
+	return edges.size() - before
+
+## Median width of the DowntownPlan road this segment lies on (0 if none).
+func _plan_median(p: Vector3, q: Vector3) -> float:
+	var mid := (p + q) * 0.5
+	for road_name in DowntownPlan.ROADS:
+		var road: Dictionary = DowntownPlan.ROADS[road_name]
+		var pts: Array = road["pts"]
+		for k in pts.size() - 1:
+			var a: Vector3 = pts[k]
+			var b: Vector3 = pts[k + 1]
+			var ab := Vector2(b.x - a.x, b.z - a.z)
+			var t := clampf(Vector2(mid.x - a.x, mid.z - a.z).dot(ab) / maxf(0.01, ab.length_squared()), 0.0, 1.0)
+			if Vector2(mid.x - a.x, mid.z - a.z).distance_to(ab * t) < 2.0:
+				return float(road.get("median", 0.0))
+	return 0.0
+
+func _entry(e: int) -> float:
+	return float(edges[e]["entry"])
+
+func _s_end(e: int) -> float:
+	return float(edges[e]["len"]) - float(edges[e]["stop"])
+
+func _off(e: int, lane: int) -> float:
+	var offs: Array = edges[e]["offs"]
+	return float(offs[mini(lane, offs.size() - 1)])
+
+## Lane index valid on edge e (a two-lane approach feeding a one-lane road).
+func _lane_for(e: int, lane: int) -> int:
+	return mini(lane, (edges[e]["offs"] as Array).size() - 1)
+
+func _signal_ok(e: int) -> bool:
+	return not bool(edges[e]["signal"]) or traffic.signal_allows(edges[e]["dir"])
+
+func lane_point(e: int, lane: int, s: float) -> Vector3:
+	var ed: Dictionary = edges[e]
+	var p: Vector3 = ed["a"] + ed["dir"] * s + ed["left"] * _off(e, lane)
+	p.y = 0.07 + lerpf(float(ed["y0"]), float(ed["y1"]), clampf(s / maxf(0.01, float(ed["len"])), 0.0, 1.0))
+	return p
+
+# ----------------------------------------------------------------- update
+func _physics_process(delta: float) -> void:
+	var pt0 := Time.get_ticks_usec()
+	_physics_step(delta)
+	if _prof:
+		_prof_us += Time.get_ticks_usec() - pt0
+		_prof_frames += 1
+		if _prof_frames % 300 == 0:
+			print("[street-prof] ambient physics avg %.2f ms/frame over 300 frames" % [_prof_us / 300000.0])
+			_prof_us = 0
+
+var _prof_us := 0
+var _prof_frames := 0
+func _physics_step(delta: float) -> void:
+	_update_focus()
+	if Game.simulation_paused:
+		return
+	_grid_timer -= delta
+	if _grid_timer <= 0.0:
+		_grid_timer = 0.1
+		_rebuild_grid()
+	_rebuild_keys()
+	_update_player_car()
+	_tick += 1
+	var i := 0
+	for v in vehicles:
+		i += 1
+		if v.active:
+			# M1 perf: lane cars far from the camera and the player step every
+			# FAR_TICKS physics frames with the summed delta (nobody sees them;
+			# queues and signals still evolve).
+			var dt := delta
+			var far := Vector2(v.global_position.x - _cam_pos.x, v.global_position.z - _cam_pos.z).length_squared() > FAR_SIM * FAR_SIM \
+					and not _player_near(v.global_position, FAR_SIM)
+			if far:
+				if (i + _tick) % FAR_TICKS != 0:
+					continue
+				dt = delta * FAR_TICKS
+			_yield_lane(v, dt)
+			_drive(v, dt)
+			if v.active:
+				_unstick(v, dt)
+	_recycle(false)
+	_tidy_promoted()
+	if _debug:
+		_debug_timer -= delta
+		if _debug_timer <= 0.0:
+			_debug_timer = 0.5
+			_debug_dump()
+
+var _debug := "--street-debug" in OS.get_cmdline_user_args()
+var _prof := "--street-prof" in OS.get_cmdline_user_args()
+var _debug_timer := 0.0
+func _debug_dump() -> void:
+	var p := Game.player_position
+	var near: Array = []
+	for v in vehicles:
+		if v.active and v.global_position.distance_to(p) < 14.0:
+			near.append("%s e%d l%d s%.1f v%.1f gap%.1f lead%.1f sig%s" % [str(v.global_position.round()), v.edge, v.lane, v.s, v.speed, v.obstacle_gap, _leader_gap(v, _s_end(v.edge)), _signal_ok(v.edge)])
+	var others: Array = []
+	for g in ["vehicles", "npcs"]:
+		for n in get_tree().get_nodes_in_group(g):
+			if n is Node3D and (n as Node3D).global_position.distance_to(p) < 9.0 and (n as Node3D).global_position.distance_to(p) > 0.5:
+				others.append("%s:%s" % [n.get_class() if not n is Car else "Car", str((n as Node3D).global_position.round())])
+	var pc = get_tree().get_first_node_in_group("player")
+	var yaw := 0.0
+	if pc and pc.current_vehicle:
+		yaw = rad_to_deg(pc.current_vehicle.rotation.y)
+		var cv: Car = pc.current_vehicle
+		var hits: Array = []
+		for i in cv.get_slide_collision_count():
+			var c := cv.get_slide_collision(i)
+			if c.get_normal().y < 0.65:
+				hits.append("%s n%s" % [c.get_collider().name if c.get_collider() else "?", str(c.get_normal().snapped(Vector3.ONE * 0.1))])
+		others.append("spd%.1f hits=%s" % [cv.forward_speed(), hits])
+	print("[street-debug] t=%.1f player=%s yaw=%.0f mode=%d near=%s others=%s" % [Time.get_ticks_msec() / 1000.0, str(p.round()), yaw, Game.mode, near.slice(0, 4), others])
+
+func _process(_delta: float) -> void:
+	# Fixed-view captures run with the simulation paused; still seed the view.
+	if Game.simulation_paused:
+		_update_focus()
+
+func _update_focus() -> void:
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return
+	_cam_pos = cam.global_position
+	var fwd := -cam.global_transform.basis.z
+	var flat := Vector3(fwd.x, 0.0, fwd.z)
+	if flat.length() < 0.05:
+		flat = Vector3.FORWARD
+	flat = flat.normalized()
+	_cam_fwd = flat
+	var reach := clampf(_cam_pos.y * 1.85, 30.0, 180.0)
+	var f := Vector3(_cam_pos.x, 0.0, _cam_pos.z) + flat * reach
+	# Lead the focus along the player's motion so a driving player meets
+	# traffic and people that were seeded out of sight ahead of time.
+	var now_ms := Time.get_ticks_msec()
+	if _last_pp_ms > 0 and now_ms > _last_pp_ms:
+		var inst := (Game.player_position - _last_pp) / (float(now_ms - _last_pp_ms) / 1000.0)
+		inst.y = 0.0
+		if inst.length() < 60.0:
+			_pp_vel = _pp_vel.lerp(inst, 0.1)
+	_last_pp = Game.player_position
+	_last_pp_ms = now_ms
+	f += _pp_vel.limit_length(25.0) * 2.5
+	var cut := _focus == Vector3.INF or f.distance_to(_focus) > 60.0
+	_focus = f
+	if cut:
+		var t0 := Time.get_ticks_usec()
+		stats["cuts"] += 1
+		_build_view_spans()
+		_rebuild_keys()
+		_recycle(true)
+		_rebuild_keys()
+		_preroll(PREROLL_SECONDS)
+		stats["cut_ms"] = float(stats.get("cut_ms", 0.0)) + (Time.get_ticks_usec() - t0) / 1000.0
+		if _prof:
+			print("[street-prof] cut %d took %.1f ms (total %.0f ms)" % [stats["cuts"], (Time.get_ticks_usec() - t0) / 1000.0, stats["cut_ms"]])
+
+## Street-life D: lane stretches (edge, s_lo, s_hi) that lie 10-140 m inside
+## the street-level camera's forward cone; the pre-roll then carries the cars
+## seeded there into queues and platoons.
+var _view_spans: Array[Vector3] = []
+func _build_view_spans() -> void:
+	_view_spans.clear()
+	if _cam_pos.y > 30.0:
+		return
+	for e in edges.size():
+		var ed: Dictionary = edges[e]
+		var lo := INF
+		var hi := -INF
+		var s := _entry(e) + 2.0
+		while s < _s_end(e) - 4.0:
+			var p := lane_point(e, 0, s)
+			var rel := p - _cam_pos
+			rel.y = 0.0
+			if rel.length() > 10.0 and rel.length() < 140.0 and rel.normalized().dot(_cam_fwd) > 0.6:
+				lo = minf(lo, s)
+				hi = maxf(hi, s)
+			s += 6.0
+		if hi > lo:
+			_view_spans.append(Vector3(e, lo, hi))
+
+## Street-life D: after a camera cut, run the lane simulation forward a few
+## seconds (signals held) so the new view opens on traffic that has already
+## formed red-light queues and platoons, not on cars scattered at random.
+const PREROLL_SECONDS := 9.0
+func _preroll(seconds: float) -> void:
+	if traffic == null:
+		return
+	_rebuild_grid()
+	var step := 0.1
+	var t := 0.0
+	# r1: replay the signal history of the last `seconds` instead of holding
+	# the current phase (a held red piled every red approach into one long
+	# queue: 97 of 112 cars standing after a cut).
+	var clock_now: float = traffic._signal_clock
+	while t < seconds:
+		traffic._signal_clock = fposmod(clock_now - seconds + t, 28.0)
+		_rebuild_keys()
+		for v in vehicles:
+			if v.active:
+				_drive(v, step)
+		t += step
+	traffic._signal_clock = clock_now
+	_rebuild_keys()
+	stats["prerolls"] = int(stats.get("prerolls", 0)) + 1
+
+## Re-seed vehicles that are far from the focus. On a camera cut everything
+## outside the spawn radius is re-seeded at once; in continuous play only cars
+## far behind are moved, and only to spots the camera cannot see.
+func _recycle(cut: bool) -> void:
+	var budget := POOL if cut else 3
+	for v in vehicles:
+		if budget <= 0:
+			break
+		if v.active:
+			var d := Vector2(v.global_position.x - _focus.x, v.global_position.z - _focus.z).length()
+			if cut:
+				if d < SPAWN_RADIUS:
+					continue
+			elif d < DESPAWN_RADIUS:
+				continue
+		if _seed_vehicle(v, not cut):
+			budget -= 1
+			stats["relocated"] += 1
+
+func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
+	for attempt in 24:
+		var e := _rng.randi_range(0, edges.size() - 1)
+		var ed: Dictionary = edges[e]
+		var lo: float = _entry(e) + 2.0
+		var hi: float = _s_end(e) - 4.0
+		# Street-life D: half of the seeds of a cut go straight into the lane
+		# stretches the street-level lens is looking at.
+		if not hidden_only and not _view_spans.is_empty() and attempt < 12 and _rng.randf() < 0.5:
+			var span: Vector3 = _view_spans[_rng.randi_range(0, _view_spans.size() - 1)]
+			e = int(span.x)
+			ed = edges[e]
+			lo = span.y
+			hi = span.z
+		if hi <= lo:
+			continue
+		var s := _rng.randf_range(lo, hi)
+		var lane := _lane_for(e, 0 if _rng.randf() < 0.55 else 1)
+		var p := lane_point(e, lane, s)
+		var dist := Vector2(p.x - _focus.x, p.z - _focus.z).length()
+		# Bias towards the near field and towards what the camera faces.
+		if dist > SPAWN_RADIUS or (dist > 90.0 and _rng.randf() < 0.55):
+			continue
+		var view := p - _cam_pos
+		view.y = 0.0
+		if not hidden_only and view.length() > 12.0 and view.normalized().dot(_cam_fwd) < 0.45 and _rng.randf() < 0.6:
+			continue
+		if hidden_only:
+			var rel := p - _cam_pos
+			rel.y = 0.0
+			if rel.length() < 105.0 and rel.normalized().dot(_cam_fwd) > -0.2:
+				continue
+		if v.kind == "bus" and lane == 1:
+			lane = 0
+			p = lane_point(e, lane, s)
+		if not _gap_free(e, lane, s):
+			continue
+		if _player_near(p, 18.0) or _in_opening_clear(p):
+			continue
+		# Street-life M2: never seed into the player's own lane ahead of a
+		# player-driven car (the scripted drive queued behind seeded cars for
+		# most of a 166 s leg).
+		if _in_player_path(p, lane_point(e, lane, s + 1.0) - p, 140.0):
+			if (ed["offs"] as Array).size() < 2:
+				continue
+			lane = 1 - lane
+			p = lane_point(e, lane, s)
+			if _in_player_path(p, lane_point(e, lane, s + 1.0) - p, 140.0) or not _gap_free(e, lane, s):
+				continue
+		_place(v, e, lane, s)
+		return true
+	return false
+
+func _gap_free(e: int, lane: int, s: float) -> bool:
+	var list: Array = _keys.get(e * 2 + lane, [])
+	for other in list:
+		if absf((other as AmbientVehicle).s - s) < MIN_GAP + 3.0:
+			return false
+	return true
+
+func _in_opening_clear(p: Vector3) -> bool:
+	if traffic == null or traffic.world == null or not traffic.world.locations.has("player_start"):
+		return false
+	var o: Vector3 = traffic.world.locations["player_start"]
+	return Vector2(p.x - o.x, p.z - o.z).length() < OPENING_CLEAR
+
+## Out of the camera's sight (behind it, or far away)?
+func _hidden_from_camera(p: Vector3) -> bool:
+	var rel := p - _cam_pos
+	rel.y = 0.0
+	return rel.length() > 140.0 or (rel.length() > 14.0 and rel.normalized().dot(_cam_fwd) < -0.15)
+
+## Stalled vehicles: re-seed gridlocked ones out of sight, and move any that
+## have stopped against the on-foot player.
+func _unstick(v: AmbientVehicle, delta: float) -> void:
+	if v.speed < 0.3:
+		v.idle_time += delta
+	else:
+		v.idle_time = 0.0
+		return
+	var on_foot := Game.mode != Game.MODE_CAR
+	# Street-life D: only a car that is actually waiting on the player (its
+	# obstacle scan stopped for the player or the player's car), or one the
+	# player on foot is pressed against, is moved. A car queued at a red light
+	# beside or ahead of the player stays put (no visible pop).
+	var waits_on_player := v.obstacle_node != null and is_instance_valid(v.obstacle_node) \
+			and (v.obstacle_node.is_in_group("player") or (v.obstacle_node is Car and (v.obstacle_node as Car).driver_is_player))
+	var wedged := on_foot and v.idle_time > WEDGE_RESET and (waits_on_player and v.blocked_time > 0.0 \
+			or _player_near(v.global_position, 1.8 + v.dims.z * 0.5)) and _player_near(v.global_position, WEDGE_RADIUS + v.dims.z * 0.5)
+	# In a car: an ambient car yields to the player's car while the player's
+	# car waits on it, a mutual deadlock that froze the scripted drive at the
+	# (-160, 0, 0) junction. Break it after DEADLOCK_RESET s.
+	if not on_foot and v.idle_time > DEADLOCK_RESET and waits_on_player and _player_near(v.global_position, 12.0 + v.dims.z * 0.5):
+		wedged = true
+	var opening := v.idle_time > WEDGE_RESET and _in_opening_clear(v.global_position)
+	var gridlock := v.idle_time > GRIDLOCK_RESET and _hidden_from_camera(v.global_position)
+	if wedged or opening or gridlock:
+		v.idle_time = 0.0
+		stats["unstuck"] += 1
+		if not _seed_vehicle(v, true):
+			_park_offscreen(v)
+
+func _park_offscreen(v: AmbientVehicle) -> void:
+	var key := v.edge * 2 + v.lane
+	if _keys.has(key):
+		_keys[key].erase(v)
+	v.active = false
+	v.visible = false
+	v.collision_layer = 0
+	v.global_position = Vector3(0, -60.0, 0)
+
+func _player_near(p: Vector3, r: float) -> bool:
+	return Vector2(p.x - Game.player_position.x, p.z - Game.player_position.z).length() < r
+
+func _place(v: AmbientVehicle, e: int, lane: int, s: float) -> void:
+	var old_key := v.edge * 2 + v.lane
+	if v.active and _keys.has(old_key):
+		_keys[old_key].erase(v)
+	v.edge = e
+	v.lane = lane
+	v.s = s
+	v.j_len = 0.0
+	v.speed = v.vmax * _rng.randf_range(0.6, 1.0)
+	v.next_edge = _choose_next(e)
+	v.active = true
+	v.visible = true
+	v.collision_layer = 8
+	v.obstacle_gap = INF
+	v.scan_timer = _rng.randf() * 0.15
+	var key := e * 2 + lane
+	if not _keys.has(key):
+		_keys[key] = []
+	_keys[key].append(v)
+	_apply_transform(v)
+
+func _choose_next(e: int) -> int:
+	var ed: Dictionary = edges[e]
+	var options: Array = _out_edges.get(int(ed["to"]), [])
+	var straight := -1
+	var left := -1
+	var right := -1
+	for o in options:
+		var d2: Vector3 = edges[o]["dir"]
+		var dot: float = (ed["dir"] as Vector3).dot(d2)
+		if dot > 0.9:
+			straight = o
+		elif dot < -0.9:
+			continue
+		elif (ed["left"] as Vector3).dot(d2) > 0.9:
+			left = o
+		else:
+			right = o
+	# Left-hand traffic: straight and near-side (left) turns never cross the
+	# opposing flow; far-side (right) turns are only taken at the map edge.
+	if straight >= 0 and left >= 0:
+		return straight if _rng.randf() < 0.68 else left
+	if straight >= 0:
+		return straight
+	if left >= 0:
+		return left
+	return right
+
+func _rebuild_keys() -> void:
+	_keys.clear()
+	for v in vehicles:
+		if not v.active:
+			continue
+		var key := v.edge * 2 + v.lane
+		if not _keys.has(key):
+			_keys[key] = []
+		_keys[key].append(v)
+	for key in _keys:
+		(_keys[key] as Array).sort_custom(func(a, b): return a.s < b.s)
+
+func _drive(v: AmbientVehicle, delta: float) -> void:
+	var ed: Dictionary = edges[v.edge]
+	var s_end: float = _s_end(v.edge)
+	var target := v.vmax
+	# M2: traffic in front of a player-driven car moves at the player's pace
+	# (the M1 drive crawled behind 9-13 m/s lane cars for most of its leg).
+	var boosted := _pc_active and _pc_speed > 4.0 and _in_player_path(v.global_position, -v.global_transform.basis.z, 130.0)
+	if boosted:
+		target = maxf(target, 20.0)
+	# 1. Car following, including the tail of the lane we are about to enter.
+	var gap := _leader_gap(v, s_end)
+	target = minf(target, _stop_speed(gap - 3.0))
+	# 2. Signals: hold at the stop line unless already committed.
+	if v.s <= s_end:
+		var to_line := s_end - v.s
+		var committed := to_line < 3.5 and v.speed > 5.0
+		# M2: a queue standing at a red light in front of a player-driven car
+		# is released (the light "changes" for the player's approach, as in
+		# GTA); cross traffic then holds for the player (_player_in_junction).
+		var release := _pc_active and _in_player_path(v.global_position, -v.global_transform.basis.z, 110.0)
+		if not _signal_ok(v.edge) and not committed and not release:
+			target = minf(target, _stop_speed(to_line - 0.5))
+		# Keep the box clear: do not enter the junction unless the exit lane
+		# has room for this car on the far side.
+		elif not committed and not release and v.next_edge >= 0 and _exit_room(v) < v.dims.z + 2.5:
+			target = minf(target, _stop_speed(to_line - 0.5))
+		# Give way to a player-driven vehicle crossing or about to cross.
+		elif not committed and to_line < 30.0 and _player_in_junction(ed["b"], v):
+			target = minf(target, _stop_speed(to_line - 0.5))
+		if v.next_edge >= 0 and to_line < 22.0 and (edges[v.next_edge]["dir"] as Vector3).dot(ed["dir"]) < 0.5:
+			target = minf(target, 6.5)
+	else:
+		target = minf(target, 6.5 if v.j_len > 0.0 and absf((v.j_p2 - v.j_c).normalized().dot((v.j_c - v.j_p0).normalized())) < 0.5 else v.vmax)
+	# 3. People, the player and physics cars in the lane corridor ahead.
+	v.scan_timer -= delta
+	if v.scan_timer <= 0.0:
+		v.scan_timer = 0.15
+		v.obstacle_gap = _scan_obstacles(v)
+	# M2: two lane cars that each see the other as the obstacle (a car
+	# turning through the box and one standing at the next stop line, held
+	# the scripted drive 56 s) — the one already in the junction goes on.
+	var mutual := v.obstacle_gap < INF and v.obstacle_node is AmbientVehicle and is_instance_valid(v.obstacle_node) \
+			and (v.obstacle_node as AmbientVehicle).obstacle_node == v and v.j_len > 0.0 and v.s < _entry(v.edge)
+	if v.obstacle_gap < INF and not mutual:
+		target = minf(target, _stop_speed(v.obstacle_gap - 1.6))
+		if v.obstacle_gap < 0.6:
+			v.speed = 0.0
+	_lane_change(v, delta)
+	# Junction deadlock breaker: a car held inside the box for long creeps on.
+	if v.speed < 0.2 and v.j_len > 0.0 and v.s < _entry(v.edge):
+		v.stuck_time += delta
+	else:
+		v.stuck_time = 0.0 if v.speed > 1.0 else v.stuck_time
+	var rate := (ACCEL * (1.6 if boosted else 1.0)) if target > v.speed else DECEL * (1.6 if target < 0.5 else 1.0)
+	v.speed = move_toward(v.speed, target, rate * delta)
+	v.set_braking(target < v.speed - 0.4 or (v.speed < 0.3 and target < 0.5))
+	var s_before := v.s
+	v.s += v.speed * delta
+	# M1 route safety: lane traffic never drives into the player's car. A
+	# kinematic body moved into it shoved it sideways or pressed it through
+	# the road (a headless route ended with the car wedged at y = -1). If
+	# the step would overlap the player's car footprint, hold instead.
+	if _pc_active and v.speed > 0.0 and _pc_blocks(v, delta):
+		v.s = s_before
+		v.speed = 0.0
+		v.obstacle_node = _pc
+		v.obstacle_gap = 0.0
+		v.set_braking(true)
+		stats["pc_holds"] = int(stats.get("pc_holds", 0)) + 1
+		return
+	if v.j_len <= 0.0 and v.s >= s_end and v.next_edge >= 0:
+		_enter_junction(v)
+	elif v.j_len > 0.0 and v.s >= _entry(v.edge):
+		v.j_len = 0.0
+	if v.lat_shift != 0.0:
+		v.lat_shift = move_toward(v.lat_shift, 0.0, LANE_CHANGE_RATE * delta)
+	_apply_transform(v)
+
+## Street-life D: a car held behind something that is not ordinary queue
+## traffic (a person or the player standing in the road, a parked or wrecked
+## car, a stalled car) changes lanes round it when the other lane is clear,
+## instead of waiting behind it for ever.
+const LANE_CHANGE_RATE := 1.6
+func _lane_change(v: AmbientVehicle, delta: float) -> void:
+	var node := v.obstacle_node
+	var odd := node != null and is_instance_valid(node) and v.obstacle_gap < 14.0 \
+			and (not node is AmbientVehicle or (node as AmbientVehicle).idle_time > 6.0)
+	if not odd or v.speed > 4.0:
+		v.blocked_time = 0.0
+		return
+	v.blocked_time += delta
+	# r1: a person standing in the carriageway in front of a waiting car steps
+	# clear (rendered route: walkers loitering at the stop line held a whole
+	# approach, and the car stuck in the box behind them, for over a minute).
+	if node is NPC and v.blocked_time > 2.0 and fmod(v.blocked_time, 1.5) < delta:
+		var fwd := -v.global_transform.basis.z
+		(node as NPC).dodge_vehicle(v.global_position, Vector3(fwd.x, 0.0, fwd.z).normalized())
+	if v.blocked_time < 0.9 or v.lat_shift != 0.0 or (v.j_len > 0.0 and v.s < _entry(v.edge)):
+		return
+	var ed: Dictionary = edges[v.edge]
+	if v.s > _s_end(v.edge) - 6.0 or (ed["offs"] as Array).size() < 2:
+		return
+	var other := 1 - v.lane
+	# The obstacle must not also block the other lane.
+	var lat: float = (node.global_position - (ed["a"] as Vector3)).dot(ed["left"])
+	if absf(lat - _off(v.edge, other)) < 2.1:
+		return
+	for o in _keys.get(v.edge * 2 + other, []):
+		var ds: float = (o as AmbientVehicle).s - v.s
+		if ds > -16.0 and ds < 12.0:
+			return
+	var old_key := v.edge * 2 + v.lane
+	if _keys.has(old_key):
+		_keys[old_key].erase(v)
+	v.lat_shift = _off(v.edge, v.lane) - _off(v.edge, other)
+	v.lane = other
+	var key := v.edge * 2 + other
+	if not _keys.has(key):
+		_keys[key] = []
+	_keys[key].append(v)
+	(_keys[key] as Array).sort_custom(func(a, b): return a.s < b.s)
+	v.blocked_time = 0.0
+	v.obstacle_gap = INF
+	v.obstacle_node = null
+	stats["lane_changes"] = int(stats.get("lane_changes", 0)) + 1
+
+var _pc: Car = null
+var _pc_active := false
+var _pc_pos := Vector3.ZERO
+var _pc_x := Vector3.RIGHT
+var _pc_z := Vector3.BACK
+const PC_HALF := Vector2(1.15, 2.6)   # player car half extents plus margin
+var _pc_speed := 0.0
+
+## Street-life M2: is point p (travelling along dir) in the player car's own
+## lane, ahead of it and within `reach` m, going the same way?
+func _in_player_path(p: Vector3, dir: Vector3, reach: float) -> bool:
+	if not _pc_active:
+		return false
+	var fwd := -_pc_z
+	dir.y = 0.0
+	if dir.length() < 0.01 or dir.normalized().dot(fwd) < 0.8:
+		return false
+	var rel := p - _pc_pos
+	rel.y = 0.0
+	var ahead := rel.dot(fwd)
+	return ahead > -3.0 and ahead < reach and absf(rel.dot(_pc_x)) < 1.9
+
+## Street-life M2: lane traffic ahead of the player's car in his lane moves
+## over to the other lane when it is clear (keep-left courtesy), so a player
+## is not stuck behind queues; a car that cannot move over stays put.
+func _yield_lane(v: AmbientVehicle, _delta: float) -> void:
+	if not _pc_active or v.lat_shift != 0.0 or (v.j_len > 0.0 and v.s < _entry(v.edge)):
+		return
+	if absf(v.global_position.x - _pc_pos.x) > 135.0 or absf(v.global_position.z - _pc_pos.z) > 135.0:
+		return
+	var fwd := -v.global_transform.basis.z
+	if not _in_player_path(v.global_position, fwd, 130.0):
+		return
+	# A car standing at a light does not slide sideways in view.
+	if v.speed < 0.5 and not _hidden_from_camera(v.global_position) and v.global_position.distance_to(_pc_pos) < 28.0:
+		return
+	var ed: Dictionary = edges[v.edge]
+	if (ed["offs"] as Array).size() < 2 or v.s > _s_end(v.edge) - 4.0:
+		return
+	var other := 1 - v.lane
+	var lat_other: float = _off(v.edge, other)
+	var here_other := lane_point(v.edge, other, v.s)
+	# Moving over must actually leave the player's path.
+	if _in_player_path(here_other, fwd, 130.0):
+		return
+	for o in _keys.get(v.edge * 2 + other, []):
+		var ds: float = (o as AmbientVehicle).s - v.s
+		if ds > -10.0 and ds < 9.0:
+			return
+	var old_key := v.edge * 2 + v.lane
+	if _keys.has(old_key):
+		_keys[old_key].erase(v)
+	v.lat_shift = _off(v.edge, v.lane) - lat_other
+	v.lane = other
+	var key := v.edge * 2 + other
+	if not _keys.has(key):
+		_keys[key] = []
+	_keys[key].append(v)
+	(_keys[key] as Array).sort_custom(func(a, b): return a.s < b.s)
+	stats["yields"] = int(stats.get("yields", 0)) + 1
+
+func _update_player_car() -> void:
+	_pc_active = false
+	var pl := get_tree().get_first_node_in_group("player")
+	if pl == null:
+		return
+	var cv = pl.get("current_vehicle")
+	if cv == null or not cv is Car or not is_instance_valid(cv):
+		return
+	_pc = cv as Car
+	_pc_active = true
+	_pc_pos = _pc.global_position
+	_pc_speed = Vector2(_pc.velocity.x, _pc.velocity.z).length()
+	var b := _pc.global_transform.basis
+	_pc_x = Vector3(b.x.x, 0.0, b.x.z).normalized()
+	_pc_z = Vector3(b.z.x, 0.0, b.z.z).normalized()
+
+## Would this vehicle's footprint at its new lane position overlap the
+## player's car (2D separating-axis test on the two rectangles)?
+func _pc_blocks(v: AmbientVehicle, delta: float) -> bool:
+	var here := v.global_position
+	if absf(here.x - _pc_pos.x) > 16.0 or absf(here.z - _pc_pos.z) > 16.0:
+		return false
+	var fwd := -v.global_transform.basis.z
+	fwd.y = 0.0
+	fwd = fwd.normalized()
+	var c := here + fwd * (v.speed * delta + 0.35)
+	var ax := Vector3.UP.cross(fwd)
+	var ah := Vector2(v.dims.x * 0.5, v.dims.z * 0.5)
+	var d := c - _pc_pos
+	d.y = 0.0
+	for axis in [ax, fwd, _pc_x, _pc_z]:
+		var ra: float = ah.x * absf(ax.dot(axis)) + ah.y * absf(fwd.dot(axis))
+		var rb: float = PC_HALF.x * absf(_pc_x.dot(axis)) + PC_HALF.y * absf(_pc_z.dot(axis))
+		if absf(d.dot(axis)) > ra + rb:
+			return false
+	# Only a step toward the player's car is held; a car already touching it
+	# (the player drove into it) may still pull away.
+	return fwd.dot(_pc_pos - here) > 0.0
+
+func _stop_speed(distance: float) -> float:
+	if distance <= 0.0:
+		return 0.0
+	return sqrt(2.0 * 3.5 * distance)
+
+func _leader_gap(v: AmbientVehicle, s_end: float) -> float:
+	var list: Array = _keys.get(v.edge * 2 + v.lane, [])
+	var idx := list.find(v)
+	var half := v.dims.z * 0.5
+	if idx >= 0 and idx < list.size() - 1:
+		var lead: AmbientVehicle = list[idx + 1]
+		return lead.s - v.s - half - lead.dims.z * 0.5
+	if v.next_edge < 0:
+		return INF
+	var nxt: Array = _keys.get(v.next_edge * 2 + _lane_for(v.next_edge, v.lane), [])
+	if nxt.is_empty():
+		return INF
+	var tail: AmbientVehicle = nxt[0]
+	var through := float(edges[v.edge]["stop"]) + _entry(v.next_edge)
+	return (s_end - v.s) + through + (tail.s - _entry(v.next_edge)) - half - tail.dims.z * 0.5
+
+func _player_in_junction(node: Vector3, v: AmbientVehicle) -> bool:
+	if Game.mode != Game.MODE_CAR:
+		return false
+	var p := Game.player_position
+	# Street-life M2: a player car driving toward this junction (within ~45 m,
+	# heading for the box) has priority, like GTA traffic yielding to the
+	# player, so cross traffic holds at its line instead of filling the box.
+	if _pc_active and _pc_speed > 2.0 and absf(p.x - node.x) < 48.0 and absf(p.z - node.z) < 48.0:
+		var to_node := node - _pc_pos
+		to_node.y = 0.0
+		if to_node.length() > 4.0 and to_node.normalized().dot(-_pc_z) > 0.85:
+			var vf := -v.global_transform.basis.z
+			vf.y = 0.0
+			# Only traffic crossing or turning across the player's road.
+			if absf(vf.normalized().dot(-_pc_z)) < 0.6:
+				return true
+	if absf(p.x - node.x) > 22.0 or absf(p.z - node.z) > 22.0:
+		return false
+	# A player queued behind this car is not crossing in front of it.
+	var rel := p - v.global_position
+	return rel.dot(-v.global_transform.basis.z) > 2.0
+
+func _exit_room(v: AmbientVehicle) -> float:
+	var nxt: Array = _keys.get(v.next_edge * 2 + _lane_for(v.next_edge, v.lane), [])
+	if nxt.is_empty():
+		return INF
+	var tail: AmbientVehicle = nxt[0]
+	return tail.s - _entry(v.next_edge) - tail.dims.z * 0.5
+
+func _enter_junction(v: AmbientVehicle) -> void:
+	var overflow := v.s - _s_end(v.edge)
+	var p0 := lane_point(v.edge, v.lane, _s_end(v.edge))
+	var ne := v.next_edge
+	var lane := _lane_for(ne, v.lane)
+	# M2: a car turning into the road ahead of a player-driven car takes the
+	# lane the player is not in.
+	if _pc_active and (edges[ne]["offs"] as Array).size() >= 2:
+		var probe := lane_point(ne, lane, _entry(ne) + 6.0)
+		if _in_player_path(probe, edges[ne]["dir"], 140.0):
+			lane = 1 - lane
+	var p2 := lane_point(ne, lane, _entry(ne))
+	var d1: Vector3 = edges[v.edge]["dir"]
+	var d2: Vector3 = edges[ne]["dir"]
+	var c: Vector3
+	if absf(d1.dot(d2)) > 0.9:
+		c = (p0 + p2) * 0.5
+	else:
+		# Intersection of the incoming and outgoing lane lines.
+		var b: Vector3 = edges[v.edge]["b"]
+		c = b + (edges[v.edge]["left"] as Vector3) * _off(v.edge, v.lane) + (edges[ne]["left"] as Vector3) * _off(ne, lane)
+		c.y = (p0.y + p2.y) * 0.5
+	v.j_p0 = p0
+	v.j_c = c
+	v.j_p2 = p2
+	v.j_len = maxf(4.0, (p0.distance_to(c) + c.distance_to(p2) + p0.distance_to(p2)) * 0.5)
+	v.edge = ne
+	v.lane = lane
+	v.s = _entry(ne) - v.j_len + overflow
+	v.next_edge = _choose_next(ne)
+
+func _apply_transform(v: AmbientVehicle) -> void:
+	var pos: Vector3
+	var fwd: Vector3
+	if v.j_len > 0.0 and v.s < _entry(v.edge):
+		var t := clampf(1.0 - (_entry(v.edge) - v.s) / v.j_len, 0.0, 1.0)
+		var a := v.j_p0.lerp(v.j_c, t)
+		var b := v.j_c.lerp(v.j_p2, t)
+		pos = a.lerp(b, t)
+		fwd = (b - a)
+		if fwd.length() < 0.001:
+			fwd = v.j_p2 - v.j_p0
+	else:
+		pos = lane_point(v.edge, v.lane, v.s)
+		fwd = edges[v.edge]["dir"]
+		if v.lat_shift != 0.0:
+			var lft: Vector3 = edges[v.edge]["left"]
+			pos += lft * v.lat_shift
+			# Nose into the new lane while drifting across.
+			fwd = fwd - lft * signf(v.lat_shift) * 0.09
+	fwd.y = 0.0
+	fwd = fwd.normalized()
+	var basis := Basis.looking_at(fwd, Vector3.UP)
+	v.global_transform = Transform3D(basis, pos)
+
+# --------------------------------------------------------------- obstacles
+func _rebuild_grid() -> void:
+	_grid.clear()
+	for group in ["npcs", "vehicles"]:
+		for n in get_tree().get_nodes_in_group(group):
+			var node := n as Node3D
+			if node == null or not node.visible:
+				continue
+			if node is NPC and (node as NPC).state == NPC.State.DEAD:
+				continue
+			_grid_add(node.global_position, node)
+	for v in vehicles:
+		if v.active:
+			_grid_add(v.global_position, v)
+	var player := get_tree().get_first_node_in_group("player") as Node3D
+	if player != null and player.visible:
+		_grid_add(player.global_position, player)
+
+func _grid_add(p: Vector3, node: Node3D) -> void:
+	var key := Vector2i(floori(p.x / CELL), floori(p.z / CELL))
+	if not _grid.has(key):
+		_grid[key] = []
+	_grid[key].append(node)
+
+## Clear distance from this car's front bumper to the nearest person or
+## physics vehicle in (or overlapping) its lane corridor, or INF. Physics cars
+## are tested by their four footprint corners, so a car parked diagonally
+## across the lane, or one already alongside, still stops the traffic. Cars
+## far from the camera do not look.
+func _scan_obstacles(v: AmbientVehicle) -> float:
+	var here := v.global_position
+	if Vector2(here.x - _cam_pos.x, here.z - _cam_pos.z).length() > 170.0:
+		v.obstacle_node = null
+		return INF
+	var fwd := -v.global_transform.basis.z
+	fwd.y = 0.0
+	fwd = fwd.normalized()
+	var left := Vector3.UP.cross(fwd)
+	var half_len := v.dims.z * 0.5
+	var half_w := v.dims.x * 0.5 + (0.08 if v.kind != "bus" else 0.0)
+	var probe := here + fwd * 9.0
+	var cx := floori(probe.x / CELL)
+	var cz := floori(probe.z / CELL)
+	var best := INF
+	var best_node: Node3D = null
+	for dx in [-1, 0, 1]:
+		for dz in [-1, 0, 1]:
+			for n in _grid.get(Vector2i(cx + dx, cz + dz), []):
+				if not is_instance_valid(n):
+					continue
+				var node := n as Node3D
+				var points: Array[Vector3] = []
+				var radius := 0.0
+				if node is AmbientVehicle:
+					if node == v or (v.stuck_time > 6.0 and v.j_len > 0.0):
+						continue
+					# r1 gridlock fix: two cars inside the same junction box never
+					# hold each other (crossing paths formed hold cycles that froze
+					# whole approaches); same-lane order inside the box is kept by
+					# _leader_gap, which follows the exit lane's queue.
+					var na := node as AmbientVehicle
+					if v.j_len > 0.0 and v.s < _entry(v.edge) and na.j_len > 0.0 and na.s < _entry(na.edge):
+						continue
+					var ab := node.global_transform.basis
+					var abx := Vector3(ab.x.x, 0, ab.x.z).normalized() * ((node as AmbientVehicle).dims.x * 0.5)
+					var abz := Vector3(ab.z.x, 0, ab.z.z).normalized() * ((node as AmbientVehicle).dims.z * 0.5)
+					var ac := node.global_position
+					points = [ac, ac + abx + abz, ac + abx - abz, ac - abx + abz, ac - abx - abz]
+				elif node is Car:
+					# A player car that is already behind our front axle is left
+					# behind rather than waited for.
+					if (node as Car).driver_is_player and (node.global_position - here).dot(fwd) < 0.0:
+						continue
+					# r1 gridlock dissolver: after GIVE_UP s at a stand, a stopped
+					# non-player car (a police car parked across the box, a civilian
+					# wedged between lanes) no longer holds lane traffic; the lane
+					# car nudges past and physics pushes the stopped car aside.
+					if not (node as Car).driver_is_player and v.idle_time > GIVE_UP and (node as Car).velocity.length() < 0.5:
+						continue
+					var b := node.global_transform.basis
+					# The player's car gets extra room when it is off the lane
+					# axis; a player car driving straight in the next lane is
+					# passed like any other car (street-life D).
+					var pad := 0.0
+					if (node as Car).driver_is_player:
+						var pf := Vector3(b.z.x, 0, b.z.z).normalized()
+						pad = 0.15 if absf(pf.dot(fwd)) > 0.97 else 0.6
+					var bx := Vector3(b.x.x, 0, b.x.z).normalized() * (0.93 + pad)
+					var bz := Vector3(b.z.x, 0, b.z.z).normalized() * (2.4 + pad)
+					var c := node.global_position
+					points = [c, c + bx + bz, c + bx - bz, c - bx + bz, c - bx - bz]
+				elif node is Helicopter:
+					continue
+				else:
+					if node is NPC and v.idle_time > GIVE_UP * 1.5:
+						continue   # a person who would not step clear (see _lane_change)
+					points = [node.global_position]
+					radius = 0.45
+				for p in points:
+					var d: Vector3 = p - here
+					var ahead := d.dot(fwd)
+					if ahead < -half_len or ahead > 20.0:
+						continue
+					if absf(d.dot(left)) > half_w + radius:
+						continue
+					var gap := maxf(0.0, ahead - half_len - radius)
+					if gap < best:
+						best = gap
+						best_node = node
+	v.obstacle_node = best_node
+	return best
+
+# --------------------------------------------------------------- carjacking
+## Swap a stopped ambient car for a real, drivable Car and hand it to the
+## player. The ambient body is recycled out of sight.
+func promote(v: AmbientVehicle, player: Node) -> void:
+	if not v.active:
+		return
+	var kind := v.kind if v.kind in ["sedan", "coupe", "van"] else "sedan"
+	var car := Car.new()
+	car.kind = kind
+	traffic.add_child(car)
+	car.global_transform = v.global_transform
+	if car._provider_root != null and v.paint != Color.WHITE:
+		AssetLibrary.tint(car._provider_root, v.paint)
+	_promoted.append(car)
+	stats["promoted"] += 1
+	v.active = false
+	v.visible = false
+	v.collision_layer = 0
+	v.speed = 0.0
+	v.global_position = Vector3(0, -60.0, 0)
+	_rebuild_keys()
+	car.interact(player)
+	Events.notify.emit("Driver bails out. Witnesses are looking.", "warn")
+
+func _tidy_promoted() -> void:
+	if _promoted.size() <= 4:
+		return
+	for i in range(_promoted.size() - 1, -1, -1):
+		var c := _promoted[i]
+		if not is_instance_valid(c):
+			_promoted.remove_at(i)
+			continue
+		if c.driver_is_player or c.has_ai:
+			continue
+		if c.global_position.distance_to(Game.player_position) > 200.0:
+			_promoted.remove_at(i)
+			c.queue_free()
+			return
+
+# ----------------------------------------------------------------- QA view
+## Vehicles within `radius` of `p` (active only).
+func count_near(p: Vector3, radius: float) -> int:
+	var n := 0
+	for v in vehicles:
+		if v.active and v.global_position.distance_to(p) < radius:
+			n += 1
+	return n
+
+func count_active() -> int:
+	var n := 0
+	for v in vehicles:
+		if v.active:
+			n += 1
+	return n
+
+## QA: who is holding whom (follow obstacle_node through ambient cars).
+func chain_desc(v: AmbientVehicle) -> String:
+	var out: Array[String] = []
+	var cur: Node3D = v
+	for i in 6:
+		if cur == null or not is_instance_valid(cur):
+			break
+		if cur is AmbientVehicle:
+			var a := cur as AmbientVehicle
+			var ed: Dictionary = edges[a.edge]
+			out.append("%s[e%d l%d s%.0f/%.0f j%.0f v%.1f idle%.0f stuck%.0f sig%s next%d gap%.1f exit%.0f %s]" % [a.name.right(5), a.edge, a.lane, a.s, _s_end(a.edge), a.j_len, a.speed, a.idle_time, a.stuck_time,
+				_signal_ok(a.edge), a.next_edge, a.obstacle_gap, _exit_room(a) if a.next_edge >= 0 else -1.0, str(a.global_position.round())])
+			cur = a.obstacle_node
+		else:
+			var what := cur.get_class()
+			if cur is Car:
+				var c := cur as Car
+				what = "Car(%s ai=%s player=%s v=%.1f)" % [c.kind, c.has_ai, c.driver_is_player, c.velocity.length()]
+			elif cur is NPC:
+				what = "NPC(state=%d police=%s)" % [(cur as NPC).state, (cur as NPC).is_police]
+			out.append("%s:%s%s" % [what, cur.name.right(6), str(cur.global_position.round())])
+			break
+	return " -> ".join(out)
+
+## QA: why active cars are standing (histogram of reasons).
+func hold_reasons() -> Dictionary:
+	var out := {}
+	for v in vehicles:
+		if not v.active or v.speed >= 0.6:
+			continue
+		var ed: Dictionary = edges[v.edge]
+		var r := "other"
+		var n := v.obstacle_node
+		if n != null and is_instance_valid(n) and v.obstacle_gap < 3.0:
+			if n is AmbientVehicle:
+				r = "amb_box" if (n as AmbientVehicle).j_len > 0.0 and (n as AmbientVehicle).s < _entry((n as AmbientVehicle).edge) else ("amb_idle" if (n as AmbientVehicle).idle_time > 5.0 else "amb")
+			elif n is Car:
+				r = "car_ai" if (n as Car).has_ai else ("car_player" if (n as Car).driver_is_player else "car_parked")
+			elif n is NPC:
+				r = "npc"
+			else:
+				r = "player"
+		elif v.j_len > 0.0 and v.s < _entry(v.edge):
+			r = "in_box"
+		elif not _signal_ok(v.edge):
+			r = "red"
+		elif _leader_gap(v, _s_end(v.edge)) < 4.0:
+			r = "queue"
+		elif v.next_edge >= 0 and _exit_room(v) < v.dims.z + 2.5:
+			r = "exit_full"
+		out[r] = int(out.get(r, 0)) + 1
+	return out
+
+## Any lane car moving inside (or about to cross) the junction box at `node`?
+func box_busy(node: Vector3) -> bool:
+	for v in vehicles:
+		if not v.active or v.speed < 1.0:
+			continue
+		var p := v.global_position
+		if absf(p.x - node.x) < 15.0 and absf(p.z - node.z) < 15.0:
+			return true
+	return false

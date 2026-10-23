@@ -154,6 +154,18 @@ func _ready() -> void:
 		started = true
 		return
 
+	if "--street-review" in args:
+		# Street-life piece: live junction footage and counts (street_review.gd).
+		var street_dir := "user://street_review"
+		for arg in args:
+			if arg.begins_with("--capture-dir="): street_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		var street: Node = _qa_system("res://src/systems/street_review.gd")
+		add_child(street)
+		street.setup(self, street_dir)
+		return
+
 	if "--water-footage" in args:
 		var footage_dir := "user://water_footage"
 		for arg in args:

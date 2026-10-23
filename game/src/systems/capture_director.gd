@@ -381,7 +381,11 @@ func _run() -> void:
 	await _interact_until(Game.MODE_CAR)
 	if not _gate("car entered", Game.mode == Game.MODE_CAR and player.current_vehicle is Car): return
 	await _shot("car_entered")
-	await _drive_route(world.locations["helipad_primary"], 160.0)
+	# Street-life r1: the drive now obeys red lights and queues behind lane
+	# traffic (held time is logged as "drive life ... held_s"), so the leg
+	# budget is longer than the empty-street 160 s. M1: 300 s (five headless
+	# routes took 93-202 s, held 28-111 s at signals and behind queues).
+	await _drive_route(world.locations["helipad_primary"], 300.0)
 	if not _gate("uninterrupted driving leg reached aviation compound", Game.mode == Game.MODE_CAR and mission.stage == Mission.Stage.TO_HELI and mission.car_driven_distance >= 80.0): return
 	await _shot("driving")
 	_release_all()
@@ -987,6 +991,13 @@ func _life_counts() -> Dictionary:
 		moving += 1
 		var rel := c.global_position - origin
 		if fwd != Vector3.ZERO and rel.dot(fwd) > 0.0 and (-c.global_transform.basis.z).dot(fwd) > 0.7: ahead += 1
+	# Street-life D: the lane traffic stream (AmbientVehicle) is traffic too.
+	for v in get_tree().get_nodes_in_group("ambient_vehicles"):
+		var av := v as AmbientVehicle
+		if av == null or not av.active or av.speed < 2.78 or av.global_position.distance_to(origin) > 80.0: continue
+		moving += 1
+		var rel2 := av.global_position - origin
+		if fwd != Vector3.ZERO and rel2.dot(fwd) > 0.0 and (-av.global_transform.basis.z).dot(fwd) > 0.7: ahead += 1
 	var peds := 0
 	var cam := get_viewport().get_camera_3d()
 	for n in get_tree().get_nodes_in_group("npcs"):
@@ -1027,18 +1038,76 @@ func _drive_route(target: Vector3, timeout: float) -> void:
 			# A turn goes through the point where the two lane lines cross, so
 			# the car follows the lane round the corner instead of cutting the
 			# kerb (left turn) or the median nose (right turn).
+			var exit_point := node + dir_out * mouth + left_out * DRIVE_LANE
 			if not targets.is_empty() and absf(dir_in.dot(dir_out)) < 0.5:
-				targets.append(node + (Vector3.UP.cross(dir_in).normalized() + left_out) * DRIVE_LANE)
-			targets.append(node + dir_out * mouth + left_out * DRIVE_LANE)
+				# r1 street-life: follow the turn as a curve (quadratic Bezier
+				# with the lane-line crossing as control point). Driving to the
+				# crossing point and then turning swung the near-side turn wide
+				# into the oncoming lanes, head-on into queued lane traffic.
+				var corner := node + (Vector3.UP.cross(dir_in).normalized() + left_out) * DRIVE_LANE
+				# M2: the car understeers out of the turn along dir_in; aim the
+				# arc's end that much short so it lands in its lane, not on the
+				# median nose (headless M2 debug: exited 1.5 m wide and hit it).
+				exit_point -= dir_in * 0.7
+				corner -= dir_in * 0.35
+				var entry: Vector3 = targets[targets.size() - 1]
+				_approach_points[entry] = true
+				for t in [0.3, 0.55, 0.8]:
+					targets.append(entry.lerp(corner, t).lerp(corner.lerp(exit_point, t), t))
+					_arc_points[targets[targets.size() - 1]] = true
+				_arc_points[exit_point] = true
+				targets.append(exit_point)
+				# Settle back on the lane line before speeding up.
+				exit_point = node + dir_out * (mouth + 9.0) + left_out * DRIVE_LANE
+				_arc_points[exit_point] = true
+			targets.append(exit_point)
 		elif targets.is_empty():
 			targets.append(node)
 		for t in targets:
 			if _finished or _interrupt_free_action() or _elapsed() >= deadline: return
-			await _drive_to(t, 5.0, minf(35.0, deadline - _elapsed()))
-			if mission.stage == Mission.Stage.TO_HELI: return
+			_turn_cap = 5.0 if _arc_points.has(t) else 0.0
+			_approach_slow = _approach_points.has(t)
+			await _drive_to(t, 2.5 if _arc_points.has(t) or _approach_points.has(t) else 5.0, minf(35.0, deadline - _elapsed()))
+			_turn_cap = 0.0
+			if mission.stage == Mission.Stage.TO_HELI:
+				_log_drive_life()
+				return
 	await _drive_to(target, 48.0, maxf(1.0, deadline - _elapsed()))
+	_log_drive_life()
 
-const DRIVE_LANE := 4.0
+func _log_drive_life() -> void:
+	_log("drive life: samples=%d moving_within_80m=%.0f%% same_dir_ahead=%.0f%% min_car_health=%.0f held_s=%.1f bypass_s=%.1f" % [
+		_drive_life["samples"], 100.0 * _drive_life["moving"] / maxf(1.0, _drive_life["samples"]),
+		100.0 * _drive_life["ahead"] / maxf(1.0, _drive_life["samples"]), _drive_life["min_health"], _drive_life["held"], _drive_life["bypass"]])
+	var parts: Array[String] = []
+	for k in _hold_why:
+		parts.append("%s=%.1f" % [k, _hold_why[k]])
+	_log("drive slow (<6 m/s allowed) by reason: " + ", ".join(parts))
+
+var _arc_points := {}
+var _approach_points := {}
+var _approach_slow := false
+var _turn_cap := 0.0
+
+## Street-life D: once-a-second traffic sample along the scripted drive, so a
+## headless route also reports how often moving traffic shares the road.
+var _drive_life := {"samples": 0, "moving": 0, "ahead": 0, "min_health": 100.0, "held": 0.0, "bypass": 0.0, "next": 0.0}
+func _sample_drive_life(car: Car, bypassing: bool) -> void:
+	var dt := get_physics_process_delta_time()
+	_drive_life["min_health"] = minf(float(_drive_life["min_health"]), car.health)
+	if _held_for > 0.0: _drive_life["held"] = float(_drive_life["held"]) + dt
+	if bypassing: _drive_life["bypass"] = float(_drive_life["bypass"]) + dt
+	if _elapsed() < float(_drive_life["next"]): return
+	_drive_life["next"] = _elapsed() + 1.0
+	var life := _life_counts()
+	_drive_life["samples"] = int(_drive_life["samples"]) + 1
+	if int(life["traffic_moving_within_80m"]) > 0: _drive_life["moving"] = int(_drive_life["moving"]) + 1
+	if int(life["traffic_ahead_same_dir"]) > 0: _drive_life["ahead"] = int(_drive_life["ahead"]) + 1
+
+## Street-life D: the scripted car keeps to the ambient traffic's offside
+## (median) lane centre, AmbientTraffic.LANE_OFFSETS[1], so lane traffic flows
+## past it in the kerb lane instead of meeting a car that straddles both.
+const DRIVE_LANE := 2.3
 
 var _reverse_side := -1.0
 
@@ -1064,14 +1133,65 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		if offset.length() < best - 0.5:
 			best = offset.length()
 			best_t = _elapsed()
+		elif _held_for > 0.0:
+			best_t = _elapsed()   # street-life: holding behind traffic or at a red light is not a stall
 		elif _elapsed() - best_t > 3.0:
-			_log("drive no progress for 3 s at %s, backing out" % [car.global_position.round()])
+			var near_desc: Array[String] = []
+			for g in ["ambient_vehicles", "vehicles", "npcs"]:
+				for n in get_tree().get_nodes_in_group(g):
+					if n != car and n is Node3D and (n as Node3D).visible and (n as Node3D).global_position.distance_to(car.global_position) < 7.0:
+						near_desc.append("%s%s" % [g.left(3), str((n as Node3D).global_position.round())])
+			_log("drive no progress for 3 s at %s yaw=%.0f, backing out; near=%s" % [car.global_position.round(), rad_to_deg(car.rotation.y), near_desc])
 			force_back = true
 			best_t = _elapsed() + 1.2
 			best = INF
 		var forward := -car.global_transform.basis.z
 		var direction := offset.normalized()
 		var avoidance := _avoid_car_direction(car, forward)
+		# Street-life D: drive with the ambient traffic like a player would,
+		# following the car ahead, stopping at red lights and only steering
+		# round a vehicle that has been standing still in front for a while.
+		var lead := _traffic_lead(car, forward)
+		var red_line := _red_light_line(car, forward)
+		var safe := 99.0
+		if lead["gap"] < INF:
+			var lead_speed := maxf(0.0, float(lead["speed"]))
+			safe = lead_speed + maxf(0.0, float(lead["gap"]) - 4.0) * 0.8
+			if float(lead["gap"]) < 3.0: safe = minf(safe, lead_speed * 0.5)
+		if red_line < INF:
+			safe = minf(safe, sqrt(2.0 * 3.5 * maxf(0.0, red_line - 1.0)))
+		# r1 street-life: give way to a lane car whose path crosses ours in the
+		# next 1.6 s (a left turn out of the median lane across a kerb-lane car
+		# going straight on spun the car round in a headless run).
+		var conflict := _crossing_conflict(car, forward)
+		if conflict:
+			safe = 0.0
+		if safe < 6.0:
+			# Where the slow time goes (headless tuning): per-reason seconds.
+			var why := "crossing" if conflict else ("red" if red_line < INF and sqrt(2.0 * 3.5 * maxf(0.0, red_line - 1.0)) <= safe + 0.01 else ("person" if lead["node"] is NPC else ("car" if lead["node"] != null else "other")))
+			_hold_why[why] = float(_hold_why.get(why, 0.0)) + get_physics_process_delta_time()
+		if safe < 1.0:
+			_held_for += get_physics_process_delta_time()
+			if _held_for > 3.0 and _elapsed() > _held_log_next:
+				_held_log_next = _elapsed() + 3.0
+				var ln: Node3D = lead["node"]
+				_log("drive held %.1fs at %s: lead=%s gap=%.1f lead_speed=%.1f red_line=%.1f" % [_held_for, car.global_position.round(),
+					(ln.name + ("(ambient e%d l%d idle%.0f obst=%s)" % [ln.edge, ln.lane, ln.idle_time, ln.obstacle_node.name if ln.obstacle_node else "-"] if ln is AmbientVehicle else "")) if ln else "-",
+					float(lead["gap"]), float(lead["speed"]), red_line])
+				if ln is AmbientVehicle and traffic.ambient != null: _log("  chain: " + traffic.ambient.chain_desc(ln))
+		else:
+			_held_for = 0.0
+		var bypass: bool = _held_for > 5.0 and red_line == INF and lead["gap"] < INF and absf(float(lead["speed"])) < 0.4
+		if _held_for > 25.0:
+			bypass = true   # never wait for ever (a signal or a stuck queue)
+		if bypass and lead["node"] != null:
+			var rel: Vector3 = (lead["node"] as Node3D).global_position - car.global_position
+			var lft := Vector3.UP.cross(forward).normalized()
+			var side := -1.0 if rel.dot(lft) >= 0.0 else 1.0
+			avoidance = (forward * maxf(4.0, float(lead["gap"]) * 0.75 + 3.0) + lft * side * 3.2).normalized()
+			safe = 4.0
+		elif bypass:
+			safe = 4.0
 		if avoidance != Vector3.ZERO:
 			direction = avoidance
 		var angle := atan2(forward.z * direction.x - forward.x * direction.z, forward.dot(direction))
@@ -1079,19 +1199,42 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		Input.action_release("move_right")
 		if absf(angle) > 0.025:
 			Input.action_press("move_left" if angle > 0.0 else "move_right", clampf(absf(angle) * 1.8, 0.15, 1.0))
-		var desired_speed := clampf(offset.length() * 0.8, 5.0, 19.0)
+		# M2: pass-through waypoints (lane points before and after a straight
+		# junction) are driven through at speed; only turns slow the car.
+		# Only once lined up: full throttle while still yawed out of a turn
+		# spun the car (headless M2 runs).
+		var floor_v := 11.0 if not (_turn_cap > 0.0 or _approach_slow) and absf(angle) < 0.25 else 5.0
+		var desired_speed := clampf(offset.length() * 0.8, floor_v, 21.0)
+		if absf(angle) > 0.3 and car.forward_speed() < 9.0: desired_speed = minf(desired_speed, 7.0)
 		if absf(angle) > 0.4: desired_speed = minf(desired_speed, 6.0)
+		if _turn_cap > 0.0: desired_speed = minf(desired_speed, _turn_cap)
+		if _approach_slow and offset.length() < 20.0: desired_speed = minf(desired_speed, 7.0)
+		desired_speed = minf(desired_speed, safe)
 		Input.action_release("move_forward")
 		Input.action_release("move_back")
-		if car.forward_speed() > desired_speed + 1.0:
+		if desired_speed < 0.6:
+			# Hold: brake to a stand, never reverse into the queue behind.
+			if car.forward_speed() > 0.5:
+				Input.action_press("move_back")
+		elif car.forward_speed() > desired_speed + 1.0:
 			Input.action_press("move_back")
 		else:
 			Input.action_press("move_forward")
-		if car.global_position.distance_to(previous) < 0.015:
+		if desired_speed < 0.6:
+			stuck_for = 0.0   # waiting in traffic is not being stuck
+		elif car.global_position.distance_to(previous) < 0.015:
 			stuck_for += get_physics_process_delta_time()
 		else:
 			stuck_for = 0.0
 		previous = car.global_position
+		_sample_drive_life(car, bypass)
+		if _drive_debug and car.global_position.x < -140.0 and car.global_position.z > 150.0 and car.global_position.z < 175.0:
+			var cols: Array[String] = []
+			for ci in car.get_slide_collision_count():
+				var col := car.get_slide_collision(ci)
+				cols.append("%s@%s n=%s" % [str(col.get_collider().name if col.get_collider() else "?"), str(col.get_position().round()), str(col.get_normal().snapped(Vector3.ONE * 0.1))])
+			_log("dbg pos=%s yaw=%.0f v=%.1f ang=%.2f des=%.1f safe=%.1f fwd=%s back=%s cols=%s" % [car.global_position.snapped(Vector3.ONE * 0.1), rad_to_deg(car.rotation.y), car.forward_speed(), angle, desired_speed, safe,
+				Input.is_action_pressed("move_forward"), Input.is_action_pressed("move_back"), cols])
 		if stuck_for > 0.9 or force_back:
 			force_back = false
 			# Reverse and steer clear using the same inputs as a player; alternate
@@ -1106,7 +1249,158 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 			await get_tree().create_timer(1.2).timeout
 			stuck_for = 0.0
 	_release_all()
-	_log("drive waypoint target=%s distance=%.1f" % [target.round(), _ground_distance(player.controlled_actor().global_position, target)])
+	var wc := player.controlled_actor()
+	_log("drive waypoint target=%s distance=%.1f speed=%.1f yaw=%.0f" % [target.round(), _ground_distance(wc.global_position, target), (wc as Car).forward_speed() if wc is Car else 0.0, rad_to_deg(wc.rotation.y)])
+
+var _held_for := 0.0
+var _held_log_next := 0.0
+var _hold_why := {}
+var _drive_debug := "--drive-debug" in OS.get_cmdline_user_args()
+
+func _crossing_conflict(car: Car, forward: Vector3) -> bool:
+	if traffic == null or traffic.ambient == null: return false
+	var my_speed := maxf(car.forward_speed(), 3.0)
+	for v in traffic.ambient.vehicles:
+		if not v.active or v.speed < 1.5: continue
+		var rel := v.global_position - car.global_position
+		rel.y = 0.0
+		if rel.length() > 22.0 or rel.dot(forward) < -2.5: continue
+		var vf := -v.global_transform.basis.z
+		vf.y = 0.0
+		vf = vf.normalized()
+		# Same direction (our lane: _traffic_lead; the next lane: alongside, not
+		# crossing). M2: lane cars running beside the car held it for 17 s.
+		if vf.dot(forward) > 0.9: continue
+		for t in [0.4, 0.8, 1.2, 1.6]:
+			var a: Vector3 = car.global_position + forward * my_speed * t
+			var b: Vector3 = v.global_position + vf * v.speed * t
+			if Vector2(a.x - b.x, a.z - b.z).length() < 3.2: return true
+	return false
+
+## Street-life D driver perception: the nearest vehicle (physics car or
+## ambient lane traffic) whose footprint overlaps this car's corridor ahead.
+## Returns {gap (m, bumper to footprint), speed (m/s along our heading), node}.
+func _traffic_lead(car: Car, forward: Vector3) -> Dictionary:
+	var left := Vector3.UP.cross(forward).normalized()
+	var best := {"gap": INF, "speed": 0.0, "node": null}
+	var candidates: Array = get_tree().get_nodes_in_group("vehicles")
+	candidates.append_array(get_tree().get_nodes_in_group("ambient_vehicles"))
+	for other in candidates:
+		if other == car or other is Helicopter or not other is Node3D: continue
+		var node := other as Node3D
+		if not node.visible: continue
+		var half := Vector2(0.95, 2.35)
+		var other_speed := 0.0
+		if node is AmbientVehicle:
+			var av := node as AmbientVehicle
+			if not av.active: continue
+			half = Vector2(av.dims.x * 0.5, av.dims.z * 0.5)
+			other_speed = av.speed * (-node.global_transform.basis.z).dot(forward)
+		elif node is Car:
+			other_speed = (node as Car).velocity.dot(forward)
+		else:
+			continue
+		var rel := node.global_position - car.global_position
+		rel.y = 0.0
+		var ahead := rel.dot(forward)
+		if ahead < 0.0 or ahead > 45.0: continue
+		var bx := node.global_transform.basis.x
+		var bz := node.global_transform.basis.z
+		var ext_lat := absf(Vector3(bx.x, 0, bx.z).normalized().dot(left)) * half.x + absf(Vector3(bz.x, 0, bz.z).normalized().dot(left)) * half.y
+		var ext_fwd := absf(Vector3(bx.x, 0, bx.z).normalized().dot(forward)) * half.x + absf(Vector3(bz.x, 0, bz.z).normalized().dot(forward)) * half.y
+		if absf(rel.dot(left)) > 0.85 + ext_lat: continue
+		var gap := ahead - ext_fwd - 2.35
+		if gap < -1.0: continue
+		# r1: an oncoming car (waiting at its own stop line, or met mid-turn)
+		# is not a car to follow; only an imminent one holds us.
+		var heading := -node.global_transform.basis.z
+		var hdot := Vector3(heading.x, 0, heading.z).normalized().dot(forward)
+		if hdot < -0.3 and (gap > 3.0 or absf(other_speed) < 0.5): continue
+		# M2: a car standing at its own stop line across our path is swept by
+		# our heading mid-turn; it is not in the lane we are driving into.
+		if absf(hdot) < 0.6 and absf(other_speed) < 0.5 and gap > 1.5: continue
+		if gap < float(best["gap"]):
+			best = {"gap": maxf(0.0, gap), "speed": other_speed, "node": node}
+	# Street-life M1: give way to people in the car's path (a walker on the
+	# side-road crossing during a left turn was struck, spun the car and sent
+	# it off the road in two headless routes). A walker that keeps standing
+	# in front of the held car steps aside, as lane traffic asks them to.
+	for n in get_tree().get_nodes_in_group("npcs"):
+		var npc := n as NPC
+		if npc == null or not npc.visible or npc.state == NPC.State.DEAD or npc.is_hostile:
+			continue
+		# M2: people on the pavement are not in the road (a turn sweeps the
+		# corridor across the corner pavement and held the car there).
+		if not _on_carriageway(npc.global_position):
+			continue
+		var rel := npc.global_position - car.global_position
+		rel.y = 0.0
+		var ahead := rel.dot(forward)
+		if ahead < 0.0 or ahead > 14.0 or absf(rel.dot(left)) > 1.5:
+			continue
+		var gap := ahead - 2.35 - 0.4
+		# Ask them to step clear early (as a slow car edging through a busy
+		# crossing does), and only stop for someone right at the bumper, so
+		# a turn through a crossing is not abandoned half way round.
+		if gap < 9.0:
+			npc.dodge_vehicle(car.global_position, forward)
+		gap += 2.6
+		if gap < float(best["gap"]):
+			best = {"gap": maxf(0.0, gap), "speed": 0.0, "node": npc}
+	return best
+
+func _on_carriageway(p: Vector3) -> bool:
+	for x in WorldBuilder.X_LINES:
+		if absf(p.x - x) < WorldBuilder.ROAD_HALF:
+			return true
+	for z in WorldBuilder.Z_LINES:
+		if absf(p.z - z) < WorldBuilder.ROAD_HALF:
+			return true
+	return absf(p.x) > 330.0 or absf(p.z) > 330.0
+
+## Distance from the front bumper to a red stop line ahead (INF when the
+## signal is green, no junction is near, or the car is already committed).
+func _red_light_line(car: Car, forward: Vector3) -> float:
+	if traffic == null: return INF
+	var left := Vector3.UP.cross(forward).normalized()
+	for node in world.traffic_nodes:
+		var rel: Vector3 = node - car.global_position
+		rel.y = 0.0
+		var ahead := rel.dot(forward)
+		if ahead < 8.0 or ahead > 60.0 or absf(rel.dot(left)) > 9.0: continue
+		var line := ahead - 12.0 - 2.35
+		if line < 0.5 and car.forward_speed() > 3.0: return INF   # committed
+		if line < -1.0: return INF
+		if traffic.signal_allows(forward):
+			_red_wait = 0.0
+			return INF
+		# Street-life M2: drive like a player. Lane traffic gives way to a
+		# player car approaching a junction (AmbientTraffic._player_in_junction),
+		# so a red is only waited at while cross traffic is still moving
+		# through the box. (M1 sat through every red behind queues: the drive
+		# leg took 166 s against 39 s and police caught the stationary car.)
+		if traffic.ambient != null and _cross_traffic_in_box(node, forward):
+			return line
+		_red_wait = 0.0
+		return INF
+	_red_wait = 0.0
+	return INF
+
+func _cross_traffic_in_box(node: Vector3, forward: Vector3) -> bool:
+	for v in traffic.ambient.vehicles:
+		if not v.active or v.speed < 1.0:
+			continue
+		var p := v.global_position
+		if absf(p.x - node.x) > 13.0 or absf(p.z - node.z) > 13.0:
+			continue
+		var vf := -v.global_transform.basis.z
+		vf.y = 0.0
+		if absf(vf.normalized().dot(forward)) < 0.7:
+			return true
+	return false
+
+const RED_PATIENCE := 6.0
+var _red_wait := 0.0
 
 ## Driver perception for this automated playtest: steer around an actual
 ## nearby car using normal controls. The obstacle and vehicle are never moved.
@@ -1116,10 +1410,13 @@ func _avoid_car_direction(car: Car, forward: Vector3) -> Vector3:
 	var obstacle: Node3D = null
 	for other in get_tree().get_nodes_in_group("vehicles"):
 		if other == car or other is Helicopter: continue
+		# Street-life D: moving or AI-driven traffic is followed (_traffic_lead),
+		# not swerved round; only parked or wrecked cars are steered past here.
+		if other is Car and ((other as Car).has_ai or (other as Car).velocity.length() > 1.0): continue
 		var offset: Vector3 = other.global_position - car.global_position
 		var ahead := offset.dot(forward)
 		var lateral := offset.dot(left)
-		if ahead > 1.0 and ahead < 17.0 and absf(lateral) < 3.2 and ahead < nearest:
+		if ahead > 1.0 and ahead < 17.0 and absf(lateral) < 2.4 and ahead < nearest:
 			nearest = ahead
 			obstacle = other
 	if obstacle == null: return Vector3.ZERO
