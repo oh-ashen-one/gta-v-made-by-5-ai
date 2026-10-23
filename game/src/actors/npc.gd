@@ -252,6 +252,12 @@ func _walk(delta: float) -> void:
 	if _crossing_hold(target):
 		velocity.x = 0.0
 		velocity.z = 0.0
+		# r1: about half of the people reaching a red crossing turn back along
+		# the pavement instead of waiting, so walkers arriving behind them do
+		# not pile up into a single-file queue along the kerb.
+		if _pace() > 1.0 and lane.size() > 1:
+			lane_dir = -lane_dir
+			lane_index = clampi(lane_index + lane_dir, 0, lane.size() - 1)
 		return
 	_move_towards(target, WALK_SPEED * _pace(), delta)
 
