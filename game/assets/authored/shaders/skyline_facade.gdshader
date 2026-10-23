@@ -63,6 +63,9 @@ uniform float roof_variety = 0.0;
 // little) so every tower reads as a solid with a light and a dark side.
 uniform float form_contrast = 0.0;
 uniform float band_frac = 0.20;
+// Coarse refuge-floor bands (round 4). 0 keeps only the fine per-floor grid
+// (Marina Bay Sands: its curtain wall has no plant floors; wave M integration).
+uniform float refuge_bands = 1.0;
 uniform float mullion_m = 2.6;
 // Daytime build: interiors stay dark. >0 only for dusk variants, and then the
 // lit panes are masked to the glazing so they never straddle the grid.
@@ -238,7 +241,7 @@ void fragment() {
 		float nb = floor(mix(6.0, 11.0, fract(icustom.a * 5.3)));
 		float mband = pulse(fy / nb + fract(icustom.a * 3.1), 1.0 / nb, fwy / nb);
 		vec3 band_col = (mat_id == 0 || mat_id == 3) ? lin(vec3(0.30, 0.32, 0.32)) : (mat_id == 2 || mat_id == 6 ? lin(vec3(0.82, 0.82, 0.80)) : c * 0.6);
-		c = mix(c, band_col, mband * 0.85);
+		c = mix(c, band_col, mband * 0.85 * refuge_bands);
 		if (mat_id == 0 || mat_id == 2 || mat_id == 3 || mat_id == 6) {
 			float streak = vnoise(vec2(hz * 0.06 + sd, 0.5));
 			c *= 0.78 + 0.5 * streak;

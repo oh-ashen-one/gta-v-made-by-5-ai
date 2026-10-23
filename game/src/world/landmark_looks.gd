@@ -56,6 +56,9 @@ static func material_for(material_name: String, source: Material = null) -> Mate
 			m.set_shader_parameter("glass_b", Color(0.27, 0.37, 0.43))
 			m.set_shader_parameter("frame_col", Color(0.74, 0.74, 0.71))
 			m.set_shader_parameter("form_contrast", 0.7)
+			# Wave M integration: no coarse white refuge bands every 6 floors on
+			# the true-scale towers; keep the fine per-floor window grid.
+			m.set_shader_parameter("refuge_bands", 0.0)
 			result = SkylineHorizon.register(m)
 		"near_shore_tower_0", "near_shore_tower_1":
 			var t := ShaderMaterial.new()

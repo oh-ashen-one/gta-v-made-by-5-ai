@@ -321,16 +321,10 @@ func _event_plaza(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 	kit.box(paving, Vector3(xc, prom_top * 0.5, (z_steps + z_sea) * 0.5), Vector3(lx + 10.0, prom_top, z_sea - z_steps))
 	kit.col_box(Vector3(lx + 10.0, 1.0, z_sea - z_steps), Vector3(xc, prom_top - 0.5, (z_steps + z_sea) * 0.5))
 	kit.box(Looks.get_mat("granite_light"), Vector3(xc, prom_top + 0.04, z_sea - 0.7), Vector3(lx + 10.0, 0.16, 1.4))
-	# Seawall railing with one opening onto the crystal pavilion gangway.
-	var gap_x := m.x + 78.0
-	Realm.railing(kit, Vector3(x0 - 5.0, prom_top + 0.1, z_sea - 0.9), Vector3(gap_x - 2.2, prom_top + 0.1, z_sea - 0.9), 1.15)
-	Realm.railing(kit, Vector3(gap_x + 2.2, prom_top + 0.1, z_sea - 0.9), Vector3(x1 + 5.0, prom_top + 0.1, z_sea - 0.9), 1.15)
-	var ra := x0 - 5.0
-	var rb := gap_x - 2.2
-	kit.col_box(Vector3(rb - ra, 1.3, 0.2), Vector3((ra + rb) * 0.5, prom_top + 0.65, z_sea - 0.9))
-	ra = gap_x + 2.2
-	rb = x1 + 5.0
-	kit.col_box(Vector3(rb - ra, 1.3, 0.2), Vector3((ra + rb) * 0.5, prom_top + 0.65, z_sea - 0.9))
+	# Seawall railing, continuous (integration: the crystal pavilion and its
+	# gangway read as an opaque black pyramid in the bay and were removed).
+	Realm.railing(kit, Vector3(x0 - 5.0, prom_top + 0.1, z_sea - 0.9), Vector3(x1 + 5.0, prom_top + 0.1, z_sea - 0.9), 1.15)
+	kit.col_box(Vector3(x1 - x0 + 10.0, 1.3, 0.2), Vector3((x0 + x1) * 0.5, prom_top + 0.65, z_sea - 0.9))
 	# Granite tree pits with rain trees, lamps between, benches facing the bay.
 	var lamp_x := []
 	var bench_x := []
@@ -360,36 +354,6 @@ func _event_plaza(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 	Realm.benches(holder, "MBSPlazaBenches", bench_x)
 	Realm.bollards(holder, "MBSPlazaBollards", bollards)
 	Realm.flush_ferns(holder, "MBSPlazaFerns")
-	# Crystal pavilion on the water off the promenade, reached by a gangway.
-	var cp := Vector3(m.x + 78.0, prom_top, z_sea + 16.0)
-	var base_r := 13.0
-	var top_pts := PackedVector3Array()
-	var low := PackedVector3Array()
-	for k in 6:
-		var ang := TAU * k / 6.0 + 0.3
-		low.append(cp + Vector3(cos(ang) * base_r, 0.0, sin(ang) * base_r * 0.8))
-		top_pts.append(cp + Vector3(cos(ang + 0.5) * base_r * 0.45 + 3.0, 13.0 - 3.0 * float(k % 2), sin(ang + 0.5) * base_r * 0.35))
-	var gl := Looks.get_mat("glass_dark")
-	var fr := Looks.get_mat("steel_satin")
-	for k in 6:
-		var k1 := (k + 1) % 6
-		kit.tri(gl, low[k1], low[k], top_pts[k])
-		kit.tri(gl, low[k1], top_pts[k], top_pts[k1])
-		kit.beam(fr, low[k], top_pts[k], 0.18, 0.18)
-		kit.beam(fr, top_pts[k], top_pts[k1], 0.18, 0.18)
-		kit.beam(fr, low[k1], top_pts[k], 0.12, 0.12)
-	var top_rev := PackedVector3Array()
-	for k in range(5, -1, -1):
-		top_rev.append(top_pts[k])
-	kit.cap(gl, top_rev)
-	kit.cyl(Looks.get_mat("concrete_fair"), cp - Vector3(0, 1.4, 0), base_r + 1.0, base_r + 1.0, 1.4, 6, true)
-	kit.col_box(Vector3(base_r * 1.6, 12.0, base_r * 1.3), cp + Vector3(0, 6.0, 0))
-	var g0 := Vector3(cp.x, prom_top, z_sea - 0.5)
-	var g1 := Vector3(cp.x, prom_top, cp.z - base_r * 0.8 + 0.5)
-	kit.box(Looks.get_mat("timber"), (g0 + g1) * 0.5 + Vector3(0, 0.1, 0), Vector3(4.0, 0.3, g1.z - g0.z))
-	Realm.glass_rail(kit, g0 + Vector3(-2.0, 0.25, 0), g1 + Vector3(-2.0, 0.25, 0), 1.1)
-	Realm.glass_rail(kit, g0 + Vector3(2.0, 0.25, 0), g1 + Vector3(2.0, 0.25, 0), 1.1)
-	kit.col_box(Vector3(4.0, 0.5, g1.z - g0.z), (g0 + g1) * 0.5)
 	# Wayfinding totem by the centre steps.
 	var totem := Label3D.new()
 	totem.text = "EVENT PLAZA\nBAYFRONT"

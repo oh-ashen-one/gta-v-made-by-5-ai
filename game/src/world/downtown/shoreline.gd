@@ -196,6 +196,17 @@ static func _rail_gap(p: Vector3) -> bool:
 	for end: Vector3 in [helix["from"], helix["to"]]:
 		if Vector2(p.x - end.x, p.z - end.z).length() < 8.0:
 			return true
+	# Integration (wave M): the Helix ramps cross the channel seawalls ~20 m
+	# inboard of its plan ends, on the bowed centreline the landmarks piece
+	# builds (z = from.z - 6 sin(pi u)), so the railing opens wherever the
+	# walkway passes over the coping.
+	var a: Vector3 = helix["from"]
+	var b: Vector3 = helix["to"]
+	var u := (p.x - a.x) / (b.x - a.x)
+	if u > 0.0 and u < 1.0:
+		var cz := lerpf(a.z, b.z, u) - 6.0 * sin(PI * u)
+		if absf(p.z - cz) < float(helix["width"]) * 0.5 + 2.5:
+			return true
 	return false
 
 ## Plot pads: every BLOCKS rect is a raised paved pad (parks are turf), so
