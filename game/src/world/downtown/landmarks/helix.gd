@@ -207,6 +207,20 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 		var c := end_p + Vector3(off * 0.5, 0, 0)
 		kit.box(Looks.get_mat("granite_paving"), Vector3(c.x, QUAY_Y * 0.5 - 0.2, c.z), Vector3(absf(off) + 8.0, QUAY_Y + 0.4, 16.0))
 		kit.col_box(Vector3(absf(off) + 8.0, 1.0, 16.0), Vector3(c.x, QUAY_Y - 0.5, c.z))
+		# downtown-polish (wave S): the 0.36 m plaza stood as a lip over the
+		# 0-0.10 m quay and walks (the player capsule has no step-up), so the
+		# helix could not be walked onto. Granite edge ramps on the three land
+		# sides (the fourth carries the deck).
+		var half := Vector2((absf(off) + 8.0) * 0.5, 8.0)
+		for n: Vector2 in [Vector2(signf(off), 0.0), Vector2(0.0, 1.0), Vector2(0.0, -1.0)]:
+			var edge := Vector3(c.x + n.x * half.x, QUAY_Y, c.z + n.y * half.y)
+			var length := half.y * 2.0 if n.x != 0.0 else half.x * 2.0
+			var p0 := Vector3(edge.x + n.x * 1.8, -0.02, edge.z + n.y * 1.8)
+			kit.col_beam(p0, edge, length, 0.4)
+			var dz := (edge - p0).normalized()
+			var dx := Vector3.UP.cross(dz).normalized()
+			var dy := dz.cross(dx).normalized()
+			kit.box(Looks.get_mat("granite_paving"), (p0 + edge) * 0.5 - dy * 0.05, Vector3(length, 0.1, p0.distance_to(edge)), Basis(dx, dy, dz))
 		var sign := Label3D.new()
 		sign.text = "HELIX BRIDGE"
 		sign.font_size = 96

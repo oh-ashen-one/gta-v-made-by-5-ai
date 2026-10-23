@@ -17,7 +17,7 @@ extends RefCounted
 ## Rect2 values are (x_min, z_min, width_x, depth_z) on the ground plane.
 ## Loading this file changes nothing in game; only pieces act on it.
 
-const PLAN_VERSION := "M-1 2026-10-23"
+const PLAN_VERSION := "S-1 2026-10-23"
 
 const WATER_LEVEL := -0.9
 const QUAY_TOP := 0.3
@@ -209,7 +209,10 @@ const BLOCKS := {
 	"civic_upriver": {"rect": Rect2(-900.0, 171.0, 290.0, 204.0), "kind": "mid_rise", "max_h": 90.0, "front": "+x (river)"},
 	"esplanade_site": {"rect": Rect2(-775.0, -630.0, 120.0, 257.0), "kind": "landmark_site", "owner": "landmarks", "max_h": 45.0},
 	"marina_centre_west": {"rect": Rect2(-900.0, -765.0, 97.0, 392.0), "kind": "marina_centre", "max_h": 180.0, "front": "+x (Raffles Ave)"},
-	"marina_centre_bay": {"rect": Rect2(-777.0, -765.0, 282.0, 93.0), "kind": "marina_centre", "max_h": 160.0, "front": "+z (Promenade), -z (Bayfront Ave)"},
+	# S-1 (downtown-polish): starts 12 m further from Raffles Avenue, so the
+	# right turn from Raffles Avenue onto Bayfront Avenue North has a corner
+	# plaza and sightline instead of a podium 6 m off the kerb return.
+	"marina_centre_bay": {"rect": Rect2(-765.0, -765.0, 270.0, 93.0), "kind": "marina_centre", "max_h": 160.0, "front": "+z (Promenade), -z (Bayfront Ave)"},
 	"marina_centre_far": {"rect": Rect2(-900.0, -1000.0, 97.0, 205.0), "kind": "marina_centre", "max_h": 120.0, "front": "+x"},
 	"flyer_site": {"rect": Rect2(-777.0, -1000.0, 282.0, 205.0), "kind": "landmark_site", "owner": "landmarks", "max_h": 170.0},
 	"mbs_site": {"rect": Rect2(-330.0, -765.0, 390.0, 105.0), "kind": "landmark_site", "owner": "landmarks", "max_h": 210.0},
@@ -319,6 +322,7 @@ const PIECE_TESTS := [
 	"res://src/systems/downtown_tests/landmarks_test.gd",
 	"res://src/systems/downtown_tests/blocks_test.gd",
 	"res://src/systems/downtown_tests/street_life_test.gd",
+	"res://src/systems/downtown_tests/polish_test.gd",
 ]
 ## Legacy builder sections a piece may take over via replaces(). WorldBuilder
 ## skips a section only when some present piece lists its key.

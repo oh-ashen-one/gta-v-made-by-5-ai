@@ -34,6 +34,12 @@ uniform float interior_energy = 0.20;
 uniform float lobby_energy = 0.42;
 uniform float reflect_metal = 0.08;
 uniform float reflect_strength = 1.0;
+// downtown-polish (wave S): direction TO the sun (world). Faces turned away
+// from it keep less of their (emissive, sun-independent) sky reflection, so
+// towers read with a lit side and a shade side from the air instead of one
+// flat pale tone. (0,0,0) = off.
+uniform vec3 sun_to = vec3(0.0);
+uniform float shade_reflect = 0.5;
 
 varying vec3 wpos;
 varying vec3 wn;
@@ -315,6 +321,11 @@ void fragment() {
 		env = mix(city, env, smoothstep(skyl - 0.02, skyl + 0.02, R.y));
 		env = mix(env, vec3(0.30, 0.29, 0.28), smoothstep(-0.05, -0.4, R.y));
 		float refl_w = (0.16 + 0.70 * fres) * reflect_strength * (is_lobby ? 0.6 : 1.0);
+		if (dot(sun_to, sun_to) > 0.01) {
+			float lit_side = smoothstep(-0.25, 0.35, dot(n, normalize(sun_to)));
+			refl_w *= mix(shade_reflect, 1.0, lit_side);
+			interior *= mix(0.75, 1.0, lit_side);
+		}
 		vec3 refl = env * mix(vec3(1.0), glass_c * 3.2, 0.35) * refl_w;
 		// ---- combine
 		vec3 frame_mix = mix(base, frame_c, clamp(mull + transom + slab, 0.0, 1.0));

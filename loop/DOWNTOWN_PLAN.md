@@ -484,3 +484,4 @@ Every merge re-runs headless `--import`, the full `--test` suite and headless `-
 | Version | Date (UTC) | Change |
 | --- | --- | --- |
 | M-1 | 2026-10-23 | Initial plan (wave M planner). |
+| S-1 | 2026-10-23 | downtown-polish: `marina_centre_bay` starts at x -765 (was -777): a 12 m corner plaza at the Raffles Avenue / Bayfront Avenue North right turn. |
