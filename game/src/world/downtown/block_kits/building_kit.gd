@@ -112,6 +112,20 @@ static func tower(k: MeshKit, det: Batch, rng: RandomNumberGenerator, c: Vector2
 			det.box_at("metal_light", Vector3(b.size.x, 0.9, 0.3), Vector3(b.get_center().x, ry + 0.45, b.end.y - 0.15))
 			if rng.randf() < 0.5 and h > 120.0:
 				det.column("metal_light", 0.18, rng.randf_range(10.0, 22.0), Vector3(b.get_center().x + b.size.x * 0.3, ry + 3.2, b.get_center().y), 4)
+			# building maintenance unit (window-cleaning crane) on the roof edge
+			if h > 90.0:
+				var bm := Vector3(b.position.x + b.size.x * 0.82, ry, b.position.y + b.size.y * 0.5)
+				det.box_at("metal_white", Vector3(2.4, 2.2, 2.4), bm + Vector3(0, 1.1, 0))
+				det.box_at("metal_white", Vector3(0.5, 0.6, b.size.y * 0.45), bm + Vector3(0, 2.6, b.size.y * 0.12))
+			# painted helipad on some wide flat crowns (decorative; not a landing pad)
+			if h > 150.0 and rng.randf() < 0.45 and minf(b.size.x, b.size.y) > 24.0:
+				var hp := Vector3(b.position.x + b.size.x * 0.3, ry + 0.03, b.position.y + b.size.y * 0.3)
+				det.column("metal_dark", 7.0, 0.04, hp, 24)
+				det.column("metal_white", 6.4, 0.05, hp, 24)
+				det.column("metal_dark", 5.9, 0.06, hp, 24)
+				det.box_at("metal_white", Vector3(0.7, 0.04, 5.0), hp + Vector3(-1.4, 0.05, 0))
+				det.box_at("metal_white", Vector3(0.7, 0.04, 5.0), hp + Vector3(1.4, 0.05, 0))
+				det.box_at("metal_white", Vector3(2.4, 0.04, 0.7), hp + Vector3(0, 0.05, 0))
 	return {"top": top_y, "style": style, "cid": cid}
 
 ## Podium across a lot: retail / lobby band at the street, stone or metal
