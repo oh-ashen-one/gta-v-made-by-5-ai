@@ -1194,9 +1194,9 @@ func _drive_to(target: Vector3, stop_distance: float, timeout: float) -> void:
 		# junction) are driven through at speed; only turns slow the car.
 		# Only once lined up: full throttle while still yawed out of a turn
 		# spun the car (headless M2 runs).
-		var floor_v := 11.0 if not (_turn_cap > 0.0 or _approach_slow) and absf(angle) < 0.12 else 5.0
+		var floor_v := 11.0 if not (_turn_cap > 0.0 or _approach_slow) and absf(angle) < 0.25 else 5.0
 		var desired_speed := clampf(offset.length() * 0.8, floor_v, 21.0)
-		if absf(angle) > 0.12 and car.forward_speed() < 9.0: desired_speed = minf(desired_speed, 7.0)
+		if absf(angle) > 0.3 and car.forward_speed() < 9.0: desired_speed = minf(desired_speed, 7.0)
 		if absf(angle) > 0.4: desired_speed = minf(desired_speed, 6.0)
 		if _turn_cap > 0.0: desired_speed = minf(desired_speed, _turn_cap)
 		if _approach_slow and offset.length() < 20.0: desired_speed = minf(desired_speed, 7.0)

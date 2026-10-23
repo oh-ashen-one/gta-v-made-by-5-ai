@@ -478,13 +478,47 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 		# Never inside or against the lens (a hand filled a frame edge).
 		if Vector2(pos.x - _cam_pos.x, pos.z - _cam_pos.z).length() < 7.0:
 			continue
+		# M2: on a wide pavement or forecourt in view, some people (and the
+		# talking groups) stand out in the open space beyond the walking line
+		# instead of everyone sharing one column by the kerb.
+		if not view_lines.is_empty() and not hidden_only and (loiter or _rng.randf() < 0.3):
+			var wide := _rng.randf_range(12.2, 16.0)
+			var lat2: float = float(ln["line"]) + float(ln["side"]) * wide
+			var pos2 := Vector3(lat2, 0.2, along) if int(ln["axis"]) == 0 else Vector3(along, 0.2, lat2)
+			if _open_ground(pos2):
+				_assign(p, ln, wide, pos2, true, off)
+				if not loiter:
+					p.idle_time = _rng.randf_range(12.0, 40.0)
+					p.rotation.y = _rng.randf_range(-PI, PI)
+					stats["forecourt"] = int(stats.get("forecourt", 0)) + 1
+				return true
 		_assign(p, ln, off, pos, loiter)
 		return true
 	return false
 
-func _assign(p: NPC, ln: Dictionary, off: float, pos: Vector3, loiter: bool) -> void:
+## Nothing solid (buildings, walls, planters) within ~1.2 m at body height.
+var _probe: PhysicsShapeQueryParameters3D
+func _open_ground(pos: Vector3) -> bool:
+	if _probe == null:
+		_probe = PhysicsShapeQueryParameters3D.new()
+		var sph := SphereShape3D.new()
+		sph.radius = 1.2
+		_probe.shape = sph
+		_probe.collision_mask = 1
+	var space := traffic.get_world_3d().direct_space_state
+	if space == null:
+		return false
+	_probe.transform = Transform3D(Basis(), pos + Vector3(0.0, 1.4, 0.0))
+	if not space.intersect_shape(_probe, 1).is_empty():
+		return false
+	# Standing on paving at street level, not on a roof or in a void.
+	var q := PhysicsRayQueryParameters3D.create(pos + Vector3(0.0, 2.0, 0.0), pos + Vector3(0.0, -1.5, 0.0), 1)
+	var hit := space.intersect_ray(q)
+	return not hit.is_empty() and absf((hit["position"] as Vector3).y - 0.2) < 0.5
+
+func _assign(p: NPC, ln: Dictionary, off: float, pos: Vector3, loiter: bool, lane_off: float = -1.0) -> void:
 	var pts: Array[Vector3] = []
-	var lateral: float = float(ln["line"]) + float(ln["side"]) * off
+	var lateral: float = float(ln["line"]) + float(ln["side"]) * (off if lane_off < 0.0 else lane_off)
 	for j in WorldBuilder.Z_LINES:
 		pts.append(Vector3(lateral, 0.25, j) if int(ln["axis"]) == 0 else Vector3(j, 0.25, lateral))
 	p.lane = pts
