@@ -1,5 +1,12 @@
 # Orchard Reach — Opus 5.5 enhancement loop (rolling handoff)
 
+## Milestones
+- **Week 1 DONE as of 2026-10-23T21:13:30Z** (owner, 2026-10-23). Final state: `main` @ `639ef5c` (git tag `week-1`), build
+  `~/Builds/OrchardReach-639ef5c.zip` on the Studio. Covers the five-AI relay waves 1-5 and Opus 5.5 runs 1-2 (waves P-T,
+  central Singapore / Marina Bay core). **Week 2 starts with the first session after this timestamp**; its work goes on a new
+  branch cut from `main` (e.g. `week-2/<topic>`), and it should begin from the owner's playtest notes on 639ef5c plus the
+  "next biggest gaps" below.
+
 ## Run 2 STOPPED and merged to `main` (owner, 2026-10-23 ~20:55Z)
 - The owner stopped the loop (usage limit) and asked for everything to go to `main` with old branches cleaned up.
   `Opus-5.5-enhancements` was fast-forwarded into `main` (main had not moved since `2c66caa`).
