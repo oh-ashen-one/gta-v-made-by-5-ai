@@ -409,6 +409,11 @@ func weapon_muzzle_position() -> Vector3:
 
 func _process(_delta: float) -> void:
 	_update_animation_activity()
+	if _lod_mid and animator != null:
+		_mid_acc += _delta
+		if animator.active and (Engine.get_process_frames() + get_instance_id()) % MID_STRIDE == 0:
+			animator.advance(_mid_acc)
+			_mid_acc = 0.0
 	_update_contact_shadows()
 	if hands != null:
 		var held := _weapon_node != null and is_instance_valid(_weapon_node) and _weapon_node.is_visible_in_tree()
@@ -447,6 +452,21 @@ func set_lod_far(far: bool) -> void:
 	if far == _lod_far: return
 	_lod_far = far
 	_update_animation_activity()
+
+## Wave-M integration perf: a figure 35-160 m from the lens advances its
+## animation every MID_STRIDE frames with the summed delta instead of every
+## frame (rendered probe: freezing the crowd's per-frame work saved ~5 ms on
+## street views; at that range a 3-frame step is not readable).
+const MID_STRIDE := 3
+var _lod_mid := false
+var _mid_acc := 0.0
+func set_lod_mid(mid: bool) -> void:
+	if mid == _lod_mid or animator == null:
+		return
+	_lod_mid = mid
+	_mid_acc = 0.0
+	animator.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL if mid \
+			else AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_IDLE
 
 func _update_animation_activity() -> void:
 	if animator != null:

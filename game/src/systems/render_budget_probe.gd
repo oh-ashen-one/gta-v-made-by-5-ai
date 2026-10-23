@@ -23,6 +23,8 @@ func _sample(view: String, phase: String, seconds: float) -> void:
 	var draws: Array[float] = []
 	var prims: Array[float] = []
 	var frames: Array[float] = []
+	var proc: Array[float] = []
+	var phys: Array[float] = []
 	var last := Time.get_ticks_usec()
 	var end := Time.get_ticks_msec() + int(seconds * 1000.0)
 	while Time.get_ticks_msec() < end:
@@ -32,7 +34,9 @@ func _sample(view: String, phase: String, seconds: float) -> void:
 		last = now
 		draws.append(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
 		prims.append(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME))
-	var row := {"view": view, "phase": phase, "frames": frames.size(), "draw_calls": _stats(draws), "primitives": _stats(prims), "frame_ms": _stats(frames)}
+		proc.append(Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0)
+		phys.append(Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0)
+	var row := {"view": view, "phase": phase, "frames": frames.size(), "draw_calls": _stats(draws), "primitives": _stats(prims), "frame_ms": _stats(frames), "process_ms": _stats(proc), "physics_ms": _stats(phys)}
 	_rows.append(row)
 	print("[budget] ", JSON.stringify(row))
 
@@ -46,6 +50,11 @@ func _stats(values: Array[float]) -> Dictionary:
 		total += v
 	return {"mean": snappedf(total / values.size(), 0.01), "p50": snappedf(sorted[int(sorted.size() * 0.5)], 0.01),
 		"p95": snappedf(sorted[mini(sorted.size() - 1, int(sorted.size() * 0.95))], 0.01)}
+
+func _tick(nodes: Array, on: bool) -> void:
+	for n in nodes:
+		if is_instance_valid(n):
+			n.process_mode = Node.PROCESS_MODE_INHERIT if on else Node.PROCESS_MODE_DISABLED
 
 func _show(nodes: Array, on: bool) -> void:
 	for n in nodes:
@@ -91,6 +100,17 @@ func _run() -> void:
 		_show(people, false)
 		await _sample(name_v, "no_people", 3.0)
 		_show(people, true)
+		_tick(people, false)
+		await _sample(name_v, "people_frozen", 3.0)
+		_tick(people, true)
+		if traffic.crowd != null:
+			traffic.crowd.process_mode = Node.PROCESS_MODE_DISABLED
+			await _sample(name_v, "crowd_director_off", 3.0)
+			traffic.crowd.process_mode = Node.PROCESS_MODE_INHERIT
+		if traffic.ambient != null:
+			traffic.ambient.process_mode = Node.PROCESS_MODE_DISABLED
+			await _sample(name_v, "lane_traffic_sim_off", 3.0)
+			traffic.ambient.process_mode = Node.PROCESS_MODE_INHERIT
 		_show(cars, false)
 		await _sample(name_v, "no_lane_cars", 3.0)
 		_show(cars, true)

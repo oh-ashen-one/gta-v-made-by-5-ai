@@ -211,7 +211,10 @@ func _physics_process(delta: float) -> void:
 		var cam := get_viewport().get_camera_3d()
 		if cam != null:
 			var limit := CharacterVisual.NPC_DRAW_RANGE + 10.0
-			character_visual.set_lod_far(state != State.DEAD and global_position.distance_squared_to(cam.global_position) > limit * limit)
+			var d2 := global_position.distance_squared_to(cam.global_position)
+			character_visual.set_lod_far(state != State.DEAD and d2 > limit * limit)
+			# Wave-M integration perf: mid-range figures animate every 3rd frame.
+			character_visual.set_lod_mid(d2 > 35.0 * 35.0 and not is_hostile and not is_police)
 	if state == State.DEAD:
 		velocity.x = 0.0
 		velocity.z = 0.0
