@@ -11,8 +11,8 @@ const SECONDS := 45.0
 const SPOTS := [
 	# name, junction centre, camera (pedestrian eye height on a corner), look-at
 	{"name": "collyer_quay_cecil", "centre": Vector3(-430.0, 0.0, -320.0), "cam": Vector3(-444.0, 1.8, -305.0), "look": Vector3(-412.0, 0.6, -323.0)},
-	{"name": "raffles_bayfront_corner", "centre": Vector3(-790.0, 0.0, -780.0), "cam": Vector3(-775.0, 1.8, -764.0), "look": Vector3(-794.0, 0.6, -792.0)},
-	{"name": "esplanade_connaught", "centre": Vector3(-660.0, 0.0, -360.0), "cam": Vector3(-647.0, 1.8, -344.0), "look": Vector3(-674.0, 0.6, -365.0)},
+	{"name": "raffles_bayfront_corner", "centre": Vector3(-790.0, 0.0, -780.0), "cam": Vector3(-770.0, 1.8, -763.0), "look": Vector3(-796.0, 0.6, -790.0)},
+	{"name": "esplanade_connaught", "centre": Vector3(-660.0, 0.0, -360.0), "cam": Vector3(-679.0, 1.8, -372.0), "look": Vector3(-655.0, 0.6, -352.0)},
 	{"name": "collyer_quay_legacy", "centre": Vector3(-320.0, 0.0, -320.0), "cam": Vector3(-305.0, 1.8, -305.0), "look": Vector3(-332.0, 0.6, -324.0)},
 ]
 

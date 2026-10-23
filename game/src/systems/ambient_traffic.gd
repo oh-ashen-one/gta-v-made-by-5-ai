@@ -828,6 +828,8 @@ func _unstick(v: AmbientVehicle, delta: float) -> void:
 	if not on_foot and v.idle_time > DEADLOCK_RESET and waits_on_player and _player_near(v.global_position, 12.0 + v.dims.z * 0.5):
 		wedged = true
 	var opening := v.idle_time > WEDGE_RESET and _in_opening_clear(v.global_position)
+	if v.next_edge < 0 and v.idle_time > 2.0 and (_hidden_from_camera(v.global_position) or v.idle_time > 25.0):
+		opening = true
 	var gridlock := v.idle_time > GRIDLOCK_RESET and _hidden_from_camera(v.global_position)
 	if wedged or opening or gridlock:
 		v.idle_time = 0.0
@@ -919,6 +921,13 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 	# 1. Car following, including the tail of the lane we are about to enter.
 	var gap := _leader_gap(v, s_end)
 	target = _mt(v, target, _stop_speed(gap - 3.0), "leader")
+	# traffic-flow (T): a dead end (only a U-turn out): stop at the end of the
+	# road and wait to be recycled out of sight. Lane cars with no next edge
+	# used to drive straight on off the graph, through kerbs and buildings,
+	# and stall in other roads (one parked across Fullerton Road for 40 s+
+	# was a tow in the downtown drive).
+	if v.next_edge < 0:
+		target = _mt(v, target, _stop_speed(s_end - v.s), "dead_end")
 	# 2. Signals: hold at the stop line unless already committed.
 	# traffic-flow (T): the hold line is the front bumper just behind the
 	# painted stop line and zebra (was the car centre 12.5 m from the junction
@@ -928,6 +937,18 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 		var front := v.s + v.dims.z * 0.5
 		var to_hold := _hold(v.edge) - front
 		var in_box := v.j_len > 0.0 and v.s < _entry(v.edge)
+		# Patience: a car held this long by one of the courtesy rules (keep
+		# clear, give way, the far crossing, a stopped car in the box) goes
+		# anyway, the way real drivers eventually do; signals and the queue
+		# in front still hold it. No jam may freeze in view.
+		var assertive := rules_on and v.idle_time > ASSERT_AFTER and String(why.get(v, "")) in SOFT_RULES
+		if assertive:
+			_assert_t[v] = 5.0
+		elif _assert_t.has(v):
+			_assert_t[v] = float(_assert_t[v]) - delta
+			assertive = float(_assert_t[v]) > 0.0
+			if not assertive:
+				_assert_t.erase(v)
 		var committed := (to_hold < 1.2 and v.speed > 4.0) or to_hold < -0.6
 		# M2: a queue standing at a red light in front of a player-driven car
 		# is released (the light "changes" for the player's approach, as in
@@ -941,26 +962,26 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 		elif not committed and not release and v.next_edge >= 0 and (not rules_on or control != Rules.CONTROL_NONE) and _exit_room(v) < v.dims.z + (3.5 if rules_on else 2.5):
 			target = _mt(v, target, _stop_speed(to_hold - 0.25), "exit_room")
 		# Give way to a player-driven vehicle crossing or about to cross.
-		elif not committed and to_line < 30.0 and _player_in_junction(ed["b"], v):
+		elif not committed and to_line < 30.0 and (not rules_on or control != Rules.CONTROL_NONE) and _player_in_junction(ed["b"], v):
 			target = _mt(v, target, _stop_speed(to_hold - 0.25), "player")
 		# A car ahead of us standing in the box (turning elsewhere, held by its
 		# own exit or a pedestrian): wait at the line, not on the zebra.
-		elif rules_on and not committed and not in_box and to_hold < 30.0 and _box_ahead_blocked(v, to_hold):
+		elif rules_on and not assertive and not committed and not in_box and to_hold < 30.0 and _box_ahead_blocked(v, to_hold):
 			target = _mt(v, target, _stop_speed(to_hold - 0.25), "box_ahead")
 		# People on the crossing on the far side of the junction.
-		elif rules_on and not committed and not in_box and to_hold < 18.0 and _exit_zebra_busy(v):
+		elif rules_on and not assertive and not committed and not in_box and to_hold < 18.0 and _exit_zebra_busy(v):
 			target = _mt(v, target, _stop_speed(to_hold - 0.25), "exit_zebra")
 		# Unsignalled junction, minor road: give way at the line.
-		elif control == Rules.CONTROL_YIELD and not committed and not release and not in_box and to_hold < 14.0 and _give_way_blocked(v, delta):
+		elif control == Rules.CONTROL_YIELD and not assertive and not committed and not release and not in_box and to_hold < 14.0 and _give_way_blocked(v, delta):
 			target = _mt(v, target, _stop_speed(to_hold - 0.25), "give_way")
 		if v.next_edge >= 0 and to_line < 22.0 and (edges[v.next_edge]["dir"] as Vector3).dot(ed["dir"]) < 0.5:
 			target = _mt(v, target, 6.5, "turn")
 		# Keep zebras clear: never stop with the body on a crossing. A car
 		# whose leader is standing (or crawling) does not roll onto a zebra
 		# unless there is room for its whole length beyond it.
-		if not in_box:
+		if not in_box and not assertive:
 			target = _mt(v, target, _keep_clear_target(v, front, gap), "keep_clear")
-		elif rules_on:
+		elif rules_on and not assertive:
 			# Turning out of the box: people on the far crossing get the road;
 			# stop short of the zebra rather than on it.
 			for iv: Vector2 in ed.get("clear", []):
@@ -984,6 +1005,9 @@ func _drive(v: AmbientVehicle, delta: float) -> void:
 		if v.obstacle_gap < 0.6:
 			v.speed = 0.0
 	_lane_change(v, delta)
+	if _jam_debug and (v.idle_time > 30.0 or (v.idle_time > 12.0 and gap == INF and _signal_ok(v.edge))) and int(v.idle_time * 2.0) != int((v.idle_time - delta) * 2.0) and int(v.idle_time) % 2 == 0:
+		print("[traffic-debug] STARVE e%d sig=%s clock=%.1f target=%.2f speed=%.2f why=%s s=%.1f hold=%.1f gap=%.1f exit=%.1f obst=%.1f node=%s ctl=%d %s" % [v.edge, _signal_ok(v.edge), traffic._signal_clock, target, v.speed, why.get(v, "-"), v.s, _hold(v.edge), gap, _exit_room(v) if v.next_edge >= 0 else -1.0, v.obstacle_gap,
+			str(v.obstacle_node.get_class()) if v.obstacle_node != null and is_instance_valid(v.obstacle_node) else "-", int(ed.get("control", 0)), str(v.global_position.round())])
 	# Junction deadlock breaker: a car held inside the box for long creeps on.
 	if v.speed < 0.2 and v.j_len > 0.0 and v.s < _entry(v.edge):
 		v.stuck_time += delta
@@ -1215,7 +1239,8 @@ func _player_in_junction(node: Vector3, v: AmbientVehicle) -> bool:
 	# traffic-flow (T): only a player in the box or in this car's own path
 	# (a player passing on the far carriageway held whole approaches for a
 	# minute: Esplanade Drive / Connaught Drive, Collyer Quay).
-	if absf(p.x - node.x) < 12.0 and absf(p.z - node.z) < 12.0:
+	var box := float(_node_box.get(int(edges[v.edge]["to"]), 10.0))
+	if absf(p.x - node.x) < box and absf(p.z - node.z) < box:
 		return true
 	return absf(rel.dot(Vector3.UP.cross(fwd))) < 3.0
 
@@ -1240,11 +1265,15 @@ func _exit_room(v: AmbientVehicle) -> float:
 	var tail: AmbientVehicle = nxt[0]
 	return tail.s - clear_from - tail.dims.z * 0.5
 
-## Debug: the rule that last capped a car's speed below walking pace.
+const ASSERT_AFTER := 14.0
+var _assert_t: Dictionary = {}
+const SOFT_RULES := ["keep_clear", "exit_zebra", "box_ahead", "give_way", "box_zebra"]
+## The rule that last capped a car's speed below walking pace (patience
+## rule above; printed by --traffic-debug).
 var why: Dictionary = {}
 func _mt(v: AmbientVehicle, cur: float, cap: float, tag: String) -> float:
 	if cap < cur:
-		if _jam_debug and cap < 0.5:
+		if cap < 0.5:
 			why[v] = tag
 		return cap
 	return cur
