@@ -45,8 +45,8 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 		var u := float(i) / n
 		var s := lerpf(-length * 0.5, length * 0.5, u)
 		var bow := 7.0 * sin(PI * u)
-		front.append(p + ax * s + az * (depth * 0.5 + bow))
-		back.append(p + ax * s - az * (depth * 0.5))
+		front.append(p + ax * s - az * (depth * 0.5 + bow))
+		back.append(p + ax * s + az * (depth * 0.5))
 	var glass := Looks.get_mat("glass_green")
 	var satin := Looks.get_mat("steel_satin")
 	var white := Looks.get_mat("steel_white")
@@ -57,24 +57,24 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 		var b0 := back[i] + Vector3(0, TOP, 0)
 		var b1 := back[i + 1] + Vector3(0, TOP, 0)
 		var up := Vector3(0, h, 0)
-		kit.quad(glass, f0, f1, f1 + up, f0 + up)
-		kit.quad(concrete, b1, b0, b0 + up, b1 + up)
-		kit.quad(Looks.get_mat("planting"), f0 + up, f1 + up, b1 + up, b0 + up)
+		kit.quad(glass, f1, f0, f0 + up, f1 + up)
+		kit.quad(concrete, b0, b1, b1 + up, b0 + up)
+		kit.quad(Looks.get_mat("planting"), f1 + up, f0 + up, b0 + up, b1 + up)
 		kit.beam(satin, f0, f0 + up, 0.18, 0.3)
 		for fl: float in [4.0, 8.0]:
 			kit.beam(white, f0 + Vector3(0, fl, 0), f1 + Vector3(0, fl, 0), 0.6, 0.45)
 		kit.beam(white, f0 + up, f1 + up, 0.9, 0.7)
 		# Warm interior read through the lowest glazing.
 		var inset := (b0 - f0).normalized() * 3.0
-		kit.quad(Looks.get_mat("interior_warm"), f0 + inset, f1 + inset, f1 + inset + Vector3(0, 3.6, 0), f0 + inset + Vector3(0, 3.6, 0))
+		kit.quad(Looks.get_mat("interior_warm"), f1 + inset, f0 + inset, f0 + inset + Vector3(0, 3.6, 0), f1 + inset + Vector3(0, 3.6, 0))
 	for e in [0, n]:
 		var f := front[e] + Vector3(0, TOP, 0)
 		var b := back[e] + Vector3(0, TOP, 0)
 		if e == 0:
-			kit.quad(concrete, b, f, f + Vector3(0, h, 0), b + Vector3(0, h, 0))
-		else:
 			kit.quad(concrete, f, b, b + Vector3(0, h, 0), f + Vector3(0, h, 0))
-	kit.col_box(Vector3(length, h, depth + 7.0), p + Vector3(0, TOP + h * 0.5, 0) + az * 3.5, basis)
+		else:
+			kit.quad(concrete, b, f, f + Vector3(0, h, 0), b + Vector3(0, h, 0))
+	kit.col_box(Vector3(length, h, depth + 7.0), p + Vector3(0, TOP + h * 0.5, 0) - az * 3.5, basis)
 	# Boarding deck on the roof under the wheel, with glass balustrade.
 	var deck_c := p + Vector3(0, TOP + h + 0.3, 0)
 	kit.box(Looks.get_mat("timber"), deck_c, Vector3(46.0, 0.6, 18.0), basis)
@@ -82,7 +82,7 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 		Realm.glass_rail(kit, deck_c + az * side - ax * 23.0 + Vector3(0, 0.3, 0), deck_c + az * side + ax * 23.0 + Vector3(0, 0.3, 0), 1.2)
 	kit.col_box(Vector3(46.0, 0.6, 18.0), deck_c, basis)
 	# Drop-off canopy and entrance on the plaza (Raffles Avenue) side.
-	var ent := p - az * (depth * 0.5 + 9.0) + Vector3(0, TOP, 0)
+	var ent := p - az * (depth * 0.5 + 13.0) + Vector3(0, TOP, 0)
 	for k in 6:
 		kit.cyl(white, ent + ax * (-25.0 + k * 10.0) - az * 6.0, 0.3, 0.25, 6.0, 10, false)
 	kit.box(white, ent + Vector3(0, 6.3, 0), Vector3(56.0, 0.6, 16.0), basis)

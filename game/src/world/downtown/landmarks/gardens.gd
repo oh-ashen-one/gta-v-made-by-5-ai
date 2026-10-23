@@ -14,7 +14,7 @@ const Realm = preload("res://src/world/downtown/landmarks/realm.gd")
 
 const TOP := 0.34
 const GROVE_TREES := [Vector3(0, 0, 0), Vector3(-15.4, 0, -4.9), Vector3(15.4, 0, -3.5), Vector3(-9.8, 0, 11.9), Vector3(10.5, 0, 12.6), Vector3(-21.7, 0, 7.7), Vector3(21.0, 0, 9.1)]
-const COPIES := [[Vector3(-30.0, 0.0, -14.0), 0.0, 1.18], [Vector3(30.0, 0.0, 20.0), 3.14159, 1.05]]
+const COPIES := [[Vector3(-46.0, 0.0, -12.0), 0.0, 1.18], [Vector3(46.0, 0.0, 16.0), 3.14159, 1.05]]
 
 func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 	var g: Vector3 = DowntownPlan.anchor("gardens_supertree_grove")
@@ -46,7 +46,7 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 			trees_world.append(w)
 			kit.col_box(Vector3(6.0, 14.0, 6.0) * sc_, w + Vector3(0, 7.0 * sc_, 0))
 			# Planted base ring round each trunk.
-			Realm.planter(kit, w, Vector2(9.0, 9.0) * sc_, 0.5)
+			Realm.planter(kit, w, Vector2(6.5, 6.5) * sc_, 0.3)
 	# OCBC-style skyway threading the first grove at ~22 m.
 	var path_ids := [5, 1, 0, 2, 6, 4, 3]
 	var ctrl: Array[Vector3] = []
@@ -88,6 +88,29 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 	Realm.benches(holder, "GardensBenches", benches)
 	for k in 10:
 		world._tree(Vector3(site.position.x + 30.0 + k * 34.0, TOP, site.end.y - 12.0), 1.0)
+	# Tree clumps and flower beds across the open garden lawns.
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4407
+	var placed := 0
+	var tries := 0
+	while placed < 36 and tries < 400:
+		tries += 1
+		var tp := Vector3(rng.randf_range(site.position.x + 10.0, site.end.x - 10.0), TOP, rng.randf_range(site.position.y + 10.0, site.end.y - 24.0))
+		if Vector2(tp.x - g.x, tp.z - g.z).length() < 100.0:
+			continue
+		var bad := false
+		for key: String in ["flower_dome", "cloud_forest"]:
+			var an: Dictionary = DowntownPlan.ANCHORS[key]
+			var ap: Vector3 = an["pos"]
+			var asz: Vector3 = an["size"]
+			if absf(tp.x - ap.x) < asz.x * 0.5 + 12.0 and absf(tp.z - ap.z) < asz.z * 0.5 + 12.0:
+				bad = true
+		if bad:
+			continue
+		world._tree(tp, rng.randf_range(0.85, 1.2))
+		if placed % 3 == 0:
+			Realm.planter(kit, tp + Vector3(rng.randf_range(6.0, 10.0), 0, rng.randf_range(-4.0, 4.0)), Vector2(rng.randf_range(6.0, 12.0), rng.randf_range(3.0, 5.0)), 0.35)
+		placed += 1
 	# Conservatories.
 	var fd: Dictionary = DowntownPlan.ANCHORS["flower_dome"]
 	var cf: Dictionary = DowntownPlan.ANCHORS["cloud_forest"]

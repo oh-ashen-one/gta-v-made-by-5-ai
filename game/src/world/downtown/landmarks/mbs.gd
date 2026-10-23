@@ -121,7 +121,7 @@ func _hull_bottom(x_rel: float) -> float:
 
 func _skypark(kit: Kit, holder: Node3D) -> void:
 	var hull := Looks.get_mat("hull_panel")
-	var deck := Looks.get_mat("timber")
+	var deck := Looks.get_mat("deck_stone")
 	var zc := m.z + 2.0
 	var rings := []
 	var n := 44
@@ -235,7 +235,11 @@ func _podium(kit: Kit, holder: Node3D) -> void:
 		kit.cyl(white, Vector3(cx, TERRACE_Y, zc), 0.55, 0.42, top - TERRACE_Y, 10, false)
 		cx += 18.0
 	kit.box(white, Vector3(xc, top + 0.7, (zb + zf + 9.0) * 0.5), Vector3(lx + 4.0, 1.4, zf + 9.0 - zb))
-	kit.box(Looks.get_mat("light_strip"), Vector3(xc, top - 0.02, zf + 5.0), Vector3(lx, 0.05, 0.4))
+	kit.box(Looks.get_mat("soffit"), Vector3(xc, top - 0.02, (zb + zf + 9.0) * 0.5), Vector3(lx + 3.6, 0.04, zf + 9.0 - zb - 0.4))
+	var sx2 := x0 + 3.0
+	while sx2 < x1 - 2.0:
+		kit.box(Looks.get_mat("light_strip"), Vector3(sx2, top - 0.06, zf + 4.5), Vector3(0.5, 0.05, 6.0))
+		sx2 += 6.0
 	kit.box(satin, Vector3(xc, top + 0.7, zf + 9.1), Vector3(lx + 4.0, 1.6, 0.25))
 	# Wave roof: a run of curved shells with glazed clerestory ends.
 	var shell := white
@@ -390,7 +394,7 @@ func _event_plaza(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 	totem.text = "EVENT PLAZA\nBAYFRONT"
 	totem.font_size = 64
 	totem.pixel_size = 0.01
-	totem.position = Vector3(m.x + 14.0, TERRACE_Y + 2.2, z_terrace - 2.0 + 0.32)
+	totem.position = Vector3(m.x + 44.0, TERRACE_Y + 2.2, z_terrace - 2.0 + 0.32)
 	totem.modulate = Color(0.92, 0.9, 0.84)
 	holder.add_child(totem)
-	kit.box(Looks.get_mat("signage"), Vector3(m.x + 14.0, TERRACE_Y + 1.5, z_terrace - 2.0), Vector3(1.6, 3.0, 0.6))
+	kit.box(Looks.get_mat("signage"), Vector3(m.x + 44.0, TERRACE_Y + 1.5, z_terrace - 2.0), Vector3(1.6, 3.0, 0.6))

@@ -127,7 +127,7 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 			var p := axis + side * (r * cos(th)) + Vector3.UP * (r * sin(th))
 			line.append(p)
 			list.append(p)
-		kit.tube(steel_w if mi < 2 else steel, line, members[mi][2], 7 if mi < 2 else 5)
+		kit.tube(steel_w if mi < 2 else steel, line, members[mi][2], 10 if mi < 2 else 7)
 		nodes[mi] = list
 	# Rungs tying major to minor helix every third station, and hoop ties.
 	var count: int = (nodes[0] as Array).size()

@@ -31,16 +31,16 @@ func _views() -> Array:
 	var hmid: Vector3 = path[int(path.size() * 0.42)] if path.size() > 10 else Vector3(-400, 3.6, -748)
 	var hfar: Vector3 = path[path.size() - 1] if path.size() > 10 else Vector3(-270, 0.4, -745)
 	return [
-		{"name": "mbs_podium_entrance", "pos": Vector3(-104.0, 3.2, -647.0), "look": Vector3(-118.0, 34.0, -690.0), "fov": 72.0},
+		{"name": "mbs_podium_entrance", "pos": Vector3(-96.0, 2.06, -634.0), "look": Vector3(-118.0, 42.0, -690.0), "fov": 70.0},
 		{"name": "mbs_event_plaza_promenade", "pos": Vector3(-20.0, 2.0, -627.0), "look": Vector3(-170.0, 42.0, -690.0), "fov": 68.0},
 		{"name": "helix_on_bridge", "pos": hmid + Vector3(0, 1.7, 0), "look": hfar + Vector3(40.0, 30.0, 20.0), "fov": 66.0},
-		{"name": "helix_from_quay", "pos": Vector3(-505.0, 2.2, -722.0), "look": Vector3(-385.0, 5.0, -752.0), "fov": 64.0},
+		{"name": "helix_from_quay", "pos": Vector3(-262.0, 2.1, -768.0), "look": Vector3(-400.0, 7.0, -747.0), "fov": 64.0},
 		{"name": "merlion_park_to_mbs", "pos": Vector3(-470.0, 2.96, -395.0), "look": Vector3(-118.0, 90.0, -705.0), "fov": 60.0},
 		{"name": "fullerton_frontage", "pos": Vector3(-452.0, 1.8, -335.0), "look": Vector3(-500.0, 16.0, -280.0), "fov": 66.0},
 		{"name": "esplanade_under_durians", "pos": Vector3(-662.0, 1.8, -505.0), "look": Vector3(-700.0, 28.0, -545.0), "fov": 74.0},
 		{"name": "esplanade_waterfront", "pos": Vector3(-650.0, 1.7, -390.0), "look": Vector3(-712.0, 15.0, -500.0), "fov": 64.0},
 		{"name": "flyer_terminal", "pos": fl + fb * Vector3(18.0, 1.8, -78.0), "look": fl + Vector3(0, 55.0, 0), "fov": 70.0},
-		{"name": "supertree_grove_inside", "pos": g + Vector3(-6.0, 1.8, 2.0), "look": g + Vector3(-34.0, 26.0, -20.0), "fov": 76.0},
+		{"name": "supertree_grove_inside", "pos": g + Vector3(-8.0, 1.8, 12.0), "look": g + Vector3(-46.0, 22.0, -12.0), "fov": 74.0},
 		{"name": "gardens_to_mbs", "pos": Vector3(40.0, 1.7, -960.0), "look": Vector3(-118.0, 90.0, -705.0), "fov": 66.0},
 		{"name": "artscience_pond", "pos": Vector3(-262.0, 1.9, -618.0), "look": Vector3(-292.0, 22.0, -595.0), "fov": 70.0},
 		{"name": "heli_mbs_bay", "pos": Vector3(60.0, 150.0, -500.0), "look": mbs + Vector3(0, 110.0, 0), "fov": 62.0},

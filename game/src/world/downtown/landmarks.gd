@@ -42,8 +42,12 @@ func skyline_clear(world: WorldBuilder, city: SkylineCity) -> void:
 	var rects: Array[Rect2] = []
 	for key: String in SITES:
 		rects.append(DowntownPlan.block_rect(key).grow(6.0))
-	for key: String in ["artscience_promontory", "fullerton_peninsula"]:
+	for key: String in ["artscience_promontory", "fullerton_peninsula", "ns_square_float"]:
 		rects.append((DowntownPlan.ISLANDS[key] as Rect2).grow(6.0))
+	# Nothing stands in the water, and the Helix corridor stays open.
+	for key: String in DowntownPlan.WATER:
+		rects.append(DowntownPlan.WATER[key] as Rect2)
+	rects.append(Rect2(-560.0, -800.0, 310.0, 110.0))
 	for r in rects:
 		city.clear_zone(r, 0.0)
 	# Towers placed before this hook ran (near flank rows) are dropped too, so

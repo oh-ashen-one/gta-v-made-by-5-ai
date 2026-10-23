@@ -50,6 +50,8 @@ static func _make(key: String) -> Material:
 		"glass_dark":
 			# Opaque curtain-wall glass: satin enough not to clip in the low sun.
 			return _std(Color(0.10, 0.16, 0.19), 0.12, 0.45, 0.7)
+		"window_glass":
+			return _std(Color(0.22, 0.30, 0.33), 0.1, 0.5, 0.8)
 		"glass_green":
 			return _std(Color(0.16, 0.24, 0.24), 0.14, 0.4, 0.7)
 		"glass_clear":
@@ -79,6 +81,14 @@ static func _make(key: String) -> Material:
 			return pw
 		"pond_water":
 			return _std(Color(0.05, 0.10, 0.11), 0.03, 0.0, 0.9)
+		"soffit":
+			var so := _std(Color(0.78, 0.76, 0.72), 0.6)
+			so.emission_enabled = true
+			so.emission = Color(0.85, 0.80, 0.72)
+			so.emission_energy_multiplier = 0.32
+			return so
+		"deck_stone":
+			return Palette.mat_textured(Color(0.66, 0.62, 0.56), "pavers", Vector3.ONE, 0.8)
 		"timber":
 			return _std(Color(0.42, 0.30, 0.20), 0.72)
 		"planting":
