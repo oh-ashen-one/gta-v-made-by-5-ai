@@ -282,7 +282,7 @@ void fragment() {
 		// above the jaw so there is no seam at the neck).
 		float face_k = smoothstep(1.47, 1.52, p.y);
 		float tone = fbm(p * 14.0);
-		col = skin_tone * (0.95 + 0.08 * tone);
+		col = skin_tone * (0.9 + 0.18 * tone);
 		col *= mix(vec3(1.0), vec3(1.04, 0.97, 0.95), smoothstep(0.55, 0.85, vnoise(p * 26.0)) * 0.5);
 		col *= 0.96 + 0.08 * vnoise(p * 140.0);
 		// Wave R: uneven living skin, not one waxy tone: mottled redness,
@@ -290,7 +290,7 @@ void fragment() {
 		float blot = fbm(p * 55.0);
 		col *= mix(vec3(1.0), vec3(1.07, 0.93, 0.92), smoothstep(0.5, 0.78, blot) * 0.7);
 		col *= 1.0 - 0.07 * smoothstep(0.62, 0.8, vnoise(p * 320.0)) * mid_k;
-		rough = 0.46 + 0.26 * fbm(p * 120.0);
+		rough = 0.36 + 0.42 * fbm(p * 120.0);
 		spec = 0.33;
 		sss = 0.2;
 		h = (vnoise(p * 520.0) - 0.5) * 0.0002 * fine_k + (vnoise(p * 140.0) - 0.5) * 0.00025 * mid_k;
@@ -327,22 +327,22 @@ void fragment() {
 			float stub_mask = jaw * (1.0 - lips) * face_col.x * fk;
 			float dots = smoothstep(0.45, 0.75, hash13(floor(p * 1400.0)));
 			float stub = stub_mask * mix(0.5, 0.25 + 0.75 * dots, fine_k);
-			col = mix(col, col * vec3(0.34, 0.33, 0.36), stub * 0.8);
+			col = mix(col, col * vec3(0.30, 0.29, 0.32), stub * 0.88);
 			// Expression creases: nasolabial folds and forehead lines.
 			vec2 a = vec2(0.022, -0.004);
 			vec2 b = vec2(0.033, -0.036);
 			vec2 q = vec2(abs(rel.x), rel.y);
 			float tseg = clamp(dot(q - a, b - a) / dot(b - a, b - a), 0.0, 1.0);
 			float dl = length(q - (a + (b - a) * tseg));
-			float crease = (1.0 - smoothstep(0.0012, 0.0045, dl)) * face_col.y * fk;
+			float crease = (1.0 - smoothstep(0.0016, 0.0062, dl)) * face_col.y * fk;
 			float fh = (1.0 - smoothstep(0.03, 0.05, abs(rel.x))) * step(0.085, rel.y) * step(rel.y, 0.125);
 			float flines = fh * line_aa(fract((rel.y - 0.085) / 0.012) - 0.5, 0.08) * face_col.y * 0.5 * fk;
-			ao *= 1.0 - 0.35 * crease - 0.2 * flines;
+			ao *= 1.0 - 0.5 * crease - 0.3 * flines;
 			// Focus frown: a short vertical crease between the brows.
 			float gl = (1.0 - smoothstep(0.0012, 0.003, abs(abs(rel.x) - 0.004))) * (1.0 - smoothstep(0.008, 0.014, abs(rel.y - 0.064))) * expr.x * fk;
 			col *= 1.0 - 0.16 * gl;
 			ao *= 1.0 - 0.3 * gl;
-			col *= 1.0 - 0.18 * crease - 0.1 * flines;
+			col *= 1.0 - 0.3 * crease - 0.18 * flines;
 			float sk = smoothstep(0.02, 0.07, dot(tex, vec3(0.33)));
 			rough = mix(rough, mix(0.6, 0.38 + 0.22 * vnoise(p * 180.0), sk), face_k);
 			rough = mix(rough, 0.32, (1.0 - smoothstep(0.0, 0.03, length(rel.xy))) * 0.6 * fk); // oily nose
@@ -445,7 +445,7 @@ void fragment() {
 		float ar = length(ap);
 		float ang = atan(ap.y, ap.x);
 		float armpit = smoothstep(0.015, 0.04, ar) * (1.0 - smoothstep(0.10, 0.17, ar)) * step(abs(p.x), 0.19);
-		float f1 = sin(p.y * 110.0 + nz * 6.0 + az * 3.0) * waist;
+		float f1 = sin(p.y * 80.0 + nz * 6.0 + az * 3.0) * waist;
 		float f2 = sin(u * 70.0 + nz * 5.0 + p.y * 9.0) * drape;
 		float f3 = sin(p.y * 85.0 - abs(p.x) * 40.0 + nz * 4.0) * sleeve;
 		float f4 = sin(ang * 11.0 + nz * 3.0) * armpit;
@@ -457,16 +457,16 @@ void fragment() {
 		float pose_amp = 1.0 + 1.6 * bendk;
 		f3 *= pose_amp;
 		f4 *= pose_amp;
-		float folds = (f1 * 0.0034 + f2 * 0.0026 + f3 * 0.0024 + f4 * 0.0026 + f5 * 0.0012) * amp * mid_k;
+		float folds = (f1 * 0.0058 + f2 * 0.0036 + f3 * 0.0042 + f4 * 0.0046 + f5 * 0.0012) * amp * mid_k;
 		float cavity = clamp(-(f1 * waist + f2 * drape * 0.8 + f3 * sleeve + f4 * armpit), 0.0, 1.0);
 		float ridge = clamp(f1 * waist + f2 * drape * 0.8 + f3 * sleeve + f4 * armpit, 0.0, 1.0);
-		ao *= 1.0 - 0.32 * cavity * amp;
+		ao *= 1.0 - 0.45 * cavity * amp;
 		// Folds must read in direct sun too (AO only darkens ambient light):
 		// the pose-loaded creases only (sleeve, armpit, waist), never the
 		// broad drape, which blotched plain cotton.
 		float pcrease = clamp(-(f1 * waist + f3 * sleeve + f4 * armpit), 0.0, 1.0);
 		float pridge = clamp(f1 * waist + f3 * sleeve + f4 * armpit, 0.0, 1.0);
-		col *= (1.0 - 0.16 * pcrease * amp * (0.5 + bendk)) * (1.0 + 0.05 * pridge * amp);
+		col *= (1.0 - 0.3 * pcrease * amp * (0.6 + bendk)) * (1.0 + 0.08 * pridge * amp);
 		h = folds + (fab_h - 1.0) * 0.00022 * fine_k;
 		// Construction: hems with a stitch line along every garment border.
 		float hem = 1.0 - smoothstep(0.016, 0.021, e);
@@ -1697,7 +1697,7 @@ static func civilian_outfit(seed_value: int) -> Dictionary:
 			si = k
 			break
 	var skin: Color = SKINS[si]
-	var elder := rng.randf() < 0.18
+	var elder := rng.randf() < 0.3
 	var hair: Color = HAIRS[rng.randi() % HAIRS.size()]
 	var shoe: Color = SHOES[rng.randi() % SHOES.size()]
 	var girth := rng.randf_range(-0.25, 0.35)
@@ -1713,7 +1713,7 @@ static func civilian_outfit(seed_value: int) -> Dictionary:
 		"skin_col": Vector4(_lin(skin).r, _lin(skin).g, _lin(skin).b, girth),
 		"hair_col": _v4(hair, (rng.randf_range(0.55, 1.0) if elder else 0.0) + (2.0 if rng.randf() < 0.2 else 0.0)),
 		"face_col": Vector4(stubble, rng.randf_range(0.3, 1.0) if elder else rng.randf_range(0.1, 0.5), rng.randf_range(0.3, 0.9), 1.0 if rng.randf() < 0.5 else 0.0),
-		"height": rng.randf_range(0.93, 1.06) * (0.97 if elder else 1.0),
+		"height": rng.randf_range(0.90, 1.08) * (0.95 if elder else 1.0),
 		"head_shape": Vector4(rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0), rng.randf_range(-0.8, 1.0), rng.randf_range(0.5, 1.9)),
 	}
 
