@@ -344,6 +344,7 @@ func run(main: Node) -> void:
 	await _street_life_checks(player, traffic)
 	await _water_checks(world)
 	await _downtown_plan_checks(world)
+	_character_look_checks(player)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
 	await _report()
 
@@ -1483,3 +1484,84 @@ func _locomotion_q_checks(player: Player) -> void:
 	var gap := Vector2(dummy.global_position.x - player.global_position.x, dummy.global_position.z - player.global_position.z).length()
 	dummy.queue_free()
 	_check("locomotion-Q: a pedestrian inside the player's personal space is shouldered clear", gap > 0.45, "gap=%.2f m" % gap)
+
+
+
+## Characters piece (wave Q): rebuilt look mesh with all body regions, the
+## procedural weapon grip on the right hand, and a varied crowd wardrobe that
+## never repeats the player's outfit.
+func _character_look_checks(player: Player) -> void:
+	if not CharacterLook.enabled or not CharacterVisual.available("player"):
+		return
+	var info := CharacterLook.build_for_rig("player")
+	var regions: PackedInt32Array = info.get("regions", PackedInt32Array())
+	var all_regions := regions.size() == 8
+	for r in [CharacterLook.R_SKIN, CharacterLook.R_SHIRT, CharacterLook.R_HAIR, CharacterLook.R_PANTS, CharacterLook.R_SHOE, CharacterLook.R_FACE]:
+		all_regions = all_regions and regions.size() == 8 and regions[r] > 50
+	_check("character look mesh has skin, face, hair, shirt, trousers and shoes", all_regions, str(regions))
+	_check("player mitten fingers fold away for the jointed procedural hands", int(info.get("grip_verts", 0)) > 150, "folded=%d" % int(info.get("grip_verts", 0)))
+	var fist := CharacterHands.build_hand(1.0, true)
+	var relaxed := CharacterHands.build_hand(-1.0, false)
+	_check("procedural hands: 4 jointed fingers + thumb in fist and relaxed poses", fist.get_surface_count() == 1 and fist.surface_get_array_len(0) > 2500 and relaxed.surface_get_array_len(0) == fist.surface_get_array_len(0), "verts=%d" % fist.surface_get_array_len(0))
+	if ResourceLoader.exists("res://assets/providers/higgsfield/fabric_denim_albedo.png"):
+		_check("character cloth uses the woven fabric set (flannel, denim, batik, jersey)", bool(info.get("fabrics", false)), str(info.get("fabrics", false)))
+	var player_sig := CharacterLook.outfit_signature(CharacterLook.player_outfit())
+	var sigs := {}
+	var clash := false
+	for i in 12:
+		var o := CharacterLook.civilian_outfit(1000 + i * 7919)
+		var sig := CharacterLook.outfit_signature(o)
+		sigs[sig] = true
+		clash = clash or sig == player_sig
+	_check("crowd wardrobe: >= 8 distinct civilians, none in the player's outfit", sigs.size() >= 8 and not clash, "distinct=%d" % sigs.size())
+	# Wave R: the look mesh is baked OFFLINE (load time) and matches a fresh build.
+	var path := CharacterVisual.asset_path("player")
+	var src_mesh: ArrayMesh = null
+	var pm := (load(path) as PackedScene).instantiate()
+	for node in pm.find_children("*", "MeshInstance3D", true, false):
+		if (node as MeshInstance3D).mesh is ArrayMesh and (node as MeshInstance3D).mesh.get_surface_count() >= 2:
+			src_mesh = (node as MeshInstance3D).mesh
+			break
+	var baked := CharacterLook._load_baked(src_mesh, path) if src_mesh != null else {}
+	pm.free()
+	_check("characters-R: player look mesh is baked offline and matches a fresh build (no runtime rebuild at load)",
+		not baked.is_empty() and baked["regions"] == regions, "bake=%s" % CharacterLook.baked_path(path))
+	_check("characters-R: hidden body skin under the clothes is dressed (no skin shards through the shirt/jeans)",
+		int(info.get("dressed", 0)) > 50, "dressed=%d" % int(info.get("dressed", 0)))
+	# Wave R: the combat aim layer seats the pistol by the characters' grip frames.
+	var gf := CharacterHands.grip_frames()
+	var prof := [[-0.03, 0.015, -0.02, 0.028], [-0.018, 0.015, -0.02, 0.028], [-0.006, 0.015, -0.02, 0.028], [0.006, 0.015, -0.02, 0.028], [0.018, 0.015, -0.02, 0.028], [0.03, 0.015, -0.02, 0.028]]
+	var grip_r := CharacterHands.build_grip(true, prof)
+	var grip_l := CharacterHands.build_grip(false, prof)
+	_check("characters-R: gun and support hands publish grip frames and close fingers round the grip", gf.has("pistol_r") and gf.has("pistol_l")
+		and grip_r.surface_get_array_len(0) > 2000 and grip_l.surface_get_array_len(0) > 2000, "verts=%d/%d" % [grip_r.surface_get_array_len(0), grip_l.surface_get_array_len(0)])
+	var probe_cv := CharacterVisual.new()
+	probe_cv.grip_frames = gf
+	var probe_layer := AimIkLayer.new()
+	probe_layer.visual = probe_cv
+	var gb_t := Basis.looking_at(Vector3(0.3, -0.2, -1.0).normalized(), Vector3.UP)
+	var hb_t := probe_layer._hand_basis(gb_t, "pistol", "r")
+	var seat_err := ((hb_t * (gf["pistol_r"] as Transform3D).basis).get_rotation_quaternion().angle_to(gb_t.get_rotation_quaternion()))
+	var off_err := (probe_layer._wrist_from_gun(gb_t, "pistol", "r") - hb_t * (gf["pistol_r"] as Transform3D).origin).length()
+	probe_layer.free()
+	probe_cv.free()
+	_check("characters-R: the aim layer seats the pistol by the published grip frame (gun pose recovered exactly)", seat_err < 0.001 and off_err < 0.0001, "ang=%.4f off=%.5f" % [seat_err, off_err])
+	var cv: CharacterVisual = player.get("_visual")
+	if cv != null and cv.hands != null:
+		_check("characters-R: the player's visual hands its grip frames to the aim layer (no second arm IK)", cv.grip_frames.has("pistol_r"), "")
+	var heads := {}
+	for i in 12:
+		var hs: Vector4 = CharacterLook.civilian_outfit(500 + i * 7919)["head_shape"]
+		heads["%d,%d,%d" % [int(hs.x * 4.0), int(hs.y * 4.0), int(hs.z * 4.0)]] = true
+	_check("characters-R: civilians get their own head build (jaw, nose, brow, hair volume)", heads.size() >= 10, "distinct=%d" % heads.size())
+	var hmin := 9.0
+	var hmax := 0.0
+	var elders := 0
+	var builds := {}
+	for i in 40:
+		var o: Dictionary = CharacterLook.civilian_outfit(900 + i * 7919)
+		hmin = minf(hmin, o["height"])
+		hmax = maxf(hmax, o["height"])
+		elders += 1 if (o["hair_col"] as Vector4).w > 0.4 and fmod((o["hair_col"] as Vector4).w, 2.0) > 0.4 else 0
+		builds[int(((o["skin_col"] as Vector4).w + 0.3) * 3.0)] = true
+	_check("characters-R2: the crowd spans heights (>=15 cm at 1.8 m), builds and older adults", (hmax - hmin) * 1.8 >= 0.15 and builds.size() >= 3 and elders >= 4, "spread=%.2fm builds=%d elders=%d/40" % [(hmax - hmin) * 1.8, builds.size(), elders])

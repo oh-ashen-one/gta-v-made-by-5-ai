@@ -214,7 +214,7 @@ func _process_modification_with_delta(delta: float) -> void:
 		# from the OTS camera it shows beside the head, arms reaching to it.
 		og = eye + D * t - ua * (SIGHT_H + AIM_DROP) - lat * AIM_ACROSS
 		var gb0 := _gun_basis(D, ua)
-		var wr := og - _hand_from_gun(gb0) * GRIP_POS - gb0 * GUN_SEAT
+		var wr := og - _wrist_from_gun(gb0, kind, "r")
 		if wr.distance_to(s_r) <= reach:
 			break
 		t -= 0.025
@@ -230,8 +230,8 @@ func _process_modification_with_delta(delta: float) -> void:
 		var k := _bump(rf, 0.0, 0.13, 0.86, 1.0)
 		og = og.lerp(hold_o, k)
 		gb = Basis(gb.get_rotation_quaternion().slerp(hold_b.get_rotation_quaternion(), k))
-	var hr := _hand_from_gun(gb)
-	var wr_t := og - hr * GRIP_POS - gb * GUN_SEAT
+	var hr := _hand_basis(gb, kind, "r")
+	var wr_t := og - _wrist_from_gun(gb, kind, "r")
 	_two_bone("r", wr_t, -_U + _R * 0.75 - flat * 0.15, hr, w)
 	# Support hand.
 	var hl := hr
@@ -239,6 +239,10 @@ func _process_modification_with_delta(delta: float) -> void:
 	if kind == "smg":
 		wl_t = og - gb.z * 0.20 - gb.y * 0.035 + L * 0.015
 		hl = _hand_from_gun(gb)
+	elif _grip_frame(kind, "l") != null:
+		# Characters piece: the support hand's own seat on the gun.
+		hl = _hand_basis(gb, kind, "l")
+		wl_t = og - _wrist_from_gun(gb, kind, "l")
 	else:
 		wl_t = wr_t - D * 0.03 + L * 0.052 - ua * 0.012
 	if reloading:
@@ -251,8 +255,9 @@ func _process_modification_with_delta(delta: float) -> void:
 			_drop_mag(sk.global_transform * og, sk.global_basis.orthonormalized() * gb)
 		_mag_show = rf > 0.34 and rf < 0.66
 	_two_bone("l", wl_t, -_U + L * 0.75 - flat * 0.15, hl, w)
-	_gun_rel = Basis(Basis.from_euler(Vector3(PI * 0.5, 0.0, 0.0)).get_rotation_quaternion().slerp((hr.inverse() * gb).get_rotation_quaternion(), w))
-	_gun_pos = GRIP_POS + (hr.inverse() * (gb * GUN_SEAT)) * w
+	var idle := _idle_gun(kind)
+	_gun_rel = Basis(idle.basis.get_rotation_quaternion().slerp((hr.inverse() * gb).get_rotation_quaternion(), w))
+	_gun_pos = idle.origin.lerp(GRIP_POS + hr.inverse() * (gb * GUN_SEAT) if _grip_frame(kind, "r") == null else (_grip_frame(kind, "r") as Transform3D).origin, w)
 	_gun_driven = true
 	if aim and w > 0.95 and not reloading:
 		# QA: angle between the barrel and the eye-to-sight line.
@@ -277,6 +282,39 @@ func _hand_from_gun(gb: Basis) -> Basis:
 	var z := (fwd * 0.84 + up * 0.55).normalized()
 	var y := (fwd * 0.55 - up * 0.84).normalized()
 	return Basis(y.cross(z), y, z).orthonormalized()
+
+## Characters piece hook: the visual may publish `grip_frames`, a Dictionary
+## of gun poses in hand-bone space ("pistol_r", "pistol_l": Transform3D, the
+## gun's transform relative to hand.r / hand.l when it is held). Without it
+## the layer keeps its own mitten grip (_hand_from_gun, GRIP_POS, GUN_SEAT).
+func _grip_frame(kind: String, side: String) -> Variant:
+	if visual == null:
+		return null
+	var g = visual.get("grip_frames")
+	if g is Dictionary and (g as Dictionary).has(kind + "_" + side):
+		return g[kind + "_" + side]
+	return null
+
+## Hand basis (skeleton space) that holds a gun with basis `gb`.
+func _hand_basis(gb: Basis, kind: String, side: String) -> Basis:
+	var f = _grip_frame(kind, side)
+	if f == null:
+		return _hand_from_gun(gb)
+	return (gb * (f as Transform3D).basis.inverse()).orthonormalized()
+
+## Offset from the hand bone origin (wrist) to the gun origin, skeleton space.
+func _wrist_from_gun(gb: Basis, kind: String, side: String) -> Vector3:
+	var f = _grip_frame(kind, side)
+	if f == null:
+		return _hand_from_gun(gb) * GRIP_POS + gb * GUN_SEAT
+	return _hand_basis(gb, kind, side) * (f as Transform3D).origin
+
+## The held gun's hand-space pose outside the aim (also the blend start).
+func _idle_gun(kind: String) -> Transform3D:
+	var f = _grip_frame(kind, "r")
+	if f != null:
+		return f
+	return Transform3D(Basis.from_euler(Vector3(PI * 0.5, 0.0, 0.0)), GRIP_POS)
 
 ## Left-hand reload path: [wrist target, hand basis].
 func _reload_left(rf: float, og: Vector3, gb: Basis, flat: Vector3, L: Vector3) -> Array:
@@ -384,8 +422,7 @@ func _place_gun() -> void:
 			_mag_hand.visible = false
 		if _reset_gun:
 			_reset_gun = false
-			gun.position = GRIP_POS
-			gun.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+			gun.transform = _idle_gun(String(visual.get("_weapon_kind")))
 		return
 	var hr := sk.global_transform * sk.get_bone_global_pose(_ids["hand.r"])
 	var hb := hr.basis.orthonormalized()

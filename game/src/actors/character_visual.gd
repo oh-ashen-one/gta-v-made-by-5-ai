@@ -63,6 +63,18 @@ var walk_arm := 0.0
 # a wider pelvis blob, so the shoes read as touching the paving in close shots.
 var contact_shadows: Array[Decal] = []
 var _foot_ids := PackedInt32Array()
+## Characters piece: the rebuilt skinned mesh and its wardrobe (empty when the
+## rig could not be processed and the legacy materials are in use).
+var look_mesh: MeshInstance3D
+var _hand_bone := -1
+var outfit: Dictionary = {}
+## Player only: jointed fingers closed on the held pistol (CharacterHands),
+## when the look mesh folded the provider's mitten hands.
+var hands: CharacterHands
+## Gun poses in hand-bone space, read by the combat AimIkLayer (empty: the
+## layer's own mitten grip).
+var grip_frames := {}
+var _focus := -1.0
 
 static func available(role: String = "player") -> bool:
 	return ResourceLoader.exists(asset_path(role))
@@ -105,7 +117,15 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		clip.loop_mode = Animation.LOOP_LINEAR if key in LOOP_CLIPS else Animation.LOOP_NONE
 	animator.animation_finished.connect(_on_animation_finished)
 	_upgrade_materials(model)
-	if role == "civilian":
+	# Wave-M integration: the characters piece's region-aware look mesh is the
+	# player's; civilians keep the street-life crowd wardrobe (crowd_wardrobe.gd
+	# + crowd_people.gd retint the provider surfaces by material name, which the
+	# rebuilt look mesh does not carry).
+	look_mesh = CharacterLook.apply(model, role) if role == "player" else null
+	if look_mesh != null:
+		outfit = CharacterLook.player_outfit()
+		CharacterLook.set_outfit(look_mesh, outfit)
+	elif role == "civilian":
 		_wardrobe_variant = wardrobe_variant
 		_wardrobe_surface = 0
 		# Street-life M1: real outfit colours (crowd_wardrobe.gd); the old
@@ -133,12 +153,22 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	weapon_socket = BoneAttachment3D.new()
 	weapon_socket.name = "WeaponSocket"
 	weapon_socket.bone_name = "hand.r"
+	_hand_bone = skeleton.find_bone("hand.r")
 	skeleton.add_child(weapon_socket)
 	loaded = true
 	_play("idle", 0.0)
 	if motion != null:
 		animator.seek(0.0, true)
 		motion.capture_reference()
+	if look_mesh != null and role == "player":
+		# Added after the motion layer so it runs last in the modifier stack.
+		hands = CharacterHands.new()
+		hands.name = "Hands"
+		hands.actor = self
+		skeleton.add_child(hands)
+		grip_frames = CharacterHands.grip_frames()
+		var sc: Vector4 = outfit.get("skin_col", Vector4(0.55, 0.33, 0.22, 0.0))
+		hands.setup(skeleton, Color(sc.x, sc.y, sc.z).linear_to_srgb())
 	return true
 
 func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloading: bool = false) -> void:
@@ -338,7 +368,35 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 	# on the body's forward axis while its grip follows the animated wrist.
 	weapon.position = Vector3(0.0, 0.055, -0.012)
 	weapon.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+	if hands != null:
+		weapon.transform = CharacterHands.weapon_transform(weapon_kind)
+		hands.fit_weapon(weapon, weapon_kind)
+		if weapon_kind == "pistol":
+			_readable_gunmetal(weapon)
 	process_priority = 10
+
+## Characters piece (wave R2): the held pistol read as a noisy black blob in
+## shade. Lift it to a worn gunmetal grey with a tighter gloss so the slide
+## edges, trigger guard and grip catch highlights at 1.5-2.5 m.
+static func _readable_gunmetal(weapon: Node3D) -> void:
+	for mesh_node in weapon.find_children("*", "MeshInstance3D", true, false):
+		var mi := mesh_node as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		for i in mi.mesh.get_surface_count():
+			var mat := mi.get_active_material(i) as StandardMaterial3D
+			if mat == null or mat.has_meta("gunmetal"):
+				continue
+			var m := mat.duplicate() as StandardMaterial3D
+			m.set_meta("gunmetal", true)
+			m.albedo_color = Color(mat.albedo_color.r * 1.9, mat.albedo_color.g * 1.9, mat.albedo_color.b * 2.0, mat.albedo_color.a)
+			m.metallic = minf(mat.metallic, 0.45)
+			m.roughness = 0.34
+			m.metallic_specular = 0.7
+			m.rim_enabled = true
+			m.rim = 0.35
+			m.rim_tint = 0.2
+			mi.set_surface_override_material(i, m)
 
 func set_aim_pitch(value: float) -> void:
 	_aim_pitch = clampf(value, -1.1, 0.85)
@@ -352,6 +410,25 @@ func weapon_muzzle_position() -> Vector3:
 func _process(_delta: float) -> void:
 	_update_animation_activity()
 	_update_contact_shadows()
+	if hands != null:
+		var held := _weapon_node != null and is_instance_valid(_weapon_node) and _weapon_node.is_visible_in_tree()
+		hands.holding = held
+		hands.aiming = _last_aim and not _last_reload and not _seated and not _dead
+		hands.weapon_kind = _weapon_kind
+		var layer := skeleton.get_node_or_null(AimIkLayer.LAYER_NAME) as AimIkLayer
+		hands.ik_weight = layer.weight if layer != null else 0.0
+		# The face focuses with the aim (brows knit, squint).
+		var focus := snappedf(hands.ik_weight, 0.05)
+		if look_mesh != null and absf(focus - _focus) > 0.001:
+			_focus = focus
+			look_mesh.set_instance_shader_parameter("expr", Vector4(focus, 0.0, 0.0, 0.0))
+		hands.update_pose()
+		if held and _weapon_kind == "pistol":
+			# The combat aim layer seats the gun in the hand while it is
+			# active; otherwise it stays in the same closed grip.
+			if layer == null or layer.weight <= 0.001:
+				_weapon_node.transform = CharacterHands.weapon_transform("pistol")
+			return
 	if _weapon_node == null or not is_instance_valid(_weapon_node):
 		return
 	if _last_aim or _last_reload:
@@ -511,7 +588,7 @@ func _player_look(node: Node) -> void:
 			continue
 		for i in mi.mesh.get_surface_count():
 			var mat := mi.mesh.surface_get_material(i) as StandardMaterial3D
-			if mat == null or mat.albedo_texture == null:
+			if look_mesh != null or mat == null or mat.albedo_texture == null:
 				continue
 			var is_skin := String(mat.resource_name).contains("Skin")
 			if not (is_skin or String(mat.resource_name).contains("CharacterClothing")):

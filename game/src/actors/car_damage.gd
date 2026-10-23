@@ -66,7 +66,11 @@ func setup(owner_car: Car, root: Node3D, aabb: AABB, base_xform: Transform3D) ->
 	for mi in root.find_children("*", "MeshInstance3D", true, false):
 		var m := mi as MeshInstance3D
 		if m.mesh == null: continue
-		_swap_material(m)
+		# Wave-M integration: only meshes that now carry the body shader on every
+		# surface take its instance uniforms. A promoted lane car's lamp/driver
+		# parts (material_override, no surface material) logged 'Parameter
+		# "material" is null' from material_get_instance_shader_parameters.
+		if not _swap_material(m): continue
 		# Model -> car (rest pose) transform of this mesh.
 		var chain := Transform3D.IDENTITY
 		var n: Node = m
@@ -87,11 +91,16 @@ func setup(owner_car: Car, root: Node3D, aabb: AABB, base_xform: Transform3D) ->
 		m.set_instance_shader_parameter("paint_color", paint)
 	_push_state()
 
-func _swap_material(m: MeshInstance3D) -> void:
+func _swap_material(m: MeshInstance3D) -> bool:
+	# True when the mesh takes the body shader and no surface is material-less.
+	var any_swapped := false
+	var has_null := m.material_override != null
 	for i in m.mesh.get_surface_count():
 		var src: Material = m.get_surface_override_material(i)
 		if src == null: src = m.mesh.surface_get_material(i)
+		if src == null: has_null = true
 		if not src is StandardMaterial3D: continue
+		any_swapped = true
 		var std := src as StandardMaterial3D
 		var key := "%d|%s" % [std.get_instance_id(), car.kind]
 		var sm: ShaderMaterial = _mat_cache.get(key)
@@ -107,6 +116,7 @@ func _swap_material(m: MeshInstance3D) -> void:
 			sm.set_shader_parameter("badge_mask", 1.0 if car.kind == "sedan" or car.kind == "police" else 0.0)
 			_mat_cache[key] = sm
 		m.set_surface_override_material(i, sm)
+	return any_swapped and not has_null
 
 ## Brake (0..1) and running lamps (0..1) for the shader lamps.
 func set_lamps(brake: float, lights: float) -> void:
