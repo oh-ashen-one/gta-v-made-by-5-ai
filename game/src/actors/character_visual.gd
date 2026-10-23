@@ -75,8 +75,6 @@ var hands: CharacterHands
 ## layer's own mitten grip).
 var grip_frames := {}
 
-static var _PROF := {}
-
 static func available(role: String = "player") -> bool:
 	return ResourceLoader.exists(asset_path(role))
 
@@ -120,9 +118,7 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 	_upgrade_materials(model)
 	# Characters piece: region-aware rebuilt mesh + shared wardrobe shader for
 	# the player and civilian rigs (officers keep their authored uniform).
-	var _t0 := Time.get_ticks_usec()
 	look_mesh = CharacterLook.apply(model, role) if role != "officer" else null
-	var _t1 := Time.get_ticks_usec()
 	if look_mesh != null:
 		if role == "player":
 			outfit = CharacterLook.player_outfit()
@@ -131,11 +127,6 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 			var stature: float = outfit["height"]
 			scale = Vector3(stature, stature, stature)
 		CharacterLook.set_outfit(look_mesh, outfit)
-		_PROF["apply"] = int(_PROF.get("apply", 0)) + _t1 - _t0
-		_PROF["outfit"] = int(_PROF.get("outfit", 0)) + Time.get_ticks_usec() - _t1
-		_PROF["n"] = int(_PROF.get("n", 0)) + 1
-		if int(_PROF["n"]) % 20 == 0:
-			print("[character-look] profile ", _PROF)
 	elif role == "civilian":
 		_apply_wardrobe(model, WARDROBE[posmod(wardrobe_variant, WARDROBE.size())])
 		var stature := 0.94 + float(posmod(wardrobe_variant, 7)) * 0.017

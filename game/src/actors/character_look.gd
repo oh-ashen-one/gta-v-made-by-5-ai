@@ -42,6 +42,7 @@ const R_SOLE := 6
 const R_FACE := 7
 
 static var _cache := {}
+static var _sources := {}
 static var enabled := OS.get_environment("ORCHARD_LEGACY_CHARACTERS") == ""
 
 const SHADER_CODE := """
@@ -442,8 +443,12 @@ void fragment() {
 		float cavity = clamp(-(f1 * waist + f2 * drape * 0.8 + f3 * sleeve + f4 * armpit), 0.0, 1.0);
 		float ridge = clamp(f1 * waist + f2 * drape * 0.8 + f3 * sleeve + f4 * armpit, 0.0, 1.0);
 		ao *= 1.0 - 0.32 * cavity * amp;
-		// Folds must read in direct sun too (AO only darkens ambient light).
-		col *= (1.0 - 0.26 * cavity * amp) * (1.0 + 0.08 * ridge * amp);
+		// Folds must read in direct sun too (AO only darkens ambient light):
+		// the pose-loaded creases only (sleeve, armpit, waist), never the
+		// broad drape, which blotched plain cotton.
+		float pcrease = clamp(-(f1 * waist + f3 * sleeve + f4 * armpit), 0.0, 1.0);
+		float pridge = clamp(f1 * waist + f3 * sleeve + f4 * armpit, 0.0, 1.0);
+		col *= (1.0 - 0.16 * pcrease * amp * (0.5 + bendk)) * (1.0 + 0.05 * pridge * amp);
 		h = folds + (fab_h - 1.0) * 0.00022 * fine_k;
 		// Construction: hems with a stitch line along every garment border.
 		float hem = 1.0 - smoothstep(0.016, 0.021, e);
@@ -712,6 +717,10 @@ static func _apply(model: Node, role: String) -> MeshInstance3D:
 	var entry: Dictionary = _cache[key]
 	if entry.is_empty():
 		return null
+	# Keep the provider mesh alive: once no instance references it, the next
+	# load() of the rig re-reads the whole mesh from the .glb (~0.34 s per
+	# pedestrian, ~70 s of world load for the crowd).
+	_sources[key] = src
 	target.mesh = entry["mesh"]
 	for i in target.get_surface_override_material_count():
 		target.set_surface_override_material(i, null)

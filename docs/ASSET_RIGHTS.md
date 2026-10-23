@@ -134,3 +134,9 @@ opus55 driving-q round 2 (2026-10-22): edited original sources only. `car.gd` bu
 - `game/src/actors/character_hands.gd` (new) and `game/src/actors/character_look.gd` (rewritten) are original code. The hands are generated at runtime (no provider geometry); the look code processes the existing provider humanoid meshes in memory only, and no provider file is written or overwritten.
 - The character shader samples four Higgsfield fabric textures (flannel, denim, batik single tile, cotton jersey neutral) from the git-ignored `game/assets/providers/higgsfield/`. They are provider outputs under Higgsfield terms (not MIT, private build only, never committed). Their manifest rows are in `docs/asset-manifest.csv` and their job records in `loop/generated_assets.jsonl`.
 - `street_weathering.gdshader` gained one stencil-read line so people are excluded from the screen-space grime. No new assets.
+
+## Opus 5.5 characters piece, wave R1 (2026-10-23)
+
+- Edited original code only: `character_look.gd` (offline bake/load, hidden-skin dressing, sleeve weight transfer, shader folds/skin/head build), `character_hands.gd` (grip frames, grip-fitted fingers; its own arm IK removed), `character_visual.gd`, and a small hook in `aim_ik_layer.gd` (optional per-hand gun seat). New original tool `game/tools/bake_character_look.gd/.tscn`.
+- New private derivatives (git-ignored, never committed): `game/assets/providers/baked_characters/player_rigged_loco4_look_r1e.res` and `civilian_rigged_v2_look_r1e.res` (+ `.json` sidecars), written offline by the bake tool from the existing provider rigs under new filenames. The source rigs are not modified; their rights status (Customuse output, UNVERIFIED) carries over unchanged. No new provider generation or external assets.
+
