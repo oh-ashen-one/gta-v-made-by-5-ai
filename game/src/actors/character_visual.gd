@@ -418,12 +418,16 @@ func weapon_muzzle_position() -> Vector3:
 
 func _process(_delta: float) -> void:
 	_update_animation_activity()
+	var posed := true
 	if _lod_mid and animator != null:
 		_mid_acc += _delta
-		if animator.active and (Engine.get_process_frames() + get_instance_id()) % MID_STRIDE == 0:
+		posed = false
+		if animator.active and (Engine.get_process_frames() + get_instance_id()) % _mid_stride == 0:
 			animator.advance(_mid_acc)
 			_mid_acc = 0.0
-	_update_contact_shadows()
+			posed = true
+	if posed:   # wave S: strided figures re-seat their contact shadows only when re-posed
+		_update_contact_shadows()
 	if hands != null:
 		var held := _weapon_node != null and is_instance_valid(_weapon_node) and _weapon_node.is_visible_in_tree()
 		hands.holding = held
@@ -469,6 +473,13 @@ func set_lod_far(far: bool) -> void:
 const MID_STRIDE := 3
 var _lod_mid := false
 var _mid_acc := 0.0
+var _mid_stride := MID_STRIDE
+## Wave S: the stride comes from PerfBudget.people_anim_stride (distance and
+## whether the figure is on screen); 1 = every frame.
+func set_anim_stride(stride: int) -> void:
+	if stride > 1:
+		_mid_stride = stride
+	set_lod_mid(stride > 1)
 func set_lod_mid(mid: bool) -> void:
 	if mid == _lod_mid or animator == null:
 		return

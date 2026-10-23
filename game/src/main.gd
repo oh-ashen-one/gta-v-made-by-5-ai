@@ -31,6 +31,8 @@ func _ready() -> void:
 	if "--asset-review" in args:
 		add_child(load("res://src/systems/asset_review.gd").new())
 		return
+	PerfBudget.lap("boot")
+	PerfPreload.start()   # wave S: overlap asset loads with the world build
 	world = WorldBuilder.new()
 	world.name = "World"
 	add_child(world)
@@ -50,7 +52,9 @@ func _ready() -> void:
 	traffic = TrafficManager.new()
 	traffic.name = "Traffic"
 	add_child(traffic)
+	PerfBudget.lap("player")
 	traffic.setup(world, player)
+	PerfBudget.lap("traffic")
 
 	mission = Mission.new()
 	mission.name = "Mission"
@@ -68,6 +72,12 @@ func _ready() -> void:
 	heli.name = "Helicopter"
 	add_child(heli)
 	heli.global_position = world.locations["helipad_primary"] + Vector3(0.0, 0.6, 0.0)
+	var perf_director := PerfDirector.new()   # wave S: runtime render budgets
+	add_child(perf_director)
+	perf_director.setup(self)
+	PerfBudget.lap("mission_hud_heli")
+	PerfBudget.report_laps("world_ui_ready")
+	PerfPreload.finish(get_tree())
 	print("[launch] world_ui_ready_ms=",Time.get_ticks_msec()," executable=",OS.get_executable_path()," editor_binary=",OS.has_feature("editor"))
 
 	if "--character-review" in args:
@@ -202,6 +212,19 @@ func _ready() -> void:
 		var budget: Node = _qa_system("res://src/systems/render_budget_probe.gd")
 		add_child(budget)
 		budget.setup(self, budget_dir)
+		return
+
+	if "--scene-stats" in args:
+		# Wave-S performance piece: static draw/triangle census per family (headless OK).
+		var stats_dir := "user://scene_stats"
+		for arg in args:
+			if arg.begins_with("--capture-dir="):
+				stats_dir = arg.trim_prefix("--capture-dir=")
+		hud.show_title(false)
+		started = true
+		var stats: Node = _qa_system("res://src/systems/scene_stats.gd")
+		add_child(stats)
+		stats.setup(self, stats_dir)
 		return
 
 	if "--perf-probe" in args:

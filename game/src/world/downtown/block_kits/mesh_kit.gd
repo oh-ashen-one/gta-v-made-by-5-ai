@@ -185,6 +185,11 @@ func prism(poly: PackedVector2Array, y0: float, y1: float, info: Dictionary, slo
 	if collide:
 		var top := (y1 + ymax) * 0.5
 		boxes.append([Vector3(bb.size.x, top - y0, bb.size.y), Vector3(bb.get_center().x, (y0 + top) * 0.5, bb.get_center().y)])
+		# Wave S performance: solid shells also occlude (inside the footprint, above the lobby band).
+		var tmin := y1
+		for ty in tops:
+			tmin = minf(tmin, ty)
+		PerfBudget.add_prism(poly, y0, tmin, gy, maxf(float(info.get("lobby", 0.0)), 4.5))
 	return ymax
 
 static func _roof_uv(p: Vector2, r: Rect2, ext: float, rot: int) -> Vector2:

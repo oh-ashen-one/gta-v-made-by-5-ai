@@ -347,7 +347,8 @@ static func _cut_background(m) -> void:
 		if not child2 is MultiMeshInstance3D or child2.has_meta("downtown_map"):
 			continue
 		var mm := (child2 as MultiMeshInstance3D).multimesh
-		if mm == null or mm.instance_count != expect or expect <= 0:
+		# wave S: the promenade trees are batched per 200 m cell, tagged "promenade_trees"
+		if mm == null or expect <= 0 or not (String(child2.get_meta("bg_tree_batch", "")) == "promenade_trees" or mm.instance_count == expect):
 			continue
 		for i in mm.instance_count:
 			var xf := mm.get_instance_transform(i)
