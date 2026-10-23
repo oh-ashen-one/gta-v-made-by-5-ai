@@ -37,6 +37,10 @@ var _occ := PackedByteArray()      # 0 free, 1 blocked
 var _rng := RandomNumberGenerator.new()
 
 static func build(world: Node, root: Node3D) -> Dictionary:
+	# `--aerial-off=fill` builds without it (perf / look A/B only).
+	if "fill" in Lighting._arg("--aerial-off", "").split(","):
+		stats = {"disabled": true}
+		return stats
 	var f := AerialFill.new()
 	return f._build(world, root)
 
