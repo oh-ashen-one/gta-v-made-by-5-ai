@@ -55,7 +55,7 @@ void fragment() {
 	col = mix(col, col * vec3(0.78, 0.74, 0.64), smoothstep(0.15, 0.45, dirt) * 0.55 * wear);
 	col = mix(col, col * 0.86 + 0.06, 0.25 * wear);   // sun-faded, dusty
 	col *= 1.0 + 0.25 * rim;
-	col = mix(col, under * (1.25 + 0.25 * g2), flake * 0.92);   // chips match the sunlit asphalt, not black
+	col = mix(col, under * (1.05 + 0.25 * g2), flake * 0.92);   // chips match the sunlit asphalt, not black
 	ALBEDO = clamp(col, vec3(0.0), vec3(1.0));
 	// Nearfield (opus55 D): analytic edge coverage. The 12 cm lines were hard
 	// geometry edges that stair-stepped into a zipper at 2x MSAA (critic B3).

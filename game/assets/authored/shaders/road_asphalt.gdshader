@@ -125,11 +125,11 @@ void fragment() {
 	tracks += w_gauss(al - 5.15, 0.34);
 	tracks += w_gauss(al - 6.85, 0.34);
 	tracks = clamp(tracks, 0.0, 1.0) * tvar * lane * wear;
-	tone *= 1.0 - 0.32 * tracks;
+	tone *= 1.0 - 0.40 * tracks;
 	rough = mix(rough, 0.56, tracks * 0.85);
 	// Between the tracks the surface is dustier and lighter.
 	float between = lane * (w_gauss(al - 2.0, 0.55) + w_gauss(al - 6.0, 0.55));
-	tone *= 1.0 + 0.06 * between * (1.0 - tracks);
+	tone *= 1.0 + 0.10 * between * (1.0 - tracks);
 
 	// Oil drip line in each lane centre: blotchy dark, a little glossy.
 	float oil = lane * (w_gauss(al - 2.0, 0.42) + w_gauss(al - 6.0, 0.42));
@@ -145,7 +145,7 @@ void fragment() {
 	// Generic lots: scattered oil stains where cars park.
 	float lot_oil = (1.0 - lane) * (1.0 - junction) * smoothstep(0.62, 0.80, w_mask(p / 9.0 + 0.13).r) * smoothstep(0.4, 0.7, sml.g);
 	oil = clamp(oil + lot_oil, 0.0, 1.0) * wear;
-	tone *= 1.0 - 0.36 * oil;
+	tone *= 1.0 - 0.45 * oil;
 	rough -= 0.22 * oil;
 	hue = mix(hue, vec3(0.92, 0.93, 1.02), oil * 0.5);
 
@@ -154,8 +154,8 @@ void fragment() {
 	// nearfield R2: silt fan washed toward the kerb (warm grey-brown, uneven
 	// tide-marks), then a dark damp channel shadowed by the kerb face.
 	float silt_n = vnoise(vec2(along * 0.35, al * 1.7)) * 0.6 + vnoise(rf * 2.3) * 0.4;
-	float silt = lane * smoothstep(6.0 + 0.9 * silt_n, 7.7, al);
-	tone = mix(tone, tone * 1.06 + 0.035, silt * 0.65);
+	float silt = lane * smoothstep(5.4 + 1.2 * silt_n, 7.6, al);
+	tone = mix(tone, tone * 1.10 + 0.05, silt * 0.75);
 	hue = mix(hue, vec3(1.10, 1.0, 0.82), silt * 0.75);
 	float tide = lane * w_gauss(al - (7.15 + 0.35 * (silt_n - 0.5)), 0.05) * step(0.4, silt_n);
 	tone *= 1.0 - 0.30 * tide;
