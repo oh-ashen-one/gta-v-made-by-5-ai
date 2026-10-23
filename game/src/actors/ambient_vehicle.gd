@@ -126,10 +126,55 @@ func _build_car() -> void:
 		# dims do not match the art, which left lamps floating beside it.
 		var bounds := _local_bounds(root)
 		if bounds.size.z > 0.5:
-			_add_brake_lamps(bounds.position.y + bounds.size.y * 0.5, bounds.end.z - 0.06, bounds.size.x * 0.3, bounds.get_center().x)
+			# Integrator (wave S): the lamps sit ON the body surface where the
+			# art's own tail lights are, found from the mesh vertices (the
+			# bounds' rear face is the bumper's furthest point; at lamp height
+			# the boot is further in, so the boxes hovered behind the car:
+			# critic downtown-polish-S1, gold taxi / blue car).
+			var seat := _rear_seat(root, bounds)
+			_add_brake_lamps(seat.x, seat.y, seat.z, bounds.get_center().x)
 	else:
 		_add_brake_lamps(dims.y * 0.55, dims.z * 0.5 + 0.02, dims.x * 0.36)
 	_add_driver()
+
+## [height, rear z, half spread] for the tail lamps of a provider body, cached
+## per model and fit. The rear-most vertex in a small window round each lamp
+## spot (in this vehicle's local space) is the surface the lamp sits on.
+static var _seat_cache := {}
+func _rear_seat(root: Node3D, bounds: AABB) -> Vector3:
+	var key := "%s|%s|%s" % [kind, str(root.scale.snapped(Vector3.ONE * 0.001)), str(bounds.size.snapped(Vector3.ONE * 0.01))]
+	if _seat_cache.has(key):
+		return _seat_cache[key]
+	var h := bounds.position.y + bounds.size.y * 0.6
+	var half := bounds.size.x * 0.34
+	var cx := bounds.get_center().x
+	var best := -INF
+	var inv := global_transform.affine_inverse() if is_inside_tree() else Transform3D.IDENTITY
+	for mi in _all_meshes(root):
+		if mi.mesh == null or not (mi.is_visible_in_tree() if is_inside_tree() else mi.visible):
+			continue
+		var xf: Transform3D
+		if is_inside_tree():
+			xf = inv * mi.global_transform
+		else:
+			xf = Transform3D.IDENTITY
+			var n: Node = mi
+			while n != null and n != self:
+				if n is Node3D:
+					xf = (n as Node3D).transform * xf
+				n = n.get_parent()
+		for si in mi.mesh.get_surface_count():
+			var arr := mi.mesh.surface_get_arrays(si)
+			if arr.is_empty() or arr[Mesh.ARRAY_VERTEX] == null:
+				continue
+			for v: Vector3 in arr[Mesh.ARRAY_VERTEX]:
+				var q := xf * v
+				if absf(q.y - h) < 0.09 and absf(absf(q.x - cx) - half) < 0.12 and q.z > best:
+					best = q.z
+	var back := bounds.end.z - 0.06 if best == -INF else best - 0.012
+	var seat := Vector3(h, back, half)
+	_seat_cache[key] = seat
+	return seat
 
 ## Merged mesh bounds of a subtree, in this vehicle's local space.
 func _local_bounds(node: Node3D) -> AABB:

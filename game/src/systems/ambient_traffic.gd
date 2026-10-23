@@ -12,6 +12,7 @@ extends Node3D
 ## view, so the street the player is looking at is always busy.
 
 const POOL := 112
+const DtBridges := preload("res://src/world/downtown/bridges.gd")
 const LANE_OFFSETS: Array[float] = [4.6, 2.3]   # kerb lane (slow), median lane
 const ENTRY := 11.0      # lane starts this far past a junction centre
 const STOP := 12.0       # stop line this far before the next junction centre
@@ -178,6 +179,7 @@ func adopt_downtown(g: Dictionary) -> int:
 				entry *= k
 				stop *= k
 			_add_edge(int(pair[0]), int(pair[1]), offs, junction_to, entry, stop, float(pair[2]), float(pair[3]))
+			edges[edges.size() - 1]["dt"] = true
 	stats["downtown_edges"] = edges.size() - before
 	return edges.size() - before
 
@@ -217,6 +219,15 @@ func lane_point(e: int, lane: int, s: float) -> Vector3:
 	var ed: Dictionary = edges[e]
 	var p: Vector3 = ed["a"] + ed["dir"] * s + ed["left"] * _off(e, lane)
 	p.y = 0.07 + lerpf(float(ed["y0"]), float(ed["y1"]), clampf(s / maxf(0.01, float(ed["len"])), 0.0, 1.0))
+	# Integrator (wave S): downtown lanes follow the real bridge deck profile
+	# (cosine ramps). The straight chord between two graph nodes ran under the
+	# deck: cars half-buried on the Esplanade Bridge ramp, a box truck sliding
+	# through the Bayfront Bridge deck, an unseen under-deck car blocking the
+	# player (critic downtown-polish-S1).
+	if ed.get("dt", false):
+		var h := DtBridges.height_at(p.x, p.z)
+		if h > 0.001:
+			p.y = 0.07 + h
 	return p
 
 # ----------------------------------------------------------------- update
@@ -1020,8 +1031,15 @@ func _apply_transform(v: AmbientVehicle) -> void:
 			pos += lft * v.lat_shift
 			# Nose into the new lane while drifting across.
 			fwd = fwd - lft * signf(v.lat_shift) * 0.09
+	var slope := 0.0
+	if v.j_len <= 0.0 or v.s >= _entry(v.edge):
+		# Integrator (wave S): pitch with the deck on bridge ramps.
+		if edges[v.edge].get("dt", false):
+			slope = (lane_point(v.edge, v.lane, v.s + 2.0).y - lane_point(v.edge, v.lane, v.s - 2.0).y) / 4.0
 	fwd.y = 0.0
 	fwd = fwd.normalized()
+	if absf(slope) > 0.002:
+		fwd = Vector3(fwd.x, clampf(slope, -0.35, 0.35), fwd.z).normalized()
 	var basis := Basis.looking_at(fwd, Vector3.UP)
 	v.global_transform = Transform3D(basis, pos)
 

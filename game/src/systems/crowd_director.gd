@@ -724,12 +724,22 @@ func _seed_cone(p: NPC, loiter: bool, near: Array, band: Vector2 = Vector2.ZERO,
 			if StreetRaster.at(a.x, a.z) != 0 or StreetRaster.at(b.x, b.z) != 0 or not _in_plaza(a.x, a.z) or not _in_plaza(b.x, b.z):
 				a = pos - across * 4.0
 				b = pos + across * 4.0
+			# Integrator (wave S): the line must stay on paving end to end (the
+			# promenade plaza rect also spans river water; a walker crossed the
+			# Singapore River in mid-air in fixed view photo_23).
+			if not _path_on_ground(a, b, ground):
+				a = pos - across * 4.0
+				b = pos + across * 4.0
+				if not _path_on_ground(a, b, ground):
+					continue
 			var line: Array[Vector3] = [Vector3(a.x, pos.y, a.z), Vector3(b.x, pos.y, b.z)]
 			p.lane = line
 			p.lane_dir = 1 if _rng.randf() < 0.5 else -1
 			p.lane_index = 1 if p.lane_dir > 0 else 0
 		elif walk[0] != null:
 			var pts: Array[Vector3] = walk[0]
+			if not _path_on_ground(pos, pts[clampi(int(walk[1]), 0, pts.size() - 1)], ground):
+				continue
 			p.lane = pts
 			p.lane_dir = 1 if _rng.randf() < 0.5 else -1
 			p.lane_index = clampi(int(walk[1]), 0, pts.size() - 1)
@@ -796,6 +806,9 @@ func _seed_poly_view(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 				continue
 			pos.y = ground + 0.2
 			if not _open_ground(pos, ground):
+				continue
+			# Integrator (wave S): the walk back to the line stays on paving.
+			if not _path_on_ground(pos, pts[k], ground):
 				continue
 		p.lane = pts
 		p.lane_dir = 1 if _rng.randf() < 0.5 else -1
@@ -920,6 +933,18 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 
 ## Nothing solid (buildings, walls, planters) within ~1.2 m at body height.
 var _probe: PhysicsShapeQueryParameters3D
+## Integrator (wave S): every ~2 m from a to b there is walkable ground within
+## 0.7 m of `ground` (no water, quay drop or void on the way).
+func _path_on_ground(a: Vector3, b: Vector3, ground: float) -> bool:
+	var flat := Vector2(b.x - a.x, b.z - a.z).length()
+	var n := maxi(1, ceili(flat / 2.0))
+	for i in n + 1:
+		var q := a.lerp(b, float(i) / float(n))
+		var g := _ground_at(Vector3(q.x, ground + 0.5, q.z))
+		if g == INF or absf(g - ground) > 0.7:
+			return false
+	return true
+
 func _open_ground(pos: Vector3, ground: float = 0.2) -> bool:
 	if _probe == null:
 		_probe = PhysicsShapeQueryParameters3D.new()
