@@ -1,60 +1,113 @@
 # Orchard Reach — Opus 5.5 enhancement loop (rolling handoff)
 
 - Branch: `Opus-5.5-enhancements` (remote `origin/Opus-5.5-enhancements`). Never merge or push `main`; that needs the owner.
-- Run: run 2 is **open-ended** (owner, ~17:27Z): it continues in waves (build → blind critique → integrate) until a blind judge prefers ours to GTA V and is wowed, or the owner stops it. Owner priority since 17:43Z: playable mechanics first (walking/running, shooting, jumping, driving, flying), then the rest of the world.
-- Records: [`loop/RUN.md`](loop/RUN.md) (run log), [`loop/PIECES.md`](loop/PIECES.md) (pieces, verdicts, merges), progress page `python3 loop/make_progress.py` → `progress/index.html`.
-- Machine: Mac Studio, Godot 4.7.1 Forward+, Metal for renders. Render only through `loop/render.sh` (shared GPU lease, at most one of our renders at a time).
-- Last update: wave-P integration, 2026-10-22 ~20:50Z. Last game-code commit `acffbe0`.
+- Run: run 2 is **open-ended** (owner, ~17:27Z on 2026-10-22). It continues in waves (build, then blind critique, then integrate) until a blind judge prefers ours to GTA V and is wowed, or until the owner stops it. Owner priority since 17:43Z: playable mechanics first (walking/running, shooting, jumping, driving, flying), then the rest of the world.
+- Records: [`loop/RUN.md`](loop/RUN.md) (run log), [`loop/PIECES.md`](loop/PIECES.md) (pieces, verdicts, merges), and the progress page, built with `python3 loop/make_progress.py` into `progress/index.html`.
+- Machine: Mac Studio, Godot 4.7.1 Forward+, Metal for renders. Render only through `loop/render.sh` (shared GPU lease; at most one of our renders at a time).
+- Last update: wave-Q integration, 2026-10-23 ~02:50Z. Last game-code commit: `359fa91`.
 
-## What is merged (wave P, this integration)
+## What is merged (wave Q, this integration)
 
 | Piece | Merged (merge) | Critic vs GTA V | Better than baseline (critic) | Integrator seam fixes |
 | --- | --- | --- | --- | --- |
-| locomotion | `2d204a7` (`0ca72da`) | OURS LOSES, P1 + P2 | **yes**, both rounds | `a397d5b` running landings keep the stride |
-| combat | `dac7463` (`b44f3c1`) | OURS LOSES, P1 | no (regressions) | `a4fb1b0`, `acffbe0` flash/tracers/sparks/holes, aim holds under fire, HUD toast |
-| driving | `7f64ae5` (`f167e2f`) | OURS LOSES, P1 | no, but "no regressions found" | `5ae8ffb` per-kind launch/brake, cam scaled to body, wall sweep |
-| helicopter | `1494459` (`d40aa96`) | OURS LOSES, P1 + P2 | no (regressions) | `26cd752`, `a397d5b`, `acffbe0` concrete not turf, workshop floor, lighter rotor veil, no blob decals on water |
+| driving | Q2 head `ccb87f0` (`8ab2a28`) | OURS LOSES, Q1–Q3 | **yes** in Q1 and Q2. Q3 judged no, so it was not merged | none needed |
+| combat | `a5e1367` (`2548105`) | OURS LOSES, Q1 + Q2 | no (2 regressions) | `b79c3e3`: both regressions fixed |
+| locomotion | `425951c` (`a14a9c2`) | OURS LOSES, Q1 + Q2 | no | `a14a9c2` camera-frame merge, `cdef3a4` head probe; orchestrator gates measured OK |
+| characters | **not merged** | OURS LOSES, Q1 + Q2 | no | branch `opus55/characters` and its worktree kept |
 
-What the owner asked for: the walk, jog and sprint are now separately authored gaits at their real speeds (about 1.5 / 3.6 / 6.8 m/s), not a sped-up walk. The stance is narrow (median foot spacing about 0.10-0.13 m, measured). The jump is human-height and has a moving airborne pose. The locomotion critic measured both complaints as fixed (`better_than_baseline=true` in P1 and P2). Its remaining loss to GTA V is character fidelity (face, hair and cloth), not the gait.
+What each merge brings:
 
-Earlier merges on this line (run 1): water, skyline, lighting, materials, on-foot, helicopter (C), driving (C). Not merged: street-life (`opus55/street-life-fix`, 14 commits ahead; unreliable headless route with ambient traffic). The wave-D branches `opus55/{aerial,characters,nearfield}` each hold one WIP commit from the stop at 17:43Z and are not merged.
+- **Driving:** per-pixel chase-cam motion blur (gated by depth and height, with no ghosted pedestrians), de-speckled asphalt, 4x anisotropy, detailed tyres and alloys, and an even paint base coat.
+- **Combat:**
+  - an eye-level two-hand stance with physical ragdoll deaths
+  - a magazine-drop reload
+  - hostiles that fire back
+  - no interaction prompts during a firefight
+  - one "Officer down." toast per burst
+- **Locomotion:**
+  - planted-foot lock with leg IK: planted-foot slip falls from 0.15–0.64 m/s to at most 0.0006 m/s
+  - an authored backpedal and weighted starts
+  - a continuous sprint-180
+  - pedestrian and prop avoidance and collision
+  - a shoulder-safe aim camera that swaps to the left shoulder in colonnades
 
-## Verified (final game code `acffbe0`)
+### Seam fixes on the integration branch
 
-- **Headless:** `--test` 152/152 PASS. `--capture` route 13/13 with 0 deaths after every merge (152.8 / 163.9 / 164.8 / 160.8 s), and on `acffbe0` 157.0 s, exit 0, 0 fatal lines.
-- **Rendered** (real Metal frames at 1280x720 through `loop/render.sh`. The lease reported `contaminated=no-exclusive-lock`, so timings are approximate):
-  - `--capture` route: **13/13, 0 deaths, 159.4 s, 0 engine errors.** Frame times excluding readback over 11,086 frames: mean 14.1, p50 14.1, p95 19.9, p99 22.8 ms. Stalls occur only in the 3 load frames. Integration C measured 12.8 / 12.7 / 18.5 / 21.4 ms. On `a397d5b` there was one 383 ms stall at 132 s during the helicopter leg, which did not recur on `acffbe0`.
-  - `--photos` (18), `--gameplay-photos` (7), `--heli-review` and `--combat-review` all exited 0 with 0 engine errors. Images are in `progress/img/integration/P/`, with the same names as `integration/C/`.
-  - Checked by eye in rendered frames:
-    - The workshop interior and forecourt are concrete again, matching C (`photo_13`/`14`).
-    - The airfield apron is concrete, not lawn (`photo_09`).
-    - The rotor reads as a light veil, and the airframe is visible under it (`route_09`).
-    - The muzzle flash is a small burst at the muzzle. Spark streaks are short. Bullet holes are dark.
-    - The van/route drive and the helicopter route views are coherent with C.
-  - Not every frame was inspected at 100%.
-- **Gait check:** at `--fixed-fps 30`, headless `--locomotion-review --loco-metrics-only` gives the same clip use and planted-slip metrics on the integrated line as on `opus55/locomotion`. The one difference is the running jump, which no longer plays the planted `land` clip; that change is intentional.
+- **`b79c3e3`, combat:**
+  - **Aim pose.** The pistol is now at shoulder height on the centreline. Before the fix, the rig's `.r` side appears on the left of the screen from the right-shoulder camera, so the gun sat exactly behind the head. A camera-frame probe measured head and gun both at x/z = -0.52, and the raised arm read as "a phone to the ear". The aim camera is also 0.10 m higher.
+  - **Bullet holes.** Bullet-hole decals now project 0.5 m deep instead of 0.22 m, so they render as crisp dark holes again instead of ghost circles.
+  - **Self-test.** The aim test now checks shoulder height (1.28–1.55 m).
+- **`a14a9c2`, merge resolution:** combat's aim framing offset now rides locomotion's camera-yaw shoulder frame, so it follows a swapped shoulder.
+- **`359fa91`, route driver:** the scripted route driver backs out after 3 s without 0.5 m of progress. The first rendered route failed gate 6 because two pursuing police cars boxed the car in at the (-156,156) corner for 140 s. The combat-Q1 critic had hit the same failure once.
+
+### Why characters was not merged
+
+- Skin-coloured shards poke through the clothes in most close and medium frames.
+- The support hand no longer grips the pistol, and the idle fingers pass through the gun.
+- Loading takes 80 s instead of 10 s, because `character_look.gd` rebuilds a 55k-vertex mesh in GDScript on the main thread.
+- Its `CharacterHands` IK competes with combat's `AimIkLayer` for the hands.
+- What is worth salvaging later: the varied crowd wardrobe, skin without facets, and better hair. The mesh rebuild would need caching to disk, and the hand IK has to be unified with `AimIkLayer` first.
+
+## Verified (final game code `359fa91`)
+
+### Headless
+
+- `--test`: 164/164 PASS.
+- `--capture` route: 13/13 with 0 deaths after every merge (160.3, 157.8, 157.7 and 160.7 s), and 163.8 s on the final code.
+
+### Rendered
+
+Real Metal frames at 1280x720 through `loop/render.sh`. The lease reported `contaminated=no-exclusive-lock`, so timings are approximate.
+
+- **`--capture` route:** **13/13, 0 deaths, 160.9 s, 0 engine errors.**
+  - Frame times excluding readback, over 10,920 frames: mean 14.5, p50 14.5, p95 20.5, p99 23.4 ms. Integration P measured 14.1 / 14.1 / 19.9 / 22.8.
+  - Stalls happen only in the load frames.
+  - `world_ui_ready` is 9.96 s.
+- **Other runs:** `--photos` (18), `--gameplay-photos` (7), `--combat-review` and `--drive-showcase` all exited 0 with 0 engine errors. These ran on `cdef3a4`; `359fa91` changes only the route driver.
+- **Photos against P:** PSNR is 25.7–44.2 dB, and only the water-animation views (photo_17, photo_18) are below 30 dB.
+- **Gameplay photos against P:** the same views, with cleaner asphalt in photo_03.
+- Images are in `progress/img/integration/Q/`, with the same names as `integration/P/`.
+
+### Checked by eye in rendered frames
+
+- In route 03 and 04, both arms extend at shoulder height toward the target over the shoulder; it no longer reads as a phone held to the ear.
+- The close aim views show an isosceles two-hand stance.
+- Bullet holes are crisp and dark.
+- The drive showcase shows speed blur only near the road, plus a handbrake slide and damage.
+- The 18 beauty views are unchanged.
+
+### Locomotion gates (headless, `--fixed-fps 30`, `--locomotion-review --loco-metrics-only`)
+
+| Measure | Merged line | Integration P |
+| --- | --- | --- |
+| Head bone yaw off the line of travel (median, walk/run phases) | 0.2–0.6° | — |
+| Stance knee, minimum | 8.3° | 14.5° |
+| Pelvis height | 0.900 m | 0.900 m |
+| Ankle gap, walk / run / sprint | 0.13 / 0.11 / 0.10 m | — |
+| Speed, walk / run / sprint | 1.50 / 3.60 / 6.80 m/s | — |
 
 ## Honest status against GTA V
 
-Every blind round in run 2 so far has returned **OURS LOSES**: locomotion 2, combat 1, driving 1, helicopter 2. No judge was wowed, and no piece is preferred to GTA V. The latest critics' biggest gaps:
+Every blind round in run 2 has returned **OURS LOSES**. That includes wave Q: characters 2 rounds, locomotion 2, combat 2 and driving 3. No judge was wowed, and no piece is preferred to GTA V. The biggest named gaps from the latest critics:
 
-1. **Character fidelity at medium and close range** (locomotion-P2, combat-P1): the face lacks skin micro-detail, the hair is a shell, the shirt has no weave, seams or folds, and the fingers do not articulate on the grip. The gait is no longer the problem.
-2. **Combat presentation:** the close aim pose has the head and torso about 60° off the barrel, so he looks at the camera instead of down the sights. Over-the-shoulder framing hides the gun under the minimap. Corpses freeze in odd poses. Reload is a static hold.
-3. **Driving:** the road surface reads as speckled noise at 80 km/h (critic check A). Traffic is almost absent. Crash damage is faceted.
-4. **Helicopter/aerial:** the city looks like a miniature from 100-150 m: bare lots, repeated blocks, few cars, flat haze.
-5. **Collision and camera:** the player passes through pedestrians and street props (scooters, bikes, planters). The aim camera jams behind arcade pillars.
+1. **Hero character fidelity at 1–3 m.** No cloth folds; the face is waxy with no micro-detail; the hands are mittens; the pistol is a black lump.
+2. **City life.** Junctions are empty in normal play. The crowd uses one body and face template and walks in lockstep knots. There are blockout props: salmon and mint blocks, toy scooters with ring wheels, flat bikes, a floating black box sign.
+3. **Street surfaces and dressing.** Chase-cam pavements, kerbs and street furniture (driving-Q3 check A). The paving shows repeating grime blotches.
+4. **Combat staging.** There is no police car, lightbar or cover in the police firefight. From the gameplay camera the pistol is still small and dark.
+5. **Locomotion feel.** Stops are instant. The running jump is a tuck hop. The sprint-180 has a brief lunge. The aim camera still meets walls in the arcade during strafe and backpedal.
 
 ## Open issues (not fixed by this integration)
 
-- A soft dark shadow follows the helicopter on the bay at about 30 m in banks (`--heli-review` h05c). The rotor-disc shadow and contact decal are now off over water, so this is the airframe's own shadow, and the water shader darkens it too much.
-- Locomotion:
-  - Backpedalling while aiming plays `aim_walk` reversed.
-  - The 180° turn has no plant or skid.
-  - Aimed strafe slip is about 0.65 m/s.
-- Toy-like scooter and kick-scooter props.
-- A dark patch on the player's neck texture.
-- "[E] Take the package" shows mid-firefight at the combat gate.
-- Performance is about 1.4 ms slower at p95 than integration C; combat FX and the helicopter are the likely cost. Not profiled.
+- **Walker's face:** in front walks it reads as turned about 35° to his left and up. The head bone faces the line of travel (measured), skeleton rest equals skin bind, and the same read shows in baseline `idle_front`. The cause is probably the face, eye or hair texture or the mesh. Not fixed.
+- **Motion blur:** near-edge props (yellow share bikes, a parked coupe) still double at about 60–70 km/h in route 06.
+- **HUD:** the pistol ammo panel still shows while driving. Q3 hid it, but Q3 was not merged.
+- **Route corner:** the scripted route always needs one back-out at the (-156,156) corner (logged as `drive no progress`). This is fine for QA, but the corner is tight.
+- **Driving Q3 extras** that could be cherry-picked separately: signal heads facing every approach, and the hero cobalt clear-coat. Do not take `drive_life.gd`; it is showcase staging and causes the drive-leg stall and the pull-away hitch.
+- **Carried over from P:**
+  - a dark airframe shadow on the bay under the helicopter in banks
+  - two floating dark cubes above the hawker-centre roof
+  - faceted sedan paint
+  - a neck texture patch
 - Do not use the save slot: always pass `--qa-session <own dir>`.
 
 ## How to run
@@ -70,15 +123,18 @@ bash loop/render.sh <label> 480 /private/tmp/opus55/<you>/route -- -- --capture 
   --qa-render-size=1280x720 --qa-session /private/tmp/opus55/<you>/route/session
 ```
 
-- **Review modes:** `--photos`, `--gameplay-photos`, `--heli-review`, `--combat-review`, `--drive-showcase`, `--locomotion-review`. For the locomotion review, pass the engine arg `--fixed-fps 30`; `--loco-metrics-only` gives headless metrics.
+- **Review modes:** `--photos`, `--gameplay-photos`, `--heli-review`, `--combat-review`, `--drive-showcase`, `--locomotion-review`.
+  - `--locomotion-review` takes the engine arg `--fixed-fps 30`. `--loco-metrics-only` gives headless metrics; `frames.jsonl` now carries `head_yaw_rel`, `head_pitch` and `look_yaw`.
+  - `--combat-review` logs the aim bones in the camera frame. It needs a rendered run; run headless, it stalls at the first still.
 - **Other modes:** `--perf-probe`, `--sightline-probe`, and `--soak` together with `--capture`.
 - **Frame times:** `<capture-dir>/capture_log.json` (`frame_times`, which excludes readback) and `frame_stalls.jsonl`.
 
 **Worktrees and branches:**
-- Merged piece worktrees (locomotion, combat, driving-p, helicopter-p) were removed after the push. Their branches are kept.
-- Still present: `.worktrees/{street-life,street-life-fix,aerial,characters,nearfield}`, all unmerged.
+- The merged piece worktrees (driving-q, combat-q, locomotion-q) were removed after the push. Their branches are kept.
+- Still present and unmerged: `.worktrees/{characters,street-life,street-life-fix,aerial,nearfield}`.
 
 ## Previous
 
-- **Run 1 final integration C** (~11:45Z, game code `32e08ba`): water, skyline, lighting, materials, on-foot, helicopter and driving were merged. Results: 140/140 regressions; route 13/13 headless and rendered; rendered p95 18.5 ms. All 23 blind rounds returned OURS LOSES. Images: `progress/img/integration/C/` (also A and B).
+- **Wave P integration** (2026-10-22 ~20:50Z, game code `acffbe0`): locomotion, combat, driving and helicopter were merged with seam fixes. Results: 152/152 regressions; route 13/13 headless and rendered; rendered p95 19.9 ms. Images: `progress/img/integration/P/`.
+- **Run 1 final integration C** (~11:45Z, game code `32e08ba`): water, skyline, lighting, materials, on-foot, helicopter and driving were merged. Results: 140/140 regressions; rendered p95 18.5 ms. Images: `progress/img/integration/C/` (also A and B).
 - **Wave 5** (branch `feature/wave-05-opus`): final candidate `98b41b2`, rendered-verified fallback `d2a6cad`. Both are private native macOS packages, not cleared for public redistribution of provider assets. Details: [`waves/05/RELEASE_REPORT.md`](waves/05/RELEASE_REPORT.md).
