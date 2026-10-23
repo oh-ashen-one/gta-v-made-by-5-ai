@@ -167,3 +167,14 @@ opus55 nearfield R2 (2026-10-23, code only, no new image files): layered ground 
 
 
 opus55 wave-M integrator (2026-10-23): no new or changed art assets. Original code edits only: `render_budget_probe.gd` (new QA probe), street-life seam fixes in `ambient_traffic.gd`, `photo_capture.gd`, `avenue_dressing.gd`, `crowd_director.gd`, `crowd_people.gd` (per-person trouser dye in the existing skin shader), `npc.gd`, `ambient_vehicle.gd`, `character_visual.gd`, `car_damage.gd` and `self_test.gd`. The characters piece's look mesh is applied to the player only; its listed rows are unchanged.
+
+## Wave S downtown-polish (Opus 5.5, 2026-10-23)
+
+New original code only: `game/src/world/downtown/planting.gd` (layered kerbside strips, palms in tree pits and medians,
+forecourt beds, the Raffles Avenue corner garden), `game/src/world/downtown/tower_shadows.gd` with the new shader
+`game/assets/authored/shaders/dt_ground_shadow.gdshader` (ground shadows of the downtown towers beyond the sun's shadow
+map), a shade-side reflection term in `dt_facade.gdshader`, Helix landing ramps, plan amendment S-1 and the review
+driver/walk changes in `downtown_review.gd`. It places existing project assets only: the authored `rain_tree.glb` and
+`palm.glb`, and the provider plant-card atlas `foliage_median_atlas.png` through `NearField` (git-ignored, private build
+use; procedural shrub clumps replace it when absent). No new imported, generated or third-party assets; no Rockstar
+material; GTA V references set the quality bar only.

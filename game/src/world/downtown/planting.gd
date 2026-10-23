@@ -131,13 +131,52 @@ static func kerb_strips(m) -> void:
 ## garden on the strip the Marina Centre plot gave up, kept below eye level
 ## within 14 m of the kerb return so the turn keeps its sightline.
 const CORNER_GARDENS := [Rect2(-776.0, -764.0, 10.0, 91.0)]
+## Raffles Avenue frontage gardens on the landmark decks (y = deck top): the
+## Esplanade's west plaza (clear of the domes' foyer rings from x -749) and
+## the Flyer site's Raffles Avenue edge. Both read as bare paving from the
+## drive before.
+const DECK_GARDENS := [[Rect2(-771.0, -618.0, 15.0, 232.0), 0.36], [Rect2(-772.0, -985.0, 9.0, 172.0), 0.36]]
+## Groves on the open parts of the Flyer site (the terminal, boarding deck and
+## entrance plaza stay clear: they lie within ~75 m of the wheel at
+## (-650, -880)); the site read as one bare paved field from the air.
+const DECK_GROVES := [[Rect2(-578.0, -988.0, 72.0, 180.0), 0.36], [Rect2(-758.0, -988.0, 60.0, 34.0), 0.36]]
+static func groves(m) -> void:
+	if not ResourceLoader.exists("res://src/world/downtown/landmarks.gd"):
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 9133
+	for e: Array in DECK_GROVES:
+		var r: Rect2 = e[0]
+		var y: float = float(e[1]) + 0.02
+		m.quad_up("turf", Vector3(r.position.x, y, r.position.y), Vector3(r.end.x, y, r.position.y), Vector3(r.end.x, y, r.end.y), Vector3(r.position.x, y, r.end.y))
+		m.box("granite_coping", Vector3(r.get_center().x, y - 0.06, r.get_center().y), Vector3(r.size.x + 0.4, 0.12, r.size.y + 0.4))
+		# loose clusters of rain trees and palms over shrub drifts
+		var n := int(r.get_area() / 260.0)
+		for i in n:
+			var c := Vector3(rng.randf_range(r.position.x + 4.0, r.end.x - 4.0), y, rng.randf_range(r.position.y + 4.0, r.end.y - 4.0))
+			if rng.randf() < 0.35:
+				palm(m, c, rng)
+			else:
+				m.tree(c, rng.randf_range(0.8, 1.3), rng)
+			for k in 5:
+				var q := c + Vector3(rng.randf_range(-3.5, 3.5), 0.0, rng.randf_range(-3.5, 3.5))
+				if r.grow(-0.8).has_point(Vector2(q.x, q.z)):
+					_clump(["ixora", "croton", "fern", "mondo"][rng.randi() % 4], q, rng.randf_range(0.8, 1.3), rng)
 static func corner_gardens(m) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 4417
-	for r: Rect2 in CORNER_GARDENS:
-		var y := 0.12
+	var gardens: Array = []
+	for r0: Rect2 in CORNER_GARDENS:
+		gardens.append([r0, 0.12, false])
+	if ResourceLoader.exists("res://src/world/downtown/landmarks.gd"):
+		for e: Array in DECK_GARDENS:
+			gardens.append([e[0], float(e[1]) + 0.02, true])
+	for g: Array in gardens:
+		var r: Rect2 = g[0]
+		var y: float = g[1]
+		var deck: bool = g[2]
 		m.quad_up("turf", Vector3(r.position.x, y, r.position.y), Vector3(r.end.x, y, r.position.y), Vector3(r.end.x, y, r.end.y), Vector3(r.position.x, y, r.end.y))
-		m.box("granite_coping", Vector3(r.get_center().x, 0.06, r.get_center().y), Vector3(r.size.x + 0.4, 0.12, r.size.y + 0.4))
+		m.box("granite_coping", Vector3(r.get_center().x, y - 0.06, r.get_center().y), Vector3(r.size.x + 0.4, 0.12, r.size.y + 0.4))
 		var z := r.position.y + 1.0
 		while z < r.end.y - 1.0:
 			for k in 3:
@@ -146,14 +185,16 @@ static func corner_gardens(m) -> void:
 				var kind: String = ["mondo", "ixora", "croton", "fern"][rng.randi() % (2 if near_corner else 4)]
 				_clump(kind, p, rng.randf_range(0.8, 1.25), rng)
 			z += 1.3
-		var t := r.position.y + 20.0
+		var t := r.position.y + (6.0 if deck else 20.0)
 		while t < r.end.y - 6.0:
-			var q := Vector3(r.get_center().x + rng.randf_range(-1.5, 1.5), y, t)
-			if rng.randf() < 0.5:
+			var q := Vector3(r.get_center().x + rng.randf_range(-1.5, 1.5) * (2.0 if deck and r.size.x > 12.0 else 1.0), y, t)
+			if rng.randf() < 0.45:
 				palm(m, q, rng)
+				if deck and r.size.x > 12.0:
+					palm(m, q + Vector3(rng.randf_range(2.5, 4.0) * (1.0 if q.x < r.get_center().x else -1.0), 0.0, rng.randf_range(-2.0, 2.0)), rng)
 			else:
-				m.tree(q, rng.randf_range(0.75, 1.0), rng)
-			t += rng.randf_range(11.0, 17.0)
+				m.tree(q, rng.randf_range(0.75, 1.1), rng)
+			t += rng.randf_range(10.0, 16.0)
 
 static func _shelter_spots() -> Array:
 	var out: Array = []

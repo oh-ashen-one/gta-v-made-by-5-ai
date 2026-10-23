@@ -79,6 +79,16 @@ and scooters are modelled and collidable; shop awnings are sagging striped canva
 paving carries a 1.16 value lift toward the pale-concrete row above; asphalt adds bounded (0.72-1.38) photographic
 detail in the lane frame. `--nearfield-off` restores the wave-5 near field; `--nearfield-no-provider` uses authored maps only.
 
+Downtown (opus55 downtown-polish, wave S): roadside planting is layered, never one tree at uniform spacing: a 0.75 m
+kerbside strip of mondo ground cover with drifts of ixora, croton and bird's-nest fern; tree pits alternate rain trees and
+palms by hash (never three of one species in a row, jittered along the kerb); planted medians get shrubs and palms between
+the rain trees; open forecourts of every built plot are lawn beds edged with shrubs; the Raffles Avenue frontages of the
+Esplanade and Flyer decks are gardens. Towers cast ground shadows from the one sun past the 280 m shadow map
+(`tower_shadows.gd`), and once the camera is above ~30-80 m the sun's shadow range blends out to 1100 m and the froxel fog
+thins to a quarter (`downtown/aerial_light.gd`). Downtown glass dims its sky reflection on faces turned from the sun, so
+towers keep a lit and a shade side from the air. Marina Centre wears dark glass, bronze and granite first.
+`--planting-off`, `--tower-shadows-off`, `--aerial-light-off`, `--facade-sun-off` restore the wave-M look for A/B.
+
 ## Camera treatment
 
 - Third-person over-the-shoulder: camera 1.62 m, lateral offset 0.85 m, arm 4.6 m (2.2 m aiming), so the character never sits on the reticle.

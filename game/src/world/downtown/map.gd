@@ -62,6 +62,7 @@ func build(w: WorldBuilder, r: Node3D) -> void:
 	if not Planting.off():
 		Planting.kerb_strips(self)
 		Planting.corner_gardens(self)
+		Planting.groves(self)
 	Bridges.build(self)
 	Bounds.build(self)
 	_flush()
@@ -79,6 +80,13 @@ func finish(w: WorldBuilder) -> void:
 	# pits, medians) and blocks (forecourt beds) is emitted once here.
 	Planting.flush(root)
 	stats["planting"] = Planting.stats.duplicate()
+	# downtown-polish: long, crisp sun shadows and a thinner froxel veil once
+	# the camera is airborne (the tower ground-shadow overlay follows)
+	var overlay: Array[ShaderMaterial] = []
+	var ts := w.find_child("DowntownTowerShadows", true, false) as MeshInstance3D
+	if ts != null and ts.mesh != null and ts.mesh.surface_get_material(0) is ShaderMaterial:
+		overlay.append(ts.mesh.surface_get_material(0) as ShaderMaterial)
+	stats["aerial_light"] = load("res://src/world/downtown/aerial_light.gd").attach(w, overlay) != null
 	w.set_meta("downtown_map_stats", stats)
 
 # ------------------------------------------------------------ materials

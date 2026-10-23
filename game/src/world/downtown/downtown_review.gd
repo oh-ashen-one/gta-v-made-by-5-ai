@@ -347,8 +347,11 @@ func _drive_leg() -> void:
 	car.occupied_by_npc = false
 	# The Marina Bay loop from the player's street (left-hand lanes).
 	var r := DowntownPlan.ROADS
-	var centre: Array = [Vector3(-160, 0, -40), Vector3(-160, 0, -320), Vector3(-470, 0, -320)]
-	var offs: Array = [3.4, 3.4]
+	# downtown-polish (wave S): the loop starts and ends on Collyer Quay (the
+	# heritage-avenue approach and its left turn are not part of the owner's
+	# route and cost minutes behind the district signals).
+	var centre: Array = [Vector3(-60, 0, -320), Vector3(-470, 0, -320)]
+	var offs: Array = [3.4]
 	for q: Vector3 in (r["fullerton_road"]["pts"] as Array).slice(1):
 		centre.append(q)
 		offs.append(3.4)
@@ -367,7 +370,7 @@ func _drive_leg() -> void:
 	_recording = true
 	_log("drive start at %s" % car.global_position)
 	var i := 0
-	var t_end := _elapsed() + 420.0
+	var t_end := _elapsed() + 900.0
 	var stills := {"esplanade_bridge": Vector3(-600, 0, -360), "raffles_avenue": Vector3(-790, 0, -600), "bayfront_bridge": Vector3(-420, 0, -780), "bayfront_avenue": Vector3(0, 0, -780), "marina_boulevard": Vector3(400, 0, -520)}
 	var stuck_t := 0.0
 	var max_deck := 0.0
@@ -410,14 +413,27 @@ func _drive_leg() -> void:
 			waits += dt
 		else:
 			blocked_t = 0.0
-		if blocked_t > 5.0 and shift_target == 0.0 and turn < 0.5:
-			var gap2 := _gap_path(path, i, car, LANE_SHIFT, 40.0, 1.6)
-			if gap2 > 34.0:
-				shift_target = LANE_SHIFT
-				shift_hold = i + 14
-				overtakes += 1
-				blocked_t = 0.0
-				_log("overtake at %s (gap %.1f m)" % [car.global_position, gap])
+		if blocked_t > 12.0:
+			# still boxed in (a stalled queue, or the lane we moved to stopped):
+			# take whichever lane offset has the clearest corridor, own lane first
+			for cand: float in [0.0, LANE_SHIFT, LANE_SHIFT * 2.0]:
+				if is_equal_approx(cand, shift_target):
+					continue
+				if _gap_path(path, i, car, cand, 34.0, 1.6) > 28.0:
+					shift_target = cand
+					shift_hold = i + 14
+					overtakes += 1
+					_log("change lane to offset %.1f at %s" % [cand, car.global_position])
+					break
+			blocked_t = 0.0
+		# overtake on straights after 5 s; anywhere short of a right-angle
+		# corner after 10 s (a queue that never moves is a stalled car)
+		elif shift_target == 0.0 and ((blocked_t > 5.0 and turn < 0.5) or (blocked_t > 10.0 and turn < 0.9)) and _gap_path(path, i, car, LANE_SHIFT, 40.0, 1.6) > 34.0:
+			shift_target = LANE_SHIFT
+			shift_hold = i + 14
+			overtakes += 1
+			blocked_t = 0.0
+			_log("overtake at %s (gap %.1f m)" % [car.global_position, gap])
 		elif shift_target != 0.0 and i > shift_hold:
 			if _gap_path(path, i, car, 0.0, 26.0, 1.6) > 24.0 or turn > 0.5:
 				shift_target = 0.0
@@ -476,7 +492,7 @@ func _walk_leg() -> void:
 	# Esplanade waterfront, along the Marina Promenade, up the Helix Bridge
 	# landing ramp, over the channel on the helix deck and down to the foot of
 	# Marina Bay Sands (tower 1's east leg).
-	pts.append_array([Vector3(-648, 0, -630), Vector3(-648, 0, -666), Vector3(-560, 0, -666), Vector3(-500, 0, -666), Vector3(-488, 0, -668), Vector3(-489, 0, -700), Vector3(-492, 0, -733), Vector3(-498, 0, -741), Vector3(-497, 0, -745.2), Vector3(-487, 0, -745.4)])
+	pts.append_array([Vector3(-647, 0, -630), Vector3(-647, 0, -659), Vector3(-641, 0, -666), Vector3(-560, 0, -666), Vector3(-500, 0, -666), Vector3(-488, 0, -668), Vector3(-489, 0, -700), Vector3(-492, 0, -733), Vector3(-498, 0, -741), Vector3(-497, 0, -745.2), Vector3(-487, 0, -745.4)])
 	var helix_from: int = pts.size()
 	for u: float in [0.04, 0.12, 0.22, 0.32, 0.42, 0.5, 0.58, 0.68, 0.78, 0.88, 0.96, 1.0]:
 		var hb: Dictionary = DowntownPlan.BRIDGES["helix_bridge"]
@@ -486,7 +502,7 @@ func _walk_leg() -> void:
 	pts.append_array([Vector3(-258, 0, -745), Vector3(-247, 0, -749), Vector3(-241, 0, -757)])
 	var k := 0
 	var t_end := _elapsed() + 240.0
-	var stills := {2: "walk_peninsula", 6: "walk_jubilee_bridge", 9: "walk_esplanade_waterfront", 12: "walk_marina_promenade", helix_from + 4: "walk_helix_bridge", pts.size() - 1: "walk_mbs"}
+	var stills := {2: "walk_peninsula", 6: "walk_jubilee_bridge", 9: "walk_esplanade_waterfront", 13: "walk_marina_promenade", helix_from + 4: "walk_helix_bridge", pts.size() - 1: "walk_mbs"}
 	var max_y := 0.0
 	var stall_p := player.global_position
 	var stall_t := _elapsed()
@@ -495,9 +511,15 @@ func _walk_leg() -> void:
 		if player.global_position.distance_to(stall_p) > 1.0:
 			stall_p = player.global_position
 			stall_t = _elapsed()
-		elif _elapsed() - stall_t > 4.0:
-			_log("walk stalled before waypoint %d %s at %s" % [k, pts[k], player.global_position])
+		elif _elapsed() - stall_t > 3.0:
+			# a walker who bumps a trunk or post steps sideways and carries on
+			_log("walk stalled before waypoint %d %s at %s: side-step" % [k, pts[k], player.global_position])
 			stall_t = _elapsed()
+			var step_dir := "move_left" if (k + int(_elapsed())) % 2 == 0 else "move_right"
+			Input.action_release("sprint")
+			Input.action_press(step_dir)
+			await get_tree().create_timer(0.7).timeout
+			Input.action_release(step_dir)
 		var d := pts[k] - player.global_position
 		d.y = 0.0
 		if d.length() < 3.0:
