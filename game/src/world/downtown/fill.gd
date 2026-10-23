@@ -495,7 +495,10 @@ static func _plant(holder: Node3D, lawn: PackedByteArray, hgt: PackedFloat32Arra
 ## forward wedge open (half-angle deg, reach m) so near crowns never fill the
 ## lower frame (wave T critic: blob crowns at dt_gardens_to_mbs, canopy hiding
 ## the Supertrees at dt_bayfront_drive).
-const VIEW_CONES := {"dt_gardens_to_mbs": Vector2(42.0, 85.0), "dt_bayfront_drive": Vector2(26.0, 170.0)}
+## integration T: widened to the full frame width (fov 66/70 deg plus a margin)
+## and past the Supertrees (T2 critic: flame / angsana crowns still framed the
+## grove bases at the right edge of both views).
+const VIEW_CONES := {"dt_gardens_to_mbs": Vector2(58.0, 170.0), "dt_bayfront_drive": Vector2(44.0, 330.0)}
 const PADANG := Rect2(-900.0, -347.0, 230.0, 336.0)
 
 static func _kept_open(x: float, z: float) -> bool:

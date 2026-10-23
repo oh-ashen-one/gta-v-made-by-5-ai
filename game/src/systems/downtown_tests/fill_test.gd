@@ -9,14 +9,16 @@ func run(world: WorldBuilder, suite: Node) -> void:
 	# 1. park canopy: thousands of trees in >= 4 crown species, no species dominating
 	var species := 0
 	for sp: String in ["rain", "angsana", "tembusu", "flame"]:
-		if int(can.get(sp, 0)) >= 300:
+		if int(can.get(sp, 0)) >= 250:
 			species += 1
-	# (round 2: the Padang went back to an open field, ~600 fewer crowns)
-	suite._check("downtown-fill: varied park canopy (>= 2200 crowns, >= 4 species with >= 300 each, shrub masses)",
-		int(can.get("total", 0)) >= 2200 and species >= 4 and int(can.get("shrub", 0)) >= 300, str(can))
+	# (round 2: the Padang went back to an open field, ~600 fewer crowns;
+	# integration T: the two comparison-view wedges were widened to the full
+	# frame past the Supertrees, ~100 fewer crowns and 2 fewer open-lawn blocks)
+	suite._check("downtown-fill: varied park canopy (>= 2100 crowns, >= 4 species with >= 250 each, shrub masses)",
+		int(can.get("total", 0)) >= 2100 and species >= 4 and int(can.get("shrub", 0)) >= 300, str(can))
 	# 2. no open lawn block: every 48 m lawn cell carries trees
 	suite._check("downtown-fill: no flat lawn larger than a block (0 treeless 48 m lawn cells)",
-		int(fill.get("lawn_blocks", 0)) >= 12 and int(fill.get("empty_lawn_blocks", -1)) == 0, "blocks=%s empty=%s" % [fill.get("lawn_blocks"), fill.get("empty_lawn_blocks")])
+		int(fill.get("lawn_blocks", 0)) >= 10 and int(fill.get("empty_lawn_blocks", -1)) == 0, "blocks=%s empty=%s" % [fill.get("lawn_blocks"), fill.get("empty_lawn_blocks")])
 	# 2b. the Padang stays an open field and the comparison-view wedges stay
 	# clear of near crowns (wave T critic: forest on the Padang, blob crowns at
 	# dt_gardens_to_mbs, canopy hiding the Supertrees at dt_bayfront_drive)

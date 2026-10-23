@@ -12,16 +12,23 @@ extends RefCounted
 ## adjoining surfaces line up, and the stripes change direction per 90 m
 ## tile (no parade-ground pattern across the map).
 ## `--fill-off` restores the old flat tinted soil turf for A/B.
+## integration T: base tones lifted ~1.6x and the near blade grain / stripe
+## contrast halved (T2 critic: photo_27 foreground lawn ~65% darker than S and
+## smeared at the lens).
 
 static var _mat: Material = null
 
 const SHADER := """
 shader_type spatial;
 render_mode cull_back, diffuse_burley, specular_schlick_ggx;
-uniform vec3 lush : source_color = vec3(0.17, 0.29, 0.09);
-uniform vec3 deep : source_color = vec3(0.10, 0.19, 0.06);
-uniform vec3 dry : source_color = vec3(0.37, 0.37, 0.17);
-uniform vec3 worn : source_color = vec3(0.33, 0.28, 0.19);
+uniform vec3 lush : source_color = vec3(0.29, 0.43, 0.14);
+uniform vec3 deep : source_color = vec3(0.20, 0.32, 0.10);
+uniform vec3 dry : source_color = vec3(0.52, 0.50, 0.25);
+uniform vec3 worn : source_color = vec3(0.46, 0.39, 0.27);
+// integration T: near-field turf = the S look (textured soil-grass, world
+// 4 m tile) so the lens foreground is grass, not low-frequency blotches.
+uniform sampler2D turf_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform float has_tex = 0.0;
 varying vec3 wp;
 float h2(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float vn(vec2 p) {
@@ -53,7 +60,7 @@ void fragment() {
 	float band = sin(dot(p, dir) * 3.14159 / 4.5);
 	float stripe = smoothstep(-0.25, 0.25, band) * 2.0 - 1.0;
 	float stripe_fade = 1.0 - smoothstep(0.55, 0.85, w);
-	col *= 1.0 + 0.11 * stripe * stripe_fade;
+	col *= 1.0 + 0.07 * stripe * stripe_fade;
 	// fine mottling (clover, bare spots); fades with distance (no shimmer)
 	float fine = vn(p * 1.7) * 0.6 + vn(p * 5.3) * 0.4;
 	float fine_w = 1.0 - smoothstep(30.0, 120.0, dist);
@@ -61,8 +68,16 @@ void fragment() {
 	// blade-scale grain within a few metres (no smeared camouflage up close)
 	float blade = vn(p * 23.0) * 0.55 + vn(p * 61.0 + 3.0) * 0.45;
 	float blade_w = 1.0 - smoothstep(4.0, 22.0, dist);
-	col *= mix(1.0, 0.70 + 0.55 * blade, blade_w);
+	col *= mix(1.0, 0.84 + 0.30 * blade, blade_w);
 	col = mix(col, col * vec3(1.12, 1.10, 0.86), blade_w * smoothstep(0.72, 0.9, blade) * 0.6);
+	float near_w = has_tex * (1.0 - smoothstep(18.0, 65.0, dist));
+	if (near_w > 0.0) {
+		vec3 tx = texture(turf_tex, p / 4.0).rgb;
+		vec3 s_col = vec3(0.30, 0.56, 0.22) * tx / 0.8;
+		s_col *= 0.86 + 0.28 * smoothstep(0.30, 0.62, m1);
+		s_col = mix(s_col, s_col * vec3(1.10, 1.04, 0.85), smoothstep(0.58, 0.80, m2) * 0.35);
+		col = mix(col, s_col, near_w);
+	}
 	ALBEDO = col;
 	ROUGHNESS = 0.93 - 0.06 * stripe * stripe_fade;
 	SPECULAR = 0.28;
@@ -70,7 +85,7 @@ void fragment() {
 	float e = 0.35;
 	float gx = vn((p + vec2(e, 0.0)) * 1.7) - vn((p - vec2(e, 0.0)) * 1.7);
 	float gz = vn((p + vec2(0.0, e)) * 1.7) - vn((p - vec2(0.0, e)) * 1.7);
-	vec3 n_ws = normalize(vec3(-gx * 0.6 * fine_w - dir.x * 0.05 * stripe, 1.0, -gz * 0.6 * fine_w - dir.y * 0.05 * stripe));
+	vec3 n_ws = normalize(vec3(-gx * 0.6 * fine_w * (1.0 - near_w) - dir.x * 0.05 * stripe, 1.0, -gz * 0.6 * fine_w * (1.0 - near_w) - dir.y * 0.05 * stripe));
 	vec3 gn = (INV_VIEW_MATRIX * vec4(NORMAL, 0.0)).xyz;
 	if (gn.y > 0.7) { NORMAL = normalize((VIEW_MATRIX * vec4(n_ws, 0.0)).xyz); }
 }
@@ -88,6 +103,10 @@ static func material() -> Material:
 		sh.code = SHADER
 		var m := ShaderMaterial.new()
 		m.shader = sh
+		const TURF := "res://assets/authored/surfaces/soil_albedo.png"
+		if ResourceLoader.exists(TURF):
+			m.set_shader_parameter("turf_tex", load(TURF))
+			m.set_shader_parameter("has_tex", 1.0)
 		_mat = m
 	return _mat
 
