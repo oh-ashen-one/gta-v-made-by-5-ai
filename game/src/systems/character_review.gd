@@ -145,7 +145,7 @@ func _hero_sun_views(player: Player, visual: CharacterVisual, cam: Camera3D) -> 
 	to_sun.y = 0.0
 	to_sun = to_sun.normalized() if to_sun.length() > 0.01 else Vector3(0, 0, 1)
 	# Lens 35 deg off the sun line: modelled light, not flat frontal.
-	var lens_dir := to_sun.rotated(Vector3.UP, deg_to_rad(52.0))
+	var lens_dir := to_sun.rotated(Vector3.UP, deg_to_rad(68.0))
 	Game.simulation_paused = true
 	player.global_position = spot + Vector3(0, 0.05, 0)
 	player.look_at(player.global_position + lens_dir, Vector3.UP)  # body forward (-Z) to the lens
@@ -176,14 +176,63 @@ func _clear_fixture(centre: Vector3, radius: float) -> void:
 		var mm := mmi.multimesh
 		var nm := String(mmi.name).to_lower()
 		var clear := nm.contains("scooter") or nm.contains("bike") or nm.contains("moped") or nm.contains("cabinet") or nm.contains("crate") or nm.contains("_box_")
+		var static_batch := nm.begins_with("staticbatch_")
 		for i in mm.instance_count:
 			var gp := mmi.global_transform * mm.get_instance_transform(i).origin
 			if Vector2(gp.x - centre.x, gp.z - centre.z).length() > radius or absf(gp.y - centre.y) > 3.0:
+				continue
+			if static_batch and mm.mesh != null:
+				# Free-standing waist-to-chest-high blocks within 4 m (the
+				# green utility box in front of the fixture), never columns,
+				# kerbs, paving or walls.
+				var bb := (mmi.global_transform * mm.get_instance_transform(i)) * mm.mesh.get_aabb()
+				var near := Vector2(bb.get_center().x - centre.x, bb.get_center().z - centre.z).length() < 4.0
+				if near and bb.size.y > 0.5 and bb.size.y < 1.8 and bb.position.y < centre.y + 0.5 and maxf(bb.size.x, bb.size.z) < 2.6 and minf(bb.size.x, bb.size.z) > 0.25:
+					mm.set_instance_transform(i, Transform3D(Basis().scaled(Vector3.ONE * 0.0001), mm.get_instance_transform(i).origin + Vector3(0, -50, 0)))
+					near_names[String(mmi.name) + " (block cleared)"] = true
 				continue
 			if clear:
 				mm.set_instance_transform(i, Transform3D(Basis().scaled(Vector3.ONE * 0.0001), mm.get_instance_transform(i).origin + Vector3(0, -50, 0)))
 			near_names[String(mmi.name) + (" (cleared)" if clear else "")] = true
 	print("[character-review] fixture batches within ", radius, " m: ", near_names.keys())
+	# Anything else small that stands between a fixed review lens and the
+	# subject (a utility cabinet stood in front of idle_front/aim_front).
+	var lenses := [Vector3(2.4, 1.4, -3.2), Vector3(3.2, 1.4, 0.1), Vector3(2.2, 1.5, -3.0), Vector3(3.2, 1.5, 0.1),
+		Vector3(3.8, 1.5, 0.2), Vector3(-1.3, 1.15, -2.9), Vector3(-0.8, 1.62, 1.7), Vector3(0.95, 1.55, -1.55),
+		Vector3(0.9, 1.38, -2.35), Vector3(0.3, 1.7, -6.8), Vector3(0.3, 1.6, -6.4), Vector3(-1.2, 1.6, -3.6)]
+	var hidden := 0
+	for n in get_tree().root.find_children("*", "GeometryInstance3D", true, false):
+		var gi := n as GeometryInstance3D
+		if not gi.is_visible_in_tree() or gi.is_ancestor_of(self) or String(gi.get_path()).contains("Player"):
+			continue
+		if gi is MultiMeshInstance3D:
+			var mm := (gi as MultiMeshInstance3D).multimesh
+			if mm == null or mm.mesh == null:
+				continue
+			for i in mm.instance_count:
+				var xf := gi.global_transform * mm.get_instance_transform(i)
+				if Vector2(xf.origin.x - centre.x, xf.origin.z - centre.z).length() > 7.0:
+					continue
+				var bb := xf * mm.mesh.get_aabb()
+				if _blocks(bb, centre, lenses):
+					mm.set_instance_transform(i, Transform3D(Basis().scaled(Vector3.ONE * 0.0001), mm.get_instance_transform(i).origin + Vector3(0, -50, 0)))
+					hidden += 1
+		elif gi is MeshInstance3D:
+			var bb2 := gi.global_transform * gi.get_aabb()
+			if _blocks(bb2, centre, lenses):
+				gi.visible = false
+				hidden += 1
+	print("[character-review] lens blockers hidden: ", hidden)
+
+func _blocks(bb: AABB, centre: Vector3, lenses: Array) -> bool:
+	if bb.size.length() > 4.5 or bb.size.y < 0.25 or Vector2(bb.get_center().x - centre.x, bb.get_center().z - centre.z).length() < 0.7:
+		return false
+	for off in lenses:
+		var from: Vector3 = centre + (off as Vector3)
+		for t in [0.05, 0.25, 1.0, 1.5]:
+			if bb.intersects_segment(from, centre + Vector3(0, t, 0)):
+				return true
+	return false
 
 func _save(label: String, wait: float) -> void:
 	await get_tree().create_timer(wait).timeout
@@ -228,7 +277,9 @@ func _people_review(base: Vector3) -> void:
 		people.append(holder)
 		holder.set_meta("visual", v)
 		print("[character-review] person ", i, " ", p["name"], " prop=", p.get("prop", "none"), " skirt=", p.get("skirt", false),
-			" look=", v.look_mesh != null)
+			" look=", v.look_mesh != null, " shirt=", v.look_mesh.get_instance_shader_parameter("shirt_col") if v.look_mesh != null else null,
+			" shirt2=", v.look_mesh.get_instance_shader_parameter("shirt_col2") if v.look_mesh != null else null,
+			" tee=", v.look_mesh.get_instance_shader_parameter("tee_col") if v.look_mesh != null else null)
 	await get_tree().create_timer(0.3).timeout
 	var cam := get_viewport().get_camera_3d()
 	cam.fov = 40

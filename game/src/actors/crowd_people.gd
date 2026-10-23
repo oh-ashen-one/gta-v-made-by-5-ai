@@ -584,7 +584,7 @@ static func _hair_mesh(style: String) -> Mesh:
 		"pixie": _shell(st, 2.05, 1.62, 1.0, 1.04, 0.0)
 		"bob": _shell(st, 3.05, 2.95, 1.05, 1.05, 0.0)
 		"bob_bangs": _shell(st, 3.0, 2.9, 1.42, 1.05, 0.0)
-		"long": _shell(st, 4.6, 2.95, 0.88, 1.05, 0.0)   # T1: swept back off the face (fringe tips read as jagged strands)
+		"long": _shell(st, 4.6, 2.95, 1.0, 1.05, 0.0)   # T1: swept back off the face (fringe tips read as jagged strands)
 		"pony":
 			_shell(st, 2.0, 1.64, 1.0, 1.03, 0.0)
 			_tube(st, Vector3(0.0, 0.07, 0.1), Vector3(0.0, -0.2, 0.17), 0.04, 0.012)

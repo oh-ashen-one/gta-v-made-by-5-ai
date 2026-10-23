@@ -192,6 +192,15 @@ void vertex() {
 	// many faces): jaw and cheeks, nose, brow ridge, hair mass.
 	vec3 rl = r - nose_tip;
 	float headk = smoothstep(1.44, 1.48, r.y);
+	// T3: the civilian head is a cracked triangle soup whose coincident
+	// corners carry different normals, so pushing along NORMAL split it into
+	// flying shards (a woman's packed quiff cut her forehead into black and
+	// skin flakes). Head pushes on civilians go along one direction per
+	// position instead: radially out of the skull centre.
+	vec3 hdir = NORMAL;
+	if (civ_face > 0.5 && headk > 0.0) {
+		hdir = normalize(r - head_centre + vec3(0.0, 0.0, 0.00001));
+	}
 	float facing = 1.0 - smoothstep(0.03, 0.09, rl.z);
 	float ax = abs(rl.x);
 	float jaw = smoothstep(-0.115, -0.085, rl.y) * (1.0 - smoothstep(-0.035, -0.005, rl.y)) * smoothstep(0.015, 0.05, ax) * (1.0 - smoothstep(0.06, 0.11, rl.z));
@@ -203,7 +212,7 @@ void vertex() {
 	float glab = (1.0 - smoothstep(0.003, 0.008, ax)) * (1.0 - smoothstep(0.008, 0.016, abs(rl.y - 0.064))) * facing;
 	float squint = (1.0 - smoothstep(0.004, 0.01, abs(rl.y - 0.026))) * smoothstep(0.016, 0.024, ax) * (1.0 - smoothstep(0.042, 0.05, ax)) * facing;
 	float corner = (1.0 - smoothstep(0.004, 0.009, length(vec2(ax - 0.026, rl.y + 0.029)))) * facing;
-	VERTEX += NORMAL * headk * expr.x * (0.0026 * knit - 0.0014 * glab + 0.0014 * squint - 0.0016 * corner);
+	VERTEX += hdir * headk * expr.x * (0.0026 * knit - 0.0014 * glab + 0.0014 * squint - 0.0016 * corner);
 	// T3: an asymmetric, readable resting expression (critic T2: "blank"):
 	// one brow a touch higher, one mouth corner drawn up into a half smirk,
 	// the other slightly down. The side is per person (head build).
@@ -213,8 +222,22 @@ void vertex() {
 	float cornerw = (1.0 - smoothstep(0.004, 0.013, length(vec2(ax - 0.024, rl.y + 0.029)))) * facing;
 	VERTEX.y += headk * (1.0 - expr.x * 0.6) * (0.0024 * browy * one + 0.0019 * cornerw * one - 0.0008 * cornerw * (1.0 - one));
 	float hairm = smoothstep(0.4, 0.8, CUSTOM2.z) * smoothstep(1.56, 1.62, r.y);
-	VERTEX += NORMAL * headk * (head_shape.x * (0.0085 * jaw + 0.0045 * cheek * facing) + head_shape.y * 0.0042 * nose
-		+ head_shape.z * 0.0032 * brow + (hv - 1.0) * (hv < 1.0 ? 0.075 : 0.006) * hairm);
+	VERTEX += hdir * headk * (head_shape.x * (0.0085 * jaw + 0.0045 * cheek * facing) + head_shape.y * 0.0042 * nose
+		+ head_shape.z * 0.0032 * brow + (hv - 1.0) * (hv < 1.0 ? 0.055 : 0.006) * hairm);
+	// T3: under a woman's generated hairstyle, every part of the authored
+	// male cut that stands out of her skull (the quiff, classed skin by the
+	// atlas, so the hair push missed it) is pulled back inside an ellipsoid
+	// just under the hair shell: it showed as a black band of quiff across
+	// her forehead (critic T2 person_face_03).
+	if (head_shape.w > 0.01 && head_shape.w < 0.95 && r.y > 1.6) {
+		vec3 hc2 = vec3(0.0, 1.645, 0.016);
+		vec3 hr = vec3(0.088, 0.104, 0.106);
+		vec3 q = (r - hc2) / hr;
+		float lq = length(q);
+		if (lq > 1.0) {
+			VERTEX += (hc2 + q / lq * hr - r) * smoothstep(1.6, 1.64, r.y);
+		}
+	}
 	// T3: (above) under a woman's own hairstyle the authored quiff is packed
 	// fully inside the skull (half-packed, it cut through the forehead as
 	// black jagged slivers: critic T2 person_face_03).
@@ -224,7 +247,7 @@ void vertex() {
 	if (person.x > 0.0) {
 		float chin = (1.0 - smoothstep(0.01, 0.03, ax)) * smoothstep(-0.13, -0.10, rl.y) * (1.0 - smoothstep(-0.07, -0.05, rl.y)) * facing;
 		float lip = (1.0 - smoothstep(0.018, 0.028, ax)) * (1.0 - smoothstep(0.004, 0.011, abs(rl.y + 0.029))) * facing;
-		VERTEX += NORMAL * headk * person.x * (-0.0095 * jaw - 0.004 * chin - 0.003 * brow - 0.0025 * nose + 0.0035 * cheek * facing + 0.0016 * lip);
+		VERTEX += hdir * headk * person.x * (-0.0095 * jaw - 0.004 * chin - 0.003 * brow - 0.0025 * nose + 0.0035 * cheek * facing + 0.0016 * lip);
 	}
 	// T1: hv < 1 (a woman's generated hairstyle sits over the authored cut) packs
 	// the authored short-back-and-sides quiff down to the scalp (critic S1: women
@@ -237,7 +260,7 @@ void vertex() {
 		VERTEX -= NORMAL * legk * mix(0.03, 0.013, smoothstep(0.22, 0.6, r.y));
 	}
 	if (CUSTOM0.y > 0.5) {
-		VERTEX += NORMAL * CUSTOM0.y * shell_step * hv;
+		VERTEX += (civ_face > 0.5 ? hdir : NORMAL) * CUSTOM0.y * shell_step * hv;
 	}
 }
 
@@ -342,7 +365,7 @@ void fragment() {
 			// Bangs (w 0.45) cover the forehead: the scalp line sits just over
 			// the brows so no skin shows between the fringe strands.
 			float fringe = step(0.425, head_shape.w);
-			float line_y = mix(nose_tip.y + mix(0.1, 0.074, fringe) + 0.004 * sin(rel.x * 60.0), 1.575, backk);
+			float line_y = mix(nose_tip.y + mix(0.111, 0.074, fringe) + 0.004 * sin(rel.x * 60.0), 1.575, backk); // T3: hairline up at the generated fringe (no dark band)
 			float side_k = smoothstep(0.055, 0.075, abs(rel.x)) * smoothstep(1.6, 1.64, p.y);
 			hairness = max(smoothstep(line_y - 0.006, line_y + 0.006, p.y), side_k);
 		}
@@ -590,12 +613,14 @@ void fragment() {
 		// toward the sternum on the front and back panels (the heaviest fold
 		// read in a chest-level shot).
 		vec2 sd = vec2(ax_ - 0.19, p.y - 1.40);
-		float diag_k = (1.0 - smoothstep(0.03, 0.13, length(sd * vec2(1.0, 0.8)))) * smoothstep(0.35, 0.7, tw3.z) * step(ax_, 0.205);
-		float f6 = sin((ax_ * 0.75 - p.y * 0.62) * 150.0 + nz * 3.5) * diag_k;
+		float diag_k = (1.0 - smoothstep(0.04, 0.15, length(sd * vec2(1.0, 0.8)))) * smoothstep(0.3, 0.7, tw3.z) * step(ax_, 0.21);
+		float f6 = sin((ax_ * 0.75 - p.y * 0.62) * 130.0 + nz * 3.5) * diag_k * 1.2;
 		// Collar roll.
 		float f5 = sin(e * 260.0 + nz * 3.0) * (1.0 - smoothstep(0.0, 0.035, e)) * step(1.38, p.y);
-		float fold_d = (f1 * 0.0062 + f2 * 0.0026 + f3 * 0.0048 + f4 * 0.0048 + f5 * 0.0012 + f6 * 0.0042) * mid_k;
-		vec3 pw = p + vec3(0.0, fold_d * 1.4, 0.0) + vec3(fold_d * 0.8, 0.0, fold_d * 0.8) * vec3(tw3.z, 0.0, tw3.x);
+		// The broad vertical drape (f2) is kept tiny: on light shirts its wavy
+		// shading read as smeared blue stripes (critic T2 pair 2).
+		float fold_d = (f1 * 0.0062 + f2 * 0.0011 + f3 * 0.0048 + f4 * 0.0048 + f5 * 0.0012 + f6 * 0.0042) * mid_k;
+		vec3 pw = p + vec3(0.0, fold_d * 1.2, 0.0) + vec3(fold_d * 0.3, 0.0, fold_d * 0.3) * vec3(tw3.z, 0.0, tw3.x);
 		vec3 base = reg == 1 ? shirt_col.rgb : tee_col.rgb;
 		col = base;
 		float fab_h = 0.0;
@@ -609,7 +634,9 @@ void fragment() {
 					// the authored red over-check stays as an accent.
 					float l = lum(fl) / 0.126;
 					float red = smoothstep(0.03, 0.09, fl.r - fl.g);
-					col = mix(base * 0.55, shirt_col2.rgb, smoothstep(0.9, 1.9, l)) * clamp(l, 0.55, 1.5);
+					// T3: crisp bands (the soft scan bands smeared into blurry
+					// streaks on light shirts: critic T2 pair 2).
+					col = mix(base * 0.62, shirt_col2.rgb, smoothstep(1.15, 1.45, l)) * clamp(mix(1.0, l, 0.5), 0.75, 1.25);
 					col = mix(col, vec3(0.32, 0.05, 0.03), red * 0.7);
 				}
 				fab_h = lum(fl) / 0.126;
@@ -622,7 +649,16 @@ void fragment() {
 				// across x, sides across z), bending over the folds; the old
 				// azimuth stripes smeared into wide blurred bands on the sleeves
 				// and flanks (critic T2 pair 2).
-				float sc = pw.x * tw3.z + pw.z * tw3.x + pw.x * tw3.y;
+				// Arc length round the torso (straight, evenly spaced vertical
+				// stripes; a triplanar x/z blend skewed them into diagonal
+				// smears on the flanks), nudged a little by the folds.
+				// Over the shoulder tops the stripes keep running front to
+				// back (constant x), and on the sleeves they run down the arm
+				// (around-the-arm coordinate), so they never fan into a
+				// sunburst at the shoulder or blotches on the sleeve.
+				float sc_torso = mix(atan(pw.x, pw.z) * 0.16, pw.x, smoothstep(0.45, 0.8, tw3.y));
+				float sc_sleeve = pw.z * tw3.x + pw.x * tw3.z + pw.z * tw3.y;
+				float sc = mix(sc_torso, sc_sleeve, smoothstep(0.17, 0.2, ax_)) + fold_d * 0.2;
 				float per = 1.0 / (max(s, 8.0) * 2.4); // scale 0 (a plain base outfit striped later) gave no period
 				float st = tband(sc, per, 0.0, per * 0.32);
 				float pin = tband(sc, per, 0.5, per * 0.07) * 0.7;
@@ -644,21 +680,22 @@ void fragment() {
 		col *= 0.97 + 0.06 * (vnoise(p * 40.0) - 0.5);
 		float amp = reg == 1 ? 1.0 : 0.7;
 		float folds = fold_d * amp;
-		float cavity = clamp(-(f1 + f2 * 0.3 + f3 + f4 + f6), 0.0, 1.0);
+		float cavity = clamp(-(f1 + f2 * 0.12 + f3 + f4 + f6), 0.0, 1.0);
 		float ridge = clamp(f1 + f2 * 0.8 + f3 + f4 + f6, 0.0, 1.0);
-		ao *= 1.0 - 0.5 * cavity * amp;
+		float lightk0 = 1.0 - 0.45 * smoothstep(0.15, 0.45, lum(col));
+		ao *= 1.0 - 0.5 * cavity * amp * lightk0;
 		// Folds must read in direct sun too (AO only darkens ambient light):
 		// the load creases (waist, sleeve, armpit, shoulder drag) shade deep in
 		// their valleys and catch light on their ridges; the broad drape only a
 		// little (it blotched plain cotton).
 		// Crease profile: narrow dark troughs, broad soft crests (a sine read
 		// as camouflage blotches).
-		float fsum = f1 + f3 + f4 + f6 + f2 * 0.2;
-		float pcrease = smoothstep(0.45, 0.95, -fsum);
+		float fsum = f1 + f3 + f4 + f6 + f2 * 0.08;
+		float pcrease = smoothstep(0.3, 0.85, -fsum);
 		float pridge = smoothstep(0.1, 0.9, fsum);
 		float lightk = 1.0 - 0.35 * smoothstep(0.15, 0.45, lum(col));
 		col *= (1.0 - 0.45 * pcrease * amp * (0.75 + 0.5 * bendk) * lightk) * (1.0 + 0.12 * pridge * amp);
-		h = folds * 1.35 + (fab_h - 1.0) * 0.00022 * fine_k;
+		h = folds * mix(1.35, 0.8, 1.0 - lightk0) + (fab_h - 1.0) * 0.00022 * fine_k;
 		// Construction: hems with a stitch line along every garment border.
 		float hem = 1.0 - smoothstep(0.016, 0.021, e);
 		float dash = step(0.38, fract((p.x + p.y * 1.3 + p.z) / 0.0042));
@@ -1114,6 +1151,7 @@ static func _backfill_mesh(entry: Dictionary) -> ArrayMesh:
 	var weights: PackedFloat32Array = a[Mesh.ARRAY_WEIGHTS]
 	var idx: PackedInt32Array = a[Mesh.ARRAY_INDEX]
 	var c0: PackedFloat32Array = a[Mesh.ARRAY_CUSTOM0]
+	var c2b = a[Mesh.ARRAY_CUSTOM2]
 	var bpv := bones.size() / maxi(v.size(), 1)
 	var remap := {}
 	var ov := PackedVector3Array()
@@ -1128,6 +1166,12 @@ static func _backfill_mesh(entry: Dictionary) -> ArrayMesh:
 			# T3: never the eye patches or hair cards (kind >= 8): their back
 			# faces drew as skin-coloured flakes over women's hair.
 			if v[i].y < 1.43 or (c0.size() > i * 4 + 1 and (c0[i * 4 + 1] > 0.5 or c0[i * 4] > 7.5)):
+				keep = false
+				break
+			# T3: nor the hair mass: the shader packs a woman's authored quiff
+			# into the skull, but the backfill (no such push) stayed where the
+			# quiff was and showed as skin-coloured flakes over her forehead.
+			if c2b != null and v[i].y > 1.56 and (c2b as PackedFloat32Array)[i * 4 + 2] > 0.4:
 				keep = false
 				break
 		if not keep:

@@ -714,6 +714,8 @@ func _seed_cone(p: NPC, loiter: bool, near: Array, band: Vector2 = Vector2.ZERO,
 		var open := loiter or _rng.randf() < idle_share
 		if not _open_ground(pos, ground):
 			continue
+		if _crowded(pos, p):
+			continue
 		if plaza and float(walk[2]) > 4.0:
 			# Out on a plaza: a straight line across it through this spot,
 			# roughly across the lens, so walkers cross the frame instead of
@@ -944,6 +946,20 @@ func _seed(p: NPC, hidden_only: bool, loiter: bool) -> bool:
 var _probe: PhysicsShapeQueryParameters3D
 ## Integrator (wave S): every ~2 m from a to b there is walkable ground within
 ## 0.7 m of `ground` (no water, quay drop or void on the way).
+## Characters T3: no seeding into someone else's body (critic T2: two
+## civilians merged into one another behind the five-foot-way subject, a
+## packed MBS step crowd with arms through neighbours): 1.1 m personal space.
+func _crowded(pos: Vector3, me: Node) -> bool:
+	if traffic == null:
+		return false
+	for o in traffic.peds:
+		if o == me or not (o is Node3D) or not is_instance_valid(o) or not (o as Node3D).visible:
+			continue
+		var q := (o as Node3D).global_position
+		if absf(q.y - pos.y) < 2.0 and Vector2(q.x - pos.x, q.z - pos.z).length_squared() < 1.21:
+			return true
+	return false
+
 func _path_on_ground(a: Vector3, b: Vector3, ground: float) -> bool:
 	var flat := Vector2(b.x - a.x, b.z - a.z).length()
 	var n := maxi(1, ceili(flat / 2.0))
