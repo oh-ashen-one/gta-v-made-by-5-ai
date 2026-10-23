@@ -48,7 +48,7 @@ func _init() -> void:
 	mats["soil"] = Palette.mat(Color(0.20, 0.15, 0.10), 0.95)
 	mats["shrub"] = Palette.mat(Color(0.17, 0.30, 0.14), 0.92)
 	mats["shrub_light"] = Palette.mat(Color(0.26, 0.40, 0.18), 0.92)
-	mats["turf"] = Palette.mat_textured(Color(0.27, 0.38, 0.17), "soil", Vector3.ONE, 0.95)
+	mats["turf"] = DowntownLawn.or_default(Palette.mat_textured(Color(0.27, 0.38, 0.17), "soil", Vector3.ONE, 0.95))
 	mats["plaster_white"] = Palette.mat_textured(Color(0.90, 0.88, 0.82), "plaster", Vector3.ONE, 0.88)
 	mats["plaster_cream"] = Palette.mat_textured(Color(0.86, 0.80, 0.68), "plaster", Vector3.ONE, 0.88)
 	mats["timber"] = Palette.mat(Color(0.36, 0.22, 0.13), 0.75)

@@ -358,7 +358,7 @@ func _event_plaza(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 	var totem := Label3D.new()
 	totem.text = "EVENT PLAZA\nBAYFRONT"
 	totem.font_size = 64
-	totem.pixel_size = 0.01
+	totem.pixel_size = load("res://src/world/downtown/block_kits/frontage_kit.gd").fit_pixel("EVENT PLAZA", 64, 0.01, 1.4)   # downtown-fill: fits the plate
 	totem.position = Vector3(m.x + 44.0, TERRACE_Y + 2.2, z_terrace - 2.0 + 0.32)
 	totem.modulate = Color(0.92, 0.9, 0.84)
 	holder.add_child(totem)

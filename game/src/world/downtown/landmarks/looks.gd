@@ -32,7 +32,7 @@ static func _make(key: String) -> Material:
 		"concrete_fair":
 			return Palette.mat_textured(Color(0.68, 0.67, 0.64), "concrete", Vector3.ONE, 0.9)
 		"turf":
-			return Palette.mat_textured(Color(0.23, 0.34, 0.15), "soil", Vector3.ONE, 0.95)
+			return DowntownLawn.or_default(Palette.mat_textured(Color(0.23, 0.34, 0.15), "soil", Vector3.ONE, 0.95))
 		"soil_bed":
 			return Palette.mat_textured(Color(0.20, 0.16, 0.12), "soil", Vector3.ONE, 0.98)
 		"steel_white":
