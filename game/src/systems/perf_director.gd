@@ -130,28 +130,67 @@ func _far_from_water(district: Node) -> void:
 				n += 1
 	stats["far_from_water"] = n
 
-## The mirrored camera only needs what lies beyond the nearest visible point
-## of the water plane: a reflection seen at water point W is the mirror image
-## of something deeper along the same ray, so geometry nearer than the
-## nearest visible plane point can never appear in it.
+## The mirrored camera only needs what lies beyond the nearest visible WATER
+## point: a reflection seen at water point W is the mirror image of something
+## deeper along the same ray, so geometry nearer than the nearest visible
+## water can never appear in it. Rays are sampled across the screen (plus rows
+## hugging the horizon, where distant water is a thin band) and only plane hits
+## that are water (downtown Shoreline map, else the legacy bay) count. With no
+## water sampled the mirror pass draws nothing but sky.
+var _shore: Script = null
+var _shore_checked := false
+var _near_cache := -1.0
+var _near_frame := -1
+
+func _is_water(x: float, z: float) -> bool:
+	if not _shore_checked:
+		_shore_checked = true
+		var sp := "res://src/world/downtown/shoreline.gd"
+		if ResourceLoader.exists(sp):
+			_shore = load(sp)
+	if _shore != null:
+		return _shore.is_water_ext(x, z)
+	return x > -900.0 and x < 900.0 and z > BayWater.FAR_SHORE_Z and z < BayWater.NEAR_SHORE_Z
+
 func _clip_reflection_near(cam: Camera3D) -> void:
 	if _reflection_cam == null or not is_instance_valid(_reflection_cam):
 		return
+	var frame := Engine.get_process_frames()
+	if _near_frame >= 0 and frame - _near_frame < 2 and _near_cache > 0.0:
+		_reflection_cam.near = maxf(_reflection_cam.near, _near_cache)
+		return
+	_near_frame = frame
 	var level := BayWater.LEVEL
 	var o := cam.global_position
 	if o.y <= level + 0.5:
+		_near_cache = -1.0
 		return
 	var fwd := -cam.global_basis.z
 	var size := get_viewport().get_visible_rect().size
+	var rows: Array[float] = [0.55, 0.65, 0.75, 0.85, 0.95, 1.0]
+	var flat := Vector3(fwd.x, 0.0, fwd.z)
+	if flat.length() > 0.01 and not cam.is_position_behind(o + flat.normalized() * 5000.0):
+		var hv := cam.unproject_position(Vector3(o.x, level, o.z) + flat.normalized() * 5000.0).y / size.y
+		for dpx in [2.0, 5.0, 10.0, 20.0, 40.0, 80.0, 160.0]:
+			rows.append(hv + dpx / size.y)
 	var best := INF
-	for uv in [Vector2(0, 0), Vector2(1, 0), Vector2(0, 1), Vector2(1, 1), Vector2(0.5, 1), Vector2(0, 0.5), Vector2(1, 0.5)]:
-		var dir := cam.project_ray_normal(uv * size)
-		if dir.y >= -0.0001:
+	var far_lim := cam.far
+	for v in rows:
+		if v < 0.0 or v > 1.0:
 			continue
-		var t := (level - o.y) / dir.y
-		best = minf(best, t * dir.dot(fwd))
-	if best < INF:
-		_reflection_cam.near = maxf(cam.near, best * 0.97 - 2.0)
+		for i in 13:
+			var dir := cam.project_ray_normal(Vector2(size.x * i / 12.0, size.y * v))
+			if dir.y >= -0.00001:
+				continue
+			var t := (level - o.y) / dir.y
+			if t > far_lim:
+				continue
+			var hit := o + dir * t
+			if not _is_water(hit.x, hit.z):
+				continue
+			best = minf(best, t * dir.dot(fwd))
+	_near_cache = (best * 0.97 - 2.0) if best < INF else far_lim * 0.98
+	_reflection_cam.near = maxf(cam.near, _near_cache)
 
 func _tree_lod(m: Node) -> void:
 	var n := 0
