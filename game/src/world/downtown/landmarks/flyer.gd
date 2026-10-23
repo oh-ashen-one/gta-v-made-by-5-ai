@@ -22,7 +22,7 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 	var p: Vector3 = a["pos"]
 	var yaw := deg_to_rad(float(a["yaw_deg"]))
 	var holder := Node3D.new()
-	holder.name = "SingaporeFlyer"
+	holder.name = "singapore_flyer"
 	root.add_child(holder)
 	var wheel := world._authored("singapore_flyer.glb", p, yaw, Vector3.ONE * WHEEL_SCALE)
 	var kit := Kit.new(holder, "FlyerCollision")

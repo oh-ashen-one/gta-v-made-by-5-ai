@@ -37,7 +37,7 @@ var stats := {}
 func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 	m = DowntownPlan.ANCHORS["marina_bay_sands"]["pos"]
 	var holder := Node3D.new()
-	holder.name = "MarinaBaySands"
+	holder.name = "marina_bay_sands"
 	root.add_child(holder)
 	var kit := Kit.new(holder, "MBSCollision")
 	_towers(kit)

@@ -18,7 +18,7 @@ func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 	var yaw := deg_to_rad(float(a["yaw_deg"]))
 	var island: Rect2 = DowntownPlan.ISLANDS["artscience_promontory"]
 	var holder := Node3D.new()
-	holder.name = "ArtScienceMuseum"
+	holder.name = "artscience_museum"
 	root.add_child(holder)
 	var kit := Kit.new(holder, "ArtScienceCollision")
 	var white := Looks.get_mat("lotus_white")

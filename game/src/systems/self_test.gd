@@ -759,7 +759,9 @@ func _wave5_checks(world: WorldBuilder, traffic: TrafficManager, heli: Helicopte
 ## layered background city and landmark material upgrades are present.
 func _skyline_checks(world: WorldBuilder) -> void:
 	var mbs: Vector3 = world.locations["marina_bay_sands"]
-	var mbs_rect := Rect2(mbs.x - 122.0, mbs.z - 30.0, 307.0, 67.2)
+	# Wave M (downtown-landmarks): mirrored true-scale footprint, SkyPark
+	# cantilever north (-x) to the podium on the bay side (+z).
+	var mbs_rect := Rect2(mbs.x - 185.0, mbs.z - 45.0, 309.0, 89.0)
 	var circles := {"artscience_museum": 26.4, "singapore_flyer": 40.0, "supertree_grove": 28.0, "merlion": 5.4}
 	var apart := true
 	var keys := circles.keys()

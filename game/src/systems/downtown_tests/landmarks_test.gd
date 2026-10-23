@@ -18,7 +18,7 @@ func run(world: WorldBuilder, suite: Object) -> void:
 	suite._check("landmarks: collision within the plan budget", int(report.get("shapes", 9999)) <= budget, "%d of %d" % [int(report.get("shapes", -1)), budget])
 	suite._check("landmarks: extra headless build time within budget", float(report.get("build_ms", 99999)) < 4000.0, str(report.get("build_ms")))
 	# MBS: SkyPark cantilever points north (-x), three towers, real geometry.
-	var mbs_root := world.find_child("MarinaBaySands", true, false)
+	var mbs_root := world.find_child("marina_bay_sands", true, false)
 	var sky := mbs_root.find_child("MBSSkyPark", false, false) as MeshInstance3D if mbs_root else null
 	var towers := mbs_root.find_child("MBSTowers", false, false) as MeshInstance3D if mbs_root else null
 	var mbs: Vector3 = DowntownPlan.anchor("marina_bay_sands")

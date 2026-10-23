@@ -22,7 +22,14 @@ const SITES := ["fullerton_site", "esplanade_site", "flyer_site", "mbs_site", "g
 
 var report := {}
 
+## A/B debug switch: `--landmarks-off` builds the legacy far shore instead
+## (before/after sightline probes and perf comparisons).
+static func disabled() -> bool:
+	return "--landmarks-off" in OS.get_cmdline_user_args()
+
 func replaces() -> PackedStringArray:
+	if disabled():
+		return PackedStringArray()
 	# While downtown-map is absent the legacy far-shore slab (which fills the
 	# east channel under the Helix) is swapped for interim_ground.gd.
 	if not ResourceLoader.exists("res://src/world/downtown/map.gd"):
@@ -30,6 +37,8 @@ func replaces() -> PackedStringArray:
 	return PackedStringArray(["far_shore_landmarks"])
 
 func skyline_clear(world: WorldBuilder, city: SkylineCity) -> void:
+	if disabled():
+		return
 	var rects: Array[Rect2] = []
 	for key: String in SITES:
 		rects.append(DowntownPlan.block_rect(key).grow(6.0))
@@ -59,6 +68,8 @@ func skyline_clear(world: WorldBuilder, city: SkylineCity) -> void:
 	city.placed = maxi(0, city.placed - dropped)
 
 func build(world: WorldBuilder, root: Node3D) -> void:
+	if disabled():
+		return
 	var holder := Node3D.new()
 	holder.name = "DowntownLandmarks"
 	root.add_child(holder)
