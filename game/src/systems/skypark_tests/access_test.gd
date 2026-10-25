@@ -107,6 +107,14 @@ func _run() -> void:
 	check("blocked arrival refuses lift without moving player", not access.use_station("ground", player) and player.global_position.distance_to(Access.ground_position()) < 1.5)
 	obstruction.queue_free()
 	await frames()
+	# Let only this deliberately generated warning expire normally before
+	# positive-flow stills. Do not clear the HUD or unrelated message history.
+	await get_tree().create_timer(HUD.NOTIFICATION_LIFETIME + 0.1).timeout
+	var fixture_notice_remains := false
+	for notice in main.hud._notifications.get_children():
+		if notice is Label and notice.text.begins_with("Lift arrival is obstructed."):
+			fixture_notice_remains = true
+	check("negative-fixture toast expires before positive still", not fixture_notice_remains)
 	var activity_state: Dictionary = main.downtown_activity.serialize_state()
 	var story: int = Game.mission_stage
 	var wanted: int = Game.wanted_level
@@ -126,6 +134,7 @@ func _run() -> void:
 	await press_e()
 	check("real E returns to ground", player.global_position.distance_to(Access.ground_position()) < 0.5)
 	await _terrace_checks()
+	await _visitor_checks()
 	await _heli_checks()
 	await _flight_checks()
 	await _death_checks()
@@ -331,3 +340,27 @@ func _fresh_scene_save_checks() -> void:
 	check("fresh-scene loaded player walks to return lift", await walk_to(Access.roof_position()))
 	await press_e()
 	check("fresh-scene return lift works through E", player.global_position.distance_to(Access.ground_position()) < 0.6)
+
+func _visitor_checks() -> void:
+	var visitors: Array = get_tree().get_nodes_in_group("skypark_visitors")
+	check("three actual roof NPC visitors", visitors.size() == 3)
+	for visitor in visitors:
+		check("visitor has live NPC floor and character", visitor is NPC and visitor.is_on_floor() and visitor.character_visual != null and visitor.character_visual.loaded and visitor.collision_layer == 4)
+	var m := DowntownPlan.anchor("marina_bay_sands")
+	check("walk to furnished viewing area", await walk_to(m + Vector3(43, 200.1, 5)))
+	player.yaw = atan2(6.0, -9.0)
+	await still("terrace_viewing_area")
+	# A real shot notification prompts inherited panic, without firing into
+	# somebody or mutating wanted/health. Their roof-local reactions must keep
+	# them out of the helicopter clearance and inside the public terrace.
+	for visitor in visitors:
+		visitor._panic(visitor.global_position - Vector3.RIGHT * 2)
+	for i in 780:
+		await get_tree().physics_frame
+		for visitor in visitors:
+			if Vector2(visitor.global_position.x - Access.pad_position().x, visitor.global_position.z - Access.pad_position().z).length() <= 9.0:
+				check("panicking visitors stay outside aircraft clearance", false)
+				return
+	check("panicking visitors stay outside aircraft clearance", true)
+	for visitor in visitors:
+		check("visitor settles back to roof-local idle", Access.on_public_terrace(visitor.global_position, 0.3) and visitor.is_on_floor() and visitor.state == NPC.State.IDLE)

@@ -15,6 +15,7 @@ const PAD_EXIT_RADIUS := 2.5
 var player: Player
 var stations: Dictionary = {}
 var _next_use_ms := 0
+var visitors: Array[NPC] = []
 
 class LiftStation extends Node3D:
 	var access: Node
@@ -26,6 +27,26 @@ class LiftStation extends Node3D:
 		return access.can_use_station(station_id)
 	func interact(actor: Node) -> void:
 		access.use_station(station_id, actor)
+
+## Actual existing NPCs, with only their roof-local return/flee behavior
+## constrained here. They retain normal animation, damage and panic reactions.
+class TerraceVisitor extends NPC:
+	var viewing_bounds: Rect2
+	func _walk(_delta: float) -> void:
+		state = State.IDLE
+		idle_time = 1.0e9
+		velocity.x = 0.0
+		velocity.z = 0.0
+	func _flee(delta: float) -> void:
+		var next := Vector2(global_position.x + _flee_dir.x, global_position.z + _flee_dir.z)
+		if not viewing_bounds.grow(-0.7).has_point(next):
+			var toward := viewing_bounds.get_center() - Vector2(global_position.x, global_position.z)
+			_flee_dir = Vector3(toward.x, 0, toward.y).normalized()
+		super._flee(delta)
+		# Keep panic/knockback motion out of the aircraft clearance, without
+		# teleporting or turning off NPC physics.
+		velocity.x = clampf(velocity.x, (viewing_bounds.position.x - global_position.x) / maxf(delta, 0.001), (viewing_bounds.end.x - global_position.x) / maxf(delta, 0.001))
+		velocity.z = clampf(velocity.z, (viewing_bounds.position.y - global_position.z) / maxf(delta, 0.001), (viewing_bounds.end.y - global_position.z) / maxf(delta, 0.001))
 
 static func ground_position() -> Vector3:
 	return DowntownPlan.anchor("marina_bay_sands") + Vector3(40.0, MBS.TERRACE_Y + 0.1, 47.0)
@@ -58,6 +79,12 @@ func setup(world: WorldBuilder, p: Player) -> void:
 		var a: Vector3 = corners[i]
 		var b: Vector3 = corners[(i + 1) % 4]
 		Realm.glass_rail(kit, a, b, 2.4)
+		# Readable support posts and a hand-height rail articulate the windscreen.
+		var posts := maxi(1, int(ceil(a.distance_to(b) / 3.0)))
+		for j in posts + 1:
+			var base := a.lerp(b, float(j) / posts)
+			kit.box(Looks.get_mat("steel_satin"), base + Vector3.UP * 1.2, Vector3(0.09, 2.4, 0.09))
+		kit.beam(Looks.get_mat("steel_satin"), a + Vector3.UP * 1.15, b + Vector3.UP * 1.15, 0.07, 0.07)
 		kit.col_beam(a + Vector3.UP * 2.4, b + Vector3.UP * 2.4, 0.16, 2.4)
 	_add_station(kit, "ground", ground_position() - Vector3(0, 0.1, 2), "SKYPARK PUBLIC LIFT\n[E] Observation terrace", "[E] Take public lift to SkyPark")
 	_add_station(kit, "roof", roof_position() - Vector3(0, 0.1, 2), "PUBLIC LIFT\n[E] Shoppes / Event Plaza", "[E] Return to Shoppes / Event Plaza")
@@ -69,12 +96,14 @@ func setup(world: WorldBuilder, p: Player) -> void:
 		benches.append(Kit.xf(bench_at))
 		kit.col_box(Vector3(2.0, 0.5, 0.5), bench_at + Vector3.UP * 0.25)
 	Realm.benches(self, "SkyParkViewingBenches", benches)
+	_viewing_area(kit, m)
 	_pad_marking(kit)
 	kit.commit(self, "SkyParkLiftAndRails", false, 450.0)
 	world.locations["skypark_public_lift"] = ground_position()
 	world.locations["skypark_public_terrace"] = roof_position()
 	world.locations["helipad_skypark"] = pad_position()
 	set_meta("collision_shapes", kit.shapes)
+	_add_visitors(m)
 
 func _add_station(kit: Kit, id: String, at: Vector3, title: String, prompt: String) -> void:
 	var station := LiftStation.new()
@@ -93,14 +122,14 @@ func _add_station(kit: Kit, id: String, at: Vector3, title: String, prompt: Stri
 	kit.box(Looks.get_mat("steel_white"), back + Vector3(0, 3.05, -0.8), Vector3(3.8, 0.1, 2.15))
 	for dx: float in [-0.77, 0.77]:
 		kit.box(Looks.get_mat("steel_satin"), back + Vector3(dx, 1.35, 0.2), Vector3(1.45, 2.6, 0.04))
-	kit.box(Looks.get_mat("signage"), back + Vector3(0, 3.15, 0), Vector3(4.6, 0.85, 0.4))
+	kit.box(Looks.get_mat("signage"), back + Vector3(0, 3.65, 0), Vector3(4.6, 1.1, 0.4))
 	var label := Label3D.new()
 	label.text = title
 	label.font_size = 48
-	label.pixel_size = 0.003
+	label.pixel_size = 0.004
 	label.outline_size = 0
 	label.modulate = Color(0.92, 0.9, 0.84)
-	label.position = back + Vector3(0, 3.15, 0.22)
+	label.position = back + Vector3(0, 3.65, 0.24)
 	label.visibility_range_end = 150.0
 	add_child(label)
 
@@ -168,3 +197,40 @@ func _pad_marking(kit: Kit) -> void:
 	for dx: float in [-1.0, 1.0]:
 		kit.box(paint, center + Vector3(dx, 0, 0), Vector3(0.3, 0.015, 3.0))
 	kit.box(paint, center, Vector3(2.0, 0.015, 0.3))
+
+func _viewing_area(kit: Kit, m: Vector3) -> void:
+	for dx: float in [36.0, 43.0]:
+		Realm.planter(kit, m + Vector3(dx, DECK_Y, 1.0), Vector2(3.0, 2.0), 0.55, false)
+		kit.col_box(Vector3(3.0, 0.55, 2.0), m + Vector3(dx, DECK_Y + 0.275, 1.0))
+	var sign_at := m + Vector3(32.5, DECK_Y, 12.0)
+	kit.box(Looks.get_mat("signage"), sign_at + Vector3.UP * 1.25, Vector3(0.18, 2.5, 3.8))
+	kit.col_box(Vector3(0.18, 2.5, 3.8), sign_at + Vector3.UP * 1.25)
+	var label := Label3D.new()
+	label.name = "SkyParkViewingWayfinding"
+	label.text = "MARINA BAY\nVIEWING TERRACE\nReturn via public lift"
+	label.font_size = 48
+	label.pixel_size = 0.005
+	label.outline_size = 0
+	label.modulate = Color(0.92, 0.9, 0.84)
+	label.position = sign_at + Vector3(0.11, 1.65, 0)
+	label.rotation.y = PI * 0.5
+	label.visibility_range_end = 100.0
+	add_child(label)
+
+func _add_visitors(m: Vector3) -> void:
+	var positions := [Vector3(35, DECK_Y + 0.08, 14.2), Vector3(39, DECK_Y + 0.08, 14.2), Vector3(34, DECK_Y + 0.08, 8)]
+	var kinds := [CrowdPeople.Kind.MAN, CrowdPeople.Kind.WOMAN, CrowdPeople.Kind.ELDER_M]
+	for i in positions.size():
+		var visitor := TerraceVisitor.new()
+		visitor.name = "SkyParkVisitor%d" % (i + 1)
+		visitor.position = m + positions[i]
+		visitor.rotation.y = PI if i < 2 else PI * 0.65
+		visitor.viewing_bounds = Rect2(m.x + 32, m.z + 2.5, 11, 12.5)
+		visitor.state = NPC.State.IDLE
+		visitor.idle_time = 1.0e9
+		visitor.set_meta("plaza_activity", "viewing")
+		visitor.set_meta("people_kind", kinds[i])
+		visitor.set_meta("people_prop", "phone" if i == 2 else "none")
+		add_child(visitor)
+		visitor.add_to_group("skypark_visitors")
+		visitors.append(visitor)
