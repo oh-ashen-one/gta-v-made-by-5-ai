@@ -7,6 +7,7 @@ var player: Player
 var traffic: TrafficManager
 var mission: Mission
 var downtown_activity: Node
+var skypark_access: Node
 var hud: HUD
 var started := false
 var _settings_return_to_pause := false
@@ -74,6 +75,10 @@ func _ready() -> void:
 	downtown_activity.name = "BayfrontCourier"
 	add_child(downtown_activity)
 	downtown_activity.setup(world, player)
+	skypark_access = load("res://src/world/downtown/skypark_access.gd").new()
+	skypark_access.name = "SkyParkAccess"
+	add_child(skypark_access)
+	skypark_access.setup(world, player)
 
 	# helicopter at the aviation compound, parked on the primary pad
 	var heli := Helicopter.new()
