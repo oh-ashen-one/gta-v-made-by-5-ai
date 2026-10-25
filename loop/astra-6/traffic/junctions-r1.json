@@ -1,0 +1,75 @@
+{
+  "results": {
+    "collyer_quay_cecil": {
+      "mean_within_30m": 6.4,
+      "min_within_30m": 5,
+      "zebra_stop_samples": 2,
+      "box_stop_samples": 0,
+      "box_yield_samples": 17,
+      "max_idle_s": 15.1,
+      "cars_through_per_min": 24.0
+    },
+    "raffles_bayfront_corner": {
+      "mean_within_30m": 9.4,
+      "min_within_30m": 7,
+      "zebra_stop_samples": 4,
+      "box_stop_samples": 5,
+      "box_yield_samples": 10,
+      "max_idle_s": 31.6,
+      "cars_through_per_min": 14.7
+    },
+    "esplanade_connaught": {
+      "mean_within_30m": 10.6,
+      "min_within_30m": 7,
+      "zebra_stop_samples": 0,
+      "box_stop_samples": 0,
+      "box_yield_samples": 5,
+      "max_idle_s": 24.1,
+      "cars_through_per_min": 21.3
+    },
+    "collyer_quay_legacy": {
+      "mean_within_30m": 10.7,
+      "min_within_30m": 5,
+      "zebra_stop_samples": 3,
+      "box_stop_samples": 24,
+      "box_yield_samples": 26,
+      "max_idle_s": 35.7,
+      "cars_through_per_min": 12.0
+    }
+  },
+  "stats": {
+    "relocated": 380,
+    "cuts": 5,
+    "promoted": 0,
+    "unstuck": 35,
+    "downtown_edges": 144,
+    "rules": {
+      "signal": 124,
+      "major": 44,
+      "yield": 16,
+      "none": 40,
+      "zebra_edges": 212,
+      "proxied": 1
+    },
+    "near_edges": 24,
+    "prerolls": 5,
+    "cut_ms": 605.061,
+    "zebra_stops": 5,
+    "box_stops": 17,
+    "max_idle_seen": 35.0499999999993,
+    "census_samples": 198,
+    "census_moving80": 189,
+    "census_near30_3": 193,
+    "census_moving80_sum": 811,
+    "lane_changes": 13,
+    "box_yields": 26
+  },
+  "seconds_per_spot": 45.0,
+  "verification": {
+    "mode": "headless",
+    "elapsed_s": 214.87,
+    "fatal_errors": 0,
+    "game_code_commit": "00f699d",
+    "notes": "No rendered quality or zero-tow claim. Same game source as committed candidate; source hashes in task-owned bounded-run metadata."
+  }
+}
