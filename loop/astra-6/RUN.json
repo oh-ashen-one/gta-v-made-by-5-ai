@@ -1,0 +1,11 @@
+{
+  "status": "in_progress",
+  "branch": "Astra-6-enhancements",
+  "baseline": "451c8eb17917452261b5262da96b8374ef060557",
+  "start_utc": "2026-10-25T18:20:57Z",
+  "handoff_utc": "2026-10-25T21:50:57Z",
+  "deadline_utc": "2026-10-25T22:20:57Z",
+  "scope": "Playable central Singapore continuity with heritage gameplay; fewer cars for freer driving; builder and critic iterations; fixed4hours including final30min",
+  "renderer_policy": "one task renderer at a time; globalmixedcap2; use existing loop/render.sh + actualsharednamespace; no foreignprocesschanges",
+  "model": "Current Codex session and inherited-model subagents; no alternate-model claim"
+}
