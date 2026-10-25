@@ -7,7 +7,8 @@ const LANE_OFFSET := 4.6        # kerb-lane centre, 4.6 m LEFT of the road centr
 const PED_COUNT := 140
 const FOCUSED_PED_COUNT := 58
 const DINER_COUNT := 45
-const TRAFFIC_COUNT := 14
+const TRAFFIC_COUNT := 7
+const OPENING_PARKING_RADIUS := 45.0
 const POLICE_SPAWN_DISTANCE := 55.0
 
 var world: WorldBuilder
@@ -15,6 +16,7 @@ var nodes: Array[Vector3] = []
 var cars: Array[Car] = []
 var peds: Array[NPC] = []
 var police_cars: Array[Car] = []
+var parking_stats := {"road_available": 0, "road_spawned": 0, "courtyard_spawned": 0}
 var _ped_lanes: Array = []
 var _player: Node = null
 var _police_timer := 0.0
@@ -193,14 +195,36 @@ func _recycle_police_car(pc: Car) -> void:
 		_police_car_pool.append(pc)
 
 # ------------------------------------------------------------------- spawning
+## Keep every courtyard and opening car. Elsewhere alternate occupied road
+## bays with empty bays, preserving pull-out/U-turn space and cars to borrow.
+func _keep_parked_spot(spot: Dictionary, road_index: int) -> bool:
+	if bool(spot.get("courtyard_only", false)):
+		return true
+	if world.locations.has("player_start"):
+		var start: Vector3 = world.locations["player_start"]
+		var pos: Vector3 = spot["pos"]
+		if Vector2(pos.x - start.x, pos.z - start.z).length() <= OPENING_PARKING_RADIUS:
+			return true
+	return road_index % 2 == 0
+
 func _spawn_parked() -> void:
 	var i := 0
+	var road_index := 0
 	for spot in world.parked_spots:
+		var courtyard := bool(spot.get("courtyard_only", false))
+		var keep := _keep_parked_spot(spot, road_index)
+		if not courtyard:
+			road_index += 1
+			parking_stats["road_available"] += 1
+		if not keep:
+			continue
+		parking_stats["courtyard_spawned" if courtyard else "road_spawned"] += 1
 		var kind := String(spot.get("kind", "sedan"))
 		if kind == "van":
 			kind = "van"
 		var car := Car.new()
 		car.kind = kind
+		car.set_meta("traffic_parking", true)
 		if bool(spot.get("courtyard_only", false)):
 			car.set_meta("courtyard_only", true)
 		add_child(car)
@@ -221,10 +245,8 @@ func _spawn_parked() -> void:
 		i += 1
 
 func _spawn_traffic() -> void:
-	# The manager's review called the heritage street "an almost-empty endless
-	# road". 26 cars spread uniformly over a 640 m grid still leaves the street
-	# the player actually walks empty, so two in five are seeded on edges near
-	# the heritage/market blocks.
+	# Keep a small physical fleet for carjacking alongside the lighter lane
+	# traffic. Two in five still start around the heritage/market blocks.
 	for i in TRAFFIC_COUNT:
 		var car := _spawn_ai_car(["sedan", "coupe", "van"][i % 3], i % 5 < 2)
 		if car:
