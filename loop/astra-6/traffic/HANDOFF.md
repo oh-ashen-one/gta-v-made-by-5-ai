@@ -30,4 +30,21 @@ python3 game/tools/bounded_run.py --seconds 350 --log /private/tmp/astra6-traffi
 
 ## Remaining gates
 
-Junction review and independent rendered driving critique pending. No rendered engine launched by this builder. Density counters do not prove visual quality, driving feel, frame rate, or a zero-tow drive. Parent owns the sole serial render lane and must verify integrated behavior after replacing the two obsolete density assertions.
+Junction review completed; independent rendered driving critique pending. No rendered engine launched by this builder. Density counters do not prove visual quality, driving feel, frame rate, or a zero-tow drive. Parent owns the sole serial render lane and must verify integrated behavior after replacing the two obsolete density assertions.
+
+## Junction census (2026-10-25 R1)
+
+`--traffic-review` finished in 214.87 s, exit 0, no fatal errors. Each corner was sampled for 45 simulated seconds at 0.5 s intervals. These are stopped-car samples, not unique cars or tow counts. Full compact metrics are in `junctions-r1.json` beside this handoff.
+
+| Junction | Cars/min | Mean cars within 30 m | Zebra stop samples | Box stop samples | Max idle s |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Collyer Quay / Cecil | 24.0 | 6.4 | 2 | 0 | 15.1 |
+| Raffles / Bayfront corner | 14.7 | 9.4 | 4 | 5 | 31.6 |
+| Esplanade / Connaught | 21.3 | 10.6 | 0 | 0 | 24.1 |
+| Collyer Quay / legacy grid | 12.0 | 10.7 | 3 | 24 | 35.7 |
+
+Traffic remains present and moving. Crossing/box stops still occur, especially at the legacy junction; the single self-test snapshot is not a zero-obstruction result. The unmodified downtown drive is now running with its own session to measure completion, waiting and tows:
+
+```sh
+python3 game/tools/bounded_run.py --seconds 1300 --log /private/tmp/astra6-traffic/drive-r1.log -- godot --headless --path game -- --downtown-review --downtown-legs=drive --traffic-census --capture-dir=/private/tmp/astra6-traffic/drive-r1 --qa-session /private/tmp/astra6-traffic/drive-r1-session
+```
