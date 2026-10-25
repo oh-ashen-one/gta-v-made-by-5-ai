@@ -48,3 +48,23 @@ Traffic remains present and moving. Crossing/box stops still occur, especially a
 ```sh
 python3 game/tools/bounded_run.py --seconds 1300 --log /private/tmp/astra6-traffic/drive-r1.log -- godot --headless --path game -- --downtown-review --downtown-legs=drive --traffic-census --capture-dir=/private/tmp/astra6-traffic/drive-r1 --qa-session /private/tmp/astra6-traffic/drive-r1-session
 ```
+
+## Completed downtown drive and independent critique response
+
+R1 unmodified headless downtown drive completed: **314.0 s, 19.2 s waiting, 0 tows**, exit 0 and no fatal errors. It crossed the Esplanade and Bayfront bridges and returned via Marina Boulevard. One scripted unstick maneuver occurred at 26.41 s at the legacy-grid corner (-309.749, -316.6); zero tows does not mean zero assistance. Integrator-reported baseline: 445.4 s, 91.5 s waiting, 0 tows (29.5% less total time and 79.0% less waiting in this candidate run). Both runs are headless; this is one drive each, not an FPS result or soak guarantee. Compact exact evidence is in `drive-r1.json`.
+
+The independent critic requested stronger tests, without production blockers:
+
+1. Protection checks must inspect actual spawned usable cars. Each spawned parked car now records its original parking spot. The test finds the actual `Car` at each protected origin and requires it to be enabled and interactable, instead of recalling the filter predicate.
+2. Camera-cut checks must run actual reseeding. An isolated short-lane fixture now calls `_recycle(true)` twice with eight pooled bodies and a capacity of two; it verifies actual activation counts, no overlap, and invisible/noncolliding exhausted pool entries. The fixture is freed immediately without mutating the live traffic graph, focus, RNG or vehicles.
+3. The one-frame crossing assertion remains supplemented by the sustained junction census and full downtown drive above; it is not presented as proof of permanent zero obstruction.
+
+R2 verification command:
+
+```sh
+python3 game/tools/bounded_run.py --seconds 400 --log /private/tmp/astra6-traffic/test-r2.log -- godot --headless --path game -- --test --qa-session /private/tmp/astra6-traffic/test-r2-session
+```
+
+R2b completed **286/288** in 48.78 s, zero engine/script errors; only the two known superseded density assertions in the integrator-owned `self_test.gd` fail in this isolated branch. All seven traffic-specific regression assertions pass, including **23 protected actual cars, 0 missing/unusable**, and **2 then 2 active cars from 8 pooled bodies**, 0 overlaps and 0 inactive colliders. R2 first used `interactables` for cars; source inspection confirmed the player's actual car interaction path is the `vehicles` group, so R2b correctly checks visible/enabled `Car` nodes in `vehicles` with `interact()`.
+
+Final test command: replace both `test-r2` path components in the command above with `test-r2b`. No renderer or Blender launched. The parent must run its integrated suite with the two updated density expectations and arrange rendered review when a shared slot is available.
