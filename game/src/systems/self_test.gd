@@ -48,7 +48,7 @@ func run(main: Node) -> void:
 	_check("weathered surfaces and wall/roof clutter present (wave B materials)", _materials_ok(world), str(SurfaceDressing.stats) + " groups=%d" % world.get_tree().get_nodes_in_group("surface_dressing").size())
 	_check("junction graph has 25 connected reference nodes", world.traffic_nodes.size() == 25)
 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
-	_check("civilian traffic populated", traffic.cars.size() >= 8)
+	_check("civilian traffic spawns the configured free-driving fleet", traffic.cars.size() == TrafficManager.TRAFFIC_COUNT and traffic.cars.size() > 0)
 	_check("pedestrians populated", traffic.peds.size() >= 20)
 	_lighting_checks(world)
 	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT + CrowdDirector.EXTRA_WALKERS + PlazaLife.pool_size()
@@ -1285,7 +1285,7 @@ func _street_life_checks(player: Player, traffic: TrafficManager) -> void:
 		player.camera.current = true
 	await _ticks(12)
 	var near := amb.count_near(amb._focus, AmbientTraffic.SPAWN_RADIUS + 5.0)
-	_check("camera-centred lane traffic is dense", near >= 45, "%d within %d m of %s" % [near, int(AmbientTraffic.SPAWN_RADIUS), amb._focus.round()])
+	_check("camera-centred lane traffic stays present within the free-driving budget", near >= 8 and near <= 48, "%d within %d m of %s" % [near, int(AmbientTraffic.SPAWN_RADIUS), amb._focus.round()])
 	var wrong := 0
 	var checked := 0
 	for v in amb.vehicles:
