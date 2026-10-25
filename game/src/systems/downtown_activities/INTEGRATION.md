@@ -33,3 +33,5 @@ The optional `--courier-baseline-curb-jump` switch records one real-input jump a
 ## Local MBS access fixture
 
 `res://src/systems/downtown_activities/tests/mbs_approach.tscn` starts explicitly at the MBS north corridor and walks ingress to the destination ring and egress. It isolates the physical ramp before spending time on the complete route; it does not prove courier progression or end-to-end travel. Use the same bounded runner and isolated `--qa-session` as above. The full courier test always starts at the normal heritage spawn.
+
+`res://src/systems/downtown_activities/tests/jubilee_return.tscn` is a second explicit local fixture: it starts at Jubilee's east approach, ray-probes the landing lip, then walks through Merlion Park to Heritage Waterfront. It isolates the reverse landing and remaining return leg without representing a full courier run.
