@@ -6,6 +6,8 @@ var world: WorldBuilder
 var player: Player
 var traffic: TrafficManager
 var mission: Mission
+var downtown_activity: Node
+var skypark_access: Node
 var hud: HUD
 var started := false
 var _settings_return_to_pause := false
@@ -66,6 +68,17 @@ func _ready() -> void:
 	add_child(hud)
 	hud.setup(world, player, mission)
 	Events.objective_marker_changed.connect(hud.set_marker)
+
+	# Optional physical errand extends the existing interaction loop across
+	# the bay without replacing Harbour Relay's objectives or checkpoints.
+	downtown_activity = load("res://src/systems/downtown_activities/courier.gd").new()
+	downtown_activity.name = "BayfrontCourier"
+	add_child(downtown_activity)
+	downtown_activity.setup(world, player)
+	skypark_access = load("res://src/world/downtown/skypark_access.gd").new()
+	skypark_access.name = "SkyParkAccess"
+	add_child(skypark_access)
+	skypark_access.setup(world, player)
 
 	# helicopter at the aviation compound, parked on the primary pad
 	var heli := Helicopter.new()
@@ -405,6 +418,8 @@ func _start_game() -> void:
 
 func _new_game() -> void:
 	mission.restart()
+	if is_instance_valid(downtown_activity):
+		downtown_activity.reset_state()
 	hud.clear_notifications()
 	Game.death_count = 0
 	_start_game()

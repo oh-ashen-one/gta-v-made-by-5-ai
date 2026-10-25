@@ -1,0 +1,41 @@
+diff --git a/game/src/world/downtown/landmarks/looks.gd b/game/src/world/downtown/landmarks/looks.gd
+index 0908f75..69e350f 100644
+--- a/game/src/world/downtown/landmarks/looks.gd
++++ b/game/src/world/downtown/landmarks/looks.gd
+@@ -24,7 +24,7 @@ static func _std(c: Color, rough: float, metal: float = 0.0, spec: float = 0.5)
+ static func _make(key: String) -> Material:
+ 	match key:
+ 		"granite_paving":
+-			return Palette.mat_textured(Color(0.60, 0.59, 0.56), "pavers", Vector3.ONE, 0.86)
++			return _plaza_paving()
+ 		"granite_light":
+ 			return Palette.mat_textured(Color(0.70, 0.68, 0.64), "concrete", Vector3.ONE, 0.82)
+ 		"granite_dark":
+@@ -122,3 +122,27 @@ static func _make(key: String) -> Material:
+ 		"tower_glass":
+ 			return LandmarkLooks.material_for("mbs_curtain_glass")
+ 	return _std(Color(0.6, 0.6, 0.6), 0.8)
++
++static func _plaza_paving() -> Material:
++	# Use the already-generated private granite set at its authored scale:
++	# a 4x4 tile of 600 mm slabs covers 2.4 m, including on sloped approaches.
++	# World triplanar mapping avoids stretched joints across giant plaza quads.
++	var prefix := "res://assets/providers/higgsfield/plaza_granite_pavers_"
++	if "--astra-plaza-material-off" in OS.get_cmdline_user_args() or not ResourceLoader.exists(prefix + "albedo.png"):
++		return Palette.mat_textured(Color(0.60, 0.59, 0.56), "pavers", Vector3.ONE, 0.86)
++	var m := _std(Color(0.88, 0.87, 0.85), 0.88)
++	m.resource_name = "AstraPlazaGranite600mm"
++	m.albedo_texture = load(prefix + "albedo.png")
++	m.uv1_triplanar = true
++	m.uv1_world_triplanar = true
++	m.uv1_triplanar_sharpness = 8.0
++	m.uv1_scale = Vector3.ONE / 2.4
++	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
++	if ResourceLoader.exists(prefix + "normal.png"):
++		m.normal_enabled = true
++		m.normal_texture = load(prefix + "normal.png")
++		m.normal_scale = 0.35
++	if ResourceLoader.exists(prefix + "rough.png"):
++		m.roughness_texture = load(prefix + "rough.png")
++		m.roughness_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_RED
++	return m

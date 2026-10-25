@@ -1,0 +1,3 @@
+# Native packaged SkyPark input
+
+Loaded an explicitly copied QA rooftop save using the normal title Continue/F6 action. Native E returned to Event Plaza and E returned to the terrace. Native A encountered the safety railing; D moved13.9m back across the terrace, remaining on supported floor. F5 stored the isolated save; F12 wrote the five timestamped captures listed with world positions in run.log. Native Command-Q closed normally: exit0,257.41s,zero fatal errors. This verifies native input from a saved rooftop fixture, not a native journey from heritage. Seven Texture RID shutdown warnings remain.

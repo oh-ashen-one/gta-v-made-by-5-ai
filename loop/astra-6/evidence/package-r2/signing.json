@@ -1,0 +1,72 @@
+{
+  "started_utc": "2026-10-25T20:54:03.038661+00:00",
+  "finished_utc": "2026-10-25T20:54:34.418481+00:00",
+  "source": "/private/tmp/astra6/package-r2/extracted/Orchard Reach.app",
+  "destination": "/private/tmp/astra6/package-r2/signed/Orchard Reach.app",
+  "archive": "/private/tmp/astra6/package-r2/candidate-signed.zip",
+  "archive_sha256": "6f2c1582d7228cd040a47aceca263f252a6ca92d157abc34e007215a8beff36d",
+  "archive_bytes": 881510418,
+  "before": {
+    "Contents/Info.plist": {
+      "sha256": "861e675bc8e821a04b3d0db2e315559badb81d4a3aa864c1d6c89fed3938115d",
+      "bytes": 1788
+    },
+    "Contents/PkgInfo": {
+      "sha256": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+      "bytes": 9
+    },
+    "Contents/MacOS/Orchard Reach": {
+      "sha256": "233633697eb0f31f0d26344eba344fb53c5700b2c308c7e84d0877ddd82271e2",
+      "bytes": 169949840
+    },
+    "Contents/Resources/Orchard Reach.pck": {
+      "sha256": "4ef858ca189058a032da4f4329381d730daf5755d07133330521ece3244e0561",
+      "bytes": 836828480
+    },
+    "Contents/Resources/icon.icns": {
+      "sha256": "779ff524928785811d6d4c61f47a26491160b1092db9b610e85fcdfd9b2d2b2a",
+      "bytes": 67500
+    },
+    "Contents/Resources/PrivacyInfo.xcprivacy": {
+      "sha256": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+      "bytes": 229
+    }
+  },
+  "after": {
+    "Contents/Info.plist": {
+      "sha256": "861e675bc8e821a04b3d0db2e315559badb81d4a3aa864c1d6c89fed3938115d",
+      "bytes": 1788
+    },
+    "Contents/PkgInfo": {
+      "sha256": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+      "bytes": 9
+    },
+    "Contents/_CodeSignature/CodeResources": {
+      "sha256": "0ffe06f39ceae3ce6ede104985233c0cde6faca3f55322b862a5f5003c88d36a",
+      "bytes": 2928
+    },
+    "Contents/MacOS/Orchard Reach": {
+      "sha256": "d6c81d6cac069cecaacf0fa8ae3d78ab5fb66fed6dfb4699e46f65aa96a43f8d",
+      "bytes": 169435792
+    },
+    "Contents/Resources/Orchard Reach.pck": {
+      "sha256": "4ef858ca189058a032da4f4329381d730daf5755d07133330521ece3244e0561",
+      "bytes": 836828480
+    },
+    "Contents/Resources/icon.icns": {
+      "sha256": "779ff524928785811d6d4c61f47a26491160b1092db9b610e85fcdfd9b2d2b2a",
+      "bytes": 67500
+    },
+    "Contents/Resources/PrivacyInfo.xcprivacy": {
+      "sha256": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+      "bytes": 229
+    }
+  },
+  "pck_identical": true,
+  "source_unchanged": true,
+  "strict_verify_exit": 0,
+  "strict_verify_output": "/private/tmp/astra6/package-r2/signed/Orchard Reach.app: valid on disk\n/private/tmp/astra6/package-r2/signed/Orchard Reach.app: satisfies its Designated Requirement\n",
+  "signature_description": "Executable=/private/tmp/astra6/package-r2/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach\nIdentifier=com.ashenone.orchardreach\nFormat=app bundle with Mach-O universal (x86_64 arm64)\nCodeDirectory v=20400 size=160690 flags=0x2(adhoc) hashes=5015+3 location=embedded\nSignature=adhoc\nInfo.plist entries=25\nTeamIdentifier=not set\nSealed Resources version=2 rules=13 files=3\nInternal requirements count=0 size=12\n",
+  "qualification": "Local ad-hoc signature only; no Developer ID, notarization, Finder/Gatekeeper or public redistribution certification.",
+  "removed_cosmetic_attributes": []
+}

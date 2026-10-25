@@ -1,0 +1,158 @@
+{
+	"frame_ms": {
+		"max": 107.48,
+		"mean": 70.49,
+		"n": 703,
+		"p50": 68.86,
+		"p95": 88.87,
+		"p99": 98.66
+	},
+	"frames_saved": 702,
+	"log": [
+		"[downtown-review 25.83] still fly_700m at (-52.98306, 106.4853, -159.0528)",
+		"[downtown-review 36.40] still fly_300m at (-361.8129, 106.4853, -415.6514)",
+		"[downtown-review 64.94] still fly_landed_ns_square at (-577.1616, 0.100112, -614.4191)",
+		"[downtown-review 65.40] fly landed=true on_foot=true at (-577.1616, 0.100447, -614.4191)",
+		"[downtown-review 71.49] still fly_walk_ns_square at (-577.4514, 0.37594, -617.324)",
+		"[downtown-review 93.55] perf street_raffles_avenue p50 22.16 p95 33.41 max 38.12 ms",
+		"[downtown-review 97.61] perf bridge_esplanade p50 21.02 p95 33.52 max 37.25 ms",
+		"[downtown-review 101.91] perf waterfront_merlion_park p50 22.95 p95 33.73 max 35.86 ms",
+		"[downtown-review 107.67] perf street_shenton_way p50 30.14 p95 37.80 max 52.12 ms",
+		"[downtown-review 112.10] perf heli_bayfront p50 21.30 p95 29.77 max 33.67 ms",
+		"[downtown-review 115.70] perf heli_river_mouth p50 18.96 p95 27.33 max 31.45 ms"
+	],
+	"note": "frame_ms excludes frames that carried a JPEG readback (encoding still lands on neighbours); perf_sweep_ms has no readback at all",
+	"perf_sweep_ms": {
+		"all": {
+			"n": 900,
+			"p50": 22.23,
+			"p95": 34.64,
+			"p99": 37.81
+		},
+		"bridge_esplanade": {
+			"max": 37.25,
+			"p50": 21.02,
+			"p95": 33.52
+		},
+		"heli_bayfront": {
+			"max": 33.67,
+			"p50": 21.31,
+			"p95": 29.77
+		},
+		"heli_river_mouth": {
+			"max": 31.45,
+			"p50": 18.96,
+			"p95": 27.33
+		},
+		"street_raffles_avenue": {
+			"max": 38.12,
+			"p50": 22.16,
+			"p95": 33.41
+		},
+		"street_shenton_way": {
+			"max": 52.12,
+			"p50": 30.14,
+			"p95": 37.81
+		},
+		"waterfront_merlion_park": {
+			"max": 35.86,
+			"p50": 22.95,
+			"p95": 33.73
+		}
+	},
+	"results": {
+		"fly": {
+			"allowed": true,
+			"completed": true,
+			"heli": "(-577.1616, 0.100447, -614.4191)",
+			"landed": true,
+			"on_foot": true
+		}
+	},
+	"stats": {
+		"aerial_light": true,
+		"behind_mbs_tall": 27,
+		"beyond_core_towers": 244,
+		"build_ms": 1105,
+		"carpets_cut": 10,
+		"draws": 331,
+		"fill": {
+			"canopy": {
+				"angsana": 340,
+				"crowns_in_kept_open": 0,
+				"draws": 116,
+				"empty_lawn_blocks": 0,
+				"flame": 270,
+				"lawn_blocks": 10,
+				"rain": 435,
+				"shrub": 833,
+				"tembusu": 297,
+				"total": 2175
+			},
+			"empty_lawn_blocks": 0,
+			"garden": {
+				"cut_cells": 8762,
+				"shore_shrubs": 40,
+				"walk_m": 1309
+			},
+			"lawn_blocks": 10,
+			"lawn_cells": 101713,
+			"ms": 966,
+			"park_panels": 16,
+			"plazas": {
+				"benches": 53,
+				"esplanade": 10,
+				"mbs": 36,
+				"merlion": 5,
+				"nearfield": {
+					"bench_bins": 9,
+					"bollard_groups": 9,
+					"clusters": 55,
+					"joints": 947,
+					"planters": 17,
+					"racks": 5,
+					"stains": 61,
+					"tables": 11,
+					"totems": 4
+				},
+				"ns_square": 26,
+				"palms": 65,
+				"shapes": 100,
+				"umbrella_tables": 30
+			},
+			"roofs": {
+				"boxes": 269,
+				"draws": 98,
+				"roofs": 77
+			}
+		},
+		"flank_towers_collided": 0,
+		"flank_towers_freed": 13,
+		"flank_walls_hidden": 1,
+		"graph_edges": 72,
+		"graph_links": 10,
+		"graph_nodes": 64,
+		"lamps": 837,
+		"land_rects": 10,
+		"planting": {
+			"forecourt_beds": 1164,
+			"median_clumps": 898,
+			"palms": 168,
+			"shrub_kinds": [
+				"ixora",
+				"mondo",
+				"fern",
+				"croton"
+			],
+			"species": 6,
+			"strip_clumps": 21041
+		},
+		"promenade_tree_parts_dropped": 186,
+		"seawall_segments": 42,
+		"shapes": 1861,
+		"signals": 30,
+		"towers_kept_downtown": 0,
+		"towers_removed": 396,
+		"trees": 261
+	}
+}

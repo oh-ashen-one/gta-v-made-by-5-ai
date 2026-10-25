@@ -5,6 +5,12 @@ extends Node
 
 signal finished(failures: int)
 
+# Minimal owner for testing the real NPC visibility rule with the dressed
+# character below; avoid constructing a second unrelated character rig.
+class CullFixtureNPC extends NPC:
+	func _ready() -> void:
+		pass
+
 const TEST_SAVE := "/tmp/orchard_reach_wave2_fixture_save.json"
 ## Wave-M integration: downtown + street-life checks took the combined suite
 ## past 40 s of engine time; this is a hang guard, not a speed budget.
@@ -48,7 +54,7 @@ func run(main: Node) -> void:
 	_check("weathered surfaces and wall/roof clutter present (wave B materials)", _materials_ok(world), str(SurfaceDressing.stats) + " groups=%d" % world.get_tree().get_nodes_in_group("surface_dressing").size())
 	_check("junction graph has 25 connected reference nodes", world.traffic_nodes.size() == 25)
 	_check("pedestrian paths present", world.ped_lanes.size() >= 20)
-	_check("civilian traffic populated", traffic.cars.size() >= 8)
+	_check("civilian traffic spawns the configured free-driving fleet", traffic.cars.size() == TrafficManager.TRAFFIC_COUNT and traffic.cars.size() > 0)
 	_check("pedestrians populated", traffic.peds.size() >= 20)
 	_lighting_checks(world)
 	var configured_peds := TrafficManager.PED_COUNT + TrafficManager.DINER_COUNT + CrowdDirector.EXTRA_WALKERS + PlazaLife.pool_size()
@@ -340,10 +346,12 @@ func run(main: Node) -> void:
 	_check("successful load publishes one state-restored event", smg_saved and smg_loaded and _state_restore_events == 1)
 	_check("saved SMG restores held model and clears transient actions", Game.carried_weapon == "smg" and player._weapon_model != null and String(player._weapon_model.scene_file_path).contains("smg") and not player._reloading and player._fire_cooldown == 0.0 and player._press_queue.is_empty())
 	_negative_save_checks(player, mission)
+	_courier_save_checks(main, player, mission)
 	await _wave5_checks(world, traffic, heli)
 	await _street_life_checks(player, traffic)
 	await _water_checks(world)
 	await _downtown_plan_checks(world)
+	await _promenade_access_check(player)
 	_character_look_checks(player)
 	for c in load("res://src/systems/perf_checks.gd").run(main):   # wave S performance piece
 		_check(c[0], c[1], c[2])
@@ -444,6 +452,58 @@ func _blocked_exit_checks(main: Node, player: Player, car: Car) -> void:
 	await _tap("interact")
 	_check("clearing blocked exit restores normal exit", Game.mode == Game.MODE_FOOT and player.current_vehicle == null and not car.driver_is_player)
 
+func _courier_snapshot() -> Dictionary:
+	var activity := get_tree().get_first_node_in_group("downtown_activity")
+	return activity.serialize_state() if activity else {}
+
+func _courier_save_checks(main: Node, player: Player, mission: Mission) -> void:
+	var activity := get_tree().get_first_node_in_group("downtown_activity")
+	_check("Bayfront Courier is connected to the running game", activity != null)
+	if not activity: return
+	var original: Dictionary = activity.serialize_state()
+	activity.restore_state({"version": 1, "stage": 1, "completed_runs": 3})
+	var saved := Game.save_game(TEST_SAVE)
+	var payload: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_SAVE))
+	activity.restore_state({"version": 1, "stage": 2, "completed_runs": 7})
+	var loaded := Game.load_game(TEST_SAVE)
+	_check("save/reload restores courier destination and completed runs", saved and loaded and activity.serialize_state() == {"version": 1, "stage": 1, "completed_runs": 3})
+	var before := _state_fingerprint(player, mission)
+	var invalid := payload.duplicate(true)
+	invalid["downtown_activity"]["stage"] = 99
+	invalid["health"] = 12.0
+	var f := FileAccess.open(TEST_SAVE, FileAccess.WRITE)
+	f.store_string(JSON.stringify(invalid)); f.close()
+	_check("invalid courier state rejects the whole save atomically", not Game.load_game(TEST_SAVE) and _state_fingerprint(player, mission) == before)
+	payload.erase("downtown_activity")
+	f = FileAccess.open(TEST_SAVE, FileAccess.WRITE)
+	f.store_string(JSON.stringify(payload)); f.close()
+	_check("legacy saves load and reset optional courier progress", Game.load_game(TEST_SAVE) and activity.serialize_state() == {"version": 1, "stage": 0, "completed_runs": 0})
+	var deaths_before := Game.death_count
+	for courier_stage in [1, 2]:
+		activity.restore_state({"version": 1, "stage": courier_stage, "completed_runs": 3})
+		var before_death := Game.death_count
+		Game.damage_player(Game.MAX_HEALTH)
+		_check("courier stage %d survives a real death/respawn" % courier_stage, Game.death_count == before_death + 1 and Game.health == Game.MAX_HEALTH and activity.serialize_state() == {"version": 1, "stage": courier_stage, "completed_runs": 3})
+	main._new_game()
+	_check("actual New Game resets the optional errand and completion count", activity.serialize_state() == {"version": 1, "stage": 0, "completed_runs": 0})
+	# Restore the surrounding regression fixture, not the user's save slot.
+	Game.load_game(TEST_SAVE)
+	Game.death_count = deaths_before
+	activity.restore_state(original)
+
+func _promenade_access_check(player: Player) -> void:
+	# Explicit collision fixture; the separate courier traversal tests this same
+	# transition from the ordinary starting point, without fixture repositioning.
+	var before := player.global_position
+	var before_yaw := player.yaw
+	player.respawn_at(Vector3(-164.0, 0.2, -322.0), 0.0)
+	await _ticks(12)
+	Input.action_press("move_forward")
+	await _ticks(150)
+	Input.action_release("move_forward")
+	_check("heritage avenue joins the promenade without a jump", player.global_position.z < -329.0 and player.global_position.y > 0.25, str(player.global_position))
+	player.respawn_at(before, before_yaw)
+
 func _state_fingerprint(player: Player, mission: Mission) -> Dictionary:
 	return {"health": Game.health, "wanted_level": Game.wanted_level, "wanted_heat": Game.wanted_heat,
 		"mission_stage": Game.mission_stage, "checkpoint": Game.checkpoint_index, "seed": Game.seed_value,
@@ -451,7 +511,7 @@ func _state_fingerprint(player: Player, mission: Mission) -> Dictionary:
 		"weapon": Game.carried_weapon, "ammo": Game.ammo.duplicate(true), "mode": Game.mode,
 		"safe_position": Game.last_safe_position, "safe_rotation": Game.last_safe_rotation,
 		"actor_position": player.global_position, "actor_yaw": player.yaw, "settings": Game.settings.duplicate(true), "state_restore_events": _state_restore_events,
-		"scene_stage": mission.stage, "objective": mission.current_objective(), "package_visible": mission.package_node.visible}
+		"scene_stage": mission.stage, "objective": mission.current_objective(), "package_visible": mission.package_node.visible, "downtown_activity": _courier_snapshot()}
 
 func _negative_save_checks(player: Player, mission: Mission) -> void:
 	Game.save_game(TEST_SAVE)
@@ -1285,7 +1345,7 @@ func _street_life_checks(player: Player, traffic: TrafficManager) -> void:
 		player.camera.current = true
 	await _ticks(12)
 	var near := amb.count_near(amb._focus, AmbientTraffic.SPAWN_RADIUS + 5.0)
-	_check("camera-centred lane traffic is dense", near >= 45, "%d within %d m of %s" % [near, int(AmbientTraffic.SPAWN_RADIUS), amb._focus.round()])
+	_check("camera-centred lane traffic stays present within the free-driving budget", near >= 8 and near <= 48, "%d within %d m of %s" % [near, int(AmbientTraffic.SPAWN_RADIUS), amb._focus.round()])
 	var wrong := 0
 	var checked := 0
 	for v in amb.vehicles:
@@ -1708,7 +1768,20 @@ func _character_stance_checks(player: Player) -> void:
 		for g in v.find_children("People*", "GeometryInstance3D", true, false):
 			if (g as GeometryInstance3D).visibility_range_begin > 0.0:
 				part_cull += 1
-		var npc_code := (load("res://src/actors/npc.gd") as Script).source_code
+		var cull_together := false
+		var lens := get_viewport().get_camera_3d()
+		if lens != null and bag != null and skirt != null:
+			var culler := CullFixtureNPC.new()
+			holder.add_child(culler)
+			culler.set_physics_process(false)
+			culler.character_visual = v
+			culler.global_position = lens.global_position - Vector3(0, 0.9 * v.scale.y, 0)
+			culler._near_hide()
+			var hidden := not v.is_visible_in_tree() and not bag.is_visible_in_tree() and not skirt.is_visible_in_tree()
+			culler.global_position += Vector3.RIGHT * 10.0
+			culler._near_hide()
+			cull_together = hidden and v.is_visible_in_tree() and bag.is_visible_in_tree() and skirt.is_visible_in_tree()
+			culler.free()
 		var cd_script := load("res://src/systems/crowd_director.gd") as Script
 		var keep: Array = cd_script.get_script_constant_map().get("KEEP_OUT", [])
 		var lawn_kept := false
@@ -1730,7 +1803,7 @@ func _character_stance_checks(player: Player) -> void:
 		_check("characters-T3: local dress in the crowd (tudung on some women, school uniforms on some children)",
 			tud >= women / 12 and tud <= women / 2 and uni >= 8, "tudung=%d of %d women, uniforms=%d" % [tud, women, uni])
 		_check("characters-T2: fitted skirt, women's narrower shoulders, near-lens cull hides body and parts together",
-			sb.size.x < 0.56 and sb.size.x > 0.3 and narrow and part_cull == 0 and npc_code.contains("func _near_hide"),
-			"skirt width=%.2f narrow=%s part_cull=%d" % [sb.size.x, narrow, part_cull])
+			sb.size.x < 0.56 and sb.size.x > 0.3 and narrow and part_cull == 0 and cull_together,
+			"skirt width=%.2f narrow=%s part_cull=%d whole_figure_hide_restore=%s" % [sb.size.x, narrow, part_cull, cull_together])
 	holder.queue_free()
 

@@ -1,0 +1,63 @@
+{
+  "verified_utc": "2026-10-25T20:20:12.142252+00:00",
+  "scope": "Full game headless controls-driven walking and E interaction from normal spawn; not rendered or vehicle-route acceptance",
+  "full_route": {
+    "checks": 31,
+    "curb_jumps": 0,
+    "elapsed_s": 603.651,
+    "failures": [],
+    "max_step_m": 0.183946222066879,
+    "travel_m": 3683.20694465523
+  },
+  "runner": {
+    "engine_exit_code": 0,
+    "exit_code": 0,
+    "timeout": false,
+    "fatal_errors": [],
+    "elapsed_sec": 605.52,
+    "child_reaped": true
+  },
+  "integration_commits": [
+    "35ba160",
+    "297043d",
+    "be86c9e",
+    "667921e"
+  ],
+  "observed_saved_state": {
+    "downtown_activity": {
+      "completed_runs": 1,
+      "stage": 0,
+      "version": 1
+    },
+    "mission_stage": 0,
+    "checkpoint_index": 0
+  },
+  "local_fixtures": {
+    "mbs_approach": {
+      "checks": 5,
+      "failures": 0,
+      "travel_m": 446.819447036833,
+      "elapsed_s": 78.977,
+      "jumps": 0,
+      "deaths": 0
+    },
+    "jubilee_return": {
+      "checks": 3,
+      "failures": 0,
+      "travel_m": 433.142084032181,
+      "elapsed_s": 77.62,
+      "jumps": 0,
+      "deaths": 0
+    }
+  },
+  "source_sha256": {
+    "game/src/systems/downtown_activities/station.gd": "268d845ed477bf36d9661196e44afe4272c6b25817682e2e37425b5e7d132fe8",
+    "game/src/systems/downtown_activities/status_card.gd": "45ed481be28c64b600c69ebe251ad6d60a458fd38c0389c3853d56323face81d",
+    "game/src/systems/downtown_activities/courier.gd": "6815e4840dc502a894ba8d3a22f681466e03c0127b85b4b2b9cb195603aa3627",
+    "game/src/systems/downtown_activities/tests/courier_route.gd": "90d5a240c30125ae0af2530e8a8460da1d907c2f6e68272aa2832db386e1eeb7",
+    "game/src/systems/downtown_activities/tests/mbs_approach.gd": "81999a1a6668fd28e26899a1567324d5cb97a2ceff5b37c06f1f5d7aceeb2cc1",
+    "game/src/systems/downtown_activities/tests/jubilee_return.gd": "1870e5c6261fe56cd8ebedf83c4051a4751890977af8a6a864efeea1cbf7bdfe"
+  },
+  "evidence_log": "/private/tmp/astra6-activities/route-r8-integrated.log",
+  "rendered": false
+}

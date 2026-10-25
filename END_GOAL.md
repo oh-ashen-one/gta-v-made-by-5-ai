@@ -91,6 +91,8 @@ Integrate these into the game's original district and waterfront composition, wi
 
 **WORLD-07 — Living density.** Calibrate spawn/simulation budgets using actual profiling. Provisional busiest-view targets are **24–40 nearby pedestrians and 8–12 active traffic vehicles**, plus parked vehicles; residential pockets are quieter. The outcome is inhabited streets along the playable route, not actors concentrated in one screenshot corner. Avoid visible close spawning, identical crowd clumps, and repeated camera-turn despawns.
 
+**Owner traffic clarification (2026-10-25):** materially reduce the number of cars on the streets so the player can drive freely through heritage and central Singapore. Earlier dense-traffic targets are provisional and yield to this direction. Preserve ambient life, usable vehicles, mission reliability and pedestrian behavior; judge the lower-density result by actual uninterrupted driving, queue time and zero tow interventions, not by maximizing the number of cars in a frame.
+
 ### 2.1 Reference anchors, not licensed asset sources
 
 Use these primary references to understand form and life; they do not grant permission to copy photographs, murals, logos, models, or branded architecture:
@@ -245,6 +247,8 @@ Source: [SingPost, corporate sustainability](https://www.singpost.com/corporate/
 **CAR-03 — Safe exits in imperfect conditions.** Stop and exit, including with one door blocked. Choose a safe alternate location or clearly reject the unsafe attempt; never place the player inside a wall, under the road, or into an explosive physics impulse. Define moving-car exits explicitly. Repeated entry, occupied seats, disabled vehicles, interrupted animations, and mission resets cannot corrupt control ownership.
 
 **CAR-04 — Physical feedback and damage.** Steering wheels/road wheels, body response, braking, engine load, collisions, and damage communicate motion. Contact with cars, street furniture, walls, and pedestrians resolves consistently. Provide a visible damaged/disabled state and a recovery/replacement path. Full soft-body deformation is stretch. Ordinary kerbs must not launch vehicles, and minor bumps cannot routinely immobilize them.
+
+**Owner update,25 October2026 — freer driving.** Reduce street-car density while preserving believable left-hand flow and pedestrian street life. Do not restore superseded minimum vehicle counts from old wave5 camera critiques. The current candidate's48 ambient/7 physical traffic and51 roadside parked vehicles are a calibrated implementation, not a substitute for checking queues, recovery and usable routes.
 
 **TRAFFIC-01 — Left-hand street logic.** Traffic follows a left-side lane graph and sensible junction paths across the map. Include minimum credible signal/priority behavior, stopping distance, queueing, and pedestrian crossing response. Markings, medians, parking, and vehicle direction agree. One distant car on a closed decorative loop is not traffic.
 

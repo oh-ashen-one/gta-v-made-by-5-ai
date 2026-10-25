@@ -1,0 +1,20 @@
+{
+  "started_utc": "2026-10-25T19:55:01.021083+00:00",
+  "finished_utc": "2026-10-25T19:56:41.504882+00:00",
+  "exit_code": 0,
+  "engine_exit_code": 0,
+  "fatal_errors": [],
+  "timeout": false,
+  "elapsed_sec": 101.25,
+  "child_reaped": true,
+  "checks": "116/116",
+  "production_hook": "Parent 0cf9289 cherry-picked locally as 8a79c7f; do not cherry-pick the duplicate hook back.",
+  "source_hashes": {
+    "game/src/main.gd": "d4dc78b6d654323f16e6fe1c167d793cf6240f5c5b5f2ec87832ebd96c0a1e4e",
+    "game/src/systems/skypark_tests/access_test.gd": "dc2960e213317077b577fc15f154af05330cfdf8553a659d12231d090e49f2fd",
+    "game/src/world/downtown/plan.gd": "65e4b6383ba802ec88fdddcefc88bdfa8f636b5bece20574514566aec508aeb7",
+    "game/src/world/downtown/skypark_access.gd": "6e83654b3050db169e7b115e0d91111d1be191787f556dfd7ce68cf7a0aa32e6",
+    "game/src/world/downtown/landmarks/mbs.gd": "59baaa696b1bdedb34b2c96f3a42f70c9aaf0cea069b29cb03bc542fa35c7043"
+  },
+  "kind": "Headless mechanical fixtures with actual production main; rendered appearance/performance are separate."
+}

@@ -1,6 +1,6 @@
 class_name AmbientTraffic
 extends Node3D
-## Dense, camera-centred civilian traffic (street-life, Opus wave A).
+## Bounded, camera-centred civilian traffic with room for free driving.
 ##
 ## Critic 5: "In 06_driving the boulevard has zero traffic ... it reads as a
 ## test map." Twenty-six physics cars spread over a 640 m grid leave any one
@@ -11,7 +11,8 @@ extends Node3D
 ## Vehicles that fall far behind the camera are re-seeded ahead of it, out of
 ## view, so the street the player is looking at is always busy.
 
-const POOL := 112
+## Owner free-driving pass: 57% fewer lane cars than the 112-car wave-T pool.
+const POOL := 48
 const DtBridges := preload("res://src/world/downtown/bridges.gd")
 const Rules := preload("res://src/systems/traffic_rules.gd")
 const LANE_OFFSETS: Array[float] = [4.6, 2.3]   # kerb lane (slow), median lane
@@ -713,7 +714,6 @@ func _pick_edge() -> int:
 
 func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 	_refresh_near_edges()
-	_spacing_cap = hidden_only
 	for attempt in 24:
 		var e := _pick_edge()
 		var ed: Dictionary = edges[e]
@@ -779,12 +779,11 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 ## packed short downtown links and district approaches solid, and most of
 ## the street stood in queues instead of flowing.
 const LANE_SPACING := 26.0
-## Only out-of-sight seeding in continuous play is capped; a camera cut still
-## packs the viewed lanes (their red-light queues are the point of the view).
-var _spacing_cap := false
+## The same lane occupancy budget applies on camera cuts and during driving.
+## A new view must not refill short streets with bumper-to-bumper queues.
 func _gap_free(e: int, lane: int, s: float) -> bool:
 	var list: Array = _keys.get(e * 2 + lane, [])
-	if _spacing_cap and list.size() >= maxi(1, int((_s_end(e) - _entry(e)) / LANE_SPACING)):
+	if list.size() >= maxi(1, int((_s_end(e) - _entry(e)) / LANE_SPACING)):
 		return false
 	for other in list:
 		if absf((other as AmbientVehicle).s - s) < MIN_GAP + 3.0:

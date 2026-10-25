@@ -1,0 +1,1479 @@
+{
+	"checks": [
+		{
+			"detail": "",
+			"name": "world builder present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "player spawned",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "traffic manager present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission running",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "helicopter present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "hud present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "district contains 3D geometry",
+			"passed": true
+		},
+		{
+			"detail": "{ \"shophouses\": 269, \"hdb\": 12, \"infill\": 247, \"condensers\": 1493, \"pipes\": 1032, \"cables\": 807, \"roof_props\": 0, \"overlays\": 9, \"roof_caps_fixed\": 0, \"shop_floor\": 1 } groups=4",
+			"name": "weathered surfaces and wall/roof clutter present (wave B materials)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "junction graph has 25 connected reference nodes",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pedestrian paths present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "civilian traffic spawns the configured free-driving fleet",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pedestrians populated",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "golden-hour environment: sky ambient, SSAO+SSIL, glow, clear sky gradient",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "sky glow and clouds follow the sun light (LIGHT0)",
+			"passed": true
+		},
+		{
+			"detail": "zenith_s=0.41 coverage=0.55",
+			"name": "sky is pale humid blue under shaded cumulus (no cobalt)",
+			"passed": true
+		},
+		{
+			"detail": "ambient=0.52 scatter=0.22",
+			"name": "shadow contrast and bounded haze (ambient, crisp sun, sun scatter <= 0.25)",
+			"passed": true
+		},
+		{
+			"detail": "elevation=19.0",
+			"name": "warm low late-afternoon sun with soft shadows",
+			"passed": true
+		},
+		{
+			"detail": "void=120 arcade=269 lamps=56",
+			"name": "void decks, arcades and street lamps carry practical lights",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "practical lights are shadowless and distance-culled (cluster budget)",
+			"passed": true
+		},
+		{
+			"detail": "fixtures=1619",
+			"name": "every practical has a modelled fixture",
+			"passed": true
+		},
+		{
+			"detail": "volumes=16 kinds=20",
+			"name": "streets are weathered and dressed (wear volumes, >= 8 clutter types)",
+			"passed": true
+		},
+		{
+			"detail": "noses=80 dome_batches=0",
+			"name": "median beds have painted noses and no dome shrubs",
+			"passed": true
+		},
+		{
+			"detail": "{ \"aframe\": 130, \"crate\": 301, \"produce\": 144, \"bin\": 210, \"tcone\": 269, \"cabinet\": 139, \"bollard\": 596 }",
+			"name": "nearfield: cones, bins, crates and A-frame menus are modelled props (no primitive stand-ins)",
+			"passed": true
+		},
+		{
+			"detail": "prop_boxes=2926",
+			"name": "nearfield: parked bikes and scooters are multi-part models with on-foot collision",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "nearfield: sign plates show their pictogram face to the viewer",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "nearfield: ground shaders carry layered wear (patch seams, resurfacing, silt, chipped paint, unit variation)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "nearfield: median beds use photo plant cards when the generated atlas is present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "nearfield: street-name lettering fits inside its blade",
+			"passed": true
+		},
+		{
+			"detail": "azimuth_off=28.0 elev=0.33",
+			"name": "low sun is in frame on the heritage avenue (toward-sun view)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "ambient population matches configured budget of 293 unique actors",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "market diners are reactive damageable NPCs",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "busy district walkers spawn along segments not junction piles",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "gameplay camera belongs to player",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "sprint 180 turns continuously (<=25 deg/frame at 30 fps, no facing flip)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission publishes initial objective",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "initial objective marker survives HUD setup order",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission registered for save and checkpoint restoration",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "package is a real interactable",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "road graph includes the fifth row",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "traffic target is near destination on the left lane",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "east-west signal excludes north-south movement",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "junction changeover clears both approaches",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "north-south signal excludes east-west movement",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "visible signal lamps agree with east-west right of way",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "visible signal lamps switch with north-south right of way",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "fire maps to a mouse button rather than a keyboard code",
+			"passed": true
+		},
+		{
+			"detail": "mag 12 -> 11",
+			"name": "real mouse-button event fires the equipped weapon",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission avenue has no static trunk obstruction",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "rapid native press and release is not dropped",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "close-cover fixture leaves camera sightline on target",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "muzzle obstruction prevents damage through close cover",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "clearing muzzle obstruction permits target damage",
+			"passed": true
+		},
+		{
+			"detail": "{ \"muzzle\": 4, \"tracer\": 3, \"impact\": 4, \"decal\": 2, \"casing\": 4, \"flinch\": 2, \"npc_shots\": 0 }",
+			"name": "shot produced muzzle flash, tracer, impact and ejected casing",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "struck NPC staggers and flinches",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "player recoil layer present and kicked by the shot",
+			"passed": true
+		},
+		{
+			"detail": "cam=0.0000 gun=0.000",
+			"name": "recoil recovers within ~0.4 s",
+			"passed": true
+		},
+		{
+			"detail": "{ \"puff\": 260, \"chip\": 160, \"spark\": 220, \"flash\": 24, \"flame\": 24, \"tracer\": 32, \"casings\": 40, \"lights\": 3 }",
+			"name": "sustained fire keeps effect pools bounded",
+			"passed": true
+		},
+		{
+			"detail": "weight=1.00 gun_h=1.38 barrel_dot=1.000",
+			"name": "aim layer holds the pistol at shoulder height along the aim",
+			"passed": true
+		},
+		{
+			"detail": "[\"\", \"\", \"\"]",
+			"name": "no interaction prompt during a firefight",
+			"passed": true
+		},
+		{
+			"detail": "pelvis_h=0.36 drift=1.02 guard=y=-1.08 h=1.54 PB_upper_arm_r",
+			"name": "lethal hit ragdolls the body; it ends on the ground, never under it or flung",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "input interaction enters a car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "occupied player collision is disabled",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "driving input moves the car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "occupant follows the moving car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "authoritative position follows controlled vehicle",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "left driving input turns left",
+			"passed": true
+		},
+		{
+			"detail": "shutter=1.18 speed=32",
+			"name": "chase camera motion blur opens with speed",
+			"passed": true
+		},
+		{
+			"detail": "samples=24",
+			"name": "motion blur is gated to near road-level pixels (no ghosted pedestrians)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "road filtering and aggregate contrast stay speckle-free",
+			"passed": true
+		},
+		{
+			"detail": "roll=0.0142 pitch=-0.0200",
+			"name": "car body rolls and pitches under load",
+			"passed": true
+		},
+		{
+			"detail": "gap=6.04",
+			"name": "chase camera trails behind the car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "car carries a ground contact shadow",
+			"passed": true
+		},
+		{
+			"detail": "moved=2.50",
+			"name": "a rammed car is shoved by the impact",
+			"passed": true
+		},
+		{
+			"detail": "yaw 1.24 rad slide 1.60",
+			"name": "handbrake turn swings the car round with the tail sliding",
+			"passed": true
+		},
+		{
+			"detail": "kept 0.41 moved 2.59 closing 12.0",
+			"name": "rear-end crash shares momentum (our car keeps rolling, the struck car is shoved)",
+			"passed": true
+		},
+		{
+			"detail": "dents 1/1 debris 7",
+			"name": "crash leaves dents on both cars and throws debris",
+			"passed": true
+		},
+		{
+			"detail": "after 2.6 m/s vz 2.6",
+			"name": "wall impact rebounds instead of stopping dead",
+			"passed": true
+		},
+		{
+			"detail": "90.40 -> 87.38",
+			"name": "NPC weapon ray damages occupied car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "car body protects its occupant from that ray",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "normal exit returns control and camera",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "on-foot collision restored",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "blocked car exit preserves seated control without wall clipping",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "clearing blocked exit restores normal exit",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death is counted for honest golden-path evidence",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death in car releases both control owners",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death restores visible player and gameplay camera",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "walking still works after vehicle death",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows",
+			"passed": true
+		},
+		{
+			"detail": "clip=idle rate=1.00",
+			"name": "locomotion-Q: planted-foot lock (leg IK) on the player; aimed backpedal is its own clip played forward, plus a skid clip",
+			"passed": true
+		},
+		{
+			"detail": "boxes=2926",
+			"name": "locomotion-Q: street props (scooters, bikes, planters...) collide with the on-foot player",
+			"passed": true
+		},
+		{
+			"detail": "0.42 s",
+			"name": "locomotion-Q: standstill to walk speed takes a real first step (>= 0.3 s)",
+			"passed": true
+		},
+		{
+			"detail": "skid=true turned=3.14 rad",
+			"name": "locomotion-Q: a sharp 180 at a sprint plants a skid, then pivots",
+			"passed": true
+		},
+		{
+			"detail": "gap=0.78 m",
+			"name": "locomotion-Q: a pedestrian inside the player's personal space is shouldered clear",
+			"passed": true
+		},
+		{
+			"detail": "apex=0.52",
+			"name": "on-foot jump is a human hop (0.40-0.70 m rise, under 0.5 s airtime)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "wanted escalation decays when unobserved",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "health regenerates out of fire",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "helicopter control is exclusive",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "lift input gains altitude",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "neutral lift stabilizes hover",
+			"passed": true
+		},
+		{
+			"detail": "{ \"rotor_spin\": 1.0, \"disc_visible\": true, \"blades_visible\": false, \"camera_current\": true, \"camera_distance\": 12.3915853500366, \"camera_height\": 7.03643608093262, \"camera_behind\": true, \"wash\": 0.36398459103519, \"wash_visible\": true }",
+			"name": "rotor spools up to a motion-blurred disc in flight",
+			"passed": true
+		},
+		{
+			"detail": "{ \"rotor_spin\": 1.0, \"disc_visible\": true, \"blades_visible\": false, \"camera_current\": true, \"camera_distance\": 12.3915853500366, \"camera_height\": 7.03643608093262, \"camera_behind\": true, \"wash\": 0.36398459103519, \"wash_visible\": true }",
+			"name": "flight chase camera trails behind and above the aircraft",
+			"passed": true
+		},
+		{
+			"detail": "{ \"rotor_spin\": 1.0, \"disc_visible\": true, \"blades_visible\": false, \"camera_current\": true, \"camera_distance\": 12.3915853500366, \"camera_height\": 7.03643608093262, \"camera_behind\": true, \"wash\": 0.36398459103519, \"wash_visible\": true }",
+			"name": "rotor downwash kicks up the ground near the pad",
+			"passed": true
+		},
+		{
+			"detail": "{ \"rotor_spin\": 1.0, \"disc_visible\": true, \"blades_visible\": false, \"camera_current\": true, \"camera_distance\": 12.3915853500366, \"camera_height\": 7.03643608093262, \"camera_behind\": true, \"wash\": 0.36398459103519, \"wash_visible\": true }",
+			"name": "chase camera looks down on the rotor disc; aviation grounds are planted (wave P)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "airborne helicopter rejects exit",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pause freezes aircraft",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pause freezes pursuit heat",
+			"passed": true
+		},
+		{
+			"detail": "position=(270.0, 0.160116, 104.0) velocity=(0.0, 0.0, 0.0) health=100.0 floor=true",
+			"name": "controlled descent lands without disabling aircraft",
+			"passed": true
+		},
+		{
+			"detail": "touchdown=0.90 m/s",
+			"name": "ground cushion settles a full-descent landing gently (wave P)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "landed helicopter exits to walking",
+			"passed": true
+		},
+		{
+			"detail": "moved=3.934 from=(2.461618, 0.275156, -331.4723) to=(6.395957, 0.275935, -331.4723) velocity=(6.8, 0.0, 0.0)",
+			"name": "waterfront helicopter exit permits actual on-foot movement",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "package input pickup advances and hides pickup",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "taking car starts the authored driving leg",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "on-foot arrival cannot bypass driving leg",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death restores package checkpoint and requires new drive",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "restoration rebuilds flags and objective",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "delivery cannot be triggered remotely",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "restart resets pickup checkpoint and prerequisites",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "restart retains exactly three mission guards",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save roundtrip restores health and mission checkpoint",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save restoration updates package and objective",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save restores sensitivity and accessibility settings",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "invalid live state cannot replace the last complete save",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "atomic replacement updates an existing save",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "successful save leaves no temporary checkpoint file",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "successful load publishes one state-restored event",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "saved SMG restores held model and clears transient actions",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects truncated position vector atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects unknown equipped weapon atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects out-of-range magazine atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects wrong health type atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects invalid checkpoint index atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects inconsistent pursuit state atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects wrong safe-position type atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects out-of-range mouse sensitivity atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save rejects wrong accessibility-setting type atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "Bayfront Courier is connected to the running game",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "save/reload restores courier destination and completed runs",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "invalid courier state rejects the whole save atomically",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "legacy saves load and reset optional courier progress",
+			"passed": true
+		},
+		{
+			"detail": "97/97",
+			"name": "kerbside parked cars sit wholly on the carriageway",
+			"passed": true
+		},
+		{
+			"detail": "50/52 blocked=[\"(-7.0, 0.0, 183.0)\", \"(153.0, 0.0, 183.0)\"]",
+			"name": "kerbside parked cars can pull out and drive 12 m unobstructed",
+			"passed": true
+		},
+		{
+			"detail": "71 asleep",
+			"name": "settled parked cars stop ticking until taken",
+			"passed": true
+		},
+		{
+			"detail": "(-160.0, 0.1, -160.0)",
+			"name": "police pursuit routes along junctions around a block",
+			"passed": true
+		},
+		{
+			"detail": "(-160.0, 0.1, 0.0) then (-160.0, 0.1, 0.0)",
+			"name": "pursuit commits to its next junction after leaving one",
+			"passed": true
+		},
+		{
+			"detail": "(-160.0, 0.1, -62.0)",
+			"name": "pursuit closes on a mid-block goal from its junction",
+			"passed": true
+		},
+		{
+			"detail": "(270.0, 1.657031, 104.0)",
+			"name": "ditched aircraft is recovered above its last supported position",
+			"passed": true
+		},
+		{
+			"detail": "lane points 5",
+			"name": "carjacked driver flees from the car and rejoins a pavement lane",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "all five required Singapore landmarks are placed",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "skyline: landmark footprints do not overlap each other",
+			"passed": true
+		},
+		{
+			"detail": "4.6 deg of 46.9",
+			"name": "skyline: Singapore Flyer lies inside the photo_06 aerial frame",
+			"passed": true
+		},
+		{
+			"detail": "roofs 247 condensers 791 housings 247",
+			"name": "skyline: flat roofs carry weathered decks and roof plant",
+			"passed": true
+		},
+		{
+			"detail": "6",
+			"name": "skyline: layered background city is built from batched tower archetypes",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "skyline: landmark facade and vertical-garden shaders are applied",
+			"passed": true
+		},
+		{
+			"detail": "{ \"materials\": 7, \"over_water\": 0, \"placed\": 1434, \"ground_shadows\": 1434, \"lowrise\": 7431, \"far_towers\": 1016, \"carpet_km2\": 78.912592, \"promenade_trees\": 188, \"atmosphere\": 4 }",
+			"name": "skyline: background city wears at least 5 distinct facade systems",
+			"passed": true
+		},
+		{
+			"detail": "{ \"materials\": 7, \"over_water\": 0, \"placed\": 1434, \"ground_shadows\": 1434, \"lowrise\": 7431, \"far_towers\": 1016, \"carpet_km2\": 78.912592, \"promenade_trees\": 188, \"atmosphere\": 4 }",
+			"name": "skyline: no background tower stands in the bay",
+			"passed": true
+		},
+		{
+			"detail": "{ \"materials\": 7, \"over_water\": 0, \"placed\": 1434, \"ground_shadows\": 1434, \"lowrise\": 7431, \"far_towers\": 1016, \"carpet_km2\": 78.912592, \"promenade_trees\": 188, \"atmosphere\": 4 } layers 6",
+			"name": "skyline: every background tower casts a ground shadow",
+			"passed": true
+		},
+		{
+			"detail": "haze@800m=0.46 haze@200m=0.00",
+			"name": "skyline: far CBD hazes toward the sky, near district stays crisp",
+			"passed": true
+		},
+		{
+			"detail": "{ \"materials\": 7, \"over_water\": 0, \"placed\": 1434, \"ground_shadows\": 1434, \"lowrise\": 7431, \"far_towers\": 1016, \"carpet_km2\": 78.912592, \"promenade_trees\": 188, \"atmosphere\": 4 }",
+			"name": "skyline: hinterland city carpet, low-rise blocks and third tower layer run past the bay",
+			"passed": true
+		},
+		{
+			"detail": "gap 0.20 { \"haze_col\": 0.60302, \"horizon_col\": 0.805616 }",
+			"name": "skyline: aerial haze is darker than the horizon sky so far towers keep silhouettes",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "run opens outdoors on the heritage street, not inside the safe room",
+			"passed": true
+		},
+		{
+			"detail": "{ \"gunshot\": { \"looped\": false, \"peak\": 0.77115625, \"seam_step\": 0.4460625, \"max_interior_step\": 1.06875 }, \"footstep\": { \"looped\": false, \"peak\": 0.43340625, \"seam_step\": 0.05546875, \"max_interior_step\": 0.2334375 }, \"impact\": { \"looped\": false, \"peak\": 0.56878125, \"seam_step\": 0.0228125, \"max_interior_step\": 0.71128125 }, \"pickup\": { \"looped\": false, \"peak\": 0.34859375, \"seam_step\": 0.015125, \"max_interior_step\": 0.2288125 }, \"ui\": { \"looped\": false, \"peak\": 0.29309375, \"seam_step\": 0.0021875, \"max_interior_step\": 0.1003125 }, \"engine\": { \"looped\": true, \"peak\": 0.34371875, \"seam_step\": 0.291375, \"max_interior_step\": 0.331125 }, \"rotor\": { \"looped\": true, \"peak\": 0.29259375, \"seam_step\": 0.0226875, \"max_interior_step\": 0.06371875 }, \"siren\": { \"looped\": true, \"peak\": 0.29996875, \"seam_step\": 0.03309375, \"max_interior_step\": 0.0835 }, \"tyre\": { \"looped\": true, \"peak\": 0.346125, \"seam_step\": 0.08290625, \"max_interior_step\": 0.2245625 }, \"city\": { \"looped\": true, \"peak\": 0.166375, \"seam_step\": 0.02196875, \"max_interior_step\": 0.0115 }, \"market\": { \"looped\": true, \"peak\": 0.10859375, \"seam_step\": 0.0383125, \"max_interior_step\": 0.00921875 }, \"water\": { \"looped\": true, \"peak\": 0.1586875, \"seam_step\": 0.0031875, \"max_interior_step\": 0.01459375 }, \"bird\": { \"looped\": false, \"peak\": 0.17996875, \"seam_step\": 0.0, \"max_interior_step\": 0.12790625 }, \"car_crash\": { \"looped\": false, \"peak\": 0.88184375, \"seam_step\": 0.24271875, \"max_interior_step\": 0.7374375 }, \"glass_break\": { \"looped\": false, \"peak\": 0.50434375, \"seam_step\": 0.06034375, \"max_interior_step\": 0.747625 } }",
+			"name": "synthesized loops have continuous seams (objective, not listening)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "synthesized sounds stay below full-scale clipping",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "street life systems present",
+			"passed": true
+		},
+		{
+			"detail": "added=8 nodes=29 lat=5.25 lift=3.67",
+			"name": "downtown road graph adopted by lane traffic (left-hand, merged, deck height)",
+			"passed": true
+		},
+		{
+			"detail": "walks=1",
+			"name": "downtown walks adopted by the crowd director",
+			"passed": true
+		},
+		{
+			"detail": "{ \"woman\": 118, \"with_prop\": 234, \"man\": 99, \"child\": 29, \"elder_f\": 19, \"elder_m\": 28 }",
+			"name": "crowd is women, men, elders and children (M2)",
+			"passed": true
+		},
+		{
+			"detail": "hair=167 skirts=67 props=231 posed=195 of 293",
+			"name": "people carry hair, skirts, props and poses (M2)",
+			"passed": true
+		},
+		{
+			"detail": "(9.6, 0.3, -80.0)",
+			"name": "walkers off the pavement return to it, crossings allowed (M2)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "taxi roof signs carry a legend; tail lamps are lens clusters (M2)",
+			"passed": true
+		},
+		{
+			"detail": "42 within 175 m of (-172.0, 0.0, -33.0)",
+			"name": "camera-centred lane traffic stays present within the free-driving budget",
+			"passed": true
+		},
+		{
+			"detail": "0/44 off-lane",
+			"name": "ambient traffic keeps to the left-hand lanes",
+			"passed": true
+		},
+		{
+			"detail": "30/48 moved, 22 holding { \"red\": 13, \"amb\": 7, \"car_ai\": 2 }",
+			"name": "ambient traffic flows and queues",
+			"passed": true
+		},
+		{
+			"detail": "48 allocated, 48 active (wave T: 112)",
+			"name": "ambient fleet stays within the free-driving budget",
+			"passed": true
+		},
+		{
+			"detail": "7 physical traffic cars (wave T: 14)",
+			"name": "physical civilian traffic stays within the free-driving budget",
+			"passed": true
+		},
+		{
+			"detail": "{ \"road_available\": 97, \"road_spawned\": 51, \"courtyard_spawned\": 20 }",
+			"name": "road parking leaves at least 40 percent of bays empty",
+			"passed": true
+		},
+		{
+			"detail": "23 protected, 0 missing/unusable",
+			"name": "protected parking produces usable opening and courtyard cars",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "short-lane budget rejects another seed at a distant gap",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "lane budget still admits separated cars and rejects overlaps",
+			"passed": true
+		},
+		{
+			"detail": "active 2 then 2 /8, overlaps 0, inactive colliders 0",
+			"name": "real camera cuts fill only the short-lane budget and exhaust safely",
+			"passed": true
+		},
+		{
+			"detail": "{ \"signal\": 124, \"major\": 44, \"yield\": 16, \"none\": 40, \"zebra_edges\": 212, \"proxied\": 1 }",
+			"name": "road rules mapped onto the lane graph (signals, priority, give way, zebras)",
+			"passed": true
+		},
+		{
+			"detail": "0/184 approaches",
+			"name": "junction hold lines sit behind the zebra on every approach",
+			"passed": true
+		},
+		{
+			"detail": "0 on zebras, 0 in boxes, 35 cars near",
+			"name": "no standing lane car on a zebra or in a junction box",
+			"passed": true
+		},
+		{
+			"detail": "0 overlapping pairs",
+			"name": "ambient vehicles never overlap",
+			"passed": true
+		},
+		{
+			"detail": "224 roamers within 130 m",
+			"name": "camera-centred crowd on the pavements",
+			"passed": true
+		},
+		{
+			"detail": "288 trees, 288 overhang",
+			"name": "avenue tree crowns overhang the carriageway",
+			"passed": true
+		},
+		{
+			"detail": "mode=0 promoted=1",
+			"name": "a stopped ambient car can be taken with interact",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "bay water uses the animated water shader, not a flat material",
+			"passed": true
+		},
+		{
+			"detail": "spec_cap=0.32",
+			"name": "water sun glint is capped so no light blows a white disc",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "water surface sits below the promenade deck with a seawall face",
+			"passed": true
+		},
+		{
+			"detail": "boats=20 moved=18 anchored=20",
+			"name": "boats are on the bay and moving, ships ride at anchor offshore",
+			"passed": true
+		},
+		{
+			"detail": "legacy_hidden=1",
+			"name": "Merlion jet is translucent falling water, opaque legacy strut hidden",
+			"passed": true
+		},
+		{
+			"detail": "whitecaps=0.55",
+			"name": "bay water is a non-periodic multi-octave wave field with whitecaps",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "avenue ends over the bay are railed jetty decks, not bare road slabs",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "sea continues to the horizon through a skirt sharing the water material",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "bay stays glassy; foam is event-driven (Kelvin wakes, stern trail, quay wet line)",
+			"passed": true
+		},
+		{
+			"detail": "moving=18 droplets=3120",
+			"name": "moving boats throw raised spray sheets, stern churn and droplets",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "wake and quay foam is lacy coverage, not smooth strokes",
+			"passed": true
+		},
+		{
+			"detail": "tris=2530",
+			"name": "runabout hull is a detailed crewed model (rails, windshield, driver)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "downtown plan is self-consistent and matches the fixed legacy anchors (S-1 2026-10-23)",
+			"passed": true
+		},
+		{
+			"detail": "{ \"towers_removed\": 396, \"towers_kept_downtown\": 0, \"beyond_core_towers\": 244, \"behind_mbs_tall\": 27, \"land_rects\": 10, \"seawall_segments\": 42, \"draws\": 331, \"signals\": 30, \"flank_towers_freed\": 13, \"flank_towers_collided\": 0, \"carpets_cut\": 10, \"flank_walls_hidden\": 1, \"promenade_tree_parts_dropped\": 0, \"lamps\": 837, \"trees\": 261, \"build_ms\": 1001, \"shapes\": 1861, \"graph_nodes\": 64, \"graph_edges\": 72, \"graph_links\": 10, \"planting\": { \"strip_clumps\": 21041, \"palms\": 168, \"median_clumps\": 898, \"forecourt_beds\": 1164, \"species\": 6, \"shrub_kinds\": [\"ixora\", \"mondo\", \"fern\", \"croton\"] }, \"aerial_light\": true, \"fill\": { \"plazas\": { \"mbs\": 36, \"ns_square\": 26, \"merlion\": 5, \"esplanade\": 10, \"nearfield\": { \"joints\": 947, \"clusters\": 55, \"planters\": 17, \"tables\": 11, \"bench_bins\": 9, \"racks\": 5, \"bollard_groups\": 9, \"totems\": 4, \"stains\": 61 }, \"palms\": 65, \"benches\": 53, \"umbrella_tables\": 30, \"shapes\": 100 }, \"park_panels\": 16, \"lawn_cells\": 101713, \"garden\": { \"cut_cells\": 8762, \"walk_m\": 1309, \"shore_shrubs\": 40 }, \"canopy\": { \"shrub\": 833, \"rain\": 435, \"angsana\": 340, \"flame\": 270, \"tembusu\": 297, \"crowns_in_kept_open\": 0, \"lawn_blocks\": 10, \"empty_lawn_blocks\": 0, \"draws\": 116, \"total\": 2175 }, \"lawn_blocks\": 10, \"empty_lawn_blocks\": 0, \"roofs\": { \"roofs\": 77, \"draws\": 98, \"boxes\": 269 }, \"ms\": 651 } }",
+			"name": "downtown-map: piece built (ground, roads, bridges, edges) and took over the legacy ground/rail sections",
+			"passed": true
+		},
+		{
+			"detail": "holes=0 ",
+			"name": "downtown-map: every playable land sample has walkable collision (no void)",
+			"passed": true
+		},
+		{
+			"detail": "gaps=0 max_y=3.66 ",
+			"name": "downtown-map: Marina Bay loop lane (Collyer Quay - Esplanade Bridge - Raffles Ave - Bayfront Bridge - Marina Blvd) is continuous collision at the road surface",
+			"passed": true
+		},
+		{
+			"detail": "esplanade_bridge deck 3.67; bayfront_bridge deck 3.66; jubilee_bridge deck 2.67; cavenagh_bridge deck 2.46; elgin_bridge deck 2.67; coleman_bridge deck 2.67; ",
+			"name": "downtown-map: six bridges stand over water with deck collision at plan height",
+			"passed": true
+		},
+		{
+			"detail": "nodes=64 edges=72 links=10 reach=true peds=57",
+			"name": "downtown-map: downtown lane graph is connected from the district to the Bayfront, Marina South and civic district, linked to legacy junctions",
+			"passed": true
+		},
+		{
+			"detail": "allowed=true refused=true pads=true",
+			"name": "downtown-map: helicopter may land and exit on downtown streets and the four new pads; water, rooftops and off-map refused",
+			"passed": true
+		},
+		{
+			"detail": "(-920.0, 1.2, -200.0):true (780.0, 1.2, -300.0):true (-700.0, 1.2, 395.0):true (500.0, 1.2, 395.0):true (100.0, 1.2, -1080.0):true ",
+			"name": "downtown-map: every playable edge has a physical barrier (hoarding, railing, fence)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "downtown-map: the district opens onto downtown (no x = +-375 rail wall)",
+			"passed": true
+		},
+		{
+			"detail": "shapes=1861 draws=331 build_ms=1001",
+			"name": "downtown-map: collision and draw budgets (shapes, mesh draws)",
+			"passed": true
+		},
+		{
+			"detail": "[\"skyline_dropped\", \"interim_ground\", \"mbs\", \"helix\", \"artscience\", \"esplanade\", \"flyer\", \"gardens\", \"fullerton\", \"shapes\", \"tris\", \"build_ms\"]",
+			"name": "landmarks: piece built every module",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "landmarks: location keys sit on the plan anchors (ArtScience and Flyer moved, D2)",
+			"passed": true
+		},
+		{
+			"detail": "130 of 300",
+			"name": "landmarks: collision within the plan budget",
+			"passed": true
+		},
+		{
+			"detail": "199",
+			"name": "landmarks: extra headless build time within budget",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "landmarks: MBS SkyPark cantilever points north over three curved towers",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "landmarks: MBS is a detailed street-level model, not a backdrop",
+			"passed": true
+		},
+		{
+			"detail": "hit y=0.36",
+			"name": "landmarks: walkable surface at event plaza promenade",
+			"passed": true
+		},
+		{
+			"detail": "hit y=1.50",
+			"name": "landmarks: walkable surface at Shoppes terrace",
+			"passed": true
+		},
+		{
+			"detail": "hit y=3.60",
+			"name": "landmarks: walkable surface at Helix deck mid-span",
+			"passed": true
+		},
+		{
+			"detail": "hit y=200.00",
+			"name": "landmarks: walkable surface at SkyPark deck",
+			"passed": true
+		},
+		{
+			"detail": "hit y=0.36",
+			"name": "landmarks: walkable surface at ArtScience promontory walk",
+			"passed": true
+		},
+		{
+			"detail": "hit y=0.36",
+			"name": "landmarks: walkable surface at Esplanade waterfront",
+			"passed": true
+		},
+		{
+			"detail": "hit y=0.36",
+			"name": "landmarks: walkable surface at Flyer entrance plaza",
+			"passed": true
+		},
+		{
+			"detail": "hit y=0.34",
+			"name": "landmarks: walkable surface at Supertree Grove plaza",
+			"passed": true
+		},
+		{
+			"detail": "hit y=1.26",
+			"name": "landmarks: walkable surface at Merlion Park terrace",
+			"passed": true
+		},
+		{
+			"detail": "gaps=0 worst=0.00",
+			"name": "landmarks: Helix deck is continuous end to end (111 probes)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "landmarks: Helix balustrades enclose the walkway",
+			"passed": true
+		},
+		{
+			"detail": "progressed=92.6 m end_y=3.58 min_y=0.36 idx=50",
+			"name": "landmarks: player climbs the Helix ramp onto the span (real controller)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "downtown blocks: piece built its root",
+			"passed": true
+		},
+		{
+			"detail": "built=36",
+			"name": "downtown blocks: every owned plot is built (36 plots)",
+			"passed": true
+		},
+		{
+			"detail": "boxes=269",
+			"name": "downtown blocks: collision stays inside the 600-box budget",
+			"passed": true
+		},
+		{
+			"detail": "violations=0",
+			"name": "downtown blocks: no building footprint leaves its plot",
+			"passed": true
+		},
+		{
+			"detail": "buildings=86 towers=49",
+			"name": "downtown blocks: dense CBD (>= 40 buildings, >= 20 towers over 100 m)",
+			"passed": true
+		},
+		{
+			"detail": "units=86",
+			"name": "downtown blocks: Boat Quay row has >= 60 shophouse units",
+			"passed": true
+		},
+		{
+			"detail": "same_pairs=0 worst_run=1",
+			"name": "downtown blocks: adjacent towers never share silhouette + cladding",
+			"passed": true
+		},
+		{
+			"detail": "styles=8 claddings=8",
+			"name": "downtown blocks: >= 7 silhouettes and >= 6 claddings in use",
+			"passed": true
+		},
+		{
+			"detail": "linkway=14283 entrances=77 bus=18 signs=257",
+			"name": "downtown blocks: street frontage (linkways >= 2 km, >= 30 entrances, >= 4 bus stops, >= 40 shop signs)",
+			"passed": true
+		},
+		{
+			"detail": "inside=0",
+			"name": "downtown blocks: built plots are clear of procedural background towers",
+			"passed": true
+		},
+		{
+			"detail": "highest hit y=246.8",
+			"name": "downtown blocks: CBD towers are collidable from the air",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "downtown-life: carriageway raster marks Cecil St / Bayfront Ave lanes, not their pavements or the plazas",
+			"passed": true
+		},
+		{
+			"detail": "0 bad vertices, 65 lines",
+			"name": "downtown-life: no downtown walk line runs along a live lane",
+			"passed": true
+		},
+		{
+			"detail": "34 near edges of 224",
+			"name": "downtown-life: lane-car seeding draws from edges near the focus",
+			"passed": true
+		},
+		{
+			"detail": "{ \"bench\": 15, \"cart\": 7, \"photo\": 6 } on_road=0 people=24",
+			"name": "downtown-life: plaza stations (benches, ice-cream carts, photo spots) built off the carriageway",
+			"passed": true
+		},
+		{
+			"detail": "{ \"strip_clumps\": 21041, \"palms\": 168, \"median_clumps\": 898, \"forecourt_beds\": 1164, \"species\": 6, \"shrub_kinds\": [\"ixora\", \"mondo\", \"fern\", \"croton\"] }",
+			"name": "downtown-polish: layered roadside planting (>= 4 species, >= 3000 strip clumps, >= 60 palms, >= 40 forecourt beds)",
+			"passed": true
+		},
+		{
+			"detail": "shadows=230",
+			"name": "downtown-polish: tower ground shadows from the sun (>= 150 buildings incl. MBS)",
+			"passed": true
+		},
+		{
+			"detail": "buildings=13 tall=11",
+			"name": "downtown-polish: Marina Centre is a dense cluster (>= 10 buildings, >= 4 over 100 m)",
+			"passed": true
+		},
+		{
+			"detail": "behind_mbs_tall=27",
+			"name": "downtown-polish: >= 5 towers over 100 m stand directly behind MBS",
+			"passed": true
+		},
+		{
+			"detail": "plots_near=0",
+			"name": "downtown-polish: Raffles Ave / Bayfront Ave North corner keeps a 15 m plaza",
+			"passed": true
+		},
+		{
+			"detail": "0.23,0.25,0.23,0.19",
+			"name": "downtown-polish: Helix landing plazas have walkable edge ramps",
+			"passed": true
+		},
+		{
+			"detail": "node=true",
+			"name": "downtown-polish: aerial light (long sun shadows from the air) attached with its overlay",
+			"passed": true
+		},
+		{
+			"detail": "{ \"shrub\": 833, \"rain\": 435, \"angsana\": 340, \"flame\": 270, \"tembusu\": 297, \"crowns_in_kept_open\": 0, \"lawn_blocks\": 10, \"empty_lawn_blocks\": 0, \"draws\": 116, \"total\": 2175 }",
+			"name": "downtown-fill: varied park canopy (>= 2100 crowns, >= 4 species with >= 250 each, shrub masses)",
+			"passed": true
+		},
+		{
+			"detail": "blocks=10 empty=0",
+			"name": "downtown-fill: no flat lawn larger than a block (0 treeless 48 m lawn cells)",
+			"passed": true
+		},
+		{
+			"detail": "kept=0",
+			"name": "downtown-fill: Padang field and view wedges keep no tree crowns",
+			"passed": true
+		},
+		{
+			"detail": "cells=101713",
+			"name": "downtown-fill: downtown turf uses the varied lawn shader (>= 50000 lawn cells)",
+			"passed": true
+		},
+		{
+			"detail": "{ \"roofs\": 77, \"draws\": 98, \"boxes\": 269 }",
+			"name": "downtown-fill: roof plant on >= 15 downtown roofs",
+			"passed": true
+		},
+		{
+			"detail": "{ \"mbs\": 36, \"ns_square\": 26, \"merlion\": 5, \"esplanade\": 10, \"nearfield\": { \"joints\": 947, \"clusters\": 55, \"planters\": 17, \"tables\": 11, \"bench_bins\": 9, \"racks\": 5, \"bollard_groups\": 9, \"totems\": 4, \"stains\": 61 }, \"palms\": 65, \"benches\": 53, \"umbrella_tables\": 30, \"shapes\": 100 }",
+			"name": "downtown-fill: MBS arrival, NS Square and Merlion Park dressed (palms, cafe umbrellas, kiosks)",
+			"passed": true
+		},
+		{
+			"detail": "{ \"joints\": 947, \"clusters\": 55, \"planters\": 17, \"tables\": 11, \"bench_bins\": 9, \"racks\": 5, \"bollard_groups\": 9, \"totems\": 4, \"stains\": 61 }",
+			"name": "downtown-fill: arrival street cameras have a paving layout (>= 800 joints) and >= 40 furniture clusters in front",
+			"passed": true
+		},
+		{
+			"detail": "fx=true",
+			"name": "downtown-fill: helicopter rotor disc draws motion-blurred blade streaks",
+			"passed": true
+		},
+		{
+			"detail": "[]",
+			"name": "downtown-fill: no shop / tower name echoes a real chain or building",
+			"passed": true
+		},
+		{
+			"detail": "helix=2.30 mono=4.10",
+			"name": "downtown-fill: sign lettering fits its plate (Helix 2.6 m plate, 4.6 m name monolith)",
+			"passed": true
+		},
+		{
+			"detail": "h=0.000/0.000",
+			"name": "downtown-fill: Esplanade waterfront paving beside the Jubilee landing is flat",
+			"passed": true
+		},
+		{
+			"detail": "(-164.0, 0.275763, -330.1324)",
+			"name": "heritage avenue joins the promenade without a jump",
+			"passed": true
+		},
+		{
+			"detail": "[4037, 4444, 4226, 0, 1966, 4537, 1819, 4024]",
+			"name": "character look mesh has skin, face, hair, shirt, trousers and shoes",
+			"passed": true
+		},
+		{
+			"detail": "folded=2463",
+			"name": "player mitten fingers fold away for the jointed procedural hands",
+			"passed": true
+		},
+		{
+			"detail": "verts=3150",
+			"name": "procedural hands: 4 jointed fingers + thumb in fist and relaxed poses",
+			"passed": true
+		},
+		{
+			"detail": "true",
+			"name": "character cloth uses the woven fabric set (flannel, denim, batik, jersey)",
+			"passed": true
+		},
+		{
+			"detail": "distinct=12",
+			"name": "crowd wardrobe: >= 8 distinct civilians, none in the player's outfit",
+			"passed": true
+		},
+		{
+			"detail": "bake=res://assets/providers/baked_characters/player_rigged_loco4_look_r1t.res",
+			"name": "characters-R: player look mesh is baked offline and matches a fresh build (no runtime rebuild at load)",
+			"passed": true
+		},
+		{
+			"detail": "dressed=160",
+			"name": "characters-R: hidden body skin under the clothes is dressed (no skin shards through the shirt/jeans)",
+			"passed": true
+		},
+		{
+			"detail": "verts=3150/3150",
+			"name": "characters-R: gun and support hands publish grip frames and close fingers round the grip",
+			"passed": true
+		},
+		{
+			"detail": "ang=0.0000 off=0.00000",
+			"name": "characters-R: the aim layer seats the pistol by the published grip frame (gun pose recovered exactly)",
+			"passed": true
+		},
+		{
+			"detail": "distinct=12",
+			"name": "characters-R: civilians get their own head build (jaw, nose, brow, hair volume)",
+			"passed": true
+		},
+		{
+			"detail": "spread=0.39m builds=4 elders=12/40",
+			"name": "characters-R2: the crowd spans heights (>=15 cm at 1.8 m), builds and older adults",
+			"passed": true
+		},
+		{
+			"detail": "res://assets/providers/baked_characters/civilian_rigged_v2_look_r1t.res",
+			"name": "characters-S: the civilian look mesh is baked offline (crowd load needs no runtime rebuild)",
+			"passed": true
+		},
+		{
+			"detail": "tris=2910",
+			"name": "characters-S: civilian head backfill closes the cracked face (head-only back faces, skinned)",
+			"passed": true
+		},
+		{
+			"detail": "eyes=306 cards=1755 nose-centre dx=-0.002; eyes=306 cards=774 nose-centre dx=-0.008; ",
+			"name": "characters-T3: eye patches, strand hair cards and a forward-facing head in the player and civilian bakes",
+			"passed": true
+		},
+		{
+			"detail": "backfill tris=2910, eye/card tris left out=12896",
+			"name": "characters-T3: backfill skips eye patches and hair cards (no skin flakes over hair)",
+			"passed": true
+		},
+		{
+			"detail": "women=30 bad_face=0 bad_legs=0 elders=10/10 tones=20 distinct=60",
+			"name": "characters-S: street-life people map onto the look outfit (women unstubbled, skirt legs, grey elders, >=5 skin tones, >=50/60 distinct)",
+			"passed": true
+		},
+		{
+			"detail": "feet dy=0.000/0.000 knees=0.26/0.43 rad pelvis shift=0.042",
+			"name": "characters-T: weight-shifted idle (pelvis over one leg, one soft knee, both soles planted, mirrored idle_b)",
+			"passed": true
+		},
+		{
+			"detail": "head scale=0.90",
+			"name": "characters-T: adult head proportion (head bone scaled to ~1:7.5 of height)",
+			"passed": true
+		},
+		{
+			"detail": "skirt_skinned=true bag_centre_err=0.000",
+			"name": "characters-T: skirts are skinned to the legs and a carried bag hides with its carrier (shared visibility centre)",
+			"passed": true
+		},
+		{
+			"detail": "rects=1",
+			"name": "characters-T3: crowd seeding keeps out of the Raffles Place lawn bed (no knee-deep walkers)",
+			"passed": true
+		},
+		{
+			"detail": "tudung=61 of 288 women, uniforms=36",
+			"name": "characters-T3: local dress in the crowd (tudung on some women, school uniforms on some children)",
+			"passed": true
+		},
+		{
+			"detail": "skirt width=0.50 narrow=true part_cull=0",
+			"name": "characters-T2: fitted skirt, women's narrower shoulders, near-lens cull hides body and parts together",
+			"passed": true
+		},
+		{
+			"detail": "occluders=499",
+			"name": "perf-S: occlusion culling on with >= 150 building occluders (downtown shells, shophouse rows, HDB slabs)",
+			"passed": true
+		},
+		{
+			"detail": "below=0",
+			"name": "perf-S: occluders start above the street band (>= 3.5 m)",
+			"passed": true
+		},
+		{
+			"detail": "batches=170 oversized=0",
+			"name": "perf-S: rain-tree batches are per-cell (culled, distance LOD), none map-wide",
+			"passed": true
+		},
+		{
+			"detail": "groups=2",
+			"name": "perf-S: cell grouping splits far instances",
+			"passed": true
+		},
+		{
+			"detail": "near=1 mid=3 far=6 off=15",
+			"name": "perf-S: crowd animates every frame near, strided far and off screen",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "perf-S: look bake valid in packaged builds (source .glb absent) and still rejected for a different source",
+			"passed": true
+		},
+		{
+			"detail": "tagged=5512 untagged=12",
+			"name": "perf-S: street-life meshes leave the bay reflection pass (main cameras still see them)",
+			"passed": true
+		},
+		{
+			"detail": "moved=(0.3, 0.0, -0.2) root=(0.0, 0.02, 0.0)",
+			"name": "perf-T: far walker deferred motion commits exactly and resets the visual glide",
+			"passed": true
+		},
+		{
+			"detail": "glide 1/2/4 idle=4 full=9 m",
+			"name": "perf-T: far walkers glide every tick near the lens, strided far / off screen; idlers strided; near walkers full rate",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "perf-T: no per-frame render-server readback in boat wash; car probe re-placed on the budget cadence; blur shader shared and prewarmed",
+			"passed": true
+		},
+		{
+			"detail": "crowd=3 traffic=3",
+			"name": "perf-T: failed crowd and lane-car re-seeds are capped per frame (no retry storm when the focus is over water)",
+			"passed": true
+		}
+	],
+	"duration_ms": 38810,
+	"engine": "4.7.1-stable (official)",
+	"failed": 0,
+	"finished_utc": "2026-10-25T19:29:41",
+	"fixture_repositioning": true,
+	"golden_path": false,
+	"passed": 293,
+	"suite": "wave2-regressions",
+	"timed_out": false,
+	"total": 293
+}

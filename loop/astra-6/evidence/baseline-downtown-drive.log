@@ -1,0 +1,38 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[wave1] main ready, args=["--downtown-review", "--downtown-legs=drive", "--capture-dir=/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/astra-6/evidence/baseline-downtown-drive", "--qa-session", "/private/tmp/astra6/baseline-drive"]
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 1009 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 21, "tris": 12660 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 130, "tris": 97332, "build_ms": 209 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 480 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 80, "median_shrub": 20638, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9985 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":676,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[profile] officer_pool_build_us=792160 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"no_reflect":7015,"small_prop_batches":238,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): traffic=2666 build_grid=1744 downtown_build=1731 player=1546 roads=947 mission_hud_heli=901 occluders=769 background_city=443 batch_static_primitives=311 world_start=102
+[launch] world_ui_ready_ms=12659 executable=/Applications/Godot.app/Contents/MacOS/Godot editor_binary=true
+[bay] submerged geometry hidden from reflection: 14
+[street-prop-colliders] 2926 prop boxes on layer 4096
+[street] avenue trees=288 candidates=377 clutter=350
+[plaza-life] 28 stations (1 rejected), 8 units
+[downtown-review 3.11] drive start at (-60.0, 0.060156, -316.6)
+[downtown-review 37.49] unstick at (-309.749, 0.058852, -316.6)
+[downtown-review 85.73] still drive_esplanade_bridge at (-589.3184, 3.666097, -354.628) (headless: no image)
+[downtown-review 159.71] still drive_raffles_avenue at (-795.0897, 0.000941, -589.1339) (headless: no image)
+[downtown-review 226.11] still drive_bayfront_bridge at (-430.2253, 3.040333, -786.1993) (headless: no image)
+[downtown-review 269.52] overtake at (-402.2534, 3.661889, -786.1306) (gap 8.8 m)
+[downtown-review 271.55] unstick at (-402.2534, 3.661889, -786.1306)
+[downtown-review 310.94] still drive_bayfront_avenue at (-11.34447, 0.000941, -783.4186) (headless: no image)
+[downtown-review 354.26] change lane to offset 3.5 at (360.8311, 0.000943, -783.6837)
+[downtown-review 396.13] still drive_marina_boulevard at (401.714, 0.000941, -531.7341) (headless: no image)
+[downtown-review 445.43] drive done=true at (258.9919, 0.060943, -317.2159), max deck y 3.88
+[downtown-review 447.47] done: {"drive":{"completed":true,"end":"(258.9919, 0.060943, -317.2159)","max_y":3.88,"overtakes":2,"seconds":445.4,"tows":0,"waiting_s":91.5}} frame p95 15.46 ms

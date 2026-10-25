@@ -1,0 +1,504 @@
+{
+	"checks": [
+		{
+			"detail": "",
+			"name": "world builder present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "player spawned",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "traffic manager present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission running",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "helicopter present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "hud present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "district contains 3D geometry",
+			"passed": true
+		},
+		{
+			"detail": "{ \"shophouses\": 269, \"hdb\": 12, \"infill\": 247, \"condensers\": 1493, \"pipes\": 1032, \"cables\": 807, \"roof_props\": 0, \"overlays\": 9, \"roof_caps_fixed\": 0, \"shop_floor\": 1 } groups=4",
+			"name": "weathered surfaces and wall/roof clutter present (wave B materials)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "junction graph has 25 connected reference nodes",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pedestrian paths present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "civilian traffic spawns the configured free-driving fleet",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pedestrians populated",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "golden-hour environment: sky ambient, SSAO+SSIL, glow, clear sky gradient",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "sky glow and clouds follow the sun light (LIGHT0)",
+			"passed": true
+		},
+		{
+			"detail": "zenith_s=0.41 coverage=0.55",
+			"name": "sky is pale humid blue under shaded cumulus (no cobalt)",
+			"passed": true
+		},
+		{
+			"detail": "ambient=0.52 scatter=0.22",
+			"name": "shadow contrast and bounded haze (ambient, crisp sun, sun scatter <= 0.25)",
+			"passed": true
+		},
+		{
+			"detail": "elevation=19.0",
+			"name": "warm low late-afternoon sun with soft shadows",
+			"passed": true
+		},
+		{
+			"detail": "void=120 arcade=269 lamps=56",
+			"name": "void decks, arcades and street lamps carry practical lights",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "practical lights are shadowless and distance-culled (cluster budget)",
+			"passed": true
+		},
+		{
+			"detail": "fixtures=1619",
+			"name": "every practical has a modelled fixture",
+			"passed": true
+		},
+		{
+			"detail": "volumes=16 kinds=20",
+			"name": "streets are weathered and dressed (wear volumes, >= 8 clutter types)",
+			"passed": true
+		},
+		{
+			"detail": "noses=80 dome_batches=0",
+			"name": "median beds have painted noses and no dome shrubs",
+			"passed": true
+		},
+		{
+			"detail": "{ \"aframe\": 130, \"crate\": 301, \"produce\": 144, \"bin\": 210, \"tcone\": 269, \"cabinet\": 139, \"bollard\": 596 }",
+			"name": "nearfield: cones, bins, crates and A-frame menus are modelled props (no primitive stand-ins)",
+			"passed": true
+		},
+		{
+			"detail": "prop_boxes=2926",
+			"name": "nearfield: parked bikes and scooters are multi-part models with on-foot collision",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "nearfield: sign plates show their pictogram face to the viewer",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "nearfield: ground shaders carry layered wear (patch seams, resurfacing, silt, chipped paint, unit variation)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "nearfield: median beds use photo plant cards when the generated atlas is present",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "nearfield: street-name lettering fits inside its blade",
+			"passed": true
+		},
+		{
+			"detail": "azimuth_off=28.0 elev=0.33",
+			"name": "low sun is in frame on the heritage avenue (toward-sun view)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "ambient population matches configured budget of 293 unique actors",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "market diners are reactive damageable NPCs",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "busy district walkers spawn along segments not junction piles",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "gameplay camera belongs to player",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "sprint 180 turns continuously (<=25 deg/frame at 30 fps, no facing flip)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission publishes initial objective",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "initial objective marker survives HUD setup order",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission registered for save and checkpoint restoration",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "package is a real interactable",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "road graph includes the fifth row",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "traffic target is near destination on the left lane",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "east-west signal excludes north-south movement",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "junction changeover clears both approaches",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "north-south signal excludes east-west movement",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "visible signal lamps agree with east-west right of way",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "visible signal lamps switch with north-south right of way",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "fire maps to a mouse button rather than a keyboard code",
+			"passed": true
+		},
+		{
+			"detail": "mag 12 -> 11",
+			"name": "real mouse-button event fires the equipped weapon",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "mission avenue has no static trunk obstruction",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "rapid native press and release is not dropped",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "close-cover fixture leaves camera sightline on target",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "muzzle obstruction prevents damage through close cover",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "clearing muzzle obstruction permits target damage",
+			"passed": true
+		},
+		{
+			"detail": "{ \"muzzle\": 4, \"tracer\": 3, \"impact\": 4, \"decal\": 2, \"casing\": 4, \"flinch\": 2, \"npc_shots\": 0 }",
+			"name": "shot produced muzzle flash, tracer, impact and ejected casing",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "struck NPC staggers and flinches",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "player recoil layer present and kicked by the shot",
+			"passed": true
+		},
+		{
+			"detail": "cam=0.0000 gun=0.000",
+			"name": "recoil recovers within ~0.4 s",
+			"passed": true
+		},
+		{
+			"detail": "{ \"puff\": 260, \"chip\": 160, \"spark\": 220, \"flash\": 24, \"flame\": 24, \"tracer\": 32, \"casings\": 40, \"lights\": 3 }",
+			"name": "sustained fire keeps effect pools bounded",
+			"passed": true
+		},
+		{
+			"detail": "weight=1.00 gun_h=1.38 barrel_dot=1.000",
+			"name": "aim layer holds the pistol at shoulder height along the aim",
+			"passed": true
+		},
+		{
+			"detail": "[\"\"]",
+			"name": "no interaction prompt during a firefight",
+			"passed": true
+		},
+		{
+			"detail": "pelvis_h=0.11 drift=1.28 guard=",
+			"name": "lethal hit ragdolls the body; it ends on the ground, never under it or flung",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "input interaction enters a car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "occupied player collision is disabled",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "driving input moves the car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "occupant follows the moving car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "authoritative position follows controlled vehicle",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "left driving input turns left",
+			"passed": true
+		},
+		{
+			"detail": "shutter=0.28 speed=32",
+			"name": "chase camera motion blur opens with speed",
+			"passed": true
+		},
+		{
+			"detail": "samples=24",
+			"name": "motion blur is gated to near road-level pixels (no ghosted pedestrians)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "road filtering and aggregate contrast stay speckle-free",
+			"passed": true
+		},
+		{
+			"detail": "roll=0.0142 pitch=-0.0200",
+			"name": "car body rolls and pitches under load",
+			"passed": true
+		},
+		{
+			"detail": "gap=5.87",
+			"name": "chase camera trails behind the car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "car carries a ground contact shadow",
+			"passed": true
+		},
+		{
+			"detail": "moved=2.50",
+			"name": "a rammed car is shoved by the impact",
+			"passed": true
+		},
+		{
+			"detail": "yaw 1.24 rad slide 1.60",
+			"name": "handbrake turn swings the car round with the tail sliding",
+			"passed": true
+		},
+		{
+			"detail": "kept 0.41 moved 2.48 closing 12.0",
+			"name": "rear-end crash shares momentum (our car keeps rolling, the struck car is shoved)",
+			"passed": true
+		},
+		{
+			"detail": "dents 1/1 debris 7",
+			"name": "crash leaves dents on both cars and throws debris",
+			"passed": true
+		},
+		{
+			"detail": "after 2.6 m/s vz 2.6",
+			"name": "wall impact rebounds instead of stopping dead",
+			"passed": true
+		},
+		{
+			"detail": "90.40 -> 87.38",
+			"name": "NPC weapon ray damages occupied car",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "car body protects its occupant from that ray",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "normal exit returns control and camera",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "on-foot collision restored",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "blocked car exit preserves seated control without wall clipping",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "clearing blocked exit restores normal exit",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death is counted for honest golden-path evidence",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death in car releases both control owners",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "death restores visible player and gameplay camera",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "walking still works after vehicle death",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows",
+			"passed": true
+		},
+		{
+			"detail": "clip=idle rate=1.00",
+			"name": "locomotion-Q: planted-foot lock (leg IK) on the player; aimed backpedal is its own clip played forward, plus a skid clip",
+			"passed": true
+		},
+		{
+			"detail": "boxes=2926",
+			"name": "locomotion-Q: street props (scooters, bikes, planters...) collide with the on-foot player",
+			"passed": true
+		},
+		{
+			"detail": "0.42 s",
+			"name": "locomotion-Q: standstill to walk speed takes a real first step (>= 0.3 s)",
+			"passed": true
+		},
+		{
+			"detail": "skid=true turned=3.14 rad",
+			"name": "locomotion-Q: a sharp 180 at a sprint plants a skid, then pivots",
+			"passed": true
+		},
+		{
+			"detail": "gap=0.78 m",
+			"name": "locomotion-Q: a pedestrian inside the player's personal space is shouldered clear",
+			"passed": true
+		},
+		{
+			"detail": "apex=0.52",
+			"name": "on-foot jump is a human hop (0.40-0.70 m rise, under 0.5 s airtime)",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "wanted escalation decays when unobserved",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "health regenerates out of fire",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "helicopter control is exclusive",
+			"passed": true
+		},
+		{
+			"detail": "90-second in-engine watchdog expired",
+			"name": "suite finished before watchdog deadline",
+			"passed": false
+		}
+	],
+	"duration_ms": 72461,
+	"engine": "4.7.1-stable (official)",
+	"failed": 1,
+	"finished_utc": "2026-10-25T21:12:16",
+	"fixture_repositioning": true,
+	"golden_path": false,
+	"passed": 97,
+	"suite": "wave2-regressions",
+	"timed_out": true,
+	"total": 98
+}

@@ -1,0 +1,194 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[wave1] main ready, args=["--capture", "--soak", "--soak-seconds=1800", "--capture-dir=/private/tmp/astra6/soak-r2/evidence", "--qa-session", "/private/tmp/astra6/soak-r2/session", "--qa-engine-log=/private/tmp/astra6/soak-r2/engine.log"]
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 1003 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 22, "tris": 12672 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 131, "tris": 97344, "build_ms": 198 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 7154 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 80, "median_shrub": 20638, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9992 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":650,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[profile] officer_pool_build_us=765725 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"no_reflect":4974,"small_prop_batches":238,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): traffic=14343 build_grid=8614 downtown_build=8381 mission_hud_heli=6177 background_city=2731 roads=2205 player=1538 occluders=731 batch_static_primitives=273 world_start=88
+[launch] world_ui_ready_ms=46281 executable=/Applications/Godot.app/Contents/MacOS/Godot editor_binary=true
+[bay] submerged geometry hidden from reflection: 14
+[street-prop-colliders] 2926 prop boxes on layer 4096
+[street] avenue trees=288 candidates=377 clutter=350
+[plaza-life] 28 stations (1 rejected), 8 units
+[capture] 1.17s Route start; seed=20261021; headless=true; scripted-input-automation=true
+[capture] 19.65s walk end at (-117.0, 0.0, -85.0); target=(-115.0, 0.0, -88.0) distance=3.9
+[capture] 19.65s PASS market reached on foot
+[profile] officer_activation_us=22 pooled=true live=0
+[capture] 21.32s combat target health=-32.0 state=3
+[capture] 23.01s combat target health=-32.0 state=3
+[capture] 24.69s combat target health=-32.0 state=3
+[capture] 24.69s PASS combat damaged and killed a mission combatant
+[capture] 24.69s walk end at (-116.0, 0.0, -86.0); target=(-115.0, 0.0, -88.0) distance=2.2
+[profile] officer_activation_us=24 pooled=true live=0
+[capture] 25.02s PASS package collected through interaction
+[capture] 25.02s PASS usable parked car found
+[profile] officer_activation_us=25 pooled=true live=1
+[capture] 30.71s walk end at (-151.0, 0.0, -88.0); target=(-153.0, 0.0, -88.0) distance=2.6
+[capture] 31.04s PASS car entered
+[capture] 39.33s drive waypoint target=(-157.0, 0.0, -11.0) distance=4.8 speed=12.1 yaw=177
+[capture] 40.99s drive waypoint target=(-158.0, 0.0, 11.0) distance=4.9 speed=11.9 yaw=178
+[capture] 48.90s drive waypoint target=(-158.0, 0.0, 149.0) distance=2.4 speed=5.8 yaw=177
+[capture] 49.62s drive waypoint target=(-157.0, 0.0, 153.0) distance=2.4 speed=5.8 yaw=-176
+[capture] 50.16s drive waypoint target=(-155.0, 0.0, 156.0) distance=2.5 speed=6.1 yaw=-157
+[capture] 50.95s drive waypoint target=(-152.0, 0.0, 157.0) distance=2.5 speed=6.1 yaw=-117
+[capture] 51.62s drive waypoint target=(-149.0, 0.0, 157.0) distance=2.4 speed=5.8 yaw=-82
+[capture] 53.00s drive waypoint target=(-140.0, 0.0, 158.0) distance=2.5 speed=5.9 yaw=-88
+[capture] 60.42s drive waypoint target=(-11.0, 0.0, 158.0) distance=4.9 speed=9.5 yaw=-88
+[capture] 62.54s drive waypoint target=(11.0, 0.0, 158.0) distance=5.0 speed=11.9 yaw=-84
+[capture] 69.60s drive waypoint target=(149.0, 0.0, 158.0) distance=4.9 speed=12.1 yaw=-88
+[capture] 71.27s drive waypoint target=(171.0, 0.0, 158.0) distance=4.9 speed=12.0 yaw=-90
+[capture] 75.08s drive waypoint target=(309.0, 0.0, 158.0) distance=65.3 speed=21.9 yaw=-90
+[capture] 75.08s drive life: samples=44 moving_within_80m=100% same_dir_ahead=66% min_car_health=100 held_s=0.5 bypass_s=0.0
+[capture] 75.08s drive slow (<6 m/s allowed) by reason: person=2.5, car=0.1
+[capture] 75.08s PASS uninterrupted driving leg reached aviation compound
+[capture] 76.42s PASS car exit restored walking
+[capture] 76.42s PASS helicopter remains usable
+[capture] 87.98s walk end at (273.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.3
+[capture] 88.30s PASS helicopter boarded
+[capture] 116.41s PASS flight reached waterfront pad airspace
+[capture] 134.92s PASS helicopter landed intact on destination pad
+[capture] 135.26s PASS landing exit restored walking
+[capture] 151.28s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 151.61s PASS mission completed through delivery interaction
+[capture] 151.61s Verified mission completions: 1
+[capture] 151.61s Restarting through the real Mission.restart for next independent mission attempt.
+[capture] 152.46s Route start; seed=20261021; headless=true; scripted-input-automation=true
+[capture] 175.95s walk end at (-117.0, 0.0, -85.0); target=(-115.0, 0.0, -88.0) distance=3.9
+[capture] 175.95s PASS market reached on foot
+[profile] officer_activation_us=20 pooled=true live=0
+[capture] 177.62s combat target health=-32.0 state=3
+[capture] 179.30s combat target health=-32.0 state=3
+[capture] 180.98s combat target health=-32.0 state=3
+[capture] 180.98s PASS combat damaged and killed a mission combatant
+[capture] 180.98s walk end at (-116.0, 0.0, -86.0); target=(-115.0, 0.0, -88.0) distance=2.2
+[profile] officer_activation_us=45 pooled=true live=0
+[capture] 181.31s PASS package collected through interaction
+[capture] 181.31s PASS usable parked car found
+[profile] officer_activation_us=21 pooled=true live=1
+[profile] officer_activation_us=32 pooled=true live=2
+[capture] 191.37s walk end at (-165.0, 0.0, -66.0); target=(-167.0, 0.0, -64.0) distance=2.6
+[capture] 191.70s PASS car entered
+[capture] 195.60s drive no progress for 3 s at (-168.0, 0.0, -69.0) yaw=-23, backing out; near=["amb(-165.0, 0.0, -66.0)", "npc(-171.0, 0.0, -64.0)", "npc(-170.0, 0.0, -67.0)", "npc(-172.0, 0.0, -67.0)", "npc(-170.0, 0.0, -66.0)", "npc(-172.0, 0.0, -74.0)", "npc(-171.0, 0.0, -63.0)"]
+[capture] 203.98s drive waypoint target=(-159.0, 0.0, -11.0) distance=4.9 speed=6.0 yaw=-165
+[capture] 205.94s drive waypoint target=(-158.0, 0.0, 11.0) distance=4.9 speed=11.9 yaw=-175
+[capture] 213.73s drive waypoint target=(-158.0, 0.0, 149.0) distance=2.4 speed=6.0 yaw=-177
+[capture] 214.45s drive waypoint target=(-157.0, 0.0, 153.0) distance=2.5 speed=6.0 yaw=-172
+[capture] 214.98s drive waypoint target=(-155.0, 0.0, 156.0) distance=2.4 speed=5.9 yaw=-158
+[capture] 216.04s drive waypoint target=(-152.0, 0.0, 157.0) distance=2.5 speed=5.0 yaw=-120
+[capture] 216.85s drive waypoint target=(-149.0, 0.0, 157.0) distance=2.5 speed=5.8 yaw=-88
+[capture] 218.30s drive waypoint target=(-140.0, 0.0, 158.0) distance=2.4 speed=5.8 yaw=-89
+[capture] 225.80s drive waypoint target=(-11.0, 0.0, 158.0) distance=5.0 speed=12.0 yaw=-88
+[capture] 227.49s drive waypoint target=(11.0, 0.0, 158.0) distance=4.9 speed=12.0 yaw=-90
+[capture] 234.55s drive waypoint target=(149.0, 0.0, 158.0) distance=4.9 speed=12.0 yaw=-91
+[capture] 236.24s drive waypoint target=(171.0, 0.0, 158.0) distance=4.9 speed=12.0 yaw=-90
+[capture] 240.11s drive waypoint target=(309.0, 0.0, 158.0) distance=67.5 speed=14.5 yaw=-90
+[capture] 240.11s drive life: samples=92 moving_within_80m=100% same_dir_ahead=61% min_car_health=100 held_s=1.2 bypass_s=0.0
+[capture] 240.11s drive slow (<6 m/s allowed) by reason: person=3.3, car=0.1, crossing=0.4
+[capture] 240.11s PASS uninterrupted driving leg reached aviation compound
+[capture] 241.46s PASS car exit restored walking
+[capture] 241.46s PASS helicopter remains usable
+[capture] 253.94s walk end at (272.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.4
+[capture] 254.38s PASS helicopter boarded
+[capture] 282.49s PASS flight reached waterfront pad airspace
+[capture] 301.00s PASS helicopter landed intact on destination pad
+[capture] 301.33s PASS landing exit restored walking
+[capture] 317.36s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 317.68s PASS mission completed through delivery interaction
+[capture] 317.68s Verified mission completions: 2
+[capture] 317.68s Restarting through the real Mission.restart for next independent mission attempt.
+[capture] 318.47s Route start; seed=20261021; headless=true; scripted-input-automation=true
+[capture] 340.02s walk end at (-117.0, 0.0, -85.0); target=(-115.0, 0.0, -88.0) distance=3.9
+[capture] 340.02s PASS market reached on foot
+[profile] officer_activation_us=34 pooled=true live=0
+[capture] 341.68s combat target health=-32.0 state=3
+[capture] 343.37s combat target health=-32.0 state=3
+[capture] 345.05s combat target health=-32.0 state=3
+[capture] 345.05s PASS combat damaged and killed a mission combatant
+[capture] 345.05s walk end at (-116.0, 0.0, -86.0); target=(-115.0, 0.0, -88.0) distance=2.2
+[profile] officer_activation_us=27 pooled=true live=0
+[capture] 345.38s PASS package collected through interaction
+[capture] 345.38s PASS usable parked car found
+[profile] officer_activation_us=29 pooled=true live=1
+[profile] officer_activation_us=21 pooled=true live=2
+[capture] 355.04s walk end at (-152.0, 0.0, -36.0); target=(-153.0, 0.0, -34.0) distance=2.6
+[capture] 355.36s PASS car entered
+[capture] 357.98s drive waypoint target=(-156.0, 0.0, -10.0) distance=5.0 speed=12.1 yaw=173
+[capture] 359.95s drive waypoint target=(-158.0, 0.0, 11.0) distance=5.0 speed=11.9 yaw=-175
+[capture] 369.84s drive waypoint target=(-158.0, 0.0, 149.0) distance=2.4 speed=4.6 yaw=-178
+[capture] 370.59s drive waypoint target=(-157.0, 0.0, 153.0) distance=2.5 speed=5.9 yaw=-172
+[capture] 371.12s drive waypoint target=(-155.0, 0.0, 156.0) distance=2.5 speed=5.9 yaw=-159
+[capture] 371.87s drive waypoint target=(-152.0, 0.0, 157.0) distance=2.5 speed=5.9 yaw=-122
+[capture] 372.58s drive waypoint target=(-149.0, 0.0, 157.0) distance=2.5 speed=5.9 yaw=-84
+[capture] 373.95s drive waypoint target=(-140.0, 0.0, 158.0) distance=2.5 speed=5.9 yaw=-86
+[capture] 382.67s drive waypoint target=(-11.0, 0.0, 158.0) distance=5.0 speed=3.1 yaw=-88
+[capture] 388.90s drive waypoint target=(11.0, 0.0, 158.0) distance=5.0 speed=7.4 yaw=-90
+[capture] 393.70s drive no progress for 3 s at (22.0, 0.0, 156.0) yaw=-46, backing out; near=["veh(27.0, 0.0, 158.0)", "npc(24.0, 0.0, 149.0)", "npc(21.0, 0.0, 149.0)"]
+[capture] 407.37s drive waypoint target=(149.0, 0.0, 158.0) distance=4.9 speed=12.0 yaw=-89
+[capture] 409.07s drive waypoint target=(171.0, 0.0, 158.0) distance=4.9 speed=12.0 yaw=-90
+[capture] 416.59s drive held 3.0s at (242.0, 0.0, 158.0): lead=@AnimatableBody3D@24554(ambient e63 l1 idle8 obst=@CharacterBody3D@19824) gap=2.7 lead_speed=0.0 red_line=inf
+[capture] 416.59s   chain: 24554[e63 l1 s89/148 j0 v0.0 idle8 stuck0 sigfalse next205 gap1.5 exit31 (249.0, 0.0, 158.0) why=obstacle] -> Car(sedan ai=false player=false v=0.0):@19824(255.0, 0.0, 157.0)
+[capture] 419.57s drive waypoint target=(309.0, 0.0, 158.0) distance=66.2 speed=3.6 yaw=-107
+[capture] 419.57s drive life: samples=155 moving_within_80m=98% same_dir_ahead=66% min_car_health=90 held_s=11.9 bypass_s=1.0
+[capture] 419.57s drive slow (<6 m/s allowed) by reason: person=3.5, car=9.6, crossing=1.9, red=2.7
+[capture] 419.57s PASS uninterrupted driving leg reached aviation compound
+[capture] 420.90s PASS car exit restored walking
+[capture] 420.90s PASS helicopter remains usable
+[capture] 438.81s walk end at (274.0, 0.0, 105.0); target=(273.0, 0.0, 104.0) distance=1.4
+[capture] 439.23s PASS helicopter boarded
+[capture] 467.36s PASS flight reached waterfront pad airspace
+[capture] 485.86s PASS helicopter landed intact on destination pad
+[capture] 486.19s PASS landing exit restored walking
+[capture] 502.22s walk end at (93.0, 0.0, -337.0); target=(96.0, 0.0, -337.0) distance=2.9
+[capture] 502.55s PASS mission completed through delivery interaction
+[capture] 502.55s Verified mission completions: 3
+[capture] 502.55s Beginning explicit fixture-assisted negative cases. Three completion records are already sealed.
+[capture] 502.95s FIXTURE PASS pause freezes player and live traffic (excluded from mission completion count)
+[capture] 502.95s FIXTURE PASS completed-run checkpoint writes through atomic save path (excluded from mission completion count)
+[capture] 502.96s FIXTURE PASS malformed checkpoint is rejected without state mutation (excluded from mission completion count)
+[capture] 503.18s FIXTURE PASS walking to airfield cannot satisfy drive stage (excluded from mission completion count)
+[capture] 503.21s Fixture phase complete; starting genuine mixed free roam from the restored completion location.
+[capture] 503.21s Free-roam foot leg to (0.0, 0.0, -320.0)
+[capture] 519.40s walk end at (7.0, 0.0, -322.0); target=(0.0, 0.0, -320.0) distance=7.0
+[capture] 527.25s walk end at (54.0, 0.0, -326.0); target=(56.0, 0.0, -327.0) distance=2.5
+[capture] 527.58s Free-roam driving leg to (160.0, 0.0, 0.0)
+[capture] 538.72s drive no progress for 3 s at (63.0, 0.0, -323.0) yaw=166, backing out; near=["npc(60.0, 0.0, -328.0)"]
+[capture] 550.99s drive no progress for 3 s at (63.0, 0.0, -325.0) yaw=163, backing out; near=["npc(60.0, 0.0, -331.0)", "npc(60.0, 0.0, -330.0)", "npc(63.0, 0.0, -332.0)", "npc(61.0, 0.0, -328.0)"]
+[capture] 556.04s drive no progress for 3 s at (62.0, 0.0, -323.0) yaw=150, backing out; near=["amb(58.0, 0.0, -322.0)", "npc(64.0, 0.0, -330.0)"]
+[capture] 562.58s drive waypoint target=(11.0, 0.0, -319.0) distance=13.6 speed=7.9 yaw=95
+[capture] 569.90s drive no progress for 3 s at (19.0, 0.0, -327.0) yaw=-169, backing out; near=["npc(16.0, 0.0, -329.0)"]
+[capture] 575.32s drive waypoint target=(7.0, 0.0, -318.0) distance=2.5 speed=6.0 yaw=137
+[capture] 575.87s drive waypoint target=(5.0, 0.0, -315.0) distance=2.4 speed=5.9 yaw=134
+[capture] 576.43s drive waypoint target=(3.0, 0.0, -312.0) distance=2.5 speed=5.8 yaw=142
+[capture] 577.07s drive waypoint target=(3.0, 0.0, -309.0) distance=2.5 speed=6.0 yaw=167
+[capture] 580.59s drive no progress for 3 s at (1.0, 0.0, -311.0) yaw=-145, backing out; near=["npc(-4.0, 0.0, -311.0)"]
+[capture] 589.32s drive no progress for 3 s at (-4.0, 0.0, -314.0) yaw=-86, backing out; near=["npc(-9.0, 0.0, -311.0)", "npc(-4.0, 0.0, -309.0)"]
+[capture] 595.62s drive no progress for 3 s at (-10.0, 0.0, -314.0) yaw=-58, backing out; near=["npc(-7.0, 0.0, -308.0)", "npc(-10.0, 0.0, -310.0)", "npc(-13.0, 0.0, -310.0)"]
+[capture] 608.04s drive no progress for 3 s at (-10.0, 0.0, -301.0) yaw=-46, backing out; near=["amb(-5.0, 0.0, -297.0)", "npc(-9.0, 0.0, -308.0)", "npc(-10.0, 0.0, -308.0)", "npc(-11.0, 0.0, -297.0)"]
+[capture] 612.08s drive waypoint target=(2.0, 0.0, -300.0) distance=11.9 speed=3.8 yaw=-73
+[capture] 614.92s drive held 3.0s at (-8.0, 0.0, -296.0): lead=@AnimatableBody3D@24516(ambient e35 l0 idle3 obst=@AnimatableBody3D@24348) gap=0.0 lead_speed=0.0 red_line=inf
+[capture] 614.92s   chain: 24516[e35 l0 s138/148 j0 v0.0 idle3 stuck0 sigfalse next31 gap3.0 exit117 (-5.0, 0.0, -298.0) why=leader] -> 24348[e35 l0 s146/148 j0 v0.0 idle3 stuck0 sigfalse next31 gapinf exit117 (-5.0, 0.0, -306.0) why=red]
+[capture] 617.92s drive held 6.0s at (-8.0, 0.0, -296.0): lead=@AnimatableBody3D@24516(ambient e35 l0 idle6 obst=@AnimatableBody3D@24348) gap=0.0 lead_speed=0.0 red_line=inf
+[capture] 617.92s   chain: 24516[e35 l0 s138/148 j0 v0.0 idle6 stuck0 sigfalse next31 gap3.0 exit80 (-5.0, 0.0, -298.0) why=leader] -> 24348[e35 l0 s146/148 j0 v0.0 idle6 stuck0 sigfalse next31 gapinf exit80 (-5.0, 0.0, -306.0) why=red]
+[capture] 622.55s drive no progress for 3 s at (-26.0, 0.0, -294.0) yaw=158, backing out; near=[]
+[capture] 630.17s drive no progress for 3 s at (-23.0, 0.0, -264.0) yaw=-117, backing out; near=[]
+[capture] 638.27s drive no progress for 3 s at (-26.0, 0.0, -238.0) yaw=-93, backing out; near=[]
+[capture] 646.80s drive no progress for 3 s at (-26.0, 0.0, -215.0) yaw=-71, backing out; near=[]
+[capture] 648.01s drive waypoint target=(2.0, 0.0, -171.0) distance=53.5 speed=-6.5 yaw=-104
+[capture] 655.44s drive waypoint target=(2.0, 0.0, -149.0) distance=5.0 speed=3.7 yaw=-156
+[capture] 657.60s drive waypoint target=(2.0, 0.0, -11.0) distance=121.7 speed=18.2 yaw=179
+[capture] 657.61s ABORT Free-roam car failed its destination gate.
+[capture] terminal success=false deaths=0 seconds=657.7

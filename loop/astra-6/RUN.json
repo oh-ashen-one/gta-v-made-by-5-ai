@@ -1,0 +1,42 @@
+{
+  "status": "complete",
+  "branch": "Astra-6-enhancements",
+  "baseline": "451c8eb17917452261b5262da96b8374ef060557",
+  "start_utc": "2026-10-25T18:20:57Z",
+  "handoff_utc": "2026-10-25T21:50:57Z",
+  "deadline_utc": "2026-10-25T22:20:57Z",
+  "scope": "Playable central Singapore continuity with heritage gameplay; fewer cars for freer driving; builder and critic iterations; fixed4hours including final30min",
+  "renderer_policy": "one task renderer at a time; globalmixedcap2; use existing loop/render.sh + actualsharednamespace; no foreignprocesschanges",
+  "model": "Current Codex session and inherited-model subagents; no alternate-model claim",
+  "last_update_utc": "2026-10-25T22:21:46.115653+00:00",
+  "current_phase": "four_hour_pass_complete",
+  "last_passing_suite": 296,
+  "traffic_comparison": {
+    "baseline_drive_s": 445.4,
+    "baseline_wait_s": 91.5,
+    "candidate_drive_s": 314.0,
+    "candidate_wait_s": 19.2,
+    "tows_each": 0,
+    "candidate_unstick_maneuvers": 1
+  },
+  "courier_status": "Full normal-spawn roundtrip31/31,3683.21m,603.65s,zero jumps/deaths/teleport steps; optional actual screenshot support being added",
+  "skypark_status": "Earlier126/126; stronger combat full140/142: preexisting native ragdoll fallback/bone-floor gates FAIL, live NPC/aircraft clearance pass. See combat-verification.json.",
+  "render_status": "All owned engines and drivers stopped. Final29packagedviews,50imagegallery ready. No new renderer required.",
+  "current_package": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/outputs/Astra-6-enhancements-2026-10-25/OrchardReach-Astra-6-enhancements.zip",
+  "package_sha256": "36dfc8d695acdaabed69ddaaad3df1c23eed0b41b17ed07e926be3d168c55bc7",
+  "package_headless_checks": "296/296; rendered UI24write/23load; final nativeSkyParkinput normalquitexit0",
+  "soak_status": "FAILED at657.7s after3mission completions/zero deaths: free-driving destination missed. No runtimefatalerrors. Not30minacceptance.",
+  "agent_status": "All builders and critics completed. Independent final audit verified source hashes, ZIP/PCK/signature, all50images and reported pass/fail counts; no material unsupported claims.",
+  "pending_polish": "None planned. Courier andSkyPark visualfindings fixedandreviewed; native ragdoll/performance/long-run acceptance remainopen.",
+  "temporary_worktrees": "Removed ownbaseline/activities/landmark/traffic checkouts aftercleanpushedbranchesandparentintegration. Privateassets stay in mainauthoringcheckout. Futurecritic readsparent; do notresume deletedcwd builders blindly.",
+  "game_source_commit": "e84bbc7",
+  "pull_request": "https://github.com/oh-ashen-one/gta-v-made-by-5-ai/pull/2",
+  "owned_processes": "All task engines, drivers and waiters stopped. Subagents completed. CUA bindings reset.",
+  "completed_utc": "2026-10-25T22:21:46.115653+00:00",
+  "open_acceptance_gates": [
+    "Native ragdoll solver/floor support",
+    "Extended mixed workload free-driving destination",
+    "Rendered core watchdog and exclusive performance",
+    "Owner animation/handling/audio/visual acceptance"
+  ]
+}

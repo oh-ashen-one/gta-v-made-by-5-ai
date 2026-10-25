@@ -1,0 +1,33 @@
+{
+  "verified_utc": "2026-10-25T20:43:18.690155+00:00",
+  "scope": "Explicit local fixtures with real production vehicle occupancy, native controls, E interaction and Game save/load; not continuous driving or flight",
+  "result": {
+    "checks": 38,
+    "continuous_driving": false,
+    "continuous_flight": false,
+    "elapsed_s": 33.572,
+    "failures": [],
+    "fixture_relocation": true,
+    "native_local_car_motion_m": 1.1869250535965
+  },
+  "runner": {
+    "engine_exit_code": 0,
+    "exit_code": 0,
+    "timeout": false,
+    "fatal_errors": [],
+    "child_reaped": true,
+    "elapsed_sec": 35.49
+  },
+  "source_sha256": {
+    "game/src/systems/downtown_activities/tests/vehicle_handover.gd": "6890c329fde625c77902cde2f6dad9cf0e775e4e3ee6b55574ef81cb860c07ee"
+  },
+  "evidence_log": "/private/tmp/astra6-activities/vehicle-handover-r4.log",
+  "production_files_modified": false,
+  "renderer": "headless",
+  "car_only_baseline": {
+    "checks": 27,
+    "failures": 0,
+    "elapsed_s": 28.881,
+    "native_local_car_motion_m": 2.25573658943176
+  }
+}

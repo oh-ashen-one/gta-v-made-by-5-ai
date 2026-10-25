@@ -143,6 +143,7 @@ func build(seed_value: int = 20261021) -> void:
 	_perimeter()
 	_far_shore_landmarks()
 	_downtown_call("build", [_world_root])
+	_central_access_joins()
 	PerfBudget.lap("downtown_build")
 	locations["player_start"] = PLAYER_START
 	_build_lane_graph()
@@ -995,10 +996,33 @@ func _infill_building(size: Vector3, pos: Vector3, kind: String) -> void:
 	_roof_kit.add_flat_roof(size, pos, kind)
 
 # ------------------------------------------------------------- water + skyline
+func _central_access_joins() -> void:
+	for key in DowntownPlan.PEDESTRIAN_JOINS:
+		var join: Dictionary = DowntownPlan.PEDESTRIAN_JOINS[key]
+		var a: Vector3 = join["from"]
+		var b: Vector3 = join["to"]
+		var forward := (b - a).normalized()
+		var right := Vector3.UP.cross(forward).normalized()
+		var up := forward.cross(right).normalized()
+		var mesh := _solid_box(Vector3(float(join["width"]), 0.12, a.distance_to(b)), (a + b) * 0.5 - up * 0.06, Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9))
+		var body := mesh.get_parent() as StaticBody3D
+		body.name = "CentralAccessJoin_" + key
+		body.basis = Basis(right, up, forward)
+		body.add_to_group("central_access_join")
+
 func _waterfront_edge() -> void:
 	# The bay surface, seawalls, boats and Merlion jet live in bay.gd (BayWater).
 	# promenade deck + railing
 	_solid_box(Vector3(700.0, 0.3, 22.0), Vector3(0.0, 0.15, PROMENADE_Z), Palette.mat_textured(Palette.CONCRETE_LIGHT,"pavers",Vector3.ONE,0.9))
+	# The raised promenade had a 30 cm vertical lip at every avenue. A player
+	# walking into the central-city route hit that lip unless they jumped.
+	# Wide matching physical ramps join road level to the existing deck.
+	for avenue_x in X_LINES:
+		var ramp := _solid_box(Vector3(12.0, 0.12, 4.0), Vector3(float(avenue_x), 0.10, PROMENADE_Z + 12.6), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9))
+		var ramp_body := ramp.get_parent() as StaticBody3D
+		ramp_body.name = "PromenadeAccessRamp_%s" % str(avenue_x)
+		ramp_body.rotation.x = atan2(0.30, 4.0)
+		ramp_body.add_to_group("promenade_access_ramp")
 	for i: int in 46:
 		_cyl(Vector3(0.12, 1.1, 0.12), Vector3(-340.0 + i * 15.0, 0.85, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
 	_box(Vector3(700.0, 0.08, 0.08), Vector3(0.0, 1.35, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))

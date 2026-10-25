@@ -6,33 +6,27 @@ A YouTube development experiment: **five AI coding setups collaborating in seque
 
 ## Status
 
-**Final wave 5 (Opus 5.5 via Claude Code) on `feature/wave-05-opus`: best available experimental build with unmet requirements; no visually accepted or public release exists.** Start with [`waves/05/RELEASE_REPORT.md`](waves/05/RELEASE_REPORT.md) and [`HANDOFF.md`](HANDOFF.md). Wave 5 opens the game outdoors on a heritage five-foot way facing the hawker hall, with Marina Bay Sands, the ArtScience Museum and the Singapore Flyer across the bay and the Supertree Grove beside the avenue; its first real renders, of the unchanged wave-4 baseline and the wave-5 candidate including a rendered 13/13 route, are in [`waves/05/evidence/rendered/`](waves/05/evidence/rendered/). Other wave-5 evidence is headless (simulation, geometry, CPU).
+The original five-model relay is complete. This branch contains the owner's separate **25 October2026 four-hour enhancement pass**, `Astra-6-enhancements`, using the current Codex session and builder/critic subagents. Start with [HANDOFF.md](HANDOFF.md) and the [current verification report](loop/astra-6/VERIFICATION.md). The candidate is ready for owner review with explicit unmet gates; it is not a public or visually accepted release.
 
-The current build lives in [`game/`](game/): **Godot 4.7.1 stable** (Forward+, GDScript, native macOS export) with an authored Singapore-inspired district, third-person control, two firearms, car theft and arcade driving, left-hand traffic, police response, a flyable helicopter, a roofed hawker hub, a void-deck housing neighbourhood, a waterfront edge and the authored mission "Harbour Relay".
+The native **Godot4.7.1 Forward+** build retains the existing heritage district, central Singapore landmarks, connected streets/bridges, combat, vehicles, helicopter and Harbour Relay mission. This pass adds a repeatable Bayfront Courier journey, repairs pedestrian transition lips, opens a public MBS SkyPark lift/terrace/landing area, and substantially reduces traffic and roadside parking.
 
-Read [HANDOFF.md](HANDOFF.md) for the current checkpoint, owned-engine/GPU protocol and the private provider-asset transfer. A fresh source clone does not contain those binaries. Godot 4.7.1 is locked.
+The final package passes296 headless core checks and24/23 rendered UI save/relaunch checks. The rendered courier journey passes44 checks over3.68km without jumps, deaths or teleport steps. Native keyboard checks also cover normal movement, car controls and the packaged SkyPark lift. Native ragdoll gates, the extended mixed workload and the rendered core watchdog/performance gate remain open. See the report for the exact scope of each pass and failure; headless checks are not rendered-performance acceptance.
 
-- Run after obtaining the shared renderer slot: `godot --log-file /tmp/orchard-player.log --path game`
-- Export after a project import: `godot --headless --log-file /tmp/orchard-export.log --path game --export-release "macOS" build/mac/OrchardReach.zip` (the export path is relative to `game/`).
-- Run bounded regression checks using the commands in [gameplay notes](docs/wave-02/GAMEPLAY_NOTES.md). Headless numerical assertion passes do not certify a clean run: check the supervisor's exit and generic error scan. The last clean *rendered* (Metal) suite, from wave 3, has 85 assertions. Wave 5's suite has 97 checks and was run **headless only**. Wave 5's rendered evidence is stills and one rendered scripted route, not a rendered suite.
+Source is in [game/](game/). A fresh source clone requires the private assets described in [private-assets.json](loop/astra-6/private-assets.json); those binaries are not blanket MIT assets. The privately delivered ZIP and50-image gallery are identified in [DELIVERY.json](loop/astra-6/DELIVERY.json). The three [approved concepts](docs/concepts/) remain the visual target, not gameplay evidence.
 
-The three approved images in [docs/concepts](docs/concepts/) remain the visual target. [Evidence](docs/EVIDENCE.md) separates rendered automation, stills, tests, performance qualifications, packaging and human acceptance.
+Use the shared renderer lease and last-moment safety check before running the game. Task-local bounded helpers are in [loop/astra-6](loop/astra-6/). The engine remains Godot4.7.1. Do not merge main or publish builds without the owner's separate authorization.
 
-The required Singapore-inspired playable slice is specified in [END_GOAL.md](END_GOAL.md); the engine is locked to Godot 4.7.1 (rationale in [`waves/01/READINESS.md`](waves/01/READINESS.md)), the development machine is the Mac Studio, and the numerical calibration is in progress. **MiniMax starts; Opus 5.5 through Claude Code must take the final wave.** Where each requirement stands is recorded in [`docs/REQUIREMENTS_LEDGER.md`](docs/REQUIREMENTS_LEDGER.md) — art fidelity, audio depth, traffic behaviour under pressure and every performance measurement are still open, and the generated hero art is integrated but not committed (provider terms, not MIT; see [`docs/asset-manifest.csv`](docs/asset-manifest.csv)). This is a playable experimental build, not a claim of a visually accepted one.
+## Original five-model relay history
 
-## The five setups and wave order
+The following are historical recorded setups, not claims of current model availability. The relay does not restart automatically when the owner requests later enhancements.
 
-The owner has authorized the five-wave relay. Each wave must verify its actual model/tool access rather than infer availability from the planned name.
-
-| Wave | Setup | Status / planning note |
+| Wave | Recorded setup | Preserved result |
 | --- | --- | --- |
-| 1 | MiniMax | Incoming checkpoint `4df93fa631d9484fb29e556a97df61a259620248`; see waves/01. |
-| 2 | GPT-6 Astra through Codex | Completed implementation on `feature/wave-02-astra`; fixed 2026-10-21 11:38:01–15:38:01 UTC window. See HANDOFF.md for final evidence and private archive. |
-| 3 | DeepSeek V4.1 Flash through Devin | Owner-designated successor; manager starts the next session. See NEXT_GOAL.md. Actual availability must be verified by that session. |
-| 4 | Argon 4 via AGY CLI | Proposed fourth wave; user-reported setup. |
-| 5 — final | Opus 5.5 through Claude Code | Required final wave; user-selected model name, not verified availability. |
-
-Model names are planned selections, not claims of verified product availability. Confirm exact versions, access, and configuration before execution. No local AI models are planned for this video.
+| 1 | MiniMax M3.1 Flash through Claude Code | `feature/wave-01-orchard-reach`, checkpoint4df93fa; [wave1](waves/01/). |
+| 2 | GPT-6 Astra through Codex | `feature/wave-02-astra`, checkpoint658741b; [wave2](waves/02/). |
+| 3 | DeepSeek V4.1 Flash Max through Devin | `feature/wave-03-deepseek`, checkpoint96c6833; [wave3](waves/03/). |
+| 4 | Gemini4 Argon High through AGY | `feature/wave-04-argon`, preserved checkpoint2966829; final source was not runtime-validated in that wave. [Archived handoff](waves/04/ARGON_HANDOFF_AT_STOP.md). |
+| 5 | Opus5.5 through Claude Code | Original final wave; [release report](waves/05/RELEASE_REPORT.md). Later owner-directed work is separately documented. |
 
 ## One shared toolbox
 
@@ -42,9 +36,9 @@ Every wave uses **Tripo through browser control** and **Customuse through MCP** 
 
 Each model can create, modify, or replace 3D assets and improve the entire game: gameplay, visuals, controls, world design, performance, or anything else needed for its wave. Tool connections, capabilities, account access, licenses, and credits still need confirmation. Listing these tools is **not permission to purchase credits or incur charges**.
 
-## How the relay works
+## Historical relay protocol
 
-Each AI inherits the **whole current game** and builds on the previous reviewed checkpoint. The aim is to show the same project improving wave by wave, not five independent games.
+Each relay AI inherited the **whole current game** and builds on the previous reviewed checkpoint. The aim is to show the same project improving wave by wave, not five independent games.
 
 Owner-authorized sequence: **MiniMax → Astra / Codex → DeepSeek / Devin → Argon 4 / AGY CLI → Opus 5.5 / Claude Code**.
 

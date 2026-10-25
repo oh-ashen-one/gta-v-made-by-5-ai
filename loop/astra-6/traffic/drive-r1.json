@@ -1,0 +1,41 @@
+{
+  "mode": "headless",
+  "candidate_game_commit": "00f699d",
+  "source_evidence": "/private/tmp/astra6-traffic/drive-r1/review.json",
+  "results": {
+    "drive": {
+      "completed": true,
+      "end": "(258.8844, 0.060943, -317.1985)",
+      "max_y": 3.89,
+      "overtakes": 0,
+      "seconds": 314.0,
+      "tows": 0,
+      "waiting_s": 19.2
+    }
+  },
+  "log": [
+    "[downtown-review 2.83] drive start at (-60.0, 0.060156, -316.6)",
+    "[downtown-review 26.41] unstick at (-309.749, 0.060142, -316.6)",
+    "[downtown-review 55.30] still drive_esplanade_bridge at (-589.3105, 3.666379, -354.5953) (headless: no image)",
+    "[downtown-review 110.68] still drive_raffles_avenue at (-795.4306, 0.000942, -589.3456) (headless: no image)",
+    "[downtown-review 172.70] still drive_bayfront_bridge at (-430.2241, 3.198548, -786.2468) (headless: no image)",
+    "[downtown-review 208.50] still drive_bayfront_avenue at (-9.752786, 0.000941, -786.9677) (headless: no image)",
+    "[downtown-review 275.63] still drive_marina_boulevard at (405.1128, 0.000941, -530.7749) (headless: no image)",
+    "[downtown-review 314.04] drive done=true at (258.8844, 0.060943, -317.1985), max deck y 3.89"
+  ],
+  "engine_exit_code": 0,
+  "fatal_errors": [],
+  "elapsed_wall_s": 330.7,
+  "frames_saved": 0,
+  "baseline_reported_by_integrator": {
+    "completed": true,
+    "seconds": 445.4,
+    "waiting_s": 91.5,
+    "tows": 0
+  },
+  "limits": [
+    "One scripted unstick maneuver at legacy corner.",
+    "No rendered frame or graphical-performance claim.",
+    "Single candidate drive, not a soak."
+  ]
+}

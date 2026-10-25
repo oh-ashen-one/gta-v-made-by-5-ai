@@ -17,7 +17,7 @@ extends RefCounted
 ## Rect2 values are (x_min, z_min, width_x, depth_z) on the ground plane.
 ## Loading this file changes nothing in game; only pieces act on it.
 
-const PLAN_VERSION := "S-1 2026-10-23"
+const PLAN_VERSION := "Astra-6 R1 2026-10-25"
 
 const WATER_LEVEL := -0.9
 const QUAY_TOP := 0.3
@@ -268,9 +268,16 @@ const HELIPADS := {
 	"the_lawn": {"pos": Vector3(205.0, 0.3, -662.0), "radius": 14.0, "status": "new"},
 	"esplanade_park": {"pos": Vector3(-625.0, 0.3, -250.0), "radius": 12.0, "status": "new"},
 	"gardens_east": {"pos": Vector3(345.0, 0.3, -1030.0), "radius": 12.0, "status": "new"},
-	"skypark": {"pos": Vector3(-118.0, 200.0, -705.0), "radius": 14.0, "status": "reserved", "rooftop": true},
+	"skypark": {"pos": Vector3(-63.0, 200.0, -698.0), "radius": 5.0, "exit_radius": 2.5, "status": "public", "rooftop": true},
 }
 const GROUND_EXIT_MAX_Y := 4.5   # bridge decks are 2.4-3.6 m
+
+## Short public-surface joins. The Jubilee reverse walk exposed a 23 cm
+## vertical lip at the peninsula edge; these endpoints overlap both floors.
+const PEDESTRIAN_JOINS := {
+	"jubilee_fullerton": {"from": Vector3(-534.0, 0.212, -400.0), "to": Vector3(-528.0, 0.36, -400.0), "width": 5.4},
+	"fullerton_heritage": {"from": Vector3(-445.0, 0.02, -338.0), "to": Vector3(-438.0, 0.30, -338.0), "width": 8.0},
+}
 
 ## ---------------------------------------------------------------- views
 ## Proposed ADDITIONAL comparison views for the downtown (the existing fixed
@@ -364,7 +371,7 @@ static func heli_exit_allowed(p: Vector3) -> bool:
 		if pad["status"] == "reserved":
 			continue
 		var c: Vector3 = pad["pos"]
-		if Vector2(p.x - c.x, p.z - c.z).length() <= float(pad["radius"]) + 4.0 and absf(p.y - c.y) < 3.0:
+		if Vector2(p.x - c.x, p.z - c.z).length() <= float(pad.get("exit_radius", float(pad["radius"]) + 4.0)) and absf(p.y - c.y) < 3.0:
 			return true
 	return p.y <= GROUND_EXIT_MAX_Y
 

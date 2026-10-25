@@ -1,0 +1,135 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--test", "--test-report=/private/tmp/astra6/package-r2/rendered-core/report.json", "--qa-session", "/private/tmp/astra6/package-r2/rendered-core/session", "--qa-render-size=1280x720"]
+[qa-render-size] requested_backing=(1280, 720)
+[perf] threaded preload requested: 140 resources
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 1144 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 22, "tris": 12672 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 131, "tris": 97344, "build_ms": 204 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 411 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 80, "median_shrub": 20638, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9992 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":790,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[character-look] loaded bake for player_rigged_loco4.glb::ArrayMesh_gmvhh in 273 ms
+[character-look] loaded bake for civilian_rigged_v2.glb::ArrayMesh_6djpn in 7 ms
+[profile] officer_pool_build_us=4476 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"far_from_water":543,"no_reflect":6133,"small_prop_batches":1089,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): build_grid=8277 background_city=1767 downtown_build=1760 batch_static_primitives=1567 roads=1276 occluders=847 mission_hud_heli=579 traffic=572 player=343 world_start=58
+[launch] world_ui_ready_ms=20343 executable=/private/tmp/astra6/package-r2/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach editor_binary=false
+=== Orchard Reach wave-2 bounded regression suite ===
+[bay] submerged geometry hidden from reflection: 18
+[street-prop-colliders] 2926 prop boxes on layer 4096
+[street] avenue trees=288 candidates=377 clutter=350
+PASS world builder present 
+PASS player spawned 
+PASS traffic manager present 
+PASS mission running 
+PASS helicopter present 
+PASS hud present 
+PASS district contains 3D geometry 
+PASS weathered surfaces and wall/roof clutter present (wave B materials) { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 } groups=4
+PASS junction graph has 25 connected reference nodes 
+PASS pedestrian paths present 
+PASS civilian traffic spawns the configured free-driving fleet 
+PASS pedestrians populated 
+PASS golden-hour environment: sky ambient, SSAO+SSIL, glow, clear sky gradient 
+PASS sky glow and clouds follow the sun light (LIGHT0) 
+PASS sky is pale humid blue under shaded cumulus (no cobalt) zenith_s=0.41 coverage=0.55
+PASS shadow contrast and bounded haze (ambient, crisp sun, sun scatter <= 0.25) ambient=0.52 scatter=0.22
+PASS warm low late-afternoon sun with soft shadows elevation=19.0
+PASS void decks, arcades and street lamps carry practical lights void=120 arcade=269 lamps=56
+PASS practical lights are shadowless and distance-culled (cluster budget) 
+PASS every practical has a modelled fixture fixtures=1619
+PASS streets are weathered and dressed (wear volumes, >= 8 clutter types) volumes=16 kinds=20
+PASS median beds have painted noses and no dome shrubs noses=80 dome_batches=0
+PASS nearfield: cones, bins, crates and A-frame menus are modelled props (no primitive stand-ins) { "aframe": 130, "crate": 301, "produce": 144, "bin": 210, "tcone": 269, "cabinet": 139, "bollard": 596 }
+PASS nearfield: parked bikes and scooters are multi-part models with on-foot collision prop_boxes=2926
+PASS nearfield: sign plates show their pictogram face to the viewer 
+PASS nearfield: ground shaders carry layered wear (patch seams, resurfacing, silt, chipped paint, unit variation) 
+PASS nearfield: median beds use photo plant cards when the generated atlas is present 
+PASS nearfield: street-name lettering fits inside its blade 
+PASS low sun is in frame on the heritage avenue (toward-sun view) azimuth_off=28.0 elev=0.33
+PASS ambient population matches configured budget of 293 unique actors 
+PASS market diners are reactive damageable NPCs 
+PASS busy district walkers spawn along segments not junction piles 
+PASS gameplay camera belongs to player 
+PASS sprint 180 turns continuously (<=25 deg/frame at 30 fps, no facing flip) 
+PASS mission publishes initial objective 
+PASS initial objective marker survives HUD setup order 
+PASS mission registered for save and checkpoint restoration 
+PASS package is a real interactable 
+PASS road graph includes the fifth row 
+PASS traffic target is near destination on the left lane 
+PASS east-west signal excludes north-south movement 
+PASS junction changeover clears both approaches 
+PASS north-south signal excludes east-west movement 
+PASS visible signal lamps agree with east-west right of way 
+PASS visible signal lamps switch with north-south right of way 
+PASS fire maps to a mouse button rather than a keyboard code 
+[plaza-life] 28 stations (1 rejected), 8 units
+DIAGNOSTIC fire action held=true paused=false mag=11 event_matches=true
+PASS real mouse-button event fires the equipped weapon mag 12 -> 11
+PASS mission avenue has no static trunk obstruction 
+PASS rapid native press and release is not dropped 
+PASS close-cover fixture leaves camera sightline on target 
+PASS muzzle obstruction prevents damage through close cover 
+[profile] officer_activation_us=26 pooled=true live=0
+PASS clearing muzzle obstruction permits target damage 
+PASS shot produced muzzle flash, tracer, impact and ejected casing { "muzzle": 4, "tracer": 3, "impact": 4, "decal": 2, "casing": 4, "flinch": 2, "npc_shots": 0 }
+PASS struck NPC staggers and flinches 
+PASS player recoil layer present and kicked by the shot 
+PASS recoil recovers within ~0.4 s cam=0.0000 gun=0.000
+PASS sustained fire keeps effect pools bounded { "puff": 260, "chip": 160, "spark": 220, "flash": 24, "flame": 24, "tracer": 32, "casings": 40, "lights": 3 }
+PASS aim layer holds the pistol at shoulder height along the aim weight=1.00 gun_h=1.38 barrel_dot=1.000
+PASS no interaction prompt during a firefight [""]
+PASS lethal hit ragdolls the body; it ends on the ground, never under it or flung pelvis_h=0.11 drift=1.28 guard=
+PASS input interaction enters a car 
+PASS occupied player collision is disabled 
+PASS driving input moves the car 
+PASS occupant follows the moving car 
+PASS authoritative position follows controlled vehicle 
+PASS left driving input turns left 
+PASS chase camera motion blur opens with speed shutter=0.28 speed=32
+PASS motion blur is gated to near road-level pixels (no ghosted pedestrians) samples=24
+PASS road filtering and aggregate contrast stay speckle-free 
+PASS car body rolls and pitches under load roll=0.0142 pitch=-0.0200
+PASS chase camera trails behind the car gap=5.87
+PASS car carries a ground contact shadow 
+PASS a rammed car is shoved by the impact moved=2.50
+PASS handbrake turn swings the car round with the tail sliding yaw 1.24 rad slide 1.60
+PASS rear-end crash shares momentum (our car keeps rolling, the struck car is shoved) kept 0.41 moved 2.48 closing 12.0
+PASS crash leaves dents on both cars and throws debris dents 1/1 debris 7
+PASS wall impact rebounds instead of stopping dead after 2.6 m/s vz 2.6
+PASS NPC weapon ray damages occupied car 90.40 -> 87.38
+PASS car body protects its occupant from that ray 
+PASS normal exit returns control and camera 
+PASS on-foot collision restored 
+PASS blocked car exit preserves seated control without wall clipping 
+PASS clearing blocked exit restores normal exit 
+PASS death is counted for honest golden-path evidence 
+PASS death in car releases both control owners 
+PASS death restores visible player and gameplay camera 
+PASS walking still works after vehicle death 
+PASS on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows 
+PASS locomotion-Q: planted-foot lock (leg IK) on the player; aimed backpedal is its own clip played forward, plus a skid clip clip=idle rate=1.00
+PASS locomotion-Q: street props (scooters, bikes, planters...) collide with the on-foot player boxes=2926
+PASS locomotion-Q: standstill to walk speed takes a real first step (>= 0.3 s) 0.42 s
+PASS locomotion-Q: a sharp 180 at a sprint plants a skid, then pivots skid=true turned=3.14 rad
+PASS locomotion-Q: a pedestrian inside the player's personal space is shouldered clear gap=0.78 m
+PASS on-foot jump is a human hop (0.40-0.70 m rise, under 0.5 s airtime) apex=0.52
+PASS wanted escalation decays when unobserved 
+PASS health regenerates out of fire 
+PASS helicopter control is exclusive 
+FAIL suite finished before watchdog deadline 90-second in-engine watchdog expired
+97/98 checks passed, 1 failed; report=/private/tmp/astra6/package-r2/rendered-core/report.json
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)

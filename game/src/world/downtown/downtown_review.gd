@@ -67,6 +67,9 @@ func _grab() -> void:
 	if _headless():
 		return
 	await RenderingServer.frame_post_draw
+	# A queued readback can resume after _finish closed the frame index.
+	# Stop that pending grab before writing either the image or its index.
+	if not _recording or _jsonl == null or not _jsonl.is_open(): return
 	var img := get_viewport().get_texture().get_image()
 	if img == null:
 		return
@@ -704,6 +707,7 @@ func _finish() -> void:
 		f.close()
 	if _jsonl:
 		_jsonl.close()
+		_jsonl = null
 	_log("done: %s frame p95 %.2f ms" % [JSON.stringify(_results), float(report["frame_ms"]["p95"])])
 	Game.simulation_paused = true
 	Sfx.shutdown_audio()

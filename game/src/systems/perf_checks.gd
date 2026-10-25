@@ -94,18 +94,149 @@ static func _wave_t(main: Node) -> Array:
 	out.append(["perf-T: far walkers glide every tick near the lens, strided far / off screen; idlers strided; near walkers full rate",
 		g_near == 1 and g_far == 2 and g_off == NPC.SIM_FAR_TICKS and PerfBudget.IDLE_TICKS >= 2 and PerfBudget.IDLE_TICKS <= 6
 		and PerfBudget.WALK_FULL_RATE_M >= 6.0, "glide %d/%d/%d idle=%d full=%.0f m" % [g_near, g_far, g_off, PerfBudget.IDLE_TICKS, PerfBudget.WALK_FULL_RATE_M]])
-	# Render-sync and first-use hitches.
-	var wash := FileAccess.get_file_as_string("res://src/world/boat_wash.gd")
-	var fx := FileAccess.get_file_as_string("res://src/actors/car_fx.gd")
-	var blur := FileAccess.get_file_as_string("res://src/actors/car_motion_blur.gd")
-	out.append(["perf-T: no per-frame render-server readback in boat wash; car probe re-placed on the budget cadence; blur shader shared and prewarmed",
-		wash != "" and not wash.contains("get_instance_custom_data") and fx.contains("PerfBudget.CAR_PROBE_STEP") and PerfBudget.CAR_PROBE_STEP >= 0.9
-		and blur.contains("static func prewarm") and blur.contains("static var _s_pipeline"), ""])
-	# Crowd / lane-car re-seeding: failed seeds are capped per frame / tick (over
-	# the bay every far roamer and car retried every frame: 10-20 fps flight).
-	var crowd := FileAccess.get_file_as_string("res://src/systems/crowd_director.gd")
-	var amb := FileAccess.get_file_as_string("res://src/systems/ambient_traffic.gd")
-	out.append(["perf-T: failed crowd and lane-car re-seeds are capped per frame (no retry storm when the focus is over water)",
-		PerfBudget.CROWD_SEED_FAILS >= 1 and PerfBudget.TRAFFIC_SEED_FAILS >= 1 and crowd.contains("PerfBudget.CROWD_SEED_FAILS") and amb.contains("PerfBudget.TRAFFIC_SEED_FAILS")
-		and crowd.contains("fails -= 1") and amb.contains("fails -= 1"), "crowd=%d traffic=%d" % [PerfBudget.CROWD_SEED_FAILS, PerfBudget.TRAFFIC_SEED_FAILS]])
+	# Compiled/exported GDScript has no source text. Exercise the actual
+	# update/recycle paths, rather than treating a source substring as proof.
+	out.append_array(_runtime_budget_checks(main))
+	return out
+
+class BareNPC extends NPC:
+	func _ready() -> void:
+		pass
+
+class BareCar extends Car:
+	func _ready() -> void:
+		pass
+
+class ProbeFx extends "res://src/actors/car_fx.gd":
+	# Isolate probe scheduling from unrelated camera motion and input.
+	func _update_camera(_delta: float) -> void:
+		pass
+
+class FailedCrowdSeeds extends CrowdDirector:
+	var attempts := 0
+	func _seed(_p: NPC, _hidden_only: bool, _loiter: bool) -> bool:
+		attempts += 1
+		return false
+
+class FailedTrafficSeeds extends AmbientTraffic:
+	var attempts := 0
+	func _seed_vehicle(_v: AmbientVehicle, _hidden_only: bool) -> bool:
+		attempts += 1
+		return false
+
+static func _runtime_budget_checks(main: Node) -> Array:
+	var out: Array = []
+	var holder := Node3D.new()
+	main.add_child(holder)
+	# The CPU phase cache must cover every moving boat and survive updates.
+	# Dummy/headless RenderingServer returns zeroed MultiMesh custom data, so
+	# GPU output checks are additional rendered coverage, never headless proof.
+	var boats: Array[Dictionary] = [
+		{"type": "launch", "half": Vector2(3.0, 1.0)},
+		{"type": "launch", "half": Vector2(4.0, 1.2)},
+		{"type": "launch", "half": Vector2(3.0, 1.0), "moored": true},
+	]
+	var wash := BoatWash.build(holder, boats)
+	var drops: MultiMesh = wash._droplets["launch"]["mm"]
+	var cached := wash._entries.size() == 2 and wash.sheets.instance_count == 2 and wash.churns.instance_count == 2 and drops.instance_count == 2 and not boats[2].has("wash")
+	for i in 2:
+		var entry: Dictionary = wash._entries[i]
+		cached = cached and int(entry["slot"]) == i and int(entry["dslot"]) == i and int(boats[i].get("wash", -1)) == i
+		cached = cached and entry.get("cd") == Color(0, i * 0.137, 0, 0) and entry.get("cc") == Color(0, i * 0.211, 0, 0) and entry.get("dc") == Color(0, i * 0.173, 0, 0)
+		var before: Array = [entry.get("cd"), entry.get("cc"), entry.get("dc")]
+		# Deliberately disagree with CPU seeds: an implementation that starts
+		# reading its phase from the renderer will fail the rendered check.
+		wash.sheets.set_instance_custom_data(i, Color(0, 0.91, 0, 0))
+		wash.churns.set_instance_custom_data(i, Color(0, 0.91, 0, 0))
+		drops.set_instance_custom_data(i, Color(0, 0.91, 0, 0))
+		wash.update_boat(boats[i], Transform3D.IDENTITY, 3.5)
+		wash.update_boat(boats[i], Transform3D.IDENTITY, 7.0)
+		cached = cached and before == [entry.get("cd"), entry.get("cc"), entry.get("dc")]
+		if DisplayServer.get_name() != "headless":
+			var sheet := wash.sheets.get_instance_custom_data(i)
+			var churn := wash.churns.get_instance_custom_data(i)
+			var drop := drops.get_instance_custom_data(i)
+			cached = cached and absf(sheet.g - i * 0.137) < 0.005 and absf(churn.g - i * 0.211) < 0.005 and absf(drop.g - i * 0.173) < 0.005 				and absf(sheet.r - 1.0) < 0.005 and absf(churn.r - 1.0) < 0.005 and absf(drop.b - 7.0) < 0.005
+	# Run the inherited _process with a fixture car. The probe must remain
+	# fixed before its deadline, relocate at it, then hold its new position.
+	var car := BareCar.new()
+	holder.add_child(car)
+	car.set_physics_process(false)
+	car.driver_is_player = true
+	var fx := ProbeFx.new()
+	holder.add_child(fx)
+	fx.set_process(false)
+	fx.car = car
+	fx.camera = Camera3D.new()
+	fx.add_child(fx.camera)
+	fx._probe = ReflectionProbe.new()
+	fx.add_child(fx._probe)
+	fx._probe.position = Vector3(100, 100, 100)
+	fx._probe_timer = 0.25
+	var paused := Game.simulation_paused
+	Game.simulation_paused = false
+	fx._process(0.1)
+	var held_before := fx._probe.position == Vector3(100, 100, 100)
+	fx._process(0.16)
+	var reset := fx._probe_timer
+	var moved_to := fx._probe.global_position
+	car.position = Vector3(20, 0, 0)
+	fx._process(0.1)
+	var held_after := fx._probe.global_position.is_equal_approx(moved_to)
+	fx._process(reset)
+	var moved_again := fx._probe.global_position.distance_to(moved_to) > 19.9
+	Game.simulation_paused = paused
+	var cadence := held_before and held_after and moved_again and reset >= 0.9 and is_equal_approx(reset, PerfBudget.CAR_PROBE_STEP)
+	# Headless prewarm has an explicit no-GPU-allocation contract. On a
+	# renderer, load-time prewarm must have produced usable shared RIDs.
+	var shader_before := CarMotionBlur._s_shader
+	var pipeline_before := CarMotionBlur._s_pipeline
+	var state_before := CarMotionBlur._s_state
+	CarMotionBlur.prewarm()
+	var no_compute := DisplayServer.get_name() == "headless" or "--no-motion-blur" in OS.get_cmdline_user_args()
+	var blur_ok := CarMotionBlur._s_state == state_before and CarMotionBlur._s_shader == shader_before and CarMotionBlur._s_pipeline == pipeline_before
+	if no_compute:
+		blur_ok = blur_ok and state_before in [0, -1] and not pipeline_before.is_valid() and not shader_before.is_valid()
+	else:
+		blur_ok = blur_ok and state_before == 1 and pipeline_before.is_valid() and shader_before.is_valid() and CarMotionBlur._s_sampler.is_valid()
+	var shared_instances := 0
+	if not no_compute:
+		for vehicle in main.get_tree().get_nodes_in_group("vehicles"):
+			var effects := vehicle.get_node_or_null("CarFx")
+			var effect: CarMotionBlur = effects.get("motion_blur") if effects != null else null
+			if effect != null:
+				shared_instances += 1
+				blur_ok = blur_ok and effect._shader == shader_before and effect._pipeline == pipeline_before
+		blur_ok = blur_ok and shared_instances > 0
+	var coverage := "GPU output/sharing NOT EXERCISED (headless or disabled); CPU cache/timer/prewarm no-allocation contract checked" if no_compute else "GPU output and shared shader/pipeline identities checked"
+	out.append(["perf-T: wake CPU cache, probe cadence and renderer-aware prewarm contract",
+		cached and cadence and blur_ok, "cache=%s probe=%s reset=%.2f prewarm=%s state=%d shared_instances=%d; %s" % [cached, cadence, reset, blur_ok, state_before, shared_instances, coverage]])
+	var crowd := FailedCrowdSeeds.new()
+	main.add_child(crowd)
+	crowd.set_process(false)
+	crowd._focus = Vector3(10000, 0, 10000)
+	var traffic := FailedTrafficSeeds.new()
+	holder.add_child(traffic)
+	traffic.set_process(false)
+	traffic.set_physics_process(false)
+	for i in 10:
+		var ped := BareNPC.new()
+		holder.add_child(ped)
+		ped.set_physics_process(false)
+		crowd.roamers.append(ped)
+		var vehicle := AmbientVehicle.new()
+		vehicle.active = false
+		traffic.vehicles.append(vehicle)
+		holder.add_child(vehicle)
+	crowd._recycle_pass(false)
+	traffic._recycle(false)
+	var first_crowd := crowd.attempts
+	var first_traffic := traffic.attempts
+	crowd._recycle_pass(false)
+	traffic._recycle(false)
+	out.append(["perf-T: failed seed attempts stop at each per-frame budget and retry next frame",
+		first_crowd == PerfBudget.CROWD_SEED_FAILS and first_crowd >= 1 and first_crowd <= 3 		and first_traffic == PerfBudget.TRAFFIC_SEED_FAILS and first_traffic >= 1 and first_traffic <= 3 		and crowd.attempts == first_crowd * 2 and traffic.attempts == first_traffic * 2,
+		"first crowd=%d traffic=%d; two frames crowd=%d traffic=%d" % [first_crowd, first_traffic, crowd.attempts, traffic.attempts]])
+	crowd.free()
+	holder.free()
 	return out

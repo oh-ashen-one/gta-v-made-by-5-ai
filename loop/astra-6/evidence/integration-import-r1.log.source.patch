@@ -1,0 +1,97 @@
+diff --git a/game/src/core/game_state.gd b/game/src/core/game_state.gd
+index 07242cf..f8c3301 100644
+--- a/game/src/core/game_state.gd
++++ b/game/src/core/game_state.gd
+@@ -265,6 +265,9 @@ func save_game(path: String = "") -> bool:
+ 		"last_safe_position": [last_safe_position.x, last_safe_position.y, last_safe_position.z],
+ 		"last_safe_rotation": last_safe_rotation,
+ 	}
++	var activity := get_tree().get_first_node_in_group("downtown_activity")
++	if activity and activity.has_method("serialize_state"):
++		data["downtown_activity"] = activity.serialize_state()
+ 	if not _validate_save_data(data):
+ 		return false
+ 	var destination := ProjectSettings.globalize_path(path)
+@@ -349,6 +352,12 @@ func load_game(path: String = "") -> bool:
+ 	var mission := get_tree().get_first_node_in_group("mission")
+ 	if mission and mission.has_method("restore_stage"):
+ 		mission.restore_stage(mission_stage)
++	var activity := get_tree().get_first_node_in_group("downtown_activity")
++	if activity:
++		if parsed.has("downtown_activity"):
++			activity.restore_state(parsed["downtown_activity"])
++		else:
++			activity.reset_state()
+ 	Events.state_restored.emit()
+ 	return true
+ 
+@@ -370,6 +379,14 @@ func _valid_saved_vector(value: Variant) -> bool:
+ 	return true
+ 
+ func _validate_save_data(data: Dictionary) -> bool:
++	# Optional for legacy saves. Validate before touching player/story state;
++	# an invalid side activity must not partially load the rest of a save.
++	if data.has("downtown_activity"):
++		var activity: Variant = data["downtown_activity"]
++		if typeof(activity) != TYPE_DICTIONARY: return false
++		if not _integer_in_range(activity.get("version"), 1, 1): return false
++		if not _integer_in_range(activity.get("stage"), 0, 2): return false
++		if not _integer_in_range(activity.get("completed_runs"), 0, 1000000): return false
+ 	if not _integer_in_range(data.get("version"), SAVE_VERSION, SAVE_VERSION): return false
+ 	if not _number_in_range(data.get("health"), 0.01, MAX_HEALTH): return false
+ 	if not _integer_in_range(data.get("wanted_level"), 0, 3): return false
+diff --git a/game/src/main.gd b/game/src/main.gd
+index be35c5d..aad619a 100644
+--- a/game/src/main.gd
++++ b/game/src/main.gd
+@@ -6,6 +6,7 @@ var world: WorldBuilder
+ var player: Player
+ var traffic: TrafficManager
+ var mission: Mission
++var downtown_activity: Node
+ var hud: HUD
+ var started := false
+ var _settings_return_to_pause := false
+@@ -67,6 +68,13 @@ func _ready() -> void:
+ 	hud.setup(world, player, mission)
+ 	Events.objective_marker_changed.connect(hud.set_marker)
+ 
++	# Optional physical errand extends the existing interaction loop across
++	# the bay without replacing Harbour Relay's objectives or checkpoints.
++	downtown_activity = load("res://src/systems/downtown_activities/courier.gd").new()
++	downtown_activity.name = "BayfrontCourier"
++	add_child(downtown_activity)
++	downtown_activity.setup(world, player)
++
+ 	# helicopter at the aviation compound, parked on the primary pad
+ 	var heli := Helicopter.new()
+ 	heli.name = "Helicopter"
+@@ -405,6 +413,8 @@ func _start_game() -> void:
+ 
+ func _new_game() -> void:
+ 	mission.restart()
++	if is_instance_valid(downtown_activity):
++		downtown_activity.reset_state()
+ 	hud.clear_notifications()
+ 	Game.death_count = 0
+ 	_start_game()
+diff --git a/game/src/world/world_builder.gd b/game/src/world/world_builder.gd
+index a126802..22aff95 100644
+--- a/game/src/world/world_builder.gd
++++ b/game/src/world/world_builder.gd
+@@ -999,6 +999,15 @@ func _waterfront_edge() -> void:
+ 	# The bay surface, seawalls, boats and Merlion jet live in bay.gd (BayWater).
+ 	# promenade deck + railing
+ 	_solid_box(Vector3(700.0, 0.3, 22.0), Vector3(0.0, 0.15, PROMENADE_Z), Palette.mat_textured(Palette.CONCRETE_LIGHT,"pavers",Vector3.ONE,0.9))
++	# The raised promenade had a 30 cm vertical lip at every avenue. A player
++	# walking into the central-city route hit that lip unless they jumped.
++	# Wide matching physical ramps join road level to the existing deck.
++	for avenue_x in X_LINES:
++		var ramp := _solid_box(Vector3(12.0, 0.12, 4.0), Vector3(float(avenue_x), 0.10, PROMENADE_Z + 12.6), Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9))
++		var ramp_body := ramp.get_parent() as StaticBody3D
++		ramp_body.name = "PromenadeAccessRamp_%s" % str(avenue_x)
++		ramp_body.rotation.x = atan2(0.30, 4.0)
++		ramp_body.add_to_group("promenade_access_ramp")
+ 	for i: int in 46:
+ 		_cyl(Vector3(0.12, 1.1, 0.12), Vector3(-340.0 + i * 15.0, 0.85, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))
+ 	_box(Vector3(700.0, 0.08, 0.08), Vector3(0.0, 1.35, PROMENADE_Z - 10.6), Palette.mat(Palette.METAL, 0.5, 0.5))

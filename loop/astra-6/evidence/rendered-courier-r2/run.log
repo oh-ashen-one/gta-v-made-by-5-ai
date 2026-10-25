@@ -1,0 +1,176 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[courier-test] PASS courier stills directory /private/tmp/astra6/render-courier-r2/session/stills
+[wave1] main ready, args=["--qa-session", "/private/tmp/astra6/render-courier-r2/session", "--courier-stills-dir=/private/tmp/astra6/render-courier-r2/session/stills", "--qa-render-size=1280x720"]
+[qa-render-size] requested_backing=(1280, 720)
+[perf] threaded preload requested: 140 resources
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 1111 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 22, "tris": 12672 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 131, "tris": 97344, "build_ms": 303 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 407 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 80, "median_shrub": 20638, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9992 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":802,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[character-look] loaded bake for player_rigged_loco4.glb::ArrayMesh_gmvhh in 284 ms
+[character-look] loaded bake for civilian_rigged_v2.glb::ArrayMesh_6djpn in 12 ms
+[profile] officer_pool_build_us=4711 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"far_from_water":543,"no_reflect":6133,"small_prop_batches":1089,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): build_grid=2156 downtown_build=1823 batch_static_primitives=1765 background_city=1542 occluders=893 traffic=609 roads=414 player=346 mission_hud_heli=220 world_start=104
+[launch] world_ui_ready_ms=11566 executable=/Applications/Godot.app/Contents/MacOS/Godot editor_binary=true
+[bay] submerged geometry hidden from reflection: 18
+[street-prop-colliders] 2926 prop boxes on layer 4096
+[street] avenue trees=288 candidates=377 clutter=350
+[plaza-life] 28 stations (1 rejected), 8 units
+[courier-test] PASS far pickup rejected 
+[courier-test] PASS unknown station rejected 
+[courier-route] heritage approach 1/4 at=(-166.9609, 0.035828, -22.02843)
+[courier-route] sidestep 0 at (-165.597, 0.032481, -215.5476) contacts=["/root/CourierRouteTest/Main/World/District/@StaticBody3D@104 @ (-160.0, 0.03, 0.0)", "/root/CourierRouteTest/Main/World/District/@StaticBody3D@104 @ (-160.0, 0.03, 0.0)"]
+[courier-route] heritage approach 2/4 at=(-163.9498, 0.035774, -297.0561)
+[courier-route] heritage approach 3/4 at=(-163.9971, 0.2687, -334.073)
+[courier-route] heritage approach 4/4 at=(-145.8775, 0.267602, -337.7599)
+[courier-test] PASS heritage approach 
+[courier-test] PASS dispatch physically reachable 
+[courier-test] PASS stills use active player camera 01_dispatch_arrival 
+[courier-test] PASS actual viewport image 01_dispatch_arrival /private/tmp/astra6/render-courier-r2/session/stills/01_dispatch_arrival.png
+[courier-stills] {"courier_state":{"completed_runs":0,"stage":0,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/01_dispatch_arrival.png","height":720,"label":"01_dispatch_arrival","physics_frame":3457,"player_position":[-144.53515625,0.267602384090424,-337.931610107422],"saved":true,"width":1280}
+[courier-test] PASS foreign actor rejected 
+[courier-test] PASS paused handover rejected 
+[courier-test] PASS busy transition rejected 
+[courier-test] PASS vehicle mode rejects handover 1 
+[courier-test] PASS vehicle mode rejects handover 2 
+[courier-test] PASS E picks up parcel 
+[courier-test] PASS snapshot survives JSON roundtrip 
+[courier-test] PASS invalid snapshot rejected atomically 
+[courier-test] PASS fractional state rejected 
+[courier-test] PASS legacy empty payload rejected by parser 
+[courier-test] PASS E returns parcel to cancel 
+[courier-test] PASS cancelled run can restart 
+[courier-test] PASS remote destination rejected 
+[courier-test] PASS wall blocks handover 
+[courier-stills] Clearing expected fixture toasts before 02_parcel_collected; all assertions remain in the route log.
+[courier-test] PASS stills use active player camera 02_parcel_collected 
+[courier-test] PASS actual viewport image 02_parcel_collected /private/tmp/astra6/render-courier-r2/session/stills/02_parcel_collected.png
+[courier-stills] {"courier_state":{"completed_runs":0,"stage":1,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/02_parcel_collected.png","height":720,"label":"02_parcel_collected","physics_frame":3566,"player_position":[-144.74836730957,0.27528840303421,-337.904449462891],"saved":true,"width":1280}
+[courier-route] Jubilee and Helix to MBS 1/41 at=(-327.0391, 0.275839, -337.1407)
+[courier-route] Jubilee and Helix to MBS 2/41 at=(-437.0259, 0.275839, -338.1047)
+[courier-route] Jubilee and Helix to MBS 3/41 at=(-455.1808, 0.224374, -343.2216)
+[courier-route] Jubilee and Helix to MBS 4/41 at=(-459.6088, 1.235844, -369.0778)
+[courier-route] Jubilee and Helix to MBS 5/41 at=(-485.136, 0.335842, -379.1617)
+[courier-route] Jubilee and Helix to MBS 6/41 at=(-518.0886, 0.356849, -383.7052)
+[courier-route] Jubilee and Helix to MBS 7/41 at=(-520.7021, 0.335839, -397.0617)
+[courier-route] Jubilee and Helix to MBS 8/41 at=(-654.5589, 0.240915, -399.9658)
+[courier-route] sidestep 0 at (-656.1675, 0.335845, -402.24) contacts=["/root/CourierRouteTest/Main/World/District/DowntownLandmarks/Esplanade/EsplanadeCollision @ (0.0, 0.0, 0.0)", "/root/CourierRouteTest/Main/World/District/DowntownLandmarks/Esplanade/EsplanadeCollision @ (0.0, 0.0, 0.0)"]
+[courier-route] sidestep 1 at (-656.1549, 0.335941, -402.2403) contacts=["/root/CourierRouteTest/Main/World/District/DowntownLandmarks/Esplanade/EsplanadeCollision @ (0.0, 0.0, 0.0)", "/root/CourierRouteTest/Main/World/District/DowntownLandmarks/Esplanade/EsplanadeCollision @ (0.0, 0.0, 0.0)", "/root/CourierRouteTest/Main/World/District/DowntownLandmarks/Esplanade/EsplanadeCollision @ (0.0, 0.0, 0.0)", "/root/CourierRouteTest/Main/World/District/DowntownLandmarks/Esplanade/EsplanadeCollision @ (0.0, 0.0, 0.0)", "/root/CourierRouteTest/Main/World/District/DowntownLandmarks/Esplanade/EsplanadeCollision @ (0.0, 0.0, 0.0)", "/root/CourierRouteTest/Main/World/District/DowntownLandmarks/Esplanade/EsplanadeCollision @ (0.0, 0.0, 0.0)"]
+[courier-route] Jubilee and Helix to MBS 9/41 at=(-658.4531, 0.335845, -406.3875)
+[courier-route] Jubilee and Helix to MBS 10/41 at=(-648.7111, 0.075839, -437.0963)
+[courier-route] Jubilee and Helix to MBS 11/41 at=(-648.1736, 0.075742, -557.0735)
+[courier-route] Jubilee and Helix to MBS 12/41 at=(-647.5953, 0.075839, -627.06)
+[courier-route] Jubilee and Helix to MBS 13/41 at=(-648.0652, 0.075839, -656.3104)
+[courier-route] Jubilee and Helix to MBS 14/41 at=(-642.6631, 0.075936, -663.5545)
+[courier-route] Jubilee and Helix to MBS 15/41 at=(-562.8547, 0.075747, -665.566)
+[courier-route] Jubilee and Helix to MBS 16/41 at=(-502.942, 0.075839, -665.7586)
+[courier-route] Jubilee and Helix to MBS 17/41 at=(-490.7704, 0.075833, -667.1541)
+[courier-route] Jubilee and Helix to MBS 18/41 at=(-489.1104, -0.026604, -697.0089)
+[courier-route] Jubilee and Helix to MBS 19/41 at=(-491.7616, -0.033609, -730.1041)
+[courier-route] Jubilee and Helix to MBS 20/41 at=(-496.1391, 0.335874, -738.6613)
+[courier-route] Jubilee and Helix to MBS 21/41 at=(-496.1391, 0.335909, -742.4183)
+[courier-route] Jubilee and Helix to MBS 22/41 at=(-489.8788, 0.340314, -744.8968)
+[courier-route] Jubilee and Helix to MBS 23/41 at=(-484.1601, 0.569124, -745.4794)
+[courier-route] Jubilee and Helix to MBS 24/41 at=(-466.5381, 1.434596, -746.9633)
+[courier-route] Jubilee and Helix to MBS 25/41 at=(-444.5425, 2.63326, -748.6061)
+[courier-route] Jubilee and Helix to MBS 26/41 at=(-422.5944, 3.575833, -749.892)
+[courier-route] Jubilee and Helix to MBS 27/41 at=(-400.5174, 3.575838, -750.706)
+[courier-route] Jubilee and Helix to MBS 28/41 at=(-382.9604, 3.575827, -750.9595)
+[courier-route] Jubilee and Helix to MBS 29/41 at=(-365.2889, 3.575827, -750.834)
+[courier-route] Jubilee and Helix to MBS 30/41 at=(-343.3204, 3.575833, -750.1582)
+[courier-route] Jubilee and Helix to MBS 31/41 at=(-321.3597, 2.934925, -748.9847)
+[courier-route] Jubilee and Helix to MBS 32/41 at=(-299.3058, 1.752548, -747.4171)
+[courier-route] Jubilee and Helix to MBS 33/41 at=(-281.7897, 0.838695, -745.9959)
+[courier-route] Jubilee and Helix to MBS 34/41 at=(-272.981, 0.451164, -745.2526)
+[courier-route] Jubilee and Helix to MBS 35/41 at=(-260.9761, 0.335839, -745.0405)
+[courier-route] Jubilee and Helix to MBS 36/41 at=(-258.3572, 0.075676, -734.8742)
+[courier-route] Jubilee and Helix to MBS 37/41 at=(-319.0221, 0.075936, -732.0562)
+[courier-route] sidestep 0 at (-321.4969, 0.075936, -698.5166) contacts=["/root/CourierRouteTest/Main/World/District/DowntownMapStatic @ (0.0, 0.0, 0.0)", "/root/CourierRouteTest/Main/World/District/DowntownMapStatic @ (0.0, 0.0, 0.0)", "/root/CourierRouteTest/Main/World/District/DowntownMapStatic @ (0.0, 0.0, 0.0)"]
+[courier-route] Jubilee and Helix to MBS 38/41 at=(-321.6858, 0.075936, -667.9605)
+[courier-route] Jubilee and Helix to MBS 39/41 at=(-323.9011, 0.075839, -632.7313)
+[courier-route] Jubilee and Helix to MBS 40/41 at=(-314.6666, 0.335839, -631.9196)
+[courier-route] Jubilee and Helix to MBS 41/41 at=(-119.9809, 0.335593, -631.9989)
+[courier-test] PASS Jubilee and Helix to MBS 
+[courier-test] PASS MBS destination physically reachable 
+[courier-test] PASS stills use active player camera 03_mbs_arrival 
+[courier-test] PASS actual viewport image 03_mbs_arrival /private/tmp/astra6/render-courier-r2/session/stills/03_mbs_arrival.png
+[courier-stills] {"courier_state":{"completed_runs":0,"stage":1,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/03_mbs_arrival.png","height":720,"label":"03_mbs_arrival","physics_frame":19996,"player_position":[-118.627593994141,0.335358113050461,-631.999267578125],"saved":true,"width":1280}
+[courier-test] PASS E handover creates return receipt 
+[courier-test] PASS delivery cannot be duplicated 
+[courier-test] PASS story objective unchanged 
+[courier-test] PASS receipt checkpoint restores 
+[courier-test] PASS stills use active player camera 04_mbs_delivered 
+[courier-test] PASS actual viewport image 04_mbs_delivered /private/tmp/astra6/render-courier-r2/session/stills/04_mbs_delivered.png
+[courier-stills] {"courier_state":{"completed_runs":0,"stage":2,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/04_mbs_delivered.png","height":720,"label":"04_mbs_delivered","physics_frame":20047,"player_position":[-118.592041015625,0.335456907749176,-631.999267578125],"saved":true,"width":1280}
+[courier-route] receipt return 1/42 at=(-118.592, 0.335457, -631.9993)
+[courier-route] receipt return 2/42 at=(-313.317, 0.335839, -632.0007)
+[courier-route] receipt return 3/42 at=(-323.2862, 0.075833, -632.0002)
+[courier-route] receipt return 4/42 at=(-322.0664, 0.075935, -662.0822)
+[courier-route] receipt return 5/42 at=(-321.9216, 0.075936, -729.0071)
+[courier-route] receipt return 6/42 at=(-260.9856, 0.075787, -731.9321)
+[courier-route] receipt return 7/42 at=(-258.3729, 0.335833, -742.0357)
+[courier-route] receipt return 8/42 at=(-267.0834, 0.335839, -744.6484)
+[courier-route] receipt return 9/42 at=(-275.853, 0.569682, -745.4799)
+[courier-route] receipt return 10/42 at=(-293.4748, 1.435216, -746.9643)
+[courier-route] receipt return 11/42 at=(-315.47, 2.633795, -748.6071)
+[courier-route] receipt return 12/42 at=(-337.4785, 3.575833, -750.0574)
+[courier-route] receipt return 13/42 at=(-359.4474, 3.575839, -750.7205)
+[courier-route] receipt return 14/42 at=(-377.0046, 3.575695, -750.9609)
+[courier-route] receipt return 15/42 at=(-394.6759, 3.575839, -750.8344)
+[courier-route] receipt return 16/42 at=(-416.6445, 3.575838, -750.1595)
+[courier-route] receipt return 17/42 at=(-438.6049, 2.935393, -748.9866)
+[courier-route] receipt return 18/42 at=(-460.6592, 1.75458, -747.4195)
+[courier-route] receipt return 19/42 at=(-478.29, 0.834942, -745.9894)
+[courier-route] receipt return 20/42 at=(-484.0539, 0.574067, -745.596)
+[courier-route] receipt return 21/42 at=(-494.0193, 0.335839, -745.2854)
+[courier-route] receipt return 22/42 at=(-496.1382, 0.335895, -743.3421)
+[courier-route] receipt return 23/42 at=(-493.1335, 0.061509, -735.6645)
+[courier-route] receipt return 24/42 at=(-489.3234, -0.025303, -702.9225)
+[courier-route] receipt return 25/42 at=(-488.1076, 0.075827, -670.9572)
+[courier-route] receipt return 26/42 at=(-497.2739, 0.075839, -666.9893)
+[courier-route] receipt return 27/42 at=(-557.1367, 0.075838, -666.7158)
+[courier-route] receipt return 28/42 at=(-638.087, 0.075833, -666.2672)
+[courier-route] receipt return 29/42 at=(-644.6718, 0.075935, -660.8445)
+[courier-route] receipt return 30/42 at=(-646.7695, 0.075839, -632.8953)
+[courier-route] receipt return 31/42 at=(-647.6342, 0.075838, -562.8721)
+[courier-route] receipt return 32/42 at=(-648.1418, 0.075839, -442.9856)
+[courier-route] receipt return 33/42 at=(-656.2558, 0.335839, -411.8672)
+[courier-route] receipt return 34/42 at=(-657.2141, 0.335845, -402.9766)
+[courier-route] receipt return 35/42 at=(-523.9996, 0.335839, -400.029)
+[courier-route] receipt return 36/42 at=(-521.2939, 0.335839, -386.9128)
+[courier-route] receipt return 37/42 at=(-490.9173, 0.335833, -379.9447)
+[courier-route] receipt return 38/42 at=(-462.9173, 1.228608, -372.6823)
+[courier-route] receipt return 39/42 at=(-458.4016, 0.883625, -346.9721)
+[courier-route] receipt return 40/42 at=(-442.7071, 0.087815, -339.1909)
+[courier-route] receipt return 41/42 at=(-332.9318, 0.275839, -337.1802)
+[courier-route] receipt return 42/42 at=(-145.9662, 0.275839, -338.0728)
+[courier-test] PASS receipt return 
+[courier-test] PASS stills use active player camera 05_receipt_return 
+[courier-test] PASS actual viewport image 05_receipt_return /private/tmp/astra6/render-courier-r2/session/stills/05_receipt_return.png
+[courier-stills] {"courier_state":{"completed_runs":0,"stage":2,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/05_receipt_return.png","height":720,"label":"05_receipt_return","physics_frame":35233,"player_position":[-144.598236083984,0.275772869586945,-338.022155761719],"saved":true,"width":1280}
+[courier-test] PASS return completes once 
+[courier-test] PASS stills use active player camera 06_courier_completed 
+[courier-test] PASS actual viewport image 06_courier_completed /private/tmp/astra6/render-courier-r2/session/stills/06_courier_completed.png
+[courier-stills] {"courier_state":{"completed_runs":1,"stage":0,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/06_courier_completed.png","height":720,"label":"06_courier_completed","physics_frame":35283,"player_position":[-144.578262329102,0.274850279092789,-338.021423339844],"saved":true,"width":1280}
+[courier-test] PASS completed route repeatable 
+[courier-test] PASS repeat cancellation keeps completion count 
+[courier-test] PASS route has no teleport steps max_step=0.222 travel=3679.1m
+[courier-test] PASS route has no deaths 
+[courier-test] PASS new game resets activity 
+[courier-test] RESULT {"checks":44,"curb_jumps":0,"elapsed_s":602.899,"failures":[],"max_step_m":0.221567988395691,"stills":[{"courier_state":{"completed_runs":0,"stage":0,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/01_dispatch_arrival.png","height":720,"label":"01_dispatch_arrival","physics_frame":3457,"player_position":[-144.53515625,0.267602384090424,-337.931610107422],"saved":true,"width":1280},{"courier_state":{"completed_runs":0,"stage":1,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/02_parcel_collected.png","height":720,"label":"02_parcel_collected","physics_frame":3566,"player_position":[-144.74836730957,0.27528840303421,-337.904449462891],"saved":true,"width":1280},{"courier_state":{"completed_runs":0,"stage":1,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/03_mbs_arrival.png","height":720,"label":"03_mbs_arrival","physics_frame":19996,"player_position":[-118.627593994141,0.335358113050461,-631.999267578125],"saved":true,"width":1280},{"courier_state":{"completed_runs":0,"stage":2,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/04_mbs_delivered.png","height":720,"label":"04_mbs_delivered","physics_frame":20047,"player_position":[-118.592041015625,0.335456907749176,-631.999267578125],"saved":true,"width":1280},{"courier_state":{"completed_runs":0,"stage":2,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/05_receipt_return.png","height":720,"label":"05_receipt_return","physics_frame":35233,"player_position":[-144.598236083984,0.275772869586945,-338.022155761719],"saved":true,"width":1280},{"courier_state":{"completed_runs":1,"stage":0,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-r2/session/stills/06_courier_completed.png","height":720,"label":"06_courier_completed","physics_frame":35283,"player_position":[-144.578262329102,0.274850279092789,-338.021423339844],"saved":true,"width":1280}],"travel_m":3679.08665456822}
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
