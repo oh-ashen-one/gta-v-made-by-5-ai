@@ -35,3 +35,17 @@ The optional `--courier-baseline-curb-jump` switch records one real-input jump a
 `res://src/systems/downtown_activities/tests/mbs_approach.tscn` starts explicitly at the MBS north corridor and walks ingress to the destination ring and egress. It isolates the physical ramp before spending time on the complete route; it does not prove courier progression or end-to-end travel. Use the same bounded runner and isolated `--qa-session` as above. The full courier test always starts at the normal heritage spawn.
 
 `res://src/systems/downtown_activities/tests/jubilee_return.tscn` is a second explicit local fixture: it starts at Jubilee's east approach, ray-probes the landing lip, then walks through Merlion Park to Heritage Waterfront. It isolates the reverse landing and remaining return leg without representing a full courier run.
+
+## Optional real-camera courier stills
+
+Add `--courier-stills-dir=<absolute path>` to the full route. The output must be a new child directory beneath the explicit private-temp `--qa-session` directory; normalized `/tmp/` aliases are accepted. Symlink redirects and existing named PNGs are rejected. Headless runs skip all screenshot waits and writes. This option does not start a renderer or replace the shared lease protocol.
+
+Example for the parent-owned rendered lane (do not add the unrelated `--capture` route flag):
+
+```sh
+bash loop/render.sh courier-route 1400 /private/tmp/astra6-courier-render -- res://src/systems/downtown_activities/tests/courier_route.tscn -- --qa-session /private/tmp/astra6-courier-render/session --courier-stills-dir=/private/tmp/astra6-courier-render/session/stills --qa-render-size=1280x720
+```
+
+Six PNGs come directly from the active player camera's viewport: `01_dispatch_arrival`, `02_parcel_collected`, `03_mbs_arrival`, `04_mbs_delivered`, `05_receipt_return`, `06_courier_completed`. The log records dimensions, player position, courier state, physics frame and any failed assertions for each image; the final result includes the capture list. Expected fixture toasts are cleared only before the parcel-collected frame, only if all assertions still pass, with an explicit log. Assertion history is never cleared. Screenshot failures fail the test.
+
+Fast headless guard smoke: use `res://src/systems/downtown_activities/tests/stills_guard.tscn` with a fresh private-temp `--qa-session` and its child `--courier-stills-dir`. This checks path acceptance/rejection and confirms headless requests never wait for rendering or create captures.
