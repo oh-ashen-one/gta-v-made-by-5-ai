@@ -13,6 +13,7 @@ var _travel := 0.0
 var _last_position := Vector3.ZERO
 var _max_step := 0.0
 var _initial_deaths := 0
+var _curb_jumps := 0
 
 func _physics_process(_delta: float) -> void:
 	if not is_instance_valid(player) or Game.simulation_paused: return
@@ -66,6 +67,10 @@ func _run() -> void:
 	player.busy = true
 	_check("busy transition rejected", not activity.can_use_station("heritage"))
 	player.busy = false
+	for mode in [Game.MODE_CAR, Game.MODE_HELI]:
+		Game.mode = mode
+		_check("vehicle mode rejects handover %d" % mode, not activity.can_use_station("heritage"))
+	Game.mode = Game.MODE_FOOT
 	await _press_e()
 	_check("E picks up parcel", activity.stage == Courier.Stage.OUTBOUND)
 	var snapshot: Dictionary = activity.serialize_state()
@@ -133,12 +138,13 @@ func _bayfront_path() -> Array[Vector3]:
 		points.append(Vector3(lerpf(a.x, b.x, u), 0, lerpf(a.z, b.z, u) - 6 * sin(PI * u)))
 	# Around the north end of the solid Shoppes podium to the promenade.
 	var mbs := DowntownPlan.anchor("marina_bay_sands")
-	points.append_array([Vector3(mbs.x - 197, 0, -735), Vector3(mbs.x - 197, 0, -665), Vector3(mbs.x - 197, 0, -635), activity.stations.bayfront.global_position])
+	points.append_array([Vector3(mbs.x - 204, 0, -735), Vector3(mbs.x - 204, 0, -665), Vector3(mbs.x - 204, 0, -635), activity.stations.bayfront.global_position])
 	return points
 
 func _walk(points: Array[Vector3], label: String) -> bool:
 	for i in points.size():
 		var target := points[i]
+		var arrival_radius := 2.0 if i == points.size() - 1 else 3.0
 		var deadline := Time.get_ticks_msec() + 75000
 		var best := INF
 		var last_progress := Time.get_ticks_msec()
@@ -147,11 +153,22 @@ func _walk(points: Array[Vector3], label: String) -> bool:
 			await get_tree().physics_frame
 			var delta := target - player.global_position
 			delta.y = 0
-			if delta.length() < 2.0: break
+			if delta.length() < arrival_radius: break
 			if delta.length() < best - 0.5:
 				best = delta.length()
 				last_progress = Time.get_ticks_msec()
 			if Time.get_ticks_msec() - last_progress > 4000:
+				# Baseline diagnostic only: bypass no physics, use the actual jump
+				# input at the already reported 0.3m heritage curb. Default test
+				# forbids this so a successful jump cannot hide a missing ramp.
+				if "--courier-baseline-curb-jump" in OS.get_cmdline_user_args() and absf(player.global_position.z + 326.66) < 1.0 and _curb_jumps == 0:
+					_curb_jumps += 1
+					print("[courier-route] BASELINE CURB JUMP; this does not prove a seamless walk")
+					Input.action_press("jump")
+					await get_tree().create_timer(0.2).timeout
+					Input.action_release("jump")
+					last_progress = Time.get_ticks_msec()
+					continue
 				if sidesteps >= 4:
 					_release()
 					return _check(label, false, "stalled waypoint %d target=%s at=%s" % [i, target, player.global_position])
@@ -173,7 +190,7 @@ func _walk(points: Array[Vector3], label: String) -> bool:
 			Input.action_press("move_forward")
 			Input.action_press("sprint")
 		_release()
-		if Vector2(player.global_position.x - target.x, player.global_position.z - target.z).length() >= 3.0:
+		if Vector2(player.global_position.x - target.x, player.global_position.z - target.z).length() >= arrival_radius + 0.5:
 			return _check(label, false, "timeout waypoint %d at=%s" % [i, player.global_position])
 		print("[courier-route] %s %d/%d at=%s" % [label, i + 1, points.size(), player.global_position])
 	return _check(label, true)
@@ -191,6 +208,6 @@ func _release() -> void:
 
 func _finish() -> void:
 	_release()
-	print("[courier-test] RESULT ", JSON.stringify({"checks": checks, "failures": failures, "travel_m": _travel, "max_step_m": _max_step, "elapsed_s": (Time.get_ticks_msec() - _started) / 1000.0}))
+	print("[courier-test] RESULT ", JSON.stringify({"checks": checks, "failures": failures, "travel_m": _travel, "max_step_m": _max_step, "curb_jumps": _curb_jumps, "elapsed_s": (Time.get_ticks_msec() - _started) / 1000.0}))
 	Sfx.shutdown_audio()
 	get_tree().quit(0 if failures.is_empty() else 1)

@@ -27,3 +27,5 @@ python3 game/tools/bounded_run.py --seconds 1200 --log /private/tmp/astra6-activ
 ```
 
 The dedicated scene loads the full game from its normal spawn, creates the activity only if the integration hook is absent, and uses movement/E input. It checks range, line of sight, pause/busy and actor guards, JSON restoration, cancellation/repeat, then walks via Jubilee and Helix to MBS and back. No respawn/position assignment is used in its traversal. The only temporary fixture is a wall for the line-of-sight rejection check; it is removed before travel. Headless success is functional evidence, not rendered quality or vehicle-route acceptance.
+
+The optional `--courier-baseline-curb-jump` switch records one real-input jump at the legacy waterfront lip, solely to diagnose downstream access on an unpatched baseline. The default route does not jump. Intermediate waypoints use the existing downtown review's 3 m reach tolerance so the driver does not demand walking into the Helix balustrade; both handover approaches require 2 m.
