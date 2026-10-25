@@ -1,38 +1,29 @@
-# Astra-6 enhancements — IN PROGRESS
+# Astra-6 enhancements — candidate ready, final review in progress
 
-Owner: current Codex session with explicitly authorized builder/critic subagents. Branch `Astra-6-enhancements`, baseline main451c8eb. Fixed 2026-10-25 18:20:57–22:20:57 UTC; final30min21:50:57. No main merge or extension. Scope/clock in loop/astra-6/TASK.md and RUN.json.
+The owner's fixed four-hour task runs25 October2026,18:20:57–22:20:57 UTC. Implementation freezes21:50:57. Branch `Astra-6-enhancements`, based on main451c8eb. Do not reset or extend the clock. All game-code changes are at `e84bbc7`; later commits preserve verification and delivery material.
 
-## Implemented and verified so far (20:30 UTC)
-- Traffic: ambient112→48, physics14→7, roadside parking97→51; all20courtyard+3opening cars preserved. Actual spawned-car and camera-cut recycling tests. Same unmodified headless drive: baseline445.4s/91.5waiting/0tows versus candidate314.0s/19.2waiting/0tows, with one controls-based unstick. Single-run comparison; not human-feel or graphics/performance acceptance. Sustained junction review still observed box/zebra stops.
-- Bayfront Courier: repeatable physical E activity between heritage waterfront and MBS Event Plaza, independent of Harbour Relay. Own HUD/card and marker; atomic optional save schema, legacy reset, actual New Game and death checks. Normal-spawn full controls-based outward/return route31/31:3683.21m,603.65s,zero jumps/deaths/teleport steps. Final save idle/completed_runs1; original story stage/checkpoint unchanged. Optional real screenshot support now integrated; rendered full route queued, no fake headless images.
-- Physical walking seams: five heritage avenue→promenade ramps; MBS north promenade ramp; Jubilee→Fullerton and Fullerton→heritage joins. Visible surfaces and matching collision ramps repair actual controller failures; traversal tests did not bypass lips.
-- MBS SkyPark: explicit public lift transition, guarded roof terrace, dedicated2.5m helicopter exit zone, return lift and ground death recovery. Production setup hook required. Headless and actual Metal rendered suites116/116, including8center headings+8boundary exits,4outside refusals, saved rooftop fresh-scene restore, actual death/recovery, controls-based flight from an explicit airborne fixture/landing/Eexit/return. This is not a continuous heritage-to-roof flight claim.
-- Core integrated suite296/296 headless; original Harbour Relay13gates/0deaths/158.8s. Final combined suite and packaged checks still pending latest polish.
+## Current result
 
-## Actual visual evidence and critique
-- Baseline29fixed views in loop/astra-6/evidence/baseline-views. CityR1 views are an intermediate iteration: optional granite paving was rejected after blind A/B preferred baseline, then removed in ebb036a. Do not label those intermediate materials final.
-- SkyPark actual four PNGs and rendered116-check log in evidence/skypark-rendered-r1. Critic found sign/lightstrip overlap, deliberate negative-test toast lingering in positive-arrival still, and empty terrace scale cues. Builder is correcting these with readable signage, normal toast expiry and bounded existing-NPC visitors/wayfinding; rerun pending.
-- Seven Texture RID warnings occurred only at rendered test shutdown after full scene teardown/rebuild; preserve this limitation. No fatal error, no memory-leak acceptance claim.
-- Shared GPU occupied by other owners; all our captures use shared lease and are contaminated for performance. No60fps/exclusive GPU claim. Only actual rendered gameplay images are progress evidence.
+Central Singapore's existing landmarks, bridges and art are retained. New work adds the Bayfront Courier roundtrip, repairs four pedestrian transition areas, makes the MBS public SkyPark reachable by lift and helicopter, and roughly halves active/parked street traffic. The original Harbour Relay remains independent. Fresh code and actual-render critics were used. See `loop/astra-6/VERIFICATION.md` for exact results and limitations.
 
-## Ownership and pending work
-- traffic_builder / siblingastra6-traffic, branchAstra-6/traffic: completed and integrateda50fff4.
-- downtown_builder / siblingastra6-activities, branchAstra-6/downtown-activities: fullroute5d7a309 and optional screenshot9289e57 integrated. No production source changes pending.
-- landmark_access_builder / siblingastra6-landmark-access, branchAstra-6/landmark-access:953d3ce+a553da0 integrated; small visual-critic polish underway. Parent owns renderer.
-- Parent owns main/coreGame/player/HUD/sharedworld hooks and integration; new read-only courier critic checking final integration. Do not duplicate live agents.
-- Current root rendered drive exec95844 (/private/tmp/astra6/render-drive-r1); courier exec32507 waiting on private one-at-a-time lock (/private/tmp/astra6/render-courier-r1). Inspect identity/state before interacting.
+Final candidate: native macOS package R3,881,511,448bytes, SHA256 `36dfc8d695acdaabed69ddaaad3df1c23eed0b41b17ed07e926be3d168c55bc7`. Strict local ad-hoc signature and identical PCK verified. Delivery folder is `outputs/Astra-6-enhancements-2026-10-25` beside this task's work directory; contains app, ZIP, gallery, screenshots, controls and verification.
 
-## Finish within fixed window
-Finish current rendered traffic/courier evidence, integrate and revalidate SkyPark polish, fresh visual critique, full regression and package/save/load/captures. Freeze implementation21:50:57; hard end22:20:57. Preserve/push all task source, actual evidence and private build; report remaining failures/untested gates honestly. No new paid generation.
+## Verified and open gates
 
-## Resource safety
-Use loop/astra-6/render.sh: private one-at-a-time lock, shared GPU_SLOT_DIR=/Users/midir/.cache/gpu-slot, native shared lease, render_gate, fixed-deadline guard and bounded_run. One task renderer; globalmixedcap2. Do not touch foreign Invincible/Bully/Veyr instances/locks. All QA uses explicit isolated --qa-session. Stop own drivers before engines, TERM/up to60s grace. Remove only task temporary worktrees after preserving pushed work/private assets; keep main authoring checkout.
+- Final packaged headless core296/296; rendered cross-process UI24write/23load.
+- Full rendered courier44/44,3679m,602.9s, zero jumps/deaths/teleports. Final compact-label dispatch review25/25 is explicitly a local fixture, not another full journey.
+- Source car/helicopter courier occupancy/handover/save fixtures38/38.
+- Rendered downtown drive reached its destination with zero tows, but its writer shut down with an error; writer correction later verified by clean rendered flight/views. No retroactive pass.
+- Rendered SkyPark140/142: access, flight, death/save recovery and corrected aircraft clearance pass; preexisting native ragdoll solver/floor gates fail.
+-30-minute mixed workload failed a free-driving destination after657.7s, after three completed missions/zero deaths. Rendered core suite hit its90s watchdog. Shared-GPU performance remains unaccepted.
+- Native keyboard checks verified normal start/movement/save, sedan entry/drive/brake/exit, then a separate packaged rooftop-save Continue/lift down/up/walk/railing/normal quit. This is OS-input automation, not human acceptance.
 
-## 20:58 UTC verification update
-All builder changes integrated, parent source aa3277b plus orchestration/docs. Packaged R2 core296/296 passed, strict ad-hoc signature valid, zero fatalerrors. GPU-only checks explicitly not exercised. Dedicated packaged scene override refused by stock template; no bypass, vehicle38checks remain source-only. Stronger SkyPark combat140/142 exposes preexisting native ragdoll solver fallback; live NPCdamage and aircraft clearance pass. Bone-node/physics and visible skeleton differ afterfallback; no unverified visible-mesh penetration claim. Preserve detailed combat-verification.json.
+## Remaining before final delivery
 
-Veyr editor2904 + ownerInvincible93277 occupy GPU cap2. No ownengine currentlyrendering. Failed courier attempt launched noengine; remaining ownqueuedSkyPark/flight driversstopped. Bounded waiter36806/session45112 waits normalcapacity until21:50:57 then uses unchanged lease/gate/deadline helper for courierR2. State /private/tmp/astra6/courier-waiter.json. Do notduplicate; inspectbeforelaunchinganyadditionalrenderer. Corrected headless30minute workload session32774 running /private/tmp/astra6/soak-r2; pending. Firstinvocation lackedrequiredqa-engine-log andaborted30seconds, preserved. Taskdeadlineunchanged22:20:57.
+Finish evidence/delivery hash audit and independent report review; push the final task branch and create/update a draft PR without merging main. Clean only task-owned disposable build copies after the delivered app/ZIP are verified. Confirm all owned drivers/engines are stopped. At the hard deadline deliver the best candidate with actual screenshots and honest open gates, then delete `astra-singapore-four-hour-enhancement-pass`.
 
-## 21:01 UTC continuation
-Veyr editor closed; capacity freed20:57, normal courier waiter launched actual Metal run. First2realPNG images exist, fullroutepending. Freshcritic wants smaller courier worldtitle and no near-target marker overlap; implement AFTER currentrun, then actual dispatch recheck and final package. Pending root executions: courier45112, SkyParkR3 17433, packageR2renderedcore82403, packageUIwrite17849, downtownflightviewsR2 85166. One taskrenderer only through private lock+sharedlease+lastmomentguard. UIload MUST wait for successful UIwrite and use same savepath/folder; don't queueblindly. Corrected30minuteheadlesssoak32774 pending until~21:25.
-All helperbranches pushed/integrated; removed ONLY our4temporarycheckouts aftercleanverification. Mainauthoringcheckout/privateassets retained. Finalsourcecurrentlyd506bc0 plus thisnote; packageR2 fromaa3277b core296/296; UIpolishmayrequireR3. Source/packagedsceneoverride distinction and ragdollfailure remain. Deadlineunchanged22:20:57.
+All builders and critics completed. Their four temporary worktrees have been removed after pushed-source verification; do not resume commands against those deleted paths. The main authoring checkout/private assets are retained. The original five-model relay is unrelated and its monitor is already deleted.
+
+## Safety
+
+Use only `loop/astra-6/render.sh` or `render_package.sh` for any remaining rendered verification: private lock, shared `GPU_SLOT_DIR=/Users/midir/.cache/gpu-slot`, normal lease, `render_gate`, fixed deadline and bounded supervisor. One task renderer, global mixed cap2. All QA saves use explicit private directories. No CUA call against an app after it exits: native bindings may relaunch it outside the lease. Stop owned drivers before engines, TERM with grace, and leave foreign sessions untouched. No purchases, global settings changes, main merge or public release.
