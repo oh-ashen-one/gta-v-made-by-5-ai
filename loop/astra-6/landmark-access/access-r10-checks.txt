@@ -1,0 +1,127 @@
+[skypark-test] PASS production main creates SkyPark access 
+[skypark-test] PASS remote and invalid station denied 
+[skypark-test] PASS ground arrival has floor and capsule clearance 
+[skypark-test] PASS strict rooftop exit permits center 
+[skypark-test] PASS strict rooftop exit refuses deck edge 
+[skypark-test] PASS other rooftop and map escape refused 
+[skypark-test] PASS existing ground pad behavior retained 
+[skypark-test] PASS roof arrival has floor and capsule clearance 
+[skypark-test] PASS north promenade entry ramp crosses without jump 
+[skypark-test] PASS Event Plaza ramp reaches lift on foot 
+[skypark-test] PASS ground lift reachable 
+[skypark-test] PASS pause guard 
+[skypark-test] PASS busy guard 
+[skypark-test] PASS dead guard 
+[skypark-test] PASS vehicle mode guard 1 
+[skypark-test] PASS vehicle mode guard 2 
+[skypark-test] PASS occupied vehicle guard independent of mode 
+[skypark-test] PASS foreign actor guard 
+[skypark-test] PASS LOS wall denies direct interaction 
+[skypark-test] PASS blocked arrival refuses lift without moving player 
+[skypark-test] PASS negative-fixture toast expires before positive still 
+[skypark-test] PASS real E lifts to public terrace (-39.0, 200.0267, -698.0)
+[skypark-test] PASS health story wanted and courier preserved 
+[skypark-test] PASS safe checkpoint remains reachable ground 
+[skypark-test] PASS immediate double use denied 
+[skypark-test] PASS native save rooftop position 
+[skypark-test] PASS native load preserves exact rooftop position 
+[skypark-test] PASS loaded player walks back to lift 
+[skypark-test] PASS real E returns to ground 
+[skypark-test] PASS public terrace floor continuous 
+[skypark-test] PASS visible boundary has collision (-1.0, 0.0, 0.0) 
+[skypark-test] PASS visible boundary has collision (1.0, 0.0, 0.0) 
+[skypark-test] PASS visible boundary has collision (0.0, 0.0, -1.0) 
+[skypark-test] PASS visible boundary has collision (0.0, 0.0, 1.0) 
+[skypark-test] PASS controller cannot jump past terrace (-1.0, 0.0, 0.0) (-87.54572, 199.9743, -698.0)
+[skypark-test] PASS controller cannot jump past terrace (1.0, 0.0, 0.0) (-38.30695, 199.9758, -698.0)
+[skypark-test] PASS controller cannot jump past terrace (0.0, 0.0, -1.0) (-63.0, 199.9751, -706.5591)
+[skypark-test] PASS controller cannot jump past terrace (0.0, 0.0, 1.0) (-63.0, 199.9758, -689.4409)
+[skypark-test] PASS three actual roof NPC visitors 
+[skypark-test] PASS visitor has live NPC floor and character 
+[skypark-test] PASS visitor has live NPC floor and character 
+[skypark-test] PASS visitor has live NPC floor and character 
+[skypark-test] PASS walk to furnished viewing area 
+[skypark-test] PASS panicking visitors stay outside aircraft clearance 
+[skypark-test] PASS visitor settles back to roof-local idle 
+[skypark-test] PASS visitor settles back to roof-local idle 
+[skypark-test] PASS visitor settles back to roof-local idle 
+[skypark-test] PASS supported aircraft center heading 0 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 0 
+[skypark-test] PASS supported visible pilot center heading 0 
+[skypark-test] PASS supported aircraft center heading 45 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 45 
+[skypark-test] PASS supported visible pilot center heading 45 
+[skypark-test] PASS supported aircraft center heading 90 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 90 
+[skypark-test] PASS supported visible pilot center heading 90 
+[skypark-test] PASS supported aircraft center heading 135 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 135 
+[skypark-test] PASS supported visible pilot center heading 135 
+[skypark-test] PASS supported aircraft center heading 180 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 180 
+[skypark-test] PASS supported visible pilot center heading 180 
+[skypark-test] PASS supported aircraft center heading 225 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 225 
+[skypark-test] PASS supported visible pilot center heading 225 
+[skypark-test] PASS supported aircraft center heading 270 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 270 
+[skypark-test] PASS supported visible pilot center heading 270 
+[skypark-test] PASS supported aircraft center heading 315 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 315 
+[skypark-test] PASS supported visible pilot center heading 315 
+[skypark-test] PASS supported aircraft boundary 2.50m heading 0 (-60.5, 199.7002, -698.0)
+[skypark-test] PASS real E exit boundary 2.50m heading 0 
+[skypark-test] PASS supported visible pilot boundary 2.50m heading 0 
+[skypark-test] PASS supported aircraft boundary 2.49m heading 45 (-61.2393, 199.7002, -696.2393)
+[skypark-test] PASS real E exit boundary 2.49m heading 45 
+[skypark-test] PASS supported visible pilot boundary 2.49m heading 45 
+[skypark-test] PASS supported aircraft boundary 2.50m heading 90 (-63.0, 199.7002, -695.5)
+[skypark-test] PASS real E exit boundary 2.50m heading 90 
+[skypark-test] PASS supported visible pilot boundary 2.50m heading 90 
+[skypark-test] PASS supported aircraft boundary 2.49m heading 135 (-64.7607, 199.7002, -696.2393)
+[skypark-test] PASS real E exit boundary 2.49m heading 135 
+[skypark-test] PASS supported visible pilot boundary 2.49m heading 135 
+[skypark-test] PASS supported aircraft boundary 2.50m heading 180 (-65.5, 199.7002, -698.0)
+[skypark-test] PASS real E exit boundary 2.50m heading 180 
+[skypark-test] PASS supported visible pilot boundary 2.50m heading 180 
+[skypark-test] PASS supported aircraft boundary 2.49m heading 225 (-64.7607, 199.7002, -699.7607)
+[skypark-test] PASS real E exit boundary 2.49m heading 225 
+[skypark-test] PASS supported visible pilot boundary 2.49m heading 225 
+[skypark-test] PASS supported aircraft boundary 2.50m heading 270 (-63.0, 199.7002, -700.5)
+[skypark-test] PASS real E exit boundary 2.50m heading 270 
+[skypark-test] PASS supported visible pilot boundary 2.50m heading 270 
+[skypark-test] PASS supported aircraft boundary 2.49m heading 315 (-61.2393, 199.7002, -699.7607)
+[skypark-test] PASS real E exit boundary 2.49m heading 315 
+[skypark-test] PASS supported visible pilot boundary 2.49m heading 315 
+[skypark-test] PASS supported aircraft outside 2.5m boundary 0 (-60.4, 199.7002, -698.0)
+[skypark-test] PASS real E refused outside 2.5m boundary 0 
+[skypark-test] PASS supported aircraft outside 2.5m boundary 90 (-63.0, 199.7002, -695.4)
+[skypark-test] PASS real E refused outside 2.5m boundary 90 
+[skypark-test] PASS supported aircraft outside 2.5m boundary 180 (-65.6, 199.7002, -698.0)
+[skypark-test] PASS real E refused outside 2.5m boundary 180 
+[skypark-test] PASS supported aircraft outside 2.5m boundary 270 (-63.0, 199.7002, -700.6)
+[skypark-test] PASS real E refused outside 2.5m boundary 270 
+[skypark-test] PASS 6m rotor and tail cylinder at allowed exit boundary 
+[skypark-test] PASS flight controls ascend 
+[skypark-test] PASS input flight lands within strict pad exit radius (-63.0, 199.701, -697.9833)
+[skypark-test] PASS flight leg has no teleport max_step=0.180
+[skypark-test] PASS flight aircraft undamaged 
+[skypark-test] PASS E exits landed helicopter 
+[skypark-test] PASS flight pilot walks to public lift 
+[skypark-test] PASS flight pilot returns to Event Plaza by E 
+[skypark-test] PASS death test reaches roof through E 
+[skypark-test] PASS rooftop death recovers once at ground 
+[skypark-test] PASS death recovery restores live visible foot controller 
+[skypark-test] PASS recovered controller walks normally 
+[skypark-test] PASS recovered controller returns to lift 
+[skypark-test] PASS lift reusable after death 
+[skypark-test] PASS fresh-scene fixture starts on public terrace 
+[skypark-test] PASS walk to distinct rooftop save position 
+[skypark-test] PASS save before scene teardown 
+[skypark-test] PASS old scene fully removed 
+[skypark-test] PASS fresh production main creates one access controller 
+[skypark-test] PASS fresh-scene native load keeps exact rooftop position 
+[skypark-test] PASS fresh-scene loaded player has floor and live controls 
+[skypark-test] PASS fresh-scene loaded player walks to return lift 
+[skypark-test] PASS fresh-scene return lift works through E 
+[skypark-test] RESULT 126/126 failures=[]

@@ -46,3 +46,13 @@ The normal lethal-damage path is exercised after taking the lift up. The test ch
 Fixture placements remain explicitly labelled; no added human-playtest or full-city traversal claim. The rendered visual/performance gate remains separate. No production behavior change was needed for this follow-up.
 
 Final follow-up r8: **116/116**, exit 0, zero engine errors, **101.25 s**, including exact cardinal 2.50 m exit boundaries and full fresh-scene native save/load. Evidence: `verification-r8.json`, `access-r8-checks.txt`. Prior expanded r7 also passed 116/116 (100.43 s) with its cardinal samples just inside the boundary.
+
+## Rendered critic follow-up: signs and a lived-in viewing area
+
+Inspected parent captures `ground_lift_approach.png` and `public_terrace_arrival.png` from `/private/tmp/astra6/render-skypark-r1/shots`. The white canopy projected in front of the lower lift sign line. Both lift sign panels/text are now above the canopy (panel center 3.65 m, 1.1 m tall; enlarged text), below the existing pavilion roof height. The test lets the deliberate arrival-obstruction warning expire normally before positive-flow stills and asserts it is gone. It never clears the HUD or unrelated message history.
+
+The western viewing area now has two small planted beds, existing benches, a visible viewing/return-lift sign and three actual NPC visitors using the existing CharacterVisual/CrowdPeople APIs. Local visitor subclasses retain native animation, damage and panic, constrain flee motion to x32..43 relative to MBS, then return to idle rather than adopting a street lane. They are not part of the global traffic/crowd pool. Added metal posts every ~3 m and a hand-height rail make the existing glass windscreen legible; collision bounds are unchanged. No new purchased assets or textures.
+
+The optional capture run adds `terrace_viewing_area.png`: the player actually walks to the viewing area and looks toward the visitors, before the panic fixture. The original four captures remain. The original arrival view still faces the bay, so this additional view is important for reviewing the western seating area honestly.
+
+Final r10: **126/126**, **121.82 s**, exit 0, zero engine errors. All prior 116 checks remain. Added checks prove notification expiry, three physical NPCs with loaded characters/floors, a walk to the seating area, and a full 13-second panic-to-idle cycle with visitors outside aircraft clearance and supported on the roof. Evidence: `verification-r10.json`, `access-r10-checks.txt`. No renderer was launched for this follow-up; parent fresh render and critic acceptance remain open.

@@ -1,0 +1,20 @@
+{
+  "started_utc": "2026-10-25T20:27:50.956116+00:00",
+  "finished_utc": "2026-10-25T20:29:51.802744+00:00",
+  "exit_code": 0,
+  "engine_exit_code": 0,
+  "fatal_errors": [],
+  "timeout": false,
+  "elapsed_sec": 121.82,
+  "child_reaped": true,
+  "checks": "126/126",
+  "source_hashes": {
+    "game/src/main.gd": "d4dc78b6d654323f16e6fe1c167d793cf6240f5c5b5f2ec87832ebd96c0a1e4e",
+    "game/src/actors/npc.gd": "9825280c7ec0165954e2d8765d8a9f315dbae0f56c2981947ad283d6f946ef79",
+    "game/src/systems/skypark_tests/access_test.gd": "e106b4f914ec3289f22af0d7eef49a53c3f1f6642a1448b243fd587e98442e65",
+    "game/src/world/downtown/plan.gd": "65e4b6383ba802ec88fdddcefc88bdfa8f636b5bece20574514566aec508aeb7",
+    "game/src/world/downtown/skypark_access.gd": "0a55d08cc8a5be14042bc3c99ba023fa769d21059eb66eb7b549160a4225e27a",
+    "game/src/world/downtown/landmarks/mbs.gd": "59baaa696b1bdedb34b2c96f3a42f70c9aaf0cea069b29cb03bc542fa35c7043"
+  },
+  "kind": "Headless mechanical validation of visual-critic source fixes; new rendered review pending."
+}
