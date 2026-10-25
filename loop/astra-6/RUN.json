@@ -8,8 +8,8 @@
   "scope": "Playable central Singapore continuity with heritage gameplay; fewer cars for freer driving; builder and critic iterations; fixed4hours including final30min",
   "renderer_policy": "one task renderer at a time; globalmixedcap2; use existing loop/render.sh + actualsharednamespace; no foreignprocesschanges",
   "model": "Current Codex session and inherited-model subagents; no alternate-model claim",
-  "last_update_utc": "2026-10-25T20:23:31.511301+00:00",
-  "current_phase": "integration_and_runtime_critique",
+  "last_update_utc": "2026-10-25T20:57:58.756633+00:00",
+  "current_phase": "packaged_validation_and_capacity_wait",
   "last_passing_suite": 296,
   "traffic_comparison": {
     "baseline_drive_s": 445.4,
@@ -20,6 +20,11 @@
     "candidate_unstick_maneuvers": 1
   },
   "courier_status": "Full normal-spawn roundtrip31/31,3683.21m,603.65s,zero jumps/deaths/teleport steps; optional actual screenshot support being added",
-  "skypark_status": "116/116 rendered plus headless; actual lift and flight landing/Eexit/return. Visualcritic requested signstrip fix, expectedtesttoastcleanup and visitor/wayfinding detail, builderworking.",
-  "render_status": "Baseline andcityR1done; skyparkR1done116/116; rendered downtown drive queuedtasksession95844 at /private/tmp/astra6/render-drive-r1; root-only renderer lane, harddeadlineguard."
+  "skypark_status": "Earlier126/126; stronger combat full140/142: preexisting native ragdoll fallback/bone-floor gates FAIL, live NPC/aircraft clearance pass. See combat-verification.json.",
+  "render_status": "No own renderer active. Two foreign Unreal owners occupy cap2. One bounded courier waiter PID36806/session45112, state/private/tmp/astra6/courier-waiter.json, cutoff21:50:57; same normal leased gate only. Prior courier32507 deniedbeforeengine; skypark86751/flight78510 intentionallystoppedbeforeengine.",
+  "current_package": "/private/tmp/astra6/package-r2/candidate-signed.zip",
+  "package_sha256": "6f2c1582d7228cd040a47aceca263f252a6ca92d157abc34e007215a8beff36d",
+  "package_headless_checks": "296/296, exit0; GPU sharing/output not exercised",
+  "soak_status": "Corrected headless1800second workload session32774, log/private/tmp/astra6/soak-r2/run.log; began20:55, pending. R1 invocation omitted qa-engine-log and aborted30s, preserved.",
+  "agent_status": "All builders/critics completed; package test helpercd8ce04 integratedaa3277b; no duplicate work needed."
 }

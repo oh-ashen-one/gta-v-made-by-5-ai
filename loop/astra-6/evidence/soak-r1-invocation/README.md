@@ -1,0 +1,1 @@
+Initial workload aborted at30seconds because manager omitted required --qa-engine-log mirror argument. No engine errors. Corrected invocation soak-r2 began20:55UTC; result pending, do not claim30minute pass.
