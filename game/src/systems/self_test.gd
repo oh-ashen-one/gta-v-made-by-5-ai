@@ -340,7 +340,7 @@ func run(main: Node) -> void:
 	_check("successful load publishes one state-restored event", smg_saved and smg_loaded and _state_restore_events == 1)
 	_check("saved SMG restores held model and clears transient actions", Game.carried_weapon == "smg" and player._weapon_model != null and String(player._weapon_model.scene_file_path).contains("smg") and not player._reloading and player._fire_cooldown == 0.0 and player._press_queue.is_empty())
 	_negative_save_checks(player, mission)
-	_courier_save_checks(player, mission)
+	_courier_save_checks(main, player, mission)
 	await _wave5_checks(world, traffic, heli)
 	await _street_life_checks(player, traffic)
 	await _water_checks(world)
@@ -450,7 +450,7 @@ func _courier_snapshot() -> Dictionary:
 	var activity := get_tree().get_first_node_in_group("downtown_activity")
 	return activity.serialize_state() if activity else {}
 
-func _courier_save_checks(player: Player, mission: Mission) -> void:
+func _courier_save_checks(main: Node, player: Player, mission: Mission) -> void:
 	var activity := get_tree().get_first_node_in_group("downtown_activity")
 	_check("Bayfront Courier is connected to the running game", activity != null)
 	if not activity: return
@@ -472,6 +472,16 @@ func _courier_save_checks(player: Player, mission: Mission) -> void:
 	f = FileAccess.open(TEST_SAVE, FileAccess.WRITE)
 	f.store_string(JSON.stringify(payload)); f.close()
 	_check("legacy saves load and reset optional courier progress", Game.load_game(TEST_SAVE) and activity.serialize_state() == {"version": 1, "stage": 0, "completed_runs": 0})
+	var deaths_before := Game.death_count
+	for courier_stage in [1, 2]:
+		activity.restore_state({"version": 1, "stage": courier_stage, "completed_runs": 3})
+		Game.damage_player(Game.MAX_HEALTH)
+		_check("courier stage %d survives a real death/respawn" % courier_stage, Game.health == Game.MAX_HEALTH and activity.serialize_state() == {"version": 1, "stage": courier_stage, "completed_runs": 3})
+	main._new_game()
+	_check("actual New Game resets the optional errand and completion count", activity.serialize_state() == {"version": 1, "stage": 0, "completed_runs": 0})
+	# Restore the surrounding regression fixture, not the user's save slot.
+	Game.load_game(TEST_SAVE)
+	Game.death_count = deaths_before
 	activity.restore_state(original)
 
 func _promenade_access_check(player: Player) -> void:
