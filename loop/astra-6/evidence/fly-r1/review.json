@@ -1,0 +1,115 @@
+{
+	"frame_ms": {
+		"max": 22.46,
+		"mean": 7.0,
+		"n": 4870,
+		"p50": 7.22,
+		"p95": 12.48,
+		"p99": 13.28
+	},
+	"frames_saved": 0,
+	"log": [
+		"[downtown-review 24.52] still fly_700m at (-52.49341, 106.6852, -158.6511) (headless: no image)",
+		"[downtown-review 35.06] still fly_300m at (-360.3733, 106.6852, -414.4114) (headless: no image)",
+		"[downtown-review 63.68] still fly_landed_ns_square at (-577.1616, 0.10012, -614.4191) (headless: no image)",
+		"[downtown-review 64.18] fly landed=true on_foot=true at (-577.1616, 0.100454, -614.4191)",
+		"[downtown-review 70.19] still fly_walk_ns_square at (-577.4514, 0.375943, -617.324) (headless: no image)"
+	],
+	"note": "frame_ms excludes frames that carried a JPEG readback (encoding still lands on neighbours); perf_sweep_ms has no readback at all",
+	"perf_sweep_ms": {},
+	"results": {
+		"fly": {
+			"allowed": true,
+			"completed": true,
+			"heli": "(-577.1616, 0.100454, -614.4191)",
+			"landed": true,
+			"on_foot": true
+		}
+	},
+	"stats": {
+		"aerial_light": true,
+		"behind_mbs_tall": 27,
+		"beyond_core_towers": 244,
+		"build_ms": 1038,
+		"carpets_cut": 10,
+		"draws": 331,
+		"fill": {
+			"canopy": {
+				"angsana": 340,
+				"crowns_in_kept_open": 0,
+				"draws": 116,
+				"empty_lawn_blocks": 0,
+				"flame": 270,
+				"lawn_blocks": 10,
+				"rain": 435,
+				"shrub": 833,
+				"tembusu": 297,
+				"total": 2175
+			},
+			"empty_lawn_blocks": 0,
+			"garden": {
+				"cut_cells": 8762,
+				"shore_shrubs": 40,
+				"walk_m": 1309
+			},
+			"lawn_blocks": 10,
+			"lawn_cells": 101713,
+			"ms": 669,
+			"park_panels": 16,
+			"plazas": {
+				"benches": 53,
+				"esplanade": 10,
+				"mbs": 36,
+				"merlion": 5,
+				"nearfield": {
+					"bench_bins": 9,
+					"bollard_groups": 9,
+					"clusters": 55,
+					"joints": 947,
+					"planters": 17,
+					"racks": 5,
+					"stains": 61,
+					"tables": 11,
+					"totems": 4
+				},
+				"ns_square": 26,
+				"palms": 65,
+				"shapes": 100,
+				"umbrella_tables": 30
+			},
+			"roofs": {
+				"boxes": 269,
+				"draws": 98,
+				"roofs": 77
+			}
+		},
+		"flank_towers_collided": 0,
+		"flank_towers_freed": 13,
+		"flank_walls_hidden": 1,
+		"graph_edges": 72,
+		"graph_links": 10,
+		"graph_nodes": 64,
+		"lamps": 837,
+		"land_rects": 10,
+		"planting": {
+			"forecourt_beds": 1164,
+			"median_clumps": 898,
+			"palms": 168,
+			"shrub_kinds": [
+				"ixora",
+				"mondo",
+				"fern",
+				"croton"
+			],
+			"species": 6,
+			"strip_clumps": 21041
+		},
+		"promenade_tree_parts_dropped": 0,
+		"seawall_segments": 42,
+		"shapes": 1861,
+		"signals": 30,
+		"towers_kept_downtown": 0,
+		"towers_removed": 396,
+		"trees": 261
+	}
+}
