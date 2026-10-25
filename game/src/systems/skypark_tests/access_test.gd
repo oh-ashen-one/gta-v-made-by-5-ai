@@ -50,6 +50,13 @@ func _run() -> void:
 	main.hud.show_title(false)
 	Game.simulation_paused = false
 	await frames(10)
+	if "--skypark-combat-probe" in OS.get_cmdline_user_args():
+		# Explicit short diagnostic fixture, not a replacement for the full suite.
+		await place(Access.ground_position())
+		await _visitor_combat_checks()
+		print("[skypark-test] COMBAT_PROBE_RESULT %d/%d failures=%s" % [checks - failures.size(), checks, failures])
+		get_tree().quit(0 if failures.is_empty() else 1)
+		return
 	check("remote and invalid station denied", not access.can_use_station("ground") and not access.can_use_station("missing"))
 	check("ground arrival has floor and capsule clearance", access.destination_clear(Access.ground_position()))
 	check("strict rooftop exit permits center", DowntownPlan.heli_exit_allowed(Access.pad_position()))
@@ -139,6 +146,7 @@ func _run() -> void:
 	await _flight_checks()
 	await _death_checks()
 	await _fresh_scene_save_checks()
+	await _visitor_combat_checks()
 	print("[skypark-test] RESULT %d/%d failures=%s" % [checks - failures.size(), checks, failures])
 	get_tree().quit(0 if failures.is_empty() else 1)
 
@@ -350,11 +358,14 @@ func _visitor_checks() -> void:
 	check("walk to furnished viewing area", await walk_to(m + Vector3(43, 200.1, 5)))
 	player.yaw = atan2(6.0, -9.0)
 	await still("terrace_viewing_area")
-	# A real shot notification prompts inherited panic, without firing into
-	# somebody or mutating wanted/health. Their roof-local reactions must keep
-	# them out of the helicopter clearance and inside the public terrace.
+	# Dispatch the actual production signal consumed by NPC._on_shot_fired.
+	# This is an explicitly labelled shot-event fixture, not a bullet hit.
+	Events.shot_fired.emit(m + Vector3(41, 201, 9), Vector3.LEFT, "pistol")
+	await frames(2)
+	var reacted := true
 	for visitor in visitors:
-		visitor._panic(visitor.global_position - Vector3.RIGHT * 2)
+		reacted = reacted and visitor.state == NPC.State.FLEE
+	check("real shot event dispatch panics all visitors", reacted)
 	for i in 780:
 		await get_tree().physics_frame
 		for visitor in visitors:
@@ -364,3 +375,116 @@ func _visitor_checks() -> void:
 	check("panicking visitors stay outside aircraft clearance", true)
 	for visitor in visitors:
 		check("visitor settles back to roof-local idle", Access.on_public_terrace(visitor.global_position, 0.3) and visitor.is_on_floor() and visitor.state == NPC.State.IDLE)
+
+func _visitor_combat_checks() -> void:
+	# Run damaging fixtures AFTER all positive-flow screenshots and the fresh
+	# scene test. Never conceal a corpse or pretend fixture damage is normal
+	# arrival presentation. Initial placements below are explicit fixtures.
+	var visitors := get_tree().get_nodes_in_group("skypark_visitors")
+	if visitors.size() != 3:
+		check("combat fixtures have fresh roof visitors", false)
+		return
+	var actor: NPC = visitors[0]
+	var m := DowntownPlan.anchor("marina_bay_sands")
+	await frames(65)
+	await press_e()
+	check("combat observer reaches roof by E", Access.on_public_terrace(player.global_position))
+	check("combat observer walks near viewing area", await walk_to(m + Vector3(46, 200.1, 7)))
+	await frames(12) # native NPC render/animation LOD catches up to nearby player
+	var cases := [
+		{"at": Vector3(43, 200.1, 7), "push": Vector3.RIGHT, "name": "east toward pad"},
+		{"at": Vector3(32.1, 200.1, 7), "push": Vector3.LEFT, "name": "west toward rail"},
+		{"at": Vector3(38, 200.1, 15), "push": Vector3.BACK, "name": "bay edge"},
+		{"at": Vector3(39, 200.1, 2.5), "push": Vector3.FORWARD, "name": "landward edge"},
+	]
+	for sample in cases:
+		actor.global_position = m + sample.at
+		actor.health = 100.0 # explicit fresh-health nonlethal fixture
+		actor.velocity = Vector3.ZERO
+		actor.state = NPC.State.IDLE
+		actor.idle_time = 1.0e9
+		await frames(12)
+		var health_before := actor.health
+		var start_position := actor.global_position
+		var fx := CombatFx.get_fx(get_tree())
+		var flinches_before := int(fx.stats.get("flinch", 0))
+		actor.take_damage(45.0, actor.global_position - sample.push * 2.0, false)
+		check("native nonlethal damage and stagger " + sample.name, actor.health == health_before - 45.0 and actor.state == NPC.State.FLEE and int(fx.stats.get("flinch", 0)) == flinches_before + 1)
+		var nearest := INF
+		var max_motion := 0.0
+		var stayed_on_terrace := true
+		for i in 60:
+			await get_tree().physics_frame
+			await get_tree().process_frame # CombatFx stagger moves in _process
+			nearest = minf(nearest, Vector2(actor.global_position.x - Access.pad_position().x, actor.global_position.z - Access.pad_position().z).length())
+			max_motion = maxf(max_motion, actor.global_position.distance_to(start_position))
+			stayed_on_terrace = stayed_on_terrace and Access.on_public_terrace(actor.global_position, 0.1)
+		check("live damage fixture clears aircraft " + sample.name, nearest > 9.0 and stayed_on_terrace and actor.health > 0.0 and max_motion > 0.02, "nearest_pad=%.3f moved=%.3f" % [nearest, max_motion])
+	# One lethal hit from the closest viewing boundary, directed toward the
+	# pad. Measure the actual physical bones, not the now-noncolliding NPC root.
+	var victim: NPC = visitors[1]
+	victim.global_position = m + Vector3(43, 200.1, 7)
+	victim.velocity = Vector3.ZERO
+	victim.state = NPC.State.IDLE
+	victim.idle_time = 1.0e9
+	await frames(12)
+	var started_before := Ragdoll.started
+	var blowups_before := Ragdoll.blowups
+	victim.take_damage(150.0, victim.global_position - Vector3.RIGHT * 2.0, false)
+	await frames(2) # capture the active phase before a possible guard fallback
+	var simulator := victim.character_visual.skeleton.get_node_or_null("Ragdoll")
+	check("native lethal damage creates independent ragdoll", victim.state == NPC.State.DEAD and victim.health <= 0.0 and victim.collision_layer == 0 and simulator != null and Ragdoll.started == started_before + 1)
+	if simulator == null: return
+	var bones: Array[PhysicalBone3D] = []
+	var initial: Dictionary = {}
+	for child in simulator.get_children():
+		if child is PhysicalBone3D:
+			bones.append(child)
+			initial[child.get_instance_id()] = child.global_position
+	var nearest_bone := INF
+	var min_y := INF
+	var min_sample: Dictionary = {}
+	var active_min_node_y := INF
+	var active_min_body_y := INF
+	var active_samples := 0
+	var fallback_min_node_y := INF
+	var fallback_min_body_y := INF
+	var max_motion := 0.0
+	var stayed_over_deck := true
+	for i in 183:
+		await get_tree().physics_frame
+		await get_tree().process_frame
+		for bone in bones:
+			var p: Vector3 = bone.global_position
+			var physics_xf: Transform3D = PhysicsServer3D.body_get_state(bone.get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM)
+			var simulating: bool = simulator.is_simulating_physics()
+			var guard_tripped := false
+			for guard in simulator.get_children():
+				if guard is Ragdoll.RagdollGuard: guard_tripped = guard.tripped
+			if simulating and simulator.influence > 0.5 and not guard_tripped:
+				active_samples += 1
+				active_min_node_y = minf(active_min_node_y, p.y)
+				active_min_body_y = minf(active_min_body_y, physics_xf.origin.y)
+			else:
+				fallback_min_node_y = minf(fallback_min_node_y, p.y)
+				fallback_min_body_y = minf(fallback_min_body_y, physics_xf.origin.y)
+			nearest_bone = minf(nearest_bone, Vector2(p.x - Access.pad_position().x, p.z - Access.pad_position().z).length())
+			if p.y < min_y:
+				min_y = p.y
+				var skeleton: Skeleton3D = victim.character_visual.skeleton
+				var bone_index := skeleton.find_bone(bone.bone_name)
+				var pose_world := skeleton.global_transform * skeleton.get_bone_global_pose(bone_index).origin if bone_index >= 0 else Vector3.INF
+				min_sample = {"frame": i, "bone": String(bone.name), "bone_node_world": str(p), "physics_body_world": str(physics_xf.origin), "actor_root_world": str(victim.global_position), "visual_root_world": str(victim.character_visual.global_position), "skeleton_root_world": str(skeleton.global_position), "skeletal_pose_world": str(pose_world), "simulating": simulating, "influence": simulator.influence, "guard_tripped": guard_tripped}
+			max_motion = maxf(max_motion, p.distance_to(initial[bone.get_instance_id()]))
+			stayed_over_deck = stayed_over_deck and Access.TERRACE.has_point(Vector2(p.x - m.x, p.z - m.z - 2.0))
+	check("lethal fixture simulates native physical bones", bones.size() == Ragdoll.BODIES.size() and bones.size() >= 10 and max_motion > 0.1, "bones=%d motion=%.3f" % [bones.size(), max_motion])
+	check("native ragdoll solver remains stable", Ragdoll.blowups == blowups_before, "blowups=%d" % (Ragdoll.blowups - blowups_before))
+	check("observed lethal fixture remains clear of aircraft", nearest_bone > 9.0, "nearest_bone_pad=%.3f" % nearest_bone)
+	check("ragdoll bone-node floor gate includes fallback state", min_y > 199.7 and stayed_over_deck, "min_y=%.3f over_deck=%s" % [min_y, stayed_over_deck])
+	print("[skypark-test] RAGDOLL_PHASES " + JSON.stringify({"active_samples": active_samples, "active_min_node_y": active_min_node_y, "active_min_body_y": active_min_body_y, "fallback_min_node_y": fallback_min_node_y, "fallback_min_body_y": fallback_min_body_y}))
+	print("[skypark-test] RAGDOLL_MIN_SAMPLE " + JSON.stringify(min_sample))
+	print("[skypark-test] RAGDOLL_NATIVE_GUARD " + Ragdoll.last_blowup)
+	print("[skypark-test] RAGDOLL_SCOPE one native lethal fixture; post-fallback node floor failure is not rendered mesh-floor proof; stability failure remains")
+	player.yaw = PI * 0.5
+	player.pitch = -0.25
+	await still("combat_ragdoll_after_fallback")

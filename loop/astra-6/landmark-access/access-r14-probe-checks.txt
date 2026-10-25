@@ -1,0 +1,21 @@
+[skypark-test] PASS production main creates SkyPark access 
+[skypark-test] PASS combat observer reaches roof by E 
+[skypark-test] PASS combat observer walks near viewing area 
+[skypark-test] PASS native nonlethal damage and stagger east toward pad 
+[skypark-test] PASS live damage fixture clears aircraft east toward pad nearest_pad=11.951 moved=4.206
+[skypark-test] PASS native nonlethal damage and stagger west toward rail 
+[skypark-test] PASS live damage fixture clears aircraft west toward rail nearest_pad=21.221 moved=1.733
+[skypark-test] PASS native nonlethal damage and stagger bay edge 
+[skypark-test] PASS live damage fixture clears aircraft bay edge nearest_pad=17.772 moved=4.417
+[skypark-test] PASS native nonlethal damage and stagger landward edge 
+[skypark-test] PASS live damage fixture clears aircraft landward edge nearest_pad=16.644 moved=3.259
+[skypark-test] PASS native lethal damage creates independent ragdoll 
+[skypark-test] PASS lethal fixture simulates native physical bones bones=12 motion=4.048
+[skypark-test] FAIL native ragdoll solver remains stable blowups=1
+[skypark-test] PASS observed lethal fixture remains clear of aircraft nearest_bone_pad=10.115
+[skypark-test] FAIL ragdoll bone-node floor gate includes fallback state min_y=198.295 over_deck=true
+[skypark-test] RAGDOLL_PHASES {"active_min_body_y":198.294738769531,"active_min_node_y":199.717575073242,"active_samples":468,"fallback_min_body_y":198.294738769531,"fallback_min_node_y":198.294738769531}
+[skypark-test] RAGDOLL_MIN_SAMPLE {"actor_root_world":"(-75.0, 199.9801, -698.0)","bone":"PB_head","bone_node_world":"(-74.41492, 198.2947, -700.0572)","frame":39,"guard_tripped":true,"influence":0.0,"physics_body_world":"(-74.41492, 198.2947, -700.0572)","simulating":false,"skeletal_pose_world":"(-74.95982, 200.6415, -699.5052)","skeleton_root_world":"(-75.0, 200.0002, -698.0)","visual_root_world":"(-75.0, 200.0002, -698.0)"}
+[skypark-test] RAGDOLL_NATIVE_GUARD y=-1.83 h=2.14 PB_head
+[skypark-test] RAGDOLL_SCOPE one native lethal fixture; post-fallback node floor failure is not rendered mesh-floor proof; stability failure remains
+[skypark-test] COMBAT_PROBE_RESULT 14/16 failures=["native ragdoll solver remains stable", "ragdoll bone-node floor gate includes fallback state"]

@@ -43,8 +43,9 @@ class TerraceVisitor extends NPC:
 			var toward := viewing_bounds.get_center() - Vector2(global_position.x, global_position.z)
 			_flee_dir = Vector3(toward.x, 0, toward.y).normalized()
 		super._flee(delta)
-		# Keep panic/knockback motion out of the aircraft clearance, without
-		# teleporting or turning off NPC physics.
+		# Bound voluntary flee velocity without teleporting or disabling physics.
+		# CombatFx stagger and physical ragdolls are separate native motions;
+		# the viewing-area setback provides clearance, not this velocity clamp.
 		velocity.x = clampf(velocity.x, (viewing_bounds.position.x - global_position.x) / maxf(delta, 0.001), (viewing_bounds.end.x - global_position.x) / maxf(delta, 0.001))
 		velocity.z = clampf(velocity.z, (viewing_bounds.position.y - global_position.z) / maxf(delta, 0.001), (viewing_bounds.end.y - global_position.z) / maxf(delta, 0.001))
 
