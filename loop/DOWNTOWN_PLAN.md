@@ -485,3 +485,11 @@ Every merge re-runs headless `--import`, the full `--test` suite and headless `-
 | --- | --- | --- |
 | M-1 | 2026-10-23 | Initial plan (wave M planner). |
 | S-1 | 2026-10-23 | downtown-polish: `marina_centre_bay` starts at x -765 (was -777): a 12 m corner plaza at the Raffles Avenue / Bayfront Avenue North right turn. |
+
+## Astra-6 public-access amendment — 2026-10-25
+
+The owner requested continuous heritage-to-central-Singapore gameplay with fewer cars. `PLAN_VERSION` is now `Astra-6 R1 2026-10-25`.
+
+- `PEDESTRIAN_JOINS.jubilee_fullerton` joins the bridge-side measured floor at (-534, 0.212, -400) to the Fullerton peninsula floor at (-528, 0.36, -400), width 5.4 m. The same pitched body carries the visible surface and collision. This fixes the reverse-walking lip; it does not change the bridge profile or water layout.
+- MBS north promenade now has a visible/collision ramp at z=-632 from x=-322/y0.10 to x=-316.8/y0.36, eliminating the access lip discovered by the physical courier route.
+- MBS SkyPark public access is a limited collision-enclosed terrace connected to the Shoppes by labelled E lift interactions. `HELIPADS.skypark` is now a small game landing area at (-63,200,-698), with a stricter 2.5 m exit radius, only together with the installed return-lift module. Other rooftop areas remain restricted. This is a game adaptation, not a claim about real-world helicopter access.

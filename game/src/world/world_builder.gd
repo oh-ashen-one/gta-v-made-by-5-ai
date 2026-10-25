@@ -143,6 +143,7 @@ func build(seed_value: int = 20261021) -> void:
 	_perimeter()
 	_far_shore_landmarks()
 	_downtown_call("build", [_world_root])
+	_central_access_joins()
 	PerfBudget.lap("downtown_build")
 	locations["player_start"] = PLAYER_START
 	_build_lane_graph()
@@ -995,6 +996,20 @@ func _infill_building(size: Vector3, pos: Vector3, kind: String) -> void:
 	_roof_kit.add_flat_roof(size, pos, kind)
 
 # ------------------------------------------------------------- water + skyline
+func _central_access_joins() -> void:
+	for key in DowntownPlan.PEDESTRIAN_JOINS:
+		var join: Dictionary = DowntownPlan.PEDESTRIAN_JOINS[key]
+		var a: Vector3 = join["from"]
+		var b: Vector3 = join["to"]
+		var forward := (b - a).normalized()
+		var right := Vector3.UP.cross(forward).normalized()
+		var up := forward.cross(right).normalized()
+		var mesh := _solid_box(Vector3(float(join["width"]), 0.12, a.distance_to(b)), (a + b) * 0.5 - up * 0.06, Palette.mat_textured(Palette.CONCRETE_LIGHT, "pavers", Vector3.ONE, 0.9))
+		var body := mesh.get_parent() as StaticBody3D
+		body.name = "CentralAccessJoin_" + key
+		body.basis = Basis(right, up, forward)
+		body.add_to_group("central_access_join")
+
 func _waterfront_edge() -> void:
 	# The bay surface, seawalls, boats and Merlion jet live in bay.gd (BayWater).
 	# promenade deck + railing

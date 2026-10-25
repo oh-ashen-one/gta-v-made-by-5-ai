@@ -17,7 +17,7 @@ extends RefCounted
 ## Rect2 values are (x_min, z_min, width_x, depth_z) on the ground plane.
 ## Loading this file changes nothing in game; only pieces act on it.
 
-const PLAN_VERSION := "S-1 2026-10-23"
+const PLAN_VERSION := "Astra-6 R1 2026-10-25"
 
 const WATER_LEVEL := -0.9
 const QUAY_TOP := 0.3
@@ -271,6 +271,12 @@ const HELIPADS := {
 	"skypark": {"pos": Vector3(-118.0, 200.0, -705.0), "radius": 14.0, "status": "reserved", "rooftop": true},
 }
 const GROUND_EXIT_MAX_Y := 4.5   # bridge decks are 2.4-3.6 m
+
+## Short public-surface joins. The Jubilee reverse walk exposed a 23 cm
+## vertical lip at the peninsula edge; these endpoints overlap both floors.
+const PEDESTRIAN_JOINS := {
+	"jubilee_fullerton": {"from": Vector3(-534.0, 0.212, -400.0), "to": Vector3(-528.0, 0.36, -400.0), "width": 5.4},
+}
 
 ## ---------------------------------------------------------------- views
 ## Proposed ADDITIONAL comparison views for the downtown (the existing fixed
