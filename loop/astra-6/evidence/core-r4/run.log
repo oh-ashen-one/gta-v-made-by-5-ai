@@ -1,0 +1,330 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[wave1] main ready, args=["--test", "--test-report=/private/tmp/astra6/core-r4/report.json", "--qa-session", "/private/tmp/astra6/core-r4/session"]
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 1012 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 22, "tris": 12672 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 131, "tris": 97344, "build_ms": 203 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 492 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 80, "median_shrub": 20638, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9992 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":657,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[profile] officer_pool_build_us=758222 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"no_reflect":4974,"small_prop_batches":238,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): traffic=2220 downtown_build=1731 build_grid=1654 player=1530 roads=952 mission_hud_heli=861 occluders=741 background_city=420 batch_static_primitives=272 world_start=91
+[launch] world_ui_ready_ms=11704 executable=/Applications/Godot.app/Contents/MacOS/Godot editor_binary=true
+=== Orchard Reach wave-2 bounded regression suite ===
+[bay] submerged geometry hidden from reflection: 14
+[street-prop-colliders] 2926 prop boxes on layer 4096
+[street] avenue trees=288 candidates=377 clutter=350
+PASS world builder present 
+PASS player spawned 
+PASS traffic manager present 
+PASS mission running 
+PASS helicopter present 
+PASS hud present 
+PASS district contains 3D geometry 
+PASS weathered surfaces and wall/roof clutter present (wave B materials) { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 } groups=4
+PASS junction graph has 25 connected reference nodes 
+PASS pedestrian paths present 
+PASS civilian traffic spawns the configured free-driving fleet 
+PASS pedestrians populated 
+PASS golden-hour environment: sky ambient, SSAO+SSIL, glow, clear sky gradient 
+PASS sky glow and clouds follow the sun light (LIGHT0) 
+PASS sky is pale humid blue under shaded cumulus (no cobalt) zenith_s=0.41 coverage=0.55
+PASS shadow contrast and bounded haze (ambient, crisp sun, sun scatter <= 0.25) ambient=0.52 scatter=0.22
+PASS warm low late-afternoon sun with soft shadows elevation=19.0
+PASS void decks, arcades and street lamps carry practical lights void=120 arcade=269 lamps=56
+PASS practical lights are shadowless and distance-culled (cluster budget) 
+PASS every practical has a modelled fixture fixtures=1619
+PASS streets are weathered and dressed (wear volumes, >= 8 clutter types) volumes=16 kinds=20
+PASS median beds have painted noses and no dome shrubs noses=80 dome_batches=0
+PASS nearfield: cones, bins, crates and A-frame menus are modelled props (no primitive stand-ins) { "aframe": 130, "crate": 301, "produce": 144, "bin": 210, "tcone": 269, "cabinet": 139, "bollard": 596 }
+PASS nearfield: parked bikes and scooters are multi-part models with on-foot collision prop_boxes=2926
+PASS nearfield: sign plates show their pictogram face to the viewer 
+PASS nearfield: ground shaders carry layered wear (patch seams, resurfacing, silt, chipped paint, unit variation) 
+PASS nearfield: median beds use photo plant cards when the generated atlas is present 
+PASS nearfield: street-name lettering fits inside its blade 
+PASS low sun is in frame on the heritage avenue (toward-sun view) azimuth_off=28.0 elev=0.33
+PASS ambient population matches configured budget of 293 unique actors 
+PASS market diners are reactive damageable NPCs 
+PASS busy district walkers spawn along segments not junction piles 
+PASS gameplay camera belongs to player 
+PASS sprint 180 turns continuously (<=25 deg/frame at 30 fps, no facing flip) 
+PASS mission publishes initial objective 
+PASS initial objective marker survives HUD setup order 
+PASS mission registered for save and checkpoint restoration 
+PASS package is a real interactable 
+PASS road graph includes the fifth row 
+PASS traffic target is near destination on the left lane 
+PASS east-west signal excludes north-south movement 
+PASS junction changeover clears both approaches 
+PASS north-south signal excludes east-west movement 
+PASS visible signal lamps agree with east-west right of way 
+PASS visible signal lamps switch with north-south right of way 
+PASS fire maps to a mouse button rather than a keyboard code 
+[plaza-life] 28 stations (1 rejected), 8 units
+DIAGNOSTIC fire action held=true paused=false mag=11 event_matches=true
+PASS real mouse-button event fires the equipped weapon mag 12 -> 11
+PASS mission avenue has no static trunk obstruction 
+PASS rapid native press and release is not dropped 
+PASS close-cover fixture leaves camera sightline on target 
+PASS muzzle obstruction prevents damage through close cover 
+[profile] officer_activation_us=21 pooled=true live=0
+PASS clearing muzzle obstruction permits target damage 
+PASS shot produced muzzle flash, tracer, impact and ejected casing { "muzzle": 4, "tracer": 3, "impact": 4, "decal": 2, "casing": 4, "flinch": 2, "npc_shots": 0 }
+PASS struck NPC staggers and flinches 
+PASS player recoil layer present and kicked by the shot 
+PASS recoil recovers within ~0.4 s cam=0.0000 gun=0.000
+PASS sustained fire keeps effect pools bounded { "puff": 260, "chip": 160, "spark": 220, "flash": 24, "flame": 24, "tracer": 32, "casings": 40, "lights": 3 }
+PASS aim layer holds the pistol at shoulder height along the aim weight=1.00 gun_h=1.38 barrel_dot=1.000
+PASS no interaction prompt during a firefight ["", "", ""]
+PASS lethal hit ragdolls the body; it ends on the ground, never under it or flung pelvis_h=0.36 drift=1.02 guard=y=-1.00 h=0.94 PB_forearm_r
+PASS input interaction enters a car 
+PASS occupied player collision is disabled 
+PASS driving input moves the car 
+PASS occupant follows the moving car 
+PASS authoritative position follows controlled vehicle 
+PASS left driving input turns left 
+PASS chase camera motion blur opens with speed shutter=0.94 speed=32
+PASS motion blur is gated to near road-level pixels (no ghosted pedestrians) samples=24
+PASS road filtering and aggregate contrast stay speckle-free 
+PASS car body rolls and pitches under load roll=0.0142 pitch=-0.0200
+PASS chase camera trails behind the car gap=6.02
+PASS car carries a ground contact shadow 
+PASS a rammed car is shoved by the impact moved=2.51
+PASS handbrake turn swings the car round with the tail sliding yaw 1.24 rad slide 1.60
+PASS rear-end crash shares momentum (our car keeps rolling, the struck car is shoved) kept 0.41 moved 2.55 closing 12.0
+PASS crash leaves dents on both cars and throws debris dents 1/1 debris 7
+PASS wall impact rebounds instead of stopping dead after 2.6 m/s vz 2.6
+PASS NPC weapon ray damages occupied car 90.40 -> 87.38
+PASS car body protects its occupant from that ray 
+PASS normal exit returns control and camera 
+PASS on-foot collision restored 
+PASS blocked car exit preserves seated control without wall clipping 
+PASS clearing blocked exit restores normal exit 
+PASS death is counted for honest golden-path evidence 
+PASS death in car releases both control owners 
+PASS death restores visible player and gameplay camera 
+PASS walking still works after vehicle death 
+PASS on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows 
+PASS locomotion-Q: planted-foot lock (leg IK) on the player; aimed backpedal is its own clip played forward, plus a skid clip clip=idle rate=1.00
+PASS locomotion-Q: street props (scooters, bikes, planters...) collide with the on-foot player boxes=2926
+PASS locomotion-Q: standstill to walk speed takes a real first step (>= 0.3 s) 0.42 s
+PASS locomotion-Q: a sharp 180 at a sprint plants a skid, then pivots skid=true turned=3.14 rad
+PASS locomotion-Q: a pedestrian inside the player's personal space is shouldered clear gap=0.78 m
+PASS on-foot jump is a human hop (0.40-0.70 m rise, under 0.5 s airtime) apex=0.52
+PASS wanted escalation decays when unobserved 
+PASS health regenerates out of fire 
+PASS helicopter control is exclusive 
+PASS lift input gains altitude 
+PASS neutral lift stabilizes hover 
+PASS rotor spools up to a motion-blurred disc in flight { "rotor_spin": 1.0, "disc_visible": true, "blades_visible": false, "camera_current": true, "camera_distance": 12.3927717208862, "camera_height": 7.03852653503418, "camera_behind": true, "wash": 0.36398459103519, "wash_visible": true }
+PASS flight chase camera trails behind and above the aircraft { "rotor_spin": 1.0, "disc_visible": true, "blades_visible": false, "camera_current": true, "camera_distance": 12.3927717208862, "camera_height": 7.03852653503418, "camera_behind": true, "wash": 0.36398459103519, "wash_visible": true }
+PASS rotor downwash kicks up the ground near the pad { "rotor_spin": 1.0, "disc_visible": true, "blades_visible": false, "camera_current": true, "camera_distance": 12.3927717208862, "camera_height": 7.03852653503418, "camera_behind": true, "wash": 0.36398459103519, "wash_visible": true }
+PASS chase camera looks down on the rotor disc; aviation grounds are planted (wave P) { "rotor_spin": 1.0, "disc_visible": true, "blades_visible": false, "camera_current": true, "camera_distance": 12.3927717208862, "camera_height": 7.03852653503418, "camera_behind": true, "wash": 0.36398459103519, "wash_visible": true }
+PASS airborne helicopter rejects exit 
+PASS pause freezes aircraft 
+PASS pause freezes pursuit heat 
+PASS controlled descent lands without disabling aircraft position=(270.0, 0.160116, 104.0) velocity=(0.0, 0.0, 0.0) health=100.0 floor=true
+PASS ground cushion settles a full-descent landing gently (wave P) touchdown=0.90 m/s
+PASS landed helicopter exits to walking 
+PASS waterfront helicopter exit permits actual on-foot movement moved=3.934 from=(2.461618, 0.275156, -331.4723) to=(6.395956, 0.275935, -331.4723) velocity=(6.8, 0.0, 0.0)
+PASS package input pickup advances and hides pickup 
+PASS taking car starts the authored driving leg 
+PASS on-foot arrival cannot bypass driving leg 
+PASS death restores package checkpoint and requires new drive 
+PASS restoration rebuilds flags and objective 
+PASS delivery cannot be triggered remotely 
+PASS restart resets pickup checkpoint and prerequisites 
+PASS restart retains exactly three mission guards 
+PASS save roundtrip restores health and mission checkpoint 
+PASS save restoration updates package and objective 
+PASS save restores sensitivity and accessibility settings 
+PASS invalid live state cannot replace the last complete save 
+PASS atomic replacement updates an existing save 
+PASS successful save leaves no temporary checkpoint file 
+PASS successful load publishes one state-restored event 
+PASS saved SMG restores held model and clears transient actions 
+PASS save rejects truncated position vector atomically 
+PASS save rejects unknown equipped weapon atomically 
+PASS save rejects out-of-range magazine atomically 
+PASS save rejects wrong health type atomically 
+PASS save rejects invalid checkpoint index atomically 
+PASS save rejects inconsistent pursuit state atomically 
+PASS save rejects wrong safe-position type atomically 
+PASS save rejects out-of-range mouse sensitivity atomically 
+PASS save rejects wrong accessibility-setting type atomically 
+PASS Bayfront Courier is connected to the running game 
+PASS save/reload restores courier destination and completed runs 
+PASS invalid courier state rejects the whole save atomically 
+PASS legacy saves load and reset optional courier progress 
+PASS courier stage 1 survives a real death/respawn 
+PASS courier stage 2 survives a real death/respawn 
+PASS actual New Game resets the optional errand and completion count 
+PASS kerbside parked cars sit wholly on the carriageway 97/97
+PASS kerbside parked cars can pull out and drive 12 m unobstructed 50/52 blocked=["(-7.0, 0.0, 183.0)", "(153.0, 0.0, 183.0)"]
+PASS settled parked cars stop ticking until taken 71 asleep
+PASS police pursuit routes along junctions around a block (-160.0, 0.1, -160.0)
+PASS pursuit commits to its next junction after leaving one (-160.0, 0.1, 0.0) then (-160.0, 0.1, 0.0)
+PASS pursuit closes on a mid-block goal from its junction (-160.0, 0.1, -62.0)
+PASS ditched aircraft is recovered above its last supported position (270.0, 1.657031, 104.0)
+PASS carjacked driver flees from the car and rejoins a pavement lane lane points 5
+PASS all five required Singapore landmarks are placed 
+PASS skyline: landmark footprints do not overlap each other 
+PASS skyline: Singapore Flyer lies inside the photo_06 aerial frame 4.6 deg of 46.9
+PASS skyline: flat roofs carry weathered decks and roof plant roofs 247 condensers 791 housings 247
+PASS skyline: layered background city is built from batched tower archetypes 6
+PASS skyline: landmark facade and vertical-garden shaders are applied 
+PASS skyline: background city wears at least 5 distinct facade systems { "materials": 7, "over_water": 0, "placed": 1434, "ground_shadows": 1434, "lowrise": 7431, "far_towers": 1016, "carpet_km2": 78.912592, "promenade_trees": 188, "atmosphere": 4 }
+PASS skyline: no background tower stands in the bay { "materials": 7, "over_water": 0, "placed": 1434, "ground_shadows": 1434, "lowrise": 7431, "far_towers": 1016, "carpet_km2": 78.912592, "promenade_trees": 188, "atmosphere": 4 }
+PASS skyline: every background tower casts a ground shadow { "materials": 7, "over_water": 0, "placed": 1434, "ground_shadows": 1434, "lowrise": 7431, "far_towers": 1016, "carpet_km2": 78.912592, "promenade_trees": 188, "atmosphere": 4 } layers 6
+PASS skyline: far CBD hazes toward the sky, near district stays crisp haze@800m=0.46 haze@200m=0.00
+PASS skyline: hinterland city carpet, low-rise blocks and third tower layer run past the bay { "materials": 7, "over_water": 0, "placed": 1434, "ground_shadows": 1434, "lowrise": 7431, "far_towers": 1016, "carpet_km2": 78.912592, "promenade_trees": 188, "atmosphere": 4 }
+PASS skyline: aerial haze is darker than the horizon sky so far towers keep silhouettes gap 0.20 { "haze_col": 0.60302, "horizon_col": 0.805616 }
+PASS run opens outdoors on the heritage street, not inside the safe room 
+PASS synthesized loops have continuous seams (objective, not listening) { "gunshot": { "looped": false, "peak": 0.77115625, "seam_step": 0.4460625, "max_interior_step": 1.06875 }, "footstep": { "looped": false, "peak": 0.43340625, "seam_step": 0.05546875, "max_interior_step": 0.2334375 }, "impact": { "looped": false, "peak": 0.56878125, "seam_step": 0.0228125, "max_interior_step": 0.71128125 }, "pickup": { "looped": false, "peak": 0.34859375, "seam_step": 0.015125, "max_interior_step": 0.2288125 }, "ui": { "looped": false, "peak": 0.29309375, "seam_step": 0.0021875, "max_interior_step": 0.1003125 }, "engine": { "looped": true, "peak": 0.34371875, "seam_step": 0.291375, "max_interior_step": 0.331125 }, "rotor": { "looped": true, "peak": 0.29259375, "seam_step": 0.0226875, "max_interior_step": 0.06371875 }, "siren": { "looped": true, "peak": 0.29996875, "seam_step": 0.03309375, "max_interior_step": 0.0835 }, "tyre": { "looped": true, "peak": 0.346125, "seam_step": 0.08290625, "max_interior_step": 0.2245625 }, "city": { "looped": true, "peak": 0.166375, "seam_step": 0.02196875, "max_interior_step": 0.0115 }, "market": { "looped": true, "peak": 0.10859375, "seam_step": 0.0383125, "max_interior_step": 0.00921875 }, "water": { "looped": true, "peak": 0.1586875, "seam_step": 0.0031875, "max_interior_step": 0.01459375 }, "bird": { "looped": false, "peak": 0.17996875, "seam_step": 0.0, "max_interior_step": 0.12790625 }, "car_crash": { "looped": false, "peak": 0.88184375, "seam_step": 0.24271875, "max_interior_step": 0.7374375 }, "glass_break": { "looped": false, "peak": 0.50434375, "seam_step": 0.06034375, "max_interior_step": 0.747625 } }
+PASS synthesized sounds stay below full-scale clipping 
+PASS street life systems present 
+PASS downtown road graph adopted by lane traffic (left-hand, merged, deck height) added=8 nodes=29 lat=5.25 lift=3.67
+PASS downtown walks adopted by the crowd director walks=1
+PASS crowd is women, men, elders and children (M2) { "man": 87, "with_prop": 234, "elder_m": 24, "woman": 124, "elder_f": 31, "child": 27 }
+PASS people carry hair, skirts, props and poses (M2) hair=184 skirts=65 props=229 posed=199 of 293
+PASS walkers off the pavement return to it, crossings allowed (M2) (9.6, 0.3, -80.0)
+PASS taxi roof signs carry a legend; tail lamps are lens clusters (M2) 
+[street-test] mode=0 vehicle=<null>
+PASS camera-centred lane traffic stays present within the free-driving budget 44 within 175 m of (-172.0, 0.0, -33.0)
+PASS ambient traffic keeps to the left-hand lanes 0/46 off-lane
+PASS ambient traffic flows and queues 28/48 moved, 24 holding { "amb": 10, "car_ai": 4, "red": 10 }
+PASS ambient fleet stays within the free-driving budget 48 allocated, 48 active (wave T: 112)
+PASS physical civilian traffic stays within the free-driving budget 7 physical traffic cars (wave T: 14)
+PASS road parking leaves at least 40 percent of bays empty { "road_available": 97, "road_spawned": 51, "courtyard_spawned": 20 }
+PASS protected parking produces usable opening and courtyard cars 23 protected, 0 missing/unusable
+PASS short-lane budget rejects another seed at a distant gap 
+PASS lane budget still admits separated cars and rejects overlaps 
+PASS real camera cuts fill only the short-lane budget and exhaust safely active 2 then 2 /8, overlaps 0, inactive colliders 0
+PASS road rules mapped onto the lane graph (signals, priority, give way, zebras) { "signal": 124, "major": 44, "yield": 16, "none": 40, "zebra_edges": 212, "proxied": 1 }
+PASS junction hold lines sit behind the zebra on every approach 0/184 approaches
+PASS no standing lane car on a zebra or in a junction box 0 on zebras, 0 in boxes, 39 cars near
+PASS ambient vehicles never overlap 0 overlapping pairs
+PASS camera-centred crowd on the pavements 222 roamers within 130 m
+PASS avenue tree crowns overhang the carriageway 288 trees, 288 overhang
+PASS a stopped ambient car can be taken with interact mode=1 promoted=1
+PASS bay water uses the animated water shader, not a flat material 
+PASS water sun glint is capped so no light blows a white disc spec_cap=0.32
+PASS water surface sits below the promenade deck with a seawall face 
+PASS boats are on the bay and moving, ships ride at anchor offshore boats=20 moved=18 anchored=20
+PASS Merlion jet is translucent falling water, opaque legacy strut hidden legacy_hidden=1
+PASS bay water is a non-periodic multi-octave wave field with whitecaps whitecaps=0.55
+PASS avenue ends over the bay are railed jetty decks, not bare road slabs 
+PASS sea continues to the horizon through a skirt sharing the water material 
+PASS bay stays glassy; foam is event-driven (Kelvin wakes, stern trail, quay wet line) 
+PASS moving boats throw raised spray sheets, stern churn and droplets moving=18 droplets=3120
+PASS wake and quay foam is lacy coverage, not smooth strokes 
+PASS runabout hull is a detailed crewed model (rails, windshield, driver) tris=2530
+PASS downtown plan is self-consistent and matches the fixed legacy anchors (Astra-6 R1 2026-10-25) 
+PASS downtown-map: piece built (ground, roads, bridges, edges) and took over the legacy ground/rail sections { "towers_removed": 396, "towers_kept_downtown": 0, "beyond_core_towers": 244, "behind_mbs_tall": 27, "land_rects": 10, "seawall_segments": 42, "draws": 331, "signals": 30, "flank_towers_freed": 13, "flank_towers_collided": 0, "carpets_cut": 10, "flank_walls_hidden": 1, "promenade_tree_parts_dropped": 0, "lamps": 837, "trees": 261, "build_ms": 1012, "shapes": 1861, "graph_nodes": 64, "graph_edges": 72, "graph_links": 10, "planting": { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }, "aerial_light": true, "fill": { "plazas": { "mbs": 36, "ns_square": 26, "merlion": 5, "esplanade": 10, "nearfield": { "joints": 947, "clusters": 55, "planters": 17, "tables": 11, "bench_bins": 9, "racks": 5, "bollard_groups": 9, "totems": 4, "stains": 61 }, "palms": 65, "benches": 53, "umbrella_tables": 30, "shapes": 100 }, "park_panels": 16, "lawn_cells": 101713, "garden": { "cut_cells": 8762, "walk_m": 1309, "shore_shrubs": 40 }, "canopy": { "shrub": 833, "rain": 435, "angsana": 340, "flame": 270, "tembusu": 297, "crowns_in_kept_open": 0, "lawn_blocks": 10, "empty_lawn_blocks": 0, "draws": 116, "total": 2175 }, "lawn_blocks": 10, "empty_lawn_blocks": 0, "roofs": { "roofs": 77, "draws": 98, "boxes": 269 }, "ms": 657 } }
+PASS downtown-map: every playable land sample has walkable collision (no void) holes=0 
+PASS downtown-map: Marina Bay loop lane (Collyer Quay - Esplanade Bridge - Raffles Ave - Bayfront Bridge - Marina Blvd) is continuous collision at the road surface gaps=0 max_y=3.66 
+PASS downtown-map: six bridges stand over water with deck collision at plan height esplanade_bridge deck 3.67; bayfront_bridge deck 3.66; jubilee_bridge deck 2.67; cavenagh_bridge deck 2.46; elgin_bridge deck 2.67; coleman_bridge deck 2.67; 
+PASS downtown-map: downtown lane graph is connected from the district to the Bayfront, Marina South and civic district, linked to legacy junctions nodes=64 edges=72 links=10 reach=true peds=57
+PASS downtown-map: helicopter may land and exit on downtown streets and the four new pads; water, rooftops and off-map refused allowed=true refused=true pads=true
+PASS downtown-map: every playable edge has a physical barrier (hoarding, railing, fence) (-920.0, 1.2, -200.0):true (780.0, 1.2, -300.0):true (-700.0, 1.2, 395.0):true (500.0, 1.2, 395.0):true (100.0, 1.2, -1080.0):true 
+PASS downtown-map: the district opens onto downtown (no x = +-375 rail wall) 
+PASS downtown-map: collision and draw budgets (shapes, mesh draws) shapes=1861 draws=331 build_ms=1012
+PASS landmarks: piece built every module ["skyline_dropped", "interim_ground", "mbs", "helix", "artscience", "esplanade", "flyer", "gardens", "fullerton", "shapes", "tris", "build_ms"]
+PASS landmarks: location keys sit on the plan anchors (ArtScience and Flyer moved, D2) 
+PASS landmarks: collision within the plan budget 131 of 300
+PASS landmarks: extra headless build time within budget 203
+PASS landmarks: MBS SkyPark cantilever points north over three curved towers 
+PASS landmarks: MBS is a detailed street-level model, not a backdrop 
+PASS landmarks: walkable surface at event plaza promenade hit y=0.36
+PASS landmarks: walkable surface at Shoppes terrace hit y=1.50
+PASS landmarks: walkable surface at Helix deck mid-span hit y=3.60
+PASS landmarks: walkable surface at SkyPark deck hit y=200.00
+PASS landmarks: walkable surface at ArtScience promontory walk hit y=0.36
+PASS landmarks: walkable surface at Esplanade waterfront hit y=0.36
+PASS landmarks: walkable surface at Flyer entrance plaza hit y=0.36
+PASS landmarks: walkable surface at Supertree Grove plaza hit y=0.34
+PASS landmarks: walkable surface at Merlion Park terrace hit y=1.26
+PASS landmarks: Helix deck is continuous end to end (111 probes) gaps=0 worst=0.00
+PASS landmarks: Helix balustrades enclose the walkway 
+PASS landmarks: player climbs the Helix ramp onto the span (real controller) progressed=92.5 m end_y=3.58 min_y=0.36 idx=50
+PASS downtown blocks: piece built its root 
+PASS downtown blocks: every owned plot is built (36 plots) built=36
+PASS downtown blocks: collision stays inside the 600-box budget boxes=269
+PASS downtown blocks: no building footprint leaves its plot violations=0
+PASS downtown blocks: dense CBD (>= 40 buildings, >= 20 towers over 100 m) buildings=86 towers=49
+PASS downtown blocks: Boat Quay row has >= 60 shophouse units units=86
+PASS downtown blocks: adjacent towers never share silhouette + cladding same_pairs=0 worst_run=1
+PASS downtown blocks: >= 7 silhouettes and >= 6 claddings in use styles=8 claddings=8
+PASS downtown blocks: street frontage (linkways >= 2 km, >= 30 entrances, >= 4 bus stops, >= 40 shop signs) linkway=14283 entrances=77 bus=18 signs=257
+PASS downtown blocks: built plots are clear of procedural background towers inside=0
+PASS downtown blocks: CBD towers are collidable from the air highest hit y=246.8
+PASS downtown-life: carriageway raster marks Cecil St / Bayfront Ave lanes, not their pavements or the plazas 
+PASS downtown-life: no downtown walk line runs along a live lane 0 bad vertices, 65 lines
+PASS downtown-life: lane-car seeding draws from edges near the focus 34 near edges of 224
+PASS downtown-life: plaza stations (benches, ice-cream carts, photo spots) built off the carriageway { "bench": 15, "cart": 7, "photo": 6 } on_road=0 people=24
+PASS downtown-polish: layered roadside planting (>= 4 species, >= 3000 strip clumps, >= 60 palms, >= 40 forecourt beds) { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+PASS downtown-polish: tower ground shadows from the sun (>= 150 buildings incl. MBS) shadows=230
+PASS downtown-polish: Marina Centre is a dense cluster (>= 10 buildings, >= 4 over 100 m) buildings=13 tall=11
+PASS downtown-polish: >= 5 towers over 100 m stand directly behind MBS behind_mbs_tall=27
+PASS downtown-polish: Raffles Ave / Bayfront Ave North corner keeps a 15 m plaza plots_near=0
+PASS downtown-polish: Helix landing plazas have walkable edge ramps 0.23,0.25,0.23,0.19
+PASS downtown-polish: aerial light (long sun shadows from the air) attached with its overlay node=true
+PASS downtown-fill: varied park canopy (>= 2100 crowns, >= 4 species with >= 250 each, shrub masses) { "shrub": 833, "rain": 435, "angsana": 340, "flame": 270, "tembusu": 297, "crowns_in_kept_open": 0, "lawn_blocks": 10, "empty_lawn_blocks": 0, "draws": 116, "total": 2175 }
+PASS downtown-fill: no flat lawn larger than a block (0 treeless 48 m lawn cells) blocks=10 empty=0
+PASS downtown-fill: Padang field and view wedges keep no tree crowns kept=0
+PASS downtown-fill: downtown turf uses the varied lawn shader (>= 50000 lawn cells) cells=101713
+PASS downtown-fill: roof plant on >= 15 downtown roofs { "roofs": 77, "draws": 98, "boxes": 269 }
+PASS downtown-fill: MBS arrival, NS Square and Merlion Park dressed (palms, cafe umbrellas, kiosks) { "mbs": 36, "ns_square": 26, "merlion": 5, "esplanade": 10, "nearfield": { "joints": 947, "clusters": 55, "planters": 17, "tables": 11, "bench_bins": 9, "racks": 5, "bollard_groups": 9, "totems": 4, "stains": 61 }, "palms": 65, "benches": 53, "umbrella_tables": 30, "shapes": 100 }
+PASS downtown-fill: arrival street cameras have a paving layout (>= 800 joints) and >= 40 furniture clusters in front { "joints": 947, "clusters": 55, "planters": 17, "tables": 11, "bench_bins": 9, "racks": 5, "bollard_groups": 9, "totems": 4, "stains": 61 }
+PASS downtown-fill: helicopter rotor disc draws motion-blurred blade streaks fx=true
+PASS downtown-fill: no shop / tower name echoes a real chain or building []
+PASS downtown-fill: sign lettering fits its plate (Helix 2.6 m plate, 4.6 m name monolith) helix=2.30 mono=4.10
+PASS downtown-fill: Esplanade waterfront paving beside the Jubilee landing is flat h=0.000/0.000
+PASS heritage avenue joins the promenade without a jump (-164.0, 0.267475, -330.1343)
+[character-look] head straightened: 18469 vertices
+[character-look] rewound 338 of 91866 triangles
+[character-look] eyes: 306 verts (head bind 5); hair cards: 1755
+PASS character look mesh has skin, face, hair, shirt, trousers and shoes [4037, 4444, 4226, 0, 1966, 4537, 1819, 4024]
+PASS player mitten fingers fold away for the jointed procedural hands folded=2463
+PASS procedural hands: 4 jointed fingers + thumb in fist and relaxed poses verts=3150
+PASS character cloth uses the woven fabric set (flannel, denim, batik, jersey) true
+PASS crowd wardrobe: >= 8 distinct civilians, none in the player's outfit distinct=12
+PASS characters-R: player look mesh is baked offline and matches a fresh build (no runtime rebuild at load) bake=res://assets/providers/baked_characters/player_rigged_loco4_look_r1t.res
+PASS characters-R: hidden body skin under the clothes is dressed (no skin shards through the shirt/jeans) dressed=160
+PASS characters-R: gun and support hands publish grip frames and close fingers round the grip verts=3150/3150
+PASS characters-R: the aim layer seats the pistol by the published grip frame (gun pose recovered exactly) ang=0.0000 off=0.00000
+PASS characters-R: civilians get their own head build (jaw, nose, brow, hair volume) distinct=12
+PASS characters-R2: the crowd spans heights (>=15 cm at 1.8 m), builds and older adults spread=0.39m builds=4 elders=12/40
+PASS characters-S: the civilian look mesh is baked offline (crowd load needs no runtime rebuild) res://assets/providers/baked_characters/civilian_rigged_v2_look_r1t.res
+PASS characters-S: civilian head backfill closes the cracked face (head-only back faces, skinned) tris=2910
+PASS characters-T3: eye patches, strand hair cards and a forward-facing head in the player and civilian bakes eyes=306 cards=1755 nose-centre dx=-0.002; eyes=306 cards=774 nose-centre dx=-0.008; 
+PASS characters-T3: backfill skips eye patches and hair cards (no skin flakes over hair) backfill tris=2910, eye/card tris left out=12896
+PASS characters-S: street-life people map onto the look outfit (women unstubbled, skirt legs, grey elders, >=5 skin tones, >=50/60 distinct) women=30 bad_face=0 bad_legs=0 elders=10/10 tones=20 distinct=60
+PASS characters-T: weight-shifted idle (pelvis over one leg, one soft knee, both soles planted, mirrored idle_b) feet dy=0.000/0.000 knees=0.26/0.43 rad pelvis shift=0.042
+PASS characters-T: adult head proportion (head bone scaled to ~1:7.5 of height) head scale=0.90
+PASS characters-T: skirts are skinned to the legs and a carried bag hides with its carrier (shared visibility centre) skirt_skinned=true bag_centre_err=0.000
+PASS characters-T3: crowd seeding keeps out of the Raffles Place lawn bed (no knee-deep walkers) rects=1
+PASS characters-T3: local dress in the crowd (tudung on some women, school uniforms on some children) tudung=61 of 288 women, uniforms=36
+PASS characters-T2: fitted skirt, women's narrower shoulders, near-lens cull hides body and parts together skirt width=0.50 narrow=true part_cull=0
+PASS perf-S: occlusion culling on with >= 150 building occluders (downtown shells, shophouse rows, HDB slabs) occluders=499
+PASS perf-S: occluders start above the street band (>= 3.5 m) below=0
+PASS perf-S: rain-tree batches are per-cell (culled, distance LOD), none map-wide batches=170 oversized=0
+PASS perf-S: cell grouping splits far instances groups=2
+PASS perf-S: crowd animates every frame near, strided far and off screen near=1 mid=3 far=6 off=15
+PASS perf-S: look bake valid in packaged builds (source .glb absent) and still rejected for a different source 
+PASS perf-S: street-life meshes leave the bay reflection pass (main cameras still see them) tagged=5531 untagged=12
+PASS perf-T: far walker deferred motion commits exactly and resets the visual glide moved=(0.3, 0.0, -0.2) root=(0.0, 0.02, 0.0)
+PASS perf-T: far walkers glide every tick near the lens, strided far / off screen; idlers strided; near walkers full rate glide 1/2/4 idle=4 full=9 m
+PASS perf-T: no per-frame render-server readback in boat wash; car probe re-placed on the budget cadence; blur shader shared and prewarmed 
+PASS perf-T: failed crowd and lane-car re-seeds are capped per frame (no retry storm when the focus is over water) crowd=3 traffic=3
+296/296 checks passed, 0 failed; report=/private/tmp/astra6/core-r4/report.json

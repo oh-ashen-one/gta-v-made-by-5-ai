@@ -1,0 +1,1388 @@
+{
+  "created_utc": "2026-10-25T20:30:24.572734+00:00",
+  "purpose": "Existing private art retained from Week1 baseline; no new paid asset generation in Astra-6 task. Hash manifest only; provider rights are not MIT. Keep full files private and preserve authoring checkout.",
+  "files": [
+    {
+      "path": "game/assets/providers/ac_unit_clean.glb",
+      "bytes": 7130864,
+      "sha256": "bee0a57c2de96a5719fdecae0e69fffa7baefe66c5069e0e883c4f90a8e4a6a2"
+    },
+    {
+      "path": "game/assets/providers/ac_unit_clean_air+conditioner+unit+3d+model_basecolor.jpg",
+      "bytes": 256966,
+      "sha256": "a0df7917d64df2b753246a893fee21aa870d313ea379a569921bfaee25d972d5"
+    },
+    {
+      "path": "game/assets/providers/ac_unit_clean_air+conditioner+unit+3d+model_normal.png",
+      "bytes": 437169,
+      "sha256": "e5fc4a1a76bd2cedefd334a14c062bd739d1396f4fdc1f0e174ba7c0adb4f58b"
+    },
+    {
+      "path": "game/assets/providers/ac_unit_clean_air+conditioner+unit+3d+model_rm.jpg",
+      "bytes": 117702,
+      "sha256": "cc40075b0390964c2456ddd11509d64eb8243955c73c9bd7a0f1e1e2d3b5fac4"
+    },
+    {
+      "path": "game/assets/providers/airfield_clutter_clean.glb",
+      "bytes": 12773748,
+      "sha256": "8fa1c35b1f836c9c47ff7bc7fb4ab7ebddaaffc13f257e5ec7b20e95171e12aa"
+    },
+    {
+      "path": "game/assets/providers/airfield_clutter_clean_weathered+cargo+crates+3d+model_basecolor.jpg",
+      "bytes": 362489,
+      "sha256": "400935a1bb813543107cf21f1cdf341829532b8e21b97227e18f66bf25a58d58"
+    },
+    {
+      "path": "game/assets/providers/airfield_clutter_clean_weathered+cargo+crates+3d+model_normal.png",
+      "bytes": 776701,
+      "sha256": "d5e4d3bffe0b813ccbaae2aa4d142942ea84e8d21e829e090ed1f8095402bff4"
+    },
+    {
+      "path": "game/assets/providers/airfield_clutter_clean_weathered+cargo+crates+3d+model_rm.jpg",
+      "bytes": 309260,
+      "sha256": "e8e972b92ff0ce09074380d0b0f8c0ce0c4cdf758ec8f937b8cf357f4671f4c2"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/civilian_rigged_v2_look_r1e.json",
+      "bytes": 733,
+      "sha256": "51f4defd5af81aeeadc7c1449331a324919fb3f6377280a82d77cd7ad5d255c0"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/civilian_rigged_v2_look_r1e.res",
+      "bytes": 2426559,
+      "sha256": "98093460d0adad5dc0fc3ef29482abecb6c28dc46e88434b5a79d1c9cac5f911"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/civilian_rigged_v2_look_r1s.json",
+      "bytes": 733,
+      "sha256": "69f80ae2a8c9690de4c52c8f6fcdf26887ecb32f50ac268f9c1a214ffab3cdd0"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/civilian_rigged_v2_look_r1s.res",
+      "bytes": 2426493,
+      "sha256": "466592c06de5505e5ecb826ab5ad23276c8f31e607f2e585f92425963adbfca3"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/civilian_rigged_v2_look_r1t.json",
+      "bytes": 772,
+      "sha256": "abb6c07793f12740193ab6330fada0785db48edc66b90d4ef673e69c9e502fbf"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/civilian_rigged_v2_look_r1t.res",
+      "bytes": 2906122,
+      "sha256": "9425c011badacc6411eef81bd3156c1e468078313e12e9d4a633b23995cd836b"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/player_rigged_loco4_look_r1e.json",
+      "bytes": 733,
+      "sha256": "6cbb6857c402cadb3f9284fa112c8d1f034d8b21e17bf515d57ad0a0be6ff21c"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/player_rigged_loco4_look_r1e.res",
+      "bytes": 5351124,
+      "sha256": "43f275ea821125f901a7bbd8a41b2468ac3cb26aaac3dc0478dbb1232582f63d"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/player_rigged_loco4_look_r1s.json",
+      "bytes": 733,
+      "sha256": "600c943587ad297fbb935c5c872f9a54527c59d0b6af510b39363609f29b8006"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/player_rigged_loco4_look_r1s.res",
+      "bytes": 5351631,
+      "sha256": "d4757801e4206ae9e62e8734958e9a4b83f29de8eee208231c081d95e6c333cc"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/player_rigged_loco4_look_r1t.json",
+      "bytes": 778,
+      "sha256": "e3b547074e0ec3929e3f6344c675ec5ec05a10ac21dd23f640950a60ad8c2c68"
+    },
+    {
+      "path": "game/assets/providers/baked_characters/player_rigged_loco4_look_r1t.res",
+      "bytes": 6410132,
+      "sha256": "0ab6eee549539746ee1cc32c1467d0e04befb752f88273f5642756d49756ecb5"
+    },
+    {
+      "path": "game/assets/providers/civilian_rig_report.json",
+      "bytes": 2121,
+      "sha256": "66beaaac3b5cb864820eec4e154a18aab7b565abbbaca9585ce4360653cdc1d1"
+    },
+    {
+      "path": "game/assets/providers/civilian_rig_report_v2.json",
+      "bytes": 2415,
+      "sha256": "3a01df887213df0773ba872b011669d3852634f8ae5b68d59592770641179fe6"
+    },
+    {
+      "path": "game/assets/providers/civilian_rigged.glb",
+      "bytes": 9919412,
+      "sha256": "ece93fcf6bc7e37ced947d74b4e392df25084c83c2209fe5ae974847dde4c444"
+    },
+    {
+      "path": "game/assets/providers/civilian_rigged_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 3232802,
+      "sha256": "de660d06af20d799549112a8e6de7675c2b3403aea9a4a3c08eb509c0e3cb1d0"
+    },
+    {
+      "path": "game/assets/providers/civilian_rigged_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png",
+      "bytes": 2404498,
+      "sha256": "9c5be4e35a54a7b3f988e39347319bcf0fb37d66ae6a9b1930ac757949316f75"
+    },
+    {
+      "path": "game/assets/providers/civilian_rigged_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 2529412,
+      "sha256": "c0f6071f165736a9464317761b397e88fe087c6bacaeb3c9a9f5e2520746ef13"
+    },
+    {
+      "path": "game/assets/providers/civilian_rigged_OrchardOriginalCharcoalWeave.png",
+      "bytes": 90117,
+      "sha256": "6fc89d4edcd0a83bdfc8ec8339c439348a58dd4fc4c45c84941ceacddffd8a09"
+    },
+    {
+      "path": "game/assets/providers/civilian_rigged_v2.glb",
+      "bytes": 10010568,
+      "sha256": "33a6d70f682bd7e344e460223db253ec549e5dce07417a7233cce3c91d316542"
+    },
+    {
+      "path": "game/assets/providers/civilian_rigged_v2_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 3232802,
+      "sha256": "de660d06af20d799549112a8e6de7675c2b3403aea9a4a3c08eb509c0e3cb1d0"
+    },
+    {
+      "path": "game/assets/providers/civilian_rigged_v2_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png",
+      "bytes": 2404498,
+      "sha256": "9c5be4e35a54a7b3f988e39347319bcf0fb37d66ae6a9b1930ac757949316f75"
+    },
+    {
+      "path": "game/assets/providers/civilian_rigged_v2_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 2529412,
+      "sha256": "c0f6071f165736a9464317761b397e88fe087c6bacaeb3c9a9f5e2520746ef13"
+    },
+    {
+      "path": "game/assets/providers/civilian_rigged_v2_OrchardOriginalCharcoalWeave.png",
+      "bytes": 90117,
+      "sha256": "6fc89d4edcd0a83bdfc8ec8339c439348a58dd4fc4c45c84941ceacddffd8a09"
+    },
+    {
+      "path": "game/assets/providers/coupe_clean.glb",
+      "bytes": 30134092,
+      "sha256": "0560279f049c313d251ee681c8b436af40411f27cfdeddac5765ed179625509f"
+    },
+    {
+      "path": "game/assets/providers/coupe_clean_texture_pbr_20250901.png",
+      "bytes": 1249951,
+      "sha256": "cdc06ff1c2f018d1acac84b4ac5696cd03b2218de418e6ab2f5918fa7032f380"
+    },
+    {
+      "path": "game/assets/providers/coupe_clean_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png",
+      "bytes": 1102043,
+      "sha256": "cc5789c0e2fee90ccc6fc7df24e23ce8591ceda4fc25f35cc8a0f425eb7c3a42"
+    },
+    {
+      "path": "game/assets/providers/coupe_clean_texture_pbr_20250901_normal.png",
+      "bytes": 493295,
+      "sha256": "e4a6cfb796c9f59de98493d003271ad34e6e56fe0ad50147cac7c6b82fe4acd7"
+    },
+    {
+      "path": "game/assets/providers/food_trolley_clean.glb",
+      "bytes": 7551672,
+      "sha256": "242f7c5af79be5c7aba112ae855e4f46be6eb7129ff91abd9bc4b3793f8d0ff4"
+    },
+    {
+      "path": "game/assets/providers/food_trolley_clean_stainless+food+cart+3d+model_basecolor.jpg",
+      "bytes": 203532,
+      "sha256": "87499ecabe8b0da7bb632d3b15cdc20caf8fbf17e3049d484918494c9e134fdf"
+    },
+    {
+      "path": "game/assets/providers/food_trolley_clean_stainless+food+cart+3d+model_normal.png",
+      "bytes": 361155,
+      "sha256": "58783b583521124dbfdb6e2f4dd03a53bde7d4800e292cc7c66c9933706b6c8b"
+    },
+    {
+      "path": "game/assets/providers/food_trolley_clean_stainless+food+cart+3d+model_rm.jpg",
+      "bytes": 252939,
+      "sha256": "17d17700f3cbd4a5278ebef7bd5a8870ce3d558e43650060bf1efe70185b11c3"
+    },
+    {
+      "path": "game/assets/providers/hawker_counter_clean.glb",
+      "bytes": 7841208,
+      "sha256": "19d050c87e10e326d9bcc1b3f6bf04cc3b51e34ea2448aabe2e5cc2e864679fd"
+    },
+    {
+      "path": "game/assets/providers/hawker_counter_clean_hawker+stall+3d+model_basecolor.jpg",
+      "bytes": 289528,
+      "sha256": "d0550e6e5b76b15f54d5a7f9186f6873cf59a1708ef92881211d5f3458c933bf"
+    },
+    {
+      "path": "game/assets/providers/hawker_counter_clean_hawker+stall+3d+model_normal.png",
+      "bytes": 399010,
+      "sha256": "8d0eac00025da7f96dc309722914b66fb167bedd79adfaa53c4cda3ae2dde5f3"
+    },
+    {
+      "path": "game/assets/providers/hawker_counter_clean_hawker+stall+3d+model_rm.jpg",
+      "bytes": 187778,
+      "sha256": "4abde1f6aecf5264e5415ac18d30555247c37f20a0db225d7f5afccd8062e13d"
+    },
+    {
+      "path": "game/assets/providers/hawker_counter_refined.glb",
+      "bytes": 3410500,
+      "sha256": "ca3063e96c28d3e7350b3beee098679851c799fe3cb136f19c789bb42ee6a2a6"
+    },
+    {
+      "path": "game/assets/providers/hawker_counter_refined_hawker+stall+3d+model_basecolor.jpg",
+      "bytes": 2848972,
+      "sha256": "1e6e66a58dc19c007bb3f3e852cb997bf622aae2aedd4e71e786f45bc7c14a4b"
+    },
+    {
+      "path": "game/assets/providers/hawker_table_clean.glb",
+      "bytes": 6688184,
+      "sha256": "b3600a3601a7fad3d3df94175e0c1060cb4346ced4a962ed3037983bce3bfc9b"
+    },
+    {
+      "path": "game/assets/providers/hawker_table_clean_round+table+3d+model_basecolor.jpg",
+      "bytes": 205050,
+      "sha256": "8081cd13a8ca2fc046e6cf337caef775fcfb9c49492c2c45e77cfb1af16e990d"
+    },
+    {
+      "path": "game/assets/providers/hawker_table_clean_round+table+3d+model_normal.png",
+      "bytes": 504033,
+      "sha256": "8bf1bd9f843885acc28c6a8a1dce0fe59eb262a6cd90e0ac41d30d613b7ae561"
+    },
+    {
+      "path": "game/assets/providers/hawker_table_clean_round+table+3d+model_rm.jpg",
+      "bytes": 117996,
+      "sha256": "2327e3fbc94988b4a84454a8a4ce70dcf463c2b7b511793af9172f43150d5887"
+    },
+    {
+      "path": "game/assets/providers/hawker_table_refined.glb",
+      "bytes": 2690924,
+      "sha256": "a83a2fdd84840b41183415a959c298ec6473ca06592ead1da115c66160b197e9"
+    },
+    {
+      "path": "game/assets/providers/hawker_table_refined_round+table+3d+model_basecolor.jpg",
+      "bytes": 2329159,
+      "sha256": "7ba04d3a90e57916871f2d7386d2ad085416fd3a5384c08e7ab6ee79f5af745c"
+    },
+    {
+      "path": "game/assets/providers/hdb_slab_clean.glb",
+      "bytes": 46240708,
+      "sha256": "2dbdd82b0d97ef2b150ce75a83086bbc7058acf0ec7bfce6aecb9c9876d673d4"
+    },
+    {
+      "path": "game/assets/providers/hdb_slab_clean_texture_pbr_20250901.png",
+      "bytes": 1615540,
+      "sha256": "f52af986d61e5b4e2fded24e7c1dd37700b5bc279e1ddb35c427be45371f2586"
+    },
+    {
+      "path": "game/assets/providers/hdb_slab_clean_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png",
+      "bytes": 1112562,
+      "sha256": "4c2dd6f90a69e76750d5afacc69a80edd3dcc038c16d78469818b44f093ced0a"
+    },
+    {
+      "path": "game/assets/providers/hdb_slab_clean_texture_pbr_20250901_normal.png",
+      "bytes": 1029122,
+      "sha256": "3899b9bdafe13d43458441b7b6e61e8ba9f163a061678e67af74e70258d655b0"
+    },
+    {
+      "path": "game/assets/providers/helicopter_clean.glb",
+      "bytes": 10692856,
+      "sha256": "7b3c3143bbae61d35d5928852b72d8cfe38825e62e7be92f7e09cc5db062df55"
+    },
+    {
+      "path": "game/assets/providers/helicopter_clean_Color_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg",
+      "bytes": 342140,
+      "sha256": "ac3f046d61fc0eb35eced8dbb841f121f4266ba1494d9ebf78f3d9fa7b222bfe"
+    },
+    {
+      "path": "game/assets/providers/helicopter_clean_NormalGL_6982c251-8629-479f-b267-fea6cc6d8c2c.png",
+      "bytes": 394879,
+      "sha256": "9666cf1bbd43270026a2978c3986ca4d4bd45ae0ef76f7ec7b0de5716f8877b6"
+    },
+    {
+      "path": "game/assets/providers/helicopter_clean_ORM_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg",
+      "bytes": 265221,
+      "sha256": "e299cc0126ad14226060b2330ea5eb8fabc407c3e529bc0e92e2825bc0397b42"
+    },
+    {
+      "path": "game/assets/providers/helicopter_refined.glb",
+      "bytes": 10693576,
+      "sha256": "bd149a128315833f988f98ded1e8a7710c0f5b31e0b52b4afcf392cf79911380"
+    },
+    {
+      "path": "game/assets/providers/helicopter_refined_Color_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg",
+      "bytes": 3508338,
+      "sha256": "3fd6d1f28341494941e999c8dc7494f2eb3dbc2b21a29e23af5816a8fa237919"
+    },
+    {
+      "path": "game/assets/providers/helicopter_refined_NormalGL_6982c251-8629-479f-b267-fea6cc6d8c2c.png",
+      "bytes": 1778696,
+      "sha256": "d6eaac9f73ec9d72491262186b3e15f4fa2cf2552a1b3320595f7545e0282839"
+    },
+    {
+      "path": "game/assets/providers/helicopter_refined_ORM_6982c251-8629-479f-b267-fea6cc6d8c2c.jpg",
+      "bytes": 2915138,
+      "sha256": "888ebc5b35c68428999bd3b87359ac6c05c5e5055f4a9844a566fe581e1514d1"
+    },
+    {
+      "path": "game/assets/providers/helicopter_refined_report.json",
+      "bytes": 2631,
+      "sha256": "28b1065c49b0900d7fd3a2333b886dbe174a95a01a34a4c399480e3ff0cbe4aa"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/concrete_weathered_albedo.png",
+      "bytes": 9501170,
+      "sha256": "f8c6fc885ff9e73ed38267eb27089603398e98561618c7fb33f56130f9db9d60"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/concrete_weathered_normal.png",
+      "bytes": 10609040,
+      "sha256": "71eeb2d28b98cac9afbd9641490566151d718997f4946ca7ecac5bb440dcac03"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/concrete_weathered_rough.png",
+      "bytes": 2623821,
+      "sha256": "99f0c060e588c3516f6ad54c56bcd2901f06f7ad6c7fc5aa918445a85555e785"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_batik_albedo.png",
+      "bytes": 8862641,
+      "sha256": "c1c0cba4911b1862c2a49f16216736ed4bbeb0703a9d682a48c3b53ba4c596e3"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_batik_normal.png",
+      "bytes": 9664574,
+      "sha256": "d3facec27b0293f2975682546fd2eb85a16f7fb3d102adfee503221dd48b5b30"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_batik_rough.png",
+      "bytes": 1905733,
+      "sha256": "40e8cb8354c1d70dc9b158e2e6fb0f7520349af7349465da4efdfb6609885c78"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_batik_single_albedo.png",
+      "bytes": 9032853,
+      "sha256": "585743a1fa7ef7b4fe45211c1530b12832c81cf36d9fb5b7a654299fb48d757d"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_cotton_jersey_albedo.png",
+      "bytes": 8790538,
+      "sha256": "4cbaf67919eb808731eef810af46cef53c5ceefbe3badb81d9fde4589f43a94b"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_cotton_jersey_neutral.png",
+      "bytes": 4853489,
+      "sha256": "b13bba5a18ea756a2ec18329e70bb677c6224bdac7a7a578fda817686fe15d50"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_cotton_jersey_normal.png",
+      "bytes": 9801170,
+      "sha256": "26728b047bab8f1920c5fddb0d85491869ea355ba873e4e70d99e9e35615876c"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_cotton_jersey_rough.png",
+      "bytes": 2457997,
+      "sha256": "3d9c79964af5a65ce5095593b55d61b919d7c5dab18e83259e9d34f0809313e8"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_denim_albedo.png",
+      "bytes": 9800885,
+      "sha256": "577a5ced237a9a4fc40385f592f650f8aec113a8fbfc6af461a091a47043a522"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_denim_normal.png",
+      "bytes": 10421028,
+      "sha256": "076b028dbc39d501350db1c688253b071e571574e5219c2436f53f553a00dc4c"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_denim_rough.png",
+      "bytes": 2483090,
+      "sha256": "1232087af81ad1413b5eab2a6f8d84db6ee9106637dc2828537f4952284da3b5"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_flannel_plaid_albedo.png",
+      "bytes": 7383650,
+      "sha256": "6a548d1a23a09b1517dda72861fb878fc977c5d40f455abd6f17dcf534f2e09e"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_flannel_plaid_normal.png",
+      "bytes": 8272481,
+      "sha256": "7a89fcf76366eeee2d45ed4639dd30760edb3c582f5094ba8cc0464b236b1b53"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/fabric_flannel_plaid_rough.png",
+      "bytes": 1762846,
+      "sha256": "fe593c3a87dd7625a88c903e59a31a54515cf6b1034150fed62bc2b0599d58bd"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/foliage_birdsnest_fern.png",
+      "bytes": 1525006,
+      "sha256": "31a79a9e3a6c4e08e5482b33662e43ecf596e6c607a5bb373663de77b0b8347a"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/foliage_croton.png",
+      "bytes": 1936679,
+      "sha256": "9b9a9378f89903baa57d0a4a3794c592f76720eb6b6af92fea7a0b8b12671f88"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/foliage_ixora.png",
+      "bytes": 1927838,
+      "sha256": "abf16e0b001c179c940b8a55d1ca7dd36e24e79350ba442225a82c17fbcbde80"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/foliage_median_atlas.png",
+      "bytes": 7364848,
+      "sha256": "6ed3173f1cc37e7b46795e929d28376d7feb749a64b91ffb1e891631c9003024"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/foliage_mondo_spiderlily.png",
+      "bytes": 1903180,
+      "sha256": "d607a126509366d8732b510b8f247e12925a446318a3c74ee26754b22f34f743"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/footpath_pavers_albedo.png",
+      "bytes": 9046530,
+      "sha256": "8294c3767890f8096c9c7036b9944e1e964284c2ad5e6f4f46a4a4b05278a0e9"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/footpath_pavers_normal.png",
+      "bytes": 10287748,
+      "sha256": "970318418d6eb10e54f81e981c2065a0de41e8fdd4f606bb95b2209eef9b11bd"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/footpath_pavers_rough.png",
+      "bytes": 2448839,
+      "sha256": "0b8ea8236ec1bb9bf73a420aa3064d2c4d5dc5d87bd30a513aea5ce7818a9a6a"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/hair_card_black_straight.png",
+      "bytes": 804279,
+      "sha256": "1b093b6a25786713bd49760f505d790d1521c8b476c3779f394062867cbd6b76"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/hair_card_black_wavy.png",
+      "bytes": 1003873,
+      "sha256": "e7ef2d918fe39df55d312c7783af98c70e03c4e923f6f58c75accd8baa81803e"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/hair_card_brown_short_coarse.png",
+      "bytes": 1151711,
+      "sha256": "2f6e00b934c2542d75fd5527f7b0e00224a3e7a96901fd263db64c16d034a2da"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/hair_card_brown_straight.png",
+      "bytes": 905160,
+      "sha256": "df7e73f3f48ee9f7947a4231c4d5bafdc3069b84d8f4475d842a2fedd04d571b"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/hair_cards_atlas.png",
+      "bytes": 5068210,
+      "sha256": "8c9cb5bb0c3e1c5dc01a952cbde2d8d4a6958c439201ed4d099f266850ba9cc2"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/hdb_facade_albedo.png",
+      "bytes": 4853306,
+      "sha256": "c23ff7de860d4c23c8f452d5fc38a9ddb82b39d3353e0b059cf214dee9ef02a3"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/hdb_facade_normal.png",
+      "bytes": 5839528,
+      "sha256": "33448b16134e141072ce47f71805c503f71debd5199ba24e60c284b79238c2c0"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/hdb_facade_rough.png",
+      "bytes": 1093497,
+      "sha256": "f1d7982fbe647f35c319e196246305640fda2adb57c0cf41f336331bf1386af8"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/plaster_weathered_albedo.png",
+      "bytes": 8683987,
+      "sha256": "5ec3fc1fbf89e62f2842b13d9f9bb1d23d6b42445bfa491efaf3ea5ffe695120"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/plaster_weathered_neutral.png",
+      "bytes": 8494057,
+      "sha256": "47da7f7028de56bda19dd1e1ba83489858b96614b18f67bc1ff182c4a3c96d16"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/plaster_weathered_normal.png",
+      "bytes": 9870830,
+      "sha256": "08ba47bf7aa418c4815642d050aff175d1b10ef97fc09acfe3714fc6796eb37b"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/plaster_weathered_rough.png",
+      "bytes": 2400587,
+      "sha256": "a2cceb87187e9add75e294bad183e17974f5ce952f2dd9219d7c397093d5f2a3"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/plaza_granite_pavers_albedo.png",
+      "bytes": 2368129,
+      "sha256": "2280864b07c3a72f8dd0bde8845f7a621fb375356eba381a5e99f6759aad442a"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/plaza_granite_pavers_normal.png",
+      "bytes": 2668395,
+      "sha256": "b7e782007ca8cc4d52bb5a4aa8bcbf4649e8b02ed913a62125d9d42a55615a2c"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/plaza_granite_pavers_rough.png",
+      "bytes": 645294,
+      "sha256": "f5e3302fa1c3a9095c94d46905c60307784f1610e1a9c4b23d0ebed2fe5ae9eb"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/road_asphalt_albedo.png",
+      "bytes": 9520237,
+      "sha256": "f07532c791567b8fc5fa672268daab05fae4083981b86b5ee6b8002375fc4bc5"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/road_asphalt_normal.png",
+      "bytes": 10484299,
+      "sha256": "a3397fb79857c96506f5377f31a33c244f8aec61417b2735fac3384a97a989ff"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/road_asphalt_rough.png",
+      "bytes": 2692484,
+      "sha256": "f166a944c00529e0f3447f49920b888d8ede3beb53c6b76793c54af592db6194"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/road_signs_atlas_albedo.png",
+      "bytes": 4581494,
+      "sha256": "02a2569a2302be0ffad046aa8c55a02113afe68ba3427308bfa0501a96efef48"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/rooftop_flat_albedo.png",
+      "bytes": 8134854,
+      "sha256": "2678a6a73b77fda9d17e15be4fde5a27bc00f3c78c701d45ad81213ffe121eb0"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/rooftop_flat_normal.png",
+      "bytes": 9184167,
+      "sha256": "77a6319649b0db126671de134ed3c9b7d03768fa222b1137ed3bd691413411bb"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/rooftop_flat_rough.png",
+      "bytes": 2039677,
+      "sha256": "5a6e8eb97de213d689777d91c99447087c1c75cfc63bf8f4ae13e3840bc787e0"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/shop_signs_atlas_albedo.png",
+      "bytes": 7230400,
+      "sha256": "ac602408f9bf15d3ad1122af32ed7d3c4f6ca3867ba83d135aae8067b1d7da0a"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/sign_ah_kow_prawn_noodle.png",
+      "bytes": 850406,
+      "sha256": "99c4654d96dda0cd2d261878104babcd63eff7df08c9cfd6dd0a9914b28dd588"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/sign_golden_lotus_money_changer.png",
+      "bytes": 852745,
+      "sha256": "d79e8b1b3c2c2a17c5ea8b67b5c72a3e37fdd30eeaaf97c903ed454bf92d440b"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/sign_happy_cycles.png",
+      "bytes": 895678,
+      "sha256": "b06306fc97471d242de72ddeb075d8f6b561744bffb3f5047b4ecbb23ccbfa6c"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/sign_joo_heng_medical_hall.png",
+      "bytes": 874024,
+      "sha256": "0f34617108afee85bc3aae05861c1c32d91c2660a1843f611e466648d197b873"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/sign_kim_seng_provision.png",
+      "bytes": 877428,
+      "sha256": "a6cee1f570f937e544ee7d7818e2cad237e59e674e311bba800bf8df53dc1fb1"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/sign_mei_ling_tailor.png",
+      "bytes": 888131,
+      "sha256": "ad874a1e0b034c3e037c2f7db80d8c16b710834b7892ed6b0d0fb33de3ad8c2f"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/sign_sin_leong_hardware.png",
+      "bytes": 825562,
+      "sha256": "fe686218f3425ae17d38b68b17cd775907608366e164c967a8f6da607d65e5f0"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/sign_teck_huat_kopitiam.png",
+      "bytes": 807715,
+      "sha256": "784eb7a753f857948dd88f902e5497e174f44bf8891ba77100c2488d6625d1b8"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/skin_detail_male_albedo.png",
+      "bytes": 7486730,
+      "sha256": "747b882090835028c358d19b7f177535adece9a8cf3853d97889703ef9a96cdd"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/skin_detail_male_normal.png",
+      "bytes": 8669539,
+      "sha256": "bce51670256d7901496009aa746980ad0bbd9578835f8fd982b9177e9ea8b3a4"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/skin_detail_male_rough.png",
+      "bytes": 2128806,
+      "sha256": "e6c2badf481367988e590abb11ada1199f54216c870efc8899ea8f856e6b5a42"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/skin_detail_neutral.png",
+      "bytes": 4361597,
+      "sha256": "740738316521ae70eef22c216cbe8b53c2f0d6e54450f4e78fc2f52c25f0b38c"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/sky_panorama_albedo.png",
+      "bytes": 6105343,
+      "sha256": "c0e998a32758b0f9b9fec64efe00801ed7729fe890a4dbed86c793ed1c77eb9e"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/tower_curtainwall_mullion_albedo.png",
+      "bytes": 1026852,
+      "sha256": "e3bde8f8ffafcfee780404082e1577752ff940dd099ee68a6945b09ae1400132"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/tower_curtainwall_mullion_normal.png",
+      "bytes": 1159620,
+      "sha256": "532d5876879a91e38326bac6499f15705bf529032595c0bf5666dcb5c5c77340"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/tower_curtainwall_mullion_rough.png",
+      "bytes": 217951,
+      "sha256": "1046191f7a0cd3b4cb043dd817ceaee40017ada0939433320fdc61fa78f2e8c2"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/tower_glass_bluegreen_albedo.png",
+      "bytes": 4436101,
+      "sha256": "21006cc2bfc8323cffa3823459950c5b3fec17abb37a22bdfd4ce29dd76396d8"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/tower_glass_bluegreen_normal.png",
+      "bytes": 4983584,
+      "sha256": "f86c93bd5aed1c0db5747c7cb5dbad2a374b253bc7db590ffdb6fe414ce539fb"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/tower_glass_bluegreen_rough.png",
+      "bytes": 776860,
+      "sha256": "4d8b636f2ebbe9d42dcc5b23b71ad746695d2cd25219e98053265fbf28c9280f"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/tower_stone_punched_albedo.png",
+      "bytes": 991547,
+      "sha256": "79bd610585d1110326f3c25fcefe407a0b99335df3e4735220905a3ac0ff050e"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/tower_stone_punched_normal.png",
+      "bytes": 1129035,
+      "sha256": "90a0d650473517d778a4e2caba1775d48b07d3f6ad6a8cd4bcffb46ce2f1ec3c"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/tower_stone_punched_rough.png",
+      "bytes": 226878,
+      "sha256": "f2639c569244ddcae8f91de74db18d78a22e10dc6bede129d2e6d63ed8b10688"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/vfx_bullet_impacts_atlas.png",
+      "bytes": 7325223,
+      "sha256": "052411c17d9dbf61fe8446b58b9d5c8485c33157fc79c0453fa36915df88ff85"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/vfx_muzzle_flash_atlas.png",
+      "bytes": 4339460,
+      "sha256": "ad56007dd94138bc385d0f9622636c9e3b69897fcba5c6fb14383a92a882964c"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/vfx_puffs_atlas.png",
+      "bytes": 4951935,
+      "sha256": "ed159a61aaa6827be473e649bbc84cfeadad7eb8ae92b7c18008fd69eaf7ffe3"
+    },
+    {
+      "path": "game/assets/providers/higgsfield/vfx_skid_mark.png",
+      "bytes": 439874,
+      "sha256": "b099d7b3ae127e42f822dabad49361b88d7f0e6969047430886974c56e363d04"
+    },
+    {
+      "path": "game/assets/providers/officer_clean.glb",
+      "bytes": 9861184,
+      "sha256": "354607e2e9474fe58d203b850204fe150247801a98efcc2e3e409e184e69b8bc"
+    },
+    {
+      "path": "game/assets/providers/officer_clean_Color_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg",
+      "bytes": 301759,
+      "sha256": "4bdad298a567d2502c83a897b450f1e33ea1850ce020a3fb154f9c81fb6c6e3b"
+    },
+    {
+      "path": "game/assets/providers/officer_clean_NormalGL_b351e7bc-2305-42e4-bc74-b35a2256b75f.png",
+      "bytes": 491349,
+      "sha256": "d81a72bbc60714f9ba14769a5dadc567c998ba55e2d7ad5460f3691ba3084584"
+    },
+    {
+      "path": "game/assets/providers/officer_clean_ORM_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg",
+      "bytes": 308462,
+      "sha256": "d85168e5d3a4dbcb10729aa837de0f7cc6442280bf22b72fe9e41e1518bbc04a"
+    },
+    {
+      "path": "game/assets/providers/officer_rig_report.json",
+      "bytes": 2106,
+      "sha256": "501d6442a81041b4266f103860c1ba10a38f45bf62606c9dfaa53f0f8687f74f"
+    },
+    {
+      "path": "game/assets/providers/officer_rig_report_v2.json",
+      "bytes": 2400,
+      "sha256": "aba307d93b3d4ceae1b9aeb7a1e58e3188c899f0c96078b453f55ef42d2c14bf"
+    },
+    {
+      "path": "game/assets/providers/officer_rigged.glb",
+      "bytes": 10968576,
+      "sha256": "e545c1cd4a91b49c17d0dea69e37965fad036b265914bd8d29b6490fefd12b33"
+    },
+    {
+      "path": "game/assets/providers/officer_rigged_Color_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg",
+      "bytes": 3043010,
+      "sha256": "598a75dbf12e74a4aae7804bffda8699f6ad72077625da8e4ec9e4289665a144"
+    },
+    {
+      "path": "game/assets/providers/officer_rigged_NormalGL_b351e7bc-2305-42e4-bc74-b35a2256b75f.png",
+      "bytes": 2119794,
+      "sha256": "9a071014c4a4db17e886bd6eaef5fc187f265add5b301a8505e8ffcfb4aa5d41"
+    },
+    {
+      "path": "game/assets/providers/officer_rigged_ORM_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg",
+      "bytes": 3089175,
+      "sha256": "a2f128d1843ed541b072a8ab2b6b73de7b2c9d5f1c5f7af71e728120b904b9cd"
+    },
+    {
+      "path": "game/assets/providers/officer_rigged_v2.glb",
+      "bytes": 11061820,
+      "sha256": "c4563767e9deabd2907436381738e0ed7752ab11d125fb7274d6d90bd3b635cd"
+    },
+    {
+      "path": "game/assets/providers/officer_rigged_v2_Color_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg",
+      "bytes": 3043010,
+      "sha256": "598a75dbf12e74a4aae7804bffda8699f6ad72077625da8e4ec9e4289665a144"
+    },
+    {
+      "path": "game/assets/providers/officer_rigged_v2_NormalGL_b351e7bc-2305-42e4-bc74-b35a2256b75f.png",
+      "bytes": 2119794,
+      "sha256": "9a071014c4a4db17e886bd6eaef5fc187f265add5b301a8505e8ffcfb4aa5d41"
+    },
+    {
+      "path": "game/assets/providers/officer_rigged_v2_ORM_b351e7bc-2305-42e4-bc74-b35a2256b75f.jpg",
+      "bytes": 3089175,
+      "sha256": "a2f128d1843ed541b072a8ab2b6b73de7b2c9d5f1c5f7af71e728120b904b9cd"
+    },
+    {
+      "path": "game/assets/providers/pistol_clean.glb",
+      "bytes": 10215220,
+      "sha256": "7acfa673b1496f6322405337b5e49238f44d50388963b6f0160599537e000004"
+    },
+    {
+      "path": "game/assets/providers/pistol_clean_pistol+3d+model_basecolor.jpg",
+      "bytes": 248299,
+      "sha256": "95793fcc8dde7e221faed8607db1578e832c6762eb05b79f6ace5310bc33d207"
+    },
+    {
+      "path": "game/assets/providers/pistol_clean_pistol+3d+model_normal.png",
+      "bytes": 849338,
+      "sha256": "02ea5bddfd93b429ed23969f4469a5cda6d92e902785bf5e365ddb9f9b79b251"
+    },
+    {
+      "path": "game/assets/providers/pistol_clean_pistol+3d+model_rm.jpg",
+      "bytes": 120558,
+      "sha256": "d9920e8b5fbb6a58c76e4319cd5b12ab44b031d2cce0fa33ecf4c8dcc0387d45"
+    },
+    {
+      "path": "game/assets/providers/pistol_held.glb",
+      "bytes": 10215192,
+      "sha256": "d710ddf885e5aff265d0c0093dabe7a485884496ea1ecb6f929f3d83b7ebea8f"
+    },
+    {
+      "path": "game/assets/providers/pistol_held_pistol+3d+model_basecolor.jpg",
+      "bytes": 3375659,
+      "sha256": "dc25d593837a1e88ad2702e6fe72549bee73cb7c5899917b50c5d62c8263e2d2"
+    },
+    {
+      "path": "game/assets/providers/pistol_held_pistol+3d+model_normal.png",
+      "bytes": 5246049,
+      "sha256": "ccd57cac50773b810efd7c3684c2de57305d522309cc51f1347d17b5d1b41767"
+    },
+    {
+      "path": "game/assets/providers/pistol_held_pistol+3d+model_rm.jpg",
+      "bytes": 1479112,
+      "sha256": "8049561fcea62b54e16fdf4e3810fca7e6ad4daafc5bfbf183e99bcd44eef007"
+    },
+    {
+      "path": "game/assets/providers/planter_clean.glb",
+      "bytes": 8360296,
+      "sha256": "cdbb9886073c6ba21f2c96a083bdfd97e52293610b3fd387bbc455a67dca1b50"
+    },
+    {
+      "path": "game/assets/providers/planter_clean_tropical+plant+3d+model_basecolor.jpg",
+      "bytes": 265778,
+      "sha256": "44bd87ca07d953f6899a19599fc069cc616052efa0a85ff79adfcf6bdccdfbb5"
+    },
+    {
+      "path": "game/assets/providers/planter_clean_tropical+plant+3d+model_normal.png",
+      "bytes": 508292,
+      "sha256": "4037b1111d03da16ce9008a6edc4445c1ff7cba1b992af3bbac373f179950a86"
+    },
+    {
+      "path": "game/assets/providers/planter_clean_tropical+plant+3d+model_rm.jpg",
+      "bytes": 136944,
+      "sha256": "e9ec9ed2a1133be41224fef58a349e8a4419faf0e91a2819f2b0d7dfb025bd46"
+    },
+    {
+      "path": "game/assets/providers/player_clean.glb",
+      "bytes": 10230688,
+      "sha256": "9e4a8c61796a715b336b8cc8747b2563d4f73c312eff28825af647d88fa6fb5d"
+    },
+    {
+      "path": "game/assets/providers/player_clean_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 304725,
+      "sha256": "586f26c798059e2eadbdd73a9210f9d305ee90001611119492e015c680e117c0"
+    },
+    {
+      "path": "game/assets/providers/player_clean_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png",
+      "bytes": 530847,
+      "sha256": "fbb5dce06ee235d1025a84612a7d9ecd85b8c2cfb5ff6166cc919032a0bef572"
+    },
+    {
+      "path": "game/assets/providers/player_clean_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 231757,
+      "sha256": "57410d97cfe544ee3772b8f6ead1f9df83dce90f514728f0deeee8980d8d4b4d"
+    },
+    {
+      "path": "game/assets/providers/player_rig_report.json",
+      "bytes": 2093,
+      "sha256": "84ed27e6500d03f86112c55dd264d93f706fe400fe80aebef5ac89de54811917"
+    },
+    {
+      "path": "game/assets/providers/player_rig_report_loco3.json",
+      "bytes": 2536,
+      "sha256": "5fc75bca9860ec39616b399aed1411cc24918a382a3fd7145ee6ab8912d8fd09"
+    },
+    {
+      "path": "game/assets/providers/player_rig_report_loco4.json",
+      "bytes": 2536,
+      "sha256": "c7fb8549d2e226d968bbe7524e767b8234c9d58f3eb7a0e3ef3bfe9ddb745f33"
+    },
+    {
+      "path": "game/assets/providers/player_rig_report_v2.json",
+      "bytes": 2387,
+      "sha256": "1dd898d883df482a0b40e687a1b22ed7ea823e560a886e449a0bc1a8699d8725"
+    },
+    {
+      "path": "game/assets/providers/player_rigged.glb",
+      "bytes": 11663516,
+      "sha256": "bfcd5d74c867c0fb62756e7145ef7dcb582f18643f5f25f48e85a6edcfe4602f"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 3232802,
+      "sha256": "de660d06af20d799549112a8e6de7675c2b3403aea9a4a3c08eb509c0e3cb1d0"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png",
+      "bytes": 2404498,
+      "sha256": "9c5be4e35a54a7b3f988e39347319bcf0fb37d66ae6a9b1930ac757949316f75"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 2529412,
+      "sha256": "c0f6071f165736a9464317761b397e88fe087c6bacaeb3c9a9f5e2520746ef13"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_OrchardOriginalCharcoalWeave.png",
+      "bytes": 90117,
+      "sha256": "6fc89d4edcd0a83bdfc8ec8339c439348a58dd4fc4c45c84941ceacddffd8a09"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_loco3.glb",
+      "bytes": 11799512,
+      "sha256": "c67c954fcf6eac7873bc9f78612888dd97e67abd515fb909f71683410108cf15"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_loco3_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 3232802,
+      "sha256": "de660d06af20d799549112a8e6de7675c2b3403aea9a4a3c08eb509c0e3cb1d0"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_loco3_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png",
+      "bytes": 2404498,
+      "sha256": "9c5be4e35a54a7b3f988e39347319bcf0fb37d66ae6a9b1930ac757949316f75"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_loco3_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 2529412,
+      "sha256": "c0f6071f165736a9464317761b397e88fe087c6bacaeb3c9a9f5e2520746ef13"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_loco3_OrchardOriginalCharcoalWeave.png",
+      "bytes": 90117,
+      "sha256": "6fc89d4edcd0a83bdfc8ec8339c439348a58dd4fc4c45c84941ceacddffd8a09"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_loco4.glb",
+      "bytes": 11799228,
+      "sha256": "578f8e3fb945e00d4f950df74cc6a2eb048f87fb144a3785f4a751f4d0118aa3"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_loco4_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 3232802,
+      "sha256": "de660d06af20d799549112a8e6de7675c2b3403aea9a4a3c08eb509c0e3cb1d0"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_loco4_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png",
+      "bytes": 2404498,
+      "sha256": "9c5be4e35a54a7b3f988e39347319bcf0fb37d66ae6a9b1930ac757949316f75"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_loco4_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 2529412,
+      "sha256": "c0f6071f165736a9464317761b397e88fe087c6bacaeb3c9a9f5e2520746ef13"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_loco4_OrchardOriginalCharcoalWeave.png",
+      "bytes": 90117,
+      "sha256": "6fc89d4edcd0a83bdfc8ec8339c439348a58dd4fc4c45c84941ceacddffd8a09"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_v2.glb",
+      "bytes": 11757900,
+      "sha256": "cb743f5a8931b1611ffd9ff55cd033fbe46f92f35e04eb549a60700e99fb584f"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_v2_Color_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 3232802,
+      "sha256": "de660d06af20d799549112a8e6de7675c2b3403aea9a4a3c08eb509c0e3cb1d0"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_v2_NormalGL_7c03bee9-b47e-419a-813e-ccc0106d092e.png",
+      "bytes": 2404498,
+      "sha256": "9c5be4e35a54a7b3f988e39347319bcf0fb37d66ae6a9b1930ac757949316f75"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_v2_ORM_7c03bee9-b47e-419a-813e-ccc0106d092e.jpg",
+      "bytes": 2529412,
+      "sha256": "c0f6071f165736a9464317761b397e88fe087c6bacaeb3c9a9f5e2520746ef13"
+    },
+    {
+      "path": "game/assets/providers/player_rigged_v2_OrchardOriginalCharcoalWeave.png",
+      "bytes": 90117,
+      "sha256": "6fc89d4edcd0a83bdfc8ec8339c439348a58dd4fc4c45c84941ceacddffd8a09"
+    },
+    {
+      "path": "game/assets/providers/previews/W1-HERO-001_preview.png",
+      "bytes": 244727,
+      "sha256": "cd49063d4deeeb4216142cb9dec484bc6630297b83f83f1af568761d313a5874"
+    },
+    {
+      "path": "game/assets/providers/previews/W1-HERO-004_preview.png",
+      "bytes": 215537,
+      "sha256": "e785d36cbf0ad2758ecea0a28801c26b267fbea64975cbf938ecd667d22c018c"
+    },
+    {
+      "path": "game/assets/providers/previews/W1-HERO-005_preview.png",
+      "bytes": 163234,
+      "sha256": "a88ce0c2db4ceccaf6d80079e3cc01f32780bdb0d15025c21d4eb588a7ab528d"
+    },
+    {
+      "path": "game/assets/providers/previews/W1-HERO-007_preview.png",
+      "bytes": 218955,
+      "sha256": "de51fdde82af3b6d8b889d9b8a3c7d5aefbf90c0ac72d3417579c530b691ff17"
+    },
+    {
+      "path": "game/assets/providers/refined_props_manifest.json",
+      "bytes": 4602,
+      "sha256": "9147455fdb0fec461b73972e09954246d2125c808db8146d7af1c471e2715b35"
+    },
+    {
+      "path": "game/assets/providers/sedan_clean.glb",
+      "bytes": 11251928,
+      "sha256": "a1d663aaa5c50827f86f4f183e1a387c9cf3e053cbe1abdcf30924b2ca9a7a88"
+    },
+    {
+      "path": "game/assets/providers/sedan_clean_Color_c00e82b4-f67d-42f8-8980-663ac27d866f.jpg",
+      "bytes": 348707,
+      "sha256": "9ac40fc5b6935576f83726b40f88ee8e01c1706b60c048ac0d2de5eecb05e2c9"
+    },
+    {
+      "path": "game/assets/providers/sedan_clean_NormalGL_c00e82b4-f67d-42f8-8980-663ac27d866f.png",
+      "bytes": 437239,
+      "sha256": "9d4437dcf0c16bc62fb276bb59d41d4d9ef758295be340a4d90795b111c3fdf8"
+    },
+    {
+      "path": "game/assets/providers/sedan_clean_ORM_c00e82b4-f67d-42f8-8980-663ac27d866f.jpg",
+      "bytes": 303017,
+      "sha256": "e528c070b96f7025f4269556617b556fbcf0c7ede6f2ce8ad1d4a700412fac74"
+    },
+    {
+      "path": "game/assets/providers/service_clutter_clean.glb",
+      "bytes": 8466696,
+      "sha256": "4566b40c3da2c88ba2a0b9dea5dc5769e6487e3560b50c1689157140865f89d3"
+    },
+    {
+      "path": "game/assets/providers/service_clutter_clean_trash+bins+3d+model_basecolor.jpg",
+      "bytes": 274008,
+      "sha256": "a14ea0ec1dc4e882e360235a3520d8b9652107cad7ab73e227ce24ec5dec918e"
+    },
+    {
+      "path": "game/assets/providers/service_clutter_clean_trash+bins+3d+model_normal.png",
+      "bytes": 559538,
+      "sha256": "200d43586dfa77fa6d49288ed31ffdc535f95153c4741e94e5f46efeb200d433"
+    },
+    {
+      "path": "game/assets/providers/service_clutter_clean_trash+bins+3d+model_rm.jpg",
+      "bytes": 107503,
+      "sha256": "c14d2404bc166b5731241c134b37327315363ccd7f3791bfffa254d2698d0ea0"
+    },
+    {
+      "path": "game/assets/providers/shophouse_clean.glb",
+      "bytes": 10238948,
+      "sha256": "24f278f57303c70bce256da2220c37ba3233565e1adab7c8e29afdfdcb3b5e53"
+    },
+    {
+      "path": "game/assets/providers/shophouse_clean_Color_bd941274-9ef3-419c-befe-da22efed2b85.jpg",
+      "bytes": 360638,
+      "sha256": "e7ee5c44a924e07a8f6f7287eac8937915839f5682a6e8ee71cb3b7ac7c19621"
+    },
+    {
+      "path": "game/assets/providers/shophouse_clean_NormalGL_bd941274-9ef3-419c-befe-da22efed2b85.png",
+      "bytes": 417584,
+      "sha256": "fd4f7647994ff18173bba61b0a92ed31d64e7870a9d510219aea65a8111b6baa"
+    },
+    {
+      "path": "game/assets/providers/shophouse_clean_ORM_bd941274-9ef3-419c-befe-da22efed2b85.jpg",
+      "bytes": 153075,
+      "sha256": "17b0fbc74c1ea54a170a4f618d9704849b5ab0fdfc73f72e5629f82fbe4b777a"
+    },
+    {
+      "path": "game/assets/providers/smg_clean.glb",
+      "bytes": 11492184,
+      "sha256": "a5c8c7c03b3f3328c1ec9d838a45aa6545f1acfc4df9b11715853beafd6def39"
+    },
+    {
+      "path": "game/assets/providers/smg_clean_compact+automatic+gun+3d+model_basecolor.jpg",
+      "bytes": 287682,
+      "sha256": "1cf35f6f2cea50fd184d598eb71a5c9b8bd2abd21eb2a029a68e3df45cb0f1a8"
+    },
+    {
+      "path": "game/assets/providers/smg_clean_compact+automatic+gun+3d+model_normal.png",
+      "bytes": 950201,
+      "sha256": "93efd6195c5c9396c85e8735b7a4fed37473361cdc824949235323ba5fdef9e4"
+    },
+    {
+      "path": "game/assets/providers/smg_clean_compact+automatic+gun+3d+model_rm.jpg",
+      "bytes": 131126,
+      "sha256": "84132f973ddaa68c28e0c89e5691cf2426eb11fc6744c77e78cd963503363131"
+    },
+    {
+      "path": "game/assets/providers/smg_held.glb",
+      "bytes": 11492148,
+      "sha256": "5d345fbf85ffd7f86067c0c1eac014eb21f5c3c67b0c10ae1e6de20db5d45899"
+    },
+    {
+      "path": "game/assets/providers/smg_held_compact+automatic+gun+3d+model_basecolor.jpg",
+      "bytes": 3538528,
+      "sha256": "e0c8ec5fa3ba1818c88b7b3061f7f7379c938afe77abb064192cf2d6de0cd5a8"
+    },
+    {
+      "path": "game/assets/providers/smg_held_compact+automatic+gun+3d+model_normal.png",
+      "bytes": 6251383,
+      "sha256": "8969603cf9d8479b3a7b56109dfae0a3cd2ddd5cec7c2e61a550e939397fae9a"
+    },
+    {
+      "path": "game/assets/providers/smg_held_compact+automatic+gun+3d+model_rm.jpg",
+      "bytes": 1588157,
+      "sha256": "f7bd9f97fc1679dff1ff3ad6780b013598eb564726c472173c2f33011e040334"
+    },
+    {
+      "path": "game/assets/providers/street_lamp_clean.glb",
+      "bytes": 13100320,
+      "sha256": "f1f7f9a6ba495eec188aada828e9167a8f48b1c32837dcfe5fea5f16075692a3"
+    },
+    {
+      "path": "game/assets/providers/street_lamp_clean_street+lamp+3d+model_basecolor.jpg",
+      "bytes": 296824,
+      "sha256": "dded4892c8b83b7d7eec2297a2cce46e90b23771f1e56cac07bfce00694abb02"
+    },
+    {
+      "path": "game/assets/providers/street_lamp_clean_street+lamp+3d+model_normal.png",
+      "bytes": 1156144,
+      "sha256": "2eaefcf820b80563e1649b9d03b5308321903e1f9e4576af91fd4874973b0a7b"
+    },
+    {
+      "path": "game/assets/providers/street_lamp_clean_street+lamp+3d+model_rm.jpg",
+      "bytes": 145639,
+      "sha256": "613bd26011381a1bf2d3569c8c994223780c6592b0452fc9f82321dfe354052e"
+    },
+    {
+      "path": "game/assets/providers/van_clean.glb",
+      "bytes": 41318768,
+      "sha256": "9183aff3ec40e4f960584b6096624d0f1c80909c572fb4bc8a6eedc0a742255d"
+    },
+    {
+      "path": "game/assets/providers/van_clean_texture_pbr_20250901.png",
+      "bytes": 1407000,
+      "sha256": "87c134307042206b8fdc20d75b90f0dd5f29bfb1f77d879f61cef2c403113cc0"
+    },
+    {
+      "path": "game/assets/providers/van_clean_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png",
+      "bytes": 1164418,
+      "sha256": "bdac4bc6cf2d7d91f8b62e4412d34e0886195d709f1498880ff19b3626f4b429"
+    },
+    {
+      "path": "game/assets/providers/van_clean_texture_pbr_20250901_normal.png",
+      "bytes": 819049,
+      "sha256": "e58af9295cb87863580e739fe6e524035e3ce47e05549e5281288f11d7990fcf"
+    },
+    {
+      "path": "art/source/characters/.gitignore",
+      "bytes": 114,
+      "sha256": "1ac204631440cfaf26ad22c91a2b8e5e299389fdb83fd5a2dcda901784790ece"
+    },
+    {
+      "path": "art/source/characters/README.md",
+      "bytes": 732,
+      "sha256": "303c6f6fc64374f6ca60a78c846ce9f7c369d51f7ba0e169c8ec54ec06421304"
+    },
+    {
+      "path": "art/source/characters/civilian_rigged.blend",
+      "bytes": 19018213,
+      "sha256": "bd5143b1724720c2a5c10be67309d9f60004b7e0962e53b42991c9f691c4ae56"
+    },
+    {
+      "path": "art/source/characters/civilian_rigged.blend1",
+      "bytes": 17160977,
+      "sha256": "f8d776ebedcc452c78e3a087dfbec2af4e41a48c4800516f5ef065e51dc53805"
+    },
+    {
+      "path": "art/source/characters/civilian_rigged_v2.blend",
+      "bytes": 19889165,
+      "sha256": "ceb48359ee4550df1501607ffeaf38adfd9167248c89c17ceaab532882ac0327"
+    },
+    {
+      "path": "art/source/characters/civilian_rigged_v2.blend1",
+      "bytes": 19889165,
+      "sha256": "1895a772f6b0fb4822163f75abdb2a7d27042ad661526d916fb4a51adde102b5"
+    },
+    {
+      "path": "art/source/characters/officer_rigged.blend",
+      "bytes": 21121492,
+      "sha256": "f4ddc9b36eac5f913f244edb51257f002ae3607f83bda3443f39594d80efb187"
+    },
+    {
+      "path": "art/source/characters/officer_rigged.blend1",
+      "bytes": 19264256,
+      "sha256": "53eb08f302496220e6ef60c3dbfea143c5b1166482f680e20cf0df76ff34c8d8"
+    },
+    {
+      "path": "art/source/characters/officer_rigged_v2.blend",
+      "bytes": 21992444,
+      "sha256": "871663733fcbf9b7cf465375ae5e080a56cf8a30fc58b8cb14e5769776cf6d15"
+    },
+    {
+      "path": "art/source/characters/officer_rigged_v2.blend1",
+      "bytes": 21992444,
+      "sha256": "0724341e96b2559a4e2f5d79c104258538b4089c7cfd3d4574dcfeca28926fd5"
+    },
+    {
+      "path": "art/source/characters/player_rigged.blend",
+      "bytes": 23647339,
+      "sha256": "ec35cdd7f7ab4a3c87cf399b6fb6f9e59e24ce62db8d5c573228ff9683e49178"
+    },
+    {
+      "path": "art/source/characters/player_rigged.blend1",
+      "bytes": 21790103,
+      "sha256": "824a187df5756fd85d9c13ebdb1b0978d0f48721082d482ed881bed8f14b16ac"
+    },
+    {
+      "path": "art/source/characters/player_rigged_loco3.blend",
+      "bytes": 25044647,
+      "sha256": "a5a5ab254a979a9d5c3d4189dd38caa4590111970dc8b57970acc8b035b89797"
+    },
+    {
+      "path": "art/source/characters/player_rigged_loco3.blend1",
+      "bytes": 25044647,
+      "sha256": "6a060dec1b11afa7357797dfb241624c192ff4718b5dcce5056ffb8fc284d9ea"
+    },
+    {
+      "path": "art/source/characters/player_rigged_loco4.blend",
+      "bytes": 25044647,
+      "sha256": "e4b958cec15c6d0448208d710c45023d345707f56dd07603f6f333466f174b91"
+    },
+    {
+      "path": "art/source/characters/player_rigged_v2.blend",
+      "bytes": 24518291,
+      "sha256": "34a4abc356b114efe8a7787b21a608dc8a1a749810fcd869bf1e94fcecbbf1b3"
+    },
+    {
+      "path": "art/source/characters/player_rigged_v2.blend1",
+      "bytes": 24518291,
+      "sha256": "36db8f328f08d33f7d142bf00f624ea4f41d47000487da5684b6d10405e16740"
+    },
+    {
+      "path": "art/source/helicopter/.gitignore",
+      "bytes": 70,
+      "sha256": "28d2d4e7a778d821d0bc02acf18a1ef24693371adaafa14a68f5d678f7a48a8c"
+    },
+    {
+      "path": "art/source/helicopter/README.md",
+      "bytes": 304,
+      "sha256": "cae74f6090cdabacdd9eee6a8c91d572f9f233fb00e920fef5d2841877976dd1"
+    },
+    {
+      "path": "art/source/helicopter/helicopter_refined.blend",
+      "bytes": 14051095,
+      "sha256": "899812937d4975fcded89c5315d1780e6f4426e95ef57872118ac20ce6446013"
+    },
+    {
+      "path": "art/source/helicopter/helicopter_refined.blend1",
+      "bytes": 14051095,
+      "sha256": "7af49a1bb2326c49ae1172ae20a3beb3b18cea43c50688597d8168f5803b8b62"
+    },
+    {
+      "path": "art/provider-sources/.gitignore",
+      "bytes": 83,
+      "sha256": "ab7ffc709900ee046ead3122f9dcc5aab38e654453890d0293058198cd38c76c"
+    },
+    {
+      "path": "art/provider-sources/hawker_counter_refined.blend",
+      "bytes": 9215903,
+      "sha256": "69d5fbc328a52dfc96bcad8b0f6c511831c80c9c504721931eb0a9d879010741"
+    },
+    {
+      "path": "art/provider-sources/hawker_counter_refined.blend1",
+      "bytes": 9216281,
+      "sha256": "c720b991b8a80e417085ad20a31ec41e1d949a861e3de000d3fc7508f2d2df52"
+    },
+    {
+      "path": "art/provider-sources/hawker_table_refined.blend",
+      "bytes": 7822668,
+      "sha256": "90d1d8af326bfa89a4d17ad98d0f45637f6a33b66c5c83e426d60be8e0736753"
+    },
+    {
+      "path": "art/provider-sources/hawker_table_refined.blend1",
+      "bytes": 7822668,
+      "sha256": "f49d630d800ca9e9cd44986dae893865b8c77bad779c285b3aabbf8d36c46861"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/concrete_weathered_raw.png",
+      "bytes": 11821898,
+      "sha256": "491c8014b7f75934fbdc87f402541841ab37ec47789309dc9ea8921f4f25fa8c"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/fabric_batik_raw.png",
+      "bytes": 10160640,
+      "sha256": "af107b85c9bb12b3e8b70a48fa57fbac8d067fef52cfbbca64d84a6cc24ac20c"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/fabric_cotton_jersey_raw.png",
+      "bytes": 10872963,
+      "sha256": "6a03589706b1f1f6b4ed758bf22639c15dfc3a1529fa5aec85a21c906df2f93f"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/fabric_denim_raw.png",
+      "bytes": 11945480,
+      "sha256": "0ff705888c140849517ecbd4dbd6a0da5abea21998db28e3304f26459c99bdc5"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/fabric_flannel_plaid_raw.png",
+      "bytes": 10092365,
+      "sha256": "f4e723aad3933d8286fe18d3f36ae400cd130fe58393a78d4250d8257e6cc9fe"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/foliage_median_atlas_raw.png",
+      "bytes": 7617634,
+      "sha256": "dccc188fa39a0bece7429e6b971e8fecef81d406cbc523a61d75f7bb4156715e"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/footpath_pavers_raw.png",
+      "bytes": 11630680,
+      "sha256": "669b7c96bad6e7bdaabb100b07656d107951a3c50a7cb329ec79ed26c65b2c5f"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/hair_cards_atlas_raw.png",
+      "bytes": 5326592,
+      "sha256": "fc552d3236de68b1ebe655d29e9f14830cc64b9547d5289fd2d02f3023174370"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/hdb_facade_raw.png",
+      "bytes": 5949480,
+      "sha256": "7e6a68523db03f1b2836614750a3cc28ab9d29c9c46563f2a7e7809af1fc78de"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/plaster_weathered_raw.png",
+      "bytes": 10571467,
+      "sha256": "55b68b64001321df491f5c9c34f4fb632a886c6ee6c0771c9749772564db79df"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/plaza_granite_pavers_raw.png",
+      "bytes": 2884861,
+      "sha256": "85d7f8293d89d8ab356c825b8c4de6717c8831b74a00811dcfa73ed8a4882469"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/road_asphalt_raw.png",
+      "bytes": 11597577,
+      "sha256": "abdfb5a44ad28308d116b85e1059a865c4387b83d2f3e6e676ab3ca6ecd4bb4e"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/road_signs_atlas_raw.png",
+      "bytes": 5057567,
+      "sha256": "8d14828881e14721f9c1abb3eb5f95e891b77437ccedd103b23d405cc35c8ca5"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/rooftop_flat_raw.png",
+      "bytes": 9548130,
+      "sha256": "e03a50213e68d414dd37523399d8a2cc34ba2962f4489ac77d131336c8ae2a38"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/shop_signs_atlas_raw.png",
+      "bytes": 7836168,
+      "sha256": "90b819433e075c2ee3dcd3356312dffeaa554b1663f6485ba8244a172e32ef92"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/skin_detail_male_raw.png",
+      "bytes": 8655534,
+      "sha256": "2a9ce3b6df298374f63ae615d64cb018cad62bf34003acc43735485882c148af"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/sky_panorama_raw.png",
+      "bytes": 7619661,
+      "sha256": "54234641fd516799d09cb01704994cc0bcdc5766a7021b544d5b93e4f0bc8bf1"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/tower_curtainwall_mullion_raw.png",
+      "bytes": 1368365,
+      "sha256": "b2c5542a45e7ae3c5b47717b45905384da1ef74a6945b21e31d5456d0d7b1312"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/tower_glass_bluegreen_raw.png",
+      "bytes": 4938744,
+      "sha256": "330453798aeb9302edfdc89abe1f35e4d028bcc50df72e4d0f60e4a723e5ad8f"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/tower_stone_punched_raw.png",
+      "bytes": 1886513,
+      "sha256": "273621eb5ccb5a76a3ef0f1ff46e244a92d2cc6f956acc89333d2982981b9146"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/vfx_bullet_impacts_atlas_raw.png",
+      "bytes": 7759065,
+      "sha256": "b9c5e172cbba79c59b5ad3629110e39c3934a8f725370dc2da80fef291598034"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/vfx_muzzle_flash_atlas_raw.png",
+      "bytes": 4671615,
+      "sha256": "d0c8e075118d19587134e62e69a786c4ed4d03b9645b22515942e6d6b3c65064"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/vfx_puffs_atlas_raw.png",
+      "bytes": 5433741,
+      "sha256": "dc957692947e9403bc2f0eecd0d14b91d6da70017c552a21e0bc854bdfe2809d"
+    },
+    {
+      "path": "art/provider-sources/higgsfield/vfx_skid_mark_raw.png",
+      "bytes": 4012203,
+      "sha256": "267f7d8a0021e88c3f193cd0256e794ca5c3e625e7b720625c5c96135686ec00"
+    }
+  ],
+  "count": 276,
+  "bytes": 1447115773
+}
