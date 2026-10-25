@@ -1,0 +1,18 @@
+{
+  "started_utc": "2026-10-25T19:45:33.482478+00:00",
+  "finished_utc": "2026-10-25T19:46:47.486970+00:00",
+  "exit_code": 0,
+  "engine_exit_code": 0,
+  "fatal_errors": [],
+  "timeout": false,
+  "elapsed_sec": 74.83,
+  "child_reaped": true,
+  "checks": "48/48",
+  "source_hashes": {
+    "game/src/systems/skypark_tests/access_test.gd": "731c7c9a2c4c81a962a8a135febdd162900278611461cf4aa21a4710283ec198",
+    "game/src/world/downtown/plan.gd": "65e4b6383ba802ec88fdddcefc88bdfa8f636b5bece20574514566aec508aeb7",
+    "game/src/world/downtown/skypark_access.gd": "6e83654b3050db169e7b115e0d91111d1be191787f556dfd7ce68cf7a0aa32e6",
+    "game/src/world/downtown/landmarks/mbs.gd": "59baaa696b1bdedb34b2c96f3a42f70c9aaf0cea069b29cb03bc542fa35c7043"
+  },
+  "kind": "Headless mechanical fixture test; rendered quality/performance remain parent-owned gates."
+}

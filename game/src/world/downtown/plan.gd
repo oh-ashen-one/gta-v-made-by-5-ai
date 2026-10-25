@@ -268,7 +268,7 @@ const HELIPADS := {
 	"the_lawn": {"pos": Vector3(205.0, 0.3, -662.0), "radius": 14.0, "status": "new"},
 	"esplanade_park": {"pos": Vector3(-625.0, 0.3, -250.0), "radius": 12.0, "status": "new"},
 	"gardens_east": {"pos": Vector3(345.0, 0.3, -1030.0), "radius": 12.0, "status": "new"},
-	"skypark": {"pos": Vector3(-118.0, 200.0, -705.0), "radius": 14.0, "status": "reserved", "rooftop": true},
+	"skypark": {"pos": Vector3(-63.0, 200.0, -698.0), "radius": 5.0, "exit_radius": 2.5, "status": "public", "rooftop": true},
 }
 const GROUND_EXIT_MAX_Y := 4.5   # bridge decks are 2.4-3.6 m
 
@@ -364,7 +364,7 @@ static func heli_exit_allowed(p: Vector3) -> bool:
 		if pad["status"] == "reserved":
 			continue
 		var c: Vector3 = pad["pos"]
-		if Vector2(p.x - c.x, p.z - c.z).length() <= float(pad["radius"]) + 4.0 and absf(p.y - c.y) < 3.0:
+		if Vector2(p.x - c.x, p.z - c.z).length() <= float(pad.get("exit_radius", float(pad["radius"]) + 4.0)) and absf(p.y - c.y) < 3.0:
 			return true
 	return p.y <= GROUND_EXIT_MAX_Y
 

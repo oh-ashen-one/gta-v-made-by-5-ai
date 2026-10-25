@@ -1,0 +1,49 @@
+[skypark-test] PASS remote and invalid station denied 
+[skypark-test] PASS ground arrival has floor and capsule clearance 
+[skypark-test] PASS strict rooftop exit permits center 
+[skypark-test] PASS strict rooftop exit refuses deck edge 
+[skypark-test] PASS other rooftop and map escape refused 
+[skypark-test] PASS existing ground pad behavior retained 
+[skypark-test] PASS roof arrival has floor and capsule clearance 
+[skypark-test] PASS north promenade entry ramp crosses without jump 
+[skypark-test] PASS Event Plaza ramp reaches lift on foot 
+[skypark-test] PASS ground lift reachable 
+[skypark-test] PASS pause guard 
+[skypark-test] PASS busy guard 
+[skypark-test] PASS dead guard 
+[skypark-test] PASS vehicle mode guard 1 
+[skypark-test] PASS vehicle mode guard 2 
+[skypark-test] PASS occupied vehicle guard independent of mode 
+[skypark-test] PASS foreign actor guard 
+[skypark-test] PASS LOS wall denies direct interaction 
+[skypark-test] PASS blocked arrival refuses lift without moving player 
+[skypark-test] PASS real E lifts to public terrace (-39.0, 200.0267, -698.0)
+[skypark-test] PASS health story wanted and courier preserved 
+[skypark-test] PASS safe checkpoint remains reachable ground 
+[skypark-test] PASS immediate double use denied 
+[skypark-test] PASS native save rooftop position 
+[skypark-test] PASS native load preserves exact rooftop position 
+[skypark-test] PASS loaded player walks back to lift 
+[skypark-test] PASS real E returns to ground 
+[skypark-test] PASS public terrace floor continuous 
+[skypark-test] PASS visible boundary has collision (-1.0, 0.0, 0.0) 
+[skypark-test] PASS visible boundary has collision (1.0, 0.0, 0.0) 
+[skypark-test] PASS visible boundary has collision (0.0, 0.0, -1.0) 
+[skypark-test] PASS visible boundary has collision (0.0, 0.0, 1.0) 
+[skypark-test] PASS controller cannot jump past terrace (-1.0, 0.0, 0.0) (-87.54572, 199.9743, -698.0)
+[skypark-test] PASS controller cannot jump past terrace (1.0, 0.0, 0.0) (-38.30695, 199.9758, -698.0)
+[skypark-test] PASS controller cannot jump past terrace (0.0, 0.0, -1.0) (-63.0, 199.9751, -706.5591)
+[skypark-test] PASS controller cannot jump past terrace (0.0, 0.0, 1.0) (-63.0, 199.9758, -689.4409)
+[skypark-test] PASS pad supports helicopter all eight headings 
+[skypark-test] PASS safe pilot exit all eight headings 
+[skypark-test] PASS 6m rotor and tail cylinder at allowed exit boundary 
+[skypark-test] PASS pilot exit walks to return lift 
+[skypark-test] PASS pilot can return to ground by E 
+[skypark-test] PASS flight controls ascend 
+[skypark-test] PASS input flight lands within strict pad exit radius (-63.0, 199.701, -697.9833)
+[skypark-test] PASS flight leg has no teleport max_step=0.180
+[skypark-test] PASS flight aircraft undamaged 
+[skypark-test] PASS E exits landed helicopter 
+[skypark-test] PASS flight pilot walks to public lift 
+[skypark-test] PASS flight pilot returns to Event Plaza by E 
+[skypark-test] RESULT 48/48 failures=[]
