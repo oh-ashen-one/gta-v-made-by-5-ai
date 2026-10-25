@@ -5,6 +5,12 @@ extends Node
 
 signal finished(failures: int)
 
+# Minimal owner for testing the real NPC visibility rule with the dressed
+# character below; avoid constructing a second unrelated character rig.
+class CullFixtureNPC extends NPC:
+	func _ready() -> void:
+		pass
+
 const TEST_SAVE := "/tmp/orchard_reach_wave2_fixture_save.json"
 ## Wave-M integration: downtown + street-life checks took the combined suite
 ## past 40 s of engine time; this is a hang guard, not a speed budget.
@@ -1762,7 +1768,20 @@ func _character_stance_checks(player: Player) -> void:
 		for g in v.find_children("People*", "GeometryInstance3D", true, false):
 			if (g as GeometryInstance3D).visibility_range_begin > 0.0:
 				part_cull += 1
-		var npc_code := (load("res://src/actors/npc.gd") as Script).source_code
+		var cull_together := false
+		var lens := get_viewport().get_camera_3d()
+		if lens != null and bag != null and skirt != null:
+			var culler := CullFixtureNPC.new()
+			holder.add_child(culler)
+			culler.set_physics_process(false)
+			culler.character_visual = v
+			culler.global_position = lens.global_position - Vector3(0, 0.9 * v.scale.y, 0)
+			culler._near_hide()
+			var hidden := not v.is_visible_in_tree() and not bag.is_visible_in_tree() and not skirt.is_visible_in_tree()
+			culler.global_position += Vector3.RIGHT * 10.0
+			culler._near_hide()
+			cull_together = hidden and v.is_visible_in_tree() and bag.is_visible_in_tree() and skirt.is_visible_in_tree()
+			culler.free()
 		var cd_script := load("res://src/systems/crowd_director.gd") as Script
 		var keep: Array = cd_script.get_script_constant_map().get("KEEP_OUT", [])
 		var lawn_kept := false
@@ -1784,7 +1803,7 @@ func _character_stance_checks(player: Player) -> void:
 		_check("characters-T3: local dress in the crowd (tudung on some women, school uniforms on some children)",
 			tud >= women / 12 and tud <= women / 2 and uni >= 8, "tudung=%d of %d women, uniforms=%d" % [tud, women, uni])
 		_check("characters-T2: fitted skirt, women's narrower shoulders, near-lens cull hides body and parts together",
-			sb.size.x < 0.56 and sb.size.x > 0.3 and narrow and part_cull == 0 and npc_code.contains("func _near_hide"),
-			"skirt width=%.2f narrow=%s part_cull=%d" % [sb.size.x, narrow, part_cull])
+			sb.size.x < 0.56 and sb.size.x > 0.3 and narrow and part_cull == 0 and cull_together,
+			"skirt width=%.2f narrow=%s part_cull=%d whole_figure_hide_restore=%s" % [sb.size.x, narrow, part_cull, cull_together])
 	holder.queue_free()
 
