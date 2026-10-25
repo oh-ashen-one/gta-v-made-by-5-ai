@@ -1,0 +1,442 @@
+{
+	"note": "fixed-view captures from an authored camera; fixture-assisted, not player-reachable proof",
+	"view_records": [
+		{
+			"camera_look": "(-40.0, 5.0, -155.0)",
+			"camera_position": "(-150.0, 2.6, -157.0)",
+			"fov": 64.0,
+			"name": "street_heritage",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-150.0, 8.0, -160.0)",
+			"camera_position": "(8.0, 5.5, -158.0)",
+			"fov": 75.0,
+			"name": "street_wide",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-90.0, 1.8, -96.0)",
+			"camera_position": "(-80.0, 2.6, -70.0)",
+			"fov": 66.0,
+			"name": "hawker_interior",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-262.0, 12.0, -112.0)",
+			"camera_position": "(-214.0, 2.2, -104.0)",
+			"fov": 68.0,
+			"name": "housing_void_deck",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-88.0, 60.0, -705.0)",
+			"camera_position": "(30.0, 2.2, -330.0)",
+			"fov": 64.0,
+			"name": "waterfront",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-40.0, 0.0, -60.0)",
+			"camera_position": "(250.0, 95.0, 250.0)",
+			"fov": 62.0,
+			"name": "aerial_district",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-24.0, 22.0, -242.0)",
+			"camera_position": "(42.0, 68.0, -356.0)",
+			"fov": 68.0,
+			"name": "aerial_waterfront",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-130.0, 3.0, -146.0)",
+			"camera_position": "(-32.0, 2.0, -149.0)",
+			"fov": 62.0,
+			"name": "street_arcade",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(270.0, 2.26, 104.0)",
+			"camera_position": "(250.0, 3.46, 128.0)",
+			"fov": 66.0,
+			"name": "airfield",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-238.8, 1.56, -70.3)",
+			"camera_position": "(-245.8, 2.36, -70.0)",
+			"fov": 72.0,
+			"name": "safe_room_furnished",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-38.0, 1.7, -18.3)",
+			"camera_position": "(-45.0, 2.5, -10.0)",
+			"fov": 66.0,
+			"name": "convenience_exterior",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-38.5, 1.3, -25.4)",
+			"camera_position": "(-38.0, 2.0, -18.2)",
+			"fov": 76.0,
+			"name": "convenience_interior",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(207.0, 1.9, 115.0)",
+			"camera_position": "(216.0, 2.8, 125.0)",
+			"fov": 68.0,
+			"name": "workshop_exterior",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(207.0, 1.5, 106.5)",
+			"camera_position": "(207.0, 2.1, 115.9)",
+			"fov": 76.0,
+			"name": "workshop_interior",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(0.0, 42.0, -780.0)",
+			"camera_position": "(96.0, 3.0, -337.0)",
+			"fov": 64.0,
+			"name": "shoreline_reverse",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-60.0, 40.0, -650.0)",
+			"camera_position": "(120.0, 110.0, -120.0)",
+			"fov": 62.0,
+			"name": "bay_skyline_aerial",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-140.0, 8.0, -560.0)",
+			"camera_position": "(-62.0, 1.6, -356.0)",
+			"fov": 60.0,
+			"name": "bay_water_level",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(67.0, 5.2, -367.0)",
+			"camera_position": "(86.0, 3.4, -353.0)",
+			"fov": 58.0,
+			"name": "merlion_jet_close",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-118.0, 90.0, -705.0)",
+			"camera_position": "(-470.0, 1.7, -395.0)",
+			"fov": 60.0,
+			"name": "dt_merlion_park_to_mbs",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-450.0, 80.0, -200.0)",
+			"camera_position": "(-150.0, 1.7, -640.0)",
+			"fov": 64.0,
+			"name": "dt_event_plaza_to_cbd",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-300.0, 20.0, -745.0)",
+			"camera_position": "(-470.0, 5.3, -745.0)",
+			"fov": 62.0,
+			"name": "dt_helix_walk",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-300.0, 10.0, -780.0)",
+			"camera_position": "(100.0, 1.4, -772.0)",
+			"fov": 70.0,
+			"name": "dt_bayfront_drive",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-480.0, 40.0, -40.0)",
+			"camera_position": "(-595.0, 1.7, 60.0)",
+			"fov": 62.0,
+			"name": "dt_boat_quay_from_north_bank",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-400.0, 120.0, -160.0)",
+			"camera_position": "(-377.0, 1.7, -20.0)",
+			"fov": 70.0,
+			"name": "dt_raffles_place",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-430.0, 30.0, 100.0)",
+			"camera_position": "(-430.0, 1.7, -250.0)",
+			"fov": 64.0,
+			"name": "dt_cecil_street_canyon",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-712.0, 15.0, -500.0)",
+			"camera_position": "(-650.0, 1.7, -390.0)",
+			"fov": 64.0,
+			"name": "dt_esplanade_waterfront",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-118.0, 90.0, -705.0)",
+			"camera_position": "(40.0, 1.7, -960.0)",
+			"fov": 66.0,
+			"name": "dt_gardens_to_mbs",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-118.0, 60.0, -705.0)",
+			"camera_position": "(368.0, 1.7, -360.0)",
+			"fov": 62.0,
+			"name": "dt_mbfc_waterfront_to_mbs",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera_look": "(-150.0, 0.0, -650.0)",
+			"camera_position": "(-900.0, 260.0, -200.0)",
+			"fov": 62.0,
+			"name": "dt_aerial_marina_bay",
+			"render_pixels": [
+				1280,
+				720
+			],
+			"saved_pixels": [
+				1280,
+				720
+			]
+		}
+	],
+	"views": [
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_01_street_heritage.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_02_street_wide.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_03_hawker_interior.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_04_housing_void_deck.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_05_waterfront.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_06_aerial_district.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_07_aerial_waterfront.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_08_street_arcade.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_09_airfield.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_10_safe_room_furnished.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_11_convenience_exterior.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_12_convenience_interior.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_13_workshop_exterior.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_14_workshop_interior.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_15_shoreline_reverse.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_16_bay_skyline_aerial.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_17_bay_water_level.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_18_merlion_jet_close.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_19_dt_merlion_park_to_mbs.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_20_dt_event_plaza_to_cbd.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_21_dt_helix_walk.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_22_dt_bayfront_drive.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_23_dt_boat_quay_from_north_bank.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_24_dt_raffles_place.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_25_dt_cecil_street_canyon.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_26_dt_esplanade_waterfront.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_27_dt_gardens_to_mbs.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_28_dt_mbfc_waterfront_to_mbs.png",
+		"saved /private/tmp/astra6/render-city-r1/shots/photo_29_dt_aerial_marina_bay.png"
+	]
+}

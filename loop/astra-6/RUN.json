@@ -8,7 +8,18 @@
   "scope": "Playable central Singapore continuity with heritage gameplay; fewer cars for freer driving; builder and critic iterations; fixed4hours including final30min",
   "renderer_policy": "one task renderer at a time; globalmixedcap2; use existing loop/render.sh + actualsharednamespace; no foreignprocesschanges",
   "model": "Current Codex session and inherited-model subagents; no alternate-model claim",
-  "last_update_utc": "2026-10-25T19:45:54.359676+00:00",
+  "last_update_utc": "2026-10-25T20:12:54.062477+00:00",
   "current_phase": "integration_and_runtime_critique",
-  "last_passing_suite": 296
+  "last_passing_suite": 296,
+  "traffic_comparison": {
+    "baseline_drive_s": 445.4,
+    "baseline_wait_s": 91.5,
+    "candidate_drive_s": 314.0,
+    "candidate_wait_s": 19.2,
+    "tows_each": 0,
+    "candidate_unstick_maneuvers": 1
+  },
+  "courier_status": "Whole outbound passed, three physical access lips found and repaired; final normal-spawn no-jump roundtrip r8 running in activities worker",
+  "skypark_status": "Integrated lift/terrace/limited rooftop landing; 116/116 headless strengthened checks; rendered full access suite queued",
+  "render_status": "Week1 baseline29 and cityR1actual29 captured. Blind paving comparison preferredbaseline; materialexperiment removed. SkyPark actual116checkcapture queued under sharedlease."
 }
