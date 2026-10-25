@@ -320,6 +320,14 @@ func _event_plaza(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 	# Waterfront promenade to the seawall.
 	kit.box(paving, Vector3(xc, prom_top * 0.5, (z_steps + z_sea) * 0.5), Vector3(lx + 10.0, prom_top, z_sea - z_steps))
 	kit.col_box(Vector3(lx + 10.0, 1.0, z_sea - z_steps), Vector3(xc, prom_top - 0.5, (z_steps + z_sea) * 0.5))
+	# Public north entry: bridge-side paving is y=0.10 but this promenade is
+	# y=0.36. A visible 4 m wide granite ramp crosses that 26 cm lip without
+	# requiring a jump, clear of the tree line and seawall.
+	var entry_z := z_steps + 9.0
+	var entry_low := Vector3(x0 - 10.0, 0.10, entry_z)
+	var entry_high := Vector3(x0 - 4.8, prom_top, entry_z)
+	kit.beam(paving, entry_low - Vector3.UP * 0.08, entry_high - Vector3.UP * 0.08, 4.0, 0.16)
+	kit.col_beam(entry_low, entry_high, 4.0, 0.16)
 	kit.box(Looks.get_mat("granite_light"), Vector3(xc, prom_top + 0.04, z_sea - 0.7), Vector3(lx + 10.0, 0.16, 1.4))
 	# Seawall railing, continuous (integration: the crystal pavilion and its
 	# gangway read as an opaque black pyramid in the bay and were removed).
