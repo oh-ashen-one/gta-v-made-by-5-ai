@@ -248,6 +248,8 @@ Source: [SingPost, corporate sustainability](https://www.singpost.com/corporate/
 
 **CAR-04 — Physical feedback and damage.** Steering wheels/road wheels, body response, braking, engine load, collisions, and damage communicate motion. Contact with cars, street furniture, walls, and pedestrians resolves consistently. Provide a visible damaged/disabled state and a recovery/replacement path. Full soft-body deformation is stretch. Ordinary kerbs must not launch vehicles, and minor bumps cannot routinely immobilize them.
 
+**Owner update,25 October2026 — freer driving.** Reduce street-car density while preserving believable left-hand flow and pedestrian street life. Do not restore superseded minimum vehicle counts from old wave5 camera critiques. The current candidate's48 ambient/7 physical traffic and51 roadside parked vehicles are a calibrated implementation, not a substitute for checking queues, recovery and usable routes.
+
 **TRAFFIC-01 — Left-hand street logic.** Traffic follows a left-side lane graph and sensible junction paths across the map. Include minimum credible signal/priority behavior, stopping distance, queueing, and pedestrian crossing response. Markings, medians, parking, and vehicle direction agree. One distant car on a closed decorative loop is not traffic.
 
 **TRAFFIC-02 — Disruption and recovery.** Traffic responds to stopped cars, collisions, police, and unsafe crossings. Temporary congestion is acceptable; permanent junction deadlock is not. Reroute or clean up distant stuck actors without visibly deleting the car directly ahead. Leave a vehicle blocking a lane and observe an understandable response instead of freezing the network. Avoid traffic clipping through queues to fake recovery.

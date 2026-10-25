@@ -1,18 +1,13 @@
-# No sixth wave — final release report instead
+# Future work after the Astra-6 enhancement pass
 
-Wave 5 (Opus 5.5 via Claude Code) is the final wave of the relay. Per the README, it ends with a release report, not a goal for another wave. See [`waves/05/RELEASE_REPORT.md`](waves/05/RELEASE_REPORT.md) for what the final candidate is, what is verified, and what is still unmet. See [`HANDOFF.md`](HANDOFF.md) for the exact checkpoint, hashes and evidence paths.
+This is a handoff for a future owner-authorized task, not permission to start another wave or extend the fixed four-hour window. The original relay ended after wave5. The prior outgoing document is archived at `loop/astra-6/INCOMING_NEXT_GOAL.md`.
 
-If the owner continues the project later, these are the highest-value open items, taken from the evidence and not from aspiration:
+Start from the reviewed `Astra-6-enhancements` candidate and [verification report](loop/astra-6/VERIFICATION.md). The owner's current density direction takes precedence over the old wave5 demand for minimum camera car counts: preserve the lighter traffic, usable bridges, continuous courier walk and public SkyPark access.
 
-1. Fill the camera-facing world. The fresh-context critic of wave 5's first real renders (`waves/05/evidence/critic_review_5_rendered.md`) scored the concepts on foot 4/10, driving 2/10, helicopter 3/10. Its testable gap: the `06_driving` and `photo_06_aerial_district` cameras should show at least 8 vehicles, at least 10 pedestrians, and canopy over the road.
-2. Fix the rendered defects it found that are still open:
-   - the white glow beside the helicopter (probably a sun glint on the bay water);
-   - water that reads as paving in low shots;
-   - Supertrees overlapping MBS;
-   - the dark void deck;
-   - the Flyer lost from `photo_06_aerial_district`;
-   - the 1.06 s render-side hitch on entering the market. One lead, untested: `game/export_presets.cfg` sets no shader-baker option. Since Godot 4.5, exports can precompile shaders, which could remove first-use pipeline compilation in the packaged build.
-3. Re-shoot the HUD frames the critic named (`09_aerial_view`, `11_delivery`, and the waterfront and grove gameplay views) to confirm the `98b41b2` minimap and ammo fixes, unless the release report already links them.
-4. Measure rendered frame time on an exclusive GPU slot. Wave 5's rendered route (p95 11.65 ms) shared the GPU with a foreign Blender render. Also A/B the batching with `--no-static-batching`.
-5. Raise landmark and material fidelity (ART-01..08); the landmarks are original low-poly forms.
-6. Run an ordinary OS-input human playtest, a listening pass, and public asset-rights clearance. Repeat the 30-minute soak rendered: wave 5 completed one, headless only (#10).
+1. **Owner playtest:** gather actual feedback on movement/animations, driving, flight, handovers, audio and city identity. Native-input automation has been performed; it is not the owner's acceptance.
+2. **Extended workload failure:** reproduce `loop/astra-6/evidence/soak-r2` at the same seed. Three missions finish with zero deaths, then the free-driving controller misses its destination at657.61s. Determine whether route planning/input recovery or world collision causes it. Preserve the destination gate and130s driving limit while investigating; do not hide the failure with teleportation or an arbitrary timeout increase.
+3. **Native ragdolls:** investigate the solver/physical-bone support failures while keeping ordinary damage and fallback behavior. Record the first active-simulation penetration, body contacts/velocities, simulator state and visible skeleton separately. The visitor area now has14m separation from the pad, and the unchanged9m clearance criterion passed at12.008m in rendered R4. That single result is not a universal corpse constraint.
+4. **Rendered verification/performance:** the packaged core suite timed out after97 passing checks at its90s watchdog under shared GPU load. Obtain appropriate shared-coordinator capacity for a clean rendered run and performance measurement. Do not kill foreign engines, raise the cap or turn headless timings into graphics acceptance.
+5. **Visual/audio quality:** improve repeated flat office glazing and overly bright canopy materials, then compare actual runtime pixels. Keep the existing Singapore landmarks, connected gameplay and approved direction. No concept image substitutes for rendered evidence. A listening pass and human animation/handling judgement remain open.
+
+No engine rewrite, new paid asset service, public release or main merge is authorized by this document. Preserve needed private art and exact evidence. Continue only on a new owner-authorized scope and branch.
