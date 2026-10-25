@@ -91,6 +91,8 @@ Integrate these into the game's original district and waterfront composition, wi
 
 **WORLD-07 — Living density.** Calibrate spawn/simulation budgets using actual profiling. Provisional busiest-view targets are **24–40 nearby pedestrians and 8–12 active traffic vehicles**, plus parked vehicles; residential pockets are quieter. The outcome is inhabited streets along the playable route, not actors concentrated in one screenshot corner. Avoid visible close spawning, identical crowd clumps, and repeated camera-turn despawns.
 
+**Owner traffic clarification (2026-10-25):** materially reduce the number of cars on the streets so the player can drive freely through heritage and central Singapore. Earlier dense-traffic targets are provisional and yield to this direction. Preserve ambient life, usable vehicles, mission reliability and pedestrian behavior; judge the lower-density result by actual uninterrupted driving, queue time and zero tow interventions, not by maximizing the number of cars in a frame.
+
 ### 2.1 Reference anchors, not licensed asset sources
 
 Use these primary references to understand form and life; they do not grant permission to copy photographs, murals, logos, models, or branded architecture:
