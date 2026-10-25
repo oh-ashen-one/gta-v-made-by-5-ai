@@ -1,4 +1,4 @@
-# Astra-6 enhancements — candidate ready, final review in progress
+# Astra-6 enhancements — four-hour pass complete
 
 The owner's fixed four-hour task runs25 October2026,18:20:57–22:20:57 UTC. Implementation freezes21:50:57. Branch `Astra-6-enhancements`, based on main451c8eb. Do not reset or extend the clock. All game-code changes are at `e84bbc7`; later commits preserve verification and delivery material.
 
@@ -18,9 +18,9 @@ Final candidate: native macOS package R3,881,511,448bytes, SHA256 `36dfc8d695acd
 -30-minute mixed workload failed a free-driving destination after657.7s, after three completed missions/zero deaths. Rendered core suite hit its90s watchdog. Shared-GPU performance remains unaccepted.
 - Native keyboard checks verified normal start/movement/save, sedan entry/drive/brake/exit, then a separate packaged rooftop-save Continue/lift down/up/walk/railing/normal quit. This is OS-input automation, not human acceptance.
 
-## Remaining before final delivery
+## Delivery and future work
 
-Finish evidence/delivery hash audit and independent report review; push the final task branch and create/update a draft PR without merging main. Clean only task-owned disposable build copies after the delivered app/ZIP are verified. Confirm all owned drivers/engines are stopped. At the hard deadline deliver the best candidate with actual screenshots and honest open gates, then delete `astra-singapore-four-hour-enhancement-pass`.
+The fixed pass is complete; handoff recorded at 2026-10-25T22:21:46.115653+00:00. The independently audited ZIP,50-image gallery and source branch are delivered. Draft PR: https://github.com/oh-ashen-one/gta-v-made-by-5-ai/pull/2. All owned test processes stopped; temporary worktrees and redundant package copies removed. The authoring checkout/private assets and durable evidence remain. No further implementation, main merge or public release is authorized. Open technical gates are retained in VERIFICATION.md; NEXT_GOAL.md is for a future owner-authorized task. The completed monitor is being removed as part of this handoff.
 
 All builders and critics completed. Their four temporary worktrees have been removed after pushed-source verification; do not resume commands against those deleted paths. The main authoring checkout/private assets are retained. The original five-model relay is unrelated and its monitor is already deleted.
 

@@ -1,6 +1,6 @@
 # Astra-6 enhancement verification
 
-Candidate prepared on **25 October 2026** for the fixed **18:20:57–22:20:57 UTC** task. Implementation freezes at21:50:57 UTC. This document records completed checks, not a future completion claim. Branch: `Astra-6-enhancements`; baseline: `451c8eb17917452261b5262da96b8374ef060557`. Final game-code checkpoint: `e84bbc7`; later commits preserve documentation and evidence.
+Candidate prepared on **25 October 2026** for the fixed **18:20:57–22:20:57 UTC** task. Implementation freezes at21:50:57 UTC. The fixed pass is complete; handoff recorded at 2026-10-25T22:21:46.115653+00:00. Completion of the timebox does not certify the open acceptance gates. Branch: `Astra-6-enhancements`; baseline: `451c8eb17917452261b5262da96b8374ef060557`. Final game-code checkpoint: `e84bbc7`; later commits preserve documentation and evidence.
 
 ## What changed
 

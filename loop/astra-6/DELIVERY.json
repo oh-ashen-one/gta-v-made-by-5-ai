@@ -1,5 +1,5 @@
 {
-  "status": "ready_for_owner_review",
+  "status": "delivered",
   "branch": "Astra-6-enhancements",
   "game_source_commit": "e84bbc7",
   "archive": "OrchardReach-Astra-6-enhancements.zip",
@@ -414,5 +414,13 @@
   "direct_app_copy_delivered": false,
   "delivery_note": "ZIP extracted under task-local temp storage and passed strict codesign verification. A direct .app copy in the cloud-managed Documents folder was omitted because File Provider reattached FinderInfo. No security attributes or provider configuration were changed.",
   "pull_request": "https://github.com/oh-ashen-one/gta-v-made-by-5-ai/pull/2",
-  "independent_audit_passed": true
+  "independent_audit_passed": true,
+  "screenshot_archive": {
+    "file": "Astra-6-screenshots.zip",
+    "bytes": 48019236,
+    "sha256": "054c0f3a7876dd9874c803a2ba21b6beb6b01e9f0227f9a4b2c71922e483111a",
+    "images": 50
+  },
+  "delivered_utc": "2026-10-25T22:21:46.115653+00:00",
+  "task_deadline_utc": "2026-10-25T22:20:57Z"
 }
