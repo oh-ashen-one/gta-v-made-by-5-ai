@@ -27,14 +27,14 @@ func _ready() -> void:
 	add_child(_ring)
 	_label = Label3D.new()
 	_label.text = "BAYFRONT COURIER\n" + title
-	_label.position = Vector3(0.0, 2.1, 0.0)
-	_label.font_size = 44
-	_label.pixel_size = 0.005
+	_label.position = Vector3(1.4, 1.35, 0.0)
+	_label.font_size = 32
+	_label.pixel_size = 0.0025
 	_label.modulate = Color(0.78, 0.95, 0.88)
 	_label.outline_modulate = Color(0.02, 0.05, 0.05)
-	_label.outline_size = 8
+	_label.outline_size = 4
 	_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_label.visibility_range_end = 90.0
+	_label.visibility_range_end = 45.0
 	add_child(_label)
 	refresh()
 

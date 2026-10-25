@@ -7,6 +7,7 @@ var _panel: Panel
 var _body: Label
 var _marker: Label
 var _refresh_time := 0.0
+var _near_prompt_available := false
 
 func setup(owner_activity: Node) -> void:
 	activity = owner_activity
@@ -56,13 +57,16 @@ func _process(delta: float) -> void:
 	var actor: Node3D = activity.player.controlled_actor()
 	var distance: float = actor.global_position.distance_to(activity.objective_position())
 	_panel.visible = activity.is_active() or distance < 100.0
-	_marker.visible = _panel.visible
 	_refresh_time -= delta
 	if _refresh_time <= 0.0:
 		_refresh_time = 0.2
+		var target_id: String = activity.target_id()
+		var station: Node = activity.stations.get(target_id)
+		_near_prompt_available = distance <= activity.INTERACTION_RADIUS and activity.can_use_station(target_id) and activity.player._interaction_target() == station
 		var hint := "Walk, drive or fly · step out and press E at the ring."
 		if activity.stage == activity.Stage.OUTBOUND: hint = "Return the parcel at Heritage Waterfront to cancel."
 		_body.text = "%s\n%d m · %s" % [activity.current_objective(), roundi(distance), hint]
+	_marker.visible = _panel.visible and not _near_prompt_available
 	if not _marker.visible: return
 	var camera := get_viewport().get_camera_3d()
 	if camera == null: return

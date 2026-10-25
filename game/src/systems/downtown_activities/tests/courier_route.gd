@@ -16,6 +16,7 @@ var _initial_deaths := 0
 var _curb_jumps := 0
 var _stills_dir := ""
 var _stills: Array[Dictionary] = []
+var _journey_completed := false
 
 func _physics_process(_delta: float) -> void:
 	if not is_instance_valid(player) or Game.simulation_paused: return
@@ -63,6 +64,8 @@ func _run() -> void:
 		_finish()
 		return
 	_check("dispatch physically reachable", activity.can_use_station("heritage"))
+	await get_tree().create_timer(0.25).timeout
+	_check("near dispatch marker yields to real E prompt", not activity._card._marker.visible)
 	await _capture_still("01_dispatch_arrival")
 	var stranger := Node.new()
 	_check("foreign actor rejected", not activity.use_station("heritage", stranger))
@@ -108,6 +111,12 @@ func _run() -> void:
 	wall.queue_free()
 	await get_tree().physics_frame
 	await _capture_still("02_parcel_collected", true)
+	await get_tree().create_timer(0.25).timeout
+	_check("distant delivery marker remains visible", activity._card._marker.visible)
+	if "--courier-dispatch-review" in OS.get_cmdline_user_args():
+		print("[courier-test] Dispatch visual review only; full outward and return journey NOT RUN.")
+		_finish()
+		return
 	var outbound := _bayfront_path()
 	if not await _walk(outbound, "Jubilee and Helix to MBS"):
 		_finish()
@@ -136,6 +145,7 @@ func _run() -> void:
 	_check("repeat cancellation keeps completion count", activity.stage == Courier.Stage.IDLE and activity.completed_runs == 1)
 	_check("route has no teleport steps", _max_step < 2.0, "max_step=%.3f travel=%.1fm" % [_max_step, _travel])
 	_check("route has no deaths", Game.death_count == _initial_deaths)
+	_journey_completed = true
 	activity.reset_state()
 	_check("new game resets activity", activity.stage == Courier.Stage.IDLE and activity.completed_runs == 0)
 	_finish()
@@ -296,6 +306,6 @@ func _capture_still(label: String, clear_fixture_toasts: bool = false) -> void:
 
 func _finish() -> void:
 	_release()
-	print("[courier-test] RESULT ", JSON.stringify({"checks": checks, "failures": failures, "stills": _stills, "travel_m": _travel, "max_step_m": _max_step, "curb_jumps": _curb_jumps, "elapsed_s": (Time.get_ticks_msec() - _started) / 1000.0}))
+	print("[courier-test] RESULT ", JSON.stringify({"mode": "dispatch_visual_review" if "--courier-dispatch-review" in OS.get_cmdline_user_args() else "full_roundtrip", "journey_completed": _journey_completed, "checks": checks, "failures": failures, "stills": _stills, "travel_m": _travel, "max_step_m": _max_step, "curb_jumps": _curb_jumps, "elapsed_s": (Time.get_ticks_msec() - _started) / 1000.0}))
 	Sfx.shutdown_audio()
 	get_tree().quit(0 if failures.is_empty() else 1)
