@@ -138,13 +138,19 @@ func _bayfront_path() -> Array[Vector3]:
 		points.append(Vector3(lerpf(a.x, b.x, u), 0, lerpf(a.z, b.z, u) - 6 * sin(PI * u)))
 	# Around the north end of the solid Shoppes podium to the promenade.
 	var mbs := DowntownPlan.anchor("marina_bay_sands")
-	points.append_array([Vector3(-258, 0, -745), Vector3(-258, 0, -732), Vector3(mbs.x - 204, 0, -732), Vector3(mbs.x - 204, 0, -665), Vector3(mbs.x - 204, 0, -635), activity.stations.bayfront.global_position])
+	points.append_array([Vector3(-258, 0, -745), Vector3(-258, 0, -732), Vector3(mbs.x - 204, 0, -732), Vector3(mbs.x - 204, 0, -665), Vector3(mbs.x - 206, 0, -632), Vector3(mbs.x - 196, 0, -632), activity.stations.bayfront.global_position])
 	return points
 
 func _walk(points: Array[Vector3], label: String) -> bool:
 	for i in points.size():
 		var target := points[i]
 		var arrival_radius := 2.0 if i == points.size() - 1 else 3.0
+		# Align with the 4 m wide public ramp before crossing the lip; broad
+		# bridge-waypoint tolerance would cut this corner outside the ramp.
+		var mbs := DowntownPlan.anchor("marina_bay_sands")
+		var ramp_z := DowntownPlan.anchor("mbs_event_plaza").z + 10.0
+		if absf(target.z - ramp_z) < 0.1 and target.x < mbs.x - 190.0:
+			arrival_radius = 0.75
 		var deadline := Time.get_ticks_msec() + 75000
 		var best := INF
 		var last_progress := Time.get_ticks_msec()
