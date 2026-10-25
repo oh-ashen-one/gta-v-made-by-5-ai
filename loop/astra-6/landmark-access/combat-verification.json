@@ -1,0 +1,85 @@
+{
+  "status": "FAILED stronger native ragdoll stability and bone-node floor gates; live-actor and aircraft-clearance checks passed",
+  "runs": [
+    {
+      "started_utc": "2026-10-25T20:34:40.331275+00:00",
+      "finished_utc": "2026-10-25T20:36:49.925956+00:00",
+      "exit_code": 1,
+      "engine_exit_code": 1,
+      "fatal_errors": [],
+      "timeout": false,
+      "elapsed_sec": 133.99,
+      "child_reaped": true,
+      "run": 11,
+      "kind": "full",
+      "result": "[skypark-test] RESULT 136/138 failures=[\"lethal fixture simulates physical bones normally\", \"observed lethal fixture remains clear of pad on physical deck\"]",
+      "source_hashes": {
+        "game/src/actors/ragdoll.gd": "e0a2033b901e36e7dae3b9a2880d936d07134257130a85dd051b1e9fe32ce0c5",
+        "game/src/actors/npc.gd": "9825280c7ec0165954e2d8765d8a9f315dbae0f56c2981947ad283d6f946ef79",
+        "game/src/systems/combat_fx.gd": "3355f853289a455ed0f11e1a1cc0a475bef893b3f791a1b3b6672de2e94e0927",
+        "game/src/systems/skypark_tests/access_test.gd": "dd972b85a64286a171cb5cf3852e0f70371348234d5926ac47e88fe8d0020a65",
+        "game/src/world/downtown/skypark_access.gd": "5abe0b70745225718e819070cf03b74f31bba06184b6bcad679cd6dcbea3c867"
+      }
+    },
+    {
+      "started_utc": "2026-10-25T20:38:25.450629+00:00",
+      "finished_utc": "2026-10-25T20:40:44.867195+00:00",
+      "exit_code": 1,
+      "engine_exit_code": 1,
+      "fatal_errors": [],
+      "timeout": false,
+      "elapsed_sec": 140.18,
+      "child_reaped": true,
+      "run": 12,
+      "kind": "full",
+      "result": "[skypark-test] RESULT 140/142 failures=[\"native ragdoll solver remains stable\", \"native ragdoll remains supported on physical deck\"]",
+      "source_hashes": {
+        "game/src/actors/ragdoll.gd": "e0a2033b901e36e7dae3b9a2880d936d07134257130a85dd051b1e9fe32ce0c5",
+        "game/src/actors/npc.gd": "9825280c7ec0165954e2d8765d8a9f315dbae0f56c2981947ad283d6f946ef79",
+        "game/src/systems/combat_fx.gd": "3355f853289a455ed0f11e1a1cc0a475bef893b3f791a1b3b6672de2e94e0927",
+        "game/src/systems/skypark_tests/access_test.gd": "2ad16d8d8ad36f81ecf93a5bb1b889cfed212604b35026ae33f39d3816904d8f",
+        "game/src/world/downtown/skypark_access.gd": "5abe0b70745225718e819070cf03b74f31bba06184b6bcad679cd6dcbea3c867"
+      }
+    },
+    {
+      "started_utc": "2026-10-25T20:41:02.415845+00:00",
+      "finished_utc": "2026-10-25T20:43:22.102981+00:00",
+      "exit_code": 1,
+      "engine_exit_code": 1,
+      "fatal_errors": [],
+      "timeout": false,
+      "elapsed_sec": 140.46,
+      "child_reaped": true,
+      "run": 13,
+      "kind": "full",
+      "result": "[skypark-test] RESULT 140/142 failures=[\"native ragdoll solver remains stable\", \"native ragdoll remains supported on physical deck\"]",
+      "source_hashes": {
+        "game/src/actors/ragdoll.gd": "e0a2033b901e36e7dae3b9a2880d936d07134257130a85dd051b1e9fe32ce0c5",
+        "game/src/actors/npc.gd": "9825280c7ec0165954e2d8765d8a9f315dbae0f56c2981947ad283d6f946ef79",
+        "game/src/systems/combat_fx.gd": "3355f853289a455ed0f11e1a1cc0a475bef893b3f791a1b3b6672de2e94e0927",
+        "game/src/systems/skypark_tests/access_test.gd": "b1502525281c5bc9ab68a1060638777d9afad90f053c9f66f1a3b0bea7c03d8c",
+        "game/src/world/downtown/skypark_access.gd": "5abe0b70745225718e819070cf03b74f31bba06184b6bcad679cd6dcbea3c867"
+      }
+    },
+    {
+      "started_utc": "2026-10-25T20:43:49.151242+00:00",
+      "finished_utc": "2026-10-25T20:44:20.392941+00:00",
+      "exit_code": 1,
+      "engine_exit_code": 1,
+      "fatal_errors": [],
+      "timeout": false,
+      "elapsed_sec": 32.01,
+      "child_reaped": true,
+      "run": 14,
+      "kind": "focused combat probe",
+      "result": "[skypark-test] COMBAT_PROBE_RESULT 14/16 failures=[\"native ragdoll solver remains stable\", \"ragdoll bone-node floor gate includes fallback state\"]",
+      "source_hashes": {
+        "game/src/actors/ragdoll.gd": "e0a2033b901e36e7dae3b9a2880d936d07134257130a85dd051b1e9fe32ce0c5",
+        "game/src/actors/npc.gd": "9825280c7ec0165954e2d8765d8a9f315dbae0f56c2981947ad283d6f946ef79",
+        "game/src/systems/combat_fx.gd": "3355f853289a455ed0f11e1a1cc0a475bef893b3f791a1b3b6672de2e94e0927",
+        "game/src/systems/skypark_tests/access_test.gd": "6931a59aa680dfc76a200a48dc092e72178c1112dfc7c0a3547d9c33b365ed75",
+        "game/src/world/downtown/skypark_access.gd": "5abe0b70745225718e819070cf03b74f31bba06184b6bcad679cd6dcbea3c867"
+      }
+    }
+  ]
+}

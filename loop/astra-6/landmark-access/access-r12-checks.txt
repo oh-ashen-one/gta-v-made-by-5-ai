@@ -1,0 +1,15 @@
+[skypark-test] PASS native nonlethal damage and stagger east toward pad 
+[skypark-test] PASS live damage fixture clears aircraft east toward pad nearest_pad=11.951 moved=4.262
+[skypark-test] PASS native nonlethal damage and stagger west toward rail 
+[skypark-test] PASS live damage fixture clears aircraft west toward rail nearest_pad=21.094 moved=1.849
+[skypark-test] PASS native nonlethal damage and stagger bay edge 
+[skypark-test] PASS live damage fixture clears aircraft bay edge nearest_pad=17.745 moved=4.643
+[skypark-test] PASS native nonlethal damage and stagger landward edge 
+[skypark-test] PASS live damage fixture clears aircraft landward edge nearest_pad=16.644 moved=3.338
+[skypark-test] PASS native lethal damage creates independent ragdoll 
+[skypark-test] PASS lethal fixture simulates native physical bones bones=12 motion=3.732
+[skypark-test] FAIL native ragdoll solver remains stable blowups=1
+[skypark-test] PASS observed lethal fixture remains clear of aircraft nearest_bone_pad=9.990
+[skypark-test] FAIL native ragdoll remains supported on physical deck min_y=198.049 over_deck=true
+[skypark-test] RAGDOLL_SCOPE observed one native lethal fixture; no claim of clamp or universal corpse confinement
+[skypark-test] RESULT 140/142 failures=["native ragdoll solver remains stable", "native ragdoll remains supported on physical deck"]
