@@ -41,10 +41,11 @@ func _run() -> void:
 	add_child(main)
 	player = main.player
 	access = get_tree().get_first_node_in_group("skypark_access")
+	check("production main creates SkyPark access", access != null and access.get_parent() == main)
 	if access == null:
-		access = Access.new()
-		main.add_child(access)
-		access.setup(main.world, player)
+		print("[skypark-test] RESULT failed: production main hook missing; no automatic bootstrap")
+		get_tree().quit(1)
+		return
 	main.started = true
 	main.hud.show_title(false)
 	Game.simulation_paused = false
@@ -127,6 +128,8 @@ func _run() -> void:
 	await _terrace_checks()
 	await _heli_checks()
 	await _flight_checks()
+	await _death_checks()
+	await _fresh_scene_save_checks()
 	print("[skypark-test] RESULT %d/%d failures=%s" % [checks - failures.size(), checks, failures])
 	get_tree().quit(0 if failures.is_empty() else 1)
 
@@ -165,40 +168,52 @@ func _terrace_checks() -> void:
 		check("controller cannot jump past terrace %s" % dir, Access.on_public_terrace(player.global_position, 0.1), str(player.global_position))
 
 func _heli_checks() -> void:
-	# Mechanical footprint/exit fixture; rendered flight remains a separate gate.
+	# Each case deliberately repositions the unoccupied aircraft as a fixture.
+	# Boarding is fixture setup; the real player E path must perform every exit.
 	var heli: Helicopter = main.get_node("Helicopter")
-	await place(Access.roof_position())
-	var safe_exits := true
-	var clear_rotor := true
+	var cases: Array[Dictionary] = []
 	for degrees in [0, 45, 90, 135, 180, 225, 270, 315]:
-		heli.global_position = Access.pad_position() + Vector3.UP * 0.5
-		heli.rotation.y = deg_to_rad(degrees)
+		cases.append({"heading": degrees, "offset": Vector3.ZERO, "allowed": true, "label": "center heading %d" % degrees})
+	for degrees in [0, 45, 90, 135, 180, 225, 270, 315]:
+		var direction := Vector3(cos(deg_to_rad(degrees)), 0, sin(deg_to_rad(degrees)))
+		var radius := 2.5 if degrees % 90 == 0 else 2.49
+		cases.append({"heading": degrees, "offset": direction * radius, "allowed": true, "label": "boundary %.2fm heading %d" % [radius, degrees]})
+	for degrees in [0, 90, 180, 270]:
+		var direction := Vector3(cos(deg_to_rad(degrees)), 0, sin(deg_to_rad(degrees)))
+		cases.append({"heading": degrees, "offset": direction * 2.6, "allowed": false, "label": "outside 2.5m boundary %d" % degrees})
+	for sample in cases:
+		# Explicit cleanup after a refused-exit case. Never counted as traversal.
+		if player.current_vehicle != null:
+			player.respawn_at(Access.roof_position(), PI)
+		await place(Access.roof_position())
+		heli.global_position = Access.pad_position() + sample.offset + Vector3.UP * 0.5
+		heli.rotation.y = deg_to_rad(sample.heading)
 		heli.velocity = Vector3.ZERO
 		await frames(35)
-		var side := heli.global_transform.basis.x
-		var forward := -heli.global_transform.basis.z
-		var exit := Car.find_safe_exit(heli, [side * 2.8, -side * 2.8, forward * 4.0, -forward * 4.0])
-		safe_exits = safe_exits and exit != Vector3.ZERO and Access.on_public_terrace(exit)
-		var q := PhysicsShapeQueryParameters3D.new()
-		var shape := CylinderShape3D.new()
-		shape.radius = 6.0 # exceeds main rotor and tail extents
-		shape.height = 5.0
-		q.shape = shape
-		q.collision_mask = 1
-		for offset: Vector3 in [Vector3.ZERO, Vector3.LEFT * 2.5, Vector3.RIGHT * 2.5, Vector3.FORWARD * 2.5, Vector3.BACK * 2.5]:
-			q.transform = Transform3D(Basis.IDENTITY, Access.pad_position() + offset + Vector3.UP * 2.6)
-			clear_rotor = clear_rotor and get_world_3d().direct_space_state.intersect_shape(q, 1).is_empty()
-	check("pad supports helicopter all eight headings", heli.is_on_floor() and absf(heli.global_position.y - 200) < 1)
-	check("safe pilot exit all eight headings", safe_exits)
+		check("supported aircraft " + sample.label, heli.is_on_floor() and absf(heli.global_position.y - 200) < 1, str(heli.global_position))
+		heli.interact(player) # labelled fixture boarding, not a traversal claim
+		await frames(5)
+		await press_e()
+		if sample.allowed:
+			check("real E exit " + sample.label, player.current_vehicle == null and not heli.pilot_is_player and Access.on_public_terrace(player.global_position))
+			await frames(12)
+			check("supported visible pilot " + sample.label, player.is_on_floor() and player.visible and player.alive and player.collision_layer == 2 and player.collision_mask == Player.COLLIDE_MASK and Game.mode == Game.MODE_FOOT)
+		else:
+			check("real E refused " + sample.label, player.current_vehicle == heli and heli.pilot_is_player and Game.mode == Game.MODE_HELI)
+	if player.current_vehicle != null:
+		player.respawn_at(Access.roof_position(), PI) # cleanup refused-exit fixture
+	# Independent conservative swept volume includes the permitted offset.
+	var clear_rotor := true
+	var q := PhysicsShapeQueryParameters3D.new()
+	var shape := CylinderShape3D.new()
+	shape.radius = 6.0
+	shape.height = 5.0
+	q.shape = shape
+	q.collision_mask = 1
+	for offset: Vector3 in [Vector3.ZERO, Vector3.LEFT * 2.5, Vector3.RIGHT * 2.5, Vector3.FORWARD * 2.5, Vector3.BACK * 2.5]:
+		q.transform = Transform3D(Basis.IDENTITY, Access.pad_position() + offset + Vector3.UP * 2.6)
+		clear_rotor = clear_rotor and get_world_3d().direct_space_state.intersect_shape(q, 1).is_empty()
 	check("6m rotor and tail cylinder at allowed exit boundary", clear_rotor)
-	# Follow an actual safe pilot exit with controller walking, without a hop
-	# across the terrace. The initial pilot position is explicitly a fixture.
-	var side := heli.global_transform.basis.x
-	var exit := Car.find_safe_exit(heli, [side * 2.8, -side * 2.8])
-	await place(exit)
-	check("pilot exit walks to return lift", await walk_to(Access.roof_position()) and access.can_use_station("roof"))
-	await press_e()
-	check("pilot can return to ground by E", player.global_position.distance_to(Access.ground_position()) < 0.6)
 
 func walk_to(target: Vector3) -> bool:
 	Input.action_press("move_forward")
@@ -272,3 +287,47 @@ func still(label: String) -> void:
 	await RenderingServer.frame_post_draw
 	DirAccess.make_dir_recursive_absolute(output)
 	get_viewport().get_texture().get_image().save_png(output.path_join(label + ".png"))
+
+func _death_checks() -> void:
+	# Arrive via the actual lift after the previous flight returned to ground.
+	await frames(65)
+	await press_e()
+	check("death test reaches roof through E", Access.on_public_terrace(player.global_position))
+	var deaths := Game.death_count
+	Game.damage_player(Game.MAX_HEALTH) # normal production lethal-damage path
+	await frames(12)
+	check("rooftop death recovers once at ground", Game.death_count == deaths + 1 and player.global_position.distance_to(Access.ground_position()) < 0.6)
+	check("death recovery restores live visible foot controller", Game.health == Game.MAX_HEALTH and player.alive and player.visible and player.current_vehicle == null and not player.busy and Game.mode == Game.MODE_FOOT and player.collision_layer == 2 and player.collision_mask == Player.COLLIDE_MASK and player.is_on_floor())
+	check("recovered controller walks normally", await walk_to(Access.ground_position() + Vector3(4, 0, 0)))
+	check("recovered controller returns to lift", await walk_to(Access.ground_position()))
+	await press_e()
+	check("lift reusable after death", Access.on_public_terrace(player.global_position))
+
+func _fresh_scene_save_checks() -> void:
+	# Save a legitimate roof position, destroy the entire game scene, rebuild
+	# normal main (including its production access hook), then native-load it.
+	check("fresh-scene fixture starts on public terrace", Access.on_public_terrace(player.global_position))
+	check("walk to distinct rooftop save position", await walk_to(Access.roof_position() + Vector3(-3, 0, 2)))
+	await frames(3)
+	var saved_position := player.global_position
+	check("save before scene teardown", Game.save_game())
+	main.queue_free()
+	player = null
+	access = null
+	await frames(5)
+	check("old scene fully removed", get_tree().get_nodes_in_group("player").is_empty() and get_tree().get_nodes_in_group("skypark_access").is_empty())
+	main = load("res://main.tscn").instantiate()
+	add_child(main)
+	player = main.player
+	access = get_tree().get_first_node_in_group("skypark_access")
+	check("fresh production main creates one access controller", access != null and get_tree().get_nodes_in_group("skypark_access").size() == 1)
+	main.started = true
+	main.hud.show_title(false)
+	Game.simulation_paused = false
+	await frames(10)
+	check("fresh-scene native load keeps exact rooftop position", Game.load_game() and player.global_position.distance_to(saved_position) < 0.01)
+	await frames(12)
+	check("fresh-scene loaded player has floor and live controls", player.is_on_floor() and player.alive and player.visible and player.collision_layer == 2 and player.collision_mask == Player.COLLIDE_MASK and Game.mode == Game.MODE_FOOT)
+	check("fresh-scene loaded player walks to return lift", await walk_to(Access.roof_position()))
+	await press_e()
+	check("fresh-scene return lift works through E", player.global_position.distance_to(Access.ground_position()) < 0.6)

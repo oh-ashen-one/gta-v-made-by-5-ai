@@ -34,3 +34,15 @@ The test proves the existing Event Plaza ramp works without jumping; real E up/d
 Final headless candidate r6: **48/48**, exit 0, zero engine errors, 74.83 s. Evidence: `verification.json`, `access-r6-checks.txt`. North promenade ramp (separate commit `297043d`) also passed a real controller no-jump crossing from x=-325 to x=-310 at z=-632. Flight touchdown (-63,199.701,-697.9833), max step 0.180 m, no aircraft damage. Final test source hashes recorded with evidence.
 
 R4's sole failed floor probe hit the newly added viewing bench at y=200.5 instead of the deck. The structural floor grid now excludes only the access module's furniture collision body while ray-testing the unchanged MBS deck beneath it; the physical bench and rail collision remain enabled for actual movement tests. R5/r6 passed.
+
+## Critic follow-up: production integration and recovery coverage
+
+Parent hook `0cf9289` was cherry-picked here as `8a79c7f` solely to test the actual production main. **Do not cherry-pick `8a79c7f` back into the parent**, which already owns that change. The follow-up test commit contains only the test and its evidence/documentation.
+
+The test now asserts that main created the SkyPark access node; missing integration fails immediately, with no automatic bootstrap. It uses actual E exits at eight center headings and eight permitted boundary fixtures, checking aircraft floor contact separately for every case, followed by pilot floor contact, visibility, collision masks and foot mode. Four outside-boundary fixtures exercise actual E refusal. Cardinal boundary cases use exactly 2.50 m; diagonals use 2.49 m to avoid floating-point rounding ambiguity.
+
+The normal lethal-damage path is exercised after taking the lift up. The test checks one death, recovery on the ground, full health, visible/alive player, normal collision and controls, walking away/back, and lift reuse. Finally it saves a distinct rooftop position, destroys the entire game scene, verifies player/access removal, rebuilds normal main, native-loads the exact rooftop position, checks physical floor support and controls, walks back, and returns via E.
+
+Fixture placements remain explicitly labelled; no added human-playtest or full-city traversal claim. The rendered visual/performance gate remains separate. No production behavior change was needed for this follow-up.
+
+Final follow-up r8: **116/116**, exit 0, zero engine errors, **101.25 s**, including exact cardinal 2.50 m exit boundaries and full fresh-scene native save/load. Evidence: `verification-r8.json`, `access-r8-checks.txt`. Prior expanded r7 also passed 116/116 (100.43 s) with its cardinal samples just inside the boundary.
