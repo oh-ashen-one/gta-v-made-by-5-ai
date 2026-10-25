@@ -55,3 +55,7 @@ Only real engine renders are used. The gallery distinguishes native packaged inp
 All rendered jobs used the shared GPU lease, last-moment cap check and a private one-at-a-time lock. No foreign engine was stopped. The first native-input session's CUA binding relaunched the task app after its bounded stop; the unexpected owned process was identified and terminated, and the binding reset. The normal user save's modification time remained22 October, before this task; no default-save write was observed. The later native rooftop session quit normally before its bound.
 
 Four temporary task worktrees were removed after clean pushed branches and integration were verified. The main authoring checkout and needed private assets remain. No main merge, public build release or extra wave is authorized by this task.
+
+### Delivery filesystem check
+
+The delivered ZIP was extracted into task-local temporary storage and its enclosed app passed strict code-signature verification; its PCK matched the tested package. Delivery is ZIP-only. A direct app copy in the cloud-managed Documents folder repeatedly acquired FinderInfo metadata from File Provider, so that disposable copy was removed after verifying its file bytes matched the signing inventory. No quarantine/provenance/security attributes or File Provider settings were changed.

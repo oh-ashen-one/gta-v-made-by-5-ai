@@ -1,0 +1,45 @@
+{
+	"ammo": {
+		"pistol": {
+			"mag": 12,
+			"reserve": 96
+		},
+		"smg": {
+			"mag": 30,
+			"reserve": 180
+		}
+	},
+	"carried_weapon": "pistol",
+	"checkpoint_index": 0,
+	"downtown_activity": {
+		"completed_runs": 0,
+		"stage": 0,
+		"version": 1
+	},
+	"elapsed": 273.03540744444,
+	"health": 100.0,
+	"last_safe_position": [
+		-78.0,
+		1.60000002384186,
+		-658.0
+	],
+	"last_safe_rotation": 3.14159265358979,
+	"mission_stage": 0,
+	"mode": 0,
+	"player_position": [
+		-48.0800819396973,
+		199.975845336914,
+		-698.0
+	],
+	"player_rotation": 3.14159265358979,
+	"seed": 20261021,
+	"settings": {
+		"hud_visible": true,
+		"invert_y": false,
+		"mouse_sensitivity": 1.0,
+		"reduced_shake": false
+	},
+	"version": 1,
+	"wanted_heat": 0.0,
+	"wanted_level": 0
+}

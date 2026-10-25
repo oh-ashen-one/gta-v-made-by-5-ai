@@ -1,5 +1,5 @@
 {
-  "status": "in_progress",
+  "status": "final_review_and_delivery",
   "branch": "Astra-6-enhancements",
   "baseline": "451c8eb17917452261b5262da96b8374ef060557",
   "start_utc": "2026-10-25T18:20:57Z",
@@ -8,8 +8,8 @@
   "scope": "Playable central Singapore continuity with heritage gameplay; fewer cars for freer driving; builder and critic iterations; fixed4hours including final30min",
   "renderer_policy": "one task renderer at a time; globalmixedcap2; use existing loop/render.sh + actualsharednamespace; no foreignprocesschanges",
   "model": "Current Codex session and inherited-model subagents; no alternate-model claim",
-  "last_update_utc": "2026-10-25T21:01:51.696859+00:00",
-  "current_phase": "packaged_validation_and_capacity_wait",
+  "last_update_utc": "2026-10-25T21:50:00Z",
+  "current_phase": "final_documentation_hash_audit_and_cleanup",
   "last_passing_suite": 296,
   "traffic_comparison": {
     "baseline_drive_s": 445.4,
@@ -21,12 +21,13 @@
   },
   "courier_status": "Full normal-spawn roundtrip31/31,3683.21m,603.65s,zero jumps/deaths/teleport steps; optional actual screenshot support being added",
   "skypark_status": "Earlier126/126; stronger combat full140/142: preexisting native ragdoll fallback/bone-floor gates FAIL, live NPC/aircraft clearance pass. See combat-verification.json.",
-  "render_status": "Capacity freed20:57. Bounded courier waiter36806/exec45112 launched real leasedcourierR2, engine log/private/tmp/astra6/render-courier-r2; first2actualPNGs exist, routepending. Queuedoutsideprivateone-at-time lock: skyparkR3 exec17433, packagedR2renderedcore82403, packagedUIwrite17849, flightviewsR2exec85166. No duplicate launches. All normallease/gate/deadline guarded.",
-  "current_package": "/private/tmp/astra6/package-r2/candidate-signed.zip",
-  "package_sha256": "6f2c1582d7228cd040a47aceca263f252a6ca92d157abc34e007215a8beff36d",
-  "package_headless_checks": "296/296, exit0; GPU sharing/output not exercised",
-  "soak_status": "Corrected1800sheadless workload32774 (/private/tmp/astra6/soak-r2) began20:55, firstmissioncomplete151.6s, secondongoing; expectedend~21:25. No30minpassclaimyet.",
-  "agent_status": "All builders/critics completed; package test helpercd8ce04 integratedaa3277b; no duplicate work needed.",
-  "pending_polish": "Courier freshvisualcritic: worldtitletoooversized/overlaps near-targetmarker; aftercurrentrender finish reduce station.gd label and suppress near-targetmarker while E available. Revalidateactualdispatchimage and finalpackage. SeeCRITIQUE_LOG.",
-  "temporary_worktrees": "Removed ownbaseline/activities/landmark/traffic checkouts aftercleanpushedbranchesandparentintegration. Privateassets stay in mainauthoringcheckout. Futurecritic readsparent; do notresume deletedcwd builders blindly."
+  "render_status": "All owned engines and drivers stopped. Final29packagedviews,50imagegallery ready. No new renderer required.",
+  "current_package": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/outputs/Astra-6-enhancements-2026-10-25/OrchardReach-Astra-6-enhancements.zip",
+  "package_sha256": "36dfc8d695acdaabed69ddaaad3df1c23eed0b41b17ed07e926be3d168c55bc7",
+  "package_headless_checks": "296/296; rendered UI24write/23load; final nativeSkyParkinput normalquitexit0",
+  "soak_status": "FAILED at657.7s after3mission completions/zero deaths: free-driving destination missed. No runtimefatalerrors. Not30minacceptance.",
+  "agent_status": "All builders/critics done; independentfinalaudit currentlycheckingdocumentation/delivery.",
+  "pending_polish": "None planned. Courier andSkyPark visualfindings fixedandreviewed; native ragdoll/performance/long-run acceptance remainopen.",
+  "temporary_worktrees": "Removed ownbaseline/activities/landmark/traffic checkouts aftercleanpushedbranchesandparentintegration. Privateassets stay in mainauthoringcheckout. Futurecritic readsparent; do notresume deletedcwd builders blindly.",
+  "game_source_commit": "e84bbc7"
 }

@@ -1,0 +1,416 @@
+{
+  "status": "candidate_delivery_under_final_review",
+  "branch": "Astra-6-enhancements",
+  "game_source_commit": "e84bbc7",
+  "archive": "OrchardReach-Astra-6-enhancements.zip",
+  "archive_bytes": 881511448,
+  "archive_sha256": "36dfc8d695acdaabed69ddaaad3df1c23eed0b41b17ed07e926be3d168c55bc7",
+  "local_ad_hoc_signature_verified": true,
+  "notarized": false,
+  "public_release": false,
+  "screenshots": [
+    {
+      "file": "screenshots/packaged-native_87007.png",
+      "title": "Continue on the SkyPark",
+      "group": "Native packaged playtest",
+      "note": "Normal keyboard input in the final app, starting from an explicitly copied QA rooftop save.",
+      "source": "/private/tmp/astra6/package-r3/native-skypark-r3b/captures/native_87007.png",
+      "sha256": "d9bb8f1de4bee659a0f88fe7da9297008d8e1715cfb155eb413d2d43a2453c57"
+    },
+    {
+      "file": "screenshots/packaged-native_134238.png",
+      "title": "Public lift to Event Plaza",
+      "group": "Native packaged playtest",
+      "note": "Normal keyboard input in the final app, starting from an explicitly copied QA rooftop save.",
+      "source": "/private/tmp/astra6/package-r3/native-skypark-r3b/captures/native_134238.png",
+      "sha256": "9b552424c0430b36f39b4114fd853e8dc60c32d5ddfa88798d77e305bbf363e7"
+    },
+    {
+      "file": "screenshots/packaged-native_151363.png",
+      "title": "Return to the SkyPark",
+      "group": "Native packaged playtest",
+      "note": "Normal keyboard input in the final app, starting from an explicitly copied QA rooftop save.",
+      "source": "/private/tmp/astra6/package-r3/native-skypark-r3b/captures/native_151363.png",
+      "sha256": "ac8b93c48e93f121f1a86b3c4e380f329cab4c8f8883f6f584dad9fe001b5975"
+    },
+    {
+      "file": "screenshots/packaged-native_199311.png",
+      "title": "Terrace safety railing",
+      "group": "Native packaged playtest",
+      "note": "Normal keyboard input in the final app, starting from an explicitly copied QA rooftop save.",
+      "source": "/private/tmp/astra6/package-r3/native-skypark-r3b/captures/native_199311.png",
+      "sha256": "2cbec6b3dffc940513b9bf19e1f32c01db3e2bbdae717fc4b7cdb4a63359daae"
+    },
+    {
+      "file": "screenshots/packaged-native_234672.png",
+      "title": "Walking across the terrace",
+      "group": "Native packaged playtest",
+      "note": "Normal keyboard input in the final app, starting from an explicitly copied QA rooftop save.",
+      "source": "/private/tmp/astra6/package-r3/native-skypark-r3b/captures/native_234672.png",
+      "sha256": "8af535e428edf51e9336b23b023e15e57b0afdf7fd6777faccacf5c7592fcbdb"
+    },
+    {
+      "file": "screenshots/courier-01_dispatch_arrival.png",
+      "title": "Bayfront Courier dispatch",
+      "group": "Gameplay validation",
+      "note": "Final-source dispatch presentation. Local 8 m starting fixture; full roundtrip validated separately.",
+      "source": "/private/tmp/astra6/render-courier-dispatch-r3/session/stills/01_dispatch_arrival.png",
+      "sha256": "74b7d87a5f2df5d345f061318a34b5842817579e7dc60c53b65edc21e6dbb412"
+    },
+    {
+      "file": "screenshots/courier-02_parcel_collected.png",
+      "title": "Parcel collected for MBS Event Plaza",
+      "group": "Gameplay validation",
+      "note": "Final-source dispatch presentation. Local 8 m starting fixture; full roundtrip validated separately.",
+      "source": "/private/tmp/astra6/render-courier-dispatch-r3/session/stills/02_parcel_collected.png",
+      "sha256": "c9fc1bf39d22be0fe4588ecba87434b197e5d77bad18289bb1fac613716fc40e"
+    },
+    {
+      "file": "screenshots/skypark-public_terrace_arrival.png",
+      "title": "Public terrace arrival",
+      "group": "Gameplay validation",
+      "note": "Final-source lift, terrace and helicopter validation; fixture-assisted route setup.",
+      "source": "/private/tmp/astra6/render-skypark-r4/stills/public_terrace_arrival.png",
+      "sha256": "59f2407e0ac830a554ce6cb75a1e06175f668fe6dc75deab0cf9a57e23e56203"
+    },
+    {
+      "file": "screenshots/skypark-flight_landed_pad.png",
+      "title": "Flight landed pad",
+      "group": "Gameplay validation",
+      "note": "Final-source lift, terrace and helicopter validation; fixture-assisted route setup.",
+      "source": "/private/tmp/astra6/render-skypark-r4/stills/flight_landed_pad.png",
+      "sha256": "2a7dfa674cee4709c74b61c7a474c7ebb055f4fab5665a67ec809ffc5cd28f11"
+    },
+    {
+      "file": "screenshots/skypark-flight_pilot_on_terrace.png",
+      "title": "Flight pilot on terrace",
+      "group": "Gameplay validation",
+      "note": "Final-source lift, terrace and helicopter validation; fixture-assisted route setup.",
+      "source": "/private/tmp/astra6/render-skypark-r4/stills/flight_pilot_on_terrace.png",
+      "sha256": "600078024157da697d546c0d2f49a3c643c7c6cbb40d9cef048f67d56001de44"
+    },
+    {
+      "file": "screenshots/skypark-terrace_viewing_area.png",
+      "title": "Terrace viewing area",
+      "group": "Gameplay validation",
+      "note": "Final-source lift, terrace and helicopter validation; fixture-assisted route setup.",
+      "source": "/private/tmp/astra6/render-skypark-r4/stills/terrace_viewing_area.png",
+      "sha256": "67df56b5ff67adcea8b194c674870ec3b56c30338bcb5bb49a88324adc3174a1"
+    },
+    {
+      "file": "screenshots/skypark-ground_lift_approach.png",
+      "title": "Ground lift approach",
+      "group": "Gameplay validation",
+      "note": "Final-source lift, terrace and helicopter validation; fixture-assisted route setup.",
+      "source": "/private/tmp/astra6/render-skypark-r4/stills/ground_lift_approach.png",
+      "sha256": "3a1ebf81b09c05e720069168e812559641a8566e98b6fca6c39baf2d4a6a0161"
+    },
+    {
+      "file": "screenshots/drive_marina_boulevard.jpg",
+      "title": "Driving: marina boulevard",
+      "group": "Gameplay validation",
+      "note": "Actual reduced-traffic driving run. Route completed; its capture-writer shutdown error was fixed afterward.",
+      "source": "/private/tmp/astra6/render-drive-r1/shots/drive_marina_boulevard.jpg",
+      "sha256": "8c16f6e93cee2862947bbb36e38c8e3e96ee019418470a8385a1d34fd9f18ea3"
+    },
+    {
+      "file": "screenshots/drive_bayfront_avenue.jpg",
+      "title": "Driving: bayfront avenue",
+      "group": "Gameplay validation",
+      "note": "Actual reduced-traffic driving run. Route completed; its capture-writer shutdown error was fixed afterward.",
+      "source": "/private/tmp/astra6/render-drive-r1/shots/drive_bayfront_avenue.jpg",
+      "sha256": "c09bfdd195e47a42489b446aa6e774ff14149cc53ed20c331d7b652067b0dac3"
+    },
+    {
+      "file": "screenshots/drive_esplanade_bridge.jpg",
+      "title": "Driving: esplanade bridge",
+      "group": "Gameplay validation",
+      "note": "Actual reduced-traffic driving run. Route completed; its capture-writer shutdown error was fixed afterward.",
+      "source": "/private/tmp/astra6/render-drive-r1/shots/drive_esplanade_bridge.jpg",
+      "sha256": "68e15afaa9787cbd90f3dcbc96d326feac03955988658fd9a66482cf087a5f7a"
+    },
+    {
+      "file": "screenshots/drive_bayfront_bridge.jpg",
+      "title": "Driving: bayfront bridge",
+      "group": "Gameplay validation",
+      "note": "Actual reduced-traffic driving run. Route completed; its capture-writer shutdown error was fixed afterward.",
+      "source": "/private/tmp/astra6/render-drive-r1/shots/drive_bayfront_bridge.jpg",
+      "sha256": "f208f8b61163c35cbcdc425ec90771415a4d070c7521583e8e8b1ffb3468b57d"
+    },
+    {
+      "file": "screenshots/drive_raffles_avenue.jpg",
+      "title": "Driving: raffles avenue",
+      "group": "Gameplay validation",
+      "note": "Actual reduced-traffic driving run. Route completed; its capture-writer shutdown error was fixed afterward.",
+      "source": "/private/tmp/astra6/render-drive-r1/shots/drive_raffles_avenue.jpg",
+      "sha256": "10db669c759d428a6f765c6ea0df71bf860c15d031062c93c5e79b071bbf3dd7"
+    },
+    {
+      "file": "screenshots/fly_landed_ns_square.jpg",
+      "title": "Flight: landed ns square",
+      "group": "Gameplay validation",
+      "note": "Actual controls-based aviation-pad flight to NS Square, landing and exit; initial boarding position is a fixture.",
+      "source": "/private/tmp/astra6/render-flight-views-r2/shots/fly_landed_ns_square.jpg",
+      "sha256": "665e569f5681227f8f0be18105a0ce57f5ce9098e94bed5eb6eff09a0496ab6f"
+    },
+    {
+      "file": "screenshots/fly_700m.jpg",
+      "title": "Flight: 700m",
+      "group": "Gameplay validation",
+      "note": "Actual controls-based aviation-pad flight to NS Square, landing and exit; initial boarding position is a fixture.",
+      "source": "/private/tmp/astra6/render-flight-views-r2/shots/fly_700m.jpg",
+      "sha256": "1e786a4180de0d7e3777a591f93fed5d838ccd53194da0eda4d3d6c8efd81878"
+    },
+    {
+      "file": "screenshots/fly_300m.jpg",
+      "title": "Flight: 300m",
+      "group": "Gameplay validation",
+      "note": "Actual controls-based aviation-pad flight to NS Square, landing and exit; initial boarding position is a fixture.",
+      "source": "/private/tmp/astra6/render-flight-views-r2/shots/fly_300m.jpg",
+      "sha256": "d074787eca3d8dec9e07115571a9f3a5b0f1db132b008ec38caf8d996db2331a"
+    },
+    {
+      "file": "screenshots/fly_walk_ns_square.jpg",
+      "title": "Flight: walk ns square",
+      "group": "Gameplay validation",
+      "note": "Actual controls-based aviation-pad flight to NS Square, landing and exit; initial boarding position is a fixture.",
+      "source": "/private/tmp/astra6/render-flight-views-r2/shots/fly_walk_ns_square.jpg",
+      "sha256": "9e38e11e71f8976428bae723bd0e99c65dc8c26b1bfa5c4296aec864b1b65184"
+    },
+    {
+      "file": "screenshots/photo_01_street_heritage.png",
+      "title": "Street heritage",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_01_street_heritage.png",
+      "sha256": "6fdc82fd3557d8ea3bc36c1ec05902a9d8b661cc3118c3a691bb50ca71e61665"
+    },
+    {
+      "file": "screenshots/photo_02_street_wide.png",
+      "title": "Street wide",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_02_street_wide.png",
+      "sha256": "7f230b7bca6e03e64043d8783306b7cd2c7c73c97fd6ffc28d431ba301433464"
+    },
+    {
+      "file": "screenshots/photo_03_hawker_interior.png",
+      "title": "Hawker interior",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_03_hawker_interior.png",
+      "sha256": "69223785f1e693511f33038aa3d267ba880a166ffb2321132c99a3772da8d409"
+    },
+    {
+      "file": "screenshots/photo_04_housing_void_deck.png",
+      "title": "Housing void deck",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_04_housing_void_deck.png",
+      "sha256": "202c0796eb3e6f9e300d88d6d8adbcb6d32aabccbf67a3066f33141572cf8b4b"
+    },
+    {
+      "file": "screenshots/photo_05_waterfront.png",
+      "title": "Waterfront",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_05_waterfront.png",
+      "sha256": "10b9abb4fe2eb156b5573e91ed7099ea644ee7b468373b7421dda241167c14b6"
+    },
+    {
+      "file": "screenshots/photo_06_aerial_district.png",
+      "title": "Aerial district",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_06_aerial_district.png",
+      "sha256": "02d5f60c372a4be97c52e77b53de544735802e35577913b3ac991e1d28479980"
+    },
+    {
+      "file": "screenshots/photo_07_aerial_waterfront.png",
+      "title": "Aerial waterfront",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_07_aerial_waterfront.png",
+      "sha256": "213b162bfe7126914c7778edc71320123887c05f0bc0c0f89541120a03afb19a"
+    },
+    {
+      "file": "screenshots/photo_08_street_arcade.png",
+      "title": "Street arcade",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_08_street_arcade.png",
+      "sha256": "f7bad5084b677acdafda3fd783185527e8a8cbeb0b9b845c14c3d8bd11c7baeb"
+    },
+    {
+      "file": "screenshots/photo_09_airfield.png",
+      "title": "Airfield",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_09_airfield.png",
+      "sha256": "433e5636520e1eab6af71dc4fe735545e9d54c923001b8edf6e2ecc61044bfb5"
+    },
+    {
+      "file": "screenshots/photo_10_safe_room_furnished.png",
+      "title": "Safe room furnished",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_10_safe_room_furnished.png",
+      "sha256": "37bf8163c787c46f3c4980f35bc24262f531cc37cf39c7c6e843f6af95443924"
+    },
+    {
+      "file": "screenshots/photo_11_convenience_exterior.png",
+      "title": "Convenience exterior",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_11_convenience_exterior.png",
+      "sha256": "990a36f69bff1611249ee5685cfde61c233536022d6df8f4b330035aeffb41e4"
+    },
+    {
+      "file": "screenshots/photo_12_convenience_interior.png",
+      "title": "Convenience interior",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_12_convenience_interior.png",
+      "sha256": "ba66cdc6f62e431f91db151766ead1f92115f1940a1582684148ecc1a4d192f7"
+    },
+    {
+      "file": "screenshots/photo_13_workshop_exterior.png",
+      "title": "Workshop exterior",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_13_workshop_exterior.png",
+      "sha256": "7dbab15241e2f5deee63fcb837bf94700946eb388d13c96951a58f83264bc8ca"
+    },
+    {
+      "file": "screenshots/photo_14_workshop_interior.png",
+      "title": "Workshop interior",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_14_workshop_interior.png",
+      "sha256": "475b47513245c70d96e4ddb459c8b2587596a2eaa7750bd35e59f27c0a1ba4f6"
+    },
+    {
+      "file": "screenshots/photo_15_shoreline_reverse.png",
+      "title": "Shoreline reverse",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_15_shoreline_reverse.png",
+      "sha256": "6f11db59d4094ae16e74dc47147c520184e267d508c9eafadedf45fc4b05b706"
+    },
+    {
+      "file": "screenshots/photo_16_bay_skyline_aerial.png",
+      "title": "Bay skyline aerial",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_16_bay_skyline_aerial.png",
+      "sha256": "d6b0e12448d9106e36b2c2dec44ef3c6b94c13736e068783f8cd4b15b294e8d5"
+    },
+    {
+      "file": "screenshots/photo_17_bay_water_level.png",
+      "title": "Bay water level",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_17_bay_water_level.png",
+      "sha256": "8be53f19588909e9a1bf6445f6b67de99594ad47f4154b0fe6487254e9d3d708"
+    },
+    {
+      "file": "screenshots/photo_18_merlion_jet_close.png",
+      "title": "Merlion jet close",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_18_merlion_jet_close.png",
+      "sha256": "85e2ef2405933ceb616508abeb30590b997f6fe88b0777b26667cc8b3ed532d6"
+    },
+    {
+      "file": "screenshots/photo_19_dt_merlion_park_to_mbs.png",
+      "title": "Merlion park to mbs",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_19_dt_merlion_park_to_mbs.png",
+      "sha256": "f3e7071aa30ca1cdebfbcdc704c282c47699ebafcc48173444c98f8740ac3f30"
+    },
+    {
+      "file": "screenshots/photo_20_dt_event_plaza_to_cbd.png",
+      "title": "Event plaza to cbd",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_20_dt_event_plaza_to_cbd.png",
+      "sha256": "18bbabe1218132c1c1318f11c414331151bed37f13cf15d140931b3bd1675e2c"
+    },
+    {
+      "file": "screenshots/photo_21_dt_helix_walk.png",
+      "title": "Helix walk",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_21_dt_helix_walk.png",
+      "sha256": "e7ee129dd3babba440167bd2e63de500039beda8a8e8800e9612d563cc3e9a90"
+    },
+    {
+      "file": "screenshots/photo_22_dt_bayfront_drive.png",
+      "title": "Bayfront drive",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_22_dt_bayfront_drive.png",
+      "sha256": "3d8b239f929815b10cb30e70e1f87cfe0d73dedb8b8867d592da8212ea38c78f"
+    },
+    {
+      "file": "screenshots/photo_23_dt_boat_quay_from_north_bank.png",
+      "title": "Boat quay from north bank",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_23_dt_boat_quay_from_north_bank.png",
+      "sha256": "203bfb201ad3f7e3eb4862393836dbc8710a3ebd9c6affa72b632cb7e48a34ef"
+    },
+    {
+      "file": "screenshots/photo_24_dt_raffles_place.png",
+      "title": "Raffles place",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_24_dt_raffles_place.png",
+      "sha256": "6691711e94a1b7ff64376aa415a1e6331e8cf7e1ebff4a13e2a4bcdefeeb5b90"
+    },
+    {
+      "file": "screenshots/photo_25_dt_cecil_street_canyon.png",
+      "title": "Cecil street canyon",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_25_dt_cecil_street_canyon.png",
+      "sha256": "3637ab1ae4a9339c9ade194b9839cb1f87c898e572fabad6f7ddf7d4d5d1cdc2"
+    },
+    {
+      "file": "screenshots/photo_26_dt_esplanade_waterfront.png",
+      "title": "Esplanade waterfront",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_26_dt_esplanade_waterfront.png",
+      "sha256": "577817e1ebab0fc0e5a3dc249ae1a59c803ebc94e0b0b5e3bdc0372f29d3c0e7"
+    },
+    {
+      "file": "screenshots/photo_27_dt_gardens_to_mbs.png",
+      "title": "Gardens to mbs",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_27_dt_gardens_to_mbs.png",
+      "sha256": "04a7e435741644b3f1059e082f824a256d326794342e92d6df12d75461488219"
+    },
+    {
+      "file": "screenshots/photo_28_dt_mbfc_waterfront_to_mbs.png",
+      "title": "Mbfc waterfront to mbs",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_28_dt_mbfc_waterfront_to_mbs.png",
+      "sha256": "295496d324219b51bb516bc708b39366c0c3333d32f60f0aaf45d569d5f09783"
+    },
+    {
+      "file": "screenshots/photo_29_dt_aerial_marina_bay.png",
+      "title": "Aerial marina bay",
+      "group": "Final build views",
+      "note": "Fixed camera in the final packaged build. HUD and camera-obstructing nearby traffic are hidden for these appearance views; not traversal or density proof.",
+      "source": "/private/tmp/astra6/package-r3/final-views-r2/shots/photo_29_dt_aerial_marina_bay.png",
+      "sha256": "077b703bf5e54fed7e7c5b4590bf52b2dc7f1a09228e292ba2701f145679f92b"
+    }
+  ],
+  "archive_extracted_signature_verified": true,
+  "direct_app_copy_delivered": false,
+  "delivery_note": "ZIP extracted under task-local temp storage and passed strict codesign verification. A direct .app copy in the cloud-managed Documents folder was omitted because File Provider reattached FinderInfo. No security attributes or provider configuration were changed."
+}

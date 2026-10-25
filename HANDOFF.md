@@ -6,7 +6,7 @@ The owner's fixed four-hour task runs25 October2026,18:20:57–22:20:57 UTC. Imp
 
 Central Singapore's existing landmarks, bridges and art are retained. New work adds the Bayfront Courier roundtrip, repairs four pedestrian transition areas, makes the MBS public SkyPark reachable by lift and helicopter, and roughly halves active/parked street traffic. The original Harbour Relay remains independent. Fresh code and actual-render critics were used. See `loop/astra-6/VERIFICATION.md` for exact results and limitations.
 
-Final candidate: native macOS package R3,881,511,448bytes, SHA256 `36dfc8d695acdaabed69ddaaad3df1c23eed0b41b17ed07e926be3d168c55bc7`. Strict local ad-hoc signature and identical PCK verified. Delivery folder is `outputs/Astra-6-enhancements-2026-10-25` beside this task's work directory; contains app, ZIP, gallery, screenshots, controls and verification.
+Final candidate: native macOS package R3,881,511,448bytes, SHA256 `36dfc8d695acdaabed69ddaaad3df1c23eed0b41b17ed07e926be3d168c55bc7`. Strict local ad-hoc signature and identical PCK verified. Delivery folder is `outputs/Astra-6-enhancements-2026-10-25` beside this task's work directory; contains the ZIP with the app, gallery, screenshots, controls and verification.
 
 ## Verified and open gates
 
