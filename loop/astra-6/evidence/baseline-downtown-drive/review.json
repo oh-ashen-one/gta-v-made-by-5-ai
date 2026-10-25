@@ -1,0 +1,123 @@
+{
+	"frame_ms": {
+		"max": 182.94,
+		"mean": 8.37,
+		"n": 27246,
+		"p50": 4.99,
+		"p95": 15.46,
+		"p99": 17.77
+	},
+	"frames_saved": 0,
+	"log": [
+		"[downtown-review 3.11] drive start at (-60.0, 0.060156, -316.6)",
+		"[downtown-review 37.49] unstick at (-309.749, 0.058852, -316.6)",
+		"[downtown-review 85.73] still drive_esplanade_bridge at (-589.3184, 3.666097, -354.628) (headless: no image)",
+		"[downtown-review 159.71] still drive_raffles_avenue at (-795.0897, 0.000941, -589.1339) (headless: no image)",
+		"[downtown-review 226.11] still drive_bayfront_bridge at (-430.2253, 3.040333, -786.1993) (headless: no image)",
+		"[downtown-review 269.52] overtake at (-402.2534, 3.661889, -786.1306) (gap 8.8 m)",
+		"[downtown-review 271.55] unstick at (-402.2534, 3.661889, -786.1306)",
+		"[downtown-review 310.94] still drive_bayfront_avenue at (-11.34447, 0.000941, -783.4186) (headless: no image)",
+		"[downtown-review 354.26] change lane to offset 3.5 at (360.8311, 0.000943, -783.6837)",
+		"[downtown-review 396.13] still drive_marina_boulevard at (401.714, 0.000941, -531.7341) (headless: no image)",
+		"[downtown-review 445.43] drive done=true at (258.9919, 0.060943, -317.2159), max deck y 3.88"
+	],
+	"note": "frame_ms excludes frames that carried a JPEG readback (encoding still lands on neighbours); perf_sweep_ms has no readback at all",
+	"perf_sweep_ms": {},
+	"results": {
+		"drive": {
+			"completed": true,
+			"end": "(258.9919, 0.060943, -317.2159)",
+			"max_y": 3.88,
+			"overtakes": 2,
+			"seconds": 445.4,
+			"tows": 0,
+			"waiting_s": 91.5
+		}
+	},
+	"stats": {
+		"aerial_light": true,
+		"behind_mbs_tall": 27,
+		"beyond_core_towers": 244,
+		"build_ms": 1009,
+		"carpets_cut": 10,
+		"draws": 331,
+		"fill": {
+			"canopy": {
+				"angsana": 340,
+				"crowns_in_kept_open": 0,
+				"draws": 116,
+				"empty_lawn_blocks": 0,
+				"flame": 270,
+				"lawn_blocks": 10,
+				"rain": 435,
+				"shrub": 833,
+				"tembusu": 297,
+				"total": 2175
+			},
+			"empty_lawn_blocks": 0,
+			"garden": {
+				"cut_cells": 8762,
+				"shore_shrubs": 40,
+				"walk_m": 1309
+			},
+			"lawn_blocks": 10,
+			"lawn_cells": 101713,
+			"ms": 676,
+			"park_panels": 16,
+			"plazas": {
+				"benches": 53,
+				"esplanade": 10,
+				"mbs": 36,
+				"merlion": 5,
+				"nearfield": {
+					"bench_bins": 9,
+					"bollard_groups": 9,
+					"clusters": 55,
+					"joints": 947,
+					"planters": 17,
+					"racks": 5,
+					"stains": 61,
+					"tables": 11,
+					"totems": 4
+				},
+				"ns_square": 26,
+				"palms": 65,
+				"shapes": 100,
+				"umbrella_tables": 30
+			},
+			"roofs": {
+				"boxes": 269,
+				"draws": 98,
+				"roofs": 77
+			}
+		},
+		"flank_towers_collided": 0,
+		"flank_towers_freed": 13,
+		"flank_walls_hidden": 1,
+		"graph_edges": 72,
+		"graph_links": 10,
+		"graph_nodes": 64,
+		"lamps": 837,
+		"land_rects": 10,
+		"planting": {
+			"forecourt_beds": 1164,
+			"median_clumps": 898,
+			"palms": 168,
+			"shrub_kinds": [
+				"ixora",
+				"mondo",
+				"fern",
+				"croton"
+			],
+			"species": 6,
+			"strip_clumps": 21041
+		},
+		"promenade_tree_parts_dropped": 0,
+		"seawall_segments": 42,
+		"shapes": 1861,
+		"signals": 30,
+		"towers_kept_downtown": 0,
+		"towers_removed": 396,
+		"trees": 261
+	}
+}
