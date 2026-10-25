@@ -391,8 +391,10 @@ func _visitor_combat_checks() -> void:
 	check("combat observer reaches roof by E", Access.on_public_terrace(player.global_position))
 	check("combat observer walks near viewing area", await walk_to(m + Vector3(46, 200.1, 7)))
 	await frames(12) # native NPC render/animation LOD catches up to nearby player
+	var viewing: Rect2 = actor.get("viewing_bounds")
+	var east_boundary := viewing.end.x - m.x
 	var cases := [
-		{"at": Vector3(43, 200.1, 7), "push": Vector3.RIGHT, "name": "east toward pad"},
+		{"at": Vector3(east_boundary, 200.1, 7), "push": Vector3.RIGHT, "name": "east toward pad"},
 		{"at": Vector3(32.1, 200.1, 7), "push": Vector3.LEFT, "name": "west toward rail"},
 		{"at": Vector3(38, 200.1, 15), "push": Vector3.BACK, "name": "bay edge"},
 		{"at": Vector3(39, 200.1, 2.5), "push": Vector3.FORWARD, "name": "landward edge"},
@@ -423,7 +425,7 @@ func _visitor_combat_checks() -> void:
 	# One lethal hit from the closest viewing boundary, directed toward the
 	# pad. Measure the actual physical bones, not the now-noncolliding NPC root.
 	var victim: NPC = visitors[1]
-	victim.global_position = m + Vector3(43, 200.1, 7)
+	victim.global_position = m + Vector3(east_boundary, 200.1, 7)
 	victim.velocity = Vector3.ZERO
 	victim.state = NPC.State.IDLE
 	victim.idle_time = 1.0e9

@@ -1,7 +1,8 @@
 extends Node3D
 ## Controls-based route from the normal player start: heritage pickup,
 ## cancellation/repeat, Jubilee + Helix walk, MBS handover, return and repeat.
-## No position assignments, respawns, forced stages or vehicle teleports.
+## Full roundtrip: no position assignments, respawns, forced stages or vehicle teleports.
+## Optional dispatch visual review uses an explicitly logged local start fixture.
 const Courier = preload("res://src/systems/downtown_activities/courier.gd")
 var main: Node
 var activity: Node
@@ -55,11 +56,16 @@ func _run() -> void:
 	main.hud.show_title(false)
 	Game.simulation_paused = false
 	_initial_deaths = Game.death_count
+	if "--courier-dispatch-review" in OS.get_cmdline_user_args():
+		print("[courier-test] FIXTURE dispatch visual review starts 8m from station; NOT normal-spawn traversal.")
+		player.respawn_at(activity.stations.heritage.global_position + Vector3(0, 0.1, 8), 0.0)
 	_last_position = player.global_position
 	await get_tree().create_timer(0.5).timeout
 	_check("far pickup rejected", not activity.use_station("heritage", player) and activity.stage == Courier.Stage.IDLE)
 	_check("unknown station rejected", not activity.use_station("unknown", player))
 	var route_start: Array[Vector3] = [Vector3(-164, 0, -22), Vector3(-164, 0, -300), Vector3(-164, 0, -337), activity.stations.heritage.global_position]
+	if "--courier-dispatch-review" in OS.get_cmdline_user_args():
+		route_start = [activity.stations.heritage.global_position]
 	if not await _walk(route_start, "heritage approach"):
 		_finish()
 		return

@@ -226,7 +226,10 @@ func _add_visitors(m: Vector3) -> void:
 		visitor.name = "SkyParkVisitor%d" % (i + 1)
 		visitor.position = m + positions[i]
 		visitor.rotation.y = PI if i < 2 else PI * 0.65
-		visitor.viewing_bounds = Rect2(m.x + 32, m.z + 2.5, 11, 12.5)
+		# Leave 14m from the eastern visitor limit to pad center. The native
+		# corpse solver can move limbs ~4m before fallback; the prior 12m
+		# separation failed the unchanged 9m aircraft-clearance test.
+		visitor.viewing_bounds = Rect2(m.x + 32, m.z + 2.5, 9, 12.5)
 		visitor.state = NPC.State.IDLE
 		visitor.idle_time = 1.0e9
 		visitor.set_meta("plaza_activity", "viewing")
