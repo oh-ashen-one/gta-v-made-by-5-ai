@@ -138,7 +138,7 @@ func _bayfront_path() -> Array[Vector3]:
 		points.append(Vector3(lerpf(a.x, b.x, u), 0, lerpf(a.z, b.z, u) - 6 * sin(PI * u)))
 	# Around the north end of the solid Shoppes podium to the promenade.
 	var mbs := DowntownPlan.anchor("marina_bay_sands")
-	points.append_array([Vector3(mbs.x - 204, 0, -735), Vector3(mbs.x - 204, 0, -665), Vector3(mbs.x - 204, 0, -635), activity.stations.bayfront.global_position])
+	points.append_array([Vector3(-258, 0, -745), Vector3(-258, 0, -732), Vector3(mbs.x - 204, 0, -732), Vector3(mbs.x - 204, 0, -665), Vector3(mbs.x - 204, 0, -635), activity.stations.bayfront.global_position])
 	return points
 
 func _walk(points: Array[Vector3], label: String) -> bool:

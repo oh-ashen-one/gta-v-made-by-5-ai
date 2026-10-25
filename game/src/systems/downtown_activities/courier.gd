@@ -91,7 +91,8 @@ func use_station(id: String, actor: Node) -> bool:
 		Events.toast("MBS handover complete. Return the signed receipt to Heritage Waterfront.", "good")
 	_refresh()
 	# Parent integrates this snapshot into Game's existing atomic save.
-	Game.save_game()
+	if not Game.save_game():
+		Events.toast("Courier progress is active for this session, but saving failed.", "warn")
 	return true
 
 func serialize_state() -> Dictionary:
