@@ -60,9 +60,15 @@ static func _density_and_spawn_checks(t: Node, amb: AmbientTraffic) -> void:
 		if not bool(spot.get("courtyard_only", false)) and Vector2(pos.x - start.x, pos.z - start.z).length() > TrafficManager.OPENING_PARKING_RADIUS:
 			continue
 		protected += 1
-		if not amb.traffic._keep_parked_spot(spot, 1):
+		var found := false
+		for child in amb.traffic.get_children():
+			if child is Car and child.get_meta("traffic_parking", false) and child.get_meta("parking_origin", Vector3.INF) == pos:
+				var car := child as Car
+				found = car.visible and not car.disabled and car.has_method("interact") and car.is_in_group("vehicles")
+				break
+		if not found:
 			missing += 1
-	t._check("opening and courtyard parking are protected from thinning", protected > 0 and missing == 0, "%d protected, %d missing" % [protected, missing])
+	t._check("protected parking produces usable opening and courtyard cars", protected > 0 and missing == 0, "%d protected, %d missing/unusable" % [protected, missing])
 	# A populated short lane must reject another seed even when its proposed
 	# position has a safe local gap. This catches the old camera-cut bypass.
 	var fixture := AmbientTraffic.new()
@@ -73,9 +79,56 @@ static func _density_and_spawn_checks(t: Node, amb: AmbientTraffic) -> void:
 	a.s = 15.0
 	b.s = 30.0
 	fixture._keys[0] = [a, b]
-	t._check("camera-cut seeding cannot overfill a short lane", not fixture._gap_free(0, 0, 60.0))
+	t._check("short-lane budget rejects another seed at a distant gap", not fixture._gap_free(0, 0, 60.0))
 	fixture._keys[0] = [a]
 	t._check("lane budget still admits separated cars and rejects overlaps", fixture._gap_free(0, 0, 60.0) and not fixture._gap_free(0, 0, 20.0))
 	a.free()
 	b.free()
+	fixture.free()
+	_camera_cut_checks(t)
+
+static func _camera_cut_checks(t: Node) -> void:
+	# An isolated one-lane street has room for two cars by the occupancy
+	# budget, but enough physical gaps for four. Exercise the complete cut
+	# path with eight pooled bodies, including failed-seed exhaustion.
+	# No live world state or RNG is changed by this fixture.
+	var fixture := AmbientTraffic.new()
+	t.add_child(fixture)
+	fixture.set_process(false)
+	fixture.set_physics_process(false)
+	fixture._rng.seed = 3007
+	fixture.nodes.assign([Vector3(9000, 0, 0), Vector3(9080, 0, 0)])
+	fixture._out_edges = {0: [0], 1: []}
+	fixture.edges.append({"a": fixture.nodes[0], "b": fixture.nodes[1], "dir": Vector3.RIGHT,
+		"left": Vector3.FORWARD, "len": 80.0, "entry": 11.0, "stop": 12.0,
+		"from": 0, "to": 1, "offs": [4.6], "signal": false, "hold": 68.0, "clear": [], "y0": 0.0, "y1": 0.0})
+	fixture._focus = Vector3(9040, 0, 0)
+	fixture._cam_pos = Vector3(9000, 2, 20)
+	fixture._cam_fwd = Vector3.RIGHT
+	for i in 8:
+		var v := AmbientVehicle.new()
+		fixture.add_child(v)
+		v.active = false
+		v.visible = false
+		v.collision_layer = 0
+		fixture.vehicles.append(v)
+	fixture._recycle(true)
+	var first := fixture.count_active()
+	fixture._recycle(true)
+	var second := fixture.count_active()
+	var overlaps := 0
+	var inactive_colliders := 0
+	for i in fixture.vehicles.size():
+		var v := fixture.vehicles[i]
+		if not v.active:
+			if v.collision_layer != 0 or v.visible:
+				inactive_colliders += 1
+			continue
+		for j in range(i + 1, fixture.vehicles.size()):
+			var other := fixture.vehicles[j]
+			if other.active and absf(v.s - other.s) < AmbientTraffic.MIN_GAP + 3.0:
+				overlaps += 1
+	t._check("real camera cuts fill only the short-lane budget and exhaust safely",
+		first == 2 and second == 2 and overlaps == 0 and inactive_colliders == 0,
+		"active %d then %d /8, overlaps %d, inactive colliders %d" % [first, second, overlaps, inactive_colliders])
 	fixture.free()

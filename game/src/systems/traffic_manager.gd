@@ -225,6 +225,7 @@ func _spawn_parked() -> void:
 		var car := Car.new()
 		car.kind = kind
 		car.set_meta("traffic_parking", true)
+		car.set_meta("parking_origin", spot["pos"])
 		if bool(spot.get("courtyard_only", false)):
 			car.set_meta("courtyard_only", true)
 		add_child(car)
