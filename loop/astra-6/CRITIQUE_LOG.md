@@ -33,3 +33,6 @@ Fresh read-only critic found no production blocker or QA leak. P3 test weakness:
 
 ## Rendered downtown drive R1, 20:38 UTC
 Actual controls route completed376.2s,72.2s waiting,zero tows,one overtake,two controls-based unsticks. Shared GPU/no-exclusive measurement p95~107ms is not performance acceptance. Supervisor exit2 because a queued frame readback resumed after its JSONL file was closed. Preserved failed evidence; added post-await recording/open-file guard and nulls the closed handle. Rendered flight/views will exercise that shutdown path; no production traffic or route gates altered.
+
+## Actual courier UI critique, 21:00 UTC — pending polish
+The two actual player-camera dispatch images show readable mission/courier HUD coexistence, but the oversized two-line world billboard dominates the skyline, and the near-target screen marker overlaps it. Fresh critic requests a substantially smaller world label (or compact physical sign) and suppression of near-target screen marker when the E interaction is available. These are new feature polish issues, not movement/performance claims. Queue a small station.gd/status_card.gd fix AFTER current full rendered courier run, preserving that run's exact evidence. Re-render dispatch from actual controller/camera; do not weaken full-route checks. Fixed implementation freeze21:50:57 remains.
