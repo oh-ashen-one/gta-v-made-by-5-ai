@@ -265,6 +265,9 @@ func save_game(path: String = "") -> bool:
 		"last_safe_position": [last_safe_position.x, last_safe_position.y, last_safe_position.z],
 		"last_safe_rotation": last_safe_rotation,
 	}
+	var activity := get_tree().get_first_node_in_group("downtown_activity")
+	if activity and activity.has_method("serialize_state"):
+		data["downtown_activity"] = activity.serialize_state()
 	if not _validate_save_data(data):
 		return false
 	var destination := ProjectSettings.globalize_path(path)
@@ -349,6 +352,12 @@ func load_game(path: String = "") -> bool:
 	var mission := get_tree().get_first_node_in_group("mission")
 	if mission and mission.has_method("restore_stage"):
 		mission.restore_stage(mission_stage)
+	var activity := get_tree().get_first_node_in_group("downtown_activity")
+	if activity:
+		if parsed.has("downtown_activity"):
+			activity.restore_state(parsed["downtown_activity"])
+		else:
+			activity.reset_state()
 	Events.state_restored.emit()
 	return true
 
@@ -370,6 +379,14 @@ func _valid_saved_vector(value: Variant) -> bool:
 	return true
 
 func _validate_save_data(data: Dictionary) -> bool:
+	# Optional for legacy saves. Validate before touching player/story state;
+	# an invalid side activity must not partially load the rest of a save.
+	if data.has("downtown_activity"):
+		var activity: Variant = data["downtown_activity"]
+		if typeof(activity) != TYPE_DICTIONARY: return false
+		if not _integer_in_range(activity.get("version"), 1, 1): return false
+		if not _integer_in_range(activity.get("stage"), 0, 2): return false
+		if not _integer_in_range(activity.get("completed_runs"), 0, 1000000): return false
 	if not _integer_in_range(data.get("version"), SAVE_VERSION, SAVE_VERSION): return false
 	if not _number_in_range(data.get("health"), 0.01, MAX_HEALTH): return false
 	if not _integer_in_range(data.get("wanted_level"), 0, 3): return false

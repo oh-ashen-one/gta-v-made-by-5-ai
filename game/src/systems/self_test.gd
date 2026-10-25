@@ -340,10 +340,12 @@ func run(main: Node) -> void:
 	_check("successful load publishes one state-restored event", smg_saved and smg_loaded and _state_restore_events == 1)
 	_check("saved SMG restores held model and clears transient actions", Game.carried_weapon == "smg" and player._weapon_model != null and String(player._weapon_model.scene_file_path).contains("smg") and not player._reloading and player._fire_cooldown == 0.0 and player._press_queue.is_empty())
 	_negative_save_checks(player, mission)
+	_courier_save_checks(player, mission)
 	await _wave5_checks(world, traffic, heli)
 	await _street_life_checks(player, traffic)
 	await _water_checks(world)
 	await _downtown_plan_checks(world)
+	await _promenade_access_check(player)
 	_character_look_checks(player)
 	for c in load("res://src/systems/perf_checks.gd").run(main):   # wave S performance piece
 		_check(c[0], c[1], c[2])
@@ -444,6 +446,47 @@ func _blocked_exit_checks(main: Node, player: Player, car: Car) -> void:
 	await _tap("interact")
 	_check("clearing blocked exit restores normal exit", Game.mode == Game.MODE_FOOT and player.current_vehicle == null and not car.driver_is_player)
 
+func _courier_snapshot() -> Dictionary:
+	var activity := get_tree().get_first_node_in_group("downtown_activity")
+	return activity.serialize_state() if activity else {}
+
+func _courier_save_checks(player: Player, mission: Mission) -> void:
+	var activity := get_tree().get_first_node_in_group("downtown_activity")
+	_check("Bayfront Courier is connected to the running game", activity != null)
+	if not activity: return
+	var original: Dictionary = activity.serialize_state()
+	activity.restore_state({"version": 1, "stage": 1, "completed_runs": 3})
+	var saved := Game.save_game(TEST_SAVE)
+	var payload: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_SAVE))
+	activity.restore_state({"version": 1, "stage": 2, "completed_runs": 7})
+	var loaded := Game.load_game(TEST_SAVE)
+	_check("save/reload restores courier destination and completed runs", saved and loaded and activity.serialize_state() == {"version": 1, "stage": 1, "completed_runs": 3})
+	var before := _state_fingerprint(player, mission)
+	var invalid := payload.duplicate(true)
+	invalid["downtown_activity"]["stage"] = 99
+	invalid["health"] = 12.0
+	var f := FileAccess.open(TEST_SAVE, FileAccess.WRITE)
+	f.store_string(JSON.stringify(invalid)); f.close()
+	_check("invalid courier state rejects the whole save atomically", not Game.load_game(TEST_SAVE) and _state_fingerprint(player, mission) == before)
+	payload.erase("downtown_activity")
+	f = FileAccess.open(TEST_SAVE, FileAccess.WRITE)
+	f.store_string(JSON.stringify(payload)); f.close()
+	_check("legacy saves load and reset optional courier progress", Game.load_game(TEST_SAVE) and activity.serialize_state() == {"version": 1, "stage": 0, "completed_runs": 0})
+	activity.restore_state(original)
+
+func _promenade_access_check(player: Player) -> void:
+	# Explicit collision fixture; the separate courier traversal tests this same
+	# transition from the ordinary starting point, without fixture repositioning.
+	var before := player.global_position
+	var before_yaw := player.yaw
+	player.respawn_at(Vector3(-164.0, 0.2, -322.0), 0.0)
+	await _ticks(12)
+	Input.action_press("move_forward")
+	await _ticks(150)
+	Input.action_release("move_forward")
+	_check("heritage avenue joins the promenade without a jump", player.global_position.z < -329.0 and player.global_position.y > 0.25, str(player.global_position))
+	player.respawn_at(before, before_yaw)
+
 func _state_fingerprint(player: Player, mission: Mission) -> Dictionary:
 	return {"health": Game.health, "wanted_level": Game.wanted_level, "wanted_heat": Game.wanted_heat,
 		"mission_stage": Game.mission_stage, "checkpoint": Game.checkpoint_index, "seed": Game.seed_value,
@@ -451,7 +494,7 @@ func _state_fingerprint(player: Player, mission: Mission) -> Dictionary:
 		"weapon": Game.carried_weapon, "ammo": Game.ammo.duplicate(true), "mode": Game.mode,
 		"safe_position": Game.last_safe_position, "safe_rotation": Game.last_safe_rotation,
 		"actor_position": player.global_position, "actor_yaw": player.yaw, "settings": Game.settings.duplicate(true), "state_restore_events": _state_restore_events,
-		"scene_stage": mission.stage, "objective": mission.current_objective(), "package_visible": mission.package_node.visible}
+		"scene_stage": mission.stage, "objective": mission.current_objective(), "package_visible": mission.package_node.visible, "downtown_activity": _courier_snapshot()}
 
 func _negative_save_checks(player: Player, mission: Mission) -> void:
 	Game.save_game(TEST_SAVE)
