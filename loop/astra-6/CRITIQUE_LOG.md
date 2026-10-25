@@ -30,3 +30,6 @@ Full courier route R8 now passes31/31 from normal starting point,3683.21m in603.
 
 ## Courier integration re-review 20:32 UTC
 Fresh read-only critic found no production blocker or QA leak. P3 test weakness: death persistence could pass if damage was a no-op. Added per-stage death_count increment assertion before health/state check; full suite rerun pending. Optional capture only lives in test scene. Physical joins share mesh/collider basis.
+
+## Rendered downtown drive R1, 20:38 UTC
+Actual controls route completed376.2s,72.2s waiting,zero tows,one overtake,two controls-based unsticks. Shared GPU/no-exclusive measurement p95~107ms is not performance acceptance. Supervisor exit2 because a queued frame readback resumed after its JSONL file was closed. Preserved failed evidence; added post-await recording/open-file guard and nulls the closed handle. Rendered flight/views will exercise that shutdown path; no production traffic or route gates altered.
