@@ -276,6 +276,7 @@ const GROUND_EXIT_MAX_Y := 4.5   # bridge decks are 2.4-3.6 m
 ## vertical lip at the peninsula edge; these endpoints overlap both floors.
 const PEDESTRIAN_JOINS := {
 	"jubilee_fullerton": {"from": Vector3(-534.0, 0.212, -400.0), "to": Vector3(-528.0, 0.36, -400.0), "width": 5.4},
+	"fullerton_heritage": {"from": Vector3(-445.0, 0.02, -338.0), "to": Vector3(-438.0, 0.30, -338.0), "width": 8.0},
 }
 
 ## ---------------------------------------------------------------- views
