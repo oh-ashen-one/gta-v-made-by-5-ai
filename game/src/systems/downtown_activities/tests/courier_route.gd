@@ -14,6 +14,8 @@ var _last_position := Vector3.ZERO
 var _max_step := 0.0
 var _initial_deaths := 0
 var _curb_jumps := 0
+var _stills_dir := ""
+var _stills: Array[Dictionary] = []
 
 func _physics_process(_delta: float) -> void:
 	if not is_instance_valid(player) or Game.simulation_paused: return
@@ -26,6 +28,9 @@ func _ready() -> void:
 	if not "--qa-session" in OS.get_cmdline_user_args():
 		push_error("Courier route requires --qa-session <isolated directory>")
 		get_tree().quit(2)
+		return
+	if not _configure_stills():
+		_finish()
 		return
 	_run.call_deferred()
 
@@ -58,6 +63,7 @@ func _run() -> void:
 		_finish()
 		return
 	_check("dispatch physically reachable", activity.can_use_station("heritage"))
+	await _capture_still("01_dispatch_arrival")
 	var stranger := Node.new()
 	_check("foreign actor rejected", not activity.use_station("heritage", stranger))
 	stranger.free()
@@ -101,24 +107,29 @@ func _run() -> void:
 	_check("wall blocks handover", not activity.can_use_station("heritage"))
 	wall.queue_free()
 	await get_tree().physics_frame
+	await _capture_still("02_parcel_collected", true)
 	var outbound := _bayfront_path()
 	if not await _walk(outbound, "Jubilee and Helix to MBS"):
 		_finish()
 		return
 	_check("MBS destination physically reachable", activity.can_use_station("bayfront"))
+	await _capture_still("03_mbs_arrival")
 	await _press_e()
 	_check("E handover creates return receipt", activity.stage == Courier.Stage.RECEIPT)
 	_check("delivery cannot be duplicated", not activity.use_station("bayfront", player) and activity.completed_runs == 0)
 	_check("story objective unchanged", main.mission.stage == saved_stage and main.mission.get_meta("marker", Vector3.ZERO) == saved_marker)
 	var receipt: Dictionary = activity.serialize_state()
 	_check("receipt checkpoint restores", activity.restore_state(JSON.parse_string(JSON.stringify(receipt))) and activity.stage == Courier.Stage.RECEIPT)
+	await _capture_still("04_mbs_delivered")
 	outbound.reverse()
 	outbound.append(activity.stations.heritage.global_position)
 	if not await _walk(outbound, "receipt return"):
 		_finish()
 		return
+	await _capture_still("05_receipt_return")
 	await _press_e()
 	_check("return completes once", activity.stage == Courier.Stage.IDLE and activity.completed_runs == 1)
+	await _capture_still("06_courier_completed")
 	await _press_e()
 	_check("completed route repeatable", activity.stage == Courier.Stage.OUTBOUND and activity.completed_runs == 1)
 	await _press_e()
@@ -212,8 +223,79 @@ func _press_e() -> void:
 func _release() -> void:
 	for action in ["move_forward", "move_back", "move_left", "move_right", "sprint", "jump", "interact"]: Input.action_release(action)
 
+
+func _canonical_temp(path: String) -> String:
+	return "/private/tmp/" + path.trim_prefix("/tmp/") if path.begins_with("/tmp/") else path
+
+func _safe_stills_path(output: String, qa_dir: String) -> bool:
+	if not output.is_absolute_path() or not qa_dir.is_absolute_path(): return false
+	if output != output.simplify_path() or qa_dir != qa_dir.simplify_path(): return false
+	var path := _canonical_temp(output)
+	var session := _canonical_temp(qa_dir).trim_suffix("/")
+	if not session.begins_with("/private/tmp/") or session == "/private/tmp": return false
+	if not path.begins_with(session + "/"): return false
+	# /tmp is the standard macOS alias. No symlinks below private temp may
+	# redirect a task capture into another session or the owner's files.
+	var parent := "/private/tmp"
+	for part in path.trim_prefix("/private/tmp/").split("/", false):
+		if not DirAccess.dir_exists_absolute(parent): break
+		var directory := DirAccess.open(parent)
+		if directory == null or directory.is_link(part): return false
+		parent = parent.path_join(part)
+	return true
+
+func _configure_stills() -> bool:
+	var args := OS.get_cmdline_user_args()
+	var requested: Array[String] = []
+	for arg in args:
+		if arg.begins_with("--courier-stills-dir="):
+			requested.append(arg.trim_prefix("--courier-stills-dir="))
+	if requested.is_empty(): return true
+	var qa_index := args.find("--qa-session")
+	var qa_dir := String(args[qa_index + 1]) if qa_index >= 0 and qa_index + 1 < args.size() else ""
+	if requested.size() != 1 or not _safe_stills_path(requested[0], qa_dir):
+		return _check("courier stills path guard", false, "use an absolute non-symlink child of the private-temp --qa-session directory")
+	if DisplayServer.get_name() == "headless":
+		print("[courier-stills] Headless renderer: optional stills disabled; no image waits or writes.")
+		return true
+	_stills_dir = _canonical_temp(requested[0])
+	return _check("courier stills directory", DirAccess.make_dir_recursive_absolute(_stills_dir) == OK, _stills_dir)
+
+func _capture_still(label: String, clear_fixture_toasts: bool = false) -> void:
+	if _stills_dir.is_empty() or DisplayServer.get_name() == "headless": return
+	_release()
+	# The pickup/cancel/invalid-input fixtures deliberately precede the real
+	# outward leg. Clear their old toasts only for its positive-flow frame,
+	# log that explicitly, and never clear after a failed assertion.
+	if clear_fixture_toasts and failures.is_empty():
+		print("[courier-stills] Clearing expected fixture toasts before ", label, "; all assertions remain in the route log.")
+		main.hud.clear_notifications()
+	elif clear_fixture_toasts:
+		print("[courier-stills] Preserving notifications because assertions failed: ", failures)
+	await get_tree().create_timer(0.35).timeout
+	if not _check("stills use active player camera " + label, get_viewport().get_camera_3d() == player.camera): return
+	var file := _stills_dir.path_join(label + ".png")
+	var directory := DirAccess.open(_stills_dir)
+	if directory == null or directory.is_link(label + ".png") or FileAccess.file_exists(file):
+		_check("stills preserve existing evidence " + label, false, file)
+		return
+	await RenderingServer.frame_post_draw
+	var raster := get_viewport().get_texture().get_image()
+	if raster == null or raster.is_empty():
+		_check("actual viewport image " + label, false)
+		return
+	var saved := raster.save_png(file) == OK
+	_check("actual viewport image " + label, saved, file)
+	var record := {"label": label, "file": file, "saved": saved,
+		"width": raster.get_width(), "height": raster.get_height(),
+		"player_position": [player.global_position.x, player.global_position.y, player.global_position.z],
+		"courier_state": activity.serialize_state(), "failed_assertions": failures.duplicate(),
+		"physics_frame": Engine.get_physics_frames()}
+	_stills.append(record)
+	print("[courier-stills] ", JSON.stringify(record))
+
 func _finish() -> void:
 	_release()
-	print("[courier-test] RESULT ", JSON.stringify({"checks": checks, "failures": failures, "travel_m": _travel, "max_step_m": _max_step, "curb_jumps": _curb_jumps, "elapsed_s": (Time.get_ticks_msec() - _started) / 1000.0}))
+	print("[courier-test] RESULT ", JSON.stringify({"checks": checks, "failures": failures, "stills": _stills, "travel_m": _travel, "max_step_m": _max_step, "curb_jumps": _curb_jumps, "elapsed_s": (Time.get_ticks_msec() - _started) / 1000.0}))
 	Sfx.shutdown_audio()
 	get_tree().quit(0 if failures.is_empty() else 1)

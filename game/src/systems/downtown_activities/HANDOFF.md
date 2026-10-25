@@ -32,3 +32,7 @@ Do not cherry-pick those duplicate commits back into the parent. Worker-owned so
 ## Remaining gates
 
 Actual driving/helicopter routes, rendered card/marker/prop appearance, performance, integrated roof/traffic changes and owner gameplay judgement remain with the parent loop. Headless success is not visual or owner acceptance. No worker engine remains running. API/run commands are in `INTEGRATION.md`. Private asset/reference symlinks were never staged.
+
+## Optional stills follow-up (20:27 UTC)
+
+Added a test-only `--courier-stills-dir=<abs>` path for six actual player-camera frames along the full route. It is disabled without the option and on headless renderers. Capture guards, metadata, toast-clearing policy and the leased render command are documented in INTEGRATION.md. The seven-case path smoke and headless no-readback/no-write check passed with exit 0, zero fatal errors in 1.76 s (`/private/tmp/astra6-activities/stills-guard-r2.log`). No GPU launch was made. The 31/31 full-route evidence above predates this optional capture-only patch; parent performs the actual rendered validation.
