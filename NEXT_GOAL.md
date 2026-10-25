@@ -11,3 +11,7 @@ Start from the reviewed `Astra-6-enhancements` candidate and [verification repor
 5. **Visual/audio quality:** improve repeated flat office glazing and overly bright canopy materials, then compare actual runtime pixels. Keep the existing Singapore landmarks, connected gameplay and approved direction. No concept image substitutes for rendered evidence. A listening pass and human animation/handling judgement remain open.
 
 No engine rewrite, new paid asset service, public release or main merge is authorized by this document. Preserve needed private art and exact evidence. Continue only on a new owner-authorized scope and branch.
+
+## Animation workflow update received during final handoff
+
+For any later animation work, first check Mixamo and Fab for a suitable licensed base, then other reputable sources if needed. Evaluate rig/format, motion type, contacts and transitions; record provenance and rights; retarget, integrate and verify actual playback before enhancing it. Custom motion requires a documented lack of a suitable available base. This update does not retroactively turn completed custom work into sourced animation, and it authorizes no purchases or new work beyond this task's timebox.

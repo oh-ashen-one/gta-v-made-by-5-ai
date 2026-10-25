@@ -27,3 +27,5 @@ All builders and critics completed. Their four temporary worktrees have been rem
 ## Safety
 
 Use only `loop/astra-6/render.sh` or `render_package.sh` for any remaining rendered verification: private lock, shared `GPU_SLOT_DIR=/Users/midir/.cache/gpu-slot`, normal lease, `render_gate`, fixed deadline and bounded supervisor. One task renderer, global mixed cap2. All QA saves use explicit private directories. No CUA call against an app after it exits: native bindings may relaunch it outside the lease. Stop owned drivers before engines, TERM with grace, and leave foreign sessions untouched. No purchases, global settings changes, main merge or public release.
+
+The owner supplied updated source-first animation rules during final handoff. The current published playbook was resolved/read and its revision verified against GitHub. Future animation tasks must start with Mixamo/Fab and licensed-source evaluation; completed work/evidence is unchanged. No animation implementation or new render was started after the freeze.
