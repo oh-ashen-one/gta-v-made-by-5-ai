@@ -21,6 +21,10 @@ func _run() -> void:
 		var q := PhysicsRayQueryParameters3D.create(Vector3(x, 5, -400), Vector3(x, -2, -400), 1)
 		var hit := space.intersect_ray(q)
 		print("[courier-test] Jubilee ground x=", x, " y=", hit.get("position", Vector3.INF))
+	for x: float in [-445.0, -443.0, -441.0, -440.5, -440.0, -439.0, -437.0]:
+		var q := PhysicsRayQueryParameters3D.create(Vector3(x, 5, -338), Vector3(x, -2, -338), 1)
+		var hit := space.intersect_ray(q)
+		print("[courier-test] Heritage link ground x=", x, " y=", hit.get("position", Vector3.INF))
 	var path: Array[Vector3] = [Vector3(-521, 0, -400), Vector3(-521, 0, -384), Vector3(-488, 0, -380), Vector3(-460, 0, -372), Vector3(-458, 0, -344), Vector3(-440, 0, -338), Vector3(-330, 0, -337), activity.stations.heritage.global_position]
 	await _walk(path, "local Jubilee to heritage return")
 	_check("local fixture has no deaths", Game.death_count == _initial_deaths)
