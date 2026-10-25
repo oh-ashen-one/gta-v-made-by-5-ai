@@ -13,3 +13,9 @@ No confirmedproductionblocker. P2testgaps: testmanuallybootstrapsmissingproducti
 
 ## Visual review
 Pending fresh candidate captures. Baseline29actualgame images capturedfromunchangedWeek1main451c8eb, zeroengineerrors, sharedcontaminatedGPU. No fullquality/60fps claim from source/headlesschecks.
+
+## Blind visual R1 — actual Metal stills
+
+A fresh Codex critic inspected six neutral A/B copies before seeing reference images or source notes. View1 A=current attempted granite material, B=Week1 baseline; B was preferred because its rectangular paving, local wear and scattered details were less checkerboard-like. View2 A=baseline/B=current and view3 A=current/B=baseline were ties for fixed environment quality. The more open road in current view2 matches the owner direction, but dynamic positions alone cannot prove traffic behavior.
+
+Decision: remove the optional new granite material and retain the existing paving, avoiding a quality regression. Existing source textures remain untouched and privately stored. The images in city-r1-views preserve the rejected material iteration; they are not final-art proof. Main open visual gaps remain trees, frontage depth and skyline material separation; no AAA acceptance claimed.
