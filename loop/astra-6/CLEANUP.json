@@ -1,0 +1,20 @@
+{
+  "delivered_archive_reverified": true,
+  "no_owned_app_processes": true,
+  "removed_disposable_package_copies": [
+    "/private/tmp/astra6/package-r1/extracted",
+    "/private/tmp/astra6/package-r1/signed",
+    "/private/tmp/astra6/package-r1/OrchardReach.zip",
+    "/private/tmp/astra6/package-r1/candidate-signed.zip",
+    "/private/tmp/astra6/package-r2/extracted",
+    "/private/tmp/astra6/package-r2/signed",
+    "/private/tmp/astra6/package-r2/OrchardReach.zip",
+    "/private/tmp/astra6/package-r2/candidate-signed.zip",
+    "/private/tmp/astra6/package-r3/extracted",
+    "/private/tmp/astra6/package-r3/signed",
+    "/private/tmp/astra6/package-r3/OrchardReach.zip",
+    "/private/tmp/astra6/package-r3/candidate-signed.zip",
+    "/private/tmp/astra6/delivery-verify"
+  ],
+  "retained": "DeliveryZIP,50images,public source/evidence,authoringprivateassets,rawQAlogs/frames forownerreview"
+}
