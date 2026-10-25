@@ -21,3 +21,9 @@ A fresh Codex critic inspected six neutral A/B copies before seeing reference im
 Decision: remove the optional new granite material and retain the existing paving, avoiding a quality regression. Existing source textures remain untouched and privately stored. The images in city-r1-views preserve the rejected material iteration; they are not final-art proof. Main open visual gaps remain trees, frontage depth and skyline material separation; no AAA acceptance claimed.
 
 SkyPark critic follow-up a553da0/equivalent c947391: strict production main hook, actual E exits at eight headings and eight boundary points, four outside refusals, real rooftop death/ground recovery/lift reuse, fresh-scene save/load all passed (116/116,101.25s,0 errors), headless. No production changes were required. Rendered review remains separate.
+
+## SkyPark actual-render review R1
+
+The 116-check suite also passed under Metal (121.55s, zero engine errors) and produced four actual player-camera frames. Fresh visual critic found: lift lightstrip overlaps secondary sign text; deliberately expected obstruction-test notice remains over successful-arrival still; public terrace needs visitor/wayfinding scale cues. The builder is correcting the sign and test-capture hygiene and adding restrained existing-asset life outside the helicopter/lift clearance. Collision/motion claims remain grounded in the test logs, not inferred from the images. Seven texture RIDs were reported on renderer shutdown after the suite's full-scene teardown/rebuild; warning retained, no memory-leak acceptance claimed.
+
+Full courier route R8 now passes31/31 from normal starting point,3683.21m in603.65s,zerojumps/deaths/teleportsteps. The access lips found by earlier failed routes were physically repaired rather than bypassed by the test.

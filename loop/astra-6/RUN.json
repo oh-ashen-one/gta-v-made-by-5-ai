@@ -8,7 +8,7 @@
   "scope": "Playable central Singapore continuity with heritage gameplay; fewer cars for freer driving; builder and critic iterations; fixed4hours including final30min",
   "renderer_policy": "one task renderer at a time; globalmixedcap2; use existing loop/render.sh + actualsharednamespace; no foreignprocesschanges",
   "model": "Current Codex session and inherited-model subagents; no alternate-model claim",
-  "last_update_utc": "2026-10-25T20:12:54.062477+00:00",
+  "last_update_utc": "2026-10-25T20:23:31.511301+00:00",
   "current_phase": "integration_and_runtime_critique",
   "last_passing_suite": 296,
   "traffic_comparison": {
@@ -19,7 +19,7 @@
     "tows_each": 0,
     "candidate_unstick_maneuvers": 1
   },
-  "courier_status": "Whole outbound passed, three physical access lips found and repaired; final normal-spawn no-jump roundtrip r8 running in activities worker",
-  "skypark_status": "Integrated lift/terrace/limited rooftop landing; 116/116 headless strengthened checks; rendered full access suite queued",
-  "render_status": "Week1 baseline29 and cityR1actual29 captured. Blind paving comparison preferredbaseline; materialexperiment removed. SkyPark actual116checkcapture queued under sharedlease."
+  "courier_status": "Full normal-spawn roundtrip31/31,3683.21m,603.65s,zero jumps/deaths/teleport steps; optional actual screenshot support being added",
+  "skypark_status": "116/116 rendered plus headless; actual lift and flight landing/Eexit/return. Visualcritic requested signstrip fix, expectedtesttoastcleanup and visitor/wayfinding detail, builderworking.",
+  "render_status": "Baseline andcityR1done; skyparkR1done116/116; rendered downtown drive queuedtasksession95844 at /private/tmp/astra6/render-drive-r1; root-only renderer lane, harddeadlineguard."
 }
