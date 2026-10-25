@@ -475,8 +475,9 @@ func _courier_save_checks(main: Node, player: Player, mission: Mission) -> void:
 	var deaths_before := Game.death_count
 	for courier_stage in [1, 2]:
 		activity.restore_state({"version": 1, "stage": courier_stage, "completed_runs": 3})
+		var before_death := Game.death_count
 		Game.damage_player(Game.MAX_HEALTH)
-		_check("courier stage %d survives a real death/respawn" % courier_stage, Game.health == Game.MAX_HEALTH and activity.serialize_state() == {"version": 1, "stage": courier_stage, "completed_runs": 3})
+		_check("courier stage %d survives a real death/respawn" % courier_stage, Game.death_count == before_death + 1 and Game.health == Game.MAX_HEALTH and activity.serialize_state() == {"version": 1, "stage": courier_stage, "completed_runs": 3})
 	main._new_game()
 	_check("actual New Game resets the optional errand and completion count", activity.serialize_state() == {"version": 1, "stage": 0, "completed_runs": 0})
 	# Restore the surrounding regression fixture, not the user's save slot.
