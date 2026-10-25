@@ -1,0 +1,56 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--ui-review", "--capture-dir=/private/tmp/astra6/package-r3/ui", "--qa-session", "/private/tmp/astra6/package-r3/ui-session", "--save-path=/private/tmp/astra6/package-r3/ui-session/orchard-reach-ui-review-astra6.json", "--qa-render-size=1280x720"]
+[qa-render-size] requested_backing=(1280, 720)
+[perf] threaded preload requested: 140 resources
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 878 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 22, "tris": 12672 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 131, "tris": 97344, "build_ms": 638 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 327 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 80, "median_shrub": 20638, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9992 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":912,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[character-look] loaded bake for player_rigged_loco4.glb::ArrayMesh_gmvhh in 275 ms
+[character-look] loaded bake for civilian_rigged_v2.glb::ArrayMesh_6djpn in 8 ms
+[profile] officer_pool_build_us=5425 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"far_from_water":543,"no_reflect":6133,"small_prop_batches":1089,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): build_grid=9274 batch_static_primitives=3659 downtown_build=1844 background_city=1376 occluders=969 traffic=771 player=359 roads=343 mission_hud_heli=174 world_start=54
+[launch] world_ui_ready_ms=19914 executable=/private/tmp/astra6/package-r3/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach editor_binary=false
+[ui-review] PASS capture_directory
+[ui-review] PASS qa_save_guard
+[bay] submerged geometry hidden from reflection: 18
+[street-prop-colliders] 2926 prop boxes on layer 4096
+[ui-review] PASS rendered_display
+[ui-review] PASS title_ready
+[street] avenue trees=288 candidates=377 clutter=350
+[plaza-life] 28 stations (1 rejected), 8 units
+[ui-review] PASS capture_01_title
+[ui-review] PASS new_game_started
+[ui-review] PASS capture_02_start
+[ui-review] PASS pause_open
+[ui-review] PASS capture_03_pause
+[ui-review] PASS settings_open
+[ui-review] PASS capture_04_settings
+[ui-review] PASS settings_return_to_pause
+[ui-review] PASS capture_05_return_to_pause
+[ui-review] PASS writer_health
+[ui-review] PASS writer_settings
+[ui-review] PASS writer_weapon_ammo
+[ui-review] PASS writer_mission
+[ui-review] PASS writer_player_ready
+[ui-review] PASS writer_held_smg
+[ui-review] PASS save_game_returned_true
+[ui-review] PASS saved_json_valid
+[ui-review] PASS saved_fixture_values
+[ui-review] PASS save_digest_available
+[ui-review] PASS capture_06_saved_fixture
+[ui-review-report] {"captures":[{"label":"01_title","path":"/private/tmp/astra6/package-r3/ui/01_title.png","pause_visible":false,"paused":true,"physics_frame":31,"process_frame":5,"raster_height":720,"raster_width":1280,"settings_visible":false,"ticks_msec":22148,"title_visible":true},{"label":"02_start","path":"/private/tmp/astra6/package-r3/ui/02_start.png","pause_visible":false,"paused":false,"physics_frame":62,"process_frame":13,"raster_height":720,"raster_width":1280,"settings_visible":false,"ticks_msec":22801,"title_visible":false},{"label":"03_pause","path":"/private/tmp/astra6/package-r3/ui/03_pause.png","pause_visible":true,"paused":true,"physics_frame":93,"process_frame":26,"raster_height":720,"raster_width":1280,"settings_visible":false,"ticks_msec":23380,"title_visible":false},{"label":"04_settings","path":"/private/tmp/astra6/package-r3/ui/04_settings.png","pause_visible":false,"paused":true,"physics_frame":124,"process_frame":39,"raster_height":720,"raster_width":1280,"settings_visible":true,"ticks_msec":24004,"title_visible":false},{"label":"05_return_to_pause","path":"/private/tmp/astra6/package-r3/ui/05_return_to_pause.png","pause_visible":true,"paused":true,"physics_frame":155,"process_frame":52,"raster_height":720,"raster_width":1280,"settings_visible":false,"ticks_msec":24574,"title_visible":false},{"label":"06_saved_fixture","path":"/private/tmp/astra6/package-r3/ui/06_saved_fixture.png","pause_visible":false,"paused":false,"physics_frame":186,"process_frame":63,"raster_height":720,"raster_width":1280,"settings_visible":false,"ticks_msec":26013,"title_visible":false}],"checks":[{"details":{},"label":"capture_directory","passed":true},{"details":{"explicit_path":"/private/tmp/astra6/package-r3/ui-session/orchard-reach-ui-review-astra6.json","requires":"--qa-session and a non-symlink /tmp/orchard-reach-ui-review-*.json task save"},"label":"qa_save_guard","passed":true},{"details":{},"label":"rendered_display","passed":true},{"details":{},"label":"title_ready","passed":true},{"details":{},"label":"capture_01_title","passed":true},{"details":{},"label":"new_game_started","passed":true},{"details":{},"label":"capture_02_start","passed":true},{"details":{},"label":"pause_open","passed":true},{"details":{},"label":"capture_03_pause","passed":true},{"details":{},"label":"settings_open","passed":true},{"details":{},"label":"capture_04_settings","passed":true},{"details":{},"label":"settings_return_to_pause","passed":true},{"details":{},"label":"capture_05_return_to_pause","passed":true},{"details":{"actual":83.0},"label":"writer_health","passed":true},{"details":{"hud_visible":true,"invert_y":true,"mouse_sensitivity":1.3,"reduced_shake":true},"label":"writer_settings","passed":true},{"details":{},"label":"writer_weapon_ammo","passed":true},{"details":{},"label":"writer_mission","passed":true},{"details":{},"label":"writer_player_ready","passed":true},{"details":{"representation":"rigged_provider","scene":"res://assets/providers/smg_held.glb"},"label":"writer_held_smg","passed":true},{"details":{},"label":"save_game_returned_true","passed":true},{"details":{},"label":"saved_json_valid","passed":true},{"details":{},"label":"saved_fixture_values","passed":true},{"details":{},"label":"save_digest_available","passed":true},{"details":{},"label":"capture_06_saved_fixture","passed":true}],"completed_ticks_msec":26013,"display_server":"macOS","editor_feature":false,"engine_version":{"build":"official","hash":"a13da4feb8d8aefc283c3763d33a2f170a18d541","hex":263937,"major":4,"minor":7,"patch":1,"status":"stable","string":"4.7.1-stable (official)","timestamp":0},"evidence_kind":"fixture-assisted UI and cross-process save roundtrip; not OS-input or human acceptance","executable":"/private/tmp/astra6/package-r3/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach","exit_code_requested":0,"fixture_label":"orchard-reach-package-roundtrip-v1","native_quit_requested":true,"passed":true,"passed_checks":["capture_directory","qa_save_guard","rendered_display","title_ready","capture_01_title","new_game_started","capture_02_start","pause_open","capture_03_pause","settings_open","capture_04_settings","settings_return_to_pause","capture_05_return_to_pause","writer_health","writer_settings","writer_weapon_ammo","writer_mission","writer_player_ready","writer_held_smg","save_game_returned_true","saved_json_valid","saved_fixture_values","save_digest_available","capture_06_saved_fixture"],"phase":"write","probe_elapsed_msec":6094,"process_id":52792,"save_path":"/private/tmp/astra6/package-r3/ui-session/orchard-reach-ui-review-astra6.json","save_sha256":"b9b9b4df486f3863a9dcf8212a679ad61d512afdb68a7a6e2dc5f7b1c9e5bb69","startup_ready_ticks_msec":19919,"timeout_seconds":45.0,"writer_process_id":null}

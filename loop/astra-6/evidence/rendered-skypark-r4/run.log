@@ -1,0 +1,205 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--qa-session", "/private/tmp/astra6/render-skypark-r4/session", "--qa-render-size=1280x720", "--skypark-stills-dir=/private/tmp/astra6/render-skypark-r4/stills"]
+[qa-render-size] requested_backing=(1280, 720)
+[perf] threaded preload requested: 140 resources
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 1150 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 22, "tris": 12672 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 131, "tris": 97344, "build_ms": 434 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 399 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 80, "median_shrub": 20638, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9992 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":876,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[character-look] loaded bake for player_rigged_loco4.glb::ArrayMesh_gmvhh in 281 ms
+[character-look] loaded bake for civilian_rigged_v2.glb::ArrayMesh_6djpn in 9 ms
+[profile] officer_pool_build_us=4983 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"far_from_water":543,"no_reflect":6133,"small_prop_batches":1089,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): build_grid=4633 batch_static_primitives=2789 downtown_build=1985 background_city=1574 occluders=967 traffic=685 roads=409 player=401 mission_hud_heli=188 world_start=106
+[launch] world_ui_ready_ms=15441 executable=/Applications/Godot.app/Contents/MacOS/Godot editor_binary=true
+[skypark-test] PASS production main creates SkyPark access 
+[bay] submerged geometry hidden from reflection: 18
+[street-prop-colliders] 2926 prop boxes on layer 4096
+[street] avenue trees=288 candidates=377 clutter=350
+[plaza-life] 28 stations (1 rejected), 8 units
+[skypark-test] PASS remote and invalid station denied 
+[skypark-test] PASS ground arrival has floor and capsule clearance 
+[skypark-test] PASS strict rooftop exit permits center 
+[skypark-test] PASS strict rooftop exit refuses deck edge 
+[skypark-test] PASS other rooftop and map escape refused 
+[skypark-test] PASS existing ground pad behavior retained 
+[skypark-test] PASS roof arrival has floor and capsule clearance 
+[skypark-test] PASS north promenade entry ramp crosses without jump 
+[skypark-test] PASS Event Plaza ramp reaches lift on foot 
+[skypark-test] PASS ground lift reachable 
+[skypark-test] PASS pause guard 
+[skypark-test] PASS busy guard 
+[skypark-test] PASS dead guard 
+[skypark-test] PASS vehicle mode guard 1 
+[skypark-test] PASS vehicle mode guard 2 
+[skypark-test] PASS occupied vehicle guard independent of mode 
+[skypark-test] PASS foreign actor guard 
+[skypark-test] PASS LOS wall denies direct interaction 
+[skypark-test] PASS blocked arrival refuses lift without moving player 
+[skypark-test] PASS negative-fixture toast expires before positive still 
+[skypark-test] PASS real E lifts to public terrace (-39.0, 200.0267, -698.0)
+[skypark-test] PASS health story wanted and courier preserved 
+[skypark-test] PASS safe checkpoint remains reachable ground 
+[skypark-test] PASS immediate double use denied 
+[skypark-test] PASS native save rooftop position 
+[skypark-test] PASS native load preserves exact rooftop position 
+[skypark-test] PASS loaded player walks back to lift 
+[skypark-test] PASS real E returns to ground 
+[skypark-test] PASS public terrace floor continuous 
+[skypark-test] PASS visible boundary has collision (-1.0, 0.0, 0.0) 
+[skypark-test] PASS visible boundary has collision (1.0, 0.0, 0.0) 
+[skypark-test] PASS visible boundary has collision (0.0, 0.0, -1.0) 
+[skypark-test] PASS visible boundary has collision (0.0, 0.0, 1.0) 
+[skypark-test] PASS controller cannot jump past terrace (-1.0, 0.0, 0.0) (-87.54572, 199.9743, -698.0)
+[skypark-test] PASS controller cannot jump past terrace (1.0, 0.0, 0.0) (-38.30695, 199.9758, -698.0)
+[skypark-test] PASS controller cannot jump past terrace (0.0, 0.0, -1.0) (-63.0, 199.9751, -706.5591)
+[skypark-test] PASS controller cannot jump past terrace (0.0, 0.0, 1.0) (-63.0, 199.9758, -689.4409)
+[skypark-test] PASS three actual roof NPC visitors 
+[skypark-test] PASS visitor has live NPC floor and character 
+[skypark-test] PASS visitor has live NPC floor and character 
+[skypark-test] PASS visitor has live NPC floor and character 
+[skypark-test] PASS walk to furnished viewing area 
+[skypark-test] PASS real shot event dispatch panics all visitors 
+[skypark-test] PASS panicking visitors stay outside aircraft clearance 
+[skypark-test] PASS visitor settles back to roof-local idle 
+[skypark-test] PASS visitor settles back to roof-local idle 
+[skypark-test] PASS visitor settles back to roof-local idle 
+[skypark-test] PASS supported aircraft center heading 0 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 0 
+[skypark-test] PASS supported visible pilot center heading 0 
+[skypark-test] PASS supported aircraft center heading 45 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 45 
+[skypark-test] PASS supported visible pilot center heading 45 
+[skypark-test] PASS supported aircraft center heading 90 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 90 
+[skypark-test] PASS supported visible pilot center heading 90 
+[skypark-test] PASS supported aircraft center heading 135 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 135 
+[skypark-test] PASS supported visible pilot center heading 135 
+[skypark-test] PASS supported aircraft center heading 180 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 180 
+[skypark-test] PASS supported visible pilot center heading 180 
+[skypark-test] PASS supported aircraft center heading 225 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 225 
+[skypark-test] PASS supported visible pilot center heading 225 
+[skypark-test] PASS supported aircraft center heading 270 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 270 
+[skypark-test] PASS supported visible pilot center heading 270 
+[skypark-test] PASS supported aircraft center heading 315 (-63.0, 199.7002, -698.0)
+[skypark-test] PASS real E exit center heading 315 
+[skypark-test] PASS supported visible pilot center heading 315 
+[skypark-test] PASS supported aircraft boundary 2.50m heading 0 (-60.5, 199.7002, -698.0)
+[skypark-test] PASS real E exit boundary 2.50m heading 0 
+[skypark-test] PASS supported visible pilot boundary 2.50m heading 0 
+[skypark-test] PASS supported aircraft boundary 2.49m heading 45 (-61.2393, 199.7002, -696.2393)
+[skypark-test] PASS real E exit boundary 2.49m heading 45 
+[skypark-test] PASS supported visible pilot boundary 2.49m heading 45 
+[skypark-test] PASS supported aircraft boundary 2.50m heading 90 (-63.0, 199.7002, -695.5)
+[skypark-test] PASS real E exit boundary 2.50m heading 90 
+[skypark-test] PASS supported visible pilot boundary 2.50m heading 90 
+[skypark-test] PASS supported aircraft boundary 2.49m heading 135 (-64.7607, 199.7002, -696.2393)
+[skypark-test] PASS real E exit boundary 2.49m heading 135 
+[skypark-test] PASS supported visible pilot boundary 2.49m heading 135 
+[skypark-test] PASS supported aircraft boundary 2.50m heading 180 (-65.5, 199.7002, -698.0)
+[skypark-test] PASS real E exit boundary 2.50m heading 180 
+[skypark-test] PASS supported visible pilot boundary 2.50m heading 180 
+[skypark-test] PASS supported aircraft boundary 2.49m heading 225 (-64.7607, 199.7002, -699.7607)
+[skypark-test] PASS real E exit boundary 2.49m heading 225 
+[skypark-test] PASS supported visible pilot boundary 2.49m heading 225 
+[skypark-test] PASS supported aircraft boundary 2.50m heading 270 (-63.0, 199.7002, -700.5)
+[skypark-test] PASS real E exit boundary 2.50m heading 270 
+[skypark-test] PASS supported visible pilot boundary 2.50m heading 270 
+[skypark-test] PASS supported aircraft boundary 2.49m heading 315 (-61.2393, 199.7002, -699.7607)
+[skypark-test] PASS real E exit boundary 2.49m heading 315 
+[skypark-test] PASS supported visible pilot boundary 2.49m heading 315 
+[skypark-test] PASS supported aircraft outside 2.5m boundary 0 (-60.4, 199.7002, -698.0)
+[skypark-test] PASS real E refused outside 2.5m boundary 0 
+[skypark-test] PASS supported aircraft outside 2.5m boundary 90 (-63.0, 199.7002, -695.4)
+[skypark-test] PASS real E refused outside 2.5m boundary 90 
+[skypark-test] PASS supported aircraft outside 2.5m boundary 180 (-65.6, 199.7002, -698.0)
+[skypark-test] PASS real E refused outside 2.5m boundary 180 
+[skypark-test] PASS supported aircraft outside 2.5m boundary 270 (-63.0, 199.7002, -700.6)
+[skypark-test] PASS real E refused outside 2.5m boundary 270 
+[skypark-test] PASS 6m rotor and tail cylinder at allowed exit boundary 
+[skypark-test] PASS flight controls ascend 
+[skypark-test] PASS input flight lands within strict pad exit radius (-63.0, 199.701, -697.9833)
+[skypark-test] PASS flight leg has no teleport max_step=0.180
+[skypark-test] PASS flight aircraft undamaged 
+[skypark-test] PASS E exits landed helicopter 
+[skypark-test] PASS flight pilot walks to public lift 
+[skypark-test] PASS flight pilot returns to Event Plaza by E 
+[skypark-test] PASS death test reaches roof through E 
+[skypark-test] PASS rooftop death recovers once at ground 
+[skypark-test] PASS death recovery restores live visible foot controller 
+[skypark-test] PASS recovered controller walks normally 
+[skypark-test] PASS recovered controller returns to lift 
+[skypark-test] PASS lift reusable after death 
+[skypark-test] PASS fresh-scene fixture starts on public terrace 
+[skypark-test] PASS walk to distinct rooftop save position 
+[skypark-test] PASS save before scene teardown 
+[skypark-test] PASS old scene fully removed 
+[wave1] main ready, args=["--qa-session", "/private/tmp/astra6/render-skypark-r4/session", "--qa-render-size=1280x720", "--skypark-stills-dir=/private/tmp/astra6/render-skypark-r4/stills"]
+[qa-render-size] requested_backing=(1280, 720)
+[perf] threaded preload requested: 280 resources
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 1128 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 22, "tris": 12672 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 131, "tris": 97344, "build_ms": 91 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 396 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 160, "median_shrub": 41276, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9992 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":1039,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[profile] officer_pool_build_us=5857 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"far_from_water":543,"no_reflect":6133,"small_prop_batches":1089,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): boot=103321 build_grid=8185 background_city=1650 downtown_build=1617 batch_static_primitives=1352 occluders=1079 traffic=478 roads=301 mission_hud_heli=99 player=93 world_start=3
+[launch] world_ui_ready_ms=133619 executable=/Applications/Godot.app/Contents/MacOS/Godot editor_binary=true
+[skypark-test] PASS fresh production main creates one access controller 
+[bay] submerged geometry hidden from reflection: 18
+[street] avenue trees=288 candidates=377 clutter=350
+[plaza-life] 28 stations (1 rejected), 8 units
+[skypark-test] PASS fresh-scene native load keeps exact rooftop position 
+[skypark-test] PASS fresh-scene loaded player has floor and live controls 
+[skypark-test] PASS fresh-scene loaded player walks to return lift 
+[skypark-test] PASS fresh-scene return lift works through E 
+[skypark-test] PASS combat observer reaches roof by E 
+[skypark-test] PASS combat observer walks near viewing area 
+[skypark-test] PASS native nonlethal damage and stagger east toward pad 
+[skypark-test] PASS live damage fixture clears aircraft east toward pad nearest_pad=13.958 moved=4.170
+[skypark-test] PASS native nonlethal damage and stagger west toward rail 
+[skypark-test] PASS live damage fixture clears aircraft west toward rail nearest_pad=21.248 moved=2.367
+[skypark-test] PASS native nonlethal damage and stagger bay edge 
+[skypark-test] PASS live damage fixture clears aircraft bay edge nearest_pad=18.208 moved=5.690
+[skypark-test] PASS native nonlethal damage and stagger landward edge 
+[skypark-test] PASS live damage fixture clears aircraft landward edge nearest_pad=16.650 moved=6.154
+[skypark-test] PASS native lethal damage creates independent ragdoll 
+[skypark-test] PASS lethal fixture simulates native physical bones bones=12 motion=3.136
+[skypark-test] FAIL native ragdoll solver remains stable blowups=1
+[skypark-test] PASS observed lethal fixture remains clear of aircraft nearest_bone_pad=12.008
+[skypark-test] FAIL ragdoll bone-node floor gate includes fallback state min_y=198.453 over_deck=true
+[skypark-test] RAGDOLL_PHASES {"active_min_body_y":198.453338623047,"active_min_node_y":199.895385742188,"active_samples":348,"fallback_min_body_y":198.453338623047,"fallback_min_node_y":198.453338623047}
+[skypark-test] RAGDOLL_MIN_SAMPLE {"actor_root_world":"(-77.0, 199.9801, -698.0)","bone":"PB_upper_arm_l","bone_node_world":"(-76.56504, 198.4533, -698.4377)","frame":29,"guard_tripped":true,"influence":0.0,"physics_body_world":"(-76.56504, 198.4533, -698.4377)","simulating":false,"skeletal_pose_world":"(-77.15503, 200.5771, -699.3817)","skeleton_root_world":"(-77.0, 200.0002, -698.0)","visual_root_world":"(-77.0, 200.0002, -698.0)"}
+[skypark-test] RAGDOLL_NATIVE_GUARD y=-1.66 h=0.62 PB_upper_arm_l
+[skypark-test] RAGDOLL_SCOPE one native lethal fixture; post-fallback node floor failure is not rendered mesh-floor proof; stability failure remains
+[skypark-test] RESULT 140/142 failures=["native ragdoll solver remains stable", "ragdoll bone-node floor gate includes fallback state"]
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)

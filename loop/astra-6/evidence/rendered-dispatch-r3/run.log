@@ -1,0 +1,63 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[courier-test] PASS courier stills directory /private/tmp/astra6/render-courier-dispatch-r3/session/stills
+[wave1] main ready, args=["--qa-session", "/private/tmp/astra6/render-courier-dispatch-r3/session", "--courier-stills-dir=/private/tmp/astra6/render-courier-dispatch-r3/session/stills", "--courier-dispatch-review", "--qa-render-size=1280x720"]
+[qa-render-size] requested_backing=(1280, 720)
+[perf] threaded preload requested: 140 resources
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 1106 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 22, "tris": 12672 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 131, "tris": 97344, "build_ms": 771 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 389 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 80, "median_shrub": 20638, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9992 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":993,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[character-look] loaded bake for player_rigged_loco4.glb::ArrayMesh_gmvhh in 321 ms
+[character-look] loaded bake for civilian_rigged_v2.glb::ArrayMesh_6djpn in 8 ms
+[profile] officer_pool_build_us=6081 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"far_from_water":543,"no_reflect":6133,"small_prop_batches":1089,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): build_grid=9210 batch_static_primitives=4022 downtown_build=2269 background_city=1489 occluders=1080 traffic=719 roads=441 player=425 mission_hud_heli=184 world_start=100
+[launch] world_ui_ready_ms=21597 executable=/Applications/Godot.app/Contents/MacOS/Godot editor_binary=true
+[courier-test] FIXTURE dispatch visual review starts 8m from station; NOT normal-spawn traversal.
+[bay] submerged geometry hidden from reflection: 18
+[street-prop-colliders] 2926 prop boxes on layer 4096
+[street] avenue trees=288 candidates=377 clutter=350
+[plaza-life] 28 stations (1 rejected), 8 units
+[courier-test] PASS far pickup rejected 
+[courier-test] PASS unknown station rejected 
+[courier-route] heritage approach 1/1 at=(-144.0, 0.267601, -336.0877)
+[courier-test] PASS heritage approach 
+[courier-test] PASS dispatch physically reachable 
+[courier-test] PASS near dispatch marker yields to real E prompt 
+[courier-test] PASS stills use active player camera 01_dispatch_arrival 
+[courier-test] PASS actual viewport image 01_dispatch_arrival /private/tmp/astra6/render-courier-dispatch-r3/session/stills/01_dispatch_arrival.png
+[courier-stills] {"courier_state":{"completed_runs":0,"stage":0,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-dispatch-r3/session/stills/01_dispatch_arrival.png","height":720,"label":"01_dispatch_arrival","physics_frame":146,"player_position":[-144.0,0.275748193264008,-337.4765625],"saved":true,"width":1280}
+[courier-test] PASS foreign actor rejected 
+[courier-test] PASS paused handover rejected 
+[courier-test] PASS busy transition rejected 
+[courier-test] PASS vehicle mode rejects handover 1 
+[courier-test] PASS vehicle mode rejects handover 2 
+[courier-test] PASS E picks up parcel 
+[courier-test] PASS snapshot survives JSON roundtrip 
+[courier-test] PASS invalid snapshot rejected atomically 
+[courier-test] PASS fractional state rejected 
+[courier-test] PASS legacy empty payload rejected by parser 
+[courier-test] PASS E returns parcel to cancel 
+[courier-test] PASS cancelled run can restart 
+[courier-test] PASS remote destination rejected 
+[courier-test] PASS wall blocks handover 
+[courier-stills] Clearing expected fixture toasts before 02_parcel_collected; all assertions remain in the route log.
+[courier-test] PASS stills use active player camera 02_parcel_collected 
+[courier-test] PASS actual viewport image 02_parcel_collected /private/tmp/astra6/render-courier-dispatch-r3/session/stills/02_parcel_collected.png
+[courier-stills] {"courier_state":{"completed_runs":0,"stage":1,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-dispatch-r3/session/stills/02_parcel_collected.png","height":720,"label":"02_parcel_collected","physics_frame":257,"player_position":[-144.0,0.275333791971207,-337.235504150391],"saved":true,"width":1280}
+[courier-test] PASS distant delivery marker remains visible 
+[courier-test] Dispatch visual review only; full outward and return journey NOT RUN.
+[courier-test] RESULT {"checks":25,"curb_jumps":0,"elapsed_s":30.818,"failures":[],"journey_completed":false,"max_step_m":0.213206931948662,"mode":"dispatch_visual_review","stills":[{"courier_state":{"completed_runs":0,"stage":0,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-dispatch-r3/session/stills/01_dispatch_arrival.png","height":720,"label":"01_dispatch_arrival","physics_frame":146,"player_position":[-144.0,0.275748193264008,-337.4765625],"saved":true,"width":1280},{"courier_state":{"completed_runs":0,"stage":1,"version":1},"failed_assertions":[],"file":"/private/tmp/astra6/render-courier-dispatch-r3/session/stills/02_parcel_collected.png","height":720,"label":"02_parcel_collected","physics_frame":257,"player_position":[-144.0,0.275333791971207,-337.235504150391],"saved":true,"width":1280}],"travel_m":7.90914039337076}

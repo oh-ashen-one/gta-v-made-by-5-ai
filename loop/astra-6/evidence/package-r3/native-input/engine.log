@@ -1,0 +1,31 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M3 Ultra (Apple9)
+
+[wave1] main ready, args=["--qa-session", "/private/tmp/astra6/package-r3/native-input/session", "--qa-render-size=1280x720"]
+[qa-render-size] requested_backing=(1280, 720)
+[perf] threaded preload requested: 140 resources
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 887 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 22, "tris": 12672 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 131, "tris": 97344, "build_ms": 260 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 334 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 80, "median_shrub": 20638, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9992 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":584,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[character-look] loaded bake for player_rigged_loco4.glb::ArrayMesh_gmvhh in 281 ms
+[character-look] loaded bake for civilian_rigged_v2.glb::ArrayMesh_6djpn in 8 ms
+[profile] officer_pool_build_us=4463 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"far_from_water":543,"no_reflect":6133,"small_prop_batches":1089,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): build_grid=1943 batch_static_primitives=1640 downtown_build=1484 background_city=1349 occluders=641 traffic=498 player=334 roads=292 mission_hud_heli=166 world_start=55
+[launch] world_ui_ready_ms=9425 executable=/private/tmp/astra6/package-r3/signed/Orchard Reach.app/Contents/MacOS/Orchard Reach editor_binary=false
+[bay] submerged geometry hidden from reflection: 18
+[street-prop-colliders] 2926 prop boxes on layer 4096
+[street] avenue trees=288 candidates=377 clutter=350
+[plaza-life] 28 stations (1 rejected), 8 units

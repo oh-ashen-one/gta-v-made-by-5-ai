@@ -1,0 +1,47 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[wave1] main ready, args=["--qa-session", "/private/tmp/astra6/skypark-combat-margin-r1/session", "--skypark-combat-probe"]
+[downtown] piece loaded: res://src/world/downtown/map.gd
+[downtown] piece loaded: res://src/world/downtown/landmarks.gd
+[downtown] piece loaded: res://src/world/downtown/blocks.gd
+[world] skyline city: 1434 towers; roof kit: 247 roofs
+[downtown-map] built in 1034 ms: 1861 collision shapes, 331 mesh draws, 837 lamps, 261 trees
+[landmarks] built { "skyline_dropped": 0, "interim_ground": { "active": false }, "mbs": { "shapes": 22, "tris": 12672 }, "helix": { "shapes": 9, "tris": 37760, "length": 220.563658714294 }, "artscience": { "shapes": 24, "tris": 4494 }, "esplanade": { "shapes": 13, "tris": 10496, "sunshades": 3132 }, "flyer": { "shapes": 17, "tris": 1794, "wheel": true }, "gardens": { "shapes": 19, "tris": 24142, "supertrees": 14 }, "fullerton": { "shapes": 11, "tris": 5986 }, "shapes": 131, "tris": 97344, "build_ms": 187 }
+[downtown-blocks] built 36 blocks, 86 buildings (49 towers), 269 collision boxes, 430 trees, 14283 m linkway, carpet clipped 2, legacy towers removed 12 in 484 ms
+[downtown-map] lane graph: 64 nodes, 72 edges, 10 legacy links, 60 parked, 57 ped lanes
+[materials] surface dressing { "shophouses": 269, "hdb": 12, "infill": 247, "condensers": 1493, "pipes": 1032, "cables": 807, "roof_props": 0, "overlays": 9, "roof_caps_fixed": 0, "shop_floor": 1 }
+[street-dressing] 16 weathering volumes, props: { "ac_unit": 529, "downpipe": 269, "meter_box": 269, "table_stools": 94, "a_frame": 130, "bicycle": 609, "weeds": 1120, "litter": 482, "display_stall": 48, "crates": 50, "drain_grate": 877, "bin": 210, "cone": 106, "utility_cabinet": 139, "scooter": 669, "signpost": 166, "bollard": 596, "median_nose": 80, "median_shrub": 20638, "yellow_box_junction": 25 }
+[lighting] practicals: 463 lights (56 lamps, 269 arcade, 120 void deck), 7 fixture batches
+[world] static primitive batching: 9992 meshes -> 1242 multimesh draws
+[downtown-planting] { "strip_clumps": 21041, "palms": 168, "median_clumps": 898, "forecourt_beds": 1164, "species": 6, "shrub_kinds": ["ixora", "mondo", "fern", "croton"] }
+[downtown-fill] {"canopy":{"angsana":340,"crowns_in_kept_open":0,"draws":116,"empty_lawn_blocks":0,"flame":270,"lawn_blocks":10,"rain":435,"shrub":833,"tembusu":297,"total":2175},"empty_lawn_blocks":0,"garden":{"cut_cells":8762,"shore_shrubs":40,"walk_m":1309},"lawn_blocks":10,"lawn_cells":101713,"ms":665,"park_panels":16,"plazas":{"benches":53,"esplanade":10,"mbs":36,"merlion":5,"nearfield":{"bench_bins":9,"bollard_groups":9,"clusters":55,"joints":947,"planters":17,"racks":5,"stains":61,"tables":11,"totems":4},"ns_square":26,"palms":65,"shapes":100,"umbrella_tables":30},"roofs":{"boxes":269,"draws":98,"roofs":77}}
+[perf] occluders built: 499
+[profile] officer_pool_build_us=744302 size=5 police_cars=2
+[perf] director: {"car_proxies_on":0,"car_real_on":0,"cars":0,"no_reflect":4974,"small_prop_batches":238,"tree_lod_biased":170}
+[perf] load laps (world_ui_ready): traffic=2196 downtown_build=1727 build_grid=1674 player=1538 roads=945 mission_hud_heli=810 occluders=749 background_city=421 batch_static_primitives=273 world_start=92
+[launch] world_ui_ready_ms=11718 executable=/Applications/Godot.app/Contents/MacOS/Godot editor_binary=true
+[skypark-test] PASS production main creates SkyPark access 
+[bay] submerged geometry hidden from reflection: 14
+[street-prop-colliders] 2926 prop boxes on layer 4096
+[street] avenue trees=288 candidates=377 clutter=350
+[plaza-life] 28 stations (1 rejected), 8 units
+[skypark-test] PASS combat observer reaches roof by E 
+[skypark-test] PASS combat observer walks near viewing area 
+[skypark-test] PASS native nonlethal damage and stagger east toward pad 
+[skypark-test] PASS live damage fixture clears aircraft east toward pad nearest_pad=13.951 moved=4.743
+[skypark-test] PASS native nonlethal damage and stagger west toward rail 
+[skypark-test] PASS live damage fixture clears aircraft west toward rail nearest_pad=21.598 moved=1.741
+[skypark-test] PASS native nonlethal damage and stagger bay edge 
+[skypark-test] PASS live damage fixture clears aircraft bay edge nearest_pad=18.092 moved=4.791
+[skypark-test] PASS native nonlethal damage and stagger landward edge 
+[skypark-test] PASS live damage fixture clears aircraft landward edge nearest_pad=16.644 moved=3.752
+[skypark-test] PASS native lethal damage creates independent ragdoll 
+[skypark-test] PASS lethal fixture simulates native physical bones bones=12 motion=4.266
+[skypark-test] FAIL native ragdoll solver remains stable blowups=1
+[skypark-test] PASS observed lethal fixture remains clear of aircraft nearest_bone_pad=10.679
+[skypark-test] FAIL ragdoll bone-node floor gate includes fallback state min_y=199.372 over_deck=true
+[skypark-test] RAGDOLL_PHASES {"active_min_body_y":199.372100830078,"active_min_node_y":199.372100830078,"active_samples":348,"fallback_min_body_y":199.493530273438,"fallback_min_node_y":199.493530273438}
+[skypark-test] RAGDOLL_MIN_SAMPLE {"actor_root_world":"(-77.0, 199.9801, -698.0)","bone":"PB_thigh_l","bone_node_world":"(-76.44725, 199.3721, -698.369)","frame":28,"guard_tripped":false,"influence":1.0,"physics_body_world":"(-76.82076, 199.4935, -699.2424)","simulating":true,"skeletal_pose_world":"(-77.06158, 200.739, -698.7161)","skeleton_root_world":"(-77.0, 200.0002, -698.0)","visual_root_world":"(-77.0, 200.0002, -698.0)"}
+[skypark-test] RAGDOLL_NATIVE_GUARD y=-0.40 h=0.77 PB_pelvis
+[skypark-test] RAGDOLL_SCOPE one native lethal fixture; post-fallback node floor failure is not rendered mesh-floor proof; stability failure remains
+[skypark-test] COMBAT_PROBE_RESULT 14/16 failures=["native ragdoll solver remains stable", "ragdoll bone-node floor gate includes fallback state"]

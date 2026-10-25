@@ -1,0 +1,30 @@
+{
+  "kind": "Native macOS keyboard input through task-owned CUA application, not a human acceptance test",
+  "package_sha256": "36dfc8d695acdaabed69ddaaad3df1c23eed0b41b17ed07e926be3d168c55bc7",
+  "actions": [
+    "Title Enter started New Game",
+    "F5 wrote only explicit isolated QA save",
+    "W held3000ms: saved displacement9.795m",
+    "Shift+W held3000ms moved10.322m in crowd; no separate sprint-engagement claim",
+    "D and W moved from pavement into road",
+    "Second Shift+W held3000ms moved10.411m; modifier delivery/sprint behavior not independently established",
+    "E on transient passing-car prompt did not board; car had moved away",
+    "Approached stationary sedan through normal W/S/A/D; E boarded, vehicle camera and Exit prompt observed",
+    "W3000ms and Space1200ms moved sedan down avenue and stopped it; E restored on-foot camera",
+    "W2200ms and F5 after exit produced saved ground-level position [-165.525177,0.035831,-123.398552], health100"
+  ],
+  "termination": "480s supervisor ended session with TERM; exit124/timeout is bounded manual-session completion, not a clean automated-test pass. Final pause-menu observation timed out.",
+  "cua_relaunch_incident": {
+    "pid": 58285,
+    "started_utc": "2026-10-25T21:27:15Z",
+    "cause": "Native CUA binding relaunched the task app after bounded engine stopped, without QA args.",
+    "action": "Verified exact task app path, SIGTERM, confirmed exit; CUA binding reset. No foreign process touched.",
+    "default_save_mtime_verified": "2026-10-22T10:32:07.274178Z",
+    "default_save_write_observed": false
+  },
+  "limits": [
+    "No native helicopter flight or entire downtown drive performed in this short keyboard session",
+    "Native screenshot observations are in task tool history; durable screenshots come from separately labeled runtime captures",
+    "No human judgement of feel, audio, animation quality or performance acceptance"
+  ]
+}
