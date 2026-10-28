@@ -1210,8 +1210,19 @@ func _count_meshes(node: Node) -> int:
 		count += _count_meshes(child)
 	return count
 
+func _process(_delta: float) -> void:
+	# A Timer may consume a cold world's accumulated first-frame delta.
+	# The suite deadline is actual monotonic time since run(), not scene load.
+	if not _reported and _started_ms > 0 and Time.get_ticks_msec() - _started_ms >= int(WATCHDOG_SECONDS * 1000.0):
+		_watchdog()
+
 func _watchdog() -> void:
 	if _reported:
+		return
+	var elapsed_ms := Time.get_ticks_msec() - _started_ms
+	if elapsed_ms < int(WATCHDOG_SECONDS * 1000.0):
+		print("[suite-watchdog] Ignoring accumulated pre-suite frame delta; actual_elapsed_ms=", elapsed_ms)
+		_watchdog_timer.start(WATCHDOG_SECONDS - float(elapsed_ms) / 1000.0)
 		return
 	_check("suite finished before watchdog deadline", false, "%d-second in-engine watchdog expired" % int(WATCHDOG_SECONDS))
 	await _report(true)
