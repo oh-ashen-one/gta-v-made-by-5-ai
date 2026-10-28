@@ -2,8 +2,8 @@
   "implementation": "continuous_tapered_public_L1_stage_r2",
   "game_default_hooked": false,
   "engine_launched_by_worker": false,
-  "compile_verified": false,
-  "runtime_verified": false,
+  "compile_verified": true,
+  "runtime_verified": true,
   "rendered_fidelity_verified": false,
   "superseded_r1_parent_report": {
     "checks": "25/25",
@@ -33,9 +33,9 @@
   "custom_motion_authored": false,
   "verification_status": "SOURCE_READY_AWAITING_PARENT_COMPILE_PHYSICS_RENDER",
   "source_sha256": {
-    "game/src/world/mbs_interior/public_l1.gd": "d883b9eb34107f34f66317874fb508162e66b8c2229a2f8f818d0fe5284b5e36",
+    "game/src/world/mbs_interior/public_l1.gd": "ec0b4d6759bb5dfead7d4104fe125af72f1df1370b0c6a8737d84c0ab7eb33f6",
     "game/src/world/mbs_interior/site_reference.gd": "0c4d3ad4a98e1b5810bd7b978871bd55431c27367bfce3baf2e866b9ce513d5f",
-    "game/src/systems/fidelity_tests/mbs_interior_public.gd": "bd16768ae0f50c8b8a0cbb214f00f89e748021188c711a745bcddd28badd0325",
+    "game/src/systems/fidelity_tests/mbs_interior_public.gd": "ece88b3c55c97e88b16d7300d7f0da349182829b4c2c028224aa54c4955ba882",
     "game/src/systems/fidelity_tests/mbs_interior_public.tscn": "efdcbfd416a5366ebe96d03e3f38f92db6fb2825dca1d629b072acdedb42c6b3"
   },
   "probe_collision": "Reuses actual production Player capsule resource/local transform/mask; runtime exact-agreement assertion; no physics during source-plan setup",
@@ -49,5 +49,55 @@
     "budget_checked_before_integer_conversions_construction_or_mutation": true,
     "runtime_verified": false
   },
-  "oversized_retry_regression": "Finite1e12 length/width/height failures must leave instance pristine before valid retry"
+  "oversized_retry_regression": "Finite1e12 length/width/height failures must leave instance pristine before valid retry",
+  "retained_r2_runtime_failure": {
+    "checks": 128,
+    "failures": 1,
+    "elapsed_s": 69.098,
+    "gate": "continuous doorway atrium circulation",
+    "evidence": "/private/tmp/singapore-fidelity/mbs-public-l1-r2/run.log",
+    "applies_to_repair": false
+  },
+  "circulation_repair": "Plan whole furnishing footprints against sampled continuous centreline/width; preserve4m public aisle plus0.5m furnishing buffer and25fullycollidingitems",
+  "static_circulation_audit": "CIRCULATION_REPAIR.json; contactpredictionwithin0.000974m; no newruntimepass",
+  "new_runtime_gates": "Actualproductioncapsule full-spine sweeps in bothdirections, peritem aisle contract, actualPlayerwalk unchanged, actualcontact diagnostics onfuturefailure",
+  "runtime_scope": "HEADLESS_TRANSLATED_STANDALONE_PUBLIC_STAGE_ONLY",
+  "parent_runtime_r3": {
+    "checks": 187,
+    "failures": 0,
+    "walk_m": 490.215781213366,
+    "elapsed_s": 80.805,
+    "source_coordinate_and_production_capsule_checks": true,
+    "normal_city_entry_verified": false,
+    "fixture_translation": true,
+    "rendered": false
+  },
+  "retained_r2_failure": {
+    "checks": 128,
+    "failures": [
+      "continuous doorway atrium circulation"
+    ],
+    "cause": "T3 planter obstructed bent central aisle; collision contact matched within0.974mm"
+  },
+  "parent_rendered_r4": {
+    "checks": 191,
+    "failures": 0,
+    "rendered": true,
+    "scope": "Translated standalone public-stage physical traversal and image acquisition, not normal city entry or visual fidelity."
+  },
+  "visual_review": {
+    "verdict": "FAILS real-MBS public identity and below current exterior quality",
+    "largest_gap": "Tall planting/vessels/canopy scale and occupied planted ground composition",
+    "other_gaps": [
+      "pale stone floor/material response",
+      "reception depth and coherent furnishings",
+      "legible wayfinding",
+      "glazed entrance detail"
+    ],
+    "full_building_assembly_gaps": [
+      "tower balcony/room faces",
+      "exterior city context"
+    ],
+    "normal_city_entry_verified": false
+  }
 }

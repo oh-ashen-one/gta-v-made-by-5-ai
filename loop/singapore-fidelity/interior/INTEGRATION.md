@@ -54,3 +54,15 @@ These changes are source-only. The new exact-collider/budget tests and revised g
 ## Parent source review checkpoint
 
 A fresh independent critic re-reviewed the continuous envelope and the follow-up fixes. It found no remaining source-level P1/P2 in transactional planning, absolute placement, shared loft joins, exact production-capsule use/lifecycle or bounded construction. This is code-only approval. Parsing, collision behaviour, actual walking and rendered appearance are still pending; the earlier25/25 is only the supersededR1shell. Full room inventory and normal source-coordinate city entry remain incomplete.
+
+## R2 circulation failure and source-only repair
+
+The parent's actual R2 run completed 128 checks with exactly one failure: the continuous Player walk stopped on approach to T3. The retained evidence is `/private/tmp/singapore-fidelity/mbs-public-l1-r2/run.log` and its supervisor metadata. All preceding placement, budget, actual-capsule, join-edge, floor, ceiling and doorway checks passed; the walking failure is not discarded.
+
+The observed fixture stop transforms to module-local (-111.624552, 2.674201). The old south/east T3 planter was centred at (-112.885526, 1.886812), with a 1.8 m square solid collider. Its east/right X face is -111.985526; adding the production capsule radius 0.36 predicts stop X=-111.625526, within **0.000974 m** of the observed stop. The observed Z falls within the planter's [0.986812, 2.786812] interval. This is an exact furnishing obstruction, not evidence that a jump, teleport, disabled collider or weaker arrival test is needed.
+
+The layout now samples the actual continuous envelope at every furnishing footprint's X ends and any profile corner. The same twelve benches, twelve planters and reception counter keep full matching physical collision. Their whole footprints preserve a four-metre central public aisle plus a 0.5 m furniture buffer on each side, with explicit side-wall clearance; the counter has a distinct lounge bay instead of sharing a bench location. An impossible furniture layout rejects the entire temporary plan before any mutation. Precise current fit-out remains unverified.
+
+Static arithmetic in `CIRCULATION_REPAIR.json` checks all 25 retained footprints: minimum centreline-to-inner-edge clearance 2.5 m, minimum wall clearance 0.671481 m, no furniture footprint overlaps. This is source arithmetic, **not** a new runtime or rendered pass. The dedicated test now sweeps the actual production capsule along both directions of each full public spine segment, checks every furnishing's aisle contract, and retains the actual continuous walking loop/thresholds unchanged. A future failure prints real slide-contact body/shape/furnishing identity and contact normals/positions before releasing movement inputs.
+
+Re-run the same scene under a new evidence label such as `mbs-public-l1-r3`; preserve R2 failure evidence. No engine or GPU was launched by this worker.

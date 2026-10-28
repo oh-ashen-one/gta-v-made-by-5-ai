@@ -105,11 +105,11 @@ func _transaction_and_transform_tests() -> void:
 	parent.add_child(module)
 	var original_local: Transform3D = module.transform
 	var rejected: Dictionary = module.build({"corridor_width_m": 100.0})
-	check("failed plan returns failure before state/children/transform mutation", not rejected.get("built", true) and module.zones.is_empty() and module.corridors.is_empty() and module.sections.is_empty() and module.get_child_count() == 0 and module.transform.is_equal_approx(original_local))
+	check("failed plan returns failure before state/children/transform mutation", not rejected.get("built", true) and module.zones.is_empty() and module.corridors.is_empty() and module.sections.is_empty() and module.furniture.is_empty() and module.get_child_count() == 0 and module.transform.is_equal_approx(original_local))
 	for field: String in ["length_m", "width_m", "roof_height_m"]:
 		var huge := {"atrium_dimensions": {"T1": {field: 1.0e12}}}
 		var oversized: Dictionary = module.build(huge)
-		check("finite oversized " + field + " rejected before mutation", not oversized.get("built", true) and module.zones.is_empty() and module.corridors.is_empty() and module.sections.is_empty() and module.get_child_count() == 0 and module.transform.is_equal_approx(original_local))
+		check("finite oversized " + field + " rejected before mutation", not oversized.get("built", true) and module.zones.is_empty() and module.corridors.is_empty() and module.sections.is_empty() and module.furniture.is_empty() and module.get_child_count() == 0 and module.transform.is_equal_approx(original_local))
 	var retry: Dictionary = module.build()
 	check("valid retry is inside explicit preconstruction member budget", retry.get("built", false) and retry.construction_budget.validated_before_integer_conversion_or_construction and retry.construction_budget.estimated_member_upper_bound <= retry.construction_budget.maximum_members)
 	check("failed build can retry with exactly three anchors", retry.get("built", false) and module.zones.size() == 3 and module.corridors.size() == 2 and module.sections.size() == 5)
@@ -124,6 +124,17 @@ func _transaction_and_transform_tests() -> void:
 	await frames(3)
 
 func _join_boundary_tests() -> void:
+	var report: Dictionary = interior.report()
+	check("all original lounge furniture retained with full colliders", interior.furniture.size() == 25 and report.furniture_items == 25)
+	check("explicit central public aisle reserved", is_equal_approx(report.reserved_public_aisle_width_m, 4.0))
+	var furniture_body: StaticBody3D = interior.get_node("MBSPublicL1Collision") as StaticBody3D
+	for item: Dictionary in interior.furniture:
+		var collision: CollisionShape3D = furniture_body.get_node_or_null(NodePath(String(item.id))) as CollisionShape3D
+		var solid_matches: bool = collision != null and not collision.disabled and collision.shape is BoxShape3D
+		if solid_matches:
+			solid_matches = (collision.shape as BoxShape3D).size.is_equal_approx(item.size) and collision.position.is_equal_approx(item.position + Vector3.UP * float((item.size as Vector3).y) * 0.5) and furniture_body.collision_layer == 1
+		check("full matching solid furniture collision retained " + String(item.id), solid_matches)
+		check("furniture footprint preserves clear aisle " + String(item.id), float(item.minimum_centerline_to_inner_edge_m) >= 2.5 - 0.0001 and float(item.minimum_wall_clearance_m) >= 0.25 - 0.0001)
 	var probes: Array[Dictionary] = interior.join_probes_local()
 	check("both side edges covered at all three profile joins", probes.size() == 6)
 	for probe: Dictionary in probes:
@@ -144,6 +155,8 @@ func _join_boundary_tests() -> void:
 	var door: Dictionary = interior.doorway_world()
 	check("whole capsule fits intentional hotel doorway", _capsule_motion_clear(door.outside, door.inside))
 	for link: Dictionary in interior.corridors:
+		check("production capsule full public spine clear " + String(link.from), _capsule_motion_clear(interior.to_global(link.a), interior.to_global(link.b)))
+		check("production capsule full public spine return clear " + String(link.to), _capsule_motion_clear(interior.to_global(link.b), interior.to_global(link.a)))
 		var center: Vector3 = (link.a + link.b) * 0.5
 		var at := interior.to_global(center)
 		var roof := ray(at + Vector3.UP * 2.0, at + Vector3.UP * 100.0)
@@ -250,10 +263,23 @@ func walk_to(target: Vector3, radius: float) -> bool:
 		player.yaw = lerp_angle(player.yaw, atan2(-d.x, -d.z), 0.20)
 		Input.action_press("move_forward")
 		Input.action_press("sprint")
+	if Vector2(player.global_position.x - target.x, player.global_position.z - target.z).length() > radius:
+		_log_blocking_contacts(target)
 	Input.action_release("move_forward")
 	Input.action_release("sprint")
 	await frames(2)
 	return Vector2(player.global_position.x - target.x, player.global_position.z - target.z).length() <= radius + 0.2
+
+func _log_blocking_contacts(target: Vector3) -> void:
+	var contacts: Array[Dictionary] = []
+	for index in player.get_slide_collision_count():
+		var contact := player.get_slide_collision(index)
+		var body: CollisionObject3D = contact.get_collider() as CollisionObject3D
+		var owner: Node3D
+		if body != null:
+			owner = body.shape_owner_get_owner(body.shape_find_owner(contact.get_collider_shape_index())) as Node3D
+		contacts.append({"body": String(body.name) if body != null else "UNKNOWN", "shape": String(owner.name) if owner != null else "UNKNOWN", "furnishing_id": owner.get_meta("furnishing_id", "") if owner != null else "", "normal": contact.get_normal(), "position": contact.get_position()})
+	print("[mbs-public-stage] BLOCKING_CONTACT_DIAGNOSTIC ", JSON.stringify({"player_world": player.global_position, "player_module_local": interior.to_local(player.global_position), "target_world": target, "target_module_local": interior.to_local(target), "contacts": contacts}))
 
 func still(label: String) -> void:
 	if DisplayServer.get_name() == "headless": return

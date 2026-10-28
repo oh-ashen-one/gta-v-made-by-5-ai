@@ -16,11 +16,15 @@ const MAX_ROOF_HEIGHT_M := 300.0
 const MAX_SITE_SPAN_M := 2000.0
 const MAX_ABS_FLOOR_ELEVATION_M := 1000.0
 const MAX_STRUCTURAL_MEMBER_BUDGET := 16000.0
+const PUBLIC_AISLE_WIDTH_M := 4.0
+const AISLE_FURNITURE_BUFFER_M := 0.50
+const FURNITURE_WALL_BUFFER_M := 0.25
 const UNBUILT_AREAS := ["hotel_guest_floor_inventory", "all_guestrooms_and_suites", "hotel_service_and_back_of_house", "hotel_lift_and_stair_cores", "paiza_T2_L55", "public_deck_T3_L56", "public_mezzanine_L57", "guest_pool_restaurants_L57", "shoppes_L1", "shoppes_B1", "shoppes_B2", "casino_B2M", "coach_B2M", "underground_links", "bayfront_station"]
 
 var zones: Array[Dictionary] = []
 var corridors: Array[Dictionary] = []
 var sections: Array[Dictionary] = []
+var furniture: Array[Dictionary] = []
 var portal_local: Dictionary = {}
 var public_path_local: Array[Vector3] = []
 var _assumptions: Array[Dictionary] = []
@@ -45,6 +49,7 @@ func build(config: Dictionary = {}) -> Dictionary:
 	if not plan.get("valid", false): return {"built": false, "error": plan.get("error", "Invalid plan"), "full_requested_interior_verified": false}
 	zones.assign(plan.zones)
 	sections.assign(plan.sections)
+	furniture.assign(plan.furniture)
 	_assumptions.assign(plan.assumptions)
 	_source_position = plan.position
 	_source_basis = plan.basis
@@ -80,7 +85,7 @@ func build(config: Dictionary = {}) -> Dictionary:
 	kit.commit(self, "MBSPublicL1Structure", true)
 	glass.commit(self, "MBSPublicL1Glazing", false)
 	_built = true
-	_report = {"built": true, "module": "source_backed_continuous_public_L1_stage_r2", "source": Reference.DATA.source.duplicate(true), "engineering_source": Reference.ATRIUM_ENGINEERING.duplicate(true), "topology_sources": Reference.DATA.topology_sources.duplicate(true), "tower_source_ids": [], "public_nodes_built": [], "continuous_atrium": true, "isolated_low_tunnels_built": 0, "geometry_metric_status": "HISTORICAL_APPROX_WIDTHS_WITH_EXPLICIT_UNVERIFIED_HEIGHTS_BOUNDARIES", "roof_heights_metric_verified": false, "entrance_metric_verified": false, "floor_elevations_verified": false, "architectural_identity_and_fitout_verified": false, "entire_floor_space_inventory_complete": false, "full_requested_interior_verified": false, "unbuilt_areas": UNBUILT_AREAS.duplicate(), "assumptions": _assumptions.duplicate(true), "triangle_count": kit.tris + glass.tris, "collision_shapes": kit.shapes, "retail_connection_built": false, "expected_approx_hotel_rooms": 1850, "room_inventory_created": 0, "profile_sections": sections.duplicate(true), "construction_budget": plan.construction_budget.duplicate(true)}
+	_report = {"built": true, "module": "source_backed_continuous_public_L1_stage_r2", "source": Reference.DATA.source.duplicate(true), "engineering_source": Reference.ATRIUM_ENGINEERING.duplicate(true), "topology_sources": Reference.DATA.topology_sources.duplicate(true), "tower_source_ids": [], "public_nodes_built": [], "continuous_atrium": true, "isolated_low_tunnels_built": 0, "geometry_metric_status": "HISTORICAL_APPROX_WIDTHS_WITH_EXPLICIT_UNVERIFIED_HEIGHTS_BOUNDARIES", "roof_heights_metric_verified": false, "entrance_metric_verified": false, "floor_elevations_verified": false, "architectural_identity_and_fitout_verified": false, "entire_floor_space_inventory_complete": false, "full_requested_interior_verified": false, "unbuilt_areas": UNBUILT_AREAS.duplicate(), "assumptions": _assumptions.duplicate(true), "triangle_count": kit.tris + glass.tris, "collision_shapes": kit.shapes, "retail_connection_built": false, "expected_approx_hotel_rooms": 1850, "room_inventory_created": 0, "profile_sections": sections.duplicate(true), "construction_budget": plan.construction_budget.duplicate(true), "reserved_public_aisle_width_m": PUBLIC_AISLE_WIDTH_M, "furniture_items": furniture.size(), "furniture_layout": furniture.duplicate(true)}
 	for zone: Dictionary in zones:
 		_report.tower_source_ids.append(zone.source_id)
 		_report.public_nodes_built.append(zone.id)
@@ -154,10 +159,12 @@ func _validated_plan(config: Dictionary) -> Dictionary:
 	var construction_budget := {"estimated_member_upper_bound": member_budget, "maximum_members": MAX_STRUCTURAL_MEMBER_BUDGET, "site_span_m": total_span, "maximum_site_span_m": MAX_SITE_SPAN_M, "maximum_zone_length_m": MAX_ZONE_LENGTH_M, "maximum_zone_width_m": MAX_ZONE_WIDTH_M, "maximum_roof_height_m": MAX_ROOF_HEIGHT_M, "validated_before_integer_conversion_or_construction": true}
 	assumptions.append({"field": "continuous_roof_and_linking_walls", "status": "HISTORICAL_FORM_WITH_STAGED_EXACT_PROFILE", "east_upper_wall_inset_ratio": inset, "why": "Arup shows vertical west and inclined east linking walls/trussed roofs. Exact current section heights, inset, truss spacing and structural connections are not surveyed here. Historic 47m/27m wall spans are not relabeled as roof elevations."})
 	assumptions.append({"field": "entrance_and_floor_elevation", "status": "UNVERIFIED_STAGING_OPENING", "floor_elevation_m": elevation, "why": "No current surveyed hotel entrance/elevation was established."})
+	var furniture_plan: Dictionary = _planned_furniture(new_sections, new_zones, inset)
+	if not furniture_plan.get("valid", false): return furniture_plan
 	var origin: Array = Reference.DATA.origin_world_xz
 	var south_axis: Array = Reference.DATA.axis_south_xz
 	var bay: Array = Reference.DATA.axis_bayward_xz
-	return {"valid": true, "construction_budget": construction_budget, "zones": new_zones, "sections": new_sections, "assumptions": assumptions, "position": Vector3(float(origin[0]), elevation, float(origin[1])), "basis": Basis(Vector3(float(south_axis[0]), 0, float(south_axis[1])), Vector3.UP, Vector3(float(bay[0]), 0, float(bay[1]))), "entrance_tower": String(config.get("entrance_tower", "T1")), "entrance_offset": offset, "entrance_sign": -1.0 if config.get("entrance_side", "bayward") == "landward" else 1.0, "entrance_x": entry_x, "door_width": door_width, "door_height": door_height, "east_inset_ratio": inset}
+	return {"valid": true, "construction_budget": construction_budget, "furniture": furniture_plan.items, "zones": new_zones, "sections": new_sections, "assumptions": assumptions, "position": Vector3(float(origin[0]), elevation, float(origin[1])), "basis": Basis(Vector3(float(south_axis[0]), 0, float(south_axis[1])), Vector3.UP, Vector3(float(bay[0]), 0, float(bay[1]))), "entrance_tower": String(config.get("entrance_tower", "T1")), "entrance_offset": offset, "entrance_sign": -1.0 if config.get("entrance_side", "bayward") == "landward" else 1.0, "entrance_x": entry_x, "door_width": door_width, "door_height": door_height, "east_inset_ratio": inset}
 
 func _edge(section: Dictionary, side: float, y: float = 0.0) -> Vector3:
 	var p: Vector3 = section.center
@@ -168,13 +175,16 @@ func _edge(section: Dictionary, side: float, y: float = 0.0) -> Vector3:
 	return p
 
 func _section_at(x: float) -> Dictionary:
-	for i in sections.size() - 1:
-		var a: Dictionary = sections[i]
-		var b: Dictionary = sections[i + 1]
+	return _sample_sections(sections, x)
+
+func _sample_sections(profile: Array[Dictionary], x: float) -> Dictionary:
+	for i in profile.size() - 1:
+		var a: Dictionary = profile[i]
+		var b: Dictionary = profile[i + 1]
 		if x <= float((b.center as Vector3).x) + 0.0001:
 			var u := clampf((x - float((a.center as Vector3).x)) / float((b.center as Vector3).x - (a.center as Vector3).x), 0.0, 1.0)
 			return {"center": (a.center as Vector3).lerp(b.center, u), "width_m": lerpf(a.width_m, b.width_m, u), "height_m": lerpf(a.height_m, b.height_m, u)}
-	return sections[-1].duplicate(true)
+	return profile[-1].duplicate(true)
 
 func _build_continuous_envelope(kit, glass) -> void:
 	for i in sections.size() - 1:
@@ -300,35 +310,100 @@ func _build_approach(kit) -> void:
 	portal.add_to_group("mbs_interior_portals")
 	_sign(at + Vector3(-_door_width * 0.8, 2.1, 0.05), "HOTEL\nPUBLIC LOBBY", PI if _entrance_sign < 0 else 0.0)
 
+func _planned_furniture(profile: Array[Dictionary], anchors: Array[Dictionary], inset: float) -> Dictionary:
+	var items: Array[Dictionary] = []
+	for zone: Dictionary in anchors:
+		var c: Vector3 = zone.center
+		var length_m: float = zone.length_m
+		for side: float in [-1.0, 1.0]:
+			for index in 2:
+				var x: float = c.x + length_m * (-0.25 if index == 0 else 0.25)
+				var id: String = String(zone.tower) + ("_east_" if side < 0 else "_west_") + str(index)
+				var bench := _planned_lounge_item(profile, x, side, Vector3(2.0, 0.5, 0.5), "bench", String(zone.tower), id + "_bench", inset)
+				if not bench.get("valid", false): return bench
+				items.append(bench.item)
+				var planter := _planned_lounge_item(profile, x + 2.8, side, Vector3(1.8, 0.55, 1.8), "planter", String(zone.tower), id + "_planter", inset)
+				if not planter.get("valid", false): return planter
+				items.append(planter.item)
+		if zone.tower == "T1":
+			# Reception has its own lounge bay, not the same X/Z as a bench.
+			var counter := _planned_lounge_item(profile, c.x + length_m * 0.05, -1.0, Vector3(5.2, 1.24, 1.3), "reception", "T1", "T1_reception", inset)
+			if not counter.get("valid", false): return counter
+			items.append(counter.item)
+	return {"valid": true, "items": items}
+
+func _planned_lounge_item(profile: Array[Dictionary], x: float, side: float, size: Vector3, kind: String, tower: String, id: String, inset: float) -> Dictionary:
+	var half_x := size.x * 0.5
+	var half_z := size.z * 0.5
+	if x - half_x < float((profile[0].center as Vector3).x) + FURNITURE_WALL_BUFFER_M or x + half_x > float((profile[-1].center as Vector3).x) - FURNITURE_WALL_BUFFER_M:
+		return {"valid": false, "error": "Furniture footprint exceeds supported public envelope: " + id}
+	# A bent/tapered atrium needs each whole furniture footprint checked against
+	# its LOCAL centreline and side walls, rather than a fixed tower-anchor Z.
+	var samples: Array[float] = [x - half_x, x, x + half_x]
+	for profile_anchor: Dictionary in profile:
+		var sx: float = (profile_anchor.center as Vector3).x
+		if sx > x - half_x and sx < x + half_x: samples.append(sx)
+	var min_center := INF
+	var max_center := -INF
+	var east_limit := -INF
+	var west_limit := INF
+	for at: float in samples:
+		var sample := _sample_sections(profile, at)
+		var sample_z: float = (sample.center as Vector3).z
+		min_center = minf(min_center, sample_z)
+		max_center = maxf(max_center, sample_z)
+		# Include the inclined east wall at the item's top, not only its base.
+		var east_top: float = sample_z - float(sample.width_m) * 0.5 + float(sample.width_m) * inset * size.y / float(sample.height_m)
+		east_limit = maxf(east_limit, east_top)
+		west_limit = minf(west_limit, sample_z + float(sample.width_m) * 0.5)
+	var section := _sample_sections(profile, x)
+	var center_z: float = (section.center as Vector3).z
+	var preferred: float = center_z + side * float(section.width_m) * 0.31
+	var z: float
+	var aisle_clearance: float
+	var wall_clearance: float
+	if side > 0:
+		z = maxf(preferred, max_center + PUBLIC_AISLE_WIDTH_M * 0.5 + AISLE_FURNITURE_BUFFER_M + half_z)
+		aisle_clearance = z - half_z - max_center
+		wall_clearance = west_limit - z - half_z
+	else:
+		z = minf(preferred, min_center - PUBLIC_AISLE_WIDTH_M * 0.5 - AISLE_FURNITURE_BUFFER_M - half_z)
+		aisle_clearance = min_center - z - half_z
+		wall_clearance = z - half_z - east_limit
+	if wall_clearance < FURNITURE_WALL_BUFFER_M:
+		return {"valid": false, "error": "Furniture cannot preserve central public aisle and wall clearance: " + id}
+	return {"valid": true, "item": {"id": id, "tower": tower, "kind": kind, "position": Vector3(x, 0, z), "size": size, "minimum_centerline_to_inner_edge_m": aisle_clearance, "minimum_wall_clearance_m": wall_clearance, "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT"}}
+
 func _furnish(kit, zone: Dictionary) -> void:
-	var c: Vector3 = zone["center"]
-	var length_m: float = zone["length_m"]
-	var width_m: float = zone["width_m"]
-	var h: float = zone["wall_height_m"]
 	var transforms: Array = []
+	for item: Dictionary in furniture:
+		if item.tower != zone.tower: continue
+		var p: Vector3 = item.position
+		var size: Vector3 = item.size
+		match String(item.kind):
+			"bench": transforms.append(Kit.xf(p))
+			"planter": Realm.planter(kit, p, Vector2(size.x, size.z), size.y, false)
+			"reception":
+				kit.box(Looks.get_mat("timber"), p + Vector3.UP * 0.55, Vector3(5.0, 1.10, 1.1))
+				kit.box(Looks.get_mat("granite_light"), p + Vector3.UP * 1.12, Vector3(5.2, 0.12, 1.3))
+				_sign(p + Vector3(0, 1.8, -0.6), "RECEPTION", 0.0)
+		# Keep complete matching physical collision; nothing is hidden/disabled.
+		kit.col_box(size, p + Vector3.UP * size.y * 0.5)
+		var shape: CollisionShape3D = kit.body.get_child(kit.body.get_child_count() - 1)
+		shape.name = String(item.id)
+		shape.set_meta("furnishing_id", item.id)
+	var c: Vector3 = zone.center
+	var width_m: float = zone.width_m
 	for side: float in [-1.0, 1.0]:
-		for offset: float in [-0.25, 0.25]:
-			var p := c + Vector3(length_m * offset, 0, side * width_m * 0.24)
-			transforms.append(Kit.xf(p))
-			kit.col_box(Vector3(2.0, 0.50, 0.5), p + Vector3.UP * 0.25)
-			Realm.planter(kit, p + Vector3(2.8, 0, 0), Vector2(1.8, 1.8), 0.55, false)
-			kit.col_box(Vector3(1.8, 0.55, 1.8), p + Vector3(2.8, 0.275, 0))
-		var y := minf(h - 1.0, 7.0)
 		var light := OmniLight3D.new()
-		light.position = c + Vector3(0, y, side * width_m * 0.22)
+		light.position = c + Vector3(0, minf(float(zone.wall_height_m) - 1.0, 7.0), side * width_m * 0.22)
 		light.light_color = Color(1.0, 0.85, 0.66)
 		light.light_energy = 1.2
 		light.omni_range = maxf(width_m, 15.0)
 		light.shadow_enabled = false
 		add_child(light)
-	Realm.benches(self, "Atrium" + String(zone["tower"]) + "Benches", transforms)
-	if zone["tower"] == "T1":
-		var at := c + Vector3(length_m * 0.25, 0, -width_m * 0.25)
-		kit.box(Looks.get_mat("timber"), at + Vector3.UP * 0.55, Vector3(5.0, 1.10, 1.1))
-		kit.box(Looks.get_mat("granite_light"), at + Vector3.UP * 1.12, Vector3(5.2, 0.12, 1.3))
-		kit.col_box(Vector3(5.2, 1.24, 1.3), at + Vector3.UP * 0.62)
-		_sign(at + Vector3(0, 1.8, -0.6), "RECEPTION", 0.0)
-	_assumptions.append({"field": String(zone["id"]) + ".loose_furniture_and_lights", "status": "STAGING_ASSUMPTION", "why": "Reused original project benches/planters/materials, not a verified current MBS fit-out."})
+	Realm.benches(self, "Atrium" + String(zone.tower) + "Benches", transforms)
+	_assumptions.append({"field": String(zone.id) + ".loose_furniture_and_lights", "status": "STAGING_ASSUMPTION", "reserved_public_aisle_width_m": PUBLIC_AISLE_WIDTH_M, "why": "Reused original furniture follows sampled continuous-envelope centreline/width; all footprints preserve an explicit clear public aisle. This is not a verified current MBS fit-out."})
 
 func _sign(at: Vector3, title: String, yaw: float) -> void:
 	var label := Label3D.new()
