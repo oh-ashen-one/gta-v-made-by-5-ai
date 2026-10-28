@@ -5,26 +5,32 @@
   "branch": "Astra-6-singapore-fidelity",
   "full_scope_file": "loop/singapore-fidelity/TASK.md",
   "previous_goal_turn": "progress: pushed source loader, compiled real geometry and metadata; original road-node topology independently verified; revised MBS shell and QA fixes code-reviewed; owner play preserved",
-  "updated_utc": "2026-10-28T19:25:31.506147+00:00",
+  "updated_utc": "2026-10-28T21:14:42.014049+00:00",
   "police": "25/25 headless +27/27 rendered, grounded/damageable real officers verified",
   "helicopter": "65/65 fixture headless; fullworld33/33 headless; rendered56/57 with post-reload walking failure, diagnostic rerun pending",
   "geography": "National dependency loader and Bayfront compiled geometry/metadata are pushed. Original node topology verified for 559 selected ways, with 2794 ordered source-coordinate checks; all remain source data, not default runtime migration.",
-  "mbs": "Continuous Arup-text-supported public atrium with actual production capsule and construction-budget fixes is code-reviewed; parsing, physics, rendered appearance and normal city integration pending. Entire building/current private plans remain incomplete.",
+  "mbs": "Revised public stage187/187 headless,490.216m translated fixture; new plan/physics gates passed. No real-city entry, render or entire-building acceptance.",
   "owner_play": {
     "driver_pid": 88900,
     "engine_pid": 88923,
     "started_utc": "2026-10-28T18:31:05.891438+00:00",
     "source_commit": "fb8128af8a8427c10c7e6318a5732009a3d57099",
     "normal_play": true,
-    "stop_or_reload_without_owner_request": false
+    "stop_or_reload_without_owner_request": false,
+    "status": "exited normally",
+    "exit_code": 0,
+    "released_utc": "2026-10-28T19:27:26.634Z"
   },
-  "core_regression": "Authoritative core R2 remains295/297. Test-only native recoil observation and process-frame prompt positive/negative controls are code-reviewed but not rerun.",
-  "verification_wait": "Owner normal-play engine88923/driver88900 still live at latest check; no second task engine launched or owner controls sent.",
+  "core_regression": "R3 default-game headless298/298, exit0/no fatalerrors; new rooftop production edits are later changes and require revalidation.",
+  "verification_wait": "Owner play is terminal, so root resumed sequential owned QA. Verify actual running handle before launch.",
   "current_workers": {
     "sky_pole_builder": "targeted shader source correction; no engine",
     "geography_stream_builder": "three original area-exception completeness audit; no engine"
   },
   "policy_revision": "6e4bcb21855ec88c0513ff4de9ee0e835046c938",
-  "policy_release": "7a2cf010c81f8e96c901",
-  "sky": "Fresh actual-image critic found zenith cloud projection pinching; targeted source fix underway, no render acceptance."
+  "policy_release": "da792027f36b30dda12d",
+  "sky": "Fresh actual-image critic found zenith cloud projection pinching; targeted source fix underway, no render acceptance.",
+  "source_frame": "R1report71checks/no assertionfailures BUT supervisor exit2 due bool/float validation script error; builder correction pending.",
+  "fullworld_helicopter": "Rendered R2 57/57; original one-shot movement3.1668m and reasserted hold3.1684m,0clearedinput samples. PriorR1 failure retained as nonreproduced, nativehuman input still unverified.",
+  "private_plan_source": "Owner has no plans and explicitly delegated all implementation decisions. Build fully explorable coherent plausible undocumented interiors, match documented public spaces, retain source/assumption distinctions; no further preference questions."
 }

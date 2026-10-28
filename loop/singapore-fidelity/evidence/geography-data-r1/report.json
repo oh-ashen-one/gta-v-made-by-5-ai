@@ -1,0 +1,22 @@
+{
+	"actual_source_metrics": {
+		"bytes_read": 6416571,
+		"cache_hits": 0,
+		"cache_misses": 22,
+		"evictions": 10,
+		"failed_queries": 0,
+		"last_query_dependency_files": 22,
+		"last_query_features": 503,
+		"last_query_ms": 998.123,
+		"max_cached_tiles": 12,
+		"metadata_load_ms": 43.82,
+		"queries": 1,
+		"returned_building_candidates": 503,
+		"source_snapshot_utc": "2026-10-27T21:23:59Z",
+		"tile_loads": 22
+	},
+	"actual_source_status": "PASS",
+	"checks": 29,
+	"failures": [],
+	"scope": "Source integrity, bounded cache and spatial broadphase data queries. Not terrain, city migration, appearance, gameplay or FPS acceptance."
+}

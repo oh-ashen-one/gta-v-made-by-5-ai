@@ -1,0 +1,482 @@
+{
+  "checks": 187,
+  "elapsed_s": 80.805,
+  "failures": [],
+  "fixture_translation": true,
+  "full_interior_verified": false,
+  "metrics": {
+    "max_step_m": 0.113728411495686,
+    "maximum_fixture_y": -0.0240595247596502,
+    "minimum_fixture_y": -0.0336214527487755,
+    "report": {
+      "architectural_identity_and_fitout_verified": false,
+      "assumptions": [
+        {
+          "field": "hotel_T3_L1.envelope",
+          "height_status": "UNVERIFIED_METRIC_STAGING_VALUE_NOT_STOREY_CONVERSION",
+          "longitudinal_extent_status": "UNVERIFIED_OSM_DERIVED_STAGING",
+          "value": {
+            "longitudinal_extent_m": 45.5612329394125,
+            "roof_height_m": 27.0,
+            "width_m": 10.0
+          },
+          "why": "Historical source establishes continuous taper and approximate widths/storey counts, not current as-built section elevations/boundary.",
+          "width_status": "HISTORICAL_ARUP_2012_APPROXIMATE"
+        },
+        {
+          "field": "hotel_T2_L1.envelope",
+          "height_status": "UNVERIFIED_METRIC_STAGING_VALUE_NOT_STOREY_CONVERSION",
+          "longitudinal_extent_status": "UNVERIFIED_OSM_DERIVED_STAGING",
+          "value": {
+            "longitudinal_extent_m": 47.8841491190941,
+            "roof_height_m": 47.0,
+            "width_m": 20.0
+          },
+          "why": "Historical source establishes continuous taper and approximate widths/storey counts, not current as-built section elevations/boundary.",
+          "width_status": "HISTORICAL_ARUP_2012_APPROXIMATE"
+        },
+        {
+          "field": "hotel_T1_L1.envelope",
+          "height_status": "UNVERIFIED_METRIC_STAGING_VALUE_NOT_STOREY_CONVERSION",
+          "longitudinal_extent_status": "UNVERIFIED_OSM_DERIVED_STAGING",
+          "value": {
+            "longitudinal_extent_m": 52.2441607655913,
+            "roof_height_m": 76.0,
+            "width_m": 40.0
+          },
+          "why": "Historical source establishes continuous taper and approximate widths/storey counts, not current as-built section elevations/boundary.",
+          "width_status": "HISTORICAL_ARUP_2012_APPROXIMATE"
+        },
+        {
+          "east_upper_wall_inset_ratio": 0.14,
+          "field": "continuous_roof_and_linking_walls",
+          "status": "HISTORICAL_FORM_WITH_STAGED_EXACT_PROFILE",
+          "why": "Arup shows vertical west and inclined east linking walls/trussed roofs. Exact current section heights, inset, truss spacing and structural connections are not surveyed here. Historic 47m/27m wall spans are not relabeled as roof elevations."
+        },
+        {
+          "field": "entrance_and_floor_elevation",
+          "floor_elevation_m": 0.0,
+          "status": "UNVERIFIED_STAGING_OPENING",
+          "why": "No current surveyed hotel entrance/elevation was established."
+        },
+        {
+          "field": "hotel_T3_L1.loose_furniture_and_lights",
+          "reserved_public_aisle_width_m": 4.0,
+          "status": "STAGING_ASSUMPTION",
+          "why": "Reused original furniture follows sampled continuous-envelope centreline/width; all footprints preserve an explicit clear public aisle. This is not a verified current MBS fit-out."
+        },
+        {
+          "field": "hotel_T2_L1.loose_furniture_and_lights",
+          "reserved_public_aisle_width_m": 4.0,
+          "status": "STAGING_ASSUMPTION",
+          "why": "Reused original furniture follows sampled continuous-envelope centreline/width; all footprints preserve an explicit clear public aisle. This is not a verified current MBS fit-out."
+        },
+        {
+          "field": "hotel_T1_L1.loose_furniture_and_lights",
+          "reserved_public_aisle_width_m": 4.0,
+          "status": "STAGING_ASSUMPTION",
+          "why": "Reused original furniture follows sampled continuous-envelope centreline/width; all footprints preserve an explicit clear public aisle. This is not a verified current MBS fit-out."
+        }
+      ],
+      "built": true,
+      "collision_shapes": 46,
+      "construction_budget": {
+        "estimated_member_upper_bound": 2652.0,
+        "maximum_members": 16000.0,
+        "maximum_roof_height_m": 300.0,
+        "maximum_site_span_m": 2000.0,
+        "maximum_zone_length_m": 1000.0,
+        "maximum_zone_width_m": 500.0,
+        "site_span_m": 266.833297729492,
+        "validated_before_integer_conversion_or_construction": true
+      },
+      "continuous_atrium": true,
+      "engineering_source": {
+        "approx_width_m": {
+          "T1": 40.0,
+          "T2": 20.0,
+          "T3": 10.0
+        },
+        "authors": [
+          "Brendon McNiven",
+          "Xiaofeng Wu"
+        ],
+        "continuous_atrium": true,
+        "form": "One connected atrium with declining northern profile; glass linking walls follow tower surfaces, vertical west and inclined east; steel wall/roof trusses and horizontal transoms.",
+        "height_storeys_approx": {
+          "T1": 20,
+          "T3": 6
+        },
+        "link_wall_vertical_span_m": {
+          "T1_T2_max": 47.0,
+          "T2_T3_min": 27.0
+        },
+        "publication": "The Arup Journal 1/2012, printed pages 17-23; atrium pages 21-23",
+        "source_id": "ARUP-JOURNAL-2012-1-ATRIUM",
+        "source_pdf_committed": false,
+        "source_url": "https://www.arup.com/globalassets/downloads/arup-journal/the-arup-journal-2012-issue-1.pdf",
+        "temporal_status": "HISTORICAL_ORIGINAL_ENGINEERING_NOT_2026_FITOUT_SURVEY",
+        "unresolved": [
+          "current exact atrium roof elevations",
+          "storey-to-metre section conversion",
+          "precise current L1 boundaries",
+          "entrance metrics",
+          "2025-2026 refurbishment fitout",
+          "full private floor and room inventory"
+        ]
+      },
+      "entire_floor_space_inventory_complete": false,
+      "entrance_metric_verified": false,
+      "expected_approx_hotel_rooms": 1850,
+      "floor_elevations_verified": false,
+      "full_requested_interior_verified": false,
+      "furniture_items": 25,
+      "furniture_layout": [
+        {
+          "id": "T3_east_0_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 2.85,
+          "minimum_wall_clearance_m": 1.62407407407407,
+          "position": "(-138.4661, 0.0, 1.186812)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T3"
+        },
+        {
+          "id": "T3_east_0_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 2.5,
+          "minimum_wall_clearance_m": 0.671481528547075,
+          "position": "(-135.6661, 0.0, 0.886812)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T3"
+        },
+        {
+          "id": "T3_east_1_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 3.09039593493226,
+          "minimum_wall_clearance_m": 1.68125235059743,
+          "position": "(-115.6855, 0.0, -0.353898)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T3"
+        },
+        {
+          "id": "T3_east_1_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 2.53578340262715,
+          "minimum_wall_clearance_m": 1.09583439681105,
+          "position": "(-112.8855, 0.0, -0.73264)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T3"
+        },
+        {
+          "id": "T3_west_0_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 2.85,
+          "minimum_wall_clearance_m": 1.65,
+          "position": "(-138.4661, 0.0, 7.386812)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T3"
+        },
+        {
+          "id": "T3_west_0_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 2.5,
+          "minimum_wall_clearance_m": 0.700000047683716,
+          "position": "(-135.6661, 0.0, 7.686812)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T3"
+        },
+        {
+          "id": "T3_west_1_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 3.09039569651368,
+          "minimum_wall_clearance_m": 1.80561670767914,
+          "position": "(-115.6855, 0.0, 6.536786)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T3"
+        },
+        {
+          "id": "T3_west_1_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 2.53578340262715,
+          "minimum_wall_clearance_m": 1.21325222987968,
+          "position": "(-112.8855, 0.0, 6.327829)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T3"
+        },
+        {
+          "id": "T2_east_0_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 5.48210495365145,
+          "minimum_wall_clearance_m": 3.14421004930963,
+          "position": "(-36.80048, 0.0, -11.02428)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T2"
+        },
+        {
+          "id": "T2_east_0_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 4.92749313660208,
+          "minimum_wall_clearance_m": 2.55860029835934,
+          "position": "(-34.00048, 0.0, -11.40302)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T2"
+        },
+        {
+          "id": "T2_east_1_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 6.49882203105269,
+          "minimum_wall_clearance_m": 3.9059284430638,
+          "position": "(-12.85841, 0.0, -12.17474)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T2"
+        },
+        {
+          "id": "T2_east_1_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 6.00816117162988,
+          "minimum_wall_clearance_m": 3.3451830387339,
+          "position": "(-10.05841, 0.0, -12.06509)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T2"
+        },
+        {
+          "id": "T2_west_0_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 5.48210495365145,
+          "minimum_wall_clearance_m": 3.27150278815146,
+          "position": "(-36.80048, 0.0, 0.64982)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T2"
+        },
+        {
+          "id": "T2_west_0_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 4.92749218292776,
+          "minimum_wall_clearance_m": 2.67913902560773,
+          "position": "(-34.00048, 0.0, 0.440864)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T2"
+        },
+        {
+          "id": "T2_west_1_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 6.49882250788984,
+          "minimum_wall_clearance_m": 3.76402711220345,
+          "position": "(-12.85841, 0.0, 1.508415)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T2"
+        },
+        {
+          "id": "T2_west_1_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 6.00816164846704,
+          "minimum_wall_clearance_m": 3.22392130947809,
+          "position": "(-10.05841, 0.0, 1.918194)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T2"
+        },
+        {
+          "id": "T1_east_0_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 11.3572481000266,
+          "minimum_wall_clearance_m": 6.87828892252041,
+          "position": "(77.79373, 0.0, -8.624676)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T1"
+        },
+        {
+          "id": "T1_east_0_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 10.8665881942781,
+          "minimum_wall_clearance_m": 6.31713746610437,
+          "position": "(80.59373, 0.0, -8.515024)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T1"
+        },
+        {
+          "id": "T1_east_1_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 12.15,
+          "minimum_wall_clearance_m": 7.31315789473684,
+          "position": "(103.9158, 0.0, -8.113188)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T1"
+        },
+        {
+          "id": "T1_east_1_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 11.5000000238419,
+          "minimum_wall_clearance_m": 6.659473707174,
+          "position": "(106.7158, 0.0, -8.113188)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T1"
+        },
+        {
+          "id": "T1_west_0_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 11.3572490537009,
+          "minimum_wall_clearance_m": 6.74177193763761,
+          "position": "(77.79373, 0.0, 14.77533)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T1"
+        },
+        {
+          "id": "T1_west_0_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 10.8665881942781,
+          "minimum_wall_clearance_m": 6.20166708858656,
+          "position": "(80.59373, 0.0, 15.18511)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T1"
+        },
+        {
+          "id": "T1_west_1_bench",
+          "kind": "bench",
+          "minimum_centerline_to_inner_edge_m": 12.15,
+          "minimum_wall_clearance_m": 7.35,
+          "position": "(103.9158, 0.0, 16.68681)",
+          "size": "(2.0, 0.5, 0.5)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T1"
+        },
+        {
+          "id": "T1_west_1_planter",
+          "kind": "planter",
+          "minimum_centerline_to_inner_edge_m": 11.5000000238419,
+          "minimum_wall_clearance_m": 6.70000002384186,
+          "position": "(106.7158, 0.0, 16.68681)",
+          "size": "(1.8, 0.55, 1.8)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T1"
+        },
+        {
+          "id": "T1_reception",
+          "kind": "reception",
+          "minimum_centerline_to_inner_edge_m": 11.7500000238419,
+          "minimum_wall_clearance_m": 6.85863160208652,
+          "position": "(93.46698, 0.0, -8.113188)",
+          "size": "(5.2, 1.24, 1.3)",
+          "status": "STAGED_LOUNGE_LAYOUT_NOT_CURRENT_AS_BUILT_FITOUT",
+          "tower": "T1"
+        }
+      ],
+      "geometry_metric_status": "HISTORICAL_APPROX_WIDTHS_WITH_EXPLICIT_UNVERIFIED_HEIGHTS_BOUNDARIES",
+      "integration_requirements": [
+        "Replace old solid MBS tower/podium collision with actual hollow floor/wall shells; do not insert this into solids.",
+        "Migrate the entire complex into the uncompressed geography frame including Bayfront Avenue and separated retail; do not leave duplicate legacy MBS in its fictional frame.",
+        "This is L1 stage only: current exact metric plans/elevations/doors and all room/service/upper/retail inventories remain incomplete.",
+        "Expand source-world player/aircraft/save bounds consistently before traversing the full real site.",
+        "Render against actual MBS reference photos and measure integrated source boundaries; standalone tests are not whole-world/fidelity acceptance."
+      ],
+      "isolated_low_tunnels_built": 0,
+      "metres_per_unit_preserved": true,
+      "module": "source_backed_continuous_public_L1_stage_r2",
+      "profile_sections": [
+        {
+          "center": "(-149.8564, 0.0, 4.286812)",
+          "height_m": 27.0,
+          "tower": "UNVERIFIED_NORTH_CAP",
+          "width_m": 10.0
+        },
+        {
+          "center": "(-127.0758, 0.0, 4.286812)",
+          "height_m": 27.0,
+          "tower": "T3",
+          "width_m": 10.0
+        },
+        {
+          "center": "(-24.82945, 0.0, -6.443544)",
+          "height_m": 47.0,
+          "tower": "T2",
+          "width_m": 20.0
+        },
+        {
+          "center": "(90.85477, 0.0, 4.286812)",
+          "height_m": 76.0,
+          "tower": "T1",
+          "width_m": 40.0
+        },
+        {
+          "center": "(116.9769, 0.0, 4.286812)",
+          "height_m": 76.0,
+          "tower": "UNVERIFIED_SOUTH_CAP",
+          "width_m": 40.0
+        }
+      ],
+      "public_nodes_built": [
+        "hotel_T3_L1",
+        "hotel_T2_L1",
+        "hotel_T1_L1"
+      ],
+      "reserved_public_aisle_width_m": 4.0,
+      "retail_connection_built": false,
+      "roof_heights_metric_verified": false,
+      "room_inventory_created": 0,
+      "source": {
+        "attribution": "\u00a9 OpenStreetMap contributors",
+        "data_license": "ODbL-1.0",
+        "license_url": "https://www.openstreetmap.org/copyright",
+        "parse_errors": {
+          "area_geometry": 3
+        },
+        "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+        "source_snapshot_utc": "2026-10-27T21:23:59Z",
+        "source_url": "https://download.geofabrik.de/asia/malaysia-singapore-brunei.html"
+      },
+      "source_placement_preserved": false,
+      "topology_sources": [
+        "MBS-KIOSK",
+        "SAFDIE-HOTEL"
+      ],
+      "tower_source_ids": [
+        "way/172307471",
+        "way/172307472",
+        "way/116801004"
+      ],
+      "triangle_count": 21738,
+      "unbuilt_areas": [
+        "hotel_guest_floor_inventory",
+        "all_guestrooms_and_suites",
+        "hotel_service_and_back_of_house",
+        "hotel_lift_and_stair_cores",
+        "paiza_T2_L55",
+        "public_deck_T3_L56",
+        "public_mezzanine_L57",
+        "guest_pool_restaurants_L57",
+        "shoppes_L1",
+        "shoppes_B1",
+        "shoppes_B2",
+        "casino_B2M",
+        "coach_B2M",
+        "underground_links",
+        "bayfront_station"
+      ]
+    },
+    "travel_m": 490.215781213366
+  },
+  "rendered_fidelity_accepted": false,
+  "whole_city_verified": false
+}

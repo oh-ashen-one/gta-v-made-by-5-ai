@@ -1,0 +1,3 @@
+SCRIPT ERROR: Invalid operands 'bool' and 'float' in operator '!='.
+          at: SingaporeSourceFrame._valid_frame (res://src/world/geography/source_frame.gd:64)
+              [0] _valid_frame (res://src/world/geography/source_frame.gd:64)

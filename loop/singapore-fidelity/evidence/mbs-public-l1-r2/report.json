@@ -1,0 +1,12 @@
+{
+  "checks": 128,
+  "elapsed_s": 69.098,
+  "failures": [
+    "continuous doorway atrium circulation"
+  ],
+  "fixture_translation": true,
+  "full_interior_verified": false,
+  "metrics": {},
+  "rendered_fidelity_accepted": false,
+  "whole_city_verified": false
+}

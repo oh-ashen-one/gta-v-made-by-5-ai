@@ -1,0 +1,46 @@
+{
+	"checks": 456,
+	"failures": [],
+	"metrics": {
+		"actual_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+		"actual_source_snapshot_utc": "2026-10-27T21:23:59Z",
+		"carried_checked_cache_cycles": {
+			"canonical_input_captures": 1,
+			"canonical_refetched_each_step": false,
+			"maximum_cached_source_drift_m": 0.0,
+			"maximum_native_projection_error_m": 3.044451295863837e-05,
+			"rebases": 219,
+			"scope": "Revision-bound cache envelopes and math only; no actual actor/camera/FX integration"
+		},
+		"engine_precision_measurement": {
+			"absolute_vector3_mm_delta_xyz": [
+				0.001953125,
+				0.00099945068359375,
+				0.0
+			],
+			"origin_relative_mm_delta_xyz": [
+				0.0009999996982514858,
+				0.0010000000474974513,
+				0.0009999999310821295
+			],
+			"scope": "Actual engine numeric representation measurement; not physics or rendering acceptance"
+		},
+		"non_grid_translation": {
+			"native_delta_addition_error_m": 1.796484377791785e-05,
+			"reconstructed_source_error_m": 5.684341886080801e-13,
+			"scope": "Actual engine numeric study; no actor movement performed"
+		},
+		"qa_path_guard_scope": "Only this fresh QA session's scratch sentinels/links were created; no user file or external link target used",
+		"repeated_rebase_math": {
+			"canonical_motion_span_m": 112128.0,
+			"maximum_canonical_roundtrip_error_m": 1.812109439924825e-05,
+			"real_actors_physics_terrain_or_camera_exercised": false,
+			"rebases": 219,
+			"standins_per_step": 3
+		}
+	},
+	"qa_path_guard_rechecked_before_write": true,
+	"rendered_acceptance": false,
+	"scope": "Coordinate/identity arithmetic and stand-in translations only. No actor/camera/FX integration, physical support, map completeness, rendered quality or performance acceptance.",
+	"world_or_owner_save_touched": false
+}

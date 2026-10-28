@@ -1,3 +1,5 @@
+> CURRENT CHECKPOINT: Read `loop/singapore-fidelity/ACTIVE_HANDOFF_FACTS.json` first. It supersedes older progress bullets below, especially owner-play terminal state, latest passed runs, creative delegation, and outstanding visual/integration gaps. Full goal remains active.
+
 # Active Singapore fidelity goal — ongoing
 
 ## Objective and branch
@@ -6,13 +8,13 @@ Read `loop/singapore-fidelity/TASK.md` for the full owner objective: damageable 
 
 This is the integration checkout, branch `Astra-6-singapore-fidelity`, based on `76c9483`. Root alone performs Git and engine operations. Builders and critics use the current inherited model; no external-provider/model claim. Failed isolated checkout left no worker files; exclusive file ownership is used here. No main merge, purchases, new paid APIs/accounts/uploads, or permission bypass is authorized.
 
-The replacement owner rules use brain release `7a2cf010c81f8e96c901`, published revision `6e4bcb21855e`. Doctor reports that revision verified. Catalog packages resolve to their source snapshots; do not edit generated caches.
+The replacement owner rules use brain release `e5231e7cff34ed09fda7`, published revision `a67557283f99`. Doctor reports that revision verified. Catalog packages resolve to their source snapshots; do not edit generated caches.
 
-## Owner play instance — preserve
+## Owner play instance — ended normally
 
 At the owner's request, root launched normal source play at **2026-10-28 18:31:05 UTC** from `fb8128a`, with no QA driver or synthetic controls. Driver PID **88900** and engine PID **88923** must be revalidated before any action. The actual 1920×1080 title window was viewed. It uses the current shared GPU lease, last-moment gate and 60 fps cap; STREAMING was absent at launch. Logs and identity are under `/private/tmp/singapore-fidelity/owner-play-20261028-1829`.
 
-Do not close, reload or send controls to the owner's game without their request. Do not launch a second task engine while this instance is live. Independent source work, lightweight background Python and read-only critique can continue. New staged modules and QA edits are not installed into this already-running session.
+This owner play instance exited normally at2026-10-28T19:27:26.634Z, exit0; root did not close it. Sequential owned QA resumed only after process/lease termination was verified. Do not automatically reopen the old instance. New source modules are not yet a finished source-world build.
 
 ## Current evidence
 
@@ -44,3 +46,13 @@ Then migrate actual source-coordinate terrain, roads, buildings, landmark/site r
 Use the current `~/.cache/gpu-slot/bin/gpu_slot.sh`, private one-engine lock, shared lease and `render_gate` inside that lease. Cap at 60 fps, 30 while STREAMING; current stream policy closes capture slots while the flag exists. Never remove or bypass it. Global mixed renderer cap is two; leave foreign processes, locks and sessions alone. Stop owned drivers before owned engines, use TERM and up to 60 seconds grace, and do not relaunch after two crashes or through OS dialogs. No local inference.
 
 Preserve private art and needed raw source/evidence until actual delivery/transfer is verified. Licenses/provenance remain separate from code; no blanket provider-asset rights claim. At the actual task end, use `wiki-suggest`; wiki page edits require item approval.
+
+## Updated director decisions and source integration
+
+Owner has no private plans and explicitly delegated every routine implementation decision: no more implementation questions. Build the entire coherent explorable MBS recreation; do not leave undocumented private floors empty, and do not call them verified as-built. Whole Singapore source layout remains the objective.
+
+Actual new proofs: source frameR3 456 clean checks, roofR3 103 rendered checks, publicatriumR4 191 rendered physics checks, data29 and core298. These have distinct scopes; none proves complete source-world or building assembly. Public lobby visualcritique FAILS: planting/stone floor/reception/entrance/wayfinding need work. Guestfloor registry/factory covers1850normalizedunits/775suites/159guestrecipes but a critic found missing productionE adapters and96inaccessible suitebedroom layouts; builder is fixing those. Physicalliftcabins/programfloors/streaming/domain/sourceplacement remain root integration.
+
+Root's `source-world-migration/CONTRACT.md` is the concrete coupled migration plan. SourceFrame is a math/cache/pose component, not actual actor rebasing. Do not feed original-node topology into the old XYmerge/Manhattan/bidirectional graph code. Currentplayer/heli negativeYrecovery still blocks realbasements. Countryboundary/coastenclosure is not dryland or terrain.
+
+The new boss-fight-blueprint and animation-sourcing rules were read at a67557283f99. No creature/boss work or new motion is being added. Preserve earlier police proof; apply current routes if further combat/animation changes are needed.

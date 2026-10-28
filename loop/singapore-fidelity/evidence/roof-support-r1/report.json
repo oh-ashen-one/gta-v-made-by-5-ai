@@ -1,0 +1,491 @@
+{
+	"all_visible_roofs_verified": false,
+	"captures": [],
+	"checks": 74,
+	"elapsed_s": 28.415,
+	"failures": [
+		"all actual membrane centres support their rendered slab height",
+		"an ordinary production membrane has a clear fixture landing and walk",
+		"actual large housing roofs have matching support"
+	],
+	"fixture_actor_position_assignments": 14,
+	"in_flight_position_assignments": false,
+	"metrics": {
+		"fullerton_upper_roof": {
+			"exit_point": "(-462.2, 33.44, -247.0)",
+			"fixture_point": "(-465.0, 33.36, -247.0)",
+			"fixture_yaw": 0.0,
+			"landing_position": "(-465.0, 33.06046, -247.0)",
+			"max_foot_step_m": 0.05999755859375,
+			"native_descent_and_exit": true,
+			"player_position": "(-462.2, 33.33584, -249.7927)",
+			"walk_m": 2.79266357421875,
+			"walk_max_y": 33.3358421325684,
+			"walk_min_y": 33.3352813720703
+		},
+		"hangar_prism_ridge": {
+			"exit_point": "(212.8, 14.79789, 60.0)",
+			"fixture_point": "(210.0, 15.16, 60.0)",
+			"fixture_yaw": 0.0,
+			"landing_position": "(210.0, 14.86043, 60.0)",
+			"max_foot_step_m": 0.0605819895863533,
+			"native_descent_and_exit": true,
+			"player_position": "(212.8513, 14.69009, 57.20614)",
+			"walk_m": 2.79432535171509,
+			"walk_max_y": 14.6979646682739,
+			"walk_min_y": 14.6830997467041
+		},
+		"known_positive_and_negative_roof_probes": 15,
+		"mbs_landward_edge": {
+			"exit_point": "(-178.0, 200.08, -717.2)",
+			"fixture_point": "(-178.0, 200.0, -720.0)",
+			"fixture_yaw": 1.5707963267949,
+			"landing_position": "(-178.0, 199.7001, -720.0)",
+			"max_foot_step_m": 0.0599975623190403,
+			"native_descent_and_exit": true,
+			"player_position": "(-180.7927, 199.9758, -717.2)",
+			"walk_m": 2.79270935058594,
+			"walk_max_y": 199.975860595703,
+			"walk_min_y": 199.974990844727
+		},
+		"mbs_pavilion_north": {
+			"exit_point": "(-213.2, 204.48, -705.0)",
+			"fixture_point": "(-216.0, 204.4, -705.0)",
+			"fixture_yaw": 0.0,
+			"landing_position": "(-216.0, 204.1004, -705.0)",
+			"max_foot_step_m": 0.0600589737296104,
+			"native_descent_and_exit": true,
+			"player_position": "(-213.2, 204.3758, -707.7927)",
+			"walk_m": 2.792724609375,
+			"walk_max_y": 204.375854492188,
+			"walk_min_y": 204.368347167969
+		},
+		"mbs_visible_bow": {
+			"exit_point": "(-287.2, 200.08, -703.0)",
+			"fixture_point": "(-290.0, 200.0, -703.0)",
+			"fixture_yaw": 0.0,
+			"landing_position": "(-290.0, 199.7001, -703.0)",
+			"max_foot_step_m": 0.0602889582514763,
+			"native_descent_and_exit": true,
+			"player_position": "(-287.2, 199.9758, -705.7929)",
+			"walk_m": 2.79290771484375,
+			"walk_max_y": 199.975845336914,
+			"walk_min_y": 199.96989440918
+		},
+		"one_fullerton_eave": {
+			"exit_point": "(-513.2, 8.690001, -396.0)",
+			"fixture_point": "(-516.0, 8.61, -396.0)",
+			"fixture_yaw": 0.0,
+			"landing_position": "(-516.0, 8.310457, -396.0)",
+			"max_foot_step_m": 0.05999755859375,
+			"native_descent_and_exit": true,
+			"player_position": "(-513.2, 8.58584, -398.7927)",
+			"walk_m": 2.79266357421875,
+			"walk_max_y": 8.58584117889404,
+			"walk_min_y": 8.585280418396
+		},
+		"production_collision": {
+			"helicopter_bottom_y": 0.300000071525574,
+			"helicopter_box_size": "(2.6, 2.6, 5.6)",
+			"player_capsule_height": 1.75,
+			"player_capsule_radius": 0.360000014305115,
+			"player_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (0.0, 0.9, 0.0)]"
+		},
+		"roofkit": {
+			"fixture_selection": {},
+			"housing_roofs": 247,
+			"physical_membranes": 247,
+			"supported_centres": 0,
+			"supported_housing_roofs": 0,
+			"visual_membranes": 247
+		},
+		"shoppes_wave_crest": {
+			"exit_point": "(-280.2, 24.6512, -673.0)",
+			"fixture_point": "(-283.0, 24.78606, -673.0)",
+			"fixture_yaw": 0.0,
+			"landing_position": "(-283.0, 24.48616, -673.0)",
+			"max_foot_step_m": 0.0600602552294731,
+			"native_descent_and_exit": true,
+			"player_position": "(-280.175, 24.55104, -675.7968)",
+			"walk_m": 2.79692554473877,
+			"walk_max_y": 24.5568428039551,
+			"walk_min_y": 24.5511512756348
+		}
+	},
+	"native_human_input": false,
+	"rendered": false,
+	"results": [
+		{
+			"detail": "",
+			"name": "production world player and helicopter exist",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "fixture probes use actual production collision resources",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=204.4000 actual_y=204.4000 normal=(0.0, 1.0, 0.0) shape=SkyParkPavilionRoof_-98",
+			"name": "pavilion roof supports its visible top -98",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=204.4000 actual_y=204.4000 normal=(0.0, 1.0, 0.0) shape=SkyParkPavilionRoof_0",
+			"name": "pavilion roof supports its visible top 0",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=204.4000 actual_y=204.4000 normal=(0.0, 1.0, 0.0) shape=SkyParkPavilionRoof_98",
+			"name": "pavilion roof supports its visible top 98",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=200.0000 actual_y=200.0000 normal=(0.0, 1.0, 0.0) shape=SkyParkStructuralHull",
+			"name": "clear visible SkyPark bow is supported",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=200.0000 actual_y=200.0000 normal=(0.0, 1.0, 0.0) shape=SkyParkStructuralHull",
+			"name": "clear landward SkyPark edge is supported",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=200.0000 actual_y=200.0000 normal=(0.0, 1.0, 0.0) shape=SkyParkStructuralHull",
+			"name": "visible stern surface is supported",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "no phantom deck support outside the tapered hull",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "no phantom support beyond the visible bow tip",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "pool liquid is not turned into solid roof",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=24.7861 actual_y=24.7861 normal=(0.0, 1.0, 0.0) shape=ShoppesStructuralWaveRoof",
+			"name": "Shoppes visible curved crest has matching support",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=15.1600 actual_y=15.1600 normal=(-0.155963, 0.987763, 0.0) shape=HangarPrismRoof",
+			"name": "hangar visible ridge has matching prism support",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=8.6100 actual_y=8.6100 normal=(0.0, 1.0, 0.0) shape=OneFullertonRoof_-507",
+			"name": "One Fullerton eave supports the visible roof",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=33.3600 actual_y=33.3600 normal=(0.0, 1.0, 0.0) shape=FullertonMainUpperMass",
+			"name": "Fullerton upper roof has actual upper-mass support",
+			"passed": true
+		},
+		{
+			"detail": "expected_y=27.3600 actual_y=27.3600 normal=(0.0, 1.0, 0.0) shape=FullertonMainLowerMass",
+			"name": "Fullerton lower terrace has lower-mass support",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "air above Fullerton lower terrace is not an upper box",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "production membrane mesh and structural body exist",
+			"passed": true
+		},
+		{
+			"detail": "247 visual/247 physical",
+			"name": "every membrane has one matching structural shape",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "small nonstructural dressing was not solidified",
+			"passed": true
+		},
+		{
+			"detail": "supported=0/247 failures=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246]",
+			"name": "all actual membrane centres support their rendered slab height",
+			"passed": false
+		},
+		{
+			"detail": "",
+			"name": "an ordinary production membrane has a clear fixture landing and walk",
+			"passed": false
+		},
+		{
+			"detail": "0/247",
+			"name": "actual large housing roofs have matching support",
+			"passed": false
+		},
+		{
+			"detail": "",
+			"name": "initial roof fixture is airborne mbs_pavilion_north",
+			"passed": true
+		},
+		{
+			"detail": "position=(-216.0, 204.1001, -705.0) target=(-216.0, 204.4, -705.0) speed=(0.0, 0.0, 0.0) health=100.00",
+			"name": "native descent lands on actual roof mbs_pavilion_north",
+			"passed": true
+		},
+		{
+			"detail": "0.89999997615814",
+			"name": "touchdown remains gentle mbs_pavilion_north",
+			"passed": true
+		},
+		{
+			"detail": "(-213.2, 204.48, -705.0)",
+			"name": "actual roof has a supported capsule exit mbs_pavilion_north",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "native E returns foot ownership mbs_pavilion_north",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "actual Player remains supported after exit mbs_pavilion_north",
+			"passed": true
+		},
+		{
+			"detail": "walk=2.793m max_step=0.0601m height=[204.368,204.376] position=(-213.2, 204.3758, -707.7927) contacts=[\"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\"]",
+			"name": "on-foot movement stays usable on roof mbs_pavilion_north",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "initial roof fixture is airborne mbs_visible_bow",
+			"passed": true
+		},
+		{
+			"detail": "position=(-290.0, 199.7001, -703.0) target=(-290.0, 200.0, -703.0) speed=(0.0, 0.0, 0.0) health=100.00",
+			"name": "native descent lands on actual roof mbs_visible_bow",
+			"passed": true
+		},
+		{
+			"detail": "0.89999997615814",
+			"name": "touchdown remains gentle mbs_visible_bow",
+			"passed": true
+		},
+		{
+			"detail": "(-287.2, 200.08, -703.0)",
+			"name": "actual roof has a supported capsule exit mbs_visible_bow",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "native E returns foot ownership mbs_visible_bow",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "actual Player remains supported after exit mbs_visible_bow",
+			"passed": true
+		},
+		{
+			"detail": "walk=2.793m max_step=0.0603m height=[199.970,199.976] position=(-287.2, 199.9758, -705.7929) contacts=[\"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\"]",
+			"name": "on-foot movement stays usable on roof mbs_visible_bow",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "initial roof fixture is airborne mbs_landward_edge",
+			"passed": true
+		},
+		{
+			"detail": "position=(-178.0, 199.7001, -720.0) target=(-178.0, 200.0, -720.0) speed=(0.0, 0.0, 0.0) health=100.00",
+			"name": "native descent lands on actual roof mbs_landward_edge",
+			"passed": true
+		},
+		{
+			"detail": "0.89999997615814",
+			"name": "touchdown remains gentle mbs_landward_edge",
+			"passed": true
+		},
+		{
+			"detail": "(-178.0, 200.08, -717.2)",
+			"name": "actual roof has a supported capsule exit mbs_landward_edge",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "native E returns foot ownership mbs_landward_edge",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "actual Player remains supported after exit mbs_landward_edge",
+			"passed": true
+		},
+		{
+			"detail": "walk=2.793m max_step=0.0600m height=[199.975,199.976] position=(-180.7927, 199.9758, -717.2) contacts=[\"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\"]",
+			"name": "on-foot movement stays usable on roof mbs_landward_edge",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "initial roof fixture is airborne shoppes_wave_crest",
+			"passed": true
+		},
+		{
+			"detail": "position=(-283.0, 24.48618, -673.0) target=(-283.0, 24.78606, -673.0) speed=(0.0, 0.0, 0.0) health=100.00",
+			"name": "native descent lands on actual roof shoppes_wave_crest",
+			"passed": true
+		},
+		{
+			"detail": "0.89999997615814",
+			"name": "touchdown remains gentle shoppes_wave_crest",
+			"passed": true
+		},
+		{
+			"detail": "(-280.2, 24.6512, -673.0)",
+			"name": "actual roof has a supported capsule exit shoppes_wave_crest",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "native E returns foot ownership shoppes_wave_crest",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "actual Player remains supported after exit shoppes_wave_crest",
+			"passed": true
+		},
+		{
+			"detail": "walk=2.797m max_step=0.0601m height=[24.551,24.557] position=(-280.175, 24.55104, -675.7968) contacts=[\"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/marina_bay_sands/MBSCollision\"]",
+			"name": "on-foot movement stays usable on roof shoppes_wave_crest",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "initial roof fixture is airborne hangar_prism_ridge",
+			"passed": true
+		},
+		{
+			"detail": "position=(210.0, 14.86013, 60.0) target=(210.0, 15.16, 60.0) speed=(0.0, 0.0, 0.0) health=100.00",
+			"name": "native descent lands on actual roof hangar_prism_ridge",
+			"passed": true
+		},
+		{
+			"detail": "0.89999997615814",
+			"name": "touchdown remains gentle hangar_prism_ridge",
+			"passed": true
+		},
+		{
+			"detail": "(212.8, 14.79789, 60.0)",
+			"name": "actual roof has a supported capsule exit hangar_prism_ridge",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "native E returns foot ownership hangar_prism_ridge",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "actual Player remains supported after exit hangar_prism_ridge",
+			"passed": true
+		},
+		{
+			"detail": "walk=2.794m max_step=0.0606m height=[14.683,14.698] position=(212.8513, 14.69009, 57.20614) contacts=[\"/root/RoofSupportReview/Main/World/District/AviationHangarRoofCollision\", \"/root/RoofSupportReview/Main/World/District/AviationHangarRoofCollision\", \"/root/RoofSupportReview/Main/World/District/AviationHangarRoofCollision\"]",
+			"name": "on-foot movement stays usable on roof hangar_prism_ridge",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "initial roof fixture is airborne one_fullerton_eave",
+			"passed": true
+		},
+		{
+			"detail": "position=(-516.0, 8.310127, -396.0) target=(-516.0, 8.61, -396.0) speed=(0.0, 0.0, 0.0) health=100.00",
+			"name": "native descent lands on actual roof one_fullerton_eave",
+			"passed": true
+		},
+		{
+			"detail": "0.89999997615814",
+			"name": "touchdown remains gentle one_fullerton_eave",
+			"passed": true
+		},
+		{
+			"detail": "(-513.2, 8.690001, -396.0)",
+			"name": "actual roof has a supported capsule exit one_fullerton_eave",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "native E returns foot ownership one_fullerton_eave",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "actual Player remains supported after exit one_fullerton_eave",
+			"passed": true
+		},
+		{
+			"detail": "walk=2.793m max_step=0.0600m height=[8.585,8.586] position=(-513.2, 8.58584, -398.7927) contacts=[\"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/FullertonWaterfront/FullertonCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/FullertonWaterfront/FullertonCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/FullertonWaterfront/FullertonCollision\"]",
+			"name": "on-foot movement stays usable on roof one_fullerton_eave",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "initial roof fixture is airborne fullerton_upper_roof",
+			"passed": true
+		},
+		{
+			"detail": "position=(-465.0, 33.06013, -247.0) target=(-465.0, 33.36, -247.0) speed=(0.0, 0.0, 0.0) health=100.00",
+			"name": "native descent lands on actual roof fullerton_upper_roof",
+			"passed": true
+		},
+		{
+			"detail": "0.89999997615814",
+			"name": "touchdown remains gentle fullerton_upper_roof",
+			"passed": true
+		},
+		{
+			"detail": "(-462.2, 33.44, -247.0)",
+			"name": "actual roof has a supported capsule exit fullerton_upper_roof",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "native E returns foot ownership fullerton_upper_roof",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "actual Player remains supported after exit fullerton_upper_roof",
+			"passed": true
+		},
+		{
+			"detail": "walk=2.793m max_step=0.0600m height=[33.335,33.336] position=(-462.2, 33.33584, -249.7927) contacts=[\"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/FullertonWaterfront/FullertonCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/FullertonWaterfront/FullertonCollision\", \"/root/RoofSupportReview/Main/World/District/DowntownLandmarks/FullertonWaterfront/FullertonCollision\"]",
+			"name": "on-foot movement stays usable on roof fullerton_upper_roof",
+			"passed": true
+		},
+		{
+			"detail": "7/7",
+			"name": "every representative actor case was exercised",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"name": "roof fixtures cause no player death",
+			"passed": true
+		}
+	],
+	"scope": "Actual structural roofs and production actors in the legacy compressed district; explicit per-case fixture positions. Not a continuous flight route, all-background-roof, geographic, human-input, appearance or performance acceptance.",
+	"whole_city_verified": false
+}
