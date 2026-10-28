@@ -1,0 +1,150 @@
+{
+  "checks": 25,
+  "elapsed_s": 90.081,
+  "failures": [],
+  "fixture_translation": true,
+  "full_interior_verified": false,
+  "metrics": {
+    "max_step_m": 0.113708935678005,
+    "maximum_fixture_y": -0.0240639615803957,
+    "minimum_fixture_y": -0.0333626195788383,
+    "report": {
+      "architectural_identity_and_fitout_verified": false,
+      "assumptions": [
+        {
+          "field": "hotel_T3_L1.atrium_envelope",
+          "status": "STAGING_ASSUMPTION",
+          "value": {
+            "length_m": 45.5612329394125,
+            "wall_height_m": 12.0,
+            "width_m": 25.2542829294213
+          },
+          "why": "Public map verifies joined/varied atria but is unscaled; footprint is not an L1 interior plan."
+        },
+        {
+          "field": "hotel_T2_L1.atrium_envelope",
+          "status": "STAGING_ASSUMPTION",
+          "value": {
+            "length_m": 47.8841491190941,
+            "wall_height_m": 18.0,
+            "width_m": 35.4167867995478
+          },
+          "why": "Public map verifies joined/varied atria but is unscaled; footprint is not an L1 interior plan."
+        },
+        {
+          "field": "hotel_T1_L1.atrium_envelope",
+          "status": "STAGING_ASSUMPTION",
+          "value": {
+            "length_m": 52.2441607655913,
+            "wall_height_m": 24.0,
+            "width_m": 42.4334095272216
+          },
+          "why": "Public map verifies joined/varied atria but is unscaled; footprint is not an L1 interior plan."
+        },
+        {
+          "field": "public_connectors",
+          "status": "STAGING_ASSUMPTION",
+          "value": {
+            "height_m": 6.0,
+            "width_m": 8.0
+          },
+          "why": "Topology is sourced; metric paths/widths/elevations are not."
+        },
+        {
+          "field": "entrance_and_floor_elevation",
+          "status": "UNVERIFIED_STAGING_OPENING",
+          "value": {
+            "along_offset_m": 0.0,
+            "floor_elevation_m": 0.0,
+            "height_m": 4.8,
+            "side": "bayward",
+            "tower": "T1",
+            "width_m": 4.0
+          },
+          "why": "No current surveyed hotel entrance was established. This is a physical test opening, not an as-built door claim."
+        },
+        {
+          "field": "hotel_T3_L1.loose_furniture_and_lights",
+          "status": "STAGING_ASSUMPTION",
+          "why": "Reused original project benches/planters/materials, not a verified current MBS fit-out."
+        },
+        {
+          "field": "hotel_T2_L1.loose_furniture_and_lights",
+          "status": "STAGING_ASSUMPTION",
+          "why": "Reused original project benches/planters/materials, not a verified current MBS fit-out."
+        },
+        {
+          "field": "hotel_T1_L1.loose_furniture_and_lights",
+          "status": "STAGING_ASSUMPTION",
+          "why": "Reused original project benches/planters/materials, not a verified current MBS fit-out."
+        }
+      ],
+      "built": true,
+      "collision_shapes": 83,
+      "entire_floor_space_inventory_complete": false,
+      "entrance_metric_verified": false,
+      "expected_approx_hotel_rooms": 1850,
+      "floor_elevations_verified": false,
+      "full_requested_interior_verified": false,
+      "geometry_metric_status": "STAGING_ASSUMPTIONS_NOT_AS_BUILT",
+      "integration_requirements": [
+        "Replace old solid MBS tower/podium collision with actual hollow floor/wall shells; do not insert this into solids.",
+        "Migrate the entire complex into the uncompressed geography frame, including Bayfront Avenue and separated retail; do not leave duplicate legacy MBS in its fictional frame.",
+        "This is L1 stage only: current metric plans/elevations/doors and all room/service/upper/retail inventories remain incomplete.",
+        "Expand source-world player/aircraft/save bounds consistently before traversing the full real site.",
+        "Render against actual MBS reference photos and measure the final integrated scene; standalone tests are not whole-world or fidelity acceptance."
+      ],
+      "metres_per_unit_preserved": true,
+      "module": "source_backed_public_L1_stage",
+      "public_nodes_built": [
+        "hotel_T3_L1",
+        "hotel_T2_L1",
+        "hotel_T1_L1"
+      ],
+      "retail_connection_built": false,
+      "room_inventory_created": 0,
+      "source": {
+        "attribution": "\u00a9 OpenStreetMap contributors",
+        "data_license": "ODbL-1.0",
+        "license_url": "https://www.openstreetmap.org/copyright",
+        "parse_errors": {
+          "area_geometry": 3
+        },
+        "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+        "source_snapshot_utc": "2026-10-27T21:23:59Z",
+        "source_url": "https://download.geofabrik.de/asia/malaysia-singapore-brunei.html"
+      },
+      "source_placement_preserved": false,
+      "topology_sources": [
+        "MBS-KIOSK",
+        "SAFDIE-HOTEL"
+      ],
+      "tower_source_ids": [
+        "way/172307471",
+        "way/172307472",
+        "way/116801004"
+      ],
+      "triangle_count": 6762,
+      "unbuilt_areas": [
+        "hotel_guest_floor_inventory",
+        "all_guestrooms_and_suites",
+        "hotel_service_and_back_of_house",
+        "hotel_lift_and_stair_cores",
+        "paiza_T2_L55",
+        "public_deck_T3_L56",
+        "public_mezzanine_L57",
+        "guest_pool_restaurants_L57",
+        "shoppes_L1",
+        "shoppes_B1",
+        "shoppes_B2",
+        "casino_B2M",
+        "coach_B2M",
+        "underground_links",
+        "bayfront_station"
+      ]
+    },
+    "travel_m": 494.365682350122
+  },
+  "rendered_fidelity_accepted": false,
+  "whole_city_verified": false
+}

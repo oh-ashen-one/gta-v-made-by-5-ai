@@ -1,0 +1,12 @@
+{
+  "schema": "singapore_country_dependency_identity_v1",
+  "index_file": "spatial-index.json",
+  "index_sha256": "3ee2381ced3e0836a41d9c73de26bdad14a85d061fafccda2947245a5764e5f7",
+  "index_bytes": 73655,
+  "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+  "boundary_sha256": "c25cce8de57f280b68bd1436deedc3eaa3eb8bebf50ec334f5d9dbfd826b9c45",
+  "indexed_cells": 950,
+  "owner_files": 906,
+  "features_indexed": 398453,
+  "integrity_scope": "Source-controlled artifact identity; not an adversarial signed-distribution guarantee. Canonical manifest remains unchanged."
+}

@@ -4,10 +4,19 @@
   "base": "76c94830893e1d3bbe56a8de29109963ee7b0b60",
   "branch": "Astra-6-singapore-fidelity",
   "full_scope_file": "loop/singapore-fidelity/TASK.md",
-  "previous_goal_turn": "progress: authoritative source fixes, passing police test, geodata extraction/projection tests and MBS reference audit",
-  "updated_utc": "2026-10-28T17:21:09.293367+00:00",
-  "police": "25/25 headless; rendered pending",
-  "helicopter": "62/63 headless; repair/exit probe pending; not accepted",
-  "geography": "906 country-source tiles prepared; old runtime compressed layout still active",
-  "mbs": "reference contract ready; full physical interior unimplemented/unverified; private plans question pending"
+  "previous_goal_turn": "progress: owner play instance launched and actual title/window verified; new data integrity fixes and independent code review",
+  "updated_utc": "2026-10-28T18:44:35.409761+00:00",
+  "police": "25/25 headless +27/27 rendered, grounded/damageable real officers verified",
+  "helicopter": "65/65 fixture headless; fullworld33/33 headless; rendered56/57 with post-reload walking failure, diagnostic rerun pending",
+  "geography": "906 source tiles + exact dependency index tracked; index hash/content and overflow fixes code-reviewed; Godot loader run pending; default city still compressed",
+  "mbs": "original public L1 stage25/25 headless/494m translated fixture only; critic rejected low envelope; source-backed continuous atrium revision ongoing; entire building incomplete",
+  "owner_play": {
+    "driver_pid": 88900,
+    "engine_pid": 88923,
+    "started_utc": "2026-10-28T18:31:05.891438+00:00",
+    "source_commit": "fb8128af8a8427c10c7e6318a5732009a3d57099",
+    "normal_play": true,
+    "stop_or_reload_without_owner_request": false
+  },
+  "core_regression": "295/297 after actual90s watchdog fix; unresolved recoil kick and interaction-prompt checks; not all-pass"
 }
