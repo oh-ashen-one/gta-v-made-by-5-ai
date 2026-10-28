@@ -1,0 +1,1511 @@
+{
+	"baseline_ref_label": "parent-provided baseline",
+	"baseline_sha256": "daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84",
+	"camera_fixtures": true,
+	"candidate_sha256": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+	"capture_limit_after_world_s": 120.0,
+	"captures": [
+		{
+			"camera": {
+				"basis_x": [
+					0.990268111228943,
+					0.0,
+					0.139173120260239
+				],
+				"basis_y": [
+					0.0193691551685333,
+					0.990268111228943,
+					-0.137818694114685
+				],
+				"basis_z": [
+					-0.137818709015846,
+					0.139173105359077,
+					0.980630874633789
+				],
+				"cull_mask": 1048575,
+				"environment_override": false,
+				"far": 4000.0,
+				"forward": [
+					0.137818709015846,
+					-0.139173105359077,
+					-0.980630874633789
+				],
+				"fov": 58.0,
+				"near": 0.0500000007450581,
+				"position": [
+					-171.0,
+					2.09999990463257,
+					-23.0
+				]
+			},
+			"camera_fixture": true,
+			"file": "/private/tmp/singapore-fidelity/sky-pole-review-r2/captures/baseline/01_ground.png",
+			"phase": "baseline",
+			"pixels": [
+				1280,
+				720
+			],
+			"png_sha256": "54b94ddddfcff2bb65a2b54df57044554bb053e66eeaf050774cce320c15cb82",
+			"pose": "01_ground",
+			"post_world_elapsed_s": 8.985,
+			"saved": true,
+			"shader_code_sha256": "daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84",
+			"unix_seconds": 1793221884.42278,
+			"utc": "2026-10-28T21:11:24Z",
+			"viewport_visible_size": [
+				1280.0,
+				720.0
+			],
+			"world_instance_id": 117323073166,
+			"world_node_count": 29143
+		},
+		{
+			"camera": {
+				"basis_x": [
+					0.819152057170868,
+					0.0,
+					-0.5735764503479
+				],
+				"basis_y": [
+					0.0,
+					1.0,
+					0.0
+				],
+				"basis_z": [
+					0.5735764503479,
+					0.0,
+					0.819152057170868
+				],
+				"cull_mask": 1048575,
+				"environment_override": false,
+				"far": 4000.0,
+				"forward": [
+					-0.5735764503479,
+					0.0,
+					-0.819152057170868
+				],
+				"fov": 62.0,
+				"near": 0.0500000007450581,
+				"position": [
+					270.0,
+					245.460006713867,
+					104.0
+				]
+			},
+			"camera_fixture": true,
+			"file": "/private/tmp/singapore-fidelity/sky-pole-review-r2/captures/baseline/02_horizon.png",
+			"phase": "baseline",
+			"pixels": [
+				1280,
+				720
+			],
+			"png_sha256": "00dce3f3ac36bef601a9b60061a9428f81ad084b4149e7fbf1ca035b83bc03f3",
+			"pose": "02_horizon",
+			"post_world_elapsed_s": 10.471,
+			"saved": true,
+			"shader_code_sha256": "daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84",
+			"unix_seconds": 1793221885.90926,
+			"utc": "2026-10-28T21:11:25Z",
+			"viewport_visible_size": [
+				1280.0,
+				720.0
+			],
+			"world_instance_id": 117323073166,
+			"world_node_count": 29143
+		},
+		{
+			"camera": {
+				"basis_x": [
+					0.819152057170868,
+					0.0,
+					-0.5735764503479
+				],
+				"basis_y": [
+					0.506437957286835,
+					0.469471603631973,
+					0.723268330097198
+				],
+				"basis_z": [
+					0.26927787065506,
+					-0.882947623729706,
+					0.384568631649017
+				],
+				"cull_mask": 1048575,
+				"environment_override": false,
+				"far": 4000.0,
+				"forward": [
+					-0.26927787065506,
+					0.882947623729706,
+					-0.384568631649017
+				],
+				"fov": 62.0,
+				"near": 0.0500000007450581,
+				"position": [
+					270.0,
+					245.460006713867,
+					104.0
+				]
+			},
+			"camera_fixture": true,
+			"file": "/private/tmp/singapore-fidelity/sky-pole-review-r2/captures/baseline/03_cap_below.png",
+			"phase": "baseline",
+			"pixels": [
+				1280,
+				720
+			],
+			"png_sha256": "9a6a3aa3029f3685dfca90b878a48fcd8b5a0ffddf6f933cc971f84dc0171da0",
+			"pose": "03_cap_below",
+			"post_world_elapsed_s": 11.744,
+			"saved": true,
+			"shader_code_sha256": "daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84",
+			"unix_seconds": 1793221887.18255,
+			"utc": "2026-10-28T21:11:27Z",
+			"viewport_visible_size": [
+				1280.0,
+				720.0
+			],
+			"world_instance_id": 117323073166,
+			"world_node_count": 29143
+		},
+		{
+			"camera": {
+				"basis_x": [
+					0.819152057170868,
+					0.0,
+					-0.5735764503479
+				],
+				"basis_y": [
+					0.545503616333008,
+					0.309016972780228,
+					0.779059946537018
+				],
+				"basis_z": [
+					0.177244856953621,
+					-0.95105654001236,
+					0.253131896257401
+				],
+				"cull_mask": 1048575,
+				"environment_override": false,
+				"far": 4000.0,
+				"forward": [
+					-0.177244856953621,
+					0.95105654001236,
+					-0.253131896257401
+				],
+				"fov": 62.0,
+				"near": 0.0500000007450581,
+				"position": [
+					270.0,
+					245.460006713867,
+					104.0
+				]
+			},
+			"camera_fixture": true,
+			"file": "/private/tmp/singapore-fidelity/sky-pole-review-r2/captures/baseline/04_cap_above.png",
+			"phase": "baseline",
+			"pixels": [
+				1280,
+				720
+			],
+			"png_sha256": "bed5f0e3440a9a68d973893645d37905cffa06ad332d9b05d11b849051cf0ae3",
+			"pose": "04_cap_above",
+			"post_world_elapsed_s": 13.046,
+			"saved": true,
+			"shader_code_sha256": "daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84",
+			"unix_seconds": 1793221888.48414,
+			"utc": "2026-10-28T21:11:28Z",
+			"viewport_visible_size": [
+				1280.0,
+				720.0
+			],
+			"world_instance_id": 117323073166,
+			"world_node_count": 29143
+		},
+		{
+			"camera": {
+				"basis_x": [
+					0.819152057170868,
+					0.0,
+					-0.5735764503479
+				],
+				"basis_y": [
+					0.573379933834076,
+					0.0261769946664572,
+					0.818871378898621
+				],
+				"basis_z": [
+					0.0150145059451461,
+					-0.999657332897186,
+					0.0214429367333651
+				],
+				"cull_mask": 1048575,
+				"environment_override": false,
+				"far": 4000.0,
+				"forward": [
+					-0.0150145059451461,
+					0.999657332897186,
+					-0.0214429367333651
+				],
+				"fov": 62.0,
+				"near": 0.0500000007450581,
+				"position": [
+					270.0,
+					245.460006713867,
+					104.0
+				]
+			},
+			"camera_fixture": true,
+			"file": "/private/tmp/singapore-fidelity/sky-pole-review-r2/captures/baseline/05_near_vertical.png",
+			"phase": "baseline",
+			"pixels": [
+				1280,
+				720
+			],
+			"png_sha256": "f9d55729c9bc5d2936545335bf1fa70a7eb82ef7cf4a418ae3411ec4b647caae",
+			"pose": "05_near_vertical",
+			"post_world_elapsed_s": 14.414,
+			"saved": true,
+			"shader_code_sha256": "daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84",
+			"unix_seconds": 1793221889.85245,
+			"utc": "2026-10-28T21:11:29Z",
+			"viewport_visible_size": [
+				1280.0,
+				720.0
+			],
+			"world_instance_id": 117323073166,
+			"world_node_count": 29143
+		},
+		{
+			"camera": {
+				"basis_x": [
+					0.990268111228943,
+					0.0,
+					0.139173120260239
+				],
+				"basis_y": [
+					0.0193691551685333,
+					0.990268111228943,
+					-0.137818694114685
+				],
+				"basis_z": [
+					-0.137818709015846,
+					0.139173105359077,
+					0.980630874633789
+				],
+				"cull_mask": 1048575,
+				"environment_override": false,
+				"far": 4000.0,
+				"forward": [
+					0.137818709015846,
+					-0.139173105359077,
+					-0.980630874633789
+				],
+				"fov": 58.0,
+				"near": 0.0500000007450581,
+				"position": [
+					-171.0,
+					2.09999990463257,
+					-23.0
+				]
+			},
+			"camera_fixture": true,
+			"file": "/private/tmp/singapore-fidelity/sky-pole-review-r2/captures/candidate/01_ground.png",
+			"phase": "candidate",
+			"pixels": [
+				1280,
+				720
+			],
+			"png_sha256": "7ac6ee1bdfaadb3376f29341b82e288b771b920c0ebaca95683d227743ad6930",
+			"pose": "01_ground",
+			"post_world_elapsed_s": 20.115,
+			"saved": true,
+			"shader_code_sha256": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+			"unix_seconds": 1793221895.55283,
+			"utc": "2026-10-28T21:11:35Z",
+			"viewport_visible_size": [
+				1280.0,
+				720.0
+			],
+			"world_instance_id": 117323073166,
+			"world_node_count": 29143
+		},
+		{
+			"camera": {
+				"basis_x": [
+					0.819152057170868,
+					0.0,
+					-0.5735764503479
+				],
+				"basis_y": [
+					0.0,
+					1.0,
+					0.0
+				],
+				"basis_z": [
+					0.5735764503479,
+					0.0,
+					0.819152057170868
+				],
+				"cull_mask": 1048575,
+				"environment_override": false,
+				"far": 4000.0,
+				"forward": [
+					-0.5735764503479,
+					0.0,
+					-0.819152057170868
+				],
+				"fov": 62.0,
+				"near": 0.0500000007450581,
+				"position": [
+					270.0,
+					245.460006713867,
+					104.0
+				]
+			},
+			"camera_fixture": true,
+			"file": "/private/tmp/singapore-fidelity/sky-pole-review-r2/captures/candidate/02_horizon.png",
+			"phase": "candidate",
+			"pixels": [
+				1280,
+				720
+			],
+			"png_sha256": "a9d340723305aa2f1b2f37db54196b476f6adf85e198982e4369cc4aa5bdc1c4",
+			"pose": "02_horizon",
+			"post_world_elapsed_s": 21.718,
+			"saved": true,
+			"shader_code_sha256": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+			"unix_seconds": 1793221897.1557,
+			"utc": "2026-10-28T21:11:37Z",
+			"viewport_visible_size": [
+				1280.0,
+				720.0
+			],
+			"world_instance_id": 117323073166,
+			"world_node_count": 29143
+		},
+		{
+			"camera": {
+				"basis_x": [
+					0.819152057170868,
+					0.0,
+					-0.5735764503479
+				],
+				"basis_y": [
+					0.506437957286835,
+					0.469471603631973,
+					0.723268330097198
+				],
+				"basis_z": [
+					0.26927787065506,
+					-0.882947623729706,
+					0.384568631649017
+				],
+				"cull_mask": 1048575,
+				"environment_override": false,
+				"far": 4000.0,
+				"forward": [
+					-0.26927787065506,
+					0.882947623729706,
+					-0.384568631649017
+				],
+				"fov": 62.0,
+				"near": 0.0500000007450581,
+				"position": [
+					270.0,
+					245.460006713867,
+					104.0
+				]
+			},
+			"camera_fixture": true,
+			"file": "/private/tmp/singapore-fidelity/sky-pole-review-r2/captures/candidate/03_cap_below.png",
+			"phase": "candidate",
+			"pixels": [
+				1280,
+				720
+			],
+			"png_sha256": "dcc8524e25661d2d9c3a47e7fa00b40a286bd5619be97de577543ac26d5739bb",
+			"pose": "03_cap_below",
+			"post_world_elapsed_s": 23.017,
+			"saved": true,
+			"shader_code_sha256": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+			"unix_seconds": 1793221898.45525,
+			"utc": "2026-10-28T21:11:38Z",
+			"viewport_visible_size": [
+				1280.0,
+				720.0
+			],
+			"world_instance_id": 117323073166,
+			"world_node_count": 29143
+		},
+		{
+			"camera": {
+				"basis_x": [
+					0.819152057170868,
+					0.0,
+					-0.5735764503479
+				],
+				"basis_y": [
+					0.545503616333008,
+					0.309016972780228,
+					0.779059946537018
+				],
+				"basis_z": [
+					0.177244856953621,
+					-0.95105654001236,
+					0.253131896257401
+				],
+				"cull_mask": 1048575,
+				"environment_override": false,
+				"far": 4000.0,
+				"forward": [
+					-0.177244856953621,
+					0.95105654001236,
+					-0.253131896257401
+				],
+				"fov": 62.0,
+				"near": 0.0500000007450581,
+				"position": [
+					270.0,
+					245.460006713867,
+					104.0
+				]
+			},
+			"camera_fixture": true,
+			"file": "/private/tmp/singapore-fidelity/sky-pole-review-r2/captures/candidate/04_cap_above.png",
+			"phase": "candidate",
+			"pixels": [
+				1280,
+				720
+			],
+			"png_sha256": "9b4b7d61058894f8200f0520e7650e549b5d1023671b61a4ad61751a7ae933cd",
+			"pose": "04_cap_above",
+			"post_world_elapsed_s": 24.363,
+			"saved": true,
+			"shader_code_sha256": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+			"unix_seconds": 1793221899.80096,
+			"utc": "2026-10-28T21:11:39Z",
+			"viewport_visible_size": [
+				1280.0,
+				720.0
+			],
+			"world_instance_id": 117323073166,
+			"world_node_count": 29143
+		},
+		{
+			"camera": {
+				"basis_x": [
+					0.819152057170868,
+					0.0,
+					-0.5735764503479
+				],
+				"basis_y": [
+					0.573379933834076,
+					0.0261769946664572,
+					0.818871378898621
+				],
+				"basis_z": [
+					0.0150145059451461,
+					-0.999657332897186,
+					0.0214429367333651
+				],
+				"cull_mask": 1048575,
+				"environment_override": false,
+				"far": 4000.0,
+				"forward": [
+					-0.0150145059451461,
+					0.999657332897186,
+					-0.0214429367333651
+				],
+				"fov": 62.0,
+				"near": 0.0500000007450581,
+				"position": [
+					270.0,
+					245.460006713867,
+					104.0
+				]
+			},
+			"camera_fixture": true,
+			"file": "/private/tmp/singapore-fidelity/sky-pole-review-r2/captures/candidate/05_near_vertical.png",
+			"phase": "candidate",
+			"pixels": [
+				1280,
+				720
+			],
+			"png_sha256": "86a0c712b48665b4264434ce0a12311f997c7312bd8b8f2f17ea4c7ce62ccab3",
+			"pose": "05_near_vertical",
+			"post_world_elapsed_s": 25.691,
+			"saved": true,
+			"shader_code_sha256": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+			"unix_seconds": 1793221901.1295,
+			"utc": "2026-10-28T21:11:41Z",
+			"viewport_visible_size": [
+				1280.0,
+				720.0
+			],
+			"world_instance_id": 117323073166,
+			"world_node_count": 29143
+		}
+	],
+	"checks": 40,
+	"display_server": "macOS",
+	"engine_version": {
+		"build": "official",
+		"hash": "a13da4feb8d8aefc283c3763d33a2f170a18d541",
+		"hex": 263937,
+		"major": 4,
+		"minor": 7,
+		"patch": 1,
+		"status": "stable",
+		"string": "4.7.1-stable (official)",
+		"timestamp": 0
+	},
+	"failures": [],
+	"full_singapore_or_mbs_verified": false,
+	"native_human_input_verified": false,
+	"performance_accepted": false,
+	"phase_uniform_resolution": {
+		"baseline_applied": {
+			"defaults": {
+				"cloud_coverage": 0.550000011920929,
+				"cloud_scale": 3.20000004768372,
+				"fallback_sun": [
+					0.800000011920929,
+					0.400000005960464,
+					0.449999988079071
+				],
+				"ground_color": [
+					0.340000003576279,
+					0.319999992847443,
+					0.28999999165535,
+					1.0
+				],
+				"horizon_cool": [
+					0.879999995231628,
+					0.850000023841858,
+					0.800000011920929,
+					1.0
+				],
+				"horizon_warm": [
+					1.0,
+					0.800000011920929,
+					0.579999983310699,
+					1.0
+				],
+				"mid_color": [
+					0.550000011920929,
+					0.629999995231628,
+					0.759999990463257,
+					1.0
+				],
+				"sky_energy": 1.0,
+				"sun_disc_energy": 40.0,
+				"zenith_color": [
+					0.300000011920929,
+					0.469999998807907,
+					0.759999990463257,
+					1.0
+				]
+			},
+			"error": "",
+			"interface": [
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "cloud_coverage",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "cloud_scale",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "fallback_sun",
+					"type": 9
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "ground_color",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "horizon_cool",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "horizon_warm",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "mid_color",
+					"type": 20
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "sky_energy",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "sun_disc_energy",
+					"type": 3
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "zenith_color",
+					"type": 20
+				}
+			],
+			"ok": true,
+			"origins": {
+				"cloud_coverage": "material_override",
+				"cloud_scale": "material_override",
+				"fallback_sun": "material_override",
+				"ground_color": "material_override",
+				"horizon_cool": "material_override",
+				"horizon_warm": "material_override",
+				"mid_color": "material_override",
+				"sky_energy": "material_override",
+				"sun_disc_energy": "material_override",
+				"zenith_color": "material_override"
+			},
+			"values": {
+				"cloud_coverage": 0.55,
+				"cloud_scale": 3.20000004768372,
+				"fallback_sun": [
+					0.800000011920929,
+					0.400000005960464,
+					0.449999988079071
+				],
+				"ground_color": [
+					0.340000003576279,
+					0.319999992847443,
+					0.28999999165535,
+					1.0
+				],
+				"horizon_cool": [
+					0.879999995231628,
+					0.850000023841858,
+					0.800000011920929,
+					1.0
+				],
+				"horizon_warm": [
+					1.0,
+					0.800000011920929,
+					0.579999983310699,
+					1.0
+				],
+				"mid_color": [
+					0.550000011920929,
+					0.629999995231628,
+					0.759999990463257,
+					1.0
+				],
+				"sky_energy": 1.0,
+				"sun_disc_energy": 40.0,
+				"zenith_color": [
+					0.379999995231628,
+					0.479999989271164,
+					0.639999985694885,
+					1.0
+				]
+			}
+		},
+		"baseline_before_apply": {
+			"defaults": {
+				"cloud_coverage": 0.550000011920929,
+				"cloud_scale": 3.20000004768372,
+				"fallback_sun": [
+					0.800000011920929,
+					0.400000005960464,
+					0.449999988079071
+				],
+				"ground_color": [
+					0.340000003576279,
+					0.319999992847443,
+					0.28999999165535,
+					1.0
+				],
+				"horizon_cool": [
+					0.879999995231628,
+					0.850000023841858,
+					0.800000011920929,
+					1.0
+				],
+				"horizon_warm": [
+					1.0,
+					0.800000011920929,
+					0.579999983310699,
+					1.0
+				],
+				"mid_color": [
+					0.550000011920929,
+					0.629999995231628,
+					0.759999990463257,
+					1.0
+				],
+				"sky_energy": 1.0,
+				"sun_disc_energy": 40.0,
+				"zenith_color": [
+					0.300000011920929,
+					0.469999998807907,
+					0.759999990463257,
+					1.0
+				]
+			},
+			"error": "",
+			"interface": [
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "cloud_coverage",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "cloud_scale",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "fallback_sun",
+					"type": 9
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "ground_color",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "horizon_cool",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "horizon_warm",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "mid_color",
+					"type": 20
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "sky_energy",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "sun_disc_energy",
+					"type": 3
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "zenith_color",
+					"type": 20
+				}
+			],
+			"ok": true,
+			"origins": {
+				"cloud_coverage": "material_override",
+				"cloud_scale": "material_override",
+				"fallback_sun": "material_override",
+				"ground_color": "material_override",
+				"horizon_cool": "material_override",
+				"horizon_warm": "material_override",
+				"mid_color": "material_override",
+				"sky_energy": "material_override",
+				"sun_disc_energy": "material_override",
+				"zenith_color": "material_override"
+			},
+			"values": {
+				"cloud_coverage": 0.55,
+				"cloud_scale": 3.20000004768372,
+				"fallback_sun": [
+					0.800000011920929,
+					0.400000005960464,
+					0.449999988079071
+				],
+				"ground_color": [
+					0.340000003576279,
+					0.319999992847443,
+					0.28999999165535,
+					1.0
+				],
+				"horizon_cool": [
+					0.879999995231628,
+					0.850000023841858,
+					0.800000011920929,
+					1.0
+				],
+				"horizon_warm": [
+					1.0,
+					0.800000011920929,
+					0.579999983310699,
+					1.0
+				],
+				"mid_color": [
+					0.550000011920929,
+					0.629999995231628,
+					0.759999990463257,
+					1.0
+				],
+				"sky_energy": 1.0,
+				"sun_disc_energy": 40.0,
+				"zenith_color": [
+					0.379999995231628,
+					0.479999989271164,
+					0.639999985694885,
+					1.0
+				]
+			}
+		},
+		"candidate_applied": {
+			"defaults": {
+				"cloud_coverage": 0.550000011920929,
+				"cloud_scale": 3.20000004768372,
+				"fallback_sun": [
+					0.800000011920929,
+					0.400000005960464,
+					0.449999988079071
+				],
+				"ground_color": [
+					0.340000003576279,
+					0.319999992847443,
+					0.28999999165535,
+					1.0
+				],
+				"horizon_cool": [
+					0.879999995231628,
+					0.850000023841858,
+					0.800000011920929,
+					1.0
+				],
+				"horizon_warm": [
+					1.0,
+					0.800000011920929,
+					0.579999983310699,
+					1.0
+				],
+				"mid_color": [
+					0.550000011920929,
+					0.629999995231628,
+					0.759999990463257,
+					1.0
+				],
+				"sky_energy": 1.0,
+				"sun_disc_energy": 40.0,
+				"zenith_color": [
+					0.300000011920929,
+					0.469999998807907,
+					0.759999990463257,
+					1.0
+				]
+			},
+			"error": "",
+			"interface": [
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "cloud_coverage",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "cloud_scale",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "fallback_sun",
+					"type": 9
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "ground_color",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "horizon_cool",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "horizon_warm",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "mid_color",
+					"type": 20
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "sky_energy",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "sun_disc_energy",
+					"type": 3
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "zenith_color",
+					"type": 20
+				}
+			],
+			"ok": true,
+			"origins": {
+				"cloud_coverage": "material_override",
+				"cloud_scale": "material_override",
+				"fallback_sun": "material_override",
+				"ground_color": "material_override",
+				"horizon_cool": "material_override",
+				"horizon_warm": "material_override",
+				"mid_color": "material_override",
+				"sky_energy": "material_override",
+				"sun_disc_energy": "material_override",
+				"zenith_color": "material_override"
+			},
+			"values": {
+				"cloud_coverage": 0.55,
+				"cloud_scale": 3.20000004768372,
+				"fallback_sun": [
+					0.800000011920929,
+					0.400000005960464,
+					0.449999988079071
+				],
+				"ground_color": [
+					0.340000003576279,
+					0.319999992847443,
+					0.28999999165535,
+					1.0
+				],
+				"horizon_cool": [
+					0.879999995231628,
+					0.850000023841858,
+					0.800000011920929,
+					1.0
+				],
+				"horizon_warm": [
+					1.0,
+					0.800000011920929,
+					0.579999983310699,
+					1.0
+				],
+				"mid_color": [
+					0.550000011920929,
+					0.629999995231628,
+					0.759999990463257,
+					1.0
+				],
+				"sky_energy": 1.0,
+				"sun_disc_energy": 40.0,
+				"zenith_color": [
+					0.379999995231628,
+					0.479999989271164,
+					0.639999985694885,
+					1.0
+				]
+			}
+		},
+		"candidate_before_apply": {
+			"defaults": {
+				"cloud_coverage": 0.550000011920929,
+				"cloud_scale": 3.20000004768372,
+				"fallback_sun": [
+					0.800000011920929,
+					0.400000005960464,
+					0.449999988079071
+				],
+				"ground_color": [
+					0.340000003576279,
+					0.319999992847443,
+					0.28999999165535,
+					1.0
+				],
+				"horizon_cool": [
+					0.879999995231628,
+					0.850000023841858,
+					0.800000011920929,
+					1.0
+				],
+				"horizon_warm": [
+					1.0,
+					0.800000011920929,
+					0.579999983310699,
+					1.0
+				],
+				"mid_color": [
+					0.550000011920929,
+					0.629999995231628,
+					0.759999990463257,
+					1.0
+				],
+				"sky_energy": 1.0,
+				"sun_disc_energy": 40.0,
+				"zenith_color": [
+					0.300000011920929,
+					0.469999998807907,
+					0.759999990463257,
+					1.0
+				]
+			},
+			"error": "",
+			"interface": [
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "cloud_coverage",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "cloud_scale",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "fallback_sun",
+					"type": 9
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "ground_color",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "horizon_cool",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "horizon_warm",
+					"type": 20
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "mid_color",
+					"type": 20
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "sky_energy",
+					"type": 3
+				},
+				{
+					"hint": 0,
+					"hint_string": "",
+					"name": "sun_disc_energy",
+					"type": 3
+				},
+				{
+					"hint": 21,
+					"hint_string": "",
+					"name": "zenith_color",
+					"type": 20
+				}
+			],
+			"ok": true,
+			"origins": {
+				"cloud_coverage": "material_override",
+				"cloud_scale": "material_override",
+				"fallback_sun": "material_override",
+				"ground_color": "material_override",
+				"horizon_cool": "material_override",
+				"horizon_warm": "material_override",
+				"mid_color": "material_override",
+				"sky_energy": "material_override",
+				"sun_disc_energy": "material_override",
+				"zenith_color": "material_override"
+			},
+			"values": {
+				"cloud_coverage": 0.55,
+				"cloud_scale": 3.20000004768372,
+				"fallback_sun": [
+					0.800000011920929,
+					0.400000005960464,
+					0.449999988079071
+				],
+				"ground_color": [
+					0.340000003576279,
+					0.319999992847443,
+					0.28999999165535,
+					1.0
+				],
+				"horizon_cool": [
+					0.879999995231628,
+					0.850000023841858,
+					0.800000011920929,
+					1.0
+				],
+				"horizon_warm": [
+					1.0,
+					0.800000011920929,
+					0.579999983310699,
+					1.0
+				],
+				"mid_color": [
+					0.550000011920929,
+					0.629999995231628,
+					0.759999990463257,
+					1.0
+				],
+				"sky_energy": 1.0,
+				"sun_disc_energy": 40.0,
+				"zenith_color": [
+					0.379999995231628,
+					0.479999989271164,
+					0.639999985694885,
+					1.0
+				]
+			}
+		}
+	},
+	"post_world_elapsed_s": 25.698,
+	"production_sky_settings": {
+		"ambient_light_sky_contribution": 0.720000028610229,
+		"ambient_light_source": 3,
+		"process_mode": 0,
+		"radiance_size": 3,
+		"reflected_light_source": 2,
+		"tonemap_exposure": 1.03999996185303
+	},
+	"production_uniform_resolution": {
+		"defaults": {
+			"cloud_coverage": 0.550000011920929,
+			"cloud_scale": 3.20000004768372,
+			"fallback_sun": [
+				0.800000011920929,
+				0.400000005960464,
+				0.449999988079071
+			],
+			"ground_color": [
+				0.340000003576279,
+				0.319999992847443,
+				0.28999999165535,
+				1.0
+			],
+			"horizon_cool": [
+				0.879999995231628,
+				0.850000023841858,
+				0.800000011920929,
+				1.0
+			],
+			"horizon_warm": [
+				1.0,
+				0.800000011920929,
+				0.579999983310699,
+				1.0
+			],
+			"mid_color": [
+				0.550000011920929,
+				0.629999995231628,
+				0.759999990463257,
+				1.0
+			],
+			"sky_energy": 1.0,
+			"sun_disc_energy": 40.0,
+			"zenith_color": [
+				0.300000011920929,
+				0.469999998807907,
+				0.759999990463257,
+				1.0
+			]
+		},
+		"error": "",
+		"interface": [
+			{
+				"hint": 0,
+				"hint_string": "",
+				"name": "cloud_coverage",
+				"type": 3
+			},
+			{
+				"hint": 0,
+				"hint_string": "",
+				"name": "cloud_scale",
+				"type": 3
+			},
+			{
+				"hint": 0,
+				"hint_string": "",
+				"name": "fallback_sun",
+				"type": 9
+			},
+			{
+				"hint": 21,
+				"hint_string": "",
+				"name": "ground_color",
+				"type": 20
+			},
+			{
+				"hint": 21,
+				"hint_string": "",
+				"name": "horizon_cool",
+				"type": 20
+			},
+			{
+				"hint": 21,
+				"hint_string": "",
+				"name": "horizon_warm",
+				"type": 20
+			},
+			{
+				"hint": 21,
+				"hint_string": "",
+				"name": "mid_color",
+				"type": 20
+			},
+			{
+				"hint": 0,
+				"hint_string": "",
+				"name": "sky_energy",
+				"type": 3
+			},
+			{
+				"hint": 0,
+				"hint_string": "",
+				"name": "sun_disc_energy",
+				"type": 3
+			},
+			{
+				"hint": 21,
+				"hint_string": "",
+				"name": "zenith_color",
+				"type": 20
+			}
+		],
+		"ok": true,
+		"origins": {
+			"cloud_coverage": "material_override",
+			"cloud_scale": "rendering_server_shader_default",
+			"fallback_sun": "rendering_server_shader_default",
+			"ground_color": "rendering_server_shader_default",
+			"horizon_cool": "material_override",
+			"horizon_warm": "rendering_server_shader_default",
+			"mid_color": "rendering_server_shader_default",
+			"sky_energy": "rendering_server_shader_default",
+			"sun_disc_energy": "rendering_server_shader_default",
+			"zenith_color": "material_override"
+		},
+		"values": {
+			"cloud_coverage": 0.55,
+			"cloud_scale": 3.20000004768372,
+			"fallback_sun": [
+				0.800000011920929,
+				0.400000005960464,
+				0.449999988079071
+			],
+			"ground_color": [
+				0.340000003576279,
+				0.319999992847443,
+				0.28999999165535,
+				1.0
+			],
+			"horizon_cool": [
+				0.879999995231628,
+				0.850000023841858,
+				0.800000011920929,
+				1.0
+			],
+			"horizon_warm": [
+				1.0,
+				0.800000011920929,
+				0.579999983310699,
+				1.0
+			],
+			"mid_color": [
+				0.550000011920929,
+				0.629999995231628,
+				0.759999990463257,
+				1.0
+			],
+			"sky_energy": 1.0,
+			"sun_disc_energy": 40.0,
+			"zenith_color": [
+				0.379999995231628,
+				0.479999989271164,
+				0.639999985694885,
+				1.0
+			]
+		}
+	},
+	"rendered": true,
+	"requested_rendering_method": "forward_plus",
+	"same_world_for_both_phases": true,
+	"schema": "singapore_sky_pole_rendered_ab_v1",
+	"scope": "Actual image acquisition only. Compare matched frames and engine logs; successful PNG writes do not establish shader correctness, radiance convergence, visual quality, frame rate or native gameplay. The actual production world is frozen and camera positions are disclosed fixtures. Ambient/reflections use each phase's sky and can affect ground views. Render-time shader animation/TAA may vary despite frozen gameplay.",
+	"selected_source_hashes": {
+		"baseline_shader": "daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84",
+		"res://assets/authored/shaders/golden_hour_sky.gdshader": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+		"res://main.tscn": "9ce932078c9492124258742ee758fd8a4cc630bc3a3ae7af3d02ebdb8a580dbd",
+		"res://src/main.gd": "d4dc78b6d654323f16e6fe1c167d793cf6240f5c5b5f2ec87832ebd96c0a1e4e",
+		"res://src/systems/fidelity_tests/sky_pole_review.gd": "32cf5180d5cc85515e8110050e6e8a995891a16ad2f1082d485a1fde0eb97c54",
+		"res://src/world/lighting.gd": "77db31bf1d51ae8428e8d7f7109f0b468d5881df6a2bbda347e5182d1d031b3a",
+		"res://src/world/world_builder.gd": "8363cca48e827499e091aa1505fd29ba9bc672940b496389d9f793b85a6a5464"
+	},
+	"shader_compile_accepted": false,
+	"sky_uniform_values": {
+		"cloud_coverage": 0.55,
+		"cloud_scale": 3.20000004768372,
+		"fallback_sun": [
+			0.800000011920929,
+			0.400000005960464,
+			0.449999988079071
+		],
+		"ground_color": [
+			0.340000003576279,
+			0.319999992847443,
+			0.28999999165535,
+			1.0
+		],
+		"horizon_cool": [
+			0.879999995231628,
+			0.850000023841858,
+			0.800000011920929,
+			1.0
+		],
+		"horizon_warm": [
+			1.0,
+			0.800000011920929,
+			0.579999983310699,
+			1.0
+		],
+		"mid_color": [
+			0.550000011920929,
+			0.629999995231628,
+			0.759999990463257,
+			1.0
+		],
+		"sky_energy": 1.0,
+		"sun_disc_energy": 40.0,
+		"zenith_color": [
+			0.379999995231628,
+			0.479999989271164,
+			0.639999985694885,
+			1.0
+		]
+	},
+	"terminal": "capture_pipeline_completed",
+	"visual_accepted": false,
+	"warmups": [
+		{
+			"actual_ms": 7112,
+			"guarantees_radiance_convergence": false,
+			"label": "baseline: sky/radiance",
+			"rendered_frames": 48
+		},
+		{
+			"actual_ms": 1015,
+			"guarantees_radiance_convergence": false,
+			"label": "baseline: 01_ground",
+			"rendered_frames": 23
+		},
+		{
+			"actual_ms": 1004,
+			"guarantees_radiance_convergence": false,
+			"label": "baseline: 02_horizon",
+			"rendered_frames": 29
+		},
+		{
+			"actual_ms": 1001,
+			"guarantees_radiance_convergence": false,
+			"label": "baseline: 03_cap_below",
+			"rendered_frames": 42
+		},
+		{
+			"actual_ms": 1012,
+			"guarantees_radiance_convergence": false,
+			"label": "baseline: 04_cap_above",
+			"rendered_frames": 44
+		},
+		{
+			"actual_ms": 1012,
+			"guarantees_radiance_convergence": false,
+			"label": "baseline: 05_near_vertical",
+			"rendered_frames": 44
+		},
+		{
+			"actual_ms": 4020,
+			"guarantees_radiance_convergence": false,
+			"label": "candidate: sky/radiance",
+			"rendered_frames": 90
+		},
+		{
+			"actual_ms": 1012,
+			"guarantees_radiance_convergence": false,
+			"label": "candidate: 01_ground",
+			"rendered_frames": 24
+		},
+		{
+			"actual_ms": 1031,
+			"guarantees_radiance_convergence": false,
+			"label": "candidate: 02_horizon",
+			"rendered_frames": 33
+		},
+		{
+			"actual_ms": 1017,
+			"guarantees_radiance_convergence": false,
+			"label": "candidate: 03_cap_below",
+			"rendered_frames": 44
+		},
+		{
+			"actual_ms": 1014,
+			"guarantees_radiance_convergence": false,
+			"label": "candidate: 04_cap_above",
+			"rendered_frames": 44
+		},
+		{
+			"actual_ms": 1008,
+			"guarantees_radiance_convergence": false,
+			"label": "candidate: 05_near_vertical",
+			"rendered_frames": 44
+		}
+	],
+	"whole_ground_image_invariance_verified": false,
+	"world_startup_ms": 28871
+}

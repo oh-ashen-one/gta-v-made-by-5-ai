@@ -56,3 +56,40 @@ The inert `wiki-suggestion.json` contains a durable fact for the parent to file 
 ## Independent equation review
 
 The original capture critic independently re-reviewed the shader and reproduced the opposing-ray convergence. It found no remaining source-level pole singularity or cap-boundary discontinuity. This is code/math approval only. The CPU light/density study uses a fixed representative horizontal sun input; it neither reproduces the actual scene LIGHT0 vector nor computes final GPU COLOR. Lower-angle direct-equation preservation does not prove bit-identical ground images because the sky also drives ambient and reflection convolution. Matched actual near-vertical, cap-transition, horizon and ground renders remain required.
+
+## Parent-run actual rendered A/B helper
+
+`game/src/systems/fidelity_tests/sky_pole_review.gd/.tscn` instantiates the real `main.tscn` exactly once. It pauses the SceneTree and gameplay, freezes production-node callbacks, hides the HUD, clears bindings only inside this QA process and keeps the mouse visible. It does not call save/load or start another test controller.
+
+The same actual world and fixed camera poses are captured for the old shader and frozen candidate. Baseline source is loaded into `Shader.new()`; both phases duplicate the production sky/material, explicitly reapply all ten actual scene uniform values and preserve the production radiance/sky settings. Warmup is four seconds and at least 48 rendered frames per sky, then one second and at least 16 frames after each camera change. Actual warmup durations/counts are recorded; they are not a proof that all radiance/TAA history has converged.
+
+Five disclosed fixtures produce ten PNGs: an eye-height opening-sidewalk view just ahead of the frozen actor, an elevated horizon view, two views through the cap boundary at 62°/72° elevation and a near-vertical 88.5° view. These are lighting fixtures, not native player-camera, animation, flight, traversal or control evidence. Both phases use the same instance; camera transforms, actual pixels and world-node counts are compared. Render-time shader motion/TAA can still vary despite paused gameplay.
+
+Parent prepares the immutable baseline under a new owned run directory and runs the scene through the normal shared lease/gate wrapper. For example:
+
+```sh
+bash loop/singapore-fidelity/run_engine.sh sky-pole-review-r1 300 \
+  /private/tmp/singapore-fidelity/sky-pole-review-r1 -- \
+  res://src/systems/fidelity_tests/sky_pole_review.tscn -- \
+  --qa-session /private/tmp/singapore-fidelity/sky-pole-review-r1/session \
+  --qa-render-size=1280x720 \
+  --sky-pole-output=/private/tmp/singapore-fidelity/sky-pole-review-r1/captures \
+  --sky-pole-baseline=/private/tmp/singapore-fidelity/sky-pole-review-r1/baseline.gdshader \
+  --sky-pole-baseline-ref=5ec183a
+```
+
+Default expected source hashes are the before/after hashes above; explicit `--sky-pole-baseline-sha256=` and `--sky-pole-candidate-sha256=` options support another deliberately identified source pair. Equal hashes, wrong identities, unsafe/symlink paths, an existing report/save, conflicting controllers and save-path overrides are refused. No image/report is overwritten. All output and baseline paths must stay within a normalized `/private/tmp/singapore-fidelity/sky-pole-review-*/` run.
+
+An internal monotonic 120-second limit begins **after** synchronous production-world startup. The root wrapper remains responsible for a total process deadline. Headless use exits 2 with `rendered=false`, no world instantiation and no visual-success claim. Successful PNG writes mean only that acquisition completed; shader correctness, final image quality, radiance convergence, frame rate, human play and the broader Singapore/MBS goal remain unaccepted until parent inspection.
+
+The report records actual timestamps, source/code/PNG hashes, camera poses, viewport and image dimensions, uniform/sky settings, warmups and explicit scope limits. No engine or GPU run was performed by the helper's author. Parsing and runtime behavior are pending root verification.
+
+## Actual A/B R1 failure and uniform-default correction
+
+Root ran the first rendered helper. It exited1 at setup check5, with no fatal engine errors, zero images and`rendered=false`. Its actual report contains only three nonnull material values: `zenith_color`, `cloud_coverage` and `horizon_cool`. The other seven entries were unset material overrides, not evidence that their declared shader defaults were absent or that the sky had passed/fail visual review. The failed report remains under the original private run directory.
+
+The helper now reflects **every** material uniform with [`Shader.get_shader_uniform_list(false)`](https://docs.godotengine.org/en/stable/classes/class_shader.html#class-shader-method-get-shader-uniform-list). For each actual Shader RID it queries [`RenderingServer.shader_get_parameter_default`](https://docs.godotengine.org/en/stable/classes/class_renderingserver.html#class-renderingserver-method-shader-get-parameter-default), records that default and uses it whenever the material override is null. No unknown/null value is skipped or replaced by a guessed constant. The complete ten-uniform contract, finite supported values, interface, declared defaults and effective starting values must match. Then all effective values are explicitly applied to each phase and compared again. The report distinguishes material overrides from renderer-provided defaults. Any unresolved field still fails before capture.
+
+`helper-r1-diagnosis.json` binds this source correction to the actual failed report and records the revised helper hash. A new run directory is required for the rerun; R1 evidence is not overwritten. No engine was launched by this worker.
+
+Root separately observed that the actual helicopter R2 upward view still has radial white cloud streaks, despite57/57 control gates. The frozen shader remains75e46d5f; mathematical continuity is not accepted visual success. Matched real A/B frames and a fresh visual critic remain required before accepting or revising that shader.

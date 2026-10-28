@@ -1,0 +1,71 @@
+{
+	"baseline_ref_label": "parent-provided baseline",
+	"baseline_sha256": "daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84",
+	"camera_fixtures": true,
+	"candidate_sha256": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+	"capture_limit_after_world_s": 120.0,
+	"captures": [],
+	"checks": 5,
+	"display_server": "macOS",
+	"engine_version": {
+		"build": "official",
+		"hash": "a13da4feb8d8aefc283c3763d33a2f170a18d541",
+		"hex": 263937,
+		"major": 4,
+		"minor": 7,
+		"patch": 1,
+		"status": "stable",
+		"string": "4.7.1-stable (official)",
+		"timestamp": 0
+	},
+	"failures": [
+		"all known production sky uniforms are available"
+	],
+	"full_singapore_or_mbs_verified": false,
+	"native_human_input_verified": false,
+	"performance_accepted": false,
+	"post_world_elapsed_s": 0.076,
+	"production_sky_settings": {},
+	"rendered": false,
+	"requested_rendering_method": "forward_plus",
+	"same_world_for_both_phases": false,
+	"schema": "singapore_sky_pole_rendered_ab_v1",
+	"scope": "Actual image acquisition only. Compare matched frames and engine logs; successful PNG writes do not establish shader correctness, radiance convergence, visual quality, frame rate or native gameplay. The actual production world is frozen and camera positions are disclosed fixtures. Ambient/reflections use each phase's sky and can affect ground views. Render-time shader animation/TAA may vary despite frozen gameplay.",
+	"selected_source_hashes": {
+		"baseline_shader": "daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84",
+		"res://assets/authored/shaders/golden_hour_sky.gdshader": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+		"res://main.tscn": "9ce932078c9492124258742ee758fd8a4cc630bc3a3ae7af3d02ebdb8a580dbd",
+		"res://src/main.gd": "d4dc78b6d654323f16e6fe1c167d793cf6240f5c5b5f2ec87832ebd96c0a1e4e",
+		"res://src/systems/fidelity_tests/sky_pole_review.gd": "2bd8d4b48d5c8750f28a728f7f0bf39f23d9401d2ea247a502b835faafe22a40",
+		"res://src/world/lighting.gd": "77db31bf1d51ae8428e8d7f7109f0b468d5881df6a2bbda347e5182d1d031b3a",
+		"res://src/world/world_builder.gd": "c65b68d0b3e996c694085a7f3e27e410f39db84b7c4f84a0820a59df810a6923"
+	},
+	"shader_compile_accepted": false,
+	"sky_uniform_values": {
+		"cloud_coverage": 0.55,
+		"cloud_scale": null,
+		"fallback_sun": null,
+		"ground_color": null,
+		"horizon_cool": [
+			0.879999995231628,
+			0.850000023841858,
+			0.800000011920929,
+			1.0
+		],
+		"horizon_warm": null,
+		"mid_color": null,
+		"sky_energy": null,
+		"sun_disc_energy": null,
+		"zenith_color": [
+			0.379999995231628,
+			0.479999989271164,
+			0.639999985694885,
+			1.0
+		]
+	},
+	"terminal": "setup_failed",
+	"visual_accepted": false,
+	"warmups": [],
+	"whole_ground_image_invariance_verified": false,
+	"world_startup_ms": 30188
+}

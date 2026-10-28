@@ -1,0 +1,32 @@
+{
+  "scope": "Actual failed R1 report plus source/API diagnosis; revised helper not yet run",
+  "r1_terminal": "setup_failed",
+  "r1_rendered": false,
+  "r1_capture_count": 0,
+  "r1_failure": [
+    "all known production sky uniforms are available"
+  ],
+  "material_override_values_present": [
+    "cloud_coverage",
+    "horizon_cool",
+    "zenith_color"
+  ],
+  "unset_material_override_names": [
+    "cloud_scale",
+    "fallback_sun",
+    "ground_color",
+    "horizon_warm",
+    "mid_color",
+    "sky_energy",
+    "sun_disc_energy"
+  ],
+  "resolution": "Reflect every actual user uniform; query its actual Shader RID default via RenderingServer; require complete finite defaults, matching baseline/candidate declarations and starting effective values, then explicitly apply all effective values and compare again. Do not skip unresolved fields.",
+  "official_api_docs": [
+    "https://docs.godotengine.org/en/stable/classes/class_shader.html#class-shader-method-get-shader-uniform-list",
+    "https://docs.godotengine.org/en/stable/classes/class_renderingserver.html#class-renderingserver-method-shader-get-parameter-default"
+  ],
+  "revised_helper_sha256": "32cf5180d5cc85515e8110050e6e8a995891a16ad2f1082d485a1fde0eb97c54",
+  "shader_sha256_unchanged": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+  "visual_accepted": false,
+  "native_flight_render_r2_notice": "Parent reports57/57 control gates, but new upward image still has radial cloud streaks; source continuity is not visual success."
+}

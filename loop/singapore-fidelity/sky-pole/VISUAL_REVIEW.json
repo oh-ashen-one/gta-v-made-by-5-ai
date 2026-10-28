@@ -1,0 +1,21 @@
+{
+  "method": "Fresh blind critic, ten unchanged actual same-world/same-camera PNGs; mapping revealed after preferences",
+  "preferences_before_mapping": {
+    "01": "tie",
+    "02": "tie",
+    "03": "B",
+    "04": "A",
+    "05": "B"
+  },
+  "unblinded_result": "Candidate preferred for all three upward pairs; ground/horizon ties",
+  "mean_abs_rgb_difference_out_of_255": {
+    "ground": 0.925,
+    "horizon": 0.579
+  },
+  "broad_neutral_white_clip_pixels_at_all_channels_ge250": 0,
+  "pole_convergence_defect_improved": true,
+  "overall_sky_visual_finished": false,
+  "remaining_gap": "Upward cloud ribbons still stretched; not convincing tropical cloud volumes. Retain as art-quality gap; current scoped pole fix is a verified improvement.",
+  "performance_or_human_acceptance": false,
+  "full_singapore_or_mbs_acceptance": false
+}
