@@ -8,6 +8,7 @@ var context: RefCounted
 var frame: RefCounted
 var last_error := ""
 var _domain: Callable
+var _domain_owner: RefCounted
 var _regions: Dictionary = {}
 var _supports: Dictionary = {}
 var _generation := 0
@@ -21,6 +22,10 @@ func configure(source_frame: RefCounted, source_context: RefCounted, domain_adap
 	frame = source_frame
 	context = source_context
 	_domain = domain_adapter
+	# Callable does not retain its RefCounted target. Keep a source-data
+	# adapter alive after a bootstrap coroutine/local variable returns.
+	var target: Object = domain_adapter.get_object()
+	if target is RefCounted: _domain_owner = target
 	_configured = true
 	add_to_group("source_world_runtime")
 	return true
@@ -180,6 +185,7 @@ func _bound(query: Dictionary, kind: String, state: String, payload: Dictionary 
 
 func _domain_observations(query: Dictionary) -> Dictionary:
 	var observations: Dictionary = {}
+	if not _domain.is_valid(): return observations
 	var supplied: Variant = _domain.call(query.source_xyz.duplicate())
 	if not supplied is Dictionary: return observations
 	for kind in ["territory", "land", "water"]:
