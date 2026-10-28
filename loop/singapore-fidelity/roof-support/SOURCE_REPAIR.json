@@ -1,13 +1,14 @@
 {
   "created_utc": "2026-10-28T20:56:35.495868+00:00",
-  "status": "R1_PHYSICS_7_ACTOR_CASES_PASS_ROOFKIT_READBACK_DIAGNOSIS_R2_PENDING",
+  "status": "DOWNTOWN_ROOF_FAMILY_EXTENSION_SOURCE_FROZEN_RUNTIME_PENDING",
   "source_sha256": {
     "game/src/world/downtown/landmarks/mbs.gd": "31e7e19570bc6c8b3234cb10dd575a836ad44a3be3e00a615a7925fcef33dfe7",
     "game/src/world/downtown/landmarks/fullerton.gd": "a9a7203014e954b45754e31633bf7ca7da8673afd53ee65de385209361edb844",
     "game/src/world/roof_kit.gd": "ed897b63126db8233a7842faa83ddd3ae734c00d10cdbc0ede2aac50add2f5fb",
     "game/src/world/world_builder.gd": "8363cca48e827499e091aa1505fd29ba9bc672940b496389d9f793b85a6a5464",
-    "game/src/systems/fidelity_tests/roof_support_review.gd": "5e7f34842b66c201ce1d656c0cd8a8aea0aa3e2f500ce9af8ce67668aeaf65e5",
-    "game/src/systems/fidelity_tests/roof_support_review.tscn": "a5000fd9e14b3f06cb6a2efcbbccd5bfa42b5c3e0447b6a065444eb0e9e0c5c6"
+    "game/src/systems/fidelity_tests/roof_support_review.gd": "d8be35b67c7808bd67f44ee43772bbbef22af2f4e330e74e7e417d01a0b3c004",
+    "game/src/systems/fidelity_tests/roof_support_review.tscn": "a5000fd9e14b3f06cb6a2efcbbccd5bfa42b5c3e0447b6a065444eb0e9e0c5c6",
+    "game/src/world/downtown/roofs.gd": "35baa05a86eb48d3e983e1dd21d2f5c088950da561545894fb6623e86c81278e"
   },
   "render_geometry_changed": false,
   "new_external_assets_or_generators": false,
@@ -52,7 +53,7 @@
     "Actual rendered roof contacts/camera inspection remain required.",
     "Distant visual-only/background buildings, full Singapore geometry and real MBS architecture are not certified."
   ],
-  "frozen_utc": "2026-10-28T21:26:36.170527+00:00",
+  "frozen_utc": "2026-10-28T22:35:43.264579+00:00",
   "production_files_frozen": true,
   "fixture_probe_resources": "Actual production Player capsule and Helicopter box shape/local transform, with stricter query margins; no copied collision dimensions.",
   "headless_r1": {
@@ -71,5 +72,66 @@
     "headless_multimesh_readback_suspected": true,
     "proof_limit": "R1 did not record exact per-instance ray/readback detail; R2 must confirm the cause, not infer runtime support from source."
   },
-  "r2_changes": "Preserve exact CPU transforms submitted to each production RoofKit MultiMesh. Headless rays use those receipts, strict native collision shape transform/dimension comparison added; rendered runs additionally compare actual GPU buffer. Every ray failure includes actual shape owner/top overlap details; fixture rejection counters and samples added. No support geometry or actor tolerances changed in R2."
+  "r2_changes": "Preserve exact CPU transforms submitted to each production RoofKit MultiMesh. Headless rays use those receipts, strict native collision shape transform/dimension comparison added; rendered runs additionally compare actual GPU buffer. Every ray failure includes actual shape owner/top overlap details; fixture rejection counters and samples added. No support geometry or actor tolerances changed in R2.",
+  "prior_roofkit_proofs": [
+    {
+      "report": "/private/tmp/singapore-fidelity/roof-support-r2/review/report.json",
+      "report_sha256": "9e5419fb747b90ffc68f1b12f7c1e04053d1e89bae291bec7ce250462871f6d2",
+      "checks": 85,
+      "failures": [],
+      "rendered": false,
+      "exit_code": 0,
+      "fatal_errors": [],
+      "scope": "Named legacy landmarks/hangar/Fullerton plus RoofKit247 membrane/housing instances. Does not cover the new DowntownRoof_* extension."
+    },
+    {
+      "report": "/private/tmp/singapore-fidelity/roof-support-r3/review/report.json",
+      "report_sha256": "1da64a635c90122cd1bca563879a4d3a189fbf55f3cba68d9ae1e8b2a1dcf26b",
+      "checks": 103,
+      "failures": [],
+      "rendered": true,
+      "exit_code": 0,
+      "fatal_errors": [],
+      "scope": "Named legacy landmarks/hangar/Fullerton plus RoofKit247 membrane/housing instances. Does not cover the new DowntownRoof_* extension."
+    }
+  ],
+  "downtown_extension": {
+    "new_production_file": "game/src/world/downtown/roofs.gd",
+    "visual_inputs_preserved": [
+      "Original primitive dimensions and transforms",
+      "Original deterministic RNG calls and order",
+      "Original mesh/material grouping and400m cell order",
+      "Original draw count, material, visibility and shadow settings",
+      "Original shrub emission"
+    ],
+    "structural_roles": [
+      "membrane",
+      "penthouse",
+      "penthouse cap",
+      "substantial condenser/cooling/tank",
+      "solid duct/skylight/planter base"
+    ],
+    "excluded_visuals": [
+      "thin fan grilles",
+      "solar panels",
+      "foliage"
+    ],
+    "collision": "Exact same CPU submissions; scale carried in BoxShape dimensions, polygonal cylinders use exact transformed rendered faces; support bodies are identity children of their MMI batch",
+    "test_extension": "All per-role native top rays, exact shape ownership and transform/vertex matches, no excluded-instance collision, rendered MMI buffer agreement, sampled negative outside-slab/cap probes, and two additional strict native descent/E/walk actor fixtures selected on clear production membrane/penthouse cap",
+    "runtime_result": "PENDING; no engine operation by child",
+    "coverage_limits": [
+      "No claim every city/background roof is covered",
+      "No route-arrival relocation claim; fixtures explicitly declared",
+      "No whole-Singapore or as-built MBS geography claim",
+      "No performance acceptance from headless or still images"
+    ],
+    "r1_parser_failure": {
+      "evidence": "/private/tmp/singapore-fidelity/roof-support-downtown-r1",
+      "script_line": 425,
+      "error": "Cannot infer type of variable ok because value has no set type",
+      "tests_exercised": false,
+      "correction": "Declare local ok as bool; compound expression contains dynamic Dictionary.get collider identity. Static scan found no other new untyped variables inferred from Variant expressions. No production geometry or check threshold changed.",
+      "rerun": "PENDING root fresh-prefix parse/physics"
+    }
+  }
 }

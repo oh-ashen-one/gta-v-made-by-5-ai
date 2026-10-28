@@ -1,0 +1,3 @@
+# Root-owned packaged-data gate
+
+The macOS preset now explicitly includes data/mbs-interior/inventory.json because the registry reads it through FileAccess. This source change is not packaged evidence. After source/native-floor gates, export a fresh candidate and run the packaged inventory/factory path; verify actual presence, all159recipes/1850units and a native door/traversal probe. Source execution or an empty/no-data report cannot pass. Do not invoke unsupported dedicated scene overrides on stock release templates as a bypass; add an explicit isolated QA entry when needed. Preserve owner save data.

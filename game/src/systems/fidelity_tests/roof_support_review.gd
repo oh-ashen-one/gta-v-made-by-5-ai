@@ -32,6 +32,7 @@ var _fixture_assignments := 0
 var _player_collider: CollisionShape3D
 var _heli_collider: CollisionShape3D
 var _heli_bottom_y := 0.0
+var _physics_clock_s := 0.0
 var _fixture_search := {"eligible_roofs": 0, "points": 0, "helicopter_blocked": 0, "foot_support_failed": 0, "capsule_blocked": 0, "sweep_blocked": 0, "sample_rejections": []}
 
 func _ready() -> void:
@@ -83,7 +84,8 @@ func _process(_delta: float) -> void:
 		check("roof review completes inside its monotonic limit", false)
 		_finish()
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	_physics_clock_s += delta
 	if _tracking_walk and is_instance_valid(player):
 		_max_walk_step = maxf(_max_walk_step, player.global_position.distance_to(_last_foot))
 		_min_walk_y = minf(_min_walk_y, player.global_position.y)
@@ -225,6 +227,7 @@ func _run() -> void:
 	_roof_rays()
 	var membrane_case := _roofkit_checks()
 	var cases := _actor_cases(membrane_case)
+	cases.append_array(_downtown_roof_checks())
 	for entry: Dictionary in cases:
 		if _finished: return
 		await _land_exit_walk(entry)
@@ -334,14 +337,133 @@ func _roofkit_checks() -> Dictionary:
 	metrics["roofkit"] = {"visual_membranes": count, "physical_membranes": deck_shapes, "supported_centres": supported, "housing_roofs": housing_count, "supported_housing_roofs": housing_ok, "fixture_selection": candidate, "fixture_search": _fixture_search, "transform_source": "CPU values submitted to production MMI; rendered runs also require GPU-buffer agreement" if DisplayServer.get_name() == "headless" else "actual renderer buffer plus independent CPU submission agreement", "headless_gpu_readback_acceptance": false, "deck_gpu_readback_max_corner_error_m": gpu_buffer_max_error, "housing_gpu_readback_max_corner_error_m": housing_gpu_error, "deck_details": deck_details, "housing_details": housing_details}
 	return candidate
 
-func _clear_membrane_fixture(deck: MultiMeshInstance3D, xf: Transform3D, index: int) -> Dictionary:
+func _downtown_shape_match(mesh: MultiMeshInstance3D, index: int, body: StaticBody3D, part: String) -> Dictionary:
+	if mesh.multimesh.mesh is BoxMesh: return _matching_box(mesh, index, body, part)
+	var receipts := _roof_receipts(mesh)
+	var source: Transform3D = receipts[index]
+	var node := body.get_node_or_null("%s_%d" % [part, index]) as CollisionShape3D
+	if node == null or not node.shape is ConvexPolygonShape3D: return {"matched": false, "reason": "no matching polygonal support shape"}
+	var raw := mesh.multimesh.mesh.get_faces()
+	var points := (node.shape as ConvexPolygonShape3D).points
+	if raw.size() != points.size(): return {"matched": false, "reason": "cylinder hull differs from authored render vertices"}
+	var error := 0.0
+	for i in raw.size():
+		error = maxf(error, (mesh.global_transform * source * raw[i]).distance_to(node.global_transform * points[i]))
+	return {"matched": not node.disabled and body.collision_layer == 1 and int(node.get_meta("render_instance_index", -1)) == index and String(node.get_meta("roof_support_kind", "")) == part and error < 0.0001, "shape": String(node.name), "max_vertex_error_m": error, "vertices": raw.size()}
+
+func _outside_downtown_slab(mesh: MultiMeshInstance3D, xf: Transform3D, index: int, part: String) -> Dictionary:
+	var size := xf.basis.get_scale()
+	var offsets := [Vector3(0.5 + 0.3 / size.x, 0.5, 0), Vector3(-0.5 - 0.3 / size.x, 0.5, 0), Vector3(0, 0.5, 0.5 + 0.3 / size.z), Vector3(0, 0.5, -0.5 - 0.3 / size.z)]
+	var probes: Array[Dictionary] = []
+	for offset: Vector3 in offsets:
+		var point := xf * offset
+		# Stay above the base slab/body, which legitimately exists below this
+		# cap. A lower floor therefore cannot masquerade as a phantom roof.
+		var hit := _ray(point + Vector3.UP * 0.02, point - Vector3.UP * 0.11)
+		probes.append({"point": point, "native_ray": _hit_detail(hit)})
+		if hit.is_empty(): return {"clear": true, "mesh": String(mesh.get_path()), "index": index, "kind": part, "probes": probes}
+	return {"clear": false, "mesh": String(mesh.get_path()), "index": index, "kind": part, "probes": probes}
+
+func _downtown_roof_checks() -> Array[Dictionary]:
+	_fixture_search = {"eligible_roofs": 0, "points": 0, "helicopter_blocked": 0, "foot_support_failed": 0, "capsule_blocked": 0, "sweep_blocked": 0, "sample_rejections": []}
+	var cases: Array[Dictionary] = []
+	var membranes: Dictionary = {}
+	var penthouse: Dictionary = {}
+	var membrane_outside: Dictionary = {}
+	var penthouse_outside: Dictionary = {}
+	var nodes: Array[Node] = [world]
+	var batches := 0
+	var receipt_ok := true
+	var exact_shapes := true
+	var native_rays := true
+	var excluded_count := 0
+	var excluded_solid := 0
+	var structural := 0
+	var gpu_error := 0.0
+	var per_part: Dictionary = {}
+	var details: Array[Dictionary] = []
+	while not nodes.is_empty():
+		var current: Node = nodes.pop_back()
+		for child in current.get_children(): nodes.append(child)
+		if not current is MultiMeshInstance3D or not String(current.name).begins_with("DowntownRoof_"): continue
+		var mesh := current as MultiMeshInstance3D
+		if mesh.multimesh == null: continue
+		batches += 1
+		var count := mesh.multimesh.instance_count
+		var receipts := _roof_receipts(mesh)
+		var parts: Array = mesh.get_meta("roof_support_parts", [])
+		if receipts.size() != count or parts.size() != count:
+			receipt_ok = false
+			details.append({"batch": String(mesh.get_path()), "reason": "incomplete authored render/structural role receipt", "render_count": count, "transform_count": receipts.size(), "part_count": parts.size()})
+			continue
+		var body := mesh.get_node_or_null("StructuralCollision") as StaticBody3D
+		var expected_body_shapes := 0
+		for i in count:
+			var part: String = parts[i]
+			var gpu_local := mesh.multimesh.get_instance_transform(i)
+			gpu_error = maxf(gpu_error, _xf_error(receipts[i], gpu_local))
+			if part.is_empty():
+				excluded_count += 1
+				if body != null:
+					for shape in body.get_children():
+						if int(shape.get_meta("render_instance_index", -1)) == i: excluded_solid += 1
+				continue
+			expected_body_shapes += 1
+			structural += 1
+			if not per_part.has(part): per_part[part] = {"instances": 0, "matched_shapes": 0, "native_top_rays": 0}
+			per_part[part].instances += 1
+			if body == null:
+				exact_shapes = false
+				native_rays = false
+				details.append({"batch": String(mesh.get_path()), "index": i, "kind": part, "reason": "missing native structural body"})
+				continue
+			var matching := _downtown_shape_match(mesh, i, body, part)
+			if matching.matched: per_part[part].matched_shapes += 1
+			else: exact_shapes = false
+			var xf := _roof_instance_xform(mesh, i)
+			var top := xf * Vector3(0, 0.5, 0)
+			var hit := _ray(top + Vector3.UP * 0.02, top - Vector3.UP * 0.11)
+			var hit_detail := _hit_detail(hit)
+			var ok: bool = not hit.is_empty() and absf((hit.position as Vector3).y - top.y) < 0.025 and (hit.normal as Vector3).y > 0.65 and _shape_kind(hit) == part and hit.get("collider") == body and int(hit_detail.get("render_instance", -1)) == i
+			if ok: per_part[part].native_top_rays += 1
+			else: native_rays = false
+			if not ok or not matching.matched or part in ["downtown_membrane", "downtown_penthouse", "downtown_penthouse_roof"]:
+				details.append({"batch": String(mesh.get_path()), "index": i, "kind": part, "expected_top": top, "matching_shape": matching, "native_ray": hit_detail, "supported": ok, "native_top_overlaps_if_failed": _top_overlap_detail(top) if not ok else []})
+			if part == "downtown_membrane" and membranes.is_empty() and xf.basis.get_scale().x > 14.0 and xf.basis.get_scale().z > 12.0:
+				_fixture_search.eligible_roofs += 1
+				membranes = _clear_membrane_fixture(mesh, xf, i, part, "downtown_membrane")
+				if not membranes.is_empty(): membrane_outside = _outside_downtown_slab(mesh, xf, i, part)
+			if part == "downtown_penthouse_roof" and penthouse.is_empty() and xf.basis.get_scale().x > 6.5 and xf.basis.get_scale().z > 4.8:
+				_fixture_search.eligible_roofs += 1
+				penthouse = _clear_membrane_fixture(mesh, xf, i, part, "downtown_penthouse_roof", PI * 0.5)
+				if not penthouse.is_empty(): penthouse_outside = _outside_downtown_slab(mesh, xf, i, part)
+		if body != null and body.get_child_count() != expected_body_shapes:
+			exact_shapes = false
+			details.append({"batch": String(mesh.get_path()), "expected_shapes": expected_body_shapes, "actual_shapes": body.get_child_count(), "reason": "structural child count mismatch"})
+	check("downtown roof MMIs retain complete authored transform and role receipts", batches > 0 and receipt_ok, "%d batches" % batches)
+	check("every substantial downtown roof part matches its actual render geometry", structural > 0 and exact_shapes, "%d structural instances" % structural)
+	check("thin downtown fan grilles and solar decoration remain non-solid", excluded_count > 0 and excluded_solid == 0, "%d excluded visual instances; %d unexpected solids" % [excluded_count, excluded_solid])
+	check("every downtown structural top has matching native support and shape identity", structural > 0 and native_rays, str(per_part))
+	if DisplayServer.get_name() != "headless":
+		check("actual downtown MMI buffers match their CPU submission receipts", gpu_error < 0.0001, "max_corner_error_m=%.6f" % gpu_error)
+	check("downtown membrane offers a clear production aircraft and capsule fixture", not membranes.is_empty())
+	check("downtown penthouse cap offers a clear production aircraft and capsule fixture", not penthouse.is_empty())
+	check("downtown membrane collision ends at its rendered slab", not membrane_outside.is_empty() and bool(membrane_outside.get("clear", false)), str(membrane_outside))
+	check("downtown penthouse cap has no phantom support outside its rendered edge", not penthouse_outside.is_empty() and bool(penthouse_outside.get("clear", false)), str(penthouse_outside))
+	if not membranes.is_empty(): cases.append(membranes)
+	if not penthouse.is_empty(): cases.append(penthouse)
+	metrics["downtown_roofs"] = {"scope": "DowntownRoof_* MMI family only, separate from RoofKit and far background towers", "batches": batches, "structural_instances": structural, "per_part": per_part, "excluded_nonstructural_instances": excluded_count, "excluded_unexpected_solids": excluded_solid, "renderer_readback_max_corner_error_m": gpu_error, "headless_gpu_readback_acceptance": false, "membrane_fixture": membranes, "penthouse_fixture": penthouse, "membrane_outside": membrane_outside, "penthouse_outside": penthouse_outside, "fixture_search": _fixture_search, "details": details}
+	return cases
+
+func _clear_membrane_fixture(deck: MultiMeshInstance3D, xf: Transform3D, index: int, support_kind: String = "deck", case_prefix: String = "ordinary_membrane", yaw: float = 0.0) -> Dictionary:
+	var orientation := Basis(Vector3.UP, yaw)
 	for x: float in [-0.25, 0.0, 0.25]:
 		for z: float in [-0.25, 0.0, 0.25]:
 			_fixture_search.points += 1
 			var top := xf * Vector3(x, 0.5, z)
 			var query := PhysicsShapeQueryParameters3D.new()
 			query.shape = _heli_collider.shape
-			query.transform = Transform3D(Basis.IDENTITY, top + Vector3.UP * (0.05 - _heli_bottom_y)) * _heli_collider.transform
+			query.transform = Transform3D(orientation, top + Vector3.UP * (0.05 - _heli_bottom_y)) * _heli_collider.transform
 			query.margin = maxf(heli.safe_margin, 0.01)
 			query.collision_mask = 1 | 4 | 8
 			query.exclude = [heli.get_rid(), player.get_rid()]
@@ -352,29 +474,29 @@ func _clear_membrane_fixture(deck: MultiMeshInstance3D, xf: Transform3D, index: 
 				continue
 			var clear := true
 			for u: float in [0.0, 0.25, 0.5, 0.75, 1.0]:
-				var foot := top + Vector3(2.8, 0, -3.4 * u)
+				var foot := top + orientation * Vector3(2.8, 0, -3.4 * u)
 				var hit := _ray(foot + Vector3.UP * 0.02, foot - Vector3.UP * 0.12)
-				if hit.is_empty() or absf((hit.position as Vector3).y - top.y) > 0.025 or _shape_kind(hit) != "deck":
+				if hit.is_empty() or absf((hit.position as Vector3).y - top.y) > 0.025 or _shape_kind(hit) != support_kind:
 					clear = false
 					_fixture_search.foot_support_failed += 1
 					_sample_rejection("walk path lacks matching membrane support", foot, [hit] if not hit.is_empty() else [])
 				query.shape = _player_collider.shape
-				query.transform = Transform3D(Basis.IDENTITY, foot + Vector3.UP * 0.08) * _player_collider.transform
+				query.transform = Transform3D(orientation, foot + Vector3.UP * 0.08) * _player_collider.transform
 				query.margin = maxf(player.safe_margin, 0.01)
 				var capsule_hits := get_world_3d().direct_space_state.intersect_shape(query, 4)
 				if not capsule_hits.is_empty():
 					clear = false
 					_fixture_search.capsule_blocked += 1
 					_sample_rejection("walk capsule obstruction", foot, capsule_hits)
-			query.transform = Transform3D(Basis.IDENTITY, top + Vector3(2.8, 0.08, 0)) * _player_collider.transform
-			query.motion = Vector3(0, 0, -3.4)
+			query.transform = Transform3D(orientation, top + orientation * Vector3(2.8, 0.08, 0)) * _player_collider.transform
+			query.motion = orientation * Vector3(0, 0, -3.4)
 			var fraction: PackedFloat32Array = get_world_3d().direct_space_state.cast_motion(query)
 			if fraction.size() != 2 or fraction[0] < 0.999:
 				clear = false
 				_fixture_search.sweep_blocked += 1
 				_sample_rejection("walk capsule sweep obstruction", top)
 			if clear:
-				return {"name": "ordinary_membrane_%d" % index, "point": top, "yaw": 0.0, "render_node": String(deck.name), "render_instance": index, "selection": "production body/capsule clearance and full walk-path sweep; other occupied spots are not claimed clear"}
+				return {"name": "%s_%d" % [case_prefix, index], "point": top, "yaw": yaw, "render_node": String(deck.get_path()), "render_instance": index, "support_kind": support_kind, "selection": "production body/capsule clearance and full walk-path sweep; other occupied spots are not claimed clear"}
 	return {}
 
 func _actor_cases(membrane: Dictionary) -> Array[Dictionary]:
@@ -408,12 +530,20 @@ func _land_exit_walk(entry: Dictionary) -> void:
 	heli.interact(player) # fixture boarding; normal production ownership path
 	await _frames(3)
 	check("initial roof fixture is airborne " + String(entry.name), player.current_vehicle == heli and not heli.is_on_floor())
-	var landing_deadline := Time.get_ticks_msec() + 8000
-	while not heli.is_landed() and Time.get_ticks_msec() < landing_deadline:
+	# This is a physics/control gate, not an eight-second performance budget.
+	# A slow rendered capture can consume wall time before eight simulated
+	# seconds of the deliberately gentle near-ground descent have elapsed.
+	var descent_wall_started := Time.get_ticks_msec()
+	var descent_sim_started := _physics_clock_s
+	var landing_deadline := descent_wall_started + 24000
+	var descent_ticks := 0
+	while not heli.is_landed() and _physics_clock_s - descent_sim_started < 8.0 and Time.get_ticks_msec() < landing_deadline:
 		Input.action_press("sprint")
 		await _frames(1)
+		descent_ticks += 1
 	Input.action_release("sprint")
 	await _frames(5)
+	metrics["descent_timing_" + String(entry.name)] = {"simulation_s": _physics_clock_s - descent_sim_started, "wall_s": float(Time.get_ticks_msec() - descent_wall_started) / 1000.0, "driver_ticks": descent_ticks, "simulation_limit_s": 8.0, "wall_guard_s": 24.0}
 	# Read the production collision box bottom. Being landed on a
 	# lower body/ground is not success for the selected visible roof surface.
 	var landed := heli.is_on_floor() and heli.is_landed() and not heli.disabled and heli.health > 99.9 and absf(heli.global_position.y + _heli_bottom_y - point.y) < 0.12

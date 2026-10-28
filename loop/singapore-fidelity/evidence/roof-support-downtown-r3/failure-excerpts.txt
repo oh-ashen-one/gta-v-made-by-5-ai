@@ -1,0 +1,2 @@
+[roof-support] FAIL native descent lands on actual roof hangar_prism_ridge position=(210.0, 15.465, 60.0) target=(210.0, 15.16, 60.0) speed=(0.0, -0.9, 0.0) health=100.00
+[roof-support] FAIL every representative actor case was exercised 9/10

@@ -8,7 +8,8 @@ extends RefCounted
 ## tanks, solar arrays, duct runs, skylights and roof-garden beds with shrub
 ## mounds. Everything stays inside the central 68 % of the roof box, so round
 ## and chamfered roofs never show an overhang. MultiMesh per prop per 400 m
-## cell; no collision. Original procedural work.
+## cell. Structural support reuses those exact authored transforms; foliage,
+## solar panels and thin fan grilles remain decoration. Original procedural work.
 
 const Canopy := preload("res://src/world/downtown/canopy.gd")
 const INSET := 0.68
@@ -76,7 +77,7 @@ static func _boxes(world: WorldBuilder) -> Array:
 
 static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 	var boxes := _boxes(world)
-	var groups := {}   # "mesh|mat" -> Array[Transform3D]
+	var groups := {}   # "mesh|mat" -> Array[{transform, support_kind}]
 	var shrubs: Array = []
 	var rng := RandomNumberGenerator.new()
 	var roofs := 0
@@ -98,7 +99,7 @@ static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 		var y := top
 		var memb: String = ["membrane_grey", "membrane_white", "membrane_terracotta", "membrane_green", "membrane_dark", "membrane_grey"][rng.randi() % 6]
 		if not covered:
-			_add(groups, "box", memb, Transform3D(Basis.from_scale(Vector3(ex, 0.12, ez)), Vector3(c.x, y + 0.06, c.z)))
+			_add(groups, "box", memb, Transform3D(Basis.from_scale(Vector3(ex, 0.12, ez)), Vector3(c.x, y + 0.06, c.z)), "downtown_membrane")
 		var others := func(p: Vector3) -> bool:
 			for o: AABB in boxes:
 				if o != bx and o.end.y > top + 1.0 and o.grow(1.0).has_point(Vector3(p.x, top + 0.5, p.z)):
@@ -108,8 +109,8 @@ static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 		var ph := Vector3(c.x + rng.randf_range(-0.25, 0.25) * ex, y, c.z + rng.randf_range(-0.25, 0.25) * ez)
 		var phs := Vector3(rng.randf_range(5.0, 8.0), rng.randf_range(3.0, 4.2), rng.randf_range(4.0, 6.0))
 		if not others.call(ph):
-			_add(groups, "box", "penthouse", Transform3D(Basis.from_scale(phs), ph + Vector3(0, phs.y * 0.5, 0)))
-			_add(groups, "box", "plant_dark", Transform3D(Basis.from_scale(Vector3(phs.x + 0.4, 0.3, phs.z + 0.4)), ph + Vector3(0, phs.y + 0.15, 0)))
+			_add(groups, "box", "penthouse", Transform3D(Basis.from_scale(phs), ph + Vector3(0, phs.y * 0.5, 0)), "downtown_penthouse")
+			_add(groups, "box", "plant_dark", Transform3D(Basis.from_scale(Vector3(phs.x + 0.4, 0.3, phs.z + 0.4)), ph + Vector3(0, phs.y + 0.15, 0)), "downtown_penthouse_roof")
 		# condenser grid
 		var rows := rng.randi_range(2, 4)
 		var cols := clampi(int(ex / 2.4) - 2, 2, 9)
@@ -120,7 +121,7 @@ static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 				var p := Vector3(gx0 + k * 2.1, y, gz0 + r * 1.8)
 				if absf(p.x - c.x) > ex * 0.5 - 0.8 or absf(p.z - c.z) > ez * 0.5 - 0.8 or others.call(p):
 					continue
-				_add(groups, "box", "plant", Transform3D(Basis.from_scale(Vector3(1.3, 1.1, 1.0)), p + Vector3(0, 0.55, 0)))
+				_add(groups, "box", "plant", Transform3D(Basis.from_scale(Vector3(1.3, 1.1, 1.0)), p + Vector3(0, 0.55, 0)), "downtown_condenser")
 				_add(groups, "cyl", "plant_dark", Transform3D(Basis.from_scale(Vector3(0.8, 0.06, 0.8)), p + Vector3(0, 1.13, 0)))
 		# cooling towers / tanks
 		if rng.randf() < 0.65:
@@ -133,9 +134,9 @@ static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 					continue
 				var rad := rng.randf_range(1.6, 2.4) if not tank else rng.randf_range(1.2, 1.6)
 				var hh := rng.randf_range(2.8, 3.8) if not tank else rng.randf_range(2.2, 3.2)
-				_add(groups, "cyl", "tower_green" if not tank else "tank", Transform3D(Basis.from_scale(Vector3(rad * 2.0, hh, rad * 2.0)), p2 + Vector3(0, hh * 0.5, 0)))
+				_add(groups, "cyl", "tower_green" if not tank else "tank", Transform3D(Basis.from_scale(Vector3(rad * 2.0, hh, rad * 2.0)), p2 + Vector3(0, hh * 0.5, 0)), "downtown_cooling" if not tank else "downtown_tank")
 				if not tank:
-					_add(groups, "cyl", "plant_dark", Transform3D(Basis.from_scale(Vector3(rad * 1.5, 0.5, rad * 1.5)), p2 + Vector3(0, hh + 0.25, 0)))
+					_add(groups, "cyl", "plant_dark", Transform3D(Basis.from_scale(Vector3(rad * 1.5, 0.5, rad * 1.5)), p2 + Vector3(0, hh + 0.25, 0)), "downtown_cooling_cap")
 		# solar array or roof garden on the remaining side
 		var side_z := c.z - ez * 0.25
 		if rng.randf() < 0.5:
@@ -152,7 +153,7 @@ static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 			var gd := ez * rng.randf_range(0.2, 0.32)
 			var gp := Vector3(c.x + rng.randf_range(-0.15, 0.15) * ex, y, side_z)
 			if not others.call(gp):
-				_add(groups, "box", "garden", Transform3D(Basis.from_scale(Vector3(gw, 0.5, gd)), gp + Vector3(0, 0.25, 0)))
+				_add(groups, "box", "garden", Transform3D(Basis.from_scale(Vector3(gw, 0.5, gd)), gp + Vector3(0, 0.25, 0)), "downtown_planter")
 				for i in int(gw * gd / 14.0):
 					var sp := gp + Vector3(rng.randf_range(-0.45, 0.45) * gw, 0.5, rng.randf_range(-0.42, 0.42) * gd)
 					var s := rng.randf_range(0.35, 0.7)
@@ -164,9 +165,9 @@ static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 			if others.call(dp):
 				continue
 			if rng.randf() < 0.5:
-				_add(groups, "box", "plant", Transform3D(Basis.from_scale(Vector3(ex * rng.randf_range(0.2, 0.45), 0.6, 0.7)), dp + Vector3(0, 0.5, 0)))
+				_add(groups, "box", "plant", Transform3D(Basis.from_scale(Vector3(ex * rng.randf_range(0.2, 0.45), 0.6, 0.7)), dp + Vector3(0, 0.5, 0)), "downtown_duct")
 			else:
-				_add(groups, "box", "skylight", Transform3D(Basis.from_scale(Vector3(rng.randf_range(3.0, 6.0), 0.5, rng.randf_range(2.0, 4.0))), dp + Vector3(0, 0.3, 0)))
+				_add(groups, "box", "skylight", Transform3D(Basis.from_scale(Vector3(rng.randf_range(3.0, 6.0), 0.5, rng.randf_range(2.0, 4.0))), dp + Vector3(0, 0.3, 0)), "downtown_skylight")
 	var draws := 0
 	var meshes := {"box": _box_mesh(), "cyl": _cyl_mesh()}
 	for key: String in groups:
@@ -174,11 +175,12 @@ static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 		var mesh_key := parts[0]
 		var mat_key := parts[1]
 		var by_cell := {}
-		for xf: Transform3D in groups[key]:
+		for entry: Dictionary in groups[key]:
+			var xf: Transform3D = entry.transform
 			var cell := Vector2i(floori(xf.origin.x / 400.0), floori(xf.origin.z / 400.0))
 			if not by_cell.has(cell):
 				by_cell[cell] = []
-			by_cell[cell].append(xf)
+			by_cell[cell].append(entry)
 		for cell in by_cell:
 			var list: Array = by_cell[cell]
 			var mm := MultiMesh.new()
@@ -186,7 +188,7 @@ static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 			mm.mesh = meshes[mesh_key]
 			mm.instance_count = list.size()
 			for i in list.size():
-				mm.set_instance_transform(i, list[i])
+				mm.set_instance_transform(i, list[i].transform)
 			var mmi := MultiMeshInstance3D.new()
 			mmi.name = "DowntownRoof_" + mat_key
 			mmi.multimesh = mm
@@ -195,14 +197,65 @@ static func build(world: WorldBuilder, holder: Node3D) -> Dictionary:
 			mmi.visibility_range_end = 1100.0
 			mmi.visibility_range_end_margin = 60.0
 			mmi.set_meta("downtown_fill", true)
+			var render_xforms: Array[Transform3D] = []
+			var support_parts: Array[String] = []
+			for entry: Dictionary in list:
+				render_xforms.append(entry.transform)
+				support_parts.append(entry.support_kind)
+			mmi.set_meta("roof_instance_transforms", render_xforms)
+			mmi.set_meta("roof_support_parts", support_parts)
+			mmi.set_meta("roof_structural_mesh", mesh_key)
 			holder.add_child(mmi)
+			_emit_structural_support(mmi, meshes[mesh_key], list)
 			draws += 1
 	if not shrubs.is_empty():
 		draws += Canopy.emit(holder, shrubs, "DowntownRoofGardens", 900.0)
 	return {"roofs": roofs, "draws": draws, "boxes": boxes.size()}
 
-static func _add(groups: Dictionary, mesh: String, mat: String, xf: Transform3D) -> void:
+static func _add(groups: Dictionary, mesh: String, mat: String, xf: Transform3D, support_kind: String = "") -> void:
 	var key := "%s|%s" % [mesh, mat]
 	if not groups.has(key):
 		groups[key] = []
-	groups[key].append(xf)
+	groups[key].append({"transform": xf, "support_kind": support_kind})
+
+
+## Native shapes are derived from the same per-cell MMI submissions. Keeping
+## structural roles separate from materials avoids solidifying the thin fan
+## discs that share plant_dark with the substantial penthouse roof slabs.
+static func _emit_structural_support(mmi: MultiMeshInstance3D, mesh: Mesh, entries: Array) -> void:
+	var body := StaticBody3D.new()
+	body.name = "StructuralCollision"
+	body.collision_layer = 1
+	body.collision_mask = 0
+	for i in entries.size():
+		var entry: Dictionary = entries[i]
+		var part: String = entry.support_kind
+		if part.is_empty(): continue
+		var xf: Transform3D = entry.transform
+		var node := CollisionShape3D.new()
+		node.name = "%s_%d" % [part, i]
+		if mesh is BoxMesh:
+			var box := BoxShape3D.new()
+			box.size = xf.basis.get_scale()
+			node.shape = box
+			node.transform = Transform3D(xf.basis.orthonormalized(), xf.origin)
+		else:
+			# Match the visible twelve-sided cylinder, including its cap, not
+			# an oversized smooth cylinder or an invented enclosing box.
+			var points := PackedVector3Array()
+			for point: Vector3 in mesh.get_faces(): points.append(xf.basis * point)
+			var hull := ConvexPolygonShape3D.new()
+			hull.points = points
+			node.shape = hull
+			node.position = xf.origin
+		node.set_meta("roof_support_kind", part)
+		node.set_meta("render_instance_index", i)
+		node.set_meta("render_instance_transform", xf)
+		body.add_child(node)
+	if body.get_child_count() == 0:
+		body.free()
+		return
+	body.add_to_group("roof_structural_support")
+	body.add_to_group("downtown_roof_structural_support")
+	body.set_meta("structural_shape_count", body.get_child_count())
+	mmi.add_child(body)
