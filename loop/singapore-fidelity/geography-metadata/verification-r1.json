@@ -1,0 +1,32 @@
+{
+  "sidecar_sha256": "d796187792548156803a7b03a04861120b1492b80ed289152379c0286e899ed4",
+  "bytes": 622148,
+  "binding": {
+    "canonical_snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+    "geometry_patch_manifest_sha256": "c789ae8b66506ed19231b7744b04d781b11e1a828d249eea4955a9d59607441f",
+    "logical_features": 789,
+    "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+    "regional_source_catalog_sha256": "295c160763a13f3f9468bbbec866305310c0d82b4837b446281e5a72e931fed0",
+    "source_ids": 788,
+    "source_snapshot_utc": "2026-10-27T21:23:59Z"
+  },
+  "header": {
+    "generator": "osmium/1.16.0",
+    "osmosis_replication_sequence_number": "4952",
+    "osmosis_replication_timestamp": "2026-10-27T21:23:59Z"
+  },
+  "ready": true,
+  "matches": 788,
+  "conflicts": 0,
+  "missing": 0,
+  "full_source_tag_entries": 4642,
+  "additional_tag_entries": 2105,
+  "source_compiler_sha256": "8e084272728cc64503591251ab782ba2124ae758d0d27cea1e859deb6492476b",
+  "source_tests_sha256": "0349f9dfc40d4c9f43168a51aff9fefd5341aeec7b6a02e0de54447ab0d77138",
+  "scope": "Metadata only. Source presence is not surveyed elevation/access/geometry/architectural acceptance.",
+  "unit_tests": {
+    "count": 13,
+    "failed": 0,
+    "scope": "Synthetic identity, binding, exact tag comparisons, native metadata-only PBF fixture and sanitized-output contracts"
+  }
+}
