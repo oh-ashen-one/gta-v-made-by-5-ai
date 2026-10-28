@@ -1,0 +1,232 @@
+{
+  "coastline_sha256": "77abd458b3ec6a83eab2c2c076dcf078f1fee00d5ee15bb8a41787422050104e",
+  "source_catalog_sha256": "d93d15015c16b6985903318e3e0223f140304e96b6f2f81115dfcdbda25b1d20",
+  "counts": {
+    "ambiguous_excluded_ring_indices": 0,
+    "closed_directed_valid_rings": 1200,
+    "country_clipped_source_land_features": 64,
+    "land_interior_rings": 1200,
+    "source_coastline_ways": 3477,
+    "source_nodes": 252403,
+    "unresolved_source_components": 4,
+    "water_interior_rings": 0
+  },
+  "source_binding": {
+    "attribution": "© OpenStreetMap contributors",
+    "canonical_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+    "country_sha256": "c25cce8de57f280b68bd1436deedc3eaa3eb8bebf50ec334f5d9dbfd826b9c45",
+    "data_license": "ODbL-1.0",
+    "license_url": "https://www.openstreetmap.org/copyright",
+    "pbf_header": {
+      "generator": "osmium/1.16.0",
+      "osmosis_replication_sequence_number": "4952",
+      "osmosis_replication_timestamp": "2026-10-27T21:23:59Z"
+    },
+    "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+    "projection_implementation_sha256": "6bc910000fca1b353112021453eb68437cb276968f36cae66e23c552c701ba29",
+    "source_snapshot_utc": "2026-10-27T21:23:59Z"
+  },
+  "coast_enclosed_country_surface_area_m2": 776383088.5162148,
+  "area_is_not_certified_dryland_or_terrain": true,
+  "unresolved": [
+    {
+      "component_id": "coast-component-000000",
+      "ways": 544,
+      "nodes": 53526,
+      "issues": [
+        "open_or_direction_mismatched_coastline_chain"
+      ],
+      "known_chain_bbox_scope": "potential_country_intersection",
+      "exact_known_source_line_ways_intersecting_country": [],
+      "source_endpoints": [
+        {
+          "node_id": 3092746546,
+          "wgs84": [
+            100.1185689,
+            6.4310242
+          ]
+        },
+        {
+          "node_id": 12685864734,
+          "wgs84": [
+            101.9188822,
+            6.3728904
+          ]
+        }
+      ],
+      "unknown_land_side_or_continuation_not_filled": true
+    },
+    {
+      "component_id": "coast-component-000002",
+      "ways": 410,
+      "nodes": 78565,
+      "issues": [
+        "open_or_direction_mismatched_coastline_chain"
+      ],
+      "known_chain_bbox_scope": "known_chain_envelope_disjoint",
+      "exact_known_source_line_ways_intersecting_country": [],
+      "source_endpoints": [
+        {
+          "node_id": 226287145,
+          "wgs84": [
+            117.4998092,
+            4.0531453
+          ]
+        },
+        {
+          "node_id": 226290549,
+          "wgs84": [
+            109.4893196,
+            1.9832771
+          ]
+        }
+      ],
+      "unknown_land_side_or_continuation_not_filled": true
+    },
+    {
+      "component_id": "coast-component-000456",
+      "ways": 3,
+      "nodes": 25,
+      "issues": [
+        "open_or_direction_mismatched_coastline_chain"
+      ],
+      "known_chain_bbox_scope": "known_chain_envelope_disjoint",
+      "exact_known_source_line_ways_intersecting_country": [],
+      "source_endpoints": [
+        {
+          "node_id": 89071669,
+          "wgs84": [
+            100.1020834,
+            6.4971443
+          ]
+        },
+        {
+          "node_id": 3080497322,
+          "wgs84": [
+            100.1152833,
+            6.4527878
+          ]
+        }
+      ],
+      "unknown_land_side_or_continuation_not_filled": true
+    },
+    {
+      "component_id": "coast-component-000457",
+      "ways": 1,
+      "nodes": 27,
+      "issues": [
+        "open_or_direction_mismatched_coastline_chain"
+      ],
+      "known_chain_bbox_scope": "known_chain_envelope_disjoint",
+      "exact_known_source_line_ways_intersecting_country": [],
+      "source_endpoints": [
+        {
+          "node_id": 295051200,
+          "wgs84": [
+            100.0953919,
+            6.5424186
+          ]
+        },
+        {
+          "node_id": 302305410,
+          "wgs84": [
+            100.0986001,
+            6.5171452
+          ]
+        }
+      ],
+      "unknown_land_side_or_continuation_not_filled": true
+    }
+  ],
+  "source_probe_coverage": {
+    "MBS": {
+      "source_wgs84": [
+        103.8608,
+        1.2834
+      ],
+      "inside_any_supported_coast_enclosed_surface": true
+    },
+    "central_main_island": {
+      "source_wgs84": [
+        103.8198,
+        1.3521
+      ],
+      "inside_any_supported_coast_enclosed_surface": true
+    },
+    "Sentosa": {
+      "source_wgs84": [
+        103.8285,
+        1.2494
+      ],
+      "inside_any_supported_coast_enclosed_surface": true
+    },
+    "Jurong_Island": {
+      "source_wgs84": [
+        103.7045,
+        1.27
+      ],
+      "inside_any_supported_coast_enclosed_surface": true
+    }
+  },
+  "assembly_issues": [],
+  "warnings": [],
+  "resources": {
+    "cpu_seconds": 39.321,
+    "location_cache_created": false,
+    "peak_rss_bytes": 2086436864,
+    "wall_seconds": 34.566
+  },
+  "supervisor": {
+    "limits": {
+      "cpu_seconds": 240,
+      "max_selected_nodes": 1500000,
+      "max_source_refs": 2000000,
+      "max_ways": 50000,
+      "memory_limit_is_supervised_not_kernel_hard": true,
+      "rss_mib": 2048,
+      "rss_sample_seconds": 1,
+      "wall_seconds": 600
+    },
+    "reason": null,
+    "sampled_peak_rss_bytes": 2079260672,
+    "status": "complete",
+    "wall_seconds": 37.554,
+    "worker": {
+      "catalog_bytes": 46359554,
+      "catalog_sha256": "d93d15015c16b6985903318e3e0223f140304e96b6f2f81115dfcdbda25b1d20",
+      "coastline_bytes": 10288724,
+      "coastline_sha256": "77abd458b3ec6a83eab2c2c076dcf078f1fee00d5ee15bb8a41787422050104e",
+      "counts": {
+        "ambiguous_excluded_ring_indices": 0,
+        "closed_directed_valid_rings": 1200,
+        "country_clipped_source_land_features": 64,
+        "land_interior_rings": 1200,
+        "source_coastline_ways": 3477,
+        "source_nodes": 252403,
+        "unresolved_source_components": 4,
+        "water_interior_rings": 0
+      },
+      "resources": {
+        "cpu_seconds": 39.321,
+        "location_cache_created": false,
+        "peak_rss_bytes": 2086436864,
+        "wall_seconds": 34.566
+      },
+      "schema": "singapore_source_coastline_v1",
+      "status": "complete"
+    },
+    "worker_exit_code": 0
+  },
+  "source_tool_sha256": "cd1820589b3ea20e07f00f46097f80e577c1274d1af61b3446757ca251600e65",
+  "source_tests_sha256": "1f569ff35561ecd12880d0f933bf415f61934fa6dbb1c94e9b9f40abf06e71b8",
+  "unit_tests": {
+    "count": 14,
+    "failed": 0
+  },
+  "runtime_visual_terrain_verified": false,
+  "country_source_way_assembly_audit": {
+    "known_source_coastline_ways_intersecting_exact_country": 331,
+    "country_intersecting_ways_absent_from_supported_closed_rings": [],
+    "unmapped_source_continuation_and_survey_completeness_still_uncertified": true
+  }
+}

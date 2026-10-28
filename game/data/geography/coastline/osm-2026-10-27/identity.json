@@ -1,0 +1,15 @@
+{
+  "schema": "singapore_coastline_artifact_identity_v1",
+  "coastline": {
+    "file": "coastline.json",
+    "sha256": "77abd458b3ec6a83eab2c2c076dcf078f1fee00d5ee15bb8a41787422050104e",
+    "bytes": 10288724
+  },
+  "source_catalog": {
+    "file": "source-catalog.json.gz",
+    "compressed_sha256": "7cd990d9535f17e6d94df998e2ab43a5c0b26c2b1e11349aa74cbc826a33069b",
+    "uncompressed_sha256": "d93d15015c16b6985903318e3e0223f140304e96b6f2f81115dfcdbda25b1d20",
+    "uncompressed_bytes": 46359554
+  },
+  "scope": "Coast-enclosed source geometry only, not dryland/terrain/elevation/tidal or runtime acceptance."
+}
