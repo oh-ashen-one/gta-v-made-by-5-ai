@@ -1,0 +1,52 @@
+{
+  "created_utc": "2026-10-28T22:54:07.436648+00:00",
+  "source_files": {
+    "game/src/world/mbs_interior/public_l1.gd": "2d8e5f56404cf2fc552167fb7d6d00f83a13a1628c655a8c391c795550f86969",
+    "game/src/systems/fidelity_tests/mbs_interior_public.gd": "8b14252aef7309d2dfd8a6327beee3bd269377113c52b165ba141d2482217911",
+    "game/src/world/downtown/canopy.gd": "4420d0d7eee92384536cde7ce670e5798eb766eeb33e423538b64e6437e03c75"
+  },
+  "viewed_images": [
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-l1-r4/stills/01_exterior_door_approach.png",
+      "sha256": "c553f26b8719fa82873841de23588bb363436189bbc859367ef498d9b93181e4",
+      "role": "actual_R4_gameplay_fixture"
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-l1-r4/stills/02_tower1_atrium.png",
+      "sha256": "87e69d0a4af6e5087c09486e17a5ecdbb9f1f1a55bc80ca5fd27f4e5aae423a0",
+      "role": "actual_R4_gameplay_fixture"
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-l1-r4/stills/03_north_atrium.png",
+      "sha256": "b934cd48547cb8da923e45f4d5eb033db4627061ba8d32fac3084f302a716847",
+      "role": "actual_R4_gameplay_fixture"
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-l1-r4/stills/04_returned_outside.png",
+      "sha256": "77b8e46f232bc3cab3c00e1fc13c540a5235f424c9cf227b31178eebc61eab43",
+      "role": "actual_R4_gameplay_fixture"
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-lobby-visual-critic-primary/arup-20.png",
+      "sha256": "92cca1e5c1bc098308023a3e1884c50cba3b78309f974b8da7957e307e6959ec",
+      "role": "private_primary_reference_only"
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-lobby-visual-critic-primary/arup-21.png",
+      "sha256": "76fc05a0c88daec1fe6dff8bb9d9609910a013926d290492f932775b8e4f238a",
+      "role": "private_primary_reference_only"
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-lobby-visual-critic-primary/arup-22.png",
+      "sha256": "bb77067a667f1f9ee1f843c1798ad72a6df6a2f69c90a461ca4731521c3d4d69",
+      "role": "private_primary_reference_only"
+    }
+  ],
+  "worker_engine_runs": 0,
+  "worker_gpu_runs": 0,
+  "worker_git_commands": 0,
+  "new_asset_downloads": 0,
+  "paid_jobs": 0,
+  "rendered_fidelity_accepted": false,
+  "root_recapture_pending": true
+}

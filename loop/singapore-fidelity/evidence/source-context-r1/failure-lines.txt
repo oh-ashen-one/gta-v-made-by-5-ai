@@ -1,0 +1,3 @@
+SCRIPT ERROR: Invalid access to property or key 'status' on a base object of type 'Dictionary'.
+          at: _native_basement_checks (res://src/systems/fidelity_tests/source_context_test.gd:429)
+          GDScript backtrace (most recent call first):

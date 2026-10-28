@@ -1,0 +1,2 @@
+FAIL landmarks: walkable surface at Shoppes terrace hit y=18.34
+297/298 checks passed, 1 failed; report=user://wave2_test_report.json

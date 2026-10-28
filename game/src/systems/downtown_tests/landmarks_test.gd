@@ -34,7 +34,10 @@ func run(world: WorldBuilder, suite: Object) -> void:
 	var space := world.get_world_3d().direct_space_state
 	var probes := {
 		"event plaza promenade": [Vector3(-118.0, 20.0, -632.0), 0.2, 0.6],
-		"Shoppes terrace": [Vector3(-60.0, 20.0, -658.0), 1.3, 1.7],
+		# Query the street-level terrace from its standing head volume. A20m
+		# ray now correctly hits the separately supported wave roof first;
+		# that cannot establish which floor a pedestrian stands on below it.
+		"Shoppes terrace": [Vector3(-60.0, 3.5, -658.0), 1.3, 1.7],
 		"Helix deck mid-span": [_helix_mid(world), 3.3, 3.9],
 		"SkyPark deck": [Vector3(-118.0, 260.0, -712.0), 195.0, 201.0],
 		"ArtScience promontory walk": [Vector3(-262.0, 20.0, -586.0), 0.2, 0.6],

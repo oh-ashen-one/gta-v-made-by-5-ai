@@ -33,6 +33,10 @@ var aiming := false
 var alive := true
 var busy := false                     # transition guard (PLAYER-03)
 var current_vehicle: Node = null
+## Installed only by a source-coordinate world. Legacy gameplay keeps its own
+## bounds until its geometry, actors and save schema migrate together.
+var source_world_runtime: Node = null
+var uses_source_world := false
 var in_mission_actor := true
 var _fire_cooldown := 0.0
 var _reload_timer := 0.0
@@ -350,6 +354,10 @@ func _apply_mouse_look(relative: Vector2) -> void:
 	pitch = clampf(pitch - dy, -1.25, 0.85)
 
 func _physics_process(delta: float) -> void:
+	if uses_source_world and not is_instance_valid(source_world_runtime):
+		velocity = Vector3.ZERO
+		_speed = 0.0
+		return
 	if has_meta("_qa_motion_probe"):
 		set_meta("_qa_motion_state", {"busy": busy, "vehicle": current_vehicle.name if current_vehicle else "none",
 			"paused": Game.simulation_paused, "mode": Game.mode, "forward": Input.get_action_strength("move_forward"),
@@ -493,6 +501,10 @@ func _physics_process(delta: float) -> void:
 				_heading = lerp_angle(_heading, new_h, clampf(delta * 6.0, 0.0, 1.0))
 	if has_meta("_qa_motion_probe"):
 		get_meta("_qa_motion_state")["requested"] = velocity
+	if is_instance_valid(source_world_runtime) and not source_world_runtime.motion_allowed(self, delta):
+		velocity = Vector3.ZERO
+		_speed = 0.0
+		return
 	move_and_slide()
 	if has_meta("_qa_motion_probe"):
 		get_meta("_qa_motion_state")["resolved"] = velocity
@@ -501,7 +513,14 @@ func _physics_process(delta: float) -> void:
 	# downtown is playable (DowntownPlan.PLAYABLE, physically walled, plus the
 	# old 35 m grace), so the landmarks are reachable on foot; only beyond it
 	# or deep in the water does the checkpoint return apply.
-	if global_position.y < -8.0 or not DowntownPlan.PLAYABLE.grow(35.0).has_point(Vector2(global_position.x, global_position.z)):
+	if is_instance_valid(source_world_runtime):
+		# A supported dry basement is valid regardless of absolute elevation.
+		# Unknown/unloaded data holds motion above; only actual 3D water is a
+		# drowning hazard, never a national-boundary or cache-miss inference.
+		if source_world_runtime.player_is_submerged(self):
+			Game.damage_player(Game.MAX_HEALTH)
+			return
+	elif global_position.y < -8.0 or not DowntownPlan.PLAYABLE.grow(35.0).has_point(Vector2(global_position.x, global_position.z)):
 		Events.toast("Beyond the city. Returning to your checkpoint.","warn")
 		Game.damage_player(Game.MAX_HEALTH)
 		return

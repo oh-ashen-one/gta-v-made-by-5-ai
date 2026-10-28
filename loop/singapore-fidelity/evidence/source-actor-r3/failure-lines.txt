@@ -1,0 +1,4 @@
+SCRIPT ERROR: Invalid call. Nonexistent function 'enter_vehicle' in base 'CharacterBody3D (Helicopter)'.
+          at: run (res://src/systems/fidelity_tests/source_actor_test.gd:132)
+          GDScript backtrace (most recent call first):
+[source-actor] FAIL bounded native source actor test

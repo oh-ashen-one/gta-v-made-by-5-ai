@@ -1,0 +1,304 @@
+extends Node3D
+## Main-thread native adapter for an explicitly installed source world.
+## A runtime is not installed in the legacy fictional bootstrap. Callers must
+## commit complete collision neighborhoods and supply versioned domain data.
+const Context = preload("res://src/world/geography/source_world_context.gd")
+const Frame = preload("res://src/world/geography/source_frame.gd")
+var context: RefCounted
+var frame: RefCounted
+var last_error := ""
+var _domain: Callable
+var _regions: Dictionary = {}
+var _supports: Dictionary = {}
+var _generation := 0
+var _configured := false
+
+func configure(source_frame: RefCounted, source_context: RefCounted, domain_adapter: Callable) -> bool:
+	if _configured or not source_frame is Frame or not source_context is Context or not domain_adapter.is_valid(): return false
+	var identity: Dictionary = source_context.metadata()
+	if not identity.configured or identity.frame_instance_id != source_frame.get_instance_id() or identity.physics_space_id != get_world_3d().space.get_id(): return false
+	frame = source_frame
+	context = source_context
+	_domain = domain_adapter
+	_configured = true
+	add_to_group("source_world_runtime")
+	return true
+
+func bind_player(actor: Player) -> bool:
+	if not _configured or not is_instance_valid(actor) or actor.get_world_3d() != get_world_3d(): return false
+	# The context capsule must match the actual production body, not a weaker
+	# fixture shape. Other orientations/scales require a different adapter.
+	if not _valid_player_profile(actor): return false
+	actor.source_world_runtime = self
+	actor.uses_source_world = true
+	return true
+
+func bind_aircraft(actor: Helicopter) -> bool:
+	if not _configured or not is_instance_valid(actor) or actor.get_world_3d() != get_world_3d(): return false
+	actor.source_world_runtime = self
+	actor.uses_source_world = true
+	return true
+
+func _player_shape(actor: Player) -> CollisionShape3D:
+	for child: Node in actor.get_children():
+		if child is CollisionShape3D and child.shape is CapsuleShape3D and not child.disabled: return child
+	return null
+
+func _valid_player_profile(actor: Player) -> bool:
+	if not is_instance_valid(actor) or actor.get_world_3d() != get_world_3d(): return false
+	if not actor.global_basis.is_equal_approx(Basis(Vector3.UP, actor.global_rotation.y)): return false
+	var count := 0
+	for child: Node in actor.get_children():
+		if child is CollisionShape3D and not child.disabled: count += 1
+	var collision := _player_shape(actor)
+	if count != 1 or collision == null or not collision.basis.is_equal_approx(Basis.IDENTITY): return false
+	var profile: Dictionary = context.metadata().profile
+	var capsule := collision.shape as CapsuleShape3D
+	var offset: Array = profile.center_offset_xyz
+	return is_equal_approx(capsule.radius, profile.radius_m) and is_equal_approx(capsule.height, profile.height_m) and collision.position.is_equal_approx(Vector3(offset[0], offset[1], offset[2]))
+
+func _point(value: Variant) -> bool:
+	if not typeof(value) in [TYPE_ARRAY, TYPE_PACKED_FLOAT64_ARRAY] or value.size() != 3: return false
+	for n in value:
+		if not typeof(n) in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(n)): return false
+	return true
+
+## Invoke AFTER main-thread geometry/physics commit, at a physics boundary.
+## `bodies` must enumerate the neighborhood's complete collision, including
+## walls/ceilings/doors. The adapter cannot infer completeness from floor hits.
+## `supports` binds stable IDs to their actual owned bodies and registered floor.
+func commit_region(id: String, minimum: Array, maximum: Array, bodies: Array, supports: Array) -> bool:
+	if not _configured or id.is_empty() or _regions.has(id) or _regions.size() >= 256 or not _point(minimum) or not _point(maximum) or bodies.is_empty(): return false
+	for axis in 3:
+		if float(minimum[axis]) >= float(maximum[axis]): return false
+	var references: Array[WeakRef] = []
+	for body in bodies:
+		if not body is CollisionObject3D or not is_instance_valid(body) or not body.is_inside_tree() or body.get_world_3d() != get_world_3d() or body.collision_layer == 0: return false
+		references.append(weakref(body))
+	var stamps: Array[Dictionary] = []
+	var token := id + "/generation-" + str(_generation + 1)
+	for support in supports:
+		if not support is Dictionary or not support.get("body") in bodies: return false
+		var body: CollisionObject3D = support.body
+		if _supports.has(body.get_instance_id()): return false
+		var stamped: Dictionary = context.make_collider_stamp(support.get("feature_id"), support.get("floor_id"), support.get("support_id"), token)
+		if not stamped.ok: return false
+		stamps.append({"body": body, "stamp": stamped.stamp})
+	_generation += 1
+	_regions[id] = {"minimum": minimum.duplicate(), "maximum": maximum.duplicate(), "bodies": references,
+		"origin_revision": frame.metadata().origin_revision, "token": token}
+	for entry: Dictionary in stamps:
+		var body: CollisionObject3D = entry.body
+		body.set_meta(Context.COLLIDER_META, entry.stamp)
+		_supports[body.get_instance_id()] = {"region": id, "body": weakref(body), "stamp": entry.stamp.duplicate(true)}
+	return true
+
+func retire_region(id: String) -> void:
+	_regions.erase(id)
+	var ids: Array = _regions.keys()
+	ids.sort()
+	for key in _supports.keys():
+		if _supports[key].region != id: continue
+		var known: Dictionary = _supports[key]
+		var body: Variant = known.body.get_ref()
+		var replacement := ""
+		if is_instance_valid(body):
+			for candidate in ids:
+				var region: Dictionary = _regions[candidate]
+				if region.origin_revision != frame.metadata().origin_revision: continue
+				for reference: WeakRef in region.bodies:
+					if reference.get_ref() == body:
+						replacement = candidate
+						break
+				if not replacement.is_empty(): break
+		if not replacement.is_empty():
+			# Geometry remains physically committed and referenced by a live
+			# adjacent region. Transfer its lease; never erase a shared floor.
+			var old: Dictionary = known.stamp
+			var renewed: Dictionary = context.make_collider_stamp(old.feature_id, old.floor_id, old.support_id, _regions[replacement].token)
+			if renewed.ok:
+				body.set_meta(Context.COLLIDER_META, renewed.stamp)
+				_supports[key] = {"region": replacement, "body": weakref(body), "stamp": renewed.stamp.duplicate(true)}
+				continue
+		if is_instance_valid(body): body.remove_meta(Context.COLLIDER_META)
+		_supports.erase(key)
+
+func _subtract_box(box: Dictionary, cut: Dictionary) -> Array[Dictionary]:
+	var low: Array = []
+	var high: Array = []
+	for axis in 3:
+		low.append(maxf(box.low[axis], cut.minimum[axis]))
+		high.append(minf(box.high[axis], cut.maximum[axis]))
+		if low[axis] >= high[axis]: return [box]
+	var remainder: Array[Dictionary] = []
+	var core: Dictionary = box.duplicate(true)
+	for axis in 3:
+		if core.low[axis] < low[axis]:
+			var left: Dictionary = core.duplicate(true)
+			left.high[axis] = low[axis]
+			remainder.append(left)
+			core.low[axis] = low[axis]
+		if core.high[axis] > high[axis]:
+			var right: Dictionary = core.duplicate(true)
+			right.low[axis] = high[axis]
+			remainder.append(right)
+			core.high[axis] = high[axis]
+	return remainder
+
+func _resident(point: Array, half_extents: Vector3) -> Dictionary:
+	var low: Array = []
+	var high: Array = []
+	for axis in 3:
+		low.append(float(point[axis]) - float(half_extents[axis]))
+		high.append(float(point[axis]) + float(half_extents[axis]))
+	var uncovered: Array[Dictionary] = [{"low": low, "high": high}]
+	var tokens: Dictionary = {}
+	var ids: Array = _regions.keys()
+	ids.sort()
+	for id in ids:
+		var region: Dictionary = _regions[id]
+		if region.origin_revision != frame.metadata().origin_revision: continue
+		var valid := true
+		for reference: WeakRef in region.bodies:
+			var body: Variant = reference.get_ref()
+			if not is_instance_valid(body) or not body.is_inside_tree() or body.collision_layer == 0 or body.get_world_3d() != get_world_3d(): valid = false
+		if not valid: continue
+		tokens[region.token] = true
+		var remaining: Array[Dictionary] = []
+		for box: Dictionary in uncovered:
+			remaining.append_array(_subtract_box(box, region))
+			if remaining.size() > 4096: return {} # bounded work; request a coalesced neighborhood
+		uncovered = remaining
+	# Include all live tokens: an overlapping neighbor's support must not be
+	# rejected merely because an earlier box also covered the query.
+	return {"tokens": tokens, "token": "union/" + str(_generation)} if uncovered.is_empty() else {}
+
+func _bound(query: Dictionary, kind: String, state: String, payload: Dictionary = {}) -> Dictionary:
+	var result: Dictionary = context.bind_observation(query, kind, state, payload)
+	return result.observation if result.ok else {}
+
+func _domain_observations(query: Dictionary) -> Dictionary:
+	var observations: Dictionary = {}
+	var supplied: Variant = _domain.call(query.source_xyz.duplicate())
+	if not supplied is Dictionary: return observations
+	for kind in ["territory", "land", "water"]:
+		var value: Variant = supplied.get(kind)
+		if value is Dictionary and value.get("state") is String and value.get("payload", {}) is Dictionary:
+			observations[kind] = _bound(query, kind, value.state, value.get("payload", {}))
+	return observations
+
+func _native_player_observations(query: Dictionary, actor: Player) -> Dictionary:
+	var result := _domain_observations(query)
+	var region := _resident(query.source_xyz, Vector3(0.8, 2.2, 0.8))
+	if region.is_empty():
+		result["physics"] = _bound(query, "physics", "unloaded")
+		return result
+	var position: Vector3 = query.local_sample.position
+	var ray := PhysicsRayQueryParameters3D.create(position + Vector3.UP * 0.1, position + Vector3.DOWN * 0.35, 1)
+	ray.exclude = [actor.get_rid()]
+	var hit := get_world_3d().direct_space_state.intersect_ray(ray)
+	var support := {"state": "unsupported"}
+	if not hit.is_empty() and _supports.has(hit.collider_id):
+		var known: Dictionary = _supports[hit.collider_id]
+		if known.region in _regions and region.tokens.has(_regions[known.region].token):
+			var stamp: Dictionary = known.stamp
+			var canonical: Dictionary = frame.to_source_current_live(hit.position)
+			if canonical.ok:
+				var normal: Vector3 = hit.normal
+				support = {"state": "supported", "feature_id": stamp.feature_id, "floor_id": stamp.floor_id,
+					"support_id": stamp.support_id, "collider_instance_id": hit.collider_id,
+					"contact_source_xyz": canonical.source_xyz, "normal_source_xyz": [normal.x, normal.y, normal.z]}
+	var shape := _player_shape(actor)
+	var clear := "unknown"
+	if shape != null:
+		var probe := PhysicsShapeQueryParameters3D.new()
+		probe.shape = shape.shape
+		probe.transform = Transform3D(actor.global_basis, position) * shape.transform
+		probe.collision_mask = Player.COLLIDE_MASK
+		probe.exclude = [actor.get_rid()]
+		# No penetration margin expansion here: resting contact must not be
+		# misreported as a ceiling overlap. Native floor contacts remain valid.
+		clear = "clear" if get_world_3d().direct_space_state.intersect_shape(probe, 1).is_empty() else "blocked"
+	result["physics"] = _bound(query, "physics", "resident", {"residency_token": _supports[hit.collider_id].stamp.residency_token if support.state == "supported" else region.token, "clearance": clear, "support": support})
+	return result
+
+func inspect_player(actor: Player) -> Dictionary:
+	if not _configured or actor.source_world_runtime != self or not _valid_player_profile(actor): return {"ok": false}
+	var canonical: Dictionary = frame.to_source_current_live(actor.global_position)
+	if not canonical.ok: return canonical
+	var begun: Dictionary = context.begin_query(canonical.source_xyz)
+	if not begun.ok: return begun
+	return context.evaluate(begun.query, _native_player_observations(begun.query, actor))
+
+## Hold safely on missing data; no Y-death-plane, invented ground or teleport.
+## Check both current and prospective neighborhoods to prevent flying/walking
+## into an unloaded chunk. Flight does not demand a floor under the aircraft.
+func motion_allowed(actor: CharacterBody3D, delta: float, aircraft: bool = false) -> bool:
+	if not _configured or actor.get_world_3d() != get_world_3d() or delta <= 0.0: return false
+	if not aircraft and (not actor is Player or not _valid_player_profile(actor)): return false
+	var start: Dictionary = frame.to_source_current_live(actor.global_position)
+	var end: Dictionary = frame.to_source_current_live(actor.global_position + actor.velocity * delta)
+	if not start.ok or not end.ok: return false
+	var half := Vector3(8, 5, 8) if aircraft else Vector3(0.8, 2.2, 0.8)
+	var middle: Array = []
+	var swept := half
+	for axis in 3:
+		middle.append((float(start.source_xyz[axis]) + float(end.source_xyz[axis])) * 0.5)
+		swept[axis] += absf(float(end.source_xyz[axis]) - float(start.source_xyz[axis])) * 0.5
+	if _resident(middle, swept).is_empty(): return false
+	for local in [actor.global_position, actor.global_position + actor.velocity * delta]:
+		var canonical: Dictionary = frame.to_source_current_live(local)
+		if not canonical.ok or _resident(canonical.source_xyz, half).is_empty(): return false
+		var begun: Dictionary = context.begin_query(canonical.source_xyz)
+		if not begun.ok: return false
+		var state: Dictionary = context.evaluate(begun.query, _domain_observations(begun.query))
+		if not state.ok or state.territory.state != "inside": return false
+	return true
+
+func player_is_submerged(actor: Player) -> bool:
+	var state := inspect_player(actor)
+	return state.get("ok", false) and state.water.state == "submerged" and state.residency.state == "resident"
+
+func aircraft_agl(actor: Helicopter) -> float:
+	# Only actual support geometry can cushion descent in a source world.
+	var origin := actor.global_position + Vector3.UP * 0.8
+	var ray := PhysicsRayQueryParameters3D.create(origin, origin + Vector3.DOWN * 40, 1)
+	ray.exclude = [actor.get_rid()]
+	var hit := get_world_3d().direct_space_state.intersect_ray(ray)
+	return maxf(actor.global_position.y - hit.position.y, 0.0) if not hit.is_empty() else 40.0
+
+func landing_exit_safe(local_position: Vector3) -> bool:
+	var actor := get_tree().get_first_node_in_group("player") as Player
+	if actor == null or actor.source_world_runtime != self or not _valid_player_profile(actor): return false
+	var canonical: Dictionary = frame.to_source_current_live(local_position)
+	if not canonical.ok: return false
+	var begun: Dictionary = context.begin_query(canonical.source_xyz)
+	if not begun.ok: return false
+	var observations := _native_player_observations(begun.query, actor)
+	var state: Dictionary = context.evaluate(begun.query, observations)
+	if not state.get("ok", false) or state.support.state != "supported": return false
+	var pose: Dictionary = context.make_restore_pose(canonical.source_xyz, actor.yaw, state.support.feature_id, state.support.floor_id)
+	if not pose.ok: return false
+	var checked: Dictionary = context.preflight_restore(pose.pose, begun.query, observations)
+	return checked.get("ok", false) and checked.get("status") == "ready"
+
+func capture_player_pose(actor: Player) -> Dictionary:
+	var state := inspect_player(actor)
+	if not state.get("ok", false) or state.support.state != "supported" or state.residency.state != "resident": return {"ok": false, "error": "Source save requires current resident native support"}
+	return context.make_restore_pose(state.source_xyz, actor.yaw, state.support.feature_id, state.support.floor_id)
+
+## Synchronous current-tick application. A cold/missing floor remains pending;
+## this operation never overwrites owner saves or interprets old local poses.
+func restore_player_pose(actor: Player, saved: Dictionary) -> Dictionary:
+	if actor.source_world_runtime != self or not _valid_player_profile(actor): return {"ok": false, "status": "invalid", "error": "Player/profile/world binding mismatch"}
+	var prepared: Dictionary = context.prepare_restore(saved)
+	if not prepared.ok or prepared.get("status") != "query_required": return prepared
+	var point: Array = saved.source_pose.source_xyz
+	var begun: Dictionary = context.begin_query(point)
+	if not begun.ok: return begun
+	var checked: Dictionary = context.preflight_restore(saved, begun.query, _native_player_observations(begun.query, actor))
+	if not checked.ok or checked.get("status") != "ready": return checked
+	# No yield between native query, revision/tick validation and application.
+	if not context.validate_query(begun.query).ok: return {"ok": false, "status": "invalid"}
+	actor.respawn_at(begun.query.local_sample.position, float(saved.source_pose.heading_rad))
+	return {"ok": true, "status": "applied", "physics_tick": Engine.get_physics_frames()}

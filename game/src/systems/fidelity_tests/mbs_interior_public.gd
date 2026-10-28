@@ -135,6 +135,9 @@ func _join_boundary_tests() -> void:
 			solid_matches = (collision.shape as BoxShape3D).size.is_equal_approx(item.size) and collision.position.is_equal_approx(item.position + Vector3.UP * float((item.size as Vector3).y) * 0.5) and furniture_body.collision_layer == 1
 		check("full matching solid furniture collision retained " + String(item.id), solid_matches)
 		check("furniture footprint preserves clear aisle " + String(item.id), float(item.minimum_centerline_to_inner_edge_m) >= 2.5 - 0.0001 and float(item.minimum_wall_clearance_m) >= 0.25 - 0.0001)
+		if item.kind == "planter":
+			var stem: CollisionShape3D = furniture_body.get_node_or_null(NodePath(String(item.id) + "_TreeStem")) as CollisionShape3D
+			check("tall vessel and overhead tree retain solid collision " + String(item.id), is_equal_approx((item.size as Vector3).y, 3.0) and stem != null and not stem.disabled and stem.shape is BoxShape3D and (stem.shape as BoxShape3D).size.y > 1.0 and stem.position.y - (stem.shape as BoxShape3D).size.y * 0.5 >= 3.0 - 0.0001 and is_equal_approx(stem.position.x, (item.position as Vector3).x) and is_equal_approx(stem.position.z, (item.position as Vector3).z) and (stem.shape as BoxShape3D).size.x <= (item.size as Vector3).x and (stem.shape as BoxShape3D).size.z <= (item.size as Vector3).z)
 	var probes: Array[Dictionary] = interior.join_probes_local()
 	check("both side edges covered at all three profile joins", probes.size() == 6)
 	for probe: Dictionary in probes:
@@ -154,6 +157,9 @@ func _join_boundary_tests() -> void:
 			check("no ray slit beside join " + label + " " + str(escape.x_offset), not ray(inside + Vector3.UP * 1.1, outside + Vector3.UP * 1.1).is_empty())
 	var door: Dictionary = interior.doorway_world()
 	check("whole capsule fits intentional hotel doorway", _capsule_motion_clear(door.outside, door.inside))
+	for side: float in [-1.0, 1.0]:
+		var offset := interior.global_basis.x * side * 1.60
+		check("parked glass leaves preserve full-width capsule approach " + str(side), _capsule_motion_clear((door.outside as Vector3) + offset, (door.inside as Vector3) + offset))
 	for link: Dictionary in interior.corridors:
 		check("production capsule full public spine clear " + String(link.from), _capsule_motion_clear(interior.to_global(link.a), interior.to_global(link.b)))
 		check("production capsule full public spine return clear " + String(link.to), _capsule_motion_clear(interior.to_global(link.b), interior.to_global(link.a)))

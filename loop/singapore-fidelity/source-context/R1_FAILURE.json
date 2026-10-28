@@ -1,0 +1,45 @@
+{
+  "status": "FAILED",
+  "evidence_root": "/private/tmp/singapore-fidelity/source-context-r1",
+  "checks": 446,
+  "assertion_failures": [],
+  "supervisor_exit_code": 2,
+  "engine_exit_code": 0,
+  "fatal_errors": [
+    "SCRIPT ERROR: Invalid access to property or key 'status' on a base object of type 'Dictionary'."
+  ],
+  "child_reaped": true,
+  "error_location": "source_context_test.gd:429 _native_basement_checks",
+  "scope_before_failure": {
+    "actual_MBS_or_terrain_datum": false,
+    "actual_Player_used": false,
+    "capsule_height_m": 1.75,
+    "capsule_offset_xyz": [
+      0.0,
+      0.9,
+      0.0
+    ],
+    "capsule_radius_m": 0.36000001430511475,
+    "native_floor_contact": true,
+    "no_Y_death_plane_in_context": true,
+    "restore_preflight": "ready",
+    "settled_local_root_xyz": [
+      0.0,
+      -20.02505111694336,
+      0.0
+    ],
+    "source_restore_xyz": [
+      17384.7,
+      -19.975051879882812,
+      -80120.7
+    ]
+  },
+  "uncompleted_native_gates": [
+    "ceiling overlap blocks restore",
+    "unloaded restore after ceiling removal",
+    "old collider stamp after explicit frame commit",
+    "no automatic native actor rebase"
+  ],
+  "underlying_preflight_error_logged": false,
+  "repair": "Every restore preparation/preflight failure now has explicit status:invalid; strict native ceiling assertion additionally records full result and query/save validation. R2 is required, no native ceiling success claimed."
+}

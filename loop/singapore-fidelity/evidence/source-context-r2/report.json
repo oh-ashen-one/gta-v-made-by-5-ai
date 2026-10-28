@@ -1,0 +1,97 @@
+{
+  "checks": 452,
+  "failures": [
+    "real capsule ceiling overlap blocks restore despite valid support"
+  ],
+  "metrics": {
+    "geometry_and_vertical_inputs": "Explicitly synthetic fixture versions; no surveyed elevation claim",
+    "native_basement": {
+      "actual_MBS_or_terrain_datum": false,
+      "actual_Player_used": false,
+      "capsule_height_m": 1.75,
+      "capsule_offset_xyz": [
+        0.0,
+        0.9,
+        0.0
+      ],
+      "capsule_radius_m": 0.360000014305115,
+      "native_floor_contact": true,
+      "no_Y_death_plane_in_context": true,
+      "restore_preflight": "ready",
+      "settled_local_root_xyz": [
+        0.0,
+        -20.0250511169434,
+        0.0
+      ],
+      "source_restore_xyz": [
+        17384.7,
+        -19.9750518798828,
+        -80120.7
+      ]
+    },
+    "native_ceiling_preflight": {
+      "decision": {
+        "error": "Unexpected provider-observation kind",
+        "ok": false,
+        "status": "invalid"
+      },
+      "payload": {
+        "clearance": "blocked",
+        "residency_token": "qa-only/physics-generation-1",
+        "support": {
+          "collider_instance_id": 86771762837,
+          "contact_source_xyz": [
+            17384.7,
+            -20.0,
+            -80120.7
+          ],
+          "feature_id": "qa-only/architectural-fixture",
+          "floor_id": "qa-only/B2",
+          "normal_source_xyz": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "state": "supported",
+          "support_id": "qa-only/slab"
+        }
+      },
+      "query_validation": {
+        "ok": true
+      },
+      "saved_validation": {
+        "ok": true,
+        "pose": {
+          "floor_geometry_sha256": "0140b5cf93f97c714866b301d9830345fa7538ecf0133c29480e8163eb27f67d",
+          "geometry_manifest_sha256": "338e706872bb36b2bd3288cbd035369e46f73135c59ee74cde5c4f3697dfb7b1",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "UNRESOLVED",
+              "source_reference": "",
+              "status": "unknown"
+            },
+            "feature_id": "qa-only/architectural-fixture",
+            "floor_id": "qa-only/B2",
+            "frame_fingerprint": "284eca73a037195beaf6906efc2b06970b2ad9eb741d957fe818c9843c1242d7",
+            "heading_rad": 0.75,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              17384.7,
+              -19.9750518798828,
+              -80120.7
+            ]
+          },
+          "vertical_manifest_sha256": "4a9bb8f7405d7b6703e729e17b365fcb41a1225ab7f6d02f3270eb074e654b03"
+        }
+      }
+    },
+    "qa_path_guard_scope": "Only this fresh QA session's scratch sentinels/links were created; no user file or external link target used",
+    "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983"
+  },
+  "production_actors_or_owner_save_touched": false,
+  "rendered_acceptance": false,
+  "scope": "Explicit source-domain/restore semantics and isolated native production-shape basement fixture only. No Player recovery/save/streaming/world bootstrap integration, whole Singapore/MBS completion, rendered or performance acceptance."
+}

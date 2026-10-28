@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-10-28T22:49:13.853472+00:00",
+  "updated_utc": "2026-10-28T23:20:53.747033+00:00",
   "branch": "Astra-6-singapore-fidelity",
   "goal_status": "active; full source-world/bootstrap and full MBS assembly remain incomplete",
   "owner_decisions": "No private plans. Owner explicitly delegates all routine/creative decisions and prohibits more implementation questions. Complete coherent undocumented private interiors, match documented public facts and disclose reconstruction.",
@@ -13,18 +13,22 @@
     "police": "25 headless +27 rendered passed",
     "helicopter_fixture": "65 headless passed",
     "helicopter_world": "R2 rendered57/57, original one-shot postload walk3.1668m, reasserted3.1684m; old R1 failure retained, no human input claim",
-    "core": "R3 default-game298/298 before subsequent roof changes; must revalidate final candidate",
+    "core": "CurrentrootadapterR1 297/298, Shoppes streetprobe at20m nowhitsthecorrectsupportedwaveroof18.34m. QA streetprobe movesinsideordinaryheadvolume3.5m retainingterrace1.3..1.7mthreshold; R2running, no passclaimed.",
     "source_data_loader": "29/29",
-    "public_atrium": "187 headless +191 rendered physics/image gates, translated fixture; visual FAILS and normal city entry not integrated",
-    "roof_support": "Downtown extension headless107/107 and renderedR4 130/130 clean after QA physics-clock correction; source/frame re-review pending. Far background remains unverified.",
+    "public_atrium": "R5 rendered205/205 physical/writes clean. Fresh visual critique still FAILS tree morphology, floor response and occupied edges. Normal source-city/actual tower assembly pending.",
+    "roof_support": "Downtown130/130 rendered +107/107 headless; independent source/frame +20image bounded approval. Source-mode actor changes later have separate fixture proof; background not exhaustive.",
     "source_frame": "R3 456/456 clean; independent review closed both cache-epoch and leaf-guard P2s. Pure component only.",
     "sky": "A/B40 acquisition checks, candidatepreferred in all3upward blindpairs, ground/horizon ties; overallsky not finished",
-    "coast": "14 tests + independent full source audit; 64 coast-enclosed features; not dryland/elevation"
+    "coast": "14 tests + independent full source audit; 64 coast-enclosed features; not dryland/elevation",
+    "source_context": "R3 478/478 clean; R1 andR2 failed runs retained. Context/native shape fixture only.",
+    "source_actor_adapter": "R5 52/52clean: actualPlayer8.5625m basement walk atY\u221220 outsideoldrectangle, realheli landing/boarding/exit, adjacent collision-union seam, sharedsupport lease transfer, profile/lost-runtime negatives, fresh source-pose restore, QApath guards. Synthetic native fixture; NOT default world/file saves/rebases/fullMBS.",
+    "source_domain": "Exactcountry/coastdomain Python9/9 with1003Shapelyparitypoints; native43/43clean. Territories/coast distinct, land/waterunknown, notterrain ordefaultgame."
   },
-  "current_work": "Guest builder fixes later bedroom route after native E and actual door rotation now work. Source-frame builder owns NEW source_world_context module/test only. Public lobby builder owns visual round on public_l1/test/newpublic-visual notes. Root owns all engines/Git and actual actor/domain/save/bootstrap integration.",
-  "next_primary_integration": "SourceWorldContext/frame/domain/save then one geometry authority and national-capable streaming. Remove old coordinate/basement death assumptions, preserve node IDs and traffic budgets, integrate whole MBS site/exterior+floor stack+physical cabins/stairs/programs, then normal bridge-to-hotel route.",
-  "public_visual_next": "Tall planted composition and pale stone floor/reception/wayfinding/entrance details; public module remains below exterior quality.",
+  "current_work": "Guest native floor variants still fail later lift no-teleport and upper-stair route; builder diagnoses. Program-floor builder ownsnew program_floor/QA/docs; geography builder ownsnew source_domain/projectedderivative/QA/docs. Root alone engines/Git, actor/domain/save/bootstrap/fullsite integration.",
+  "next_primary_integration": "Install real territory/coast descriptors; implement runtime streaming/rebase/save-v2 and MBS site/exterior/floorstack/physical cabins/programs. Defaultmain remains fictional; do not relabel component native fixtures whole-source-world.",
+  "public_visual_next": "R5 realcaptures better butstillfails; broad branching trees, nonclipped pale stone and occupiededges plus towerassembly remain. Preserve collision/4mspine.",
   "safety": "Root runs one task engine at a time through current GPU slot, private lock, render_gate, capped60/30STREAMING; no main merge/public release/new purchases/permission bypass/foreign control.",
-  "publication_checkpoint": "62e3ae8 pushed; later roof-family/guest-floor work is active and not yet verified or committed.",
-  "live_or_queued_engine_handles": "No task engine at checkpoint; previousroofR4 andguestR3terminal. Revalidate processes beforelaunch."
+  "publication_checkpoint": "744cd92 pushed; current context/runtime/public follow-up pending separatecommit.",
+  "live_or_queued_engine_handles": "No taskengine known at23:12:25Z; revalidateprocesses/handles beforelaunch. New completedsourceactorR5 andguestR5 terminal.",
+  "source_runtime_open_p2": "R5 initial idlePlayer floorcontact ~1.24mm overlap reportedclearanceblocked; postwalkrestore passed butimmediateidlepose notyet. Rootfixesnativegeometryawarecontact tolerance withoutsavedYrewrite orwholebodyexclusion."
 }

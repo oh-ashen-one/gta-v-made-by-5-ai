@@ -1,0 +1,12 @@
+{
+  "checks": 52,
+  "failures": [],
+  "metrics": {
+    "actual_helicopter_used": true,
+    "actual_player_used": true,
+    "basement_walk_distance_m": 8.5625,
+    "owner_save_files_touched": false,
+    "qa_path_guard_scope": "Only this fresh QA session's scratch sentinels/links were created; no user file or external link target used"
+  },
+  "scope": "Actual production actors/native source adapter in a synthetic basement only; no normal world migration, whole-MBS, national terrain, file-save, rebase or visual acceptance."
+}

@@ -1,0 +1,4 @@
+[source-context] FAIL real capsule ceiling overlap blocks restore despite valid support {"error":"Unexpected provider-observation kind","ok":false,"status":"invalid"}
+SCRIPT ERROR: Invalid access to property or key 'support' on a base object of type 'Dictionary'.
+          at: _native_basement_checks (res://src/systems/fidelity_tests/source_context_test.gd:452)
+          GDScript backtrace (most recent call first):

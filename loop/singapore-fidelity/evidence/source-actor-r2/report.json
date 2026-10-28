@@ -1,0 +1,11 @@
+{
+  "checks": 20,
+  "failures": [],
+  "metrics": {
+    "actual_helicopter_used": true,
+    "actual_player_used": true,
+    "basement_walk_distance_m": 8.56832218170166,
+    "owner_save_files_touched": false
+  },
+  "scope": "Actual production actors/native source adapter in a synthetic basement only; no normal world migration, whole-MBS, national terrain, file-save, rebase or visual acceptance."
+}

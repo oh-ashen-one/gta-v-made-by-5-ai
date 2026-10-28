@@ -1,0 +1,188 @@
+{
+  "status": "native_provider_name_normalization_frozen_pending_parent_r3",
+  "prepared_utc": "2026-10-28T22:47:10Z",
+  "files": [
+    {
+      "path": "game/src/world/geography/source_world_context.gd",
+      "sha256": "bdac6bf9350997a105e161826c8689ce050afbbedfb120bca3cd056da6cbc3f7",
+      "lines": 509
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_context_test.gd",
+      "sha256": "18578c399b4527fc8ef2ba4c144c0a59298e49fc98deb516c7d5fd8ee2a9a6c1",
+      "lines": 620
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_context_test.tscn",
+      "sha256": "4b5aee9005941261b462d335591a6afb8ac18ebc7409f714acab0eb10b8f2fd5",
+      "lines": 6
+    }
+  ],
+  "ownership": "Only new exclusive context, QA scene and source-context documentation; no parent shared files edited",
+  "verification": {
+    "engine_run_by_builder": false,
+    "godot_parse_verified": true,
+    "runtime_pass_claimed": false,
+    "static_whitespace_and_unique_function_checks": true,
+    "source_frame_component_changed": false,
+    "current_repair_parse_verified": false
+  },
+  "fixture_scope": {
+    "actual_source_manifest_frame": true,
+    "canonical_source_arrays": true,
+    "capsule_shape_mirrors_current_Player_source": {
+      "radius_m": 0.36,
+      "height_m": 1.75,
+      "offset_xyz": [
+        0,
+        0.9,
+        0
+      ]
+    },
+    "native_basement_floor_qa_prepared": true,
+    "native_basement_runtime_verified": false,
+    "production_Player_instantiated": false,
+    "actor_recovery_or_Game_save_integrated": false,
+    "actual_MBS_or_source_terrain_proved": false
+  },
+  "known_limits": [
+    "Provider envelopes and collider stamps are validated metadata, not proof that an arbitrary adapter ran its native queries",
+    "Restore ready is current-tick preflight only, never actor application or a durable ticket",
+    "Finite box unions are architectural dry-volume declarations, not terrain/coast polygons or flood simulation",
+    "Registry scan needs a bounded active architecture catalog and root-owned streaming/spatial index",
+    "No actor/camera/FX/interpolation/cache enumeration or scene rebasing is performed",
+    "QA report writer rechecks owned paths but is not an OS O_EXCL primitive"
+  ],
+  "parent_run": {
+    "driver": "loop/singapore-fidelity/run_engine.sh",
+    "tag": "source-context-r3",
+    "timeout_seconds": 75,
+    "scene": "res://src/systems/fidelity_tests/source_context_test.tscn",
+    "evidence": "/private/tmp/singapore-fidelity/source-context-r3",
+    "qa_session": "/private/tmp/singapore-fidelity/source-context-r3/session",
+    "fresh_session_required": true
+  },
+  "historical_frame_scope": "Existing source-frame R1 failure and parent-verified R3 clean math/cache scope are preserved; neither is new context proof",
+  "previous_context_r1": {
+    "status": "FAILED",
+    "evidence_root": "/private/tmp/singapore-fidelity/source-context-r1",
+    "checks": 446,
+    "assertion_failures": [],
+    "supervisor_exit_code": 2,
+    "engine_exit_code": 0,
+    "fatal_errors": [
+      "SCRIPT ERROR: Invalid access to property or key 'status' on a base object of type 'Dictionary'."
+    ],
+    "child_reaped": true,
+    "error_location": "source_context_test.gd:429 _native_basement_checks",
+    "scope_before_failure": {
+      "actual_MBS_or_terrain_datum": false,
+      "actual_Player_used": false,
+      "capsule_height_m": 1.75,
+      "capsule_offset_xyz": [
+        0.0,
+        0.9,
+        0.0
+      ],
+      "capsule_radius_m": 0.36000001430511475,
+      "native_floor_contact": true,
+      "no_Y_death_plane_in_context": true,
+      "restore_preflight": "ready",
+      "settled_local_root_xyz": [
+        0.0,
+        -20.02505111694336,
+        0.0
+      ],
+      "source_restore_xyz": [
+        17384.7,
+        -19.975051879882812,
+        -80120.7
+      ]
+    },
+    "uncompleted_native_gates": [
+      "ceiling overlap blocks restore",
+      "unloaded restore after ceiling removal",
+      "old collider stamp after explicit frame commit",
+      "no automatic native actor rebase"
+    ],
+    "underlying_preflight_error_logged": false,
+    "repair": "Every restore preparation/preflight failure now has explicit status:invalid; strict native ceiling assertion additionally records full result and query/save validation. R2 is required, no native ceiling success claimed."
+  },
+  "previous_context_r2": {
+    "status": "FAILED",
+    "evidence_root": "/private/tmp/singapore-fidelity/source-context-r2",
+    "checks": 452,
+    "assertion_failures": [
+      "real capsule ceiling overlap blocks restore despite valid support"
+    ],
+    "supervisor_exit_code": 1,
+    "engine_exit_code": 1,
+    "fatal_errors": [
+      "SCRIPT ERROR: Invalid access to property or key 'support' on a base object of type 'Dictionary'."
+    ],
+    "child_reaped": true,
+    "error_location": "source_context_test.gd:452 _native_basement_checks",
+    "native_ceiling_preflight": {
+      "decision": {
+        "error": "Unexpected provider-observation kind",
+        "ok": false,
+        "status": "invalid"
+      },
+      "payload": {
+        "clearance": "blocked",
+        "residency_token": "qa-only/physics-generation-1",
+        "support": {
+          "collider_instance_id": 86771762837,
+          "contact_source_xyz": [
+            17384.7,
+            -20.0,
+            -80120.7
+          ],
+          "feature_id": "qa-only/architectural-fixture",
+          "floor_id": "qa-only/B2",
+          "normal_source_xyz": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "state": "supported",
+          "support_id": "qa-only/slab"
+        }
+      },
+      "query_validation": {
+        "ok": true
+      },
+      "saved_validation": {
+        "ok": true,
+        "pose": {
+          "floor_geometry_sha256": "0140b5cf93f97c714866b301d9830345fa7538ecf0133c29480e8163eb27f67d",
+          "geometry_manifest_sha256": "338e706872bb36b2bd3288cbd035369e46f73135c59ee74cde5c4f3697dfb7b1",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "UNRESOLVED",
+              "source_reference": "",
+              "status": "unknown"
+            },
+            "feature_id": "qa-only/architectural-fixture",
+            "floor_id": "qa-only/B2",
+            "frame_fingerprint": "284eca73a037195beaf6906efc2b06970b2ad9eb741d957fe818c9843c1242d7",
+            "heading_rad": 0.75,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              17384.7,
+              -19.975051879882812,
+              -80120.7
+            ]
+          },
+          "vertical_manifest_sha256": "4a9bb8f7405d7b6703e729e17b365fcb41a1225ab7f6d02f3270eb074e654b03"
+        }
+      }
+    },
+    "cause": "A newly dot-assigned observations.physics key was rejected by the TYPE_STRING-only map validation; the same final stale-collider path repeated this rejected-key condition and unchecked .support caused a fatal error.",
+    "repair": "Normalize only exact String/StringName known provider names; reject all other keys/case/whitespace; preserve all identity and payload validation. Explicit named/dot assignment regressions and recorded Variant types added. Native final support assertion now guards API error results without weakening unknown-support expectation.",
+    "remaining_proof": "R3 must complete the unchanged ceiling-block/native stale-collider/no-automatic-rebase gates and clean engine/supervisor exit."
+  }
+}

@@ -16,6 +16,14 @@ At the owner's request, root launched normal source play at **2026-10-28 18:31:0
 
 This owner play instance exited normally at2026-10-28T19:27:26.634Z, exit0; root did not close it. Sequential owned QA resumed only after process/lease termination was verified. Do not automatically reopen the old instance. New source modules are not yet a finished source-world build.
 
+## Native source integration checkpoint — 2026-10-28 23:20 UTC
+
+`source_runtime.gd` now connects the actual Player/Helicopter to SourceWorldContext when explicitly installed. Native R5 passed52 clean checks: real basement walking8.5625m atY=-20 outside old bounds, source-pose capture/fresh restore, native aircraft landing/boarding/exit, adjacent region coverage, shared floor lease transfer, invalid-profile/unloaded/lost-runtime holds and guarded report writes. Context R3 passed478. Real national domain adapter passed43 native +9 Python tests; it deliberately retains unknown land/water while hydrology/elevation remain unresolved. The default main still builds the legacy fictional world. Actor math/fixtures are not national bootstrap, save-file migration, rebases or full MBS.
+
+Public atrium R5 passed205 rendered mechanics/writes, but a fresh critic still rejects tree morphology, floor response and sparse occupied edges. Guest suite native passes now reach all6 room/service/lift interaction types, but the later no-teleport and upper-stair route still fail; builder is repairing the actual receiving-floor adjacency and measuring residual drift. Program-floor builder owns only newprogram_floor/test/docs. Domain builder is frozen. Root owns all engine/Git and source-world/site/physical-cabin integration. Current coreR1 is297/298; new supported Shoppes roof intercepts an old20m street-floor ray. A narrow3.5m standing-head-volume probe correction retains the same terrace-height thresholds; R2 pending. All failed runs remain evidence.
+
+Read ACTIVE_HANDOFF_FACTS for newest details. No further owner implementation questions; no clock/newwave. Keep this full goal active.
+
 ## Current evidence
 
 - **Police:** the direct cause was two decorative officer meshes with no NPC/damage implementation. Production now uses permanent grounded NPCs plus responder-pool lifecycle hardening. Headless **25/25** and actual rendered **27/27** passed; independent image/log review confirms floor support and damage. This does not establish all animation/ragdoll quality.

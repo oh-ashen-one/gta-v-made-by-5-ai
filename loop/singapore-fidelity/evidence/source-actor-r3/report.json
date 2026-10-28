@@ -1,0 +1,10 @@
+{
+  "checks": 20,
+  "failures": [
+    "bounded native source actor test"
+  ],
+  "metrics": {
+    "basement_walk_distance_m": 8.56832218170166
+  },
+  "scope": "Actual production actors/native source adapter in a synthetic basement only; no normal world migration, whole-MBS, national terrain, file-save, rebase or visual acceptance."
+}

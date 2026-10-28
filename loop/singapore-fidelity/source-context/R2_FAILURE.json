@@ -1,0 +1,77 @@
+{
+  "status": "FAILED",
+  "evidence_root": "/private/tmp/singapore-fidelity/source-context-r2",
+  "checks": 452,
+  "assertion_failures": [
+    "real capsule ceiling overlap blocks restore despite valid support"
+  ],
+  "supervisor_exit_code": 1,
+  "engine_exit_code": 1,
+  "fatal_errors": [
+    "SCRIPT ERROR: Invalid access to property or key 'support' on a base object of type 'Dictionary'."
+  ],
+  "child_reaped": true,
+  "error_location": "source_context_test.gd:452 _native_basement_checks",
+  "native_ceiling_preflight": {
+    "decision": {
+      "error": "Unexpected provider-observation kind",
+      "ok": false,
+      "status": "invalid"
+    },
+    "payload": {
+      "clearance": "blocked",
+      "residency_token": "qa-only/physics-generation-1",
+      "support": {
+        "collider_instance_id": 86771762837,
+        "contact_source_xyz": [
+          17384.7,
+          -20.0,
+          -80120.7
+        ],
+        "feature_id": "qa-only/architectural-fixture",
+        "floor_id": "qa-only/B2",
+        "normal_source_xyz": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "state": "supported",
+        "support_id": "qa-only/slab"
+      }
+    },
+    "query_validation": {
+      "ok": true
+    },
+    "saved_validation": {
+      "ok": true,
+      "pose": {
+        "floor_geometry_sha256": "0140b5cf93f97c714866b301d9830345fa7538ecf0133c29480e8163eb27f67d",
+        "geometry_manifest_sha256": "338e706872bb36b2bd3288cbd035369e46f73135c59ee74cde5c4f3697dfb7b1",
+        "schema": "singapore_source_restore_v1",
+        "source_pose": {
+          "elevation_reference": {
+            "reference": "UNRESOLVED",
+            "source_reference": "",
+            "status": "unknown"
+          },
+          "feature_id": "qa-only/architectural-fixture",
+          "floor_id": "qa-only/B2",
+          "frame_fingerprint": "284eca73a037195beaf6906efc2b06970b2ad9eb741d957fe818c9843c1242d7",
+          "heading_rad": 0.75,
+          "room_id": "",
+          "schema": "singapore_source_pose_v1",
+          "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+          "source_xyz": [
+            17384.7,
+            -19.975051879882812,
+            -80120.7
+          ]
+        },
+        "vertical_manifest_sha256": "4a9bb8f7405d7b6703e729e17b365fcb41a1225ab7f6d02f3270eb074e654b03"
+      }
+    }
+  },
+  "cause": "A newly dot-assigned observations.physics key was rejected by the TYPE_STRING-only map validation; the same final stale-collider path repeated this rejected-key condition and unchecked .support caused a fatal error.",
+  "repair": "Normalize only exact String/StringName known provider names; reject all other keys/case/whitespace; preserve all identity and payload validation. Explicit named/dot assignment regressions and recorded Variant types added. Native final support assertion now guards API error results without weakening unknown-support expectation.",
+  "remaining_proof": "R3 must complete the unchanged ceiling-block/native stale-collider/no-automatic-rebase gates and clean engine/supervisor exit."
+}

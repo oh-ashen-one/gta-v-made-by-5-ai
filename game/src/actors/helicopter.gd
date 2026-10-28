@@ -17,6 +17,8 @@ const CAMERA_DEFAULT_PITCH := deg_to_rad(-18.0)
 const CAMERA_DISTANCE := 12.0
 
 var pilot_is_player := false
+var source_world_runtime: Node = null
+var uses_source_world := false
 var health := 100.0
 var disabled := false
 var _yaw_input := 0.0
@@ -288,6 +290,9 @@ func _paint_finish(node: Node) -> void:
 			_paint_finish(child)
 
 func _physics_process(delta: float) -> void:
+	if uses_source_world and not is_instance_valid(source_world_runtime):
+		velocity = Vector3.ZERO
+		return
 	if Game.simulation_paused:
 		return
 	_impact_cooldown = maxf(0.0, _impact_cooldown - delta)
@@ -333,7 +338,10 @@ func _physics_process(delta: float) -> void:
 	# aircraft is turned back rather than flying into empty scenery.
 	# Wave M (downtown-map): the envelope is DowntownPlan.AIR around the whole
 	# Marina Bay downtown; the turn-back heads for the middle of the playable map.
-	if not DowntownPlan.in_air_envelope(global_position):
+	if is_instance_valid(source_world_runtime) and not source_world_runtime.motion_allowed(self, delta, true):
+		velocity = Vector3.ZERO
+		return
+	if not is_instance_valid(source_world_runtime) and not DowntownPlan.in_air_envelope(global_position):
 		var home_c := DowntownPlan.PLAYABLE.get_center()
 		var home := Vector3(home_c.x - global_position.x, 0.0, home_c.y - global_position.z).normalized()
 		velocity.x = lerpf(velocity.x, home.x * 18.0, clampf(delta * 1.5, 0.0, 1.0))
@@ -347,7 +355,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	# A ditched aircraft (below the water line, where nothing supports it) is
 	# recovered to its last supported position instead of falling forever.
-	if global_position.y < -3.0:
+	if not is_instance_valid(source_world_runtime) and global_position.y < -3.0:
 		global_position = _last_good_position + Vector3(0.0, 1.5, 0.0) if _last_good_position != Vector3.ZERO else Vector3(0.0, 2.0, -337.0)
 		velocity = Vector3.ZERO
 		if pilot_is_player:
@@ -444,6 +452,8 @@ func _pilot_input(delta: float) -> void:
 
 ## Height of the skids above the ground or water below (metres).
 func _probe_agl() -> float:
+	if is_instance_valid(source_world_runtime):
+		return source_world_runtime.aircraft_agl(self)
 	var origin := global_position + Vector3.UP * 0.8
 	var space := get_world_3d().direct_space_state
 	var query := PhysicsRayQueryParameters3D.create(origin, origin + Vector3.DOWN * 40.0, 1)
@@ -642,6 +652,7 @@ func exit_vehicle(player: Node) -> void:
 ## Car's shared query checks floor normal, capsule volume and the route out.
 ## Here we also reject underwater support and a drop off a narrow roof edge.
 func landing_exit_position() -> Vector3:
+	if uses_source_world and not is_instance_valid(source_world_runtime): return Vector3.ZERO
 	if not is_on_floor(): return Vector3.ZERO
 	var side := global_transform.basis.x
 	var forward := -global_transform.basis.z
@@ -650,7 +661,9 @@ func landing_exit_position() -> Vector3:
 		var one_offset: Array[Vector3] = [offset]
 		var candidate := Car.find_safe_exit(self, one_offset)
 		if candidate == Vector3.ZERO: continue
-		if candidate.y <= DowntownPlan.WATER_LEVEL + 0.15: continue
+		if is_instance_valid(source_world_runtime):
+			if not source_world_runtime.landing_exit_safe(candidate): continue
+		elif candidate.y <= DowntownPlan.WATER_LEVEL + 0.15: continue
 		if absf(candidate.y - global_position.y) > 1.5: continue
 		return candidate
 	return Vector3.ZERO

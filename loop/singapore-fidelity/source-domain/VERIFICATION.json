@@ -1,0 +1,70 @@
+{
+  "identity_sha256": "82e7c84c55f8f03ca9e646b2fa6f66e8921f23f072e961c533646ab414d12834",
+  "domain_sha256": "0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+  "identity_bytes": 1871,
+  "domain_bytes": 392620,
+  "bindings": {
+    "coast_identity_sha256": "7a78cf14250939dd7e00451417e2f741d6518f56962a0ad288170ee197c9f494",
+    "coastline_sha256": "77abd458b3ec6a83eab2c2c076dcf078f1fee00d5ee15bb8a41787422050104e",
+    "country_wgs84_sha256": "c25cce8de57f280b68bd1436deedc3eaa3eb8bebf50ec334f5d9dbfd826b9c45",
+    "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+    "projection_implementation_sha256": "6bc910000fca1b353112021453eb68437cb276968f36cae66e23c552c701ba29",
+    "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+    "source_snapshot_utc": "2026-10-27T21:23:59Z"
+  },
+  "counts": {
+    "coast_enclosure": {
+      "polygons": 64,
+      "rings": 64,
+      "vertices": 9834
+    },
+    "territory": {
+      "polygons": 3,
+      "rings": 3,
+      "vertices": 246
+    }
+  },
+  "provider_descriptors": [
+    {
+      "kind": "territory",
+      "provider_id": "singapore-source-domain/territory/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+      "registry_version": "singapore_source_domain_registry_v1",
+      "source_reference": "source-domain/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d"
+    },
+    {
+      "kind": "land",
+      "provider_id": "singapore-source-domain/land/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+      "registry_version": "singapore_source_domain_registry_v1",
+      "source_reference": "source-domain/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d"
+    },
+    {
+      "kind": "water",
+      "provider_id": "singapore-source-domain/water/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+      "registry_version": "singapore_source_domain_registry_v1",
+      "source_reference": "source-domain/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d"
+    }
+  ],
+  "python_tests": {
+    "count": 9,
+    "failed": 0,
+    "independent_reference_points": 1003,
+    "actual_national_inputs_exercised": true
+  },
+  "godot_parsing_runtime_status": "PASS_PARENT_RUN",
+  "source_compiler_sha256": "f29aa35e4f1cfefd24f1d4969e8fcec6c9b408edd3cf1c042d3a47e5220fc029",
+  "source_python_tests_sha256": "197192b7d098483618fa2c8e679fe32669afe7a660390f86cad305f4893608c8",
+  "source_adapter_sha256": "b60633d76095c15de13481afaac7f48441bb5de3d362e80c0402ef37c7ed2672",
+  "source_native_qa_sha256": "c18f54cb24b331d9fde2af0a0b09712fd53f2c97592bec91b588e461660aa16a",
+  "unknown_land_water_policy": true,
+  "scope": "Double-array horizontal coverage component, not source-world bootstrap or completed terrain/city/MBS",
+  "native_qa": {
+    "checks": 43,
+    "failures": [],
+    "report_sha256": "258f3a380b24e753c42090f68d152d938d36452d010a28a84c3e497ffc50ecde",
+    "parent_supervisor_exit_code": 0,
+    "parent_reported_engine_logs_clean": true,
+    "parent_reported_processes_reaped": true,
+    "actual200queries_us": 28953,
+    "scope": "Data-only exact-source XY classification and context rows; no actor, terrain, inland hydrology, dry volume, water level, streaming, rendering or performance acceptance"
+  }
+}
