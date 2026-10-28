@@ -1,0 +1,14 @@
+{
+  "post_critique_python_tests": {
+    "passed": 19,
+    "failed": 0,
+    "command": "python -m unittest discover -s game/tools/geodata -p test_compile_geometry.py -v"
+  },
+  "independent_extra_boundary_cases": 15,
+  "source_compiler_sha256": "6fe00cbbb5ee339f34c8824c408f3cec2d035674c4020dd5075f47da0bbad942",
+  "source_tests_sha256": "7384869b01fb1df20c9276ac788e59a351ec797773641e076ef8d1505bc95983",
+  "artifact_manifest_sha256": "c789ae8b66506ed19231b7744b04d781b11e1a828d249eea4955a9d59607441f",
+  "artifact_files": 27,
+  "all_files_byte_identical_to_pre_fix_r3": true,
+  "scope": "Source geometry, integrity and mathematical seam coverage only. No runtime city or visual acceptance."
+}

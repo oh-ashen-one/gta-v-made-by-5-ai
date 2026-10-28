@@ -1,0 +1,41 @@
+{
+  "artifact": {
+    "compile_seconds": 1.659,
+    "counts": {
+      "building": 215,
+      "building_height_known": 197,
+      "building_height_unknown": 18,
+      "chunks": 25,
+      "features": 789,
+      "road": 559,
+      "road_elevation_unknown": 559,
+      "road_width_unknown": 559,
+      "water": 11,
+      "waterway": 4
+    },
+    "integrity": {
+      "compiled_path_length_m": 35052.22933395063,
+      "compiled_surface_area_m2": 770772.7911916145,
+      "default_height_or_width_invented": false,
+      "no_distance_compression": true,
+      "selected_source_path_length_m": 35052.22933395063,
+      "selected_source_surface_area_m2": 770772.7911916146,
+      "shared_collision_topology": true,
+      "source_geometry_unchanged_in_catalog": true
+    },
+    "issues": 0,
+    "manifest_sha256": "c789ae8b66506ed19231b7744b04d781b11e1a828d249eea4955a9d59607441f",
+    "output": "/private/tmp/singapore-fidelity/geography-mesh/mbs-bayfront-r3",
+    "total_bytes": 2049321
+  },
+  "source_compiler_sha256": "4bff1f2bb9b3706439bb8c657fe3849b795c883333f661321acfd74325b73997",
+  "source_tests_sha256": "214e618dccfb3386cfd09f970d097ec4942329f29ac55bce6b285654bfd5d78b",
+  "dependency_owner_count": 13,
+  "geometry_stats": {
+    "path_fragments": 714,
+    "surface_fragments": 307,
+    "hole_rings": 3,
+    "triangles": 3179
+  },
+  "minimum_triangle_cross_product_y": 0.010683114561670853
+}
