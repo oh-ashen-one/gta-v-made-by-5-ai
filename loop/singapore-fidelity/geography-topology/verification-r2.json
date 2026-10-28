@@ -1,0 +1,147 @@
+{
+  "artifact": {
+    "bytes": 3864803,
+    "closed_source_ways": 28,
+    "found_source_ways": 559,
+    "issues": 0,
+    "maximum_axis_projection_error_m": 4.999677810246794e-05,
+    "missing_source_ways": 0,
+    "node_validation_issues": 0,
+    "ordered_associations_checked": 2794,
+    "ordered_node_associations": 2794,
+    "ready_for_source_identity_topology": true,
+    "requested_source_ways": 559,
+    "scan_and_verify_seconds": 1.893,
+    "schema": "singapore_original_way_topology_v2",
+    "sha256": "2ffe21d198a2da653eee2b0f4ed35bf9993baf31d4d3e893551c3a60facd0c87",
+    "shared_between_source_ways_nodes": 607,
+    "source_node_locations_independently_projected": true,
+    "source_nodes_checked": 1992,
+    "source_segments": 2235,
+    "unique_source_nodes": 1992
+  },
+  "binding": {
+    "canonical_snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+    "geometry_patch_manifest_sha256": "c789ae8b66506ed19231b7744b04d781b11e1a828d249eea4955a9d59607441f",
+    "logical_features": 789,
+    "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+    "predecessor_topology_sha256": "5b5672fbcf77117ec8a47b868e7472fd286bb261345b3d92bf5ab83b19216ca2",
+    "regional_source_catalog_sha256": "295c160763a13f3f9468bbbec866305310c0d82b4837b446281e5a72e931fed0",
+    "selected_logical_features": 559,
+    "selected_semantic_kinds": [
+      "road"
+    ],
+    "selected_source_ways": 559,
+    "source_ids": 788,
+    "source_snapshot_utc": "2026-10-27T21:23:59Z"
+  },
+  "node_scan_header": {
+    "generator": "osmium/1.16.0",
+    "osmosis_replication_sequence_number": "4952",
+    "osmosis_replication_timestamp": "2026-10-27T21:23:59Z"
+  },
+  "node_coordinate_validation": {
+    "coordinate_mismatches": [],
+    "duplicate_source_node_ids": [],
+    "elevation_inferred_from_tags": false,
+    "found_source_nodes": 1992,
+    "invalid_source_node_ids": [],
+    "maximum_axis_error_m": 4.999677810246794e-05,
+    "missing_source_node_ids": [],
+    "ordered_associations_checked": 2794,
+    "projection_frame": {
+      "distance_compression": false,
+      "legacy_plan_alignment_applied": false,
+      "metres_per_unit": 1.0,
+      "origin_easting": 30000.0,
+      "origin_northing": 30000.0,
+      "source_crs": "EPSG:4326",
+      "survey_crs": "EPSG:3414",
+      "world_axes": {
+        "x": "south",
+        "y": "up",
+        "z": "west"
+      }
+    },
+    "projection_implementation_sha256": "6bc910000fca1b353112021453eb68437cb276968f36cae66e23c552c701ba29",
+    "requested_source_nodes": 1992,
+    "rounding_tolerance_per_axis_m": 0.0001,
+    "snapshot_time_conflict": false,
+    "source_header_conflict": false,
+    "source_node_tags_preserved": true
+  },
+  "original_node_tag_counts": {
+    "access": 3,
+    "access:conditional": 1,
+    "amenity": 5,
+    "barrier": 6,
+    "bicycle": 1,
+    "button_operated": 17,
+    "crossing": 22,
+    "crossing:island": 1,
+    "crossing:markings": 10,
+    "crossing:signals": 5,
+    "entrance": 2,
+    "exit": 1,
+    "fixme": 1,
+    "foot": 4,
+    "highway": 57,
+    "horse": 1,
+    "image": 3,
+    "level": 1,
+    "mapillary": 3,
+    "maxheight": 1,
+    "motor_vehicle": 4,
+    "name": 6,
+    "note": 1,
+    "parking": 1,
+    "ref": 2,
+    "tactile_paving": 28,
+    "tourism": 3,
+    "traffic_signals:sound": 15,
+    "traffic_signals:vibration": 13,
+    "wheelchair": 4
+  },
+  "selected_node_semantics": {
+    "highway": {
+      "elevator": 6,
+      "traffic_signals": 10,
+      "crossing": 37,
+      "toll_gantry": 3,
+      "motorway_junction": 1
+    },
+    "crossing": {
+      "zebra": 5,
+      "traffic_signals": 16,
+      "unmarked": 1
+    },
+    "crossing:signals": {
+      "yes": 5
+    },
+    "kerb": {},
+    "ele": {},
+    "ele:datum": {},
+    "traffic_signals": {},
+    "barrier": {
+      "lift_gate": 3,
+      "gate": 1,
+      "cycle_barrier": 1,
+      "yes": 1
+    }
+  },
+  "r1_preserved_sha256": "5b5672fbcf77117ec8a47b868e7472fd286bb261345b3d92bf5ab83b19216ca2",
+  "source_tool_sha256": "949af71fb41a597dcbc4c0f288c14fcbe3b83cceee6d9a9cf474364ce0e6d70f",
+  "source_tests_sha256": "8bad9439514dfb06b1fe502025a00ec62653464c8777e4e04b9756db1133efa9",
+  "binding_helper_sha256": "8e084272728cc64503591251ab782ba2124ae758d0d27cea1e859deb6492476b",
+  "unit_tests": {
+    "count": 21,
+    "failed": 0
+  },
+  "remaining_gaps": [
+    "Source2Dprojection/order verified only for this bound target set; national data/runtime migration remains incomplete.",
+    "OSM source geometry/survey completeness/positional correctness is not independently certified.",
+    "Regionalway selection does not provide every incident outside way/country-complete graph.",
+    "Elevation/terrain/grade/bridge/tunnel profile,widths,lanes,access/direction/legalvehiclepolicy remain unassessed.",
+    "No rendered architecture/interior/visual/gameplay/performance acceptance follows from source topology."
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "singapore_regional_supplements_identity_v1",
+  "geometry_manifest_sha256": "c789ae8b66506ed19231b7744b04d781b11e1a828d249eea4955a9d59607441f",
+  "source_catalog_sha256": "295c160763a13f3f9468bbbec866305310c0d82b4837b446281e5a72e931fed0",
+  "canonical_snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+  "supplements": [
+    {
+      "file": "source-tags.json",
+      "bytes": 622148,
+      "sha256": "d796187792548156803a7b03a04861120b1492b80ed289152379c0286e899ed4"
+    },
+    {
+      "file": "source-topology.json",
+      "bytes": 3864803,
+      "sha256": "2ffe21d198a2da653eee2b0f4ed35bf9993baf31d4d3e893551c3a60facd0c87"
+    }
+  ],
+  "scope": "Tracked artifact integrity only; consumers must also verify supplement bindings/readiness. Not signed distribution, survey, elevation or gameplay acceptance."
+}

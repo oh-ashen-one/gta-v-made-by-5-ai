@@ -1,0 +1,98 @@
+{
+  "artifact": {
+    "bytes": 2830042,
+    "closed_source_ways": 28,
+    "found_source_ways": 559,
+    "issues": 0,
+    "missing_source_ways": 0,
+    "ordered_node_associations": 2794,
+    "ready_for_source_identity_topology": true,
+    "requested_source_ways": 559,
+    "scan_and_verify_seconds": 19.676,
+    "schema": "singapore_original_way_topology_v1",
+    "sha256": "5b5672fbcf77117ec8a47b868e7472fd286bb261345b3d92bf5ab83b19216ca2",
+    "shared_between_source_ways_nodes": 607,
+    "source_segments": 2235,
+    "unique_source_nodes": 1992
+  },
+  "binding": {
+    "canonical_snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+    "geometry_patch_manifest_sha256": "c789ae8b66506ed19231b7744b04d781b11e1a828d249eea4955a9d59607441f",
+    "logical_features": 789,
+    "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+    "regional_source_catalog_sha256": "295c160763a13f3f9468bbbec866305310c0d82b4837b446281e5a72e931fed0",
+    "selected_logical_features": 559,
+    "selected_semantic_kinds": [
+      "road"
+    ],
+    "selected_source_ways": 559,
+    "source_ids": 788,
+    "source_snapshot_utc": "2026-10-27T21:23:59Z"
+  },
+  "header": {
+    "generator": "osmium/1.16.0",
+    "osmosis_replication_sequence_number": "4952",
+    "osmosis_replication_timestamp": "2026-10-27T21:23:59Z"
+  },
+  "maximum_shared_node_axis_difference_m": 0.0,
+  "semantic_tag_values": {
+    "bridge": {
+      "yes": 46,
+      "suspension_bridge": 1
+    },
+    "tunnel": {
+      "building_passage": 5,
+      "yes": 9
+    },
+    "layer": {
+      "-2": 1,
+      "1": 29,
+      "-1": 5,
+      "2": 25
+    },
+    "oneway": {
+      "yes": 144,
+      "no": 11
+    },
+    "junction": {},
+    "access": {
+      "private": 4
+    },
+    "bicycle": {
+      "private": 1,
+      "designated": 25,
+      "yes": 21
+    },
+    "proposed": {
+      "tertiary": 1
+    }
+  },
+  "highway_types": {
+    "footway": 283,
+    "service": 87,
+    "cycleway": 26,
+    "pedestrian": 40,
+    "primary": 24,
+    "motorway": 3,
+    "steps": 20,
+    "corridor": 24,
+    "proposed": 1,
+    "secondary": 37,
+    "residential": 9,
+    "path": 2,
+    "tertiary": 1,
+    "trunk_link": 2
+  },
+  "nodes_with_endpoint_associations": 677,
+  "retraced_ways_beyond_closure": 3,
+  "independent_source_node_projection_verified": false,
+  "source_tool_sha256": "5357833582e3e3ee85a14fc8dd65efc90c2d22868cc911020d81b6b3f9a9d947",
+  "source_tests_sha256": "a92ba177fab70835288d70f553a35bdc5c8fbdc83c5fb9e4f4628a0be14c8fdc",
+  "binding_helper_sha256": "8e084272728cc64503591251ab782ba2124ae758d0d27cea1e859deb6492476b",
+  "scope": "Source node incidence only, not a legal/physical vehicle route network or full city acceptance.",
+  "unit_tests": {
+    "count": 16,
+    "failed": 0,
+    "scope": "Analytic/source identity incidence and native tiny-PBF reference-only scan; not vehicle routing acceptance"
+  }
+}
