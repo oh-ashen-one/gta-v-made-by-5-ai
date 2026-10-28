@@ -1,0 +1,75 @@
+{
+  "created_utc": "2026-10-28T20:56:35.495868+00:00",
+  "status": "R1_PHYSICS_7_ACTOR_CASES_PASS_ROOFKIT_READBACK_DIAGNOSIS_R2_PENDING",
+  "source_sha256": {
+    "game/src/world/downtown/landmarks/mbs.gd": "31e7e19570bc6c8b3234cb10dd575a836ad44a3be3e00a615a7925fcef33dfe7",
+    "game/src/world/downtown/landmarks/fullerton.gd": "a9a7203014e954b45754e31633bf7ca7da8673afd53ee65de385209361edb844",
+    "game/src/world/roof_kit.gd": "ed897b63126db8233a7842faa83ddd3ae734c00d10cdbc0ede2aac50add2f5fb",
+    "game/src/world/world_builder.gd": "8363cca48e827499e091aa1505fd29ba9bc672940b496389d9f793b85a6a5464",
+    "game/src/systems/fidelity_tests/roof_support_review.gd": "5e7f34842b66c201ce1d656c0cd8a8aea0aa3e2f500ce9af8ce67668aeaf65e5",
+    "game/src/systems/fidelity_tests/roof_support_review.tscn": "a5000fd9e14b3f06cb6a2efcbbccd5bfa42b5c3e0447b6a065444eb0e9e0c5c6"
+  },
+  "render_geometry_changed": false,
+  "new_external_assets_or_generators": false,
+  "collision_inputs": "Existing original rendered structural faces, box dimensions and instance transforms; no new provider assets",
+  "static_math": {
+    "skypark_visible_bow_width_at_minus172_m": 15.961468239748005,
+    "skypark_visible_width_at_minus164_m": 22.25782822268901,
+    "outside_probe_z_relative_to_hull_centre_m": 14.0,
+    "outside_probe_exceeds_actual_halfwidth": true,
+    "pavilion_roof_top_m": 204.4,
+    "shoppes_sampled_crest_m": 24.78605814759156,
+    "roofkit_membrane_offset_above_old_body_m": 0.38,
+    "one_fullerton_roof_top_m": 8.61,
+    "fullerton_old_upper_box_relative_xz": [
+      -40,
+      -42.5,
+      40,
+      42.5
+    ],
+    "fullerton_new_lower_mass_relative_xz": [
+      -37,
+      -39.5,
+      40,
+      42.5
+    ],
+    "fullerton_new_upper_mass_relative_xz": [
+      -35,
+      -37.5,
+      38,
+      40.5
+    ],
+    "fullerton_lower_top_m": 27.36,
+    "fullerton_upper_top_m": 33.36,
+    "fullerton_terrace_probe_relative_xz": [
+      38.7,
+      30
+    ]
+  },
+  "proof_limits": [
+    "Static arithmetic/transcribed source values only; not a Godot parser or runtime pass.",
+    "Headless rays and native production actor fixtures must run through root-owned engine.",
+    "Actual rendered roof contacts/camera inspection remain required.",
+    "Distant visual-only/background buildings, full Singapore geometry and real MBS architecture are not certified."
+  ],
+  "frozen_utc": "2026-10-28T21:26:36.170527+00:00",
+  "production_files_frozen": true,
+  "fixture_probe_resources": "Actual production Player capsule and Helicopter box shape/local transform, with stricter query margins; no copied collision dimensions.",
+  "headless_r1": {
+    "report": "/private/tmp/singapore-fidelity/roof-support-r1/review/report.json",
+    "test_checks": 74,
+    "test_elapsed_s": 28.415,
+    "engine_exit_code": 1,
+    "fatal_errors": [],
+    "failed_checks": [
+      "all actual membrane centres support their rendered slab height",
+      "an ordinary production membrane has a clear fixture landing and walk",
+      "actual large housing roofs have matching support"
+    ],
+    "native_actor_cases_passed": 7,
+    "ordinary_membrane_actor_case_exercised": false,
+    "headless_multimesh_readback_suspected": true,
+    "proof_limit": "R1 did not record exact per-instance ray/readback detail; R2 must confirm the cause, not infer runtime support from source."
+  },
+  "r2_changes": "Preserve exact CPU transforms submitted to each production RoofKit MultiMesh. Headless rays use those receipts, strict native collision shape transform/dimension comparison added; rendered runs additionally compare actual GPU buffer. Every ray failure includes actual shape owner/top overlap details; fixture rejection counters and samples added. No support geometry or actor tolerances changed in R2."
+}

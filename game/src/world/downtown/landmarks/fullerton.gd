@@ -11,6 +11,26 @@ const Realm = preload("res://src/world/downtown/landmarks/realm.gd")
 
 const TOP := 0.36
 
+func _support_box(kit: Kit, size: Vector3, center: Vector3, label: String) -> void:
+	kit.col_box(size, center)
+	if kit.body == null or kit.body.get_child_count() == 0: return
+	var shape := kit.body.get_child(kit.body.get_child_count() - 1) as CollisionShape3D
+	if shape != null:
+		shape.name = label
+		shape.set_meta("roof_support_kind", label)
+
+func _support_cylinder(kit: Kit, mat: Material, center: Vector3, r0: float, r1: float, height: float, sides: int, label: String) -> void:
+	# Reuse the render primitive's exact polygonal faces, not a wider smooth
+	# cylinder or a bounding box that would support air beside the lantern.
+	var primitive := Kit.new()
+	primitive.cyl(mat, center, r0, r1, height, sides, true)
+	kit.col_trimesh(primitive.to_mesh().get_faces())
+	if kit.body == null or kit.body.get_child_count() == 0: return
+	var shape := kit.body.get_child(kit.body.get_child_count() - 1) as CollisionShape3D
+	if shape != null:
+		shape.name = label
+		shape.set_meta("roof_support_kind", label)
+
 func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 	var holder := Node3D.new()
 	holder.name = "FullertonWaterfront"
@@ -41,7 +61,10 @@ func _hotel(kit: Kit, holder: Node3D) -> void:
 	# Main block set back behind the colonnades; rusticated base course.
 	kit.box(stone, Vector3(p.x + inset * 0.5, TOP + body_h * 0.5, p.z + inset * 0.5), Vector3(size.x - inset, body_h, size.z - inset))
 	kit.box(stone, Vector3(p.x + inset * 0.5, TOP + body_h + 3.0, p.z + inset * 0.5), Vector3(size.x - inset - 4.0, 6.0, size.z - inset - 4.0))
-	kit.col_box(Vector3(size.x, body_h + 6.0, size.z), Vector3(p.x, TOP + (body_h + 6.0) * 0.5, p.z))
+	# Split the actual stepped masses. The former full-footprint box reached
+	# the upper roof over the lower terrace, creating invisible high support.
+	_support_box(kit, Vector3(size.x - inset, body_h, size.z - inset), Vector3(p.x + inset * 0.5, TOP + body_h * 0.5, p.z + inset * 0.5), "FullertonMainLowerMass")
+	_support_box(kit, Vector3(size.x - inset - 4.0, 6.0, size.z - inset - 4.0), Vector3(p.x + inset * 0.5, TOP + body_h + 3.0, p.z + inset * 0.5), "FullertonMainUpperMass")
 	# Facade grammar on the two public faces (-z bay/Collyer Quay, -x river).
 	var faces := [
 		{"o": Vector3(x0, 0, z0), "d": Vector3(1, 0, 0), "n": Vector3(0, 0, -1), "len": size.x},
@@ -58,15 +81,21 @@ func _hotel(kit: Kit, holder: Node3D) -> void:
 			kit.beam(shadow, wall + Vector3(0, TOP + 1.0 + k * 0.95, 0) + n * 0.02, wall + d * flen + Vector3(0, TOP + 1.0 + k * 0.95, 0) + n * 0.02, 0.12, 0.08)
 		# Plinth podium the colonnade stands on.
 		kit.box(stone, o + d * flen * 0.5 - n * inset * 0.5 + Vector3(0, TOP + 4.0, 0), (d * flen + n * inset).abs() + Vector3(0, 8.0, 0) + (d.abs() * 0.0))
+		_support_box(kit, (d * flen + n * inset).abs() + Vector3(0, 8.0, 0), o + d * flen * 0.5 - n * inset * 0.5 + Vector3(0, TOP + 4.0, 0), "FullertonPlinth_%d" % kit.shapes)
 		var ncol := int(flen / 4.8)
 		for k in ncol + 1:
 			var cpos := o + d * (k * flen / ncol) - n * 1.0
 			kit.cyl(stone, cpos + Vector3(0, TOP + 8.0, 0), 0.85, 0.72, 15.5, 12, false)
 			kit.box(stone, cpos + Vector3(0, TOP + 8.25, 0), Vector3(2.0, 0.5, 2.0))
 			kit.box(stone, cpos + Vector3(0, TOP + 23.7, 0), Vector3(2.1, 0.5, 2.1))
+			_support_cylinder(kit, stone, cpos + Vector3(0, TOP + 8.0, 0), 0.85, 0.72, 15.5, 12, "FullertonColumn_%d" % kit.shapes)
+			_support_box(kit, Vector3(2.0, 0.5, 2.0), cpos + Vector3(0, TOP + 8.25, 0), "FullertonColumnBase_%d" % kit.shapes)
+			_support_box(kit, Vector3(2.1, 0.5, 2.1), cpos + Vector3(0, TOP + 23.7, 0), "FullertonColumnCapital_%d" % kit.shapes)
 		# Entablature and cornice over the colonnade.
 		kit.box(stone, o + d * flen * 0.5 - n * (inset * 0.5 - 0.4) + Vector3(0, TOP + 25.0, 0), (d * (flen + 2.0) + n * (inset + 1.2)).abs() + Vector3(0, 2.4, 0))
 		kit.box(Looks.get_mat("granite_light"), o + d * flen * 0.5 - n * (inset * 0.5 - 0.9) + Vector3(0, TOP + 26.5, 0), (d * (flen + 3.0) + n * (inset + 2.2)).abs() + Vector3(0, 0.6, 0))
+		_support_box(kit, (d * (flen + 2.0) + n * (inset + 1.2)).abs() + Vector3(0, 2.4, 0), o + d * flen * 0.5 - n * (inset * 0.5 - 0.4) + Vector3(0, TOP + 25.0, 0), "FullertonEntablature_%d" % kit.shapes)
+		_support_box(kit, (d * (flen + 3.0) + n * (inset + 2.2)).abs() + Vector3(0, 0.6, 0), o + d * flen * 0.5 - n * (inset * 0.5 - 0.9) + Vector3(0, TOP + 26.5, 0), "FullertonCornice_%d" % kit.shapes)
 		# Windows: arched base openings, three tall rows behind the columns, attic row.
 		var nwin := int(flen / 4.8)
 		for k in nwin:
@@ -80,12 +109,17 @@ func _hotel(kit: Kit, holder: Node3D) -> void:
 	# Main entrance portico and lantern pavilion on the bay front.
 	var ent := Vector3(p.x, TOP, z0 - 0.5)
 	kit.box(stone, ent + Vector3(0, 9.0, -1.5), Vector3(16.0, 18.0, 3.0))
+	_support_box(kit, Vector3(16.0, 18.0, 3.0), ent + Vector3(0, 9.0, -1.5), "FullertonEntranceMass")
 	kit.box(glass, ent + Vector3(0, 3.0, -3.05), Vector3(6.0, 5.0, 0.1))
 	kit.box(Looks.get_mat("granite_light"), ent + Vector3(0, 18.6, -1.5), Vector3(18.0, 1.2, 4.0))
+	_support_box(kit, Vector3(18.0, 1.2, 4.0), ent + Vector3(0, 18.6, -1.5), "FullertonEntranceRoof")
 	var lantern := Vector3(p.x, TOP + body_h + 6.0, z0 + 10.0)
 	kit.box(stone, lantern + Vector3(0, 2.5, 0), Vector3(10.0, 5.0, 10.0))
+	_support_box(kit, Vector3(10.0, 5.0, 10.0), lantern + Vector3(0, 2.5, 0), "FullertonLanternMass")
 	kit.cyl(Looks.get_mat("glass_clear"), lantern + Vector3(0, 5.0, 0), 3.2, 3.2, 3.4, 12, false)
 	kit.cyl(Looks.get_mat("steel_bronze"), lantern + Vector3(0, 8.4, 0), 3.8, 0.4, 2.6, 12, true)
+	_support_cylinder(kit, Looks.get_mat("glass_clear"), lantern + Vector3(0, 5.0, 0), 3.2, 3.2, 3.4, 12, "FullertonLanternGlazing")
+	_support_cylinder(kit, Looks.get_mat("steel_bronze"), lantern + Vector3(0, 8.4, 0), 3.8, 0.4, 2.6, 12, "FullertonLanternRoof")
 	kit.cyl(Looks.get_mat("steel_dark"), lantern + Vector3(0, 11.0, 0), 0.08, 0.06, 9.0, 6, true)
 	var sign := Label3D.new()
 	sign.text = "THE FULLERTON"
@@ -129,6 +163,7 @@ func _one_fullerton(kit: Kit, holder: Node3D, world: WorldBuilder) -> void:
 		kit.box(Looks.get_mat("interior_warm"), vc + Vector3(0, 3.6, 0), Vector3(vs.x - 2.0, 7.2, vs.z - 2.0))
 		kit.box(Looks.get_mat("glass_clear"), vc + Vector3(0, 3.7, 0), Vector3(vs.x - 1.4, 7.4, vs.z - 1.4))
 		kit.box(white, vc + Vector3(0, 7.9, 0), Vector3(vs.x + 5.0, 0.7, vs.z + 6.0))
+		_support_box(kit, Vector3(vs.x + 5.0, 0.7, vs.z + 6.0), vc + Vector3(0, 7.9, 0), "OneFullertonRoof_%.0f" % vc.x)
 		for cx: float in [vx0 - 1.5, vx1 + 1.5]:
 			for cz: float in [-396.0 - 9.5, -396.0 + 9.5]:
 				kit.cyl(white, Vector3(cx, TOP, cz), 0.2, 0.2, 7.5, 8, false)

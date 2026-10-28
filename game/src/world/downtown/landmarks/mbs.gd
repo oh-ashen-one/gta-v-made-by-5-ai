@@ -34,6 +34,22 @@ const PODIUM_BACK_Z := 16.0
 var m: Vector3
 var stats := {}
 
+## Structural collision uses the same triangle corners/winding as Kit's
+## rendered primitives. Pool water, planting and decorative members are not
+## included in these roof surfaces.
+func _roof_quad(a: Vector3, b: Vector3, c: Vector3, d: Vector3) -> PackedVector3Array:
+	return PackedVector3Array([a, c, b, a, d, c])
+
+func _roof_tri(a: Vector3, b: Vector3, c: Vector3) -> PackedVector3Array:
+	return PackedVector3Array([a, c, b])
+
+func _tag_roof_shape(kit: Kit, label: String) -> void:
+	if kit.body == null or kit.body.get_child_count() == 0: return
+	var shape := kit.body.get_child(kit.body.get_child_count() - 1) as CollisionShape3D
+	if shape == null: return
+	shape.name = label
+	shape.set_meta("roof_support_kind", label)
+
 func build(world: WorldBuilder, root: Node3D) -> Dictionary:
 	m = DowntownPlan.ANCHORS["marina_bay_sands"]["pos"]
 	var holder := Node3D.new()
@@ -124,6 +140,7 @@ func _skypark(kit: Kit, holder: Node3D) -> void:
 	var deck := Looks.get_mat("deck_stone")
 	var zc := m.z + 2.0
 	var rings := []
+	var roof_faces := PackedVector3Array()
 	var n := 44
 	for i in n + 1:
 		var s := float(i) / n
@@ -148,23 +165,36 @@ func _skypark(kit: Kit, holder: Node3D) -> void:
 		var a: PackedVector3Array = rings[i]
 		var b: PackedVector3Array = rings[i + 1]
 		kit.quad(deck, a[6], a[0], b[0], b[6])
+		roof_faces.append_array(_roof_quad(a[6], a[0], b[0], b[6]))
+		for j in a.size() - 1:
+			roof_faces.append_array(_roof_quad(a[j], a[j + 1], b[j + 1], b[j]))
 		for side in [1, 5]:
 			kit.beam(reveal, a[side] - Vector3(0, 0.05, 0), b[side] - Vector3(0, 0.05, 0), 0.12, 0.12)
 		Realm.glass_rail(kit, a[0], b[0], 1.3)
 		Realm.glass_rail(kit, b[6], a[6], 1.3)
 	var stern: PackedVector3Array = rings[n]
 	kit.cap(hull, stern)
+	for j in range(1, stern.size() - 1):
+		roof_faces.append_array(_roof_tri(stern[0], stern[j], stern[j + 1]))
 	var bow: PackedVector3Array = rings[0]
 	var bow_rev := PackedVector3Array()
 	for i in range(bow.size() - 1, -1, -1):
 		bow_rev.append(bow[i])
 	kit.cap(hull, bow_rev)
+	for j in range(1, bow_rev.size() - 1):
+		roof_faces.append_array(_roof_tri(bow_rev[0], bow_rev[j], bow_rev[j + 1]))
+	# The previous rectangle missed the bow/eaves and supported empty air
+	# outside the tapered hull. The closed structural shell matches rendering.
+	kit.col_trimesh(roof_faces)
+	_tag_roof_shape(kit, "SkyParkStructuralHull")
 	# Infinity pool along the bay edge of the deck, over the north and centre towers.
 	var pool_x0 := m.x - 150.0
 	var pool_x1 := m.x + 20.0
 	var pool_z1 := zc + HULL_W * 0.5 - 1.6
 	var pool_z0 := pool_z1 - 9.0
 	kit.box(Looks.get_mat("granite_light"), Vector3((pool_x0 + pool_x1) * 0.5, DECK_Y + 0.12, (pool_z0 + pool_z1) * 0.5), Vector3(pool_x1 - pool_x0 + 1.2, 0.24, pool_z1 - pool_z0 + 1.2))
+	kit.col_box(Vector3(pool_x1 - pool_x0 + 1.2, 0.24, pool_z1 - pool_z0 + 1.2), Vector3((pool_x0 + pool_x1) * 0.5, DECK_Y + 0.12, (pool_z0 + pool_z1) * 0.5))
+	_tag_roof_shape(kit, "SkyParkPoolStoneBase")
 	kit.box(Looks.get_mat("pool_water"), Vector3((pool_x0 + pool_x1) * 0.5, DECK_Y + 0.26, (pool_z0 + pool_z1) * 0.5), Vector3(pool_x1 - pool_x0, 0.06, pool_z1 - pool_z0))
 	# Sun-lounger rows beside the pool.
 	var lounger := Looks.get_mat("steel_white")
@@ -184,10 +214,11 @@ func _skypark(kit: Kit, holder: Node3D) -> void:
 		var px := m.x + dx
 		kit.box(Looks.get_mat("glass_dark"), Vector3(px, DECK_Y + 2.0, zc - 2.0), Vector3(24.0, 4.0, 8.0))
 		kit.box(Looks.get_mat("steel_white"), Vector3(px, DECK_Y + 4.2, zc - 2.0), Vector3(27.0, 0.4, 10.5))
+		kit.col_box(Vector3(24.0, 4.0, 8.0), Vector3(px, DECK_Y + 2.0, zc - 2.0))
+		_tag_roof_shape(kit, "SkyParkPavilionBody_%.0f" % dx)
+		kit.col_box(Vector3(27.0, 0.4, 10.5), Vector3(px, DECK_Y + 4.2, zc - 2.0))
+		_tag_roof_shape(kit, "SkyParkPavilionRoof_%.0f" % dx)
 	Realm.glb_multimesh(holder, "MBSSkyParkPalms", "palm.glb", palm_x, false, 1400.0)
-	# Landable deck for the helicopter (pad itself stays reserved; plan section 10).
-	var hx: float = m.x + (HULL_X[0] + HULL_X[1]) * 0.5
-	kit.col_box(Vector3(HULL_X[1] - HULL_X[0] - 20.0, 8.0, 30.0), Vector3(hx + 10.0, DECK_Y - 4.0, zc))
 
 # ------------------------------------------------------------------ Shoppes
 func _podium(kit: Kit, holder: Node3D) -> void:
@@ -196,6 +227,7 @@ func _podium(kit: Kit, holder: Node3D) -> void:
 	var zf := m.z + FACADE_Z
 	var zb := m.z + PODIUM_BACK_Z
 	var top := 16.0
+	var roof_faces := PackedVector3Array()
 	var concrete := Looks.get_mat("concrete_fair")
 	var white := Looks.get_mat("steel_white")
 	var satin := Looks.get_mat("steel_satin")
@@ -235,6 +267,8 @@ func _podium(kit: Kit, holder: Node3D) -> void:
 		kit.cyl(white, Vector3(cx, TERRACE_Y, zc), 0.55, 0.42, top - TERRACE_Y, 10, false)
 		cx += 18.0
 	kit.box(white, Vector3(xc, top + 0.7, (zb + zf + 9.0) * 0.5), Vector3(lx + 4.0, 1.4, zf + 9.0 - zb))
+	kit.col_box(Vector3(lx + 4.0, 1.4, zf + 9.0 - zb), Vector3(xc, top + 0.7, (zb + zf + 9.0) * 0.5))
+	_tag_roof_shape(kit, "ShoppesStructuralCanopy")
 	kit.box(Looks.get_mat("soffit"), Vector3(xc, top - 0.02, (zb + zf + 9.0) * 0.5), Vector3(lx + 3.6, 0.04, zf + 9.0 - zb - 0.4))
 	var sx2 := x0 + 3.0
 	while sx2 < x1 - 2.0:
@@ -268,8 +302,13 @@ func _podium(kit: Kit, holder: Node3D) -> void:
 		kit.loft(shell, [ra, rb], false, true)
 		kit.loft(Looks.get_mat("steel_dark"), [ra_rev, rb_rev], false, true)
 		for k in steps:
+			roof_faces.append_array(_roof_quad(ra[k], ra[k + 1], rb[k + 1], rb[k]))
 			kit.tri(Looks.get_mat("glass_dark"), Vector3(arc[k].x, base, zf + 6.0), Vector3(arc[k + 1].x, arc[k + 1].y, zf + 6.0), Vector3(arc[k].x, arc[k].y, zf + 6.0))
 			kit.tri(Looks.get_mat("glass_dark"), Vector3(arc[k].x, base, zf + 6.0), Vector3(arc[k + 1].x, base, zf + 6.0), Vector3(arc[k + 1].x, arc[k + 1].y, zf + 6.0))
+			roof_faces.append_array(_roof_tri(Vector3(arc[k].x, base, zf + 6.0), Vector3(arc[k + 1].x, arc[k + 1].y, zf + 6.0), Vector3(arc[k].x, arc[k].y, zf + 6.0)))
+			roof_faces.append_array(_roof_tri(Vector3(arc[k].x, base, zf + 6.0), Vector3(arc[k + 1].x, base, zf + 6.0), Vector3(arc[k + 1].x, arc[k + 1].y, zf + 6.0)))
+	kit.col_trimesh(roof_faces)
+	_tag_roof_shape(kit, "ShoppesStructuralWaveRoof")
 	# Entrances on the tower axes: recessed portals, revolving doors, signs.
 	for dx: float in TOWER_DX:
 		var ex := m.x + dx

@@ -725,6 +725,19 @@ func _aviation_block(centre: Vector3) -> void:
 	hangar_roof.material_override = Palette.corrugated(Palette.METAL_DARK.lightened(0.25), 0.7)
 	hangar_roof.position = centre + Vector3(-30.0, 13.5, -20.0)
 	_world_root.add_child(hangar_roof)
+	# The pitched visible roof rises three metres above the old box support.
+	# Use the primitive's own vertices rather than a raised rectangular volume.
+	var hangar_roof_body := StaticBody3D.new()
+	hangar_roof_body.name = "AviationHangarRoofCollision"
+	hangar_roof_body.collision_layer = 1
+	hangar_roof_body.collision_mask = 0
+	hangar_roof_body.transform = hangar_roof.transform
+	var hangar_roof_shape := CollisionShape3D.new()
+	hangar_roof_shape.name = "HangarPrismRoof"
+	hangar_roof_shape.shape = prism.create_convex_shape()
+	hangar_roof_shape.set_meta("roof_support_kind", "HangarPrismRoof")
+	hangar_roof_body.add_child(hangar_roof_shape)
+	_world_root.add_child(hangar_roof_body)
 	_box(Vector3(14.0, 9.0, 0.2), centre + Vector3(-30.0, 4.5, -8.1), Palette.mat(Palette.METAL_DARK, 0.5, 0.5))
 	var hsign := _label3d("AIR SERVICE", centre + Vector3(-30.0, 11.0, -7.9))
 	hsign.font_size = 48

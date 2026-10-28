@@ -27,6 +27,11 @@ var _deck: Array = []        # [Transform3D, Color]
 var _parts := {}             # part name -> Array[Transform3D]
 var _rng := RandomNumberGenerator.new()
 var roofs := 0
+## Solid structural parts share their exact rendered instance transforms.
+## Grilles, thin solar panels, foliage and narrow antenna/vent details do
+## not become invented landing platforms.
+const SUPPORT_BOX_PARTS := ["parapet", "housing", "housing_roof", "stand", "condenser", "duct", "planter", "skylight"]
+const SUPPORT_CYL_PARTS := ["cooling", "tank"]
 
 func _init(seed_value: int = 5501) -> void:
 	_rng.seed = seed_value
@@ -151,15 +156,21 @@ func build(parent: Node3D) -> void:
 		unit.size = Vector3.ONE
 		mm.mesh = unit
 		mm.instance_count = _deck.size()
+		var deck_xforms: Array[Transform3D] = []
 		for i in _deck.size():
 			mm.set_instance_transform(i, _deck[i][0])
 			mm.set_instance_color(i, _deck[i][1])
+			deck_xforms.append(_deck[i][0])
 		var mat := ShaderMaterial.new()
 		mat.shader = load(DECK_SHADER)
 		var mmi := MultiMeshInstance3D.new()
 		mmi.name = "RoofKit_deck"
 		mmi.multimesh = mm
 		mmi.material_override = mat
+		# The headless dummy renderer cannot read MultiMesh buffers back.
+		# Retain exactly the values submitted above for native-physics QA;
+		# rendered QA additionally compares the real buffer with this receipt.
+		mmi.set_meta("roof_instance_transforms", deck_xforms)
 		parent.add_child(mmi)
 	var looks := {
 		"parapet": [_box(), Palette.mat_textured(Color(0.66, 0.64, 0.60), "concrete", Vector3.ONE, 0.9)],
@@ -191,9 +202,61 @@ func build(parent: Node3D) -> void:
 		inst.name = "RoofKit_%s" % part
 		inst.multimesh = mm2
 		inst.material_override = looks[part][1]
+		inst.set_meta("roof_instance_transforms", xforms.duplicate())
 		if part in ["fan", "door", "solar", "skylight", "shrub", "mast"]:
 			inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		parent.add_child(inst)
+	_build_structural_collision(parent, looks)
+
+func _support_box(body: StaticBody3D, xf: Transform3D, label: String, part: String, index: int) -> void:
+	var shape := BoxShape3D.new()
+	shape.size = xf.basis.get_scale()
+	var node := CollisionShape3D.new()
+	node.name = label
+	node.shape = shape
+	# Shape dimensions carry scale; the collision node keeps an orthonormal
+	# basis, avoiding nonuniform CollisionShape3D scaling warnings/behaviour.
+	node.transform = Transform3D(xf.basis.orthonormalized(), xf.origin)
+	node.set_meta("roof_support_kind", part)
+	node.set_meta("render_instance_index", index)
+	node.set_meta("render_instance_transform", xf)
+	body.add_child(node)
+
+func _support_polygon(body: StaticBody3D, mesh: Mesh, xf: Transform3D, label: String, part: String, index: int) -> void:
+	# The cylinders are visibly 12-sided. Their transformed render vertices
+	# define the convex support rather than a wider smooth cylinder or box.
+	var points := PackedVector3Array()
+	for point: Vector3 in mesh.get_faces():
+		points.append(xf.basis * point)
+	var shape := ConvexPolygonShape3D.new()
+	shape.points = points
+	var node := CollisionShape3D.new()
+	node.name = label
+	node.shape = shape
+	node.position = xf.origin
+	node.set_meta("roof_support_kind", part)
+	node.set_meta("render_instance_index", index)
+	node.set_meta("render_instance_transform", xf)
+	body.add_child(node)
+
+func _build_structural_collision(parent: Node3D, looks: Dictionary) -> void:
+	var body := StaticBody3D.new()
+	body.name = "RoofKitStructuralCollision"
+	body.collision_layer = 1
+	body.collision_mask = 0
+	body.add_to_group("roof_structural_support")
+	parent.add_child(body)
+	for i in _deck.size():
+		_support_box(body, _deck[i][0], "Membrane_%d" % i, "deck", i)
+	for part: String in SUPPORT_BOX_PARTS:
+		var transforms: Array = _parts.get(part, [])
+		for i in transforms.size():
+			_support_box(body, transforms[i], "%s_%d" % [part, i], part, i)
+	for part: String in SUPPORT_CYL_PARTS:
+		var transforms: Array = _parts.get(part, [])
+		for i in transforms.size():
+			_support_polygon(body, looks[part][0], transforms[i], "%s_%d" % [part, i], part, i)
+	body.set_meta("structural_shape_count", body.get_child_count())
 
 ## Tinted copies of a Palette facade sheet, so a block of mid-block buildings
 ## does not read as one white estate from the air. A handful of shared
