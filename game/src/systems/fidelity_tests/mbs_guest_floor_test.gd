@@ -24,6 +24,9 @@ var native_e_doors:Array[String]=[]
 var motion_trace:Array[Dictionary]=[]
 var walk_target:=Vector3.ZERO
 var walk_stage:=""
+var walk_phase:=""
+var gait_records:Array[Dictionary]=[]
+var public_sprint_leg:=false
 var lift_monitor:=false
 var lift_previous:=Vector3.ZERO
 var lift_peak_residual:=0.0
@@ -73,7 +76,7 @@ func _physics_process(delta:float)->void:
 		if lift_trace.size()>12:lift_trace.pop_front()
 		lift_previous=p
 	if Engine.get_physics_frames()%6==0:
-		motion_trace.append({"tick":Engine.get_physics_frames(),"stage":walk_stage,"position":p,"target":walk_target,"yaw":player.yaw,"velocity":player.velocity,"floor":player.is_on_floor(),"forward":Input.get_action_strength("move_forward"),"sprint":Input.get_action_strength("sprint"),"controller":player.get_meta("_qa_motion_state",{}).duplicate(true)})
+		motion_trace.append({"tick":Engine.get_physics_frames(),"stage":walk_stage,"phase":walk_phase,"position":p,"target":walk_target,"yaw":player.yaw,"velocity":player.velocity,"floor":player.is_on_floor(),"forward":Input.get_action_strength("move_forward"),"sprint":Input.get_action_strength("sprint"),"controller":player.get_meta("_qa_motion_state",{}).duplicate(true)})
 		if motion_trace.size()>12:motion_trace.pop_front()
 
 func ray(a:Vector3,b:Vector3)->Dictionary:
@@ -125,6 +128,55 @@ func capsule_clear(a:Vector3,b:Vector3,diagnostic_label:String="")->bool:
 		var blocked:Array[Dictionary]=get_world_3d().direct_space_state.intersect_shape(query,16)
 		print("[mbs-guest-floor] CAPSULE_SWEEP_BLOCK ",JSON.stringify({"label":diagnostic_label,"from":a,"to":b,"fraction":fraction,"sample_transform":query.transform,"hits":hit_details(blocked)}))
 	return clear
+
+## Native non-mutating diagnostics: these query the production body RID and
+## its real shapes at a supplied pose. No actor/collider transform is assigned.
+func native_motion_diagnostic(label:String,pose:Transform3D,motion:Vector3)->Dictionary:
+	var parameters:=PhysicsTestMotionParameters3D.new()
+	parameters.from=pose
+	parameters.motion=motion
+	parameters.margin=player.safe_margin
+	parameters.max_collisions=16
+	parameters.recovery_as_collision=false
+	var result:=PhysicsTestMotionResult3D.new()
+	var blocked:=PhysicsServer3D.body_test_motion(player.get_rid(),parameters,result)
+	var contacts:Array[Dictionary]=[]
+	for index in result.get_collision_count():
+		var body:=result.get_collider(index) as CollisionObject3D
+		var shape_index:=result.get_collider_shape(index)
+		var detail:Dictionary={"collider_id":result.get_collider_id(index),"collider_shape_index":shape_index,"local_shape_index":result.get_collision_local_shape(index),"normal":result.get_collision_normal(index),"point":result.get_collision_point(index),"depth_m":result.get_collision_depth(index)}
+		if body!=null:
+			detail.merge(body_pose(body))
+			var shape_owner:Node3D=body.shape_owner_get_owner(body.shape_find_owner(shape_index)) as Node3D
+			if shape_owner!=null:
+				detail["shape_name"]=String(shape_owner.name)
+				detail["shape_global_transform"]=shape_owner.global_transform
+				if shape_owner is CollisionShape3D and (shape_owner as CollisionShape3D).shape is BoxShape3D:
+					detail["box_size"]=((shape_owner as CollisionShape3D).shape as BoxShape3D).size
+		contacts.append(detail)
+	# Shape overlap supplements body-test recovery/floor contacts with ALL
+	# nearby actual colliders, using the unchanged stricter QA query margin.
+	var query:=PhysicsShapeQueryParameters3D.new()
+	query.shape=capsule
+	query.transform=pose*capsule_transform
+	query.collision_mask=mask
+	query.margin=maxf(.01,player.safe_margin)
+	query.exclude=[player.get_rid()]
+	var overlaps:=get_world_3d().direct_space_state.intersect_shape(query,32)
+	var snapshot:Dictionary={"label":label,"pose":pose,"motion":motion,"body_safe_margin_m":parameters.margin,"body_blocked":blocked,"safe_fraction":result.get_collision_safe_fraction(),"unsafe_fraction":result.get_collision_unsafe_fraction(),"travel":result.get_travel(),"remainder":result.get_remainder(),"native_contacts":contacts,"capsule_shape":capsule.get_class(),"capsule_transform":capsule_transform,"strict_query_margin_m":query.margin,"overlap_shapes":hit_details(overlaps),"actor_pose_unchanged":player.global_transform}
+	print("[mbs-guest-floor] NATIVE_MOTION_DIAGNOSTIC ",JSON.stringify(snapshot))
+	return snapshot
+
+func retained_west_entry_probe()->void:
+	# Exact failed R7 pose/request, not a setup relocation. Capsule symmetry
+	# makes current yaw irrelevant to its footprint; no body pose is changed.
+	var before:=player.global_transform
+	var pose:=player.global_transform
+	pose.origin=Vector3(-18.69701,-.024059,6.215035)
+	native_motion_diagnostic("retained R7 west:1 stop/request",pose,Vector3(-2.775994,-.5,6.207565)/float(Engine.physics_ticks_per_second))
+	var horizontal_target:=Vector3(-19.27164,pose.origin.y,7.5)
+	native_motion_diagnostic("retained R7 west:1 stop/target-horizontal",pose,(horizontal_target-pose.origin).normalized()*.15)
+	check("retained failure native probes never relocate actor",player.global_transform.is_equal_approx(before))
 
 func door_snapshot(door:Node3D)->Dictionary:
 	var detail:=body_pose(door as CollisionObject3D)
@@ -275,6 +327,7 @@ func fixture(id:String,unit_id:String,variant:String)->bool:
 			check("closed bedroom door blocks actual capsule "+bedroom_id,not capsule_clear(candidate.to_global(bedroom.door_approach),candidate.to_global(bedroom.door_inside)))
 			if not await native_e(bedroom_id):return false
 			check("opened bedroom door clears actual capsule "+bedroom_id,capsule_clear(candidate.to_global(bedroom.door_approach),candidate.to_global(bedroom.door_inside),"opened bedroomdoor "+bedroom_id))
+			if bedroom_id=="R-T2-L41-02-bedroom-1":retained_west_entry_probe()
 			# Door now aligns with the clear bed/window aisle. Travel in and
 			# out along that corridor, without a sprint-speed 0.3m lateral jog.
 			var bedroom_route:Array[Vector3]=[bedroom.door_inside,bedroom.window,bedroom.door_inside,bedroom.door_approach,bedroom.living_gallery]
@@ -352,7 +405,17 @@ func blocked_e(id:String)->bool:
 	await frames(3)
 	var invisible:bool=not player._interaction_visible(door) and player._interaction_target()!=door
 	check("production LOS excludes occluded exact door "+id,invisible)
-	Input.action_press("interact");await frames(6);Input.action_release("interact");await frames(5)
+	Input.action_release("interact")
+	await get_tree().process_frame
+	await get_tree().process_frame
+	Input.action_press("interact")
+	await frames(6)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	Input.action_release("interact")
+	await frames(5)
+	await get_tree().process_frame
+	await get_tree().process_frame
 	var remained_closed:bool=not bool(door.get("opened"))
 	check("native E cannot open through obstruction "+id,remained_closed)
 	blocker.queue_free();await frames(3)
@@ -363,6 +426,8 @@ func native_e(id:String,request_only:bool=false)->bool:
 	if not check("production door adapter exists "+id,door!=null and door.is_in_group("interactables") and door.has_method("interact") and not String(door.get("prompt_text")).is_empty()):return false
 	Input.action_release("interact")
 	await frames(12)
+	await get_tree().process_frame
+	await get_tree().process_frame
 	if not check("native interaction selects exact door "+id,player._interaction_target()==door):return false
 	if not check("production LOS permits door "+id,player._interaction_visible(door)):return false
 	var was_open:bool=door.get("opened")
@@ -373,10 +438,20 @@ func native_e(id:String,request_only:bool=false)->bool:
 		lift_previous=before
 		lift_peak_residual=0;lift_peak_step=0;lift_sample_count=0
 		lift_input_clear=true;lift_trace.clear()
+	var press_process_frame:=Engine.get_process_frames()
 	Input.action_press("interact")
 	await frames(6)
+	# Player polls held interact in _process, not _physics_process. Physics
+	# catch-up alone can consume six ticks without a polling opportunity.
+	await get_tree().process_frame
+	await get_tree().process_frame
+	var held_process_frames:=Engine.get_process_frames()-press_process_frame
 	Input.action_release("interact")
 	await frames(5)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	print("[mbs-guest-floor] NATIVE_E_PROCESS_WINDOW ",JSON.stringify({"door_id":id,"held_process_frames":held_process_frames,"armed_after":player.get("_press_armed"),"transition_requests":transition_calls.get(id,0),"opened":door.get("opened")}))
+	if not check("held native E spans production process polling "+id,held_process_frames>=2):return false
 	var ok:bool
 	if request_only:
 		ok=int(transition_calls.get(id,0))==requests+1 and not bool(door.get("opened")) and player.global_position.distance_to(before)<.02
@@ -408,24 +483,97 @@ func walk_public_to(target_local:Vector3,wing:String)->bool:
 	for waypoint:Vector3 in route:
 		walk_stage="public/"+wing+"/"+str(waypoint)
 		if not check("full capsule clears public corridor segment",capsule_clear(candidate.to_global(previous_local),candidate.to_global(waypoint),"public corridor/endbay")):return false
-		if not await walk_to(candidate.to_global(waypoint),.18):return false
+		public_sprint_leg=true
+		var walked:bool=await walk_to(candidate.to_global(waypoint),.18)
+		public_sprint_leg=false
+		if not walked:return false
 		previous_local=waypoint
 	return true
 
+func release_motion_input()->void:
+	for action:String in ["move_forward","move_back","move_left","move_right","sprint","walk","jump"]:
+		Input.action_release(action)
+
+func settle_native_motion(label:String)->bool:
+	release_motion_input()
+	walk_phase="settle/"+label
+	var started:=Time.get_ticks_msec()
+	var quiet_frames:=0
+	# Releasing native inputs invokes the production braking/stop animation.
+	# Never assign actor position/velocity, heading, speed or controller state.
+	while Time.get_ticks_msec()-started<2500:
+		await get_tree().physics_frame
+		var horizontal:=Vector2(player.velocity.x,player.velocity.z).length()
+		if horizontal<.05:
+			quiet_frames+=1
+			if quiet_frames>=3:return true
+		else:quiet_frames=0
+	return check("native locomotion settles with released input "+label,false,str(player.velocity))
+
 func walk_to(target:Vector3,radius:float)->bool:
+	var allow_sprint:bool=public_sprint_leg
 	walk_target=target
+	if not await settle_native_motion("before leg"):return false
+	var turn_started:=Time.get_ticks_msec()
+	walk_phase="stopped-camera-turn"
+	while Time.get_ticks_msec()-turn_started<2000:
+		var direction:=target-player.global_position
+		if Vector2(direction.x,direction.z).length()<=radius:break
+		var desired:=atan2(-direction.x,-direction.z)
+		player.yaw=lerp_angle(player.yaw,desired,.24)
+		if absf(wrapf(player.yaw-desired,-PI,PI))<.01:break
+		await get_tree().physics_frame
+	var turn_delta:=target-player.global_position
+	if Vector2(turn_delta.x,turn_delta.z).length()>radius:
+		if not check("camera aligned while stopped",absf(wrapf(player.yaw-atan2(-turn_delta.x,-turn_delta.z),-PI,PI))<.01):return false
 	var started_tick:=Time.get_ticks_msec()
 	var start_position:=player.global_position
 	var initial:=player.global_position.distance_to(target)
-	var deadline:=Time.get_ticks_msec()+int((initial/4.5+12.0)*1000.0)
+	# Long public corridor legs may sprint; constrained room/stair legs use
+	# the real WALK action (1.5m/s), with the unchanged arrival radii.
+	var nominal_speed:float=Player.SPRINT_SPEED if allow_sprint else Player.WALK_SPEED
+	var deadline:=started_tick+int((initial/nominal_speed+12.0)*1000.0)
+	var braking:=false
 	while player.global_position.distance_to(target)>radius and Time.get_ticks_msec()<deadline:
 		await get_tree().physics_frame
 		var d:=target-player.global_position
+		var remaining:=Vector2(d.x,d.z).length()
+		var speed:=Vector2(player.velocity.x,player.velocity.z).length()
+		var stopping_distance:=speed*speed/(2.0*Player.DECEL)+speed/float(Engine.physics_ticks_per_second)
+		if braking:
+			if speed<.05:
+				if player.global_position.distance_to(target)<=radius:break
+				braking=false
+			else:continue
+		if remaining<=radius+stopping_distance and speed>.10:
+			release_motion_input()
+			walk_phase="native-braking"
+			braking=true
+			continue
 		player.yaw=lerp_angle(player.yaw,atan2(-d.x,-d.z),.20)
 		Input.action_press("move_forward")
-		Input.action_press("sprint")
+		# Sprint has no tight corner/reversal mandate. It is reserved for
+		# a straight public leg, returning to walk well before the target.
+		if allow_sprint and remaining>4.0:
+			Input.action_release("walk");Input.action_press("sprint")
+			walk_phase="public-straight-sprint"
+		else:
+			Input.action_release("sprint");Input.action_press("walk")
+			walk_phase="constrained-native-walk"
+	if player.global_position.distance_to(target)>radius and Time.get_ticks_msec()>=deadline:
+		var requested_velocity:Vector3=player.get_meta("_qa_motion_state",{}).get("requested",player.velocity)
+		native_motion_diagnostic("timeout before releasing actual requested step",player.global_transform,requested_velocity/float(Engine.physics_ticks_per_second))
+		print("[mbs-guest-floor] PRE_SETTLE_TIMEOUT ",JSON.stringify({"stage":walk_stage,"phase":walk_phase,"pose":player.global_transform,"target":target,"velocity":player.velocity,"requested_velocity":requested_velocity,"controller":player.get_meta("_qa_motion_state",{}),"recent":motion_trace}))
+	if not await settle_native_motion("at leg end"):return false
 	var ok:=player.global_position.distance_to(target)<=radius+.08
+	gait_records.append({"stage":walk_stage,"allow_public_sprint":allow_sprint,"nominal_speed_mps":nominal_speed,"start":start_position,"end":player.global_position,"target":target,"arrival_radius_m":radius,"distance_after_native_settle_m":player.global_position.distance_to(target),"elapsed_s":float(Time.get_ticks_msec()-started_tick)/1000.0,"actor_or_velocity_assigned":false})
 	if not ok:
+		var probe_motion:=player.velocity/float(Engine.physics_ticks_per_second)
+		native_motion_diagnostic("actual failed walk requested step",player.global_transform,probe_motion)
+		var target_step:=target-player.global_position
+		target_step.y=0.0
+		if target_step.length()>.15:target_step=target_step.normalized()*.15
+		native_motion_diagnostic("actual failed walk toward target",player.global_transform,target_step)
 		var contacts:Array[Dictionary]=[]
 		for index in player.get_slide_collision_count():
 			var contact:=player.get_slide_collision(index)
@@ -436,10 +584,9 @@ func walk_to(target:Vector3,radius:float)->bool:
 		for id:String in candidate.doors:
 			var door:Node3D=candidate.doors[id]
 			if door.global_position.distance_to(player.global_position)<3.0:nearby_doors.append(door_snapshot(door))
-		print("[mbs-guest-floor] MOTION_INPUT_TRACE ",JSON.stringify({"stage":walk_stage,"player":player.global_position,"target":target,"leg":{"initial_distance_m":initial,"remaining_distance_m":player.global_position.distance_to(target),"elapsed_s":float(Time.get_ticks_msec()-started_tick)/1000.0,"budget_s":float(deadline-started_tick)/1000.0,"displacement_m":player.global_position.distance_to(start_position)},"busy":player.busy,"alive":player.alive,"paused":Game.simulation_paused,"mode":Game.mode,"input":{"forward":Input.get_action_strength("move_forward"),"back":Input.get_action_strength("move_back"),"left":Input.get_action_strength("move_left"),"right":Input.get_action_strength("move_right"),"sprint":Input.get_action_strength("sprint")},"velocity":player.velocity,"controller":player.get_meta("_qa_motion_state",{}),"last_samples":motion_trace,"nearby_doors":nearby_doors}))
+		print("[mbs-guest-floor] MOTION_INPUT_TRACE ",JSON.stringify({"stage":walk_stage,"phase":walk_phase,"player":player.global_position,"target":target,"leg":{"initial_distance_m":initial,"remaining_distance_m":player.global_position.distance_to(target),"elapsed_s":float(Time.get_ticks_msec()-started_tick)/1000.0,"budget_s":float(deadline-started_tick)/1000.0,"displacement_m":player.global_position.distance_to(start_position)},"busy":player.busy,"alive":player.alive,"paused":Game.simulation_paused,"mode":Game.mode,"input":{"forward":Input.get_action_strength("move_forward"),"back":Input.get_action_strength("move_back"),"left":Input.get_action_strength("move_left"),"right":Input.get_action_strength("move_right"),"sprint":Input.get_action_strength("sprint")},"velocity":player.velocity,"controller":player.get_meta("_qa_motion_state",{}),"last_samples":motion_trace,"nearby_doors":nearby_doors}))
 		check("continuous productionPlayer walking",false,"at%s target%s contacts%s"%[player.global_position,target,contacts])
-	Input.action_release("move_forward");Input.action_release("sprint")
-	await frames(2)
+	walk_phase="idle"
 	return ok
 
 func still(label:String)->void:
@@ -463,9 +610,9 @@ func _light_fixture()->void:
 func finish()->void:
 	if finished:return
 	finished=true;tracking=false;lift_monitor=false
-	for action:String in ["move_forward","move_back","move_left","move_right","sprint","jump","interact"]:Input.action_release(action)
+	for action:String in ["move_forward","move_back","move_left","move_right","sprint","walk","jump","interact"]:Input.action_release(action)
 	var variants_exercised:Array[String]=[]
 	for item:Dictionary in fixture_results:
 		if not variants_exercised.has(item.variant):variants_exercised.append(item.variant)
-	print("[mbs-guest-floor] RESULT ",JSON.stringify({"variants_exercised":variants_exercised,"full_suite_variant_matrix_exercised":variants_exercised.size()==6,"required_suite_variants":["east:1","west:1","east:2","west:2","east:3","west:3"],"native_e_doors":native_e_doors,"checks":checks,"failures":failures,"fixtures":fixture_results,"all1850rooms_physically_tested":false,"full_building_completed":false,"current_private_asbuilt_verified":false}))
+	print("[mbs-guest-floor] RESULT ",JSON.stringify({"variants_exercised":variants_exercised,"full_suite_variant_matrix_exercised":variants_exercised.size()==6,"required_suite_variants":["east:1","west:1","east:2","west:2","east:3","west:3"],"native_e_doors":native_e_doors,"checks":checks,"failures":failures,"fixtures":fixture_results,"gait_policy":"stop-settle/turn-in-place/native-walk; sprint only explicit straight public legs","gait_records":gait_records,"all1850rooms_physically_tested":false,"full_building_completed":false,"current_private_asbuilt_verified":false}))
 	Sfx.shutdown_audio();get_tree().quit(0 if failures.is_empty() else 1)

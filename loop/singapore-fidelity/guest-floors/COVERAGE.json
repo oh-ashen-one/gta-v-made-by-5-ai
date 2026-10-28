@@ -1,5 +1,5 @@
 {
-  "source_status": "FROZEN_FOR_PARENT_COMPILE_CRITIQUE_AND_RUNTIME",
+  "source_status": "FROZEN_R8_QA_ONLY_PENDING_PARENT_COMMIT_AND_NATIVE_RUN",
   "worker_engines": 0,
   "worker_gpu": 0,
   "worker_git_mutations": 0,
@@ -15,7 +15,7 @@
     "game/data/mbs-interior/inventory.json": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
     "game/src/world/mbs_interior/inventory.gd": "470bfe6da66fc4a510f2fbb683d245b046c3593c9d7157c9c0d8d9b6347905eb",
     "game/src/world/mbs_interior/guest_floor.gd": "46d1e71ff6870dab9efaf1c6f04ecc643d5ff761b556391aa61ef9dfebc37849",
-    "game/src/systems/fidelity_tests/mbs_guest_floor_test.gd": "262ca361fbaaa1acc9cb984d2fa9fc4eda6c55a47fb43ae9ae337e2ca2ae8ca4",
+    "game/src/systems/fidelity_tests/mbs_guest_floor_test.gd": "feae3f82bd426d781e910092450f7e282fb9ef9509394048ec71b97c72dacb4b",
     "game/src/systems/fidelity_tests/mbs_guest_floor_test.tscn": "cae05541416df9e43c8bc7e23cef03b64ec63f6259e29e610bf43791419df280"
   },
   "production_interaction_adapter": "interactables + interact(actor) + can_interact + prompt_text; leaf-centre collision origin and production LOS",
@@ -66,6 +66,13 @@
       "failure": "west1 short lateral bedroom return dogleg reached left-front pier",
       "east1_fixture_completed_in_same_matrix": true,
       "full_matrix_acceptance": false
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-guest-west1-r1/run.log",
+      "source_commit": "fd33dd5",
+      "failure": "west:1 first bedroom-entry sprint arc drifted outside planned doorway approach; exact shape diagnostic pending",
+      "checks": 1006,
+      "runtime_acceptance": false
     }
   ],
   "door_pose_correction": "Independent angle integration and one complete Transform3D submission; physics sync/collision preserved; fresh runtime pending",
@@ -87,5 +94,8 @@
     "short_lateral_return_waypoint_removed": true,
     "native_E_and_arrival_thresholds_unchanged": true,
     "runtime_verified": false
-  }
+  },
+  "current_revision_runtime_verified": false,
+  "latest_revision": "R8_QA_GAIT_NATIVE_SWEEP_ONLY",
+  "gait_diagnostic": "GAIT_DIAGNOSTIC_R8.json"
 }

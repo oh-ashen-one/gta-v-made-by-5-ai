@@ -1,0 +1,66 @@
+{
+  "revision": "R8_QA_GAIT_NATIVE_SWEEP_ONLY",
+  "status": "FROZEN_PENDING_PARENT_COMMIT_AND_NATIVE_RUN",
+  "retained_failure": "/private/tmp/singapore-fidelity/mbs-guest-west1-r1/run.log",
+  "retained_source_commit": "fd33dd5",
+  "retained_native_checks": 1006,
+  "retained_failed_stage": "R-T2-L41-02-bedroom-1/route_segment_0",
+  "actual_entry_from_m": [
+    -18.10734,
+    -0.02416,
+    5.835666
+  ],
+  "planned_approach_m": [
+    -19.27164,
+    0,
+    6.0
+  ],
+  "stopped_actor_m": [
+    -18.69701,
+    -0.024059,
+    6.215035
+  ],
+  "target_m": [
+    -19.27164,
+    0,
+    7.5
+  ],
+  "front_wall_plane_z_m": 6.65,
+  "wall_half_thickness_m": 0.075,
+  "capsule_radius_m": 0.36,
+  "predicted_wall_contact_z_m": 6.215,
+  "analytic_limit": "Position matches front-pier face; floor-only slide contacts do NOT prove exact hit shape. Native body_test_motion and actual-capsule overlap reports added before further geometry changes.",
+  "production_geometry_changes": false,
+  "player_controller_changes": false,
+  "actor_position_or_velocity_assignment_during_traversal": false,
+  "native_gait_policy": {
+    "constrained_room_stair_legs": "release inputs; bounded native velocity settle; camera turn stopped; W + production WALK; release/brake natively",
+    "public_legs": "explicit long straight public route only may sprint; returns to native walk before target",
+    "arrival_radii": "unchanged",
+    "capsule_radius_m": 0.36,
+    "capsule_height_m": 1.75,
+    "capsule_center_y_m": 0.9,
+    "strict_query_margin_m": 0.01,
+    "bed_width_m": 1.95
+  },
+  "new_native_measurements_pending": [
+    "exact retained-R7 stopped-pose collision shape IDs/transforms by body_test_motion (no actor relocation)",
+    "strict actual-capsule overlap shape IDs at retained pose",
+    "fresh actual walk timeout requested motion/body sweep before input release",
+    "selected west:1 continuous native walking and six E paths"
+  ],
+  "native_E_window": "release and held action each span at least two process boundaries, because production Player polls _process; exact target/LOS/state/physical-angle gates unchanged",
+  "code_only_runtime_pass": false,
+  "all_variant_matrix_pass": false,
+  "all1850_rooms_runtime_verified": false,
+  "full_building_completed": false,
+  "source_sha256": {
+    "game/src/systems/fidelity_tests/mbs_guest_floor_test.gd": "feae3f82bd426d781e910092450f7e282fb9ef9509394048ec71b97c72dacb4b",
+    "game/src/world/mbs_interior/guest_floor.gd": "46d1e71ff6870dab9efaf1c6f04ecc643d5ff761b556391aa61ef9dfebc37849"
+  },
+  "primary_API_docs": [
+    "https://docs.godotengine.org/en/stable/classes/class_physicstestmotionparameters3d.html",
+    "https://docs.godotengine.org/en/stable/classes/class_physicstestmotionresult3d.html",
+    "https://docs.godotengine.org/en/stable/classes/class_physicsserver3d.html"
+  ]
+}
