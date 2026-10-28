@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-10-28T22:19:39.316954+00:00",
+  "updated_utc": "2026-10-28T22:26:29.094485+00:00",
   "branch": "Astra-6-singapore-fidelity",
   "goal_status": "active; full source-world/bootstrap and full MBS assembly remain incomplete",
   "owner_decisions": "No private plans. Owner explicitly delegates all routine/creative decisions and prohibits more implementation questions. Complete coherent undocumented private interiors, match documented public facts and disclose reconstruction.",
@@ -17,12 +17,13 @@
     "source_data_loader": "29/29",
     "public_atrium": "187 headless +191 rendered physics/image gates, translated fixture; visual FAILS and normal city entry not integrated",
     "roof_support": "85 headless +103 rendered, 247 membrane/housing transform agreement0error; source/frame review pending",
-    "source_frame": "R3 math/cache/guard456/456, cleanengine; source review pending; no actor rebasing yet",
+    "source_frame": "R3 456/456 clean; independent review closed both cache-epoch and leaf-guard P2s. Pure component only.",
     "sky": "A/B40 acquisition checks, candidatepreferred in all3upward blindpairs, ground/horizon ties; overallsky not finished",
     "coast": "14 tests + independent full source audit; 64 coast-enclosed features; not dryland/elevation"
   },
-  "current_work": "Guest-floor builder repairing nativeE/bedroom-clearance P2s; roof and frame critics re-review. Other completed modules frozen. Use collaboration.list_agents for live states.",
+  "current_work": "Rooftop builder now fixing separate downtown/roofs.gd membrane/penthouse family; previous103 rendered proof remains scoped. Guest builder correcting native E adapters/LOS and all suite bedroom routes. Root must implement SourceWorldContext/domain/save/bootstrap after these components; no source-world city integration yet.",
   "next_primary_integration": "SourceWorldContext/frame/domain/save then one geometry authority and national-capable streaming. Remove old coordinate/basement death assumptions, preserve node IDs and traffic budgets, integrate whole MBS site/exterior+floor stack+physical cabins/stairs/programs, then normal bridge-to-hotel route.",
   "public_visual_next": "Tall planted composition and pale stone floor/reception/wayfinding/entrance details; public module remains below exterior quality.",
-  "safety": "Root runs one task engine at a time through current GPU slot, private lock, render_gate, capped60/30STREAMING; no main merge/public release/new purchases/permission bypass/foreign control."
+  "safety": "Root runs one task engine at a time through current GPU slot, private lock, render_gate, capped60/30STREAMING; no main merge/public release/new purchases/permission bypass/foreign control.",
+  "publication_checkpoint": "62e3ae8 pushed; later roof-family/guest-floor work is active and not yet verified or committed."
 }

@@ -56,3 +56,7 @@ Actual new proofs: source frameR3 456 clean checks, roofR3 103 rendered checks, 
 Root's `source-world-migration/CONTRACT.md` is the concrete coupled migration plan. SourceFrame is a math/cache/pose component, not actual actor rebasing. Do not feed original-node topology into the old XYmerge/Manhattan/bidirectional graph code. Currentplayer/heli negativeYrecovery still blocks realbasements. Countryboundary/coastenclosure is not dryland or terrain.
 
 The new boss-fight-blueprint and animation-sourcing rules were read at a67557283f99. No creature/boss work or new motion is being added. Preserve earlier police proof; apply current routes if further combat/animation changes are needed.
+
+## Latest review delta
+
+The tested roof patch has bounded independent approval, but a separate reachable family in `game/src/world/downtown/roofs.gd` still has unsupported membranes and stair/penthouses. Rooftop builder owns that extension and review-scene changes now. Do not call103renderedchecks everyroof. SourceFrameR3's456cleanchecks and independent stale-cache/leaf review are complete; actual source-world/domain/actor/save/bootstrap integration is still ROOT work. Guestfloor builder is correcting nativeE/LOS and suitebedroom clearance without shrinking beds or margins. No more owner questions.
