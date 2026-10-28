@@ -4,12 +4,12 @@
   "base": "76c94830893e1d3bbe56a8de29109963ee7b0b60",
   "branch": "Astra-6-singapore-fidelity",
   "full_scope_file": "loop/singapore-fidelity/TASK.md",
-  "previous_goal_turn": "progress: owner play instance launched and actual title/window verified; new data integrity fixes and independent code review",
-  "updated_utc": "2026-10-28T18:44:35.409761+00:00",
+  "previous_goal_turn": "progress: pushed source loader, compiled real geometry and metadata; original road-node topology independently verified; revised MBS shell and QA fixes code-reviewed; owner play preserved",
+  "updated_utc": "2026-10-28T19:25:31.506147+00:00",
   "police": "25/25 headless +27/27 rendered, grounded/damageable real officers verified",
   "helicopter": "65/65 fixture headless; fullworld33/33 headless; rendered56/57 with post-reload walking failure, diagnostic rerun pending",
-  "geography": "906 source tiles + exact dependency index tracked; index hash/content and overflow fixes code-reviewed; Godot loader run pending; default city still compressed",
-  "mbs": "original public L1 stage25/25 headless/494m translated fixture only; critic rejected low envelope; source-backed continuous atrium revision ongoing; entire building incomplete",
+  "geography": "National dependency loader and Bayfront compiled geometry/metadata are pushed. Original node topology verified for 559 selected ways, with 2794 ordered source-coordinate checks; all remain source data, not default runtime migration.",
+  "mbs": "Continuous Arup-text-supported public atrium with actual production capsule and construction-budget fixes is code-reviewed; parsing, physics, rendered appearance and normal city integration pending. Entire building/current private plans remain incomplete.",
   "owner_play": {
     "driver_pid": 88900,
     "engine_pid": 88923,
@@ -18,5 +18,13 @@
     "normal_play": true,
     "stop_or_reload_without_owner_request": false
   },
-  "core_regression": "295/297 after actual90s watchdog fix; unresolved recoil kick and interaction-prompt checks; not all-pass"
+  "core_regression": "Authoritative core R2 remains295/297. Test-only native recoil observation and process-frame prompt positive/negative controls are code-reviewed but not rerun.",
+  "verification_wait": "Owner normal-play engine88923/driver88900 still live at latest check; no second task engine launched or owner controls sent.",
+  "current_workers": {
+    "sky_pole_builder": "targeted shader source correction; no engine",
+    "geography_stream_builder": "three original area-exception completeness audit; no engine"
+  },
+  "policy_revision": "6e4bcb21855ec88c0513ff4de9ee0e835046c938",
+  "policy_release": "7a2cf010c81f8e96c901",
+  "sky": "Fresh actual-image critic found zenith cloud projection pinching; targeted source fix underway, no render acceptance."
 }
