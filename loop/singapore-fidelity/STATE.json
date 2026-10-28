@@ -4,5 +4,10 @@
   "base": "76c94830893e1d3bbe56a8de29109963ee7b0b60",
   "branch": "Astra-6-singapore-fidelity",
   "full_scope_file": "loop/singapore-fidelity/TASK.md",
-  "previous_goal_turn": "initial turn; concrete work begins with verified source/reference research and implementation"
+  "previous_goal_turn": "progress: authoritative source fixes, passing police test, geodata extraction/projection tests and MBS reference audit",
+  "updated_utc": "2026-10-28T17:21:09.293367+00:00",
+  "police": "25/25 headless; rendered pending",
+  "helicopter": "62/63 headless; repair/exit probe pending; not accepted",
+  "geography": "906 country-source tiles prepared; old runtime compressed layout still active",
+  "mbs": "reference contract ready; full physical interior unimplemented/unverified; private plans question pending"
 }

@@ -14,6 +14,8 @@ const PURSUE_SPEED := 3.4
 
 var state: int = State.WALK
 var health := 100.0
+## Reserve actors must stay inert even if a direct signal/API reaches them.
+var pooled_inactive := false
 var is_police := false
 var is_hostile := false
 var lane: Array = []
@@ -216,6 +218,7 @@ func _near_hide() -> void:
 	character_visual.visible = c.distance_squared_to(cam.global_position) > NEAR_HIDE * NEAR_HIDE
 
 func _physics_process(delta: float) -> void:
+	if pooled_inactive: return
 	if _near_cull and character_visual != null:
 		_near_hide()
 	if Game.simulation_paused:
@@ -693,7 +696,7 @@ func _animate(delta: float, speed: float) -> void:
 var _walk_phase := 0.0
 
 func take_damage(amount: float, from_position: Vector3, by_player: bool = true) -> void:
-	if state == State.DEAD:
+	if pooled_inactive or state == State.DEAD:
 		return
 	health -= amount
 	if character_visual != null and character_visual.loaded and health > 0:
@@ -708,7 +711,7 @@ func take_damage(amount: float, from_position: Vector3, by_player: bool = true) 
 		_die(by_player)
 
 func _panic(from_position: Vector3) -> void:
-	if state == State.DEAD:
+	if pooled_inactive or state == State.DEAD:
 		return
 	if character_visual != null and character_visual.loaded:
 		character_visual.set_seated(false)
@@ -753,7 +756,7 @@ func _die(by_player: bool) -> void:
 			Events.toast("Officer down.", "bad")
 
 func _on_shot_fired(origin: Vector3, _dir: Vector3, _weapon_id: String) -> void:
-	if state == State.DEAD:
+	if pooled_inactive or state == State.DEAD:
 		return
 	var d := global_position.distance_to(origin)
 	if d > 26.0:

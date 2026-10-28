@@ -711,13 +711,11 @@ func _far_shore_landmarks() -> void:
 ## Aviation compound: hangar, helipads, perimeter fence.
 func _aviation_block(centre: Vector3) -> void:
 	preload("res://src/world/aviation_grounds.gd").build(_world_root, centre) # wave P: turf, apron tarmac, hedges
-	# ground staff (static figures from the generated officer set)
-	if AssetLibrary.has_asset("officer_clean.glb"):
-		for i: int in 2:
-			var guard := AssetLibrary.instantiate("officer_clean.glb", _world_root)
-			if guard != null:
-				guard.position = centre + Vector3(18.0 + i * 6.0, 0.0, 10.0 + i * 3.0)
-				guard.rotation.y = -1.1
+	# TrafficManager owns actual grounded, damageable officers at these posts.
+	# The former two raw officer GLBs had no actor/hitbox and a centred mesh
+	# origin, so they appeared buried and could never react to bullets.
+	for i: int in 2:
+		locations["aviation_officer_%d" % i] = centre + Vector3(18.0 + i * 6.0, 0.6, 10.0 + i * 3.0)
 	# hangar
 	_solid_box(Vector3(38.0, 12.0, 24.0), centre + Vector3(-30.0, 6.0, -20.0), Palette.corrugated(Palette.METAL.lightened(0.3)))
 	var hangar_roof := MeshInstance3D.new()

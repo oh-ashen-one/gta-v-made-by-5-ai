@@ -16,6 +16,8 @@ var nodes: Array[Vector3] = []
 var cars: Array[Car] = []
 var peds: Array[NPC] = []
 var police_cars: Array[Car] = []
+## Permanent aviation staff are real actors, separate from transient responders.
+var airfield_officers: Array[NPC] = []
 var parking_stats := {"road_available": 0, "road_spawned": 0, "courtyard_spawned": 0}
 var _ped_lanes: Array = []
 var _player: Node = null
@@ -55,6 +57,7 @@ func setup(w: WorldBuilder, player: Node) -> void:
 	_spawn_traffic()
 	_spawn_peds()
 	_warm_officer_pool()
+	_spawn_airfield_officers()
 	_update_signal_lamps(true)
 	_setup_street_life()
 
@@ -88,13 +91,9 @@ func _warm_officer_pool() -> void:
 		var officer := NPC.new()
 		officer.is_police = true
 		officer.state = NPC.State.IDLE
-		officer.visible = false
-		officer.collision_layer = 0
-		officer.collision_mask = 0
-		officer.set_physics_process(false)
-		officer.set_process(false)
 		add_child(officer)
-		officer.global_position = Vector3(0.0, -80.0 - i * 3.0, 0.0)
+		# _ready assigns NPC collision defaults; park AFTER it has run.
+		_park_officer(officer, Vector3(0.0, -80.0 - i * 3.0, 0.0))
 		_officer_pool.append(officer)
 	for i in POLICE_CAR_POOL_SIZE:
 		var pc := Car.new()
@@ -111,42 +110,128 @@ func _warm_officer_pool() -> void:
 	_officer_pool_ready = true
 	print("[profile] officer_pool_build_us=", Time.get_ticks_usec() - started, " size=", _officer_pool.size(), " police_cars=", _police_car_pool.size())
 
-## Activate one pooled officer at `pos`. Returns null when the pool is empty, so
-## the caller falls back to construction rather than silently spawning nothing.
-func _take_officer(pos: Vector3) -> NPC:
-	var officer: NPC = null
-	while not _officer_pool.is_empty():
-		var candidate: NPC = _officer_pool.pop_back()
-		if is_instance_valid(candidate):
-			officer = candidate
-			break
-	if officer == null:
-		return null
-	officer.global_position = pos
-	officer.health = 100.0
-	officer.state = NPC.State.PURSUE
-	officer.idle_time = 0.0
-	officer.panic_time = 0.0
-	officer.collision_layer = 4
-	officer.collision_mask = 1 | 4
-	officer.visible = true
-	officer.set_physics_process(true)
-	officer.set_process(true)
-	if officer.character_visual != null:
-		officer.character_visual.reset_alive()
-	return officer
+class AirfieldOfficer extends NPC:
+	var post_position := Vector3.ZERO
+	func _walk(delta: float) -> void:
+		# Stand down by physically returning to the post, never by teleporting.
+		if Vector2(global_position.x - post_position.x, global_position.z - post_position.z).length() > 0.8:
+			_move_towards(post_position, WALK_SPEED, delta)
+		else:
+			velocity.x = 0.0
+			velocity.z = 0.0
+			state = State.IDLE
+			idle_time = 3600.0
 
-## Return a responder to the pool instead of freeing and rebuilding it.
-func _recycle_officer(officer: NPC) -> void:
-	if not is_instance_valid(officer):
-		return
+func _supported_officer_position(requested: Vector3) -> Vector3:
+	var space := get_world_3d().direct_space_state
+	if space == null: return Vector3.INF
+	# Keep the requested elevation: rooftop responders must not be forced to
+	# y=0.4, and airfield posts may be on the raised pad or apron.
+	var ray := PhysicsRayQueryParameters3D.create(requested + Vector3.UP * 8.0, requested - Vector3.UP * 16.0, 1)
+	var hit := space.intersect_ray(ray)
+	if hit.is_empty() or (hit["normal"] as Vector3).y < cos(deg_to_rad(60.0)): return Vector3.INF
+	var feet: Vector3 = hit["position"] + Vector3.UP * 0.04
+	var capsule := CapsuleShape3D.new()
+	capsule.radius = 0.32
+	capsule.height = 1.72
+	var clearance := PhysicsShapeQueryParameters3D.new()
+	clearance.shape = capsule
+	clearance.transform = Transform3D(Basis.IDENTITY, feet + Vector3.UP * 0.88)
+	clearance.collision_mask = 1 | 4 | 8
+	if not space.intersect_shape(clearance, 1).is_empty(): return Vector3.INF
+	return feet
+
+func _spawn_airfield_officers() -> void:
+	# Physics broadphase must contain the completed world's colliders before
+	# projecting the posts onto their real supported surfaces.
+	await get_tree().physics_frame
+	if not is_inside_tree() or not is_instance_valid(world): return
+	for i in 2:
+		var key := "aviation_officer_%d" % i
+		if not world.locations.has(key): continue
+		var pos := _supported_officer_position(world.locations[key])
+		if pos == Vector3.INF:
+			push_warning("No supported clear floor at airfield officer post: " + key)
+			continue
+		var officer := AirfieldOfficer.new()
+		officer.name = "AirfieldOfficer%d" % i
+		officer.is_police = true
+		officer.state = NPC.State.IDLE
+		officer.idle_time = 3600.0
+		officer.post_position = pos
+		add_child(officer)
+		officer.global_position = pos
+		officer.rotation.y = -1.1
+		officer.add_to_group("airfield_officers")
+		airfield_officers.append(officer)
+
+func _update_airfield_officers(wanted: int) -> void:
+	if _player == null: return
+	for officer in airfield_officers:
+		if not is_instance_valid(officer) or officer.state == NPC.State.DEAD: continue
+		if wanted <= 0:
+			if officer.state == NPC.State.PURSUE: officer.state = NPC.State.WALK
+			continue
+		if officer.global_position.distance_to(_player.controlled_actor().global_position) <= 42.0 and _has_sight(officer.global_position):
+			officer.state = NPC.State.PURSUE
+			Game.player_seen = true
+			Game.last_seen_position = _player.controlled_actor().global_position
+			Game.search_timer = 14.0
+
+func _park_officer(officer: NPC, pos: Vector3) -> void:
+	officer.pooled_inactive = true
 	officer.state = NPC.State.IDLE
+	officer.velocity = Vector3.ZERO
 	officer.visible = false
 	officer.collision_layer = 0
 	officer.collision_mask = 0
 	officer.set_physics_process(false)
 	officer.set_process(false)
-	officer.global_position = Vector3(0.0, -80.0 - _officer_pool.size() * 3.0, 0.0)
+	officer.process_mode = Node.PROCESS_MODE_DISABLED
+	officer.global_position = pos
+
+func _activate_officer(officer: NPC, pos: Vector3) -> void:
+	officer.global_position = pos
+	officer.velocity = Vector3.ZERO
+	officer.health = 100.0
+	officer.state = NPC.State.PURSUE
+	officer.idle_time = 0.0
+	officer.panic_time = 0.0
+	officer.fire_timer = 0.0
+	officer._sim_accum = 0.0
+	officer._idle_acc = 0.0
+	officer._half_acc = 0.0
+	officer._far_off = Vector3.ZERO
+	officer._root_base = Vector3.INF
+	for key in ["_combat_state", "_flinch_until", "_los_at", "_los"]:
+		if officer.has_meta(key): officer.remove_meta(key)
+	if officer.body_root != null:
+		officer.body_root.transform = Transform3D(Basis.IDENTITY, Vector3(0, 0.02, 0))
+	if officer.character_visual != null:
+		officer.character_visual.position = Vector3.ZERO
+		officer.character_visual.reset_alive()
+	officer.pooled_inactive = false
+	officer.collision_layer = 4
+	officer.collision_mask = 1 | 4
+	officer.visible = true
+	officer.process_mode = Node.PROCESS_MODE_INHERIT
+	officer.set_physics_process(true)
+	officer.set_process(true)
+
+## Activate a reserved responder only on a supported, unobstructed surface.
+func _take_officer(pos: Vector3) -> NPC:
+	var supported := _supported_officer_position(pos)
+	if supported == Vector3.INF: return null
+	while not _officer_pool.is_empty():
+		var officer: NPC = _officer_pool.pop_back()
+		if is_instance_valid(officer):
+			_activate_officer(officer, supported)
+			return officer
+	return null
+
+func _recycle_officer(officer: NPC) -> void:
+	if not is_instance_valid(officer) or _officer_pool.has(officer): return
+	_park_officer(officer, Vector3(0.0, -80.0 - _officer_pool.size() * 3.0, 0.0))
 	_officer_pool.append(officer)
 
 func _take_police_car(pos: Vector3, target: Vector3) -> Car:
@@ -595,6 +680,7 @@ func _update_police(delta: float) -> void:
 		if not is_instance_valid(peds[index]):
 			peds.remove_at(index)
 	Game.player_seen = false
+	_update_airfield_officers(wanted)
 	if wanted <= 0:
 		Sfx.set_siren(false, 1.0)
 		# responders stand down and are cleaned up when the search ends (LAW-05)
@@ -639,20 +725,20 @@ func _update_police(delta: float) -> void:
 		_police_timer = 4.5
 		var angle := _rng.randf_range(0.0, TAU)
 		var pos: Vector3 = _player.controlled_actor().global_position + Vector3(cos(angle), 0.0, sin(angle)) * _rng.randf_range(28.0, 45.0)
-		pos.y = 0.4
-		var activation_started := Time.get_ticks_usec()
-		var officer := _take_officer(pos)
-		if officer == null:
-			# Pool exhausted (more responders than the cap allows): build once.
-			officer = NPC.new()
-			officer.is_police = true
-			add_child(officer)
-			officer.global_position = pos
-			officer.state = NPC.State.PURSUE
-		var activation_us := Time.get_ticks_usec() - activation_started
-		_officer_activation_us.append(activation_us)
-		print("[profile] officer_activation_us=", activation_us, " pooled=", activation_us < 20000, " live=", live_officers)
-		peds.append(officer)
+		var supported := _supported_officer_position(pos)
+		if supported != Vector3.INF:
+			var activation_started := Time.get_ticks_usec()
+			var officer := _take_officer(pos)
+			if officer == null:
+				# Pool exhausted (more responders than the cap allows): build once.
+				officer = NPC.new()
+				officer.is_police = true
+				add_child(officer)
+				_activate_officer(officer, supported)
+			var activation_us := Time.get_ticks_usec() - activation_started
+			_officer_activation_us.append(activation_us)
+			print("[profile] officer_activation_us=", activation_us, " pooled=", activation_us < 20000, " live=", live_officers)
+			peds.append(officer)
 	Sfx.set_siren(wanted > 0 and not police_cars.is_empty(), 1.0 + 0.1 * float(wanted))
 	# vehicle pursuit: one active pursuit car, respawned when it is wrecked
 	# or has fallen far behind (B13)
