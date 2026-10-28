@@ -1,11 +1,11 @@
 {
-  "created_utc": "2026-10-28T23:37:09.608038+00:00",
+  "created_utc": "2026-10-28T23:47:13.167671+00:00",
   "worker": "public_lobby_builder/program_floor_factory",
   "source_hashes": {
     "game/src/world/mbs_interior/program_floor.gd": "3cb21c4ee9c2f67a8c34f62b3cf1b30a6e4ed8c2eafe518a7a7f8501440516d8",
-    "game/src/systems/fidelity_tests/mbs_program_floor_test.gd": "cd24e3a4f4f8a1077ed1409d0bc2cb8439d5ff8d1b98d272d64f6a42de9a73b0",
+    "game/src/systems/fidelity_tests/mbs_program_floor_test.gd": "2263076e76fd3fe12214bf1fda9b9570addeb39599e10504301b50625e8099d6",
     "game/src/systems/fidelity_tests/mbs_program_floor_test.tscn": "754ba9560a868d645b43946895ca3152b8fa57543358a0f9788055e5b5329bbb",
-    "game/src/world/mbs_interior/guest_floor.gd": "757e5d32158429414f3c0fbce472382611a494d87ef3895fa93f62a67a728631",
+    "game/src/world/mbs_interior/guest_floor.gd": "46d1e71ff6870dab9efaf1c6f04ecc643d5ff761b556391aa61ef9dfebc37849",
     "game/data/mbs-interior/inventory.json": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819"
   },
   "new_files_only": true,
@@ -15,5 +15,10 @@
   "engine_compile_verified": false,
   "engine_runtime_verified": false,
   "rendered_fidelity_accepted": false,
-  "whole_building_completed": false
+  "whole_building_completed": false,
+  "round": "R2_NATIVE_PROCESS_FRAME_INPUT_OBSERVATION",
+  "predecessor_checkpoint": "91c4230ce8a37f4080c4fc3dab29e6af9fb51de0",
+  "predecessor_failed_checks": [
+    "production E action T2-L5-water_garden"
+  ]
 }

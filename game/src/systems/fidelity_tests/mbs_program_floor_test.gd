@@ -8,6 +8,9 @@ var runtime_program_doors: Array[String] = []
 var tested_floor := ""
 var tested_wing := "west"
 var _program_started := 0
+var _input_stage := "setup"
+var _input_observations: Array[Dictionary] = []
+var _door_dispatch_events: Array[Dictionary] = []
 
 func _ready() -> void:
 	if not "--qa-session" in OS.get_cmdline_user_args():
@@ -25,6 +28,21 @@ func check(label: String,ok: bool,detail: String = "") -> bool:
 	print("[mbs-program-floor] %s %s %s"%["PASS" if ok else "FAIL",label,detail])
 	if not ok: failures.append(label)
 	return ok
+
+func frames(count: int) -> void:
+	for i in count: await get_tree().physics_frame
+	# Production Player consumes interact in _process. Physics catch-up can
+	# finish the entire old six-tick held window before that polling callback.
+	# Two boundaries guarantee one complete process cycle while the input state
+	# is held, including the negative LOS control. No direct interaction call.
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+func _process(_delta: float) -> void:
+	if not is_instance_valid(player) or not Input.is_action_pressed("interact"): return
+	var target: Node3D=player._interaction_target()
+	_input_observations.append({"stage":_input_stage,"process_frame":Engine.get_process_frames(),"physics_frame":Engine.get_physics_frames(),"held":Input.is_action_pressed("interact"),"armed":player.get("_press_armed").duplicate(),"queue":player.get("_press_queue").duplicate(),"player_processing":player.is_processing(),"player_can_process":player.can_process(),"paused":Game.simulation_paused,"busy":player.busy,"target_id":target.get("door_id") if target!=null else "NONE","target_open":target.get("opened") if target!=null else false})
+	if _input_observations.size()>128: _input_observations.pop_front()
 
 func run() -> void:
 	Game.simulation_paused=false;Game.mode=Game.MODE_FOOT
@@ -77,6 +95,8 @@ func program_fixture(record: Dictionary,wing: String) -> bool:
 	check("runtime limits remain truthful",not result.current_private_asbuilt_verified and not result.integrated_city_traversal_verified and not result.all_program_floors_runtime_verified and not result.full_building_completed and not result.permanent_empty_fallback)
 	transition_calls.clear()
 	candidate.transition_requested.connect(func(_floor_id: String,portal_id: String,_kind: String): transition_calls[portal_id]=int(transition_calls.get(portal_id,0))+1)
+	candidate.door_state_changed.connect(func(_floor_id: String,door_id: String,value: bool):
+		_door_dispatch_events.append({"stage":_input_stage,"door_id":door_id,"open":value,"process_frame":Engine.get_process_frames(),"physics_frame":Engine.get_physics_frames()}))
 	await frames(6)
 	if bool(candidate.floor_record.geometry.atrium_void_active): check("real atrium void has no slab or hidden ceiling",ray(Vector3(0,4,0),Vector3(0,-1,0)).is_empty())
 	var selected: Array[Dictionary] = []
@@ -96,8 +116,11 @@ func program_fixture(record: Dictionary,wing: String) -> bool:
 		var outside: Vector3=candidate.to_global(cell.entry_local)
 		var inside: Vector3=candidate.to_global(cell.inside_local)
 		check("closed native program door physically blocks capsule "+String(cell.id),not capsule_clear(outside,inside))
+		_input_stage="blocked_los_negative_control"
 		if cell.id==first.id and not await blocked_e(cell.id): return false
+		_input_stage="native_open_"+String(cell.id)
 		if not await native_e(cell.id): return false
+		_input_stage="walking_"+String(cell.id)
 		if not check("opened native door clears full-size capsule "+String(cell.id),capsule_clear(outside,inside,"program door entry "+String(cell.id))): return false
 		if not await walk_to(inside,.18): return false
 		var view: Vector3=candidate.to_global(cell.view_local)
@@ -112,6 +135,7 @@ func program_fixture(record: Dictionary,wing: String) -> bool:
 		if not await walk_to(outside,.18): return false
 		runtime_program_doors.append(cell.id)
 	var saved: Dictionary=candidate.serialize_state()
+	_input_stage="json_persistence_direct_state_test"
 	candidate.set_door_open(first.id,false)
 	await frames(60)
 	var roundtrip: Dictionary=JSON.parse_string(JSON.stringify(saved))
@@ -124,6 +148,7 @@ func program_fixture(record: Dictionary,wing: String) -> bool:
 		if not await walk_public_to(portal.landing,wing): return false
 		await frames(20)
 		check("lift is interlocked without root physical cabin "+String(portal.id),not candidate.set_door_open(portal.id,true))
+		_input_stage="native_lift_request_"+String(portal.id)
 		if not await native_e(portal.id,true): return false
 	check("continuous selected-wing route has no jump/teleport/death",max_step<.50 and minimum_y>-.20 and Game.death_count==0,"travel%.2f maxstep%.4f minY%.3f"%[travel,max_step,minimum_y])
 	tracking=false
@@ -159,7 +184,7 @@ func finish() -> void:
 	if finished: return
 	finished=true;tracking=false
 	for action: String in ["move_forward","move_back","move_left","move_right","sprint","jump","interact"]: Input.action_release(action)
-	var result: Dictionary={"checks":checks,"failed":failures.size(),"failures":failures,"elapsed_s":float(Time.get_ticks_msec()-_program_started)/1000.0,"planned_floor_coverage":plan_results,"runtime_fixture":fixture_results,"selected_floor":tested_floor,"selected_wing":tested_wing,"actual_native_program_doors":runtime_program_doors,"private_asbuilt_verified":false,"rendered_fidelity_accepted":false,"full_building_completed":false}
+	var result: Dictionary={"checks":checks,"failed":failures.size(),"failures":failures,"elapsed_s":float(Time.get_ticks_msec()-_program_started)/1000.0,"planned_floor_coverage":plan_results,"runtime_fixture":fixture_results,"selected_floor":tested_floor,"selected_wing":tested_wing,"actual_native_program_doors":runtime_program_doors,"held_input_observations":_input_observations,"door_dispatch_events":_door_dispatch_events,"private_asbuilt_verified":false,"rendered_fidelity_accepted":false,"full_building_completed":false}
 	print("[mbs-program-floor] RESULT ",JSON.stringify(result))
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--mbs-program-report="):

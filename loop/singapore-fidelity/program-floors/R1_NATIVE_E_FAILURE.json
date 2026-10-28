@@ -1,0 +1,41 @@
+{
+  "observed_utc": "2026-10-28T23:47:13.166426+00:00",
+  "checkpoint": "91c4230ce8a37f4080c4fc3dab29e6af9fb51de0",
+  "started_utc": "2026-10-28T23:42:14.641325+00:00",
+  "finished_utc": "2026-10-28T23:42:25.850719+00:00",
+  "engine_exit_code": 1,
+  "supervisor_exit_code": 1,
+  "fatal_errors": [],
+  "timeout": false,
+  "child_reaped": true,
+  "checks": 137,
+  "failures": [
+    "production E action T2-L5-water_garden"
+  ],
+  "elapsed_test_s": 8.061,
+  "selected_floor": "T2-L5",
+  "selected_wing": "west",
+  "actual_native_program_doors": [],
+  "evidence_files": {
+    "report.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-program-spa-west-r1/report.json",
+      "sha256": "e98ade25b50d48002cd354b7eedf8aa484bc50b3565291f73374fa1512e566be"
+    },
+    "run.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-program-spa-west-r1/run.log",
+      "sha256": "fae47bf93f1fb307d358a670f1addf4c92902fcc1ca0ffd5b44d90cd0f83d680"
+    },
+    "engine.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-program-spa-west-r1/engine.log",
+      "sha256": "fae47bf93f1fb307d358a670f1addf4c92902fcc1ca0ffd5b44d90cd0f83d680"
+    },
+    "run.log.meta.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-program-spa-west-r1/run.log.meta.json",
+      "sha256": "0204df120a099a89f433bfb59a926ea38cb6b8dbfd4b27570ba27ad3eb550443"
+    }
+  },
+  "r1_actual_process_input_samples": false,
+  "r1_handler_dispatch_samples": false,
+  "inference": "Physics-only press/release waits do not guarantee production _process polling. R2 adds process lifecycle gates and observational dispatch/state traces; root rerun required.",
+  "r2_runtime_verified": false
+}
