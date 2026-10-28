@@ -1,0 +1,164 @@
+{
+  "final_audit_sha256": "bda48e5adc1ced9074ad141d507b2bef30d0b607c7814b176dc51f65e4d245b6",
+  "original_emitted_audit_sha256": "8176880070422ac90aa7637b33fa61dd050c3d707b064c17333d8e04e5970081",
+  "status": "complete",
+  "recorded_failure_scope_conclusion": "all_reproduced_recorded_factory_failures_outside_country",
+  "source_binding": {
+    "attribution": "© OpenStreetMap contributors",
+    "canonical_snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+    "data_license": "ODbL-1.0",
+    "exact_country_sha256": "c25cce8de57f280b68bd1436deedc3eaa3eb8bebf50ec334f5d9dbfd826b9c45",
+    "license_url": "https://www.openstreetmap.org/copyright",
+    "original_extractor_sha256": "3ff470373094f888b5693577b5ac20f8ec57ba7e2b3210aa909011f149fac269",
+    "pbf_header": {
+      "generator": "osmium/1.16.0",
+      "osmosis_replication_sequence_number": "4952",
+      "osmosis_replication_timestamp": "2026-10-27T21:23:59Z"
+    },
+    "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+    "predecessor_emitted_area_audit_sha256": "8176880070422ac90aa7637b33fa61dd050c3d707b064c17333d8e04e5970081",
+    "recorded_area_geometry_exceptions": 3,
+    "source_snapshot_utc": "2026-10-27T21:23:59Z"
+  },
+  "counts": {
+    "area_geometry": 3,
+    "building_attempts": 1744371,
+    "country_attempts": 1,
+    "eligible_factory_attempts": 1771396,
+    "emitted_area_events": 1983323,
+    "factory_successes": 1771393,
+    "water_attempts": 27024
+  },
+  "classifications": {
+    "outside_country": 3
+  },
+  "failures": [
+    {
+      "source_id": "way/1113415118",
+      "source_tags": {
+        "building": "yes"
+      },
+      "classification": "outside_country",
+      "complete_source_node_bounds_wgs84": [
+        101.6995717,
+        3.1621339,
+        101.6997774,
+        3.1623306
+      ],
+      "valid_source_nodes": 11,
+      "missing_source_nodes": [],
+      "invalid_source_nodes": [],
+      "unresolved_conditions": []
+    },
+    {
+      "source_id": "way/1215622359",
+      "source_tags": {
+        "building": "university",
+        "name": "B03"
+      },
+      "classification": "outside_country",
+      "complete_source_node_bounds_wgs84": [
+        103.635362,
+        1.5592842,
+        103.6355665,
+        1.5595091
+      ],
+      "valid_source_nodes": 9,
+      "missing_source_nodes": [],
+      "invalid_source_nodes": [],
+      "unresolved_conditions": []
+    },
+    {
+      "source_id": "relation/19881155",
+      "source_tags": {
+        "building": "house"
+      },
+      "classification": "outside_country",
+      "complete_source_node_bounds_wgs84": [
+        102.1952724,
+        6.1676826,
+        102.195435,
+        6.1679245
+      ],
+      "valid_source_nodes": 18,
+      "missing_source_nodes": [],
+      "invalid_source_nodes": [],
+      "unresolved_conditions": []
+    }
+  ],
+  "raw_source_fallback": {
+    "geometry_repaired": false,
+    "nested_relations_expanded": false,
+    "node_location_cache_created": false,
+    "only_failed_source_ids_and_members_retained": true,
+    "source_nodes_found": 38,
+    "source_nodes_requested": 38,
+    "source_relations_retained": 1,
+    "source_ways_retained": 4
+  },
+  "factory_pass_resources": {
+    "cpu_seconds": 138.644,
+    "location_index": "disk-backed sparse_file_array; all source locations needed by native area assembly, no feature payload retained",
+    "peak_rss_bytes": 770310144,
+    "wall_seconds": 153.557
+  },
+  "raw_source_pass_resources": {
+    "cpu_seconds": 11.238,
+    "location_index": "none; C++ ID-filtered recorded failure/member-way/node metadata only",
+    "peak_rss_bytes": 184795136,
+    "wall_seconds": 2.959
+  },
+  "factory_supervisor": {
+    "audit_sha256": "8176880070422ac90aa7637b33fa61dd050c3d707b064c17333d8e04e5970081",
+    "audit_status": "complete",
+    "failure_classifications": {
+      "UNKNOWN": 3
+    },
+    "limits": {
+      "max_cpu_seconds": 240,
+      "max_index_mib": 2048,
+      "max_rss_mib": 2048,
+      "max_wall_seconds": 480,
+      "rss_is_supervised_not_kernel_hard_limit": true,
+      "rss_poll_interval_seconds": 1
+    },
+    "owned_location_index_removed_after_worker_exit": true,
+    "reason": null,
+    "reproduces_recorded_exception_count": true,
+    "sampled_peak_index_bytes": 486539712,
+    "sampled_peak_worker_rss_bytes": 740900864,
+    "status": "complete",
+    "wall_seconds": 154.974,
+    "worker_exit_code": 0
+  },
+  "raw_supervisor": {
+    "audit_sha256": "bda48e5adc1ced9074ad141d507b2bef30d0b607c7814b176dc51f65e4d245b6",
+    "audit_status": "complete",
+    "failure_classifications": {
+      "outside_country": 3
+    },
+    "limits": {
+      "max_cpu_seconds": 240,
+      "max_index_mib": 2048,
+      "max_rss_mib": 2048,
+      "max_wall_seconds": 480,
+      "rss_is_supervised_not_kernel_hard_limit": true,
+      "rss_poll_interval_seconds": 1
+    },
+    "reason": null,
+    "reproduces_recorded_exception_count": true,
+    "sampled_peak_index_bytes": 0,
+    "sampled_peak_worker_rss_bytes": 184729600,
+    "status": "complete",
+    "wall_seconds": 4.196,
+    "worker_exit_code": 0
+  },
+  "source_tool_sha256": "ad8010d2a1ef55ef067f47b0e2fd003cd021ae9145d2dad73f603f43f0df4fe7",
+  "source_tests_sha256": "e6c3750d8136de1eb260e12f0637b427aeba5b00a61276ed03c85addc6baf026",
+  "unit_tests": {
+    "count": 14,
+    "failed": 0
+  },
+  "native_assembler_suppressed_objects_audited": false,
+  "source_completeness_certified": false
+}
