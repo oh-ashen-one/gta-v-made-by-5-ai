@@ -1,0 +1,30 @@
+{
+  "status": "typed_validation_repair_frozen_pending_parent_r2",
+  "retained_parent_r1": {
+    "arithmetic_checks": 71,
+    "arithmetic_failures": [],
+    "engine_exit_code": 0,
+    "supervisor_exit_code": 2,
+    "fatal_errors": [
+      "SCRIPT ERROR: Invalid operands 'bool' and 'float' in operator '!='."
+    ],
+    "result": "FAILED: arithmetic report does not override engine errors",
+    "raw_evidence": "/private/tmp/singapore-fidelity/source-frame-r1"
+  },
+  "fixes": [
+    "Validate top-level numeric/string/bool frame fields and nested axis strings before equality.",
+    "Validate plan/pose identity string types before equality.",
+    "Normalize explicit complete pose-elevation metadata before dictionary comparison.",
+    "Reject malformed local-vector query arguments through structured API errors.",
+    "Preserve original negative tests and add frame/axis/elevation/plan/pose adversarial-type matrices."
+  ],
+  "source_hashes": {
+    "game/src/world/geography/source_frame.gd": "b75d342fe5d09a85e902557d94e4a923df4f9831f39a44d9e3e9941f7bffeb30",
+    "game/src/systems/fidelity_tests/source_frame_test.gd": "9335286eaf9015e6fb41c13a84454994be81f4089706b2069109fce20c5334c2",
+    "game/src/systems/fidelity_tests/source_frame_test.tscn": "a9f39cc08be89a6aa97b8cfab55a4ae1060c8947707fb67c775c3a8904fa0ad8"
+  },
+  "worker_engine_or_gpu_runs": 0,
+  "worker_git_commands": 0,
+  "new_runtime_result": "NOT_RUN_BY_WORKER",
+  "root_required_gate": "Fresh report with no assertion failures PLUS supervisor exit0, no fatal engine errors and child_reaped=true. Math/report green alone is insufficient."
+}

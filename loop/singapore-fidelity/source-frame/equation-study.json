@@ -1,0 +1,29 @@
+{
+  "scope": "CPU float32/double design arithmetic only, not a GDScript parser or engine run",
+  "actual_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+  "actual_source_snapshot_utc": "2026-10-27T21:23:59Z",
+  "absolute_float32_mm_delta_xyz": [
+    0.001953125,
+    0.00099945068359375,
+    0.0
+  ],
+  "origin_relative_float32_mm_delta_xyz": [
+    0.0009999996982514858,
+    0.0010000000474974513,
+    0.0009999999310821295
+  ],
+  "source_roundtrip_max_error_m": 1.8553691916167736e-10,
+  "non_grid_naive_delta_addition_error_m": 1.796484377791785e-05,
+  "non_grid_canonical_reconstruction_error_m": 5.684341886080801e-13,
+  "bounded_rebases": 219,
+  "canonical_motion_span_m": 112128.0,
+  "repeated_rebase_max_error_m": 1.812109439924825e-05,
+  "source_hashes": {
+    "game/src/world/geography/source_frame.gd": "7de1b4822c6e6640e6f1dcfb5bf5f202245786b6839b21d3f6a26ebc19559e16",
+    "game/src/systems/fidelity_tests/source_frame_test.gd": "622ca4bfa44c2a043a70eea0fea15a9dd92e138565d73ec020d0f1e491a626b9",
+    "game/src/systems/fidelity_tests/source_frame_test.tscn": "a9f39cc08be89a6aa97b8cfab55a4ae1060c8947707fb67c775c3a8904fa0ad8"
+  },
+  "godot_run_by_worker": false,
+  "compile_verified": false,
+  "physics_or_world_integration_verified": false
+}

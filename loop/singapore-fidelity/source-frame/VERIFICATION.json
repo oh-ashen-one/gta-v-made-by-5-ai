@@ -1,0 +1,56 @@
+{
+  "status": "checked_cache_and_report_leaf_guards_frozen_pending_parent_r3",
+  "source_hashes": {
+    "game/src/world/geography/source_frame.gd": "e9e29704d4df3c1c17ccebbdbdc6619c3718fccec18337751f5917e7b090fbe2",
+    "game/src/systems/fidelity_tests/source_frame_test.gd": "e0a013ca3820774aa3b359de21c23a10bbfed55c38c00364dfbaa3011ac77373",
+    "game/src/systems/fidelity_tests/source_frame_test.tscn": "a9f39cc08be89a6aa97b8cfab55a4ae1060c8947707fb67c775c3a8904fa0ad8"
+  },
+  "worker_actions": {
+    "git_commands": 0,
+    "engine_or_gpu_launches": 0,
+    "ui_actions": 0,
+    "shared_actor_main_save_edits": 0
+  },
+  "verification": {
+    "standard_library_design_study": "passed its arithmetic assertions; not execution of GDScript",
+    "gdtoolkit_available": false,
+    "godot_parse_runtime": "R2_CLEAN298_OF298_RETAINED; new cache/leaf revision awaits parentR3",
+    "real_actor_physics_camera_rebase": "NOT_IMPLEMENTED_OR_TESTED",
+    "owner_save_touched": false
+  },
+  "parent_scene": "res://src/systems/fidelity_tests/source_frame_test.tscn",
+  "scope": "Canonical source precision/identity math only. Full source-world runtime integration and full owner goal remain incomplete.",
+  "retained_parent_r1": {
+    "arithmetic_checks": 71,
+    "arithmetic_failures": [],
+    "engine_exit_code": 0,
+    "supervisor_exit_code": 2,
+    "fatal_errors": [
+      "SCRIPT ERROR: Invalid operands 'bool' and 'float' in operator '!='."
+    ],
+    "result": "FAILED: arithmetic report does not override engine errors",
+    "raw_evidence": "/private/tmp/singapore-fidelity/source-frame-r1"
+  },
+  "repair_receipt": "REPAIR_R1.json",
+  "retained_parent_r2": {
+    "checks": 298,
+    "failures": [],
+    "engine_exit_code": 0,
+    "supervisor_exit_code": 0,
+    "fatal_errors": [],
+    "child_reaped": true,
+    "scope": "Clean R2 coordinate arithmetic only; independent review found local-cache epoch and QA report-leaf P2s before live integration.",
+    "raw_evidence": "/private/tmp/singapore-fidelity/source-frame-r2"
+  },
+  "live_guard_repair_receipt": "REPAIR_R2_LIVE_GUARDS.json",
+  "parent_r3": {
+    "checks": 456,
+    "failures": 0,
+    "engine_exit": 0,
+    "supervisor_exit": 0,
+    "fatal_errors": 0,
+    "child_reaped": true,
+    "independent_source_and_filesystem_review": "Both stale-cache and report-leaf P2s closed; no new blocker found",
+    "scope": "Math, checked cache/preview epochs and owned QA writer only; no actor/domain/save/streaming integration"
+  }
+}

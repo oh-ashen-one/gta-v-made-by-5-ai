@@ -1,0 +1,51 @@
+{
+  "status": "checked_cache_and_report_leaf_guards_frozen_pending_parent_r3",
+  "retained_parent_r2": {
+    "checks": 298,
+    "failures": [],
+    "engine_exit_code": 0,
+    "supervisor_exit_code": 0,
+    "fatal_errors": [],
+    "child_reaped": true,
+    "scope": "Clean R2 coordinate arithmetic only; independent review found local-cache epoch and QA report-leaf P2s before live integration.",
+    "raw_evidence": "/private/tmp/singapore-fidelity/source-frame-r2"
+  },
+  "source_hashes": {
+    "game/src/world/geography/source_frame.gd": "e9e29704d4df3c1c17ccebbdbdc6619c3718fccec18337751f5917e7b090fbe2",
+    "game/src/systems/fidelity_tests/source_frame_test.gd": "e0a013ca3820774aa3b359de21c23a10bbfed55c38c00364dfbaa3011ac77373",
+    "game/src/systems/fidelity_tests/source_frame_test.tscn": "a9f39cc08be89a6aa97b8cfab55a4ae1060c8947707fb67c775c3a8904fa0ad8"
+  },
+  "interface_changes": {
+    "removed_ambiguous_bare_names": [
+      "to_source",
+      "local_after_rebase"
+    ],
+    "explicit_current_live_names": [
+      "to_source_current_live",
+      "local_after_rebase_current_live"
+    ],
+    "checked_cache_apis": [
+      "capture_current_local",
+      "project_source_sample",
+      "validate_local_sample",
+      "sample_to_local",
+      "sample_to_source",
+      "sample_after_rebase",
+      "validate_rebase_preview",
+      "activate_rebase_preview"
+    ]
+  },
+  "new_verification_prepared": [
+    "Origin0->512->1024 stale-cache reproduction rejects old sample.",
+    "Wrong-context sample has matching snapshot/origin/revision, isolating context validation.",
+    "Returning to original origin does not revive stale revision.",
+    "Future preview refuses checked consumption before commit and needs explicit activation afterward.",
+    "One sample is carried through219 non-grid cycles; no fresh canonical input per iteration.",
+    "Actual guarded report writer rejects own directory links, dangling leaves, existing regular files/directories and late inserted links; own target sentinels stay unchanged.",
+    "QA session must be fresh; parent chain and leaf are rechecked immediately before write."
+  ],
+  "filesystem_limit": "Single-owner ownership guard and recheck, not an OS-level O_EXCL open or defense against adversarial same-user races after the final check.",
+  "actor_world_domain_save_integration": "NOT_IMPLEMENTED_BY_THIS_MODULE",
+  "worker_engine_gpu_or_git_runs": 0,
+  "new_parent_runtime_result": "PENDING"
+}
