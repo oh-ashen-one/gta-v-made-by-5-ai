@@ -1,0 +1,583 @@
+{
+  "created_utc": "2026-10-28T23:35:30.703488+00:00",
+  "method": "STATIC_PYTHON_SOURCE_AND_INVENTORY_ARITHMETIC_NOT_GODOT_QA",
+  "source_sha256": "3cb21c4ee9c2f67a8c34f62b3cf1b30a6e4ed8c2eafe518a7a7f8501440516d8",
+  "inventory_sha256": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
+  "records": [
+    {
+      "id": "T1-B5",
+      "program_spaces": 11,
+      "furnished_rooms": 8,
+      "objects": 96,
+      "minimum_room_depth_m": 28.101035,
+      "minimum_frontage_m": 13.144922500000002,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T1-B4",
+      "program_spaces": 11,
+      "furnished_rooms": 8,
+      "objects": 96,
+      "minimum_room_depth_m": 28.101035,
+      "minimum_frontage_m": 13.144922500000002,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T1-B3",
+      "program_spaces": 11,
+      "furnished_rooms": 8,
+      "objects": 97,
+      "minimum_room_depth_m": 28.101035,
+      "minimum_frontage_m": 13.144922500000002,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T1-B2",
+      "program_spaces": 8,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 28.101035,
+      "minimum_frontage_m": 17.526563333333335,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T1-B2M",
+      "program_spaces": 8,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 28.101035,
+      "minimum_frontage_m": 17.526563333333335,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T1-B1",
+      "program_spaces": 8,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 28.101035,
+      "minimum_frontage_m": 17.526563333333335,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T1-L1",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 28.101035,
+      "minimum_frontage_m": 17.526563333333335,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T1-L55",
+      "program_spaces": 9,
+      "furnished_rooms": 7,
+      "objects": 96,
+      "minimum_room_depth_m": 28.101035,
+      "minimum_frontage_m": 13.144922500000002,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T1-L56",
+      "program_spaces": 5,
+      "furnished_rooms": 2,
+      "objects": 32,
+      "minimum_room_depth_m": 28.101035,
+      "minimum_frontage_m": 52.57969000000001,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T1-L57",
+      "program_spaces": 11,
+      "furnished_rooms": 9,
+      "objects": 82,
+      "minimum_room_depth_m": 28.101035,
+      "minimum_frontage_m": 9.559943636363638,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-B5",
+      "program_spaces": 11,
+      "furnished_rooms": 8,
+      "objects": 69,
+      "minimum_room_depth_m": 22.941754999999997,
+      "minimum_frontage_m": 11.7474825,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-B4",
+      "program_spaces": 11,
+      "furnished_rooms": 8,
+      "objects": 69,
+      "minimum_room_depth_m": 22.941754999999997,
+      "minimum_frontage_m": 11.7474825,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-B3",
+      "program_spaces": 11,
+      "furnished_rooms": 8,
+      "objects": 72,
+      "minimum_room_depth_m": 22.941754999999997,
+      "minimum_frontage_m": 11.7474825,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-B2",
+      "program_spaces": 8,
+      "furnished_rooms": 5,
+      "objects": 71,
+      "minimum_room_depth_m": 22.941754999999997,
+      "minimum_frontage_m": 15.663310000000001,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-B2M",
+      "program_spaces": 8,
+      "furnished_rooms": 5,
+      "objects": 71,
+      "minimum_room_depth_m": 22.941754999999997,
+      "minimum_frontage_m": 15.663310000000001,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-B1",
+      "program_spaces": 8,
+      "furnished_rooms": 5,
+      "objects": 71,
+      "minimum_room_depth_m": 22.941754999999997,
+      "minimum_frontage_m": 15.663310000000001,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-L1",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 70,
+      "minimum_room_depth_m": 22.941754999999997,
+      "minimum_frontage_m": 15.663310000000001,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-L5",
+      "program_spaces": 10,
+      "furnished_rooms": 8,
+      "objects": 31,
+      "minimum_room_depth_m": 7.470484999999998,
+      "minimum_frontage_m": 11.7474825,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-L55",
+      "program_spaces": 10,
+      "furnished_rooms": 8,
+      "objects": 70,
+      "minimum_room_depth_m": 22.941754999999997,
+      "minimum_frontage_m": 11.7474825,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-L56",
+      "program_spaces": 5,
+      "furnished_rooms": 2,
+      "objects": 32,
+      "minimum_room_depth_m": 22.941754999999997,
+      "minimum_frontage_m": 46.98993,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T2-L57",
+      "program_spaces": 11,
+      "furnished_rooms": 9,
+      "objects": 60,
+      "minimum_room_depth_m": 22.941754999999997,
+      "minimum_frontage_m": 8.543623636363636,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T3-B5",
+      "program_spaces": 11,
+      "furnished_rooms": 8,
+      "objects": 37,
+      "minimum_room_depth_m": 15.469325,
+      "minimum_frontage_m": 11.00296,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T3-B4",
+      "program_spaces": 11,
+      "furnished_rooms": 8,
+      "objects": 37,
+      "minimum_room_depth_m": 15.469325,
+      "minimum_frontage_m": 11.00296,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T3-B3",
+      "program_spaces": 11,
+      "furnished_rooms": 8,
+      "objects": 40,
+      "minimum_room_depth_m": 15.469325,
+      "minimum_frontage_m": 11.00296,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T3-B2",
+      "program_spaces": 8,
+      "furnished_rooms": 5,
+      "objects": 43,
+      "minimum_room_depth_m": 15.469325,
+      "minimum_frontage_m": 14.670613333333334,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T3-B2M",
+      "program_spaces": 8,
+      "furnished_rooms": 5,
+      "objects": 43,
+      "minimum_room_depth_m": 15.469325,
+      "minimum_frontage_m": 14.670613333333334,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T3-B1",
+      "program_spaces": 9,
+      "furnished_rooms": 6,
+      "objects": 42,
+      "minimum_room_depth_m": 15.469325,
+      "minimum_frontage_m": 14.670613333333334,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T3-L1",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 43,
+      "minimum_room_depth_m": 15.469325,
+      "minimum_frontage_m": 14.670613333333334,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T3-L56",
+      "program_spaces": 7,
+      "furnished_rooms": 4,
+      "objects": 44,
+      "minimum_room_depth_m": 15.469325,
+      "minimum_frontage_m": 22.00592,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "T3-L57",
+      "program_spaces": 11,
+      "furnished_rooms": 9,
+      "objects": 34,
+      "minimum_room_depth_m": 15.469325,
+      "minimum_frontage_m": 8.002152727272728,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "SHOPPES-B5",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 34.8,
+      "minimum_frontage_m": 42.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "SHOPPES-B4",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 34.8,
+      "minimum_frontage_m": 42.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "SHOPPES-B3",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 34.8,
+      "minimum_frontage_m": 42.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "SHOPPES-B2",
+      "program_spaces": 8,
+      "furnished_rooms": 4,
+      "objects": 64,
+      "minimum_room_depth_m": 34.8,
+      "minimum_frontage_m": 63.8,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "SHOPPES-B2M",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 34.8,
+      "minimum_frontage_m": 42.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "SHOPPES-B1",
+      "program_spaces": 8,
+      "furnished_rooms": 4,
+      "objects": 64,
+      "minimum_room_depth_m": 34.8,
+      "minimum_frontage_m": 63.8,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "SHOPPES-L1",
+      "program_spaces": 8,
+      "furnished_rooms": 4,
+      "objects": 64,
+      "minimum_room_depth_m": 34.8,
+      "minimum_frontage_m": 63.8,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "EXPO-B2",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 41.8,
+      "minimum_frontage_m": 38.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "EXPO-B1",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 41.8,
+      "minimum_frontage_m": 38.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "EXPO-L1",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 41.8,
+      "minimum_frontage_m": 38.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "EXPO-L2",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 41.8,
+      "minimum_frontage_m": 38.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "EXPO-L3",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 41.8,
+      "minimum_frontage_m": 38.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "EXPO-L4",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 41.8,
+      "minimum_frontage_m": 38.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "EXPO-L5",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 41.8,
+      "minimum_frontage_m": 38.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "CASINO-B2M",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 31.8,
+      "minimum_frontage_m": 29.2,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "CASINO-L1",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 31.8,
+      "minimum_frontage_m": 29.2,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "CASINO-L2",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 31.8,
+      "minimum_frontage_m": 29.2,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "CASINO-L3",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 31.8,
+      "minimum_frontage_m": 29.2,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "CASINO-L4",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 31.8,
+      "minimum_frontage_m": 29.2,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "THEATRE-B1",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 76,
+      "minimum_room_depth_m": 26.8,
+      "minimum_frontage_m": 26.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "THEATRE-L1",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 26.8,
+      "minimum_frontage_m": 26.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "THEATRE-L2",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 26.8,
+      "minimum_frontage_m": 26.53333333333333,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "MUSEUM-B2",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 31.8,
+      "minimum_frontage_m": 29.2,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "MUSEUM-B1",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 31.8,
+      "minimum_frontage_m": 29.2,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "MUSEUM-L1",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 31.8,
+      "minimum_frontage_m": 29.2,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "MUSEUM-L2",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 31.8,
+      "minimum_frontage_m": 29.2,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    },
+    {
+      "id": "MUSEUM-L3",
+      "program_spaces": 9,
+      "furnished_rooms": 5,
+      "objects": 80,
+      "minimum_room_depth_m": 31.8,
+      "minimum_frontage_m": 29.2,
+      "all_private_layouts_reconstructed": true,
+      "engine_runtime_tested": false
+    }
+  ],
+  "count": 57,
+  "furnished_program_rooms": 323,
+  "objects": 3976,
+  "engine_tests_run": false,
+  "whole_building_verified": false
+}

@@ -1,0 +1,9 @@
+[
+  {
+    "page": "gta-v-made-by-5-ai",
+    "type": "update",
+    "title": "Program-floor factory has a separate static planner and shared physical core",
+    "evidence": "2026-10-28 source-only worker handoff: game/src/world/mbs_interior/program_floor.gd SHA256 3cb21c4ee9c2f67a8c34f62b3cf1b30a6e4ed8c2eafe518a7a7f8501440516d8; loop/singapore-fidelity/program-floors/INTEGRATION.md. Root compile/runtime/push pending at filing proposal.",
+    "snippet": "On2026-10-28 the new MBS program_floor.gd component inherits GuestFloor's nativeE/LOS SwingDoor, persistence and exact core/stair/lift helpers, but its static planner is ProgramFloor.program_plan(record); inherited GuestFloor.plan(record) still accepts guest records only. Raw resort records lack dimensions and therefore use explicitly reconstructed profiles unless the site assembly injects complete geometry. Source-only arithmetic covers57programrecords, not whole-building or runtime acceptance. See program-floors/INTEGRATION.md for root gates, especially the tall L1 void, actual adjacent-level stair rises and recessed roof-pool/L56 clearance."
+  }
+]

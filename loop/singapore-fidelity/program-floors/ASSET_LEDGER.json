@@ -1,0 +1,26 @@
+{
+  "scope": "Existing project sources only; program-floor reconstruction",
+  "source_first_prior_checks": "Consulted existing research/mbs/asset-candidates.json and current gaming-ralph-loops ASSETS.md before adaptation. This worker did not make new catalog/account/acquisition calls or claim no suitable external asset exists.",
+  "external_candidates": [
+    {"source": "Fab", "candidate": "Prior free furniture candidates", "fit_access": "One low-fit sofa candidate; broader pack UE-only, per-listing rights unverified. Not acquired."},
+    {"source": "NVIDIA SimReady", "candidate": "Industrial/logistics catalog", "fit_access": "Potential strong industrial source, but exact package/license/dependencies not acquired or verified; no bulk download or conversion."},
+    {"source": "ThreeJS Assets", "candidate": "Prior armchair/free collection", "fit_access": "Existing ledger reports low-poly style weak for visual target; raw redistribution restricted, account not used. Not acquired."},
+    {"source": "Poly Haven", "candidate": "Prior Marble01 candidate", "fit_access": "Existing ledger identifies CC0 material candidate; no new download. Installed stone remains unverified."}
+  ],
+  "selected_existing": [
+    {"path": "game/src/world/mbs_interior/guest_floor.gd", "use": "Production native E SwingDoor motion/persistence/LOS adapter and fixed core/stair/lift geometry; furniture/material patterns adapted", "provenance": "Existing original project code; no new motion authored"},
+    {"path": "game/src/world/downtown/landmarks/kit.gd", "use": "Existing original mesh and explicit physical collision primitives"},
+    {"path": "game/src/world/downtown/landmarks/looks.gd", "use": "Existing shared material library; cache instances not mutated"},
+    {"path": "game/src/world/downtown/landmarks/realm.gd", "use": "Existing original benches/planter geometry"},
+    {"path": "game/src/world/downtown/canopy.gd", "use": "Existing original shrub mesh/shader; no new animation"},
+    {"path": "game/assets/providers/sedan_clean.glb", "use": "Optional already-delivered static parking dressing, fitted to actual bounds; no provider request", "rights": "Existing private provider source. Public raw redistribution remains UNVERIFIED/restricted; no new blanket MIT or clearance claim. Source absence leaves equipped vacant bays, not an empty program room."}
+  ],
+  "new_authored": "Program layout and original adaptations of existing project primitive/furniture systems; no copied branded fit-out or commissioned artwork",
+  "new_asset_downloads": 0,
+  "new_provider_jobs": 0,
+  "purchases": 0,
+  "uploads": 0,
+  "new_account_actions": 0,
+  "engine_runtime_verified": false,
+  "rendered_visual_quality_accepted": false
+}
