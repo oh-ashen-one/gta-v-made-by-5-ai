@@ -1,0 +1,167 @@
+{
+  "scope": "CPU equation study only; no shader compilation, runtime, render or performance acceptance",
+  "shader_before_sha256": "daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84",
+  "shader_after_sha256": "75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78",
+  "equation_study_script_sha256": "604516792536bea7c5ab7ee7ee0f6ed37b71b23eb66fc9e519b1428c69245cbe",
+  "declared_cap": "h > 0 and length(d.xz + vec2(1e-5)) < 0.4; approximately upper23.6degrees",
+  "outside_cap_exact_field_shading_comparisons": 384,
+  "cap_inside_boundary_samples": 64,
+  "cap_inside_distance_from_boundary": 1e-06,
+  "maximum_cap_boundary_field_shading_difference_from_legacy": 1.0661456162353034e-09,
+  "legacy_shifted_normalize_zero_ray": {
+    "view_ray": [
+      -1e-05,
+      0.9999999999,
+      -1e-05
+    ],
+    "before_defined": false,
+    "after": {
+      "p": [
+        7.3,
+        2.1
+      ],
+      "direction": [
+        0.0,
+        0.0
+      ],
+      "az": 0.5,
+      "density": 0.0,
+      "radial_shadow_samples": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "light": 1.15
+    }
+  },
+  "true_zenith_after": {
+    "p": [
+      7.3000000055651295,
+      2.10000000556513
+    ],
+    "direction": [
+      2.6515879294495527e-09,
+      2.6515879294495527e-09
+    ],
+    "az": 0.5000000018055171,
+    "density": 0.0,
+    "radial_shadow_samples": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "light": 1.15
+  },
+  "convergence_rings": [
+    {
+      "angular_distance_from_true_zenith_degrees": 20.0,
+      "before": {
+        "opposite_x_ray_uv_distance": 4.352829587582942,
+        "azimuth_lighting_range": 0.9997684587660443,
+        "density_range": 0.9759913532591271,
+        "light_range": 1.15,
+        "all_field_and_shading_samples_finite": true
+      },
+      "after": {
+        "opposite_x_ray_uv_distance": 4.104978176205991,
+        "azimuth_lighting_range": 0.9428413440370401,
+        "density_range": 1.0,
+        "light_range": 1.15,
+        "all_field_and_shading_samples_finite": true
+      }
+    },
+    {
+      "angular_distance_from_true_zenith_degrees": 10.0,
+      "before": {
+        "opposite_x_ray_uv_distance": 4.2353209478293365,
+        "azimuth_lighting_range": 0.9997684585292488,
+        "density_range": 0.9669963950550551,
+        "light_range": 1.15,
+        "all_field_and_shading_samples_finite": true
+      },
+      "after": {
+        "opposite_x_ray_uv_distance": 1.7015508526666885,
+        "azimuth_lighting_range": 0.40165949435148024,
+        "density_range": 0.9242763409094381,
+        "light_range": 1.15,
+        "all_field_and_shading_samples_finite": true
+      }
+    },
+    {
+      "angular_distance_from_true_zenith_degrees": 1.5,
+      "before": {
+        "opposite_x_ray_uv_distance": 4.198423839369928,
+        "azimuth_lighting_range": 0.9997684448091717,
+        "density_range": 0.9693623494085628,
+        "light_range": 1.15,
+        "all_field_and_shading_samples_finite": true
+      },
+      "after": {
+        "opposite_x_ray_uv_distance": 0.0515884455651166,
+        "azimuth_lighting_range": 0.012284729154013463,
+        "density_range": 0.0,
+        "light_range": 0.0,
+        "all_field_and_shading_samples_finite": true
+      }
+    },
+    {
+      "angular_distance_from_true_zenith_degrees": 0.1,
+      "before": {
+        "opposite_x_ray_uv_distance": 4.19751743037837,
+        "azimuth_lighting_range": 0.9997653002612188,
+        "density_range": 0.964854287136625,
+        "light_range": 1.15,
+        "all_field_and_shading_samples_finite": true
+      },
+      "after": {
+        "opposite_x_ray_uv_distance": 0.00023906243176445495,
+        "azimuth_lighting_range": 5.693996184735761e-05,
+        "density_range": 0.0,
+        "light_range": 0.0,
+        "all_field_and_shading_samples_finite": true
+      }
+    },
+    {
+      "angular_distance_from_true_zenith_degrees": 0.001,
+      "before": {
+        "opposite_x_ray_uv_distance": 3.3673538079479073,
+        "azimuth_lighting_range": 0.9885475297221082,
+        "density_range": 1.0,
+        "light_range": 1.15,
+        "all_field_and_shading_samples_finite": true
+      },
+      "after": {
+        "opposite_x_ray_uv_distance": 3.583311897097527e-08,
+        "azimuth_lighting_range": 9.414457768919249e-09,
+        "density_range": 0.0,
+        "light_range": 0.0,
+        "all_field_and_shading_samples_finite": true
+      }
+    },
+    {
+      "angular_distance_from_true_zenith_degrees": 1e-05,
+      "before": {
+        "opposite_x_ray_uv_distance": 0.03663221299633317,
+        "azimuth_lighting_range": 0.0033272922397936666,
+        "density_range": 0.0,
+        "light_range": 0.0,
+        "all_field_and_shading_samples_finite": true
+      },
+      "after": {
+        "opposite_x_ray_uv_distance": 3.071510238219525e-10,
+        "azimuth_lighting_range": 8.992284694642194e-11,
+        "density_range": 0.0,
+        "light_range": 0.0,
+        "all_field_and_shading_samples_finite": true
+      }
+    }
+  ],
+  "rendered_capture_inspected": "heli-world-rendered-r1/captures/03_look_up.png",
+  "capture_sha256": "62f85404a4782695d8bcf117c24ed059c77e395d8db6c0d9993577625c490cbb",
+  "notes": [
+    "Legacy epsilon shifts the mathematical normalize-zero ray slightly off true zenith; practical near-zenith rays still sampled a nearly full noise ring.",
+    "Cloud field, radial self-shadow sampling and azimuth-dependent lighting now approach one finite limit together.",
+    "Sun-direction and forward-scattering calculations are unchanged.",
+    "A tiny guard also defines legacy dh where its input is exactlyzero; ordinary defined rays outside the cap retain their old calculation."
+  ]
+}

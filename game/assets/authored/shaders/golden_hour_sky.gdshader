@@ -103,11 +103,30 @@ void sky() {
 	float mu = dot(d, sd);
 	float mup = clamp(mu, 0.0, 1.0);
 
-	vec2 dh = normalize(d.xz + vec2(1e-5));
+	// The legacy azimuth projection remains unchanged outside the overhead
+	// cap. At its pole a nonzero cloud radius sampled an entire noise ring,
+	// stretching clouds into spokes. Collapse the field AND radial shadow
+	// samples smoothly to one point, and remove the view-azimuth lighting bias.
+	vec2 azimuth_ray = d.xz + vec2(1e-5);
+	float azimuth_radius = length(azimuth_ray);
+	vec2 dh = vec2(0.0);
+	if (azimuth_radius > 0.0) {
+		dh = normalize(azimuth_ray);
+	}
 	vec2 sh = normalize(sd.xz + vec2(1e-5));
+	float pole_weight = 1.0;
+	if (h > 0.0) {
+		// Approximately the upper 23.6 degrees of the dome. Using the same
+		// epsilon-shifted radius also regularizes the legacy normalize(0) ray.
+		pole_weight = smoothstep(0.0, 0.4, azimuth_radius);
+	}
+	vec2 cloud_dh = dh * pole_weight;
 	// Clamped: float error can push the dot past -1, and pow() of a negative
 	// base is NaN, which the radiance convolution spreads over the whole map.
 	float az = clamp(dot(dh, sh) * 0.5 + 0.5, 0.0, 1.0);
+	if (pole_weight < 1.0) {
+		az = mix(0.5, az, pole_weight);
+	}
 
 	// Humid tropical gradient: pale blue overhead, a wide warm haze band low
 	// down (warmest toward the sun's azimuth), no saturated cobalt.
@@ -132,7 +151,7 @@ void sky() {
 		// Round 4: closer to a true cloud-plane projection, so cumulus are
 		// big overhead and flatten into stacked banks toward the horizon.
 		float r = pow(h + 0.06, -0.62) * 0.68;
-		vec2 p = dh * r * cloud_scale + vec2(7.3, 2.1);
+		vec2 p = cloud_dh * r * cloud_scale + vec2(7.3, 2.1);
 		float D = density(p);
 		if (D > 0.002) {
 			// Self-shadowing from the cloud's own density field. Density
@@ -141,9 +160,9 @@ void sky() {
 			// and the sun means the far, shaded side. Both darken; the free
 			// upper silhouette and the sun-facing edge stay bright.
 			float step_v = 0.10;
-			float up1 = density(p - dh * step_v);
-			float up2 = density(p - dh * step_v * 2.6);
-			float dn1 = density(p + dh * step_v * 1.4);
+			float up1 = density(p - cloud_dh * step_v);
+			float up2 = density(p - cloud_dh * step_v * 2.6);
+			float dn1 = density(p + cloud_dh * step_v * 1.4);
 			float sn1 = density(p + sh * 0.10);
 			float sn2 = density(p + sh * 0.26);
 			float above = up1 * 0.55 + up2 * 0.45;
