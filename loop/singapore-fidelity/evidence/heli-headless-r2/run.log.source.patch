@@ -1,0 +1,621 @@
+diff --git a/game/src/actors/helicopter.gd b/game/src/actors/helicopter.gd
+index ecbe693..d925130 100644
+--- a/game/src/actors/helicopter.gd
++++ b/game/src/actors/helicopter.gd
+@@ -7,6 +7,14 @@ const MAX_TILT := 0.45
+ const LIFT := 26.0
+ const GRAVITY := 12.0
+ const MAX_FORWARD := 38.0
++const MAX_DESCENT_SPEED := 22.0
++const LANDING_SINK_SPEED := 0.9
++const VERTICAL_ACCELERATION := 30.0
++const VERTICAL_BRAKING := 38.0
++const LANDING_BRAKING := 30.0
++const CAMERA_PITCH_LIMIT := deg_to_rad(89.0)
++const CAMERA_DEFAULT_PITCH := deg_to_rad(-18.0)
++const CAMERA_DISTANCE := 12.0
+ 
+ var pilot_is_player := false
+ var health := 100.0
+@@ -30,14 +38,14 @@ const AIR_LIMIT_SOUTH := 820.0
+ const AIR_CEILING := 420.0
+ var _envelope_notice := 0.0
+ var _impact_cooldown := 0.0
+-# opus55 helicopter piece: rotor spool, presentation FX and a lagged chase rig.
++# Rotor spool/presentation FX are separate from the user-controlled orbit camera.
+ var _fx: HeliFX = null
+ var rotor_spin := 0.15
+ var _cam_ready := false
+ var _cam_yaw := 0.0
+-var _cam_pos := Vector3.ZERO
+-var _cam_roll := 0.0
+-var _cam_look := Vector3.ZERO
++var _cam_pitch := CAMERA_DEFAULT_PITCH
++var _cam_distance := CAMERA_DISTANCE
++var _camera_probe := SphereShape3D.new()
+ var _prev_forward_speed := 0.0
+ var _accel_pitch := 0.0
+ var _hover_clock := 0.0
+@@ -46,9 +54,6 @@ var _agl := 0.0
+ var _touch_dip := 0.0
+ var _was_on_floor := true
+ var last_touchdown_speed := 0.0 ## vertical speed (m/s) at the last skid contact
+-var _cam_vel := Vector3.ZERO
+-var _cam_yaw_vel := 0.0
+-var _cam_drag := Vector3.ZERO
+ 
+ func _ready() -> void:
+ 	add_to_group("vehicles")
+@@ -59,6 +64,7 @@ func _ready() -> void:
+ 	# or a pedestrian as a moving platform.
+ 	platform_floor_layers = 1
+ 	platform_wall_layers = 0
++	_camera_probe.radius = 0.3
+ 	_build()
+ 
+ func _build() -> void:
+@@ -177,8 +183,7 @@ func _build() -> void:
+ 	shape.position = Vector3(0.0, 1.6, 0.4)
+ 	add_child(shape)
+ 
+-	# Chase camera: a free (top-level) camera that trails the aircraft with
+-	# positional and yaw lag and leans into banks (see _update_chase_camera).
++	# World-space orbit: aircraft pitch/bank never rotates the pilot's view.
+ 	_camera = Camera3D.new()
+ 	_camera.name = "ChaseCamera"
+ 	_camera.fov = 64.0
+@@ -418,15 +423,20 @@ func _pilot_input(delta: float) -> void:
+ 	var bob := (sin(_hover_clock * 1.3) * 0.06 + sin(_hover_clock * 2.9) * 0.025) * (1.0 - near_ground) if not is_on_floor() else 0.0
+ 	_touch_dip = move_toward(_touch_dip, 0.0, delta * 0.45)
+ 	_body.position.y = lerpf(_body.position.y, bob - _touch_dip, clampf(delta * 6.0, 0.0, 1.0))
+-	# Collective with inertia. Neutral lift holds altitude; descent is capped
+-	# by a ground cushion so the last few metres always settle gently.
+-	var target_vertical_speed := _lift_input * (12.0 if _lift_input >= 0.0 else 7.0)
++	# Fast commanded descent, with a stopping-distance envelope only near
++	# physical support. At altitude Shift now reaches22m/s, rather than7.
++	var target_vertical_speed := _lift_input * (12.0 if _lift_input >= 0.0 else MAX_DESCENT_SPEED)
++	var clearance := maxf(_agl - 0.55 - maxf(-velocity.y, 0.0) * delta, 0.0)
++	var safe_sink := minf(MAX_DESCENT_SPEED, sqrt(LANDING_SINK_SPEED * LANDING_SINK_SPEED + 2.0 * LANDING_BRAKING * clearance))
+ 	if target_vertical_speed < 0.0:
+-		target_vertical_speed = maxf(target_vertical_speed, -lerpf(0.9, 7.0, clampf((_agl - 0.5) / 9.0, 0.0, 1.0)))
+-	# the collective arrests a climb or sink faster than it builds one, so a
+-	# released stick settles into a hover without bouncing
++		target_vertical_speed = maxf(target_vertical_speed, -safe_sink)
++	# Release arrests vertical travel; it does not spring through the hover.
+ 	var arresting := absf(target_vertical_speed) < absf(velocity.y)
+-	velocity.y = move_toward(velocity.y, target_vertical_speed, (22.0 if arresting else 15.0) * delta)
++	velocity.y = move_toward(velocity.y, target_vertical_speed, (VERTICAL_BRAKING if arresting else VERTICAL_ACCELERATION) * delta)
++	if velocity.y < 0.0:
++		# Enforce the landing cushion even when a low-rate tick crosses the
++		# stopping envelope. This affects the final metres, not high flight.
++		velocity.y = maxf(velocity.y, -safe_sink)
+ 	if is_on_floor() and _lift_input <= 0.0:
+ 		velocity.y = minf(velocity.y, 0.0)
+ 
+@@ -452,63 +462,46 @@ func _process(delta: float) -> void:
+ 	else:
+ 		_cam_ready = false
+ 
+-## Chase camera with weight. Position and heading ride damped springs
+-## (slightly under-damped), so in a banking turn the camera swings wide,
+-## lags, then settles back in behind; it sits high enough above the rotor
+-## plane that the blurred disc always reads, pulls back and widens with
+-## speed, rolls with part of the bank and dips on a hard touchdown.
+-## A ray keeps it out of buildings.
++## The view belongs to the player, not to the aircraft's yaw/bank/bob.
++## Mouse motion is applied once per event. With no new input the orientation
++## remains fixed in world space, including while turning or touching down.
++func _ensure_orbit_ready() -> void:
++	if _cam_ready: return
++	_cam_ready = true
++	_cam_yaw = rotation.y
++	_cam_pitch = CAMERA_DEFAULT_PITCH
++	_cam_distance = CAMERA_DISTANCE
++
++func apply_look_motion(relative: Vector2, sensitivity: float, invert_y: bool) -> void:
++	if not pilot_is_player or Game.simulation_paused: return
++	_ensure_orbit_ready()
++	_cam_yaw = wrapf(_cam_yaw - relative.x * sensitivity, -PI, PI)
++	var dy := relative.y * sensitivity * (-1.0 if invert_y else 1.0)
++	_cam_pitch = clampf(_cam_pitch - dy, -CAMERA_PITCH_LIMIT, CAMERA_PITCH_LIMIT)
++
+ func _update_chase_camera(delta: float) -> void:
+-	var ground_speed := Vector2(velocity.x, velocity.z).length()
+-	var speed_frac := clampf(ground_speed / MAX_FORWARD, 0.0, 1.0)
+-	if not _cam_ready:
+-		_cam_yaw = rotation.y
+-		_cam_yaw_vel = 0.0
+-		_cam_ready = true
+-		_cam_pos = _chase_target(ground_speed) - global_position
+-		_cam_vel = Vector3.ZERO
+-		_cam_drag = Vector3.ZERO
+-		_cam_look = global_position + Vector3.UP * 3.4
+-		_cam_roll = 0.0
+-	var steps := clampi(int(ceil(delta / 0.0167)), 1, 6)
+-	var h := minf(delta, 0.1) / float(steps)
+-	for _i in steps:
+-		# heading spring: omega 4.5 rad/s, damping 0.65 (swings wide, settles)
+-		var yaw_err := wrapf(rotation.y - _cam_yaw, -PI, PI)
+-		_cam_yaw_vel += (yaw_err * 20.0 - _cam_yaw_vel * 5.8) * h
+-		_cam_yaw += _cam_yaw_vel * h
+-		# offset spring in the aircraft frame (no steady-state lag at speed):
+-		# omega 3.4 rad/s, damping 0.78, height stiffer
+-		var err := (_chase_target(ground_speed) - global_position) - _cam_pos
+-		var acc := Vector3(err.x * 11.56, err.y * 20.0, err.z * 11.56) - Vector3(_cam_vel.x * 5.3, _cam_vel.y * 7.2, _cam_vel.z * 5.3)
+-		_cam_vel += acc * h
+-		_cam_pos += _cam_vel * h
+-	# a touch of world-space drag: the camera trails a little further when the
+-	# aircraft accelerates hard and catches up as speed settles
+-	_cam_drag = _cam_drag.lerp(Vector3(velocity.x, velocity.y * 0.5, velocity.z) * -0.025, clampf(delta * 1.5, 0.0, 1.0))
++	_ensure_orbit_ready()
++	var orbit := Basis(Vector3.UP, _cam_yaw) * Basis(Vector3.RIGHT, _cam_pitch)
+ 	var pivot := global_position + Vector3.UP * 3.2
+-	var cam_pos := global_position + _cam_pos + _cam_drag
+-	var space := get_world_3d().direct_space_state
+-	var query := PhysicsRayQueryParameters3D.create(pivot, cam_pos, 1)
++	var desired_distance := CAMERA_DISTANCE
++	var query := PhysicsShapeQueryParameters3D.new()
++	query.shape = _camera_probe
++	query.transform = Transform3D(Basis.IDENTITY, pivot)
++	query.motion = orbit.z * desired_distance
++	query.collision_mask = 1
+ 	query.exclude = [get_rid()]
+-	var hit := space.intersect_ray(query)
+-	if not hit.is_empty():
+-		cam_pos = (hit["position"] as Vector3) + (pivot - cam_pos).normalized() * 0.6
+-	var look := global_position + Vector3.UP * 3.4 + Vector3(velocity.x, 0.0, velocity.z) * 0.12
+-	_cam_look = _cam_look.lerp(look, clampf(delta * 4.5, 0.0, 1.0))
+-	_camera.global_position = cam_pos + Vector3.DOWN * _touch_dip * 0.6
+-	if cam_pos.distance_to(_cam_look) > 0.5:
+-		_camera.look_at(_cam_look, Vector3.UP)
+-	_cam_roll = lerpf(_cam_roll, _body.rotation.z * 0.38, clampf(delta * 2.0, 0.0, 1.0))
+-	_camera.rotate_object_local(Vector3.FORWARD, -_cam_roll)
+-	_camera.fov = lerpf(_camera.fov, 62.0 + 8.0 * speed_frac, clampf(delta * 1.2, 0.0, 1.0))
+-
+-func _chase_target(ground_speed: float) -> Vector3:
+-	var back := Basis(Vector3.UP, _cam_yaw) * Vector3(0.0, 0.0, 1.0)
+-	var distance := 10.2 + ground_speed * 0.03
+-	# rises with speed so the forward-tilted rotor disc is still seen from above
+-	var height := 6.8 + ground_speed * 0.085 + clampf(absf(velocity.y) * 0.08, 0.0, 1.2)
+-	return global_position + back * distance + Vector3.UP * height
++	var fractions := get_world_3d().direct_space_state.cast_motion(query)
++	if fractions.size() >= 1 and float(fractions[0]) < 1.0:
++		desired_distance = maxf(0.25, desired_distance * float(fractions[0]) - 0.05)
++	# Collision closes distance immediately; clearing it eases monotonically
++	# outward. There is no vertical spring, touchdown dip or bank roll that
++	# can fight mouse look and oscillate the view.
++	if desired_distance < _cam_distance:
++		_cam_distance = desired_distance
++	else:
++		_cam_distance = lerpf(_cam_distance, desired_distance, 1.0 - exp(-8.0 * maxf(delta, 0.0)))
++	_camera.global_transform = Transform3D(orbit, pivot + orbit.z * _cam_distance)
++	_camera.fov = 64.0
+ 
+ ## Snapshot of the presentation layer for regression checks.
+ func presentation_state() -> Dictionary:
+@@ -520,6 +513,8 @@ func presentation_state() -> Dictionary:
+ 		"camera_current": _camera.current,
+ 		"camera_distance": offset.length(),
+ 		"camera_height": offset.y,
++		"camera_orbit_yaw": _cam_yaw,
++		"camera_orbit_pitch": _cam_pitch,
+ 		"camera_behind": offset.dot(-global_transform.basis.z) < 0.0,
+ 		"wash": _fx.wash_intensity if _fx != null else 0.0,
+ 		"wash_visible": _fx != null and _fx.wash_intensity > 0.03}
+@@ -548,6 +543,8 @@ func interact(player: Node) -> void:
+ 	player.busy = true
+ 	player.visible = false
+ 	player.global_position = global_position
++	_cam_ready = false
++	_ensure_orbit_ready()
+ 	_camera.current = true
+ 	Game.set_mode(Game.MODE_HELI)
+ 	Sfx.start_rotor()
+@@ -561,30 +558,19 @@ func exit_vehicle(player: Node) -> void:
+ 	if not is_on_floor():
+ 		Events.notify.emit("Land before exiting.", "warn")
+ 		return
+-	# Wave M (downtown-map): exits anywhere on playable land at street, plaza
+-	# or bridge-deck level, or on a downtown helipad (DowntownPlan rule);
+-	# rooftops, water and land outside the map stay refused.
+-	if not DowntownPlan.heli_exit_allowed(global_position):
+-		if disabled:
+-			# A downed aircraft out of bounds cannot fly back: recover the pilot
+-			# to the last safe point instead of trapping them (release critic).
+-			Events.notify.emit("Aircraft down outside the city - recovered to your last safe point.", "warn")
+-			player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
+-			return
+-		if DowntownPlan.is_land(global_position):
+-			Events.notify.emit("Land at street level or on a helipad to exit.", "warn")
+-		else:
+-			Events.notify.emit("Restricted landing area - fly back over the city to exit.", "warn")
+-		return
+-	var side := global_transform.basis.x
+-	var forward := -global_transform.basis.z
+-	var offsets: Array[Vector3] = [side * 2.8, -side * 2.8, forward * 4.0, -forward * 4.0]
+-	var exit_pos := Car.find_safe_exit(self, offsets)
++	# A roof is a valid landing site when the aircraft is physically
++	# supported and a walkable, unblocked space exists beside it. No map or
++	# pad whitelist: elevated roofs and platforms use the same geometry test.
++	var exit_pos := landing_exit_position()
+ 	if exit_pos == Vector3.ZERO:
+ 		Events.notify.emit("No clear landing-side exit. Reposition the helicopter.", "warn")
+ 		return
+ 	pilot_is_player = false
+ 	player.global_position = exit_pos
++	player.velocity = Vector3.ZERO
++	if player is CollisionObject3D:
++		(player as CollisionObject3D).collision_layer = 2
++		(player as CollisionObject3D).collision_mask = Player.COLLIDE_MASK
+ 	player.yaw = rotation.y
+ 	player.rotation.y = rotation.y
+ 	player.visible = true
+@@ -596,8 +582,26 @@ func exit_vehicle(player: Node) -> void:
+ 	Events.vehicle_exited.emit(self)
+ 	Events.notify.emit("Landed and on foot.", "info")
+ 
++## Returns a supported capsule position on the same landing surface.
++## Car's shared query checks floor normal, capsule volume and the route out.
++## Here we also reject underwater support and a drop off a narrow roof edge.
++func landing_exit_position() -> Vector3:
++	if not is_on_floor(): return Vector3.ZERO
++	var side := global_transform.basis.x
++	var forward := -global_transform.basis.z
++	var offsets: Array[Vector3] = [side * 2.8, -side * 2.8, forward * 4.0, -forward * 4.0]
++	for offset in offsets:
++		var one_offset: Array[Vector3] = [offset]
++		var candidate := Car.find_safe_exit(self, one_offset)
++		if candidate == Vector3.ZERO: continue
++		if candidate.y <= DowntownPlan.WATER_LEVEL + 0.15: continue
++		if absf(candidate.y - global_position.y) > 1.5: continue
++		return candidate
++	return Vector3.ZERO
++
+ func force_exit() -> void:
+ 	pilot_is_player = false
++	_cam_ready = false
+ 	_yaw_input = 0.0
+ 	_pitch_input = 0.0
+ 	_lift_input = 0.0
+diff --git a/game/src/actors/npc.gd b/game/src/actors/npc.gd
+index 5ace40a..165091b 100644
+--- a/game/src/actors/npc.gd
++++ b/game/src/actors/npc.gd
+@@ -14,6 +14,8 @@ const PURSUE_SPEED := 3.4
+ 
+ var state: int = State.WALK
+ var health := 100.0
++## Reserve actors must stay inert even if a direct signal/API reaches them.
++var pooled_inactive := false
+ var is_police := false
+ var is_hostile := false
+ var lane: Array = []
+@@ -216,6 +218,7 @@ func _near_hide() -> void:
+ 	character_visual.visible = c.distance_squared_to(cam.global_position) > NEAR_HIDE * NEAR_HIDE
+ 
+ func _physics_process(delta: float) -> void:
++	if pooled_inactive: return
+ 	if _near_cull and character_visual != null:
+ 		_near_hide()
+ 	if Game.simulation_paused:
+@@ -693,7 +696,7 @@ func _animate(delta: float, speed: float) -> void:
+ var _walk_phase := 0.0
+ 
+ func take_damage(amount: float, from_position: Vector3, by_player: bool = true) -> void:
+-	if state == State.DEAD:
++	if pooled_inactive or state == State.DEAD:
+ 		return
+ 	health -= amount
+ 	if character_visual != null and character_visual.loaded and health > 0:
+@@ -708,7 +711,7 @@ func take_damage(amount: float, from_position: Vector3, by_player: bool = true)
+ 		_die(by_player)
+ 
+ func _panic(from_position: Vector3) -> void:
+-	if state == State.DEAD:
++	if pooled_inactive or state == State.DEAD:
+ 		return
+ 	if character_visual != null and character_visual.loaded:
+ 		character_visual.set_seated(false)
+@@ -753,7 +756,7 @@ func _die(by_player: bool) -> void:
+ 			Events.toast("Officer down.", "bad")
+ 
+ func _on_shot_fired(origin: Vector3, _dir: Vector3, _weapon_id: String) -> void:
+-	if state == State.DEAD:
++	if pooled_inactive or state == State.DEAD:
+ 		return
+ 	var d := global_position.distance_to(origin)
+ 	if d > 26.0:
+diff --git a/game/src/actors/player.gd b/game/src/actors/player.gd
+index 3d8f939..7692278 100644
+--- a/game/src/actors/player.gd
++++ b/game/src/actors/player.gd
+@@ -327,13 +327,7 @@ func _unhandled_input(event: InputEvent) -> void:
+ 	if event.is_action_pressed("walk_toggle"):
+ 		_walk_toggle = not _walk_toggle
+ 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+-		var mm := event as InputEventMouseMotion
+-		var sens: float = MOUSE_SENS * float(Game.settings.get("mouse_sensitivity", 1.0))
+-		yaw -= mm.relative.x * sens
+-		var dy: float = mm.relative.y * sens
+-		if bool(Game.settings.get("invert_y", false)):
+-			dy = -dy
+-		pitch = clampf(pitch - dy, -1.25, 0.85)
++		_apply_mouse_look((event as InputEventMouseMotion).relative)
+ 	# Preserve rapid native press/release events even when a slow frame ends
+ 	# after both. Scripted action_press still uses the held-state fallback.
+ 	if not (event is InputEventKey and event.echo):
+@@ -343,6 +337,18 @@ func _unhandled_input(event: InputEvent) -> void:
+ 	# NOTE: fire/reload/weapon/interact are polled in _process so that scripted
+ 	# input (Input.action_press) reaches the same code path as a human press.
+ 
++## One mouse path for native events and deterministic camera regressions.
++## Occupied helicopter look must not mutate the hidden on-foot camera.
++func _apply_mouse_look(relative: Vector2) -> void:
++	var sens: float = MOUSE_SENS * float(Game.settings.get("mouse_sensitivity", 1.0))
++	var inverted := bool(Game.settings.get("invert_y", false))
++	if current_vehicle is Helicopter:
++		(current_vehicle as Helicopter).apply_look_motion(relative, sens, inverted)
++		return
++	yaw -= relative.x * sens
++	var dy := relative.y * sens * (-1.0 if inverted else 1.0)
++	pitch = clampf(pitch - dy, -1.25, 0.85)
++
+ func _physics_process(delta: float) -> void:
+ 	if has_meta("_qa_motion_probe"):
+ 		set_meta("_qa_motion_state", {"busy": busy, "vehicle": current_vehicle.name if current_vehicle else "none",
+diff --git a/game/src/systems/traffic_manager.gd b/game/src/systems/traffic_manager.gd
+index f3d569f..3bcbb2c 100644
+--- a/game/src/systems/traffic_manager.gd
++++ b/game/src/systems/traffic_manager.gd
+@@ -16,6 +16,8 @@ var nodes: Array[Vector3] = []
+ var cars: Array[Car] = []
+ var peds: Array[NPC] = []
+ var police_cars: Array[Car] = []
++## Permanent aviation staff are real actors, separate from transient responders.
++var airfield_officers: Array[NPC] = []
+ var parking_stats := {"road_available": 0, "road_spawned": 0, "courtyard_spawned": 0}
+ var _ped_lanes: Array = []
+ var _player: Node = null
+@@ -55,6 +57,7 @@ func setup(w: WorldBuilder, player: Node) -> void:
+ 	_spawn_traffic()
+ 	_spawn_peds()
+ 	_warm_officer_pool()
++	_spawn_airfield_officers()
+ 	_update_signal_lamps(true)
+ 	_setup_street_life()
+ 
+@@ -88,13 +91,9 @@ func _warm_officer_pool() -> void:
+ 		var officer := NPC.new()
+ 		officer.is_police = true
+ 		officer.state = NPC.State.IDLE
+-		officer.visible = false
+-		officer.collision_layer = 0
+-		officer.collision_mask = 0
+-		officer.set_physics_process(false)
+-		officer.set_process(false)
+ 		add_child(officer)
+-		officer.global_position = Vector3(0.0, -80.0 - i * 3.0, 0.0)
++		# _ready assigns NPC collision defaults; park AFTER it has run.
++		_park_officer(officer, Vector3(0.0, -80.0 - i * 3.0, 0.0))
+ 		_officer_pool.append(officer)
+ 	for i in POLICE_CAR_POOL_SIZE:
+ 		var pc := Car.new()
+@@ -111,42 +110,128 @@ func _warm_officer_pool() -> void:
+ 	_officer_pool_ready = true
+ 	print("[profile] officer_pool_build_us=", Time.get_ticks_usec() - started, " size=", _officer_pool.size(), " police_cars=", _police_car_pool.size())
+ 
+-## Activate one pooled officer at `pos`. Returns null when the pool is empty, so
+-## the caller falls back to construction rather than silently spawning nothing.
+-func _take_officer(pos: Vector3) -> NPC:
+-	var officer: NPC = null
+-	while not _officer_pool.is_empty():
+-		var candidate: NPC = _officer_pool.pop_back()
+-		if is_instance_valid(candidate):
+-			officer = candidate
+-			break
+-	if officer == null:
+-		return null
++class AirfieldOfficer extends NPC:
++	var post_position := Vector3.ZERO
++	func _walk(delta: float) -> void:
++		# Stand down by physically returning to the post, never by teleporting.
++		if Vector2(global_position.x - post_position.x, global_position.z - post_position.z).length() > 0.8:
++			_move_towards(post_position, WALK_SPEED, delta)
++		else:
++			velocity.x = 0.0
++			velocity.z = 0.0
++			state = State.IDLE
++			idle_time = 3600.0
++
++func _supported_officer_position(requested: Vector3) -> Vector3:
++	var space := get_world_3d().direct_space_state
++	if space == null: return Vector3.INF
++	# Keep the requested elevation: rooftop responders must not be forced to
++	# y=0.4, and airfield posts may be on the raised pad or apron.
++	var ray := PhysicsRayQueryParameters3D.create(requested + Vector3.UP * 8.0, requested - Vector3.UP * 16.0, 1)
++	var hit := space.intersect_ray(ray)
++	if hit.is_empty() or (hit["normal"] as Vector3).y < cos(deg_to_rad(60.0)): return Vector3.INF
++	var feet: Vector3 = hit["position"] + Vector3.UP * 0.04
++	var capsule := CapsuleShape3D.new()
++	capsule.radius = 0.32
++	capsule.height = 1.72
++	var clearance := PhysicsShapeQueryParameters3D.new()
++	clearance.shape = capsule
++	clearance.transform = Transform3D(Basis.IDENTITY, feet + Vector3.UP * 0.88)
++	clearance.collision_mask = 1 | 4 | 8
++	if not space.intersect_shape(clearance, 1).is_empty(): return Vector3.INF
++	return feet
++
++func _spawn_airfield_officers() -> void:
++	# Physics broadphase must contain the completed world's colliders before
++	# projecting the posts onto their real supported surfaces.
++	await get_tree().physics_frame
++	if not is_inside_tree() or not is_instance_valid(world): return
++	for i in 2:
++		var key := "aviation_officer_%d" % i
++		if not world.locations.has(key): continue
++		var pos := _supported_officer_position(world.locations[key])
++		if pos == Vector3.INF:
++			push_warning("No supported clear floor at airfield officer post: " + key)
++			continue
++		var officer := AirfieldOfficer.new()
++		officer.name = "AirfieldOfficer%d" % i
++		officer.is_police = true
++		officer.state = NPC.State.IDLE
++		officer.idle_time = 3600.0
++		officer.post_position = pos
++		add_child(officer)
++		officer.global_position = pos
++		officer.rotation.y = -1.1
++		officer.add_to_group("airfield_officers")
++		airfield_officers.append(officer)
++
++func _update_airfield_officers(wanted: int) -> void:
++	if _player == null: return
++	for officer in airfield_officers:
++		if not is_instance_valid(officer) or officer.state == NPC.State.DEAD: continue
++		if wanted <= 0:
++			if officer.state == NPC.State.PURSUE: officer.state = NPC.State.WALK
++			continue
++		if officer.global_position.distance_to(_player.controlled_actor().global_position) <= 42.0 and _has_sight(officer.global_position):
++			officer.state = NPC.State.PURSUE
++			Game.player_seen = true
++			Game.last_seen_position = _player.controlled_actor().global_position
++			Game.search_timer = 14.0
++
++func _park_officer(officer: NPC, pos: Vector3) -> void:
++	officer.pooled_inactive = true
++	officer.state = NPC.State.IDLE
++	officer.velocity = Vector3.ZERO
++	officer.visible = false
++	officer.collision_layer = 0
++	officer.collision_mask = 0
++	officer.set_physics_process(false)
++	officer.set_process(false)
++	officer.process_mode = Node.PROCESS_MODE_DISABLED
++	officer.global_position = pos
++
++func _activate_officer(officer: NPC, pos: Vector3) -> void:
+ 	officer.global_position = pos
++	officer.velocity = Vector3.ZERO
+ 	officer.health = 100.0
+ 	officer.state = NPC.State.PURSUE
+ 	officer.idle_time = 0.0
+ 	officer.panic_time = 0.0
++	officer.fire_timer = 0.0
++	officer._sim_accum = 0.0
++	officer._idle_acc = 0.0
++	officer._half_acc = 0.0
++	officer._far_off = Vector3.ZERO
++	officer._root_base = Vector3.INF
++	for key in ["_combat_state", "_flinch_until", "_los_at", "_los"]:
++		if officer.has_meta(key): officer.remove_meta(key)
++	if officer.body_root != null:
++		officer.body_root.transform = Transform3D(Basis.IDENTITY, Vector3(0, 0.02, 0))
++	if officer.character_visual != null:
++		officer.character_visual.position = Vector3.ZERO
++		officer.character_visual.reset_alive()
++	officer.pooled_inactive = false
+ 	officer.collision_layer = 4
+ 	officer.collision_mask = 1 | 4
+ 	officer.visible = true
++	officer.process_mode = Node.PROCESS_MODE_INHERIT
+ 	officer.set_physics_process(true)
+ 	officer.set_process(true)
+-	if officer.character_visual != null:
+-		officer.character_visual.reset_alive()
+-	return officer
+ 
+-## Return a responder to the pool instead of freeing and rebuilding it.
++## Activate a reserved responder only on a supported, unobstructed surface.
++func _take_officer(pos: Vector3) -> NPC:
++	var supported := _supported_officer_position(pos)
++	if supported == Vector3.INF: return null
++	while not _officer_pool.is_empty():
++		var officer: NPC = _officer_pool.pop_back()
++		if is_instance_valid(officer):
++			_activate_officer(officer, supported)
++			return officer
++	return null
++
+ func _recycle_officer(officer: NPC) -> void:
+-	if not is_instance_valid(officer):
+-		return
+-	officer.state = NPC.State.IDLE
+-	officer.visible = false
+-	officer.collision_layer = 0
+-	officer.collision_mask = 0
+-	officer.set_physics_process(false)
+-	officer.set_process(false)
+-	officer.global_position = Vector3(0.0, -80.0 - _officer_pool.size() * 3.0, 0.0)
++	if not is_instance_valid(officer) or _officer_pool.has(officer): return
++	_park_officer(officer, Vector3(0.0, -80.0 - _officer_pool.size() * 3.0, 0.0))
+ 	_officer_pool.append(officer)
+ 
+ func _take_police_car(pos: Vector3, target: Vector3) -> Car:
+@@ -595,6 +680,7 @@ func _update_police(delta: float) -> void:
+ 		if not is_instance_valid(peds[index]):
+ 			peds.remove_at(index)
+ 	Game.player_seen = false
++	_update_airfield_officers(wanted)
+ 	if wanted <= 0:
+ 		Sfx.set_siren(false, 1.0)
+ 		# responders stand down and are cleaned up when the search ends (LAW-05)
+@@ -639,20 +725,20 @@ func _update_police(delta: float) -> void:
+ 		_police_timer = 4.5
+ 		var angle := _rng.randf_range(0.0, TAU)
+ 		var pos: Vector3 = _player.controlled_actor().global_position + Vector3(cos(angle), 0.0, sin(angle)) * _rng.randf_range(28.0, 45.0)
+-		pos.y = 0.4
+-		var activation_started := Time.get_ticks_usec()
+-		var officer := _take_officer(pos)
+-		if officer == null:
+-			# Pool exhausted (more responders than the cap allows): build once.
+-			officer = NPC.new()
+-			officer.is_police = true
+-			add_child(officer)
+-			officer.global_position = pos
+-			officer.state = NPC.State.PURSUE
+-		var activation_us := Time.get_ticks_usec() - activation_started
+-		_officer_activation_us.append(activation_us)
+-		print("[profile] officer_activation_us=", activation_us, " pooled=", activation_us < 20000, " live=", live_officers)
+-		peds.append(officer)
++		var supported := _supported_officer_position(pos)
++		if supported != Vector3.INF:
++			var activation_started := Time.get_ticks_usec()
++			var officer := _take_officer(pos)
++			if officer == null:
++				# Pool exhausted (more responders than the cap allows): build once.
++				officer = NPC.new()
++				officer.is_police = true
++				add_child(officer)
++				_activate_officer(officer, supported)
++			var activation_us := Time.get_ticks_usec() - activation_started
++			_officer_activation_us.append(activation_us)
++			print("[profile] officer_activation_us=", activation_us, " pooled=", activation_us < 20000, " live=", live_officers)
++			peds.append(officer)
+ 	Sfx.set_siren(wanted > 0 and not police_cars.is_empty(), 1.0 + 0.1 * float(wanted))
+ 	# vehicle pursuit: one active pursuit car, respawned when it is wrecked
+ 	# or has fallen far behind (B13)
+diff --git a/game/src/world/world_builder.gd b/game/src/world/world_builder.gd
+index 6af3a30..790182a 100644
+--- a/game/src/world/world_builder.gd
++++ b/game/src/world/world_builder.gd
+@@ -711,13 +711,11 @@ func _far_shore_landmarks() -> void:
+ ## Aviation compound: hangar, helipads, perimeter fence.
+ func _aviation_block(centre: Vector3) -> void:
+ 	preload("res://src/world/aviation_grounds.gd").build(_world_root, centre) # wave P: turf, apron tarmac, hedges
+-	# ground staff (static figures from the generated officer set)
+-	if AssetLibrary.has_asset("officer_clean.glb"):
+-		for i: int in 2:
+-			var guard := AssetLibrary.instantiate("officer_clean.glb", _world_root)
+-			if guard != null:
+-				guard.position = centre + Vector3(18.0 + i * 6.0, 0.0, 10.0 + i * 3.0)
+-				guard.rotation.y = -1.1
++	# TrafficManager owns actual grounded, damageable officers at these posts.
++	# The former two raw officer GLBs had no actor/hitbox and a centred mesh
++	# origin, so they appeared buried and could never react to bullets.
++	for i: int in 2:
++		locations["aviation_officer_%d" % i] = centre + Vector3(18.0 + i * 6.0, 0.6, 10.0 + i * 3.0)
+ 	# hangar
+ 	_solid_box(Vector3(38.0, 12.0, 24.0), centre + Vector3(-30.0, 6.0, -20.0), Palette.corrugated(Palette.METAL.lightened(0.3)))
+ 	var hangar_roof := MeshInstance3D.new()

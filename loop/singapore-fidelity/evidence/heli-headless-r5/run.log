@@ -1,0 +1,74 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[street-prop-colliders] 0 prop boxes on layer 4096
+[heli-fidelity] PASS production occupancy is exclusive 
+[heli-fidelity] PASS shared mouse path changes helicopter orbit 
+[heli-fidelity] PASS helicopter look leaves hidden foot view alone 
+[heli-fidelity] PASS free orbit reaches cardinal 0 
+[heli-fidelity] PASS free orbit reaches cardinal 1 
+[heli-fidelity] PASS free orbit reaches cardinal 2 
+[heli-fidelity] PASS free orbit reaches cardinal 3 
+[heli-fidelity] PASS look up reaches near vertical 
+[heli-fidelity] PASS look down reaches near vertical 
+[heli-fidelity] PASS invert Y applies to aircraft look 
+[heli-fidelity] PASS no-input view remains world-stable through turns and banks 
+[heli-fidelity] PASS no vertical camera spring oscillation at30/60/144fps peak_to_peak_y=0.000000
+[heli-fidelity] PASS orbit horizon has no aircraft bank roll 
+[heli-fidelity] PASS pause prevents aircraft look mutation 
+[heli-fidelity] PASS orbit camera stays in front of intervening geometry 
+[heli-fidelity] PASS camera sphere does not penetrate wall 
+[heli-fidelity] PASS cleared camera distance recovers without oscillation 
+[heli-fidelity] PASS occupied pivot and endpoint retain a known-clear pose 
+[heli-fidelity] PASS first occupied-pivot frame finds a clear side without losing requested yaw 
+[heli-fidelity] PASS reverse sweep exits an initially overlapping pivot 
+[heli-fidelity] PASS clearing pivot obstruction restores requested orbit 
+[heli-fidelity] PASS Shift reaches a substantially faster high-altitude descent velocity_y=-22.000 altitude=163.919
+[heli-fidelity] PASS releasing descent arrests sink into hover 
+[heli-fidelity] PASS fast descent still lands without damage y=-0.300 health=100.0
+[heli-fidelity] PASS landing cushion keeps touchdown gentle touchdown_mps=0.900
+[heli-fidelity] PASS ordinary ground E exit restores foot control 
+[heli-fidelity] PASS ordinary rooftop physically supports aircraft heading0 
+[heli-fidelity] PASS unmarked roof has a supported clear exit heading0 
+[heli-fidelity] PASS E exits an unmarked roof heading0 
+[heli-fidelity] PASS roof exit leaves live supported capsule heading0 
+[heli-fidelity] PASS on-foot movement remains usable on roof heading0 first0.25s=0.219m total1s=2.793m speed=3.600 floor=true contacts=["/root/HelicopterFidelityTest/OrdinaryRoofFixture", "/root/HelicopterFidelityTest/OrdinaryRoofFixture", "/root/HelicopterFidelityTest/OrdinaryRoofFixture"]
+[heli-fidelity] PASS ordinary rooftop physically supports aircraft heading90 
+[heli-fidelity] PASS unmarked roof has a supported clear exit heading90 
+[heli-fidelity] PASS E exits an unmarked roof heading90 
+[heli-fidelity] PASS roof exit leaves live supported capsule heading90 
+[heli-fidelity] PASS on-foot movement remains usable on roof heading90 first0.25s=0.219m total1s=2.793m speed=3.600 floor=true contacts=["/root/HelicopterFidelityTest/OrdinaryRoofFixture", "/root/HelicopterFidelityTest/OrdinaryRoofFixture", "/root/HelicopterFidelityTest/OrdinaryRoofFixture"]
+[heli-fidelity] PASS ordinary rooftop physically supports aircraft heading180 
+[heli-fidelity] PASS unmarked roof has a supported clear exit heading180 
+[heli-fidelity] PASS E exits an unmarked roof heading180 
+[heli-fidelity] PASS roof exit leaves live supported capsule heading180 
+[heli-fidelity] PASS on-foot movement remains usable on roof heading180 first0.25s=0.219m total1s=2.793m speed=3.600 floor=true contacts=["/root/HelicopterFidelityTest/OrdinaryRoofFixture", "/root/HelicopterFidelityTest/OrdinaryRoofFixture", "/root/HelicopterFidelityTest/OrdinaryRoofFixture"]
+[heli-fidelity] PASS ordinary rooftop physically supports aircraft heading-90 
+[heli-fidelity] PASS unmarked roof has a supported clear exit heading-90 
+[heli-fidelity] PASS E exits an unmarked roof heading-90 
+[heli-fidelity] PASS roof exit leaves live supported capsule heading-90 
+[heli-fidelity] PASS on-foot movement remains usable on roof heading-90 first0.25s=0.219m total1s=2.793m speed=3.600 floor=true contacts=["/root/HelicopterFidelityTest/OrdinaryRoofFixture", "/root/HelicopterFidelityTest/OrdinaryRoofFixture", "/root/HelicopterFidelityTest/OrdinaryRoofFixture"]
+[heli-fidelity] PASS blocked roof capsule paths produce no exit 
+[heli-fidelity] PASS blocked roof exit retains pilot ownership 
+[heli-fidelity] PASS native damage disables occupied aircraft on blocked roof 
+[heli-fidelity] PASS actual E recovers disabled pilot from blocked roof 
+[heli-fidelity] PASS wreck recovery preserves player health and mission on blocked roof 
+[heli-fidelity] REPAIR_DIAGNOSTIC reboard_immediate {"disabled":false,"exit_position":"(0.0, 0.0, 0.0)","floor":false,"heli_position":"(80.0, 100.6816, 0.0)","heli_velocity":"(0.0, -2.6, 0.0)","interact_armed":true,"interact_held":false,"landed":false,"lift":0.0,"mode":2,"pilot":true,"player_busy":false,"player_vehicle":"RealHelicopter:<CharacterBody3D#79440119598>"}
+[heli-fidelity] REPAIR_DIAGNOSTIC reboard_after_physics {"disabled":false,"exit_position":"(0.0, 0.0, 0.0)","floor":false,"heli_position":"(80.0, 100.6138, 0.0)","heli_velocity":"(0.0, 0.0, 0.0)","interact_armed":true,"interact_held":false,"landed":false,"lift":0.0,"mode":2,"pilot":true,"player_busy":false,"player_vehicle":"RealHelicopter:<CharacterBody3D#79440119598>"}
+[heli-fidelity] REPAIR_DIAGNOSTIC hover_exit_refused {"disabled":false,"exit_position":"(0.0, 0.0, 0.0)","floor":false,"heli_position":"(80.0, 100.6138, 0.0)","heli_velocity":"(0.0, 0.0, 0.0)","interact_armed":true,"interact_held":false,"landed":false,"lift":0.0,"mode":2,"pilot":true,"player_busy":false,"player_vehicle":"RealHelicopter:<CharacterBody3D#79440119598>"}
+[heli-fidelity] PASS healthy repaired hover still refuses unsupported E exit 
+[heli-fidelity] REPAIR_DIAGNOSTIC native_setdown {"disabled":false,"exit_position":"(82.8, 100.08, 0.0)","floor":true,"heli_position":"(80.0, 99.70016, 0.0)","heli_velocity":"(0.0, 0.0, 0.0)","interact_armed":true,"interact_held":false,"landed":true,"lift":-0.589534995049203,"mode":2,"pilot":true,"player_busy":false,"player_vehicle":"RealHelicopter:<CharacterBody3D#79440119598>"}
+[heli-fidelity] PASS native Shift sets repaired fixture down on its roof { "heli_position": "(80.0, 99.70016, 0.0)", "heli_velocity": "(0.0, 0.0, 0.0)", "floor": true, "landed": true, "pilot": true, "disabled": false, "lift": -0.5895349950492, "exit_position": "(82.8, 100.08, 0.0)", "mode": 2, "player_vehicle": "RealHelicopter:<CharacterBody3D#79440119598>", "player_busy": false, "interact_held": false, "interact_armed": true }
+[heli-fidelity] REPAIR_DIAGNOSTIC after_exit_key {"disabled":false,"exit_position":"(0.0, 0.0, 0.0)","floor":false,"heli_position":"(80.0, 100.9649, 0.0)","heli_velocity":"(0.0, -0.6, 0.0)","interact_armed":true,"interact_held":false,"landed":false,"lift":-0.313303067303944,"mode":0,"pilot":false,"player_busy":false,"player_vehicle":"<null>"}
+[heli-fidelity] PASS removing physical obstruction permits healthy E exit { "heli_position": "(80.0, 100.9649, 0.0)", "heli_velocity": "(0.0, -0.6, 0.0)", "floor": false, "landed": false, "pilot": false, "disabled": false, "lift": -0.31330306730394, "exit_position": "(0.0, 0.0, 0.0)", "mode": 0, "player_vehicle": "<null>", "player_busy": false, "interact_held": false, "interact_armed": true }
+[heli-fidelity] PASS narrow roof supports aircraft but has no safe foot space 
+[heli-fidelity] PASS unsafe narrow-roof exit retains occupancy 
+[heli-fidelity] PASS native damage disables occupied aircraft on narrow roof 
+[heli-fidelity] PASS actual E recovers disabled pilot from narrow roof 
+[heli-fidelity] PASS wreck recovery preserves player health and mission on narrow roof 
+[heli-fidelity] PASS submerged support never creates an underwater foot exit 
+[heli-fidelity] PASS underwater exit refusal preserves occupancy 
+[heli-fidelity] PASS native damage disables occupied aircraft on submerged support 
+[heli-fidelity] PASS actual E recovers disabled pilot from submerged support 
+[heli-fidelity] PASS wreck recovery preserves player health and mission on submerged support 
+[heli-fidelity] PASS unsupported airborne exit remains refused 
+[heli-fidelity] RESULT {"checks":65,"elapsed_s":50.502,"failures":[],"fixture_assisted":true,"metrics":{"cardinal_yaws":[0.0,1.57079637050629,-3.14159250259398,-1.57079660892487],"descent_in_first2s_m":36.0811920166016,"high_descent_speed_mps":21.9999294281006,"repair_after_exit_key":{"disabled":false,"exit_position":"(0.0, 0.0, 0.0)","floor":false,"heli_position":"(80.0, 100.9649, 0.0)","heli_velocity":"(0.0, -0.6, 0.0)","interact_armed":true,"interact_held":false,"landed":false,"lift":-0.313303067303944,"mode":0,"pilot":false,"player_busy":false,"player_vehicle":"<null>"},"repair_hover_exit_refused":{"disabled":false,"exit_position":"(0.0, 0.0, 0.0)","floor":false,"heli_position":"(80.0, 100.6138, 0.0)","heli_velocity":"(0.0, 0.0, 0.0)","interact_armed":true,"interact_held":false,"landed":false,"lift":0.0,"mode":2,"pilot":true,"player_busy":false,"player_vehicle":"RealHelicopter:<CharacterBody3D#79440119598>"},"repair_native_setdown":{"disabled":false,"exit_position":"(82.8, 100.08, 0.0)","floor":true,"heli_position":"(80.0, 99.70016, 0.0)","heli_velocity":"(0.0, 0.0, 0.0)","interact_armed":true,"interact_held":false,"landed":true,"lift":-0.589534995049203,"mode":2,"pilot":true,"player_busy":false,"player_vehicle":"RealHelicopter:<CharacterBody3D#79440119598>"},"repair_reboard_after_physics":{"disabled":false,"exit_position":"(0.0, 0.0, 0.0)","floor":false,"heli_position":"(80.0, 100.6138, 0.0)","heli_velocity":"(0.0, 0.0, 0.0)","interact_armed":true,"interact_held":false,"landed":false,"lift":0.0,"mode":2,"pilot":true,"player_busy":false,"player_vehicle":"RealHelicopter:<CharacterBody3D#79440119598>"},"repair_reboard_immediate":{"disabled":false,"exit_position":"(0.0, 0.0, 0.0)","floor":false,"heli_position":"(80.0, 100.6816, 0.0)","heli_velocity":"(0.0, -2.6, 0.0)","interact_armed":true,"interact_held":false,"landed":false,"lift":0.0,"mode":2,"pilot":true,"player_busy":false,"player_vehicle":"RealHelicopter:<CharacterBody3D#79440119598>"},"roof_walk_-90":{"contacts":["/root/HelicopterFidelityTest/OrdinaryRoofFixture","/root/HelicopterFidelityTest/OrdinaryRoofFixture","/root/HelicopterFidelityTest/OrdinaryRoofFixture"],"first_step_m":0.219370186328888,"one_second_m":2.7927553653717},"roof_walk_0":{"contacts":["/root/HelicopterFidelityTest/OrdinaryRoofFixture","/root/HelicopterFidelityTest/OrdinaryRoofFixture","/root/HelicopterFidelityTest/OrdinaryRoofFixture"],"first_step_m":0.219461962580681,"one_second_m":2.79276823997498},"roof_walk_180":{"contacts":["/root/HelicopterFidelityTest/OrdinaryRoofFixture","/root/HelicopterFidelityTest/OrdinaryRoofFixture","/root/HelicopterFidelityTest/OrdinaryRoofFixture"],"first_step_m":0.21935185790062,"one_second_m":2.79276919364929},"roof_walk_90":{"contacts":["/root/HelicopterFidelityTest/OrdinaryRoofFixture","/root/HelicopterFidelityTest/OrdinaryRoofFixture","/root/HelicopterFidelityTest/OrdinaryRoofFixture"],"first_step_m":0.219443202018738,"one_second_m":2.79273247718811},"steady_camera_vertical_range_m":0.0},"mode":"full","native_human_input":false,"rendered_appearance_acceptance":false}

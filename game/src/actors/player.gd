@@ -327,13 +327,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("walk_toggle"):
 		_walk_toggle = not _walk_toggle
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		var mm := event as InputEventMouseMotion
-		var sens: float = MOUSE_SENS * float(Game.settings.get("mouse_sensitivity", 1.0))
-		yaw -= mm.relative.x * sens
-		var dy: float = mm.relative.y * sens
-		if bool(Game.settings.get("invert_y", false)):
-			dy = -dy
-		pitch = clampf(pitch - dy, -1.25, 0.85)
+		_apply_mouse_look((event as InputEventMouseMotion).relative)
 	# Preserve rapid native press/release events even when a slow frame ends
 	# after both. Scripted action_press still uses the held-state fallback.
 	if not (event is InputEventKey and event.echo):
@@ -342,6 +336,18 @@ func _unhandled_input(event: InputEvent) -> void:
 				_press_queue[action] = true
 	# NOTE: fire/reload/weapon/interact are polled in _process so that scripted
 	# input (Input.action_press) reaches the same code path as a human press.
+
+## One mouse path for native events and deterministic camera regressions.
+## Occupied helicopter look must not mutate the hidden on-foot camera.
+func _apply_mouse_look(relative: Vector2) -> void:
+	var sens: float = MOUSE_SENS * float(Game.settings.get("mouse_sensitivity", 1.0))
+	var inverted := bool(Game.settings.get("invert_y", false))
+	if current_vehicle is Helicopter:
+		(current_vehicle as Helicopter).apply_look_motion(relative, sens, inverted)
+		return
+	yaw -= relative.x * sens
+	var dy := relative.y * sens * (-1.0 if inverted else 1.0)
+	pitch = clampf(pitch - dy, -1.25, 0.85)
 
 func _physics_process(delta: float) -> void:
 	if has_meta("_qa_motion_probe"):
