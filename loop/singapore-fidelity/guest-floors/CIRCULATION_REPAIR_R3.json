@@ -1,0 +1,24 @@
+{
+  "method": "Static horizontal exact axis-aligned segment/AABB distance; not runtime acceptance",
+  "suite_units_checked": 775,
+  "approach_segments_checked": 2325,
+  "full_production_radius_m": 0.36,
+  "query_margin_m": 0.01,
+  "minimum_distance_to_furnished_obstacle_m": 0.5399999999999998,
+  "blocked_segments": [],
+  "old_r3_bar_bounds_world_xz": {
+    "x": [
+      -18.65592,
+      -17.65592
+    ],
+    "z": [
+      -3.925,
+      -3.275
+    ]
+  },
+  "old_stop_distance_to_bar_m": 0.3610322938464076,
+  "old_waypoint_distance_to_bar_m": 0.028996484269647925,
+  "old_r3_evidence": "/private/tmp/singapore-fidelity/mbs-guest-east1-r3/run.log",
+  "new_runtime_pass": false,
+  "full_building_completed": false
+}

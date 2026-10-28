@@ -1,0 +1,13 @@
+{
+  "status": "OPTIONAL_POLISH_REQUESTS_NOT_GENERATED",
+  "provider_route": "Tripo browser through parent only",
+  "worker_provider_jobs": 0,
+  "blocking_layout": false,
+  "requests": [
+    {"id":"MBS-SMALL-TEA-001","description":"Original luxury hotel tea and coffee tray, ceramic teapot and two cups, small clear glass jar and folded linen. Cream ceramic, dark timber, brushed brass details. No logos, lettering or imitation of a proprietary hotel object.","size_m":[0.45,0.22,0.30],"target_triangles_max":5000,"texture_max":1024,"use":"Repeated minibar/desk dressing; instanced per streamed guest floor"},
+    {"id":"MBS-SMALL-AMENITY-002","description":"Unbranded cream stone bathroom amenity tray with three small neutral pump bottles, soap dish and neatly folded hand towel; realistic hotel furnishing, no words/logos.","size_m":[0.32,0.20,0.18],"target_triangles_max":4000,"texture_max":1024,"use":"Bathroom counter dressing, collision handled by the counter"},
+    {"id":"MBS-SMALL-LUGGAGE-003","description":"Original compact hotel luggage stand, dark walnut folding frame with black straps and a single closed unbranded graphite suitcase. No wheels or moving parts required. Neutral contemporary luxury style.","size_m":[0.70,0.85,0.50],"target_triangles_max":6000,"texture_max":1024,"use":"Optional wardrobe-side dressing; preserve room entry aisle"}
+  ],
+  "required_delivery": ["actual_export_path","job_page","credits_used","hash","rights_and_marks_review","LOD_cleanup_state"],
+  "do_not": ["UseTripoAPI","ClaimGeneratedWithoutExports","DuplicateExistingJobs","UseMeshy","StartPaidCustomuseJob"]
+}

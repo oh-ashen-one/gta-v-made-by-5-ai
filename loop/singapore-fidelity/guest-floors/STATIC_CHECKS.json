@@ -1,0 +1,29 @@
+{
+  "method": "Static whole-inventory dimensional consistency only; no engine/visual claim",
+  "guest_floor_recipes": 159,
+  "unit_recipes": 1850,
+  "suite_recipes": 775,
+  "minimum_room_frontage_m": 4.293838048780488,
+  "minimum_room_depth_m": 5.979915,
+  "minimum_suite_bedroom_width_m": 3.8036509897810222,
+  "fixed_vertical_core_axes": 18,
+  "all_core_axes_identical_across_63_levels_per_tower": true,
+  "minimum_core_approach_floor_depth_m": 2.979915,
+  "inventory_sha256": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
+  "generator_repeated_identical_sha256": true,
+  "void_cap_runtime_test_pending": true,
+  "actual_production_player_walk_pending": true,
+  "program_factory_integration_pending": true,
+  "all1850runtime_verified": false,
+  "full_building_completed": false,
+  "minimum_suite_window_aisle_m": 1.0686509897810224,
+  "suite_bedrooms": 804,
+  "suite_variant_matrix_represented": [
+    "east:1",
+    "west:1",
+    "east:2",
+    "west:2",
+    "east:3",
+    "west:3"
+  ]
+}

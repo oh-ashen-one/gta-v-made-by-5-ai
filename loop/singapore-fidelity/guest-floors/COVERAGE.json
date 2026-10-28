@@ -1,0 +1,74 @@
+{
+  "source_status": "FROZEN_FOR_PARENT_COMPILE_CRITIQUE_AND_RUNTIME",
+  "worker_engines": 0,
+  "worker_gpu": 0,
+  "worker_git_mutations": 0,
+  "current_private_asbuilt_verified": false,
+  "allguestfloorrecipes_materiallyimplemented": true,
+  "all1850rooms_runtime_verified": false,
+  "program_modules_built_by_worker": false,
+  "source_frame_integration_built_by_worker": false,
+  "full_building_completed": false,
+  "allmetric_private_geometry_is_reconstruction": true,
+  "source_sha256": {
+    "game/data/mbs-interior/generate_inventory.py": "019bfe1bf715ec38ceb95524e9837983791e70b8ac0ab7222435df59ab41b069",
+    "game/data/mbs-interior/inventory.json": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
+    "game/src/world/mbs_interior/inventory.gd": "470bfe6da66fc4a510f2fbb683d245b046c3593c9d7157c9c0d8d9b6347905eb",
+    "game/src/world/mbs_interior/guest_floor.gd": "757e5d32158429414f3c0fbce472382611a494d87ef3895fa93f62a67a728631",
+    "game/src/systems/fidelity_tests/mbs_guest_floor_test.gd": "9bb6a00ede3a0639e6537e5b16230d7676ca4a07b4c45b61f418313a9c03d437",
+    "game/src/systems/fidelity_tests/mbs_guest_floor_test.tscn": "cae05541416df9e43c8bc7e23cef03b64ec63f6259e29e610bf43791419df280"
+  },
+  "production_interaction_adapter": "interactables + interact(actor) + can_interact + prompt_text; leaf-centre collision origin and production LOS",
+  "suite_layout_correction": {
+    "suite_units": 775,
+    "reconstructed_suite_bedrooms": 804,
+    "unsourced_bedroom_counts_reallocated": 99,
+    "full_king_bed_width_m": 1.95,
+    "bedframe_width_m": 2.11,
+    "complete_bed_and_nightstands_width_m": 2.51,
+    "minimum_window_aisle_m": 1.0686509897810224,
+    "threshold_m": 0.74,
+    "native_E_and_physical_runtime_verified": false
+  },
+  "retained_runtime_failures": [
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-guest-east1-r1/run.log",
+      "failure": "variant selector mismatch; no traversal"
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-guest-east1-r2/run.log",
+      "failure": "opened-roomdoor capsule sweep and continuous walking",
+      "native_room_E_gate_passed_before_failure": true,
+      "runtime_acceptance": false
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-guest-east1-r3/run.log",
+      "failure": "furnished bathroom approach blocked by social bar",
+      "atomic_door_pose_and_opened_capsule_passed_before_failure": true,
+      "runtime_acceptance": false
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-guest-east1-r4/run.log",
+      "failure": "QA direct opposite-core walk crossed guest-room party wall",
+      "native_room_bath_bedroom_linen_E_gates_passed_before_failure": true,
+      "runtime_acceptance": false
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-guest-east1-r5/run.log",
+      "failure": "exact-position lift assertion and stair return onto missing next-floor support",
+      "native_E_all_six_paths_and_stair_ascent_passed_before_failure": true,
+      "runtime_acceptance": false,
+      "complete_failed_source_tree_recoverable": false
+    }
+  ],
+  "door_pose_correction": "Independent angle integration and one complete Transform3D submission; physics sync/collision preserved; fresh runtime pending",
+  "foyer_circulation_repair": "Keep solid bar/dining/coffee furniture clear of real cross-gallery and side bath aisle; fullcapsule presweeps; stricter0.10m corner arrival; static775suite/2325segment audit only",
+  "public_circulation_route": "Pure same-wing main-corridor/endbay waypoints; private-room shortcuts refused; fullcapsule presweeps and actualwalking; fresh runtime pending",
+  "r6_pending": {
+    "next_actual_inventory_core_receiving_interface_loaded_in_fixture": true,
+    "full_adjacent_floor_or_building_claim": false,
+    "old_stair_and_native_E_thresholds_retained": true,
+    "perphysics_lift_motion_residual_bound": "production safe_margin + float noise; existing0.02m transaction/step bounds retained",
+    "root_commit_before_next_run_required": true
+  }
+}

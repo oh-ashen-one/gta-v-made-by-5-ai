@@ -1,0 +1,97 @@
+{
+  "method": "All-recipe static dimensions, not engine evidence",
+  "suite_units": 775,
+  "suite_bedrooms": 804,
+  "suite_case_counts": {
+    "west:1": 369,
+    "east:1": 381,
+    "east:2": 9,
+    "west:2": 12,
+    "east:3": 1,
+    "west:3": 3
+  },
+  "minimum_bedroom_width_m": 3.8036509897810222,
+  "minimum_actual_window_aisle_m": 1.0686509897810224,
+  "bed_width_fixed_m": 1.95,
+  "bedframe_width_fixed_m": 2.11,
+  "nightstands_have_physical_colliders": true,
+  "required_clearance_m": 0.74,
+  "reallocated_unsourced_bedroom_count_units": 99,
+  "selected_worst_case_recipes": {
+    "west:1": {
+      "case": "west:1",
+      "floor_id": "T2-L41",
+      "unit_id": "R-T2-L41-02",
+      "bedrooms": 1,
+      "bedroom_width_m": 4.6316549999999985,
+      "minimum_window_aisle_m": 1.8966549999999986,
+      "bed_width_m": 1.95,
+      "bedframe_width_m": 2.11,
+      "whole_bed_and_nightstands_m": 2.51,
+      "runtime_verified": false
+    },
+    "east:1": {
+      "case": "east:1",
+      "floor_id": "T3-L47",
+      "unit_id": "R-T3-L47-01",
+      "bedrooms": 1,
+      "bedroom_width_m": 4.135306666666666,
+      "minimum_window_aisle_m": 1.400306666666666,
+      "bed_width_m": 1.95,
+      "bedframe_width_m": 2.11,
+      "whole_bed_and_nightstands_m": 2.51,
+      "runtime_verified": false
+    },
+    "east:2": {
+      "case": "east:2",
+      "floor_id": "T3-L24",
+      "unit_id": "R-T3-L24-09",
+      "bedrooms": 2,
+      "bedroom_width_m": 3.8036509897810222,
+      "minimum_window_aisle_m": 1.0686509897810224,
+      "bed_width_m": 1.95,
+      "bedframe_width_m": 2.11,
+      "whole_bed_and_nightstands_m": 2.51,
+      "runtime_verified": false
+    },
+    "west:2": {
+      "case": "west:2",
+      "floor_id": "T3-L13",
+      "unit_id": "R-T3-L13-08",
+      "bedrooms": 2,
+      "bedroom_width_m": 3.8036509897810222,
+      "minimum_window_aisle_m": 1.0686509897810224,
+      "bed_width_m": 1.95,
+      "bedframe_width_m": 2.11,
+      "whole_bed_and_nightstands_m": 2.51,
+      "runtime_verified": false
+    },
+    "east:3": {
+      "case": "east:3",
+      "floor_id": "T1-L54",
+      "unit_id": "R-T1-L54-03",
+      "bedrooms": 3,
+      "bedroom_width_m": 3.9359661818181824,
+      "minimum_window_aisle_m": 1.2009661818181825,
+      "bed_width_m": 1.95,
+      "bedframe_width_m": 2.11,
+      "whole_bed_and_nightstands_m": 2.51,
+      "runtime_verified": false
+    },
+    "west:3": {
+      "case": "west:3",
+      "floor_id": "T1-L54",
+      "unit_id": "R-T1-L54-10",
+      "bedrooms": 3,
+      "bedroom_width_m": 3.9359661818181824,
+      "minimum_window_aisle_m": 1.2009661818181825,
+      "bed_width_m": 1.95,
+      "bedframe_width_m": 2.11,
+      "whole_bed_and_nightstands_m": 2.51,
+      "runtime_verified": false
+    }
+  },
+  "all_six_cases_runtime_verified": false,
+  "native_E_runtime_verified": false,
+  "full_building_completed": false
+}

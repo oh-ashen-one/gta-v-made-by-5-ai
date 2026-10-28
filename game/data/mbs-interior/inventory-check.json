@@ -1,0 +1,12 @@
+{
+  "units": 1850,
+  "suites": 775,
+  "standard_units": 1075,
+  "guest_floors": 159,
+  "hotel_floor_records": 189,
+  "resort_program_floor_records": 27,
+  "physical_connection_records": 1150,
+  "orphaned_floor_ids": [],
+  "inventory_sha256": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
+  "scope": "Deterministic inventory/data checks only; no engine or complete-building claim"
+}
