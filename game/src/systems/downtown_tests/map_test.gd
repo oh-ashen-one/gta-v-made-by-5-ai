@@ -90,11 +90,11 @@ func run(world: WorldBuilder, suite: Node) -> void:
 		nodes.size() >= 40 and reach and (g.get("links", []) as Array).size() >= 4 and bool(g.get("left_hand", false)) and not world.downtown_ped_lanes.is_empty() and world.traffic_nodes.size() == 25,
 		"nodes=%d edges=%d links=%d reach=%s peds=%d" % [nodes.size(), edges.size(), (g.get("links", []) as Array).size(), reach, world.downtown_ped_lanes.size()])
 	# 4. helicopter exit rule
-	var allowed := DowntownPlan.heli_exit_allowed(Vector3(-580, 0.6, -618)) and DowntownPlan.heli_exit_allowed(Vector3(205, 0.3, -662)) \
-		and DowntownPlan.heli_exit_allowed(Vector3(-430, 0.2, 50)) and DowntownPlan.heli_exit_allowed(Vector3(0.4, 0.3, -329.6)) and DowntownPlan.heli_exit_allowed(Vector3(240, 0.3, 240))
-	var refused := not DowntownPlan.heli_exit_allowed(Vector3(-150, -0.5, -500)) and not DowntownPlan.heli_exit_allowed(Vector3(-430, 60.0, 50)) and not DowntownPlan.heli_exit_allowed(Vector3(950, 0.2, 0))
+	var allowed := DowntownPlan.is_marked_landing_hint(Vector3(-580, 0.6, -618)) and DowntownPlan.is_marked_landing_hint(Vector3(205, 0.3, -662)) \
+		and DowntownPlan.is_marked_landing_hint(Vector3(-430, 0.2, 50)) and DowntownPlan.is_marked_landing_hint(Vector3(0.4, 0.3, -329.6)) and DowntownPlan.is_marked_landing_hint(Vector3(240, 0.3, 240))
+	var refused := not DowntownPlan.is_marked_landing_hint(Vector3(-150, -0.5, -500)) and not DowntownPlan.is_marked_landing_hint(Vector3(-430, 60.0, 50)) and not DowntownPlan.is_marked_landing_hint(Vector3(950, 0.2, 0))
 	var pads := world.locations.has("helipad_ns_square") and world.locations.has("helipad_the_lawn") and world.locations.has("helipad_esplanade_park") and world.locations.has("helipad_gardens_east")
-	suite._check("downtown-map: helicopter may land and exit on downtown streets and the four new pads; water, rooftops and off-map refused", allowed and refused and pads, "allowed=%s refused=%s pads=%s" % [allowed, refused, pads])
+	suite._check("downtown-map: legacy ground/painted landing hints are distinct from geometry exit permission", allowed and refused and pads, "allowed=%s refused=%s pads=%s" % [allowed, refused, pads])
 	# 5. physical edges: a walker meets a barrier at every PLAYABLE edge
 	var edge_ok := true
 	var edge_detail := ""

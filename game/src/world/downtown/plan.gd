@@ -17,7 +17,7 @@ extends RefCounted
 ## Rect2 values are (x_min, z_min, width_x, depth_z) on the ground plane.
 ## Loading this file changes nothing in game; only pieces act on it.
 
-const PLAN_VERSION := "Astra-6 R1 2026-10-25"
+const PLAN_VERSION := "Singapore fidelity R1 2026-10-28; geographic migration pending"
 
 const WATER_LEVEL := -0.9
 const QUAY_TOP := 0.3
@@ -258,9 +258,9 @@ const PROMENADES := {
 const WALK_LOOP := ["west_shore_promenade", "fullerton_peninsula_walk", "jubilee_bridge", "esplanade_waterfront", "marina_promenade", "helix_bridge", "bayfront_event_plaza", "mbfc_waterfront"]
 
 ## ---------------------------------------------------------------- helicopter
-## Landing pads. Ground-level exits are allowed anywhere on playable land
-## (see heli_exit_allowed); rooftop exits only on pads with "rooftop": true and
-## a working descent (lift/stair interaction) provided by the owning piece.
+## Legacy gameplay landing markers and navigation hints.
+## They do not authorize or forbid exits: Helicopter validates actual physical
+## landing support and foot clearance on any roof, as requested28Oct2026.
 const HELIPADS := {
 	"aviation_primary": {"pos": Vector3(240.0, 0.3, 240.0), "radius": 16.0, "status": "existing"},
 	"promenade_secondary": {"pos": Vector3(0.0, 0.3, -337.0), "radius": 11.0, "status": "existing"},
@@ -268,7 +268,7 @@ const HELIPADS := {
 	"the_lawn": {"pos": Vector3(205.0, 0.3, -662.0), "radius": 14.0, "status": "new"},
 	"esplanade_park": {"pos": Vector3(-625.0, 0.3, -250.0), "radius": 12.0, "status": "new"},
 	"gardens_east": {"pos": Vector3(345.0, 0.3, -1030.0), "radius": 12.0, "status": "new"},
-	"skypark": {"pos": Vector3(-63.0, 200.0, -698.0), "radius": 5.0, "exit_radius": 2.5, "status": "public", "rooftop": true},
+	"skypark": {"pos": Vector3(-63.0, 200.0, -698.0), "radius": 5.0, "hint_radius": 2.5, "status": "public", "rooftop": true},
 }
 const GROUND_EXIT_MAX_Y := 4.5   # bridge decks are 2.4-3.6 m
 
@@ -362,8 +362,9 @@ static func is_land(p: Vector3) -> bool:
 static func in_air_envelope(p: Vector3) -> bool:
 	return AIR.has_point(Vector2(p.x, p.z)) and p.y <= AIR_CEILING
 
-## Exit rule for the helicopter (wired by downtown-map in helicopter.gd).
-static func heli_exit_allowed(p: Vector3) -> bool:
+## Legacy marker/ground-navigation hint only; never a physics permission.
+## A false value on an unmarked roof must not prevent a supported safe exit.
+static func is_marked_landing_hint(p: Vector3) -> bool:
 	if not is_land(p):
 		return false
 	for key in HELIPADS:
@@ -371,7 +372,7 @@ static func heli_exit_allowed(p: Vector3) -> bool:
 		if pad["status"] == "reserved":
 			continue
 		var c: Vector3 = pad["pos"]
-		if Vector2(p.x - c.x, p.z - c.z).length() <= float(pad.get("exit_radius", float(pad["radius"]) + 4.0)) and absf(p.y - c.y) < 3.0:
+		if Vector2(p.x - c.x, p.z - c.z).length() <= float(pad.get("hint_radius", float(pad["radius"]) + 4.0)) and absf(p.y - c.y) < 3.0:
 			return true
 	return p.y <= GROUND_EXIT_MAX_Y
 

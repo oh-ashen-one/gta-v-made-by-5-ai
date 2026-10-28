@@ -59,10 +59,10 @@ func _run() -> void:
 		return
 	check("remote and invalid station denied", not access.can_use_station("ground") and not access.can_use_station("missing"))
 	check("ground arrival has floor and capsule clearance", access.destination_clear(Access.ground_position()))
-	check("strict rooftop exit permits center", DowntownPlan.heli_exit_allowed(Access.pad_position()))
-	check("strict rooftop exit refuses deck edge", not DowntownPlan.heli_exit_allowed(Access.pad_position() + Vector3(0, 0, 3)))
-	check("other rooftop and map escape refused", not DowntownPlan.heli_exit_allowed(Vector3(-118, 200, -705)) and not DowntownPlan.heli_exit_allowed(Vector3(5000, 200, 5000)))
-	check("existing ground pad behavior retained", DowntownPlan.heli_exit_allowed(DowntownPlan.HELIPADS.ns_square.pos + Vector3(18, 0, 0)))
+	check("painted rooftop marker hint includes center", DowntownPlan.is_marked_landing_hint(Access.pad_position()))
+	check("painted marker hint excludes adjacent unmarked deck (not exit refusal)", not DowntownPlan.is_marked_landing_hint(Access.pad_position() + Vector3(0, 0, 3)))
+	check("other roofs and off-map points are not marked hints", not DowntownPlan.is_marked_landing_hint(Vector3(-118, 200, -705)) and not DowntownPlan.is_marked_landing_hint(Vector3(5000, 200, 5000)))
+	check("existing ground navigation hints retained", DowntownPlan.is_marked_landing_hint(DowntownPlan.HELIPADS.ns_square.pos + Vector3(18, 0, 0)))
 	check("roof arrival has floor and capsule clearance", access.destination_clear(Access.roof_position()))
 	await place(Vector3(-325.0, 0.15, -632.0))
 	check("north promenade entry ramp crosses without jump", await walk_to(Vector3(-310.0, 0.4, -632.0)))
@@ -197,7 +197,7 @@ func _heli_checks() -> void:
 		cases.append({"heading": degrees, "offset": direction * radius, "allowed": true, "label": "boundary %.2fm heading %d" % [radius, degrees]})
 	for degrees in [0, 90, 180, 270]:
 		var direction := Vector3(cos(deg_to_rad(degrees)), 0, sin(deg_to_rad(degrees)))
-		cases.append({"heading": degrees, "offset": direction * 2.6, "allowed": false, "label": "outside 2.5m boundary %d" % degrees})
+		cases.append({"heading": degrees, "offset": direction * 2.6, "allowed": true, "label": "adjacent unmarked deck %d" % degrees})
 	for sample in cases:
 		# Explicit cleanup after a refused-exit case. Never counted as traversal.
 		if player.current_vehicle != null:
@@ -281,7 +281,7 @@ func _flight_checks() -> void:
 			break
 	for action in ["move_forward", "move_back", "sprint", "jump"]: Input.action_release(action)
 	await frames(20)
-	check("input flight lands within strict pad exit radius", landed and DowntownPlan.heli_exit_allowed(heli.global_position), str(heli.global_position))
+	check("input flight lands at selected painted target", landed and DowntownPlan.is_marked_landing_hint(heli.global_position), str(heli.global_position))
 	check("flight leg has no teleport", max_step < 1.0, "max_step=%.3f" % max_step)
 	check("flight aircraft undamaged", heli.health == 100.0)
 	await still("flight_landed_pad")

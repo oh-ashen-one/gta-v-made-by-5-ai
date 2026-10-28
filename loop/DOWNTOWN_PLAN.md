@@ -494,3 +494,7 @@ The owner requested continuous heritage-to-central-Singapore gameplay with fewer
 - MBS north promenade now has a visible/collision ramp at z=-632 from x=-322/y0.10 to x=-316.8/y0.36, eliminating the access lip discovered by the physical courier route.
 - MBS SkyPark public access is a limited collision-enclosed terrace connected to the Shoppes by labelled E lift interactions. `HELIPADS.skypark` is now a small game landing area at (-63,200,-698), with a stricter 2.5 m exit radius, only together with the installed return-lift module. Other rooftop areas remain restricted. This is a game adaptation, not a claim about real-world helicopter access.
 - `PEDESTRIAN_JOINS.fullerton_heritage` joins the flat Fullerton-side walk (x=-445/y0.02) onto the raised heritage extension (x=-438/y0.30) at z=-338, width8m. The normal return walk exposed this one-way drop/vertical lip after crossing Jubilee; no bridge or existing promenade is removed.
+
+## Owner amendment28October2026: geometry-based roof exits
+
+The new owner request supersedes the old street/pad-only exit rule. Marker radii are navigation/art hints only. `Helicopter.landing_exit_position()` checks actual landing support, foot capsule and clear path on ordinary roofs. `is_marked_landing_hint()` is not physics permission. Tests now accept supported adjacent unmarked deck exits and verify actual camera orbit instead of forced chase/recentering. Existing geographic rectangles remain compressed/unverified pending the new real-data migration; changing marker policy does not certify one-to-one geography.

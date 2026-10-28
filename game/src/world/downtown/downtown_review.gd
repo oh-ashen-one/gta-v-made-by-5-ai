@@ -678,7 +678,7 @@ func _fly_leg() -> void:
 	heli.exit_vehicle(player)
 	await get_tree().create_timer(0.5).timeout
 	var on_foot := player.current_vehicle == null
-	_results["fly"] = {"completed": landed and on_foot, "landed": landed, "on_foot": on_foot, "heli": str(heli.global_position), "allowed": DowntownPlan.heli_exit_allowed(heli.global_position)}
+	_results["fly"] = {"completed": landed and on_foot, "landed": landed, "on_foot": on_foot, "heli": str(heli.global_position), "marked_landing_hint": DowntownPlan.is_marked_landing_hint(heli.global_position)}
 	_log("fly landed=%s on_foot=%s at %s" % [landed, on_foot, heli.global_position])
 	if on_foot:
 		player.camera.current = true

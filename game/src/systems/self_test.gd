@@ -254,9 +254,22 @@ func run(main: Node) -> void:
 	_check("neutral lift stabilizes hover", absf(heli.velocity.y) < 0.5)
 	var heli_fx := heli.presentation_state()
 	_check("rotor spools up to a motion-blurred disc in flight", heli_fx["rotor_spin"] > 0.95 and heli_fx["disc_visible"] and not heli_fx["blades_visible"], str(heli_fx))
-	_check("flight chase camera trails behind and above the aircraft", heli_fx["camera_current"] and heli_fx["camera_distance"] > 8.0 and heli_fx["camera_distance"] < 26.0 and heli_fx["camera_behind"] and heli_fx["camera_height"] > 1.0, str(heli_fx))
+	var foot_yaw_before := player.yaw
+	var aircraft_heading_before := heli.rotation.y
+	var view_before := heli._camera.global_transform.basis
+	player._apply_mouse_look(Vector2(300, -120))
+	await _ticks(4)
+	var free_view := heli.presentation_state()
+	_check("helicopter mouse look rotates actual orbit without moving hidden foot view", heli._camera.current and heli._camera.global_position.is_finite() and not heli._camera.global_transform.basis.is_equal_approx(view_before) and is_equal_approx(player.yaw, foot_yaw_before), str(free_view))
+	var held_orbit: float = free_view["camera_orbit_yaw"]
+	heli.rotation.y += PI * 0.5 # explicit regression fixture, not flight-route input
+	await _ticks(6)
+	_check("helicopter orbit does not recenter when aircraft turns", absf(wrapf(float(heli.presentation_state()["camera_orbit_yaw"]) - held_orbit, -PI, PI)) < 0.001)
+	heli.rotation.y = aircraft_heading_before
+	player._apply_mouse_look(Vector2(-300, 120))
+	await _ticks(4)
 	_check("rotor downwash kicks up the ground near the pad", heli_fx["wash"] > 0.2 and heli_fx["wash_visible"], str(heli_fx))
-	_check("chase camera looks down on the rotor disc; aviation grounds are planted (wave P)", heli_fx["camera_height"] > 5.5 and world.find_child("AviationGrounds", true, false) != null, str(heli_fx))
+	_check("free helicopter camera stays finite and aviation grounds remain planted", heli._camera.global_position.is_finite() and heli._camera.global_transform.basis.is_finite() and world.find_child("AviationGrounds", true, false) != null, str(heli.presentation_state()))
 	heli.exit_vehicle(player)
 	_check("airborne helicopter rejects exit", player.current_vehicle == heli)
 	Game.simulation_paused = true
