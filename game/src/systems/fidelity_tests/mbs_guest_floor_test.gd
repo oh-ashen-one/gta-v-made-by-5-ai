@@ -23,6 +23,7 @@ var transition_calls:Dictionary={}
 var native_e_doors:Array[String]=[]
 var motion_trace:Array[Dictionary]=[]
 var walk_target:=Vector3.ZERO
+var walk_stage:=""
 var lift_monitor:=false
 var lift_previous:=Vector3.ZERO
 var lift_peak_residual:=0.0
@@ -72,7 +73,7 @@ func _physics_process(delta:float)->void:
 		if lift_trace.size()>12:lift_trace.pop_front()
 		lift_previous=p
 	if Engine.get_physics_frames()%6==0:
-		motion_trace.append({"tick":Engine.get_physics_frames(),"position":p,"target":walk_target,"yaw":player.yaw,"velocity":player.velocity,"floor":player.is_on_floor(),"forward":Input.get_action_strength("move_forward"),"sprint":Input.get_action_strength("sprint"),"controller":player.get_meta("_qa_motion_state",{}).duplicate(true)})
+		motion_trace.append({"tick":Engine.get_physics_frames(),"stage":walk_stage,"position":p,"target":walk_target,"yaw":player.yaw,"velocity":player.velocity,"floor":player.is_on_floor(),"forward":Input.get_action_strength("move_forward"),"sprint":Input.get_action_strength("sprint"),"controller":player.get_meta("_qa_motion_state",{}).duplicate(true)})
 		if motion_trace.size()>12:motion_trace.pop_front()
 
 func ray(a:Vector3,b:Vector3)->Dictionary:
@@ -191,6 +192,7 @@ func run()->void:
 	finish()
 
 func fixture(id:String,unit_id:String,variant:String)->bool:
+	walk_stage=variant+"/setup"
 	tracking=false
 	lift_monitor=false
 	player.process_mode=Node.PROCESS_MODE_DISABLED
@@ -273,8 +275,17 @@ func fixture(id:String,unit_id:String,variant:String)->bool:
 			check("closed bedroom door blocks actual capsule "+bedroom_id,not capsule_clear(candidate.to_global(bedroom.door_approach),candidate.to_global(bedroom.door_inside)))
 			if not await native_e(bedroom_id):return false
 			check("opened bedroom door clears actual capsule "+bedroom_id,capsule_clear(candidate.to_global(bedroom.door_approach),candidate.to_global(bedroom.door_inside),"opened bedroomdoor "+bedroom_id))
-			for target:Vector3 in [bedroom.door_inside,bedroom.aisle_start,bedroom.window,bedroom.aisle_start,bedroom.door_inside,bedroom.door_approach,bedroom.living_gallery]:
+			# Door now aligns with the clear bed/window aisle. Travel in and
+			# out along that corridor, without a sprint-speed 0.3m lateral jog.
+			var bedroom_route:Array[Vector3]=[bedroom.door_inside,bedroom.window,bedroom.door_inside,bedroom.door_approach,bedroom.living_gallery]
+			var previous_bedroom:Vector3=bedroom.door_approach
+			for route_index in bedroom_route.size():
+				var target:Vector3=bedroom_route[route_index]
+				walk_stage=bedroom_id+"/route_segment_"+str(route_index)
+				if not check("full capsule clears continuous bedroom route "+walk_stage,capsule_clear(candidate.to_global(previous_bedroom),candidate.to_global(target),walk_stage)):return false
+				print("[mbs-guest-floor] ROUTE_SEGMENT ",JSON.stringify({"stage":walk_stage,"actual_from":player.global_position,"planned_from":candidate.to_global(previous_bedroom),"target":candidate.to_global(target)}))
 				if not await walk_to(candidate.to_global(target),.22):return false
+				previous_bedroom=target
 			check("actualPlayer reached full kingbed window aisle "+bedroom_id,true,str(bedroom.clear_window_aisle_m))
 		if not await walk_to(candidate.to_global(cell.entry_local),.4):return false
 	var saved:Dictionary=candidate.serialize_state()
@@ -395,6 +406,7 @@ func walk_public_to(target_local:Vector3,wing:String)->bool:
 	# untouched and its production controller performs every physical segment.
 	var previous_local:=Vector3(actual_local.x,0,actual_local.z)
 	for waypoint:Vector3 in route:
+		walk_stage="public/"+wing+"/"+str(waypoint)
 		if not check("full capsule clears public corridor segment",capsule_clear(candidate.to_global(previous_local),candidate.to_global(waypoint),"public corridor/endbay")):return false
 		if not await walk_to(candidate.to_global(waypoint),.18):return false
 		previous_local=waypoint
@@ -424,7 +436,7 @@ func walk_to(target:Vector3,radius:float)->bool:
 		for id:String in candidate.doors:
 			var door:Node3D=candidate.doors[id]
 			if door.global_position.distance_to(player.global_position)<3.0:nearby_doors.append(door_snapshot(door))
-		print("[mbs-guest-floor] MOTION_INPUT_TRACE ",JSON.stringify({"player":player.global_position,"target":target,"leg":{"initial_distance_m":initial,"remaining_distance_m":player.global_position.distance_to(target),"elapsed_s":float(Time.get_ticks_msec()-started_tick)/1000.0,"budget_s":float(deadline-started_tick)/1000.0,"displacement_m":player.global_position.distance_to(start_position)},"busy":player.busy,"alive":player.alive,"paused":Game.simulation_paused,"mode":Game.mode,"input":{"forward":Input.get_action_strength("move_forward"),"back":Input.get_action_strength("move_back"),"left":Input.get_action_strength("move_left"),"right":Input.get_action_strength("move_right"),"sprint":Input.get_action_strength("sprint")},"velocity":player.velocity,"controller":player.get_meta("_qa_motion_state",{}),"last_samples":motion_trace,"nearby_doors":nearby_doors}))
+		print("[mbs-guest-floor] MOTION_INPUT_TRACE ",JSON.stringify({"stage":walk_stage,"player":player.global_position,"target":target,"leg":{"initial_distance_m":initial,"remaining_distance_m":player.global_position.distance_to(target),"elapsed_s":float(Time.get_ticks_msec()-started_tick)/1000.0,"budget_s":float(deadline-started_tick)/1000.0,"displacement_m":player.global_position.distance_to(start_position)},"busy":player.busy,"alive":player.alive,"paused":Game.simulation_paused,"mode":Game.mode,"input":{"forward":Input.get_action_strength("move_forward"),"back":Input.get_action_strength("move_back"),"left":Input.get_action_strength("move_left"),"right":Input.get_action_strength("move_right"),"sprint":Input.get_action_strength("sprint")},"velocity":player.velocity,"controller":player.get_meta("_qa_motion_state",{}),"last_samples":motion_trace,"nearby_doors":nearby_doors}))
 		check("continuous productionPlayer walking",false,"at%s target%s contacts%s"%[player.global_position,target,contacts])
 	Input.action_release("move_forward");Input.action_release("sprint")
 	await frames(2)

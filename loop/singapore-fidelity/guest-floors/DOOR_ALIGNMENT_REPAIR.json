@@ -1,0 +1,28 @@
+{
+  "method": "Static all-suite door/aisle/bed bounds; not runtime acceptance",
+  "bedrooms_checked": 804,
+  "bed_width_m": 1.95,
+  "bedframe_width_m": 2.11,
+  "door_width_m": 1.15,
+  "required_radius_plus_margin_m": 0.37,
+  "minimum_route_distance_to_furniture_m": 0.418650989781022,
+  "minimum_route_distance_to_sidewall_m": 0.5343254948905107,
+  "minimum_route_distance_to_open_leaf_m": 0.4218254948905109,
+  "maximum_door_aisle_offset_m": 0.11567450510948918,
+  "discrete_short_lateral_waypoint_removed": true,
+  "west1_example": [
+    {
+      "index": 1,
+      "old_door_u": 0.004172500000000801,
+      "new_door_u": 0.3075000000000002,
+      "aisle_u": 0.3075000000000002,
+      "old_jog_m": 0.3033274999999993,
+      "new_continuous_path_x_difference_m": 0.0
+    }
+  ],
+  "prior_matrix_r1": "/private/tmp/singapore-fidelity/mbs-guest-matrix-r1/run.log",
+  "prior_checkpoint_parent_reported": "734008e; combined pushed aa06956",
+  "old_west1_pier_corner_contact_distance_m": 0.3611108878253318,
+  "new_runtime_pass": false,
+  "whole_suite_matrix_runtime_accepted": false
+}

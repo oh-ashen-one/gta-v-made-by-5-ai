@@ -126,8 +126,8 @@ static func plan(record: Dictionary) -> Dictionary:
 					var aisle_left:float=left+WALL*.5
 					var aisle_right:float=bed_u-1.255
 					var aisle_u:float=(aisle_left+aisle_right)*.5
-					var door_u:float=left+.72
-					cell.bedroom_layouts.append({"index":bedroom_index+1,"left_u":left,"right_u":right,"bed_u":bed_u,"bed_width_m":1.95,"bedframe_width_m":2.11,"whole_furniture_width_m":2.51,"clear_window_aisle_m":aisle_right-aisle_left,"door_approach":_p(cell,door_u,0,3.40),"door_inside":_p(cell,door_u,0,4.90),"aisle_start":_p(cell,aisle_u,0,4.90),"window":_p(cell,aisle_u,0,room_depth-.70),"living_gallery":_p(cell,-frontage*.5+.85,0,3.40)})
+					var door_u:float=maxf(left+.725,aisle_u)
+					cell.bedroom_layouts.append({"index":bedroom_index+1,"door_u":door_u,"left_u":left,"right_u":right,"bed_u":bed_u,"bed_width_m":1.95,"bedframe_width_m":2.11,"whole_furniture_width_m":2.51,"clear_window_aisle_m":aisle_right-aisle_left,"door_approach":_p(cell,door_u,0,3.40),"door_inside":_p(cell,door_u,0,4.90),"aisle_start":_p(cell,aisle_u,0,4.90),"window":_p(cell,aisle_u,0,room_depth-.70),"living_gallery":_p(cell,-frontage*.5+.85,0,3.40)})
 			result.append(cell)
 			x += frontage
 		wings.append({"id": wing_name, "side": side, "inner_z": inside, "outer_z": outside, "room_inner_z": room_inner, "corridor_center_z": inside + side * corridor * 0.5, "core_z": side * (cross_m * 0.5 - 5.6), "depth_m": wing_width})
@@ -404,7 +404,7 @@ func _suite_fitout(kit,cell:Dictionary)->void:
 	for i in bedrooms:
 		var left:=divider+float(i)*bedroom_width
 		var right:=left+bedroom_width
-		var door_center:=left+.72
+		var door_center:float=cell.bedroom_layouts[i].door_u
 		_wall_x_gap(kit,String(cell.id)+"BedroomFront"+str(i),float(cell.inner_z)+float(cell.side)*bedroom_front,float(cell.center_x)+left,float(cell.center_x)+right,float(cell.center_x)+door_center,1.15,_height)
 		if i>0:_solid(kit,String(cell.id)+"BedroomPartition"+str(i),_materials.wall,_p(cell,left,_height*.5,(bedroom_front+depth)*.5),Vector3(WALL,_height,depth-bedroom_front))
 		_door(String(cell.id)+"-bedroom-"+str(i+1),_p(cell,door_center-.575,0,bedroom_front),1.15,0,-float(cell.side)*PI*.5)
