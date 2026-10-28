@@ -1,8 +1,10 @@
 # Test corrections and retained failures
 
-- HelicopterR2:46/50, four first-step checks sampled only0.25s. Retainedearlydisplacement inR5 andobserveda full1s withstronger>2m criteria; no locomotioncodechange.
-- HelicopterR3/R4: repair/reboard fixture was hovering1.18maboveroof, so physicalexitrefusalwascorrect. R5retainsnegativehealthyhoverrefusal, actualShiftsetdownandpositiveE;65/65.
-- CoreR1:139480mscoldworldbuild, then90-secondTimerexpiredwhenonly2442ms ofactualsuite timehadpassed (46checks). A newlycreatedTimerconsumedtheworld's accumulatedfirst-frame delta. Guardnowusesactualmonotonicelapsed, retains90sdeadline andhasper-framebackup. Thisdoesnotclearcoldstartup/performance; rawfailurekept.
-- Fullworldheadless33/33; firstactualrender56/57, onlypost-loadwalkingfailure. State/floor/exactsave/loadpassed. Motion/input/contactdiagnosticpending; no thresholdweakening orproductionworkaroundwithoutcause.
+- Helicopter R2:46/50. Four first-step checks sampled only0.25seconds. R5 retained early displacement and observed a full second with stronger movement-over2m criteria; no locomotion code change.
+- Helicopter R3/R4: the repair/reboard fixture hovered1.18m above the roof, so refusing a physical exit was correct. R5 preserves the negative healthy-hover case, actual Shift setdown and positive E exit;65/65.
+- Core R1:139480ms cold world construction was followed by a90-second timer firing after only2442ms of actual suite time. The newly created timer consumed accumulated first-frame delta. Guard now uses monotonic elapsed time, retains the90-second deadline and has a per-frame backup. Cold startup/performance remains unaccepted; failed evidence is preserved.
+- Core R2:295/297. The actual failed results are recoil-kick observation and nonempty prompt capture during combat. Root subsequently changed only QA observation timing: native player shot signal samples the kick immediately after real recoil dispatch, requiring the same velocity/amplitude thresholds and a new last-shot marker; the recovery assertion remains. Prompt observation waits actual process frames, matching Player publication, instead of two catch-up physics ticks. A fresh critic also required a positive control: the test now verifies a real eligible car publishes a prompt after natural combat expiry, then checks that same car during combat. No new engine run or passing claim yet.
+- Full-world helicopter:33/33 headless; first actual render56/57, only post-load walking failed. Exact saved/restored pose, floor and other state checks passed. Enhanced input/focus/contact/motion diagnostics await a rendered rerun; no threshold weakening or production workaround without a cause.
+- MBS public L1: original stage25/25 headless was superseded after architectural critique. The new continuous envelope, production-capsule sweeps and construction-budget checks remain uncompiled and unverified at runtime.
 
-None ofthese fixtures proveswholeSingaporeaccuracyorentireMBScompletion.
+None of these fixtures proves whole-Singapore accuracy or the entire MBS interior. The owner play instance is preserved; a second task engine is not launched while it is live.

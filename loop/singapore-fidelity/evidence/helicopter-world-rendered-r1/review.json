@@ -1,0 +1,412 @@
+{
+	"captures": [
+		{
+			"camera_pitch": -0.314159265358979,
+			"camera_yaw": 0.0,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/01_airborne_aviation.png",
+			"initial_boarding_fixture": true,
+			"label": "01_airborne_aviation",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 75.816,
+				"flight_distance_m": 247.012517482042,
+				"health": 100.0,
+				"heli_position": "(270.0, 247.1746, 104.0)",
+				"landed": false,
+				"max_physics_step_m": 0.200004577636719,
+				"mode": 2,
+				"on_floor": false,
+				"velocity": "(0.0, 0.104736, 0.0)"
+			}
+		},
+		{
+			"camera_pitch": -0.314159265358979,
+			"camera_yaw": 1.57079633045196,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/02_orbit_quarter_1.png",
+			"initial_boarding_fixture": true,
+			"label": "02_orbit_quarter_1",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 77.433,
+				"flight_distance_m": 247.029866725206,
+				"health": 100.0,
+				"heli_position": "(270.0, 247.1902, 104.0)",
+				"landed": false,
+				"max_physics_step_m": 0.200004577636719,
+				"mode": 2,
+				"on_floor": false,
+				"velocity": "(0.0, 0.000354, 0.0)"
+			}
+		},
+		{
+			"camera_pitch": -0.314159265358979,
+			"camera_yaw": -3.14159264627565,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/02_orbit_quarter_2.png",
+			"initial_boarding_fixture": true,
+			"label": "02_orbit_quarter_2",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 78.884,
+				"flight_distance_m": 247.029866725206,
+				"health": 100.0,
+				"heli_position": "(270.0, 247.1902, 104.0)",
+				"landed": false,
+				"max_physics_step_m": 0.200004577636719,
+				"mode": 2,
+				"on_floor": false,
+				"velocity": "(0.0, 0.000002, 0.0)"
+			}
+		},
+		{
+			"camera_pitch": -0.314159265358979,
+			"camera_yaw": -1.57079631582368,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/02_orbit_quarter_3.png",
+			"initial_boarding_fixture": true,
+			"label": "02_orbit_quarter_3",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 80.305,
+				"flight_distance_m": 247.029866725206,
+				"health": 100.0,
+				"heli_position": "(270.0, 247.1902, 104.0)",
+				"landed": false,
+				"max_physics_step_m": 0.200004577636719,
+				"mode": 2,
+				"on_floor": false,
+				"velocity": "(0.0, 0.0, 0.0)"
+			}
+		},
+		{
+			"camera_pitch": -0.314159265358979,
+			"camera_yaw": 0.0000000146282833624056,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/02_orbit_quarter_4.png",
+			"initial_boarding_fixture": true,
+			"label": "02_orbit_quarter_4",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 81.591,
+				"flight_distance_m": 247.029866725206,
+				"health": 100.0,
+				"heli_position": "(270.0, 247.1902, 104.0)",
+				"landed": false,
+				"max_physics_step_m": 0.200004577636719,
+				"mode": 2,
+				"on_floor": false,
+				"velocity": "(0.0, 0.0, 0.0)"
+			}
+		},
+		{
+			"camera_pitch": 1.54461636559195,
+			"camera_yaw": 0.0000000146282833624056,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/03_look_up.png",
+			"initial_boarding_fixture": true,
+			"label": "03_look_up",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 82.399,
+				"flight_distance_m": 247.029866725206,
+				"health": 100.0,
+				"heli_position": "(270.0, 247.1902, 104.0)",
+				"landed": false,
+				"max_physics_step_m": 0.200004577636719,
+				"mode": 2,
+				"on_floor": false,
+				"velocity": "(0.0, 0.0, 0.0)"
+			}
+		},
+		{
+			"camera_pitch": -1.54461637671762,
+			"camera_yaw": 0.0000000146282833624056,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/04_look_down.png",
+			"initial_boarding_fixture": true,
+			"label": "04_look_down",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 82.965,
+				"flight_distance_m": 247.029866725206,
+				"health": 100.0,
+				"heli_position": "(270.0, 247.1902, 104.0)",
+				"landed": false,
+				"max_physics_step_m": 0.200004577636719,
+				"mode": 2,
+				"on_floor": false,
+				"velocity": "(0.0, 0.0, 0.0)"
+			}
+		},
+		{
+			"camera_pitch": -0.31415926535898,
+			"camera_yaw": 0.0000000146282833624056,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/05_held_camera_after_turn.png",
+			"initial_boarding_fixture": true,
+			"label": "05_held_camera_after_turn",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 86.03,
+				"flight_distance_m": 247.029866725206,
+				"health": 100.0,
+				"heli_position": "(270.0, 247.1902, 104.0)",
+				"landed": false,
+				"max_physics_step_m": 0.200004577636719,
+				"mode": 2,
+				"on_floor": false,
+				"velocity": "(0.0, 0.0, 0.0)"
+			}
+		},
+		{
+			"camera_pitch": -0.31415926535898,
+			"camera_yaw": 0.0000000146282833624056,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/08_bay_approach.png",
+			"initial_boarding_fixture": true,
+			"label": "08_bay_approach",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 115.608,
+				"flight_distance_m": 811.077952777967,
+				"health": 100.0,
+				"heli_position": "(106.5924, 244.936, -433.3002)",
+				"landed": false,
+				"max_physics_step_m": 0.500002324581146,
+				"mode": 2,
+				"on_floor": false,
+				"velocity": "(-1.691694, 0.0, -4.733804)"
+			}
+		},
+		{
+			"camera_pitch": -0.31415926535898,
+			"camera_yaw": 0.0000000146282833624056,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/09_landed_unpainted_roof.png",
+			"initial_boarding_fixture": true,
+			"label": "09_landed_unpainted_roof",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 145.257,
+				"flight_distance_m": 1281.60066186433,
+				"health": 100.0,
+				"heli_position": "(-245.3537, 199.701, -701.6065)",
+				"landed": true,
+				"max_physics_step_m": 0.531866014003754,
+				"mode": 2,
+				"on_floor": true,
+				"velocity": "(-0.032267, 0.0, -0.018908)"
+			}
+		},
+		{
+			"camera_pitch": -0.31415926535898,
+			"camera_yaw": 0.0000000146282833624056,
+			"failed_assertions": [],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/10_walking_unpainted_roof.png",
+			"initial_boarding_fixture": true,
+			"label": "10_walking_unpainted_roof",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 148.824,
+				"flight_distance_m": 1284.17839590911,
+				"health": 100.0,
+				"heli_position": "(-245.3596, 199.7001, -701.61)",
+				"landed": true,
+				"max_physics_step_m": 1.28466796875,
+				"mode": 0,
+				"on_floor": true,
+				"velocity": "(0.0, 0.0, 0.0)"
+			}
+		},
+		{
+			"camera_pitch": -0.31415926535898,
+			"camera_yaw": 0.0000000146282833624056,
+			"failed_assertions": [
+				"walking remains usable after native roof reload"
+			],
+			"file": "/private/tmp/singapore-fidelity/heli-world-rendered-r1/captures/11_unpainted_roof_after_native_reload.png",
+			"initial_boarding_fixture": true,
+			"label": "11_unpainted_roof_after_native_reload",
+			"pixels": [
+				1280,
+				720
+			],
+			"saved": true,
+			"state": {
+				"disabled": false,
+				"elapsed_s": 158.744,
+				"flight_distance_m": 1284.17839590911,
+				"health": 100.0,
+				"heli_position": "(-245.3596, 199.7001, -701.61)",
+				"landed": true,
+				"max_physics_step_m": 1.28466796875,
+				"mode": 0,
+				"on_floor": true,
+				"velocity": "(0.0, 0.0, 0.0)"
+			}
+		}
+	],
+	"checks": 57,
+	"elapsed_s": 159.191,
+	"failures": [
+		"walking remains usable after native roof reload"
+	],
+	"geographic_accuracy_verified": false,
+	"in_flight_position_assignments": false,
+	"initial_ground_boarding_fixture": true,
+	"metrics": {
+		"aircraft_yaw_change_during_hold_rad": 1.17947804927826,
+		"camera_rotation_no_mouse_rad": 0.0,
+		"foot_walk_heading_rad": 1.57079633293152,
+		"look_down_motion": {
+			"relative_camera_y_trace_m": [
+				-8.79588317871094,
+				-8.79588317871094,
+				-8.79588317871094,
+				-8.79588317871094,
+				-8.79588317871094,
+				-8.79588317871094,
+				-8.79588317871094,
+				-8.79588317871094,
+				6.848388671875,
+				6.848388671875,
+				6.848388671875,
+				6.848388671875,
+				6.848388671875,
+				6.848388671875,
+				6.848388671875
+			],
+			"vertical_reversals": 0
+		},
+		"look_up_motion": {
+			"relative_camera_y_trace_m": [
+				6.908203125,
+				6.908203125,
+				6.908203125,
+				6.908203125,
+				6.908203125,
+				6.908203125,
+				6.908203125,
+				6.908203125,
+				-5.41752624511719,
+				-5.41752624511719,
+				-5.41752624511719,
+				-5.41752624511719,
+				-5.41752624511719,
+				-5.41752624511719,
+				-5.41752624511719
+			],
+			"vertical_reversals": 0
+		},
+		"marked_landing_hint_at_target": false,
+		"relative_camera_y_range_no_mouse_m": 0.0,
+		"roof_position_before_reload": [
+			-246.734527587891,
+			199.975845336914,
+			-707.412109375
+		],
+		"roof_post_reload_position": [
+			-246.734588623047,
+			199.975845336914,
+			-704.266784667969
+		],
+		"roof_save_payload_position": [
+			-246.734588623047,
+			199.975845336914,
+			-704.266784667969
+		],
+		"roof_save_position": [
+			-246.734588623047,
+			199.975845336914,
+			-704.266784667969
+		],
+		"roof_selection": "local(-130,deck_y,2): clear unpainted deck; local(-100,deck_y,0) rejected because it overlaps the visible pavilion",
+		"roof_target": [
+			-248.0,
+			200.0,
+			-703.0
+		]
+	},
+	"native_human_input": false,
+	"notes": [
+		"41.61s FIXTURE initial player ground-side boarding placement; no subsequent aircraft relocation",
+		"94.77s flight target=(100.0, 245.0, -450.0) distance=462.08 best=462.08 altitude=244.94",
+		"102.77s flight target=(100.0, 245.0, -450.0) distance=253.63 best=253.63 altitude=244.94",
+		"110.78s flight target=(100.0, 245.0, -450.0) distance=63.89 best=63.89 altitude=244.94",
+		"124.23s flight target=(-248.0, 200.0, -703.0) distance=281.65 best=281.65 altitude=244.94",
+		"132.25s flight target=(-248.0, 200.0, -703.0) distance=64.54 best=64.54 altitude=219.92",
+		"140.28s flight target=(-248.0, 200.0, -703.0) distance=7.67 best=7.67 altitude=219.90",
+		"145.07s physical roof touchdown { \"heli_position\": \"(-245.349, 199.701, -701.6037)\", \"velocity\": \"(-0.038699, 0.0, -0.022677)\", \"health\": 100.0, \"disabled\": false, \"on_floor\": true, \"landed\": true, \"mode\": 2, \"elapsed_s\": 145.068, \"flight_distance_m\": 1281.59202978201, \"max_physics_step_m\": 0.53186601400375 }"
+	],
+	"rendered": true,
+	"scope": "Real compressed district; actual controls-based flight/free-look/ordinary-roof exit. Not whole-interior/map/performance acceptance.",
+	"terminal": {
+		"disabled": false,
+		"elapsed_s": 159.191,
+		"flight_distance_m": 1284.17839590911,
+		"health": 100.0,
+		"heli_position": "(-245.3596, 199.7001, -701.61)",
+		"landed": true,
+		"max_physics_step_m": 1.28466796875,
+		"mode": 0,
+		"on_floor": true,
+		"velocity": "(0.0, 0.0, 0.0)"
+	}
+}

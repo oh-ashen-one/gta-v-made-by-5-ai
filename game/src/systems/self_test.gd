@@ -656,9 +656,28 @@ func _weapon_input_checks(main: Node, player: Player) -> void:
 		player.yaw = atan2(-re_aim.x, -re_aim.z)
 		player.pitch = atan2(re_aim.y, Vector2(re_aim.x, re_aim.z).length())
 	var fx_before: Dictionary = CombatFx.stats.duplicate()
+	# Observe the real shot signal synchronously, after Player dispatched recoil
+	# but before subsequent render frames can legitimately recover the spring.
+	# _tap deliberately spans multiple process/physics frames; its final state
+	# is not a reliable observation of the initial kick on a slow frame.
+	var recoil_layer := player.get_node_or_null("PlayerCombat")
+	var recoil_probe := {"player_shots": 0, "kick_observed": false, "cam_kick": 0.0, "cam_kick_v": 0.0,
+		"prior_shot_time": recoil_layer.last_shot_time if recoil_layer else INF}
+	var observe_recoil := func(origin: Vector3, _direction: Vector3, weapon_id: String) -> void:
+		if weapon_id != Game.carried_weapon or origin.distance_to(player.camera.global_position) > 0.01:
+			return
+		var layer := player.get_node_or_null("PlayerCombat")
+		if layer == null: return
+		recoil_probe["player_shots"] += 1
+		recoil_probe["cam_kick"] = layer.cam_kick
+		recoil_probe["cam_kick_v"] = layer.cam_kick_v
+		var fresh_dispatch: bool = layer.last_shot_time > float(recoil_probe["prior_shot_time"])
+		recoil_probe["kick_observed"] = bool(recoil_probe["kick_observed"]) or (fresh_dispatch and (absf(layer.cam_kick) > 0.0005 or absf(layer.cam_kick_v) > 0.01))
+	Events.shot_fired.connect(observe_recoil)
 	await _tap("fire")
+	Events.shot_fired.disconnect(observe_recoil)
 	_check("clearing muzzle obstruction permits target damage", target.health < target_health)
-	await _combat_fx_checks(player, fx_before)
+	await _combat_fx_checks(player, fx_before, recoil_probe)
 	if player._visual != null:
 		player._visual.set_paused(false)
 	Input.action_release("aim")
@@ -672,12 +691,12 @@ func _weapon_input_checks(main: Node, player: Player) -> void:
 
 ## Combat piece: every shot shows a muzzle flash, tracer, impact and brass,
 ## a hit target staggers, recoil recovers, and sustained fire stays bounded.
-func _combat_fx_checks(player: Player, before: Dictionary) -> void:
+func _combat_fx_checks(player: Player, before: Dictionary, recoil_probe: Dictionary) -> void:
 	var st: Dictionary = CombatFx.stats
 	_check("shot produced muzzle flash, tracer, impact and ejected casing", st["muzzle"] > before["muzzle"] and st["tracer"] > before["tracer"] and st["impact"] > before["impact"] and st["casing"] > before["casing"], str(st))
 	_check("struck NPC staggers and flinches", st["flinch"] > before["flinch"])
 	var combat := player.get_node_or_null("PlayerCombat")
-	_check("player recoil layer present and kicked by the shot", combat != null and (absf(combat.cam_kick) > 0.0005 or absf(combat.cam_kick_v) > 0.01))
+	_check("player recoil layer present and kicked by the shot", combat != null and int(recoil_probe["player_shots"]) > 0 and bool(recoil_probe["kick_observed"]), "native shot observation=%s; post-tap kick=%.5f velocity=%.5f" % [recoil_probe, combat.cam_kick if combat else 0.0, combat.cam_kick_v if combat else 0.0])
 	await _ticks(24)
 	_check("recoil recovers within ~0.4 s", combat != null and absf(combat.cam_kick) < 0.003 and absf(combat.gun_kick) < 0.05, "cam=%.4f gun=%.3f" % [combat.cam_kick if combat else -1.0, combat.gun_kick if combat else -1.0])
 	var fx := CombatFx.get_fx(get_tree())
@@ -710,13 +729,35 @@ func _combat_q_checks(player: Player) -> void:
 		ok_gun = float(layer.get("weight")) > 0.9 and h > 1.28 and h < 1.55 and barrel.normalized().dot(aim_dir.normalized()) > 0.96
 		detail = "weight=%.2f gun_h=%.2f barrel_dot=%.3f" % [float(layer.get("weight")), h, barrel.normalized().dot(aim_dir.normalized())]
 	_check("aim layer holds the pistol at shoulder height along the aim", ok_gun, detail)
+	# Disclosed positive control: an actual production car, held on the firing
+	# bay beside the player. Blank messages are meaningful only if this same
+	# eligible target ordinarily publishes a nonempty prompt outside combat.
+	var prompt_car := Car.new()
+	prompt_car.has_ai = false
+	player.get_parent().add_child(prompt_car)
+	prompt_car.global_position = player.global_position + Vector3(2.6, 0.0, 0.0)
+	prompt_car.set_physics_process(false)
+	var clear_deadline := Time.get_ticks_msec() + int((CombatFx.COMBAT_HOLD + 4.0) * 1000)
+	while CombatFx.in_combat() and Time.get_ticks_msec() < clear_deadline:
+		await get_tree().process_frame
+	var ordinary_prompts: Array[String] = []
+	var grab_ordinary := func(text: String) -> void: ordinary_prompts.append(text)
+	Events.interaction_prompt.connect(grab_ordinary)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	Events.interaction_prompt.disconnect(grab_ordinary)
+	_check("eligible production car publishes an ordinary interaction prompt outside combat", not CombatFx.in_combat() and player._interaction_target() == prompt_car and ordinary_prompts.any(func(t): return not t.is_empty()), str(ordinary_prompts.slice(0, 3)))
 	CombatFx.mark_combat()
 	var prompts: Array[String] = []
 	var grab := func(text: String) -> void: prompts.append(text)
 	Events.interaction_prompt.connect(grab)
-	await _ticks(2)
+	# Prompts are published by Player._process, not _physics_process. Two
+	# catch-up physics ticks can occur without any process callback between.
+	await get_tree().process_frame
+	await get_tree().process_frame
 	Events.interaction_prompt.disconnect(grab)
-	_check("no interaction prompt during a firefight", CombatFx.in_combat() and not prompts.is_empty() and prompts.all(func(t): return t == ""), str(prompts.slice(0, 3)))
+	_check("no interaction prompt during a firefight", CombatFx.in_combat() and player._interaction_target() == prompt_car and not prompts.is_empty() and prompts.all(func(t): return t == ""), str(prompts.slice(0, 3)))
+	prompt_car.queue_free()
 	var victim := NPC.new()
 	victim.is_police = true
 	player.get_parent().add_child(victim)
