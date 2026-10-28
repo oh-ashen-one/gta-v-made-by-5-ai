@@ -1,0 +1,978 @@
+{
+  "audit_kind": "source geometry and legacy-layout audit, not interior completion",
+  "created_utc": "2026-10-28T17:09:17.096542+00:00",
+  "source": {
+    "source_url": "https://download.geofabrik.de/asia/malaysia-singapore-brunei.html",
+    "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+    "source_snapshot_utc": "2026-10-27T21:23:59Z",
+    "data_license": "ODbL-1.0",
+    "license_url": "https://www.openstreetmap.org/copyright",
+    "attribution": "© OpenStreetMap contributors",
+    "parse_errors": {
+      "area_geometry": 3
+    }
+  },
+  "georeference": {
+    "source_crs": "EPSG:4326",
+    "survey_crs": "EPSG:3414",
+    "origin_easting": 30000.0,
+    "origin_northing": 30000.0,
+    "world_axes": {
+      "x": "south",
+      "y": "up",
+      "z": "west"
+    },
+    "metres_per_unit": 1.0,
+    "distance_compression": false,
+    "legacy_plan_alignment_applied": false
+  },
+  "candidate_buildings": [
+    {
+      "source_id": "relation/2298319",
+      "source_kind": "building",
+      "identity_evidence": {
+        "name": "The Shoppes at Marina Bay Sands",
+        "name:en": "The Shoppes at Marina Bay Sands",
+        "name:zh": "滨海湾金沙购物广场",
+        "building": "retail"
+      },
+      "candidate_roles": [
+        "retail"
+      ],
+      "source_geometry_valid": true,
+      "source_height_m": 15.0,
+      "source_height_status": "source_tag",
+      "raw_levels_tag": "2",
+      "metrics": {
+        "area_m2": 27429.968,
+        "bounds_world_xz_m": [
+          151.124,
+          -1039.0877,
+          636.9596,
+          -653.2214
+        ],
+        "footprint_centroid": {
+          "world_xz_m": [
+            394.2234,
+            -853.1511
+          ],
+          "wgs84_lon_lat": [
+            103.858955265,
+            1.284018506
+          ]
+        },
+        "inside_representative_point": {
+          "world_xz_m": [
+            414.1741,
+            -843.3888
+          ],
+          "wgs84_lon_lat": [
+            103.858867545,
+            1.283838079
+          ]
+        },
+        "oriented_envelope": {
+          "long_m": 584.21,
+          "short_m": 173.252,
+          "major_axis_grid_bearing_deg_mod180": 32.50998,
+          "corners_world_xz_m": [
+            [
+              123.0637,
+              -961.7997
+            ],
+            [
+              615.727,
+              -647.8179
+            ],
+            [
+              708.8405,
+              -793.9207
+            ],
+            [
+              216.1772,
+              -1107.9025
+            ]
+          ],
+          "axis_endpoints_north_to_south": [
+            {
+              "world_xz_m": [
+                169.6204,
+                -1034.8511
+              ],
+              "wgs84_lon_lat": [
+                103.860587932,
+                1.286049719
+              ]
+            },
+            {
+              "world_xz_m": [
+                662.2837,
+                -720.8693
+              ],
+              "wgs84_lon_lat": [
+                103.857766638,
+                1.281594274
+              ]
+            }
+          ],
+          "not_tower_or_door_positions": true
+        }
+      },
+      "architectural_identity_verified": false
+    },
+    {
+      "source_id": "way/116801004",
+      "source_kind": "building",
+      "identity_evidence": {
+        "name": "Marina Bay Sands Tower 1",
+        "name:en": "Marina Bay Sands Tower 1",
+        "building": "hotel"
+      },
+      "candidate_roles": [
+        "hotel"
+      ],
+      "source_geometry_valid": true,
+      "source_height_m": 193.0,
+      "source_height_status": "source_tag",
+      "raw_levels_tag": "55",
+      "metrics": {
+        "area_m2": 3036.404,
+        "bounds_world_xz_m": [
+          504.4989,
+          -1027.9958,
+          581.8681,
+          -951.7166
+        ],
+        "footprint_centroid": {
+          "world_xz_m": [
+            543.1842,
+            -989.857
+          ],
+          "wgs84_lon_lat": [
+            103.860183608,
+            1.282671343
+          ]
+        },
+        "inside_representative_point": {
+          "world_xz_m": [
+            543.1836,
+            -989.8562
+          ],
+          "wgs84_lon_lat": [
+            103.8601836,
+            1.282671349
+          ]
+        },
+        "oriented_envelope": {
+          "long_m": 58.681,
+          "short_m": 52.043,
+          "major_axis_grid_bearing_deg_mod180": 34.97078,
+          "corners_world_xz_m": [
+            [
+              582.1405,
+              -994.3626
+            ],
+            [
+              534.0551,
+              -1027.9958
+            ],
+            [
+              504.2265,
+              -985.3498
+            ],
+            [
+              552.3119,
+              -951.7166
+            ]
+          ],
+          "axis_endpoints_north_to_south": [
+            {
+              "world_xz_m": [
+                519.1408,
+                -1006.6728
+              ],
+              "wgs84_lon_lat": [
+                103.860334706,
+                1.282888782
+              ]
+            },
+            {
+              "world_xz_m": [
+                567.2262,
+                -973.0396
+              ],
+              "wgs84_lon_lat": [
+                103.860032494,
+                1.282453918
+              ]
+            }
+          ],
+          "not_tower_or_door_positions": true
+        }
+      },
+      "architectural_identity_verified": false
+    },
+    {
+      "source_id": "way/172307471",
+      "source_kind": "building",
+      "identity_evidence": {
+        "name": "Marina Bay Sands Tower 3",
+        "name:en": "Marina Bay Sands Tower 3",
+        "building": "hotel"
+      },
+      "candidate_roles": [
+        "hotel"
+      ],
+      "source_geometry_valid": true,
+      "source_height_m": 193.0,
+      "source_height_status": "source_tag",
+      "raw_levels_tag": "55",
+      "metrics": {
+        "area_m2": 1571.886,
+        "bounds_world_xz_m": [
+          315.4812,
+          -1100.2107,
+          372.3499,
+          -1055.3495
+        ],
+        "footprint_centroid": {
+          "world_xz_m": [
+            343.8289,
+            -1077.8979
+          ],
+          "wgs84_lon_lat": [
+            103.860974709,
+            1.284474234
+          ]
+        },
+        "inside_representative_point": {
+          "world_xz_m": [
+            346.342,
+            -1078.1249
+          ],
+          "wgs84_lon_lat": [
+            103.860976747,
+            1.284451506
+          ]
+        },
+        "oriented_envelope": {
+          "long_m": 54.646,
+          "short_m": 31.082,
+          "major_axis_grid_bearing_deg_mod180": 15.89691,
+          "corners_world_xz_m": [
+            [
+              311.3794,
+              -1070.3174
+            ],
+            [
+              363.9355,
+              -1055.3495
+            ],
+            [
+              372.4491,
+              -1085.2428
+            ],
+            [
+              319.893,
+              -1100.2107
+            ]
+          ],
+          "axis_endpoints_north_to_south": [
+            {
+              "world_xz_m": [
+                315.6362,
+                -1085.2641
+              ],
+              "wgs84_lon_lat": [
+                103.861040899,
+                1.284729198
+              ]
+            },
+            {
+              "world_xz_m": [
+                368.1923,
+                -1070.2961
+              ],
+              "wgs84_lon_lat": [
+                103.860906401,
+                1.284253901
+              ]
+            }
+          ],
+          "not_tower_or_door_positions": true
+        }
+      },
+      "architectural_identity_verified": false
+    },
+    {
+      "source_id": "way/172307472",
+      "source_kind": "building",
+      "identity_evidence": {
+        "name": "Marina Bay Sands Tower 2",
+        "building": "hotel"
+      },
+      "candidate_roles": [
+        "hotel"
+      ],
+      "source_geometry_valid": true,
+      "source_height_m": 193.0,
+      "source_height_status": "source_tag",
+      "raw_levels_tag": "55",
+      "metrics": {
+        "area_m2": 3065.84,
+        "bounds_world_xz_m": [
+          403.7426,
+          -1082.305,
+          479.6852,
+          -1010.4888
+        ],
+        "footprint_centroid": {
+          "world_xz_m": [
+            441.6953,
+            -1046.4076
+          ],
+          "wgs84_lon_lat": [
+            103.860691746,
+            1.283589169
+          ]
+        },
+        "inside_representative_point": {
+          "world_xz_m": [
+            441.6995,
+            -1046.3969
+          ],
+          "wgs84_lon_lat": [
+            103.86069165,
+            1.28358913
+          ]
+        },
+        "oriented_envelope": {
+          "long_m": 61.147,
+          "short_m": 50.535,
+          "major_axis_grid_bearing_deg_mod180": 25.29423,
+          "corners_world_xz_m": [
+            [
+              480.1467,
+              -1056.1788
+            ],
+            [
+              424.8619,
+              -1082.305
+            ],
+            [
+              403.27,
+              -1036.615
+            ],
+            [
+              458.5548,
+              -1010.4888
+            ]
+          ],
+          "axis_endpoints_north_to_south": [
+            {
+              "world_xz_m": [
+                414.0659,
+                -1059.46
+              ],
+              "wgs84_lon_lat": [
+                103.86080903,
+                1.283839037
+              ]
+            },
+            {
+              "world_xz_m": [
+                469.3508,
+                -1033.3338
+              ],
+              "wgs84_lon_lat": [
+                103.86057427,
+                1.283339063
+              ]
+            }
+          ],
+          "not_tower_or_door_positions": true
+        }
+      },
+      "architectural_identity_verified": false
+    },
+    {
+      "source_id": "way/821764692",
+      "source_kind": "building",
+      "identity_evidence": {
+        "name": "Apple Marina Bay Sands",
+        "name:en": "Apple Marina Bay Sands",
+        "building": "retail"
+      },
+      "candidate_roles": [
+        "unclassified_mbs_name"
+      ],
+      "source_geometry_valid": true,
+      "source_height_m": 5.0,
+      "source_height_status": "source_tag",
+      "raw_levels_tag": "1",
+      "metrics": {
+        "area_m2": 823.879,
+        "bounds_world_xz_m": [
+          454.0576,
+          -715.4989,
+          486.5666,
+          -682.7458
+        ],
+        "footprint_centroid": {
+          "world_xz_m": [
+            470.2867,
+            -699.1226
+          ],
+          "wgs84_lon_lat": [
+            103.857571252,
+            1.283330629
+          ]
+        },
+        "inside_representative_point": {
+          "world_xz_m": [
+            470.2806,
+            -700.8863
+          ],
+          "wgs84_lon_lat": [
+            103.8575871,
+            1.283330684
+          ]
+        },
+        "oriented_envelope": {
+          "long_m": 32.392,
+          "short_m": 32.36,
+          "major_axis_grid_bearing_deg_mod180": 26.41803,
+          "corners_world_xz_m": [
+            [
+              448.563,
+              -691.8633
+            ],
+            [
+              477.5725,
+              -677.4515
+            ],
+            [
+              491.9701,
+              -706.4324
+            ],
+            [
+              462.9606,
+              -720.8442
+            ]
+          ],
+          "axis_endpoints_north_to_south": [
+            {
+              "world_xz_m": [
+                455.7618,
+                -706.3538
+              ],
+              "wgs84_lon_lat": [
+                103.857636228,
+                1.283461987
+              ]
+            },
+            {
+              "world_xz_m": [
+                484.7713,
+                -691.942
+              ],
+              "wgs84_lon_lat": [
+                103.85750673,
+                1.283199636
+              ]
+            }
+          ],
+          "not_tower_or_door_positions": true
+        }
+      },
+      "architectural_identity_verified": false
+    }
+  ],
+  "hotel_selection": {
+    "status": "ambiguous",
+    "source_id": null
+  },
+  "retail_selection": {
+    "status": "unique_semantic_source_match_requires_architectural_review",
+    "source_id": "relation/2298319"
+  },
+  "bayfront_avenue": {
+    "all_named_source_ids": [
+      "way/83145747",
+      "way/160588641",
+      "way/651874715",
+      "way/479342613",
+      "way/531336842",
+      "way/634994943",
+      "way/635341764",
+      "way/635341765",
+      "way/635341766",
+      "way/635345722",
+      "way/635345724",
+      "way/635390320",
+      "way/635392742",
+      "way/643807947",
+      "way/643810038",
+      "way/676479279",
+      "way/676705143",
+      "way/687861963",
+      "way/687861964",
+      "way/687958770",
+      "way/687958771",
+      "way/687958772",
+      "way/718971944",
+      "way/718971945",
+      "way/763513328",
+      "way/763513329",
+      "way/763513330",
+      "way/763514663",
+      "way/763514664",
+      "way/763514665",
+      "way/160588637",
+      "way/160588639",
+      "way/160588642",
+      "way/479284867",
+      "way/627708719",
+      "way/627708722",
+      "way/667468497",
+      "way/667468498",
+      "way/687958773",
+      "way/763513331",
+      "way/763514662",
+      "way/23037305",
+      "way/150009548",
+      "way/305495647",
+      "way/305495650",
+      "way/305865019",
+      "way/477915674",
+      "way/666133093",
+      "way/763513327",
+      "way/849812552",
+      "way/1009152433",
+      "way/1009347002",
+      "way/1009348662",
+      "way/1009348663",
+      "way/1010903479",
+      "way/1280746586"
+    ],
+    "drivable_source_ids": [
+      "way/83145747",
+      "way/160588641",
+      "way/651874715",
+      "way/479342613",
+      "way/634994943",
+      "way/635341764",
+      "way/635341765",
+      "way/635341766",
+      "way/635345722",
+      "way/635345724",
+      "way/635390320",
+      "way/635392742",
+      "way/643807947",
+      "way/643810038",
+      "way/676479279",
+      "way/676705143",
+      "way/687861963",
+      "way/687861964",
+      "way/687958770",
+      "way/687958771",
+      "way/687958772",
+      "way/718971944",
+      "way/718971945",
+      "way/763513328",
+      "way/763513329",
+      "way/763513330",
+      "way/763514663",
+      "way/763514664",
+      "way/763514665",
+      "way/160588637",
+      "way/160588639",
+      "way/160588642",
+      "way/479284867",
+      "way/627708719",
+      "way/627708722",
+      "way/667468497",
+      "way/667468498",
+      "way/687958773",
+      "way/763513331",
+      "way/763514662",
+      "way/23037305",
+      "way/150009548",
+      "way/305495650",
+      "way/305865019",
+      "way/477915674",
+      "way/666133093",
+      "way/763513327",
+      "way/849812552",
+      "way/1009347002",
+      "way/1009348662",
+      "way/1009348663",
+      "way/1010903479",
+      "way/1280746586"
+    ],
+    "names": [
+      "Bayfront Avenue"
+    ],
+    "widths_only_as_tagged": {
+      "way/83145747": null,
+      "way/160588641": null,
+      "way/651874715": null,
+      "way/479342613": null,
+      "way/634994943": null,
+      "way/635341764": null,
+      "way/635341765": null,
+      "way/635341766": null,
+      "way/635345722": null,
+      "way/635345724": null,
+      "way/635390320": null,
+      "way/635392742": null,
+      "way/643807947": null,
+      "way/643810038": null,
+      "way/676479279": null,
+      "way/676705143": null,
+      "way/687861963": null,
+      "way/687861964": null,
+      "way/687958770": null,
+      "way/687958771": null,
+      "way/687958772": null,
+      "way/718971944": null,
+      "way/718971945": null,
+      "way/763513328": null,
+      "way/763513329": null,
+      "way/763513330": null,
+      "way/763514663": null,
+      "way/763514664": null,
+      "way/763514665": null,
+      "way/160588637": null,
+      "way/160588639": null,
+      "way/160588642": null,
+      "way/479284867": null,
+      "way/627708719": null,
+      "way/627708722": null,
+      "way/667468497": null,
+      "way/667468498": null,
+      "way/687958773": null,
+      "way/763513331": null,
+      "way/763514662": null,
+      "way/23037305": null,
+      "way/150009548": null,
+      "way/305495650": null,
+      "way/305865019": null,
+      "way/477915674": null,
+      "way/666133093": null,
+      "way/763513327": null,
+      "way/849812552": null,
+      "way/1009347002": null,
+      "way/1009348662": null,
+      "way/1009348663": null,
+      "way/1010903479": null,
+      "way/1280746586": null
+    }
+  },
+  "hotel_retail_separation": null,
+  "landmarks": {
+    "artscience_museum": {
+      "status": "missing_from_extracted_building_features",
+      "source_ids": [],
+      "metrics": null
+    },
+    "singapore_flyer": {
+      "status": "ambiguous",
+      "source_ids": [
+        "way/51761904",
+        "way/230082125"
+      ],
+      "metrics": null
+    },
+    "merlion_landmark": {
+      "status": "missing_from_extracted_building_features",
+      "source_ids": [],
+      "metrics": null
+    },
+    "esplanade": {
+      "status": "unique_semantic_match",
+      "source_ids": [
+        "way/97582570"
+      ],
+      "metrics": {
+        "area_m2": 10366.539,
+        "bounds_world_xz_m": [
+          -301.2223,
+          -571.6813,
+          -158.5914,
+          -406.536
+        ],
+        "footprint_centroid": {
+          "world_xz_m": [
+            -231.2524,
+            -501.8458
+          ],
+          "wgs84_lon_lat": [
+            103.855798698,
+            1.289675118
+          ]
+        },
+        "inside_representative_point": {
+          "world_xz_m": [
+            -201.6832,
+            -489.3093
+          ],
+          "wgs84_lon_lat": [
+            103.85568605,
+            1.289407706
+          ]
+        },
+        "oriented_envelope": {
+          "long_m": 166.825,
+          "short_m": 135.675,
+          "major_axis_grid_bearing_deg_mod180": 82.46504,
+          "corners_world_xz_m": [
+            [
+              -307.3571,
+              -563.6166
+            ],
+            [
+              -285.4811,
+              -398.232
+            ],
+            [
+              -150.9777,
+              -416.0232
+            ],
+            [
+              -172.8537,
+              -581.4078
+            ]
+          ],
+          "axis_endpoints_north_to_south": [
+            {
+              "world_xz_m": [
+                -240.1054,
+                -572.5122
+              ],
+              "wgs84_lon_lat": [
+                103.856433666,
+                1.289755176
+              ]
+            },
+            {
+              "world_xz_m": [
+                -218.2294,
+                -407.1276
+              ],
+              "wgs84_lon_lat": [
+                103.854947615,
+                1.289557351
+              ]
+            }
+          ],
+          "not_tower_or_door_positions": true
+        }
+      }
+    },
+    "fullerton": {
+      "status": "unique_semantic_match",
+      "source_ids": [
+        "way/46595395"
+      ],
+      "metrics": {
+        "area_m2": 6697.789,
+        "bounds_world_xz_m": [
+          87.6832,
+          -237.5205,
+          215.8063,
+          -158.3031
+        ],
+        "footprint_centroid": {
+          "world_xz_m": [
+            149.6153,
+            -196.5619
+          ],
+          "wgs84_lon_lat": [
+            103.85305557,
+            1.286230708
+          ]
+        },
+        "inside_representative_point": {
+          "world_xz_m": [
+            151.3436,
+            -195.3694
+          ],
+          "wgs84_lon_lat": [
+            103.853044855,
+            1.286215078
+          ]
+        },
+        "oriented_envelope": {
+          "long_m": 122.466,
+          "short_m": 80.389,
+          "major_axis_grid_bearing_deg_mod180": 25.50918,
+          "corners_world_xz_m": [
+            [
+              223.146,
+              -205.8042
+            ],
+            [
+              112.6188,
+              -258.5448
+            ],
+            [
+              77.9988,
+              -185.9924
+            ],
+            [
+              188.5261,
+              -133.2519
+            ]
+          ],
+          "axis_endpoints_north_to_south": [
+            {
+              "world_xz_m": [
+                95.3088,
+                -222.2686
+              ],
+              "wgs84_lon_lat": [
+                103.853286559,
+                1.286721835
+              ]
+            },
+            {
+              "world_xz_m": [
+                205.8361,
+                -169.5281
+              ],
+              "wgs84_lon_lat": [
+                103.852812656,
+                1.285722269
+              ]
+            }
+          ],
+          "not_tower_or_door_positions": true
+        }
+      }
+    }
+  },
+  "legacy_comparison": {
+    "path": "game/src/world/downtown/plan.gd",
+    "sha256": "14a707a93f5c0c59ebce41632522c742052bd476bd073c9342f10c87e3010ab2",
+    "plan_version": "Astra-6 R1 2026-10-25",
+    "declared_distance_scales": {
+      "east_west": 0.45,
+      "north_south": 0.65
+    },
+    "anchors_world_xyz_m": {
+      "marina_bay_sands": [
+        -118.0,
+        0.0,
+        -705.0
+      ],
+      "mbs_event_plaza": [
+        -118.0,
+        0.3,
+        -642.0
+      ],
+      "artscience_museum": [
+        -290.0,
+        0.3,
+        -598.0
+      ],
+      "singapore_flyer": [
+        -650.0,
+        0.0,
+        -880.0
+      ],
+      "helix_bridge": [
+        -380.0,
+        3.6,
+        -745.0
+      ],
+      "esplanade_concert_hall": [
+        -712.0,
+        0.3,
+        -455.0
+      ],
+      "esplanade_theatre": [
+        -712.0,
+        0.3,
+        -575.0
+      ],
+      "merlion": [
+        64.0,
+        0.3,
+        -371.0
+      ],
+      "merlion_park_true": [
+        -470.0,
+        0.3,
+        -405.0
+      ],
+      "fullerton_hotel": [
+        -485.0,
+        0.3,
+        -257.0
+      ],
+      "one_fullerton": [
+        -488.0,
+        0.3,
+        -392.0
+      ],
+      "supertree_grove_district": [
+        -80.0,
+        0.16,
+        -262.0
+      ],
+      "gardens_supertree_grove": [
+        -10.0,
+        0.0,
+        -905.0
+      ],
+      "flower_dome": [
+        230.0,
+        0.0,
+        -875.0
+      ],
+      "cloud_forest": [
+        240.0,
+        0.0,
+        -985.0
+      ],
+      "ns_square": [
+        -580.0,
+        0.3,
+        -618.0
+      ],
+      "raffles_place": [
+        -377.0,
+        0.16,
+        -80.0
+      ],
+      "boat_quay": [
+        -511.0,
+        0.0,
+        90.0
+      ],
+      "mbfc": [
+        481.0,
+        0.0,
+        -480.0
+      ],
+      "sheares_bridge": [
+        -350.0,
+        29.0,
+        -1120.0
+      ]
+    },
+    "frame_registration_to_survey": "NOT_ESTABLISHED; direct absolute point deltas would be misleading",
+    "pairwise_distance_comparisons": [],
+    "interpretation": "Pair distances avoid an arbitrary origin translation, but authored anchors and source polygon centroids are not established equivalent points. Do not apply these ratios as a runtime warp."
+  },
+  "full_interior_acceptance": false,
+  "one_to_one_city_acceptance": false,
+  "unverified": [
+    "Every interior level, room, doorway and vertical circulation assignment",
+    "Architectural identity/extent of source footprint versus resort/site or building-part geometry",
+    "Actual Tower3/L56 public-deck footprint and elevation: a north endpoint is not that deck",
+    "OSM height/name/completeness and physical-world survey accuracy",
+    "Runtime replacement of legacy compressed geometry"
+  ]
+}

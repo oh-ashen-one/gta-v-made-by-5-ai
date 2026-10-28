@@ -1,0 +1,281 @@
+{
+  "purpose": "Reference-backed circulation requirements; not completed geometry or an as-built metric plan",
+  "target_epoch": "2026-10-28",
+  "world_geometry_coordinates": null,
+  "level_elevations_m": null,
+  "tower_axis_order_north_to_south": [
+    "T3",
+    "T2",
+    "T1"
+  ],
+  "hotel_and_retail_separated_by": "Bayfront Avenue; use real underpass/bridge connections, not attached hotel-mall massing",
+  "nodes": [
+    {
+      "id": "hotel_T1_L1",
+      "label": "Hotel Tower1 atrium/lobby",
+      "level_label": "L1",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "hotel_T2_L1",
+      "label": "Hotel Tower2 atrium/lobby",
+      "level_label": "L1",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "hotel_T3_L1",
+      "label": "Hotel Tower3 atrium/lobby",
+      "level_label": "L1",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "hotel_T3_B1_boxoffice",
+      "label": "Observation Deck box office",
+      "level_label": "B1",
+      "source_ids": [
+        "MBS-FAQ"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "public_deck_T3_L56",
+      "label": "North cantilever public observation deck",
+      "level_label": "L56",
+      "source_ids": [
+        "MBS-SKYPARK",
+        "MBS-FAQ"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "public_mezzanine_L57",
+      "label": "Public-deck mezzanine subset",
+      "level_label": "L57",
+      "source_ids": [
+        "MBS-FAQ"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "roof_pool_L57",
+      "label": "Hotel pool and roof facilities",
+      "level_label": "L57",
+      "source_ids": [
+        "MBS-FAQ"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "paiza_T2_L55",
+      "label": "Paiza Sky Residence",
+      "level_label": "L55",
+      "source_ids": [
+        "MBS-PAIZA-RESIDENCE"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "shoppes_L1",
+      "label": "Bay Level retail spine",
+      "level_label": "L1",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "shoppes_B1",
+      "label": "Galleria retail spine",
+      "level_label": "B1",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "shoppes_B2",
+      "label": "Canal retail spine",
+      "level_label": "B2",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "casino_B2M",
+      "label": "Casino mezzanine component",
+      "level_label": "B2M",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "coach_B2M",
+      "label": "Coach bay hotel lift connection",
+      "level_label": "B2M",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "city_event_plaza",
+      "label": "Event Plaza and waterfront promenade",
+      "level_label": null,
+      "source_ids": [
+        "MBS-KIOSK",
+        "MBS-FLOORPLAN-2018"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    },
+    {
+      "id": "bayfront_station",
+      "label": "Bayfront MRT/underground pedestrian network",
+      "level_label": null,
+      "source_ids": [
+        "MBS-FLOORPLAN-2018",
+        "MBS-ART-PATH"
+      ],
+      "world_position": null,
+      "implementation_status": "not_implemented_by_researcher"
+    }
+  ],
+  "edges": [
+    {
+      "from": "hotel_T1_L1",
+      "to": "hotel_T2_L1",
+      "kind": "continuous_ground_atrium",
+      "source_ids": [
+        "MBS-KIOSK",
+        "SAFDIE-HOTEL"
+      ],
+      "metric_path": null,
+      "evidence_level": "public_schematic_or_operator_text",
+      "needs_current_dimensioned_validation": true
+    },
+    {
+      "from": "hotel_T2_L1",
+      "to": "hotel_T3_L1",
+      "kind": "continuous_ground_atrium",
+      "source_ids": [
+        "MBS-KIOSK",
+        "SAFDIE-HOTEL"
+      ],
+      "metric_path": null,
+      "evidence_level": "public_schematic_or_operator_text",
+      "needs_current_dimensioned_validation": true
+    },
+    {
+      "from": "shoppes_B2",
+      "to": "hotel_T2_L1",
+      "kind": "lift_or_escalator_via_underground_link_exact_landing_unverified",
+      "source_ids": [
+        "MBS-KIOSK",
+        "MBS-ART-PATH"
+      ],
+      "metric_path": null,
+      "evidence_level": "public_schematic_or_operator_text",
+      "needs_current_dimensioned_validation": true
+    },
+    {
+      "from": "coach_B2M",
+      "to": "hotel_T1_L1",
+      "kind": "lift_landing_between_T1_T2_exact_point_unverified",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "metric_path": null,
+      "evidence_level": "public_schematic_or_operator_text",
+      "needs_current_dimensioned_validation": true
+    },
+    {
+      "from": "shoppes_B1",
+      "to": "hotel_T2_L1",
+      "kind": "signed_lift_connection_exact_landing_unverified",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "metric_path": null,
+      "evidence_level": "public_schematic_or_operator_text",
+      "needs_current_dimensioned_validation": true
+    },
+    {
+      "from": "shoppes_B1",
+      "to": "hotel_T3_L1",
+      "kind": "signed_lift_connection_exact_landing_unverified",
+      "source_ids": [
+        "MBS-KIOSK"
+      ],
+      "metric_path": null,
+      "evidence_level": "public_schematic_or_operator_text",
+      "needs_current_dimensioned_validation": true
+    },
+    {
+      "from": "public_deck_T3_L56",
+      "to": "public_mezzanine_L57",
+      "kind": "mezzanine_connection",
+      "source_ids": [
+        "MBS-FAQ"
+      ],
+      "metric_path": null,
+      "evidence_level": "public_schematic_or_operator_text",
+      "needs_current_dimensioned_validation": true
+    },
+    {
+      "from": "city_event_plaza",
+      "to": "shoppes_L1",
+      "kind": "public_promenade_frontage_entrance_points_need_survey",
+      "source_ids": [
+        "MBS-KIOSK",
+        "SAFDIE-RETAIL"
+      ],
+      "metric_path": null,
+      "evidence_level": "public_schematic_or_operator_text",
+      "needs_current_dimensioned_validation": true
+    },
+    {
+      "from": "shoppes_B2",
+      "to": "bayfront_station",
+      "kind": "underground_pedestrian_network",
+      "source_ids": [
+        "MBS-FLOORPLAN-2018",
+        "MBS-ART-PATH"
+      ],
+      "metric_path": null,
+      "evidence_level": "public_schematic_or_operator_text",
+      "needs_current_dimensioned_validation": true
+    }
+  ],
+  "not_proven": [
+    "Exact entrance/lift door coordinates",
+    "Every hotel/service floor and room assignment",
+    "Complete shops/casino/private fit-outs",
+    "All floor elevations and wall widths",
+    "Current as-built dimensions after2025 refurbishment"
+  ],
+  "gameplay_access_note": "Real-world public/guest/private labels are reference facts, not a request to add ticketing/security restrictions to gameplay."
+}

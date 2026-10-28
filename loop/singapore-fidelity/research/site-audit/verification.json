@@ -1,0 +1,24 @@
+{
+  "verified_utc": "2026-10-28T17:24:35.631619+00:00",
+  "tests": {
+    "kind": "Labeled synthetic analytic fixtures, not physical MBS runtime checks",
+    "passed": 16,
+    "failed": 0,
+    "command": "python -m unittest discover -s game/tools/geodata -p 'test_site_audit.py' -v"
+  },
+  "real_snapshot_audit_completed": true,
+  "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+  "script_sha256": "a2a5a230f0ffbd2025deffe19e5457d180b6aa5aac1a3eb31e77f3dac940cc53",
+  "test_sha256": "1207af7c51f73c4cc6197609f5a496663d370f365e99610083a66e8c702c9d15",
+  "outputs": {
+    "mbs-source-components-r1.json": "ca004a1e1512322e700da1ca80a5394de8fab16d9dd15301ed340b643f70fec9",
+    "real-source-r1.json": "a84fe904b886a56e5f9d2943ceb111b67c636f451297d4711a1c75e32173a047",
+    "real-source-r2.json": "492c2b7f2a89348fe12d3c725f473110934aa56d758394269154a8450e067ebe",
+    "real-source-r3.json": "655ecea9afe4468bfbcf7a311f9a80c980e6f949c3bad0e0b13db8e281ac6c9e",
+    "real-source-r4.json": "bde4add86af664ba7264bd8b8cdd61ff1c2a6d29f7fa165a6f54827788635a22",
+    "real-source-r5.json": "d635330125e4c7c21389d9d61ecd25b4d1ae03cc71132cca6d1e425c77671070"
+  },
+  "engine_launched": false,
+  "git_mutations": false,
+  "full_city_or_interior_complete": false
+}

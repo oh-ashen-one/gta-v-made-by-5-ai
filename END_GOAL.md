@@ -1,5 +1,8 @@
 # END GOAL — The Singapore Open-World Slice
 
+> **Active owner amendment —28 October2026.** The new Singapore-fidelity goal supersedes earlier latitude to compress or invent the city layout and earlier street/helipad-only helicopter exit rules. Use real, uncompressed building/street coordinates and real street names for the requested one-to-one Singapore layout. Make the entire MBS building interior explorable through a physical exterior entrance at the same quality standard as the exterior, with source-backed room/floor/circulation coverage. Also fix the two decorative/invulnerable airfield cops, provide stable fully controllable helicopter look, allow geometry-supported ordinary roof landings/exits and speed up Shift descent. Preserve unknown/unverified geometry as open requirements; an approximate city, coordinate dataset or lobby-only interior does not complete this amended goal. See `loop/singapore-fidelity/TASK.md` and the rolling `HANDOFF.md`. No previous completed benchmark is retroactively upgraded by this amendment.
+
+
 **Canonical north star for every builder, reviewer, and handoff.**
 
 **Status:** fixed quality specification; implementation and acceptance belong in the evidence ledger. **Owner update, 2026-10-21:** the visual target is GTA VI-level fidelity in Singapore. Builders choose technical approaches autonomously; the Codex manager monitors hourly and hands the project to the next builder at each fixed four-hour boundary. The first wave is active. This document is not evidence that the target has been achieved.

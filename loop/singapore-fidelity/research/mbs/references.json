@@ -1,0 +1,273 @@
+{
+  "checked_utc": "2026-10-28T16:52:40.874818+00:00",
+  "target_epoch": "2026-10-28 existing three-tower resort; future2027work not assumed present",
+  "sources": [
+    {
+      "id": "MBS-KIOSK",
+      "title": "Sands LifeStyle Kiosk Locations",
+      "url": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/sands-lifestyle/SandsLifeStyle_KioskMap.pdf",
+      "publisher": "Marina Bay Sands",
+      "date_in_document": null,
+      "kind": "operator visitor schematic",
+      "pages": 1,
+      "visual_inspection": {
+        "method": "Chrome PDF viewer, task-created tab911551525",
+        "reviewed_panels": [
+          "The Shoppes BayLevelL1",
+          "GalleriaB1/CasinoB2M",
+          "CanalB2",
+          "HotelL1"
+        ]
+      },
+      "supports": [
+        "L1/B1/B2/B2M level identities",
+        "retail spine and branches",
+        "three-tower hotel lobby connection",
+        "lifts from B2 Shoppes and B2M CoachBay"
+      ],
+      "does_not_support": [
+        "metric scale",
+        "floor elevations",
+        "upper hotel floor inventory",
+        "private room/BOH layout"
+      ],
+      "rights": "Publicly accessible; no redistribution permission established. No PDF/image copied into public source.",
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-FLOORPLAN-2018",
+      "title": "Floor Plans: Sands Expo and Convention Centre",
+      "url": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/meetings/packages-and-promotions/hospitality-meetings-package/Floor-Plan.pdf",
+      "publisher": "Marina Bay Sands",
+      "date_in_document": "2018.11 (footer on PDFpage10)",
+      "kind": "historical sales floorplan brochure",
+      "pages": 10,
+      "visual_inspection": {
+        "method": "Chrome PDF viewer same owned research tab",
+        "reviewed_pages": [
+          2,
+          8,
+          10
+        ]
+      },
+      "supports": [
+        "historical resort topology and BayfrontAvenue separation",
+        "Expo room plans, not hotel guestrooms",
+        "historical SkyPark pool/garden/restaurant/public-deck organization"
+      ],
+      "does_not_support": [
+        "current as-built guestrooms",
+        "post-2025 full hotel floor assignment",
+        "current tenant fit-outs",
+        "metric scale for every drawn area"
+      ],
+      "rights": "Footer says all rights reserved and restricts reproduction. Reference only; no plan graphics publicly committed.",
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-FACTS-2026",
+      "title": "Marina Bay Sands Hotel factsheet",
+      "url": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/company-information/media-centre/factsheets/amenities/marina-bay-sands-hotel.pdf",
+      "publisher": "Marina Bay Sands",
+      "date_in_document": "Contains February2026 facts; no formal issue date inspected",
+      "kind": "current operator factsheet",
+      "supports": [
+        "approximately1850rooms/suites,775suites,55floors,3towers",
+        "legs connect atLevel23",
+        "SkyPark approximately200m high,12400sqm,150m pool"
+      ],
+      "does_not_support": [
+        "per-floor room numbering",
+        "wall and lift-core dimensions",
+        "exact elevations of labelled levels"
+      ],
+      "rights": "Reference only; artwork/raw PDF not public source.",
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-CORPORATE",
+      "title": "Corporate factsheet",
+      "url": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/company-information/media-centre/factsheets/corporate/marina-bay-sands-corporate.pdf",
+      "publisher": "Marina Bay Sands",
+      "supports": [
+        "room refurbishment completedMay2025",
+        "current hotel inventory approximately1850rooms including775suites"
+      ],
+      "does_not_support": [
+        "individual floor plans"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "SAFDIE-HOTEL",
+      "title": "Marina Bay Sands - Hotel and SkyPark",
+      "url": "https://www.safdiearchitects.com/projects/marina-bay-sands-hotel-and-skypark",
+      "publisher": "Safdie Architects",
+      "date_in_document": "Built2010",
+      "kind": "original architect design account",
+      "supports": [
+        "ground atrium/internal pedestrian street joins towers",
+        "north cantilever public promenade",
+        "original structural/program relationship"
+      ],
+      "does_not_support": [
+        "current room count or updated room layouts"
+      ],
+      "cautions": [
+        "historical text gives about2600rooms and57storeys; use current operator inventory for the2026 target",
+        "page contains internally inconsistent pool measurements; do not treat as a dimensional survey"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "SAFDIE-RETAIL",
+      "title": "Marina Bay Sands - Public Realm and Retail Galleria",
+      "url": "https://www.safdiearchitects.com/projects/marina-bay-sands-public-realm-and-retail-galleria",
+      "publisher": "Safdie Architects",
+      "date_in_document": "Built2011",
+      "supports": [
+        "stacked retail spaces below waterfront grade",
+        "public circulation links shopping, theatres, casino and convention program",
+        "four-storey casino atrium"
+      ],
+      "does_not_support": [
+        "current individual tenant interiors or private casino layout"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-SKYPARK",
+      "title": "SkyPark Observation Deck visitor page",
+      "url": "https://www.marinabaysands.com/attractions/skypark-observation-deck.html",
+      "publisher": "Marina Bay Sands",
+      "supports": [
+        "public observationDeckTower3Level56",
+        "visitor entrance viaTower3driveway"
+      ],
+      "does_not_support": [
+        "a real rooftop helipad",
+        "exact roof floorplate coordinates"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-FAQ",
+      "title": "Frequently Asked Questions",
+      "url": "https://www.marinabaysands.com/faq.html",
+      "publisher": "Marina Bay Sands",
+      "supports": [
+        "ObservationDeckLevel56 has mezzanine connection to part ofLevel57",
+        "SkyPark/pool/restaurantsLevel57",
+        "ObservationDeckboxofficeTower3B1",
+        "CE LA VI receptionTower3L1"
+      ],
+      "does_not_support": [
+        "precise elevator shafts and floor elevations"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-RENOVATION",
+      "title": "Hotel renovation FAQ",
+      "url": "https://www.marinabaysands.com/faq/hotel-renovation.html",
+      "publisher": "Marina Bay Sands",
+      "supports": [
+        "announcedfuturelobby/arrivalworksstart6January2027",
+        "announcedSkyPark/poolworksfromMay2027",
+        "phasedroutingchangesaredate-dependent"
+      ],
+      "cautions": [
+        "Do not model these upcoming closures as present on28October2026",
+        "GiftShopTower2closureannouncedfrom31October2026; target snapshot must be pinned"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-PAIZA-RESIDENCE",
+      "title": "Paiza Sky Residence factsheet",
+      "url": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/company-information/media-centre/factsheets/restaurants/paiza-sky-residence.pdf",
+      "publisher": "Marina Bay Sands",
+      "supports": [
+        "privateclubTower2Level55",
+        "dining/tea/lounge/check-in program"
+      ],
+      "does_not_support": [
+        "room-by-room floorplate"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-SANDS-ROOM",
+      "title": "Sands Premier Room",
+      "url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-room.html",
+      "publisher": "Marina Bay Sands",
+      "supports": [
+        "representative contemporary room appearance/program"
+      ],
+      "does_not_support": [
+        "which room type occupies every physical room",
+        "all room variants",
+        "as-built floor layout"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-SIGNATURE",
+      "title": "Sands Signature Suite",
+      "url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-signature-suite.html",
+      "publisher": "Marina Bay Sands",
+      "supports": [
+        "140sqm-average sample suite with three entertainment variants"
+      ],
+      "cautions": [
+        "operator explicitly says images/tours are illustrative and actual layouts/furnishings may vary"
+      ],
+      "does_not_support": [
+        "exact template for every room of the building"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-SAMPLE-SUITE",
+      "title": "Paiza Signature Suite one-bedroom sample plan",
+      "url": "https://www.marinabaysands.com/content/dam/marinabaysands/hotel/paiza-signature-suite/paiza-signature-suite-floorplan.pdf",
+      "publisher": "Marina Bay Sands",
+      "kind": "sample unit plan",
+      "supports": [
+        "one published suite configuration only"
+      ],
+      "does_not_support": [
+        "currentSKU-to-floor mapping",
+        "all guestrooms",
+        "full tower as-built plans"
+      ],
+      "cautions": [
+        "product title differs from contemporary SandsSignature naming; matching applicability must be verified before use"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    },
+    {
+      "id": "MBS-ART-PATH",
+      "title": "Art installations at MBS Art Path",
+      "url": "https://www.marinabaysands.com/guides/exceptional-experiences/marina-bay-sands-art-path.html",
+      "publisher": "Marina Bay Sands",
+      "supports": [
+        "interior/exterior material and landmark cues",
+        "Tower3entrybesideTippingWall",
+        "Tower1atriumDrift/Motion",
+        "atriumRisingForest andB2RainOculus"
+      ],
+      "does_not_support": [
+        "rights to reproduce artworks as game assets",
+        "complete construction plans"
+      ],
+      "checked_utc": "2026-10-28T16:52:40.874818+00:00"
+    }
+  ],
+  "access_notes": [
+    "web reader could parse official PDFs",
+    "direct urllib/curl PDF downloads timed out, including official regional hosts; no local PDF hash acquired",
+    "in-app browser unavailable; Chrome background visibility override unsupported; normal task-created Chrome tab subsequently loaded PDFs and was visually inspected",
+    "No PDF images/raw branded plans committed; public source URLs and factual derived notes only"
+  ]
+}

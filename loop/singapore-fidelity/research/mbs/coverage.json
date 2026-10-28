@@ -1,0 +1,84 @@
+{
+  "full_requested_interior_verified": false,
+  "as_built_complete": false,
+  "scope_note": "The three hotel towers, joined atrium and rooftop are the minimum core of the boat-topped building. Connected retail/casino/expo components are recorded, not silently counted as hotel guestrooms or substituted for the full request.",
+  "areas": [
+    {
+      "id": "hotel_ground_atrium",
+      "scope": "Required hotel interior",
+      "evidence_status": "partial_topology",
+      "sources": "MBS-KIOSK/SAFDIE-HOTEL",
+      "remaining_gap": "Contiguous L1 spine across three differently sized atria; exact metric geometry, current fit-outs and all doors still unverified"
+    },
+    {
+      "id": "hotel_lift_cores",
+      "scope": "Required hotel interior",
+      "evidence_status": "partial_topology",
+      "sources": "MBS-KIOSK/MBS-FAQ",
+      "remaining_gap": "Selected public links known; all express/guest/service shafts, stops and dimensions unknown"
+    },
+    {
+      "id": "hotel_guest_floors",
+      "scope": "Required hotel interior",
+      "evidence_status": "not_covered",
+      "sources": "MBS-FACTS-2026",
+      "remaining_gap": "Inventory aggregate is known; floor-by-floor corridor/core/room assignment and skipped/service/refuge levels are not"
+    },
+    {
+      "id": "all_guestrooms_suites",
+      "scope": "Required hotel interior",
+      "evidence_status": "sample_only",
+      "sources": "MBS-SANDS-ROOM/MBS-SIGNATURE/MBS-SAMPLE-SUITE",
+      "remaining_gap": "Representative categories/one sample plan do not prove every room or current variant"
+    },
+    {
+      "id": "hotel_service_boh",
+      "scope": "Required whole-building completeness",
+      "evidence_status": "not_covered",
+      "sources": "none",
+      "remaining_gap": "Staff routes, plant, kitchens, housekeeping, storage, loading and maintenance spaces lack complete public plans"
+    },
+    {
+      "id": "hotel_paiza_private",
+      "scope": "Required whole-building completeness",
+      "evidence_status": "program_only",
+      "sources": "MBS-PAIZA-RESIDENCE",
+      "remaining_gap": "L55Tower2 known; full detailed floorplate not established"
+    },
+    {
+      "id": "roof_l56_l57",
+      "scope": "Required roof/interior circulation",
+      "evidence_status": "partial_topology",
+      "sources": "MBS-FLOORPLAN-2018/MBS-SKYPARK/MBS-FAQ",
+      "remaining_gap": "Public north observation deck, pool and roof program known; exact level elevations/dimensions and2026as-built drawing unknown"
+    },
+    {
+      "id": "shoppes",
+      "scope": "Connected resort component",
+      "evidence_status": "public_schematic",
+      "sources": "MBS-KIOSK",
+      "remaining_gap": "L1/B1/B2/B2M spine and unit envelopes are diagrammed; scale and current shop interiors unverified"
+    },
+    {
+      "id": "casino",
+      "scope": "Connected resort component",
+      "evidence_status": "envelope_only",
+      "sources": "MBS-KIOSK/SAFDIE-RETAIL",
+      "remaining_gap": "Location/program known, not complete gaming/private/service floor layout"
+    },
+    {
+      "id": "expo_convention",
+      "scope": "Connected resort component",
+      "evidence_status": "historical_plans",
+      "sources": "MBS-FLOORPLAN-2018",
+      "remaining_gap": "Some dimensioned room plans exist, but2018.11 is not a current hotel interior plan"
+    },
+    {
+      "id": "theatre_museum",
+      "scope": "Adjacent resort component",
+      "evidence_status": "program_only",
+      "sources": "MBS-KIOSK/MBS-FLOORPLAN-2018",
+      "remaining_gap": "Addresses adjacency; neither is a substitute for three-tower hotel completion"
+    }
+  ]
+}

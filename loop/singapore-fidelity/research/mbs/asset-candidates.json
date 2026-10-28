@@ -1,0 +1,89 @@
+{
+  "checked_utc": "2026-10-28T16:52:40.874818+00:00",
+  "source_first_checks": [
+    "Fab",
+    "NVIDIA SimReady",
+    "ThreeJS Assets",
+    "Poly Haven"
+  ],
+  "purchases": 0,
+  "downloads": 0,
+  "custom_art_authored": false,
+  "candidate_does_not_mean_selected": true,
+  "candidates": [
+    {
+      "id": "FAB-SOFA",
+      "url": "https://www.fab.com/listings/b35a779c-cf07-4f29-846e-243c00be40f7",
+      "creator": "Leilanie",
+      "title": "Sofa-Couch",
+      "listed_price": "Free",
+      "formats": [
+        "fbx",
+        "gltf",
+        "glb",
+        "usdz"
+      ],
+      "fit_score_0_to_5": 2,
+      "fit": "Potential loose contemporary seating; not an MBS architectural replica. Dimensions/material quality not inspected in engine.",
+      "license_status": "UNVERIFIED; public license field rendered as dash",
+      "download_status": "not_acquired",
+      "decision": "Candidate only; confirm actual license and runtime fit before use"
+    },
+    {
+      "id": "FAB-FURNITURE",
+      "url": "https://www.fab.com/listings/baece383-bc75-4de8-971d-25110a169a36",
+      "creator": "Next Level 3D",
+      "title": "Free Furniture Pack",
+      "listed_price": "Free",
+      "formats": [
+        "Unreal Engine"
+      ],
+      "fit_score_0_to_5": 2,
+      "fit": "Broad furniture set; UE-only source format adds conversion/tooling work for this Godot game.",
+      "license_status": "UNVERIFIED; do not infer FabStandard or rights from free label; metadata also lists AI-use restriction requiring interpretation",
+      "download_status": "not_acquired",
+      "decision": "Not selected for integration"
+    },
+    {
+      "id": "TJA-ARMCHAIR",
+      "url": "https://threejsassets.com/assets/armchair",
+      "creator": "Individual creator not verified; providerThreeJSAssets",
+      "title": "Free Armchair",
+      "listed_price": "Free",
+      "formats": [
+        "GLB/Draco"
+      ],
+      "fit_score_0_to_5": 1,
+      "fit": "Low-poly stylized furniture is weak fit for photorealistic MBS target; useful only if actual preview/optimization matches direction.",
+      "license_url": "https://threejsassets.com/license",
+      "license_status": "ProviderFreeCommercialLicense: project embedding/modification allowed, raw standalone redistribution prohibited; verify acquisition record",
+      "download_status": "not_acquired; free signed-in account required",
+      "decision": "Not selected; do not lower fidelity target because it is free"
+    },
+    {
+      "id": "SIMREADY",
+      "url": "https://huggingface.co/datasets/nvidia/simready-assets",
+      "title": "NVIDIA SimReady asset catalog",
+      "fit_score_0_to_5": 2,
+      "fit": "Possible service/utility/kitchen dressing; USD dependency/conversion and per-package license checks required. No exact MBS interior identified.",
+      "license_status": "UNVERIFIED per asset",
+      "download_status": "not_acquired; root catalog readable, tree/license tool requests inaccessible",
+      "decision": "Catalog checked; no selected asset and no claim that none exist"
+    },
+    {
+      "id": "POLYHAVEN-MARBLE",
+      "url": "https://polyhaven.com/a/marble_01",
+      "creator": "Rob Tuytel",
+      "title": "Marble 01",
+      "formats": [
+        "PBR maps"
+      ],
+      "fit_score_0_to_5": 3,
+      "fit": "Cream/beige floor material candidate, not the actual MBS installed stone. Must compare scale/roughness/pattern to official visual references.",
+      "license_url": "https://polyhaven.com/license",
+      "license_status": "PolyHaven asset license page verifiedCC0; exact downloaded asset/version and notices still required at acquisition",
+      "download_status": "not_acquired",
+      "decision": "Possible material base, no production change"
+    }
+  ]
+}

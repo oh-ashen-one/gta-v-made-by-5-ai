@@ -1,0 +1,21 @@
+# MBS whole-interior implementation contract
+
+This is a staged plan toward the full requested building, not a smaller replacement objective. The factual node/link inventory is `circulation-contract.json`; unknown positions and elevations remain null deliberately.
+
+1. **Pin real geometry and date.** Use the integrator's licensed geodata transform and current footprint. Keep Bayfront Avenue between the hotel and retail complex. Locate actual entrance thresholds, external walkways and below-road links before carving rooms. Use the October2026 state; do not mix the2018sales drawing,2025room refurbishment and future2027detours as one as-built plan.
+2. **Build the ground connection.** The player must walk through a real exterior opening into a continuous three-tower atrium. Match varied atrium proportions, double-leg tower envelope, glazing, daylight, retail/restaurant edges, reception and lift lobbies from verified references. Replace the relevant solid bounding-box colliders with shell/floor/wall collision. No menu-only entrance or invisible floor/wall shortcut counts as walking into the building.
+3. **Create the complete floor/space inventory.** Identify every actual level, guestroom/suite, corridor, core, stair, lift, service room and required connected area. Map room IDs/types to current as-built floor plans. Do not assume every numbered level is a repeated guest floor. A sample room can establish a room module only; it cannot assign the entire building. Stream rooms/floors for performance, but streaming cannot conceal missing or invented layouts.
+4. **Join the lower resort levels.** Preserve distinct L1/B1/B2/B2M labels, underground links, coach-bay connections, MRT and retail circulation. Check hotel versus connected-resort scope explicitly; conference plans do not fill missing hotel interiors. Store per-door/per-link reference and metric status.
+5. **Complete upper circulation and roof programs.** Preserve actual tower identities: north-to-south T3,T2,T1. Route public observation access through the correct Tower3 system, distinguish L56 from its L57 mezzanine and guest roof facilities, and place private club/restaurant programs only where supported. A game may allow exploration of private areas, but their real-world access classification must stay truthful in the reference ledger.
+6. **Source and integrate materials/props.** Select free, license-compatible furniture/material candidates that meet the existing art quality. Record acquisition, format, units, modifications and redistribution status; keep restricted raw files private. Evaluate marble, warm metals, glazing, textiles, plants and lighting at real gameplay-camera scale. Do not reproduce independent commissioned artworks or branded fit-outs without checking rights.
+7. **Verify the whole request.** Track every floor, room, door, stair/lift and exterior link against a source-backed coverage matrix. Walk exterior-to-interior and complete all circulation routes with ordinary controls. Verify collision, save/relaunch on upper floors, combat/reactions where applicable, rooftop landing/exit behavior, streaming continuity and independent source-to-runtime dimensional checks. Record unsupported spaces as incomplete. Match real photos/diagrams with fresh rendered critics, keeping reference rights separate from implementation evidence.
+8. **Measure and deliver.** Declare1920×1080/Forward+quality and target16.67ms frames on the verified Studio; use the shared/exclusive GPU protocol and preserve other sessions. Do not infer performance from stills or headless checks. Deliver editable sources, acquisition instructions/provenance, real runtime captures and a requirement-by-requirement audit. Completion remains unproven until the requested full interior and one-to-one layout are verified.
+
+## Evidence needed to close current gaps
+
+- Current surveyed hotel floor/room/core/stair/service layouts and elevations.
+- Current detailed fit-out references for every occupied space/variant, not only marketing photographs.
+- Verified exterior doorway/underground landing positions tied to the city coordinate frame.
+- Applicable rights for selected raw assets and any reproduced reference artwork.
+
+Research has not found a complete public as-built set. This is a data-coverage limitation to resolve, not permission to declare a smaller interior finished.

@@ -1,0 +1,52 @@
+{
+  "source_snapshot_utc": "2026-10-27T21:23:59Z",
+  "tiles": 906,
+  "counts": {
+    "road": 257845,
+    "waterway": 3644,
+    "water": 1549,
+    "building": 135415
+  },
+  "named_road_or_path_ways": 81680,
+  "unique_name_strings": 5541,
+  "unnamed_road_or_path_ways": 176165,
+  "highway_classes": {
+    "primary": 12909,
+    "secondary": 9254,
+    "motorway_link": 1968,
+    "motorway": 1664,
+    "service": 90523,
+    "steps": 7501,
+    "footway": 66675,
+    "primary_link": 1804,
+    "residential": 32291,
+    "path": 1740,
+    "cycleway": 5966,
+    "construction": 3750,
+    "tertiary": 9282,
+    "tertiary_link": 526,
+    "proposed": 178,
+    "pedestrian": 710,
+    "unclassified": 5152,
+    "track": 1287,
+    "busway": 40,
+    "trunk": 2305,
+    "trunk_link": 764,
+    "secondary_link": 770,
+    "crossing": 1,
+    "living_street": 69,
+    "bus_stop": 7,
+    "corridor": 654,
+    "rest_area": 2,
+    "raceway": 12,
+    "elevator": 34,
+    "bridleway": 5,
+    "services": 1,
+    "road": 1
+  },
+  "building_heights_unknown": 131259,
+  "source_area_geometry_errors": {
+    "area_geometry": 3
+  },
+  "claim": "Actual attributed country geometry in uncompressed metres; current runtime city has NOT been migrated or verified one-to-one."
+}

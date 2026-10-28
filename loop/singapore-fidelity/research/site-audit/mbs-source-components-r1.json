@@ -1,0 +1,2366 @@
+{
+  "schema": "mbs_source_site_components_v1",
+  "source": {
+    "source_url": "https://download.geofabrik.de/asia/malaysia-singapore-brunei.html",
+    "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+    "source_snapshot_utc": "2026-10-27T21:23:59Z",
+    "data_license": "ODbL-1.0",
+    "license_url": "https://www.openstreetmap.org/copyright",
+    "attribution": "© OpenStreetMap contributors",
+    "parse_errors": {
+      "area_geometry": 3
+    }
+  },
+  "coordinate_frame": {
+    "source_crs": "EPSG:4326",
+    "survey_crs": "EPSG:3414",
+    "origin_easting": 30000.0,
+    "origin_northing": 30000.0,
+    "world_axes": {
+      "x": "south",
+      "y": "up",
+      "z": "west"
+    },
+    "metres_per_unit": 1.0,
+    "distance_compression": false,
+    "legacy_plan_alignment_applied": false
+  },
+  "geometry_coordinates": "[world X south, world Z west] metres; not RFC7946 WGS84 GeoJSON",
+  "ground_elevation_status": "Not provided; terrain, basement and floor elevations are not inferred",
+  "hotel_source_ids": [
+    "way/116801004",
+    "way/172307472",
+    "way/172307471"
+  ],
+  "retail_source_id": "relation/2298319",
+  "bayfront_avenue_source_ids": [
+    "way/1009347002",
+    "way/1009348662",
+    "way/1009348663",
+    "way/1010903479",
+    "way/1280746586",
+    "way/150009548",
+    "way/160588637",
+    "way/160588639",
+    "way/160588641",
+    "way/160588642",
+    "way/23037305",
+    "way/305495650",
+    "way/305865019",
+    "way/477915674",
+    "way/479284867",
+    "way/479342613",
+    "way/627708719",
+    "way/627708722",
+    "way/634994943",
+    "way/635341764",
+    "way/635341765",
+    "way/635341766",
+    "way/635345722",
+    "way/635345724",
+    "way/635390320",
+    "way/635392742",
+    "way/643807947",
+    "way/643810038",
+    "way/651874715",
+    "way/666133093",
+    "way/667468497",
+    "way/667468498",
+    "way/676479279",
+    "way/676705143",
+    "way/687861963",
+    "way/687861964",
+    "way/687958770",
+    "way/687958771",
+    "way/687958772",
+    "way/687958773",
+    "way/718971944",
+    "way/718971945",
+    "way/763513327",
+    "way/763513328",
+    "way/763513329",
+    "way/763513330",
+    "way/763513331",
+    "way/763514662",
+    "way/763514663",
+    "way/763514664",
+    "way/763514665",
+    "way/83145747",
+    "way/849812552"
+  ],
+  "features": [
+    {
+      "id": "way/83145747",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -218.4404,
+            -1079.1151
+          ],
+          [
+            -204.5191,
+            -1079.5827
+          ],
+          [
+            -177.6494,
+            -1080.4955
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/160588641",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "2",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -177.019,
+            -1068.0977
+          ],
+          [
+            -205.1824,
+            -1067.3406
+          ],
+          [
+            -219.0816,
+            -1066.962
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/651874715",
+      "kind": "road",
+      "tags": {
+        "bridge": "yes",
+        "highway": "secondary",
+        "lanes": "3",
+        "layer": "2",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -122.2512,
+            -1066.4957
+          ],
+          [
+            -177.019,
+            -1068.0977
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/116801004",
+      "kind": "building",
+      "tags": {
+        "building": "hotel",
+        "building:levels": "55",
+        "height": "193",
+        "name": "Marina Bay Sands Tower 1",
+        "name:en": "Marina Bay Sands Tower 1"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                552.3119,
+                -951.7166
+              ],
+              [
+                581.8681,
+                -994.5531
+              ],
+              [
+                534.0551,
+                -1027.9958
+              ],
+              [
+                530.5168,
+                -1022.8652
+              ],
+              [
+                504.4989,
+                -985.1593
+              ],
+              [
+                539.7505,
+                -960.5085
+              ],
+              [
+                552.3119,
+                -951.7166
+              ]
+            ]
+          ]
+        ]
+      },
+      "height_m": 193.0,
+      "height_status": "source_tag"
+    },
+    {
+      "id": "relation/2298319",
+      "kind": "building",
+      "tags": {
+        "addr:housenumber": "10",
+        "addr:postcode": "018956",
+        "addr:street": "Bayfront Avenue",
+        "building": "retail",
+        "building:levels": "2",
+        "height": "15",
+        "layer": "2",
+        "name": "The Shoppes at Marina Bay Sands",
+        "name:en": "The Shoppes at Marina Bay Sands",
+        "name:zh": "滨海湾金沙购物广场"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                607.2484,
+                -653.2214
+              ],
+              [
+                636.9596,
+                -681.1336
+              ],
+              [
+                597.7383,
+                -721.0536
+              ],
+              [
+                554.1493,
+                -760.0165
+              ],
+              [
+                504.4898,
+                -798.6676
+              ],
+              [
+                454.2663,
+                -832.5666
+              ],
+              [
+                526.5818,
+                -880.4562
+              ],
+              [
+                499.347,
+                -906.6651
+              ],
+              [
+                409.9035,
+                -851.2187
+              ],
+              [
+                331.1738,
+                -890.5706
+              ],
+              [
+                301.3959,
+                -903.1574
+              ],
+              [
+                378.7641,
+                -999.1696
+              ],
+              [
+                372.5387,
+                -1008.2509
+              ],
+              [
+                361.625,
+                -1005.8803
+              ],
+              [
+                281.7909,
+                -908.9778
+              ],
+              [
+                263.5682,
+                -913.2623
+              ],
+              [
+                234.3652,
+                -927.0065
+              ],
+              [
+                219.8134,
+                -937.1339
+              ],
+              [
+                212.9024,
+                -943.6444
+              ],
+              [
+                208.2361,
+                -951.4125
+              ],
+              [
+                202.0438,
+                -961.0837
+              ],
+              [
+                197.2779,
+                -972.747
+              ],
+              [
+                195.8403,
+                -985.4009
+              ],
+              [
+                196.0171,
+                -994.6158
+              ],
+              [
+                197.7309,
+                -1005.5558
+              ],
+              [
+                200.5063,
+                -1014.7819
+              ],
+              [
+                204.0999,
+                -1023.0954
+              ],
+              [
+                200.7272,
+                -1031.3755
+              ],
+              [
+                172.3205,
+                -1039.0877
+              ],
+              [
+                167.4664,
+                -1027.9696
+              ],
+              [
+                163.6074,
+                -1016.6735
+              ],
+              [
+                161.0091,
+                -1002.9401
+              ],
+              [
+                155.624,
+                -1004.0084
+              ],
+              [
+                154.2419,
+                -1002.0719
+              ],
+              [
+                151.124,
+                -971.9118
+              ],
+              [
+                154.0763,
+                -971.1328
+              ],
+              [
+                161.3964,
+                -968.9516
+              ],
+              [
+                167.6771,
+                -966.4587
+              ],
+              [
+                171.9896,
+                -954.2167
+              ],
+              [
+                176.2469,
+                -944.334
+              ],
+              [
+                182.3728,
+                -933.6278
+              ],
+              [
+                190.9757,
+                -924.4019
+              ],
+              [
+                198.2737,
+                -916.1552
+              ],
+              [
+                207.9933,
+                -907.7194
+              ],
+              [
+                217.6465,
+                -901.5206
+              ],
+              [
+                228.3724,
+                -896.0229
+              ],
+              [
+                239.9938,
+                -892.061
+              ],
+              [
+                271.7621,
+                -882.6906
+              ],
+              [
+                275.7539,
+                -878.9178
+              ],
+              [
+                284.0138,
+                -875.5903
+              ],
+              [
+                290.3608,
+                -875.8463
+              ],
+              [
+                295.8011,
+                -874.1992
+              ],
+              [
+                295.9228,
+                -872.7191
+              ],
+              [
+                303.1544,
+                -869.0799
+              ],
+              [
+                313.3494,
+                -864.2388
+              ],
+              [
+                331.7934,
+                -855.7029
+              ],
+              [
+                345.8365,
+                -849.0367
+              ],
+              [
+                369.6434,
+                -837.7408
+              ],
+              [
+                364.8777,
+                -829.0489
+              ],
+              [
+                440.4118,
+                -787.0815
+              ],
+              [
+                444.8126,
+                -795.1168
+              ],
+              [
+                482.1097,
+                -767.9175
+              ],
+              [
+                508.5152,
+                -747.6515
+              ],
+              [
+                521.6184,
+                -737.5909
+              ],
+              [
+                580.9644,
+                -686.5196
+              ],
+              [
+                607.2484,
+                -653.2214
+              ]
+            ],
+            [
+              [
+                404.3973,
+                -813.4239
+              ],
+              [
+                403.4906,
+                -813.4684
+              ],
+              [
+                402.5949,
+                -813.5908
+              ],
+              [
+                401.7103,
+                -813.7912
+              ],
+              [
+                400.8478,
+                -814.0694
+              ],
+              [
+                400.0074,
+                -814.4144
+              ],
+              [
+                399.1892,
+                -814.815
+              ],
+              [
+                398.4152,
+                -815.2936
+              ],
+              [
+                397.6854,
+                -815.8389
+              ],
+              [
+                396.9998,
+                -816.4287
+              ],
+              [
+                396.3585,
+                -817.0853
+              ],
+              [
+                395.7835,
+                -817.7865
+              ],
+              [
+                395.2527,
+                -818.5321
+              ],
+              [
+                394.7993,
+                -819.3223
+              ],
+              [
+                394.4012,
+                -820.1458
+              ],
+              [
+                394.0806,
+                -820.9917
+              ],
+              [
+                393.8262,
+                -821.8709
+              ],
+              [
+                393.6383,
+                -822.7612
+              ],
+              [
+                393.5277,
+                -823.6738
+              ],
+              [
+                393.4945,
+                -824.5864
+              ],
+              [
+                393.5277,
+                -825.5101
+              ],
+              [
+                393.6493,
+                -826.4338
+              ],
+              [
+                393.8372,
+                -827.3464
+              ],
+              [
+                394.1026,
+                -828.2368
+              ],
+              [
+                394.4454,
+                -829.1048
+              ],
+              [
+                394.8545,
+                -829.9395
+              ],
+              [
+                395.33,
+                -830.7297
+              ],
+              [
+                395.8718,
+                -831.4865
+              ],
+              [
+                396.4799,
+                -832.1876
+              ],
+              [
+                397.1323,
+                -832.8443
+              ],
+              [
+                397.8511,
+                -833.4452
+              ],
+              [
+                398.603,
+                -833.9683
+              ],
+              [
+                399.3991,
+                -834.4358
+              ],
+              [
+                400.2395,
+                -834.8364
+              ],
+              [
+                401.1019,
+                -835.1703
+              ],
+              [
+                401.9976,
+                -835.4263
+              ],
+              [
+                402.9043,
+                -835.6044
+              ],
+              [
+                403.8221,
+                -835.7045
+              ],
+              [
+                404.7398,
+                -835.7268
+              ],
+              [
+                405.6687,
+                -835.6712
+              ],
+              [
+                406.5754,
+                -835.5487
+              ],
+              [
+                407.4821,
+                -835.3373
+              ],
+              [
+                408.3667,
+                -835.0591
+              ],
+              [
+                409.2181,
+                -834.703
+              ],
+              [
+                410.0364,
+                -834.2801
+              ],
+              [
+                410.8215,
+                -833.7792
+              ],
+              [
+                411.5623,
+                -833.2228
+              ],
+              [
+                412.259,
+                -832.6107
+              ],
+              [
+                412.8892,
+                -831.9318
+              ],
+              [
+                413.4753,
+                -831.2084
+              ],
+              [
+                413.995,
+                -830.4405
+              ],
+              [
+                414.4484,
+                -829.6281
+              ],
+              [
+                414.8354,
+                -828.7823
+              ],
+              [
+                415.145,
+                -827.9142
+              ],
+              [
+                415.3883,
+                -827.0128
+              ],
+              [
+                415.5431,
+                -826.1002
+              ],
+              [
+                415.6316,
+                -825.1653
+              ],
+              [
+                415.6426,
+                -824.2416
+              ],
+              [
+                415.5874,
+                -823.329
+              ],
+              [
+                415.4436,
+                -822.4275
+              ],
+              [
+                415.2335,
+                -821.5372
+              ],
+              [
+                414.946,
+                -820.6691
+              ],
+              [
+                414.6033,
+                -819.8233
+              ],
+              [
+                414.1831,
+                -819.022
+              ],
+              [
+                413.6966,
+                -818.2429
+              ],
+              [
+                413.1548,
+                -817.5084
+              ],
+              [
+                412.5466,
+                -816.8295
+              ],
+              [
+                411.8942,
+                -816.1952
+              ],
+              [
+                411.1866,
+                -815.6276
+              ],
+              [
+                410.4347,
+                -815.1045
+              ],
+              [
+                409.6496,
+                -814.6593
+              ],
+              [
+                408.8313,
+                -814.2698
+              ],
+              [
+                407.9799,
+                -813.9582
+              ],
+              [
+                407.0953,
+                -813.7133
+              ],
+              [
+                406.2107,
+                -813.5352
+              ],
+              [
+                405.304,
+                -813.4462
+              ],
+              [
+                404.3973,
+                -813.4239
+              ]
+            ]
+          ]
+        ]
+      },
+      "height_m": 15.0,
+      "height_status": "source_tag"
+    },
+    {
+      "id": "way/479342613",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "4",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1008.1046,
+            -616.1871
+          ],
+          [
+            971.3604,
+            -639.1908
+          ],
+          [
+            961.0658,
+            -645.6345
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/634994943",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            969.4362,
+            -658.6892
+          ],
+          [
+            979.7087,
+            -652.1898
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/635341764",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            729.62,
+            -811.2569
+          ],
+          [
+            740.2463,
+            -803.7782
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/635341765",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "concrete"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            887.9974,
+            -708.2244
+          ],
+          [
+            950.4393,
+            -670.2633
+          ],
+          [
+            969.4362,
+            -658.6892
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/635341766",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            740.2463,
+            -803.7782
+          ],
+          [
+            746.4386,
+            -799.4936
+          ],
+          [
+            825.2126,
+            -750.3033
+          ],
+          [
+            877.2384,
+            -715.347
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/635345722",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            732.5505,
+            -791.8032
+          ],
+          [
+            721.8136,
+            -799.1706
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/635345724",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            886.6485,
+            -690.8851
+          ],
+          [
+            878.4217,
+            -696.3606
+          ],
+          [
+            816.1677,
+            -737.5492
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/635390320",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            654.2517,
+            -860.9591
+          ],
+          [
+            669.6438,
+            -851.4884
+          ],
+          [
+            678.6115,
+            -845.5788
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/635392742",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            721.8136,
+            -799.1706
+          ],
+          [
+            714.2834,
+            -804.6127
+          ],
+          [
+            670.5397,
+            -833.626
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/643807947",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "4",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            580.8297,
+            -889.616
+          ],
+          [
+            575.3894,
+            -893.3443
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/643810038",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            571.309,
+            -915.124
+          ],
+          [
+            583.7598,
+            -906.7661
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/676479279",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            511.5872,
+            -948.1326
+          ],
+          [
+            564.4312,
+            -919.3864
+          ],
+          [
+            571.309,
+            -915.124
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/676705143",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "4",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            629.6931,
+            -858.9
+          ],
+          [
+            619.8408,
+            -865.0321
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/687861963",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            461.3971,
+            -961.2088
+          ],
+          [
+            440.7416,
+            -973.5954
+          ],
+          [
+            421.0813,
+            -986.0932
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/687861964",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            421.0813,
+            -986.0932
+          ],
+          [
+            381.9375,
+            -1010.0428
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/687958770",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            516.0104,
+            -929.3911
+          ],
+          [
+            507.8941,
+            -934.5549
+          ],
+          [
+            461.3971,
+            -961.2088
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/687958771",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "4",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            619.8408,
+            -865.0321
+          ],
+          [
+            580.8297,
+            -889.616
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/687958772",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "4",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            450.7153,
+            -986.0156
+          ],
+          [
+            511.5872,
+            -948.1326
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/718971944",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            562.6069,
+            -901.7133
+          ],
+          [
+            556.0719,
+            -905.3191
+          ],
+          [
+            516.0104,
+            -929.3911
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/718971945",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            575.3894,
+            -893.3443
+          ],
+          [
+            562.6069,
+            -901.7133
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/763513328",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            877.2384,
+            -715.347
+          ],
+          [
+            887.9974,
+            -708.2244
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/763513329",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "4",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            678.6115,
+            -845.5788
+          ],
+          [
+            721.2384,
+            -816.9439
+          ],
+          [
+            729.62,
+            -811.2569
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/763513330",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            583.7598,
+            -906.7661
+          ],
+          [
+            588.3597,
+            -903.5387
+          ],
+          [
+            654.2517,
+            -860.9591
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/763514663",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            670.5397,
+            -833.626
+          ],
+          [
+            629.6931,
+            -858.9
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/763514664",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            816.1677,
+            -737.5492
+          ],
+          [
+            739.0191,
+            -787.7299
+          ],
+          [
+            732.5505,
+            -791.8032
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/763514665",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            961.0658,
+            -645.6345
+          ],
+          [
+            942.5223,
+            -656.9194
+          ],
+          [
+            886.6485,
+            -690.8851
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/160588637",
+      "kind": "road",
+      "tags": {
+        "bridge": "yes",
+        "highway": "secondary",
+        "lanes": "3",
+        "layer": "2",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -177.6494,
+            -1080.4955
+          ],
+          [
+            190.9409,
+            -1069.6931
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/160588639",
+      "kind": "road",
+      "tags": {
+        "bridge": "yes",
+        "highway": "secondary",
+        "lanes": "3",
+        "layer": "2",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            226.7563,
+            -1053.3002
+          ],
+          [
+            -122.2512,
+            -1066.4957
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/160588642",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "4",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            227.4085,
+            -1068.6251
+          ],
+          [
+            238.2449,
+            -1067.6681
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/172307471",
+      "kind": "building",
+      "tags": {
+        "building": "hotel",
+        "building:levels": "55",
+        "height": "193",
+        "name": "Marina Bay Sands Tower 3",
+        "name:en": "Marina Bay Sands Tower 3"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                363.9355,
+                -1055.3495
+              ],
+              [
+                372.3499,
+                -1085.2648
+              ],
+              [
+                319.893,
+                -1100.2107
+              ],
+              [
+                318.9753,
+                -1096.9498
+              ],
+              [
+                315.4812,
+                -1084.5185
+              ],
+              [
+                323.4979,
+                -1082.2371
+              ],
+              [
+                321.187,
+                -1074.0126
+              ],
+              [
+                319.5063,
+                -1068.0029
+              ],
+              [
+                363.9355,
+                -1055.3495
+              ]
+            ]
+          ]
+        ]
+      },
+      "height_m": 193.0,
+      "height_status": "source_tag"
+    },
+    {
+      "id": "way/172307472",
+      "kind": "building",
+      "tags": {
+        "building": "hotel",
+        "building:levels": "55",
+        "height": "193",
+        "name": "Marina Bay Sands Tower 2"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                458.5548,
+                -1010.4888
+              ],
+              [
+                479.6852,
+                -1056.3969
+              ],
+              [
+                424.8619,
+                -1082.305
+              ],
+              [
+                418.5151,
+                -1068.6939
+              ],
+              [
+                403.7426,
+                -1036.3969
+              ],
+              [
+                458.5548,
+                -1010.4888
+              ]
+            ]
+          ]
+        ]
+      },
+      "height_m": 193.0,
+      "height_status": "source_tag"
+    },
+    {
+      "id": "way/479284867",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            290.381,
+            -1059.0213
+          ],
+          [
+            291.4204,
+            -1058.7876
+          ],
+          [
+            300.2333,
+            -1056.3059
+          ],
+          [
+            323.7747,
+            -1048.9943
+          ],
+          [
+            345.348,
+            -1042.1946
+          ],
+          [
+            364.776,
+            -1034.7939
+          ],
+          [
+            388.1738,
+            -1024.3439
+          ],
+          [
+            406.2418,
+            -1014.4168
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/627708719",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            287.1192,
+            -1044.7537
+          ],
+          [
+            279.4895,
+            -1046.5677
+          ],
+          [
+            237.6369,
+            -1052.7995
+          ],
+          [
+            226.7563,
+            -1053.3002
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/627708722",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "4",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            238.2449,
+            -1067.6681
+          ],
+          [
+            282.3422,
+            -1061.158
+          ],
+          [
+            290.381,
+            -1059.0213
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/667468497",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "4",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            337.3867,
+            -1028.7282
+          ],
+          [
+            319.8052,
+            -1034.8602
+          ],
+          [
+            287.1192,
+            -1044.7537
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/667468498",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            381.9375,
+            -1010.0428
+          ],
+          [
+            358.7499,
+            -1020.159
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/687958773",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            406.2418,
+            -1014.4168
+          ],
+          [
+            428.4896,
+            -1000.8172
+          ],
+          [
+            450.7153,
+            -986.0156
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/763513331",
+      "kind": "road",
+      "tags": {
+        "bridge": "yes",
+        "highway": "secondary",
+        "lanes": "4",
+        "layer": "2",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            190.9409,
+            -1069.6931
+          ],
+          [
+            227.4085,
+            -1068.6251
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/763514662",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            358.7499,
+            -1020.159
+          ],
+          [
+            337.3867,
+            -1028.7282
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/23037305",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1381.2305,
+            -369.9233
+          ],
+          [
+            1372.9373,
+            -375.5546
+          ],
+          [
+            1368.26,
+            -378.5372
+          ],
+          [
+            1270.4118,
+            -444.4102
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/150009548",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "4",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1086.2039,
+            -584.2693
+          ],
+          [
+            1128.1341,
+            -556.4244
+          ],
+          [
+            1141.0604,
+            -547.8328
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/305495650",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "2",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1148.1153,
+            -524.3279
+          ],
+          [
+            1132.4246,
+            -534.6001
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/305865019",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "2",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1141.0604,
+            -547.8328
+          ],
+          [
+            1156.4083,
+            -538.1839
+          ],
+          [
+            1187.1814,
+            -518.7971
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/477915674",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1132.4246,
+            -534.6001
+          ],
+          [
+            1119.2772,
+            -543.2919
+          ],
+          [
+            1046.5959,
+            -591.2024
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/666133093",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1046.5959,
+            -591.2024
+          ],
+          [
+            1008.1046,
+            -616.1871
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/763513327",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1054.9332,
+            -604.2236
+          ],
+          [
+            1086.2039,
+            -584.2693
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/849812552",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "lanes": "3",
+        "maxspeed": "50",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            979.7087,
+            -652.1898
+          ],
+          [
+            1054.9332,
+            -604.2236
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/1009347002",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1279.7663,
+            -459.0007
+          ],
+          [
+            1378.3664,
+            -394.5522
+          ],
+          [
+            1383.3976,
+            -391.5474
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/1009348662",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1187.1814,
+            -518.7971
+          ],
+          [
+            1207.9143,
+            -505.4311
+          ],
+          [
+            1240.8326,
+            -485.0427
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/1009348663",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1270.4118,
+            -444.4102
+          ],
+          [
+            1198.8252,
+            -491.0855
+          ],
+          [
+            1148.1153,
+            -524.3279
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/1010903479",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1240.8326,
+            -485.0427
+          ],
+          [
+            1279.7663,
+            -459.0007
+          ]
+        ]
+      }
+    },
+    {
+      "id": "way/1280746586",
+      "kind": "road",
+      "tags": {
+        "highway": "secondary",
+        "name": "Bayfront Avenue",
+        "name:zh": "贝弗兰道",
+        "oneway": "yes"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1383.3976,
+            -391.5474
+          ],
+          [
+            1391.7681,
+            -386.5393
+          ]
+        ]
+      }
+    }
+  ],
+  "complete_hotel_interior": false,
+  "architectural_identity_and_fitout_verified": false,
+  "missing_metric_geometry": [
+    "Shared hotel atrium envelope/circulation beyond tagged tower footprints",
+    "Actual doorway, lift, stair and underpass landing coordinates/elevations",
+    "Roof-program polygons and floor levels",
+    "Current upper-floor room and service layouts"
+  ]
+}
