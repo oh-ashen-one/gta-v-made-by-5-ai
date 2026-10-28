@@ -12,6 +12,7 @@ var _regions: Dictionary = {}
 var _supports: Dictionary = {}
 var _generation := 0
 var _configured := false
+var native_clearance_diagnostics: Dictionary = {}
 
 func configure(source_frame: RefCounted, source_context: RefCounted, domain_adapter: Callable) -> bool:
 	if _configured or not source_frame is Frame or not source_context is Context or not domain_adapter.is_valid(): return false
@@ -216,11 +217,46 @@ func _native_player_observations(query: Dictionary, actor: Player) -> Dictionary
 		probe.transform = Transform3D(actor.global_basis, position) * shape.transform
 		probe.collision_mask = Player.COLLIDE_MASK
 		probe.exclude = [actor.get_rid()]
-		# No penetration margin expansion here: resting contact must not be
-		# misreported as a ceiling overlap. Native floor contacts remain valid.
-		clear = "clear" if get_world_3d().direct_space_state.intersect_shape(probe, 1).is_empty() else "blocked"
+		clear = _player_clearance(probe, actor, support, hit)
 	result["physics"] = _bound(query, "physics", "resident", {"residency_token": _supports[hit.collider_id].stamp.residency_token if support.state == "supported" else region.token, "clearance": clear, "support": support})
 	return result
+
+func _player_clearance(probe: PhysicsShapeQueryParameters3D, actor: Player, support: Dictionary, floor_hit: Dictionary) -> String:
+	var space := get_world_3d().direct_space_state
+	var intersections := space.intersect_shape(probe, 33)
+	native_clearance_diagnostics = {"physics_tick": Engine.get_physics_frames(), "query_center_xyz": [probe.transform.origin.x, probe.transform.origin.y, probe.transform.origin.z], "overlap_shapes": intersections.size(), "contacts": []}
+	if intersections.is_empty(): return "clear"
+	if support.state != "supported" or floor_hit.is_empty() or intersections.size() >= 33: return "blocked"
+	# CharacterBody resting contacts can retain a millimetre of solver slop.
+	# Do not shift the saved pose, shrink the capsule, or exclude the support
+	# body: it may also contain a ceiling or wall. Inspect ALL native contact
+	# pairs instead, requiring shallow upward contacts at the capsule's foot.
+	for intersection: Dictionary in intersections:
+		if intersection.collider_id != floor_hit.collider_id: return "blocked"
+	var contacts := space.collide_shape(probe, 33)
+	if contacts.is_empty() or contacts.size() % 2 != 0 or contacts.size() >= 66: return "blocked"
+	var capsule := probe.shape as CapsuleShape3D
+	if capsule == null: return "blocked"
+	var coordinate_magnitude := maxf(absf(probe.transform.origin.x), maxf(absf(probe.transform.origin.y), absf(probe.transform.origin.z)))
+	var float_roundoff := maxf(0.00001, coordinate_magnitude * 2.0 * 0.00000011920928955078125)
+	var tolerance := actor.safe_margin * 2.0 + float_roundoff
+	native_clearance_diagnostics["solver_safe_margin_m"] = actor.safe_margin
+	native_clearance_diagnostics["local_float_roundoff_m"] = float_roundoff
+	native_clearance_diagnostics["maximum_floor_contact_depth_m"] = tolerance
+	var bottom := probe.transform.origin.y - capsule.height * 0.5
+	var minimum_normal: float = context.metadata().profile.min_support_normal_y
+	for index in range(0, contacts.size(), 2):
+		var separation: Vector3 = contacts[index + 1] - contacts[index]
+		var depth := separation.length()
+		var measured_normal := separation / depth if depth > 0.0000001 else Vector3.ZERO
+		native_clearance_diagnostics.contacts.append({"depth_m": depth, "query_xyz": [contacts[index].x, contacts[index].y, contacts[index].z], "other_xyz": [contacts[index + 1].x, contacts[index + 1].y, contacts[index + 1].z], "normal_xyz": [measured_normal.x, measured_normal.y, measured_normal.z]})
+		if depth > tolerance: return "blocked"
+		if depth <= 0.0000001: continue
+		var normal := separation / depth
+		if normal.y < minimum_normal: return "blocked"
+		var foot_band := capsule.radius * (1.0 - normal.y) + tolerance
+		if contacts[index + 1].y > bottom + foot_band: return "blocked"
+	return "clear"
 
 func inspect_player(actor: Player) -> Dictionary:
 	if not _configured or actor.source_world_runtime != self or not _valid_player_profile(actor): return {"ok": false}

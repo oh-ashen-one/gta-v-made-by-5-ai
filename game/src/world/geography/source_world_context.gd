@@ -15,6 +15,10 @@ const RESTORE_KEYS := ["schema", "source_pose", "geometry_manifest_sha256", "ver
 const PROFILE_KEYS := ["profile_id", "radius_m", "height_m", "center_offset_xyz", "min_support_normal_y", "max_support_drop_m", "max_support_rise_m", "max_support_lateral_m"]
 const FLOOR_KEYS := ["feature_id", "floor_id", "geometry_sha256", "support_ids", "volumes", "provenance"]
 const VOLUME_KEYS := ["volume_id", "min_xyz", "max_xyz", "dry"]
+const OBOX_SCHEMA := "singapore_upright_obox_v1"
+const OBOX_KEYS := ["schema", "volume_id", "center_xyz", "half_extents_xyz", "axis_x_xyz", "axis_z_xyz", "dry"]
+const OBOX_BASIS_TOLERANCE := 0.000000000001
+const DOUBLE_ROUNDING_FACTOR := 8.0 * 0.0000000000000002220446049250313
 const CONTACT_KEYS := ["state", "feature_id", "floor_id", "support_id", "collider_instance_id", "contact_source_xyz", "normal_source_xyz"]
 
 var last_error := ""
@@ -160,6 +164,9 @@ func _floor_key(feature_id: String, floor_id: String) -> String:
 	return JSON.stringify([feature_id, floor_id])
 
 func _normal_volume(value: Variant) -> Dictionary:
+	# A schema-bearing volume is explicitly the oriented alternative. Unknown
+	# schemas/hybrid fields must never fall back to a broader axis-aligned box.
+	if typeof(value) == TYPE_DICTIONARY and value.has("schema"): return _normal_obox(value)
 	if not _exact(value, VOLUME_KEYS) or not _label(value.volume_id) or typeof(value.dry) != TYPE_BOOL: return _fail("Invalid source-volume schema")
 	var lower: Dictionary = _point(value.min_xyz)
 	var upper: Dictionary = _point(value.max_xyz)
@@ -167,6 +174,33 @@ func _normal_volume(value: Variant) -> Dictionary:
 	for i in 3:
 		if float(lower.point[i]) >= float(upper.point[i]): return _fail("Source volume must have positive extent in all axes")
 	return {"ok": true, "volume": {"volume_id": value.volume_id, "min_xyz": lower.point, "max_xyz": upper.point, "dry": value.dry}}
+
+func _normal_obox(value: Variant) -> Dictionary:
+	if not _exact(value, OBOX_KEYS) or typeof(value.schema) != TYPE_STRING or value.schema != OBOX_SCHEMA or not _label(value.volume_id) or typeof(value.dry) != TYPE_BOOL: return _fail("Invalid upright oriented-volume schema")
+	var center: Dictionary = _point(value.center_xyz)
+	var half: Dictionary = _point(value.half_extents_xyz)
+	var axis_x: Dictionary = _point(value.axis_x_xyz)
+	var axis_z: Dictionary = _point(value.axis_z_xyz)
+	if not center.ok or not half.ok or not axis_x.ok or not axis_z.ok: return _fail("Oriented volume requires finite canonical double arrays")
+	for component: float in half.point:
+		if component <= 0.0: return _fail("Oriented volume half-extents must all be positive")
+	var x: Array = axis_x.point
+	var z: Array = axis_z.point
+	# Y is implicitly +Up; do not accept even a small tilt, scaled basis,
+	# mirrored basis or independent shear. Tolerance is only double roundoff.
+	if float(x[1]) != 0.0 or float(z[1]) != 0.0: return _fail("Oriented volume must be upright with implicit +Y Up")
+	var length_x_sq := float(x[0]) * float(x[0]) + float(x[2]) * float(x[2])
+	var length_z_sq := float(z[0]) * float(z[0]) + float(z[2]) * float(z[2])
+	var dot_xz := float(x[0]) * float(z[0]) + float(x[2]) * float(z[2])
+	var determinant := float(x[0]) * float(z[2]) - float(x[2]) * float(z[0])
+	if absf(length_x_sq - 1.0) > OBOX_BASIS_TOLERANCE or absf(length_z_sq - 1.0) > OBOX_BASIS_TOLERANCE or absf(dot_xz) > OBOX_BASIS_TOLERANCE or absf(determinant - 1.0) > OBOX_BASIS_TOLERANCE: return _fail("Oriented volume X/Z basis must be unit, orthogonal and right-handed")
+	# The enclosing canonical bounds must remain in the same finite coordinate
+	# domain as every query; these bounds are validated, NEVER used as dry area.
+	var enclosing: Array[float] = [absf(float(x[0])) * float(half.point[0]) + absf(float(z[0])) * float(half.point[2]), float(half.point[1]), absf(float(x[2])) * float(half.point[0]) + absf(float(z[2])) * float(half.point[2])]
+	for i in 3:
+		if absf(float(center.point[i])) + enclosing[i] > Frame.MAX_CANONICAL_COMPONENT_M: return _fail("Oriented volume extends outside the finite canonical coordinate domain")
+	return {"ok": true, "volume": {"schema": OBOX_SCHEMA, "volume_id": value.volume_id,
+		"center_xyz": center.point, "half_extents_xyz": half.point, "axis_x_xyz": axis_x.point, "axis_z_xyz": axis_z.point, "dry": value.dry}}
 
 ## A floor registration is an architectural statement, not a collision lease.
 ## Unloading geometry does not erase the floor identity or turn it into void.
@@ -211,9 +245,26 @@ func floor_record(feature_id: Variant, floor_id: Variant) -> Dictionary:
 	return {"ok": true, "floor": _floors[key].duplicate(true)} if _floors.has(key) else _fail("Floor identity is not registered yet")
 
 func _inside(point: Array, volume: Dictionary) -> bool:
+	if volume.has("schema"): return _inside_obox(point, volume)
 	for i in 3:
 		if float(point[i]) < float(volume.min_xyz[i]) or float(point[i]) > float(volume.max_xyz[i]): return false
 	return true
+
+func _inside_obox(point: Array, volume: Dictionary) -> bool:
+	# Subtract in canonical double space BEFORE projection; do not construct an
+	# absolute Vector3, Basis or broad AABB. Source boxes are not actor transforms.
+	var dx := float(point[0]) - float(volume.center_xyz[0])
+	var dy := float(point[1]) - float(volume.center_xyz[1])
+	var dz := float(point[2]) - float(volume.center_xyz[2])
+	var along_x := dx * float(volume.axis_x_xyz[0]) + dz * float(volume.axis_x_xyz[2])
+	var along_z := dx * float(volume.axis_z_xyz[0]) + dz * float(volume.axis_z_xyz[2])
+	# Inclusive faces/corners need a bounded scalar roundoff allowance when a
+	# canonical point near80km is constructed from a rotated edge. This is not
+	# a gameplay/capsule margin: ~1e-10m for a10m box near80km, well below1mm.
+	var magnitude := 1.0
+	for i in 3: magnitude = maxf(magnitude, maxf(absf(float(point[i])), absf(float(volume.center_xyz[i]))))
+	var epsilon := DOUBLE_ROUNDING_FACTOR * magnitude + OBOX_BASIS_TOLERANCE * (float(volume.half_extents_xyz[0]) + float(volume.half_extents_xyz[2]))
+	return absf(along_x) <= float(volume.half_extents_xyz[0]) + epsilon and absf(dy) <= float(volume.half_extents_xyz[1]) + epsilon and absf(along_z) <= float(volume.half_extents_xyz[2]) + epsilon
 
 func _floor_contains(floor: Dictionary, point: Array) -> bool:
 	for volume: Dictionary in floor.volumes:

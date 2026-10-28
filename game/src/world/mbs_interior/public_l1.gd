@@ -7,6 +7,7 @@ const Kit = preload("res://src/world/downtown/landmarks/kit.gd")
 const Looks = preload("res://src/world/downtown/landmarks/looks.gd")
 const Realm = preload("res://src/world/downtown/landmarks/realm.gd")
 const Canopy = preload("res://src/world/downtown/canopy.gd")
+const SourceFrame = preload("res://src/world/geography/source_frame.gd")
 const FLOOR_THICKNESS := 0.24
 const WALL_THICKNESS := 0.24
 # Supported construction domain, not an architectural assertion. These bounds
@@ -128,6 +129,7 @@ func build(config: Dictionary = {}) -> Dictionary:
 		_report.public_nodes_built.append(zone.id)
 	_report["planting_visual_stage"] = {"generic_vessel_height_m": TREE_VESSEL_HEIGHT_M, "tree_layout": _tree_layout.duplicate(true), "source_fit": "HISTORICAL_TALL_PLANTED_COMPOSITION_ONLY", "artwork_replica": false, "current_fitout_verified": false}
 	_report["floor_finish_status"] = "ORIGINAL_PALE_STONE_STAGING_MATERIAL_NOT_VERIFIED_INSTALLED_STONE"
+	if plan.has("coordinate_context"): _report["coordinate_context"] = plan.coordinate_context.duplicate(true)
 	return report()
 
 func _validated_plan(config: Dictionary) -> Dictionary:
@@ -203,7 +205,23 @@ func _validated_plan(config: Dictionary) -> Dictionary:
 	var origin: Array = Reference.DATA.origin_world_xz
 	var south_axis: Array = Reference.DATA.axis_south_xz
 	var bay: Array = Reference.DATA.axis_bayward_xz
-	return {"valid": true, "construction_budget": construction_budget, "furniture": furniture_plan.items, "zones": new_zones, "sections": new_sections, "assumptions": assumptions, "position": Vector3(float(origin[0]), elevation, float(origin[1])), "basis": Basis(Vector3(float(south_axis[0]), 0, float(south_axis[1])), Vector3.UP, Vector3(float(bay[0]), 0, float(bay[1]))), "entrance_tower": String(config.get("entrance_tower", "T1")), "entrance_offset": offset, "entrance_sign": -1.0 if config.get("entrance_side", "bayward") == "landward" else 1.0, "entrance_x": entry_x, "door_width": door_width, "door_height": door_height, "east_inset_ratio": inset}
+	var canonical: Array = [float(origin[0]), elevation, float(origin[1])]
+	var placement: Vector3
+	var coordinate_context: Dictionary = {}
+	if config.has("source_frame"):
+		var frame: Variant = config.source_frame
+		if not frame is SourceFrame: return {"valid": false, "error": "Require an actual configured source frame."}
+		# Subtract the canonical active origin in doubles before making an
+		# engine vector. This is source-world placement, not fixture translation.
+		var projected: Dictionary = frame.to_local(canonical)
+		if not projected.ok: return {"valid": false, "error": projected.get("error", "Source placement failed")}
+		placement = projected.position
+		coordinate_context = {"canonical_origin_xyz": canonical, "frame": frame.metadata(), "origin_subtracted_before_vector": true}
+	else:
+		placement = Vector3(float(origin[0]), elevation, float(origin[1]))
+	var result := {"valid": true, "construction_budget": construction_budget, "furniture": furniture_plan.items, "zones": new_zones, "sections": new_sections, "assumptions": assumptions, "position": placement, "basis": Basis(Vector3(float(south_axis[0]), 0, float(south_axis[1])), Vector3.UP, Vector3(float(bay[0]), 0, float(bay[1]))), "entrance_tower": String(config.get("entrance_tower", "T1")), "entrance_offset": offset, "entrance_sign": -1.0 if config.get("entrance_side", "bayward") == "landward" else 1.0, "entrance_x": entry_x, "door_width": door_width, "door_height": door_height, "east_inset_ratio": inset}
+	if not coordinate_context.is_empty(): result["coordinate_context"] = coordinate_context
+	return result
 
 func _edge(section: Dictionary, side: float, y: float = 0.0) -> Vector3:
 	var p: Vector3 = section.center

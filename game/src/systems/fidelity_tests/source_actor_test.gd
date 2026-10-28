@@ -84,12 +84,20 @@ func run() -> void:
 		"max_support_drop_m": 0.35, "max_support_rise_m": 0.1, "max_support_lateral_m": 0.4}
 	check("context binds production physics world", context.configure(frame, sha("QA-fixture-geometry-not-MBS"), sha("QA-unresolved-vertical-reference"), profile, get_world_3d()))
 	for kind in Context.KINDS: check("explicit fixture provider " + kind, context.register_provider(kind, "qa-only/" + kind, "fixture://not-Singapore-survey"))
-	var definition := {"feature_id": "qa-only/basement", "floor_id": "B2", "geometry_sha256": sha("40m-floor-1m-slab"), "support_ids": ["slab"],
+	var definition := {"feature_id": "qa-only/basement", "floor_id": "B2", "geometry_sha256": sha("40m-floor-1m-slab-with-same-body-ceiling"), "support_ids": ["slab"],
 		"volumes": [{"volume_id": "dry-room", "min_xyz": source(Vector3(1480, -20.5, -20)), "max_xyz": source(Vector3(1520, -17.9, 20)), "dry": true}],
 		"provenance": "Synthetic production-actor test, not MBS floorplan or elevation"}
 	check("register explicit dry basement", context.register_floor(definition))
 	var floor := box("NativeBasementSlab", Vector3(1500, -20.5, 0), Vector3(40, 1, 40))
-	var wall := box("NativeBasementWall", Vector3(1480, -18, 0), Vector3(0.2, 5, 40))
+	# A ceiling on the SAME support body prevents a whole-body collision
+	# exclusion from falsely approving the blocked restore below it.
+	var ceiling := CollisionShape3D.new()
+	var ceiling_shape := BoxShape3D.new()
+	ceiling_shape.size = Vector3(3, 0.2, 3)
+	ceiling.shape = ceiling_shape
+	ceiling.position = Vector3(-5, 2.1, 6)
+	floor.add_child(ceiling)
+	var wall := box("NativeBasementWall", Vector3(1488, -18, 0), Vector3(0.2, 5, 40))
 	runtime = Runtime.new()
 	add_child(runtime)
 	check("native runtime installs one context/domain", runtime.configure(frame, context, domain))
@@ -106,6 +114,18 @@ func run() -> void:
 	var state: Dictionary = runtime.inspect_player(player)
 	check("actual Player remains alive below old death plane and outside old rectangle", Game.health == Game.MAX_HEALTH and start.y < -19.9 and start.x > 1494 and player.is_on_floor(), start)
 	check("native registered support distinguishes dry basement from exterior sea", state.get("ok", false) and state.support.state == "supported" and state.water.state == "dry_indoor" and state.residency.state == "resident", state)
+	var idle_saved: Dictionary = runtime.capture_player_pose(player)
+	var idle_position := player.global_position
+	var idle_restored: Dictionary = runtime.restore_player_pose(player, idle_saved.pose) if idle_saved.get("ok", false) else {}
+	check("immediate idle resting pose restores at exact savedY without a walking prerequisite", idle_restored.get("status") == "applied" and player.global_position == idle_position, idle_restored)
+	metrics["idle_resting_clearance"] = {"state": state.clearance, "position_xyz": [idle_position.x, idle_position.y, idle_position.z], "native": runtime.native_clearance_diagnostics.duplicate(true)}
+	for blocked_case in [
+		{"name": "same-support-body ceiling", "position": Vector3(1495, idle_position.y, 6)},
+		{"name": "real wall", "position": Vector3(1488.2, idle_position.y, -6)},
+		{"name": "deep floor penetration", "position": idle_position - Vector3.UP * 0.02}]:
+		var blocked_pose: Dictionary = context.make_restore_pose(source(blocked_case.position), player.yaw, "qa-only/basement", "B2")
+		var blocked: Dictionary = runtime.restore_player_pose(player, blocked_pose.pose)
+		check("resting contact tolerance still rejects " + blocked_case.name, blocked.get("status") == "blocked" and blocked.get("reasons", []).has("capsule_clearance_blocked") and player.global_position == idle_position, blocked)
 	player.yaw = -PI * 0.5
 	Input.action_press("move_forward")
 	await frames(150)

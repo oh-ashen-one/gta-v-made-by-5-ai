@@ -10,6 +10,7 @@ const FEATURE := "qa-only/architectural-fixture"
 const FLOOR := "qa-only/B2"
 const SUPPORT := "qa-only/slab"
 const RESIDENCY := "qa-only/physics-generation-1"
+const ROTATED_FLOOR := "qa-only/rotated-B2"
 var definition: Dictionary = {}
 var snapshot := ""
 var checks := 0
@@ -129,8 +130,10 @@ func _run() -> void:
 	_restore_semantics_checks()
 	_adversarial_checks()
 	_provider_key_spelling_checks()
+	_oriented_volume_checks()
 	_transition_checks()
 	await _native_basement_checks()
+	await _native_oriented_basement_checks()
 	_finish()
 
 func _configuration_and_registry_checks() -> void:
@@ -356,7 +359,7 @@ func _box(parent: Node3D, label: String, center: Vector3, size: Vector3) -> Stat
 	body.position = center
 	return body
 
-func _native_payload(frame: Variant, query: Dictionary, floor: StaticBody3D) -> Dictionary:
+func _native_payload(frame: Variant, query: Dictionary, floor: StaticBody3D, floor_id: String = FLOOR) -> Dictionary:
 	var local: Vector3 = query.local_sample.position
 	var ray := PhysicsRayQueryParameters3D.create(local + Vector3.UP * .15, local + Vector3.DOWN * .35, 1)
 	ray.exclude = [_body.get_rid()]
@@ -375,7 +378,7 @@ func _native_payload(frame: Variant, query: Dictionary, floor: StaticBody3D) -> 
 	if not hit.is_empty() and hit.collider == floor:
 		var point: Dictionary = frame.to_source_current_live(hit.position)
 		var normal: Vector3 = hit.normal
-		support = {"state": "supported", "feature_id": FEATURE, "floor_id": FLOOR, "support_id": SUPPORT,
+		support = {"state": "supported", "feature_id": FEATURE, "floor_id": floor_id, "support_id": SUPPORT,
 			"collider_instance_id": floor.get_instance_id(), "contact_source_xyz": point.source_xyz,
 			"normal_source_xyz": [float(normal.x), float(normal.y), float(normal.z)]}
 	return {"residency_token": RESIDENCY, "support": support, "clearance": "clear" if overlaps.is_empty() else "blocked"}
@@ -489,12 +492,172 @@ func _native_basement_checks() -> void:
 	floor.queue_free()
 	await _frames(2)
 
+func _oriented_volume(dry: bool = true) -> Dictionary:
+	return {"schema": Context.OBOX_SCHEMA, "volume_id": "qa-only/rotated-dry-envelope",
+		"center_xyz": [BASE[0], -19.2, BASE[2]], "half_extents_xyz": [10.0, 1.3, 2.0],
+		"axis_x_xyz": [.6, 0.0, .8], "axis_z_xyz": [-.8, 0.0, .6], "dry": dry}
+
+func _oriented_floor(volume: Dictionary) -> Dictionary:
+	var floor: Dictionary = _floor_definition(ROTATED_FLOOR)
+	floor.volumes = [volume]
+	floor.provenance = "Rotated isolated QA box and slab, not actual MBS or a surveyed floor"
+	return floor
+
+func _oriented_source(volume: Dictionary, along: Array) -> Array[float]:
+	return [float(volume.center_xyz[0]) + float(volume.axis_x_xyz[0]) * float(along[0]) + float(volume.axis_z_xyz[0]) * float(along[2]),
+		float(volume.center_xyz[1]) + float(along[1]),
+		float(volume.center_xyz[2]) + float(volume.axis_x_xyz[2]) * float(along[0]) + float(volume.axis_z_xyz[2]) * float(along[2])]
+
+func _oriented_state(context: Variant, source_xyz: Array) -> Dictionary:
+	var query: Dictionary = context.begin_query(source_xyz)
+	if not query.ok: return query
+	return context.evaluate(query.query, _domain(context, query.query))
+
+func _oriented_volume_checks() -> void:
+	var fixture: Dictionary = _fixture(false)
+	var context: Variant = fixture.context
+	var frame: Variant = fixture.frame
+	var volume: Dictionary = _oriented_volume()
+	if not check("upright oriented floor volume registers exact schema", context.register_floor(_oriented_floor(volume)), context.last_error): return
+	var stored: Dictionary = context.floor_record(FEATURE, ROTATED_FLOOR).floor
+	check("oriented registry preserves canonical double arrays and schema", stored.volumes[0].schema == Context.OBOX_SCHEMA and typeof(stored.volumes[0].center_xyz) == TYPE_ARRAY and stored.volumes[0].axis_x_xyz == [.6, 0.0, .8])
+	for point in [[0.0, 0.0, 0.0], [9.999, 0.0, 1.999], [-9.999, 0.0, -1.999]]:
+		check("rotated interior is dry at" + str(point), _state_is(_oriented_state(context, _oriented_source(volume, point)), "water", "dry_indoor"))
+	for x in [-10.0, 10.0]:
+		for y in [-1.3, 1.3]:
+			for z in [-2.0, 2.0]:
+				var corner: Array = _oriented_source(volume, [x, y, z])
+				check("oriented faces/corners are inclusive " + str([x, y, z]), _state_is(_oriented_state(context, corner), "water", "dry_indoor"), JSON.stringify(corner, "", true, true))
+	for point in [[10.001, 0.0, 0.0], [-10.001, 0.0, 0.0], [0.0, 1.301, 0.0], [0.0, -1.301, 0.0], [0.0, 0.0, 2.001], [0.0, 0.0, -2.001]]:
+		check("one millimetre beyond oriented face stays exterior " + str(point), _state_is(_oriented_state(context, _oriented_source(volume, point)), "water", "submerged"))
+	var enclosing_corner: Array = [BASE[0] + 7.0, -19.2, BASE[2] + 8.5]
+	var broad: Dictionary = _fixture(false)
+	var legacy: Dictionary = _floor_definition("qa-only/enclosing-aabb")
+	legacy.volumes = [{"volume_id": "qa-only/enclosing-aabb", "min_xyz": [BASE[0] - 7.6, -20.5, BASE[2] - 9.2], "max_xyz": [BASE[0] + 7.6, -17.9, BASE[2] + 9.2], "dry": true}]
+	check("legacy exact AABB registration stays supported", broad.context.register_floor(legacy))
+	check("same enclosing AABB corner is outside actual rotated box", _state_is(_oriented_state(broad.context, enclosing_corner), "water", "dry_indoor") and _state_is(_oriented_state(context, enclosing_corner), "water", "submerged"))
+	check("oriented floor source-save bounds reject enclosing corner", not context.make_restore_pose(enclosing_corner, 0.0, FEATURE, ROTATED_FLOOR).ok)
+	var near_inside: Array = _oriented_source(volume, [9.999, 0.0, .25])
+	var near_outside: Array = _oriented_source(volume, [10.001, 0.0, .25])
+	check("80km canonical millimetre wall classification remains distinct", absf(float(near_inside[2])) > 80000.0 and _state_is(_oriented_state(context, near_inside), "water", "dry_indoor") and _state_is(_oriented_state(context, near_outside), "water", "submerged"), JSON.stringify({"inside": near_inside, "outside": near_outside}, "", true, true))
+	metrics["oriented_volume_precision"] = {"canonical_center_xyz": volume.center_xyz.duplicate(), "half_extents_xyz": volume.half_extents_xyz.duplicate(), "axis_x_xyz": volume.axis_x_xyz.duplicate(), "axis_z_xyz": volume.axis_z_xyz.duplicate(), "wall_inside_m": 9.999, "wall_outside_m": 10.001, "absolute_Vector3_constructed": false, "enclosing_AABB_used_for_dry_containment": false}
+	var reference: Dictionary = context.floor_record(FEATURE, ROTATED_FLOOR)
+	for target in [[BASE[0] + 512.1234, 0.0, BASE[2] - 31.2468], [BASE[0] - 211.2345, 20.125, BASE[2] + 511.5432], BASE]:
+		var plan: Dictionary = frame.prepare_rebase(target)
+		if not check("oriented rebase invariant fixture explicitly commits", plan.ok and frame.commit_rebase(plan.plan)): return
+		check("oriented dry/exterior classification survives new active origin", _state_is(_oriented_state(context, near_inside), "water", "dry_indoor") and _state_is(_oriented_state(context, near_outside), "water", "submerged") and context.floor_record(FEATURE, ROTATED_FLOOR) == reference)
+	var wet: Dictionary = _fixture(false)
+	wet.context.register_floor(_oriented_floor(_oriented_volume(false)))
+	check("non-dry oriented floor does not exempt water", _state_is(_oriented_state(wet.context, volume.center_xyz), "water", "submerged"))
+	_oriented_volume_negative_checks(context)
+	var packed: Dictionary = _fixture(false)
+	var packed_volume: Dictionary = _oriented_volume()
+	for key: String in ["center_xyz", "half_extents_xyz", "axis_x_xyz", "axis_z_xyz"]: packed_volume[key] = PackedFloat64Array(packed_volume[key])
+	check("PackedFloat64 oriented inputs normalize safely", packed.context.register_floor(_oriented_floor(packed_volume)) and _state_is(_oriented_state(packed.context, volume.center_xyz), "water", "dry_indoor"))
+	packed_volume.center_xyz[0] += 100.0
+	check("oriented registered arrays do not alias caller input", packed.context.floor_record(FEATURE, ROTATED_FLOOR).floor.volumes[0].center_xyz[0] == BASE[0])
+
+func _oriented_volume_negative_checks(context: Variant) -> void:
+	var before: Dictionary = context.metadata()
+	for field: String in Context.OBOX_KEYS:
+		for value in [null, 1.5, {}, "wrong"]:
+			var invalid: Dictionary = _oriented_volume()
+			invalid[field] = "" if field == "volume_id" and typeof(value) == TYPE_STRING else value
+			var floor: Dictionary = _oriented_floor(invalid)
+			floor.floor_id = "qa-only/invalid-oriented"
+			check("typed oriented volume rejection " + field + "/" + str(typeof(value)), not context.register_floor(floor) and context.metadata() == before)
+	var cases: Array[Dictionary] = [
+		{"axis_x_xyz": [0.0, 0.0, 0.0]}, {"axis_x_xyz": [1.2, 0.0, 1.6]},
+		{"axis_x_xyz": [.6, .000000000000001, .8]}, {"axis_z_xyz": [-.8, -.000000000000001, .6]},
+		{"axis_z_xyz": [.6, 0.0, .8]}, {"axis_z_xyz": [.8, 0.0, -.6]},
+		{"axis_x_xyz": [.60000001, 0.0, .8]}, {"axis_z_xyz": [.8, 0.0, .6]},
+		{"half_extents_xyz": [10.0, 0.0, 2.0]}, {"half_extents_xyz": [-10.0, 1.3, 2.0]},
+		{"half_extents_xyz": [10.0, INF, 2.0]}, {"center_xyz": [BASE[0], NAN, BASE[2]]},
+		{"axis_x_xyz": [true, 0.0, .8]}, {"axis_z_xyz": [NAN, 0.0, .6]},
+		{"center_xyz": Vector3(BASE[0], -19.2, BASE[2])}, {"half_extents_xyz": Vector3(10, 1.3, 2)},
+		{"axis_x_xyz": Vector3(.6, 0, .8)}, {"axis_z_xyz": PackedFloat32Array([-.8, 0, .6])},
+		{"center_xyz": [Frame.MAX_CANONICAL_COMPONENT_M - 1.0, -19.2, BASE[2]]},
+		{"schema": "unknown_obox_v0"}, {"schema": true}, {"volume_id": true}]
+	for index in cases.size():
+		var invalid: Dictionary = _oriented_volume()
+		invalid.merge(cases[index], true)
+		var floor: Dictionary = _oriented_floor(invalid)
+		floor.floor_id = "qa-only/invalid-oriented"
+		check("malformed tilt/scale/bounds oriented volume rejects " + str(index), not context.register_floor(floor) and context.metadata() == before)
+	var hybrid: Dictionary = _oriented_volume()
+	hybrid["min_xyz"] = [0, 0, 0]
+	var mixed: Dictionary = _oriented_floor(hybrid)
+	mixed.floor_id = "qa-only/invalid-oriented"
+	check("oriented hybrid/extra fields do not fall back to AABB", not context.register_floor(mixed) and context.metadata() == before)
+	hybrid = _oriented_volume()
+	hybrid.erase("axis_z_xyz")
+	mixed.volumes = [hybrid]
+	check("missing oriented basis cannot fabricate a default", not context.register_floor(mixed) and context.metadata() == before)
+	hybrid = _oriented_volume()
+	hybrid.axis_x_xyz = [0.0, 0.0, 0.0]
+	mixed.volumes = [_floor_definition().volumes[0], hybrid]
+	check("mixed valid AABB and invalid oriented volume rejects whole floor transaction", not context.register_floor(mixed) and context.metadata() == before)
+
+func _native_oriented_basement_checks() -> void:
+	var fixture: Dictionary = _fixture(false)
+	var context: Variant = fixture.context
+	var frame: Variant = fixture.frame
+	var volume: Dictionary = _oriented_volume()
+	if not check("native rotated basement registers oriented volume", context.register_floor(_oriented_floor(volume))): return
+	var floor: StaticBody3D = _box(self, "QaRotatedBasementFloor", Vector3(0, -20.25, 0), Vector3(20, .5, 4))
+	floor.rotation.y = -atan2(float(volume.axis_x_xyz[2]), float(volume.axis_x_xyz[0]))
+	var stamp: Dictionary = context.make_collider_stamp(FEATURE, ROTATED_FLOOR, SUPPORT, RESIDENCY)
+	if not check("native rotated slab gets current source stamp", stamp.ok): return
+	floor.set_meta(Context.COLLIDER_META, stamp.stamp)
+	_body = CharacterBody3D.new()
+	_body.name = "QaRotatedProductionShapeOnly"
+	_body.collision_layer = 2
+	_body.collision_mask = 1
+	_body.floor_max_angle = deg_to_rad(52.0)
+	var capsule := CapsuleShape3D.new()
+	capsule.radius = .36
+	capsule.height = 1.75
+	var shape := CollisionShape3D.new()
+	shape.shape = capsule
+	shape.position = Vector3(0, .9, 0)
+	_body.add_child(shape)
+	add_child(_body)
+	var initial: Dictionary = frame.to_local(_oriented_source(volume, [4.0, .2, .5]))
+	if not check("rotated capsule initial pose projects after origin subtraction", initial.ok): return
+	_body.position = initial.position
+	_body_moves = true
+	await _frames(120)
+	_body_moves = false
+	var settled := _body.position
+	check("actual capsule settles on rotated native slab below-8", _body.is_on_floor() and settled.y < -19.9 and settled.y > -20.2 and _body.velocity.length() < .01, str(settled))
+	var source: Dictionary = frame.to_source_current_live(settled + Vector3.UP * .05)
+	var query: Dictionary = context.begin_query(source.source_xyz).query
+	var payload: Dictionary = _native_payload(frame, query, floor, ROTATED_FLOOR)
+	var observations: Dictionary = _domain(context, query, "inside", "non_land", "water_column", "omitted")
+	observations.physics = _observation(context, query, "physics", "resident", payload)
+	var saved: Dictionary = context.make_restore_pose(query.source_xyz, .75, FEATURE, ROTATED_FLOOR)
+	if not check("rotated native supported point has named source pose", saved.ok): return
+	var preflight: Dictionary = context.preflight_restore(saved.pose, query, observations)
+	check("rotated native slab/capsule source restore is ready without moving actor", payload.support.state == "supported" and payload.clearance == "clear" and preflight.ok and preflight.get("status") == "ready" and _body.position == settled, JSON.stringify(preflight))
+	var corner: Array = [BASE[0] + 7.0, -19.99, BASE[2] + 8.5]
+	var corner_query: Dictionary = context.begin_query(corner).query
+	var corner_payload: Dictionary = _native_payload(frame, corner_query, floor, ROTATED_FLOOR)
+	var corner_observations: Dictionary = _domain(context, corner_query, "inside", "unknown", "water_column", "omitted")
+	corner_observations.physics = _observation(context, corner_query, "physics", "resident", corner_payload)
+	var corner_state: Dictionary = context.evaluate(corner_query, corner_observations)
+	check("native ray misses enclosing-AABB corner outside rotated slab", corner_payload.support.state == "unsupported", JSON.stringify(corner_payload))
+	check("same enclosing-AABB corner is not falsely dry or supported", _state_is(corner_state, "water", "submerged") and _state_is(corner_state, "support", "unsupported") and not context.make_restore_pose(corner, 0.0, FEATURE, ROTATED_FLOOR).ok, JSON.stringify(corner_state))
+	metrics["native_oriented_basement"] = {"settled_root_xyz": [float(settled.x), float(settled.y), float(settled.z)], "source_pose_xyz": query.source_xyz.duplicate(), "slab_rotation_y_rad": floor.rotation.y, "oriented_box": volume.duplicate(true), "restore_status": preflight.get("status"), "enclosing_AABB_corner_supported": corner_payload.support.state, "actual_Player_or_MBS_used": false, "actor_moved_by_context": false}
+	_body.queue_free()
+	floor.queue_free()
+	await _frames(2)
+
 func _finish() -> void:
 	if _finished: return
 	_finished = true
 	_body_moves = false
 	var report := {"checks": checks, "failures": failures, "metrics": metrics,
-		"scope": "Explicit source-domain/restore semantics and isolated native production-shape basement fixture only. No Player recovery/save/streaming/world bootstrap integration, whole Singapore/MBS completion, rendered or performance acceptance.",
+		"scope": "Explicit source-domain/restore semantics and isolated axis-aligned/upright-rotated native production-shape basement fixtures only. No Player recovery/save/streaming/world bootstrap integration, whole Singapore/MBS completion, rendered or performance acceptance.",
 		"production_actors_or_owner_save_touched": false, "rendered_acceptance": false}
 	var written := _write_guarded_report(qa_session, output, JSON.stringify(report, "\t", true, true))
 	if not written.ok:

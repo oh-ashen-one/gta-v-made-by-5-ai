@@ -1,16 +1,16 @@
 {
-  "status": "native_provider_name_normalization_frozen_pending_parent_r3",
+  "status": "upright_oriented_volumes_frozen_pending_parent_parse_runtime_and_review",
   "prepared_utc": "2026-10-28T22:47:10Z",
   "files": [
     {
       "path": "game/src/world/geography/source_world_context.gd",
-      "sha256": "bdac6bf9350997a105e161826c8689ce050afbbedfb120bca3cd056da6cbc3f7",
-      "lines": 509
+      "sha256": "6a05351c725cd4d8c2eef985716d836a26aeb61016ef0cc5cb9456d823b940ff",
+      "lines": 560
     },
     {
       "path": "game/src/systems/fidelity_tests/source_context_test.gd",
-      "sha256": "18578c399b4527fc8ef2ba4c144c0a59298e49fc98deb516c7d5fd8ee2a9a6c1",
-      "lines": 620
+      "sha256": "7bb7eb00d4263731fe434a1c08461fd8c0a4f341bdfb105fbc52b08623b15860",
+      "lines": 782
     },
     {
       "path": "game/src/systems/fidelity_tests/source_context_test.tscn",
@@ -21,11 +21,12 @@
   "ownership": "Only new exclusive context, QA scene and source-context documentation; no parent shared files edited",
   "verification": {
     "engine_run_by_builder": false,
-    "godot_parse_verified": true,
+    "godot_parse_verified": false,
     "runtime_pass_claimed": false,
     "static_whitespace_and_unique_function_checks": true,
     "source_frame_component_changed": false,
-    "current_repair_parse_verified": false
+    "current_repair_parse_verified": false,
+    "current_source_parse_verified": false
   },
   "fixture_scope": {
     "actual_source_manifest_frame": true,
@@ -55,11 +56,11 @@
   ],
   "parent_run": {
     "driver": "loop/singapore-fidelity/run_engine.sh",
-    "tag": "source-context-r3",
+    "tag": "source-context-oriented-r1",
     "timeout_seconds": 75,
     "scene": "res://src/systems/fidelity_tests/source_context_test.tscn",
-    "evidence": "/private/tmp/singapore-fidelity/source-context-r3",
-    "qa_session": "/private/tmp/singapore-fidelity/source-context-r3/session",
+    "evidence": "/private/tmp/singapore-fidelity/source-context-oriented-r1",
+    "qa_session": "/private/tmp/singapore-fidelity/source-context-oriented-r1/session",
     "fresh_session_required": true
   },
   "historical_frame_scope": "Existing source-frame R1 failure and parent-verified R3 clean math/cache scope are preserved; neither is new context proof",
@@ -184,5 +185,79 @@
     "cause": "A newly dot-assigned observations.physics key was rejected by the TYPE_STRING-only map validation; the same final stale-collider path repeated this rejected-key condition and unchecked .support caused a fatal error.",
     "repair": "Normalize only exact String/StringName known provider names; reject all other keys/case/whitespace; preserve all identity and payload validation. Explicit named/dot assignment regressions and recorded Variant types added. Native final support assertion now guards API error results without weakening unknown-support expectation.",
     "remaining_proof": "R3 must complete the unchanged ceiling-block/native stale-collider/no-automatic-rebase gates and clean engine/supervisor exit."
+  },
+  "previous_context_r3": {
+    "status": "PASSED_COMPONENT_SCOPE_ONLY",
+    "evidence_root": "/private/tmp/singapore-fidelity/source-context-r3",
+    "checks": 478,
+    "assertion_failures": [],
+    "supervisor_exit_code": 0,
+    "engine_exit_code": 0,
+    "fatal_errors": [],
+    "child_reaped": true,
+    "source_hashes": {
+      "game/src/systems/fidelity_tests/source_context_test.gd": "18578c399b4527fc8ef2ba4c144c0a59298e49fc98deb516c7d5fd8ee2a9a6c1",
+      "game/src/world/geography/source_world_context.gd": "bdac6bf9350997a105e161826c8689ce050afbbedfb120bca3cd056da6cbc3f7"
+    },
+    "native_key_types": [
+      {
+        "key": "territory",
+        "type_name": "String",
+        "variant_type": 4
+      },
+      {
+        "key": "land",
+        "type_name": "String",
+        "variant_type": 4
+      },
+      {
+        "key": "water",
+        "type_name": "String",
+        "variant_type": 4
+      },
+      {
+        "key": "physics",
+        "type_name": "StringName",
+        "variant_type": 21
+      }
+    ],
+    "scope": "Pre-extension independent domain/cache/restore semantics and one isolated axis-aligned native basement capsule fixture; not oriented-box source, actor/site/bootstrap/save integration or complete Singapore/MBS"
+  },
+  "oriented_extension": {
+    "schema": "singapore_upright_obox_v1",
+    "exact_keys": [
+      "schema",
+      "volume_id",
+      "center_xyz",
+      "half_extents_xyz",
+      "axis_x_xyz",
+      "axis_z_xyz",
+      "dry"
+    ],
+    "basis": "Upright +Y implicit, canonical-double X/Z unit orthogonal right-handed, zero tilt",
+    "basis_squared_length_dot_determinant_tolerance": 1e-12,
+    "containment": "Canonical double point-center, scalar dot onto X/Z, inclusive half extents plus bounded double-roundoff allowance; enclosing AABB never used as dry area",
+    "legacy_aabb_input_and_containment_unchanged": true,
+    "documentation": "loop/singapore-fidelity/source-context/CONTEXT_ORIENTED_VOLUMES.md",
+    "prepared_tests": [
+      "all inclusive rotated corners",
+      "one-mm outside all six faces",
+      "enclosing-AABB-only exterior corner",
+      "80km millimetre distinction",
+      "three non-grid source-origin commits preserve classification",
+      "strict malformed/scale/tilt/shear/reflection/finite-domain rejection",
+      "all-volume transaction rejection",
+      "PackedFloat64/detached inputs",
+      "native rotated slab and production-shape capsule ready restore",
+      "native ray miss and non-dry/non-supported enclosing corner"
+    ],
+    "current_native_extension_run": false,
+    "scalar_double_design_study_only": {
+      "python_standard_library": true,
+      "maximum_80km_corner_roundoff_m": 2.9110047705671604e-12,
+      "face_allowance_m": 1.5432295342253565e-10,
+      "godot_execution": false
+    },
+    "ownership": "Only context module, its QA files, this extension doc and VERIFICATION; no source_runtime/actors/RUNTIME docs, engines or Git"
   }
 }

@@ -116,8 +116,14 @@ func _helix_walk(world: WorldBuilder, suite: Object) -> void:
 	var idx := 0
 	var t0 := Time.get_ticks_msec()
 	var min_y := 99.0
-	while Time.get_ticks_msec() - t0 < 3500:
+	var physics_start := Engine.get_physics_frames()
+	var simulation_elapsed := 0.0
+	# Preserve the original21s simulated opportunity (3.5wall seconds at6x)
+	# without assuming the CPU/shared machine actually sustains that ratio.
+	# The separate14s wall guard still bounds a real stall.
+	while simulation_elapsed < 21.0 and Time.get_ticks_msec() - t0 < 14000:
 		await tree.physics_frame
+		simulation_elapsed = float(Engine.get_physics_frames() - physics_start) * Engine.time_scale / float(Engine.physics_ticks_per_second)
 		var p: Vector3 = player.global_position
 		while idx < path.size() - 1 and Vector2(p.x - (path[idx] as Vector3).x, p.z - (path[idx] as Vector3).z).length() < 6.0:
 			idx += 1
@@ -135,7 +141,7 @@ func _helix_walk(world: WorldBuilder, suite: Object) -> void:
 	var endp: Vector3 = player.global_position
 	var progressed := Vector2(endp.x - start.x, endp.z - start.z).length()
 	suite._check("landmarks: player climbs the Helix ramp onto the span (real controller)", progressed > 60.0 and endp.y > 3.0 and min_y > 0.25,
-		"progressed=%.1f m end_y=%.2f min_y=%.2f idx=%d" % [progressed, endp.y, min_y, idx])
+		"progressed=%.1f m end_y=%.2f min_y=%.2f idx=%d simulated=%.2fs wall=%.2fs" % [progressed, endp.y, min_y, idx, simulation_elapsed, float(Time.get_ticks_msec()-t0)/1000.0])
 	player.respawn_at(saved_pos, saved_yaw)
 	for i in 2:
 		await tree.physics_frame
