@@ -1,0 +1,53 @@
+{
+  "implementation": "continuous_tapered_public_L1_stage_r2",
+  "game_default_hooked": false,
+  "engine_launched_by_worker": false,
+  "compile_verified": false,
+  "runtime_verified": false,
+  "rendered_fidelity_verified": false,
+  "superseded_r1_parent_report": {
+    "checks": "25/25",
+    "elapsed_s": 90.081,
+    "walk_m": 494.366,
+    "applies_to_r2": false
+  },
+  "source_placement": "Absolute actual OSM tower centroids/uncompressed basis; transformed unit-parent API corrected",
+  "source_form": "Historical Arup2012 text confirms continuous sloping atrium, approximate40/20/10m widths and20-to6-storey height trend",
+  "diagram_pixels_inspected": false,
+  "diagram_dimension_extraction": false,
+  "roof_height_m": {
+    "T3": 27,
+    "T2": 47,
+    "T1": 76,
+    "status": "UNVERIFIED_CONFIGURABLE_STAGING_NOT_SURVEYED_STOREY_CONVERSION"
+  },
+  "metric_hotel_entrance": "UNVERIFIED_STAGING_OPENING",
+  "floor_elevations": "UNVERIFIED_RELATIVE_GROUND_ASSUMPTION",
+  "current_fitout": "UNVERIFIED_ORIGINAL_PROJECT_REUSE",
+  "hotel_room_inventory_complete": false,
+  "retail_basement_roof_service_interiors_built": false,
+  "full_requested_interior_verified": false,
+  "unknown_areas_are_not_hidden_by_streaming": true,
+  "source_first_checks": "research/mbs/asset-candidates.json",
+  "new_asset_purchases_downloads_uploads": 0,
+  "custom_motion_authored": false,
+  "verification_status": "SOURCE_READY_AWAITING_PARENT_COMPILE_PHYSICS_RENDER",
+  "source_sha256": {
+    "game/src/world/mbs_interior/public_l1.gd": "d883b9eb34107f34f66317874fb508162e66b8c2229a2f8f818d0fe5284b5e36",
+    "game/src/world/mbs_interior/site_reference.gd": "0c4d3ad4a98e1b5810bd7b978871bd55431c27367bfce3baf2e866b9ce513d5f",
+    "game/src/systems/fidelity_tests/mbs_interior_public.gd": "bd16768ae0f50c8b8a0cbb214f00f89e748021188c711a745bcddd28badd0325",
+    "game/src/systems/fidelity_tests/mbs_interior_public.tscn": "efdcbfd416a5366ebe96d03e3f38f92db6fb2825dca1d629b072acdedb42c6b3"
+  },
+  "probe_collision": "Reuses actual production Player capsule resource/local transform/mask; runtime exact-agreement assertion; no physics during source-plan setup",
+  "construction_domain": {
+    "maximum_zone_length_m": 1000,
+    "maximum_zone_width_m": 500,
+    "maximum_roof_height_m": 300,
+    "maximum_site_span_m": 2000,
+    "maximum_abs_floor_elevation_m": 1000,
+    "maximum_structural_member_budget": 16000,
+    "budget_checked_before_integer_conversions_construction_or_mutation": true,
+    "runtime_verified": false
+  },
+  "oversized_retry_regression": "Finite1e12 length/width/height failures must leave instance pristine before valid retry"
+}
