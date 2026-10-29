@@ -1,0 +1,10 @@
+{
+  "status": "PASS_EMITTED_NEAR_JUNCTION_SEAMS",
+  "junction_groups": 5441,
+  "samples": 135444,
+  "overlap_comparisons": 179821,
+  "maximum_height_mismatch_m": 2.3865794247512895e-06,
+  "outliers_over5mm": [],
+  "elapsed_seconds": 34.059685541986255,
+  "scope": "Source-connected emitted-way centreline overlap within largest incident halfwidth; not full-curve/all-area/native/vehicle/terrain/source-world acceptance"
+}

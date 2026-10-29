@@ -1,0 +1,136 @@
+{
+  "status": "PHYSICAL_SURFACES_REJECTED_GRAPH_SOURCE_IDENTITY_AUDIT_RETAINED",
+  "artifact_identity_sha256": "a70fedf48a0a3ab158dfc9e617ec828dfedbfa18d60d2e5b6f4871f6901dc190",
+  "database_sha256": "423aaf20cf28478b8a7c38b9cbb1618c2009390dcf7280a4234eeede00e4381f",
+  "compiler_sha256": "3b85041e91aafb69e167fa32d50cd25dd78342881decd64f924733402ed824e1",
+  "surface_metrics": {
+    "minimum_triangle_cross_m2": 0.0018468163907527924,
+    "maximum_surface_slope_ratio": 35.87532632429866,
+    "surface_triangles_above_car_centerline_grade_policy": 6056,
+    "largest_surface_slope_cases": [
+      [
+        "-1_-1",
+        "way/646795846",
+        9,
+        35.87532632429866
+      ],
+      [
+        "-1_-1",
+        "way/646795846",
+        0,
+        35.818464336600556
+      ],
+      [
+        "-2_1",
+        "way/1184466638",
+        2,
+        34.9912501591848
+      ],
+      [
+        "-1_-1",
+        "way/541150388",
+        6,
+        20.682649968293465
+      ],
+      [
+        "-2_-2",
+        "way/542336747",
+        15,
+        7.816972812162659
+      ],
+      [
+        "-1_1",
+        "way/644708422",
+        6,
+        4.196083322045018
+      ],
+      [
+        "-2_-1",
+        "way/643262084",
+        8,
+        3.8275574489981268
+      ],
+      [
+        "-2_-1",
+        "way/643262084",
+        11,
+        3.8025354761187065
+      ],
+      [
+        "-2_1",
+        "way/1293827539",
+        1,
+        3.43845152042937
+      ],
+      [
+        "1_0",
+        "way/172274256",
+        11,
+        2.5053186752379215
+      ],
+      [
+        "-1_-1",
+        "way/159938667",
+        5,
+        1.9098694436872257
+      ],
+      [
+        "0_0",
+        "way/301810474",
+        11,
+        1.8057603230113146
+      ],
+      [
+        "0_0",
+        "way/1253902992",
+        2,
+        1.727917467267782
+      ],
+      [
+        "-1_0",
+        "way/1280080010",
+        10,
+        1.6680349918386508
+      ],
+      [
+        "-1_0",
+        "way/1280080010",
+        20,
+        1.4808582206764398
+      ],
+      [
+        "0_-1",
+        "way/725804755",
+        8,
+        1.3374916879737313
+      ],
+      [
+        "-1_-1",
+        "way/784673437",
+        6,
+        1.3335276308341695
+      ],
+      [
+        "0_0",
+        "way/665727336",
+        1,
+        1.3218478206352613
+      ],
+      [
+        "0_-2",
+        "way/1391960351",
+        26,
+        1.2711641759423065
+      ],
+      [
+        "0_-1",
+        "way/725804755",
+        7,
+        1.1479136205098301
+      ]
+    ],
+    "scope": "Emitted Float32 ribbon surfaces; not native/current-frame collision or actual driven route"
+  },
+  "reason": "Nearest-centerline lifting on arbitrary constrained triangles does not bound actual surface gradients; centerline grade proof insufficient",
+  "native_run_or_accepted_playability": false
+}

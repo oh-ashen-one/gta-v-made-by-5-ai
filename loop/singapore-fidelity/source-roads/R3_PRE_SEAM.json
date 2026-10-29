@@ -1,0 +1,7 @@
+{
+  "artifact_identity_sha256": "357f557152275700af689243b478ceeec31434464cc57e4514006a6662a46f30",
+  "database_sha256": "59d80657256888ee97af292b21c83cba4334590b5a78050c0b201f41962707cf",
+  "source_sha256": "b187a76154eefe2187f120e1dee0ec62292f85ad0dce0ffdcdab5e07988a85f2",
+  "status": "EMITTED_FACE_SLOPES_PASS_JUNCTION_C0_REVIEW_PENDING",
+  "reason": "Different width hubs require common plateau length propagated across all original segments; not accepted as driven"
+}

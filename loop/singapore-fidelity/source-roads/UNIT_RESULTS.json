@@ -1,0 +1,6 @@
+{
+  "status": "19_CPU_UNIT_TESTS_PASSED",
+  "command": "/usr/sbin/taskpolicy -b nice -n 10 /private/tmp/orchard-geodata/venv/bin/python -m unittest discover -s game/tools/geography -p test_compile_roads.py -v",
+  "scope": "Original-node/direction/access/width/grade/ribbon/hole/source-read/height-constraint regressions, no Godot/native/actual vehicle acceptance",
+  "test_sha256": "1bd0ffffd8662cb1a252bb59e5d6ab323625069738a62ceab77044beb2772386"
+}

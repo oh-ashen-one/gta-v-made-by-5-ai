@@ -1,0 +1,144 @@
+{
+  "status": "FROZEN_CPU_SOURCE_SURFACE_SEAM_AUDITS_PASS_NATIVE_AND_ROOT_INTEGRATION_PENDING",
+  "artifact_directory": "/private/tmp/singapore-fidelity/source-roads/candidate-r5",
+  "artifact_identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+  "files": [
+    {
+      "path": "game/tools/geography/compile_roads.py",
+      "sha256": "c203c52106c1caea2e473512533794259a3bc9d28dd01e80a43f91d6e63b59e5",
+      "lines": 713
+    },
+    {
+      "path": "game/tools/geography/test_compile_roads.py",
+      "sha256": "1bd0ffffd8662cb1a252bb59e5d6ab323625069738a62ceab77044beb2772386",
+      "lines": 229
+    },
+    {
+      "path": "game/src/world/geography/source_roads.gd",
+      "sha256": "c9ffb4ad34a25ce93b144809e12bf8424c46e908696d5ec3c6de6253f29acebb",
+      "lines": 286
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_roads_test.gd",
+      "sha256": "06f8848e077c8fcfd3ebb7641f8d285787e3bdbd6eac2ff7abfac2657c712e68",
+      "lines": 206
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_roads_test.tscn",
+      "sha256": "59457bee8bfdd90af7207563d143280af977ec814024f26156c11593e0bddaee",
+      "lines": 4
+    }
+  ],
+  "cpu_unit_tests": 19,
+  "source_identity_audit": {
+    "status": "PASS_SOURCE_IDENTITY_AND_EMITTED_WINDING_ONLY",
+    "artifact_identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+    "owners": 906,
+    "original_ways": 257845,
+    "original_segments_audited": 911877,
+    "maximum_source_axis_delta_m": 1.1368683772161603e-13,
+    "maximum_original_node_id": 14323830285,
+    "node_ids_fit_current_JSON_double_exact_integer_range": true,
+    "physical_tiles": 20,
+    "triangles_checked": 327872,
+    "holes_retained": 2726,
+    "elapsed_seconds": 57.57248329202412,
+    "not_proved": [
+      "semantic policy correctness independent review",
+      "current legal directions/access/turn restrictions",
+      "native collision/driver/gameplay",
+      "source terrain/bridge/tunnel survey heights",
+      "root integration/full Singapore completion"
+    ]
+  },
+  "seam_audit": {
+    "status": "PASS_EMITTED_NEAR_JUNCTION_SEAMS",
+    "junction_groups": 5441,
+    "samples": 135444,
+    "overlap_comparisons": 179821,
+    "maximum_height_mismatch_m": 2.3865794247512895e-06,
+    "outliers_over5mm": [],
+    "elapsed_seconds": 34.059685541986255,
+    "scope": "Source-connected emitted-way centreline overlap within largest incident halfwidth; not full-curve/all-area/native/vehicle/terrain/source-world acceptance"
+  },
+  "supervisor": {
+    "limits": {
+      "cpu_seconds": 3600,
+      "rss_bytes": 2147483648,
+      "wall_seconds": 7200
+    },
+    "reason": null,
+    "sampled_peak_rss_bytes": 800440320,
+    "status": "complete_compile_not_runtime_acceptance",
+    "wall_seconds": 318.32700616601505,
+    "worker_exit": 0,
+    "worker_log": "candidate-r5.worker.log"
+  },
+  "profile": {
+    "DEM_reference": "EGM96 metres; separate preferred terrain reference, not road survey",
+    "bridge_clearance_game_m_per_layer": 6.0,
+    "car_max_grade_game": 0.12,
+    "conflict_policy": "bridge-priority",
+    "conflicting_game_constraints": 9530,
+    "foot_max_grade_game": 0.25,
+    "maximum_allowance_error_m": 2.886579864025407e-14,
+    "maximum_height_only_constraint_error_m": 3.552713678800501e-15,
+    "status": "GAME_Lipschitz_cut_fill_bridge6m_tunnel5m_NOT_SURVEYED",
+    "steps_max_grade_game": 0.7,
+    "terrain_cut_fill_required_for_physical_integration": true,
+    "tunnel_depth_game_m_per_layer": 5.0,
+    "tunnel_depth_unresolved_where_bridge_priority_conflicts": true,
+    "vertices": 820134
+  },
+  "surface_height_constraints": {
+    "acute_merge_plateau_length_capped_groups": 94,
+    "junction_hub_radius": "common incident-width/angle flat approach length; drawn apron keeps each own halfwidth; capped128m",
+    "junction_hub_vertices": 322688,
+    "junction_plateau_height_only_constraints": 79108,
+    "max_surface_grade_margin": 0.999,
+    "navigation_connections_inferred_from_XY": false,
+    "source_segments_with_geometry_aware_height_constraints": 911877,
+    "zero_horizontal_original_segments_retained": true
+  },
+  "physical_scope": {
+    "bounds_xz": [
+      -2000.0,
+      -2500.0,
+      2000.0,
+      2000.0
+    ],
+    "fragments": 7281,
+    "maximum_actual_surface_slope": 0.12074838439229812,
+    "scope": "bounded continuous-region work batch; country graph is complete and compiler can build other regions",
+    "ways": 6880
+  },
+  "actual_primary_route": {
+    "receipt": "loop/singapore-fidelity/source-roads/ACTUAL_PRIMARY_ROUTE_R5.json",
+    "distance_m": 5266.87722642142,
+    "actual_original_ways": 107,
+    "all_in_physical_batch": true,
+    "native_driven": false
+  },
+  "fixture": {
+    "path": "res://data/geography/source-roads/qa-fixture-v4",
+    "identity_sha256": "217d7bde5a019d110648ac3fd1f877763d58135eefde78fc23f4ceabf358d7a0",
+    "synthetic_not_actual_Singapore": true,
+    "current_source_reproduction_verified": true,
+    "native_run": false
+  },
+  "parent_native_command": "bash loop/singapore-fidelity/source-roads/run_native.sh source-roads-fixture-r1",
+  "godot_parse_verified": false,
+  "engine_or_gpu_started_by_builder": false,
+  "git_run_by_builder": false,
+  "independent_code_critic": "Pending: all4agent slotsoccupied duringbuilderwork",
+  "not_proved": [
+    "Godot parse/native fixture",
+    "actual source-world production car/foot driving",
+    "terrain cut/fill/tunnel walls/real deck clearances/datum",
+    "SourceWorldContext support/dry/residency stamping and restores/rebases",
+    "full road area/seams at all acute/self-crossings",
+    "currentlegal lane/turn/restrictionrules",
+    "rendered quality and shared/exclusive performance",
+    "whole Singapore or whole goal completion"
+  ]
+}

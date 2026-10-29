@@ -1,0 +1,38 @@
+{
+  "maximum_emitted_surface_slope": 0.12074838439229812,
+  "minimum_triangle_cross_m2": 3.6325020751348802e-06,
+  "total_physical_vertices": 1039356,
+  "maximum_tile_vertices": 112446,
+  "quantized_degenerate_triangles_omitted": 0,
+  "geometry_height_constraints": {
+    "acute_merge_plateau_length_capped_groups": 94,
+    "junction_hub_radius": "common incident-width/angle flat approach length; drawn apron keeps each own halfwidth; capped128m",
+    "junction_hub_vertices": 322688,
+    "junction_plateau_height_only_constraints": 79108,
+    "max_surface_grade_margin": 0.999,
+    "navigation_connections_inferred_from_XY": false,
+    "source_segments_with_geometry_aware_height_constraints": 911877,
+    "zero_horizontal_original_segments_retained": true
+  },
+  "profile": {
+    "DEM_reference": "EGM96 metres; separate preferred terrain reference, not road survey",
+    "bridge_clearance_game_m_per_layer": 6.0,
+    "car_max_grade_game": 0.12,
+    "conflict_policy": "bridge-priority",
+    "conflicting_game_constraints": 9530,
+    "foot_max_grade_game": 0.25,
+    "maximum_allowance_error_m": 2.886579864025407e-14,
+    "maximum_height_only_constraint_error_m": 3.552713678800501e-15,
+    "status": "GAME_Lipschitz_cut_fill_bridge6m_tunnel5m_NOT_SURVEYED",
+    "steps_max_grade_game": 0.7,
+    "terrain_cut_fill_required_for_physical_integration": true,
+    "tunnel_depth_game_m_per_layer": 5.0,
+    "tunnel_depth_unresolved_where_bridge_priority_conflicts": true,
+    "vertices": 820134
+  },
+  "resources": {
+    "peak_rss_bytes": 858144768,
+    "worker_wall_seconds": 321.87630050000735
+  },
+  "runtime_verified": false
+}

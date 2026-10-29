@@ -1,0 +1,11 @@
+{
+  "schema": "source_roads_reproduction_reference_v1",
+  "complete_runtime_dataset": false,
+  "metadata_only_DO_NOT_CONFIGURE": true,
+  "actual_private_artifact": "/private/tmp/singapore-fidelity/source-roads/candidate-r5",
+  "identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+  "source_city_identity_sha256": "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963",
+  "compiler_sha256": "c203c52106c1caea2e473512533794259a3bc9d28dd01e80a43f91d6e63b59e5",
+  "reproduction_readme": "loop/singapore-fidelity/source-roads/README.md",
+  "reason": "Large regenerated graph/mesh/SQLite caches stay local; source, metadata hashes, attribution and reproduction command are Git-backed"
+}

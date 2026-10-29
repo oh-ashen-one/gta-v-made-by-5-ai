@@ -1,0 +1,21 @@
+{
+  "status": "PASS_SOURCE_IDENTITY_AND_EMITTED_WINDING_ONLY",
+  "artifact_identity_sha256": "a70fedf48a0a3ab158dfc9e617ec828dfedbfa18d60d2e5b6f4871f6901dc190",
+  "owners": 906,
+  "original_ways": 257845,
+  "original_segments_audited": 911877,
+  "maximum_source_axis_delta_m": 1.1368683772161603e-13,
+  "maximum_original_node_id": 14323830285,
+  "node_ids_fit_current_JSON_double_exact_integer_range": true,
+  "physical_tiles": 20,
+  "triangles_checked": 35017,
+  "holes_retained": 31,
+  "elapsed_seconds": 47.580405375003465,
+  "not_proved": [
+    "semantic policy correctness independent review",
+    "current legal directions/access/turn restrictions",
+    "native collision/driver/gameplay",
+    "source terrain/bridge/tunnel survey heights",
+    "root integration/full Singapore completion"
+  ]
+}

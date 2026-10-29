@@ -1,0 +1,24 @@
+{
+  "status": "FAILED_NO_COMPLETE_ARTIFACT",
+  "source_code_sha256": "baf042b50dfe17267cc31a42f10e2197dba140bcba61142803d29c95b20e9e96",
+  "owned_ingest_database_sha256": "d946e3ec54eb9ed31f04284e7e1950c8d440363205ea7c6ad582157fc01b4c48",
+  "database_bytes": 884269056,
+  "owners": 906,
+  "ways": 257845,
+  "vertices": 820134,
+  "edges": 923305,
+  "failure": "1754 contradictory GAME bridge/tunnel profile constraints; sourcecounts complete",
+  "supervisor": {
+    "limits": {
+      "cpu_seconds": 3600,
+      "rss_bytes": 2147483648,
+      "wall_seconds": 7200
+    },
+    "reason": null,
+    "sampled_peak_rss_bytes": 338051072,
+    "status": "FAILED_incomplete",
+    "wall_seconds": 463.3939392080065,
+    "worker_exit": 1,
+    "worker_log": "candidate-r1.worker.log"
+  }
+}
