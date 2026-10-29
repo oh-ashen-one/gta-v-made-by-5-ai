@@ -1,0 +1,104 @@
+{
+  "actor_pose_writes_during_traversal": 0,
+  "all_floor_pairs_tested": false,
+  "checks": 67,
+  "elapsed_s": 59.829,
+  "failed": 1,
+  "failures": [
+    "actual E stair state matches readiness"
+  ],
+  "fixture": [],
+  "full_building_completed": false,
+  "gate_state": {
+    "actor_pose_writes": 0,
+    "actor_reparents": 0,
+    "actor_velocity_writes": 0,
+    "bound_floors": [
+      "T3-L47"
+    ],
+    "context_registered_by_component": false,
+    "full_building_completed": false,
+    "gates": {
+      "T3-L47-east-stair-fire-door": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": -1.12,
+        "open_generation": "fixture-upper-48-v2-injected",
+        "opened": true,
+        "physically_closed": false,
+        "readiness_observation": {
+          "generation": "fixture-upper-48-v2-injected",
+          "ready": true,
+          "reason": "ready",
+          "valid": true
+        },
+        "ready": true,
+        "ready_generation": "fixture-upper-48-v2-injected",
+        "state": "OPENING",
+        "upper_id": "T3-L48"
+      },
+      "T3-L47-west-stair-fire-door": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": 0.0,
+        "open_generation": "",
+        "opened": false,
+        "physically_closed": true,
+        "readiness_observation": {
+          "generation": "fixture-upper-48-v2-injected",
+          "ready": true,
+          "reason": "ready",
+          "valid": true
+        },
+        "ready": true,
+        "ready_generation": "fixture-upper-48-v2-injected",
+        "state": "CLOSED_READY",
+        "upper_id": "T3-L48"
+      }
+    },
+    "geometry_version": "mbs-stair-fire-door-v1",
+    "protected_floor_ids": [
+      "T3-L47",
+      "T3-L48"
+    ]
+  },
+  "native_E_actions": [
+    {
+      "after": "(12.16892, 3.424835, -26.46529)",
+      "before": "(12.16892, 3.424835, -26.46529)",
+      "exact_target": true,
+      "expected_open": false,
+      "movement_m": 0.0,
+      "opened": false,
+      "process_frames": 6
+    },
+    {
+      "after": "(12.29181, 3.425845, -26.14898)",
+      "before": "(12.29181, 3.425845, -26.14898)",
+      "exact_target": true,
+      "expected_open": false,
+      "movement_m": 0.0,
+      "opened": false,
+      "process_frames": 8
+    },
+    {
+      "after": "(12.29181, 3.425845, -26.14898)",
+      "before": "(12.29181, 3.425845, -26.14898)",
+      "exact_target": true,
+      "expected_open": true,
+      "movement_m": 0.0,
+      "opened": true,
+      "process_frames": 6
+    },
+    {
+      "after": "(12.75333, 3.425022, -24.31653)",
+      "before": "(12.86593, 3.425816, -24.671)",
+      "exact_target": true,
+      "expected_open": true,
+      "movement_m": 0.37191978096962,
+      "opened": true,
+      "process_frames": 9
+    }
+  ],
+  "source_site_tested": false
+}

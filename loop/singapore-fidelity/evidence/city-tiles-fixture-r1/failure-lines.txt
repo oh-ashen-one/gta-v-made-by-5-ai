@@ -1,0 +1,3 @@
+[city-tiles] FAIL generated courtyardroof has actual native support { "position": (3.0, -0.000002, 3.0), "normal": (0.0, 1.0, 0.0), "face_index": 8, "collider_id": 69692556946, "collider": @StaticBody3D@44:<StaticBody3D#69692556946>, "shape": 0, "rid": RID(107374182400) }
+[city-tiles] FAIL spanningroof supports across canonical tileedge { "position": (1000.0, 0.0, 30.0), "normal": (0.0, 1.0, 0.0), "face_index": 3, "collider_id": 69809997465, "collider": @StaticBody3D@47:<StaticBody3D#69809997465>, "shape": 0, "rid": RID(137438953474) }
+[city-tiles] FAIL actualcapsule settles oncompiledroof (2.744774, 11.52917, 3.255226)

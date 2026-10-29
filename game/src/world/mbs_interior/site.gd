@@ -41,21 +41,29 @@ func _collect(node: Node) -> void:
 	if node is CollisionObject3D and node.collision_layer & 1 != 0: _bodies.append(node)
 	for child: Node in node.get_children(): _collect(child)
 
-func build(frame: RefCounted, context: RefCounted, runtime: Node3D) -> Dictionary:
+func build(frame: RefCounted, context: RefCounted, runtime: Node3D, config: Dictionary = {}) -> Dictionary:
 	if _built or not is_inside_tree() or not frame.metadata().configured or not context.metadata().configured:
 		return {"built": false, "error": "Require fresh site and configured common source context."}
 	if context.metadata().frame_instance_id != frame.get_instance_id() or runtime.context != context:
 		return {"built": false, "error": "Site, actors and domains require one geometry/frame authority."}
+	for key in config:
+		if key != "core_connections": return {"built": false, "error": "Unknown source-site configuration"}
+	if not config.get("core_connections", []) is Array: return {"built": false, "error": "Core connections require an explicit array"}
 	_frame = frame
 	_context = context
 	_runtime = runtime
 	public_l1 = PublicL1.new()
 	public_l1.name = "SourceMBSHotelPublicL1"
 	add_child(public_l1)
-	var result: Dictionary = public_l1.build({"source_frame": frame})
+	var public_config := {"source_frame": frame}
+	if not config.get("core_connections", []).is_empty(): public_config["core_connections"] = config.core_connections.duplicate(true)
+	var result: Dictionary = public_l1.build(public_config)
 	if not result.get("built", false):
 		public_l1.queue_free()
 		return result
+	if not config.get("core_connections", []).is_empty() and (not result.get("core_connections") is Array or result.core_connections.size() != config.core_connections.size()):
+		public_l1.queue_free()
+		return {"built": false, "error": "Requested source core joins were not constructed; no silent disconnected fallback"}
 	var volumes: Array = []
 	var sections: Array = public_l1.sections
 	# Inscribed rotated boxes follow the bent continuous loft. Never turn its
@@ -78,6 +86,11 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D) -> Dictionar
 	var outside: Vector3 = portal.outside
 	var inside: Vector3 = portal.inside
 	volumes.append(_volume("entrance-approach", (outside + inside) * 0.5 + Vector3.UP * 1.35, Vector3(2.0, 1.65, absf(outside.z - inside.z) * 0.5 + 1.0)))
+	# The public/Program builders share a validated join request. Append the
+	# actual constructed adapter's source volumes, not a broad gap-filling box.
+	for connection: Dictionary in result.get("core_connections", []):
+		if not connection.get("source_dry_volumes") is Array: return {"built": false, "error": "Core adapter omitted canonical dry geometry"}
+		volumes.append_array(connection.source_dry_volumes.duplicate(true))
 	_collect(public_l1)
 	var ids: Array[String] = []
 	for index in _bodies.size(): ids.append("public-structure-" + str(index))
@@ -89,6 +102,7 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D) -> Dictionar
 	_report = {"built": true, "source_site": true, "legacy_layout_or_duplicate_hotel_used": false,
 		"canonical_origin_xyz": [Reference.DATA.origin_world_xz[0], 0.0, Reference.DATA.origin_world_xz[1]],
 		"public": result, "native_collision_committed": false, "floor_volume_count": volumes.size(),
+		"core_connections": result.get("core_connections", []).duplicate(true),
 		"full_MBS_assembly_completed": false, "default_city_bootstrap_migrated": false,
 		"pending": ["source exterior/guest/program floor stacks", "physical cabins and connected stairs", "retail/Bayfront Avenue/bridge/city integration", "integrated visual and normal-input acceptance"]}
 	return _report.duplicate(true)
