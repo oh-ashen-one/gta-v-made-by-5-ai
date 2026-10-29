@@ -1,0 +1,2261 @@
+{
+  "checks": 184,
+  "elapsed_s": 838.034,
+  "failed": 1,
+  "failures": [
+    "native locomotion settles with released input before leg"
+  ],
+  "gait_records": [
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.0251562632620335,
+      "elapsed_s": 0.138,
+      "elapsed_sim_s": 0.0,
+      "end": "(67.36024, -0.021156, 72.36877)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 12.0293489738057,
+      "stage": "exterior arrival through real reserved corridor/0",
+      "start": "(67.36024, -0.021156, 72.36877)",
+      "target": "(67.36024, 0.004, 72.36877)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 87.1760938428342
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178416132926941,
+      "elapsed_s": 7.514,
+      "elapsed_sim_s": 2.58333333333333,
+      "end": "(68.58154, -0.020167, 69.6032)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 15.7334541082382,
+      "stage": "exterior arrival through real reserved corridor/1",
+      "start": "(67.36024, -0.021156, 72.36877)",
+      "target": "(68.653, 0.004, 69.44151)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 109.400724649429
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179902359843254,
+      "elapsed_s": 4.776,
+      "elapsed_sim_s": 1.53333333333333,
+      "end": "(69.22737, -0.020196, 68.14097)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 14.0730908115705,
+      "stage": "exterior arrival through real reserved corridor/2",
+      "start": "(68.58154, -0.020167, 69.6032)",
+      "target": "(69.29938, 0.004, 67.97789)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 99.4385448694229
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179307550191879,
+      "elapsed_s": 17.499,
+      "elapsed_sim_s": 6.21666666666667,
+      "end": "(72.70208, -0.02016, 60.27294)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 22.2425452868144,
+      "stage": "exterior arrival through real reserved corridor/3",
+      "start": "(69.22737, -0.020196, 68.14097)",
+      "target": "(72.77408, 0.0, 60.10997)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 148.455271720886
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179057434201241,
+      "elapsed_s": 3.906,
+      "elapsed_sim_s": 1.35,
+      "end": "(73.22756, -0.020166, 59.08306)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.7247593800227,
+      "stage": "exterior arrival through real reserved corridor/4",
+      "start": "(72.70208, -0.02016, 60.27294)",
+      "target": "(73.29926, 0.004, 58.92077)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 97.3485562801361
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.17909063398838,
+      "elapsed_s": 39.231,
+      "elapsed_sim_s": 13.9,
+      "end": "(81.30732, -0.024064, 40.78782)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 35.5403385162354,
+      "stage": "exterior arrival through real reserved corridor/5",
+      "start": "(73.22756, -0.020166, 59.08306)",
+      "target": "(81.37897, 0.0, 40.62547)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 228.242031097412
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179723709821701,
+      "elapsed_s": 6.389,
+      "elapsed_sim_s": 2.4,
+      "end": "(78.89735, -0.02416, 39.25457)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 15.5403068860372,
+      "stage": "loft to T1-L1-east-core/0",
+      "start": "(81.30732, -0.024064, 40.78782)",
+      "target": "(78.7471, 0.0, 39.15896)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 108.241841316223
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178984671831131,
+      "elapsed_s": 34.128,
+      "elapsed_sim_s": 12.6166666666667,
+      "end": "(86.04366, -0.02416, 22.64117)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 33.3056500752767,
+      "stage": "loft to T1-L1-east-core/1",
+      "start": "(78.89735, -0.02416, 39.25457)",
+      "target": "(86.11352, 0.004, 22.4788)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 214.83390045166
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179033741354942,
+      "elapsed_s": 4.27,
+      "elapsed_sim_s": 1.55,
+      "end": "(86.65058, -0.020172, 21.26324)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.9638508558273,
+      "stage": "loft to T1-L1-east-core/2",
+      "start": "(86.04366, -0.02416, 22.64117)",
+      "target": "(86.72205, 0.004, 21.10088)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 98.783105134964
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178461134433746,
+      "elapsed_s": 3.832,
+      "elapsed_sim_s": 1.35,
+      "end": "(87.16793, -0.020161, 20.09121)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.7016883691152,
+      "stage": "loft to T1-L1-east-core/3",
+      "start": "(86.65058, -0.020172, 21.26324)",
+      "target": "(87.23958, 0.0, 19.92901)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 97.2101302146912
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178462341427803,
+      "elapsed_s": 0.163,
+      "elapsed_sim_s": 0.0,
+      "end": "(87.16793, -0.020161, 20.09121)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 12.2082060649991,
+      "stage": "public/east/(-3.000031, 0.0, -21.3)",
+      "start": "(87.16793, -0.020161, 20.09121)",
+      "target": "(87.23956, 0.0, 19.929)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 88.2492363899946
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178175896406174,
+      "elapsed_s": 16.475,
+      "elapsed_sim_s": 6.4,
+      "end": "(115.5176, -0.024223, 32.41848)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 48.2721029917399,
+      "stage": "public/east/(28.08985, 0.0, -21.3)",
+      "start": "(87.16793, -0.020161, 20.09121)",
+      "target": "(115.6795, 0.0, 32.48887)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 304.632617950439
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179631188511848,
+      "elapsed_s": 6.16,
+      "elapsed_sim_s": 2.5,
+      "end": "(116.8919, -0.024201, 29.7193)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 15.7415014108022,
+      "stage": "public/east/(28.08985, 0.0, -24.50104)",
+      "start": "(115.5176, -0.024223, 32.41848)",
+      "target": "(116.9727, 0.0, 29.56067)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 109.449008464813
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.17894235253334,
+      "elapsed_s": 6.583,
+      "elapsed_sim_s": 2.45,
+      "end": "(115.7422, -0.024167, 32.32273)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 15.527313987414,
+      "stage": "public/east/(28.08006, 0.0, -21.3)",
+      "start": "(116.8919, -0.024201, 29.7193)",
+      "target": "(115.6705, 0.0, 32.48492)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 108.163883924484
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178209513425827,
+      "elapsed_s": 29.048,
+      "elapsed_sim_s": 10.5666666666667,
+      "end": "(61.35808, -0.024206, 8.498444)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 81.4752260843913,
+      "stage": "public/east/(-31.46985, 0.0, -21.3)",
+      "start": "(115.7422, -0.024167, 32.32273)",
+      "target": "(61.19636, 0.0, 8.427597)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 360.0
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178077861666679,
+      "elapsed_s": 4.969,
+      "elapsed_sim_s": 1.85,
+      "end": "(62.02741, -0.024184, 6.58074)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 14.5756683746974,
+      "stage": "public/east/(-31.46985, 0.0, -23.50103)",
+      "start": "(61.35808, -0.024206, 8.498444)",
+      "target": "(62.08554, 0.0, 6.414165)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 102.454010248184
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179488182067871,
+      "elapsed_s": 3.474,
+      "elapsed_sim_s": 1.23333333333333,
+      "end": "(62.41969, -0.025375, 5.662784)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 13.3722287813822,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(62.02741, -0.024184, 6.58074)",
+      "target": "(62.48953, 0.0, 5.499401)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 95.2333726882935
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179488182067871,
+      "elapsed_s": 0.143,
+      "elapsed_sim_s": 0.0,
+      "end": "(62.41969, -0.025375, 5.662784)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 12.2094028790792,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(62.41969, -0.025375, 5.662784)",
+      "target": "(62.48953, 0.0, 5.499401)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 88.2564172744751
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.218469351530075,
+      "elapsed_s": 3.592,
+      "elapsed_sim_s": 1.33333333333333,
+      "end": "(62.88687, -0.02407, 4.600436)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.6075584888458,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(62.41969, -0.025375, 5.662784)",
+      "target": "(62.97432, 0.0, 4.401684)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 96.645350933075
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.219976380467415,
+      "elapsed_s": 2.527,
+      "elapsed_sim_s": 0.866666666666667,
+      "end": "(63.12843, -0.024067, 4.052868)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 12.9537430405617,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(62.88687, -0.02407, 4.600436)",
+      "target": "(63.21671, 0.0, 3.852825)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 92.7224582433701
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.277569472789764,
+      "elapsed_s": 33.334,
+      "elapsed_sim_s": 12.0166666666667,
+      "end": "(64.20734, 2.375881, 1.610144)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 16.5018000205358,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(63.12843, -0.024067, 4.052868)",
+      "target": "(64.30747, 2.5, 1.382961)",
+      "termination_reason": "no_progress_6_sim_seconds",
+      "wall_budget_s": 114.010800123215
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.219208613038063,
+      "elapsed_s": 3.131,
+      "elapsed_sim_s": 1.1,
+      "end": "(64.46191, 2.47584, 1.033435)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.0001896421115,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(64.20734, 2.375881, 1.610144)",
+      "target": "(64.54987, 2.5, 0.834103)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 93.0011378526688
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.219565019011497,
+      "elapsed_s": 3.857,
+      "elapsed_sim_s": 1.43333333333333,
+      "end": "(65.76699, 2.475816, 1.404601)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.8377861380577,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(64.46191, 2.47584, 1.033435)",
+      "target": "(65.97689, 2.5, 1.464317)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 98.0267168283463
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.219411596655846,
+      "elapsed_s": 2.009,
+      "elapsed_sim_s": 0.7,
+      "end": "(65.74621, 2.47584, 1.795413)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 12.7115739881992,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(65.76699, 2.475816, 1.404601)",
+      "target": "(65.7345, 2.5, 2.013176)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 91.2694439291954
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.277634799480438,
+      "elapsed_s": 34.617,
+      "elapsed_sim_s": 12.9166666666667,
+      "end": "(64.74297, 4.875676, 4.255495)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 16.4898004134496,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(65.74621, 2.47584, 1.795413)",
+      "target": "(64.64374, 5.0, 4.483044)",
+      "termination_reason": "no_progress_6_sim_seconds",
+      "wall_budget_s": 113.938802480698
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.12,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.118916764855385,
+      "elapsed_s": 2.899,
+      "elapsed_sim_s": 1.01666666666667,
+      "end": "(64.63793, 4.975937, 4.495283)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 12.4645061393579,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(64.74297, 4.875676, 4.255495)",
+      "target": "(64.59122, 5.0, 4.601963)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 89.7870368361473
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179680779576302,
+      "elapsed_s": 4.447,
+      "elapsed_sim_s": 1.61666666666667,
+      "end": "(63.98844, 4.975816, 5.966727)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 14.0843880772591,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(64.63793, 4.975937, 4.495283)",
+      "target": "(63.91656, 5.0, 6.12962)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 99.5063284635544
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.219360455870628,
+      "elapsed_s": 3.433,
+      "elapsed_sim_s": 1.01666666666667,
+      "end": "(64.31329, 4.975936, 5.231366)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.1926144957542,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(63.98844, 4.975816, 5.966727)",
+      "target": "(64.40135, 5.0, 5.031902)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 94.1556869745255
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.218645587563515,
+      "elapsed_s": 2.3,
+      "elapsed_sim_s": 0.883333333333333,
+      "end": "(64.55598, 4.975933, 4.681852)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 12.954785635074,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(64.31329, 4.975936, 5.231366)",
+      "target": "(64.64374, 5.0, 4.483044)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 92.7287138104439
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.213897228240967,
+      "elapsed_s": 6.557,
+      "elapsed_sim_s": 2.66666666666667,
+      "end": "(65.69682, 2.692318, 2.098881)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 16.4640824794769,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(64.55598, 4.975933, 4.681852)",
+      "target": "(65.7345, 2.5, 2.013176)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 113.784494876862
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.219813644886017,
+      "elapsed_s": 1.645,
+      "elapsed_sim_s": 0.816666666666667,
+      "end": "(65.88867, 2.47584, 1.664197)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 12.8397563695908,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(65.69682, 2.692318, 2.098881)",
+      "target": "(65.97689, 2.5, 1.464317)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 92.0385382175446
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.219720333814621,
+      "elapsed_s": 3.395,
+      "elapsed_sim_s": 1.43333333333333,
+      "end": "(64.73548, 2.475834, 0.949167)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.8380246559779,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(65.88867, 2.47584, 1.664197)",
+      "target": "(64.54987, 2.5, 0.834103)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 98.0281479358673
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.219423308968544,
+      "elapsed_s": 2.036,
+      "elapsed_sim_s": 0.7,
+      "end": "(64.46059, 2.475686, 1.22769)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 12.7115260064602,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(64.73548, 2.475834, 0.949167)",
+      "target": "(64.30747, 2.5, 1.382961)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 91.2691560387611
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.215308472514153,
+      "elapsed_s": 7.413,
+      "elapsed_sim_s": 2.68333333333333,
+      "end": "(63.25797, 0.193346, 3.767543)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 16.4528789520264,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(64.46059, 2.475686, 1.22769)",
+      "target": "(63.21671, 0.0, 3.852825)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 113.717273712158
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.219329372048378,
+      "elapsed_s": 2.325,
+      "elapsed_sim_s": 0.833333333333333,
+      "end": "(63.06328, -0.024064, 4.202656)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 12.8412741919359,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(63.25797, 0.193346, 3.767543)",
+      "target": "(62.97432, 0.0, 4.401684)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 92.0476451516151
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.22,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.21875025331974,
+      "elapsed_s": 3.727,
+      "elapsed_sim_s": 1.28333333333333,
+      "end": "(62.57743, -0.025373, 5.300703)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.6545744736989,
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)",
+      "start": "(63.06328, -0.024064, 4.202656)",
+      "target": "(62.48953, 0.0, 5.499401)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 96.9274468421936
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178092077374458,
+      "elapsed_s": 7.621,
+      "elapsed_sim_s": 2.73333333333333,
+      "end": "(61.26776, -0.024179, 8.266247)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 15.9881375630697,
+      "stage": "public/east/(-31.46972, 0.0, -21.3)",
+      "start": "(62.57743, -0.025373, 5.300703)",
+      "target": "(61.19648, 0.0, 8.42765)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 110.928825378418
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179295852780342,
+      "elapsed_s": 16.78,
+      "elapsed_sim_s": 5.96666666666667,
+      "end": "(87.07706, -0.020155, 19.85602)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 45.2153085072835,
+      "stage": "public/east/(-3.000008, 0.0, -21.3)",
+      "start": "(61.26776, -0.024179, 8.266247)",
+      "target": "(87.23958, 0.0, 19.92901)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 286.291851043701
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.17929819226265,
+      "elapsed_s": 0.179,
+      "elapsed_sim_s": 0.0,
+      "end": "(87.07706, -0.020155, 19.85602)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 12.2091812243064,
+      "stage": "public/east/(-3.000008, 0.0, -21.29999)",
+      "start": "(87.07706, -0.020155, 19.85602)",
+      "target": "(87.23958, 0.0, 19.92902)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 88.2550873458385
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179296642541885,
+      "elapsed_s": 0.175,
+      "elapsed_sim_s": 0.0,
+      "end": "(87.07706, -0.020155, 19.85602)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 12.2091794162989,
+      "stage": "return from T1-L1-east-core/0",
+      "start": "(87.07706, -0.020155, 19.85602)",
+      "target": "(87.23958, 0.0, 19.92901)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 88.2550764977932
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179276674985886,
+      "elapsed_s": 3.842,
+      "elapsed_sim_s": 1.31666666666667,
+      "end": "(86.77077, -0.020172, 20.93005)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.5105006098747,
+      "stage": "return from T1-L1-east-core/1",
+      "start": "(87.07706, -0.020155, 19.85602)",
+      "target": "(86.72205, 0.004, 21.10088)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 96.0630036592484
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.177975371479988,
+      "elapsed_s": 4.4,
+      "elapsed_sim_s": 1.5,
+      "end": "(86.18244, -0.020166, 22.31651)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.9630529681842,
+      "stage": "return from T1-L1-east-core/2",
+      "start": "(86.77077, -0.020172, 20.93005)",
+      "target": "(86.11352, 0.004, 22.4788)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 98.7783178091049
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178720593452454,
+      "elapsed_s": 35.449,
+      "elapsed_sim_s": 12.65,
+      "end": "(78.81848, -0.02416, 38.99691)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 33.4791253407796,
+      "stage": "return from T1-L1-east-core/3",
+      "start": "(86.18244, -0.020166, 22.31651)",
+      "target": "(78.7471, 0.0, 39.15896)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 215.874752044678
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.17794543504715,
+      "elapsed_s": 311.945,
+      "elapsed_sim_s": 75.8833333333333,
+      "end": "(-19.95588, -0.024161, -15.83949)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 144.010133107503,
+      "stage": "loft to T2-L1-east-core/0",
+      "start": "(78.81848, -0.02416, 38.99691)",
+      "target": "(-20.11001, 0.0, -15.92507)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 360.0
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178608968853951,
+      "elapsed_s": 24.296,
+      "elapsed_sim_s": 5.96666666666667,
+      "end": "(-16.80606, -0.024077, -23.397)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 21.7580715815226,
+      "stage": "loft to T2-L1-east-core/1",
+      "start": "(-19.95588, -0.024161, -15.83949)",
+      "target": "(-16.73829, 0.004, -23.55984)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 145.548429489136
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.178293839097023,
+      "elapsed_s": 10.196,
+      "elapsed_sim_s": 1.6,
+      "end": "(-16.14119, -0.020166, -24.91099)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 14.1354834834735,
+      "stage": "loft to T2-L1-east-core/2",
+      "start": "(-16.80606, -0.024077, -23.397)",
+      "target": "(-16.07016, 0.004, -25.07273)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 99.8129009008408
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": false,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179312735795975,
+      "elapsed_s": 4.134,
+      "elapsed_sim_s": 1.33333333333333,
+      "end": "(-15.61691, -0.020178, -26.09892)",
+      "nominal_speed_mps": 1.5,
+      "simulation_budget_s": 13.7229152123133,
+      "stage": "loft to T2-L1-east-core/3",
+      "start": "(-16.14119, -0.020166, -24.91099)",
+      "target": "(-15.54498, 0.0, -26.26192)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 97.33749127388
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179314732551575,
+      "elapsed_s": 0.114,
+      "elapsed_sim_s": 0.0,
+      "end": "(-15.61691, -0.020178, -26.09892)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 12.2092005213102,
+      "stage": "public/east/(0.000046, 0.0, -11.3)",
+      "start": "(-15.61691, -0.020178, -26.09892)",
+      "target": "(-15.54493, 0.0, -26.2619)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 88.255203127861
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179257318377495,
+      "elapsed_s": 16.39,
+      "elapsed_sim_s": 5.45,
+      "end": "(7.431002, -0.024184, -16.11372)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 41.5114831924438,
+      "stage": "public/east/(25.29497, 0.0, -11.3)",
+      "start": "(-15.61691, -0.020178, -26.09892)",
+      "target": "(7.593983, 0.0, -16.04311)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 264.068899154663
+    },
+    {
+      "actor_or_velocity_assigned": false,
+      "allow_public_sprint": true,
+      "arrival_radius_m": 0.18,
+      "budget_gait_speed_mps": 1.5,
+      "distance_after_native_settle_m": 0.179782718420029,
+      "elapsed_s": 8.0,
+      "elapsed_sim_s": 3.03333333333333,
+      "end": "(10.7672, -0.024166, -23.23809)",
+      "nominal_speed_mps": 6.8,
+      "simulation_budget_s": 21.3858400980632,
+      "stage": "public/east/(25.29497, 0.0, -19.34175)",
+      "start": "(7.431002, -0.024184, -16.11372)",
+      "target": "(10.84274, 0.0, -23.39943)",
+      "termination_reason": "arrival",
+      "wall_budget_s": 143.315040588379
+    }
+  ],
+  "metrics": {},
+  "native_actions": [
+    {
+      "actual_E": true,
+      "id": "T1-L1-east-guest_lift",
+      "kind": "guest_lift",
+      "source_position": [
+        578.697189205504,
+        -0.0242014117538929,
+        -1000.76321665718
+      ],
+      "tower": "T1"
+    },
+    {
+      "actual_E": true,
+      "id": "T1-B1-east-stair-lower-entry-door",
+      "kind": "lower_flight_entry_door",
+      "source_position": [
+        523.832675808287,
+        -0.0241841953247786,
+        -1023.90177218391
+      ],
+      "tower": "T1"
+    },
+    {
+      "actual_E": true,
+      "id": "T1-L1-east-stair-fire-door",
+      "kind": "stair_fire_door",
+      "source_position": [
+        526.443199032164,
+        4.97593688964844,
+        -1025.98722903206
+      ],
+      "tower": "T1"
+    },
+    {
+      "actual_E": true,
+      "id": "T2-L1-east-guest_lift",
+      "kind": "guest_lift",
+      "source_position": [
+        472.572463863707,
+        -0.024166302755475,
+        -1053.72060267403
+      ],
+      "tower": "T2"
+    }
+  ],
+  "owner_playtest": false,
+  "performance_accepted": false,
+  "public_visual_fidelity_accepted": false,
+  "source_runtime_profile": {
+    "body_liveness_checks": 42889456,
+    "calls": 60238,
+    "enabled": true,
+    "max_us": 807703,
+    "physics_tick": 15136,
+    "registered_regions": 28,
+    "total_us": 211361273
+  },
+  "source_runtime_profile_progress": [
+    {
+      "elapsed_wall_s": 10.717,
+      "phase": "settle/before leg",
+      "physics_tick": 117,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 100392,
+        "calls": 141,
+        "enabled": true,
+        "max_us": 4199,
+        "physics_tick": 117,
+        "registered_regions": 28,
+        "total_us": 401855
+      },
+      "stage": "exterior arrival through real reserved corridor/0"
+    },
+    {
+      "elapsed_wall_s": 20.746,
+      "phase": "constrained-native-walk",
+      "physics_tick": 327,
+      "resolved_velocity": "(0.606006, 0.0, -1.372136)",
+      "source_runtime": {
+        "body_liveness_checks": 699896,
+        "calls": 983,
+        "enabled": true,
+        "max_us": 21512,
+        "physics_tick": 327,
+        "registered_regions": 28,
+        "total_us": 3008649
+      },
+      "stage": "exterior arrival through real reserved corridor/2"
+    },
+    {
+      "elapsed_wall_s": 30.791,
+      "phase": "constrained-native-walk",
+      "physics_tick": 531,
+      "resolved_velocity": "(0.605986, 0.0, -1.372144)",
+      "source_runtime": {
+        "body_liveness_checks": 1281600,
+        "calls": 1800,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 531,
+        "registered_regions": 28,
+        "total_us": 5608546
+      },
+      "stage": "exterior arrival through real reserved corridor/3"
+    },
+    {
+      "elapsed_wall_s": 40.811,
+      "phase": "native-braking",
+      "physics_tick": 755,
+      "resolved_velocity": "(0.393901, 0.0, -0.89189)",
+      "source_runtime": {
+        "body_liveness_checks": 1919552,
+        "calls": 2696,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 755,
+        "registered_regions": 28,
+        "total_us": 8195042
+      },
+      "stage": "exterior arrival through real reserved corridor/3"
+    },
+    {
+      "elapsed_wall_s": 50.831,
+      "phase": "constrained-native-walk",
+      "physics_tick": 964,
+      "resolved_velocity": "(0.605998, 0.0, -1.372139)",
+      "source_runtime": {
+        "body_liveness_checks": 2516208,
+        "calls": 3534,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 964,
+        "registered_regions": 28,
+        "total_us": 10766711
+      },
+      "stage": "exterior arrival through real reserved corridor/5"
+    },
+    {
+      "elapsed_wall_s": 60.861,
+      "phase": "constrained-native-walk",
+      "physics_tick": 1175,
+      "resolved_velocity": "(0.605972, 0.0, -1.372151)",
+      "source_runtime": {
+        "body_liveness_checks": 3117136,
+        "calls": 4378,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 1175,
+        "registered_regions": 28,
+        "total_us": 13365316
+      },
+      "stage": "exterior arrival through real reserved corridor/5"
+    },
+    {
+      "elapsed_wall_s": 70.901,
+      "phase": "constrained-native-walk",
+      "physics_tick": 1389,
+      "resolved_velocity": "(0.605907, 0.0, -1.372179)",
+      "source_runtime": {
+        "body_liveness_checks": 3726608,
+        "calls": 5234,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 1389,
+        "registered_regions": 28,
+        "total_us": 15984510
+      },
+      "stage": "exterior arrival through real reserved corridor/5"
+    },
+    {
+      "elapsed_wall_s": 80.954,
+      "phase": "constrained-native-walk",
+      "physics_tick": 1608,
+      "resolved_velocity": "(0.605729, 0.0, -1.372258)",
+      "source_runtime": {
+        "body_liveness_checks": 4350320,
+        "calls": 6110,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 1608,
+        "registered_regions": 28,
+        "total_us": 18550655
+      },
+      "stage": "exterior arrival through real reserved corridor/5"
+    },
+    {
+      "elapsed_wall_s": 90.96,
+      "phase": "constrained-native-walk",
+      "physics_tick": 1829,
+      "resolved_velocity": "(-1.265479, 0.0, -0.805334)",
+      "source_runtime": {
+        "body_liveness_checks": 4980440,
+        "calls": 6995,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 1829,
+        "registered_regions": 28,
+        "total_us": 21123457
+      },
+      "stage": "loft to T1-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 100.987,
+      "phase": "constrained-native-walk",
+      "physics_tick": 2064,
+      "resolved_velocity": "(0.592709, 0.0, -1.377932)",
+      "source_runtime": {
+        "body_liveness_checks": 5650432,
+        "calls": 7936,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 2064,
+        "registered_regions": 28,
+        "total_us": 23741895
+      },
+      "stage": "loft to T1-L1-east-core/1"
+    },
+    {
+      "elapsed_wall_s": 111.001,
+      "phase": "constrained-native-walk",
+      "physics_tick": 2283,
+      "resolved_velocity": "(0.592652, 0.0, -1.377956)",
+      "source_runtime": {
+        "body_liveness_checks": 6274144,
+        "calls": 8812,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 2283,
+        "registered_regions": 28,
+        "total_us": 26313865
+      },
+      "stage": "loft to T1-L1-east-core/1"
+    },
+    {
+      "elapsed_wall_s": 121.004,
+      "phase": "constrained-native-walk",
+      "physics_tick": 2505,
+      "resolved_velocity": "(0.592717, 0.0, -1.377928)",
+      "source_runtime": {
+        "body_liveness_checks": 6906400,
+        "calls": 9700,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 2505,
+        "registered_regions": 28,
+        "total_us": 28871564
+      },
+      "stage": "loft to T1-L1-east-core/1"
+    },
+    {
+      "elapsed_wall_s": 131.008,
+      "phase": "native-braking",
+      "physics_tick": 2725,
+      "resolved_velocity": "(0.463532, 0.0, -1.052444)",
+      "source_runtime": {
+        "body_liveness_checks": 7533672,
+        "calls": 10581,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 2725,
+        "registered_regions": 28,
+        "total_us": 31411893
+      },
+      "stage": "loft to T1-L1-east-core/2"
+    },
+    {
+      "elapsed_wall_s": 141.044,
+      "phase": "public-straight-sprint",
+      "physics_tick": 2945,
+      "resolved_velocity": "(6.235948, 0.0, 2.711635)",
+      "source_runtime": {
+        "body_liveness_checks": 8161656,
+        "calls": 11463,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 2945,
+        "registered_regions": 28,
+        "total_us": 34009387
+      },
+      "stage": "public/east/(28.08985, 0.0, -21.3)"
+    },
+    {
+      "elapsed_wall_s": 151.06,
+      "phase": "constrained-native-walk",
+      "physics_tick": 3177,
+      "resolved_velocity": "(1.375577, 0.0, 0.598153)",
+      "source_runtime": {
+        "body_liveness_checks": 8822392,
+        "calls": 12391,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 3177,
+        "registered_regions": 28,
+        "total_us": 36713543
+      },
+      "stage": "public/east/(28.08985, 0.0, -21.3)"
+    },
+    {
+      "elapsed_wall_s": 161.08,
+      "phase": "idle",
+      "physics_tick": 3429,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 9540088,
+        "calls": 13399,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 3429,
+        "registered_regions": 28,
+        "total_us": 39416252
+      },
+      "stage": "public/east/(28.08985, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 171.127,
+      "phase": "constrained-native-walk",
+      "physics_tick": 3656,
+      "resolved_velocity": "(-0.606071, 0.0, 1.372107)",
+      "source_runtime": {
+        "body_liveness_checks": 10187296,
+        "calls": 14308,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 3656,
+        "registered_regions": 28,
+        "total_us": 42043171
+      },
+      "stage": "public/east/(28.08006, 0.0, -21.3)"
+    },
+    {
+      "elapsed_wall_s": 181.149,
+      "phase": "public-straight-sprint",
+      "physics_tick": 3877,
+      "resolved_velocity": "(-6.22854, 0.0, -2.728606)",
+      "source_runtime": {
+        "body_liveness_checks": 10816704,
+        "calls": 15192,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 3877,
+        "registered_regions": 28,
+        "total_us": 44670589
+      },
+      "stage": "public/east/(-31.46985, 0.0, -21.3)"
+    },
+    {
+      "elapsed_wall_s": 191.182,
+      "phase": "public-straight-sprint",
+      "physics_tick": 4093,
+      "resolved_velocity": "(-6.228523, 0.0, -2.728644)",
+      "source_runtime": {
+        "body_liveness_checks": 11431872,
+        "calls": 16056,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 4093,
+        "registered_regions": 28,
+        "total_us": 47318834
+      },
+      "stage": "public/east/(-31.46985, 0.0, -21.3)"
+    },
+    {
+      "elapsed_wall_s": 201.201,
+      "phase": "constrained-native-walk",
+      "physics_tick": 4318,
+      "resolved_velocity": "(-1.373934, 0.0, -0.601919)",
+      "source_runtime": {
+        "body_liveness_checks": 12072672,
+        "calls": 16956,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 4318,
+        "registered_regions": 28,
+        "total_us": 49964243
+      },
+      "stage": "public/east/(-31.46985, 0.0, -21.3)"
+    },
+    {
+      "elapsed_wall_s": 211.205,
+      "phase": "idle",
+      "physics_tick": 4544,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 12716320,
+        "calls": 17860,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 4544,
+        "registered_regions": 28,
+        "total_us": 52602823
+      },
+      "stage": "public/east/(-31.46985, 0.0, -23.50103)"
+    },
+    {
+      "elapsed_wall_s": 221.239,
+      "phase": "constrained-native-walk",
+      "physics_tick": 4787,
+      "resolved_velocity": "(0.091721, 0.0, -0.208491)",
+      "source_runtime": {
+        "body_liveness_checks": 13408384,
+        "calls": 18832,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 4787,
+        "registered_regions": 28,
+        "total_us": 55256440
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 231.252,
+      "phase": "constrained-native-walk",
+      "physics_tick": 5006,
+      "resolved_velocity": "(0.605856, 0.0, -1.372202)",
+      "source_runtime": {
+        "body_liveness_checks": 14032096,
+        "calls": 19708,
+        "enabled": true,
+        "max_us": 55122,
+        "physics_tick": 5006,
+        "registered_regions": 28,
+        "total_us": 57890930
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 241.277,
+      "phase": "native-braking",
+      "physics_tick": 5225,
+      "resolved_velocity": "(0.048035, 0.0, -0.109149)",
+      "source_runtime": {
+        "body_liveness_checks": 14655808,
+        "calls": 20584,
+        "enabled": true,
+        "max_us": 96826,
+        "physics_tick": 5225,
+        "registered_regions": 28,
+        "total_us": 60575304
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 251.291,
+      "phase": "native-braking",
+      "physics_tick": 5444,
+      "resolved_velocity": "(0.193879, 0.0, -0.440289)",
+      "source_runtime": {
+        "body_liveness_checks": 15279520,
+        "calls": 21460,
+        "enabled": true,
+        "max_us": 96826,
+        "physics_tick": 5444,
+        "registered_regions": 28,
+        "total_us": 63180209
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 261.295,
+      "phase": "stopped-camera-turn",
+      "physics_tick": 5660,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 15894688,
+        "calls": 22324,
+        "enabled": true,
+        "max_us": 96826,
+        "physics_tick": 5660,
+        "registered_regions": 28,
+        "total_us": 65829155
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 271.338,
+      "phase": "constrained-native-walk",
+      "physics_tick": 5892,
+      "resolved_velocity": "(-0.569727, 0.0, 1.387592)",
+      "source_runtime": {
+        "body_liveness_checks": 16555424,
+        "calls": 23252,
+        "enabled": true,
+        "max_us": 96826,
+        "physics_tick": 5892,
+        "registered_regions": 28,
+        "total_us": 68448716
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 281.338,
+      "phase": "constrained-native-walk",
+      "physics_tick": 6125,
+      "resolved_velocity": "(-0.575915, 0.0, 1.385035)",
+      "source_runtime": {
+        "body_liveness_checks": 17219008,
+        "calls": 24184,
+        "enabled": true,
+        "max_us": 96826,
+        "physics_tick": 6125,
+        "registered_regions": 28,
+        "total_us": 71075474
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 291.353,
+      "phase": "constrained-native-walk",
+      "physics_tick": 6337,
+      "resolved_velocity": "(-0.070802, 0.0, 0.165428)",
+      "source_runtime": {
+        "body_liveness_checks": 17822784,
+        "calls": 25032,
+        "enabled": true,
+        "max_us": 96826,
+        "physics_tick": 6337,
+        "registered_regions": 28,
+        "total_us": 73684741
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 301.412,
+      "phase": "constrained-native-walk",
+      "physics_tick": 6563,
+      "resolved_velocity": "(-0.21581, 0.0, 0.496037)",
+      "source_runtime": {
+        "body_liveness_checks": 18466432,
+        "calls": 25936,
+        "enabled": true,
+        "max_us": 96826,
+        "physics_tick": 6563,
+        "registered_regions": 28,
+        "total_us": 76318703
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 311.444,
+      "phase": "idle",
+      "physics_tick": 6785,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 19098688,
+        "calls": 26824,
+        "enabled": true,
+        "max_us": 96826,
+        "physics_tick": 6785,
+        "registered_regions": 28,
+        "total_us": 78913468
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 321.449,
+      "phase": "stopped-camera-turn",
+      "physics_tick": 6999,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 19708872,
+        "calls": 27681,
+        "enabled": true,
+        "max_us": 132169,
+        "physics_tick": 6999,
+        "registered_regions": 28,
+        "total_us": 81611630
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 331.474,
+      "phase": "native-braking",
+      "physics_tick": 7254,
+      "resolved_velocity": "(0.464361, 0.0, -1.052078)",
+      "source_runtime": {
+        "body_liveness_checks": 20435112,
+        "calls": 28701,
+        "enabled": true,
+        "max_us": 132169,
+        "physics_tick": 7254,
+        "registered_regions": 28,
+        "total_us": 84272399
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 341.508,
+      "phase": "constrained-native-walk",
+      "physics_tick": 7499,
+      "resolved_velocity": "(-0.642242, 0.0, 1.355553)",
+      "source_runtime": {
+        "body_liveness_checks": 21132872,
+        "calls": 29681,
+        "enabled": true,
+        "max_us": 132169,
+        "physics_tick": 7499,
+        "registered_regions": 28,
+        "total_us": 86931761
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 351.533,
+      "phase": "constrained-native-walk",
+      "physics_tick": 7721,
+      "resolved_velocity": "(-0.606888, 0.0, 1.371746)",
+      "source_runtime": {
+        "body_liveness_checks": 21765128,
+        "calls": 30569,
+        "enabled": true,
+        "max_us": 132169,
+        "physics_tick": 7721,
+        "registered_regions": 28,
+        "total_us": 89563063
+      },
+      "stage": "public/east/(-31.46984, 0.0, -24.50104)"
+    },
+    {
+      "elapsed_wall_s": 361.538,
+      "phase": "settle/at leg end",
+      "physics_tick": 7939,
+      "resolved_velocity": "(-0.053843, 0.0, 0.121917)",
+      "source_runtime": {
+        "body_liveness_checks": 22385992,
+        "calls": 31441,
+        "enabled": true,
+        "max_us": 132169,
+        "physics_tick": 7939,
+        "registered_regions": 28,
+        "total_us": 92186840
+      },
+      "stage": "public/east/(-31.46972, 0.0, -21.3)"
+    },
+    {
+      "elapsed_wall_s": 371.542,
+      "phase": "public-straight-sprint",
+      "physics_tick": 8156,
+      "resolved_velocity": "(6.20328, 0.0, 2.785556)",
+      "source_runtime": {
+        "body_liveness_checks": 23004008,
+        "calls": 32309,
+        "enabled": true,
+        "max_us": 132169,
+        "physics_tick": 8156,
+        "registered_regions": 28,
+        "total_us": 94849056
+      },
+      "stage": "public/east/(-3.000008, 0.0, -21.3)"
+    },
+    {
+      "elapsed_wall_s": 381.569,
+      "phase": "constrained-native-walk",
+      "physics_tick": 8368,
+      "resolved_velocity": "(-0.132765, 0.0, 0.466973)",
+      "source_runtime": {
+        "body_liveness_checks": 23608496,
+        "calls": 33158,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 8368,
+        "registered_regions": 28,
+        "total_us": 97541772
+      },
+      "stage": "return from T1-L1-east-core/1"
+    },
+    {
+      "elapsed_wall_s": 391.569,
+      "phase": "constrained-native-walk",
+      "physics_tick": 8582,
+      "resolved_velocity": "(-0.605789, 0.0, 1.372232)",
+      "source_runtime": {
+        "body_liveness_checks": 24219392,
+        "calls": 34016,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 8582,
+        "registered_regions": 28,
+        "total_us": 100000770
+      },
+      "stage": "return from T1-L1-east-core/3"
+    },
+    {
+      "elapsed_wall_s": 401.579,
+      "phase": "constrained-native-walk",
+      "physics_tick": 8807,
+      "resolved_velocity": "(-0.60569, 0.0, 1.372275)",
+      "source_runtime": {
+        "body_liveness_checks": 24860192,
+        "calls": 34916,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 8807,
+        "registered_regions": 28,
+        "total_us": 102521775
+      },
+      "stage": "return from T1-L1-east-core/3"
+    },
+    {
+      "elapsed_wall_s": 411.6,
+      "phase": "constrained-native-walk",
+      "physics_tick": 9024,
+      "resolved_velocity": "(-0.605544, 0.0, 1.372339)",
+      "source_runtime": {
+        "body_liveness_checks": 25478208,
+        "calls": 35784,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 9024,
+        "registered_regions": 28,
+        "total_us": 105046898
+      },
+      "stage": "return from T1-L1-east-core/3"
+    },
+    {
+      "elapsed_wall_s": 421.608,
+      "phase": "constrained-native-walk",
+      "physics_tick": 9235,
+      "resolved_velocity": "(-0.605387, 0.0, 1.372409)",
+      "source_runtime": {
+        "body_liveness_checks": 26079136,
+        "calls": 36628,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 9235,
+        "registered_regions": 28,
+        "total_us": 107550866
+      },
+      "stage": "return from T1-L1-east-core/3"
+    },
+    {
+      "elapsed_wall_s": 431.651,
+      "phase": "constrained-native-walk",
+      "physics_tick": 9443,
+      "resolved_velocity": "(-1.31145, 0.0, -0.728079)",
+      "source_runtime": {
+        "body_liveness_checks": 26672232,
+        "calls": 37461,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 9443,
+        "registered_regions": 28,
+        "total_us": 110076811
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 441.672,
+      "phase": "constrained-native-walk",
+      "physics_tick": 9651,
+      "resolved_velocity": "(-1.31145, 0.0, -0.728079)",
+      "source_runtime": {
+        "body_liveness_checks": 27264616,
+        "calls": 38293,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 9651,
+        "registered_regions": 28,
+        "total_us": 112615670
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 451.701,
+      "phase": "constrained-native-walk",
+      "physics_tick": 9867,
+      "resolved_velocity": "(-1.311449, 0.0, -0.728081)",
+      "source_runtime": {
+        "body_liveness_checks": 27879784,
+        "calls": 39157,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 9867,
+        "registered_regions": 28,
+        "total_us": 115115532
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 461.716,
+      "phase": "constrained-native-walk",
+      "physics_tick": 10090,
+      "resolved_velocity": "(-1.311448, 0.0, -0.728083)",
+      "source_runtime": {
+        "body_liveness_checks": 28514888,
+        "calls": 40049,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 10090,
+        "registered_regions": 28,
+        "total_us": 117642125
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 471.724,
+      "phase": "constrained-native-walk",
+      "physics_tick": 10302,
+      "resolved_velocity": "(-1.311447, 0.0, -0.728084)",
+      "source_runtime": {
+        "body_liveness_checks": 29118664,
+        "calls": 40897,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 10302,
+        "registered_regions": 28,
+        "total_us": 120152691
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 481.738,
+      "phase": "constrained-native-walk",
+      "physics_tick": 10522,
+      "resolved_velocity": "(-1.311446, 0.0, -0.728086)",
+      "source_runtime": {
+        "body_liveness_checks": 29745224,
+        "calls": 41777,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 10522,
+        "registered_regions": 28,
+        "total_us": 122650891
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 491.782,
+      "phase": "constrained-native-walk",
+      "physics_tick": 10737,
+      "resolved_velocity": "(-1.311445, 0.0, -0.728088)",
+      "source_runtime": {
+        "body_liveness_checks": 30357544,
+        "calls": 42637,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 10737,
+        "registered_regions": 28,
+        "total_us": 125183741
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 501.818,
+      "phase": "constrained-native-walk",
+      "physics_tick": 10950,
+      "resolved_velocity": "(-1.311444, 0.0, -0.72809)",
+      "source_runtime": {
+        "body_liveness_checks": 30964168,
+        "calls": 43489,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 10950,
+        "registered_regions": 28,
+        "total_us": 127708122
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 511.857,
+      "phase": "constrained-native-walk",
+      "physics_tick": 11160,
+      "resolved_velocity": "(-1.311442, 0.0, -0.728093)",
+      "source_runtime": {
+        "body_liveness_checks": 31562248,
+        "calls": 44329,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 11160,
+        "registered_regions": 28,
+        "total_us": 130236058
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 521.887,
+      "phase": "constrained-native-walk",
+      "physics_tick": 11389,
+      "resolved_velocity": "(-1.311442, 0.0, -0.728093)",
+      "source_runtime": {
+        "body_liveness_checks": 32214440,
+        "calls": 45245,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 11389,
+        "registered_regions": 28,
+        "total_us": 132917174
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 531.893,
+      "phase": "constrained-native-walk",
+      "physics_tick": 11602,
+      "resolved_velocity": "(-1.311442, 0.0, -0.728093)",
+      "source_runtime": {
+        "body_liveness_checks": 32821064,
+        "calls": 46097,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 11602,
+        "registered_regions": 28,
+        "total_us": 135475530
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 541.942,
+      "phase": "constrained-native-walk",
+      "physics_tick": 11813,
+      "resolved_velocity": "(-1.311443, 0.0, -0.728092)",
+      "source_runtime": {
+        "body_liveness_checks": 33421992,
+        "calls": 46941,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 11813,
+        "registered_regions": 28,
+        "total_us": 138095036
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 551.96,
+      "phase": "constrained-native-walk",
+      "physics_tick": 12033,
+      "resolved_velocity": "(-1.311442, 0.0, -0.728094)",
+      "source_runtime": {
+        "body_liveness_checks": 34048552,
+        "calls": 47821,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 12033,
+        "registered_regions": 28,
+        "total_us": 140685382
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 562.168,
+      "phase": "constrained-native-walk",
+      "physics_tick": 12216,
+      "resolved_velocity": "(-1.311441, 0.0, -0.728095)",
+      "source_runtime": {
+        "body_liveness_checks": 34569736,
+        "calls": 48553,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 12216,
+        "registered_regions": 28,
+        "total_us": 143348442
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 572.17,
+      "phase": "constrained-native-walk",
+      "physics_tick": 12276,
+      "resolved_velocity": "(-1.311441, 0.0, -0.728095)",
+      "source_runtime": {
+        "body_liveness_checks": 34740616,
+        "calls": 48793,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 12276,
+        "registered_regions": 28,
+        "total_us": 145574140
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 582.178,
+      "phase": "constrained-native-walk",
+      "physics_tick": 12403,
+      "resolved_velocity": "(-1.311441, 0.0, -0.728095)",
+      "source_runtime": {
+        "body_liveness_checks": 35102312,
+        "calls": 49301,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 12403,
+        "registered_regions": 28,
+        "total_us": 147846876
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 592.188,
+      "phase": "constrained-native-walk",
+      "physics_tick": 12619,
+      "resolved_velocity": "(-1.311441, 0.0, -0.728095)",
+      "source_runtime": {
+        "body_liveness_checks": 35717480,
+        "calls": 50165,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 12619,
+        "registered_regions": 28,
+        "total_us": 150437677
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 602.282,
+      "phase": "constrained-native-walk",
+      "physics_tick": 12786,
+      "resolved_velocity": "(-1.311441, 0.0, -0.728094)",
+      "source_runtime": {
+        "body_liveness_checks": 36193096,
+        "calls": 50833,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 12786,
+        "registered_regions": 28,
+        "total_us": 152947719
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 612.547,
+      "phase": "constrained-native-walk",
+      "physics_tick": 12877,
+      "resolved_velocity": "(-1.311441, 0.0, -0.728094)",
+      "source_runtime": {
+        "body_liveness_checks": 36452264,
+        "calls": 51197,
+        "enabled": true,
+        "max_us": 167118,
+        "physics_tick": 12877,
+        "registered_regions": 28,
+        "total_us": 155323166
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 622.607,
+      "phase": "constrained-native-walk",
+      "physics_tick": 12950,
+      "resolved_velocity": "(-1.311441, 0.0, -0.728094)",
+      "source_runtime": {
+        "body_liveness_checks": 36660168,
+        "calls": 51489,
+        "enabled": true,
+        "max_us": 207429,
+        "physics_tick": 12950,
+        "registered_regions": 28,
+        "total_us": 157859402
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 633.212,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13023,
+      "resolved_velocity": "(-1.311442, 0.0, -0.728094)",
+      "source_runtime": {
+        "body_liveness_checks": 36868072,
+        "calls": 51781,
+        "enabled": true,
+        "max_us": 207429,
+        "physics_tick": 13023,
+        "registered_regions": 28,
+        "total_us": 160322816
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 643.286,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13084,
+      "resolved_velocity": "(-1.311442, 0.0, -0.728094)",
+      "source_runtime": {
+        "body_liveness_checks": 37041800,
+        "calls": 52025,
+        "enabled": true,
+        "max_us": 207429,
+        "physics_tick": 13084,
+        "registered_regions": 28,
+        "total_us": 162949443
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 653.475,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13140,
+      "resolved_velocity": "(-1.311442, 0.0, -0.728094)",
+      "source_runtime": {
+        "body_liveness_checks": 37201288,
+        "calls": 52249,
+        "enabled": true,
+        "max_us": 207429,
+        "physics_tick": 13140,
+        "registered_regions": 28,
+        "total_us": 165432895
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 663.619,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13196,
+      "resolved_velocity": "(-1.311442, 0.0, -0.728093)",
+      "source_runtime": {
+        "body_liveness_checks": 37360776,
+        "calls": 52473,
+        "enabled": true,
+        "max_us": 207429,
+        "physics_tick": 13196,
+        "registered_regions": 28,
+        "total_us": 167873010
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 673.689,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13246,
+      "resolved_velocity": "(-1.311443, 0.0, -0.728092)",
+      "source_runtime": {
+        "body_liveness_checks": 37503176,
+        "calls": 52673,
+        "enabled": true,
+        "max_us": 397550,
+        "physics_tick": 13246,
+        "registered_regions": 28,
+        "total_us": 170597991
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 683.925,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13299,
+      "resolved_velocity": "(-1.311445, 0.0, -0.728088)",
+      "source_runtime": {
+        "body_liveness_checks": 37654120,
+        "calls": 52885,
+        "enabled": true,
+        "max_us": 397550,
+        "physics_tick": 13299,
+        "registered_regions": 28,
+        "total_us": 172960936
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 694.109,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13347,
+      "resolved_velocity": "(-1.311447, 0.0, -0.728084)",
+      "source_runtime": {
+        "body_liveness_checks": 37790824,
+        "calls": 53077,
+        "enabled": true,
+        "max_us": 401977,
+        "physics_tick": 13347,
+        "registered_regions": 28,
+        "total_us": 175723560
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 704.402,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13418,
+      "resolved_velocity": "(-1.31145, 0.0, -0.728078)",
+      "source_runtime": {
+        "body_liveness_checks": 37993032,
+        "calls": 53361,
+        "enabled": true,
+        "max_us": 401977,
+        "physics_tick": 13418,
+        "registered_regions": 28,
+        "total_us": 178197026
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 714.432,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13482,
+      "resolved_velocity": "(-1.311452, 0.0, -0.728075)",
+      "source_runtime": {
+        "body_liveness_checks": 38175304,
+        "calls": 53617,
+        "enabled": true,
+        "max_us": 401977,
+        "physics_tick": 13482,
+        "registered_regions": 28,
+        "total_us": 180718875
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 724.444,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13591,
+      "resolved_velocity": "(-1.311453, 0.0, -0.728073)",
+      "source_runtime": {
+        "body_liveness_checks": 38485736,
+        "calls": 54053,
+        "enabled": true,
+        "max_us": 401977,
+        "physics_tick": 13591,
+        "registered_regions": 28,
+        "total_us": 183269875
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 734.458,
+      "phase": "constrained-native-walk",
+      "physics_tick": 13805,
+      "resolved_velocity": "(-1.311415, 0.0, -0.728141)",
+      "source_runtime": {
+        "body_liveness_checks": 39095208,
+        "calls": 54909,
+        "enabled": true,
+        "max_us": 401977,
+        "physics_tick": 13805,
+        "registered_regions": 28,
+        "total_us": 185832454
+      },
+      "stage": "loft to T2-L1-east-core/0"
+    },
+    {
+      "elapsed_wall_s": 744.487,
+      "phase": "constrained-native-walk",
+      "physics_tick": 14008,
+      "resolved_velocity": "(0.577057, 0.0, -1.38456)",
+      "source_runtime": {
+        "body_liveness_checks": 39674064,
+        "calls": 55722,
+        "enabled": true,
+        "max_us": 401977,
+        "physics_tick": 14008,
+        "registered_regions": 28,
+        "total_us": 188370466
+      },
+      "stage": "loft to T2-L1-east-core/1"
+    },
+    {
+      "elapsed_wall_s": 754.527,
+      "phase": "constrained-native-walk",
+      "physics_tick": 14181,
+      "resolved_velocity": "(0.576997, 0.0, -1.384585)",
+      "source_runtime": {
+        "body_liveness_checks": 40166768,
+        "calls": 56414,
+        "enabled": true,
+        "max_us": 401977,
+        "physics_tick": 14181,
+        "registered_regions": 28,
+        "total_us": 190966582
+      },
+      "stage": "loft to T2-L1-east-core/1"
+    },
+    {
+      "elapsed_wall_s": 764.528,
+      "phase": "constrained-native-walk",
+      "physics_tick": 14275,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 40435192,
+        "calls": 56791,
+        "enabled": true,
+        "max_us": 401977,
+        "physics_tick": 14275,
+        "registered_regions": 28,
+        "total_us": 193636286
+      },
+      "stage": "loft to T2-L1-east-core/2"
+    },
+    {
+      "elapsed_wall_s": 774.545,
+      "phase": "settle/at leg end",
+      "physics_tick": 14370,
+      "resolved_velocity": "(0.053596, 0.0, -0.122025)",
+      "source_runtime": {
+        "body_liveness_checks": 40705752,
+        "calls": 57171,
+        "enabled": true,
+        "max_us": 807703,
+        "physics_tick": 14370,
+        "registered_regions": 28,
+        "total_us": 196277603
+      },
+      "stage": "loft to T2-L1-east-core/2"
+    },
+    {
+      "elapsed_wall_s": 784.586,
+      "phase": "public-straight-sprint",
+      "physics_tick": 14580,
+      "resolved_velocity": "(6.239568, 0.0, 2.703293)",
+      "source_runtime": {
+        "body_liveness_checks": 41305256,
+        "calls": 58013,
+        "enabled": true,
+        "max_us": 807703,
+        "physics_tick": 14580,
+        "registered_regions": 28,
+        "total_us": 198876442
+      },
+      "stage": "public/east/(25.29497, 0.0, -11.3)"
+    },
+    {
+      "elapsed_wall_s": 794.62,
+      "phase": "constrained-native-walk",
+      "physics_tick": 14770,
+      "resolved_velocity": "(1.376375, 0.0, 0.596316)",
+      "source_runtime": {
+        "body_liveness_checks": 41846376,
+        "calls": 58773,
+        "enabled": true,
+        "max_us": 807703,
+        "physics_tick": 14770,
+        "registered_regions": 28,
+        "total_us": 201605787
+      },
+      "stage": "public/east/(25.29497, 0.0, -11.3)"
+    },
+    {
+      "elapsed_wall_s": 804.632,
+      "phase": "native-braking",
+      "physics_tick": 15000,
+      "resolved_velocity": "(0.265031, 0.0, -0.566024)",
+      "source_runtime": {
+        "body_liveness_checks": 42501416,
+        "calls": 59693,
+        "enabled": true,
+        "max_us": 807703,
+        "physics_tick": 15000,
+        "registered_regions": 28,
+        "total_us": 204244578
+      },
+      "stage": "public/east/(25.29497, 0.0, -19.34175)"
+    },
+    {
+      "elapsed_wall_s": 815.086,
+      "phase": "idle",
+      "physics_tick": 15104,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 42797608,
+        "calls": 60109,
+        "enabled": true,
+        "max_us": 807703,
+        "physics_tick": 15104,
+        "registered_regions": 28,
+        "total_us": 206764359
+      },
+      "stage": "public/east/(25.29497, 0.0, -19.34175)"
+    },
+    {
+      "elapsed_wall_s": 825.176,
+      "phase": "idle",
+      "physics_tick": 15120,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 42843176,
+        "calls": 60173,
+        "enabled": true,
+        "max_us": 807703,
+        "physics_tick": 15120,
+        "registered_regions": 28,
+        "total_us": 208011452
+      },
+      "stage": "public/east/(25.29497, 0.0, -19.34175)"
+    },
+    {
+      "elapsed_wall_s": 835.487,
+      "phase": "settle/before leg",
+      "physics_tick": 15134,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 42883760,
+        "calls": 60230,
+        "enabled": true,
+        "max_us": 807703,
+        "physics_tick": 15134,
+        "registered_regions": 28,
+        "total_us": 211043746
+      },
+      "stage": "public/east/(25.29104, 0.0, -11.3)"
+    }
+  ],
+  "whole_building_completed": false,
+  "supervision": {
+    "checkpoint": "d440b806b6922e671293a27aab4785a307ed9d63",
+    "started_utc": "2026-10-29T03:56:04.966848+00:00",
+    "finished_utc": "2026-10-29T04:10:12.410186+00:00",
+    "exit_code": 1,
+    "elapsed_sec": 847.67,
+    "child_reaped": true,
+    "fatal_errors": []
+  },
+  "raw_report_sha256": "c79a1b43e539a83f408fce8d9ed18a83fb387a3cba63e0a077ad5aabac11a18b",
+  "private_evidence_directory": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r5"
+}

@@ -1,0 +1,893 @@
+{
+  "checks": 82,
+  "failed": 0,
+  "failures": [],
+  "fixture_relocations_explicit": true,
+  "metrics": {
+    "committed_recoveries": [
+      {
+        "death_count": 7,
+        "reason": "disabled_aircraft",
+        "token": "source-recovery:160121751256:2"
+      },
+      {
+        "death_count": 8,
+        "reason": "death",
+        "token": "source-recovery:160121751256:8"
+      }
+    ],
+    "pending_floor": {
+      "detail": {
+        "ok": true,
+        "reason": "floor_identity_not_registered",
+        "required_feature_id": "qa-source/dry-room",
+        "required_floor_id": "PENDING-B2",
+        "status": "pending"
+      },
+      "ok": false,
+      "reason": "floor_identity_not_registered",
+      "status": "pending",
+      "token": "source-load:160121751256:3"
+    },
+    "required_requests": [
+      {
+        "pose": {
+          "floor_geometry_sha256": "88ca60efe5be670c47913282d55b6511fd05c5d604ba2529df0e5a93659693fa",
+          "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "QA synthetic B2; not source terrain",
+              "source_reference": "",
+              "status": "staging"
+            },
+            "feature_id": "qa-source/dry-room",
+            "floor_id": "B2",
+            "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              0.0,
+              -20.0248069763184,
+              -1000.0
+            ]
+          },
+          "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+        },
+        "reason": "fresh_physics_boundary_required",
+        "token": "source-load:160121751256:1"
+      },
+      {
+        "pose": {
+          "floor_geometry_sha256": "a812c5808dfd47ec2de7c49b58b73b5ee371ab75f4f9349809053145b5da096e",
+          "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "QA synthetic B2; not source terrain",
+              "source_reference": "",
+              "status": "staging"
+            },
+            "feature_id": "qa-source/dry-room",
+            "floor_id": "PENDING-B2",
+            "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              0.0,
+              -20.0248069763184,
+              -1000.0
+            ]
+          },
+          "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+        },
+        "reason": "floor_identity_not_registered",
+        "token": "source-load:160121751256:3"
+      },
+      {
+        "pose": {
+          "floor_geometry_sha256": "88ca60efe5be670c47913282d55b6511fd05c5d604ba2529df0e5a93659693fa",
+          "geometry_manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "QA synthetic B2; not source terrain",
+              "source_reference": "",
+              "status": "staging"
+            },
+            "feature_id": "qa-source/dry-room",
+            "floor_id": "B2",
+            "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              0.0,
+              -20.0248069763184,
+              -1000.0
+            ]
+          },
+          "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+        },
+        "reason": "source_geometry_or_vertical_version_changed",
+        "token": "source-load:160121751256:4"
+      },
+      {
+        "pose": {
+          "floor_geometry_sha256": "88ca60efe5be670c47913282d55b6511fd05c5d604ba2529df0e5a93659693fa",
+          "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "QA synthetic B2; not source terrain",
+              "source_reference": "",
+              "status": "staging"
+            },
+            "feature_id": "qa-source/dry-room",
+            "floor_id": "B2",
+            "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              0.0,
+              -20.0248069763184,
+              -1000.0
+            ]
+          },
+          "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+        },
+        "reason": "[\"capsule_clearance_blocked\"]",
+        "token": "source-load:160121751256:5"
+      },
+      {
+        "pose": {
+          "floor_geometry_sha256": "3c14f7859ea20bb2df9361b76e61fb01095bed4722802b99ea51d13c0d934b62",
+          "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "QA synthetic B2; not source terrain",
+              "source_reference": "",
+              "status": "staging"
+            },
+            "feature_id": "qa-source/outdoor",
+            "floor_id": "DECK",
+            "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              20.0,
+              -20.0248069763184,
+              -1000.0
+            ]
+          },
+          "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+        },
+        "reason": "[\"three_dimensional_water_unresolved\"]",
+        "token": "source-load:160121751256:6"
+      },
+      {
+        "pose": {
+          "floor_geometry_sha256": "88ca60efe5be670c47913282d55b6511fd05c5d604ba2529df0e5a93659693fa",
+          "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "QA synthetic B2; not source terrain",
+              "source_reference": "",
+              "status": "staging"
+            },
+            "feature_id": "qa-source/dry-room",
+            "floor_id": "B2",
+            "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              0.0,
+              -20.0248069763184,
+              -1000.0
+            ]
+          },
+          "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+        },
+        "reason": "fresh_physics_boundary_required",
+        "token": "source-recovery:160121751256:8"
+      }
+    ],
+    "same_body_ceiling": {
+      "detail": {
+        "ok": true,
+        "pending": [],
+        "reasons": [
+          "capsule_clearance_blocked"
+        ],
+        "state": {
+          "clearance": {
+            "state": "blocked"
+          },
+          "indoor": {
+            "dry_volume_matches": [
+              {
+                "feature_id": "qa-source/dry-room",
+                "floor_id": "B2",
+                "provenance": "QA-only synthetic enclosed native room; not Singapore surveyed ground or actual MBS architecture",
+                "volume_id": "actual-fixture-room"
+              },
+              {
+                "feature_id": "mbs-hotel/physical-shaft/QA",
+                "floor_id": "CABIN",
+                "provenance": "QA-only native support identity, not actual physical lift mechanics",
+                "volume_id": "QA logical cabin"
+              },
+              {
+                "feature_id": "qa-source/dry-room",
+                "floor_id": "PENDING-B2",
+                "provenance": "QA-only synthetic enclosed native room; not Singapore surveyed ground or actual MBS architecture",
+                "volume_id": "actual-fixture-room"
+              }
+            ],
+            "state": "dry_registered"
+          },
+          "land": {
+            "provider_id": "qa-save/land",
+            "state": "unknown"
+          },
+          "ok": true,
+          "origin_revision": 0,
+          "physics_tick": 92,
+          "residency": {
+            "residency_token": "qa-room/generation-5",
+            "state": "resident"
+          },
+          "source_xyz": [
+            0.0,
+            -20.0248069763184,
+            -1000.0
+          ],
+          "support": {
+            "collider_instance_id": 78785808018,
+            "contact_source_xyz": [
+              0.0,
+              -20.0,
+              -1000.0
+            ],
+            "feature_id": "qa-source/dry-room",
+            "floor_id": "B2",
+            "state": "supported",
+            "support_id": "native-floor"
+          },
+          "territory": {
+            "provider_id": "qa-save/territory",
+            "state": "inside"
+          },
+          "unresolved": [],
+          "water": {
+            "dry_volume_matches": [
+              {
+                "feature_id": "qa-source/dry-room",
+                "floor_id": "B2",
+                "provenance": "QA-only synthetic enclosed native room; not Singapore surveyed ground or actual MBS architecture",
+                "volume_id": "actual-fixture-room"
+              },
+              {
+                "feature_id": "mbs-hotel/physical-shaft/QA",
+                "floor_id": "CABIN",
+                "provenance": "QA-only native support identity, not actual physical lift mechanics",
+                "volume_id": "QA logical cabin"
+              },
+              {
+                "feature_id": "qa-source/dry-room",
+                "floor_id": "PENDING-B2",
+                "provenance": "QA-only synthetic enclosed native room; not Singapore surveyed ground or actual MBS architecture",
+                "volume_id": "actual-fixture-room"
+              }
+            ],
+            "outdoor_water_observation": {
+              "provider_id": "qa-save/water",
+              "state": "unknown"
+            },
+            "state": "dry_indoor"
+          }
+        },
+        "status": "blocked"
+      },
+      "ok": false,
+      "reason": "[\"capsule_clearance_blocked\"]",
+      "status": "blocked",
+      "token": "source-load:160121751256:5"
+    },
+    "saved_pose": {
+      "floor_geometry_sha256": "88ca60efe5be670c47913282d55b6511fd05c5d604ba2529df0e5a93659693fa",
+      "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+      "schema": "singapore_source_restore_v1",
+      "source_pose": {
+        "elevation_reference": {
+          "reference": "QA synthetic B2; not source terrain",
+          "source_reference": "",
+          "status": "staging"
+        },
+        "feature_id": "qa-source/dry-room",
+        "floor_id": "B2",
+        "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+        "heading_rad": 0.0,
+        "room_id": "",
+        "schema": "singapore_source_pose_v1",
+        "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+        "source_xyz": [
+          0.0,
+          -20.0248069763184,
+          -1000.0
+        ]
+      },
+      "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+    },
+    "saved_stats": {
+      "ammo": {
+        "pistol": {
+          "mag": 8.0,
+          "reserve": 64.0
+        },
+        "smg": {
+          "mag": 11.0,
+          "reserve": 44.0
+        }
+      },
+      "carried_weapon": "smg",
+      "death_count": 7.0,
+      "elapsed_seconds": 84.0,
+      "health": 37.0,
+      "mode": 0.0,
+      "search_timer": 4.0,
+      "seed": 1234.0,
+      "settings": {
+        "hud_visible": true,
+        "invert_y": true,
+        "mouse_sensitivity": 1.4,
+        "reduced_shake": true
+      },
+      "since_damage": 2.0,
+      "wanted_heat": 50.0,
+      "wanted_level": 2.0
+    },
+    "service": {
+      "anchor_restore_state": {
+        "hydrology_reclassified": false,
+        "ok": true,
+        "physics_tick": 118,
+        "restore_policy": "strict",
+        "status": "ready_after_native_apply",
+        "water_state": "dry_indoor"
+      },
+      "completed_recovery_serial": 8,
+      "configured": true,
+      "has_source_anchor": true,
+      "last_capture_pose": {
+        "floor_geometry_sha256": "88ca60efe5be670c47913282d55b6511fd05c5d604ba2529df0e5a93659693fa",
+        "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+        "schema": "singapore_source_restore_v1",
+        "source_pose": {
+          "elevation_reference": {
+            "reference": "QA synthetic B2; not source terrain",
+            "source_reference": "",
+            "status": "staging"
+          },
+          "feature_id": "qa-source/dry-room",
+          "floor_id": "B2",
+          "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+          "heading_rad": 0.0,
+          "room_id": "",
+          "schema": "singapore_source_pose_v1",
+          "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+          "source_xyz": [
+            0.0,
+            -20.0248069763184,
+            -1000.0
+          ]
+        },
+        "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+      },
+      "last_capture_restore_state": {
+        "actor_or_save_mutated": false,
+        "configured_restore_policy": "strict",
+        "current_local_sample": {
+          "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+          "frame_instance_id": -9223371958337403253,
+          "origin_revision": 0,
+          "position": "(0.0, -20.02481, 0.0)",
+          "sample_sha256": "0cbf26162d3997085dcdbc1201d7834439d1fbfe5616e8914d78248070f2500c",
+          "schema": "singapore_local_sample_v1",
+          "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+          "source_origin_xyz": [
+            0.0,
+            0.0,
+            -1000.0
+          ],
+          "source_xyz": [
+            0.0,
+            -20.0248069763184,
+            -1000.0
+          ]
+        },
+        "hydrology_reclassified": false,
+        "ok": true,
+        "physics_tick": 116,
+        "query_sha256": "e010dc99ee1ed9b43548e6cd90a5366377408bbce04f16cc41944739dd7e3bd1",
+        "registry_revision": 8,
+        "source_pose": {
+          "elevation_reference": {
+            "reference": "QA synthetic B2; not source terrain",
+            "source_reference": "",
+            "status": "staging"
+          },
+          "feature_id": "qa-source/dry-room",
+          "floor_id": "B2",
+          "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+          "heading_rad": 0.0,
+          "room_id": "",
+          "schema": "singapore_source_pose_v1",
+          "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+          "source_xyz": [
+            0.0,
+            -20.0248069763184,
+            -1000.0
+          ]
+        },
+        "state": {
+          "clearance": {
+            "state": "clear"
+          },
+          "indoor": {
+            "dry_volume_matches": [
+              {
+                "feature_id": "qa-source/dry-room",
+                "floor_id": "B2",
+                "provenance": "QA-only synthetic enclosed native room; not Singapore surveyed ground or actual MBS architecture",
+                "volume_id": "actual-fixture-room"
+              },
+              {
+                "feature_id": "mbs-hotel/physical-shaft/QA",
+                "floor_id": "CABIN",
+                "provenance": "QA-only native support identity, not actual physical lift mechanics",
+                "volume_id": "QA logical cabin"
+              },
+              {
+                "feature_id": "qa-source/dry-room",
+                "floor_id": "PENDING-B2",
+                "provenance": "QA-only synthetic enclosed native room; not Singapore surveyed ground or actual MBS architecture",
+                "volume_id": "actual-fixture-room"
+              }
+            ],
+            "state": "dry_registered"
+          },
+          "land": {
+            "provider_id": "qa-save/land",
+            "state": "unknown"
+          },
+          "ok": true,
+          "origin_revision": 0,
+          "physics_tick": 116,
+          "residency": {
+            "residency_token": "qa-room/generation-5",
+            "state": "resident"
+          },
+          "source_xyz": [
+            0.0,
+            -20.0248069763184,
+            -1000.0
+          ],
+          "support": {
+            "collider_instance_id": 78785808018,
+            "contact_source_xyz": [
+              0.0,
+              -20.0,
+              -1000.0
+            ],
+            "feature_id": "qa-source/dry-room",
+            "floor_id": "B2",
+            "state": "supported",
+            "support_id": "native-floor"
+          },
+          "territory": {
+            "provider_id": "qa-save/territory",
+            "state": "inside"
+          },
+          "unresolved": [],
+          "water": {
+            "dry_volume_matches": [
+              {
+                "feature_id": "qa-source/dry-room",
+                "floor_id": "B2",
+                "provenance": "QA-only synthetic enclosed native room; not Singapore surveyed ground or actual MBS architecture",
+                "volume_id": "actual-fixture-room"
+              },
+              {
+                "feature_id": "mbs-hotel/physical-shaft/QA",
+                "floor_id": "CABIN",
+                "provenance": "QA-only native support identity, not actual physical lift mechanics",
+                "volume_id": "QA logical cabin"
+              },
+              {
+                "feature_id": "qa-source/dry-room",
+                "floor_id": "PENDING-B2",
+                "provenance": "QA-only synthetic enclosed native room; not Singapore surveyed ground or actual MBS architecture",
+                "volume_id": "actual-fixture-room"
+              }
+            ],
+            "outdoor_water_observation": {
+              "provider_id": "qa-save/water",
+              "state": "unknown"
+            },
+            "state": "dry_indoor"
+          }
+        },
+        "status": "ready"
+      },
+      "last_saved_pose": {
+        "floor_geometry_sha256": "88ca60efe5be670c47913282d55b6511fd05c5d604ba2529df0e5a93659693fa",
+        "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+        "schema": "singapore_source_restore_v1",
+        "source_pose": {
+          "elevation_reference": {
+            "reference": "QA synthetic B2; not source terrain",
+            "source_reference": "",
+            "status": "staging"
+          },
+          "feature_id": "qa-source/dry-room",
+          "floor_id": "B2",
+          "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+          "heading_rad": 0.0,
+          "room_id": "",
+          "schema": "singapore_source_pose_v1",
+          "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+          "source_xyz": [
+            0.0,
+            -20.0248069763184,
+            -1000.0
+          ]
+        },
+        "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+      },
+      "last_saved_restore_state": {
+        "hydrology_reclassified": false,
+        "ok": true,
+        "physics_tick": 115,
+        "restore_policy": "strict",
+        "status": "applied",
+        "water_state": "dry_indoor"
+      },
+      "legacy_path": "/private/tmp/singapore-fidelity/source-save-r2/session/source-save-legacy.json",
+      "legacy_save_read_or_written": false,
+      "mission_doors_vehicle_NPC_state_included": false,
+      "pending_kind": "",
+      "pending_reason": "",
+      "pending_token": "",
+      "qa_session": "/private/tmp/singapore-fidelity/source-save-r2/session",
+      "recovery_anchor_pose": {
+        "floor_geometry_sha256": "88ca60efe5be670c47913282d55b6511fd05c5d604ba2529df0e5a93659693fa",
+        "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+        "schema": "singapore_source_restore_v1",
+        "source_pose": {
+          "elevation_reference": {
+            "reference": "QA synthetic B2; not source terrain",
+            "source_reference": "",
+            "status": "staging"
+          },
+          "feature_id": "qa-source/dry-room",
+          "floor_id": "B2",
+          "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+          "heading_rad": 0.0,
+          "room_id": "",
+          "schema": "singapore_source_pose_v1",
+          "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+          "source_xyz": [
+            0.0,
+            -20.0248069763184,
+            -1000.0
+          ]
+        },
+        "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+      },
+      "restore_policy": "strict",
+      "schema": "orchard_reach_source_save_v2",
+      "scope": "onfoot_combat_inventory_settings_no_missions_doors_or_vehicles",
+      "slot_path": "/private/tmp/singapore-fidelity/source-save-r2/session/source-save-legacy.source-v2.json",
+      "transaction_busy": false
+    },
+    "unknown_water_policy": {
+      "applied": {
+        "hydrology_reclassified": false,
+        "kind": "load",
+        "ok": true,
+        "physics_tick": 103,
+        "reason": "",
+        "restore_policy": "supported_native_surface",
+        "status": "applied",
+        "token": "source-load:189196666903:1",
+        "water_state": "unknown"
+      },
+      "metadata": {
+        "anchor_restore_state": {
+          "configured_restore_policy": "supported_native_surface",
+          "hydrology_reclassified": false,
+          "ok": true,
+          "reasons": [
+            "three_dimensional_water_unresolved"
+          ],
+          "state": {
+            "clearance": {
+              "state": "clear"
+            },
+            "indoor": {
+              "dry_volume_matches": [],
+              "state": "unregistered"
+            },
+            "land": {
+              "provider_id": "qa-save/land",
+              "state": "unknown"
+            },
+            "ok": true,
+            "origin_revision": 0,
+            "physics_tick": 104,
+            "residency": {
+              "residency_token": "qa-outdoor/generation-6",
+              "state": "resident"
+            },
+            "source_xyz": [
+              20.0,
+              -20.0248069763184,
+              -1000.0
+            ],
+            "support": {
+              "collider_instance_id": 181747582677,
+              "contact_source_xyz": [
+                20.0,
+                -20.0,
+                -1000.0
+              ],
+              "feature_id": "qa-source/outdoor",
+              "floor_id": "DECK",
+              "state": "supported",
+              "support_id": "native-deck"
+            },
+            "territory": {
+              "provider_id": "qa-save/territory",
+              "state": "inside"
+            },
+            "unresolved": [],
+            "water": {
+              "provider_id": "qa-save/water",
+              "state": "unknown"
+            }
+          },
+          "status": "ready_under_game_policy",
+          "strict_status": "pending"
+        },
+        "completed_recovery_serial": 0,
+        "configured": true,
+        "has_source_anchor": true,
+        "last_capture_pose": {
+          "floor_geometry_sha256": "3c14f7859ea20bb2df9361b76e61fb01095bed4722802b99ea51d13c0d934b62",
+          "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "QA synthetic B2; not source terrain",
+              "source_reference": "",
+              "status": "staging"
+            },
+            "feature_id": "qa-source/outdoor",
+            "floor_id": "DECK",
+            "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              20.0,
+              -20.0248069763184,
+              -1000.0
+            ]
+          },
+          "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+        },
+        "last_capture_restore_state": {
+          "configured_restore_policy": "supported_native_surface",
+          "hydrology_reclassified": false,
+          "ok": true,
+          "reasons": [
+            "three_dimensional_water_unresolved"
+          ],
+          "state": {
+            "clearance": {
+              "state": "clear"
+            },
+            "indoor": {
+              "dry_volume_matches": [],
+              "state": "unregistered"
+            },
+            "land": {
+              "provider_id": "qa-save/land",
+              "state": "unknown"
+            },
+            "ok": true,
+            "origin_revision": 0,
+            "physics_tick": 104,
+            "residency": {
+              "residency_token": "qa-outdoor/generation-6",
+              "state": "resident"
+            },
+            "source_xyz": [
+              20.0,
+              -20.0248069763184,
+              -1000.0
+            ],
+            "support": {
+              "collider_instance_id": 181747582677,
+              "contact_source_xyz": [
+                20.0,
+                -20.0,
+                -1000.0
+              ],
+              "feature_id": "qa-source/outdoor",
+              "floor_id": "DECK",
+              "state": "supported",
+              "support_id": "native-deck"
+            },
+            "territory": {
+              "provider_id": "qa-save/territory",
+              "state": "inside"
+            },
+            "unresolved": [],
+            "water": {
+              "provider_id": "qa-save/water",
+              "state": "unknown"
+            }
+          },
+          "status": "ready_under_game_policy",
+          "strict_status": "pending"
+        },
+        "last_saved_pose": {
+          "floor_geometry_sha256": "3c14f7859ea20bb2df9361b76e61fb01095bed4722802b99ea51d13c0d934b62",
+          "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "QA synthetic B2; not source terrain",
+              "source_reference": "",
+              "status": "staging"
+            },
+            "feature_id": "qa-source/outdoor",
+            "floor_id": "DECK",
+            "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              20.0,
+              -20.0248069763184,
+              -1000.0
+            ]
+          },
+          "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+        },
+        "last_saved_restore_state": {
+          "hydrology_reclassified": false,
+          "ok": true,
+          "physics_tick": 103,
+          "restore_policy": "supported_native_surface",
+          "status": "applied",
+          "water_state": "unknown"
+        },
+        "legacy_path": "/private/tmp/singapore-fidelity/source-save-r2/session/source-save-legacy.json",
+        "legacy_save_read_or_written": false,
+        "mission_doors_vehicle_NPC_state_included": false,
+        "pending_kind": "",
+        "pending_reason": "",
+        "pending_token": "",
+        "qa_session": "/private/tmp/singapore-fidelity/source-save-r2/session",
+        "recovery_anchor_pose": {
+          "floor_geometry_sha256": "3c14f7859ea20bb2df9361b76e61fb01095bed4722802b99ea51d13c0d934b62",
+          "geometry_manifest_sha256": "2d90128adae0b3b3bdbf10acc5313769b49e962adae90630f1859d4887e8a9cb",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "QA synthetic B2; not source terrain",
+              "source_reference": "",
+              "status": "staging"
+            },
+            "feature_id": "qa-source/outdoor",
+            "floor_id": "DECK",
+            "frame_fingerprint": "2fe601e81b3a6b623247a3c9bdb6906ad8a48f9e75f24817a3f4f7139a5f3c63",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              20.0,
+              -20.0248069763184,
+              -1000.0
+            ]
+          },
+          "vertical_manifest_sha256": "c329c471ee6e6a0a9dfd09510b41c0dca32079d43634993c4f1c82ea63f927fc"
+        },
+        "restore_policy": "supported_native_surface",
+        "schema": "orchard_reach_source_save_v2",
+        "scope": "onfoot_combat_inventory_settings_no_missions_doors_or_vehicles",
+        "slot_path": "/private/tmp/singapore-fidelity/source-save-r2/session/source-save-legacy.source-v2.json",
+        "transaction_busy": false
+      },
+      "native_state": {
+        "clearance": {
+          "state": "clear"
+        },
+        "indoor": {
+          "dry_volume_matches": [],
+          "state": "unregistered"
+        },
+        "land": {
+          "provider_id": "qa-save/land",
+          "state": "unknown"
+        },
+        "ok": true,
+        "origin_revision": 0,
+        "physics_tick": 104,
+        "residency": {
+          "residency_token": "qa-outdoor/generation-6",
+          "state": "resident"
+        },
+        "source_xyz": [
+          20.0,
+          -20.0248069763184,
+          -1000.0
+        ],
+        "support": {
+          "collider_instance_id": 181747582677,
+          "contact_source_xyz": [
+            20.0,
+            -20.0,
+            -1000.0
+          ],
+          "feature_id": "qa-source/outdoor",
+          "floor_id": "DECK",
+          "state": "supported",
+          "support_id": "native-deck"
+        },
+        "territory": {
+          "provider_id": "qa-save/territory",
+          "state": "inside"
+        },
+        "unresolved": [],
+        "water": {
+          "provider_id": "qa-save/water",
+          "state": "unknown"
+        }
+      }
+    }
+  },
+  "schema": "source_save_native_fixture_v1",
+  "synthetic_dry_room_not_MBS_or_city": true,
+  "visual_or_whole_world_acceptance": false,
+  "supervision": {
+    "checkpoint": "b30c69aa0448670202d7a633b6786d918a0cb225",
+    "started_utc": "2026-10-29T04:22:21.188332+00:00",
+    "finished_utc": "2026-10-29T04:22:55.600427+00:00",
+    "exit_code": 0,
+    "elapsed_sec": 34.67,
+    "child_reaped": true,
+    "fatal_errors": []
+  },
+  "raw_report_sha256": "77eaf2efcfaf0acbfefd45d99519d18b03b17eb60c8e7f883f1c232fc56bc9cd",
+  "private_evidence_directory": "/private/tmp/singapore-fidelity/source-save-r2"
+}

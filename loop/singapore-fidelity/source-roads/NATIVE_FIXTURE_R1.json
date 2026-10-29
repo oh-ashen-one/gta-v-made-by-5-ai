@@ -1,0 +1,31 @@
+{
+  "checks": 25,
+  "failures": [],
+  "metrics": {
+    "synthetic_native_traversal": {
+      "actual_country_route": false,
+      "end_xyz": [
+        140.06881713867188,
+        -0.025367625057697296,
+        0.001162561122328043
+      ],
+      "max_step_m": 0.08817560970783234,
+      "peak_y_m": 5.981406211853027,
+      "production_Player_or_Car": false,
+      "samples": 2770,
+      "supported_samples": 2770
+    }
+  },
+  "scope": "SYNTHETIC original-node/direction/cache/ribbon/collision/ramp fixture. No actual source Singapore route, production car/actor/traffic integration, terrain cut/fill, rendered/performance or whole-goal acceptance.",
+  "supervision": {
+    "checkpoint": "b4a3325ee2bba78fcfbe5347bcb60c5be45d82f0",
+    "started_utc": "2026-10-29T04:11:51.478672+00:00",
+    "finished_utc": "2026-10-29T04:12:50.873911+00:00",
+    "exit_code": 0,
+    "elapsed_sec": 153.44,
+    "child_reaped": true,
+    "fatal_errors": []
+  },
+  "raw_report_sha256": "600b2084244fa93d3d74ce3181fe475829a14d2442d85e96314e5b5387217eba",
+  "private_evidence_directory": "/private/tmp/singapore-fidelity/source-roads-fixture-r1"
+}

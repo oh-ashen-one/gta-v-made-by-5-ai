@@ -1,0 +1,278 @@
+{
+  "checks": 670,
+  "failures": [],
+  "metrics": {
+    "dry_floor_broadphase": {
+      "broadphase_us": 12283,
+      "canonical_Vector3_constructed": false,
+      "exact_candidate_volumes": 256,
+      "exhaustive_us": 323232,
+      "exhaustive_volume_checks": 48384,
+      "floor_count": 189,
+      "outputs_equal": true,
+      "public_schema_or_source_record_changed": false,
+      "queries": 32,
+      "timings_shared_CPU_microbenchmark_not_gameplay_fps": true,
+      "volumes_per_floor": 8
+    },
+    "geometry_and_vertical_inputs": "Explicitly synthetic fixture versions; no surveyed elevation claim",
+    "native_basement": {
+      "actual_MBS_or_terrain_datum": false,
+      "actual_Player_used": false,
+      "capsule_height_m": 1.75,
+      "capsule_offset_xyz": [
+        0.0,
+        0.9,
+        0.0
+      ],
+      "capsule_radius_m": 0.36000001430511475,
+      "native_floor_contact": true,
+      "no_Y_death_plane_in_context": true,
+      "restore_preflight": "ready",
+      "settled_local_root_xyz": [
+        0.0,
+        -20.02505111694336,
+        0.0
+      ],
+      "source_restore_xyz": [
+        17384.7,
+        -19.975051879882812,
+        -80120.7
+      ]
+    },
+    "native_ceiling_preflight": {
+      "decision": {
+        "ok": true,
+        "pending": [],
+        "reasons": [
+          "capsule_clearance_blocked"
+        ],
+        "state": {
+          "clearance": {
+            "state": "blocked"
+          },
+          "indoor": {
+            "dry_volume_matches": [
+              {
+                "feature_id": "qa-only/architectural-fixture",
+                "floor_id": "qa-only/B2",
+                "provenance": "Reconstructed isolated QA box; not actual MBS basement/datum",
+                "volume_id": "qa-only/B2/dry-envelope"
+              }
+            ],
+            "state": "dry_registered"
+          },
+          "land": {
+            "provider_id": "qa-only/land",
+            "state": "unknown"
+          },
+          "ok": true,
+          "origin_revision": 0,
+          "physics_tick": 125,
+          "residency": {
+            "residency_token": "qa-only/physics-generation-1",
+            "state": "resident"
+          },
+          "source_xyz": [
+            17384.7,
+            -19.975051879882812,
+            -80120.7
+          ],
+          "support": {
+            "collider_instance_id": 108011718281,
+            "contact_source_xyz": [
+              17384.7,
+              -20.0,
+              -80120.7
+            ],
+            "feature_id": "qa-only/architectural-fixture",
+            "floor_id": "qa-only/B2",
+            "state": "supported",
+            "support_id": "qa-only/slab"
+          },
+          "territory": {
+            "provider_id": "qa-only/territory",
+            "state": "inside"
+          },
+          "unresolved": [],
+          "water": {
+            "dry_volume_matches": [
+              {
+                "feature_id": "qa-only/architectural-fixture",
+                "floor_id": "qa-only/B2",
+                "provenance": "Reconstructed isolated QA box; not actual MBS basement/datum",
+                "volume_id": "qa-only/B2/dry-envelope"
+              }
+            ],
+            "outdoor_water_observation": {
+              "body_id": "qa-only/sea-column",
+              "bottom_y": -100.0,
+              "state": "submerged",
+              "surface_y": 0.0
+            },
+            "state": "dry_indoor"
+          }
+        },
+        "status": "blocked"
+      },
+      "payload": {
+        "clearance": "blocked",
+        "residency_token": "qa-only/physics-generation-1",
+        "support": {
+          "collider_instance_id": 108011718281,
+          "contact_source_xyz": [
+            17384.7,
+            -20.0,
+            -80120.7
+          ],
+          "feature_id": "qa-only/architectural-fixture",
+          "floor_id": "qa-only/B2",
+          "normal_source_xyz": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "state": "supported",
+          "support_id": "qa-only/slab"
+        }
+      },
+      "query_validation": {
+        "ok": true
+      },
+      "saved_validation": {
+        "ok": true,
+        "pose": {
+          "floor_geometry_sha256": "0140b5cf93f97c714866b301d9830345fa7538ecf0133c29480e8163eb27f67d",
+          "geometry_manifest_sha256": "338e706872bb36b2bd3288cbd035369e46f73135c59ee74cde5c4f3697dfb7b1",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "UNRESOLVED",
+              "source_reference": "",
+              "status": "unknown"
+            },
+            "feature_id": "qa-only/architectural-fixture",
+            "floor_id": "qa-only/B2",
+            "frame_fingerprint": "284eca73a037195beaf6906efc2b06970b2ad9eb741d957fe818c9843c1242d7",
+            "heading_rad": 0.75,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              17384.7,
+              -19.975051879882812,
+              -80120.7
+            ]
+          },
+          "vertical_manifest_sha256": "4a9bb8f7405d7b6703e729e17b365fcb41a1225ab7f6d02f3270eb074e654b03"
+        }
+      }
+    },
+    "native_dictionary_provider_key_types": [
+      {
+        "key": "territory",
+        "type_name": "String",
+        "variant_type": 4
+      },
+      {
+        "key": "land",
+        "type_name": "String",
+        "variant_type": 4
+      },
+      {
+        "key": "water",
+        "type_name": "String",
+        "variant_type": 4
+      },
+      {
+        "key": "physics",
+        "type_name": "StringName",
+        "variant_type": 21
+      }
+    ],
+    "native_oriented_basement": {
+      "actor_moved_by_context": false,
+      "actual_Player_or_MBS_used": false,
+      "enclosing_AABB_corner_supported": "unsupported",
+      "oriented_box": {
+        "axis_x_xyz": [
+          0.6,
+          0.0,
+          0.8
+        ],
+        "axis_z_xyz": [
+          -0.8,
+          0.0,
+          0.6
+        ],
+        "center_xyz": [
+          17384.7,
+          -19.2,
+          -80120.7
+        ],
+        "dry": true,
+        "half_extents_xyz": [
+          10.0,
+          1.3,
+          2.0
+        ],
+        "schema": "singapore_upright_obox_v1",
+        "volume_id": "qa-only/rotated-dry-envelope"
+      },
+      "restore_status": "ready",
+      "settled_root_xyz": [
+        2.0,
+        -20.024837493896484,
+        3.5
+      ],
+      "slab_rotation_y_rad": -0.9272952079772949,
+      "source_pose_xyz": [
+        17386.7,
+        -19.974838256835938,
+        -80117.2
+      ]
+    },
+    "oriented_volume_precision": {
+      "absolute_Vector3_constructed": false,
+      "axis_x_xyz": [
+        0.6,
+        0.0,
+        0.8
+      ],
+      "axis_z_xyz": [
+        -0.8,
+        0.0,
+        0.6
+      ],
+      "canonical_center_xyz": [
+        17384.7,
+        -19.2,
+        -80120.7
+      ],
+      "enclosing_AABB_used_for_dry_containment": false,
+      "half_extents_xyz": [
+        10.0,
+        1.3,
+        2.0
+      ],
+      "wall_inside_m": 9.999,
+      "wall_outside_m": 10.001
+    },
+    "qa_path_guard_scope": "Only this fresh QA session's scratch sentinels/links were created; no user file or external link target used",
+    "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983"
+  },
+  "production_actors_or_owner_save_touched": false,
+  "rendered_acceptance": false,
+  "scope": "Explicit source-domain/restore semantics and isolated axis-aligned/upright-rotated native production-shape basement fixtures only. No Player recovery/save/streaming/world bootstrap integration, whole Singapore/MBS completion, rendered or performance acceptance.",
+  "supervision": {
+    "checkpoint": "b30c69aa0448670202d7a633b6786d918a0cb225",
+    "started_utc": "2026-10-29T04:22:04.083446+00:00",
+    "finished_utc": "2026-10-29T04:22:18.409937+00:00",
+    "exit_code": 0,
+    "elapsed_sec": 90.45,
+    "child_reaped": true,
+    "fatal_errors": []
+  },
+  "raw_report_sha256": "b9a7ff010b6d90b0271c71c973941635c5dc71f2a073a28e55eaccee5a4e43f8",
+  "private_evidence_directory": "/private/tmp/singapore-fidelity/source-context-broadphase-r1"
+}

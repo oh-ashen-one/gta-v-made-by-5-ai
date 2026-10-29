@@ -1,0 +1,232 @@
+{
+  "all_country_playable": false,
+  "checks": 9,
+  "failed": 1,
+  "failures": [
+    "bounded source world QA"
+  ],
+  "full_bridge_MBS_continuous_route": false,
+  "metrics": {
+    "boot": {
+      "active_regions": [
+        "source-world/-1_-2",
+        "source-world/-1_-1",
+        "source-world/-1_0",
+        "source-world/0_-2",
+        "source-world/0_-1",
+        "source-world/0_0",
+        "source-world/1_-2",
+        "source-world/1_-1",
+        "source-world/1_0"
+      ],
+      "architecture_guard": {
+        "configuration_error": "",
+        "configured": true,
+        "geometry_is_land_or_dry_floor": false,
+        "last_transition": {},
+        "masks": 5,
+        "missing_floor_is_known_void": false,
+        "root_assessment_required": true,
+        "root_masks_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+        "schema": "singapore_source_world_architecture_guard_v1"
+      },
+      "architecture_inventory_sha256": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
+      "architecture_load_failures": [],
+      "boot_failed": false,
+      "city_identity_sha256": "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963",
+      "context": {
+        "configured": true,
+        "context_instance_id": -9223371894802086176,
+        "elevation_verified_by_context": false,
+        "frame_fingerprint": "778284762afb14402fea908a7675e33c888412dab4645157eda940cf72f231f6",
+        "frame_instance_id": -9223371925823158553,
+        "geometry_manifest_sha256": "79b701b699b237fd61f0cdfa174112b226eb2c13a7314ac46eb62561a531a400",
+        "origin_revision": 0,
+        "physics_space_id": 158913789952,
+        "profile": {
+          "center_offset_xyz": [
+            0.0,
+            0.9,
+            0.0
+          ],
+          "height_m": 1.75,
+          "max_support_drop_m": 0.35,
+          "max_support_lateral_m": 0.4,
+          "max_support_rise_m": 0.1,
+          "min_support_normal_y": 0.615661475325658,
+          "profile_id": "production-player-upright",
+          "radius_m": 0.36
+        },
+        "profile_sha256": "929061b8229074749254d77db4e39657e717fcbc2c952bea17694f8a12e98b06",
+        "providers": {
+          "land": {
+            "provider_id": "singapore-source-domain/land/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "source_reference": "source-domain/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d"
+          },
+          "physics": {
+            "provider_id": "source-world-native-physics-v1",
+            "source_reference": "Actual same-World3D triangle/capsule observations after committed collision neighborhoods"
+          },
+          "territory": {
+            "provider_id": "singapore-source-domain/territory/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "source_reference": "source-domain/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d"
+          },
+          "water": {
+            "provider_id": "singapore-source-domain/water/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "source_reference": "source-domain/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d"
+          }
+        },
+        "registered_floor_count": 27,
+        "registry_revision": 31,
+        "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+        "vertical_manifest_sha256": "67a7075ab0df478ec6f3772c267663119a32ccfc002ea221165e11761fb1b499"
+      },
+      "datum": {
+        "base_elevation_m": 7.20845026201939,
+        "base_elevation_provenance": "COARSE EGM96 DEM sampled at actual source hotel anchor; reconstructed level datum, NOT current surveyed L1",
+        "dem_identity_sha256": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841",
+        "dem_sample": {
+          "height_m_egm96": 7.20845026201939,
+          "normal_source_xyz": [
+            -0.0486496178338567,
+            0.997310944649957,
+            0.0548096192837545
+          ],
+          "normal_state": "derived_dem",
+          "ok": true,
+          "provenance": {
+            "chunk": "0_-2",
+            "chunk_sha256": "f0038e6ccb4241904a3c83c5155cb6068ab9be6640e921ed85e1acce85be8cd9",
+            "coverage": "compiled1kmDEM reference patch; territory/coast/inlandwater remain separate",
+            "grid_spacing_m": 25.0,
+            "hydrology": false,
+            "identity_sha256": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841",
+            "manifest_sha256": "d3146cef6532abe6e6fe71a2122ae5189810a8e302c8de7e9bb25d2fa61a48c6",
+            "native_posting_arcseconds": 1,
+            "new25mmeasurement_resolution": false,
+            "physical_support": false,
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "surveyed_ground": false,
+            "world_y_alignment_verified": false
+          },
+          "reason": "Coarse/interpolated EGM96 DEM; not current surveyed ground or an architectural floor",
+          "state": "sampled_dem",
+          "vertical_reference": "EGM96 geoid metres"
+        },
+        "source_anchor_xyz": [
+          461.805267208433,
+          0.0,
+          -1030.48251215889
+        ]
+      },
+      "frame": {
+        "configured": true,
+        "elevation_reference": {
+          "reference": "EGM96_DEM_game_world_reference_not_current_survey",
+          "source_reference": "Mapzen Skadi EGM96 coarse source DEM; game world offset 0m; not current surveyed ground",
+          "status": "source_tag"
+        },
+        "elevation_verified_by_module": false,
+        "frame_fingerprint": "778284762afb14402fea908a7675e33c888412dab4645157eda940cf72f231f6",
+        "georeference": {
+          "distance_compression": false,
+          "legacy_plan_alignment_applied": false,
+          "metres_per_unit": 1.0,
+          "origin_easting": 30000.0,
+          "origin_northing": 30000.0,
+          "source_crs": "EPSG:4326",
+          "survey_crs": "EPSG:3414",
+          "world_axes": {
+            "x": "south",
+            "y": "up",
+            "z": "west"
+          }
+        },
+        "last_rebase_plan_sha256": "",
+        "max_local_component_m": 2048.0,
+        "max_rebase_component_m": 1024.0,
+        "origin_revision": 0,
+        "recommended_rebase_component_m": 512.0,
+        "schema": "singapore_source_frame_v1",
+        "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+        "source_origin_xyz": [
+          0.0,
+          0.0,
+          -500.0
+        ]
+      },
+      "last_error": "",
+      "legacy_mission_traffic_save_consumers_migrated": false,
+      "mbs": {},
+      "national_residency_and_rebase_implemented": false,
+      "ok": true,
+      "road_physical_candidate_root_approved": true,
+      "roads_identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+      "schema": "singapore_source_world_entry_v1",
+      "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+      "spawn_receipts": {
+        "car": {
+          "native_collision_instance_id": 699509258274,
+          "normal_xyz": [
+            -0.0507146529853344,
+            0.99871289730072,
+            -0.000747042126022279
+          ],
+          "source_xyz": [
+            456.073486328125,
+            7.65753364562988,
+            585.590942382812
+          ],
+          "support_source_id": "terrain|0_0",
+          "surveyed_or_hydrology_verified": false
+        },
+        "helicopter": {
+          "native_collision_instance_id": 699509258274,
+          "normal_xyz": [
+            -0.0507146529853344,
+            0.99871289730072,
+            -0.000747042126022279
+          ],
+          "source_xyz": [
+            456.949798583984,
+            7.71073246002197,
+            597.221801757812
+          ],
+          "support_source_id": "terrain|0_0",
+          "surveyed_or_hydrology_verified": false
+        },
+        "player": {
+          "native_collision_instance_id": 699509258274,
+          "normal_xyz": [
+            -0.0937847942113876,
+            0.995592296123505,
+            -0.000744707125704736
+          ],
+          "source_xyz": [
+            436.949798583984,
+            6.11353206634521,
+            577.221801757812
+          ],
+          "support_source_id": "terrain|0_0",
+          "surveyed_or_hydrology_verified": false
+        }
+      },
+      "terrain_identity_sha256": "f8488742dd93726276b33ca12cda7c6d0a38b967123a0be0d574b9145b7f469c",
+      "tile_count": 9,
+      "whole_requested_game_or_visual_acceptance": false
+    }
+  },
+  "rendered_visual_acceptance": false,
+  "schema": "singapore_source_world_native_entry_test_v1",
+  "supervision": {
+    "checkpoint": "b30c69aa0448670202d7a633b6786d918a0cb225",
+    "started_utc": "2026-10-29T04:23:06.900609+00:00",
+    "finished_utc": "2026-10-29T04:27:20.767656+00:00",
+    "exit_code": 1,
+    "elapsed_sec": 254.13,
+    "child_reaped": true,
+    "fatal_errors": []
+  },
+  "raw_report_sha256": "a8c882fea4ea80ff8500a09950ae6688329f2239dba174fd24fe4b7468a70f8e",
+  "private_evidence_directory": "/private/tmp/singapore-fidelity/source-world-r1"
+}

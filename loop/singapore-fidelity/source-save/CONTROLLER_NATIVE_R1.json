@@ -1,0 +1,576 @@
+{
+  "actual_SourceWorld_class_with_auto_boot_disabled": true,
+  "actual_source_centroids_basis_and_inventory": true,
+  "checks": 98,
+  "continuous_travel_tested": false,
+  "failed": 0,
+  "failures": [],
+  "fixture_setup_relocations_explicit": true,
+  "metrics": {
+    "actual_source_frame": {
+      "configured": true,
+      "elevation_reference": {
+        "reference": "Controller integration uses reconstructed MBS L1=0 datum",
+        "source_reference": "Actual pinned source centroids/basis; not current surveyed elevation",
+        "status": "staging"
+      },
+      "elevation_verified_by_module": false,
+      "frame_fingerprint": "1c447ba4767bb086c1c9fdf5aa097fe0f62d736b0e31da446ecdc757e3be9fbc",
+      "georeference": {
+        "distance_compression": false,
+        "legacy_plan_alignment_applied": false,
+        "metres_per_unit": 1.0,
+        "origin_easting": 30000.0,
+        "origin_northing": 30000.0,
+        "source_crs": "EPSG:4326",
+        "survey_crs": "EPSG:3414",
+        "world_axes": {
+          "x": "south",
+          "y": "up",
+          "z": "west"
+        }
+      },
+      "last_rebase_plan_sha256": "",
+      "max_local_component_m": 2048.0,
+      "max_rebase_component_m": 1024.0,
+      "origin_revision": 0,
+      "recommended_rebase_component_m": 512.0,
+      "schema": "singapore_source_frame_v1",
+      "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+      "source_origin_xyz": [
+        441.695252568434,
+        80.9,
+        -1046.40758658095
+      ]
+    },
+    "commits": [
+      {
+        "generation": "mbs-floor-stack/116618430168/T2-L23/1/generation-1",
+        "id": "T2-L23",
+        "physics_tick": 5
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T2-L25/2/generation-2",
+        "id": "T2-L25",
+        "physics_tick": 9
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T2-L24/3/generation-3",
+        "id": "T2-L24",
+        "physics_tick": 13
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L23/4/generation-4",
+        "id": "T3-L23",
+        "physics_tick": 48
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L25/5/generation-5",
+        "id": "T3-L25",
+        "physics_tick": 52
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L24/6/generation-6",
+        "id": "T3-L24",
+        "physics_tick": 56
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L23/7/generation-7",
+        "id": "T3-L23",
+        "physics_tick": 162
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L25/8/generation-8",
+        "id": "T3-L25",
+        "physics_tick": 166
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L24/9/generation-9",
+        "id": "T3-L24",
+        "physics_tick": 170
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L23/10/generation-10",
+        "id": "T3-L23",
+        "physics_tick": 225
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L25/11/generation-11",
+        "id": "T3-L25",
+        "physics_tick": 229
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L24/12/generation-12",
+        "id": "T3-L24",
+        "physics_tick": 233
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L23/13/generation-13",
+        "id": "T3-L23",
+        "physics_tick": 277
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L25/14/generation-14",
+        "id": "T3-L25",
+        "physics_tick": 281
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L24/15/generation-15",
+        "id": "T3-L24",
+        "physics_tick": 285
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L23/16/generation-16",
+        "id": "T3-L23",
+        "physics_tick": 463
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L25/17/generation-17",
+        "id": "T3-L25",
+        "physics_tick": 467
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L24/18/generation-18",
+        "id": "T3-L24",
+        "physics_tick": 471
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T1-L23/19/generation-19",
+        "id": "T1-L23",
+        "physics_tick": 545
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T1-L25/20/generation-20",
+        "id": "T1-L25",
+        "physics_tick": 549
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T1-L24/21/generation-21",
+        "id": "T1-L24",
+        "physics_tick": 553
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L23/22/generation-22",
+        "id": "T3-L23",
+        "physics_tick": 674
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L25/23/generation-23",
+        "id": "T3-L25",
+        "physics_tick": 678
+      },
+      {
+        "generation": "mbs-floor-stack/116618430168/T3-L24/24/generation-24",
+        "id": "T3-L24",
+        "physics_tick": 682
+      }
+    ],
+    "explicit_setup_relocations": [
+      {
+        "actual_module_landing": "(30.95275, 0.0, -7.474358)",
+        "floor_id": "T2-L24",
+        "kind": "EXPLICIT_FIXTURE_SETUP_NOT_CONTROLLER_TRAVEL"
+      },
+      {
+        "actual_module_landing": "(-71.29449, 0.0, -32.73073)",
+        "floor_id": "T3-L24",
+        "kind": "EXPLICIT_FIXTURE_SETUP_NOT_CONTROLLER_TRAVEL"
+      },
+      {
+        "actual_module_landing": "(30.95275, 0.0, -7.474358)",
+        "floor_id": "T2-L24",
+        "kind": "EXPLICIT_FIXTURE_SETUP_NOT_CONTROLLER_TRAVEL"
+      },
+      {
+        "actual_module_landing": "(30.95275, 0.0, -7.474358)",
+        "floor_id": "T2-L24",
+        "kind": "EXPLICIT_FIXTURE_SETUP_NOT_CONTROLLER_TRAVEL"
+      },
+      {
+        "actual_module_landing": "(-71.29449, 0.0, -32.73073)",
+        "floor_id": "T3-L24",
+        "kind": "EXPLICIT_FIXTURE_SETUP_NOT_CONTROLLER_TRAVEL"
+      },
+      {
+        "actual_module_landing": "(30.95275, 0.0, -7.474358)",
+        "floor_id": "T2-L24",
+        "kind": "EXPLICIT_FIXTURE_SETUP_NOT_CONTROLLER_TRAVEL"
+      },
+      {
+        "actual_module_landing": "(-71.29449, 0.0, -32.73073)",
+        "floor_id": "T3-L24",
+        "kind": "EXPLICIT_FIXTURE_SETUP_NOT_CONTROLLER_TRAVEL"
+      },
+      {
+        "actual_module_landing": "(30.95275, 0.0, -7.474358)",
+        "floor_id": "T2-L24",
+        "kind": "EXPLICIT_FIXTURE_SETUP_NOT_CONTROLLER_TRAVEL"
+      }
+    ],
+    "external_cancel": {
+      "accepted": true,
+      "actual_remote_ready": true,
+      "before": {
+        "ammo": {
+          "pistol": {
+            "mag": 12.0,
+            "reserve": 96.0
+          },
+          "smg": {
+            "mag": 17.0,
+            "reserve": 180.0
+          }
+        },
+        "deaths": 0,
+        "health": 100.0,
+        "position": "(30.95275, -0.025013, -7.474358)",
+        "v1": "[123, 34, 118, 101, 114, 115, 105, 111, 110, 34, 58, 49, 44, 34, 99, 111, 110, 116, 114, 111, 108, 108, 101, 114, 95, 108, 101, 103, 97, 99, 121, 95, 115, 101, 110, 116, 105, 110, 101, 108, 34, 58, 34, 80, 82, 69, 83, 69, 82, 86, 69, 32, 69, 88, 65, 67, 84, 32, 66, 89, 84, 69, 83, 34, 125, 10]",
+        "v2": "[123, 10, 9, 34, 99, 111, 110, 116, 101, 120, 116, 95, 112, 111, 115, 101, 34, 58, 32, 123, 10, 9, 9, 34, 102, 108, 111, 111, 114, 95, 103, 101, 111, 109, 101, 116, 114, 121, 95, 115, 104, 97, 50, 53, 54, 34, 58, 32, 34, 53, 54, 56, 57, 50, 50, 51, 57, 54, 55, 97, 97, 98, 48, 50, 52, 102, 51, 54, 53, 49, 100, 102, 102, 102, 52, 102, 49, 98, 102, 49, 101, 100, 51, 98, 57, 99, 57, 53, 50, 56, 98, 56, 53, 56, 99, 50, 55, 52, 99, 98, 55, 52, 56, 101, 101, 53, 102, 97, 55, 56, 52, 55, 102, 34, 44, 10, 9, 9, 34, 103, 101, 111, 109, 101, 116, 114, 121, 95, 109, 97, 110, 105, 102, 101, 115, 116, 95, 115, 104, 97, 50, 53, 54, 34, 58, 32, 34, 50, 57, 49, 49, 48, 49, 100, 56, 53, 102, 100, 51, 97, 54, 102, 51, 98, 50, 102, 51, 99, 100, 97, 102, 49, 49, 56, 54, 53, 48, 101, 50, 101, 101, 50, 99, 100, 48, 99, 100, 55, 98, 102, 57, 98, 100, 98, 52, 52, 53, 56, 100, 50, 56, 101, 55, 99, 55, 99, 48, 49, 98, 99, 50, 34, 44, 10, 9, 9, 34, 115, 99, 104, 101, 109, 97, 34, 58, 32, 34, 115, 105, 110, 103, 97, 112, 111, 114, 101, 95, 115, 111, 117, 114, 99, 101, 95, 114, 101, 115, 116, 111, 114, 101, 95, 118, 49, 34, 44, 10, 9, 9, 34, 115, 111, 117, 114, 99, 101, 95, 112, 111, 115, 101, 34, 58, 32, 123, 10, 9, 9, 9, 34, 101, 108, 101, 118, 97, 116, 105, 111, 110, 95, 114, 101, 102, 101, 114, 101, 110, 99, 101, 34, 58, 32, 123, 10, 9, 9, 9, 9, 34, 114, 101, 102, 101, 114, 101, 110, 99, 101, 34, 58, 32, 34, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 32, 105, 110, 116, 101, 103, 114, 97, 116, 105, 111, 110, 32, 117, 115, 101, 115, 32, 114, 101, 99, 111, 110, 115, 116, 114, 117, 99, 116, 101, 100, 32, 77, 66, 83, 32, 76, 49, 61, 48, 32, 100, 97, 116, 117, 109, 34, 44, 10, 9, 9, 9, 9, 34, 115, 111, 117, 114, 99, 101, 95, 114, 101, 102, 101, 114, 101, 110, 99, 101, 34, 58, 32, 34, 65, 99, 116, 117, 97, 108, 32, 112, 105, 110, 110, 101, 100, 32, 115, 111, 117, 114, 99, 101, 32, 99, 101, 110, 116, 114, 111, 105, 100, 115, 47, 98, 97, 115, 105, 115, 59, 32, 110, 111, 116, 32, 99, 117, 114, 114, 101, 110, 116, 32, 115, 117, 114, 118, 101, 121, 101, 100, 32, 101, 108, 101, 118, 97, 116, 105, 111, 110, 34, 44, 10, 9, 9, 9, 9, 34, 115, 116, 97, 116, 117, 115, 34, 58, 32, 34, 115, 116, 97, 103, 105, 110, 103, 34, 10, 9, 9, 9, 125, 44, 10, 9, 9, 9, 34, 102, 101, 97, 116, 117, 114, 101, 95, 105, 100, 34, 58, 32, 34, 109, 98, 115, 45, 104, 111, 116, 101, 108, 47, 115, 111, 117, 114, 99, 101, 45, 102, 108, 111, 111, 114, 45, 115, 116, 97, 99, 107, 45, 114, 101, 99, 111, 110, 115, 116, 114, 117, 99, 116, 105, 111, 110, 34, 44, 10, 9, 9, 9, 34, 102, 108, 111, 111, 114, 95, 105, 100, 34, 58, 32, 34, 84, 51, 45, 76, 50, 52, 34, 44, 10, 9, 9, 9, 34, 102, 114, 97, 109, 101, 95, 102, 105, 110, 103, 101, 114, 112, 114, 105, 110, 116, 34, 58, 32, 34, 49, 99, 52, 52, 55, 98, 97, 52, 55, 54, 55, 98, 98, 48, 56, 54, 99, 49, 99, 57, 102, 100, 102, 53, 97, 97, 48, 57, 55, 102, 101, 48, 102, 54, 50, 100, 55, 51, 54, 98, 48, 101, 51, 49, 100, 97, 52, 52, 54, 101, 99, 100, 99, 55, 53, 55, 101, 51, 98, 101, 57, 102, 98, 99, 34, 44, 10, 9, 9, 9, 34, 104, 101, 97, 100, 105, 110, 103, 95, 114, 97, 100, 34, 58, 32, 48, 46, 48, 44, 10, 9, 9, 9, 34, 114, 111, 111, 109, 95, 105, 100, 34, 58, 32, 34, 34, 44, 10, 9, 9, 9, 34, 115, 99, 104, 101, 109, 97, 34, 58, 32, 34, 115, 105, 110, 103, 97, 112, 111, 114, 101, 95, 115, 111, 117, 114, 99, 101, 95, 112, 111, 115, 101, 95, 118, 49, 34, 44, 10, 9, 9, 9, 34, 115, 110, 97, 112, 115, 104, 111, 116, 95, 109, 97, 110, 105, 102, 101, 115, 116, 95, 115, 104, 97, 50, 53, 54, 34, 58, 32, 34, 100, 52, 99, 55, 52, 98, 51, 57, 54, 56, 102, 48, 55, 97, 102, 54, 53, 53, 56, 49, 57, 50, 97, 97, 55, 56, 51, 49, 101, 100, 54, 54, 101, 97, 99, 102, 100, 101, 56, 54, 49, 102, 97, 101, 57, 98, 51, 51, 101, 99, 49, 52, 56, 54, 53, 97, 97, 98, 98, 102, 99, 57, 56, 51, 34, 44, 10, 9, 9, 9, 34, 115, 111, 117, 114, 99, 101, 95, 120, 121, 122, 34, 58, 32, 91, 10, 9, 9, 9, 9, 51, 55, 48, 46, 52, 48, 48, 55, 53, 55, 57, 51, 57, 53, 50, 55, 52, 55, 44, 10, 9, 9, 9, 9, 56, 48, 46, 56, 55, 53, 50, 55, 57, 57, 52, 50, 49, 53, 52, 56, 57, 44, 10, 9, 9, 9, 9, 45, 49, 48, 55, 57, 46, 49, 51, 56, 51, 49, 52, 55, 51, 48, 51, 54, 49, 49, 10, 9, 9, 9, 93, 10, 9, 9, 125, 44, 10, 9, 9, 34, 118, 101, 114, 116, 105, 99, 97, 108, 95, 109, 97, 110, 105, 102, 101, 115, 116, 95, 115, 104, 97, 50, 53, 54, 34, 58, 32, 34, 57, 48, 53, 55, 54, 102, 50, 99, 55, 49, 100, 50, 51, 97, 48, 97, 48, 98, 56, 49, 50, 97, 55, 54, 99, 54, 55, 51, 54, 51, 97, 98, 57, 52, 56, 48, 57, 51, 101, 48, 52, 55, 98, 100, 98, 53, 48, 56, 99, 54, 50, 55, 57, 55, 100, 100, 50, 100, 102, 55, 53, 97, 100, 56, 34, 10, 9, 125, 44, 10, 9, 34, 114, 101, 99, 111, 118, 101, 114, 121, 95, 99, 104, 101, 99, 107, 112, 111, 105, 110, 116, 34, 58, 32, 123, 10, 9, 9, 34, 102, 108, 111, 111, 114, 95, 103, 101, 111, 109, 101, 116, 114, 121, 95, 115, 104, 97, 50, 53, 54, 34, 58, 32, 34, 53, 54, 56, 57, 50, 50, 51, 57, 54, 55, 97, 97, 98, 48, 50, 52, 102, 51, 54, 53, 49, 100, 102, 102, 102, 52, 102, 49, 98, 102, 49, 101, 100, 51, 98, 57, 99, 57, 53, 50, 56, 98, 56, 53, 56, 99, 50, 55, 52, 99, 98, 55, 52, 56, 101, 101, 53, 102, 97, 55, 56, 52, 55, 102, 34, 44, 10, 9, 9, 34, 103, 101, 111, 109, 101, 116, 114, 121, 95, 109, 97, 110, 105, 102, 101, 115, 116, 95, 115, 104, 97, 50, 53, 54, 34, 58, 32, 34, 50, 57, 49, 49, 48, 49, 100, 56, 53, 102, 100, 51, 97, 54, 102, 51, 98, 50, 102, 51, 99, 100, 97, 102, 49, 49, 56, 54, 53, 48, 101, 50, 101, 101, 50, 99, 100, 48, 99, 100, 55, 98, 102, 57, 98, 100, 98, 52, 52, 53, 56, 100, 50, 56, 101, 55, 99, 55, 99, 48, 49, 98, 99, 50, 34, 44, 10, 9, 9, 34, 115, 99, 104, 101, 109, 97, 34, 58, 32, 34, 115, 105, 110, 103, 97, 112, 111, 114, 101, 95, 115, 111, 117, 114, 99, 101, 95, 114, 101, 115, 116, 111, 114, 101, 95, 118, 49, 34, 44, 10, 9, 9, 34, 115, 111, 117, 114, 99, 101, 95, 112, 111, 115, 101, 34, 58, 32, 123, 10, 9, 9, 9, 34, 101, 108, 101, 118, 97, 116, 105, 111, 110, 95, 114, 101, 102, 101, 114, 101, 110, 99, 101, 34, 58, 32, 123, 10, 9, 9, 9, 9, 34, 114, 101, 102, 101, 114, 101, 110, 99, 101, 34, 58, 32, 34, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 32, 105, 110, 116, 101, 103, 114, 97, 116, 105, 111, 110, 32, 117, 115, 101, 115, 32, 114, 101, 99, 111, 110, 115, 116, 114, 117, 99, 116, 101, 100, 32, 77, 66, 83, 32, 76, 49, 61, 48, 32, 100, 97, 116, 117, 109, 34, 44, 10, 9, 9, 9, 9, 34, 115, 111, 117, 114, 99, 101, 95, 114, 101, 102, 101, 114, 101, 110, 99, 101, 34, 58, 32, 34, 65, 99, 116, 117, 97, 108, 32, 112, 105, 110, 110, 101, 100, 32, 115, 111, 117, 114, 99, 101, 32, 99, 101, 110, 116, 114, 111, 105, 100, 115, 47, 98, 97, 115, 105, 115, 59, 32, 110, 111, 116, 32, 99, 117, 114, 114, 101, 110, 116, 32, 115, 117, 114, 118, 101, 121, 101, 100, 32, 101, 108, 101, 118, 97, 116, 105, 111, 110, 34, 44, 10, 9, 9, 9, 9, 34, 115, 116, 97, 116, 117, 115, 34, 58, 32, 34, 115, 116, 97, 103, 105, 110, 103, 34, 10, 9, 9, 9, 125, 44, 10, 9, 9, 9, 34, 102, 101, 97, 116, 117, 114, 101, 95, 105, 100, 34, 58, 32, 34, 109, 98, 115, 45, 104, 111, 116, 101, 108, 47, 115, 111, 117, 114, 99, 101, 45, 102, 108, 111, 111, 114, 45, 115, 116, 97, 99, 107, 45, 114, 101, 99, 111, 110, 115, 116, 114, 117, 99, 116, 105, 111, 110, 34, 44, 10, 9, 9, 9, 34, 102, 108, 111, 111, 114, 95, 105, 100, 34, 58, 32, 34, 84, 51, 45, 76, 50, 52, 34, 44, 10, 9, 9, 9, 34, 102, 114, 97, 109, 101, 95, 102, 105, 110, 103, 101, 114, 112, 114, 105, 110, 116, 34, 58, 32, 34, 49, 99, 52, 52, 55, 98, 97, 52, 55, 54, 55, 98, 98, 48, 56, 54, 99, 49, 99, 57, 102, 100, 102, 53, 97, 97, 48, 57, 55, 102, 101, 48, 102, 54, 50, 100, 55, 51, 54, 98, 48, 101, 51, 49, 100, 97, 52, 52, 54, 101, 99, 100, 99, 55, 53, 55, 101, 51, 98, 101, 57, 102, 98, 99, 34, 44, 10, 9, 9, 9, 34, 104, 101, 97, 100, 105, 110, 103, 95, 114, 97, 100, 34, 58, 32, 48, 46, 48, 44, 10, 9, 9, 9, 34, 114, 111, 111, 109, 95, 105, 100, 34, 58, 32, 34, 34, 44, 10, 9, 9, 9, 34, 115, 99, 104, 101, 109, 97, 34, 58, 32, 34, 115, 105, 110, 103, 97, 112, 111, 114, 101, 95, 115, 111, 117, 114, 99, 101, 95, 112, 111, 115, 101, 95, 118, 49, 34, 44, 10, 9, 9, 9, 34, 115, 110, 97, 112, 115, 104, 111, 116, 95, 109, 97, 110, 105, 102, 101, 115, 116, 95, 115, 104, 97, 50, 53, 54, 34, 58, 32, 34, 100, 52, 99, 55, 52, 98, 51, 57, 54, 56, 102, 48, 55, 97, 102, 54, 53, 53, 56, 49, 57, 50, 97, 97, 55, 56, 51, 49, 101, 100, 54, 54, 101, 97, 99, 102, 100, 101, 56, 54, 49, 102, 97, 101, 57, 98, 51, 51, 101, 99, 49, 52, 56, 54, 53, 97, 97, 98, 98, 102, 99, 57, 56, 51, 34, 44, 10, 9, 9, 9, 34, 115, 111, 117, 114, 99, 101, 95, 120, 121, 122, 34, 58, 32, 91, 10, 9, 9, 9, 9, 51, 55, 48, 46, 52, 48, 48, 55, 53, 55, 57, 51, 57, 53, 50, 55, 52, 55, 44, 10, 9, 9, 9, 9, 56, 48, 46, 56, 55, 53, 50, 55, 57, 57, 52, 50, 49, 53, 52, 56, 57, 44, 10, 9, 9, 9, 9, 45, 49, 48, 55, 57, 46, 49, 51, 56, 51, 49, 52, 55, 51, 48, 51, 54, 49, 49, 10, 9, 9, 9, 93, 10, 9, 9, 125, 44, 10, 9, 9, 34, 118, 101, 114, 116, 105, 99, 97, 108, 95, 109, 97, 110, 105, 102, 101, 115, 116, 95, 115, 104, 97, 50, 53, 54, 34, 58, 32, 34, 57, 48, 53, 55, 54, 102, 50, 99, 55, 49, 100, 50, 51, 97, 48, 97, 48, 98, 56, 49, 50, 97, 55, 54, 99, 54, 55, 51, 54, 51, 97, 98, 57, 52, 56, 48, 57, 51, 101, 48, 52, 55, 98, 100, 98, 53, 48, 56, 99, 54, 50, 55, 57, 55, 100, 100, 50, 100, 102, 55, 53, 97, 100, 56, 34, 10, 9, 125, 44, 10, 9, 34, 115, 99, 104, 101, 109, 97, 34, 58, 32, 34, 111, 114, 99, 104, 97, 114, 100, 95, 114, 101, 97, 99, 104, 95, 115, 111, 117, 114, 99, 101, 95, 115, 97, 118, 101, 95, 118, 50, 34, 44, 10, 9, 34, 115, 99, 111, 112, 101, 34, 58, 32, 34, 111, 110, 102, 111, 111, 116, 95, 99, 111, 109, 98, 97, 116, 95, 105, 110, 118, 101, 110, 116, 111, 114, 121, 95, 115, 101, 116, 116, 105, 110, 103, 115, 95, 110, 111, 95, 109, 105, 115, 115, 105, 111, 110, 115, 95, 100, 111, 111, 114, 115, 95, 111, 114, 95, 118, 101, 104, 105, 99, 108, 101, 115, 34, 44, 10, 9, 34, 115, 116, 97, 116, 115, 34, 58, 32, 123, 10, 9, 9, 34, 97, 109, 109, 111, 34, 58, 32, 123, 10, 9, 9, 9, 34, 112, 105, 115, 116, 111, 108, 34, 58, 32, 123, 10, 9, 9, 9, 9, 34, 109, 97, 103, 34, 58, 32, 49, 50, 44, 10, 9, 9, 9, 9, 34, 114, 101, 115, 101, 114, 118, 101, 34, 58, 32, 57, 54, 10, 9, 9, 9, 125, 44, 10, 9, 9, 9, 34, 115, 109, 103, 34, 58, 32, 123, 10, 9, 9, 9, 9, 34, 109, 97, 103, 34, 58, 32, 49, 55, 44, 10, 9, 9, 9, 9, 34, 114, 101, 115, 101, 114, 118, 101, 34, 58, 32, 49, 56, 48, 10, 9, 9, 9, 125, 10, 9, 9, 125, 44, 10, 9, 9, 34, 99, 97, 114, 114, 105, 101, 100, 95, 119, 101, 97, 112, 111, 110, 34, 58, 32, 34, 115, 109, 103, 34, 44, 10, 9, 9, 34, 100, 101, 97, 116, 104, 95, 99, 111, 117, 110, 116, 34, 58, 32, 48, 44, 10, 9, 9, 34, 101, 108, 97, 112, 115, 101, 100, 95, 115, 101, 99, 111, 110, 100, 115, 34, 58, 32, 48, 46, 57, 55, 50, 48, 57, 56, 51, 51, 51, 51, 51, 51, 51, 51, 52, 53, 44, 10, 9, 9, 34, 104, 101, 97, 108, 116, 104, 34, 58, 32, 49, 48, 48, 46, 48, 44, 10, 9, 9, 34, 109, 111, 100, 101, 34, 58, 32, 48, 44, 10, 9, 9, 34, 115, 101, 97, 114, 99, 104, 95, 116, 105, 109, 101, 114, 34, 58, 32, 48, 46, 48, 44, 10, 9, 9, 34, 115, 101, 101, 100, 34, 58, 32, 50, 48, 50, 54, 49, 48, 50, 49, 44, 10, 9, 9, 34, 115, 101, 116, 116, 105, 110, 103, 115, 34, 58, 32, 123, 10, 9, 9, 9, 34, 104, 117, 100, 95, 118, 105, 115, 105, 98, 108, 101, 34, 58, 32, 116, 114, 117, 101, 44, 10, 9, 9, 9, 34, 105, 110, 118, 101, 114, 116, 95, 121, 34, 58, 32, 102, 97, 108, 115, 101, 44, 10, 9, 9, 9, 34, 109, 111, 117, 115, 101, 95, 115, 101, 110, 115, 105, 116, 105, 118, 105, 116, 121, 34, 58, 32, 49, 46, 48, 44, 10, 9, 9, 9, 34, 114, 101, 100, 117, 99, 101, 100, 95, 115, 104, 97, 107, 101, 34, 58, 32, 102, 97, 108, 115, 101, 10, 9, 9, 125, 44, 10, 9, 9, 34, 115, 105, 110, 99, 101, 95, 100, 97, 109, 97, 103, 101, 34, 58, 32, 48, 46, 48, 44, 10, 9, 9, 34, 119, 97, 110, 116, 101, 100, 95, 104, 101, 97, 116, 34, 58, 32, 48, 46, 48, 44, 10, 9, 9, 34, 119, 97, 110, 116, 101, 100, 95, 108, 101, 118, 101, 108, 34, 58, 32, 48, 10, 9, 125, 44, 10, 9, 34, 118, 101, 114, 115, 105, 111, 110, 34, 58, 32, 50, 10, 125]",
+        "weapon": "smg",
+        "yaw": 0.0
+      },
+      "physics_tick": 233,
+      "pins_before": {
+        "T3-L24/source-restore/source-load:209614541538:2": true
+      },
+      "token": "source-load:209614541538:2"
+    },
+    "real_Runtime_busy_callback_probes": [
+      {
+        "busy_uninstall_refused": true,
+        "owner_retained": true,
+        "pins_after": {
+          "T3-L24/source-restore/source-load:209614541538:1": true
+        },
+        "pins_before": {
+          "T3-L24/source-restore/source-load:209614541538:1": true
+        },
+        "reentrant_load_refused": true,
+        "same_pending_token": true,
+        "token": "source-load:209614541538:1",
+        "transaction_still_busy": true
+      }
+    ],
+    "remaining_foreign_pin": {
+      "T2-L24": {
+        "qa-controller/retain-home": true
+      }
+    },
+    "requirements": [
+      {
+        "physics_tick": 156,
+        "pose": {
+          "floor_geometry_sha256": "5689223967aab024f3651dfff4f1bf1ed3b9c9528b858c274cb748ee5fa7847f",
+          "geometry_manifest_sha256": "291101d85fd3a6f3b2f3cdaf118650e2ee2cd0cd7bf9bdb4458d28e7c7c01bc2",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "Controller integration uses reconstructed MBS L1=0 datum",
+              "source_reference": "Actual pinned source centroids/basis; not current surveyed elevation",
+              "status": "staging"
+            },
+            "feature_id": "mbs-hotel/source-floor-stack-reconstruction",
+            "floor_id": "T3-L24",
+            "frame_fingerprint": "1c447ba4767bb086c1c9fdf5aa097fe0f62d736b0e31da446ecdc757e3be9fbc",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              370.400757939527,
+              80.8752799421549,
+              -1079.13831473036
+            ]
+          },
+          "vertical_manifest_sha256": "90576f2c71d23a0a0b812a76c67363ab948093e047bdb508c62797dd2df75ad8"
+        },
+        "reason": "fresh_physics_boundary_required",
+        "token": "source-load:209614541538:1"
+      },
+      {
+        "physics_tick": 157,
+        "pose": {
+          "floor_geometry_sha256": "5689223967aab024f3651dfff4f1bf1ed3b9c9528b858c274cb748ee5fa7847f",
+          "geometry_manifest_sha256": "291101d85fd3a6f3b2f3cdaf118650e2ee2cd0cd7bf9bdb4458d28e7c7c01bc2",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "Controller integration uses reconstructed MBS L1=0 datum",
+              "source_reference": "Actual pinned source centroids/basis; not current surveyed elevation",
+              "status": "staging"
+            },
+            "feature_id": "mbs-hotel/source-floor-stack-reconstruction",
+            "floor_id": "T3-L24",
+            "frame_fingerprint": "1c447ba4767bb086c1c9fdf5aa097fe0f62d736b0e31da446ecdc757e3be9fbc",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              370.400757939527,
+              80.8752799421549,
+              -1079.13831473036
+            ]
+          },
+          "vertical_manifest_sha256": "90576f2c71d23a0a0b812a76c67363ab948093e047bdb508c62797dd2df75ad8"
+        },
+        "reason": "[\"required_collision_not_resident\", \"fresh_physical_support_required\", \"capsule_clearance_unresolved\"]",
+        "token": "source-load:209614541538:1"
+      },
+      {
+        "physics_tick": 219,
+        "pose": {
+          "floor_geometry_sha256": "5689223967aab024f3651dfff4f1bf1ed3b9c9528b858c274cb748ee5fa7847f",
+          "geometry_manifest_sha256": "291101d85fd3a6f3b2f3cdaf118650e2ee2cd0cd7bf9bdb4458d28e7c7c01bc2",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "Controller integration uses reconstructed MBS L1=0 datum",
+              "source_reference": "Actual pinned source centroids/basis; not current surveyed elevation",
+              "status": "staging"
+            },
+            "feature_id": "mbs-hotel/source-floor-stack-reconstruction",
+            "floor_id": "T3-L24",
+            "frame_fingerprint": "1c447ba4767bb086c1c9fdf5aa097fe0f62d736b0e31da446ecdc757e3be9fbc",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              370.400757939527,
+              80.8752799421549,
+              -1079.13831473036
+            ]
+          },
+          "vertical_manifest_sha256": "90576f2c71d23a0a0b812a76c67363ab948093e047bdb508c62797dd2df75ad8"
+        },
+        "reason": "fresh_physics_boundary_required",
+        "token": "source-load:209614541538:2"
+      },
+      {
+        "physics_tick": 220,
+        "pose": {
+          "floor_geometry_sha256": "5689223967aab024f3651dfff4f1bf1ed3b9c9528b858c274cb748ee5fa7847f",
+          "geometry_manifest_sha256": "291101d85fd3a6f3b2f3cdaf118650e2ee2cd0cd7bf9bdb4458d28e7c7c01bc2",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "Controller integration uses reconstructed MBS L1=0 datum",
+              "source_reference": "Actual pinned source centroids/basis; not current surveyed elevation",
+              "status": "staging"
+            },
+            "feature_id": "mbs-hotel/source-floor-stack-reconstruction",
+            "floor_id": "T3-L24",
+            "frame_fingerprint": "1c447ba4767bb086c1c9fdf5aa097fe0f62d736b0e31da446ecdc757e3be9fbc",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              370.400757939527,
+              80.8752799421549,
+              -1079.13831473036
+            ]
+          },
+          "vertical_manifest_sha256": "90576f2c71d23a0a0b812a76c67363ab948093e047bdb508c62797dd2df75ad8"
+        },
+        "reason": "[\"required_collision_not_resident\", \"fresh_physical_support_required\", \"capsule_clearance_unresolved\"]",
+        "token": "source-load:209614541538:2"
+      },
+      {
+        "physics_tick": 241,
+        "pose": {
+          "floor_geometry_sha256": "5689223967aab024f3651dfff4f1bf1ed3b9c9528b858c274cb748ee5fa7847f",
+          "geometry_manifest_sha256": "291101d85fd3a6f3b2f3cdaf118650e2ee2cd0cd7bf9bdb4458d28e7c7c01bc2",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "Controller integration uses reconstructed MBS L1=0 datum",
+              "source_reference": "Actual pinned source centroids/basis; not current surveyed elevation",
+              "status": "staging"
+            },
+            "feature_id": "mbs-hotel/source-floor-stack-reconstruction",
+            "floor_id": "T3-L24",
+            "frame_fingerprint": "1c447ba4767bb086c1c9fdf5aa097fe0f62d736b0e31da446ecdc757e3be9fbc",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              370.400757939527,
+              80.8752799421549,
+              -1079.13831473036
+            ]
+          },
+          "vertical_manifest_sha256": "90576f2c71d23a0a0b812a76c67363ab948093e047bdb508c62797dd2df75ad8"
+        },
+        "reason": "fresh_physics_boundary_required",
+        "token": "source-load:209614541538:3"
+      },
+      {
+        "physics_tick": 263,
+        "pose": {
+          "floor_geometry_sha256": "5689223967aab024f3651dfff4f1bf1ed3b9c9528b858c274cb748ee5fa7847f",
+          "geometry_manifest_sha256": "291101d85fd3a6f3b2f3cdaf118650e2ee2cd0cd7bf9bdb4458d28e7c7c01bc2",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "Controller integration uses reconstructed MBS L1=0 datum",
+              "source_reference": "Actual pinned source centroids/basis; not current surveyed elevation",
+              "status": "staging"
+            },
+            "feature_id": "mbs-hotel/source-floor-stack-reconstruction",
+            "floor_id": "T3-L24",
+            "frame_fingerprint": "1c447ba4767bb086c1c9fdf5aa097fe0f62d736b0e31da446ecdc757e3be9fbc",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              370.400757939527,
+              80.8752799421549,
+              -1079.13831473036
+            ]
+          },
+          "vertical_manifest_sha256": "90576f2c71d23a0a0b812a76c67363ab948093e047bdb508c62797dd2df75ad8"
+        },
+        "reason": "fresh_physics_boundary_required",
+        "token": "source-load:209614541538:4"
+      },
+      {
+        "physics_tick": 264,
+        "pose": {
+          "floor_geometry_sha256": "5689223967aab024f3651dfff4f1bf1ed3b9c9528b858c274cb748ee5fa7847f",
+          "geometry_manifest_sha256": "291101d85fd3a6f3b2f3cdaf118650e2ee2cd0cd7bf9bdb4458d28e7c7c01bc2",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "Controller integration uses reconstructed MBS L1=0 datum",
+              "source_reference": "Actual pinned source centroids/basis; not current surveyed elevation",
+              "status": "staging"
+            },
+            "feature_id": "mbs-hotel/source-floor-stack-reconstruction",
+            "floor_id": "T3-L24",
+            "frame_fingerprint": "1c447ba4767bb086c1c9fdf5aa097fe0f62d736b0e31da446ecdc757e3be9fbc",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              370.400757939527,
+              80.8752799421549,
+              -1079.13831473036
+            ]
+          },
+          "vertical_manifest_sha256": "90576f2c71d23a0a0b812a76c67363ab948093e047bdb508c62797dd2df75ad8"
+        },
+        "reason": "[\"required_collision_not_resident\", \"fresh_physical_support_required\", \"capsule_clearance_unresolved\"]",
+        "token": "source-load:209614541538:4"
+      },
+      {
+        "physics_tick": 354,
+        "pose": {
+          "floor_geometry_sha256": "5689223967aab024f3651dfff4f1bf1ed3b9c9528b858c274cb748ee5fa7847f",
+          "geometry_manifest_sha256": "291101d85fd3a6f3b2f3cdaf118650e2ee2cd0cd7bf9bdb4458d28e7c7c01bc2",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "Controller integration uses reconstructed MBS L1=0 datum",
+              "source_reference": "Actual pinned source centroids/basis; not current surveyed elevation",
+              "status": "staging"
+            },
+            "feature_id": "mbs-hotel/source-floor-stack-reconstruction",
+            "floor_id": "T3-L24",
+            "frame_fingerprint": "1c447ba4767bb086c1c9fdf5aa097fe0f62d736b0e31da446ecdc757e3be9fbc",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              370.400757939527,
+              80.8752799421549,
+              -1079.13831473036
+            ]
+          },
+          "vertical_manifest_sha256": "90576f2c71d23a0a0b812a76c67363ab948093e047bdb508c62797dd2df75ad8"
+        },
+        "reason": "[\"required_collision_not_resident\", \"fresh_physical_support_required\", \"capsule_clearance_unresolved\"]",
+        "token": "source-recovery:209614541538:5"
+      },
+      {
+        "physics_tick": 553,
+        "pose": {
+          "floor_geometry_sha256": "5689223967aab024f3651dfff4f1bf1ed3b9c9528b858c274cb748ee5fa7847f",
+          "geometry_manifest_sha256": "291101d85fd3a6f3b2f3cdaf118650e2ee2cd0cd7bf9bdb4458d28e7c7c01bc2",
+          "schema": "singapore_source_restore_v1",
+          "source_pose": {
+            "elevation_reference": {
+              "reference": "Controller integration uses reconstructed MBS L1=0 datum",
+              "source_reference": "Actual pinned source centroids/basis; not current surveyed elevation",
+              "status": "staging"
+            },
+            "feature_id": "mbs-hotel/source-floor-stack-reconstruction",
+            "floor_id": "T3-L24",
+            "frame_fingerprint": "1c447ba4767bb086c1c9fdf5aa097fe0f62d736b0e31da446ecdc757e3be9fbc",
+            "heading_rad": 0.0,
+            "room_id": "",
+            "schema": "singapore_source_pose_v1",
+            "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+            "source_xyz": [
+              370.400757939527,
+              80.8752799421549,
+              -1079.13831473036
+            ]
+          },
+          "vertical_manifest_sha256": "90576f2c71d23a0a0b812a76c67363ab948093e047bdb508c62797dd2df75ad8"
+        },
+        "reason": "[\"required_collision_not_resident\", \"fresh_physical_support_required\", \"capsule_clearance_unresolved\"]",
+        "token": "source-recovery:209614541538:6"
+      }
+    ],
+    "restores": [
+      {
+        "physics_tick": 170,
+        "position": "(-71.29449, -0.02472, -32.73073)",
+        "reason": "load",
+        "token": "source-load:209614541538:1"
+      },
+      {
+        "physics_tick": 471,
+        "position": "(-71.29449, -0.02472, -32.73073)",
+        "reason": "death",
+        "token": "source-recovery:209614541538:5"
+      },
+      {
+        "physics_tick": 682,
+        "position": "(-71.29449, -0.02472, -32.73073)",
+        "reason": "death",
+        "token": "source-recovery:209614541538:6"
+      }
+    ],
+    "source_runtime_profile": {
+      "body_liveness_checks": 243456,
+      "calls": 1294,
+      "enabled": true,
+      "max_us": 33855,
+      "physics_tick": 687,
+      "registered_regions": 6,
+      "total_us": 1043284
+    }
+  },
+  "national_artifact_boot_tested": false,
+  "real_controller_service_Game_Player_FloorStack": true,
+  "schema": "source_session_controller_native_fixture_v1",
+  "visual_or_whole_world_acceptance": false,
+  "supervision": {
+    "checkpoint": "6c6894a5df75f020e3342c0852f082017406eccd",
+    "started_utc": "2026-10-29T04:33:37.081301+00:00",
+    "finished_utc": "2026-10-29T04:34:03.623797+00:00",
+    "exit_code": 0,
+    "elapsed_sec": 26.74,
+    "child_reaped": true,
+    "fatal_errors": []
+  },
+  "raw_report_sha256": "09471eb2d2968853ddb5dc276b585a09ce0f2872d539f745497db9fe74e26390",
+  "private_evidence_directory": "/private/tmp/singapore-fidelity/source-controller-r1"
+}

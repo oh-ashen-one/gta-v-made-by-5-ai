@@ -1,0 +1,48 @@
+{
+  "schema": "source_context_dry_broadphase_author_freeze_v1",
+  "created_utc": "2026-10-29T04:21:14.269902+00:00",
+  "inspected_actual_profile": {
+    "run": "mbs-public-core-entry-r5",
+    "checks": 184,
+    "failed": 1,
+    "elapsed_s": 838.034,
+    "failures": [
+      "native locomotion settles with released input before leg"
+    ],
+    "last_runtime_profile": {
+      "elapsed_wall_s": 835.487,
+      "phase": "settle/before leg",
+      "physics_tick": 15134,
+      "resolved_velocity": "(0.0, 0.0, 0.0)",
+      "source_runtime": {
+        "body_liveness_checks": 42883760,
+        "calls": 60230,
+        "enabled": true,
+        "max_us": 807703,
+        "physics_tick": 15134,
+        "registered_regions": 28,
+        "total_us": 211043746
+      },
+      "stage": "public/east/(25.29104, 0.0, -11.3)"
+    },
+    "runtime_measurement_is_NOT_dry_matches_time": true,
+    "dry_matches_baseline_attribution": "source_inspection_only"
+  },
+  "scope": "immutable per-floor dry reject bounds; exact original predicate and public identities unchanged",
+  "existing571checks_retained": true,
+  "new_native_tests_and_microbenchmark": "pending_root",
+  "child_engine_gpu_git_actions": false,
+  "whole_goal_complete": false,
+  "files": [
+    {
+      "path": "game/src/world/geography/source_world_context.gd",
+      "sha256": "324393c9f3f78cb3359ee20bd5eed80f5292e18a45d2198742304d528c3e5cfb",
+      "bytes": 42927
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_context_test.gd",
+      "sha256": "b5d3223cb982402045af2f960b2b0d7a1dd4d71b4636e753c20d0679150af422",
+      "bytes": 65170
+    }
+  ]
+}

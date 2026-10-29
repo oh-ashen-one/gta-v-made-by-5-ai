@@ -1,0 +1,8 @@
+{
+  "created_utc": "2026-10-29T04:29:45.673209+00:00",
+  "source_sha256": "589884e00a50000b9dbf2b032770f44fba12463ac801986680b1a1f84a705468",
+  "scope_findings": [],
+  "method": "LEXICAL_ONLY_NOT_GODOT_COMPILER",
+  "engine_parse_verified": false,
+  "native_verified": false
+}
