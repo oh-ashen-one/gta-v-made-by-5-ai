@@ -1,0 +1,10 @@
+{
+  "status": "SOURCE_CANDIDATE_NATIVE_PENDING_STREAM_GUARD",
+  "files": {
+    "game/src/world/mbs_interior/source_core_geometry.gd": "1ed30b81150cb57c05b7fd69d4bff186821b10320320d83c29874f6e3eb95a30",
+    "game/src/world/mbs_interior/source_stair_gates.gd": "42773c3837f3459a3579685cec5ddc3d0858755d27344baca04a46cffa7971df"
+  },
+  "native_run": false,
+  "default_game_integrated": false,
+  "full_goal_complete": false
+}
