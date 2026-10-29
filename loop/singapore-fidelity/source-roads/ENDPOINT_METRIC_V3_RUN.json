@@ -1,0 +1,38 @@
+{
+  "all_owned_cpu_processes_terminal": true,
+  "country_or_native_or_world_acceptance": false,
+  "exec_session": 95914,
+  "identity_sha256": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+  "independent_audit_exec_session": null,
+  "independent_audits": [
+    "endpoint-v3-records/INDEPENDENT_PROFILE_GRAPH_AUDIT.json",
+    "endpoint-v3-records/INDEPENDENT_ORIGINAL_CITY_AUDIT.json"
+  ],
+  "observed_utc": "2026-10-29T16:02:45.559965+00:00",
+  "output": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/endpoint-metric-v3-r1",
+  "owned_lifecycle": {
+    "created_utc": "2026-10-29T15:49:17.118668+00:00",
+    "kind": "source-endpoint-metric-v3",
+    "limits": {
+      "cpu_seconds": 3600,
+      "minimum_filesystem_free_bytes": 12884901888,
+      "output_logical_bytes": 8589934592,
+      "rss_bytes": 2147483648,
+      "wall_seconds": 7200
+    },
+    "reason": null,
+    "sampled_peak_output_logical_bytes": 2537020096,
+    "sampled_peak_rss_bytes": 568524800,
+    "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/semantic_endpoint_baseline.py",
+    "status": "COMPLETE",
+    "supervisor_pid": 74449,
+    "terminal_utc": "2026-10-29T15:54:51.382830+00:00",
+    "wall_seconds": 334.264614791,
+    "worker_exit": 0,
+    "worker_lstart": "Thu Oct 29 11:49:17 2026",
+    "worker_pid": 74458
+  },
+  "prelaunch": "ENDPOINT_METRIC_V3_PRELAUNCH.json",
+  "producer_terminal": "endpoint-v3-records/supervisor.json",
+  "status": "PRODUCER_AND_INDEPENDENT_SOURCE_PROFILE_GRAPH_AUDITS_PASS_NO_PHYSICAL_OR_NATIVE_ADOPTION"
+}

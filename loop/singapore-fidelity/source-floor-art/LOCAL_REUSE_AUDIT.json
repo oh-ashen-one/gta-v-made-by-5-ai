@@ -1,0 +1,47 @@
+{
+  "observed_utc": "2026-10-29T15:53:49.625767+00:00",
+  "inspected_glb_count": 49,
+  "pool_table_or_cue_asset_found": false,
+  "matches": [
+    {
+      "path": "game/assets/authored/interior_safe_furnishings.glb",
+      "sha256": "10f61f877f0a176ce2c0b4b7aa5ca6050087609bd863a2de8cfb1c0e3f22ea1e",
+      "nodes": [
+        "interior_safe_furnishings"
+      ],
+      "materials": [
+        "Interior_wood",
+        "Interior_wood_edge",
+        "Interior_darksteel",
+        "Interior_fabric",
+        "Interior_glass",
+        "Interior_coollight",
+        "Interior_steel",
+        "Interior_red",
+        "Interior_gold",
+        "Interior_white",
+        "Interior_trim",
+        "Interior_cushion",
+        "Interior_blue",
+        "Interior_light"
+      ],
+      "embedded_or_external_images_count": 0,
+      "asset_used_or_modified": false
+    },
+    {
+      "path": "game/assets/providers/hawker_table_refined.glb",
+      "sha256": "a83a2fdd84840b41183415a959c298ec6473ca06592ead1da115c66160b197e9",
+      "nodes": [
+        "hawker_table_refined"
+      ],
+      "materials": [
+        "tripo_material_b025885f-ebc6-4ca2-9ae9-b7747cb338f0"
+      ],
+      "embedded_or_external_images_count": 1,
+      "asset_used_or_modified": false
+    }
+  ],
+  "existing_source_fitout": "game/src/world/mbs_interior/guest_floor.gd:_suite_fitout supplies same sofa/coffee-table/display/bar across all variants; no billiards branch.",
+  "reusable_authoring": "game/tools/build_interiors.py:safe_room contains3.45m-wide sofa assembly with separate cushions/arms, plus coffee table; existing GLB is merged and fullsafe-room dressing, so extract from existing editable authoring geometry, not whole room into each suite.",
+  "rights_limit": "docs/ASSET_RIGHTS.md retains unresolved packaging-atlas datablock references in whole safe-furnishing .blend sources; safe GLB has no image textures. Do not treat whole saved authoring file as cleared merely from original geometry."
+}

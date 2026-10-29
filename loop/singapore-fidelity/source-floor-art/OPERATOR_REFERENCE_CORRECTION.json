@@ -1,0 +1,28 @@
+{
+  "observed_utc": "2026-10-29T15:56:37.831111+00:00",
+  "official_plan_url": "https://www.marinabaysands.com/content/dam/marinabaysands/hotel/marina-suite/the-marina-floorplan.pdf",
+  "pdf_page_one_based": 2,
+  "page_title": "THE MARINA (MEDIA ROOM WITH POOL TABLE)",
+  "visual_method": "Owned Chrome PDF tab, page2 at500%; closed after restoring100%. No PDF/model asset downloaded.",
+  "exact_table_annotation": [
+    "POOL TABLE (8')",
+    "1500x2620"
+  ],
+  "location": "Right-hand living room above circular dining, next to guestWC/minibar zone.",
+  "outer_versus_bed_dimension": "UNRESOLVED: text annotation has no dimension extension arrows; both inner pocket/bed and outer perimeter are drawn. Overall table-size interpretation is explicitly an inference.",
+  "rejected_earlier_search_ocr": "1800x900 is not the label in the visually inspected PDF.",
+  "separate_media_room_display_annotation": "98-inch SMART TV",
+  "signature_reference_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-signature-suite.html",
+  "signature_page_facts": {
+    "average_area_sqm": 140,
+    "variants": [
+      "pool table",
+      "media room",
+      "entertainment den"
+    ],
+    "living_room_display_inches": 85,
+    "actual_layouts_and_furnishings_may_vary": true
+  },
+  "raw_operator_images_or_plan_not_committed": true,
+  "asset_not_acquired": true
+}

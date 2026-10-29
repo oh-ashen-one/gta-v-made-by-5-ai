@@ -1,0 +1,46 @@
+{
+  "endpoint_v3_result": {
+    "database_sha256": "9f15cbc5bbe06b863e38dcab1dc61a17aa00515fa574ec2f24a6f2c3126caa66",
+    "identity_sha256": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+    "no_engines_launched": true,
+    "road_and_terrain_physical_adoption": false,
+    "root_only_git": true
+  },
+  "live_job": null,
+  "new_durable_output_root": "loop/singapore-fidelity/source-roads/generated",
+  "observed_utc": "2026-10-29T16:02:45.559965+00:00",
+  "old_global_baseline_completion_not_inferred": true,
+  "preserved_authoritative_inputs": {
+    "city_r1_identity_sha256": "2871b559368ecf5f999d84f82a008788eedfa4d8a03b2cff861d2ffe2a5e95ab",
+    "frozen_r5_kernel_sha256": "c203c52106c1caea2e473512533794259a3bc9d28dd01e80a43f91d6e63b59e5",
+    "metadata_only_r5_identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+    "terrain_identity_sha256": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841"
+  },
+  "r5_result": {
+    "audit": "R5_RECOVERY_PAYLOAD_AUDIT.json",
+    "compiler_exit": 0,
+    "compiler_wall_seconds": 777.8685345829999,
+    "database_sha256": "631780eecd99cec90de9dec536aee384e730b563f8e2ecd185ffd8cac23f209f",
+    "identity_sha256": "4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802",
+    "old_diagnostic_multiplicity_not_independently_known": true,
+    "sampled_peak_rss_bytes": 810467328
+  },
+  "restart_losses": {
+    "former_country_r2": true,
+    "former_r5_dataset": true,
+    "former_semantic_baseline": true
+  },
+  "schema": "source_road_recovery_record_v1",
+  "status": "R5_PAYLOAD_REPRODUCED_V3_RECONSTRUCTED_GRAPH_PROFILE_AUDITED_NO_NATIVE_ADOPTION",
+  "tests": {
+    "recovery_auditor_adversarial": {
+      "failed": 0,
+      "passed": 7
+    },
+    "semantic_targeted": {
+      "failed": 0,
+      "passed": 23
+    }
+  },
+  "worker_ownership": "road_semantic_recovery CPU only; Root alone engines/Git"
+}

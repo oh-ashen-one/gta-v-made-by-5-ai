@@ -1,0 +1,29 @@
+{
+  "artifact_identity_sha256": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+  "counts": {
+    "car_permitted_source_segments": 396224,
+    "edges": 921747,
+    "emitted_unique_vertices": 818512,
+    "emitted_vertex_occurrences": 842354,
+    "graph_chunks": 906,
+    "height_constraints": 79133,
+    "profile_vertices": 818512,
+    "source_portal_transitions": 7820,
+    "structure_metric_orders": 14801,
+    "vertical_orders": 1
+  },
+  "database_sha256": "9f15cbc5bbe06b863e38dcab1dc61a17aa00515fa574ec2f24a6f2c3126caa66",
+  "maxima": {
+    "absolute_metric_bound_error_m": 0.0,
+    "car_12percent_allowance_error_m": 0.0,
+    "continuous_portal_height_error_m": 0.0,
+    "geometry_allowance_error_m": 3.552713678800501e-15,
+    "source_edge_grade_error_m": 2.930988785010413e-14,
+    "structure_metric_orders_error_m": 1.2434497875801753e-14,
+    "vertical_orders_error_m": 0.0
+  },
+  "physical_surfaces_native_traversal_terrain_cover_or_surveyed_elevations_proved": false,
+  "seconds": 67.85716704199967,
+  "source_facts_and_modes_audit": "Separate full original-city catalog audit and before/after source signature remain required",
+  "status": "PASS_ALL_PROFILE_INEQUALITIES_AND_EMITTED_GRAPH_ALIGNMENT_ONLY"
+}

@@ -1,0 +1,17 @@
+{
+  "actual_private_artifact": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/endpoint-metric-v3-r1",
+  "complete_runtime_dataset": false,
+  "database_sha256": "9f15cbc5bbe06b863e38dcab1dc61a17aa00515fa574ec2f24a6f2c3126caa66",
+  "identity_sha256": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+  "independent_audit_pending": false,
+  "independent_code_critique": "Root assigned source_dataset_recovery; review pending separately",
+  "independent_cpu_audits": [
+    "INDEPENDENT_PROFILE_GRAPH_AUDIT.json",
+    "INDEPENDENT_ORIGINAL_CITY_AUDIT.json"
+  ],
+  "metadata_only_DO_NOT_CONFIGURE": true,
+  "producer_result": "result.json",
+  "recipe": "semantic_endpoint_baseline.py; arguments preserved in ENDPOINT_METRIC_V3_RUN.json/prelaunch/README",
+  "schema": "endpoint_metric_v3_metadata_only_reproduction_reference",
+  "scope": "Full source graph and reconstructed profile only; no physicaltiles/nativephysics/terraincover/surveyedelevations"
+}

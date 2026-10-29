@@ -1,0 +1,89 @@
+{
+  "schema": "endpoint_metric_v3_independent_code_review_v1",
+  "observed_utc": "2026-10-29T16:03:58.559682+00:00",
+  "reviewer_scope": "Read-only source review and bounded SQLite read-only queries; no global job/test suite/engine restarted, no production edited.",
+  "status": "APPROVED_BOUNDED_PROFILE_RECIPE_NO_BLOCKING_FINDINGS_NEXT_PHYSICAL_VALIDATION_REQUIRED",
+  "findings": [],
+  "frozen_files_all_match": true,
+  "source_sha256": {
+    "loop/singapore-fidelity/source-roads/endpoint_profiles_v3.py": "20dccd6b05824cc1f43d0cef142feaa59c4e9f47c9204fbd3e968c11ed0ace4e",
+    "loop/singapore-fidelity/source-roads/semantic_endpoint_baseline.py": "bbd6e030232068782e96aa1195f90f1cdb86d45f752d18ad3373ac052e70f6ee",
+    "loop/singapore-fidelity/source-roads/semantic_baseline.py": "e2906a9576a63ac277ee8313e1caef50e86030d343c3e0eb83419f0ccd9b11ad",
+    "loop/singapore-fidelity/source-roads/test_endpoint_profiles_v3.py": "c2cd8bba3c0bcff6ca6934a8d6c6130de4f317b75e40ea7a3d0fd129f843faa1",
+    "loop/singapore-fidelity/source-roads/cpu_job.py": "2a7dea0c37db14708a5abd9a4ed1003c6c548350bb668e9c82aa3ce8025081b1",
+    "loop/singapore-fidelity/source-roads/test_cpu_job_limits.py": "21f849ef1e810965720bfb03c2a4b461a235ebc7565e05a84479a764d5b2de26"
+  },
+  "reviewed_invariants": [
+    "Original IDs, ordered node associations, XZ, names/full tags, modes/access/directions, navigation edges, render-hub constraints and protected ramp orders are included in exact before/after signatures. Only declared metric bounds, inference rows and Y are excluded.",
+    "The source-only clone checks the pinned predecessor DB hash and terminal rejected-profile status, refuses mutated Y or an already-migrated v3 schema, and recomputes full source conservation against the recovered R5 source. Failed predecessor solved Y is not adopted.",
+    "Compatible bridge/tunnel plus level runs cross arbitrary way splits. Different structure/level transitions require the same original source node and exact zero length/allowance. Coordinates alone do not create a portal or navigation edge.",
+    "Height-only geometry adjacency can affect available height-distance and flat components but is not emitted as navigation adjacency or reported as original network distance.",
+    "Near-portal offsets are relative to solved portal height; short runs explicitly remain below nominal offset. Far interior DEM+6 or DEM-5 and relative constraints are both identified as game reconstruction, not clearance survey.",
+    "Sparse protected ramp orders remain distinct; structure relations are separately bounded100000, ramp relations4096 and closure64rounds. Budget rejection is unresolved work, not proof of source impossibility.",
+    "The solver verifies every current edge allowance, height-only allowance and relative gap before writing Y. Source graph car allowances remain0.12; foot0.25/steps0.7 are not promoted into the car physical producer/native0.122 contract.",
+    "Output remains graph/profile-only with physical_tiles empty. Actual ribbon slope, Float32/native geometry, terrain cover, bridge deck clearance and pedestrian-only support remain later gates.",
+    "APFS clone is explicit, failure does not launch an unbounded fallback. Direct filesystem free reserve and logical output budget are checked before/during/after the owned CPU child; signal handling terminates/reaps its owned worker."
+  ],
+  "tests_reviewed_not_rerun_by_reviewer": [
+    "Five endpoint tests: source parking ramp, refusal without Y write, same-structure way split, explicit subnominal short structure and ten actual portal witnesses with preserved source topology.",
+    "Two CPU lifecycle tests: fast-finished over-budget output rejected and supervisor SIGTERM reaps owned worker.",
+    "Semantic source/grade tests and original-source audit are part of frozen predecessor/continuation evidence; not reinterpreted as native tests."
+  ],
+  "independent_observed_result": {
+    "before_after_source_signatures_exactly_equal": true,
+    "bad_transition_original_node_length_or_allowance_count": 0,
+    "car_allowance_above_012_count": 0,
+    "null_profile_y_count": 0,
+    "protected_ramp": {
+      "source_way": "way/1453057758",
+      "required_gap_m": 5.0,
+      "actual_solved_gap_m": 5.0
+    },
+    "structure_relations": 14801,
+    "current_identity_sha256": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+    "database_sha256": "9f15cbc5bbe06b863e38dcab1dc61a17aa00515fa574ec2f24a6f2c3126caa66",
+    "current_profile": {
+      "car_grade_limit": 0.12,
+      "closure_rounds": [
+        3,
+        4,
+        5
+      ],
+      "conflicting_game_constraints": 0,
+      "foot_graph_grade_limit": 0.25,
+      "maximum_allowance_error_m": 2.930988785010413e-14,
+      "maximum_height_only_constraint_error_m": 3.552713678800501e-15,
+      "maximum_relative_clearance_error_m": 1.2434497875801753e-14,
+      "physical_scope": "CAR_ONLY_PRODUCER_STILL_REQUIRES_FOOT_DECK_PATH_SUPPORT_NEXT",
+      "policy": "source_road_endpoint_metric_profile_v3",
+      "ramp_relations": 1,
+      "source_elevation_survey_or_terrain_cover_or_native_acceptance": false,
+      "step_graph_grade_limit": 0.7,
+      "structure_relations": 14801,
+      "vertices": 818512
+    },
+    "supervisor": {
+      "status": "COMPLETE",
+      "worker_exit": 0,
+      "reason": null,
+      "terminal_utc": "2026-10-29T15:54:51.382830+00:00",
+      "wall_seconds": 334.264614791,
+      "sampled_peak_output_logical_bytes": 2537020096,
+      "sampled_peak_rss_bytes": 568524800,
+      "limits": {
+        "cpu_seconds": 3600,
+        "minimum_filesystem_free_bytes": 12884901888,
+        "output_logical_bytes": 8589934592,
+        "rss_bytes": 2147483648,
+        "wall_seconds": 7200
+      }
+    }
+  },
+  "not_verified_by_this_review": [
+    "Independent all-emitted-graph auditor being written/run separately by road worker",
+    "Physical national meshes, geographic over/under clearance and native full-country traversal",
+    "Default SourceWorld adoption, rendered quality and performance",
+    "Full user goal or exact surveyed Singapore elevation acceptance"
+  ],
+  "source_or_git_mutation": false
+}

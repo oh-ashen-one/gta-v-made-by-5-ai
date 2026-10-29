@@ -1,0 +1,207 @@
+{
+  "observed_utc": "2026-10-29T15:53:49.625767+00:00",
+  "records": [
+    {
+      "provider": "Sketchfab",
+      "source_url": "https://api.sketchfab.com/v3/models/e0b938c0c2e74eb794a49ebde2543977",
+      "observed_utc": "2026-10-29T15:53:49.625767+00:00",
+      "response_sha256": "ecee956cb090ac61bfaa3b59ca744a4dd64e230181b2dda12bb1766bb13096e7",
+      "name": "Pool Table Traditional",
+      "creator": "fizyman",
+      "uid": "e0b938c0c2e74eb794a49ebde2543977",
+      "isDownloadable": true,
+      "license": {
+        "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+        "label": "CC Attribution",
+        "fullName": "Creative Commons Attribution",
+        "requirements": "Author must be credited. Commercial use is allowed.",
+        "url": "http://creativecommons.org/licenses/by/4.0/",
+        "slug": "by"
+      },
+      "triangles": 24266,
+      "vertices": 12786,
+      "actual_download_authorization_or_binary_access_verified": false,
+      "asset_binary_downloaded": false
+    },
+    {
+      "provider": "Sketchfab",
+      "source_url": "https://api.sketchfab.com/v3/models/908fa2a7b4dd43359c0e1a07c0bf171d",
+      "observed_utc": "2026-10-29T15:53:49.625767+00:00",
+      "response_sha256": "584de170bcc70d39b21ca7d5953154428e6faecbd8d8b78f883ad63be784548b",
+      "name": "Pool Balls & Cue",
+      "creator": "lluismartinezborrell",
+      "uid": "908fa2a7b4dd43359c0e1a07c0bf171d",
+      "isDownloadable": true,
+      "license": {
+        "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+        "label": "CC Attribution",
+        "fullName": "Creative Commons Attribution",
+        "requirements": "Author must be credited. Commercial use is allowed.",
+        "url": "http://creativecommons.org/licenses/by/4.0/",
+        "slug": "by"
+      },
+      "triangles": 10328,
+      "vertices": 5202,
+      "actual_download_authorization_or_binary_access_verified": false,
+      "asset_binary_downloaded": false
+    },
+    {
+      "provider": "Sketchfab",
+      "source_url": "https://api.sketchfab.com/v3/models/caec4c2c4a0c433eaa440734ce459385",
+      "observed_utc": "2026-10-29T15:53:49.625767+00:00",
+      "response_sha256": "a3265e9bbe27457189b8ae4e38d0e79265021aedf4c3f5d763459e50efe319e4",
+      "name": "Simple Pool Table",
+      "creator": "designedbyjonathan",
+      "uid": "caec4c2c4a0c433eaa440734ce459385",
+      "isDownloadable": true,
+      "license": {
+        "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+        "label": "CC Attribution",
+        "fullName": "Creative Commons Attribution",
+        "requirements": "Author must be credited. Commercial use is allowed.",
+        "url": "http://creativecommons.org/licenses/by/4.0/",
+        "slug": "by"
+      },
+      "triangles": 17589,
+      "vertices": 5418,
+      "actual_download_authorization_or_binary_access_verified": false,
+      "asset_binary_downloaded": false
+    },
+    {
+      "provider": "NVIDIA SimReady",
+      "asset": "sofa_soft_b01",
+      "dataset_commit": "2f9df104f58cd997777486814371fff8a0fa701b",
+      "source_url": "https://huggingface.co/datasets/nvidia/simready-assets/resolve/2f9df104f58cd997777486814371fff8a0fa701b/sofa_soft_b01/com.nvidia.simready.packaging.json",
+      "license_url": "https://huggingface.co/datasets/nvidia/simready-assets/resolve/2f9df104f58cd997777486814371fff8a0fa701b/sofa_soft_b01/.metadata/LICENSE.txt",
+      "manifest_sha256": "b11fd2da215d94947fcf4932c998c6f3156da19f5008f1ecf37ed3097a26a0d0",
+      "license_sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "package": {
+        "format_version": "1.0",
+        "package_id": "simready.hf.nvidia.simready-assets.sofa_soft_b01.2026.09.19_014000209153",
+        "license": "CC-BY-4.0",
+        "metadata": [
+          {
+            "name": "com.nvidia.simready.packaging.bom.json",
+            "hash": {
+              "sha256": "1367be22f6f17d541c353ab117474ff7b19b05067d7f94d253e2e908d397eb4e"
+            }
+          }
+        ],
+        "content_hash": {
+          "sha256": "76541656d9636601c7657f3a960ded60e0104a30ab3fa1b32b56a961c65782f4"
+        },
+        "package_hash": {
+          "sha256": "aacc831ba31d9a659d32b9bd2508d4aaf199a5f83d36dc8b03fdf54dff0d00ad"
+        }
+      },
+      "license_file_header": "Attribution 4.0 International",
+      "observed_utc": "2026-10-29T15:53:49.625767+00:00",
+      "only_package_and_license_metadata_read": true,
+      "asset_files_downloaded": false,
+      "dimensions_and_geometry_fit": "UNVERIFIED",
+      "USD_conversion_runtime_quality_and_marks": "UNVERIFIED"
+    },
+    {
+      "provider": "NVIDIA SimReady",
+      "asset": "sofa_soft_b02",
+      "dataset_commit": "2f9df104f58cd997777486814371fff8a0fa701b",
+      "source_url": "https://huggingface.co/datasets/nvidia/simready-assets/resolve/2f9df104f58cd997777486814371fff8a0fa701b/sofa_soft_b02/com.nvidia.simready.packaging.json",
+      "license_url": "https://huggingface.co/datasets/nvidia/simready-assets/resolve/2f9df104f58cd997777486814371fff8a0fa701b/sofa_soft_b02/.metadata/LICENSE.txt",
+      "manifest_sha256": "b149a8fa54127b7c4914c05e7c5ba20478a7916b54d6d6beb42080952fba0a4e",
+      "license_sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "package": {
+        "format_version": "1.0",
+        "package_id": "simready.hf.nvidia.simready-assets.sofa_soft_b02.2026.09.19_014103184484",
+        "license": "CC-BY-4.0",
+        "metadata": [
+          {
+            "name": "com.nvidia.simready.packaging.bom.json",
+            "hash": {
+              "sha256": "50d5c7ed72bc18122b661d6a9bb01d30c9fbaeb85d171e1e4ce171067deed46b"
+            }
+          }
+        ],
+        "content_hash": {
+          "sha256": "52d9321d293f86db2349db45e879593221e1e0bc41aab48cb92956898577511a"
+        },
+        "package_hash": {
+          "sha256": "712839b25786890fe3df232bd0b7338e2627735ea7febe0a519774e56c4624e7"
+        }
+      },
+      "license_file_header": "Attribution 4.0 International",
+      "observed_utc": "2026-10-29T15:53:49.625767+00:00",
+      "only_package_and_license_metadata_read": true,
+      "asset_files_downloaded": false,
+      "dimensions_and_geometry_fit": "UNVERIFIED",
+      "USD_conversion_runtime_quality_and_marks": "UNVERIFIED"
+    },
+    {
+      "provider": "NVIDIA SimReady",
+      "asset": "sofa_soft_b03",
+      "dataset_commit": "2f9df104f58cd997777486814371fff8a0fa701b",
+      "source_url": "https://huggingface.co/datasets/nvidia/simready-assets/resolve/2f9df104f58cd997777486814371fff8a0fa701b/sofa_soft_b03/com.nvidia.simready.packaging.json",
+      "license_url": "https://huggingface.co/datasets/nvidia/simready-assets/resolve/2f9df104f58cd997777486814371fff8a0fa701b/sofa_soft_b03/.metadata/LICENSE.txt",
+      "manifest_sha256": "84d7c517aadfd72177f8cd3a3883e1b54f600c7ded26007dc9a048aa9290f971",
+      "license_sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "package": {
+        "format_version": "1.0",
+        "package_id": "simready.hf.nvidia.simready-assets.sofa_soft_b03.2026.09.19_014204828082",
+        "license": "CC-BY-4.0",
+        "metadata": [
+          {
+            "name": "com.nvidia.simready.packaging.bom.json",
+            "hash": {
+              "sha256": "9c1d39c1d10b61fa031bb43bc9ec3cc66ef71a24b9fdf17603d062237eb1028c"
+            }
+          }
+        ],
+        "content_hash": {
+          "sha256": "8e91333872ec7f87e192faf709c2109d95457588919d52213b5c13c18d350158"
+        },
+        "package_hash": {
+          "sha256": "88a72d92247fbe76325c121f14bbbbf35dabcd131b2f0032ae1712c7eccf451c"
+        }
+      },
+      "license_file_header": "Attribution 4.0 International",
+      "observed_utc": "2026-10-29T15:53:49.625767+00:00",
+      "only_package_and_license_metadata_read": true,
+      "asset_files_downloaded": false,
+      "dimensions_and_geometry_fit": "UNVERIFIED",
+      "USD_conversion_runtime_quality_and_marks": "UNVERIFIED"
+    },
+    {
+      "provider": "NVIDIA SimReady",
+      "asset": "sofa_visitor_a01",
+      "dataset_commit": "2f9df104f58cd997777486814371fff8a0fa701b",
+      "source_url": "https://huggingface.co/datasets/nvidia/simready-assets/resolve/2f9df104f58cd997777486814371fff8a0fa701b/sofa_visitor_a01/com.nvidia.simready.packaging.json",
+      "license_url": "https://huggingface.co/datasets/nvidia/simready-assets/resolve/2f9df104f58cd997777486814371fff8a0fa701b/sofa_visitor_a01/.metadata/LICENSE.txt",
+      "manifest_sha256": "8ad2a3a67a235c5faf8efd7078c036c8c9d2bcc3ef467773bf0f584069d36c1e",
+      "license_sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "package": {
+        "format_version": "1.0",
+        "package_id": "simready.hf.nvidia.simready-assets.sofa_visitor_a01.2026.10.07_043755527823",
+        "license": "CC-BY-4.0",
+        "metadata": [
+          {
+            "name": "com.nvidia.simready.packaging.bom.json",
+            "hash": {
+              "sha256": "37c0087c1755e523942ebf3737bb5d389f89e03ef9a39548a89f8f75bdef6797"
+            }
+          }
+        ],
+        "content_hash": {
+          "sha256": "9fd3655ee2e4faadcbdfb25df9d46eed016875e0a4f1e30171e1b95a92235df8"
+        },
+        "package_hash": {
+          "sha256": "28f98555f74f2c5b25fb149bb88d7cec475300b1cecd21379969146ead184c4c"
+        }
+      },
+      "license_file_header": "Attribution 4.0 International",
+      "observed_utc": "2026-10-29T15:53:49.625767+00:00",
+      "only_package_and_license_metadata_read": true,
+      "asset_files_downloaded": false,
+      "dimensions_and_geometry_fit": "UNVERIFIED",
+      "USD_conversion_runtime_quality_and_marks": "UNVERIFIED"
+    }
+  ]
+}

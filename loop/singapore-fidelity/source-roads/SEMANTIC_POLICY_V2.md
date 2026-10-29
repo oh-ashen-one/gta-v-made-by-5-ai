@@ -1,5 +1,15 @@
 # Versioned source semantics correction — targeted stage only
 
+**Later status, 2026-10-29:** The source-semantic v2 implementation has now
+ingested and independently conserved all906 owners/257845 ways/805225 original
+nodes. Its global metric model was rejected (5328 absolute-offset conflicts);
+that failure is preserved. The separate endpoint-aware metric v3 producer
+has completed a full graph/profile with unchanged source facts and grade
+limits. See `ENDPOINT_METRIC_V3.md`, its actual RUN/supervisor state and
+`endpoint-v3-records/`. This does not provide physical country surfaces,
+native traversal, surveyed road heights or full-world acceptance. The
+targeted-stage text below records the original v2 contract and motivation.
+
 Root authorized a new inference recipe after identifying a source-semantic
 error in frozen R5. R5, country R2, rejected copied-DB attempts and geometry
 proofs remain immutable. The geometry workaround is stopped. Those rejection
