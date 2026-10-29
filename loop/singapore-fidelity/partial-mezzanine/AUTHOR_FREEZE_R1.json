@@ -1,0 +1,30 @@
+{
+  "schema": "partial_mezzanine_author_freeze_v1",
+  "created_utc": "2026-10-29T04:53:47.258503+00:00",
+  "worker_owned_files": [
+    {
+      "path": "game/src/world/mbs_interior/partial_mezzanine.gd",
+      "sha256": "f90cabe1cbaa8874bc6c5af9136c1980e594dcf372b943642492a4d3bc338510",
+      "bytes": 17628
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/mbs_partial_mezzanine_test.gd",
+      "sha256": "1eb0291520cdb7346948b3408967f658749e2bf8d061aef85be6fe77fd99b4fd",
+      "bytes": 15568
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/mbs_partial_mezzanine_test.tscn",
+      "sha256": "feabcfc486ed06b82381413be084eaa48c3c25e27d6a86d3ed82774c7a3ee400",
+      "bytes": 225
+    }
+  ],
+  "existing_production_or_test_files_edited": false,
+  "worker_engine_gpu_git_actions": false,
+  "all_six_recipes_native_verified": false,
+  "selected_native_tower_default": "T3",
+  "engine_parse_verified": false,
+  "native_verified": false,
+  "render_verified": false,
+  "root_dispatch_transport_integration_pending": true,
+  "full_building_complete": false
+}

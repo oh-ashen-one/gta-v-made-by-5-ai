@@ -1,0 +1,655 @@
+{
+  "observed_utc": "2026-10-29T04:52:05.504923+00:00",
+  "inventory_sha256": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
+  "low_hotel_intervals": 6,
+  "additional_low_shoppes_intervals": 2,
+  "tall_casino_interval_m": 7.5,
+  "intervals_requiring_special_recipe": [
+    {
+      "floor_id": "T1-B2",
+      "elevation_m": -10.0,
+      "upper_floor_id": "T1-B2M",
+      "upper_elevation_m": -7.5,
+      "actual_inventory_rise_m": 2.5,
+      "source_height_status": "RECONSTRUCTED_NOT_SURVEYED",
+      "existing_full_recipe_clear_height_plus_slab_m": 3.28,
+      "program": "hotel_service_basement",
+      "required_names": [
+        "service_corridor",
+        "linen_laundry_transfer",
+        "engineering_store",
+        "staff_changing",
+        "staff_pantry",
+        "plant",
+        "service_lifts",
+        "stairs"
+      ],
+      "scope": "NEW_HOTEL_PARTIAL_FACTORY"
+    },
+    {
+      "floor_id": "T1-B2M",
+      "elevation_m": -7.5,
+      "upper_floor_id": "T1-B1",
+      "upper_elevation_m": -5.0,
+      "actual_inventory_rise_m": 2.5,
+      "source_height_status": "RECONSTRUCTED_NOT_SURVEYED",
+      "existing_full_recipe_clear_height_plus_slab_m": 3.28,
+      "program": "hotel_service_basement",
+      "required_names": [
+        "service_corridor",
+        "linen_laundry_transfer",
+        "engineering_store",
+        "staff_changing",
+        "staff_pantry",
+        "plant",
+        "service_lifts",
+        "stairs"
+      ],
+      "scope": "NEW_HOTEL_PARTIAL_FACTORY"
+    },
+    {
+      "floor_id": "T2-B2",
+      "elevation_m": -10.0,
+      "upper_floor_id": "T2-B2M",
+      "upper_elevation_m": -7.5,
+      "actual_inventory_rise_m": 2.5,
+      "source_height_status": "RECONSTRUCTED_NOT_SURVEYED",
+      "existing_full_recipe_clear_height_plus_slab_m": 3.28,
+      "program": "hotel_service_basement",
+      "required_names": [
+        "service_corridor",
+        "linen_laundry_transfer",
+        "engineering_store",
+        "staff_changing",
+        "staff_pantry",
+        "plant",
+        "service_lifts",
+        "stairs"
+      ],
+      "scope": "NEW_HOTEL_PARTIAL_FACTORY"
+    },
+    {
+      "floor_id": "T2-B2M",
+      "elevation_m": -7.5,
+      "upper_floor_id": "T2-B1",
+      "upper_elevation_m": -5.0,
+      "actual_inventory_rise_m": 2.5,
+      "source_height_status": "RECONSTRUCTED_NOT_SURVEYED",
+      "existing_full_recipe_clear_height_plus_slab_m": 3.28,
+      "program": "hotel_service_basement",
+      "required_names": [
+        "service_corridor",
+        "linen_laundry_transfer",
+        "engineering_store",
+        "staff_changing",
+        "staff_pantry",
+        "plant",
+        "service_lifts",
+        "stairs"
+      ],
+      "scope": "NEW_HOTEL_PARTIAL_FACTORY"
+    },
+    {
+      "floor_id": "T3-B2",
+      "elevation_m": -10.0,
+      "upper_floor_id": "T3-B2M",
+      "upper_elevation_m": -7.5,
+      "actual_inventory_rise_m": 2.5,
+      "source_height_status": "RECONSTRUCTED_NOT_SURVEYED",
+      "existing_full_recipe_clear_height_plus_slab_m": 3.28,
+      "program": "hotel_service_basement",
+      "required_names": [
+        "service_corridor",
+        "linen_laundry_transfer",
+        "engineering_store",
+        "staff_changing",
+        "staff_pantry",
+        "plant",
+        "service_lifts",
+        "stairs"
+      ],
+      "scope": "NEW_HOTEL_PARTIAL_FACTORY"
+    },
+    {
+      "floor_id": "T3-B2M",
+      "elevation_m": -7.5,
+      "upper_floor_id": "T3-B1",
+      "upper_elevation_m": -5.0,
+      "actual_inventory_rise_m": 2.5,
+      "source_height_status": "RECONSTRUCTED_NOT_SURVEYED",
+      "existing_full_recipe_clear_height_plus_slab_m": 3.28,
+      "program": "hotel_service_basement",
+      "required_names": [
+        "service_corridor",
+        "linen_laundry_transfer",
+        "engineering_store",
+        "staff_changing",
+        "staff_pantry",
+        "plant",
+        "service_lifts",
+        "stairs"
+      ],
+      "scope": "NEW_HOTEL_PARTIAL_FACTORY"
+    },
+    {
+      "floor_id": "SHOPPES-B2",
+      "elevation_m": -10.0,
+      "upper_floor_id": "SHOPPES-B2M",
+      "upper_elevation_m": -7.5,
+      "actual_inventory_rise_m": 2.5,
+      "source_height_status": "RECONSTRUCTED_NOT_SURVEYED",
+      "existing_full_recipe_clear_height_plus_slab_m": 3.28,
+      "program": "retail_galleria",
+      "required_names": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing",
+        "retail_units",
+        "restaurant_seating",
+        "retail_service_stores"
+      ],
+      "scope": "ROOT_RESORT_MAPPING_AND_RECIPE_REQUIRED"
+    },
+    {
+      "floor_id": "SHOPPES-B2M",
+      "elevation_m": -7.5,
+      "upper_floor_id": "SHOPPES-B1",
+      "upper_elevation_m": -5.0,
+      "actual_inventory_rise_m": 2.5,
+      "source_height_status": "RECONSTRUCTED_NOT_SURVEYED",
+      "existing_full_recipe_clear_height_plus_slab_m": 3.28,
+      "program": "coach_entry",
+      "required_names": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "scope": "ROOT_RESORT_MAPPING_AND_RECIPE_REQUIRED"
+    },
+    {
+      "floor_id": "CASINO-B2M",
+      "elevation_m": -7.5,
+      "upper_floor_id": "CASINO-L1",
+      "upper_elevation_m": 0.0,
+      "actual_inventory_rise_m": 7.5,
+      "source_height_status": "RECONSTRUCTED_NOT_SURVEYED",
+      "existing_full_recipe_clear_height_plus_slab_m": 3.28,
+      "program": "casino_gaming",
+      "required_names": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "scope": "ROOT_RESORT_MAPPING_AND_RECIPE_REQUIRED"
+    }
+  ],
+  "missing_resort_mappings": [
+    {
+      "floor_id": "SHOPPES-B5",
+      "building": "SHOPPES",
+      "elevation_m": -22.5,
+      "program": "back_of_house_parking_loading",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "SHOPPES-B4",
+      "building": "SHOPPES",
+      "elevation_m": -18.5,
+      "program": "back_of_house_parking_loading",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "SHOPPES-B3",
+      "building": "SHOPPES",
+      "elevation_m": -14.5,
+      "program": "back_of_house_parking_loading",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "SHOPPES-B2",
+      "building": "SHOPPES",
+      "elevation_m": -10.0,
+      "program": "retail_galleria",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing",
+        "retail_units",
+        "restaurant_seating",
+        "retail_service_stores"
+      ],
+      "source_fact_ids": [
+        "MBS-KIOSK"
+      ],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "SHOPPES-B2M",
+      "building": "SHOPPES",
+      "elevation_m": -7.5,
+      "program": "coach_entry",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [
+        "MBS-KIOSK"
+      ],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "SHOPPES-B1",
+      "building": "SHOPPES",
+      "elevation_m": -5.0,
+      "program": "retail_galleria",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing",
+        "retail_units",
+        "restaurant_seating",
+        "retail_service_stores"
+      ],
+      "source_fact_ids": [
+        "MBS-KIOSK"
+      ],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "SHOPPES-L1",
+      "building": "SHOPPES",
+      "elevation_m": 0.0,
+      "program": "retail_galleria",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing",
+        "retail_units",
+        "restaurant_seating",
+        "retail_service_stores"
+      ],
+      "source_fact_ids": [
+        "MBS-KIOSK"
+      ],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "EXPO-B2",
+      "building": "EXPO",
+      "elevation_m": -10.0,
+      "program": "back_of_house_parking_loading",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "EXPO-B1",
+      "building": "EXPO",
+      "elevation_m": -5.0,
+      "program": "back_of_house_parking_loading",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "EXPO-L1",
+      "building": "EXPO",
+      "elevation_m": 0.0,
+      "program": "expo_public_program",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "EXPO-L2",
+      "building": "EXPO",
+      "elevation_m": 5.0,
+      "program": "expo_public_program",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "EXPO-L3",
+      "building": "EXPO",
+      "elevation_m": 8.45,
+      "program": "fitness_centre",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [
+        "MBS-FITNESS"
+      ],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "EXPO-L4",
+      "building": "EXPO",
+      "elevation_m": 11.9,
+      "program": "expo_public_program",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "EXPO-L5",
+      "building": "EXPO",
+      "elevation_m": 15.35,
+      "program": "expo_public_program",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "CASINO-B2M",
+      "building": "CASINO",
+      "elevation_m": -7.5,
+      "program": "casino_gaming",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "CASINO-L1",
+      "building": "CASINO",
+      "elevation_m": 0.0,
+      "program": "casino_gaming",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "CASINO-L2",
+      "building": "CASINO",
+      "elevation_m": 5.0,
+      "program": "casino_gaming",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "CASINO-L3",
+      "building": "CASINO",
+      "elevation_m": 8.45,
+      "program": "casino_gaming",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "CASINO-L4",
+      "building": "CASINO",
+      "elevation_m": 11.9,
+      "program": "casino_public_program",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "THEATRE-B1",
+      "building": "THEATRE",
+      "elevation_m": -5.0,
+      "program": "back_of_house_parking_loading",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "THEATRE-L1",
+      "building": "THEATRE",
+      "elevation_m": 0.0,
+      "program": "theatre_public_program",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "THEATRE-L2",
+      "building": "THEATRE",
+      "elevation_m": 5.0,
+      "program": "theatre_public_program",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "MUSEUM-B2",
+      "building": "MUSEUM",
+      "elevation_m": -10.0,
+      "program": "back_of_house_parking_loading",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "MUSEUM-B1",
+      "building": "MUSEUM",
+      "elevation_m": -5.0,
+      "program": "back_of_house_parking_loading",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "MUSEUM-L1",
+      "building": "MUSEUM",
+      "elevation_m": 0.0,
+      "program": "museum_public_program",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "MUSEUM-L2",
+      "building": "MUSEUM",
+      "elevation_m": 5.0,
+      "program": "museum_public_program",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    },
+    {
+      "floor_id": "MUSEUM-L3",
+      "building": "MUSEUM",
+      "elevation_m": 8.45,
+      "program": "museum_public_program",
+      "rooms_required": [
+        "public_circulation",
+        "service_circulation",
+        "toilets",
+        "staff_lift_landing",
+        "public_stairs_lift_landing"
+      ],
+      "source_fact_ids": [],
+      "explicit_geometry_present": false,
+      "mapping_source_coordinates": null
+    }
+  ],
+  "missing_mapping_count": 27,
+  "resort_building_counts": {
+    "SHOPPES": 7,
+    "EXPO": 7,
+    "CASINO": 5,
+    "THEATRE": 3,
+    "MUSEUM": 5
+  },
+  "permanent_empty_fallback_authorized": false,
+  "full_building_complete": false
+}

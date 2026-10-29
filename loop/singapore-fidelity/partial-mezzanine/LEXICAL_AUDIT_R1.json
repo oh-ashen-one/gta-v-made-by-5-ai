@@ -1,0 +1,9 @@
+{
+  "observed_utc": "2026-10-29T04:52:05.507971+00:00",
+  "scope_findings": {
+    "game/src/world/mbs_interior/partial_mezzanine.gd": [],
+    "game/src/systems/fidelity_tests/mbs_partial_mezzanine_test.gd": []
+  },
+  "engine_parse_verified": false,
+  "native_verified": false
+}
