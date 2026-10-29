@@ -179,7 +179,7 @@ func run()->void:
 	if not await _rooms_and_doors(mezz):finish();return
 	if not await _stair_between(mezz,upper,true):finish();return
 	var receiving:Dictionary=runtime.inspect_player(player)
-	check("actual native upper B1 receiving floor supports player",receiving.get("ok",false) and receiving.support.floor_id==selected_tower+"-B1" and player.is_on_floor() and Game.death_count==0,receiving)
+	check("actual native upper B1 receiving floor supports player",receiving.get("ok",false) and receiving.support.floor_id==selected_tower+"-B1" and player.is_on_floor() and Game.death_count==0,str(receiving))
 	if not await _stair_between(mezz,upper,false):finish();return
 	if not await _stair_between(lower,mezz,false):finish();return
 	check("continuous low service rooms/crosslinks/Ustairs return without teleport",travel>100 and max_step<.5 and Game.death_count==0 and player.global_position.y<1.0)

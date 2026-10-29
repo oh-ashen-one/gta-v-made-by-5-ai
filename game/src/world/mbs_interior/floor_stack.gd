@@ -75,7 +75,7 @@ func configure(frame: RefCounted,context: RefCounted,runtime: Node3D,base_elevat
 		if not key in ["max_active_floors","max_pending_requests","auto_stream","geometry_overrides","resort_mappings","unload_guard","public_core_connections","public_arrival_corridor"]: last_error="Unknown stack option";return false
 	var active: Variant=options.get("max_active_floors",6)
 	var pending: Variant=options.get("max_pending_requests",3)
-	if not typeof(active)==TYPE_INT or active<3 or active>12 or not typeof(pending)==TYPE_INT or pending<1 or pending>4 or typeof(options.get("auto_stream",true))!=TYPE_BOOL: last_error="Bounded active/pending floor limits required";return false
+	if not typeof(active)==TYPE_INT or active<3 or active>18 or not typeof(pending)==TYPE_INT or pending<1 or pending>4 or typeof(options.get("auto_stream",true))!=TYPE_BOOL: last_error="Bounded active/pending floor limits required";return false
 	if not options.get("geometry_overrides",{}) is Dictionary or not options.get("resort_mappings",{}) is Dictionary: last_error="Mapping options must be dictionaries";return false
 	if options.has("unload_guard") and (not options.unload_guard is Callable or not options.unload_guard.is_valid()): last_error="Invalid explicit unload guard";return false
 	var public_requests: Variant=options.get("public_core_connections",[])

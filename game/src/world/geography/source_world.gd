@@ -322,9 +322,10 @@ func _build_mbs() -> Dictionary:
 	floor_stack.name = "SourceMBSFloorStack"
 	add_child(floor_stack)
 	# All three pinned L1s protect their B1/L2neighbors: nine actual floors.
-	# Leave three additional slots for one actor's active neighboring floor
-	# range. Do not silently drop a tower or weaken floor_ready requirements.
-	if not floor_stack.configure(source_frame,source_context,source_runtime,base,provenance,{"max_active_floors":12,"max_pending_requests":3,"auto_stream":true,"public_core_connections":connections,"public_arrival_corridor":arrival}): return {"ok":false,"reason":"MBS floor stack rejected shared datum/context"}
+	# Reserve nine more slots for current, open-door/shaft protected and
+	# destination neighborhoods during walking and source-save restoration.
+	# No occupied floor is evicted to force a transition through the budget.
+	if not floor_stack.configure(source_frame,source_context,source_runtime,base,provenance,{"max_active_floors":18,"max_pending_requests":3,"auto_stream":true,"public_core_connections":connections,"public_arrival_corridor":arrival}): return {"ok":false,"reason":"MBS floor stack rejected shared datum/context"}
 	for tower in ["T1","T2","T3"]:
 		var floor_result: Dictionary = await floor_stack.ensure_floor(tower+"-L1")
 		if not floor_result.get("ready",false): return {"ok":false,"reason":str(floor_result)}

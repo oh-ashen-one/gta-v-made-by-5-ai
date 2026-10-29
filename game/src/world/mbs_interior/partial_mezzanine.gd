@@ -137,7 +137,7 @@ func _low_lifts(kit,wing:Dictionary,g:Dictionary)->void:
 		var kind:String="guest_lift" if index==0 else "service_lift";var cx:float=x+(-1.3 if index==0 else 1.3)
 		var id:String=String(floor_record.id)+"-"+String(wing.id)+"-"+kind
 		_solid(kit,id+"LowHeader",Looks.get_mat("steel_satin"),Vector3(cx,PASSAGE_HEIGHT+HEADER_HEIGHT*.5,z),Vector3(DOOR_WIDTH,HEADER_HEIGHT,.15))
-		_low_door(id,Vector3(cx-DOOR_WIDTH*.5,0,z),kind,-side)
+		_low_door(id,Vector3(cx-DOOR_WIDTH*.5,0,z),kind,side)
 		portals.append({"id":id,"kind":kind,"wing":wing.id,"landing":Vector3(cx,0,z-side*.60),"threshold":Vector3(cx,0,z),"cabin_expected_center":Vector3(cx,0,z+side*1.4),"core_door_height_m":PASSAGE_HEIGHT,"clear_height_m":SERVICE_CLEAR,"requires_physical_cabin":true,"loaded_collision_required":true,"actor_teleport":false})
 
 func _gallery_guards(kit)->void:
