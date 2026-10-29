@@ -135,6 +135,18 @@ func run() -> void:
 	var idle_position := player.global_position
 	var idle_restored: Dictionary = runtime.restore_player_pose(player, idle_saved.pose) if idle_saved.get("ok", false) else {}
 	check("immediate idle resting pose restores at exact savedY without a walking prerequisite", idle_restored.get("status") == "applied" and player.global_position == idle_position, idle_restored)
+	var mag_before_death: int = Game.current_mag()
+	Game.damage_player(Game.MAX_HEALTH)
+	for action in ["move_forward", "interact", "fire", "weapon_next"]: Input.action_press(action)
+	await frames(12)
+	for action in ["move_forward", "interact", "fire", "weapon_next"]: Input.action_release(action)
+	check("real source death without recovery service holds movement and gameplay inputs", Game.health == 0.0 and not player.alive and player.global_position == idle_position and player.current_vehicle == null and Game.current_mag() == mag_before_death and Game.death_count == before_deaths)
+	# Explicit QA recovery of this negative case, not a service-recovery claim.
+	Game.health = Game.MAX_HEALTH
+	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
+	var negative_reset: Dictionary = runtime.restore_player_pose(player, idle_saved.pose)
+	player.reset_action_state(false)
+	check("negative-case QA reset uses checked native source pose", negative_reset.get("status") == "applied" and player.alive)
 	metrics["idle_resting_clearance"] = {"state": state.clearance, "position_xyz": [idle_position.x, idle_position.y, idle_position.z], "native": runtime.native_clearance_diagnostics.duplicate(true)}
 	for blocked_case in [
 		{"name": "same-support-body ceiling", "position": Vector3(1495, idle_position.y, 6)},
@@ -176,6 +188,14 @@ func run() -> void:
 	heli.interact(player)
 	await frames(4)
 	check("actual production boarding owns player proxy", player.current_vehicle == heli and heli.pilot_is_player)
+	var occupied_pose := heli.global_position
+	Game.damage_player(Game.MAX_HEALTH)
+	Input.action_press("move_forward")
+	await frames(12)
+	Input.action_release("move_forward")
+	check("dead occupied source pilot cannot drive while recovery is pending", Game.health == 0.0 and heli.global_position == occupied_pose and player.current_vehicle == heli and heli.pilot_is_player)
+	Game.health = Game.MAX_HEALTH
+	Events.health_changed.emit(Game.health, Game.MAX_HEALTH)
 	heli.exit_vehicle(player)
 	await frames(8)
 	check("actual production exit returns player to basement floor without water-plane rejection", player.current_vehicle == null and not heli.pilot_is_player and player.global_position.y < -19.8 and Game.health == Game.MAX_HEALTH, player.global_position)

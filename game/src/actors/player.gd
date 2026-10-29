@@ -326,6 +326,7 @@ func _ensure_walk_action() -> void:
 		InputMap.action_add_event("walk_toggle", caps)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if uses_source_world and Game.source_controls_held(): return
 	if Game.simulation_paused:
 		return
 	if event.is_action_pressed("walk_toggle"):
@@ -354,6 +355,10 @@ func _apply_mouse_look(relative: Vector2) -> void:
 	pitch = clampf(pitch - dy, -1.25, 0.85)
 
 func _physics_process(delta: float) -> void:
+	if uses_source_world and Game.source_controls_held():
+		velocity = Vector3.ZERO
+		_speed = 0.0
+		return
 	if uses_source_world and not is_instance_valid(source_world_runtime):
 		velocity = Vector3.ZERO
 		_speed = 0.0
@@ -885,6 +890,9 @@ func _interaction_visible(target: Node3D) -> bool:
 	return get_world_3d().direct_space_state.intersect_ray(ray).is_empty()
 
 func _process(_delta: float) -> void:
+	if uses_source_world and Game.source_controls_held():
+		_press_queue.clear()
+		return
 	if Game.simulation_paused:
 		return
 	if current_vehicle == null and not busy:

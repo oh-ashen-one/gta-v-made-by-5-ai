@@ -270,6 +270,10 @@ func _body_color() -> Color:
 		_: return Color(0.30, 0.36, 0.42)
 
 func _physics_process(delta: float) -> void:
+	if uses_source_world and driver_is_player and Game.source_controls_held():
+		velocity = Vector3.ZERO
+		_forward = 0.0
+		return
 	if uses_source_world and not is_instance_valid(source_world_runtime):
 		_hold_source_motion()
 		return

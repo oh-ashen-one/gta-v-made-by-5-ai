@@ -18,6 +18,15 @@ var _save_path: String = SAVE_PATH
 # Source geography has its own versioned slot and checked restore service.
 # Keeping this separate prevents legacy local XYZ from becoming map positions.
 var _source_session: Object
+var _source_recovery_hold := false
+
+func source_controls_held() -> bool:
+	return health <= 0.0 or _source_recovery_hold
+
+func set_source_recovery_hold(service: Object, held: bool) -> bool:
+	if service == null or service != _bound_source_session(): return false
+	_source_recovery_hold = held
+	return true
 
 func save_slot_path() -> String:
 	return _save_path
@@ -28,7 +37,12 @@ func _source_player() -> Player:
 
 func install_source_session(service: Object) -> bool:
 	var body := _source_player()
-	if body == null or not is_instance_valid(service) or not service.has_method("is_bound_to") or not service.is_bound_to(body.source_world_runtime, body): return false
+	if body == null or not is_instance_valid(service): return false
+	for method in ["is_bound_to", "metadata", "save", "load", "has_save", "capture_anchor", "request_recovery", "retry_pending"]:
+		if not service.has_method(method): return false
+	if not service.is_bound_to(body.source_world_runtime, body): return false
+	var info: Variant = service.metadata()
+	if not info is Dictionary or not info.get("slot_path") is String or info.slot_path.is_empty(): return false
 	if is_instance_valid(_source_session) and _source_session != service: return false
 	_source_session = service
 	return true
@@ -36,6 +50,7 @@ func install_source_session(service: Object) -> bool:
 func uninstall_source_session(expected: Object) -> bool:
 	if _source_session != expected: return false
 	_source_session = null
+	_source_recovery_hold = false
 	return true
 
 func _bound_source_session() -> Object:
@@ -45,8 +60,9 @@ func _bound_source_session() -> Object:
 
 func _source_slot_request(path: String, service: Object) -> bool:
 	if path.is_empty(): return true
-	var info: Dictionary = service.metadata()
-	return info.get("slot_path", "") != "" and ProjectSettings.globalize_path(path).simplify_path() == ProjectSettings.globalize_path(info.slot_path).simplify_path()
+	var info: Variant = service.metadata()
+	if not info is Dictionary or not info.get("slot_path") is String or info.slot_path.is_empty(): return false
+	return ProjectSettings.globalize_path(path).simplify_path() == ProjectSettings.globalize_path(info.slot_path).simplify_path()
 
 func recover_disabled_aircraft() -> bool:
 	if _source_player() != null:

@@ -290,6 +290,9 @@ func _paint_finish(node: Node) -> void:
 			_paint_finish(child)
 
 func _physics_process(delta: float) -> void:
+	if uses_source_world and pilot_is_player and Game.source_controls_held():
+		velocity = Vector3.ZERO
+		return
 	if uses_source_world and not is_instance_valid(source_world_runtime):
 		velocity = Vector3.ZERO
 		return
