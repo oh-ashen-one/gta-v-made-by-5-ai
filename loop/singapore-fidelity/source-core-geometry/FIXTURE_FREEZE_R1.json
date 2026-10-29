@@ -1,0 +1,58 @@
+{
+  "schema": "source_core_geometry_fixture_freeze_v1",
+  "observed_utc": "2026-10-29T15:33:28.438663+00:00",
+  "status": "LEXICAL_REVIEW_ONLY_NATIVE_IMPORT_AND_RUN_PENDING_ROOT",
+  "source_sha256": {
+    "game/src/world/mbs_interior/source_core_geometry.gd": "1ed30b81150cb57c05b7fd69d4bff186821b10320320d83c29874f6e3eb95a30",
+    "game/src/world/mbs_interior/source_stair_gates.gd": "42773c3837f3459a3579685cec5ddc3d0858755d27344baca04a46cffa7971df",
+    "game/src/world/mbs_interior/source_core_layout.gd": "212426ea1b27e4d1e612c64593975666c2a13475795ef090decc503ca295900d",
+    "game/src/systems/fidelity_tests/mbs_source_core_geometry_test.gd": "67fee28511612e5f388ff57497653a0bc671f7a068f0c45b10eff7e67ded8c57",
+    "game/src/systems/fidelity_tests/mbs_source_core_geometry_test.tscn": "316128ae3581ce782f9d908d02905b6074451e6e6f65f844cc230042c949d72c"
+  },
+  "lexical_brackets": "balanced",
+  "native_engine_launched": false,
+  "root_required_variants": [
+    "normal",
+    "low"
+  ],
+  "native_wall_bound_s": 720,
+  "recommended_outer_bound_s": 780,
+  "fixtures": {
+    "normal": [
+      "T3-L47",
+      "T3-L48",
+      "T3-L49"
+    ],
+    "low": [
+      "T3-B2",
+      "T3-B2M",
+      "T3-B1"
+    ]
+  },
+  "planned_checks": [
+    "Actual source T3 individual axis transform, same Context/Runtime and country domain",
+    "Complete three-core native body union includes all moving gates",
+    "Four lift shaft slab holes and incoming stair openings stay physically open",
+    "Receiving-floor owns exactly one native arrival landing; lower floor adds no duplicate",
+    "Upward native rays on both differently rotated U-stairs and both physical flights",
+    "Strict changed-portal refusal before scene mutation",
+    "Gates remain unready until actual region support commits; disabled actual receiver revokes readiness",
+    "Actual native closed leaves seal declared source-pose openings",
+    "Real normal2.35m and low2.10m receiver-height leaves",
+    "Production Player native walk hall/eastU/nativeE/upperhall/nativeE/westU/hall, one setup spawn",
+    "Rear midlanding local z4.67 proves full capsule headroom beyond centre-only z4.5 route"
+  ],
+  "geometry_review": {
+    "reported_headroom_defect": "Old cutout end5.00m intruded into full capsule rear landing envelope. Root now cuts to full5.10m.",
+    "coincident_geometry_fix": "Root removed lower-floor upperlanding and slab overlap; true receiver owns its landing. Fixture checks actual body and single contact.",
+    "winding": "Ramp triangles use existing Kit.col_trimesh double-sided collision, not a new culling workaround. Fixture requires real upward native support on both return directions.",
+    "no_new_blocker_found_after_source_review": true
+  },
+  "scope_limitations": [
+    "Core-only fixture deliberately has no guest/program rooms or full exterior shell",
+    "Third actual core module terminates outgoing construction at fixture boundary, explicitly has_upper_floor=false; no further tower acceptance",
+    "Native parse, movement and rendering are unverified until Root runs them",
+    "No all-tower, whole-hotel, gameplay-performance, human-play or full-goal completion claim"
+  ],
+  "child_engine_gpu_git_actions": false
+}
