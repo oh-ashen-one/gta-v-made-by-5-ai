@@ -29,6 +29,9 @@ var _identity: Dictionary = {}
 var _profile: Dictionary = {}
 var _providers: Dictionary = {}
 var _floors: Dictionary = {}
+## Immutable registration-derived reject bounds only. Not a dry-area result,
+## source record, observation identity or inter-frame physics/readiness cache.
+var _dry_floor_bounds: Dictionary = {}
 var _registry_revision := 0
 var _sha_re := RegEx.new()
 
@@ -235,6 +238,7 @@ func register_floor(definition: Variant) -> bool:
 		return false
 	_floors[key] = {"feature_id": definition.feature_id, "floor_id": definition.floor_id,
 		"geometry_sha256": definition.geometry_sha256, "support_ids": ids, "volumes": volumes, "provenance": definition.provenance}
+	_dry_floor_bounds[key] = _dry_union_bounds(volumes)
 	_registry_revision += 1
 	last_error = ""
 	return true
@@ -271,9 +275,60 @@ func _floor_contains(floor: Dictionary, point: Array) -> bool:
 		if _inside(point, volume): return true
 	return false
 
+## Conservative enclosure of the EXACT accepted oriented predicate. The basis
+## is allowed its existing1e-12 orthogonality/unit tolerance; therefore use
+## the inverse2x2 projection, not an assumed exact transpose. Existing epsilon
+## is point-dependent, so bound it over the same finite canonical domain.
+func _dry_union_bounds(volumes: Array[Dictionary]) -> Dictionary:
+	var lower: Array[float] = [INF,INF,INF]
+	var upper: Array[float] = [-INF,-INF,-INF]
+	var any_dry := false
+	for volume: Dictionary in volumes:
+		if not volume.dry: continue
+		var minimum: Array
+		var maximum: Array
+		if volume.has("schema"):
+			var x: Array = volume.axis_x_xyz
+			var z: Array = volume.axis_z_xyz
+			var half: Array = volume.half_extents_xyz
+			var center: Array = volume.center_xyz
+			var determinant := absf(float(x[0])*float(z[2])-float(x[2])*float(z[0]))
+			var epsilon_cap := DOUBLE_ROUNDING_FACTOR*Frame.MAX_CANONICAL_COMPONENT_M+OBOX_BASIS_TOLERANCE*(float(half[0])+float(half[2]))
+			var along_x: float = float(half[0])+epsilon_cap
+			var along_z: float = float(half[2])+epsilon_cap
+			var radius: Array[float] = [(absf(float(z[2]))*along_x+absf(float(x[2]))*along_z)/determinant,float(half[1])+epsilon_cap,(absf(float(z[0]))*along_x+absf(float(x[0]))*along_z)/determinant]
+			var magnitude := Frame.MAX_CANONICAL_COMPONENT_M
+			for axis in 3: magnitude = maxf(magnitude,absf(float(center[axis]))+radius[axis])
+			# Outward-only double arithmetic allowance for projection inversion
+			# and center±radius. False candidates still take exact _inside below.
+			var outward: float = DOUBLE_ROUNDING_FACTOR*(Frame.MAX_CANONICAL_COMPONENT_M+magnitude)
+			minimum = []; maximum = []
+			for axis in 3:
+				minimum.append(float(center[axis])-radius[axis]-outward)
+				maximum.append(float(center[axis])+radius[axis]+outward)
+		else:
+			minimum = volume.min_xyz
+			maximum = volume.max_xyz
+		for axis in 3:
+			lower[axis] = minf(lower[axis],float(minimum[axis]))
+			upper[axis] = maxf(upper[axis],float(maximum[axis]))
+		any_dry = true
+	return {"minimum":lower,"maximum":upper} if any_dry else {}
+
+func _dry_bounds_contains(point: Array,bounds: Dictionary) -> bool:
+	if bounds.is_empty(): return false
+	for axis in 3:
+		if float(point[axis])<float(bounds.minimum[axis]) or float(point[axis])>float(bounds.maximum[axis]): return false
+	return true
+
 func _dry_matches(point: Array) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	for floor: Dictionary in _floors.values():
+	for key in _floors:
+		var bounds: Variant = _dry_floor_bounds.get(key)
+		if bounds is Dictionary and not _dry_bounds_contains(point,bounds): continue
+		# A missing derived entry takes the old exhaustive path, never silently
+		# drops a registered floor. Normal immutable registration creates it.
+		var floor: Dictionary = _floors[key]
 		for volume: Dictionary in floor.volumes:
 			if volume.dry and _inside(point, volume): result.append({"feature_id": floor.feature_id, "floor_id": floor.floor_id, "volume_id": volume.volume_id, "provenance": floor.provenance})
 	return result

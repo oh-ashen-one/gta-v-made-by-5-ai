@@ -131,6 +131,7 @@ func _run() -> void:
 	_adversarial_checks()
 	_provider_key_spelling_checks()
 	_oriented_volume_checks()
+	_dry_broadphase_checks()
 	_transition_checks()
 	await _native_basement_checks()
 	await _native_oriented_basement_checks()
@@ -556,6 +557,118 @@ func _oriented_volume_checks() -> void:
 	check("PackedFloat64 oriented inputs normalize safely", packed.context.register_floor(_oriented_floor(packed_volume)) and _state_is(_oriented_state(packed.context, volume.center_xyz), "water", "dry_indoor"))
 	packed_volume.center_xyz[0] += 100.0
 	check("oriented registered arrays do not alias caller input", packed.context.floor_record(FEATURE, ROTATED_FLOOR).floor.volumes[0].center_xyz[0] == BASE[0])
+
+## Independent exhaustive reference is the original production algorithm.
+## It deliberately never reads the new floor bounds.
+func _exhaustive_dry_matches(context: Variant,point: Array) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for floor: Dictionary in context._floors.values():
+		for volume: Dictionary in floor.volumes:
+			if volume.dry and context._inside(point,volume): result.append({"feature_id":floor.feature_id,"floor_id":floor.floor_id,"volume_id":volume.volume_id,"provenance":floor.provenance})
+	return result
+
+func _dry_parity(label: String,context: Variant,point: Array) -> void:
+	var fast: Array = context._dry_matches(point)
+	var exhaustive: Array = _exhaustive_dry_matches(context,point)
+	check("dry broadphase parity "+label,fast==exhaustive,"" if fast==exhaustive else JSON.stringify({"point":point,"fast":fast,"exhaustive":exhaustive},"",true,true))
+
+func _dry_broadphase_checks() -> void:
+	var fixture: Dictionary = _fixture(false)
+	var context: Variant = fixture.context
+	var aabb: Dictionary = _floor_definition("qa-only/broad-aabb")
+	check("dry broadphase AABB registers",context.register_floor(aabb))
+	var rotated: Dictionary = _oriented_volume()
+	var oriented: Dictionary = _oriented_floor(rotated)
+	oriented.floor_id = "qa-only/broad-rotated"
+	check("dry broadphase rotated floor registers",context.register_floor(oriented))
+	var record: Dictionary = context.floor_record(FEATURE,oriented.floor_id)
+	for x in [-10.001,-10.0,-9.999,0.0,9.999,10.0,10.001]:
+		for z in [-2.001,-2.0,0.0,2.0,2.001]: _dry_parity("rotated "+str([x,z]),context,_oriented_source(rotated,[x,0.0,z]))
+	for y in [-1.301,-1.3,0.0,1.3,1.301]: _dry_parity("inclusive Y "+str(y),context,_oriented_source(rotated,[10.0,y,2.0]))
+	for point in [aabb.volumes[0].min_xyz,aabb.volumes[0].max_xyz,[BASE[0]-12.000001,-19.2,BASE[2]],[BASE[0]+12.000001,-19.2,BASE[2]],[BASE[0],-20.500001,BASE[2]]]: _dry_parity("exact AABB boundary/outside",context,point)
+	var disjoint: Dictionary = _floor_definition("qa-only/disjoint-dry")
+	disjoint.volumes = [{"volume_id":"left","min_xyz":[BASE[0]+40.0,-20.0,BASE[2]-2.0],"max_xyz":[BASE[0]+44.0,-18.0,BASE[2]+2.0],"dry":true},{"volume_id":"right","min_xyz":[BASE[0]+60.0,-20.0,BASE[2]-2.0],"max_xyz":[BASE[0]+64.0,-18.0,BASE[2]+2.0],"dry":true},{"volume_id":"wet-gap","min_xyz":[BASE[0]+44.0,-20.0,BASE[2]-2.0],"max_xyz":[BASE[0]+60.0,-18.0,BASE[2]+2.0],"dry":false}]
+	context.register_floor(disjoint)
+	var gap: Array = [BASE[0]+50.0,-19.0,BASE[2]]
+	check("floor union enclosure never certifies gap dry",context._dry_bounds_contains(gap,context._dry_floor_bounds[context._floor_key(FEATURE,disjoint.floor_id)]) and context._dry_matches(gap).is_empty())
+	_dry_parity("disjoint wet gap",context,gap)
+	var wet: Dictionary = _floor_definition("qa-only/all-nondry",false)
+	context.register_floor(wet)
+	check("all-nondry registry has no dry broadphase candidate",context._dry_floor_bounds[context._floor_key(FEATURE,wet.floor_id)].is_empty() and context._floor_contains(context.floor_record(FEATURE,wet.floor_id).floor,[BASE[0],-19.2,BASE[2]]))
+	var before: Dictionary = context.metadata()
+	_dry_parity("outside every floor",context,[BASE[0]+500.0,300.0,BASE[2]-500.0])
+	check("reject bounds do not mutate registry metadata or exact floor records",context.metadata()==before and context.floor_record(FEATURE,oriented.floor_id)==record)
+	var late_point: Array = [BASE[0]+90.0,-19.2,BASE[2]]
+	var old_query: Dictionary = context.begin_query(late_point)
+	var old_observations: Dictionary = _domain(context,old_query.query)
+	var late: Dictionary = _oriented_volume()
+	late.center_xyz[0] += 90.0; late.volume_id = "late-volume"
+	var late_floor: Dictionary = _oriented_floor(late); late_floor.floor_id = "qa-only/late-dry-floor"
+	check("late immutable floor updates broadphase immediately",context._dry_matches(late_point).is_empty() and context.register_floor(late_floor) and not context._dry_matches(late_point).is_empty())
+	_dry_parity("late registration",context,late_point)
+	check("late registration still invalidates older query identity",not context.evaluate(old_query.query,old_observations).ok)
+	var index_before: Dictionary = context._dry_floor_bounds.duplicate(true)
+	check("rejected duplicate floor leaves derived index unchanged",not context.register_floor(late_floor) and context._dry_floor_bounds==index_before)
+	context._dry_floor_bounds.erase(context._floor_key(FEATURE,late_floor.floor_id))
+	_dry_parity("missing derived entry falls back exact",context,late_point)
+
+	# Existing OBox epsilon is larger near the finite canonical limit. Test
+	# accepted just-beyond-nominal faces, never a float32 absolute projection.
+	var limit: Dictionary = _oriented_volume()
+	limit.center_xyz = [0.0,0.0,Frame.MAX_CANONICAL_COMPONENT_M-20.0]
+	limit.half_extents_xyz = [1.0,1.0,1.0]
+	limit.axis_x_xyz = [1.0,0.0,0.0]; limit.axis_z_xyz = [0.0,0.0,1.0]
+	var limit_floor: Dictionary = _oriented_floor(limit); limit_floor.floor_id = "qa-only/canonical-limit"
+	check("canonical-limit exact volume registers",context.register_floor(limit_floor))
+	var epsilon: float = Context.DOUBLE_ROUNDING_FACTOR*Frame.MAX_CANONICAL_COMPONENT_M+Context.OBOX_BASIS_TOLERANCE*2.0
+	for offset in [[1.0+epsilon*.5,0.0,0.0],[0.0,1.0+epsilon*.5,0.0],[0.0,0.0,1.0+epsilon*.5],[1.0+epsilon*4.0,0.0,0.0]]:
+		_dry_parity("existing epsilon at canonical limit",context,_oriented_source(limit,offset))
+	check("broadphase retains existing epsilon-accepted face",not context._dry_matches(_oriented_source(limit,[1.0+epsilon*.5,0.0,0.0])).is_empty())
+	# Accepted near-unit bases require inverse bounds; abs(axis)*half alone
+	# would wrongly reject this valid point beyond a million-metre half axis.
+	var scaled: Dictionary = _oriented_volume()
+	scaled.center_xyz = [3000000.0,-19.2,-2000000.0]
+	scaled.half_extents_xyz = [1000000.0,1.3,2.0]
+	scaled.axis_x_xyz = [1.0-4e-13,0.0,0.0]; scaled.axis_z_xyz = [0.0,0.0,1.0]
+	var scaled_floor: Dictionary = _oriented_floor(scaled); scaled_floor.floor_id = "qa-only/admitted-basis-tolerance"
+	check("existing near-unit basis tolerance stays admitted",context.register_floor(scaled_floor),context.last_error)
+	var inverse_edge: Array = [4000000.0+.0000005,-19.2,-2000000.0]
+	check("inverse broadphase keeps exact admitted-basis edge",context._inside(inverse_edge,scaled) and not context._dry_matches(inverse_edge).is_empty())
+	_dry_parity("near-unit inverse basis",context,inverse_edge)
+	_dry_broadphase_microbenchmark()
+
+func _dry_broadphase_microbenchmark() -> void:
+	var fixture: Dictionary = _fixture(false)
+	var context: Variant = fixture.context
+	var points: Array = []
+	for index in 189:
+		var floor: Dictionary = _floor_definition("qa-only/stacked-"+str(index))
+		var center: Array = [BASE[0]+float(index%3)*80.0,-40.0+float(index/3)*4.0,BASE[2]+float(index%3)*70.0]
+		var volumes: Array = []
+		for part in 8:
+			var volume: Dictionary = _oriented_volume()
+			volume.volume_id = "volume-"+str(part)
+			volume.center_xyz = [float(center[0])+float(part)*1.2,float(center[1]),float(center[2])]
+			volume.half_extents_xyz = [15.0,1.5,12.0]
+			volumes.append(volume)
+		floor.volumes = volumes
+		if not context.register_floor(floor): check("bounded189floor benchmark registration",false,context.last_error); return
+		if index%6==0: points.append(center)
+	var exact_candidate_volumes := 0
+	for point: Array in points:
+		_dry_parity("189floor population",context,point)
+		for key in context._floors:
+			if context._dry_bounds_contains(point,context._dry_floor_bounds[key]): exact_candidate_volumes += context._floors[key].volumes.size()
+	var start: int = Time.get_ticks_usec()
+	var fast_matches := 0
+	for point: Array in points: fast_matches += context._dry_matches(point).size()
+	var fast_us: int = Time.get_ticks_usec()-start
+	start = Time.get_ticks_usec()
+	var slow_matches := 0
+	for point: Array in points: slow_matches += _exhaustive_dry_matches(context,point).size()
+	var exhaustive_us: int = Time.get_ticks_usec()-start
+	check("broadphase prunes exact volume work without dropping matches",fast_matches==slow_matches and exact_candidate_volumes<189*8*points.size()/10)
+	metrics["dry_floor_broadphase"] = {"floor_count":189,"volumes_per_floor":8,"queries":points.size(),"broadphase_us":fast_us,"exhaustive_us":exhaustive_us,"exact_candidate_volumes":exact_candidate_volumes,"exhaustive_volume_checks":189*8*points.size(),"outputs_equal":fast_matches==slow_matches,"timings_shared_CPU_microbenchmark_not_gameplay_fps":true,"public_schema_or_source_record_changed":false,"canonical_Vector3_constructed":false}
 
 func _oriented_volume_negative_checks(context: Variant) -> void:
 	var before: Dictionary = context.metadata()
