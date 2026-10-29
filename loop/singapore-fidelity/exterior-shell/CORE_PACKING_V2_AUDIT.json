@@ -1,0 +1,872 @@
+{
+  "schema": "mbs_source_core_packing_audit_v2",
+  "passed": 29,
+  "failed": 0,
+  "assertions": [
+    {
+      "name": "6 required stable core aliases per tower",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "full physical stair/hinge/query/capsule envelope inside reservation",
+      "passed": true,
+      "detail": {
+        "derived_actual_bounds": [
+          -1.84,
+          -2.0974999999999997,
+          1.84,
+          5.2
+        ],
+        "actual_capsule_radius_m": 0.36,
+        "hinge_frame_clearance_m": 0.1175,
+        "receiving_approach_z_m": -1.7174999999999998
+      }
+    },
+    {
+      "name": "source guard perimeter and outboard hinge match audited recipe",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "open grilles do not overlap adjacent real shafts",
+      "passed": true,
+      "detail": {
+        "shaft_width": 2.6400000000000006,
+        "open_grille_width": 2.7399999999999998,
+        "centres": [
+          -4.5,
+          -1.5,
+          1.5,
+          4.5
+        ]
+      }
+    },
+    {
+      "name": "cabin dimensions agree with audited complete geometry",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T3 complete bank within unchanged source ground and continuous tapered profile",
+      "passed": true,
+      "detail": {
+        "exact_continuous_inverse_swept_rectangle": [
+          [
+            -14.0,
+            8.326668469340861
+          ],
+          [
+            14.0,
+            8.326668469340861
+          ],
+          [
+            14.0,
+            15.799999999999999
+          ],
+          [
+            -14.0,
+            15.799999999999999
+          ]
+        ],
+        "complete_segment_boundary_event_proof": true,
+        "supplemental_sampled_and_critical_sections": 201,
+        "min_sampled_corner_boundary_margin_m": 0.3787355252288531
+      }
+    },
+    {
+      "name": "T3 revised own-axis public void avoids full bank",
+      "passed": true,
+      "detail": {
+        "void_interval": [
+          -5.0,
+          5.0
+        ],
+        "bank_z_interval": [
+          8.6,
+          15.799999999999999
+        ]
+      }
+    },
+    {
+      "name": "T3 operational component polygons inside bank",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T3 no overlap between operational component envelopes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "T3 full-size hall remains inside bank",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T3 stair side approach full capsule clears lifts and open leaves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T3 stair occupancy span encloses both current lane queries",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T2 complete bank within unchanged source ground and continuous tapered profile",
+      "passed": true,
+      "detail": {
+        "exact_continuous_inverse_swept_rectangle": [
+          [
+            -14.0,
+            12.01190928374988
+          ],
+          [
+            14.0,
+            12.01190928374988
+          ],
+          [
+            14.0,
+            24.6
+          ],
+          [
+            -14.0,
+            24.6
+          ]
+        ],
+        "complete_segment_boundary_event_proof": true,
+        "supplemental_sampled_and_critical_sections": 201,
+        "min_sampled_corner_boundary_margin_m": 0.6680809404007814
+      }
+    },
+    {
+      "name": "T2 revised own-axis public void avoids full bank",
+      "passed": true,
+      "detail": {
+        "void_interval": [
+          -10.0,
+          10.0
+        ],
+        "bank_z_interval": [
+          17.4,
+          24.6
+        ]
+      }
+    },
+    {
+      "name": "T2 operational component polygons inside bank",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T2 no overlap between operational component envelopes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "T2 full-size hall remains inside bank",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T2 stair side approach full capsule clears lifts and open leaves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T2 stair occupancy span encloses both current lane queries",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T1 complete bank within unchanged source ground and continuous tapered profile",
+      "passed": true,
+      "detail": {
+        "exact_continuous_inverse_swept_rectangle": [
+          [
+            -14.0,
+            12.452498861277316
+          ],
+          [
+            14.0,
+            12.452498861277316
+          ],
+          [
+            14.0,
+            25.400000000000002
+          ],
+          [
+            -14.0,
+            25.400000000000002
+          ]
+        ],
+        "complete_segment_boundary_event_proof": true,
+        "supplemental_sampled_and_critical_sections": 201,
+        "min_sampled_corner_boundary_margin_m": 0.6175844083365641
+      }
+    },
+    {
+      "name": "T1 revised own-axis public void avoids full bank",
+      "passed": true,
+      "detail": {
+        "void_interval": [
+          -20.35,
+          18.0
+        ],
+        "bank_z_interval": [
+          18.2,
+          25.400000000000002
+        ]
+      }
+    },
+    {
+      "name": "T1 operational component polygons inside bank",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T1 no overlap between operational component envelopes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "T1 full-size hall remains inside bank",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T1 stair side approach full capsule clears lifts and open leaves",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "T1 stair occupancy span encloses both current lane queries",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "old 2.5m spacing rejected",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "concave edge crossing not accepted by corner-only logic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "out-of-source bank negative control",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "towers": [
+    {
+      "tower": "T3",
+      "source_id": "way/172307471",
+      "unchanged_source_ring_sha256": "5ef0471591b0456fdb6e5b174f32a121ec29431ca6ac1495b9fd09799dc1a9a3",
+      "own_ground_ring": [
+        [
+          25.513823816107152,
+          16.178735525228852
+        ],
+        [
+          25.412403662835295,
+          -14.897252237069287
+        ],
+        [
+          -29.13213088153613,
+          -14.903232026281206
+        ],
+        [
+          -29.121549962313665,
+          -11.515676839402577
+        ],
+        [
+          -29.076997455769344,
+          1.3972612296104305
+        ],
+        [
+          -20.74199523510709,
+          1.3955785071449136
+        ],
+        [
+          -20.71176636981706,
+          9.938513908732816
+        ],
+        [
+          -20.682088819103296,
+          16.178735525228852
+        ]
+      ],
+      "bank_polygon": [
+        [
+          -14.0,
+          8.6
+        ],
+        [
+          14.0,
+          8.6
+        ],
+        [
+          14.0,
+          15.799999999999999
+        ],
+        [
+          -14.0,
+          15.799999999999999
+        ]
+      ],
+      "shared_hall": [
+        [
+          -13.75,
+          8.7
+        ],
+        [
+          13.75,
+          8.7
+        ],
+        [
+          13.75,
+          11.299999999999999
+        ],
+        [
+          -13.75,
+          11.299999999999999
+        ]
+      ],
+      "components": [
+        {
+          "id": "lift-4.5",
+          "envelope": [
+            [
+              -5.9,
+              11.299999999999999
+            ],
+            [
+              -3.1,
+              11.299999999999999
+            ],
+            [
+              -3.1,
+              15.299999999999999
+            ],
+            [
+              -5.9,
+              15.299999999999999
+            ]
+          ]
+        },
+        {
+          "id": "lift-1.5",
+          "envelope": [
+            [
+              -2.9,
+              11.299999999999999
+            ],
+            [
+              -0.10000000000000009,
+              11.299999999999999
+            ],
+            [
+              -0.10000000000000009,
+              15.299999999999999
+            ],
+            [
+              -2.9,
+              15.299999999999999
+            ]
+          ]
+        },
+        {
+          "id": "lift1.5",
+          "envelope": [
+            [
+              0.10000000000000009,
+              11.299999999999999
+            ],
+            [
+              2.9,
+              11.299999999999999
+            ],
+            [
+              2.9,
+              15.299999999999999
+            ],
+            [
+              0.10000000000000009,
+              15.299999999999999
+            ]
+          ]
+        },
+        {
+          "id": "lift4.5",
+          "envelope": [
+            [
+              3.1,
+              11.299999999999999
+            ],
+            [
+              5.9,
+              11.299999999999999
+            ],
+            [
+              5.9,
+              15.299999999999999
+            ],
+            [
+              3.1,
+              15.299999999999999
+            ]
+          ]
+        },
+        {
+          "id": "stair-1",
+          "envelope": [
+            [
+              -6.1000000000000005,
+              11.36
+            ],
+            [
+              -6.1000000000000005,
+              15.04
+            ],
+            [
+              -13.600000000000001,
+              15.04
+            ],
+            [
+              -13.600000000000001,
+              11.36
+            ]
+          ]
+        },
+        {
+          "id": "stair1",
+          "envelope": [
+            [
+              6.1000000000000005,
+              15.04
+            ],
+            [
+              6.1000000000000005,
+              11.36
+            ],
+            [
+              13.600000000000001,
+              11.36
+            ],
+            [
+              13.600000000000001,
+              15.04
+            ]
+          ]
+        }
+      ],
+      "minimum_observed_shell_margin_m": 0.3787355252288531,
+      "sections_tested": 201
+    },
+    {
+      "tower": "T2",
+      "source_id": "way/172307472",
+      "unchanged_source_ring_sha256": "53699818bb15b36a2721effdf36eb6c4bbd501c16386e1901f70ebded0a12341",
+      "own_ground_ring": [
+        [
+          30.590053358428676,
+          25.271569095988948
+        ],
+        [
+          30.07958154295823,
+          -25.263437268862823
+        ],
+        [
+          -30.557237869837543,
+          -25.263437268862823
+        ],
+        [
+          -30.479970963107007,
+          -10.245516531452935
+        ],
+        [
+          -30.03673026034136,
+          25.266826434471103
+        ]
+      ],
+      "bank_polygon": [
+        [
+          -14.0,
+          17.4
+        ],
+        [
+          14.0,
+          17.4
+        ],
+        [
+          14.0,
+          24.6
+        ],
+        [
+          -14.0,
+          24.6
+        ]
+      ],
+      "shared_hall": [
+        [
+          -13.75,
+          17.5
+        ],
+        [
+          13.75,
+          17.5
+        ],
+        [
+          13.75,
+          20.1
+        ],
+        [
+          -13.75,
+          20.1
+        ]
+      ],
+      "components": [
+        {
+          "id": "lift-4.5",
+          "envelope": [
+            [
+              -5.9,
+              20.1
+            ],
+            [
+              -3.1,
+              20.1
+            ],
+            [
+              -3.1,
+              24.1
+            ],
+            [
+              -5.9,
+              24.1
+            ]
+          ]
+        },
+        {
+          "id": "lift-1.5",
+          "envelope": [
+            [
+              -2.9,
+              20.1
+            ],
+            [
+              -0.10000000000000009,
+              20.1
+            ],
+            [
+              -0.10000000000000009,
+              24.1
+            ],
+            [
+              -2.9,
+              24.1
+            ]
+          ]
+        },
+        {
+          "id": "lift1.5",
+          "envelope": [
+            [
+              0.10000000000000009,
+              20.1
+            ],
+            [
+              2.9,
+              20.1
+            ],
+            [
+              2.9,
+              24.1
+            ],
+            [
+              0.10000000000000009,
+              24.1
+            ]
+          ]
+        },
+        {
+          "id": "lift4.5",
+          "envelope": [
+            [
+              3.1,
+              20.1
+            ],
+            [
+              5.9,
+              20.1
+            ],
+            [
+              5.9,
+              24.1
+            ],
+            [
+              3.1,
+              24.1
+            ]
+          ]
+        },
+        {
+          "id": "stair-1",
+          "envelope": [
+            [
+              -6.1000000000000005,
+              20.16
+            ],
+            [
+              -6.1000000000000005,
+              23.84
+            ],
+            [
+              -13.600000000000001,
+              23.84
+            ],
+            [
+              -13.600000000000001,
+              20.16
+            ]
+          ]
+        },
+        {
+          "id": "stair1",
+          "envelope": [
+            [
+              6.1000000000000005,
+              23.84
+            ],
+            [
+              6.1000000000000005,
+              20.16
+            ],
+            [
+              13.600000000000001,
+              20.16
+            ],
+            [
+              13.600000000000001,
+              23.84
+            ]
+          ]
+        }
+      ],
+      "minimum_observed_shell_margin_m": 0.6680809404007814,
+      "sections_tested": 201
+    },
+    {
+      "tower": "T1",
+      "source_id": "way/116801004",
+      "unchanged_source_ring_sha256": "a5cae6155cebe0b5250a50d69c9054b3fcee06caccace1db85e36163ce2e10b2",
+      "own_ground_ring": [
+        [
+          29.340128737408392,
+          26.022382058754786
+        ],
+        [
+          29.007681952226015,
+          -26.020140649363626
+        ],
+        [
+          -29.340387015735512,
+          -26.020140649363626
+        ],
+        [
+          -29.299179504286997,
+          -19.787891842472163
+        ],
+        [
+          -29.007940230553245,
+          26.02238205875473
+        ],
+        [
+          14.007606030937435,
+          26.017583563706815
+        ]
+      ],
+      "bank_polygon": [
+        [
+          -14.0,
+          18.2
+        ],
+        [
+          14.0,
+          18.2
+        ],
+        [
+          14.0,
+          25.400000000000002
+        ],
+        [
+          -14.0,
+          25.400000000000002
+        ]
+      ],
+      "shared_hall": [
+        [
+          -13.75,
+          18.3
+        ],
+        [
+          13.75,
+          18.3
+        ],
+        [
+          13.75,
+          20.900000000000002
+        ],
+        [
+          -13.75,
+          20.900000000000002
+        ]
+      ],
+      "components": [
+        {
+          "id": "lift-4.5",
+          "envelope": [
+            [
+              -5.9,
+              20.900000000000002
+            ],
+            [
+              -3.1,
+              20.900000000000002
+            ],
+            [
+              -3.1,
+              24.900000000000002
+            ],
+            [
+              -5.9,
+              24.900000000000002
+            ]
+          ]
+        },
+        {
+          "id": "lift-1.5",
+          "envelope": [
+            [
+              -2.9,
+              20.900000000000002
+            ],
+            [
+              -0.10000000000000009,
+              20.900000000000002
+            ],
+            [
+              -0.10000000000000009,
+              24.900000000000002
+            ],
+            [
+              -2.9,
+              24.900000000000002
+            ]
+          ]
+        },
+        {
+          "id": "lift1.5",
+          "envelope": [
+            [
+              0.10000000000000009,
+              20.900000000000002
+            ],
+            [
+              2.9,
+              20.900000000000002
+            ],
+            [
+              2.9,
+              24.900000000000002
+            ],
+            [
+              0.10000000000000009,
+              24.900000000000002
+            ]
+          ]
+        },
+        {
+          "id": "lift4.5",
+          "envelope": [
+            [
+              3.1,
+              20.900000000000002
+            ],
+            [
+              5.9,
+              20.900000000000002
+            ],
+            [
+              5.9,
+              24.900000000000002
+            ],
+            [
+              3.1,
+              24.900000000000002
+            ]
+          ]
+        },
+        {
+          "id": "stair-1",
+          "envelope": [
+            [
+              -6.1000000000000005,
+              20.96
+            ],
+            [
+              -6.1000000000000005,
+              24.64
+            ],
+            [
+              -13.600000000000001,
+              24.64
+            ],
+            [
+              -13.600000000000001,
+              20.96
+            ]
+          ]
+        },
+        {
+          "id": "stair1",
+          "envelope": [
+            [
+              6.1000000000000005,
+              24.64
+            ],
+            [
+              6.1000000000000005,
+              20.96
+            ],
+            [
+              13.600000000000001,
+              20.96
+            ],
+            [
+              13.600000000000001,
+              24.64
+            ]
+          ]
+        }
+      ],
+      "minimum_observed_shell_margin_m": 0.6175844083365641,
+      "sections_tested": 201
+    }
+  ],
+  "production_geometry_source_sha256": {
+    "cabins.gd": "51cf29891609c50f456b9a94ea4c6126dd85745f5b28c7ef56a06df93bc71122",
+    "guest_floor.gd": "32bd95ffb7eec03e305a017472dc15e72d6007756c1e01a91ba6e4fed99eddd8",
+    "stair_gates.gd": "404a88439e5106b9ab15f8ba5b5b4946e13e7d496e1ed63897835aa5d276b1be"
+  },
+  "helper_sha256": "212426ea1b27e4d1e612c64593975666c2a13475795ef090decc503ca295900d",
+  "runtime_parse_tested": false,
+  "native_collision_or_traversal_verified": false,
+  "current_factories_integrated": false,
+  "continuous_taper_proof": "Exact inverse-affine swept rectangle fully contained in the original source polygon; every segment subdivided at proper, vertex, and collinear boundary events. Samples supplemental only.",
+  "scope": "Source-polygon and operational-envelope packing only. Reconstruction, not private as-built layout."
+}

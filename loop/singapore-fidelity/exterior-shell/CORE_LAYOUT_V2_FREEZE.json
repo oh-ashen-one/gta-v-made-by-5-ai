@@ -1,0 +1,22 @@
+{
+  "schema": "mbs_core_layout_v2_freeze",
+  "frozen_utc": "2026-10-29T14:45:58.667692+00:00",
+  "source_sha256": {
+    "game/src/world/mbs_interior/source_core_layout.gd": "212426ea1b27e4d1e612c64593975666c2a13475795ef090decc503ca295900d",
+    "game/src/world/mbs_interior/exterior_shell.gd": "52c5ea9489fcde981cf9e2d5a6369b6e291d4ef11f011f7c09451535ee1024df",
+    "game/src/systems/fidelity_tests/mbs_source_core_layout_test.gd": "68a6ebd4b4424ffa12cb32f02091e50fb94e30f9bbec228826d068ac33bf7c0c",
+    "game/src/systems/fidelity_tests/mbs_source_core_layout_test.tscn": "32f8011a29f0340562ca0d7c089a28972f35dc7cdf80f185596b4837cd08e7e9",
+    "loop/singapore-fidelity/exterior-shell/audit_core_layout.py": "70de663355a23a193e2324ddae038eed6b3adbc6a8910943850e078d2e23dc2e",
+    "loop/singapore-fidelity/exterior-shell/CORE_LAYOUT_V2_INTEGRATION.md": "8ce1707306849986f9f3f048f51643d42aca43c9aeb4d069714553190a34725f",
+    "loop/singapore-fidelity/exterior-shell/CORE_PACKING_V2_AUDIT.json": "5b80a1657b64ebae65ed536b0f1abdb6037f40b82f196216602543aac6df5e23"
+  },
+  "cpu_checks": {
+    "passed": 29,
+    "failed": 0
+  },
+  "native_fixture_prepared": "res://src/systems/fidelity_tests/mbs_source_core_layout_test.tscn",
+  "engine_launched": false,
+  "current_factory_or_public_mask_integration": false,
+  "native_fit_or_gameplay_claim": false,
+  "parent_owns_git_and_engine": true
+}

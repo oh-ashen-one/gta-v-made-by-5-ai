@@ -1,0 +1,1509 @@
+{
+  "schema": "mbs_persistent_exterior_conflict_audit_v1",
+  "observed_utc": "2026-10-29T06:41:28.245197+00:00",
+  "method": "Local frozen SourceReference and inventory; CPU scalar even-odd polygon/corner-distance audit, no engine/mesh edit. Whole GLB accessor bounds read, not rendered as proof.",
+  "source_data": {
+    "source_url": "https://download.geofabrik.de/asia/malaysia-singapore-brunei.html",
+    "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+    "source_snapshot_utc": "2026-10-27T21:23:59Z",
+    "data_license": "ODbL-1.0",
+    "license_url": "https://www.openstreetmap.org/copyright",
+    "attribution": "\u00a9 OpenStreetMap contributors",
+    "parse_errors": {
+      "area_geometry": 3
+    }
+  },
+  "tower_rows": [
+    {
+      "source_id": "way/172307471",
+      "tower": "T3",
+      "source_centroid_xz": [
+        343.82889930719983,
+        -1077.8979211752164
+      ],
+      "common_local_centroid_xz": [
+        -127.0758342158373,
+        4.286811600926107
+      ],
+      "source_height_m": 193.0,
+      "height_status": "source_tag",
+      "source_footprint_ring_local_xz": [
+        [
+          27.502061989950697,
+          12.503730451971833
+        ],
+        [
+          23.11390563121501,
+          -18.26104461987423
+        ],
+        [
+          -30.909775111860185,
+          -10.741190672469864
+        ],
+        [
+          -30.431897812920447,
+          -7.3874948921168
+        ],
+        [
+          -28.60611011667071,
+          5.395793174270026
+        ],
+        [
+          -20.351058312741255,
+          4.244105471617685
+        ],
+        [
+          -19.142407931136113,
+          12.701163075480054
+        ],
+        [
+          -18.25202028886538,
+          18.877606746921764
+        ]
+      ],
+      "streamed_upper_rectangle_dimensions_m": [
+        56.41184,
+        36.13865
+      ],
+      "upper_rectangle_corners_outside_source": [
+        {
+          "local_corner_xz": [
+            -28.20592,
+            -18.069325
+          ],
+          "shortest_source_boundary_distance_m": 6.885386312248728
+        },
+        {
+          "local_corner_xz": [
+            -28.20592,
+            18.069325
+          ],
+          "shortest_source_boundary_distance_m": 9.736726258422863
+        },
+        {
+          "local_corner_xz": [
+            28.20592,
+            -18.069325
+          ],
+          "shortest_source_boundary_distance_m": 5.013921116449875
+        },
+        {
+          "local_corner_xz": [
+            28.20592,
+            18.069325
+          ],
+          "shortest_source_boundary_distance_m": 5.609478414520217
+        }
+      ],
+      "vertical_void_profile": [
+        {
+          "id": "T3-L1",
+          "elevation_m": 0.0,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L2",
+          "elevation_m": 5.0,
+          "void_active": true,
+          "void_min_z_m": -9.48941,
+          "void_max_z_m": 5.15
+        },
+        {
+          "id": "T3-L3",
+          "elevation_m": 8.45,
+          "void_active": true,
+          "void_min_z_m": -9.48941,
+          "void_max_z_m": 5.15
+        },
+        {
+          "id": "T3-L4",
+          "elevation_m": 11.9,
+          "void_active": true,
+          "void_min_z_m": -9.48941,
+          "void_max_z_m": 5.15
+        },
+        {
+          "id": "T3-L5",
+          "elevation_m": 15.35,
+          "void_active": true,
+          "void_min_z_m": -9.48941,
+          "void_max_z_m": 5.15
+        },
+        {
+          "id": "T3-L6",
+          "elevation_m": 18.8,
+          "void_active": true,
+          "void_min_z_m": -9.48941,
+          "void_max_z_m": 5.15
+        },
+        {
+          "id": "T3-L7",
+          "elevation_m": 22.25,
+          "void_active": true,
+          "void_min_z_m": -9.48941,
+          "void_max_z_m": 5.15
+        },
+        {
+          "id": "T3-L8",
+          "elevation_m": 25.7,
+          "void_active": true,
+          "void_min_z_m": -9.48941,
+          "void_max_z_m": 5.15
+        },
+        {
+          "id": "T3-L9",
+          "elevation_m": 29.15,
+          "void_active": true,
+          "void_min_z_m": -9.48941,
+          "void_max_z_m": 5.15
+        },
+        {
+          "id": "T3-L10",
+          "elevation_m": 32.6,
+          "void_active": true,
+          "void_min_z_m": -9.48941,
+          "void_max_z_m": 5.15
+        },
+        {
+          "id": "T3-L11",
+          "elevation_m": 36.05,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L12",
+          "elevation_m": 39.5,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L13",
+          "elevation_m": 42.95,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L14",
+          "elevation_m": 46.4,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L15",
+          "elevation_m": 49.85,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L16",
+          "elevation_m": 53.3,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L17",
+          "elevation_m": 56.75,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L18",
+          "elevation_m": 60.2,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L19",
+          "elevation_m": 63.65,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L20",
+          "elevation_m": 67.1,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L21",
+          "elevation_m": 70.55,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L22",
+          "elevation_m": 74.0,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L23",
+          "elevation_m": 77.45,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L24",
+          "elevation_m": 80.9,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L25",
+          "elevation_m": 84.35,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L26",
+          "elevation_m": 87.8,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L27",
+          "elevation_m": 91.25,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L28",
+          "elevation_m": 94.7,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L29",
+          "elevation_m": 98.15,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L30",
+          "elevation_m": 101.6,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L31",
+          "elevation_m": 105.05,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L32",
+          "elevation_m": 108.5,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L33",
+          "elevation_m": 111.95,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L34",
+          "elevation_m": 115.4,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L35",
+          "elevation_m": 118.85,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L36",
+          "elevation_m": 122.3,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L37",
+          "elevation_m": 125.75,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L38",
+          "elevation_m": 129.2,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L39",
+          "elevation_m": 132.65,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L40",
+          "elevation_m": 136.1,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L41",
+          "elevation_m": 139.55,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L42",
+          "elevation_m": 143.0,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L43",
+          "elevation_m": 146.45,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L44",
+          "elevation_m": 149.9,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L45",
+          "elevation_m": 153.35,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L46",
+          "elevation_m": 156.8,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L47",
+          "elevation_m": 160.25,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L48",
+          "elevation_m": 163.7,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L49",
+          "elevation_m": 167.15,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L50",
+          "elevation_m": 170.6,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L51",
+          "elevation_m": 174.05,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L52",
+          "elevation_m": 177.5,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L53",
+          "elevation_m": 180.95,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L54",
+          "elevation_m": 184.4,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L55",
+          "elevation_m": 187.85,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L56",
+          "elevation_m": 191.3,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T3-L57",
+          "elevation_m": 194.75,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        }
+      ],
+      "height_conflicts": {
+        "inventory_L56_floor_m": 191.3,
+        "inventory_L56_clear_top_m": 194.38,
+        "inventory_L57_floor_m": 194.75,
+        "L57_minus_source_tag_m": 1.75
+      }
+    },
+    {
+      "source_id": "way/172307472",
+      "tower": "T2",
+      "source_centroid_xz": [
+        441.6952525684337,
+        -1046.407586580947
+      ],
+      "common_local_centroid_xz": [
+        -24.829446770623942,
+        -6.443543841228605
+      ],
+      "source_height_m": 193.0,
+      "height_status": "source_tag",
+      "source_footprint_ring_local_xz": [
+        [
+          29.933208566490283,
+          26.046239535868708
+        ],
+        [
+          30.716342633549306,
+          -24.48527687520895
+        ],
+        [
+          -29.900611961695873,
+          -26.03727046346623
+        ],
+        [
+          -30.20775261149859,
+          -11.022292006230916
+        ],
+        [
+          -30.673592134520092,
+          24.489761704992176
+        ]
+      ],
+      "streamed_upper_rectangle_dimensions_m": [
+        59.38993,
+        51.08351
+      ],
+      "upper_rectangle_corners_outside_source": [
+        {
+          "local_corner_xz": [
+            -29.694965,
+            25.541755
+          ],
+          "shortest_source_boundary_distance_m": 1.0265221511779694
+        },
+        {
+          "local_corner_xz": [
+            29.694965,
+            -25.541755
+          ],
+          "shortest_source_boundary_distance_m": 1.0299899563942405
+        }
+      ],
+      "vertical_void_profile": [
+        {
+          "id": "T2-L1",
+          "elevation_m": 0.0,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L2",
+          "elevation_m": 5.0,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L3",
+          "elevation_m": 8.45,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L4",
+          "elevation_m": 11.9,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L5",
+          "elevation_m": 15.35,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L6",
+          "elevation_m": 18.8,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L7",
+          "elevation_m": 22.25,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L8",
+          "elevation_m": 25.7,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L9",
+          "elevation_m": 29.15,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L10",
+          "elevation_m": 32.6,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L11",
+          "elevation_m": 36.05,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L12",
+          "elevation_m": 39.5,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L13",
+          "elevation_m": 42.95,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L14",
+          "elevation_m": 46.4,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L15",
+          "elevation_m": 49.85,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L16",
+          "elevation_m": 53.3,
+          "void_active": true,
+          "void_min_z_m": -10.15,
+          "void_max_z_m": 15.47127
+        },
+        {
+          "id": "T2-L17",
+          "elevation_m": 56.75,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L18",
+          "elevation_m": 60.2,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L19",
+          "elevation_m": 63.65,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L20",
+          "elevation_m": 67.1,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L21",
+          "elevation_m": 70.55,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L22",
+          "elevation_m": 74.0,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L23",
+          "elevation_m": 77.45,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L24",
+          "elevation_m": 80.9,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L25",
+          "elevation_m": 84.35,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L26",
+          "elevation_m": 87.8,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L27",
+          "elevation_m": 91.25,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L28",
+          "elevation_m": 94.7,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L29",
+          "elevation_m": 98.15,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L30",
+          "elevation_m": 101.6,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L31",
+          "elevation_m": 105.05,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L32",
+          "elevation_m": 108.5,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L33",
+          "elevation_m": 111.95,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L34",
+          "elevation_m": 115.4,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L35",
+          "elevation_m": 118.85,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L36",
+          "elevation_m": 122.3,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L37",
+          "elevation_m": 125.75,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L38",
+          "elevation_m": 129.2,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L39",
+          "elevation_m": 132.65,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L40",
+          "elevation_m": 136.1,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L41",
+          "elevation_m": 139.55,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L42",
+          "elevation_m": 143.0,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L43",
+          "elevation_m": 146.45,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L44",
+          "elevation_m": 149.9,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L45",
+          "elevation_m": 153.35,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L46",
+          "elevation_m": 156.8,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L47",
+          "elevation_m": 160.25,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L48",
+          "elevation_m": 163.7,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L49",
+          "elevation_m": 167.15,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L50",
+          "elevation_m": 170.6,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L51",
+          "elevation_m": 174.05,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L52",
+          "elevation_m": 177.5,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L53",
+          "elevation_m": 180.95,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L54",
+          "elevation_m": 184.4,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L55",
+          "elevation_m": 187.85,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L56",
+          "elevation_m": 191.3,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T2-L57",
+          "elevation_m": 194.75,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        }
+      ],
+      "height_conflicts": {
+        "inventory_L56_floor_m": 191.3,
+        "inventory_L56_clear_top_m": 194.38,
+        "inventory_L57_floor_m": 194.75,
+        "L57_minus_source_tag_m": 1.75
+      }
+    },
+    {
+      "source_id": "way/116801004",
+      "tower": "T1",
+      "source_centroid_xz": [
+        543.18424816395,
+        -989.8570443379905
+      ],
+      "common_local_centroid_xz": [
+        90.85477655755574,
+        4.286811600926114
+      ],
+      "source_height_m": 193.0,
+      "height_status": "source_tag",
+      "source_footprint_ring_local_xz": [
+        [
+          23.757857421326214,
+          31.202111035752626
+        ],
+        [
+          33.48950335080652,
+          -19.923516179893625
+        ],
+        [
+          -23.758544008932624,
+          -31.199961798396778
+        ],
+        [
+          -24.92256822406483,
+          -25.077244192906083
+        ],
+        [
+          -33.490189938413025,
+          19.92566541724939
+        ],
+        [
+          8.71532231090455,
+          28.234213965142914
+        ]
+      ],
+      "streamed_upper_rectangle_dimensions_m": [
+        64.97969,
+        61.40207
+      ],
+      "upper_rectangle_corners_outside_source": [
+        {
+          "local_corner_xz": [
+            -32.489845,
+            -30.701035
+          ],
+          "shortest_source_boundary_distance_m": 8.484476987159015
+        },
+        {
+          "local_corner_xz": [
+            -32.489845,
+            30.701035
+          ],
+          "shortest_source_boundary_distance_m": 10.37923761186861
+        },
+        {
+          "local_corner_xz": [
+            32.489845,
+            -30.701035
+          ],
+          "shortest_source_boundary_distance_m": 10.381137294133476
+        },
+        {
+          "local_corner_xz": [
+            32.489845,
+            30.701035
+          ],
+          "shortest_source_boundary_distance_m": 8.484274310199986
+        }
+      ],
+      "vertical_void_profile": [
+        {
+          "id": "T1-L1",
+          "elevation_m": 0.0,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L2",
+          "elevation_m": 5.0,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L3",
+          "elevation_m": 8.45,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L4",
+          "elevation_m": 11.9,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L5",
+          "elevation_m": 15.35,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L6",
+          "elevation_m": 18.8,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L7",
+          "elevation_m": 22.25,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L8",
+          "elevation_m": 25.7,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L9",
+          "elevation_m": 29.15,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L10",
+          "elevation_m": 32.6,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L11",
+          "elevation_m": 36.05,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L12",
+          "elevation_m": 39.5,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L13",
+          "elevation_m": 42.95,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L14",
+          "elevation_m": 46.4,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L15",
+          "elevation_m": 49.85,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L16",
+          "elevation_m": 53.3,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L17",
+          "elevation_m": 56.75,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L18",
+          "elevation_m": 60.2,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L19",
+          "elevation_m": 63.65,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L20",
+          "elevation_m": 67.1,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L21",
+          "elevation_m": 70.55,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L22",
+          "elevation_m": 74.0,
+          "void_active": true,
+          "void_min_z_m": -20.35512,
+          "void_max_z_m": 20.15
+        },
+        {
+          "id": "T1-L23",
+          "elevation_m": 77.45,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L24",
+          "elevation_m": 80.9,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L25",
+          "elevation_m": 84.35,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L26",
+          "elevation_m": 87.8,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L27",
+          "elevation_m": 91.25,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L28",
+          "elevation_m": 94.7,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L29",
+          "elevation_m": 98.15,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L30",
+          "elevation_m": 101.6,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L31",
+          "elevation_m": 105.05,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L32",
+          "elevation_m": 108.5,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L33",
+          "elevation_m": 111.95,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L34",
+          "elevation_m": 115.4,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L35",
+          "elevation_m": 118.85,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L36",
+          "elevation_m": 122.3,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L37",
+          "elevation_m": 125.75,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L38",
+          "elevation_m": 129.2,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L39",
+          "elevation_m": 132.65,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L40",
+          "elevation_m": 136.1,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L41",
+          "elevation_m": 139.55,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L42",
+          "elevation_m": 143.0,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L43",
+          "elevation_m": 146.45,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L44",
+          "elevation_m": 149.9,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L45",
+          "elevation_m": 153.35,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L46",
+          "elevation_m": 156.8,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L47",
+          "elevation_m": 160.25,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L48",
+          "elevation_m": 163.7,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L49",
+          "elevation_m": 167.15,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L50",
+          "elevation_m": 170.6,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L51",
+          "elevation_m": 174.05,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L52",
+          "elevation_m": 177.5,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L53",
+          "elevation_m": 180.95,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L54",
+          "elevation_m": 184.4,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L55",
+          "elevation_m": 187.85,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L56",
+          "elevation_m": 191.3,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        },
+        {
+          "id": "T1-L57",
+          "elevation_m": 194.75,
+          "void_active": false,
+          "void_min_z_m": 0.0,
+          "void_max_z_m": 0.0
+        }
+      ],
+      "height_conflicts": {
+        "inventory_L56_floor_m": 191.3,
+        "inventory_L56_clear_top_m": 194.38,
+        "inventory_L57_floor_m": 194.75,
+        "L57_minus_source_tag_m": 1.75
+      }
+    }
+  ],
+  "actual_centroid_spacing_m": [
+    102.80789985945468,
+    116.18080760159629
+  ],
+  "combined_upper_room_rectangles_common_bounds": {
+    "x": [
+      -155.2817542158373,
+      123.34462155755574
+    ],
+    "z": [
+      -31.985298841228605,
+      34.98784660092612
+    ],
+    "span_z_m": 66.97314544215473
+  },
+  "existing_asset_conflicts": {
+    "glb_tower_centres_x": [
+      -92,
+      0,
+      92
+    ],
+    "glb_tower_top_m": 192,
+    "glb_main_deck_m": 201,
+    "glb_mirrored_bow_direction": "+X, incompatible with source north=-X",
+    "procedural_tower_centres_x": [
+      -98,
+      0,
+      98
+    ],
+    "procedural_tower_top_m": 191,
+    "procedural_deck_m": 200,
+    "procedural_hull_x_range": [
+      -185,
+      124
+    ],
+    "procedural_hull_width_m": 38,
+    "whole_glb_sha256": "d058237f1fe3db83f4f65c6995caf3d3c6ed56bd802e636f520c44b17fd3e4be",
+    "glb_accessor_union_min": [
+      -165,
+      0,
+      -25
+    ],
+    "glb_accessor_union_max": [
+      185.3128662109375,
+      208.10000610351562,
+      37.5
+    ],
+    "full_asset_dropin_source_compatible": false
+  },
+  "approved_concepts_viewed": [
+    "docs/concepts/singapore-helicopter.png",
+    "docs/concepts/singapore-on-foot.png"
+  ],
+  "resolved_height_policy": null,
+  "resolved_footprint_policy": null,
+  "new_shell_source_authored": false,
+  "worker_engine_gpu_git_actions": false,
+  "full_building_complete": false
+}
