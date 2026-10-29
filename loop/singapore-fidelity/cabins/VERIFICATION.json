@@ -1,0 +1,60 @@
+{
+  "status": "FROZEN_PENDING_PARENT_PARSE_RUNTIME_AND_CRITIQUE",
+  "files": [
+    {
+      "path": "game/src/world/mbs_interior/cabins.gd",
+      "sha256": "6fee490024b54c7e2a15c9ca7accd3ac000d46caf5e0eeb6de63e85d88612513",
+      "lines": 517
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/mbs_cabin_test.gd",
+      "sha256": "91715f1756b1c4d2d5dc95505ff8bff7a820cf5cc381b0559adbd14c7044af65",
+      "lines": 294
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/mbs_cabin_test.tscn",
+      "sha256": "6b3bcbb3cad3e9b3addc2db6b6d3a1ab371da111288bd4c4b94a0d832b65909f",
+      "lines": 4
+    },
+    {
+      "path": "loop/singapore-fidelity/cabins/run.sh",
+      "sha256": "a0ebf84ea7aff4b8cdffaf5c05b93636689cbe9fc9a930ae666c4ed5c510151b",
+      "lines": 17
+    }
+  ],
+  "engine_or_gpu_started_by_builder": false,
+  "git_run_by_builder": false,
+  "runtime_pass_claimed": false,
+  "independent_critic": "Unavailable: all four agent slots occupied at both checks; root review pending",
+  "scope": "New isolated physical cabin/shaft component and two actual GuestFloor+production Player native QA only; no context/runtime/main/actor/save or other workers files edited",
+  "root_run": "bash loop/singapore-fidelity/cabins/run.sh mbs-cabin-r1",
+  "timeout_seconds": 180,
+  "internal_watchdog_seconds": 150,
+  "readiness_contract": {
+    "ready": "bool actual floor/neighborhood collision committed and retained",
+    "floor_id": "exact requested string",
+    "collision_generation": "nonempty current generation string",
+    "travel_ready": "bool parent path/pin policy AND cabin.shaft_collision_ready()"
+  },
+  "control": "Native floor transition_requested+confirm_transition_ready; cabin E panel/floor list; queued calls and emergency retry",
+  "motion": "Layer1 AnimatableBody3D full Transform3D atomic setters, acceleration/deceleration and native body sweep; no actor pose/reparent/velocity mutations",
+  "prepared_proofs": [
+    "native E landing call and E cabin selection",
+    "walk in/out actual cabin",
+    "truly absent upper floor waits until actual GuestFloor builds/binds",
+    "up/down platform velocity/support/incremental Player pose",
+    "door obstruction prevents departure",
+    "native ceiling sweep stops closed cabin",
+    "withdrawn travel lease holds",
+    "explicit safety resume and native E queued return"
+  ],
+  "known_unverified": [
+    "All new Godot parsing/runtime assertions",
+    "Rendered cabin/UI quality",
+    "Actual source-site/whole-MBS assembly",
+    "moving cabin source support/dry identity, origin rebase and world save",
+    "NPC passengers and multi-shaft performance",
+    "Root HUD gameplay input routing while selector is open"
+  ],
+  "source_assets": "Existing Kit and Looks materials/door concept reused; no human animation, provider generation or purchase"
+}
