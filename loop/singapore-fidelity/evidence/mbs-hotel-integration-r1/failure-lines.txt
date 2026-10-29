@@ -1,0 +1,1 @@
+SCRIPT ERROR: Parse Error: Could not resolve class "res://src/world/mbs_interior/hotel.gd".

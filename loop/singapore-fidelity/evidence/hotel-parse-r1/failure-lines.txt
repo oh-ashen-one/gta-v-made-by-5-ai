@@ -1,0 +1,2 @@
+SCRIPT ERROR: Parse Error: Cannot infer the type of "shaft_ready" variable because the value doesn't have a set type.
+SCRIPT ERROR: Parse Error: Cannot infer the type of "inserted" variable because the value doesn't have a set type.
