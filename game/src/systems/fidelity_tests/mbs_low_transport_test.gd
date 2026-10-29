@@ -126,7 +126,9 @@ func _open_gate(geometry:Dictionary,label:String)->bool:
 		if not door.opened:
 			if not await _until(func():return stairs.report().gates[geometry.gate_id].ready,"actual complete floor groups become ready "+label):return false
 			if not await _press(door,label+" after actual group commit"):return false
-	return await _until(func():return door.opened and absf(door.motion_angle-door.swing_delta)<.002,"actual native gate reaches open pose "+label)
+	var opened:bool=await _until(func():return door.opened and absf(door.motion_angle-door.swing_delta)<.002,"actual native gate reaches open pose "+label)
+	if not opened:evidence["failed_native_gate"]={"label":label,"geometry":geometry.duplicate(true),"gate":stairs.report().gates.get(geometry.gate_id,{}),"actor_position":player.global_position}
+	return opened
 
 func _descend(owner:String,probe_header:bool=false)->bool:
 	var lower:Node3D=stack.get_floor(owner);var flight:Dictionary=_stair(owner);var top:Dictionary=_gate_geometry(owner,"upper_return")

@@ -250,7 +250,9 @@ func _build_stair(kit, wing: Dictionary, g: Dictionary) -> void:
 	_solid(kit, String(wing.id) + "StairLowerLanding", Looks.get_mat("concrete_fair"), Vector3(x, -0.10, z + side * landing * .5), Vector3(3.2, .2, landing))
 	_solid(kit, String(wing.id) + "StairMidLanding", Looks.get_mat("concrete_fair"), Vector3(x, rise * .5 - .10, z + side * (landing + run + landing * .5)), Vector3(3.2, .2, landing))
 	_solid(kit, String(wing.id) + "StairUpperLanding", Looks.get_mat("concrete_fair"), Vector3(x, rise - .10, z + side * landing * .5), Vector3(3.2, .2, landing))
-	for offset: float in [-1.48, 1.48]:
+	# Keep the .12m guards inside the3.2m landing perimeter. The former
+	# centres at+/-1.48 intruded10mm into the1.30m gate apertures.
+	for offset: float in [-1.54, 1.54]:
 		_solid(kit, String(wing.id) + "StairGuard" + str(offset), _materials.wall, Vector3(x + offset, rise * .5 + .50, z + side * 2.6), Vector3(.12, rise + 1.0, 5.2))
 	_solid(kit,String(wing.id)+"StairMidGuard",_materials.wall,Vector3(x,rise*.5+.55,z+side*(landing+run+landing)),Vector3(3.2,1.10,.10))
 	_solid(kit,String(wing.id)+"StairCentreGuard",_materials.wall,Vector3(x,rise*.5+.5,z+side*(landing+run*.5)),Vector3(.10,rise+1.0,run))

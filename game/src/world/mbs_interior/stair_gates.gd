@@ -8,13 +8,16 @@ const GuestFloor=preload("res://src/world/mbs_interior/guest_floor.gd")
 const Inventory=preload("res://src/world/mbs_interior/inventory.gd")
 const Kit=preload("res://src/world/downtown/landmarks/kit.gd")
 const Looks=preload("res://src/world/downtown/landmarks/looks.gd")
-const GEOMETRY_VERSION="mbs-stair-fire-door-v4-destination-height"
+const GEOMETRY_VERSION="mbs-stair-fire-door-v5-clear-hinge-and-guards"
 const WIDTH=1.30
 const HEIGHT=2.35
 const LEAF_THICKNESS=.075
 const FRAME_THICKNESS=.15
 const LANDING_WIDTH=3.2
 const GATE_EDGE_SETBACK=.45
+# An outboard hinge keeps the real thick leaf clear of its static jamb
+# throughout the sweep; it does not enlarge the capsule or omit the frame.
+const HINGE_FRAME_CLEARANCE=(FRAME_THICKNESS+LEAF_THICKNESS)*.5+.005
 const OCCUPANCY_MASK=2|4|8
 const MAX_BOUND_FLOORS=32
 
@@ -117,7 +120,9 @@ func bind_floor(module:Node3D,id:String,upper_id:String,provider:Callable,receiv
 		for lane:String in ["upper_return","lower_departure"]:
 			var center_x:float=expected_x if lane=="upper_return" else expected_x-1.56
 			var leaf_id:String=gate_id if lane=="upper_return" else id+"-"+wing+"-stair-lower-entry-door"
-			plans.append({"id":leaf_id,"wing":wing,"lane":lane,"side":side,"x":center_x,"landing_x":expected_x-.78,"edge_z":core,"plane_z":core+side*GATE_EDGE_SETBACK,"rise":rise,"lower_id":id,"upper_id":upper_id,"lower_generation":lower_proof.generation,"base_angle":0.0,"hinge":Vector3(center_x-WIDTH*.5,rise,core+side*GATE_EDGE_SETBACK),"build_landing_frame":lane=="upper_return","height":receiving_height,"clear_height":receiving_clear,"header_height":header_height,"requires_receiving_geometry":low_receiver})
+			var frame_plane:float=core+side*GATE_EDGE_SETBACK
+			var leaf_plane:float=frame_plane-side*HINGE_FRAME_CLEARANCE
+			plans.append({"id":leaf_id,"wing":wing,"lane":lane,"side":side,"x":center_x,"landing_x":expected_x-.78,"edge_z":core,"plane_z":leaf_plane,"frame_plane_z":frame_plane,"rise":rise,"lower_id":id,"upper_id":upper_id,"lower_generation":lower_proof.generation,"base_angle":0.0,"hinge":Vector3(center_x-WIDTH*.5,rise,leaf_plane),"build_landing_frame":lane=="upper_return","height":receiving_height,"clear_height":receiving_clear,"header_height":header_height,"requires_receiving_geometry":low_receiver})
 	if plans.size()!=4:return {"bound":false,"error":"Both actual U-stair lanes in both wings are required"}
 	var holder:=Node3D.new()
 	holder.name="OwnedStairFireDoors"
@@ -147,12 +152,12 @@ func _build_gate(holder:Node3D,p:Dictionary)->void:
 		# pier/leaf has matching real collision; neither lane is an open bypass.
 		var intervals:Array[Vector2]=[Vector2(landing_x-LANDING_WIDTH*.5,landing_x-.78-WIDTH*.5),Vector2(landing_x-.78+WIDTH*.5,landing_x+.78-WIDTH*.5),Vector2(landing_x+.78+WIDTH*.5,landing_x+LANDING_WIDTH*.5)]
 		for bounds:Vector2 in intervals:
-			_box(kit,"StairFireDoorPier"+str(bounds.x),mat,Vector3((bounds.x+bounds.y)*.5,float(p.rise)+float(p.height)*.5,p.plane_z),Vector3(bounds.y-bounds.x,p.height,FRAME_THICKNESS))
+			_box(kit,"StairFireDoorPier"+str(bounds.x),mat,Vector3((bounds.x+bounds.y)*.5,float(p.rise)+float(p.height)*.5,p.frame_plane_z),Vector3(bounds.y-bounds.x,p.height,FRAME_THICKNESS))
 		for offset:float in [-.78,.78]:
-			_box(kit,"StairFireDoorLintel"+str(offset),mat,Vector3(landing_x+offset,float(p.rise)+float(p.height)+float(p.header_height)*.5,p.plane_z),Vector3(WIDTH,p.header_height,FRAME_THICKNESS))
+			_box(kit,"StairFireDoorLintel"+str(offset),mat,Vector3(landing_x+offset,float(p.rise)+float(p.height)+float(p.header_height)*.5,p.frame_plane_z),Vector3(WIDTH,p.header_height,FRAME_THICKNESS))
 		# Existing tall returns still prevent going around the landing closure.
 		for end:float in [-1.0,1.0]:
-			_box(kit,"StairFireDoorSideReturn"+str(end),mat,Vector3(landing_x+end*1.48,float(p.rise)+float(p.height)*.5,float(p.edge_z)+float(p.side)*.5),Vector3(.12,p.height,1.40))
+			_box(kit,"StairFireDoorSideReturn"+str(end),mat,Vector3(landing_x+end*1.54,float(p.rise)+float(p.height)*.5,float(p.edge_z)+float(p.side)*.5),Vector3(.12,p.height,1.40))
 		kit.commit(holder,"StairFireDoorFrameMaterials_"+String(p.wing),true)
 	var door:=StairDoor.new()
 	door.name=("StairFireDoor_"+String(p.wing)+"_"+String(p.lane)).validate_node_name()
@@ -317,8 +322,26 @@ func _static_leaf_step_clear(state:Dictionary,target:float,delta:float)->bool:
 		query.transform=(state.holder as Node3D).global_transform*Transform3D(basis,centre)
 		query.collision_mask=1;query.margin=.0001;query.exclude=[door.get_rid()]
 		hits.append_array(get_world_3d().direct_space_state.intersect_shape(query,16))
-	state["last_static_probe"]={"physics_tick":Engine.get_physics_frames(),"from_angle":door.motion_angle,"to_angle":next,"mechanical_edge_inset_m":.002,"angular_samples":steps+1,"only_own_leaf_excluded":true,"blocking_body_ids":_blocker_ids(hits)}
+	state["last_static_probe"]={"physics_tick":Engine.get_physics_frames(),"from_angle":door.motion_angle,"to_angle":next,"mechanical_edge_inset_m":.002,"angular_samples":steps+1,"only_own_leaf_excluded":true,"blocking_body_ids":_blocker_ids(hits),"blocking_shapes":_static_blocker_shapes(hits)}
 	return hits.is_empty()
+
+func _static_blocker_shapes(hits:Array[Dictionary])->Array[Dictionary]:
+	var result:Array[Dictionary]=[];var seen:Dictionary={}
+	for hit:Dictionary in hits:
+		var body:CollisionObject3D=hit.get("collider") as CollisionObject3D
+		var index:int=int(hit.get("shape",-1))
+		if body==null or index<0:continue
+		var key:String=str(body.get_instance_id())+"/"+str(index)
+		if seen.has(key):continue
+		seen[key]=true
+		var owner:Object=body.shape_owner_get_owner(body.shape_find_owner(index))
+		var row:Dictionary={"body_id":body.get_instance_id(),"body_path":str(body.get_path()),"shape_index":index}
+		if owner is CollisionShape3D:
+			row["shape_name"]=str(owner.name);row["position_local"]=owner.position;row["global_transform"]=owner.global_transform
+			if owner.shape is BoxShape3D:row["box_size"]=owner.shape.size
+		result.append(row)
+		if result.size()>=16:break
+	return result
 
 func _set_state(state:Dictionary,value:String)->void:
 	if state.state==value:return
@@ -424,7 +447,7 @@ func geometry_descriptor(id:String)->Dictionary:
 	var geometry:Array[Dictionary]=[]
 	for key:String in _floors[id].gate_ids:
 		var state:Dictionary=_gates[key]
-		geometry.append({"gate_id":key,"wing":state.wing,"lane":state.lane,"hinge_local":state.hinge,"opening_center_x_local_m":state.x,"landing_center_x_local_m":state.landing_x,"receiving_approach_local":Vector3(state.x,state.rise,float(state.plane_z)-float(state.side)*(WIDTH+.75)),"opening_width_m":WIDTH,"height_m":state.height,"receiving_door_height_m":state.height,"receiving_clear_height_m":state.clear_height,"header_height_m":state.header_height,"thickness_m":LEAF_THICKNESS,"landing_width_m":LANDING_WIDTH,"edge_z_local_m":state.edge_z,"gate_plane_z_local_m":state.plane_z,"rise_m":state.rise,"side":state.side})
+		geometry.append({"gate_id":key,"wing":state.wing,"lane":state.lane,"hinge_local":state.hinge,"opening_center_x_local_m":state.x,"landing_center_x_local_m":state.landing_x,"receiving_approach_local":Vector3(state.x,state.rise,float(state.plane_z)-float(state.side)*(WIDTH+.75)),"opening_width_m":WIDTH,"height_m":state.height,"receiving_door_height_m":state.height,"receiving_clear_height_m":state.clear_height,"header_height_m":state.header_height,"thickness_m":LEAF_THICKNESS,"landing_width_m":LANDING_WIDTH,"edge_z_local_m":state.edge_z,"gate_plane_z_local_m":state.plane_z,"frame_plane_z_local_m":state.frame_plane_z,"hinge_frame_clearance_m":HINGE_FRAME_CLEARANCE,"rise_m":state.rise,"side":state.side})
 	return {"version":GEOMETRY_VERSION,"floor_id":id,"upper_id":_floors[id].upper_id,"bound_collision_generation":_floors[id].lower_generation,"gates":geometry,"root_context_registration_required":true,"actor_pose_writes":0,"asbuilt_verified":false}
 
 func report()->Dictionary:
