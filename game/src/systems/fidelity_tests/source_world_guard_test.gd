@@ -81,6 +81,32 @@ func _register(label: String,body: StaticBody3D) -> bool:
 func _frames(count: int) -> void:
 	for i in count: await get_tree().physics_frame
 
+## The production Player root is NOT its foot: centerY.9-height1.75/2
+## places the actual capsule bottom .025m above that root. Measure that
+## geometry and current native contact, with the same bounded solver-margin
+## plus local-float-roundoff envelope used by the production runtime. Do not
+## raise the root, shrink the capsule or accept a centimetre-scale floor gap.
+func _native_foot_contact() -> Dictionary:
+	var result := {"ok":false,"state":runtime.inspect_player(player)}
+	var shape_node: CollisionShape3D
+	for child: Node in player.get_children():
+		if child is CollisionShape3D and not child.disabled and child.shape is CapsuleShape3D:
+			if shape_node!=null: return result
+			shape_node = child
+	if shape_node==null or not result.state.get("ok",false) or result.state.support.state!="supported": return result
+	var capsule := shape_node.shape as CapsuleShape3D
+	var bottom_offset: float = shape_node.position.y-capsule.height*.5
+	var bottom_y: float = float(result.state.source_xyz[1])+bottom_offset
+	var support_y: float = float(result.state.support.contact_source_xyz[1])
+	var center: Vector3 = shape_node.global_position
+	var magnitude: float = maxf(absf(center.x),maxf(absf(center.y),absf(center.z)))
+	var roundoff: float = maxf(.00001,magnitude*2.0*.00000011920928955078125)
+	var tolerance: float = player.safe_margin*2.0+roundoff
+	var gap: float = bottom_y-support_y
+	result.merge({"capsule_height_m":capsule.height,"capsule_center_offset_y_m":shape_node.position.y,"physical_bottom_offset_from_root_m":bottom_offset,"root_source_y":result.state.source_xyz[1],"capsule_bottom_source_y":bottom_y,"native_support_source_y":support_y,"native_capsule_gap_m":gap,"safe_margin_m":player.safe_margin,"local_float_roundoff_m":roundoff,"maximum_solver_contact_gap_m":tolerance})
+	result.ok = result.state.clearance.state=="clear" and gap>=-tolerance and gap<=tolerance
+	return result
+
 func _run() -> void:
 	Game.simulation_paused = true
 	origin = [(EDGE_A[0]+EDGE_B[0])*.5,0.0,(EDGE_A[1]+EDGE_B[1])*.5]
@@ -119,15 +145,19 @@ func _run() -> void:
 	if not check("actual production player binds",runtime.bind_player(player)): _finish(); return
 	Game.simulation_paused = false
 	await _frames(70)
+	var baseline: Dictionary = _native_foot_contact()
+	metrics["settled_before_approach"] = baseline
+	check("production capsule bottom offset measured independently of rootY",baseline.get("ok",false) and absf(float(baseline.get("physical_bottom_offset_from_root_m",INF))-.025)<.000001,baseline)
 	var initial: Vector3 = player.global_position
 	Input.action_press("move_forward")
 	await _frames(150)
 	Input.action_release("move_forward")
 	await _frames(5)
 	var held: Vector3 = player.global_position
-	metrics["before_commit"] = {"edge_side_m":held.dot(normal),"walked_m":held.distance_to(initial),"y":held.y,"guard":runtime.architecture_guard_metadata()}
+	var held_contact: Dictionary = _native_foot_contact()
+	metrics["before_commit"] = {"edge_side_m":held.dot(normal),"walked_m":held.distance_to(initial),"y":held.y,"native_foot_contact":held_contact,"guard":runtime.architecture_guard_metadata()}
 	check("player walks continuously to unloaded architecture boundary",held.distance_to(initial)>1.0 and held.dot(normal)>=-.02,metrics.before_commit)
-	check("missing planned floor is held rather than fallen through",held.y>-.02 and runtime.last_transition.get("assessment",{}).get("state")=="required",metrics.before_commit)
+	check("missing planned floor is held rather than fallen through",held_contact.get("ok",false) and held_contact.state.support.feature_id=="qa-only/exterior" and runtime.last_transition.get("assessment",{}).get("state")=="required",metrics.before_commit)
 	var inside_ray := PhysicsRayQueryParameters3D.create(-normal*2.0+Vector3.UP*3.0,-normal*2.0-Vector3.UP*2.0,1)
 	check("guard did not fabricate the missing interior support",get_world_3d().direct_space_state.intersect_ray(inside_ray).is_empty())
 	assessment_state = "known_physical_void"
@@ -146,8 +176,9 @@ func _run() -> void:
 	Input.action_release("move_forward")
 	await _frames(10)
 	var final: Dictionary = runtime.inspect_player(player)
-	metrics["after_commit"] = {"edge_side_m":player.global_position.dot(normal),"y":player.global_position.y,"state":final,"teleports":0,"guard":runtime.architecture_guard_metadata()}
-	check("same player continuously crosses after actual native commit",crossed and player.global_position.y>-.02,metrics.after_commit)
+	var final_contact: Dictionary = _native_foot_contact()
+	metrics["after_commit"] = {"edge_side_m":player.global_position.dot(normal),"y":player.global_position.y,"native_foot_contact":final_contact,"state":final,"teleports":0,"guard":runtime.architecture_guard_metadata()}
+	check("same player continuously crosses after actual native commit",crossed and final_contact.get("ok",false),metrics.after_commit)
 	check("crossed player has actual new-floor support",final.get("ok",false) and final.support.state=="supported" and final.support.feature_id=="qa-only/interior",final)
 	check("outdoor source water remains unresolved",final.get("ok",false) and final.water.state=="unknown" and final.land.state=="unknown")
 	check("mask identity retained in transition receipt",runtime.architecture_guard_metadata().root_masks_sha256==MASKS)

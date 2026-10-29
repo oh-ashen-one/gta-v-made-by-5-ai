@@ -1,0 +1,41 @@
+{
+  "schema": "source_world_guard_repair_freeze_v2",
+  "created_utc": "2026-10-29T03:22:40.611802+00:00",
+  "r1_retained": {
+    "started_utc": "2026-10-29T03:13:02.285837+00:00",
+    "finished_utc": "2026-10-29T03:13:05.722344+00:00",
+    "engine_exit_code": 1,
+    "exit_code": 1,
+    "fatal_errors": [],
+    "timeout": false,
+    "child_reaped": true
+  },
+  "r1_result": {
+    "checks": 6,
+    "failed": 1,
+    "failures": [
+      "verified source mask guard configures"
+    ]
+  },
+  "root_cause": "exact pinned fifth mask is Polygon, four source masks MultiPolygon; loader accepted MultiPolygon only",
+  "correction": "normalize wrapper only, retain all exact bytes/coordinates/rings/type and SHA; additionally validate source schema/snapshot",
+  "new_native_gate": "pending_root",
+  "sourceworld_r2_entry_unchanged": true,
+  "files": [
+    {
+      "path": "game/src/world/geography/source_world_guard.gd",
+      "sha256": "d31855e513455105e0b9e051aa472c23759770e5031ec0f3b43969749a3b8a7b",
+      "bytes": 9999
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_guard_test.gd",
+      "sha256": "9131fdfe28f41dd442bf7ea7407057f00f7a58542556da19322c7fe04f7fa97e",
+      "bytes": 10744
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_guard_test.tscn",
+      "sha256": "4f4121ab0a208a5775c6f20ebe2c847dfb7f34f3dcdfe910504f3ed587442feb",
+      "bytes": 213
+    }
+  ]
+}
