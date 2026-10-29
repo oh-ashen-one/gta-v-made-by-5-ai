@@ -23,6 +23,9 @@ var _source_recovery_hold := false
 func source_controls_held() -> bool:
 	return health <= 0.0 or _source_recovery_hold
 
+func source_session_owns(service: Object) -> bool:
+	return service != null and service == _bound_source_session()
+
 func set_source_recovery_hold(service: Object, held: bool) -> bool:
 	if service == null or service != _bound_source_session(): return false
 	_source_recovery_hold = held
@@ -43,12 +46,16 @@ func install_source_session(service: Object) -> bool:
 	if not service.is_bound_to(body.source_world_runtime, body): return false
 	var info: Variant = service.metadata()
 	if not info is Dictionary or not info.get("slot_path") is String or info.slot_path.is_empty(): return false
-	if is_instance_valid(_source_session) and _source_session != service: return false
+	if is_instance_valid(_source_session): return _source_session == service
 	_source_session = service
+	_source_recovery_hold = false
 	return true
 
 func uninstall_source_session(expected: Object) -> bool:
 	if _source_session != expected: return false
+	if is_instance_valid(expected):
+		var info: Variant = expected.metadata()
+		if info is Dictionary and info.get("transaction_busy",false): return false
 	_source_session = null
 	_source_recovery_hold = false
 	return true
@@ -213,6 +220,10 @@ func health_ratio() -> float:
 	return clampf(health / MAX_HEALTH, 0.0, 1.0)
 
 func damage_player(amount: float) -> void:
+	# A deliberate source load/recovery holds the player in place. Incoming
+	# damage must pause with controls, rather than kill an immobile actor and
+	# race a pending load against a second death transaction.
+	if _source_recovery_hold and _source_player() != null: return
 	if health <= 0.0:
 		return
 	_since_damage = 0.0

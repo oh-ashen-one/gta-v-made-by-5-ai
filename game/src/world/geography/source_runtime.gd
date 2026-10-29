@@ -408,9 +408,16 @@ func capture_player_pose(actor: Player) -> Dictionary:
 	if not state.get("ok", false) or state.support.state != "supported" or state.residency.state != "resident": return {"ok": false, "error": "Source save requires current resident native support"}
 	return context.make_restore_pose(state.source_xyz, actor.yaw, state.support.feature_id, state.support.floor_id)
 
+## Data-only policy classification. This is not a restore authorization: the
+## mutating method below always obtains its own fresh Context/native proof.
+func supports_unknown_water_restore(checked: Dictionary) -> bool:
+	if not checked.get("ok", false) or checked.get("status") != "pending" or checked.get("reasons", []) != ["three_dimensional_water_unresolved"]: return false
+	var state: Dictionary = checked.get("state", {})
+	return state.get("ok", false) and state.territory.state == "inside" and state.residency.state == "resident" and state.support.state == "supported" and state.clearance.state == "clear" and state.water.state == "unknown"
+
 ## Synchronous current-tick application. A cold/missing floor remains pending;
 ## this operation never overwrites owner saves or interprets old local poses.
-func restore_player_pose(actor: Player, saved: Dictionary) -> Dictionary:
+func restore_player_pose(actor: Player, saved: Dictionary, allow_supported_unknown_water: bool = false) -> Dictionary:
 	if actor.source_world_runtime != self or not _valid_player_profile(actor): return {"ok": false, "status": "invalid", "error": "Player/profile/world binding mismatch"}
 	var prepared: Dictionary = context.prepare_restore(saved)
 	if not prepared.ok or prepared.get("status") != "query_required": return prepared
@@ -418,8 +425,15 @@ func restore_player_pose(actor: Player, saved: Dictionary) -> Dictionary:
 	var begun: Dictionary = context.begin_query(point)
 	if not begun.ok: return begun
 	var checked: Dictionary = context.preflight_restore(saved, begun.query, _native_player_observations(begun.query, actor))
-	if not checked.ok or checked.get("status") != "ready": return checked
+	var native_surface_policy := false
+	# Explicit gameplay policy, separate from source hydrology knowledge. The
+	# strict Context remains unchanged. A real supported/clear/resident saved
+	# pose may resume while ONLY water classification is unresolved; missing
+	# collision, wrong-floor support, ceilings and known immersion still fail.
+	if allow_supported_unknown_water:
+		native_surface_policy = supports_unknown_water_restore(checked)
+	if not native_surface_policy and (not checked.ok or checked.get("status") != "ready"): return checked
 	# No yield between native query, revision/tick validation and application.
 	if not context.validate_query(begun.query).ok: return {"ok": false, "status": "invalid"}
 	actor.respawn_at(begun.query.local_sample.position, float(saved.source_pose.heading_rad))
-	return {"ok": true, "status": "applied", "physics_tick": Engine.get_physics_frames()}
+	return {"ok": true, "status": "applied", "physics_tick": Engine.get_physics_frames(), "restore_policy": "supported_native_surface" if native_surface_policy else "strict", "water_state": "unknown" if native_surface_policy else checked.get("state", {}).get("water", {}).get("state", "unknown"), "hydrology_reclassified": false}

@@ -8,6 +8,7 @@ const SCHEMA := "orchard_reach_source_save_v2"
 const SCOPE := "onfoot_combat_inventory_settings_no_missions_doors_or_vehicles"
 const MAX_BYTES := 65536
 const DOC_KEYS := ["schema","version","scope","context_pose","stats"]
+const CHECKPOINT_DOC_KEYS := ["schema","version","scope","context_pose","stats","recovery_checkpoint"]
 const STATS_KEYS := ["health","death_count","wanted_level","wanted_heat","elapsed_seconds","seed","mode","carried_weapon","ammo","settings","search_timer","since_damage"]
 signal restore_required(reason: String, context_pose: Dictionary, token: String)
 signal restored(reason: String, token: String)
@@ -21,6 +22,11 @@ var _slot := ""
 var _qa := ""
 var _anchor: Dictionary = {}
 var _anchor_status: Dictionary = {}
+var _candidate_pose: Dictionary = {}
+var _candidate_status: Dictionary = {}
+var _saved_pose: Dictionary = {}
+var _saved_status: Dictionary = {}
+var _restore_policy := "strict"
 var _pending: Dictionary = {}
 var _serial := 0
 var _completed_recovery_serial := 0
@@ -49,6 +55,12 @@ func _hash(value: Variant) -> bool:
 func _label(value: Variant,empty: bool = false,maximum: int = 256) -> bool:
 	return value is String and value.length()<=maximum and (empty or not value.is_empty())
 
+func _string_is(value: Variant,expected: String) -> bool:
+	return value is String and value==expected
+
+func _string_in(value: Variant,choices: Array) -> bool:
+	return value is String and choices.has(value)
+
 func _result(status: String,reason: String = "",extra: Dictionary = {}) -> Dictionary:
 	last_result = {"ok":status in ["bound","captured","saved","applied","already_completed","anchor_captured","cancelled"],"status":status,"reason":reason}
 	last_result.merge(extra,true)
@@ -71,8 +83,9 @@ func _safe_path(path: String,allow_missing: bool = true) -> bool:
 
 ## Bind one actual production player/runtime/world. qa_session defaults to the
 ## real command-line session; a QA run cannot fall back to the owner's slot.
-func configure(runtime: Node3D,player: Player,legacy_save_path: String = "",qa_session: String = "") -> bool:
+func configure(runtime: Node3D,player: Player,legacy_save_path: String = "",qa_session: String = "",restore_policy: String = "strict") -> bool:
 	if _configured or not is_inside_tree() or not is_instance_valid(runtime) or not runtime is Runtime or not runtime.is_inside_tree() or not runtime.context is Context or not is_instance_valid(player) or not player.is_inside_tree() or player.source_world_runtime!=runtime or not player.uses_source_world or runtime.get_world_3d()!=player.get_world_3d() or not runtime.context.metadata().configured or not runtime._valid_player_profile(player): _result("invalid","source_binding_mismatch"); return false
+	if not restore_policy in ["strict","supported_native_surface"]: _result("invalid","unknown_explicit_source_restore_policy"); return false
 	var legacy_input: String = legacy_save_path
 	if legacy_input.is_empty():
 		legacy_input = String(Game.call("save_slot_path")) if Game.has_method("save_slot_path") else String(Game.get("_save_path"))
@@ -93,6 +106,7 @@ func configure(runtime: Node3D,player: Player,legacy_save_path: String = "",qa_s
 	var slot: String = legacy.trim_suffix(".json")+".source-v2.json"
 	if slot==legacy or not _safe_path(slot): _result("invalid","unsafe_source_sibling_slot"); return false
 	_runtime = runtime; _player = player; _legacy = legacy; _slot = slot; _qa = qa
+	_restore_policy = restore_policy
 	_configured = true
 	_result("bound")
 	return true
@@ -100,16 +114,19 @@ func configure(runtime: Node3D,player: Player,legacy_save_path: String = "",qa_s
 func is_bound_to(runtime: Object,player: Object) -> bool:
 	return _configured and is_instance_valid(_runtime) and is_instance_valid(_player) and _runtime.is_inside_tree() and _player.is_inside_tree() and runtime==_runtime and player==_player and _player.source_world_runtime==_runtime and _player.uses_source_world and _runtime.get_world_3d()==_player.get_world_3d() and _runtime._valid_player_profile(_player)
 
+func _owns_session() -> bool:
+	return is_bound_to(_runtime,_player) and Game.has_method("source_session_owns") and bool(Game.call("source_session_owns",self))
+
 func metadata() -> Dictionary:
-	return {"schema":SCHEMA,"configured":_configured,"slot_path":_slot,"legacy_path":_legacy,"qa_session":_qa,"scope":SCOPE,"has_source_anchor":not _anchor.is_empty(),"anchor_restore_state":_anchor_status.duplicate(true),"pending_token":pending_token(),"pending_reason":_pending.get("reason",""),"pending_kind":_pending.get("kind",""),"completed_recovery_serial":_completed_recovery_serial,"legacy_save_read_or_written":false,"mission_doors_vehicle_NPC_state_included":false}
+	return {"schema":SCHEMA,"configured":_configured,"transaction_busy":_busy,"slot_path":_slot,"legacy_path":_legacy,"qa_session":_qa,"scope":SCOPE,"restore_policy":_restore_policy,"has_source_anchor":not _anchor.is_empty(),"recovery_anchor_pose":_anchor.duplicate(true),"anchor_restore_state":_anchor_status.duplicate(true),"last_capture_pose":_candidate_pose.duplicate(true),"last_capture_restore_state":_candidate_status.duplicate(true),"last_saved_pose":_saved_pose.duplicate(true),"last_saved_restore_state":_saved_status.duplicate(true),"pending_token":pending_token(),"pending_reason":_pending.get("reason",""),"pending_kind":_pending.get("kind",""),"completed_recovery_serial":_completed_recovery_serial,"legacy_save_read_or_written":false,"mission_doors_vehicle_NPC_state_included":false}
 
 func pending_token() -> String:
 	return String(_pending.get("token",""))
 
-func _set_hold(held: bool) -> void:
+func _set_hold(held: bool) -> bool:
 	# Game validates exact currently installed service ownership. configure()
 	# itself remains independent and cannot take over another live session.
-	if Game.has_method("set_source_recovery_hold"): Game.call("set_source_recovery_hold",self,held)
+	return Game.has_method("set_source_recovery_hold") and bool(Game.call("set_source_recovery_hold",self,held))
 
 func _validate_stats(stats: Variant) -> bool:
 	if not _exact(stats,STATS_KEYS): return false
@@ -117,7 +134,7 @@ func _validate_stats(stats: Variant) -> bool:
 	var heat: float = stats.wanted_heat
 	var level: int = 3 if heat>=100.0 else (2 if heat>=45.0 else (1 if heat>=12.0 else 0))
 	if int(stats.wanted_level)!=level or not _number(stats.elapsed_seconds,0,1000000000.0) or not _integer(stats.seed,0,2147483647) or not _integer(stats.mode,Game.MODE_FOOT,Game.MODE_FOOT): return false
-	if not _number(stats.search_timer,0,1000000.0) or not _number(stats.since_damage,0,1000000.0) or not stats.carried_weapon in ["pistol","smg"]: return false
+	if not _number(stats.search_timer,0,1000000.0) or not _number(stats.since_damage,0,1000000.0) or not _string_in(stats.carried_weapon,["pistol","smg"]): return false
 	if not _exact(stats.ammo,["pistol","smg"]): return false
 	for weapon in ["pistol","smg"]:
 		var slot: Variant = stats.ammo[weapon]
@@ -131,11 +148,11 @@ func _live_stats(recovery: bool = false,death: bool = false) -> Dictionary:
 	return {"health":Game.MAX_HEALTH if recovery else Game.health,"death_count":Game.death_count+(1 if death else 0),"wanted_level":0 if recovery else Game.wanted_level,"wanted_heat":0.0 if recovery else Game.wanted_heat,"elapsed_seconds":Game.elapsed_seconds,"seed":Game.seed_value,"mode":Game.MODE_FOOT if recovery else Game.mode,"carried_weapon":Game.carried_weapon,"ammo":Game.ammo.duplicate(true),"settings":Game.settings.duplicate(true),"search_timer":0.0 if recovery else Game.search_timer,"since_damage":0.0 if recovery else float(Game.get("_since_damage"))}
 
 func _pose_structure(pose: Variant) -> bool:
-	if not _exact(pose,Context.RESTORE_KEYS) or pose.schema!=Context.RESTORE_SCHEMA: return false
+	if not _exact(pose,Context.RESTORE_KEYS) or not _string_is(pose.schema,Context.RESTORE_SCHEMA): return false
 	for field in ["geometry_manifest_sha256","vertical_manifest_sha256","floor_geometry_sha256"]:
 		if not _hash(pose[field]): return false
 	var source: Variant = pose.source_pose
-	if not _exact(source,Frame.POSE_KEYS) or source.schema!=Frame.POSE_SCHEMA or not _hash(source.snapshot_manifest_sha256) or not _hash(source.frame_fingerprint): return false
+	if not _exact(source,Frame.POSE_KEYS) or not _string_is(source.schema,Frame.POSE_SCHEMA) or not _hash(source.snapshot_manifest_sha256) or not _hash(source.frame_fingerprint): return false
 	if not source.source_xyz is Array or source.source_xyz.size()!=3 or not _number(source.heading_rad,-1000000.0,1000000.0): return false
 	for n in source.source_xyz:
 		if not _number(n,-Frame.MAX_CANONICAL_COMPONENT_M,Frame.MAX_CANONICAL_COMPONENT_M): return false
@@ -144,11 +161,16 @@ func _pose_structure(pose: Variant) -> bool:
 	# cannot become the source recovery point even if a crafted save saysFOOT.
 	if source.floor_id.to_upper()=="CABIN" or source.feature_id.begins_with("mbs-hotel/physical-shaft/"): return false
 	var elevation: Variant = source.elevation_reference
-	if not _exact(elevation,["status","reference","source_reference"]) or not elevation.status in ["unknown","staging","source_tag","surveyed"] or not _label(elevation.reference,false,160) or not _label(elevation.source_reference,true,512): return false
+	if not _exact(elevation,["status","reference","source_reference"]) or not _string_in(elevation.status,["unknown","staging","source_tag","surveyed"]) or not _label(elevation.reference,false,160) or not _label(elevation.source_reference,true,512): return false
 	return true
 
 func _validate_document(value: Variant) -> Dictionary:
-	if not _exact(value,DOC_KEYS) or value.schema!=SCHEMA or not _integer(value.version,2,2) or value.scope!=SCOPE or not _validate_stats(value.stats) or not _pose_structure(value.context_pose): return {"ok":false,"status":"invalid","reason":"invalid_source_v2_envelope_or_complete_stats"}
+	if (not _exact(value,DOC_KEYS) and not _exact(value,CHECKPOINT_DOC_KEYS)) or not _string_is(value.schema,SCHEMA) or not _integer(value.version,2,2) or not _string_is(value.scope,SCOPE) or not _validate_stats(value.stats) or not _pose_structure(value.context_pose): return {"ok":false,"status":"invalid","reason":"invalid_source_v2_envelope_or_complete_stats"}
+	if value.has("recovery_checkpoint") and typeof(value.recovery_checkpoint)!=TYPE_NIL:
+		if not _pose_structure(value.recovery_checkpoint): return {"ok":false,"status":"invalid","reason":"invalid_source_recovery_checkpoint"}
+		var checkpoint: Dictionary = value.recovery_checkpoint
+		var pose: Dictionary = value.context_pose
+		if checkpoint.geometry_manifest_sha256!=pose.geometry_manifest_sha256 or checkpoint.vertical_manifest_sha256!=pose.vertical_manifest_sha256 or checkpoint.source_pose.snapshot_manifest_sha256!=pose.source_pose.snapshot_manifest_sha256 or checkpoint.source_pose.frame_fingerprint!=pose.source_pose.frame_fingerprint or checkpoint.source_pose.elevation_reference!=pose.source_pose.elevation_reference: return {"ok":false,"status":"invalid","reason":"checkpoint_belongs_to_different_source_version"}
 	return {"ok":true,"document":value.duplicate(true)}
 
 func _compatible(pose: Dictionary) -> Dictionary:
@@ -158,8 +180,33 @@ func _compatible(pose: Dictionary) -> Dictionary:
 	if not checked.get("ok",false): return {"ok":false,"status":"blocked","reason":"source_frame_snapshot_or_elevation_changed","detail":checked}
 	return {"ok":true}
 
+func _preflight_pose(pose: Dictionary) -> Dictionary:
+	var compatible: Dictionary = _compatible(pose)
+	if not compatible.ok: return compatible
+	var prepared: Dictionary = _runtime.context.prepare_restore(pose)
+	if not prepared.get("ok",false) or prepared.get("status")!="query_required": return prepared
+	var query: Dictionary = prepared.query
+	var checked: Dictionary = _runtime.context.preflight_restore(pose,query,_runtime._native_player_observations(query,_player))
+	checked["configured_restore_policy"] = _restore_policy
+	checked["hydrology_reclassified"] = false
+	if _restore_policy=="supported_native_surface" and _runtime.supports_unknown_water_restore(checked):
+		checked["strict_status"] = checked.status
+		checked["status"] = "ready_under_game_policy"
+	return checked
+
+func _ready_preflight(checked: Dictionary) -> bool:
+	return checked.get("ok",false) and checked.get("status","") in ["ready","ready_under_game_policy"]
+
+func _record_anchor_candidate(pose: Dictionary,checked: Dictionary) -> bool:
+	_candidate_pose = pose.duplicate(true)
+	_candidate_status = checked.duplicate(true)
+	if not _ready_preflight(checked): return false
+	_anchor = pose.duplicate(true)
+	_anchor_status = checked.duplicate(true)
+	return true
+
 func _capture_pose() -> Dictionary:
-	if not is_bound_to(_runtime,_player): return {"ok":false,"reason":"source_binding_lost"}
+	if not _owns_session(): return {"ok":false,"reason":"service_does_not_own_source_session"}
 	if Game.mode!=Game.MODE_FOOT or _player.current_vehicle!=null or not _player.visible or not _player.is_visible_in_tree() or not _player.alive or _player.busy: return {"ok":false,"reason":"onfoot_visible_unoccupied_anchor_required"}
 	var state: Dictionary = _runtime.inspect_player(_player)
 	if not state.get("ok",false) or state.residency.state!="resident" or state.support.state!="supported" or state.clearance.state!="clear" or state.water.state=="submerged": return {"ok":false,"reason":"fresh_supported_clear_source_anchor_required","detail":state}
@@ -170,7 +217,7 @@ func _capture_pose() -> Dictionary:
 func capture() -> Dictionary:
 	var captured: Dictionary = _capture_pose()
 	if not captured.get("ok",false): return _result("invalid",captured.get("reason","capture_refused"),{"detail":captured})
-	var document := {"schema":SCHEMA,"version":2,"scope":SCOPE,"context_pose":captured.pose,"stats":_live_stats()}
+	var document := {"schema":SCHEMA,"version":2,"scope":SCOPE,"context_pose":captured.pose,"stats":_live_stats(),"recovery_checkpoint":_anchor.duplicate(true) if not _anchor.is_empty() else null}
 	var valid: Dictionary = _validate_document(document)
 	if not valid.ok: return _result("invalid",valid.reason)
 	return _result("captured","",{"document":valid.document})
@@ -178,9 +225,11 @@ func capture() -> Dictionary:
 func capture_anchor() -> bool:
 	var captured: Dictionary = _capture_pose()
 	if not captured.get("ok",false): _result("invalid",captured.get("reason","anchor_refused")); return false
-	_anchor = captured.pose.duplicate(true)
-	var query: Dictionary = _runtime.context.begin_query(_anchor.source_pose.source_xyz)
-	_anchor_status = _runtime.context.preflight_restore(_anchor,query.query,_runtime._native_player_observations(query.query,_player)) if query.get("ok",false) else {"status":"pending","reason":"origin_or_physics_context_required"}
+	var checked: Dictionary = _preflight_pose(captured.pose)
+	var accepted: bool = _record_anchor_candidate(captured.pose,checked)
+	if not accepted:
+		_result(checked.get("status","pending"),"recovery_checkpoint_preflight_not_ready",{"restore_state":checked.duplicate(true),"previous_checkpoint_preserved":not _anchor.is_empty()})
+		return false
 	_result("anchor_captured","",{"restore_state":_anchor_status.duplicate(true)})
 	return true
 
@@ -202,12 +251,20 @@ func _read_document() -> Dictionary:
 func has_save() -> bool:
 	# A valid document may still need a different current geometry/floor. Keep
 	# it visible; load reports pending/blocked instead of erasing the old slot.
-	return is_bound_to(_runtime,_player) and _read_document().get("ok",false)
+	return _owns_session() and _read_document().get("ok",false)
 
 func save() -> bool:
+	if not _owns_session(): _result("invalid","service_does_not_own_source_session"); return false
 	if _busy or not _pending.is_empty(): _result("blocked","another_source_transaction_pending"); return false
 	var captured: Dictionary = capture()
 	if not captured.ok: return false
+	var review: Dictionary = _preflight_pose(captured.document.context_pose)
+	# The primary source save always keeps its exact current supported pose.
+	# A pending candidate must not replace the last restorable recovery point.
+	var checkpoint: Variant = captured.document.context_pose.duplicate(true) if _ready_preflight(review) else (_anchor.duplicate(true) if not _anchor.is_empty() else null)
+	captured.document["recovery_checkpoint"] = checkpoint
+	var checked: Dictionary = _validate_document(captured.document)
+	if not checked.ok: _result("invalid",checked.reason); return false
 	if not _safe_path(_slot) or not _safe_path(_legacy): _result("invalid","source_slot_path_changed"); return false
 	var payload: PackedByteArray = JSON.stringify(captured.document,"\t",true,true).to_utf8_buffer()
 	if payload.size()>MAX_BYTES: _result("invalid","source_slot_exceeds_bound"); return false
@@ -228,9 +285,10 @@ func save() -> bool:
 	if written!=payload or DirAccess.rename_absolute(temporary,_slot)!=OK:
 		DirAccess.remove_absolute(temporary); _busy = false; _result("invalid","source_atomic_publish_failed"); return false
 	_busy = false
-	_anchor = captured.document.context_pose.duplicate(true)
-	_anchor_status = {"status":"captured_not_cold_restore_proof"}
-	_result("saved","",{"bytes":payload.size(),"slot_path":_slot})
+	_saved_pose = captured.document.context_pose.duplicate(true)
+	_saved_status = review.duplicate(true)
+	_record_anchor_candidate(_saved_pose,review)
+	_result("saved","",{"bytes":payload.size(),"slot_path":_slot,"source_pose_restore_state":review.duplicate(true),"previous_checkpoint_preserved":not _ready_preflight(review) and not _anchor.is_empty()})
 	return true
 
 func _new_token(kind: String) -> String:
@@ -241,12 +299,14 @@ func _completed_recovery(token: String) -> bool:
 	return _recovery_tokens.get(token,"")=="completed"
 
 func load() -> bool:
-	if not is_bound_to(_runtime,_player) or _busy: _result("invalid","source_binding_lost_or_busy"); return false
+	if not _owns_session() or _busy: _result("invalid","source_session_not_owned_or_busy"); return false
 	if not _pending.is_empty(): return retry_pending()
 	var read: Dictionary = _read_document()
 	if not read.get("ok",false): _result(read.get("status","invalid"),read.get("reason","read_failed")); return false
+	_saved_pose = read.document.context_pose.duplicate(true)
+	_saved_status = {"status":"validated_file_not_yet_applied","file_sha256":read.file_sha256,"configured_restore_policy":_restore_policy}
 	_pending = {"kind":"load","reason":"load","token":_new_token("load"),"document":read.document.duplicate(true),"file_sha256":read.file_sha256}
-	_set_hold(true)
+	if not _set_hold(true): _pending.clear(); _result("invalid","source_recovery_hold_ownership_rejected"); return false
 	return retry_pending()
 
 func _emit_required(reason: String) -> void:
@@ -254,22 +314,29 @@ func _emit_required(reason: String) -> void:
 	restore_required.emit(reason,pose,pending_token())
 
 func retry_pending(token: String = "") -> bool:
-	if not is_bound_to(_runtime,_player) or _busy: _result("invalid","source_binding_lost_or_busy"); return false
+	if not _owns_session() or _busy: _result("invalid","source_session_not_owned_or_busy"); return false
 	if _pending.is_empty():
 		if not token.is_empty() and (token==_last_completed_token or _completed_recovery(token)): _result("already_completed","",{"token":token}); return true
 		_result("invalid","no_matching_pending_source_restore"); return false
 	if not token.is_empty() and token!=pending_token(): _result("invalid","different_pending_restore_token"); return false
 	if _pending.kind=="recovery":
-		if _anchor.is_empty():
+		var recovery_pose: Dictionary = _pending.get("recovery_pose",{})
+		if recovery_pose.is_empty() and not _anchor.is_empty(): recovery_pose = _anchor.duplicate(true)
+		if recovery_pose.is_empty():
 			var saved: Dictionary = _read_document()
-			if saved.get("ok",false) and _compatible(saved.document.context_pose).get("ok",false): _anchor = saved.document.context_pose.duplicate(true)
-		if _anchor.is_empty():
+			if saved.get("ok",false):
+				_saved_pose = saved.document.context_pose.duplicate(true)
+				_saved_status = _preflight_pose(_saved_pose)
+				var checkpoint: Variant = saved.document.get("recovery_checkpoint")
+				recovery_pose = checkpoint.duplicate(true) if checkpoint is Dictionary else saved.document.context_pose.duplicate(true)
+		if recovery_pose.is_empty():
 			_result("pending","no_valid_source_onfoot_anchor",{"token":pending_token()})
 			_emit_required("no_valid_source_onfoot_anchor")
 			return false
 		# Recovery keeps current ammunition/settings/death accounting through a
 		# streaming wait; load intentionally restores its complete saved snapshot.
-		_pending.document = {"schema":SCHEMA,"version":2,"scope":SCOPE,"context_pose":_anchor.duplicate(true),"stats":_live_stats(true,_pending.reason=="death")}
+		_pending["recovery_pose"] = recovery_pose.duplicate(true)
+		_pending.document = {"schema":SCHEMA,"version":2,"scope":SCOPE,"context_pose":recovery_pose.duplicate(true),"stats":_live_stats(true,_pending.reason=="death")}
 	var document: Dictionary = _pending.get("document",{})
 	var valid: Dictionary = _validate_document(document)
 	if not valid.ok: _result("invalid",valid.reason,{"token":pending_token()}); return false
@@ -280,20 +347,23 @@ func retry_pending(token: String = "") -> bool:
 		_result("pending","fresh_physics_boundary_required",{"token":pending_token()})
 		_emit_required("fresh_physics_boundary_required")
 		return false
-	# No yield or scene callback between fresh Runtime preflight+actual pose
-	# application and committing the already fully validated scalar state.
+	# No yield separates fresh Runtime preflight+actual pose and validated stats.
+	# Existing Player.respawn_at mode/notify callbacks still run inside Runtime;
+	# _busy rejects reentrant service calls until this complete commit finishes.
 	_busy = true
-	var applied: Dictionary = _runtime.restore_player_pose(_player,document.context_pose)
+	var applied: Dictionary = _runtime.restore_player_pose(_player,document.context_pose,_restore_policy=="supported_native_surface")
 	if not applied.get("ok",false) or applied.get("status")!="applied":
 		_busy = false
 		var status: String = applied.get("status","invalid")
 		_result(status,applied.get("reason",str(applied.get("reasons",applied.get("error","restore_not_ready")))),{"token":pending_token(),"detail":applied.duplicate(true)})
+		if _pending.kind=="load": _saved_status = applied.duplicate(true)
 		_emit_required(last_result.reason)
 		return false
 	var transaction: Dictionary = _pending.duplicate(true)
 	_apply_stats(document.stats)
 	_anchor = document.context_pose.duplicate(true)
-	_anchor_status = {"status":"applied","physics_tick":applied.physics_tick}
+	_anchor_status = {"ok":true,"status":"ready_after_native_apply","physics_tick":applied.physics_tick,"restore_policy":applied.get("restore_policy",_restore_policy),"water_state":applied.get("water_state","unknown"),"hydrology_reclassified":false}
+	if transaction.kind=="load": _saved_status = applied.duplicate(true)
 	_last_completed_token = transaction.token
 	if transaction.kind=="recovery":
 		_completed_recovery_serial = maxi(_completed_recovery_serial,int(String(transaction.token).get_slice(":",2)))
@@ -301,7 +371,7 @@ func retry_pending(token: String = "") -> bool:
 	_pending.clear()
 	_busy = false
 	_set_hold(false)
-	_result("applied","",{"token":transaction.token,"kind":transaction.kind,"physics_tick":applied.physics_tick})
+	_result("applied","",{"token":transaction.token,"kind":transaction.kind,"physics_tick":applied.physics_tick,"restore_policy":applied.get("restore_policy",_restore_policy),"water_state":applied.get("water_state","unknown"),"hydrology_reclassified":false})
 	# Signals occur only after the complete state commit. No legacy parser or
 	# reset_action_state() default can overwrite the restored selected weapon.
 	Events.health_changed.emit(Game.health,Game.MAX_HEALTH)
@@ -328,7 +398,7 @@ func _apply_stats(stats: Dictionary) -> void:
 	_player.reset_action_state(false)
 
 func request_recovery(reason: String = "death",token: String = "") -> bool:
-	if not is_bound_to(_runtime,_player) or _busy or not reason in ["death","disabled_aircraft"]: _result("invalid","recovery_binding_or_reason_invalid"); return false
+	if not _owns_session() or _busy or not reason in ["death","disabled_aircraft"]: _result("invalid","recovery_ownership_or_reason_invalid"); return false
 	if not token.is_empty() and _completed_recovery(token): _result("already_completed","",{"token":token}); return true
 	if not _pending.is_empty():
 		if _pending.kind!="recovery" or (not token.is_empty() and token!=pending_token()): _result("blocked","another_source_restore_pending"); return false
@@ -352,11 +422,11 @@ func request_recovery(reason: String = "death",token: String = "") -> bool:
 	var issued: String = _new_token("recovery")
 	_recovery_tokens[issued] = "pending"
 	_pending = {"kind":"recovery","reason":reason,"token":issued,"document":{}}
-	_set_hold(true)
+	if not _set_hold(true): _recovery_tokens[issued] = "cancelled"; _pending.clear(); _result("invalid","source_recovery_hold_ownership_rejected"); return false
 	return retry_pending()
 
 func cancel_pending(token: String) -> bool:
-	if _busy or token.is_empty() or token!=pending_token(): return false
+	if not _owns_session() or _busy or token.is_empty() or token!=pending_token(): return false
 	if _pending.kind=="recovery": _recovery_tokens[token] = "cancelled"
 	_pending.clear()
 	_set_hold(false)

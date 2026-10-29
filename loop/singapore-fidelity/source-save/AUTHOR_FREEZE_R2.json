@@ -1,0 +1,50 @@
+{
+  "schema": "source_save_service_repair_freeze_v2",
+  "created_utc": "2026-10-29T04:07:19.776328+00:00",
+  "root_native_r1": {
+    "started_utc": "2026-10-29T03:52:15.610584+00:00",
+    "finished_utc": "2026-10-29T03:52:34.599030+00:00",
+    "engine_exit_code": 0,
+    "exit_code": 0,
+    "fatal_errors": [],
+    "timeout": false,
+    "elapsed_sec": 88.88,
+    "child_reaped": true
+  },
+  "r1_counts": {
+    "checks": 48,
+    "failed": 0,
+    "failures": []
+  },
+  "r1_does_not_validate_revised_source": true,
+  "new_native_import_and_fixture": "pending_root",
+  "new_independent_review": "pending_root",
+  "repairs": [
+    "explicit String guards before schema/enum comparisons",
+    "ready checkpoint preserved separately from exact pending primary pose",
+    "validated optional persisted checkpoint with five-key v2 compatibility",
+    "explicit strict-default native-supported-surface policy retaining UNKNOWN",
+    "current Game session ownership required for every mutating API",
+    "owner hold acquisition checked and busy metadata exposed",
+    "existing Runtime callbacks documented; no-yield transaction only"
+  ],
+  "child_engine_gpu_git_actions": false,
+  "whole_goal_complete": false,
+  "files": [
+    {
+      "path": "game/src/world/geography/source_save_service.gd",
+      "sha256": "5ccf5e4b4fba09406c671ecc12c33bdcbb3aa3b603e5b3f184ee63b45c808766",
+      "bytes": 30438
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_save_test.gd",
+      "sha256": "a125f2905d3ea769c21c45424881750a45262043785b3250e43e99ebc876ba11",
+      "bytes": 28471
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_save_test.tscn",
+      "sha256": "89b2964f5d3af0d6996d4daeec3d1a9ef7a1190fda2a57736fc25ccfec24d1fd",
+      "bytes": 206
+    }
+  ]
+}
