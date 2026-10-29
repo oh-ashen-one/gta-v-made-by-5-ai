@@ -162,6 +162,22 @@ func run() -> void:
 	heli.exit_vehicle(player)
 	await frames(8)
 	check("actual production exit returns player to basement floor without water-plane rejection", player.current_vehicle == null and not heli.pilot_is_player and player.global_position.y < -19.8 and Game.health == Game.MAX_HEALTH, player.global_position)
+	var car := Car.new()
+	car.process_mode = Node.PROCESS_MODE_DISABLED
+	car.position = Vector3(1506, -19.95, -8)
+	add_child(car)
+	check("production car hull binds to common source runtime", runtime.bind_car(car))
+	car.has_ai = true; car.max_speed = 6.0; car.ai_target = Vector3(1506, -20, -14)
+	Game.player_position = Vector3(-10000, 0, 0) # exercise the former far-AI shortcut
+	car.process_mode = Node.PROCESS_MODE_INHERIT
+	var car_start := car.global_position
+	await frames(90)
+	check("source far AI car uses supported native motion below old sea plane", car.global_position.distance_to(car_start) > .25 and car.is_on_floor() and car.global_position.y < -19.8, car.global_position)
+	car.has_ai = false
+	car.shove(Vector3(4, 0, 0), car.global_position)
+	var shove_start := car.global_position
+	await frames(15)
+	check("source-bound car shove follows native motion", car.global_position.x > shove_start.x + .1 and car.is_on_floor(), car.global_position)
 	runtime.retire_region("qa-basement")
 	var shared: Dictionary = runtime.inspect_player(player)
 	check("retiring west keeps shared live floor supported on east", shared.get("ok", false) and shared.support.state == "supported" and shared.residency.state == "resident", shared)
@@ -170,10 +186,13 @@ func run() -> void:
 		check("shared-floor lease transfer preserves native capture and restore", transferred.get("ok", false) and transferred.get("status") == "applied", transferred)
 	var before := player.global_position
 	runtime.retire_region("qa-basement-east")
+	var car_before := car.global_position
+	car.shove(Vector3(8, 0, 0), car.global_position)
 	Input.action_press("move_forward")
 	await frames(30)
 	Input.action_release("move_forward")
 	check("unloaded collision holds actual Player without death or invented checkpoint", player.global_position.is_equal_approx(before) and Game.health == Game.MAX_HEALTH, player.global_position)
+	check("unloaded collision holds car shove without legacy direct integration", car.global_position.is_equal_approx(car_before), car.global_position)
 	if saved.get("ok", false):
 		var pending: Dictionary = runtime.restore_player_pose(player, saved.pose)
 		check("cold source restore waits and leaves actor unchanged", pending.get("ok", false) and pending.get("status") == "pending" and player.global_position.is_equal_approx(before), pending)
@@ -184,6 +203,7 @@ func run() -> void:
 	await frames(12)
 	Input.action_release("move_forward")
 	check("source-bound actors hold when runtime disappears instead of falling back to fictional bounds", player.global_position.is_equal_approx(before) and heli.global_position.is_equal_approx(heli_before) and Game.health == Game.MAX_HEALTH and heli.landing_exit_position() == Vector3.ZERO)
+	check("source car retains source-mode hold after runtime teardown", car.uses_source_world and car.global_position.is_equal_approx(car_before))
 	metrics["actual_player_used"] = true
 	metrics["actual_helicopter_used"] = true
 	metrics["owner_save_files_touched"] = false

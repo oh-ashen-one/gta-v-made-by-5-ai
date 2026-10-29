@@ -45,6 +45,28 @@ func bind_aircraft(actor: Helicopter) -> bool:
 	actor.uses_source_world = true
 	return true
 
+func bind_car(actor: Car) -> bool:
+	if not _configured or not is_instance_valid(actor) or actor.get_world_3d() != get_world_3d() or _car_envelope(actor) == Vector3.ZERO: return false
+	actor.source_world_runtime = self
+	actor.uses_source_world = true
+	return true
+
+func _car_envelope(actor: Car) -> Vector3:
+	if not actor.global_basis.is_equal_approx(Basis(Vector3.UP, actor.global_rotation.y)): return Vector3.ZERO
+	var shape_node: CollisionShape3D
+	var count := 0
+	for child: Node in actor.get_children():
+		if child is CollisionShape3D and not child.disabled:
+			count += 1
+			shape_node = child
+	if count != 1 or shape_node == null or not shape_node.shape is BoxShape3D or not shape_node.basis.is_equal_approx(Basis.IDENTITY): return Vector3.ZERO
+	var half: Vector3 = (shape_node.shape as BoxShape3D).size * .5
+	var offset := shape_node.position
+	# Circumscribed horizontal envelope covers the full production hull even
+	# while steering/spinning. This checks residency, not collision avoidance.
+	var radius := Vector2(absf(offset.x) + half.x, absf(offset.z) + half.z).length() + .5
+	return Vector3(radius, absf(offset.y) + half.y + .5, radius)
+
 func _player_shape(actor: Player) -> CollisionShape3D:
 	for child: Node in actor.get_children():
 		if child is CollisionShape3D and child.shape is CapsuleShape3D and not child.disabled: return child
@@ -291,20 +313,28 @@ func inspect_player(actor: Player) -> Dictionary:
 ## Hold safely on missing data; no Y-death-plane, invented ground or teleport.
 ## Check both current and prospective neighborhoods to prevent flying/walking
 ## into an unloaded chunk. Flight does not demand a floor under the aircraft.
-func motion_allowed(actor: CharacterBody3D, delta: float, aircraft: bool = false) -> bool:
+func motion_allowed(actor: CharacterBody3D, delta: float, aircraft: bool = false, extra_motion: Vector3 = Vector3.ZERO) -> bool:
 	if not _configured or actor.get_world_3d() != get_world_3d() or delta <= 0.0: return false
-	if not aircraft and (not actor is Player or not _valid_player_profile(actor)): return false
+	var car_half := Vector3.ZERO
+	if actor is Car:
+		if actor.source_world_runtime != self: return false
+		car_half = _car_envelope(actor)
+		if car_half == Vector3.ZERO: return false
+	elif not aircraft and (not actor is Player or not _valid_player_profile(actor)): return false
+	if not extra_motion.is_finite(): return false
 	var start: Dictionary = frame.to_source_current_live(actor.global_position)
-	var end: Dictionary = frame.to_source_current_live(actor.global_position + actor.velocity * delta)
+	var target := actor.global_position + actor.velocity * delta + extra_motion
+	var end: Dictionary = frame.to_source_current_live(target)
 	if not start.ok or not end.ok: return false
 	var half := Vector3(8, 5, 8) if aircraft else Vector3(0.8, 2.2, 0.8)
+	if actor is Car: half = car_half
 	var middle: Array = []
 	var swept := half
 	for axis in 3:
 		middle.append((float(start.source_xyz[axis]) + float(end.source_xyz[axis])) * 0.5)
 		swept[axis] += absf(float(end.source_xyz[axis]) - float(start.source_xyz[axis])) * 0.5
 	if _resident(middle, swept).is_empty(): return false
-	for local in [actor.global_position, actor.global_position + actor.velocity * delta]:
+	for local in [actor.global_position, target]:
 		var canonical: Dictionary = frame.to_source_current_live(local)
 		if not canonical.ok or _resident(canonical.source_xyz, half).is_empty(): return false
 		var begun: Dictionary = context.begin_query(canonical.source_xyz)

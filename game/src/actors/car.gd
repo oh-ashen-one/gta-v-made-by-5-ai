@@ -1,5 +1,7 @@
 class_name Car
 extends CharacterBody3D
+var source_world_runtime: Node = null
+var uses_source_world := false
 ## Arcade vehicle with a real cabin, wheels, lights, damage and left-hand-road
 ## AI. Physics is a deliberately simple kinematic model (reliable at district
 ## speeds, no physics-engine tuning rabbit hole): throttle, steering, drag,
@@ -268,11 +270,15 @@ func _body_color() -> Color:
 		_: return Color(0.30, 0.36, 0.42)
 
 func _physics_process(delta: float) -> void:
+	if uses_source_world and not is_instance_valid(source_world_runtime):
+		_hold_source_motion()
+		return
 	_impact_cooldown = maxf(0.0, _impact_cooldown - delta)
 	if Game.simulation_paused:
 		return
 	if disabled:
 		velocity = Vector3.ZERO
+		if not _source_motion_allowed(delta): return
 		move_and_slide()
 		return
 	if not driver_is_player and _shove.length_squared() > 0.01:
@@ -281,7 +287,7 @@ func _physics_process(delta: float) -> void:
 	if driver_is_player:
 		_player_control(delta)
 	elif has_ai:
-		if global_position.distance_squared_to(Game.player_position) > SIM_NEAR * SIM_NEAR:
+		if not uses_source_world and global_position.distance_squared_to(Game.player_position) > SIM_NEAR * SIM_NEAR:
 			# Steering/speed decisions every SIM_FAR_TICKS ticks; motion every tick
 			# (cheap direct integration) so distant traffic does not judder.
 			_sim_accum += delta
@@ -310,11 +316,25 @@ func _physics_process(delta: float) -> void:
 		velocity.y -= 24.0 * delta
 	else:
 		velocity.y = -0.6
+	if not _source_motion_allowed(delta): return
 	_step_low_kerb(delta)
 	var before := velocity
 	move_and_slide()
 	_check_impact(before)
 	_spin_wheels(delta)
+
+func _hold_source_motion() -> void:
+	velocity = Vector3.ZERO
+	_forward = 0.0
+	_shove = Vector3.ZERO
+	_shove_spin = 0.0
+
+func _source_motion_allowed(delta: float, extra_motion: Vector3 = Vector3.ZERO) -> bool:
+	if not uses_source_world: return true
+	if not is_instance_valid(source_world_runtime) or not source_world_runtime.motion_allowed(self, delta, false, extra_motion):
+		_hold_source_motion()
+		return false
+	return true
 
 var _shove := Vector3.ZERO
 var _shove_spin := 0.0
@@ -342,6 +362,7 @@ func _shoved_motion(delta: float) -> void:
 	velocity.z = _shove.z
 	velocity.y = -0.6 if is_on_floor() else velocity.y - 24.0 * delta
 	rotate_y(_shove_spin * delta)
+	if not _source_motion_allowed(delta): return
 	move_and_slide()
 	_shove = _shove.move_toward(Vector3.ZERO, 9.0 * delta)
 	_shove_spin = move_toward(_shove_spin, 0.0, 3.0 * delta)
@@ -360,6 +381,7 @@ func _step_low_kerb(delta: float) -> void:
 	var horizontal_motion := Vector3(velocity.x, 0.0, velocity.z) * delta
 	if horizontal_motion.length() < 0.01: return
 	if not test_move(global_transform, horizontal_motion): return
+	if not _source_motion_allowed(delta, Vector3.UP * .24): return
 	var raised := global_transform
 	raised.origin.y += 0.24
 	if not test_move(global_transform, Vector3.UP * 0.24) and not test_move(raised, horizontal_motion):
