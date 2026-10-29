@@ -1,0 +1,3867 @@
+{
+  "created_utc": "2026-10-29T00:49:15.105431+00:00",
+  "method": "PYTHON_DOUBLE_SOURCE_AND_INVENTORY_ARITHMETIC_ONLY_NOT_ENGINE_QA",
+  "module_sha256": "c1d484dd61be229d37476b7aee4c2359b87250cbd6fa7941d509e2b013a0e526",
+  "inventory_sha256": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
+  "actual_tower_source_ids": [
+    "way/172307471",
+    "way/172307472",
+    "way/116801004"
+  ],
+  "common_source_axes_double": [
+    [
+      0.9147652463748762,
+      0.4039858215639653
+    ],
+    [
+      -0.4039858215639653,
+      0.9147652463748762
+    ]
+  ],
+  "test_origin_xyz": [
+    441.6952525684337,
+    80.9,
+    -1046.407586580947
+  ],
+  "hotel_floor_count": 189,
+  "resort_records_require_explicit_source_mapping": 27,
+  "incompatible_mezzanine_recipe_rows": [
+    {
+      "floor_id": "T3-B2",
+      "upper_floor_id": "T3-B2M",
+      "actual_inventory_rise_m": 2.5,
+      "required_clear_height_plus_slab_m": 3.2800000000000002,
+      "resolution": "TRANSIENT_ROOT_PARTIAL_MEZZANINE_VERTICAL_ZONES_NOT_EMPTY_FLOOR"
+    },
+    {
+      "floor_id": "T3-B2M",
+      "upper_floor_id": "T3-B1",
+      "actual_inventory_rise_m": 2.5,
+      "required_clear_height_plus_slab_m": 3.2800000000000002,
+      "resolution": "TRANSIENT_ROOT_PARTIAL_MEZZANINE_VERTICAL_ZONES_NOT_EMPTY_FLOOR"
+    },
+    {
+      "floor_id": "T2-B2",
+      "upper_floor_id": "T2-B2M",
+      "actual_inventory_rise_m": 2.5,
+      "required_clear_height_plus_slab_m": 3.2800000000000002,
+      "resolution": "TRANSIENT_ROOT_PARTIAL_MEZZANINE_VERTICAL_ZONES_NOT_EMPTY_FLOOR"
+    },
+    {
+      "floor_id": "T2-B2M",
+      "upper_floor_id": "T2-B1",
+      "actual_inventory_rise_m": 2.5,
+      "required_clear_height_plus_slab_m": 3.2800000000000002,
+      "resolution": "TRANSIENT_ROOT_PARTIAL_MEZZANINE_VERTICAL_ZONES_NOT_EMPTY_FLOOR"
+    },
+    {
+      "floor_id": "T1-B2",
+      "upper_floor_id": "T1-B2M",
+      "actual_inventory_rise_m": 2.5,
+      "required_clear_height_plus_slab_m": 3.2800000000000002,
+      "resolution": "TRANSIENT_ROOT_PARTIAL_MEZZANINE_VERTICAL_ZONES_NOT_EMPTY_FLOOR"
+    },
+    {
+      "floor_id": "T1-B2M",
+      "upper_floor_id": "T1-B1",
+      "actual_inventory_rise_m": 2.5,
+      "required_clear_height_plus_slab_m": 3.2800000000000002,
+      "resolution": "TRANSIENT_ROOT_PARTIAL_MEZZANINE_VERTICAL_ZONES_NOT_EMPTY_FLOOR"
+    }
+  ],
+  "target_neighbour_sets": {
+    "T2-L24": [
+      "T2-L23",
+      "T2-L25"
+    ],
+    "T2-L25": [
+      "T2-L24",
+      "T2-L26"
+    ],
+    "T3-L24": [
+      "T3-L23",
+      "T3-L25"
+    ]
+  },
+  "placements": [
+    {
+      "floor_id": "T3-B5",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        -22.5,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -103.4,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 4.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-B4"
+      ]
+    },
+    {
+      "floor_id": "T3-B4",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        -18.5,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -99.4,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 4.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-B5",
+        "T3-B3"
+      ]
+    },
+    {
+      "floor_id": "T3-B3",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        -14.5,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -95.4,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 4.5,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-B4",
+        "T3-B2"
+      ]
+    },
+    {
+      "floor_id": "T3-B2",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        -10.0,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -90.9,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 2.5,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-B3",
+        "T3-B2M"
+      ]
+    },
+    {
+      "floor_id": "T3-B2M",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        -7.5,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -88.4,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 2.5,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-B2",
+        "T3-B1"
+      ]
+    },
+    {
+      "floor_id": "T3-B1",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        -5.0,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -85.9,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 5.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-B2M",
+        "T3-L1"
+      ]
+    },
+    {
+      "floor_id": "T3-L1",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        0.0,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -80.9,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 5.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-B1",
+        "T3-L2"
+      ]
+    },
+    {
+      "floor_id": "T3-L2",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        5.0,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -75.9,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L1",
+        "T3-L3"
+      ]
+    },
+    {
+      "floor_id": "T3-L3",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        8.45,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -72.45,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000001,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L2",
+        "T3-L4"
+      ]
+    },
+    {
+      "floor_id": "T3-L4",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        11.9,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -69.0,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L3",
+        "T3-L5"
+      ]
+    },
+    {
+      "floor_id": "T3-L5",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        15.35,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -65.55000000000001,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000001,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L4",
+        "T3-L6"
+      ]
+    },
+    {
+      "floor_id": "T3-L6",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        18.8,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -62.10000000000001,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L5",
+        "T3-L7"
+      ]
+    },
+    {
+      "floor_id": "T3-L7",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        22.25,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -58.650000000000006,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L6",
+        "T3-L8"
+      ]
+    },
+    {
+      "floor_id": "T3-L8",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        25.7,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -55.2,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L7",
+        "T3-L9"
+      ]
+    },
+    {
+      "floor_id": "T3-L9",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        29.15,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -51.75000000000001,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L8",
+        "T3-L10"
+      ]
+    },
+    {
+      "floor_id": "T3-L10",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        32.6,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -48.300000000000004,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L9",
+        "T3-L11"
+      ]
+    },
+    {
+      "floor_id": "T3-L11",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        36.05,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -44.85000000000001,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L10",
+        "T3-L12"
+      ]
+    },
+    {
+      "floor_id": "T3-L12",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        39.5,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -41.400000000000006,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L11",
+        "T3-L13"
+      ]
+    },
+    {
+      "floor_id": "T3-L13",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        42.95,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -37.95,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L12",
+        "T3-L14"
+      ]
+    },
+    {
+      "floor_id": "T3-L14",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        46.4,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -34.50000000000001,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L13",
+        "T3-L15"
+      ]
+    },
+    {
+      "floor_id": "T3-L15",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        49.85,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -31.050000000000004,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L14",
+        "T3-L16"
+      ]
+    },
+    {
+      "floor_id": "T3-L16",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        53.3,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -27.60000000000001,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L15",
+        "T3-L17"
+      ]
+    },
+    {
+      "floor_id": "T3-L17",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        56.75,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -24.150000000000006,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L16",
+        "T3-L18"
+      ]
+    },
+    {
+      "floor_id": "T3-L18",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        60.2,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -20.700000000000003,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L17",
+        "T3-L19"
+      ]
+    },
+    {
+      "floor_id": "T3-L19",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        63.65,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -17.250000000000007,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L18",
+        "T3-L20"
+      ]
+    },
+    {
+      "floor_id": "T3-L20",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        67.1,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -13.800000000000011,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L19",
+        "T3-L21"
+      ]
+    },
+    {
+      "floor_id": "T3-L21",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        70.55,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -10.350000000000009,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L20",
+        "T3-L22"
+      ]
+    },
+    {
+      "floor_id": "T3-L22",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        74.0,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -6.900000000000006,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L21",
+        "T3-L23"
+      ]
+    },
+    {
+      "floor_id": "T3-L23",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        77.45,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        -3.450000000000003,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L22",
+        "T3-L24"
+      ]
+    },
+    {
+      "floor_id": "T3-L24",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        80.9,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        0.0,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L23",
+        "T3-L25"
+      ]
+    },
+    {
+      "floor_id": "T3-L25",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        84.35,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        3.4499999999999886,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L24",
+        "T3-L26"
+      ]
+    },
+    {
+      "floor_id": "T3-L26",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        87.8,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        6.8999999999999915,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L25",
+        "T3-L27"
+      ]
+    },
+    {
+      "floor_id": "T3-L27",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        91.25,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        10.349999999999994,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L26",
+        "T3-L28"
+      ]
+    },
+    {
+      "floor_id": "T3-L28",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        94.7,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        13.799999999999997,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L27",
+        "T3-L29"
+      ]
+    },
+    {
+      "floor_id": "T3-L29",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        98.15,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        17.25,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L28",
+        "T3-L30"
+      ]
+    },
+    {
+      "floor_id": "T3-L30",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        101.6,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        20.69999999999999,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L29",
+        "T3-L31"
+      ]
+    },
+    {
+      "floor_id": "T3-L31",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        105.05,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        24.14999999999999,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L30",
+        "T3-L32"
+      ]
+    },
+    {
+      "floor_id": "T3-L32",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        108.5,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        27.599999999999994,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L31",
+        "T3-L33"
+      ]
+    },
+    {
+      "floor_id": "T3-L33",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        111.95,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        31.049999999999997,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L32",
+        "T3-L34"
+      ]
+    },
+    {
+      "floor_id": "T3-L34",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        115.4,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        34.5,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L33",
+        "T3-L35"
+      ]
+    },
+    {
+      "floor_id": "T3-L35",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        118.85,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        37.94999999999999,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L34",
+        "T3-L36"
+      ]
+    },
+    {
+      "floor_id": "T3-L36",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        122.3,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        41.39999999999999,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L35",
+        "T3-L37"
+      ]
+    },
+    {
+      "floor_id": "T3-L37",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        125.75,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        44.849999999999994,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L36",
+        "T3-L38"
+      ]
+    },
+    {
+      "floor_id": "T3-L38",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        129.2,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        48.29999999999998,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L37",
+        "T3-L39"
+      ]
+    },
+    {
+      "floor_id": "T3-L39",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        132.65,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        51.75,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L38",
+        "T3-L40"
+      ]
+    },
+    {
+      "floor_id": "T3-L40",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        136.1,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        55.19999999999999,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L39",
+        "T3-L41"
+      ]
+    },
+    {
+      "floor_id": "T3-L41",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        139.55,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        58.650000000000006,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L40",
+        "T3-L42"
+      ]
+    },
+    {
+      "floor_id": "T3-L42",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        143.0,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        62.099999999999994,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L41",
+        "T3-L43"
+      ]
+    },
+    {
+      "floor_id": "T3-L43",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        146.45,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        65.54999999999998,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L42",
+        "T3-L44"
+      ]
+    },
+    {
+      "floor_id": "T3-L44",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        149.9,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        69.0,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L43",
+        "T3-L45"
+      ]
+    },
+    {
+      "floor_id": "T3-L45",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        153.35,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        72.44999999999999,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L44",
+        "T3-L46"
+      ]
+    },
+    {
+      "floor_id": "T3-L46",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        156.8,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        75.9,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L45",
+        "T3-L47"
+      ]
+    },
+    {
+      "floor_id": "T3-L47",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        160.25,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        79.35,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L46",
+        "T3-L48"
+      ]
+    },
+    {
+      "floor_id": "T3-L48",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        163.7,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        82.79999999999998,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L47",
+        "T3-L49"
+      ]
+    },
+    {
+      "floor_id": "T3-L49",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        167.15,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        86.25,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L48",
+        "T3-L50"
+      ]
+    },
+    {
+      "floor_id": "T3-L50",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        170.6,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        89.69999999999999,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L49",
+        "T3-L51"
+      ]
+    },
+    {
+      "floor_id": "T3-L51",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        174.05,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        93.15,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L50",
+        "T3-L52"
+      ]
+    },
+    {
+      "floor_id": "T3-L52",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        177.5,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        96.6,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L51",
+        "T3-L53"
+      ]
+    },
+    {
+      "floor_id": "T3-L53",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        180.95,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        100.04999999999998,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L52",
+        "T3-L54"
+      ]
+    },
+    {
+      "floor_id": "T3-L54",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        184.4,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        103.5,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L53",
+        "T3-L55"
+      ]
+    },
+    {
+      "floor_id": "T3-L55",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        187.85,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        106.94999999999999,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L54",
+        "T3-L56"
+      ]
+    },
+    {
+      "floor_id": "T3-L56",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        191.3,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        110.4,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T3-L55",
+        "T3-L57"
+      ]
+    },
+    {
+      "floor_id": "T3-L57",
+      "source_tower_id": "way/172307471",
+      "canonical_anchor_xyz": [
+        343.82889930719983,
+        194.75,
+        -1077.8979211752164
+      ],
+      "projected_local_xyz": [
+        -97.86635326123388,
+        113.85,
+        -31.49033459426937
+      ],
+      "copied_next_stair_rise_m": null,
+      "has_upper_floor": false,
+      "neighbours": [
+        "T3-L56"
+      ]
+    },
+    {
+      "floor_id": "T2-B5",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        -22.5,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -103.4,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 4.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-B4"
+      ]
+    },
+    {
+      "floor_id": "T2-B4",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        -18.5,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -99.4,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 4.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-B5",
+        "T2-B3"
+      ]
+    },
+    {
+      "floor_id": "T2-B3",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        -14.5,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -95.4,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 4.5,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-B4",
+        "T2-B2"
+      ]
+    },
+    {
+      "floor_id": "T2-B2",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        -10.0,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -90.9,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 2.5,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-B3",
+        "T2-B2M"
+      ]
+    },
+    {
+      "floor_id": "T2-B2M",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        -7.5,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -88.4,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 2.5,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-B2",
+        "T2-B1"
+      ]
+    },
+    {
+      "floor_id": "T2-B1",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        -5.0,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -85.9,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 5.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-B2M",
+        "T2-L1"
+      ]
+    },
+    {
+      "floor_id": "T2-L1",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        0.0,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -80.9,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 5.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-B1",
+        "T2-L2"
+      ]
+    },
+    {
+      "floor_id": "T2-L2",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        5.0,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -75.9,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L1",
+        "T2-L3"
+      ]
+    },
+    {
+      "floor_id": "T2-L3",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        8.45,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -72.45,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000001,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L2",
+        "T2-L4"
+      ]
+    },
+    {
+      "floor_id": "T2-L4",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        11.9,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -69.0,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L3",
+        "T2-L5"
+      ]
+    },
+    {
+      "floor_id": "T2-L5",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        15.35,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -65.55000000000001,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000001,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L4",
+        "T2-L6"
+      ]
+    },
+    {
+      "floor_id": "T2-L6",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        18.8,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -62.10000000000001,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L5",
+        "T2-L7"
+      ]
+    },
+    {
+      "floor_id": "T2-L7",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        22.25,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -58.650000000000006,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L6",
+        "T2-L8"
+      ]
+    },
+    {
+      "floor_id": "T2-L8",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        25.7,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -55.2,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L7",
+        "T2-L9"
+      ]
+    },
+    {
+      "floor_id": "T2-L9",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        29.15,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -51.75000000000001,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L8",
+        "T2-L10"
+      ]
+    },
+    {
+      "floor_id": "T2-L10",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        32.6,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -48.300000000000004,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L9",
+        "T2-L11"
+      ]
+    },
+    {
+      "floor_id": "T2-L11",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        36.05,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -44.85000000000001,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L10",
+        "T2-L12"
+      ]
+    },
+    {
+      "floor_id": "T2-L12",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        39.5,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -41.400000000000006,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L11",
+        "T2-L13"
+      ]
+    },
+    {
+      "floor_id": "T2-L13",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        42.95,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -37.95,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L12",
+        "T2-L14"
+      ]
+    },
+    {
+      "floor_id": "T2-L14",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        46.4,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -34.50000000000001,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L13",
+        "T2-L15"
+      ]
+    },
+    {
+      "floor_id": "T2-L15",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        49.85,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -31.050000000000004,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L14",
+        "T2-L16"
+      ]
+    },
+    {
+      "floor_id": "T2-L16",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        53.3,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -27.60000000000001,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L15",
+        "T2-L17"
+      ]
+    },
+    {
+      "floor_id": "T2-L17",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        56.75,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -24.150000000000006,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L16",
+        "T2-L18"
+      ]
+    },
+    {
+      "floor_id": "T2-L18",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        60.2,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -20.700000000000003,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L17",
+        "T2-L19"
+      ]
+    },
+    {
+      "floor_id": "T2-L19",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        63.65,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -17.250000000000007,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L18",
+        "T2-L20"
+      ]
+    },
+    {
+      "floor_id": "T2-L20",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        67.1,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -13.800000000000011,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L19",
+        "T2-L21"
+      ]
+    },
+    {
+      "floor_id": "T2-L21",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        70.55,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -10.350000000000009,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L20",
+        "T2-L22"
+      ]
+    },
+    {
+      "floor_id": "T2-L22",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        74.0,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -6.900000000000006,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L21",
+        "T2-L23"
+      ]
+    },
+    {
+      "floor_id": "T2-L23",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        77.45,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        -3.450000000000003,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L22",
+        "T2-L24"
+      ]
+    },
+    {
+      "floor_id": "T2-L24",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        80.9,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L23",
+        "T2-L25"
+      ]
+    },
+    {
+      "floor_id": "T2-L25",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        84.35,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        3.4499999999999886,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L24",
+        "T2-L26"
+      ]
+    },
+    {
+      "floor_id": "T2-L26",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        87.8,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        6.8999999999999915,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L25",
+        "T2-L27"
+      ]
+    },
+    {
+      "floor_id": "T2-L27",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        91.25,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        10.349999999999994,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L26",
+        "T2-L28"
+      ]
+    },
+    {
+      "floor_id": "T2-L28",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        94.7,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        13.799999999999997,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L27",
+        "T2-L29"
+      ]
+    },
+    {
+      "floor_id": "T2-L29",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        98.15,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        17.25,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L28",
+        "T2-L30"
+      ]
+    },
+    {
+      "floor_id": "T2-L30",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        101.6,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        20.69999999999999,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L29",
+        "T2-L31"
+      ]
+    },
+    {
+      "floor_id": "T2-L31",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        105.05,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        24.14999999999999,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L30",
+        "T2-L32"
+      ]
+    },
+    {
+      "floor_id": "T2-L32",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        108.5,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        27.599999999999994,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L31",
+        "T2-L33"
+      ]
+    },
+    {
+      "floor_id": "T2-L33",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        111.95,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        31.049999999999997,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L32",
+        "T2-L34"
+      ]
+    },
+    {
+      "floor_id": "T2-L34",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        115.4,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        34.5,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L33",
+        "T2-L35"
+      ]
+    },
+    {
+      "floor_id": "T2-L35",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        118.85,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        37.94999999999999,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L34",
+        "T2-L36"
+      ]
+    },
+    {
+      "floor_id": "T2-L36",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        122.3,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        41.39999999999999,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L35",
+        "T2-L37"
+      ]
+    },
+    {
+      "floor_id": "T2-L37",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        125.75,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        44.849999999999994,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L36",
+        "T2-L38"
+      ]
+    },
+    {
+      "floor_id": "T2-L38",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        129.2,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        48.29999999999998,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L37",
+        "T2-L39"
+      ]
+    },
+    {
+      "floor_id": "T2-L39",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        132.65,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        51.75,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L38",
+        "T2-L40"
+      ]
+    },
+    {
+      "floor_id": "T2-L40",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        136.1,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        55.19999999999999,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L39",
+        "T2-L41"
+      ]
+    },
+    {
+      "floor_id": "T2-L41",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        139.55,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        58.650000000000006,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L40",
+        "T2-L42"
+      ]
+    },
+    {
+      "floor_id": "T2-L42",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        143.0,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        62.099999999999994,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L41",
+        "T2-L43"
+      ]
+    },
+    {
+      "floor_id": "T2-L43",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        146.45,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        65.54999999999998,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L42",
+        "T2-L44"
+      ]
+    },
+    {
+      "floor_id": "T2-L44",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        149.9,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        69.0,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L43",
+        "T2-L45"
+      ]
+    },
+    {
+      "floor_id": "T2-L45",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        153.35,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        72.44999999999999,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L44",
+        "T2-L46"
+      ]
+    },
+    {
+      "floor_id": "T2-L46",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        156.8,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        75.9,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L45",
+        "T2-L47"
+      ]
+    },
+    {
+      "floor_id": "T2-L47",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        160.25,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        79.35,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L46",
+        "T2-L48"
+      ]
+    },
+    {
+      "floor_id": "T2-L48",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        163.7,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        82.79999999999998,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L47",
+        "T2-L49"
+      ]
+    },
+    {
+      "floor_id": "T2-L49",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        167.15,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        86.25,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L48",
+        "T2-L50"
+      ]
+    },
+    {
+      "floor_id": "T2-L50",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        170.6,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        89.69999999999999,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L49",
+        "T2-L51"
+      ]
+    },
+    {
+      "floor_id": "T2-L51",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        174.05,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        93.15,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L50",
+        "T2-L52"
+      ]
+    },
+    {
+      "floor_id": "T2-L52",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        177.5,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        96.6,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L51",
+        "T2-L53"
+      ]
+    },
+    {
+      "floor_id": "T2-L53",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        180.95,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        100.04999999999998,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L52",
+        "T2-L54"
+      ]
+    },
+    {
+      "floor_id": "T2-L54",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        184.4,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        103.5,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L53",
+        "T2-L55"
+      ]
+    },
+    {
+      "floor_id": "T2-L55",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        187.85,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        106.94999999999999,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L54",
+        "T2-L56"
+      ]
+    },
+    {
+      "floor_id": "T2-L56",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        191.3,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        110.4,
+        0.0
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T2-L55",
+        "T2-L57"
+      ]
+    },
+    {
+      "floor_id": "T2-L57",
+      "source_tower_id": "way/172307472",
+      "canonical_anchor_xyz": [
+        441.6952525684337,
+        194.75,
+        -1046.407586580947
+      ],
+      "projected_local_xyz": [
+        0.0,
+        113.85,
+        0.0
+      ],
+      "copied_next_stair_rise_m": null,
+      "has_upper_floor": false,
+      "neighbours": [
+        "T2-L56"
+      ]
+    },
+    {
+      "floor_id": "T1-B5",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        -22.5,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -103.4,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 4.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-B4"
+      ]
+    },
+    {
+      "floor_id": "T1-B4",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        -18.5,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -99.4,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 4.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-B5",
+        "T1-B3"
+      ]
+    },
+    {
+      "floor_id": "T1-B3",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        -14.5,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -95.4,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 4.5,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-B4",
+        "T1-B2"
+      ]
+    },
+    {
+      "floor_id": "T1-B2",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        -10.0,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -90.9,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 2.5,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-B3",
+        "T1-B2M"
+      ]
+    },
+    {
+      "floor_id": "T1-B2M",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        -7.5,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -88.4,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 2.5,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-B2",
+        "T1-B1"
+      ]
+    },
+    {
+      "floor_id": "T1-B1",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        -5.0,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -85.9,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 5.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-B2M",
+        "T1-L1"
+      ]
+    },
+    {
+      "floor_id": "T1-L1",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        0.0,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -80.9,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 5.0,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-B1",
+        "T1-L2"
+      ]
+    },
+    {
+      "floor_id": "T1-L2",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        5.0,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -75.9,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L1",
+        "T1-L3"
+      ]
+    },
+    {
+      "floor_id": "T1-L3",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        8.45,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -72.45,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000001,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L2",
+        "T1-L4"
+      ]
+    },
+    {
+      "floor_id": "T1-L4",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        11.9,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -69.0,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L3",
+        "T1-L5"
+      ]
+    },
+    {
+      "floor_id": "T1-L5",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        15.35,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -65.55000000000001,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000001,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L4",
+        "T1-L6"
+      ]
+    },
+    {
+      "floor_id": "T1-L6",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        18.8,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -62.10000000000001,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L5",
+        "T1-L7"
+      ]
+    },
+    {
+      "floor_id": "T1-L7",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        22.25,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -58.650000000000006,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L6",
+        "T1-L8"
+      ]
+    },
+    {
+      "floor_id": "T1-L8",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        25.7,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -55.2,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999993,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L7",
+        "T1-L9"
+      ]
+    },
+    {
+      "floor_id": "T1-L9",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        29.15,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -51.75000000000001,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L8",
+        "T1-L10"
+      ]
+    },
+    {
+      "floor_id": "T1-L10",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        32.6,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -48.300000000000004,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L9",
+        "T1-L11"
+      ]
+    },
+    {
+      "floor_id": "T1-L11",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        36.05,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -44.85000000000001,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L10",
+        "T1-L12"
+      ]
+    },
+    {
+      "floor_id": "T1-L12",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        39.5,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -41.400000000000006,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L11",
+        "T1-L13"
+      ]
+    },
+    {
+      "floor_id": "T1-L13",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        42.95,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -37.95,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L12",
+        "T1-L14"
+      ]
+    },
+    {
+      "floor_id": "T1-L14",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        46.4,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -34.50000000000001,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L13",
+        "T1-L15"
+      ]
+    },
+    {
+      "floor_id": "T1-L15",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        49.85,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -31.050000000000004,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L14",
+        "T1-L16"
+      ]
+    },
+    {
+      "floor_id": "T1-L16",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        53.3,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -27.60000000000001,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L15",
+        "T1-L17"
+      ]
+    },
+    {
+      "floor_id": "T1-L17",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        56.75,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -24.150000000000006,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L16",
+        "T1-L18"
+      ]
+    },
+    {
+      "floor_id": "T1-L18",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        60.2,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -20.700000000000003,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L17",
+        "T1-L19"
+      ]
+    },
+    {
+      "floor_id": "T1-L19",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        63.65,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -17.250000000000007,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999957,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L18",
+        "T1-L20"
+      ]
+    },
+    {
+      "floor_id": "T1-L20",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        67.1,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -13.800000000000011,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L19",
+        "T1-L21"
+      ]
+    },
+    {
+      "floor_id": "T1-L21",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        70.55,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -10.350000000000009,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L20",
+        "T1-L22"
+      ]
+    },
+    {
+      "floor_id": "T1-L22",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        74.0,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -6.900000000000006,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L21",
+        "T1-L23"
+      ]
+    },
+    {
+      "floor_id": "T1-L23",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        77.45,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        -3.450000000000003,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L22",
+        "T1-L24"
+      ]
+    },
+    {
+      "floor_id": "T1-L24",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        80.9,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        0.0,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L23",
+        "T1-L25"
+      ]
+    },
+    {
+      "floor_id": "T1-L25",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        84.35,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        3.4499999999999886,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L24",
+        "T1-L26"
+      ]
+    },
+    {
+      "floor_id": "T1-L26",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        87.8,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        6.8999999999999915,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L25",
+        "T1-L27"
+      ]
+    },
+    {
+      "floor_id": "T1-L27",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        91.25,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        10.349999999999994,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L26",
+        "T1-L28"
+      ]
+    },
+    {
+      "floor_id": "T1-L28",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        94.7,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        13.799999999999997,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L27",
+        "T1-L29"
+      ]
+    },
+    {
+      "floor_id": "T1-L29",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        98.15,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        17.25,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L28",
+        "T1-L30"
+      ]
+    },
+    {
+      "floor_id": "T1-L30",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        101.6,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        20.69999999999999,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L29",
+        "T1-L31"
+      ]
+    },
+    {
+      "floor_id": "T1-L31",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        105.05,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        24.14999999999999,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L30",
+        "T1-L32"
+      ]
+    },
+    {
+      "floor_id": "T1-L32",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        108.5,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        27.599999999999994,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L31",
+        "T1-L33"
+      ]
+    },
+    {
+      "floor_id": "T1-L33",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        111.95,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        31.049999999999997,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L32",
+        "T1-L34"
+      ]
+    },
+    {
+      "floor_id": "T1-L34",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        115.4,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        34.5,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L33",
+        "T1-L35"
+      ]
+    },
+    {
+      "floor_id": "T1-L35",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        118.85,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        37.94999999999999,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L34",
+        "T1-L36"
+      ]
+    },
+    {
+      "floor_id": "T1-L36",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        122.3,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        41.39999999999999,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000003,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L35",
+        "T1-L37"
+      ]
+    },
+    {
+      "floor_id": "T1-L37",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        125.75,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        44.849999999999994,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L36",
+        "T1-L38"
+      ]
+    },
+    {
+      "floor_id": "T1-L38",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        129.2,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        48.29999999999998,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L37",
+        "T1-L39"
+      ]
+    },
+    {
+      "floor_id": "T1-L39",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        132.65,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        51.75,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L38",
+        "T1-L40"
+      ]
+    },
+    {
+      "floor_id": "T1-L40",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        136.1,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        55.19999999999999,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L39",
+        "T1-L41"
+      ]
+    },
+    {
+      "floor_id": "T1-L41",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        139.55,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        58.650000000000006,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L40",
+        "T1-L42"
+      ]
+    },
+    {
+      "floor_id": "T1-L42",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        143.0,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        62.099999999999994,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L41",
+        "T1-L43"
+      ]
+    },
+    {
+      "floor_id": "T1-L43",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        146.45,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        65.54999999999998,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L42",
+        "T1-L44"
+      ]
+    },
+    {
+      "floor_id": "T1-L44",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        149.9,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        69.0,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L43",
+        "T1-L45"
+      ]
+    },
+    {
+      "floor_id": "T1-L45",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        153.35,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        72.44999999999999,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L44",
+        "T1-L46"
+      ]
+    },
+    {
+      "floor_id": "T1-L46",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        156.8,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        75.9,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L45",
+        "T1-L47"
+      ]
+    },
+    {
+      "floor_id": "T1-L47",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        160.25,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        79.35,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L46",
+        "T1-L48"
+      ]
+    },
+    {
+      "floor_id": "T1-L48",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        163.7,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        82.79999999999998,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L47",
+        "T1-L49"
+      ]
+    },
+    {
+      "floor_id": "T1-L49",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        167.15,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        86.25,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L48",
+        "T1-L50"
+      ]
+    },
+    {
+      "floor_id": "T1-L50",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        170.6,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        89.69999999999999,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L49",
+        "T1-L51"
+      ]
+    },
+    {
+      "floor_id": "T1-L51",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        174.05,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        93.15,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L50",
+        "T1-L52"
+      ]
+    },
+    {
+      "floor_id": "T1-L52",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        177.5,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        96.6,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L51",
+        "T1-L53"
+      ]
+    },
+    {
+      "floor_id": "T1-L53",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        180.95,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        100.04999999999998,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L52",
+        "T1-L54"
+      ]
+    },
+    {
+      "floor_id": "T1-L54",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        184.4,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        103.5,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L53",
+        "T1-L55"
+      ]
+    },
+    {
+      "floor_id": "T1-L55",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        187.85,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        106.94999999999999,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.450000000000017,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L54",
+        "T1-L56"
+      ]
+    },
+    {
+      "floor_id": "T1-L56",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        191.3,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        110.4,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": 3.4499999999999886,
+      "has_upper_floor": true,
+      "neighbours": [
+        "T1-L55",
+        "T1-L57"
+      ]
+    },
+    {
+      "floor_id": "T1-L57",
+      "source_tower_id": "way/116801004",
+      "canonical_anchor_xyz": [
+        543.18424816395,
+        194.75,
+        -989.8570443379905
+      ],
+      "projected_local_xyz": [
+        101.48899559551626,
+        113.85,
+        56.55054224295657
+      ],
+      "copied_next_stair_rise_m": null,
+      "has_upper_floor": false,
+      "neighbours": [
+        "T1-L56"
+      ]
+    }
+  ],
+  "engine_compile_verified": false,
+  "native_runtime_verified": false,
+  "origin_commits_performed": 0,
+  "actor_pose_mutations": 0,
+  "full_building_completed": false
+}

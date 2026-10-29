@@ -1,0 +1,9 @@
+[
+  {
+    "page": "gta-v-made-by-5-ai",
+    "type": "update",
+    "title": "Source floor stack uses actual centroid projection and floor-only readiness",
+    "evidence": "2026-10-29 source-only component freeze in game/src/world/mbs_interior/floor_stack.gd and loop/singapore-fidelity/floor-stack/FROZEN_SOURCE.json; parent commit/native gate pending.",
+    "snippet": "The new source floor stack is a component of the ongoing MBS goal, not a new four-hour pass. It projects actual tower centroid double arrays only after the common SourceFrame origin subtraction, copies real adjacent inventory elevation differences into recipes and exposes exact synchronous ready_for_floor {ready,floor_id,collision_generation,travel_ready:false}. Root must combine actual shaft/cabin proof and retain pins/unload guards. Mezzanine2.5m intervals require root partial platforms/vertical zones; missing resort anchors are transient mapping gaps, never permanent empty floors. See floor-stack/INTEGRATION.md. Native and whole-building verification remained pending at worker freeze."
+  }
+]

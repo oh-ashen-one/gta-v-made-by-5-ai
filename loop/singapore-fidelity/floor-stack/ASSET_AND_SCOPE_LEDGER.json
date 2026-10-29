@@ -1,0 +1,28 @@
+{
+  "scope": "Existing source/factory integration only; no new art or animation",
+  "existing_sources_reused": [
+    "game/src/world/geography/source_frame.gd",
+    "game/src/world/geography/source_world_context.gd",
+    "game/src/world/geography/source_runtime.gd",
+    "game/src/world/mbs_interior/site_reference.gd",
+    "game/src/world/mbs_interior/inventory.gd",
+    "game/src/world/mbs_interior/guest_floor.gd",
+    "game/src/world/mbs_interior/program_floor.gd"
+  ],
+  "source_first_art_ledger": "Existing program-floors/ASSET_LEDGER.json and research/mbs/asset-candidates.json remain authoritative for reused factory art. No candidate/acquisition/provider claim is added by the streamer.",
+  "factory_model": "Current inherited session model; no alternate model/provider assertion",
+  "protected_files_edited": false,
+  "child_engine_runs": 0,
+  "child_gpu_runs": 0,
+  "child_git_commands": 0,
+  "downloads": 0,
+  "provider_jobs": 0,
+  "purchases": 0,
+  "new_motion_authored": false,
+  "source_frame_origin_commits": 0,
+  "actor_pose_mutations": 0,
+  "save_file_writes": 0,
+  "engine_compile_verified": false,
+  "native_runtime_verified": false,
+  "whole_building_complete": false
+}
