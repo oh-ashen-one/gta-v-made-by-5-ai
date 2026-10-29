@@ -1,0 +1,2 @@
+[mbs-public-core-entry] FAIL source L2/full neighbours cold commit T1 { "ready": false, "floor_id": "T1-L1", "collision_generation": "", "travel_ready": false, "status": "physics_commit_pending", "error": "Actual complete collision/door poses did not commit in the bounded current epoch", "transient": true, "requested_floor_id": "T1-L2" }
+ERROR: The InputMap action "walk" doesn't exist.

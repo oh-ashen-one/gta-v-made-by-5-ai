@@ -1,0 +1,13 @@
+{
+  "checks": 17,
+  "elapsed_s": 13.42,
+  "failed": 1,
+  "failures": [
+    "source L2/full neighbours cold commit T1"
+  ],
+  "metrics": {},
+  "native_actions": [],
+  "owner_playtest": false,
+  "public_visual_fidelity_accepted": false,
+  "whole_building_completed": false
+}
