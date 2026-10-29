@@ -150,7 +150,8 @@ func _build_title_panel(root: Control) -> void:
 	_button(_title_panel,"New game   ·   Enter",Vector2(96,310),func():get_tree().current_scene._new_game())
 	_button(_title_panel,"Continue   ·   F6",Vector2(96,365),func():get_tree().current_scene._continue_game())
 	_button(_title_panel,"Settings   ·   F3",Vector2(96,420),func():get_tree().current_scene._toggle_settings())
-	_button(_title_panel,"Quit game",Vector2(96,475),func():get_tree().current_scene._quit_game())
+	_button(_title_panel,"MBS hotel interior · Preview",Vector2(96,475),func():get_tree().current_scene._open_hotel_preview())
+	_button(_title_panel,"Quit game",Vector2(96,530),func():get_tree().current_scene._quit_game())
 	_panel(_title_panel,Vector2(712,438),Vector2(520,208),Color(.015,.04,.045,.58))
 	var controls:=_mk_label(_title_panel,Vector2(730,452),17,Color(.86,.92,.88))
 	controls.text="WALK THE ARCADES\nWASD move · Mouse look · Shift sprint\n\nTAKE THE WHEEL\nE enter/exit · W/S throttle · A/D steer\n\nTAKE TO THE AIR\nSpace climb · Shift descend · E land and exit"

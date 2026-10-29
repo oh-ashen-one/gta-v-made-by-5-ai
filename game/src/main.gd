@@ -431,6 +431,11 @@ func _continue_game() -> void:
 	else:
 		Events.toast("No compatible save. Start a new game to begin.","warn")
 
+func _open_hotel_preview() -> void:
+	Game.simulation_paused=true
+	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
+	get_tree().change_scene_to_file("res://src/scenes/hotel_preview.tscn")
+
 func _quit_game() -> void:
 	Sfx.shutdown_audio()
 	get_tree().quit()
