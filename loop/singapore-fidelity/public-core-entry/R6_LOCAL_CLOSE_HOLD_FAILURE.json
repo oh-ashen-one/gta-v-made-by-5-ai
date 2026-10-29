@@ -1,0 +1,94 @@
+{
+  "observed_utc": "2026-10-29T03:52:07.650975+00:00",
+  "run_name": "mbs-stair-gates-r5",
+  "checkpoint": "af6e51420498f923faf3637760691630853f8fc6",
+  "actual_source_sha256": "686ecf466a21e2e81e05120834f08be63f84d32c42060cd4099b9f0a74183158",
+  "checks": 97,
+  "failed": 1,
+  "failures": [
+    "actual E stair state matches readiness"
+  ],
+  "engine_exit_code": 1,
+  "supervisor_exit_code": 1,
+  "fatal_errors": [],
+  "timeout": false,
+  "child_reaped": true,
+  "elapsed_wall_s": 92.72,
+  "failed_native_action": {
+    "after": "(11.65918, 3.425799, -23.46829)",
+    "before": "(11.65918, 3.425799, -23.46829)",
+    "door_physics": {
+      "base_angle": 0.0,
+      "commanded_angle": -1.5707963267949,
+      "hinge_local": "(-27.83592, 3.45, -12.91932)",
+      "id": "T3-L47-east-stair-lower-entry-door",
+      "node": "StairFireDoor_east_lower_departure",
+      "node_euler": "(0.0, -1.200796, 0.0)",
+      "node_local_transform": "[X: (-0.0, 0.0, 1.0), Y: (0.0, 1.0, 0.0), Z: (-1.0, 0.0, -0.0), O: (-27.83592, 3.45, -12.26932)]",
+      "node_origin": "(10.61104, 3.45, -24.37313)",
+      "opened": true,
+      "physics_euler": "(0.0, -1.200796, 0.0)",
+      "physics_origin": "(10.61103, 3.45, -24.37313)",
+      "swing_delta": -1.5707963267949,
+      "sync_to_physics": true
+    },
+    "exact_target": true,
+    "expected_open": false,
+    "gate_state": {
+      "close_requested": true,
+      "lower_id": "T3-L47",
+      "motion_angle": -1.5707963267949,
+      "open_generation": "fixture-upper-48-v1",
+      "opened": true,
+      "opening_blocker_ids": [],
+      "physically_closed": false,
+      "readiness_observation": {
+        "generation": "fixture-upper-48-v1",
+        "ready": true,
+        "reason": "ready",
+        "valid": true
+      },
+      "ready": true,
+      "ready_generation": "fixture-upper-48-v1",
+      "state": "HOLD_OCCUPIED",
+      "upper_id": "T3-L48"
+    },
+    "movement_m": 0.0,
+    "opened": true,
+    "player_instance_id": 73131886224,
+    "process_frames": 5
+  },
+  "diagnosis": "Native exact E/LOS worked. Unchanged closing occupancy guard correctly queued closure/HOLD_OCCUPIED: actual centred capsule at1.872627m from plane has only7.627mm clearance from hold box, below its10mm query margin. Old2.05m target allowed.18m native arrival stopping error. Geometry and occupancy guards are not defective.",
+  "independent_scalar_derivation": {
+    "gate_width_m": 1.3,
+    "actual_player_local_xyz": [
+      -27.18590793786958,
+      3.425799,
+      -11.046692871180046
+    ],
+    "plane_z": -12.91932,
+    "actual_receiving_side_distance_m": 1.8726271288199552,
+    "closing_hold_far_edge_from_plane_m": 1.505,
+    "capsule_radius_m": 0.36,
+    "closing_query_margin_m": 0.01,
+    "required_centre_distance_without_body_margin_m": 1.875,
+    "old_target_centre_distance_m": 2.05,
+    "qa_max_arrival_plus_existing_settle_tolerance_m": 0.26,
+    "r7_body_margin_m": 0.001,
+    "r7_extra_clearance_buffer_m": 0.15,
+    "r7_target_rounded_up_to_decimetre_m": 2.3,
+    "r7_minimum_guard_clearance_bound_m": 0.164
+  },
+  "native_r7_verified": false,
+  "whole_building_completed": false,
+  "evidence": {
+    "run.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-stair-gates-r5/run.log",
+      "sha256": "2a7fb0468ec17b42c392d93a36c5bbe023723fae52cb74e3040755002a2c34bf"
+    },
+    "run.log.meta.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-stair-gates-r5/run.log.meta.json",
+      "sha256": "d15195e5144b1b5a97c644ece7c61d92be48146cd50b3b9410f5346d1bc14c5a"
+    }
+  }
+}

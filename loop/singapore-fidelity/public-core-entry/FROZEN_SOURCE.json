@@ -1,6 +1,6 @@
 {
-  "created_utc": "2026-10-29T03:39:11.008710+00:00",
-  "phase": "R6_NATIVE_STRAIGHT_CLEAR_CLOSE_BEFORE_CROSS_LANE_REGRESSION_FROZEN",
+  "created_utc": "2026-10-29T03:52:07.652850+00:00",
+  "phase": "R7_DERIVED_CAPSULE_GUARD_CLEARANCE_AND_ACTUAL_NATIVE_HOLD_QUERY_FROZEN",
   "source_hashes": {
     "game/src/world/mbs_interior/public_l1.gd": "3454e63c5ef5c3d5716a98808ab81cf0acc7e52f36b45cdf67697b29ab0bad4e",
     "game/src/world/mbs_interior/program_floor.gd": "f835eddb2be6b23cd90f7110a38d49b880cdcf12fe5e8fc7d516653e73ffdc8e",
@@ -14,7 +14,7 @@
     "game/src/world/geography/source_runtime.gd": "a20cf77d07a7717a44aa108d9268a8588d0f8504c81812c2bb75c1b10f81b824",
     "game/data/mbs-interior/inventory.json": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
     "game/src/systems/fidelity_tests/mbs_guest_floor_test.gd": "e316d8b725a70dfccf1191f7309150baf6cec8b0867efaeb3c00a37aab989aa7",
-    "game/src/systems/fidelity_tests/mbs_stair_gate_test.gd": "686ecf466a21e2e81e05120834f08be63f84d32c42060cd4099b9f0a74183158",
+    "game/src/systems/fidelity_tests/mbs_stair_gate_test.gd": "2d5bd40acbfe30cf5709089284ce6b7ae7ac24f436036eb3c933a35ed1ada3d7",
     "game/src/systems/fidelity_tests/mbs_stair_gate_test.tscn": "8ec2ec53c691ff629b30d964b367631d1049f7fcb43606d4b5a3690a675c6edd"
   },
   "protected_stack_apis": {
@@ -39,9 +39,9 @@
   "outer_wall_watchdog_s": 900,
   "stair_gate_guard_methods_edited": [],
   "local_fixture_readiness_note": "Readiness uses immutable bound_lower_floor node reference; upper traversal changes only the normal QA route candidate, never its actual readiness provider target.",
-  "predecessor_local_checkpoint": "8ff1bc22a96382a79a292e4b9c4fa732822b7aa7",
+  "predecessor_local_checkpoint": "af6e51420498f923faf3637760691630853f8fc6",
   "predecessor_local_failure": [
-    "full capsule clears public corridor segment"
+    "actual E stair state matches readiness"
   ],
-  "local_fixture_revision": "Stable bound_lower_floor readiness reference plus physically swept straight clear/close before cross-lane route. Production geometry unchanged from paired-door R5."
+  "local_fixture_revision": "Derive2.30m receiving-side QA approaches from unchanged full hold box, actual capsule/query/body margin, native stopping tolerance and safety buffer; require unchanged actual production hold query empty before each native closing E. Strict swept continuous paths retained; no production geometry change."
 }

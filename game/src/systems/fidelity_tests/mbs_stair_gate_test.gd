@@ -21,6 +21,8 @@ var neighbor_generation:="fixture-neighbor-49-v1"
 var _started:=0
 var native_gate_actions:Array[Dictionary]=[]
 var retirement_observation:Dictionary={}
+var gate_approach_proofs:Array[Dictionary]=[]
+var closing_clearance_proofs:Array[Dictionary]=[]
 
 func _ready()->void:
 	if not "--qa-session" in OS.get_cmdline_user_args():
@@ -70,10 +72,47 @@ func _delayed_load()->void:
 	gates.refresh_now()
 	loading=false
 
+func _safe_receiving_gate_approach(geometry:Dictionary)->Vector3:
+	# Derive clearance from the UNCHANGED production hold query. Its box is
+	# WIDTH+.80 deep, centred WIDTH*.35 into the receiving side; its .01 query
+	# margin expands around the actual production capsule. Include the largest
+	# public-route arrival radius and existing native settling allowance, rather
+	# than assume the actor reaches a mathematical target exactly.
+	var guard_far:float=Gates.WIDTH*.35+(Gates.WIDTH+.80)*.5
+	var capsule_radius:float=(capsule as CapsuleShape3D).radius
+	var required_distance:float=guard_far+capsule_radius+.01+player.safe_margin
+	var arrival_bound:float=.18+.08
+	var target_distance:float=ceilf((required_distance+arrival_bound+.15)*10.0)/10.0
+	var approach:=Vector3(geometry.opening_center_x_local_m,geometry.rise_m,float(geometry.gate_plane_z_local_m)-float(geometry.side)*target_distance)
+	# Triangle bound covers every current physical leaf-centre orientation,
+	# actual arrival displacement and a conservative vertical resting error.
+	var interaction_upper_bound:float=target_distance+Gates.WIDTH+arrival_bound+.10
+	var proof:Dictionary={"gate_id":geometry.gate_id,"closing_hold_far_edge_m":guard_far,"actual_capsule_radius_m":capsule_radius,"production_query_margin_m":.01,"actual_body_safe_margin_m":player.safe_margin,"unchanged_arrival_and_settle_bound_m":arrival_bound,"required_actor_centre_distance_m":required_distance,"target_actor_centre_distance_m":target_distance,"minimum_resting_clearance_bound_m":target_distance-arrival_bound-required_distance,"conservative_native_E_distance_bound_m":interaction_upper_bound,"production_native_E_range_m":Player.PICKUP_RANGE,"approach":approach}
+	gate_approach_proofs.append(proof)
+	print("[mbs-stair-gate] APPROACH_DERIVATION ",JSON.stringify(proof))
+	check("derived approach clears full hold volume despite stopping tolerance",target_distance-arrival_bound-required_distance>=.15 and interaction_upper_bound<Player.PICKUP_RANGE)
+	return approach
+
+func _actual_closing_volume_clear()->bool:
+	# Query the ACTUAL production hold volume without changing its state or
+	# excluding the player. An analytic target is not proof of actual arrival.
+	var state:Dictionary=(gates.get("_gates") as Dictionary)[gate_id]
+	var hits:Array=gates.call("_occupants",state)
+	var body_ids:Array[int]=[]
+	for hit:Dictionary in hits:
+		var body:CollisionObject3D=hit.get("collider") as CollisionObject3D
+		if body!=null:body_ids.append(body.get_instance_id())
+	var proof:Dictionary={"gate_id":gate_id,"actual_player_position":player.global_position,"player_instance_id":player.get_instance_id(),"production_hold_query_body_ids":body_ids,"actual_volume_empty":hits.is_empty(),"query_has_exclusions":false}
+	closing_clearance_proofs.append(proof)
+	print("[mbs-stair-gate] ACTUAL_CLOSE_VOLUME_CLEARANCE ",JSON.stringify(proof))
+	return check("actual native closing hold volume clear before closing E",hits.is_empty(),str(proof))
+
 func _native_gate_e(expected_open:bool)->bool:
 	var door:Node3D=gates.doors[gate_id]
 	release_motion_input()
 	if not await settle_native_motion("stair E"):return false
+	if door.opened and not expected_open:
+		if not _actual_closing_volume_clear():return false
 	Input.action_release("interact")
 	await get_tree().process_frame;await get_tree().process_frame
 	if not check("native E selects exact visible stair door",player._interaction_target()==door):return false
@@ -148,7 +187,11 @@ func _next_lower_flight_regression()->bool:
 	# The current receiving point is still beside the open return leaf.
 	# Diagonally crossing to the other lane intersects that real leaf (native
 	# R5 local failure). Walk straight along this lane beyond its sweep first.
-	var return_clear:=Vector3(stair.upper.x,3.45,float(lower_entry.gate_plane_z_local_m)-side*(Gates.WIDTH+.75))
+	var return_geometry:Dictionary={}
+	for gate_geometry:Dictionary in gates.geometry_descriptor(lower_id).gates:
+		if gate_geometry.gate_id==original_id:return_geometry=gate_geometry;break
+	if not check("actual upper-return descriptor present for safe clearance",not return_geometry.is_empty()):return false
+	var return_clear:Vector3=_safe_receiving_gate_approach(return_geometry)
 	var sweep_start:Vector3=site.to_local(player.global_position)
 	sweep_start.y=3.45 # Analytic floor reference only; never assign actor pose.
 	if not check("full capsule clears straight return-lane exit beside open leaf",capsule_clear(site.to_global(sweep_start),site.to_global(return_clear))):return false
@@ -159,7 +202,8 @@ func _next_lower_flight_regression()->bool:
 	if not await _native_gate_e(false):return false
 	await frames(70)
 	if not check("return leaf is physically closed before native departure selection",gates.report().gates[original_id].physically_closed):return false
-	var approach:Vector3=upper_floor.to_local(site.to_global(lower_entry.receiving_approach_local))
+	var departure_clear:Vector3=_safe_receiving_gate_approach(lower_entry)
+	var approach:Vector3=upper_floor.to_local(site.to_global(departure_clear))
 	if not await walk_public_to(approach,"east"):return false
 	gate_id=lower_entry.gate_id
 	if not await _native_gate_e(true):return false
@@ -177,7 +221,7 @@ func _next_lower_flight_regression()->bool:
 	await frames(70)
 	if not check("departing leaf independently closes with both physical apertures guarded",gates.report().gates[gate_id].physically_closed and gates.report().gates[original_id].physically_closed):return false
 	gate_id=original_id
-	var return_approach:Vector3=upper_floor.to_local(site.to_global(Vector3(stair.upper.x,3.45,float(lower_entry.gate_plane_z_local_m)-side*(Gates.WIDTH+.75))))
+	var return_approach:Vector3=upper_floor.to_local(site.to_global(return_clear))
 	if not await walk_public_to(return_approach,"east"):return false
 	if not await _native_gate_e(true):return false
 	await frames(70)
@@ -314,5 +358,5 @@ func finish()->void:
 	if finished:return
 	finished=true;tracking=false
 	release_motion_input();Input.action_release("interact")
-	print("[mbs-stair-gate] RESULT ",JSON.stringify({"checks":checks,"failed":failures.size(),"failures":failures,"elapsed_s":float(Time.get_ticks_msec()-_started)/1000.0,"fixture":fixture_results,"gate_state":gates.report() if is_instance_valid(gates) else {},"native_E_actions":native_gate_actions,"retirement_observation":retirement_observation,"actor_pose_writes_during_traversal":0,"source_site_tested":false,"all_floor_pairs_tested":false,"full_building_completed":false}))
+	print("[mbs-stair-gate] RESULT ",JSON.stringify({"checks":checks,"failed":failures.size(),"failures":failures,"elapsed_s":float(Time.get_ticks_msec()-_started)/1000.0,"fixture":fixture_results,"gate_state":gates.report() if is_instance_valid(gates) else {},"native_E_actions":native_gate_actions,"retirement_observation":retirement_observation,"gate_approach_derivations":gate_approach_proofs,"actual_closing_clearance_proofs":closing_clearance_proofs,"actor_pose_writes_during_traversal":0,"source_site_tested":false,"all_floor_pairs_tested":false,"full_building_completed":false}))
 	Sfx.shutdown_audio();get_tree().quit(0 if failures.is_empty() else 1)

@@ -1,0 +1,10 @@
+{
+  "created_utc": "2026-10-29T03:39:11.012808+00:00",
+  "scope_findings": {
+    "game/src/world/mbs_interior/stair_gates.gd": [],
+    "game/src/systems/fidelity_tests/mbs_stair_gate_test.gd": [],
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": []
+  },
+  "engine_parse_verified": false,
+  "native_r6_verified": false
+}
