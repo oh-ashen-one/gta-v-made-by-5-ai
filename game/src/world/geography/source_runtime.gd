@@ -16,6 +16,58 @@ var _configured := false
 var native_clearance_diagnostics: Dictionary = {}
 var _profile_residency := "--profile-source-runtime" in OS.get_cmdline_user_args()
 var _residency_cost := {"calls": 0, "total_us": 0, "max_us": 0, "body_liveness_checks": 0, "inventory_reference_visits": 0, "inventory_groups_validated": 0, "inventory_group_reuses": 0}
+var _diagnose_motion := "--diagnose-source-motion" in OS.get_cmdline_user_args()
+var _motion_decisions: Dictionary = {}
+var _motion_rejections: Dictionary = {}
+var _last_residency_diagnostic: Dictionary = {}
+var _residency_diagnostic_serial := 0
+
+func motion_diagnostics(actor: CharacterBody3D = null) -> Dictionary:
+	var id: int = actor.get_instance_id() if is_instance_valid(actor) else 0
+	return {"enabled":_diagnose_motion,"actor_id":id,"last_decision":_motion_decisions.get(id,{}).duplicate(true),"last_rejection":_motion_rejections.get(id,{}).duplicate(true),"last_residency_query":_last_residency_diagnostic.duplicate(true)}
+
+func _diagnostic_vector(value: Vector3) -> Array:
+	return [float(value.x),float(value.y),float(value.z)]
+
+func _record_motion(actor: CharacterBody3D,allowed: bool,reason: String,delta: float,detail: Dictionary = {}) -> void:
+	if not _diagnose_motion: return
+	var actor_valid: bool = is_instance_valid(actor)
+	var id: int = actor.get_instance_id() if actor_valid else 0
+	var row := {"allowed":allowed,"reason":reason,"physics_tick":Engine.get_physics_frames(),"wall_us":Time.get_ticks_usec(),"delta_s":delta,"actor_id":id,"actor_valid":actor_valid,"detail":detail.duplicate(true)}
+	if actor_valid:
+		var inside: bool = actor.is_inside_tree()
+		var basis: Basis = actor.global_basis if inside else actor.basis
+		row.merge({"actor_name":String(actor.name),"inside_tree":inside,"requested_velocity":_diagnostic_vector(actor.velocity),"position":_diagnostic_vector(actor.global_position if inside else actor.position),"basis":[_diagnostic_vector(basis.x),_diagnostic_vector(basis.y),_diagnostic_vector(basis.z)],"rotation_y":actor.global_rotation.y if inside else actor.rotation.y})
+	if actor_valid and not allowed and reason in ["player_profile_or_actor_type","car_hull_profile"]:
+		var shapes: Array[Dictionary] = []
+		for child: Node in actor.get_children():
+			if not child is CollisionShape3D: continue
+			var shape: Shape3D = child.shape
+			var shape_row := {"name":String(child.name),"disabled":child.disabled,"position":_diagnostic_vector(child.position),"basis":[_diagnostic_vector(child.basis.x),_diagnostic_vector(child.basis.y),_diagnostic_vector(child.basis.z)],"class":shape.get_class() if shape!=null else "null"}
+			if shape is CapsuleShape3D: shape_row.merge({"radius":shape.radius,"height":shape.height})
+			elif shape is BoxShape3D: shape_row["size"] = _diagnostic_vector(shape.size)
+			shapes.append(shape_row)
+		row["actor_shape_profile"] = shapes
+	if not _motion_decisions.has(id) and _motion_decisions.size()>=64:
+		var old: Variant = _motion_decisions.keys()[0]
+		_motion_decisions.erase(old); _motion_rejections.erase(old)
+	_motion_decisions[id] = row
+	if not allowed: _motion_rejections[id] = row.duplicate(true)
+
+func _motion_refused(actor: CharacterBody3D,reason: String,delta: float,detail: Dictionary = {}) -> bool:
+	_record_motion(actor,false,reason,delta,detail)
+	return false
+
+func _diagnostic_body_failure(body: Object,current_world: World3D) -> Dictionary:
+	var result := {"body_id":body.get_instance_id(),"name":String((body as Node).name),"inside_tree":(body as Node).is_inside_tree(),"collision_layer":body.get("collision_layer")}
+	if not result.inside_tree: result["reason"] = "body_outside_tree"
+	elif int(result.collision_layer)==0: result["reason"] = "body_layer_zero"
+	else:
+		var actual: World3D = (body as CollisionObject3D).get_world_3d()
+		result["reason"] = "body_world_mismatch" if actual!=current_world else "cached_body_invalid"
+		result["actual_world_space"] = actual.space.get_id() if actual!=null else 0
+		result["expected_world_space"] = current_world.space.get_id()
+	return result
 
 func residency_profile() -> Dictionary:
 	var result := _residency_cost.duplicate(true)
@@ -130,6 +182,7 @@ func commit_region(id: String, minimum: Array, maximum: Array, bodies: Array, su
 	_generation += 1
 	_regions[id] = {"minimum": minimum.duplicate(), "maximum": maximum.duplicate(), "bodies": references, "body_inventory_key": inventory_key,
 		"origin_revision": frame.metadata().origin_revision, "token": token}
+	if _diagnose_motion: _regions[id]["diagnostic_inventory_ids"] = body_ids.duplicate()
 	for entry: Dictionary in stamps:
 		var body: CollisionObject3D = entry.body
 		body.set_meta(Context.COLLIDER_META, entry.stamp)
@@ -229,11 +282,20 @@ func _resident_impl(point: Array, half_extents: Vector3) -> Dictionary:
 	# stamped support body is also listed in the neighboring region.
 	var checked_bodies: Dictionary = {}
 	var checked_inventories: Dictionary = {}
+	var inventory_failures: Variant = null
+	var body_failures: Variant = null
 	var current_origin: int = frame.metadata().origin_revision
 	var current_world := get_world_3d()
+	var trace: Variant = null
+	if _diagnose_motion:
+		inventory_failures = {}; body_failures = {}
+		_residency_diagnostic_serial += 1
+		trace = {"query_serial":_residency_diagnostic_serial,"physics_tick":Engine.get_physics_frames(),"origin_revision":current_origin,"center_source_xyz":point.duplicate(),"half_extents_xyz":_diagnostic_vector(half_extents),"minimum_source_xyz":low.duplicate(),"maximum_source_xyz":high.duplicate(),"registered_regions":ids.size(),"invalid_regions":[],"live_regions":[]}
 	for id in ids:
 		var region: Dictionary = _regions[id]
-		if region.origin_revision != current_origin: continue
+		if region.origin_revision != current_origin:
+			if _diagnose_motion and trace.invalid_regions.size()<16: trace.invalid_regions.append({"region_id":id,"reason":"stale_origin","region_origin_revision":region.origin_revision,"current_origin_revision":current_origin})
+			continue
 		var valid := true
 		var key: String = region.body_inventory_key
 		# Initial map cells can intentionally share one complete collision
@@ -249,24 +311,40 @@ func _resident_impl(point: Array, half_extents: Vector3) -> Dictionary:
 				var body: Variant = reference.get_ref()
 				if not is_instance_valid(body):
 					valid = false
+					if _diagnose_motion:
+						var reference_index: int = region.bodies.find(reference)
+						var expected_ids: PackedStringArray = region.get("diagnostic_inventory_ids",PackedStringArray())
+						inventory_failures[key] = {"reason":"freed_body_reference","reference_index":reference_index,"original_body_id":expected_ids[reference_index] if reference_index<expected_ids.size() else "not_recorded"}
 					break
 				var body_id: int = body.get_instance_id()
 				if not checked_bodies.has(body_id):
 					if _profile_residency: _residency_cost.body_liveness_checks += 1
 					checked_bodies[body_id] = body.is_inside_tree() and body.collision_layer != 0 and body.get_world_3d() == current_world
+					if _diagnose_motion and not checked_bodies[body_id]: body_failures[body_id] = _diagnostic_body_failure(body,current_world)
 				if not checked_bodies[body_id]:
 					valid = false
+					if _diagnose_motion: inventory_failures[key] = body_failures.get(body_id,{"reason":"cached_invalid_body","body_id":body_id}).duplicate(true)
 					break
 			checked_inventories[key] = valid
-		if not valid: continue
+		if not valid:
+			if _diagnose_motion and trace.invalid_regions.size()<16: trace.invalid_regions.append({"region_id":id,"inventory_key":key,"inventory_size":region.bodies.size(),"minimum_source_xyz":region.minimum.duplicate(),"maximum_source_xyz":region.maximum.duplicate(),"failure":inventory_failures.get(key,{"reason":"cached_invalid_inventory"}).duplicate(true)})
+			continue
+		if _diagnose_motion and trace.live_regions.size()<16: trace.live_regions.append({"region_id":id,"token":region.token,"inventory_key":key,"minimum_source_xyz":region.minimum.duplicate(),"maximum_source_xyz":region.maximum.duplicate()})
 		tokens[region.token] = true
 		var remaining: Array[Dictionary] = []
 		for box: Dictionary in uncovered:
 			remaining.append_array(_subtract_box(box, region))
-			if remaining.size() > 4096: return {} # bounded work; request a coalesced neighborhood
+			if remaining.size() > 4096:
+				if _diagnose_motion:
+					trace.merge({"ok":false,"reason":"box_union_fragment_work_limit","uncovered_fragment_count":remaining.size(),"first_uncovered_fragments":remaining.slice(0,16)},true)
+					_last_residency_diagnostic = trace
+				return {} # Same bounded work; request a coalesced neighborhood.
 		uncovered = remaining
 	# Include all live tokens: an overlapping neighbor's support must not be
 	# rejected merely because an earlier box also covered the query.
+	if _diagnose_motion:
+		trace.merge({"ok":uncovered.is_empty(),"reason":"resident" if uncovered.is_empty() else "uncovered_source_envelope","live_token_count":tokens.size(),"uncovered_fragment_count":uncovered.size(),"first_uncovered_fragments":uncovered.slice(0,16)},true)
+		_last_residency_diagnostic = trace
 	return {"tokens": tokens, "token": "union/" + str(_generation)} if uncovered.is_empty() else {}
 
 func _bound(query: Dictionary, kind: String, state: String, payload: Dictionary = {}) -> Dictionary:
@@ -366,18 +444,20 @@ func inspect_player(actor: Player) -> Dictionary:
 ## Check both current and prospective neighborhoods to prevent flying/walking
 ## into an unloaded chunk. Flight does not demand a floor under the aircraft.
 func motion_allowed(actor: CharacterBody3D, delta: float, aircraft: bool = false, extra_motion: Vector3 = Vector3.ZERO) -> bool:
-	if not _configured or actor.get_world_3d() != get_world_3d() or delta <= 0.0: return false
+	if not _configured: return _motion_refused(actor,"runtime_unconfigured",delta)
+	if actor.get_world_3d() != get_world_3d(): return _motion_refused(actor,"actor_world_mismatch",delta)
+	if delta <= 0.0: return _motion_refused(actor,"nonpositive_delta",delta)
 	var car_half := Vector3.ZERO
 	if actor is Car:
-		if actor.source_world_runtime != self: return false
+		if actor.source_world_runtime != self: return _motion_refused(actor,"car_runtime_binding",delta)
 		car_half = _car_envelope(actor)
-		if car_half == Vector3.ZERO: return false
-	elif not aircraft and (not actor is Player or not _valid_player_profile(actor)): return false
-	if not extra_motion.is_finite(): return false
+		if car_half == Vector3.ZERO: return _motion_refused(actor,"car_hull_profile",delta)
+	elif not aircraft and (not actor is Player or not _valid_player_profile(actor)): return _motion_refused(actor,"player_profile_or_actor_type",delta)
+	if not extra_motion.is_finite(): return _motion_refused(actor,"nonfinite_extra_motion",delta)
 	var start: Dictionary = frame.to_source_current_live(actor.global_position)
 	var target := actor.global_position + actor.velocity * delta + extra_motion
 	var end: Dictionary = frame.to_source_current_live(target)
-	if not start.ok or not end.ok: return false
+	if not start.ok or not end.ok: return _motion_refused(actor,"source_frame_projection",delta,{"start":start,"end":end})
 	var half := Vector3(8, 5, 8) if aircraft else Vector3(0.8, 2.2, 0.8)
 	if actor is Car: half = car_half
 	var middle: Array = []
@@ -385,14 +465,16 @@ func motion_allowed(actor: CharacterBody3D, delta: float, aircraft: bool = false
 	for axis in 3:
 		middle.append((float(start.source_xyz[axis]) + float(end.source_xyz[axis])) * 0.5)
 		swept[axis] += absf(float(end.source_xyz[axis]) - float(start.source_xyz[axis])) * 0.5
-	if _resident(middle, swept).is_empty(): return false
+	if _resident(middle, swept).is_empty(): return _motion_refused(actor,"swept_residency",delta,{"start_source_xyz":start.source_xyz,"end_source_xyz":end.source_xyz,"residency":_last_residency_diagnostic if _diagnose_motion else {}})
 	for local in [actor.global_position, target]:
 		var canonical: Dictionary = frame.to_source_current_live(local)
-		if not canonical.ok or _resident(canonical.source_xyz, half).is_empty(): return false
+		if not canonical.ok: return _motion_refused(actor,"endpoint_source_projection",delta,{"projection":canonical})
+		if _resident(canonical.source_xyz, half).is_empty(): return _motion_refused(actor,"endpoint_residency",delta,{"point_source_xyz":canonical.source_xyz,"residency":_last_residency_diagnostic if _diagnose_motion else {}})
 		var begun: Dictionary = context.begin_query(canonical.source_xyz)
-		if not begun.ok: return false
+		if not begun.ok: return _motion_refused(actor,"endpoint_query_invalid",delta,{"query":begun})
 		var state: Dictionary = context.evaluate(begun.query, _domain_observations(begun.query))
-		if not state.ok or state.territory.state != "inside": return false
+		if not state.ok or state.territory.state != "inside": return _motion_refused(actor,"endpoint_territory_or_domain",delta,{"point_source_xyz":canonical.source_xyz,"state":state})
+	if _diagnose_motion: _record_motion(actor,true,"allowed",delta,{"start_source_xyz":start.source_xyz,"end_source_xyz":end.source_xyz,"extra_motion":_diagnostic_vector(extra_motion)})
 	return true
 
 func player_is_submerged(actor: Player) -> bool:

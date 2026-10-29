@@ -1,0 +1,15 @@
+# Opt-in native motion refusal diagnosis
+
+Retained PartialR4 evidence:125checks/1failure, engine exit1/no fatal/reaped in177.5seconds. The failed end-crosslink walk had small repeated requested velocity, resolved zero and upward floor contacts. That evidence alone does not establish whether a source-runtime predicate or another movement path held the actor. No geometry, tolerance or motion-policy fix is made here.
+
+Root should add `--diagnose-source-motion` to the fresh PartialR5 native run. It enables new diagnostic hooks in `source_runtime.gd`; the default is off. The actual boolean checks, order, source envelopes, liveness validity, fragment cap, domain predicates, masks, actor transforms and velocities are unchanged.
+
+`motion_diagnostics(actor)` returns that actor's last base-runtime decision and sticky last refusal, each with physics tick, requested velocity captured before the caller zeros it, actual local-world pose/basis, reason and relevant detail. Distinct reasons identify unconfigured/world/delta, actor/car profile, nonfinite extra motion, source projection, swept or endpoint residency, invalid query and territory/domain refusal. Profile refusals capture actual enabled collision-shape dimensions/offsets/bases only on failure.
+
+When diagnostics are enabled, residency traces record the actual query envelope, origin revision, live region bounds/tokens and bounded invalid-region/inventory causes. Freed references can be identified by their commit-time native ID; layer/tree/world invalidations have their actual body name/ID/facts. An uncovered envelope reports its first sixteen exact source-box fragments and total count. The existing fragment-work-limit path remains a refusal and is labeled separately. This is observability, not a result cache; live validation still runs on each query. Normal flag-off calls allocate no diagnostic failure maps or traces and perform no extra native diagnostic queries.
+
+The Partial fixture logs progress every10wall seconds while tracking and appends exact runtime diagnostics to failures and the terminal report, including failures before its normal measurements assignment. The inherited check still runs once with unchanged predicates/counting. No native probes are used to exclude a collider or force a pass. Per-actor decision capture prevents another actor's later success from hiding the relevant refusal; a later inspection can overwrite the generic last residency trace but not the stored rejection snapshot.
+
+Root's fresh run must compare the decision's tick with the controller/requested/resolved motion trace. If the base runtime reports allowed, the failure remains elsewhere; do not infer an undocumented runtime refusal. SourceWorld's separate architectural subclass can also refuse after its base call, but the current Partial fixture uses the base Runtime directly.
+
+At author freeze the exact cause remains unproven. Parsing/native R5 are pending. No child engine/GPU/Git action occurred. After this freeze the child switches to the separate optional CityScene collision-batching task; these diagnostic source files remain stable for Root.

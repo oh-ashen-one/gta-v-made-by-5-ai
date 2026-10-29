@@ -17,6 +17,34 @@ var runtime: Node3D
 var domain: RefCounted
 var started_ms := 0
 var measurements: Dictionary = {}
+var _last_motion_progress_ms := 0
+var _motion_progress: Array[Dictionary] = []
+var _motion_failures: Array[Dictionary] = []
+
+func check(label:String,value:bool,detail:String="")->bool:
+	var passed:bool=super.check(label,value,detail)
+	if not value and is_instance_valid(runtime):
+		var diagnostic:Dictionary=_motion_diagnostic(label)
+		_motion_failures.append(diagnostic)
+		print("[partial-mezzanine] SOURCE_MOTION_FAILURE ",JSON.stringify(diagnostic,"",true,true))
+	return passed
+
+func _motion_diagnostic(label:String)->Dictionary:
+	var row:Dictionary={"label":label,"physics_tick":Engine.get_physics_frames(),"elapsed_wall_s":float(Time.get_ticks_msec()-started_ms)/1000.0,"walk_stage":walk_stage,"walk_phase":walk_phase}
+	if is_instance_valid(player):
+		row["position"]=[player.global_position.x,player.global_position.y,player.global_position.z]
+		row["resolved_velocity"]=[player.velocity.x,player.velocity.y,player.velocity.z]
+		row["on_floor"]=player.is_on_floor()
+		row["controller"]=player.get_meta("_qa_motion_state",{})
+		if is_instance_valid(runtime):row["source_motion"]=runtime.motion_diagnostics(player)
+	return row
+
+func _process(_delta:float)->void:
+	if finished or not tracking or not "--diagnose-source-motion" in OS.get_cmdline_user_args() or Time.get_ticks_msec()-_last_motion_progress_ms<10000:return
+	_last_motion_progress_ms=Time.get_ticks_msec()
+	var diagnostic:Dictionary=_motion_diagnostic("incremental-motion")
+	_motion_progress.append(diagnostic)
+	print("[partial-mezzanine] SOURCE_MOTION_PROGRESS ",JSON.stringify(diagnostic,"",true,true))
 
 func _check(label:String,value:bool,detail:Variant="")->bool:
 	return check(label,value,str(detail))
@@ -195,6 +223,9 @@ func run()->void:
 func finish()->void:
 	if finished:return
 	finished=true;tracking=false
+	measurements["motion_progress"]=_motion_progress
+	measurements["motion_failures"]=_motion_failures
+	if is_instance_valid(runtime):measurements["terminal_motion_diagnostic"]=runtime.motion_diagnostics(player if is_instance_valid(player) else null)
 	for action:String in ["move_forward","move_back","move_left","move_right","sprint","walk","jump","interact"]:
 		if InputMap.has_action(action):Input.action_release(action)
 	var result:Dictionary={"schema":"partial_mezzanine_native_fixture_v1","checks":checks,"failed":failures.size(),"failures":failures,"elapsed_s":float(Time.get_ticks_msec()-started_ms)/1000.0,"measurements":measurements,"six_recipes_statically_planned":true,"selected_actual_source_tower":selected_tower,"one_initial_actor_setup":true,"guarded_transport_integrated":false,"all_six_recipes_runtime_verified":false,"visual_fidelity_accepted":false,"full_building_completed":false}

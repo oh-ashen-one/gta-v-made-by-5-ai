@@ -1,0 +1,36 @@
+{
+  "schema": "source_motion_diagnostic_author_freeze_v1",
+  "created_utc": "2026-10-29T06:02:50.294767+00:00",
+  "r4_retained": {
+    "engine_exit_code": 1,
+    "exit_code": 1,
+    "fatal_errors": [],
+    "elapsed_sec": 177.5,
+    "child_reaped": true
+  },
+  "r4_result": {
+    "checks": 125,
+    "failed": 1,
+    "failures": [
+      "continuous productionPlayer walking"
+    ]
+  },
+  "required_argument": "--diagnose-source-motion",
+  "default_off": true,
+  "behavior_predicates_masks_tolerances_pose_velocity_unchanged": true,
+  "actual_root_cause": "not_yet_proven",
+  "native_parse_and_r5": "pending_root",
+  "child_engine_gpu_git_actions": false,
+  "files": [
+    {
+      "path": "game/src/world/geography/source_runtime.gd",
+      "bytes": 33723,
+      "sha256": "571dd21e742b1f91a88cef4e6349660fa945ca7353fb5174894520bf454c0fbe"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/mbs_partial_mezzanine_test.gd",
+      "bytes": 17858,
+      "sha256": "835ad91c880e49773449592608996c3e656cfbfea0f9eb60b63e01c760e5461d"
+    }
+  ]
+}
