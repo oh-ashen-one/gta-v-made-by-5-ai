@@ -1,0 +1,2 @@
+[mbs-floor-stack] FAIL only stable static floor bodies are stamped T2-L24
+[mbs-floor-stack] FAIL only stable static floor bodies are stamped T2-L25

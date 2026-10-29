@@ -1,0 +1,44 @@
+{
+  "checks": 17,
+  "failures": [
+    "positive doorway hold detects the actual fixture blocker",
+    "native exclusion property contains bound landing door RID",
+    "wait for truly absent upper floor"
+  ],
+  "initial_actor_spawns": 1,
+  "metrics": {
+    "actual_poses_after_blocker_removal": {
+      "blocker_removed": true,
+      "lift": {
+        "actor_pose_assignments": 0,
+        "actor_reparents": 0,
+        "bound_floor_ids": [
+          "T3-L5"
+        ],
+        "built": true,
+        "commanded_y_m": 15.35,
+        "current_floor_id": "T3-L5",
+        "detail": "Cabin aligned; landing collision ready",
+        "gate_fraction": 1.0,
+        "landing_fractions": {
+          "T3-L5": 1.0,
+          "T3-L6": 0.0
+        },
+        "last_blockage": {},
+        "last_door_probe": {},
+        "private_asbuilt_verified": false,
+        "queue": [],
+        "shaft_id": "T3-east-guest_lift",
+        "source_world_or_whole_MBS_completed": false,
+        "state": "OPEN",
+        "target_floor_id": "",
+        "velocity_y_mps": 0.0
+      },
+      "player_native": "(23.80592, 15.32583, -14.01606)",
+      "player_node": "(23.80592, 15.32583, -14.01606)",
+      "relative_to_cabin": "(0.0, -0.024166, -0.146737)"
+    },
+    "threshold_probe_with_blocker": {}
+  },
+  "scope": "Isolated two-stop physical cabin and native GuestFloor/production Player fixture. No source city/site streaming, whole-MBS assembly, rebase/save integration, rendered/performance or private as-built acceptance."
+}

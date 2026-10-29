@@ -1,0 +1,71 @@
+{
+  "checks": 12,
+  "failures": [],
+  "initial_actor_spawns": 1,
+  "metrics": {
+    "latest_native_panel_dispatch": {
+      "after_open": true,
+      "after_state": {
+        "actor_pose_assignments": 0,
+        "actor_reparents": 0,
+        "bound_floor_ids": [
+          "T3-L5"
+        ],
+        "built": true,
+        "commanded_y_m": 15.35,
+        "current_floor_id": "T3-L5",
+        "detail": "Cabin aligned; landing collision ready",
+        "gate_fraction": 1.0,
+        "landing_fractions": {
+          "T3-L5": 1.0,
+          "T3-L6": 0.0
+        },
+        "last_blockage": {},
+        "last_door_probe": {},
+        "private_asbuilt_verified": false,
+        "queue": [],
+        "shaft_id": "T3-east-guest_lift",
+        "source_world_or_whole_MBS_completed": false,
+        "state": "OPEN",
+        "target_floor_id": "",
+        "velocity_y_mps": 0.0
+      },
+      "armed": {
+        "fire": true,
+        "interact": true,
+        "reload": true,
+        "weapon_next": true
+      },
+      "before_open": false,
+      "before_state": {
+        "actor_pose_assignments": 0,
+        "actor_reparents": 0,
+        "bound_floor_ids": [
+          "T3-L5"
+        ],
+        "built": true,
+        "commanded_y_m": 15.35,
+        "current_floor_id": "T3-L5",
+        "detail": "Cabin aligned; landing collision ready",
+        "gate_fraction": 1.0,
+        "landing_fractions": {
+          "T3-L5": 1.0,
+          "T3-L6": 0.0
+        },
+        "last_blockage": {},
+        "last_door_probe": {},
+        "private_asbuilt_verified": false,
+        "queue": [],
+        "shaft_id": "T3-east-guest_lift",
+        "source_world_or_whole_MBS_completed": false,
+        "state": "OPEN",
+        "target_floor_id": "",
+        "velocity_y_mps": 0.0
+      },
+      "physics_frame": 213,
+      "process_frame": 58,
+      "queued": {}
+    }
+  },
+  "scope": "Isolated two-stop physical cabin and native GuestFloor/production Player fixture. No source city/site streaming, whole-MBS assembly, rebase/save integration, rendered/performance or private as-built acceptance."
+}

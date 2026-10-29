@@ -1,0 +1,214 @@
+{
+  "checks": 94,
+  "elapsed_s": 86.329,
+  "failed": 2,
+  "failures": [
+    "only stable static floor bodies are stamped T2-L24",
+    "only stable static floor bodies are stamped T2-L25"
+  ],
+  "metrics": {
+    "actual_source_origin_xyz": [
+      441.695252568434,
+      80.9,
+      -1046.40758658095
+    ],
+    "cabin_travel_verified": false,
+    "commit_events": [
+      {
+        "body_count": 29,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L4/1/generation-2",
+        "id": "T2-L4",
+        "physics_tick": 11
+      },
+      {
+        "body_count": 28,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L6/2/generation-3",
+        "id": "T2-L6",
+        "physics_tick": 15
+      },
+      {
+        "body_count": 15,
+        "floor_ready_at_event": true,
+        "generation": "mbs-floor-stack/85899347872/T2-L5/3/generation-4",
+        "id": "T2-L5",
+        "physics_tick": 19
+      },
+      {
+        "body_count": 18,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T3-L56/4/generation-5",
+        "id": "T3-L56",
+        "physics_tick": 32
+      },
+      {
+        "body_count": 16,
+        "floor_ready_at_event": true,
+        "generation": "mbs-floor-stack/85899347872/T3-L57/5/generation-6",
+        "id": "T3-L57",
+        "physics_tick": 36
+      },
+      {
+        "body_count": 34,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L23/6/generation-7",
+        "id": "T2-L23",
+        "physics_tick": 46
+      },
+      {
+        "body_count": 35,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L25/7/generation-8",
+        "id": "T2-L25",
+        "physics_tick": 50
+      },
+      {
+        "body_count": 35,
+        "floor_ready_at_event": true,
+        "generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "id": "T2-L24",
+        "physics_tick": 54
+      },
+      {
+        "body_count": 35,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L26/9/generation-10",
+        "id": "T2-L26",
+        "physics_tick": 58
+      },
+      {
+        "body_count": 33,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T3-L23/10/generation-11",
+        "id": "T3-L23",
+        "physics_tick": 558
+      },
+      {
+        "body_count": 34,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T3-L25/11/generation-12",
+        "id": "T3-L25",
+        "physics_tick": 562
+      },
+      {
+        "body_count": 34,
+        "floor_ready_at_event": true,
+        "generation": "mbs-floor-stack/85899347872/T3-L24/12/generation-13",
+        "id": "T3-L24",
+        "physics_tick": 566
+      },
+      {
+        "body_count": 34,
+        "floor_ready_at_event": true,
+        "generation": "mbs-floor-stack/85899347872/T3-L24/13/generation-14",
+        "id": "T3-L24",
+        "physics_tick": 669
+      },
+      {
+        "body_count": 35,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L26/14/generation-15",
+        "id": "T2-L26",
+        "physics_tick": 676
+      }
+    ],
+    "distance_m": 53.4333615267642,
+    "lower": "T2-L24",
+    "max_step_m": 0.113334663212299,
+    "native_room_door": "R-T2-L24-02",
+    "remote_state_seed": "EXPLICIT_EMPTY_FLOOR_API_NOT_NATIVE_REMOTE_E",
+    "retirements": [
+      {
+        "bodies_still_alive": 29,
+        "id": "T2-L4",
+        "physics_tick": 19,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 15,
+        "id": "T2-L5",
+        "physics_tick": 22,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 28,
+        "id": "T2-L6",
+        "physics_tick": 25,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 18,
+        "id": "T3-L56",
+        "physics_tick": 36,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 16,
+        "id": "T3-L57",
+        "physics_tick": 39,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 35,
+        "id": "T2-L26",
+        "physics_tick": 551,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 34,
+        "id": "T3-L24",
+        "physics_tick": 631,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 33,
+        "id": "T3-L23",
+        "physics_tick": 669,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      }
+    ],
+    "source_frame_revision": 0,
+    "stack_report": {
+      "active_floor_count": 6,
+      "actor_pose_mutations": 0,
+      "base_elevation_m": 0.0,
+      "common_source_frame": true,
+      "configured": true,
+      "datum_provenance": "Reconstructed hotel L1=0 for native stack proof; external vertical datum unresolved",
+      "full_building_completed": false,
+      "locally_committed_floors": [
+        "T2-L23",
+        "T2-L25",
+        "T2-L24",
+        "T2-L26",
+        "T3-L25",
+        "T3-L24"
+      ],
+      "maximum_active_floors": 6,
+      "origin_commits_performed": 0,
+      "pending_requests": 0,
+      "ready_floors": [
+        "T2-L25",
+        "T2-L24"
+      ],
+      "registered_floor_count": 12,
+      "shaft_travel_ready": false,
+      "source_city_complete": false
+    },
+    "swimming_or_pool_ceiling_clearance_verified": false,
+    "upper": "T2-L25",
+    "whole_building_completed": false
+  },
+  "owner_playtest": false,
+  "rendered_fidelity_accepted": false,
+  "whole_building_completed": false
+}

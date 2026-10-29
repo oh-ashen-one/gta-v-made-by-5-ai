@@ -1,0 +1,1 @@
+SCRIPT ERROR: Invalid type in function 'check' in base 'Node3D (mbs_cabin_test.gd)'. Cannot convert argument 3 from Dictionary to String.

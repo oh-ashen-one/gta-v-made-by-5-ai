@@ -1,0 +1,6412 @@
+{
+  "checks": 43,
+  "failures": [],
+  "initial_actor_spawns": 1,
+  "metrics": {
+    "actual_poses_after_blocker_removal": {
+      "blocker_removed": true,
+      "lift": {
+        "actor_pose_assignments": 0,
+        "actor_reparents": 0,
+        "bound_floor_ids": [
+          "T3-L5"
+        ],
+        "built": true,
+        "commanded_y_m": 15.35,
+        "current_floor_id": "T3-L5",
+        "detail": "Doorway obstructed; waiting for clear threshold",
+        "gate_fraction": 1.0,
+        "landing_fractions": {
+          "T3-L5": 1.0,
+          "T3-L6": 0.0
+        },
+        "last_blockage": {},
+        "last_door_probe": {
+          "actual_exclusion_count": 9,
+          "collision_mask": 11,
+          "controlling_hits": [
+            {
+              "body": "QaDoorwayObstruction",
+              "box_size": "(0.5, 1.9, 0.45)",
+              "collider_id": 108397595394,
+              "collision_layer": 1,
+              "native_body_origin": "(23.80592, 16.35, -12.46932)",
+              "native_shape_aabb_max": "(24.05592, 17.3, -12.24432)",
+              "native_shape_aabb_min": "(23.55592, 15.4, -12.69432)",
+              "native_shape_basis": [
+                "(1.0, 0.0, 0.0)",
+                "(0.0, 1.0, 0.0)",
+                "(0.0, 0.0, 1.0)"
+              ],
+              "native_shape_origin": "(23.80592, 16.35, -12.46932)",
+              "node_origin": "(23.80592, 16.35, -12.46932)",
+              "path": "/root/MBSPhysicalCabinFixture/QaDoorwayObstruction",
+              "relative_to_cabin": "(0.0, 1.0, 1.4)",
+              "rid_id": 3560527888422,
+              "shape_class": "BoxShape3D",
+              "shape_index": 0,
+              "shape_name": "@CollisionShape3D@504"
+            }
+          ],
+          "expected_exclusion_count": 9,
+          "landing_doors": [
+            {
+              "body": "Door_T3_L5_east_guest_lift",
+              "floor_id": "T3-L5",
+              "rid_id": 330712481795
+            }
+          ],
+          "legacy_owned_only_hits": [
+            {
+              "body": "QaDoorwayObstruction",
+              "box_size": "(0.5, 1.9, 0.45)",
+              "collider_id": 108397595394,
+              "collision_layer": 1,
+              "native_body_origin": "(23.80592, 16.35, -12.46932)",
+              "native_shape_aabb_max": "(24.05592, 17.3, -12.24432)",
+              "native_shape_aabb_min": "(23.55592, 15.4, -12.69432)",
+              "native_shape_basis": [
+                "(1.0, 0.0, 0.0)",
+                "(0.0, 1.0, 0.0)",
+                "(0.0, 0.0, 1.0)"
+              ],
+              "native_shape_origin": "(23.80592, 16.35, -12.46932)",
+              "node_origin": "(23.80592, 16.35, -12.46932)",
+              "path": "/root/MBSPhysicalCabinFixture/QaDoorwayObstruction",
+              "relative_to_cabin": "(0.0, 1.0, 1.4)",
+              "rid_id": 3560527888422,
+              "shape_class": "BoxShape3D",
+              "shape_index": 0,
+              "shape_name": "@CollisionShape3D@504"
+            },
+            {
+              "body": "Door_T3_L5_east_guest_lift",
+              "box_size": "(1.3, 2.35, 0.075)",
+              "collider_id": 75094820599,
+              "collision_layer": 1,
+              "native_body_origin": "(23.15592, 15.35, -13.11932)",
+              "native_shape_aabb_max": "(23.19342, 17.7, -12.46933)",
+              "native_shape_aabb_min": "(23.11842, 15.35, -13.76932)",
+              "native_shape_basis": [
+                "(-0.0, 0.0, -1.0)",
+                "(0.0, 1.0, 0.0)",
+                "(1.0, 0.0, -0.0)"
+              ],
+              "native_shape_origin": "(23.15592, 16.525, -13.11932)",
+              "node_origin": "(23.15592, 15.35, -13.11932)",
+              "path": "/root/MBSPhysicalCabinFixture/@Node3D@41/Door_T3_L5_east_guest_lift",
+              "relative_to_cabin": "(-0.65, 0.0, 0.749995)",
+              "rid_id": 330712481795,
+              "shape_class": "BoxShape3D",
+              "shape_index": 0,
+              "shape_name": "@CollisionShape3D@77"
+            }
+          ],
+          "owned_exclusion_count": 8,
+          "physics_tick": 345,
+          "query_origin": "(23.80592, 16.45, -12.46932)",
+          "query_size": "(1.26, 2.1, 0.7)"
+        },
+        "private_asbuilt_verified": false,
+        "queue": [
+          "T3-L6"
+        ],
+        "shaft_id": "T3-east-guest_lift",
+        "source_world_or_whole_MBS_completed": false,
+        "state": "OPEN",
+        "target_floor_id": "",
+        "velocity_y_mps": 0.0
+      },
+      "player_native": "(23.80592, 15.32583, -14.01606)",
+      "player_node": "(23.80592, 15.32583, -14.01606)",
+      "relative_to_cabin": "(0.0, -0.024166, -0.146737)"
+    },
+    "latest_native_panel_dispatch": {
+      "after_open": false,
+      "after_state": {
+        "actor_pose_assignments": 0,
+        "actor_reparents": 0,
+        "bound_floor_ids": [
+          "T3-L5",
+          "T3-L6"
+        ],
+        "built": true,
+        "commanded_y_m": 18.8,
+        "current_floor_id": "T3-L6",
+        "detail": "Closing cabin and landing doors",
+        "gate_fraction": 0.666666666666666,
+        "landing_fractions": {
+          "T3-L5": 0.0,
+          "T3-L6": 0.666666666666666
+        },
+        "last_blockage": {},
+        "last_door_probe": {
+          "actual_exclusion_count": 10,
+          "collision_mask": 11,
+          "controlling_hits": [],
+          "expected_exclusion_count": 10,
+          "landing_doors": [
+            {
+              "body": "Door_T3_L5_east_guest_lift",
+              "floor_id": "T3-L5",
+              "rid_id": 330712481795
+            },
+            {
+              "body": "Door_T3_L6_east_guest_lift",
+              "floor_id": "T3-L6",
+              "rid_id": 4032974290984
+            }
+          ],
+          "legacy_owned_only_hits": [
+            {
+              "body": "Door_T3_L6_east_guest_lift",
+              "box_size": "(1.3, 2.35, 0.075)",
+              "collider_id": 139083123539,
+              "collision_layer": 1,
+              "native_body_origin": "(23.57466, 18.8, -12.96647)",
+              "native_shape_aabb_max": "(24.02209, 21.15, -12.44517)",
+              "native_shape_aabb_min": "(23.12724, 18.8, -13.48778)",
+              "native_shape_basis": [
+                "(0.644218, 0.0, -0.764842)",
+                "(0.0, 1.0, 0.0)",
+                "(0.764842, 0.0, 0.644218)"
+              ],
+              "native_shape_origin": "(23.57466, 19.975, -12.96647)",
+              "node_origin": "(23.57466, 18.8, -12.96647)",
+              "path": "/root/MBSPhysicalCabinFixture/@Node3D@505/Door_T3_L6_east_guest_lift",
+              "relative_to_cabin": "(-0.231258, 0.0, 0.902847)",
+              "rid_id": 4032974290984,
+              "shape_class": "BoxShape3D",
+              "shape_index": 0,
+              "shape_name": "@CollisionShape3D@541"
+            }
+          ],
+          "owned_exclusion_count": 8,
+          "physics_tick": 1062,
+          "query_origin": "(23.80592, 19.9, -12.46932)",
+          "query_size": "(1.26, 2.1, 0.7)"
+        },
+        "private_asbuilt_verified": false,
+        "queue": [],
+        "shaft_id": "T3-east-guest_lift",
+        "source_world_or_whole_MBS_completed": false,
+        "state": "CLOSING",
+        "target_floor_id": "T3-L5",
+        "velocity_y_mps": 0.0
+      },
+      "armed": {
+        "fire": true,
+        "interact": true,
+        "reload": true,
+        "weapon_next": true
+      },
+      "before_open": true,
+      "before_state": {
+        "actor_pose_assignments": 0,
+        "actor_reparents": 0,
+        "bound_floor_ids": [
+          "T3-L5",
+          "T3-L6"
+        ],
+        "built": true,
+        "commanded_y_m": 18.8,
+        "current_floor_id": "T3-L6",
+        "detail": "Cabin aligned; landing collision ready",
+        "gate_fraction": 1.0,
+        "landing_fractions": {
+          "T3-L5": 0.0,
+          "T3-L6": 1.0
+        },
+        "last_blockage": {},
+        "last_door_probe": {
+          "actual_exclusion_count": 9,
+          "collision_mask": 11,
+          "controlling_hits": [],
+          "expected_exclusion_count": 9,
+          "landing_doors": [
+            {
+              "body": "Door_T3_L5_east_guest_lift",
+              "floor_id": "T3-L5",
+              "rid_id": 330712481795
+            }
+          ],
+          "legacy_owned_only_hits": [
+            {
+              "body": "Door_T3_L5_east_guest_lift",
+              "box_size": "(1.3, 2.35, 0.075)",
+              "collider_id": 75094820599,
+              "collision_layer": 1,
+              "native_body_origin": "(23.80592, 15.35, -12.46933)",
+              "native_shape_aabb_max": "(24.45592, 17.7, -12.43182)",
+              "native_shape_aabb_min": "(23.15592, 15.35, -12.50683)",
+              "native_shape_basis": [
+                "(1.0, 0.0, 0.0)",
+                "(0.0, 1.0, 0.0)",
+                "(0.0, 0.0, 1.0)"
+              ],
+              "native_shape_origin": "(23.80592, 16.525, -12.46933)",
+              "node_origin": "(23.80592, 15.35, -12.46933)",
+              "path": "/root/MBSPhysicalCabinFixture/@Node3D@41/Door_T3_L5_east_guest_lift",
+              "relative_to_cabin": "(0.0, 0.0, 1.399995)",
+              "rid_id": 330712481795,
+              "shape_class": "BoxShape3D",
+              "shape_index": 0,
+              "shape_name": "@CollisionShape3D@77"
+            }
+          ],
+          "owned_exclusion_count": 8,
+          "physics_tick": 514,
+          "query_origin": "(23.80592, 16.45, -12.46932)",
+          "query_size": "(1.26, 2.1, 0.7)"
+        },
+        "private_asbuilt_verified": false,
+        "queue": [],
+        "shaft_id": "T3-east-guest_lift",
+        "source_world_or_whole_MBS_completed": false,
+        "state": "OPEN",
+        "target_floor_id": "",
+        "velocity_y_mps": 0.0
+      },
+      "physics_frame": 1062,
+      "process_frame": 314,
+      "queued": {}
+    },
+    "ride": {
+      "last_motion_samples": [
+        {
+          "cabin_y": 15.69375,
+          "on_floor": true,
+          "platform_y_velocity": 0.875015199184418,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.6393756866455,
+            -14.0160570144653
+          ],
+          "tick": 662
+        },
+        {
+          "cabin_y": 15.709375,
+          "on_floor": true,
+          "platform_y_velocity": 0.89584344625473,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.6543064117432,
+            -14.0160570144653
+          ],
+          "tick": 663
+        },
+        {
+          "cabin_y": 15.7253472222222,
+          "on_floor": true,
+          "platform_y_velocity": 0.916671693325043,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.669584274292,
+            -14.0160570144653
+          ],
+          "tick": 664
+        },
+        {
+          "cabin_y": 15.7416666666667,
+          "on_floor": true,
+          "platform_y_velocity": 0.937499940395355,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.685209274292,
+            -14.0160570144653
+          ],
+          "tick": 665
+        },
+        {
+          "cabin_y": 15.7583333333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.958328187465668,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.7011814117432,
+            -14.0160570144653
+          ],
+          "tick": 666
+        },
+        {
+          "cabin_y": 15.7753472222222,
+          "on_floor": true,
+          "platform_y_velocity": 0.97915643453598,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.7175006866455,
+            -14.0160570144653
+          ],
+          "tick": 667
+        },
+        {
+          "cabin_y": 15.7927083333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.999984681606293,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.734167098999,
+            -14.0160570144653
+          ],
+          "tick": 668
+        },
+        {
+          "cabin_y": 15.8104166666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.02081298828125,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.7511806488037,
+            -14.0160570144653
+          ],
+          "tick": 669
+        },
+        {
+          "cabin_y": 15.8284722222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.04169845581055,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.7685422897339,
+            -14.0160570144653
+          ],
+          "tick": 670
+        },
+        {
+          "cabin_y": 15.846875,
+          "on_floor": true,
+          "platform_y_velocity": 1.06246948242188,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.7862501144409,
+            -14.0160570144653
+          ],
+          "tick": 671
+        },
+        {
+          "cabin_y": 15.865625,
+          "on_floor": true,
+          "platform_y_velocity": 1.08335494995117,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.8043060302734,
+            -14.0160570144653
+          ],
+          "tick": 672
+        },
+        {
+          "cabin_y": 15.8847222222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.10418319702148,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.8227090835571,
+            -14.0160570144653
+          ],
+          "tick": 673
+        },
+        {
+          "cabin_y": 15.9041666666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.1250114440918,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.841459274292,
+            -14.0160570144653
+          ],
+          "tick": 674
+        },
+        {
+          "cabin_y": 15.9239583333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.14578235149384,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.8605556488037,
+            -14.0160570144653
+          ],
+          "tick": 675
+        },
+        {
+          "cabin_y": 15.9440972222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.16666781902313,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.8800001144409,
+            -14.0160570144653
+          ],
+          "tick": 676
+        },
+        {
+          "cabin_y": 15.9645833333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.18755328655243,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.8997926712036,
+            -14.0160570144653
+          ],
+          "tick": 677
+        },
+        {
+          "cabin_y": 15.9854166666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.20832431316376,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.9199314117432,
+            -14.0160570144653
+          ],
+          "tick": 678
+        },
+        {
+          "cabin_y": 16.0065972222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.22915256023407,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.9404172897339,
+            -14.0160570144653
+          ],
+          "tick": 679
+        },
+        {
+          "cabin_y": 16.028125,
+          "on_floor": true,
+          "platform_y_velocity": 1.24998080730438,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.9612503051758,
+            -14.0160570144653
+          ],
+          "tick": 680
+        },
+        {
+          "cabin_y": 16.05,
+          "on_floor": true,
+          "platform_y_velocity": 1.27086627483368,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.9824314117432,
+            -14.0160570144653
+          ],
+          "tick": 681
+        },
+        {
+          "cabin_y": 16.0722222222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.29169452190399,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.0039596557617,
+            -14.0160570144653
+          ],
+          "tick": 682
+        },
+        {
+          "cabin_y": 16.0947916666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.31240832805634,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.0258331298828,
+            -14.0160570144653
+          ],
+          "tick": 683
+        },
+        {
+          "cabin_y": 16.1177083333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.33335101604462,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.0480556488037,
+            -14.0160570144653
+          ],
+          "tick": 684
+        },
+        {
+          "cabin_y": 16.1409722222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.35417926311493,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.0706253051758,
+            -14.0160570144653
+          ],
+          "tick": 685
+        },
+        {
+          "cabin_y": 16.1645833333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.37500751018524,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.093542098999,
+            -14.0160570144653
+          ],
+          "tick": 686
+        },
+        {
+          "cabin_y": 16.1885416666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.39583575725555,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.1168060302734,
+            -14.0160570144653
+          ],
+          "tick": 687
+        },
+        {
+          "cabin_y": 16.2128472222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.41666400432587,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.140417098999,
+            -14.0160570144653
+          ],
+          "tick": 688
+        },
+        {
+          "cabin_y": 16.2375,
+          "on_floor": true,
+          "platform_y_velocity": 1.43749225139618,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.1643753051758,
+            -14.0160570144653
+          ],
+          "tick": 689
+        },
+        {
+          "cabin_y": 16.2625,
+          "on_floor": true,
+          "platform_y_velocity": 1.45832049846649,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.1886806488037,
+            -14.0160570144653
+          ],
+          "tick": 690
+        },
+        {
+          "cabin_y": 16.2878472222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.4791487455368,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.2133331298828,
+            -14.0160570144653
+          ],
+          "tick": 691
+        },
+        {
+          "cabin_y": 16.3135416666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.50009143352509,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.2383346557617,
+            -14.0160570144653
+          ],
+          "tick": 692
+        },
+        {
+          "cabin_y": 16.3395833333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.52080523967743,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.2636814117432,
+            -14.0160570144653
+          ],
+          "tick": 693
+        },
+        {
+          "cabin_y": 16.3659722222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.54163348674774,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.2893753051758,
+            -14.0160570144653
+          ],
+          "tick": 694
+        },
+        {
+          "cabin_y": 16.3927083333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.56246173381805,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.3154163360596,
+            -14.0160570144653
+          ],
+          "tick": 695
+        },
+        {
+          "cabin_y": 16.4197916666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.58340442180634,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.3418064117432,
+            -14.0160570144653
+          ],
+          "tick": 696
+        },
+        {
+          "cabin_y": 16.4472222222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.60411822795868,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.3685417175293,
+            -14.0160570144653
+          ],
+          "tick": 697
+        },
+        {
+          "cabin_y": 16.475,
+          "on_floor": true,
+          "platform_y_velocity": 1.62506091594696,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.3956260681152,
+            -14.0160570144653
+          ],
+          "tick": 698
+        },
+        {
+          "cabin_y": 16.503125,
+          "on_floor": true,
+          "platform_y_velocity": 1.6457747220993,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.4230556488037,
+            -14.0160570144653
+          ],
+          "tick": 699
+        },
+        {
+          "cabin_y": 16.5315972222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.66671741008759,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.450834274292,
+            -14.0160570144653
+          ],
+          "tick": 700
+        },
+        {
+          "cabin_y": 16.5604166666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.68743121623993,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.4789581298828,
+            -14.0160570144653
+          ],
+          "tick": 701
+        },
+        {
+          "cabin_y": 16.5895833333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.70837390422821,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.5074310302734,
+            -14.0160570144653
+          ],
+          "tick": 702
+        },
+        {
+          "cabin_y": 16.6190972222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.72920215129852,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.5362510681152,
+            -14.0160570144653
+          ],
+          "tick": 703
+        },
+        {
+          "cabin_y": 16.6489583333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.74991595745087,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.5654163360596,
+            -14.0160570144653
+          ],
+          "tick": 704
+        },
+        {
+          "cabin_y": 16.6791666666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.77085864543915,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.5949306488037,
+            -14.0160570144653
+          ],
+          "tick": 705
+        },
+        {
+          "cabin_y": 16.7097222222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.79168689250946,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.624792098999,
+            -14.0160570144653
+          ],
+          "tick": 706
+        },
+        {
+          "cabin_y": 16.740625,
+          "on_floor": true,
+          "platform_y_velocity": 1.81251513957977,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.6550006866455,
+            -14.0160570144653
+          ],
+          "tick": 707
+        },
+        {
+          "cabin_y": 16.771875,
+          "on_floor": true,
+          "platform_y_velocity": 1.83334338665009,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.6855564117432,
+            -14.0160570144653
+          ],
+          "tick": 708
+        },
+        {
+          "cabin_y": 16.8034722222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.8541716337204,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.716459274292,
+            -14.0160570144653
+          ],
+          "tick": 709
+        },
+        {
+          "cabin_y": 16.8354166666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.87499988079071,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.747709274292,
+            -14.0160570144653
+          ],
+          "tick": 710
+        },
+        {
+          "cabin_y": 16.8677083333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.89582812786102,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.7793064117432,
+            -14.0160570144653
+          ],
+          "tick": 711
+        },
+        {
+          "cabin_y": 16.9003472222222,
+          "on_floor": true,
+          "platform_y_velocity": 1.91665637493134,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.8112506866455,
+            -14.0160570144653
+          ],
+          "tick": 712
+        },
+        {
+          "cabin_y": 16.9333333333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.93748462200165,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.843542098999,
+            -14.0160570144653
+          ],
+          "tick": 713
+        },
+        {
+          "cabin_y": 16.9666666666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.95831286907196,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.8761806488037,
+            -14.0160570144653
+          ],
+          "tick": 714
+        },
+        {
+          "cabin_y": 17.0,
+          "on_floor": true,
+          "platform_y_velocity": 1.97914111614227,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.9091663360596,
+            -14.0160570144653
+          ],
+          "tick": 715
+        },
+        {
+          "cabin_y": 17.0333333333333,
+          "on_floor": true,
+          "platform_y_velocity": 2.00008392333984,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.9425010681152,
+            -14.0160570144653
+          ],
+          "tick": 716
+        },
+        {
+          "cabin_y": 17.0666666666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.9758338928223,
+            -14.0160570144653
+          ],
+          "tick": 717
+        },
+        {
+          "cabin_y": 17.1,
+          "on_floor": true,
+          "platform_y_velocity": 1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.0091667175293,
+            -14.0160570144653
+          ],
+          "tick": 718
+        },
+        {
+          "cabin_y": 17.1333333333333,
+          "on_floor": true,
+          "platform_y_velocity": 2.00008392333984,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.042501449585,
+            -14.0160570144653
+          ],
+          "tick": 719
+        },
+        {
+          "cabin_y": 17.1666666666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.075834274292,
+            -14.0160570144653
+          ],
+          "tick": 720
+        },
+        {
+          "cabin_y": 17.2,
+          "on_floor": true,
+          "platform_y_velocity": 1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.109167098999,
+            -14.0160570144653
+          ],
+          "tick": 721
+        },
+        {
+          "cabin_y": 17.2333333333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.1424999237061,
+            -14.0160570144653
+          ],
+          "tick": 722
+        },
+        {
+          "cabin_y": 17.2663194444445,
+          "on_floor": true,
+          "platform_y_velocity": 2.00008392333984,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.1758346557617,
+            -14.0160570144653
+          ],
+          "tick": 723
+        },
+        {
+          "cabin_y": 17.2989583333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.2091674804688,
+            -14.0160570144653
+          ],
+          "tick": 724
+        },
+        {
+          "cabin_y": 17.33125,
+          "on_floor": true,
+          "platform_y_velocity": 1.97914111614227,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.2421531677246,
+            -14.0160570144653
+          ],
+          "tick": 725
+        },
+        {
+          "cabin_y": 17.3631944444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.95831286907196,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.2747917175293,
+            -14.0160570144653
+          ],
+          "tick": 726
+        },
+        {
+          "cabin_y": 17.3947916666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.93748462200165,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.3070831298828,
+            -14.0160570144653
+          ],
+          "tick": 727
+        },
+        {
+          "cabin_y": 17.4260416666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.91665637493134,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.3390274047852,
+            -14.0160570144653
+          ],
+          "tick": 728
+        },
+        {
+          "cabin_y": 17.4569444444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.89594256877899,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.370626449585,
+            -14.0160570144653
+          ],
+          "tick": 729
+        },
+        {
+          "cabin_y": 17.4875,
+          "on_floor": true,
+          "platform_y_velocity": 1.87499988079071,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.401876449585,
+            -14.0160570144653
+          ],
+          "tick": 730
+        },
+        {
+          "cabin_y": 17.5177083333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.85405719280243,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.4327774047852,
+            -14.0160570144653
+          ],
+          "tick": 731
+        },
+        {
+          "cabin_y": 17.5475694444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.83334338665009,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.4633331298828,
+            -14.0160570144653
+          ],
+          "tick": 732
+        },
+        {
+          "cabin_y": 17.5770833333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.81251513957977,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.4935417175293,
+            -14.0160570144653
+          ],
+          "tick": 733
+        },
+        {
+          "cabin_y": 17.60625,
+          "on_floor": true,
+          "platform_y_velocity": 1.79168689250946,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.5234031677246,
+            -14.0160570144653
+          ],
+          "tick": 734
+        },
+        {
+          "cabin_y": 17.6350694444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.77085864543915,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.5529174804688,
+            -14.0160570144653
+          ],
+          "tick": 735
+        },
+        {
+          "cabin_y": 17.6635416666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.75003039836884,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.5820846557617,
+            -14.0160570144653
+          ],
+          "tick": 736
+        },
+        {
+          "cabin_y": 17.6916666666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.72908771038055,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.6109027862549,
+            -14.0160570144653
+          ],
+          "tick": 737
+        },
+        {
+          "cabin_y": 17.7194444444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.70837390422821,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.6393756866455,
+            -14.0160570144653
+          ],
+          "tick": 738
+        },
+        {
+          "cabin_y": 17.746875,
+          "on_floor": true,
+          "platform_y_velocity": 1.6875456571579,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.667501449585,
+            -14.0160570144653
+          ],
+          "tick": 739
+        },
+        {
+          "cabin_y": 17.7739583333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.66660296916962,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.6952781677246,
+            -14.0160570144653
+          ],
+          "tick": 740
+        },
+        {
+          "cabin_y": 17.8006944444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.64588916301727,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.7227096557617,
+            -14.0160570144653
+          ],
+          "tick": 741
+        },
+        {
+          "cabin_y": 17.8270833333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.62494647502899,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.749792098999,
+            -14.0160570144653
+          ],
+          "tick": 742
+        },
+        {
+          "cabin_y": 17.853125,
+          "on_floor": true,
+          "platform_y_velocity": 1.60411822795868,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.7765274047852,
+            -14.0160570144653
+          ],
+          "tick": 743
+        },
+        {
+          "cabin_y": 17.8788194444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.58340442180634,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.8029174804688,
+            -14.0160570144653
+          ],
+          "tick": 744
+        },
+        {
+          "cabin_y": 17.9041666666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.56246173381805,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.8289585113525,
+            -14.0160570144653
+          ],
+          "tick": 745
+        },
+        {
+          "cabin_y": 17.9291666666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.54163348674774,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.8546524047852,
+            -14.0160570144653
+          ],
+          "tick": 746
+        },
+        {
+          "cabin_y": 17.9538194444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.5209196805954,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.8800010681152,
+            -14.0160570144653
+          ],
+          "tick": 747
+        },
+        {
+          "cabin_y": 17.978125,
+          "on_floor": true,
+          "platform_y_velocity": 1.49997699260712,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.9050006866455,
+            -14.0160570144653
+          ],
+          "tick": 748
+        },
+        {
+          "cabin_y": 18.0020833333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.4791487455368,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.9296531677246,
+            -14.0160570144653
+          ],
+          "tick": 749
+        },
+        {
+          "cabin_y": 18.0256944444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.45832049846649,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.9539585113525,
+            -14.0160570144653
+          ],
+          "tick": 750
+        },
+        {
+          "cabin_y": 18.0489583333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.43749225139618,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.9779167175293,
+            -14.0160570144653
+          ],
+          "tick": 751
+        },
+        {
+          "cabin_y": 18.071875,
+          "on_floor": true,
+          "platform_y_velocity": 1.41666400432587,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.0015277862549,
+            -14.0160570144653
+          ],
+          "tick": 752
+        },
+        {
+          "cabin_y": 18.0944444444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.39583575725555,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.0247917175293,
+            -14.0160570144653
+          ],
+          "tick": 753
+        },
+        {
+          "cabin_y": 18.1166666666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.37500751018524,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.0477085113525,
+            -14.0160570144653
+          ],
+          "tick": 754
+        },
+        {
+          "cabin_y": 18.1385416666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.35417926311493,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.0702781677246,
+            -14.0160570144653
+          ],
+          "tick": 755
+        },
+        {
+          "cabin_y": 18.1600694444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.33335101604462,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.0925006866455,
+            -14.0160570144653
+          ],
+          "tick": 756
+        },
+        {
+          "cabin_y": 18.18125,
+          "on_floor": true,
+          "platform_y_velocity": 1.3125227689743,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.1143760681152,
+            -14.0160570144653
+          ],
+          "tick": 757
+        },
+        {
+          "cabin_y": 18.2020833333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.29158008098602,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.1359024047852,
+            -14.0160570144653
+          ],
+          "tick": 758
+        },
+        {
+          "cabin_y": 18.2225694444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.27086627483368,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.1570835113525,
+            -14.0160570144653
+          ],
+          "tick": 759
+        },
+        {
+          "cabin_y": 18.2427083333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.25003802776337,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.1779174804688,
+            -14.0160570144653
+          ],
+          "tick": 760
+        },
+        {
+          "cabin_y": 18.2625,
+          "on_floor": true,
+          "platform_y_velocity": 1.22909533977509,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.1984024047852,
+            -14.0160570144653
+          ],
+          "tick": 761
+        },
+        {
+          "cabin_y": 18.2819444444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.20838153362274,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.218542098999,
+            -14.0160570144653
+          ],
+          "tick": 762
+        },
+        {
+          "cabin_y": 18.3010416666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.18755328655243,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.2383346557617,
+            -14.0160570144653
+          ],
+          "tick": 763
+        },
+        {
+          "cabin_y": 18.3197916666667,
+          "on_floor": true,
+          "platform_y_velocity": 1.16661059856415,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.2577781677246,
+            -14.0160570144653
+          ],
+          "tick": 764
+        },
+        {
+          "cabin_y": 18.3381944444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.1458967924118,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.276876449585,
+            -14.0160570144653
+          ],
+          "tick": 765
+        },
+        {
+          "cabin_y": 18.35625,
+          "on_floor": true,
+          "platform_y_velocity": 1.12495422363281,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.2956256866455,
+            -14.0160570144653
+          ],
+          "tick": 766
+        },
+        {
+          "cabin_y": 18.3739583333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.1041259765625,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.3140277862549,
+            -14.0160570144653
+          ],
+          "tick": 767
+        },
+        {
+          "cabin_y": 18.3913194444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.08341217041016,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.3320846557617,
+            -14.0160570144653
+          ],
+          "tick": 768
+        },
+        {
+          "cabin_y": 18.4083333333333,
+          "on_floor": true,
+          "platform_y_velocity": 1.06246948242188,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.3497924804688,
+            -14.0160570144653
+          ],
+          "tick": 769
+        },
+        {
+          "cabin_y": 18.425,
+          "on_floor": true,
+          "platform_y_velocity": 1.04164123535156,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.3671531677246,
+            -14.0160570144653
+          ],
+          "tick": 770
+        },
+        {
+          "cabin_y": 18.4413194444445,
+          "on_floor": true,
+          "platform_y_velocity": 1.02081298828125,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.3841667175293,
+            -14.0160570144653
+          ],
+          "tick": 771
+        },
+        {
+          "cabin_y": 18.4572916666667,
+          "on_floor": true,
+          "platform_y_velocity": 0.999984681606293,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4008331298828,
+            -14.0160570144653
+          ],
+          "tick": 772
+        },
+        {
+          "cabin_y": 18.4729166666667,
+          "on_floor": true,
+          "platform_y_velocity": 0.97915643453598,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4171524047852,
+            -14.0160570144653
+          ],
+          "tick": 773
+        },
+        {
+          "cabin_y": 18.4881944444445,
+          "on_floor": true,
+          "platform_y_velocity": 0.958442628383636,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.433126449585,
+            -14.0160570144653
+          ],
+          "tick": 774
+        },
+        {
+          "cabin_y": 18.503125,
+          "on_floor": true,
+          "platform_y_velocity": 0.937499940395355,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.448751449585,
+            -14.0160570144653
+          ],
+          "tick": 775
+        },
+        {
+          "cabin_y": 18.5177083333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.916557252407074,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4640274047852,
+            -14.0160570144653
+          ],
+          "tick": 776
+        },
+        {
+          "cabin_y": 18.5319444444445,
+          "on_floor": true,
+          "platform_y_velocity": 0.89584344625473,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4789581298828,
+            -14.0160570144653
+          ],
+          "tick": 777
+        },
+        {
+          "cabin_y": 18.5458333333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.875015199184418,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4935417175293,
+            -14.0160570144653
+          ],
+          "tick": 778
+        },
+        {
+          "cabin_y": 18.559375,
+          "on_floor": true,
+          "platform_y_velocity": 0.854186952114105,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5077781677246,
+            -14.0160570144653
+          ],
+          "tick": 779
+        },
+        {
+          "cabin_y": 18.5725694444445,
+          "on_floor": true,
+          "platform_y_velocity": 0.833358705043793,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5216674804688,
+            -14.0160570144653
+          ],
+          "tick": 780
+        },
+        {
+          "cabin_y": 18.5854166666667,
+          "on_floor": true,
+          "platform_y_velocity": 0.81253045797348,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5352096557617,
+            -14.0160570144653
+          ],
+          "tick": 781
+        },
+        {
+          "cabin_y": 18.5979166666667,
+          "on_floor": true,
+          "platform_y_velocity": 0.791587769985199,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5484027862549,
+            -14.0160570144653
+          ],
+          "tick": 782
+        },
+        {
+          "cabin_y": 18.6100694444445,
+          "on_floor": true,
+          "platform_y_velocity": 0.770873963832855,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5612506866455,
+            -14.0160570144653
+          ],
+          "tick": 783
+        },
+        {
+          "cabin_y": 18.621875,
+          "on_floor": true,
+          "platform_y_velocity": 0.750045716762543,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.573751449585,
+            -14.0160570144653
+          ],
+          "tick": 784
+        },
+        {
+          "cabin_y": 18.6333333333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.729103028774261,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5859031677246,
+            -14.0160570144653
+          ],
+          "tick": 785
+        },
+        {
+          "cabin_y": 18.6444444444444,
+          "on_floor": true,
+          "platform_y_velocity": 0.708389222621918,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5977096557617,
+            -14.0160570144653
+          ],
+          "tick": 786
+        },
+        {
+          "cabin_y": 18.6552083333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.687446534633636,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.609167098999,
+            -14.0160570144653
+          ],
+          "tick": 787
+        },
+        {
+          "cabin_y": 18.665625,
+          "on_floor": true,
+          "platform_y_velocity": 0.666618287563324,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6202774047852,
+            -14.0160570144653
+          ],
+          "tick": 788
+        },
+        {
+          "cabin_y": 18.6756944444444,
+          "on_floor": true,
+          "platform_y_velocity": 0.64590448141098,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6310424804688,
+            -14.0160570144653
+          ],
+          "tick": 789
+        },
+        {
+          "cabin_y": 18.6854166666667,
+          "on_floor": true,
+          "platform_y_velocity": 0.624961793422699,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6414585113525,
+            -14.0160570144653
+          ],
+          "tick": 790
+        },
+        {
+          "cabin_y": 18.6947916666667,
+          "on_floor": true,
+          "platform_y_velocity": 0.604133546352386,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6515274047852,
+            -14.0160570144653
+          ],
+          "tick": 791
+        },
+        {
+          "cabin_y": 18.7038194444444,
+          "on_floor": true,
+          "platform_y_velocity": 0.583419740200043,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6612510681152,
+            -14.0160570144653
+          ],
+          "tick": 792
+        },
+        {
+          "cabin_y": 18.7125,
+          "on_floor": true,
+          "platform_y_velocity": 0.562477111816406,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6706256866455,
+            -14.0160570144653
+          ],
+          "tick": 793
+        },
+        {
+          "cabin_y": 18.7208333333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.541648864746094,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6796531677246,
+            -14.0160570144653
+          ],
+          "tick": 794
+        },
+        {
+          "cabin_y": 18.7288194444445,
+          "on_floor": true,
+          "platform_y_velocity": 0.520820617675781,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6883335113525,
+            -14.0160570144653
+          ],
+          "tick": 795
+        },
+        {
+          "cabin_y": 18.7364583333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.499992340803146,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6966667175293,
+            -14.0160570144653
+          ],
+          "tick": 796
+        },
+        {
+          "cabin_y": 18.74375,
+          "on_floor": true,
+          "platform_y_velocity": 0.479164093732834,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7046527862549,
+            -14.0160570144653
+          ],
+          "tick": 797
+        },
+        {
+          "cabin_y": 18.7506944444444,
+          "on_floor": true,
+          "platform_y_velocity": 0.458335846662521,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7122917175293,
+            -14.0160570144653
+          ],
+          "tick": 798
+        },
+        {
+          "cabin_y": 18.7572916666667,
+          "on_floor": true,
+          "platform_y_velocity": 0.437507599592209,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7195835113525,
+            -14.0160570144653
+          ],
+          "tick": 799
+        },
+        {
+          "cabin_y": 18.7635416666667,
+          "on_floor": true,
+          "platform_y_velocity": 0.416679352521896,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7265281677246,
+            -14.0160570144653
+          ],
+          "tick": 800
+        },
+        {
+          "cabin_y": 18.7694444444444,
+          "on_floor": true,
+          "platform_y_velocity": 0.395851105451584,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7331256866455,
+            -14.0160570144653
+          ],
+          "tick": 801
+        },
+        {
+          "cabin_y": 18.775,
+          "on_floor": true,
+          "platform_y_velocity": 0.375022858381271,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7393760681152,
+            -14.0160570144653
+          ],
+          "tick": 802
+        },
+        {
+          "cabin_y": 18.7802083333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.35408017039299,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7452774047852,
+            -14.0160570144653
+          ],
+          "tick": 803
+        },
+        {
+          "cabin_y": 18.7850694444444,
+          "on_floor": true,
+          "platform_y_velocity": 0.333366364240646,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7508335113525,
+            -14.0160570144653
+          ],
+          "tick": 804
+        },
+        {
+          "cabin_y": 18.7895833333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.312538117170334,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7560424804688,
+            -14.0160570144653
+          ],
+          "tick": 805
+        },
+        {
+          "cabin_y": 18.79375,
+          "on_floor": true,
+          "platform_y_velocity": 0.291595429182053,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7609024047852,
+            -14.0160570144653
+          ],
+          "tick": 806
+        },
+        {
+          "cabin_y": 18.7975694444444,
+          "on_floor": true,
+          "platform_y_velocity": 0.270881652832031,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.765417098999,
+            -14.0160570144653
+          ],
+          "tick": 807
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.250053405761719,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7695846557617,
+            -14.0160570144653
+          ],
+          "tick": 808
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.229110702872276,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7734031677246,
+            -14.0160570144653
+          ],
+          "tick": 809
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.145797714591026,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 810
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 811
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 812
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 813
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 814
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 815
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 816
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 817
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 818
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 819
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 820
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 821
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 822
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 823
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 824
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 825
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 826
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 827
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 828
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 829
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 830
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 831
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 832
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 833
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 834
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 835
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 836
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 837
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 838
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 839
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 840
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 841
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 842
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 843
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 844
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 845
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 846
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 847
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 848
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 849
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 850
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 851
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 852
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 853
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 854
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 855
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 856
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 857
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 858
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 859
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 860
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 861
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 862
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 863
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 864
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 865
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 866
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 867
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 868
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 869
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 870
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 871
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 872
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 873
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 874
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 875
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0160570144653
+          ],
+          "tick": 876
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1063
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1064
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1065
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1066
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1067
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1068
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1069
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1070
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1071
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1072
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1073
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1074
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1075
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1076
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1077
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1078
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1079
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1080
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1081
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1082
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1083
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1084
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1085
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1086
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1087
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1088
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1089
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1090
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1091
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1092
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1093
+        },
+        {
+          "cabin_y": 18.8,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1094
+        },
+        {
+          "cabin_y": 18.7996527777778,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1095
+        },
+        {
+          "cabin_y": 18.7989583333333,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7758331298828,
+            -14.0154151916504
+          ],
+          "tick": 1096
+        },
+        {
+          "cabin_y": 18.7979166666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.0208282452076674,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7754859924316,
+            -14.0154151916504
+          ],
+          "tick": 1097
+        },
+        {
+          "cabin_y": 18.7965277777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.0416564904153347,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7747917175293,
+            -14.0154151916504
+          ],
+          "tick": 1098
+        },
+        {
+          "cabin_y": 18.7947916666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.0624847374856472,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7737503051758,
+            -14.0154151916504
+          ],
+          "tick": 1099
+        },
+        {
+          "cabin_y": 18.7927083333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.0833129808306694,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7723617553711,
+            -14.0154151916504
+          ],
+          "tick": 1100
+        },
+        {
+          "cabin_y": 18.7902777777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.104141227900982,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7706260681152,
+            -14.0154151916504
+          ],
+          "tick": 1101
+        },
+        {
+          "cabin_y": 18.7875,
+          "on_floor": true,
+          "platform_y_velocity": -0.125083923339844,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7685413360596,
+            -14.0154151916504
+          ],
+          "tick": 1102
+        },
+        {
+          "cabin_y": 18.784375,
+          "on_floor": true,
+          "platform_y_velocity": -0.145797714591026,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7661113739014,
+            -14.0154151916504
+          ],
+          "tick": 1103
+        },
+        {
+          "cabin_y": 18.7809027777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.166625961661339,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.763334274292,
+            -14.0154151916504
+          ],
+          "tick": 1104
+        },
+        {
+          "cabin_y": 18.7770833333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.18756864964962,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7602081298828,
+            -14.0154151916504
+          ],
+          "tick": 1105
+        },
+        {
+          "cabin_y": 18.7729166666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.208282455801964,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7567367553711,
+            -14.0154151916504
+          ],
+          "tick": 1106
+        },
+        {
+          "cabin_y": 18.7684027777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.229225143790245,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7529163360596,
+            -14.0154151916504
+          ],
+          "tick": 1107
+        },
+        {
+          "cabin_y": 18.7635416666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.249938949942589,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7487506866455,
+            -14.0154151916504
+          ],
+          "tick": 1108
+        },
+        {
+          "cabin_y": 18.7583333333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.270881652832031,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7442359924316,
+            -14.0154151916504
+          ],
+          "tick": 1109
+        },
+        {
+          "cabin_y": 18.7527777777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.291595429182053,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7393760681152,
+            -14.0154151916504
+          ],
+          "tick": 1110
+        },
+        {
+          "cabin_y": 18.746875,
+          "on_floor": true,
+          "platform_y_velocity": -0.312538117170334,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.734167098999,
+            -14.0154151916504
+          ],
+          "tick": 1111
+        },
+        {
+          "cabin_y": 18.740625,
+          "on_floor": true,
+          "platform_y_velocity": -0.333366364240646,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7286109924316,
+            -14.0154151916504
+          ],
+          "tick": 1112
+        },
+        {
+          "cabin_y": 18.7340277777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.35408017039299,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7227096557617,
+            -14.0154151916504
+          ],
+          "tick": 1113
+        },
+        {
+          "cabin_y": 18.7270833333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.375022858381271,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.716459274292,
+            -14.0154151916504
+          ],
+          "tick": 1114
+        },
+        {
+          "cabin_y": 18.7197916666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.395851105451584,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.7098617553711,
+            -14.0154151916504
+          ],
+          "tick": 1115
+        },
+        {
+          "cabin_y": 18.7121527777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.416679352521896,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.702917098999,
+            -14.0154151916504
+          ],
+          "tick": 1116
+        },
+        {
+          "cabin_y": 18.7041666666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.437507599592209,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6956253051758,
+            -14.0154151916504
+          ],
+          "tick": 1117
+        },
+        {
+          "cabin_y": 18.6958333333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.458335846662521,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6879863739014,
+            -14.0154151916504
+          ],
+          "tick": 1118
+        },
+        {
+          "cabin_y": 18.6871527777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.479164093732834,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6800003051758,
+            -14.0154151916504
+          ],
+          "tick": 1119
+        },
+        {
+          "cabin_y": 18.678125,
+          "on_floor": true,
+          "platform_y_velocity": -0.499992340803146,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.671667098999,
+            -14.0154151916504
+          ],
+          "tick": 1120
+        },
+        {
+          "cabin_y": 18.66875,
+          "on_floor": true,
+          "platform_y_velocity": -0.520820617675781,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6629867553711,
+            -14.0154151916504
+          ],
+          "tick": 1121
+        },
+        {
+          "cabin_y": 18.6590277777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.541648864746094,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.653959274292,
+            -14.0154151916504
+          ],
+          "tick": 1122
+        },
+        {
+          "cabin_y": 18.6489583333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.562477111816406,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6445846557617,
+            -14.0154151916504
+          ],
+          "tick": 1123
+        },
+        {
+          "cabin_y": 18.6385416666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.583419740200043,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6348609924316,
+            -14.0154151916504
+          ],
+          "tick": 1124
+        },
+        {
+          "cabin_y": 18.6277777777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.604133546352386,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.624792098999,
+            -14.0154151916504
+          ],
+          "tick": 1125
+        },
+        {
+          "cabin_y": 18.6166666666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.624961793422699,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6143760681152,
+            -14.0154151916504
+          ],
+          "tick": 1126
+        },
+        {
+          "cabin_y": 18.6052083333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.64590448141098,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.6036109924316,
+            -14.0154151916504
+          ],
+          "tick": 1127
+        },
+        {
+          "cabin_y": 18.5934027777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.666618287563324,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5925006866455,
+            -14.0154151916504
+          ],
+          "tick": 1128
+        },
+        {
+          "cabin_y": 18.58125,
+          "on_floor": true,
+          "platform_y_velocity": -0.687560975551605,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5810413360596,
+            -14.0154151916504
+          ],
+          "tick": 1129
+        },
+        {
+          "cabin_y": 18.56875,
+          "on_floor": true,
+          "platform_y_velocity": -0.708274781703949,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5692367553711,
+            -14.0154151916504
+          ],
+          "tick": 1130
+        },
+        {
+          "cabin_y": 18.5559027777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.72921746969223,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5570831298828,
+            -14.0154151916504
+          ],
+          "tick": 1131
+        },
+        {
+          "cabin_y": 18.5427083333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.749931275844574,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.544584274292,
+            -14.0154151916504
+          ],
+          "tick": 1132
+        },
+        {
+          "cabin_y": 18.5291666666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.770873963832855,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5317363739014,
+            -14.0154151916504
+          ],
+          "tick": 1133
+        },
+        {
+          "cabin_y": 18.5152777777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.791702210903168,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5185413360596,
+            -14.0154151916504
+          ],
+          "tick": 1134
+        },
+        {
+          "cabin_y": 18.5010416666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.812416017055511,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.5050010681152,
+            -14.0154151916504
+          ],
+          "tick": 1135
+        },
+        {
+          "cabin_y": 18.4864583333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.833358705043793,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4911117553711,
+            -14.0154151916504
+          ],
+          "tick": 1136
+        },
+        {
+          "cabin_y": 18.4715277777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.854186952114105,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4768753051758,
+            -14.0154151916504
+          ],
+          "tick": 1137
+        },
+        {
+          "cabin_y": 18.45625,
+          "on_floor": true,
+          "platform_y_velocity": -0.875015199184418,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4622917175293,
+            -14.0154151916504
+          ],
+          "tick": 1138
+        },
+        {
+          "cabin_y": 18.440625,
+          "on_floor": true,
+          "platform_y_velocity": -0.89584344625473,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4473609924316,
+            -14.0154151916504
+          ],
+          "tick": 1139
+        },
+        {
+          "cabin_y": 18.4246527777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.916671693325043,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4320831298828,
+            -14.0154151916504
+          ],
+          "tick": 1140
+        },
+        {
+          "cabin_y": 18.4083333333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.937499940395355,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4164581298828,
+            -14.0154151916504
+          ],
+          "tick": 1141
+        },
+        {
+          "cabin_y": 18.3916666666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.958328187465668,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.4004859924316,
+            -14.0154151916504
+          ],
+          "tick": 1142
+        },
+        {
+          "cabin_y": 18.3746527777778,
+          "on_floor": true,
+          "platform_y_velocity": -0.97915643453598,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.3841667175293,
+            -14.0154151916504
+          ],
+          "tick": 1143
+        },
+        {
+          "cabin_y": 18.3572916666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.999984681606293,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.3675003051758,
+            -14.0154151916504
+          ],
+          "tick": 1144
+        },
+        {
+          "cabin_y": 18.3395833333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.02081298828125,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.3504867553711,
+            -14.0154151916504
+          ],
+          "tick": 1145
+        },
+        {
+          "cabin_y": 18.3215277777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.04164123535156,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.3331260681152,
+            -14.0154151916504
+          ],
+          "tick": 1146
+        },
+        {
+          "cabin_y": 18.303125,
+          "on_floor": true,
+          "platform_y_velocity": -1.06258392333984,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.3154163360596,
+            -14.0154151916504
+          ],
+          "tick": 1147
+        },
+        {
+          "cabin_y": 18.284375,
+          "on_floor": true,
+          "platform_y_velocity": -1.08329772949219,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.2973613739014,
+            -14.0154151916504
+          ],
+          "tick": 1148
+        },
+        {
+          "cabin_y": 18.2652777777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.1041259765625,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.278959274292,
+            -14.0154151916504
+          ],
+          "tick": 1149
+        },
+        {
+          "cabin_y": 18.2458333333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.12506866455078,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.2602081298828,
+            -14.0154151916504
+          ],
+          "tick": 1150
+        },
+        {
+          "cabin_y": 18.2260416666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.14578235149384,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.2411117553711,
+            -14.0154151916504
+          ],
+          "tick": 1151
+        },
+        {
+          "cabin_y": 18.2059027777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.16672503948212,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.2216663360596,
+            -14.0154151916504
+          ],
+          "tick": 1152
+        },
+        {
+          "cabin_y": 18.1854166666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.18743884563446,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.2018756866455,
+            -14.0154151916504
+          ],
+          "tick": 1153
+        },
+        {
+          "cabin_y": 18.1645833333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.20838153362274,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.1817359924316,
+            -14.0154151916504
+          ],
+          "tick": 1154
+        },
+        {
+          "cabin_y": 18.1434027777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.22909533977509,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.1612510681152,
+            -14.0154151916504
+          ],
+          "tick": 1155
+        },
+        {
+          "cabin_y": 18.121875,
+          "on_floor": true,
+          "platform_y_velocity": -1.25003802776337,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.140417098999,
+            -14.0154151916504
+          ],
+          "tick": 1156
+        },
+        {
+          "cabin_y": 18.1,
+          "on_floor": true,
+          "platform_y_velocity": -1.27086627483368,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.1192359924316,
+            -14.0154151916504
+          ],
+          "tick": 1157
+        },
+        {
+          "cabin_y": 18.0777777777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.29158008098602,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.0977096557617,
+            -14.0154151916504
+          ],
+          "tick": 1158
+        },
+        {
+          "cabin_y": 18.0552083333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.3125227689743,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.075834274292,
+            -14.0154151916504
+          ],
+          "tick": 1159
+        },
+        {
+          "cabin_y": 18.0322916666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.33335101604462,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.0536117553711,
+            -14.0154151916504
+          ],
+          "tick": 1160
+        },
+        {
+          "cabin_y": 18.0090277777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.35417926311493,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.031042098999,
+            -14.0154151916504
+          ],
+          "tick": 1161
+        },
+        {
+          "cabin_y": 17.9854166666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.37500751018524,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            18.0081253051758,
+            -14.0154151916504
+          ],
+          "tick": 1162
+        },
+        {
+          "cabin_y": 17.9614583333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.39583575725555,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.9848613739014,
+            -14.0154151916504
+          ],
+          "tick": 1163
+        },
+        {
+          "cabin_y": 17.9371527777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.41666400432587,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.9612503051758,
+            -14.0154151916504
+          ],
+          "tick": 1164
+        },
+        {
+          "cabin_y": 17.9125,
+          "on_floor": true,
+          "platform_y_velocity": -1.43749225139618,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.937292098999,
+            -14.0154151916504
+          ],
+          "tick": 1165
+        },
+        {
+          "cabin_y": 17.8875,
+          "on_floor": true,
+          "platform_y_velocity": -1.45832049846649,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.9129867553711,
+            -14.0154151916504
+          ],
+          "tick": 1166
+        },
+        {
+          "cabin_y": 17.8621527777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.4791487455368,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.888334274292,
+            -14.0154151916504
+          ],
+          "tick": 1167
+        },
+        {
+          "cabin_y": 17.8364583333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.49997699260712,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.8633346557617,
+            -14.0154151916504
+          ],
+          "tick": 1168
+        },
+        {
+          "cabin_y": 17.8104166666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.5209196805954,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.8379859924316,
+            -14.0154151916504
+          ],
+          "tick": 1169
+        },
+        {
+          "cabin_y": 17.7840277777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.54163348674774,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.812292098999,
+            -14.0154151916504
+          ],
+          "tick": 1170
+        },
+        {
+          "cabin_y": 17.7572916666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.56246173381805,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.7862510681152,
+            -14.0154151916504
+          ],
+          "tick": 1171
+        },
+        {
+          "cabin_y": 17.7302083333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.58340442180634,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.7598609924316,
+            -14.0154151916504
+          ],
+          "tick": 1172
+        },
+        {
+          "cabin_y": 17.7027777777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.60411822795868,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.7331256866455,
+            -14.0154151916504
+          ],
+          "tick": 1173
+        },
+        {
+          "cabin_y": 17.675,
+          "on_floor": true,
+          "platform_y_velocity": -1.62506091594696,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.7060413360596,
+            -14.0154151916504
+          ],
+          "tick": 1174
+        },
+        {
+          "cabin_y": 17.646875,
+          "on_floor": true,
+          "platform_y_velocity": -1.6457747220993,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.6786117553711,
+            -14.0154151916504
+          ],
+          "tick": 1175
+        },
+        {
+          "cabin_y": 17.6184027777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.66671741008759,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.6508331298828,
+            -14.0154151916504
+          ],
+          "tick": 1176
+        },
+        {
+          "cabin_y": 17.5895833333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.68743121623993,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.622709274292,
+            -14.0154151916504
+          ],
+          "tick": 1177
+        },
+        {
+          "cabin_y": 17.5604166666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.70837390422821,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.5942363739014,
+            -14.0154151916504
+          ],
+          "tick": 1178
+        },
+        {
+          "cabin_y": 17.5309027777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.72920215129852,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.5654163360596,
+            -14.0154151916504
+          ],
+          "tick": 1179
+        },
+        {
+          "cabin_y": 17.5010416666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.74991595745087,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.5362510681152,
+            -14.0154151916504
+          ],
+          "tick": 1180
+        },
+        {
+          "cabin_y": 17.4708333333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.77085864543915,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.5067367553711,
+            -14.0154151916504
+          ],
+          "tick": 1181
+        },
+        {
+          "cabin_y": 17.4402777777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.79168689250946,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.4768753051758,
+            -14.0154151916504
+          ],
+          "tick": 1182
+        },
+        {
+          "cabin_y": 17.409375,
+          "on_floor": true,
+          "platform_y_velocity": -1.81251513957977,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.4466667175293,
+            -14.0154151916504
+          ],
+          "tick": 1183
+        },
+        {
+          "cabin_y": 17.378125,
+          "on_floor": true,
+          "platform_y_velocity": -1.83334338665009,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.4161109924316,
+            -14.0154151916504
+          ],
+          "tick": 1184
+        },
+        {
+          "cabin_y": 17.3465277777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.8541716337204,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.3852081298828,
+            -14.0154151916504
+          ],
+          "tick": 1185
+        },
+        {
+          "cabin_y": 17.3145833333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.87499988079071,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.3539581298828,
+            -14.0154151916504
+          ],
+          "tick": 1186
+        },
+        {
+          "cabin_y": 17.2822916666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.89582812786102,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.3223609924316,
+            -14.0154151916504
+          ],
+          "tick": 1187
+        },
+        {
+          "cabin_y": 17.2496527777778,
+          "on_floor": true,
+          "platform_y_velocity": -1.91665637493134,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.2904167175293,
+            -14.0154151916504
+          ],
+          "tick": 1188
+        },
+        {
+          "cabin_y": 17.2166666666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.93748462200165,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.2581253051758,
+            -14.0154151916504
+          ],
+          "tick": 1189
+        },
+        {
+          "cabin_y": 17.1833333333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.95831286907196,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.2254867553711,
+            -14.0154151916504
+          ],
+          "tick": 1190
+        },
+        {
+          "cabin_y": 17.15,
+          "on_floor": true,
+          "platform_y_velocity": -1.97914111614227,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.1925010681152,
+            -14.0154151916504
+          ],
+          "tick": 1191
+        },
+        {
+          "cabin_y": 17.1166666666667,
+          "on_floor": true,
+          "platform_y_velocity": -2.00008392333984,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.1591663360596,
+            -14.0154151916504
+          ],
+          "tick": 1192
+        },
+        {
+          "cabin_y": 17.0833333333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.1258335113525,
+            -14.0154151916504
+          ],
+          "tick": 1193
+        },
+        {
+          "cabin_y": 17.05,
+          "on_floor": true,
+          "platform_y_velocity": -1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.0925006866455,
+            -14.0154151916504
+          ],
+          "tick": 1194
+        },
+        {
+          "cabin_y": 17.0166666666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.0591678619385,
+            -14.0154151916504
+          ],
+          "tick": 1195
+        },
+        {
+          "cabin_y": 16.9833333333333,
+          "on_floor": true,
+          "platform_y_velocity": -2.00008392333984,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            17.0258331298828,
+            -14.0154151916504
+          ],
+          "tick": 1196
+        },
+        {
+          "cabin_y": 16.95,
+          "on_floor": true,
+          "platform_y_velocity": -1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.9925003051758,
+            -14.0154151916504
+          ],
+          "tick": 1197
+        },
+        {
+          "cabin_y": 16.9166666666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.9591674804688,
+            -14.0154151916504
+          ],
+          "tick": 1198
+        },
+        {
+          "cabin_y": 16.8836805555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.99996936321259,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.9258346557617,
+            -14.0154151916504
+          ],
+          "tick": 1199
+        },
+        {
+          "cabin_y": 16.8510416666667,
+          "on_floor": true,
+          "platform_y_velocity": -2.00008392333984,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.8924999237061,
+            -14.0154151916504
+          ],
+          "tick": 1200
+        },
+        {
+          "cabin_y": 16.81875,
+          "on_floor": true,
+          "platform_y_velocity": -1.97914111614227,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.8595142364502,
+            -14.0154151916504
+          ],
+          "tick": 1201
+        },
+        {
+          "cabin_y": 16.7868055555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.95831286907196,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.8268756866455,
+            -14.0154151916504
+          ],
+          "tick": 1202
+        },
+        {
+          "cabin_y": 16.7552083333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.93748462200165,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.794584274292,
+            -14.0154151916504
+          ],
+          "tick": 1203
+        },
+        {
+          "cabin_y": 16.7239583333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.91665637493134,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.7626399993896,
+            -14.0154151916504
+          ],
+          "tick": 1204
+        },
+        {
+          "cabin_y": 16.6930555555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.89582812786102,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.7310428619385,
+            -14.0154151916504
+          ],
+          "tick": 1205
+        },
+        {
+          "cabin_y": 16.6625,
+          "on_floor": true,
+          "platform_y_velocity": -1.87499988079071,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.6997928619385,
+            -14.0154151916504
+          ],
+          "tick": 1206
+        },
+        {
+          "cabin_y": 16.6322916666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.8541716337204,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.6688899993896,
+            -14.0154151916504
+          ],
+          "tick": 1207
+        },
+        {
+          "cabin_y": 16.6024305555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.83334338665009,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.638334274292,
+            -14.0154151916504
+          ],
+          "tick": 1208
+        },
+        {
+          "cabin_y": 16.5729166666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.81251513957977,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.6081256866455,
+            -14.0154151916504
+          ],
+          "tick": 1209
+        },
+        {
+          "cabin_y": 16.54375,
+          "on_floor": true,
+          "platform_y_velocity": -1.79168689250946,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.5782642364502,
+            -14.0154151916504
+          ],
+          "tick": 1210
+        },
+        {
+          "cabin_y": 16.5149305555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.77085864543915,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.5487499237061,
+            -14.0154151916504
+          ],
+          "tick": 1211
+        },
+        {
+          "cabin_y": 16.4864583333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.74991595745087,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.5195846557617,
+            -14.0154151916504
+          ],
+          "tick": 1212
+        },
+        {
+          "cabin_y": 16.4583333333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.72920215129852,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.4907646179199,
+            -14.0154151916504
+          ],
+          "tick": 1213
+        },
+        {
+          "cabin_y": 16.4305555555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.70837390422821,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.4622917175293,
+            -14.0154151916504
+          ],
+          "tick": 1214
+        },
+        {
+          "cabin_y": 16.403125,
+          "on_floor": true,
+          "platform_y_velocity": -1.68743121623993,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.4341678619385,
+            -14.0154151916504
+          ],
+          "tick": 1215
+        },
+        {
+          "cabin_y": 16.3760416666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.66671741008759,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.4063892364502,
+            -14.0154151916504
+          ],
+          "tick": 1216
+        },
+        {
+          "cabin_y": 16.3493055555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.6457747220993,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.3789596557617,
+            -14.0154151916504
+          ],
+          "tick": 1217
+        },
+        {
+          "cabin_y": 16.3229166666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.62506091594696,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.3518753051758,
+            -14.0154151916504
+          ],
+          "tick": 1218
+        },
+        {
+          "cabin_y": 16.296875,
+          "on_floor": true,
+          "platform_y_velocity": -1.60411822795868,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.3251399993896,
+            -14.0154151916504
+          ],
+          "tick": 1219
+        },
+        {
+          "cabin_y": 16.2711805555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.58340442180634,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.2987499237061,
+            -14.0154151916504
+          ],
+          "tick": 1220
+        },
+        {
+          "cabin_y": 16.2458333333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.56246173381805,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.2727088928223,
+            -14.0154151916504
+          ],
+          "tick": 1221
+        },
+        {
+          "cabin_y": 16.2208333333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.54163348674774,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.2470149993896,
+            -14.0154151916504
+          ],
+          "tick": 1222
+        },
+        {
+          "cabin_y": 16.1961805555556,
+          "on_floor": true,
+          "platform_y_velocity": -1.5209196805954,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.2216663360596,
+            -14.0154151916504
+          ],
+          "tick": 1223
+        },
+        {
+          "cabin_y": 16.171875,
+          "on_floor": true,
+          "platform_y_velocity": -1.49997699260712,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.1966667175293,
+            -14.0154151916504
+          ],
+          "tick": 1224
+        },
+        {
+          "cabin_y": 16.1479166666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.4791487455368,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.1720142364502,
+            -14.0154151916504
+          ],
+          "tick": 1225
+        },
+        {
+          "cabin_y": 16.1243055555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.45832049846649,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.1477088928223,
+            -14.0154151916504
+          ],
+          "tick": 1226
+        },
+        {
+          "cabin_y": 16.1010416666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.43749225139618,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.1237506866455,
+            -14.0154151916504
+          ],
+          "tick": 1227
+        },
+        {
+          "cabin_y": 16.078125,
+          "on_floor": true,
+          "platform_y_velocity": -1.41666400432587,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.1001396179199,
+            -14.0154151916504
+          ],
+          "tick": 1228
+        },
+        {
+          "cabin_y": 16.0555555555556,
+          "on_floor": true,
+          "platform_y_velocity": -1.39583575725555,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.0768756866455,
+            -14.0154151916504
+          ],
+          "tick": 1229
+        },
+        {
+          "cabin_y": 16.0333333333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.37500751018524,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.0539588928223,
+            -14.0154151916504
+          ],
+          "tick": 1230
+        },
+        {
+          "cabin_y": 16.0114583333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.35417926311493,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.0313892364502,
+            -14.0154151916504
+          ],
+          "tick": 1231
+        },
+        {
+          "cabin_y": 15.9899305555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.33335101604462,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            16.0091667175293,
+            -14.0154151916504
+          ],
+          "tick": 1232
+        },
+        {
+          "cabin_y": 15.96875,
+          "on_floor": true,
+          "platform_y_velocity": -1.3125227689743,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.9872913360596,
+            -14.0154151916504
+          ],
+          "tick": 1233
+        },
+        {
+          "cabin_y": 15.9479166666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.29163730144501,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.9657640457153,
+            -14.0154151916504
+          ],
+          "tick": 1234
+        },
+        {
+          "cabin_y": 15.9274305555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.27080905437469,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.9445838928223,
+            -14.0154151916504
+          ],
+          "tick": 1235
+        },
+        {
+          "cabin_y": 15.9072916666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.24998080730438,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.9237508773804,
+            -14.0154151916504
+          ],
+          "tick": 1236
+        },
+        {
+          "cabin_y": 15.8875,
+          "on_floor": true,
+          "platform_y_velocity": -1.22920978069305,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.9032640457153,
+            -14.0154151916504
+          ],
+          "tick": 1237
+        },
+        {
+          "cabin_y": 15.8680555555556,
+          "on_floor": true,
+          "platform_y_velocity": -1.20832431316376,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.8831253051758,
+            -14.0154151916504
+          ],
+          "tick": 1238
+        },
+        {
+          "cabin_y": 15.8489583333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.18749606609344,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.8633337020874,
+            -14.0154151916504
+          ],
+          "tick": 1239
+        },
+        {
+          "cabin_y": 15.8302083333333,
+          "on_floor": true,
+          "platform_y_velocity": -1.16666781902313,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.8438892364502,
+            -14.0154151916504
+          ],
+          "tick": 1240
+        },
+        {
+          "cabin_y": 15.8118055555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.14583957195282,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.8247919082642,
+            -14.0154151916504
+          ],
+          "tick": 1241
+        },
+        {
+          "cabin_y": 15.79375,
+          "on_floor": true,
+          "platform_y_velocity": -1.12495422363281,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.8060426712036,
+            -14.0154151916504
+          ],
+          "tick": 1242
+        },
+        {
+          "cabin_y": 15.7760416666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.10418319702148,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.7876396179199,
+            -14.0154151916504
+          ],
+          "tick": 1243
+        },
+        {
+          "cabin_y": 15.7586805555556,
+          "on_floor": true,
+          "platform_y_velocity": -1.08335494995117,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.7695837020874,
+            -14.0154151916504
+          ],
+          "tick": 1244
+        },
+        {
+          "cabin_y": 15.7416666666667,
+          "on_floor": true,
+          "platform_y_velocity": -1.06246948242188,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.7518758773804,
+            -14.0154151916504
+          ],
+          "tick": 1245
+        },
+        {
+          "cabin_y": 15.725,
+          "on_floor": true,
+          "platform_y_velocity": -1.04169845581055,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.7345142364502,
+            -14.0154151916504
+          ],
+          "tick": 1246
+        },
+        {
+          "cabin_y": 15.7086805555555,
+          "on_floor": true,
+          "platform_y_velocity": -1.02081298828125,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.7175006866455,
+            -14.0154151916504
+          ],
+          "tick": 1247
+        },
+        {
+          "cabin_y": 15.6927083333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.999984681606293,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.700834274292,
+            -14.0154151916504
+          ],
+          "tick": 1248
+        },
+        {
+          "cabin_y": 15.6770833333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.979213654994965,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.6845140457153,
+            -14.0154151916504
+          ],
+          "tick": 1249
+        },
+        {
+          "cabin_y": 15.6618055555555,
+          "on_floor": true,
+          "platform_y_velocity": -0.958328187465668,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.6685419082642,
+            -14.0154151916504
+          ],
+          "tick": 1250
+        },
+        {
+          "cabin_y": 15.646875,
+          "on_floor": true,
+          "platform_y_velocity": -0.937499940395355,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.6529169082642,
+            -14.0154151916504
+          ],
+          "tick": 1251
+        },
+        {
+          "cabin_y": 15.6322916666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.916671693325043,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.6376390457153,
+            -14.0154151916504
+          ],
+          "tick": 1252
+        },
+        {
+          "cabin_y": 15.6180555555556,
+          "on_floor": true,
+          "platform_y_velocity": -0.895786225795746,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.622709274292,
+            -14.0154151916504
+          ],
+          "tick": 1253
+        },
+        {
+          "cabin_y": 15.6041666666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.875015199184418,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.6081256866455,
+            -14.0154151916504
+          ],
+          "tick": 1254
+        },
+        {
+          "cabin_y": 15.590625,
+          "on_floor": true,
+          "platform_y_velocity": -0.854186952114105,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.5938892364502,
+            -14.0154151916504
+          ],
+          "tick": 1255
+        },
+        {
+          "cabin_y": 15.5774305555555,
+          "on_floor": true,
+          "platform_y_velocity": -0.833301484584808,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.5800008773804,
+            -14.0154151916504
+          ],
+          "tick": 1256
+        },
+        {
+          "cabin_y": 15.5645833333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.81253045797348,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.5664587020874,
+            -14.0154151916504
+          ],
+          "tick": 1257
+        },
+        {
+          "cabin_y": 15.5520833333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.791644990444183,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.5532646179199,
+            -14.0154151916504
+          ],
+          "tick": 1258
+        },
+        {
+          "cabin_y": 15.5399305555556,
+          "on_floor": true,
+          "platform_y_velocity": -0.770816743373871,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.5404176712036,
+            -14.0154151916504
+          ],
+          "tick": 1259
+        },
+        {
+          "cabin_y": 15.528125,
+          "on_floor": true,
+          "platform_y_velocity": -0.750045716762543,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.5279169082642,
+            -14.0154151916504
+          ],
+          "tick": 1260
+        },
+        {
+          "cabin_y": 15.5166666666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.729160249233246,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.5157642364502,
+            -14.0154151916504
+          ],
+          "tick": 1261
+        },
+        {
+          "cabin_y": 15.5055555555555,
+          "on_floor": true,
+          "platform_y_velocity": -0.708332002162933,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.5039587020874,
+            -14.0154151916504
+          ],
+          "tick": 1262
+        },
+        {
+          "cabin_y": 15.4947916666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.687503755092621,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.4925003051758,
+            -14.0154151916504
+          ],
+          "tick": 1263
+        },
+        {
+          "cabin_y": 15.484375,
+          "on_floor": true,
+          "platform_y_velocity": -0.666675508022308,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.4813890457153,
+            -14.0154151916504
+          ],
+          "tick": 1264
+        },
+        {
+          "cabin_y": 15.4743055555556,
+          "on_floor": true,
+          "platform_y_velocity": -0.645790040493011,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.4706258773804,
+            -14.0154151916504
+          ],
+          "tick": 1265
+        },
+        {
+          "cabin_y": 15.4645833333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.625019013881683,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.4602088928223,
+            -14.0154151916504
+          ],
+          "tick": 1266
+        },
+        {
+          "cabin_y": 15.4552083333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.604190766811371,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.4501390457153,
+            -14.0154151916504
+          ],
+          "tick": 1267
+        },
+        {
+          "cabin_y": 15.4461805555556,
+          "on_floor": true,
+          "platform_y_velocity": -0.583305299282074,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.4404172897339,
+            -14.0154151916504
+          ],
+          "tick": 1268
+        },
+        {
+          "cabin_y": 15.4375,
+          "on_floor": true,
+          "platform_y_velocity": -0.562477111816406,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.4310426712036,
+            -14.0154151916504
+          ],
+          "tick": 1269
+        },
+        {
+          "cabin_y": 15.4291666666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.541706085205078,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.4220142364502,
+            -14.0154151916504
+          ],
+          "tick": 1270
+        },
+        {
+          "cabin_y": 15.4211805555556,
+          "on_floor": true,
+          "platform_y_velocity": -0.520820617675781,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.4133338928223,
+            -14.0154151916504
+          ],
+          "tick": 1271
+        },
+        {
+          "cabin_y": 15.4135416666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.499992340803146,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.4050006866455,
+            -14.0154151916504
+          ],
+          "tick": 1272
+        },
+        {
+          "cabin_y": 15.40625,
+          "on_floor": true,
+          "platform_y_velocity": -0.479164093732834,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3970146179199,
+            -14.0154151916504
+          ],
+          "tick": 1273
+        },
+        {
+          "cabin_y": 15.3993055555556,
+          "on_floor": true,
+          "platform_y_velocity": -0.458335846662521,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3893756866455,
+            -14.0154151916504
+          ],
+          "tick": 1274
+        },
+        {
+          "cabin_y": 15.3927083333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.437507599592209,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3820838928223,
+            -14.0154151916504
+          ],
+          "tick": 1275
+        },
+        {
+          "cabin_y": 15.3864583333333,
+          "on_floor": true,
+          "platform_y_velocity": -0.416679352521896,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3751392364502,
+            -14.0154151916504
+          ],
+          "tick": 1276
+        },
+        {
+          "cabin_y": 15.3805555555556,
+          "on_floor": true,
+          "platform_y_velocity": -0.395793884992599,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3685426712036,
+            -14.0154151916504
+          ],
+          "tick": 1277
+        },
+        {
+          "cabin_y": 15.375,
+          "on_floor": true,
+          "platform_y_velocity": -0.375022858381271,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3622922897339,
+            -14.0154151916504
+          ],
+          "tick": 1278
+        },
+        {
+          "cabin_y": 15.3697916666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.354194611310959,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3563890457153,
+            -14.0154151916504
+          ],
+          "tick": 1279
+        },
+        {
+          "cabin_y": 15.3649305555556,
+          "on_floor": true,
+          "platform_y_velocity": -0.333309143781662,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3508338928223,
+            -14.0154151916504
+          ],
+          "tick": 1280
+        },
+        {
+          "cabin_y": 15.3604166666667,
+          "on_floor": true,
+          "platform_y_velocity": -0.312480896711349,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3456258773804,
+            -14.0154151916504
+          ],
+          "tick": 1281
+        },
+        {
+          "cabin_y": 15.35625,
+          "on_floor": true,
+          "platform_y_velocity": -0.291709870100021,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3407640457153,
+            -14.0154151916504
+          ],
+          "tick": 1282
+        },
+        {
+          "cabin_y": 15.3524305555556,
+          "on_floor": true,
+          "platform_y_velocity": -0.270824432373047,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3362503051758,
+            -14.0154151916504
+          ],
+          "tick": 1283
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": -0.249996170401573,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3320837020874,
+            -14.0154151916504
+          ],
+          "tick": 1284
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": -0.229167923331261,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.3282642364502,
+            -14.0154151916504
+          ],
+          "tick": 1285
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": -0.145797714591026,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1286
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1287
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1288
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1289
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1290
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1291
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1292
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1293
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1294
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1295
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1296
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1297
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1298
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1299
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1300
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1301
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1302
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1303
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1304
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1305
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1306
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1307
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1308
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1309
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1310
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1311
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1312
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1313
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1314
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1315
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1316
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1317
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1318
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1319
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1320
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1321
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1322
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1323
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1324
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1325
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1326
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1327
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1328
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1329
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1330
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1331
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1332
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1333
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1334
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1335
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1336
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1337
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1338
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1339
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1340
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1341
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1342
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1343
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1344
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1345
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1346
+        },
+        {
+          "cabin_y": 15.35,
+          "on_floor": true,
+          "platform_y_velocity": 0.0,
+          "player_resolved_velocity_y": 0.0,
+          "player_xyz": [
+            23.8059196472168,
+            15.325834274292,
+            -14.0154151916504
+          ],
+          "tick": 1347
+        }
+      ],
+      "maximum_cabin_player_offset_m": 0.0908336639404332,
+      "maximum_player_step_m": 0.0600319541990757,
+      "on_floor_samples": 548,
+      "platform_peak_y_velocity_mps": 2.00008392333984,
+      "samples": 548
+    },
+    "threshold_probe_after_blocker_removed": {
+      "actual_exclusion_count": 9,
+      "collision_mask": 11,
+      "controlling_hits": [],
+      "expected_exclusion_count": 9,
+      "landing_doors": [
+        {
+          "body": "Door_T3_L5_east_guest_lift",
+          "floor_id": "T3-L5",
+          "rid_id": 330712481795
+        }
+      ],
+      "legacy_owned_only_hits": [
+        {
+          "body": "Door_T3_L5_east_guest_lift",
+          "box_size": "(1.3, 2.35, 0.075)",
+          "collider_id": 75094820599,
+          "collision_layer": 1,
+          "native_body_origin": "(23.80592, 15.35, -12.46933)",
+          "native_shape_aabb_max": "(24.45592, 17.7, -12.43182)",
+          "native_shape_aabb_min": "(23.15592, 15.35, -12.50683)",
+          "native_shape_basis": [
+            "(1.0, 0.0, 0.0)",
+            "(0.0, 1.0, 0.0)",
+            "(0.0, 0.0, 1.0)"
+          ],
+          "native_shape_origin": "(23.80592, 16.525, -12.46933)",
+          "node_origin": "(23.80592, 15.35, -12.46933)",
+          "path": "/root/MBSPhysicalCabinFixture/@Node3D@41/Door_T3_L5_east_guest_lift",
+          "relative_to_cabin": "(0.0, 0.0, 1.399995)",
+          "rid_id": 330712481795,
+          "shape_class": "BoxShape3D",
+          "shape_index": 0,
+          "shape_name": "@CollisionShape3D@77"
+        }
+      ],
+      "owned_exclusion_count": 8,
+      "physics_tick": 514,
+      "query_origin": "(23.80592, 16.45, -12.46932)",
+      "query_size": "(1.26, 2.1, 0.7)"
+    },
+    "threshold_probe_with_blocker": {
+      "actual_exclusion_count": 9,
+      "collision_mask": 11,
+      "controlling_hits": [
+        {
+          "body": "QaDoorwayObstruction",
+          "box_size": "(0.5, 1.9, 0.45)",
+          "collider_id": 108397595394,
+          "collision_layer": 1,
+          "native_body_origin": "(23.80592, 16.35, -12.46932)",
+          "native_shape_aabb_max": "(24.05592, 17.3, -12.24432)",
+          "native_shape_aabb_min": "(23.55592, 15.4, -12.69432)",
+          "native_shape_basis": [
+            "(1.0, 0.0, 0.0)",
+            "(0.0, 1.0, 0.0)",
+            "(0.0, 0.0, 1.0)"
+          ],
+          "native_shape_origin": "(23.80592, 16.35, -12.46932)",
+          "node_origin": "(23.80592, 16.35, -12.46932)",
+          "path": "/root/MBSPhysicalCabinFixture/QaDoorwayObstruction",
+          "relative_to_cabin": "(0.0, 1.0, 1.4)",
+          "rid_id": 3560527888422,
+          "shape_class": "BoxShape3D",
+          "shape_index": 0,
+          "shape_name": "@CollisionShape3D@504"
+        }
+      ],
+      "expected_exclusion_count": 9,
+      "landing_doors": [
+        {
+          "body": "Door_T3_L5_east_guest_lift",
+          "floor_id": "T3-L5",
+          "rid_id": 330712481795
+        }
+      ],
+      "legacy_owned_only_hits": [
+        {
+          "body": "QaDoorwayObstruction",
+          "box_size": "(0.5, 1.9, 0.45)",
+          "collider_id": 108397595394,
+          "collision_layer": 1,
+          "native_body_origin": "(23.80592, 16.35, -12.46932)",
+          "native_shape_aabb_max": "(24.05592, 17.3, -12.24432)",
+          "native_shape_aabb_min": "(23.55592, 15.4, -12.69432)",
+          "native_shape_basis": [
+            "(1.0, 0.0, 0.0)",
+            "(0.0, 1.0, 0.0)",
+            "(0.0, 0.0, 1.0)"
+          ],
+          "native_shape_origin": "(23.80592, 16.35, -12.46932)",
+          "node_origin": "(23.80592, 16.35, -12.46932)",
+          "path": "/root/MBSPhysicalCabinFixture/QaDoorwayObstruction",
+          "relative_to_cabin": "(0.0, 1.0, 1.4)",
+          "rid_id": 3560527888422,
+          "shape_class": "BoxShape3D",
+          "shape_index": 0,
+          "shape_name": "@CollisionShape3D@504"
+        },
+        {
+          "body": "Door_T3_L5_east_guest_lift",
+          "box_size": "(1.3, 2.35, 0.075)",
+          "collider_id": 75094820599,
+          "collision_layer": 1,
+          "native_body_origin": "(23.15592, 15.35, -13.11932)",
+          "native_shape_aabb_max": "(23.19342, 17.7, -12.46933)",
+          "native_shape_aabb_min": "(23.11842, 15.35, -13.76932)",
+          "native_shape_basis": [
+            "(-0.0, 0.0, -1.0)",
+            "(0.0, 1.0, 0.0)",
+            "(1.0, 0.0, -0.0)"
+          ],
+          "native_shape_origin": "(23.15592, 16.525, -13.11932)",
+          "node_origin": "(23.15592, 15.35, -13.11932)",
+          "path": "/root/MBSPhysicalCabinFixture/@Node3D@41/Door_T3_L5_east_guest_lift",
+          "relative_to_cabin": "(-0.65, 0.0, 0.749995)",
+          "rid_id": 330712481795,
+          "shape_class": "BoxShape3D",
+          "shape_index": 0,
+          "shape_name": "@CollisionShape3D@77"
+        }
+      ],
+      "owned_exclusion_count": 8,
+      "physics_tick": 345,
+      "query_origin": "(23.80592, 16.45, -12.46932)",
+      "query_size": "(1.26, 2.1, 0.7)"
+    }
+  },
+  "scope": "Isolated two-stop physical cabin and native GuestFloor/production Player fixture. No source city/site streaming, whole-MBS assembly, rebase/save integration, rendered/performance or private as-built acceptance."
+}

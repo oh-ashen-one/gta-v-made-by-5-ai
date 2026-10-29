@@ -1,0 +1,15 @@
+# Full source Singapore/MBS goal remains active
+
+Previous goal turn is PROGRESS: actual source Hotel/floor/cabin integration code and native component evidence changed authoritative state. No owner questions, no new4hclock, no completion/pause.
+
+First inspect ACTIVE_HANDOFF_FACTS and live validation queue PID2770 (state under/private/tmp/singapore-fidelity/validation-queue-20261029-0118). It runs stair gates then native city-mesh fixture sequentially. Do not duplicate an active engine or interpret missing observation as terminal. Current SourceFloorStackR1 failed only because AnimatableBody3D inheritsStaticBody3D; builder fixes moving-door support classification. CabinsR4 passed43 and actual source public entry passed30/493.95m. All distinct scopes, not the full game.
+
+Root owns new hotel.gd and mbs_hotel_test. It composes common source frame/domain/runtime and floor streamer, real moving shafts with CABIN support/dry identity, actual-generation/origin readiness, floor pins, source upper-stair doors, retire-before-free and exact same-definition failure retry. New root code is not parsed/tested yet. Independent critic's source repair follow-up remains needed, then native Hotel gate. The FloorStack producer's max-active and source-space values must remain coherent; do not move actors or frame origins inside components.
+
+Critical integration still required: public-envelope door openings to perimeter L1 programs/cores (loft glass currently separates them); complete hotel/resort source anchors/footprints and partialB2Mmezzanine geometry; physical pool/ceiling/water; all189hotel+27resort coverage and all6guestvariants; source country terrain/buildings/actual roads/network/direction/grade and source boot replacing legacymain; coordinated actors/cameras/FX/AI/signs/minimap/rebases; versioned source Game saves and recovery preserving original v1bytes; package/render/fidelity and normal bridge/door/whole-interior/roof route.
+
+Root chose partial mezzanine platforms/vertical zones for2.5m B2M conflicts; do not flatten full overlapping floors or permanently leave empty fallback. CurrentpublicvisualR5 still FAILS tree morphology/stone/occupiededge quality; source component green checks never prove GTAreferencequality.
+
+City compiler current candidate-r1 wholecountry CPUjob is active under geography_stream_builder; never commit in-flight artifacts as complete. It preserves exactsourceX/Z/IDs/names/holes, explicit oldDEM EGM96 policy and reconstructed unknownheight9.6m/levels3.2m. Wholecountry terrain already1798chunks/31native/17Python/independent audit approved. No survey/current-floor-height or collision inference from a DEM alone.
+
+Single owned engine through current taskhelper/GPUlease/render_gate; globalmixedcap2. ForeignVeyr/Blender leftuntouched. No mainmerge/newcharges/providers/accounts/securitybypass. RootGit only; builders share exclusivefileownership. Usecurrentbrain policy and source-firstassets/animation; no alternate-model claims. Keepgoalactive through temporaryrough edges and full final audit.
