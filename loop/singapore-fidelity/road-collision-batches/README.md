@@ -1,0 +1,9 @@
+# Exact native road collision batches
+
+SourceWorld previously checked thousands of road bodies for liveness on each motion query. SourceRoads now supports an optional static_batches representation with bounded32768face ConcavePolygon bodies; the default per_feature API remains. Original arrays, render mesh, original way/name metadata and source topology remain unchanged. SourceWorld resolves original way identity from the fresh native shape/face range and includes this representation in its save/assembly identity.
+
+R1/R2 native tests caught a real precision mismatch when expanding original source vectors directly. ArrayMesh applies its native storage representation; the batch now expands the exact same ArrayMesh.get_faces() used by default trimesh creation. Byte-for-byte geometry assertions remain, and R3 passes all39checks. One fixture reduces five bodies to one; a second splits them into24small bodies to verify source ranges across splits. This is a representation proof, not a full-country performance result.
+
+Independent review found in-place shape mutation could keep the same resource ID while invalidating face provenance. Resource.changed now permanently invalidates that batch mapping; the native same-resource set_faces negative passes. Missing faces, wrong shape/RID, disabled/freed/replaced bodies and stale origin fail closed. Renderer-visible arrays are unchanged. No cross-frame physics-readiness cache was introduced.
+
+SourceWorld opt-in awaits its full recovered-data walk/drive/flight run. Its city/terrain directories now resolve to durable task-private recovery files whose original identity and every payload hash were independently matched; road reconstruction is separate and cannot silently change the pinned road data. No whole-city fidelity, default main migration,60fps or visual acceptance is claimed.

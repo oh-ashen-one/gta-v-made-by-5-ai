@@ -1,0 +1,39 @@
+{
+  "observed_utc": "2026-10-29T14:45:26.458829+00:00",
+  "scope": "Independent read-only source review; Root owns native execution and fixes.",
+  "source_hashes": {
+    "game/src/world/geography/source_roads.gd": "71934f4c809c7132a386417d8c48feaf54f3b654cc22d4dec73119d2acaab84c",
+    "game/src/systems/fidelity_tests/source_road_batch_test.gd": "ee5276f05b4d659cc4cc7337c7d4d310231694cb28e0efcc2d9d919a64516ece"
+  },
+  "status": "REWORK_ONE_P2_BEFORE_SOURCEWORLD_ADOPTION",
+  "findings": [
+    {
+      "priority": "P2",
+      "file": "game/src/world/geography/source_roads.gd",
+      "lines": [
+        320,
+        336
+      ],
+      "title": "Invalidate face provenance when the same concave resource changes",
+      "detail": "The mapping is bound only to shape instance ID and stored face count/ranges. ConcavePolygonShape3D.set_faces can replace/reorder the triangles inside that same resource. After a same-instance reordering across two source-way ranges, the resolver can accept a new native face_index but return the old source-way/face assignment. The existing replacement-resource test does not cover this. Detect the installed resource generation changing once, then reject its mapping in O(1); avoid rehashing large faces on every player/support query. Root should validate the actual change notification and native behavior rather than assume it.",
+      "requested_native_evidence": "Build aggregate with multiple ways, mutate same shape instance triangle order across way boundary, verify fresh native ray no longer receives stale source provenance; preserve old resource-ID replacement, split-range, loop-hole, shape-index, disabled/free checks."
+    }
+  ],
+  "reviewed_as_correct": [
+    "New mode opt-in; previous default retained.",
+    "All source row geometry/indices checked before adding scene nodes.",
+    "Triangle triples are copied in exact original order; split ranges carry original source_first_face across batches.",
+    "Visual positions, normals, UV and indices remain the same aggregate arrays.",
+    "Fixed per-body faces and per-tile face/vertex bounds remain.",
+    "Native shape owner, RID, space, resource replacement and origin revision are checked before range resolution.",
+    "Synthetic QA compares actual triangle byte arrays, render arrays and original-way ray results across default/batched/split layouts; a real loop hole is retained."
+  ],
+  "unproven": [
+    "Root native fixture result",
+    "Actual country chunk integration and traversal",
+    "Main-thread construction cost and representative rendered frame timing",
+    "Current source-world adoption"
+  ],
+  "nonblocking_observation": "build_physical still creates a transient per-feature ArrayMesh in static_batches mode although only the previous per_feature branch uses its trimesh conversion. Removing unused transient allocations could reduce setup cost without affecting representation, but native correctness comes first.",
+  "child_engine_gpu_git_actions": false
+}

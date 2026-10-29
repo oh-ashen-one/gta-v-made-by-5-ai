@@ -1,0 +1,37 @@
+{
+  "schema": "source_road_batch_independent_p2_closure_v1",
+  "observed_utc": "2026-10-29T14:51:38.358509+00:00",
+  "prior_review": "ROAD_BATCH_CODE_REVIEW_R1.json",
+  "status": "P2_CLOSED_BOUNDED_COMPONENT_APPROVED",
+  "source_sha256": {
+    "game/src/world/geography/source_roads.gd": "93e4f50490c91af4885a254b84db72771fe2dd5c5530f3a48c463be255c16773",
+    "game/src/systems/fidelity_tests/source_road_batch_test.gd": "7137210caf575b253e935e936178299777b0626d8c8539a11e671edb93ec69ed"
+  },
+  "native_receipt": "loop/singapore-fidelity/road-collision-batches/NATIVE_R3.json",
+  "native_receipt_sha256": "4e05a3f3deca998ee9cd3860e8f6a185c0b5ad16d25a9b5870bbcc1a6ae5b149",
+  "closure": "The actual installed ConcavePolygonShape3D Resource.changed signal now invalidates the dictionary shared with the registered face-range map. resolve_source_hit refuses invalidated mappings before any lookup. A same-resource set_faces mutation is exercised natively and rejected. No per-query face hashing/caching workaround introduced.",
+  "exact_representation": "Batched collision now expands through ArrayMesh.get_faces(), the same native representation as defaultcreate_trimesh_shape. The original byte-exact comparisons remain in QA and pass for aggregate and split shapes. No approximate epsilon was substituted.",
+  "prior_nonblocking_observation_withdrawn": "The per-feature ArrayMesh is now intentionally required for canonical native collision representation; do not remove it based on the prior allocation observation without equivalent byte-native proof.",
+  "native_summary": {
+    "checks": 39,
+    "failed": 0,
+    "default_bodies": 5,
+    "batch_bodies": 1,
+    "split_bodies": 24,
+    "faces": 188,
+    "native_source_probes": 5,
+    "supervisor": {
+      "exit_code": 0,
+      "engine_exit_code": 0,
+      "child_reaped": true,
+      "elapsed_sec": 4.02,
+      "fatal_errors": []
+    }
+  },
+  "scope_excludes": [
+    "Actual country route traversal",
+    "Representative rendered performance",
+    "Full SourceWorld adoption or complete goal acceptance"
+  ],
+  "child_engine_gpu_git_actions": false
+}

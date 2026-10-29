@@ -1,0 +1,61 @@
+{
+  "schema": "mbs_low_transport_independent_code_review_v1",
+  "observed_utc": "2026-10-29T14:49:58.813705+00:00",
+  "reviewed_change": "89b6a75 production Guest sideguards and StairGates v5 frame/hinge only",
+  "source_sha256": {
+    "game/src/world/mbs_interior/guest_floor.gd": "32bd95ffb7eec03e305a017472dc15e72d6007756c1e01a91ba6e4fed99eddd8",
+    "game/src/world/mbs_interior/stair_gates.gd": "404a88439e5106b9ab15f8ba5b5b4946e13e7d496e1ed63897835aa5d276b1be",
+    "game/src/systems/fidelity_tests/mbs_low_transport_test.gd": "4c0b0a2bf006de330b7871f3afa64a357cb7180d1371bc91336aaa7df9ad17c8"
+  },
+  "native_receipt_sha256": "6674174b8c527300696e843d60b35befc3b4d09497476a1dd7ea52d4d6095bf9",
+  "status": "BOUNDED_CHANGE_APPROVED_NO_NEW_BLOCKER_FOUND_NORMAL_NATIVE_REGRESSION_PENDING",
+  "findings": [],
+  "geometry_analysis": {
+    "unchanged_landing_width_m": 3.2,
+    "unchanged_leaf_width_m": 1.3,
+    "unchanged_leaf_thickness_m": 0.075,
+    "guard_centres_m": [
+      -1.54,
+      1.54
+    ],
+    "guard_inner_face_m": 1.48,
+    "guard_outer_face_m": 1.6,
+    "gate_outer_edge_closed_m": 1.43,
+    "old_guard_inner_m": 1.42,
+    "old_intrusion_m": 0.01,
+    "new_closed_aperture_side_gap_m": 0.05,
+    "frame_plane_m": 0.45,
+    "leaf_plane_m": 0.3325,
+    "outboard_hinge_offset_m": 0.1175,
+    "closed_leaf_to_frame_m": 0.005,
+    "sampled_leaf_static_clearance": {
+      "pier0": 0.005000000000000004,
+      "pier1": 0.0050000000000000044,
+      "pier2": 0.0050000000000000044,
+      "side_return-1": 0.012499999999999734,
+      "floor_guard-1": 0.012499999999999734,
+      "side_return1": 0.0494592497871127,
+      "floor_guard1": 0.04945924978711269
+    },
+    "static_overlap_samples": 0,
+    "sample_count_per_lane": 10001,
+    "lanes": 2,
+    "method": "Conservative 2D full-thickness physical leaf OBB samples, piers/side returns/tall floor guards; positive separation. Symmetric wing sides are normalized to stairward-positive coordinate. Sampling supplements analytical hinge/frame separation; not native or whole-hotel proof."
+  },
+  "code_review": [
+    "Full visible leaf and collision remain same dimensions. The5mm jamb gap comes from moving the hinge outside the frame, not omitting the frame or shrinking the production capsule.",
+    "Guards remain0.12m thick and outer faces exactly meet the3.2m landing edges; their movement clears the formerly10mm intrusion.",
+    "At90degrees each opened leaf leaves0.6125m from its thick face to the unchanged lane center, greater than production0.36m capsule radius.",
+    "Gate static probes still exclude only their own moving leaf; static frames, ceilings, headers and both neighboring floor inventories remain queried. Existing2mm mechanical contact inset is unchanged.",
+    "Opening occupancy and closing/threshold occupancy volumes derive from the moved actual leaf plane/hinge. No actor repositioning added.",
+    "Destination-height normalization unchanged: low2.10+0.10header fits2.30receiver; normal2.35+0.20header remains selected from actual receiving record.",
+    "The geometry change is independent of stair rise and wing reflection. It applies to inherited Partial and normal Guest/Program stairs, so normal-height suite remains necessary."
+  ],
+  "native_evidence_scope": {
+    "R3": "31checks1failure; actual frame side return and lower/upper guards in failed static sweep documented",
+    "R4": "119checks0failed;99.0170063260884m continuous T3 B1/B2M/B2 stair/cabin route;614ride samples supported; intrusive actual headers still hold",
+    "normal_legacy_native_suite_tested": false,
+    "all_towers_floors_rendered_or_whole_goal_accepted": false
+  },
+  "child_engine_gpu_git_actions": false
+}

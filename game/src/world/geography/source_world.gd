@@ -49,8 +49,8 @@ signal source_consumers_ready(services: Dictionary)
 
 @export var auto_boot := true
 @export var build_mbs := true
-@export var city_data_directory := "/private/tmp/singapore-fidelity/city-geometry/candidate-r2"
-@export var terrain_data_directory := "/private/tmp/singapore-fidelity/terrain-scene/mbs-neighborhood-r1"
+@export var city_data_directory := ProjectSettings.globalize_path("res://").path_join("../loop/singapore-fidelity/recovery/private/city-geometry/candidate-r2").simplify_path()
+@export var terrain_data_directory := ProjectSettings.globalize_path("res://").path_join("../loop/singapore-fidelity/recovery/private/terrain-scene/mbs-neighborhood-r1").simplify_path()
 @export var road_data_directory := "/private/tmp/singapore-fidelity/source-roads/candidate-r5"
 ## Root must explicitly approve a corrected, natively checked physical road
 ## identity. A property toggle can NEVER make the known-rejectedR2 acceptable.
@@ -156,7 +156,7 @@ func boot() -> Dictionary:
 	if not base.get("ok",false) or base.get("state") != "sampled_dem": return _fail("No declared DEM reference at actual hotel source anchor")
 	_datum = {"base_elevation_m":float(base.height_m_egm96),"base_elevation_provenance":"COARSE EGM96 DEM sampled at actual source hotel anchor; reconstructed level datum, NOT current surveyed L1","source_anchor_xyz":HOTEL_ANCHOR.duplicate(),"dem_identity_sha256":DEM_SHA,"dem_sample":base.duplicate(true)}
 	if not _prepare_architecture_inventory(): return _fail("MBS source/reconstruction inventory could not bind transition guard")
-	var geometry := {"schema":"singapore_source_world_assembly_v1","snapshot_sha256":SNAPSHOT,"city_sha256":CITY_SHA,"terrain_sha256":TERRAIN_SHA,"roads_sha256":ROADS_SHA,"root_masks_sha256":MASKS_SHA,"mbs_inventory_sha256":_architecture_inventory_sha,"mbs_reconstruction_base":_datum.base_elevation_m,"world_y_policy":Y_POLICY,"registry_policy":"non_dry_exterior_tile_support_ids_actual_native_triangles","city_collision_representation":"exact_static_batches_32768_v1"}
+	var geometry := {"schema":"singapore_source_world_assembly_v1","snapshot_sha256":SNAPSHOT,"city_sha256":CITY_SHA,"terrain_sha256":TERRAIN_SHA,"roads_sha256":ROADS_SHA,"root_masks_sha256":MASKS_SHA,"mbs_inventory_sha256":_architecture_inventory_sha,"mbs_reconstruction_base":_datum.base_elevation_m,"world_y_policy":Y_POLICY,"registry_policy":"non_dry_exterior_tile_support_ids_actual_native_triangles","city_collision_representation":"exact_static_batches_32768_v1","road_collision_representation":"exact_arraymesh_static_batches_32768_v1"}
 	var vertical := {"dem_identity_sha256":DEM_SHA,"world_y_policy":Y_POLICY,"mbs_reference":_datum}
 	source_context = Context.new()
 	if not source_context.configure(source_frame,_digest(geometry),_digest(vertical),PROFILE,get_world_3d()): return _fail(source_context.last_error)
@@ -207,7 +207,7 @@ func boot() -> Dictionary:
 			if road_inventory.has(key):
 				var prepared: Dictionary = roads.prepare_physical(key)
 				if not prepared.get("ok",false): return _fail("Road tile integrity failed: "+key)
-				var built: Dictionary = roads.build_physical(prepared.plan,self,_materials.material_for("roads","road"))
+				var built: Dictionary = roads.build_physical(prepared.plan,self,_materials.material_for("roads","road"),{"collision_mode":"static_batches"})
 				if not built.get("ok",false): return _fail("Road native preparation rejected: "+key+" "+str(built.get("error","")))
 				row.road_node = built.node
 				var road_bodies: Array = []
@@ -258,6 +258,9 @@ func _collect_bodies(node: Node, bodies: Array) -> void:
 	for child: Node in node.get_children(): _collect_bodies(child,bodies)
 
 func _source_body_id(body: StaticBody3D, index: int) -> String:
+	if body.has_meta("source_road_batch"):
+		var road_batch:Dictionary=body.get_meta("source_road_batch")
+		return "road-batch/"+String(road_batch.tile_key)+"/"+str(road_batch.batch_index)
 	if body.has_meta("source_city_batch"):
 		var batch: Dictionary = body.get_meta("source_city_batch")
 		return "city-batch/"+String(batch.tile_key)+"/"+str(batch.batch_index)
@@ -487,7 +490,11 @@ func _ray_surface(source_xz: Array, expected_y: float, allowance: float = 6.0) -
 	var source_id: String = hit.collider.get_meta("source_way",hit.collider.get_meta("source_feature_id",""))
 	var source_lookup: Dictionary = city_scene.resolve_source_hit(hit) if is_instance_valid(city_scene) else {}
 	if source_lookup.get("ok",false): source_id = source_lookup.feature_id
-	elif hit.collider.has_meta("source_city_batch"): return {"ok":false,"reason":"Native batch face source identity unresolved"}
+	elif hit.collider.has_meta("source_city_batch"): return {"ok":false,"reason":"Native city batch face source identity unresolved"}
+	if hit.collider.has_meta("source_road_batch"):
+		source_lookup=roads.resolve_source_hit(hit)
+		if not source_lookup.get("ok",false):return {"ok":false,"reason":"Native road batch face source identity unresolved"}
+		source_id=source_lookup.source_way
 	return {"ok":true,"position":hit.position,"source_xyz":canonical.source_xyz,"normal":hit.normal,"body":hit.collider,"source_id":source_id,"native_source_lookup":source_lookup}
 
 

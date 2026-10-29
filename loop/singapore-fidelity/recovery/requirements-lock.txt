@@ -1,0 +1,9 @@
+certifi==2026.10.23
+charset-normalizer==3.5.2
+idna==3.20
+numpy==2.3.4
+osmium==4.1.1
+pyproj==3.7.2
+requests==2.34.2
+shapely==2.1.2
+urllib3==2.8.0

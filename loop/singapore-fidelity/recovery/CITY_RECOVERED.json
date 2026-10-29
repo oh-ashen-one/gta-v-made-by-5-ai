@@ -1,0 +1,28 @@
+{
+  "catalogs": 906,
+  "counts": {
+    "building": 135415,
+    "excluded_root_special_complex": 119,
+    "game_extrusion_render_and_collision_candidate": 135100,
+    "game_story_height_from_source_levels_reconstruction": 41548,
+    "game_unknown_height_fallback_reconstruction": 89711,
+    "road": 257845,
+    "road_record": 257845,
+    "source_height_tag": 4156,
+    "unresolved_height_order_or_range": 196,
+    "unresolved_water_or_other_geometry_no_support_generated": 5193,
+    "water": 1549,
+    "waterway": 3644
+  },
+  "directory": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/recovery/private/city-geometry/candidate-r2",
+  "engine_or_gameplay_acceptance": false,
+  "identity_sha256": "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963",
+  "kind": "city",
+  "manifest_sha256": "654138afba82972c2cd27dee9ed3d1f2a3a1d86d100c8d68b1fc18f1d64945bb",
+  "mesh_tiles": 808,
+  "observed_utc": "2026-10-29T14:43:50.876389+00:00",
+  "source_pin_changed": false,
+  "status": "EXACT_PIN_AND_FULL_INVENTORY_MATCH",
+  "verified_bytes": 1072753939,
+  "verified_files": 2524
+}

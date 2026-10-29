@@ -1,0 +1,21 @@
+{
+  "catalogs": 9,
+  "counts": {
+    "prepared_tiles": 9,
+    "requested_tiles": 9,
+    "triangles": 26178,
+    "unknown_grid_cells": 0,
+    "vertices": 15004
+  },
+  "directory": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/recovery/private/terrain-scene/mbs-neighborhood-r1",
+  "engine_or_gameplay_acceptance": false,
+  "identity_sha256": "f8488742dd93726276b33ca12cda7c6d0a38b967123a0be0d574b9145b7f469c",
+  "kind": "terrain",
+  "manifest_sha256": "02678e05b5055daf488ad84ad9b9645fdefc00f0e3237a29410af78e25c8f9ac",
+  "mesh_tiles": 9,
+  "observed_utc": "2026-10-29T14:40:47.617611+00:00",
+  "source_pin_changed": false,
+  "status": "EXACT_PIN_AND_FULL_INVENTORY_MATCH",
+  "verified_bytes": 2492224,
+  "verified_files": 31
+}

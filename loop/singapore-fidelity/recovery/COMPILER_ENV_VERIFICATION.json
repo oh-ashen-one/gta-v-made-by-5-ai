@@ -1,0 +1,47 @@
+{
+  "observed_utc": "2026-10-29T14:38:08.599386+00:00",
+  "runtime": "CPython3.12.14 in task-local ignored venv",
+  "packages": [
+    "certifi==2026.10.23",
+    "charset-normalizer==3.5.2",
+    "idna==3.20",
+    "numpy==2.3.4",
+    "osmium==4.1.1",
+    "pyproj==3.7.2",
+    "requests==2.34.2",
+    "shapely==2.1.2",
+    "urllib3==2.8.0"
+  ],
+  "tests": [
+    {
+      "suite": "test_compile_city.py",
+      "passed": 11,
+      "failed": 0,
+      "output_sha256": "78aeb6fe5ab48ecafa93e35163db88ed3ce889d772a3f92a6330b70084cc5a7c",
+      "terminal": "exit0",
+      "log_tail": [
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 11 tests in 1.576s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "suite": "test_compile_terrain_scene.py",
+      "passed": 7,
+      "failed": 0,
+      "output_sha256": "c3b1140f069b39e0e64c267da60115bfc6e8bf47a9bc92451ac3649baaa9d401",
+      "terminal": "exit0",
+      "log_tail": [
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 7 tests in 0.419s",
+        "",
+        "OK"
+      ]
+    }
+  ],
+  "child_engine_gpu_git_actions": false,
+  "native_acceptance": false
+}
