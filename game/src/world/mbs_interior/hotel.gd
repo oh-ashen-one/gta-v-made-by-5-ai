@@ -336,7 +336,11 @@ func report() -> Dictionary:
 
 func _exit_tree() -> void:
 	if is_instance_valid(_stack) and _stack.get("_unload_guard") == _before_floor_unload:
-		if _previous_guard_set and _previous_unload_guard.is_valid(): _stack.set_unload_guard(_previous_unload_guard)
+		if _previous_guard_set:
+			if _previous_unload_guard.is_valid(): _stack.set_unload_guard(_previous_unload_guard)
+			# If that earlier owner disappeared, keep the installed guard latch.
+			# This callback becomes invalid on teardown, so Stack remains closed
+			# until root explicitly installs a replacement authority.
 		else: _stack.release_unload_guard(_before_floor_unload)
 	if is_instance_valid(_stack):
 		for key: String in _pins:
