@@ -15,7 +15,7 @@ var _generation := 0
 var _configured := false
 var native_clearance_diagnostics: Dictionary = {}
 var _profile_residency := "--profile-source-runtime" in OS.get_cmdline_user_args()
-var _residency_cost := {"calls": 0, "total_us": 0, "max_us": 0, "body_liveness_checks": 0}
+var _residency_cost := {"calls": 0, "total_us": 0, "max_us": 0, "body_liveness_checks": 0, "inventory_reference_visits": 0, "inventory_groups_validated": 0, "inventory_group_reuses": 0}
 
 func residency_profile() -> Dictionary:
 	var result := _residency_cost.duplicate(true)
@@ -109,9 +109,15 @@ func commit_region(id: String, minimum: Array, maximum: Array, bodies: Array, su
 	for axis in 3:
 		if float(minimum[axis]) >= float(maximum[axis]): return false
 	var references: Array[WeakRef] = []
+	var body_ids := PackedStringArray()
 	for body in bodies:
 		if not body is CollisionObject3D or not is_instance_valid(body) or not body.is_inside_tree() or body.get_world_3d() != get_world_3d() or body.collision_layer == 0: return false
 		references.append(weakref(body))
+		body_ids.append(str(body.get_instance_id()))
+	var inventory_hash := HashingContext.new()
+	inventory_hash.start(HashingContext.HASH_SHA256)
+	inventory_hash.update(",".join(body_ids).to_utf8_buffer())
+	var inventory_key: String = inventory_hash.finish().hex_encode()
 	var stamps: Array[Dictionary] = []
 	var token := id + "/generation-" + str(_generation + 1)
 	for support in supports:
@@ -122,7 +128,7 @@ func commit_region(id: String, minimum: Array, maximum: Array, bodies: Array, su
 		if not stamped.ok: return false
 		stamps.append({"body": body, "stamp": stamped.stamp})
 	_generation += 1
-	_regions[id] = {"minimum": minimum.duplicate(), "maximum": maximum.duplicate(), "bodies": references,
+	_regions[id] = {"minimum": minimum.duplicate(), "maximum": maximum.duplicate(), "bodies": references, "body_inventory_key": inventory_key,
 		"origin_revision": frame.metadata().origin_revision, "token": token}
 	for entry: Dictionary in stamps:
 		var body: CollisionObject3D = entry.body
@@ -222,24 +228,36 @@ func _resident_impl(point: Array, half_extents: Vector3) -> Dictionary:
 	# a mutation. Every live region token remains included, even where its
 	# stamped support body is also listed in the neighboring region.
 	var checked_bodies: Dictionary = {}
+	var checked_inventories: Dictionary = {}
 	var current_origin: int = frame.metadata().origin_revision
 	var current_world := get_world_3d()
 	for id in ids:
 		var region: Dictionary = _regions[id]
 		if region.origin_revision != current_origin: continue
 		var valid := true
-		for reference: WeakRef in region.bodies:
-			var body: Variant = reference.get_ref()
-			if not is_instance_valid(body):
-				valid = false
-				break
-			var body_id: int = body.get_instance_id()
-			if not checked_bodies.has(body_id):
-				if _profile_residency: _residency_cost.body_liveness_checks += 1
-				checked_bodies[body_id] = body.is_inside_tree() and body.collision_layer != 0 and body.get_world_3d() == current_world
-			if not checked_bodies[body_id]:
-				valid = false
-				break
+		var key: String = region.body_inventory_key
+		# Initial map cells can intentionally share one complete collision
+		# neighborhood. Identical ordered native IDs need only one scan INSIDE
+		# this synchronous query. Nothing survives into the next query/tick.
+		if checked_inventories.has(key):
+			valid = checked_inventories[key]
+			if _profile_residency: _residency_cost.inventory_group_reuses += 1
+		else:
+			if _profile_residency: _residency_cost.inventory_groups_validated += 1
+			for reference: WeakRef in region.bodies:
+				if _profile_residency: _residency_cost.inventory_reference_visits += 1
+				var body: Variant = reference.get_ref()
+				if not is_instance_valid(body):
+					valid = false
+					break
+				var body_id: int = body.get_instance_id()
+				if not checked_bodies.has(body_id):
+					if _profile_residency: _residency_cost.body_liveness_checks += 1
+					checked_bodies[body_id] = body.is_inside_tree() and body.collision_layer != 0 and body.get_world_3d() == current_world
+				if not checked_bodies[body_id]:
+					valid = false
+					break
+			checked_inventories[key] = valid
 		if not valid: continue
 		tokens[region.token] = true
 		var remaining: Array[Dictionary] = []

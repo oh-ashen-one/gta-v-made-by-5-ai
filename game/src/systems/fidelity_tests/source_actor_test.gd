@@ -107,12 +107,23 @@ func run() -> void:
 	check("commit whole bounded fixture neighborhood", runtime.commit_region("qa-basement", source(Vector3(1480, -40, -20)), source(Vector3(1500, 50, 20)), [floor, wall],
 		[{"body": floor, "feature_id": "qa-only/basement", "floor_id": "B2", "support_id": "slab"}]))
 	check("adjacent complete collision region commits without duplicate support stamp", runtime.commit_region("qa-basement-east", source(Vector3(1500, -40, -20)), source(Vector3(1520, 50, 20)), [floor, wall], []))
+	var inventory_before: Dictionary = runtime.residency_profile()
 	var shared_region: Dictionary = runtime._resident(source(Vector3(1505, -19.95, -6)), Vector3(.8, 2.2, .8))
 	check("adjacent-only query retains original shared support token", not shared_region.is_empty() and shared_region.tokens.has(runtime.region_status("qa-basement").residency_token))
+	if inventory_before.enabled:
+		var inventory_after: Dictionary = runtime.residency_profile()
+		check("identical complete inventories are scanned once within the query", inventory_after.inventory_groups_validated - inventory_before.inventory_groups_validated == 1 and inventory_after.inventory_group_reuses - inventory_before.inventory_group_reuses == 1 and inventory_after.inventory_reference_visits - inventory_before.inventory_reference_visits == 2)
 	wall.collision_layer = 0
 	check("same-tick disabled shared body invalidates both collision regions", runtime._resident(source(Vector3(1505, -19.95, -6)), Vector3(.8, 2.2, .8)).is_empty())
 	wall.collision_layer = 1
 	check("same-tick restored shared body is revalidated without stale cache", not runtime._resident(source(Vector3(1505, -19.95, -6)), Vector3(.8, 2.2, .8)).is_empty())
+	var disposable := box("DisposedSharedInventoryProbe",Vector3(1475,-21,0),Vector3(1,1,1))
+	await frames(2)
+	check("additional shared inventory registers independently", runtime.commit_region("qa-disposable-a",source(Vector3(1470,-30,-4)),source(Vector3(1478,-15,4)),[disposable],[]) and runtime.commit_region("qa-disposable-b",source(Vector3(1470,-30,-4)),source(Vector3(1478,-15,4)),[disposable],[]))
+	check("live disposable shared inventory covers its native area", not runtime._resident(source(Vector3(1475,-20,0)),Vector3(.2,.2,.2)).is_empty())
+	disposable.free()
+	check("freeing shared body immediately invalidates both regions in same tick", runtime._resident(source(Vector3(1475,-20,0)),Vector3(.2,.2,.2)).is_empty())
+	runtime.retire_region("qa-disposable-a"); runtime.retire_region("qa-disposable-b")
 	check("actual Player capsule binds without weaker profile", runtime.bind_player(player))
 	Game.health = Game.MAX_HEALTH
 	Game.simulation_paused = false
