@@ -61,12 +61,15 @@ func _native_register(module:Node3D,record:Dictionary)->bool:
 	if not _check("actual plain structural support exists "+String(record.id),structure!=null and structure.get_script()==null and structure.get_class()=="StaticBody3D"):return false
 	var definition:Dictionary={"feature_id":Stack.FEATURE,"floor_id":record.id,"geometry_sha256":_hash(JSON.stringify({"record":record,"descriptor":module.geometry_descriptor() if module is Partial else module.report()},"",true,true)),"support_ids":["static/ProgramFloorSolidCollision"],"volumes":volumes,"provenance":"QA actual source placements; original reconstructed service galleries, not surveyed as-built"}
 	if not _check("precise local architecture volumes register "+String(record.id),context.register_floor(definition)):return false
-	var bodies:Array=[];_collect(module,bodies)
+	var bodies:Array=[]
+	# All three constructed modules overlap the declared probe neighborhoods.
+	# Include their complete collider union before spawning the actor.
+	for member:Node3D in modules.values():_collect(member,bodies)
 	var minimum:Array=[INF,INF,INF];var maximum:Array=[-INF,-INF,-INF]
 	var length_m:float=record.geometry.length_m;var cross_m:float=record.geometry.cross_m
-	for x:float in [-length_m*.5,length_m*.5]:
-		for z:float in [-cross_m*.5,cross_m*.5]:
-			for y:float in [-.30,8.0]:
+	for x:float in [-length_m*.5-2.0,length_m*.5+2.0]:
+		for z:float in [-cross_m*.5-2.0,cross_m*.5+2.0]:
+			for y:float in [-3.0,8.0]:
 				var corner:Array=_canonical(record,Vector3(x,y,z))
 				for axis in 3:minimum[axis]=minf(minimum[axis],corner[axis]);maximum[axis]=maxf(maximum[axis],corner[axis])
 	return _check("complete native bodies commit "+String(record.id),runtime.commit_region("partial-native/"+String(record.id),minimum,maximum,bodies,[{"body":structure,"feature_id":Stack.FEATURE,"floor_id":record.id,"support_id":"static/ProgramFloorSolidCollision"}]))
@@ -166,7 +169,7 @@ func run()->void:
 	_check("central mezzanine has real void rather than hidden full slab",ray(mezz.to_global(Vector3(0,.4,0)),mezz.to_global(Vector3(0,-.4,0))).is_empty())
 	_check("lower central service base exists beneath open mezz void",not ray(lower.to_global(Vector3(0,.4,0)),lower.to_global(Vector3(0,-.4,0))).is_empty())
 	for module:Node3D in [lower,mezz]:
-		_check("every required named service program remains physically furnished",module.program_coverage.size()==8 and module.rooms.size()==5 and module.furnishings.size()>=20)
+		_check("every required named service program remains physically furnished",module.program_coverage.size()==8 and module.rooms.size()==5 and module.furnishings.size()>=20,{"floor_id":module.floor_record.id,"programs":module.program_coverage.size(),"rooms":module.rooms.size(),"furnishings":module.furnishings.size()})
 		for wing:Dictionary in module.get("_plan").wings:
 			var point:=Vector3(0,0,wing.corridor_center_z)
 			var hit:Dictionary=ray(module.to_global(point+Vector3.UP*.1),module.to_global(point+Vector3.UP*2.6))

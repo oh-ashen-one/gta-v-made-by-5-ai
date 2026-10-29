@@ -31,7 +31,7 @@ static func partial_plan(record: Dictionary) -> Dictionary:
 	var inner:float=cross_m*.5-WING_DEPTH
 	var room_end:float=length_m*.5-float(g.core_bay_m)-END_LINK_WIDTH
 	if inner<8 or room_end<18:return {"valid":false,"error":"Insufficient double-height zone or furnished room frontage."}
-	g.merge({"clear_height_m":SERVICE_CLEAR,"storey_height_m":rise,"atrium_void_active":mezz,"void_min_z_m":-inner if mezz else 0.0,"void_max_z_m":inner if mezz else 0.0,"core_door_height_m":PASSAGE_HEIGHT,"partial_mezzanine_schema":SCHEMA,"all_dimensions_reconstructed":true},true)
+	g.merge({"clear_height_m":SERVICE_CLEAR,"storey_height_m":rise,"atrium_void_active":mezz,"void_min_z_m":-inner if mezz else 0.0,"void_max_z_m":inner if mezz else 0.0,"core_door_height_m":PASSAGE_HEIGHT,"partial_mezzanine_schema":SCHEMA,"service_fitout_version":2,"all_dimensions_reconstructed":true},true)
 	var expected:Dictionary={}
 	for item:Dictionary in original.program_spaces:expected[item.id]=String(item.program)
 	var furnished:Array[Dictionary]=[];var cores:Array[Dictionary]=[];var seen:Dictionary={}
@@ -87,7 +87,9 @@ func build(record:Dictionary)->Dictionary:
 		_low_lifts(kit,wing,planned.geometry)
 		_outer_shell(kit,wing,planned.geometry)
 	for cell:Dictionary in rooms:_low_room(kit,cell)
-	if planned.role=="partial_mezzanine":_gallery_guards(kit)
+	if planned.role=="partial_mezzanine":
+		_gallery_guards(kit)
+		_gallery_service_trolleys(kit)
 	else:_central_service_fitout(kit)
 	for entry:Dictionary in planned.core_programs:program_coverage.append({"id":entry.id,"program":entry.program,"implementation":"CONNECTED_FURNISHED_PARTIAL_GALLERIES_AND_NATIVE_CORES","private_asbuilt_verified":false})
 	kit.commit(self,"PartialMezzanineMaterialBatches",true);_program_plan["static_collision_shapes"]=kit.shapes;_built=true
@@ -146,6 +148,15 @@ func _gallery_guards(kit)->void:
 		_solid(kit,"MezzOpenEdgeZ"+str(side),Looks.get_mat("steel_satin"),Vector3(0,.55,side*z),Vector3(x*2,1.10,.10))
 		_solid(kit,"MezzOpenEdgeX"+str(side),Looks.get_mat("steel_satin"),Vector3(side*x,.55,0),Vector3(.10,1.10,z*2))
 		kit.beam(Looks.get_mat("steel_dark"),Vector3(-x,1.15,side*z),Vector3(x,1.15,side*z),.06,.06)
+
+func _gallery_service_trolleys(kit)->void:
+	# Two linen-transfer stations at the inner edges of the real end links.
+	# Their native boxes stay outside the continuous central walking spine.
+	var size:Vector3=_object_size("trolley")
+	var x:float=float(_partial_plan.room_end_x_m)+size.x*.5+.10
+	for side:float in [-1.0,1.0]:
+		var object:Dictionary={"id":String(floor_record.id)+"-gallery-linen-"+str(side),"space_id":String(floor_record.id)+"-service_corridor","kind":"trolley","position":Vector3(side*x,0,0),"size":size,"side":side}
+		_furnishing(kit,{},object);furnishings.append(object)
 
 func _central_service_fitout(kit)->void:
 	var g:Dictionary=_partial_plan.geometry;var inner:float=float(g.cross_m)*.5-WING_DEPTH
