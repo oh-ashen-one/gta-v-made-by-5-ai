@@ -1,0 +1,11 @@
+{
+  "schema": "singapore_local_generated_city_record_v1",
+  "storage": "Large generated meshes/catalogs remain private/local, not bundled in this metadata-only record",
+  "identity_sha256": "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963",
+  "manifest_sha256": "654138afba82972c2cd27dee9ed3d1f2a3a1d86d100c8d68b1fc18f1d64945bb",
+  "parent_rejected_identity_sha256": "2871b559368ecf5f999d84f82a008788eedfa4d8a03b2cff861d2ffe2a5e95ab",
+  "runtime_source_directory_example": "/private/tmp/singapore-fidelity/city-geometry/candidate-r2",
+  "reproduction": "compile_city.py whole-country recipe followed by --repair-winding; see source-controlled city-geometry README and retained R1 source snapshots",
+  "data_not_present_here": "meshes/ and catalogs/ are deliberately not copied into this metadata record; do not configure it as a complete runtime dataset",
+  "native_fixture_status": "RootV2 26/26clean; actual country bounded native sample pending"
+}

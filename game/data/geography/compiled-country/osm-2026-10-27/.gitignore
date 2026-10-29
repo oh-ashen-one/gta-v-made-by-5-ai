@@ -1,0 +1,8 @@
+# Private/regenerable owned CPU staging, never source/runtime artifacts.
+candidate-*/.work.sqlite*
+candidate-*/.job.lock
+candidate-*/progress.json
+candidate-*/failure-*.json
+candidate-*/supervisor-*.json
+# Large rejected/generated candidates stay private; publish recipes/manifests.
+candidate-r1/
