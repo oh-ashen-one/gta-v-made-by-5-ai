@@ -1,0 +1,581 @@
+{
+  "checks": 168,
+  "elapsed_s": 93.526,
+  "failed": 0,
+  "failures": [],
+  "metrics": {
+    "actual_source_origin_xyz": [
+      441.695252568434,
+      80.9,
+      -1046.40758658095
+    ],
+    "cabin_travel_verified": false,
+    "commit_events": [
+      {
+        "body_count": 29,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L4/1/generation-2",
+        "id": "T2-L4",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 11,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 28,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L6/2/generation-3",
+        "id": "T2-L6",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 15,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 15,
+        "floor_ready_at_event": true,
+        "generation": "mbs-floor-stack/85899347872/T2-L5/3/generation-4",
+        "id": "T2-L5",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 19,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 18,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T3-L56/4/generation-5",
+        "id": "T3-L56",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 32,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 16,
+        "floor_ready_at_event": true,
+        "generation": "mbs-floor-stack/85899347872/T3-L57/5/generation-6",
+        "id": "T3-L57",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 36,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 34,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L23/6/generation-7",
+        "id": "T2-L23",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 46,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 35,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L25/7/generation-8",
+        "id": "T2-L25",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 50,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 35,
+        "floor_ready_at_event": true,
+        "generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "id": "T2-L24",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 54,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 35,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L26/9/generation-10",
+        "id": "T2-L26",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 58,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 33,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T3-L23/10/generation-11",
+        "id": "T3-L23",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 573,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 34,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T3-L25/11/generation-12",
+        "id": "T3-L25",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 577,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 34,
+        "floor_ready_at_event": true,
+        "generation": "mbs-floor-stack/85899347872/T3-L24/12/generation-13",
+        "id": "T3-L24",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 581,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 34,
+        "floor_ready_at_event": true,
+        "generation": "mbs-floor-stack/85899347872/T3-L24/13/generation-14",
+        "id": "T3-L24",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 684,
+        "plain_structure_stamps": 1
+      },
+      {
+        "body_count": 35,
+        "floor_ready_at_event": false,
+        "generation": "mbs-floor-stack/85899347872/T2-L26/14/generation-15",
+        "id": "T2-L26",
+        "moving_body_stamp_paths": [],
+        "physics_tick": 691,
+        "plain_structure_stamps": 1
+      }
+    ],
+    "distance_m": 53.5005170180975,
+    "lower": "T2-L24",
+    "max_step_m": 0.113334663212299,
+    "moving_door_observations": [
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": 0.0,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 176
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.0466666666666667,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 177
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.0933333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 178
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.14,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 179
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.186666666666667,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 180
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.233333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 181
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.28,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 182
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.326666666666667,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 183
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.373333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 184
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.42,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 185
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.466666666666667,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 186
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.513333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 187
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.56,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 188
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.606666666666666,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 189
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.653333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 190
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.7,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 191
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.746666666666666,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 192
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.793333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 193
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.84,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 194
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.886666666666666,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 195
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.933333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 196
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -0.98,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 197
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.02666666666667,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 198
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.07333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 199
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.12,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 200
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.16666666666667,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 201
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.21333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 202
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.26,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 203
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.30666666666667,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 204
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.35333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 205
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.4,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 206
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.44666666666667,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 207
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.49333333333333,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 208
+      },
+      {
+        "broad_static_type": true,
+        "collision_generation": "mbs-floor-stack/85899347872/T2-L24/8/generation-9",
+        "door_id": "R-T2-L24-02",
+        "floor_ready": true,
+        "has_floor_support_meta": false,
+        "motion_angle": -1.54,
+        "native_class": "AnimatableBody3D",
+        "physics_tick": 209
+      }
+    ],
+    "native_room_door": "R-T2-L24-02",
+    "remote_state_seed": "EXPLICIT_EMPTY_FLOOR_API_NOT_NATIVE_REMOTE_E",
+    "retirements": [
+      {
+        "bodies_still_alive": 29,
+        "id": "T2-L4",
+        "physics_tick": 19,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 15,
+        "id": "T2-L5",
+        "physics_tick": 22,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 28,
+        "id": "T2-L6",
+        "physics_tick": 25,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 18,
+        "id": "T3-L56",
+        "physics_tick": 36,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 16,
+        "id": "T3-L57",
+        "physics_tick": 39,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 35,
+        "id": "T2-L26",
+        "physics_tick": 566,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 34,
+        "id": "T3-L24",
+        "physics_tick": 646,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      },
+      {
+        "bodies_still_alive": 33,
+        "id": "T3-L23",
+        "physics_tick": 684,
+        "region_absent_before_free": true,
+        "static_stamps_removed": true
+      }
+    ],
+    "source_frame_revision": 0,
+    "stack_report": {
+      "active_floor_count": 6,
+      "actor_pose_mutations": 0,
+      "base_elevation_m": 0.0,
+      "common_source_frame": true,
+      "configured": true,
+      "datum_provenance": "Reconstructed hotel L1=0 for native stack proof; external vertical datum unresolved",
+      "full_building_completed": false,
+      "locally_committed_floors": [
+        "T2-L23",
+        "T2-L25",
+        "T2-L24",
+        "T2-L26",
+        "T3-L25",
+        "T3-L24"
+      ],
+      "maximum_active_floors": 6,
+      "origin_commits_performed": 0,
+      "pending_requests": 0,
+      "ready_floors": [
+        "T2-L25",
+        "T2-L24"
+      ],
+      "registered_floor_count": 12,
+      "shaft_travel_ready": false,
+      "source_city_complete": false
+    },
+    "swimming_or_pool_ceiling_clearance_verified": false,
+    "upper": "T2-L25",
+    "whole_building_completed": false
+  },
+  "owner_playtest": false,
+  "rendered_fidelity_accepted": false,
+  "whole_building_completed": false
+}

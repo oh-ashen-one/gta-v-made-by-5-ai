@@ -1,0 +1,523 @@
+{
+  "actor_pose_writes_during_traversal": 0,
+  "all_floor_pairs_tested": false,
+  "checks": 85,
+  "elapsed_s": 82.006,
+  "failed": 1,
+  "failures": [
+    "retire removes only its owned two gate assemblies"
+  ],
+  "fixture": [
+    {
+      "all_floor_pairs_tested": false,
+      "floor_id": "T3-L47",
+      "max_step_m": 0.0303847957402468,
+      "native_gate_actions": [
+        {
+          "after": "(12.16893, 3.425874, -26.46521)",
+          "before": "(12.16893, 3.425874, -26.46521)",
+          "door_physics": {
+            "base_angle": 0.0,
+            "commanded_angle": 0.0,
+            "hinge_local": "(-26.27592, 3.45, -12.91932)",
+            "id": "T3-L47-east-stair-fire-door",
+            "node": "StairFireDoor_east",
+            "node_euler": "(0.0, 0.37, 0.0)",
+            "node_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-25.62592, 3.45, -12.91932)]",
+            "node_origin": "(12.43643, 3.45, -25.77831)",
+            "opened": false,
+            "physics_euler": "(0.0, 0.37, 0.0)",
+            "physics_origin": "(12.43643, 3.45, -25.77831)",
+            "swing_delta": -1.5707963267949,
+            "sync_to_physics": true
+          },
+          "exact_target": true,
+          "expected_open": false,
+          "gate_state": {
+            "close_requested": false,
+            "lower_id": "T3-L47",
+            "motion_angle": 0.0,
+            "open_generation": "",
+            "opened": false,
+            "opening_blocker_ids": [],
+            "physically_closed": true,
+            "readiness_observation": {
+              "generation": "",
+              "ready": false,
+              "reason": "receiving_floor_not_ready",
+              "valid": false
+            },
+            "ready": false,
+            "ready_generation": "",
+            "state": "CLOSED_UNREADY",
+            "upper_id": "T3-L48"
+          },
+          "movement_m": 0.0,
+          "opened": false,
+          "player_instance_id": 73064777360,
+          "process_frames": 5
+        },
+        {
+          "after": "(12.29182, 3.425845, -26.14889)",
+          "before": "(12.29182, 3.425845, -26.14889)",
+          "door_physics": {
+            "base_angle": 0.0,
+            "commanded_angle": 0.0,
+            "hinge_local": "(-26.27592, 3.45, -12.91932)",
+            "id": "T3-L47-east-stair-fire-door",
+            "node": "StairFireDoor_east",
+            "node_euler": "(0.0, 0.37, 0.0)",
+            "node_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-25.62592, 3.45, -12.91932)]",
+            "node_origin": "(12.43643, 3.45, -25.77831)",
+            "opened": false,
+            "physics_euler": "(0.0, 0.37, 0.0)",
+            "physics_origin": "(12.43643, 3.45, -25.77831)",
+            "swing_delta": -1.5707963267949,
+            "sync_to_physics": true
+          },
+          "exact_target": true,
+          "expected_open": false,
+          "gate_state": {
+            "close_requested": false,
+            "lower_id": "T3-L47",
+            "motion_angle": 0.0,
+            "open_generation": "",
+            "opened": false,
+            "opening_blocker_ids": [],
+            "physically_closed": true,
+            "readiness_observation": {
+              "generation": "fixture-upper-48-v1",
+              "ready": true,
+              "reason": "ready",
+              "valid": true
+            },
+            "ready": true,
+            "ready_generation": "fixture-upper-48-v1",
+            "state": "CLOSED_UNREADY",
+            "upper_id": "T3-L48"
+          },
+          "movement_m": 0.0,
+          "opened": false,
+          "player_instance_id": 73064777360,
+          "process_frames": 7
+        },
+        {
+          "after": "(12.29182, 3.425845, -26.14889)",
+          "before": "(12.29182, 3.425845, -26.14889)",
+          "door_physics": {
+            "base_angle": 0.0,
+            "commanded_angle": -0.933333333333333,
+            "hinge_local": "(-26.27592, 3.45, -12.91932)",
+            "id": "T3-L47-east-stair-fire-door",
+            "node": "StairFireDoor_east",
+            "node_euler": "(0.0, -0.516667, 0.0)",
+            "node_local_transform": "[X: (0.631999, 0.0, 0.774969), Y: (0.0, 1.0, 0.0), Z: (-0.774969, 0.0, 0.631999), O: (-25.86512, 3.45, -12.4156)]",
+            "node_origin": "(12.39557, 3.45, -25.22217)",
+            "opened": true,
+            "physics_euler": "(0.0, -0.563333, 0.0)",
+            "physics_origin": "(12.37997, 3.45, -25.19616)",
+            "swing_delta": -1.5707963267949,
+            "sync_to_physics": true
+          },
+          "exact_target": true,
+          "expected_open": true,
+          "gate_state": {
+            "close_requested": false,
+            "lower_id": "T3-L47",
+            "motion_angle": -0.933333333333333,
+            "open_generation": "fixture-upper-48-v1",
+            "opened": true,
+            "opening_blocker_ids": [],
+            "physically_closed": false,
+            "readiness_observation": {
+              "generation": "fixture-upper-48-v1",
+              "ready": true,
+              "reason": "ready",
+              "valid": true
+            },
+            "ready": true,
+            "ready_generation": "fixture-upper-48-v1",
+            "state": "OPENING",
+            "upper_id": "T3-L48"
+          },
+          "movement_m": 0.0,
+          "opened": true,
+          "player_instance_id": 73064777360,
+          "process_frames": 6
+        },
+        {
+          "after": "(12.86591, 3.425816, -24.67094)",
+          "before": "(12.86591, 3.425816, -24.67094)",
+          "door_physics": {
+            "base_angle": 0.0,
+            "commanded_angle": 0.0,
+            "hinge_local": "(-26.27592, 3.45, -12.91932)",
+            "id": "T3-L47-east-stair-fire-door",
+            "node": "StairFireDoor_east",
+            "node_euler": "(0.0, 0.37, 0.0)",
+            "node_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-25.62592, 3.45, -12.91932)]",
+            "node_origin": "(12.43643, 3.45, -25.77831)",
+            "opened": false,
+            "physics_euler": "(0.0, 0.37, 0.0)",
+            "physics_origin": "(12.43643, 3.45, -25.77831)",
+            "swing_delta": -1.5707963267949,
+            "sync_to_physics": true
+          },
+          "exact_target": true,
+          "expected_open": false,
+          "gate_state": {
+            "close_requested": false,
+            "lower_id": "T3-L47",
+            "motion_angle": 0.0,
+            "open_generation": "",
+            "opened": false,
+            "opening_blocker_ids": [
+              73064777360
+            ],
+            "physically_closed": true,
+            "readiness_observation": {
+              "generation": "fixture-upper-48-v2-injected",
+              "ready": true,
+              "reason": "ready",
+              "valid": true
+            },
+            "ready": true,
+            "ready_generation": "fixture-upper-48-v2-injected",
+            "state": "CLOSED_OPENING_OCCUPIED",
+            "upper_id": "T3-L48"
+          },
+          "movement_m": 0.0,
+          "opened": false,
+          "player_instance_id": 73064777360,
+          "process_frames": 5
+        },
+        {
+          "after": "(13.23686, 3.425833, -23.71467)",
+          "before": "(13.23686, 3.425833, -23.71467)",
+          "door_physics": {
+            "base_angle": 0.0,
+            "commanded_angle": -0.746666666666666,
+            "hinge_local": "(-26.27592, 3.45, -12.91932)",
+            "id": "T3-L47-east-stair-fire-door",
+            "node": "StairFireDoor_east",
+            "node_euler": "(0.0, -0.33, 0.0)",
+            "node_local_transform": "[X: (0.764842, 0.0, 0.644218), Y: (0.0, 1.0, 0.0), Z: (-0.644218, 0.0, 0.764842), O: (-25.77877, 3.45, -12.50058)]",
+            "node_origin": "(12.44534, 3.45, -25.33263)",
+            "opened": true,
+            "physics_euler": "(0.0, -0.376667, 0.0)",
+            "physics_origin": "(12.43484, 3.45, -25.30418)",
+            "swing_delta": -1.5707963267949,
+            "sync_to_physics": true
+          },
+          "exact_target": true,
+          "expected_open": true,
+          "gate_state": {
+            "close_requested": false,
+            "lower_id": "T3-L47",
+            "motion_angle": -0.746666666666666,
+            "open_generation": "fixture-upper-48-v2-injected",
+            "opened": true,
+            "opening_blocker_ids": [],
+            "physically_closed": false,
+            "readiness_observation": {
+              "generation": "fixture-upper-48-v2-injected",
+              "ready": true,
+              "reason": "ready",
+              "valid": true
+            },
+            "ready": true,
+            "ready_generation": "fixture-upper-48-v2-injected",
+            "state": "OPENING",
+            "upper_id": "T3-L48"
+          },
+          "movement_m": 0.0,
+          "opened": true,
+          "player_instance_id": 73064777360,
+          "process_frames": 5
+        }
+      ],
+      "required_upper_neighbor": "T3-L49",
+      "source_site_tested": false,
+      "travel_m": 30.755534883876,
+      "upper_id": "T3-L48"
+    }
+  ],
+  "full_building_completed": false,
+  "gate_state": {
+    "actor_pose_writes": 0,
+    "actor_reparents": 0,
+    "actor_velocity_writes": 0,
+    "bound_floors": [
+      "T3-L47"
+    ],
+    "context_registered_by_component": false,
+    "full_building_completed": false,
+    "gates": {
+      "T3-L47-east-stair-fire-door": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": 0.0,
+        "open_generation": "",
+        "opened": false,
+        "opening_blocker_ids": [],
+        "physically_closed": true,
+        "readiness_observation": {
+          "generation": "",
+          "ready": false,
+          "reason": "stale_bound_floor_generation",
+          "valid": false
+        },
+        "ready": false,
+        "ready_generation": "",
+        "state": "CLOSED_UNREADY",
+        "upper_id": "T3-L48"
+      },
+      "T3-L47-west-stair-fire-door": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": 0.0,
+        "open_generation": "",
+        "opened": false,
+        "opening_blocker_ids": [],
+        "physically_closed": true,
+        "readiness_observation": {
+          "generation": "",
+          "ready": false,
+          "reason": "stale_bound_floor_generation",
+          "valid": false
+        },
+        "ready": false,
+        "ready_generation": "",
+        "state": "CLOSED_UNREADY",
+        "upper_id": "T3-L48"
+      }
+    },
+    "geometry_version": "mbs-stair-fire-door-v2",
+    "protected_floor_ids": []
+  },
+  "native_E_actions": [
+    {
+      "after": "(12.16893, 3.425874, -26.46521)",
+      "before": "(12.16893, 3.425874, -26.46521)",
+      "door_physics": {
+        "base_angle": 0.0,
+        "commanded_angle": 0.0,
+        "hinge_local": "(-26.27592, 3.45, -12.91932)",
+        "id": "T3-L47-east-stair-fire-door",
+        "node": "StairFireDoor_east",
+        "node_euler": "(0.0, 0.37, 0.0)",
+        "node_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-25.62592, 3.45, -12.91932)]",
+        "node_origin": "(12.43643, 3.45, -25.77831)",
+        "opened": false,
+        "physics_euler": "(0.0, 0.37, 0.0)",
+        "physics_origin": "(12.43643, 3.45, -25.77831)",
+        "swing_delta": -1.5707963267949,
+        "sync_to_physics": true
+      },
+      "exact_target": true,
+      "expected_open": false,
+      "gate_state": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": 0.0,
+        "open_generation": "",
+        "opened": false,
+        "opening_blocker_ids": [],
+        "physically_closed": true,
+        "readiness_observation": {
+          "generation": "",
+          "ready": false,
+          "reason": "receiving_floor_not_ready",
+          "valid": false
+        },
+        "ready": false,
+        "ready_generation": "",
+        "state": "CLOSED_UNREADY",
+        "upper_id": "T3-L48"
+      },
+      "movement_m": 0.0,
+      "opened": false,
+      "player_instance_id": 73064777360,
+      "process_frames": 5
+    },
+    {
+      "after": "(12.29182, 3.425845, -26.14889)",
+      "before": "(12.29182, 3.425845, -26.14889)",
+      "door_physics": {
+        "base_angle": 0.0,
+        "commanded_angle": 0.0,
+        "hinge_local": "(-26.27592, 3.45, -12.91932)",
+        "id": "T3-L47-east-stair-fire-door",
+        "node": "StairFireDoor_east",
+        "node_euler": "(0.0, 0.37, 0.0)",
+        "node_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-25.62592, 3.45, -12.91932)]",
+        "node_origin": "(12.43643, 3.45, -25.77831)",
+        "opened": false,
+        "physics_euler": "(0.0, 0.37, 0.0)",
+        "physics_origin": "(12.43643, 3.45, -25.77831)",
+        "swing_delta": -1.5707963267949,
+        "sync_to_physics": true
+      },
+      "exact_target": true,
+      "expected_open": false,
+      "gate_state": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": 0.0,
+        "open_generation": "",
+        "opened": false,
+        "opening_blocker_ids": [],
+        "physically_closed": true,
+        "readiness_observation": {
+          "generation": "fixture-upper-48-v1",
+          "ready": true,
+          "reason": "ready",
+          "valid": true
+        },
+        "ready": true,
+        "ready_generation": "fixture-upper-48-v1",
+        "state": "CLOSED_UNREADY",
+        "upper_id": "T3-L48"
+      },
+      "movement_m": 0.0,
+      "opened": false,
+      "player_instance_id": 73064777360,
+      "process_frames": 7
+    },
+    {
+      "after": "(12.29182, 3.425845, -26.14889)",
+      "before": "(12.29182, 3.425845, -26.14889)",
+      "door_physics": {
+        "base_angle": 0.0,
+        "commanded_angle": -0.933333333333333,
+        "hinge_local": "(-26.27592, 3.45, -12.91932)",
+        "id": "T3-L47-east-stair-fire-door",
+        "node": "StairFireDoor_east",
+        "node_euler": "(0.0, -0.516667, 0.0)",
+        "node_local_transform": "[X: (0.631999, 0.0, 0.774969), Y: (0.0, 1.0, 0.0), Z: (-0.774969, 0.0, 0.631999), O: (-25.86512, 3.45, -12.4156)]",
+        "node_origin": "(12.39557, 3.45, -25.22217)",
+        "opened": true,
+        "physics_euler": "(0.0, -0.563333, 0.0)",
+        "physics_origin": "(12.37997, 3.45, -25.19616)",
+        "swing_delta": -1.5707963267949,
+        "sync_to_physics": true
+      },
+      "exact_target": true,
+      "expected_open": true,
+      "gate_state": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": -0.933333333333333,
+        "open_generation": "fixture-upper-48-v1",
+        "opened": true,
+        "opening_blocker_ids": [],
+        "physically_closed": false,
+        "readiness_observation": {
+          "generation": "fixture-upper-48-v1",
+          "ready": true,
+          "reason": "ready",
+          "valid": true
+        },
+        "ready": true,
+        "ready_generation": "fixture-upper-48-v1",
+        "state": "OPENING",
+        "upper_id": "T3-L48"
+      },
+      "movement_m": 0.0,
+      "opened": true,
+      "player_instance_id": 73064777360,
+      "process_frames": 6
+    },
+    {
+      "after": "(12.86591, 3.425816, -24.67094)",
+      "before": "(12.86591, 3.425816, -24.67094)",
+      "door_physics": {
+        "base_angle": 0.0,
+        "commanded_angle": 0.0,
+        "hinge_local": "(-26.27592, 3.45, -12.91932)",
+        "id": "T3-L47-east-stair-fire-door",
+        "node": "StairFireDoor_east",
+        "node_euler": "(0.0, 0.37, 0.0)",
+        "node_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-25.62592, 3.45, -12.91932)]",
+        "node_origin": "(12.43643, 3.45, -25.77831)",
+        "opened": false,
+        "physics_euler": "(0.0, 0.37, 0.0)",
+        "physics_origin": "(12.43643, 3.45, -25.77831)",
+        "swing_delta": -1.5707963267949,
+        "sync_to_physics": true
+      },
+      "exact_target": true,
+      "expected_open": false,
+      "gate_state": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": 0.0,
+        "open_generation": "",
+        "opened": false,
+        "opening_blocker_ids": [
+          73064777360
+        ],
+        "physically_closed": true,
+        "readiness_observation": {
+          "generation": "fixture-upper-48-v2-injected",
+          "ready": true,
+          "reason": "ready",
+          "valid": true
+        },
+        "ready": true,
+        "ready_generation": "fixture-upper-48-v2-injected",
+        "state": "CLOSED_OPENING_OCCUPIED",
+        "upper_id": "T3-L48"
+      },
+      "movement_m": 0.0,
+      "opened": false,
+      "player_instance_id": 73064777360,
+      "process_frames": 5
+    },
+    {
+      "after": "(13.23686, 3.425833, -23.71467)",
+      "before": "(13.23686, 3.425833, -23.71467)",
+      "door_physics": {
+        "base_angle": 0.0,
+        "commanded_angle": -0.746666666666666,
+        "hinge_local": "(-26.27592, 3.45, -12.91932)",
+        "id": "T3-L47-east-stair-fire-door",
+        "node": "StairFireDoor_east",
+        "node_euler": "(0.0, -0.33, 0.0)",
+        "node_local_transform": "[X: (0.764842, 0.0, 0.644218), Y: (0.0, 1.0, 0.0), Z: (-0.644218, 0.0, 0.764842), O: (-25.77877, 3.45, -12.50058)]",
+        "node_origin": "(12.44534, 3.45, -25.33263)",
+        "opened": true,
+        "physics_euler": "(0.0, -0.376667, 0.0)",
+        "physics_origin": "(12.43484, 3.45, -25.30418)",
+        "swing_delta": -1.5707963267949,
+        "sync_to_physics": true
+      },
+      "exact_target": true,
+      "expected_open": true,
+      "gate_state": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": -0.746666666666666,
+        "open_generation": "fixture-upper-48-v2-injected",
+        "opened": true,
+        "opening_blocker_ids": [],
+        "physically_closed": false,
+        "readiness_observation": {
+          "generation": "fixture-upper-48-v2-injected",
+          "ready": true,
+          "reason": "ready",
+          "valid": true
+        },
+        "ready": true,
+        "ready_generation": "fixture-upper-48-v2-injected",
+        "state": "OPENING",
+        "upper_id": "T3-L48"
+      },
+      "movement_m": 0.0,
+      "opened": true,
+      "player_instance_id": 73064777360,
+      "process_frames": 5
+    }
+  ],
+  "source_site_tested": false
+}

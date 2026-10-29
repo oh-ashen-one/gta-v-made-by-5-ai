@@ -1,0 +1,1 @@
+[mbs-guest-floor] FAIL retire removes only its owned two gate assemblies
