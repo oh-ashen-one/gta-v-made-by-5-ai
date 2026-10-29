@@ -1,13 +1,13 @@
 {
-  "status": "FROZEN_SOURCE_ONLY_PENDING_PARENT_COMMIT_PARSE_NATIVE_TEST_AND_CRITIQUE",
-  "geometry_version": "mbs-stair-fire-door-v1",
+  "status": "FROZEN_PENDING_PARENT_COMMIT_AND_NATIVE_RUN",
+  "geometry_version": "mbs-stair-fire-door-v2",
   "worker_engines": 0,
   "worker_gpu": 0,
   "worker_git_mutations": 0,
   "existing_guest_or_program_or_actor_edits": false,
   "source_sha256": {
-    "game/src/world/mbs_interior/stair_gates.gd": "3d78bfb09d316859a486e0a6eac3f79b29f6511ad6d8bc7ae5eb20c1d29aaf6a",
-    "game/src/systems/fidelity_tests/mbs_stair_gate_test.gd": "f8aa9d5a0655f37a1af7e6becb33c026763398cd0a46de66fbf18d410b65662e",
+    "game/src/world/mbs_interior/stair_gates.gd": "bf7a5ca1156c8ee6d4d1cee6266685500a09d56cbb5134f3eeeabb2be78e38a5",
+    "game/src/systems/fidelity_tests/mbs_stair_gate_test.gd": "1656c8918152516495b0c29e1a6ae5314dfb2bea5bac2bace52f930214cc167f",
     "game/src/systems/fidelity_tests/mbs_stair_gate_test.tscn": "8ec2ec53c691ff629b30d964b367631d1049f7fcb43606d4b5a3690a675c6edd"
   },
   "geometry": {
@@ -45,5 +45,17 @@
   "source_site_verified": false,
   "full_building_completed": false,
   "retirement_lease": "prior successful preflight must match bound generation; provider must show that generation retired before holder removal; stale notifications cannot remove rebound gates",
-  "native_readiness_poll_budget": "one atomic provider snapshot per physics/process pair; forced refresh for E/manual retirement transactions"
+  "native_readiness_poll_budget": "one atomic provider snapshot per physics/process pair; forced refresh for E/manual retirement transactions",
+  "retained_failures": [
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-stair-gate-r1/run.log",
+      "source_checkpoint": "90e91a1a9fc01689bebf26a9e5ae427cd85b42a9",
+      "checks": 67,
+      "failed": 1,
+      "opened_correctly": true,
+      "actor_pushed_m": 0.37191978096962,
+      "native_acceptance": false
+    }
+  ],
+  "opening_occupancy_interlock": "receiving-side quarter-sweep actor query before opening and during motion; never pushes actor to clear"
 }

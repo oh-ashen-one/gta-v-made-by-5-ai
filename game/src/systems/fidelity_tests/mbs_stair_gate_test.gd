@@ -83,7 +83,7 @@ func _native_gate_e(expected_open:bool)->bool:
 	await get_tree().process_frame;await get_tree().process_frame
 	Input.action_release("interact");await frames(5)
 	await get_tree().process_frame;await get_tree().process_frame
-	var action:Dictionary={"opened":door.opened,"expected_open":expected_open,"process_frames":Engine.get_process_frames()-process_start,"before":before,"after":player.global_position,"movement_m":player.global_position.distance_to(before),"exact_target":player._interaction_target()==door}
+	var action:Dictionary={"opened":door.opened,"expected_open":expected_open,"player_instance_id":player.get_instance_id(),"gate_state":gates.report().gates[gate_id],"door_physics":door_snapshot(door),"process_frames":Engine.get_process_frames()-process_start,"before":before,"after":player.global_position,"movement_m":player.global_position.distance_to(before),"exact_target":player._interaction_target()==door}
 	native_gate_actions.append(action)
 	print("[mbs-stair-gate] NATIVE_E ",JSON.stringify(action))
 	return check("actual E stair state matches readiness",door.opened==expected_open and action.movement_m<.02)
@@ -199,6 +199,12 @@ func run()->void:
 	check("missing receiving generation fails closed",not gates.report().gates[gate_id].ready)
 	readiness_override="";gates.refresh_now();await frames(5)
 	if not await walk_to(site.to_global(stair.upper),.14):finish();return
+	# This is a real receiving-side standing point INSIDE the opening sweep,
+	# as retained R1 proved. Native E must not let a leaf push the actor.
+	if not await _native_gate_e(false):finish();return
+	var blocked_open:Dictionary=gates.report().gates[gate_id]
+	if not check("opening sweep interlock identifies actual Player capsule",blocked_open.state=="CLOSED_OPENING_OCCUPIED" and blocked_open.opening_blocker_ids.has(player.get_instance_id())):finish();return
+	if not await walk_to(site.to_global(clear),.14):finish();return
 	if not await _native_gate_e(true):finish();return
 	await frames(70)
 	for index in range(stair.walk_route.size()-2,-1,-1):

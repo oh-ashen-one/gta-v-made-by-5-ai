@@ -1,0 +1,32 @@
+{
+  "revision": "R2_OPENING_SWEEP_OCCUPANCY",
+  "status": "FROZEN_PENDING_PARENT_COMMIT_AND_NATIVE_RUN",
+  "retained_failure": "/private/tmp/singapore-fidelity/mbs-stair-gate-r1/run.log",
+  "source_checkpoint": "90e91a1a9fc01689bebf26a9e5ae427cd85b42a9",
+  "retained_checks": 67,
+  "retained_failed_checks": 1,
+  "failure": "Actual E opened correctly, but receiving-side opening sweep pushed stationary production capsule0.37191978m",
+  "exact_native_target": true,
+  "held_process_frames": 9,
+  "opening_angle_at_failure_rad": -1.12,
+  "actor_before_local_xz_m": [
+    -25.62590341738092,
+    -11.731632870490161
+  ],
+  "hinge_local_xz_m": [
+    -26.27591855,
+    -12.919325
+  ],
+  "leaf_tip_at_angle_m": [
+    -25.709531369840274,
+    -11.749194425170543
+  ],
+  "full_capsule_radius_m": 0.36,
+  "native_E_no_motion_bound_m_unchanged": 0.02,
+  "change": "Actual actor overlap query blocks opening from the conservative receiving-side quarter-sweep envelope; during opening a newly entering actor holds leaf motion. Closing/retirement guard retained. No actor writes or geometry/controller edits.",
+  "qa": "Native E at the obstructing receiving-side approach must stay closed and stationary and report Player instance blocker; real walking backs away, then native E opens. Exact target/LOS/state and2cm bound unchanged.",
+  "runtime_verified": false,
+  "full_building_completed": false,
+  "source_sha256": {},
+  "prior_actor_center_to_tip_m": 0.08545199023625089
+}

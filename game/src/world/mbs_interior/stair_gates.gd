@@ -8,7 +8,7 @@ const GuestFloor=preload("res://src/world/mbs_interior/guest_floor.gd")
 const Inventory=preload("res://src/world/mbs_interior/inventory.gd")
 const Kit=preload("res://src/world/downtown/landmarks/kit.gd")
 const Looks=preload("res://src/world/downtown/landmarks/looks.gd")
-const GEOMETRY_VERSION="mbs-stair-fire-door-v1"
+const GEOMETRY_VERSION="mbs-stair-fire-door-v2"
 const WIDTH=1.30
 const HEIGHT=2.35
 const LEAF_THICKNESS=.075
@@ -200,6 +200,27 @@ func _occupants(state:Dictionary)->Array[Dictionary]:
 	query.collision_mask=OCCUPANCY_MASK;query.margin=.01
 	return get_world_3d().direct_space_state.intersect_shape(query,32)
 
+func _opening_occupants(state:Dictionary)->Array[Dictionary]:
+	if not is_inside_tree() or not is_instance_valid(state.get("holder")):return []
+	var query:=PhysicsShapeQueryParameters3D.new()
+	var box:=BoxShape3D.new()
+	# Conservative quarter-sweep envelope: hinge..tip in X and receiving-side
+	# plane..tip in Z. Unlike the closing/threshold volume it does not include
+	# the safe staircase side of a closed door. No actor is moved to clear it.
+	box.size=Vector3(WIDTH,HEIGHT,WIDTH)
+	query.shape=box
+	var local:=Vector3(float(state.hinge.x)+WIDTH*.5,float(state.rise)+HEIGHT*.5,float(state.plane_z)-float(state.side)*WIDTH*.5)
+	query.transform=(state.holder as Node3D).global_transform*Transform3D(Basis.IDENTITY,local)
+	query.collision_mask=OCCUPANCY_MASK;query.margin=.01
+	return get_world_3d().direct_space_state.intersect_shape(query,32)
+
+func _blocker_ids(hits:Array[Dictionary])->Array[int]:
+	var ids:Array[int]=[]
+	for hit:Dictionary in hits:
+		var body:CollisionObject3D=hit.get("collider") as CollisionObject3D
+		if body!=null and not ids.has(body.get_instance_id()):ids.append(body.get_instance_id())
+	return ids
+
 func _physically_closed(state:Dictionary)->bool:
 	var door:StairDoor=state.door
 	if not is_instance_valid(door) or not is_instance_valid(state.get("holder")) or door.opened or absf(door.motion_angle-door.base_angle)>.001:return false
@@ -221,6 +242,15 @@ func _gate_motion_allowed(id:String)->bool:
 			state.close_requested=false;state.open_generation=""
 			_set_state(state,"CLOSED_READY" if state.ready else "CLOSED_UNREADY")
 		else:_set_state(state,"CLOSING")
+	elif door.opened:
+		var target:float=door.base_angle+door.swing_delta
+		if absf(door.motion_angle-target)>.001:
+			var opening_hits:=_opening_occupants(state)
+			if not opening_hits.is_empty():
+				state["opening_blocker_ids"]=_blocker_ids(opening_hits)
+				_set_state(state,"OPENING_HOLD_OCCUPIED")
+				return false
+		else:_set_state(state,"OPEN")
 	return true
 
 func _set_state(state:Dictionary,value:String)->void:
@@ -240,6 +270,12 @@ func request_interaction(id:String)->bool:
 	if not state.ready or state.close_requested or not _physically_closed(state):
 		_emit_floor_request.call_deferred(state.upper_id)
 		return false
+	var opening_hits:=_opening_occupants(state)
+	if not opening_hits.is_empty():
+		state["opening_blocker_ids"]=_blocker_ids(opening_hits)
+		_set_state(state,"CLOSED_OPENING_OCCUPIED")
+		return false
+	state["opening_blocker_ids"]=[]
 	door.ready_to_open=true
 	if not door.set_open(true):return false
 	state.open_generation=state.ready_generation
@@ -326,5 +362,5 @@ func report()->Dictionary:
 	var statuses:Dictionary={}
 	for key:String in _gates:
 		var state:Dictionary=_gates[key]
-		statuses[key]={"lower_id":state.lower_id,"upper_id":state.upper_id,"state":state.state,"ready":state.ready,"ready_generation":state.ready_generation,"open_generation":state.open_generation,"close_requested":state.close_requested,"opened":state.door.opened if is_instance_valid(state.door) else false,"motion_angle":state.door.motion_angle if is_instance_valid(state.door) else null,"physically_closed":_physically_closed(state),"readiness_observation":state.last_observation.duplicate(true)}
+		statuses[key]={"lower_id":state.lower_id,"upper_id":state.upper_id,"state":state.state,"ready":state.ready,"ready_generation":state.ready_generation,"open_generation":state.open_generation,"close_requested":state.close_requested,"opened":state.door.opened if is_instance_valid(state.door) else false,"motion_angle":state.door.motion_angle if is_instance_valid(state.door) else null,"physically_closed":_physically_closed(state),"readiness_observation":state.last_observation.duplicate(true),"opening_blocker_ids":state.get("opening_blocker_ids",[]).duplicate()}
 	return {"geometry_version":GEOMETRY_VERSION,"bound_floors":_floors.keys(),"gates":statuses,"protected_floor_ids":_protected.duplicate(),"actor_pose_writes":0,"actor_velocity_writes":0,"actor_reparents":0,"context_registered_by_component":false,"full_building_completed":false}
