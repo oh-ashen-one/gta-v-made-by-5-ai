@@ -12,6 +12,7 @@ const Inventory = preload("res://src/world/mbs_interior/inventory.gd")
 const Reference = preload("res://src/world/mbs_interior/site_reference.gd")
 const GuestFloor = preload("res://src/world/mbs_interior/guest_floor.gd")
 const ProgramFloor = preload("res://src/world/mbs_interior/program_floor.gd")
+const PartialFloor = preload("res://src/world/mbs_interior/partial_mezzanine.gd")
 const PublicL1 = preload("res://src/world/mbs_interior/public_l1.gd")
 const FEATURE := "mbs-hotel/source-floor-stack-reconstruction"
 const SCHEMA := "mbs_floor_stack_doors_v1"
@@ -160,6 +161,26 @@ func adjacent_floor_ids(id: String) -> Array[String]:
 	if at+1<order.size(): result.append(order[at+1])
 	return result
 
+func _uses_partial(record: Dictionary) -> bool:
+	return record.get("tower", "") in ["T1", "T2", "T3"] and record.get("level", "") in ["B2", "B2M"]
+
+## Physical neighboring storeys remain distinct from assembly dependencies.
+## A low basement/mezzanine also needs B1's real ceiling, without teaching
+## the lift/stair topology that B1 is B2's immediate next landing.
+func required_floor_ids(id: String) -> Array[String]:
+	id = Inventory.normalize_floor_id(id)
+	var result: Array[String] = adjacent_floor_ids(id)
+	if _records.has(id) and _uses_partial(_records[id]):
+		for level in ["B2", "B2M", "B1"]:
+			var member: String = String(_records[id].tower)+"-"+level
+			if member != id and not result.has(member): result.append(member)
+	return result
+
+func planned_floor_record(id: String) -> Dictionary:
+	id = Inventory.normalize_floor_id(id)
+	var recipe := _recipe(id)
+	return recipe.record.duplicate(true) if recipe.get("ok",false) else {}
+
 func _recipe(id: String) -> Dictionary:
 	if not _records.has(id): return {"ok":false,"status":"unknown_floor","error":"Floor is absent from the inventory"}
 	var record: Dictionary=_records[id].duplicate(true)
@@ -191,13 +212,18 @@ func _recipe(id: String) -> Dictionary:
 	var index:=order.find(id)
 	var has_upper:=index+1<order.size()
 	if not record.get("geometry") is Dictionary: return {"ok":false,"status":"pending_root_recipe_change","error":"Complete explicit floor geometry required"}
+	var partial: Dictionary = {}
+	if _uses_partial(record):
+		partial = PartialFloor.partial_plan(record)
+		if not partial.get("valid",false): return {"ok":false,"status":"pending_root_recipe_change","error":partial.get("error","Invalid partial service geometry")}
+		record.geometry = partial.geometry.duplicate(true)
 	if has_upper:
 		var rise: float=float(_records[order[index+1]].elevation_m)-float(record.elevation_m)
 		record.geometry.storey_height_m=rise
 		if not _number(record.geometry.get("clear_height_m")) or float(record.geometry.clear_height_m)+.20>rise+.00001:
 			return {"ok":false,"status":"pending_root_recipe_change","error":"Actual adjacent elevations cannot fit current full-height recipe; partial mezzanine/vertical zones required","floor_id":id,"upper_floor_id":order[index+1],"actual_rise_m":rise,"required_headroom_plus_slab_m":float(record.geometry.get("clear_height_m",0))+.20,"requires_root_recipe_change":true}
 	record["has_upper_floor"]=has_upper
-	var planned: Dictionary=GuestFloor.plan(record) if record.factory=="guest_floor_v1" else ProgramFloor.program_plan(record)
+	var planned: Dictionary=partial if not partial.is_empty() else (GuestFloor.plan(record) if record.factory=="guest_floor_v1" else ProgramFloor.program_plan(record))
 	if not planned.get("valid",false): return {"ok":false,"status":"pending_root_recipe_change","error":planned.get("error","Unsupported factory"),"requires_root_recipe_change":true}
 	var projected: Dictionary=_frame.to_local(placement.anchor_xyz)
 	if not projected.ok: return {"ok":false,"status":"pending_root_origin_transaction","error":projected.get("error","Outside active frame"),"requires_root_rebase":true}
@@ -254,6 +280,11 @@ func _subtract_rect(rectangle: Rect2,hole: Rect2) -> Array[Rect2]:
 
 func _volumes(recipe: Dictionary,module: Node3D) -> Array:
 	var result: Array=[]
+	if module is PartialFloor:
+		var descriptor: Dictionary = module.geometry_descriptor()
+		for box: Dictionary in descriptor.dry_boxes_local:
+			result.append(_volume(recipe.placement,box.id,box.center,box.half))
+		return result
 	var g: Dictionary=recipe.record.geometry
 	var placement: Dictionary=recipe.placement
 	var h: float=g.clear_height_m
@@ -414,6 +445,17 @@ func _floor_probe_observation(entry: Dictionary,wing: Dictionary,x: float) -> Di
 	return observation
 
 func _floor_probes_valid(entry: Dictionary,recipe: Dictionary) -> bool:
+	if entry.node is PartialFloor:
+		var descriptor: Dictionary = entry.node.geometry_descriptor()
+		var observations: Array = []
+		var complete := true
+		for point: Vector3 in descriptor.native_floor_probe_points_local:
+			var observation := _floor_probe_observation(entry,{"id":"partial-"+str(observations.size()),"corridor_center_z":point.z},point.x)
+			observations.append(observation)
+			if not observation.valid_owned_floor: complete = false
+		entry["native_floor_probe_diagnostics"] = {"partial_service_geometry":true,"actual_owned_probes":observations,"required_owned_probe_count":4,"complete":complete,"physics_tick":Engine.get_physics_frames()}
+		if complete: entry["native_floor_probes"] = observations
+		return complete and observations.size() == 4
 	var adapted: bool=not recipe.record.geometry.get("atrium_core_openings",[]).is_empty() or not recipe.record.geometry.get("public_arrival_corridor",{}).is_empty()
 	var lofts: Array=_shared_public_lofts() if adapted else []
 	var observations: Array=[];var legacy_centres: Array=[];var selections: Array=[]
@@ -460,7 +502,7 @@ func _local_committed(id: String) -> bool:
 func floor_ready(id: String) -> bool:
 	id=Inventory.normalize_floor_id(id)
 	if not _local_committed(id): return false
-	for neighbor: String in adjacent_floor_ids(id):
+	for neighbor: String in required_floor_ids(id):
 		if not _local_committed(neighbor): return false
 	return true
 
@@ -478,7 +520,7 @@ func floor_state(id: String) -> Dictionary:
 	if not _records.has(id): return _not_ready(id,"unknown_floor","Not an inventory floor")
 	var entry: Dictionary=_entries.get(id,{})
 	var result:=ready_for_floor(id)
-	result.merge({"status":entry.get("status","unloaded"),"local_collision_committed":_local_committed(id),"required_neighbors":adjacent_floor_ids(id),"source_id":entry.get("placement",{}).get("source_id",""),"canonical_anchor_xyz":entry.get("placement",{}).get("anchor_xyz",[]).duplicate(),"origin_revision":entry.get("origin_revision",-1),"region_id":entry.get("region_id",""),"body_count":entry.get("bodies",[]).size(),"static_support_count":entry.get("supports",[]).size(),"native_floor_probes":entry.get("native_floor_probes",[]).duplicate(true),"saved_doors":_saved_doors.get(id,{}).duplicate(true),"error":entry.get("error","")},true)
+	result.merge({"status":entry.get("status","unloaded"),"local_collision_committed":_local_committed(id),"required_neighbors":required_floor_ids(id),"source_id":entry.get("placement",{}).get("source_id",""),"canonical_anchor_xyz":entry.get("placement",{}).get("anchor_xyz",[]).duplicate(),"origin_revision":entry.get("origin_revision",-1),"region_id":entry.get("region_id",""),"body_count":entry.get("bodies",[]).size(),"static_support_count":entry.get("supports",[]).size(),"native_floor_probes":entry.get("native_floor_probes",[]).duplicate(true),"saved_doors":_saved_doors.get(id,{}).duplicate(true),"error":entry.get("error","")},true)
 	result["native_commit_diagnostics"]={"body_pose_failure":entry.get("native_body_failure",{}).duplicate(true),"floor_probes":entry.get("native_floor_probe_diagnostics",{}).duplicate(true)}
 	return result
 
@@ -547,18 +589,18 @@ func _protected_floors() -> Dictionary:
 	var guarded: Dictionary={}
 	for id: String in _pins:
 		guarded[id]="explicit_pin"
-		for neighbor: String in adjacent_floor_ids(id): guarded[neighbor]="pinned_neighbor"
+		for neighbor: String in required_floor_ids(id): guarded[neighbor]="pinned_neighbor"
 	for key: Variant in _actor_claims.keys():
 		var actor: Variant=_actor_claims[key].actor.get_ref()
 		if not is_instance_valid(actor): _actor_claims.erase(key);continue
 		var id: String=_actor_claims[key].floor_id
 		guarded[id]="explicit_actor_claim"
-		for neighbor: String in adjacent_floor_ids(id): guarded[neighbor]="claimed_neighbor"
+		for neighbor: String in required_floor_ids(id): guarded[neighbor]="claimed_neighbor"
 	for actor: Node3D in _bound_actors():
 		var id:=_actor_floor(actor)
 		if id.is_empty(): continue
 		guarded[id]="native_source_actor_or_aircraft"
-		for neighbor: String in adjacent_floor_ids(id): guarded[neighbor]="occupied_neighbor"
+		for neighbor: String in required_floor_ids(id): guarded[neighbor]="occupied_neighbor"
 	return guarded
 
 func _active_count() -> int:
@@ -638,7 +680,7 @@ func _load_one(id: String,recipe: Dictionary) -> Dictionary:
 	if _local_committed(id): _entries[id].last_used=Time.get_ticks_msec();return {"ready":true,"floor_id":id}
 	if int(recipe.projected.origin_revision)!=int(_frame.metadata().origin_revision): return _not_ready(id,"pending_root_origin_transaction","A preflight projection from another origin epoch cannot create native geometry")
 	if _entries.has(id) and is_instance_valid(_entries[id].get("node")): return _not_ready(id,"pending_root_retirement","An uncommitted/stale retained floor cannot be overwritten")
-	var module: Node3D=GuestFloor.new() if recipe.record.factory=="guest_floor_v1" else ProgramFloor.new()
+	var module: Node3D=PartialFloor.new() if _uses_partial(recipe.record) else (GuestFloor.new() if recipe.record.factory=="guest_floor_v1" else ProgramFloor.new())
 	module.name="SourceFloor_"+id.replace("-","_")
 	add_child(module)
 	# Only this already origin-subtracted local projection enters a transform.
@@ -729,7 +771,7 @@ func ensure_floor(id: String) -> Dictionary:
 			_pending-=1;return _not_ready(id,"pending_busy","Bounded lifecycle wait elapsed")
 		await get_tree().physics_frame
 	_busy=true
-	var needed: Array[String]=adjacent_floor_ids(id)
+	var needed: Array[String]=required_floor_ids(id)
 	if not needed.has(id): needed.append(id)
 	var recipes: Dictionary={}
 	for required: String in needed:
