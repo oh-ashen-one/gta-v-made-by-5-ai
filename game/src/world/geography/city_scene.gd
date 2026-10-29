@@ -1,4 +1,5 @@
 extends Node3D
+const SourceFrame = preload("res://src/world/geography/source_frame.gd")
 ## Main-thread source mesh installation. Decoding/I/O belongs to the producer;
 ## the world coordinator owns residency, actors, rebases and eviction policy.
 signal tile_committed(tile_key: String, receipt: Dictionary)
@@ -15,7 +16,7 @@ var _maximum_tiles := 9
 var _feature_batch := 16
 
 func configure(frame: RefCounted, material_for_surface: Callable, may_retire: Callable, maximum_tiles: int = 9, features_per_frame: int = 16) -> bool:
-	if _configured or not is_inside_tree() or not frame is SingaporeSourceFrame or not frame.metadata().configured: return false
+	if _configured or not is_inside_tree() or not frame is SourceFrame or not frame.metadata().configured: return false
 	if not material_for_surface.is_valid() or not may_retire.is_valid() or maximum_tiles < 1 or maximum_tiles > 25 or features_per_frame < 1 or features_per_frame > 64: return false
 	_frame = frame; _materials = material_for_surface; _retire_guard = may_retire
 	if _materials.get_object() is RefCounted: _material_owner = _materials.get_object()
