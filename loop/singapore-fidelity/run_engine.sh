@@ -7,7 +7,18 @@ if [ "${1:-}" = "--leased" ]; then
  seconds="$2"; out="$3"; shift 3
  fps="${GPU_SLOT_FPS_CAP:-60}"
  [ ! -e "$HOME/.cache/gpu-slot/STREAMING" ] || fps=30
- exec python3 "$root/game/tools/bounded_run.py" --seconds "$seconds" --log "$out/run.log" -- \
+ startup=()
+ headless=false
+ for engine_arg in "$@"; do
+  [ "$engine_arg" != "--" ] || break
+  if [ "$engine_arg" = "--headless" ]; then headless=true; fi
+ done
+ if ! "$headless"; then
+  # Conservative provisional60s expectation,2x startup bound. Tighten from
+  # actual measured cold-frame receipts; process banners never count.
+  startup=(--first-frame-seconds 120)
+ fi
+ exec python3 "$root/game/tools/bounded_run.py" --seconds "$seconds" --log "$out/run.log" "${startup[@]}" -- \
   /opt/homebrew/bin/godot --max-fps "$fps" --path "$root/game" --log-file "$out/engine.log" "$@"
 fi
 [ $# -ge 4 ] && [ "$4" = "--" ] || { echo "usage: $0 label seconds output -- godot-args..." >&2; exit 2; }

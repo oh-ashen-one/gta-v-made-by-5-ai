@@ -1,0 +1,124 @@
+{
+  "schema": "singapore_render_safety_independent_review_v1",
+  "observed_utc": "2026-10-29T17:28:34.232470+00:00",
+  "status": "CODE_AND_CPU_PROTOCOL_APPROVED_NO_REMAINING_BLOCKING_FINDINGS_NATIVE_FIRST_FRAME_PENDING",
+  "policy_revision_reviewed": "67f806f269f662227b0f8b2cd59438a10dc2d54e",
+  "policy_freshness_scope": "Resolved local67f806 rule text plus Root explicit direction; child doctor was not-recently-checked, so this review does not claim an independent fresh GitHub policy fetch. No shared infrastructure was changed.",
+  "source_sha256": {
+    "game/tools/render_startup_health.py": "4864a13f824b402659a92e517793a867fe0b0eecac4b7df2c0f940191a50b2a3",
+    "game/tools/render_launch_guard.py": "b5211aba3eee3b0563caf8ed7d76e6723b25cf64d05eee7107351ac40fda16ee",
+    "game/tools/render_gate.py": "09578571fd2483f67fe5002c2e684bfce11e854ea89b92a4b88bb4d422855474",
+    "game/tools/bounded_run.py": "12b1da31473c17140dc80725957f36e3b3961d3aa1cb77f4937c62d87d81ae9d",
+    "game/tools/test_render_startup_health.py": "8686764545f576a4e0976ece4888723264ccfc638e32a2b820a5881cb356f67d",
+    "game/tools/test_render_launch_guard.py": "17780c507cc69eede66a2aef1dfd3a047b3e95ea65c2098ed54ebc9bd5f3bd57",
+    "game/src/systems/render_startup_health.gd": "0c74f7c79dd0b102fef8e9aa5e67c3a6a5f25a66592da54bb9b32f255507090c",
+    "game/src/core/game_state.gd": "bfc6ddeff1cd222fcfbbd4999ea6c2ea576fdb0ab4aa2581f8ca9b73647c7870",
+    "loop/render.sh": "fbff7093b16ff351ef4c8649fcdfea3b3b866cedd745eddc2a29496ff3b99c9d",
+    "loop/singapore-fidelity/run_engine.sh": "b8b3c17f54b9a87bdf694b90e6d44dcda9aa56e9ccbacf7cab315a92f0fe727e"
+  },
+  "cpu_receipt_sha256": "2914ba1466ad637a5645854a0c788149111d6fef4a3c07251f4cf06130d62253",
+  "cpu_test_log_sha256": "812b1903568364443feb75cdcb2d26fb5b62a7018d869d4605fe757995a4bb7c",
+  "cpu_tests_observed": {
+    "count": 25,
+    "exit_code": 0,
+    "duration_s": 1.035,
+    "result": "OK",
+    "executed_by_root": true,
+    "fresh_test_rerun_by_reviewer": false,
+    "native_gpu_frame_or_readback": false,
+    "native_gdscript_parse": false,
+    "real_shared_flags_changed": false
+  },
+  "findings_and_closure": [
+    {
+      "id": "F1",
+      "priority": "high",
+      "original_finding": "Renderer shutdown was incorrectly keyed only to health nonce opt-in.",
+      "resolution": "Closed: known rendering commands are classified independently; rendered commands lacking explicit supported health now refuse before launch; possible renderers never use SIGKILL."
+    },
+    {
+      "id": "F2",
+      "priority": "high",
+      "original_finding": "Distinct actual Metal Python parent/child clients were folded as one job.",
+      "resolution": "Closed: separate native GPU children remain separate capacity rows; ancestry is not a capacity exemption."
+    },
+    {
+      "id": "F3",
+      "priority": "medium",
+      "original_finding": "A replayed caller health token preceded the newly appended nonce and caused false no-frame timeout.",
+      "resolution": "Closed: caller-supplied/replayed health flags are rejected before child launch or shared pause."
+    },
+    {
+      "id": "F4",
+      "priority": "medium",
+      "original_finding": "Leftover mock-stuck configuration could fabricate stuck clients and trigger a real shared pause.",
+      "resolution": "Closed: mock-stuck, utilization mocks, ignore overrides and modified Unreal pattern are refused before final observation."
+    },
+    {
+      "id": "F5",
+      "priority": "medium",
+      "original_finding": "A first-frame deadline could expire unnoticed during the full TERM grace wait.",
+      "resolution": "Closed: the same startup health/deadline callback is polled during bounded shutdown; no renderer force-kill was introduced."
+    },
+    {
+      "id": "F6",
+      "priority": "medium",
+      "original_finding": "A UV launcher could be removed without retaining its unrecognized native GPU replacement.",
+      "resolution": "Closed: replacement requires a retained counted native child; native descendants of a known ML ancestor are counted, and the targeted counterexample has a regression test."
+    },
+    {
+      "id": "F7",
+      "priority": "high",
+      "original_finding": "A native Metal process in E/Z could escape the stuck list if its executable name was unrecognized.",
+      "resolution": "Closed: all observed native Metal PIDs in E/Z are checked independently of workload-name classification."
+    },
+    {
+      "id": "F8",
+      "priority": "high",
+      "original_finding": "A game argument named --headless after Godot standalone -- could disable renderer protection.",
+      "resolution": "Closed: only actual pre-separator engine flags affect classification and helper health opt-in; positive native-engine observation also supplements the shared classifier."
+    },
+    {
+      "id": "F9",
+      "priority": "medium",
+      "original_finding": "Legacy rendered callers had no first-frame protocol and old packages could be falsely opted in.",
+      "resolution": "Closed for supported current-source helper: loop/render.sh is instrumented. Uninstrumented rendered calls refuse before launch; old packages require a new instrumented build/provenance, not a nonce-only workaround."
+    }
+  ],
+  "reviewed_remaining_paths": [
+    "Fresh per-run stdout log plus exact nonce and child PID reject stale output. Overlong unrelated lines are bounded; a banner/submitted frame is insufficient.",
+    "Godot hook runs only with explicit health request, skips headless, awaits frame_post_draw and completes ViewportTexture.get_image before emitting evidence. This source path still needs actual native execution.",
+    "Final capacity/utilization/stuck/pause/streaming observation occurs after expensive source/art snapshot and in the process that execs the engine; no earlier stale preflight is treated as current capacity.",
+    "Machine pause uses the established shared PAUSED switch with exclusive create and preserves an existing pause. There is no automatic resume or foreign-process kill.",
+    "Popen-owned child shutdown uses TERM and bounded wait. A stuck renderer remains explicitly unreaped and causes shared pause; synthetic CPU tests do not prove a real GPU command returned.",
+    "Current120second startup threshold is explicitly provisional2x60 expectation in code and metadata. It is not a measured normal startup baseline. Actual clean cold/warm observations remain necessary."
+  ],
+  "read_only_native_inventory_observation": {
+    "ioreg_class": "IOGPUDeviceUserClient",
+    "output_bytes": 20100,
+    "parsed_creator_pids": 71,
+    "not_workload_slot_count": true,
+    "scope": "Parser worked on live registry output only; no Metal/MPS compute probe or engine was started."
+  },
+  "required_next_evidence": [
+    "Normal gated headless/native parse of the new GDScript hook and affected entrypoint.",
+    "First controlled rendered run with fresh child PID/nonce and actual viewport readback while capacity/headroom/streaming policy permits.",
+    "Record measured startup timing before changing the provisional threshold.",
+    "Export instrumented source before testing newly supported packaged captures; historic uninstrumented binaries are not silently made compatible."
+  ],
+  "reviewer_actions": {
+    "engine_launched": false,
+    "gpu_compute_probe": false,
+    "process_signals": false,
+    "shared_flag_changes": false,
+    "production_edits": false,
+    "git_actions": false,
+    "pure_classifier_counterexamples_only": true
+  },
+  "not_acceptance_of": [
+    "Game visuals, source-world traversal or gameplay",
+    "Representative rendering performance",
+    "Whole machine safety against uncoordinated foreign launchers",
+    "Complete Singapore/MBS user goal"
+  ]
+}

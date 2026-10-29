@@ -1,0 +1,30 @@
+test_cpu_ffmpeg_and_desktop_compositor_are_not_extra_gpu_compute (test_render_launch_guard.FinalInventory.test_cpu_ffmpeg_and_desktop_compositor_are_not_extra_gpu_compute) ... ok
+test_distinct_encoder_child_of_training_job_is_not_hidden (test_render_launch_guard.FinalInventory.test_distinct_encoder_child_of_training_job_is_not_hidden) ... ok
+test_distinct_native_compute_child_is_counted_and_visible_if_stuck (test_render_launch_guard.FinalInventory.test_distinct_native_compute_child_is_counted_and_visible_if_stuck) ... ok
+test_engine_vs_cpu_command (test_render_launch_guard.FinalInventory.test_engine_vs_cpu_command) ... ok
+test_game_argument_does_not_disable_rendered_shutdown_safety (test_render_launch_guard.FinalInventory.test_game_argument_does_not_disable_rendered_shutdown_safety) ... ok
+test_native_creator_pid_extraction (test_render_launch_guard.FinalInventory.test_native_creator_pid_extraction) ... ok
+test_only_proven_non_gpu_uv_launcher_is_removed (test_render_launch_guard.FinalInventory.test_only_proven_non_gpu_uv_launcher_is_removed) ... ok
+test_positive_native_engine_is_not_hidden_by_shared_flag_parse (test_render_launch_guard.FinalInventory.test_positive_native_engine_is_not_hidden_by_shared_flag_parse) ... ok
+test_renderer_shutdown_classification_is_independent_of_nonce (test_render_launch_guard.FinalInventory.test_renderer_shutdown_classification_is_independent_of_nonce) ... ok
+test_simulator_and_hardware_encoder_count (test_render_launch_guard.FinalInventory.test_simulator_and_hardware_encoder_count) ... ok
+test_unknown_native_children_of_ml_launcher_are_retained (test_render_launch_guard.FinalInventory.test_unknown_native_children_of_ml_launcher_are_retained) ... ok
+test_unknown_native_metal_stuck_client_is_never_ignored (test_render_launch_guard.FinalInventory.test_unknown_native_metal_stuck_client_is_never_ignored) ... ok
+test_unknown_python_only_counts_with_actual_metal_client (test_render_launch_guard.FinalInventory.test_unknown_python_only_counts_with_actual_metal_client) ... ok
+test_banner_headless_empty_or_submission_is_not_readback (test_render_startup_health.StartupEvidence.test_banner_headless_empty_or_submission_is_not_readback) ... ok
+test_incremental_split_marker (test_render_startup_health.StartupEvidence.test_incremental_split_marker) ... ok
+test_pause_is_atomic_and_never_overwrites_existing_owner (test_render_startup_health.StartupEvidence.test_pause_is_atomic_and_never_overwrites_existing_owner) ... ok
+test_real_cpu_child_terminates_and_reaps (test_render_startup_health.StartupEvidence.test_real_cpu_child_terminates_and_reaps) ... ok
+test_replayed_nonce_refused_before_child_or_pause (test_render_startup_health.StartupEvidence.test_replayed_nonce_refused_before_child_or_pause) ... ok
+test_startup_health_still_polled_during_term_grace (test_render_startup_health.StartupEvidence.test_startup_health_still_polled_during_term_grace) ... ok
+test_stuck_render_child_is_not_killed (test_render_startup_health.StartupEvidence.test_stuck_render_child_is_not_killed) ... ok
+test_supervisor_cpu_protocol_success (test_render_startup_health.StartupEvidence.test_supervisor_cpu_protocol_success) ... ok
+test_supervisor_missing_frame_pauses_before_owned_stop (test_render_startup_health.StartupEvidence.test_supervisor_missing_frame_pauses_before_owned_stop) ... ok
+test_uninstrumented_legacy_render_command_refuses_before_launch (test_render_startup_health.StartupEvidence.test_uninstrumented_legacy_render_command_refuses_before_launch) ... ok
+test_valid_child_readback (test_render_startup_health.StartupEvidence.test_valid_child_readback) ... ok
+test_wrong_child_or_stale_run (test_render_startup_health.StartupEvidence.test_wrong_child_or_stale_run) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 1.035s
+
+OK

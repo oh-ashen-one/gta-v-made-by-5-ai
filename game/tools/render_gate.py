@@ -1,20 +1,40 @@
 #!/usr/bin/env python3
-"""Last-moment shared-engine safety check; used inside the common GPU lease."""
-import os,sys,subprocess,json
+"""Final safety check inside the shared lease, immediately before owned launch."""
+import json
+import os
+import sys
 from pathlib import Path
-root=Path(os.environ.get('GPU_SLOT_DIR',os.path.expanduser('~/.cache/gpu-slot')))
-if (root/'PAUSED').exists():raise SystemExit('Shared GPU coordinator is PAUSED; renderer not launched.')
-lines=subprocess.check_output(['ps','-axo','pid=,stat=,comm='],text=True).splitlines();engines=[]
-for line in lines:
- parts=line.strip().split(None,2)
- if len(parts)!=3:continue
- pid,state,exe=parts
- if Path(exe).name not in {'Godot','godot','UnrealEditor','Unity','Blender','blender','Orchard Reach'}:continue
- args=subprocess.check_output(['ps','-p',pid,'-o','command='],text=True)
- if state.startswith(('E','Z')):raise SystemExit('Engine stuck exiting: '+pid+' '+exe)
- if '--headless' not in args:engines.append({'pid':int(pid),'state':state,'executable':exe})
-print(json.dumps({'renderer_preflight':engines,'shared_root':str(root)}),flush=True)
-if len(engines)>=2:raise SystemExit('Mixed renderer cap2 already occupied; no launch.')
-cmd=sys.argv[1:];cmd=cmd[1:] if cmd and cmd[0]=='--' else cmd
-if not cmd:raise SystemExit('No command')
-os.execvp(cmd[0],cmd)
+from render_launch_guard import snapshot, safe_public_rows, engine_arguments
+from render_startup_health import pause_shared
+
+
+def main():
+    root = Path(os.environ.get('GPU_SLOT_DIR', str(Path.home()/'.cache/gpu-slot')))
+    command = sys.argv[1:]
+    command = command[1:] if command and command[0] == '--' else command
+    if not command:
+        raise SystemExit('No command')
+    if os.environ.get('GPU_SLOT_HELD') not in {'capture','perf'}:
+        raise SystemExit('A verified normal shared GPU lease is required')
+    state = snapshot(root)
+    print(json.dumps({'renderer_preflight': safe_public_rows(state['clients']),
+                      'shared_root': str(root), 'utilization': state['utilization'],
+                      'headless_command': '--headless' in engine_arguments(command)}), flush=True)
+    if state['stuck']:
+        pause_shared(root, None, 'A GPU client is stuck exiting: '+','.join(str(row['pid']) for row in state['stuck']))
+        raise SystemExit('GPU client stuck exiting; shared launches paused, no process killed')
+    if state['paused'] or state['streaming']:
+        raise SystemExit('Shared coordinator is paused or streaming; no launch')
+    # Until a clean recovery hour is explicitly established, this task renders
+    # alone with no concurrent GPU training. Headless QA still obeys the shared
+    # mixed cap/headroom gate and never launches through another route.
+    cap = 2 if '--headless' in engine_arguments(command) else 1
+    if len(state['clients']) >= cap:
+        raise SystemExit('GPU client capacity is occupied; no launch')
+    if state['utilization'] is None or state['utilization'] >= 85:
+        raise SystemExit('GPU headroom disappeared after shared admission; no launch')
+    os.execvp(command[0], command)
+
+
+if __name__ == '__main__':
+    main()

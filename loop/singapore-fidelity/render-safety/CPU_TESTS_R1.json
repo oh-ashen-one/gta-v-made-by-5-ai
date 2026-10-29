@@ -1,0 +1,35 @@
+{
+  "observed_utc": "2026-10-29T17:25:06.028851+00:00",
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "game/tools",
+    "-p",
+    "test_render_*.py",
+    "-v"
+  ],
+  "exit_code": 0,
+  "cpu_only": true,
+  "real_gpu_frame_verified": false,
+  "native_script_parsing_verified": false,
+  "test_log_sha256": "812b1903568364443feb75cdcb2d26fb5b62a7018d869d4605fe757995a4bb7c",
+  "source_sha256": {
+    "game/tools/render_startup_health.py": "4864a13f824b402659a92e517793a867fe0b0eecac4b7df2c0f940191a50b2a3",
+    "game/tools/render_launch_guard.py": "b5211aba3eee3b0563caf8ed7d76e6723b25cf64d05eee7107351ac40fda16ee",
+    "game/tools/render_gate.py": "09578571fd2483f67fe5002c2e684bfce11e854ea89b92a4b88bb4d422855474",
+    "game/tools/bounded_run.py": "12b1da31473c17140dc80725957f36e3b3961d3aa1cb77f4937c62d87d81ae9d",
+    "game/tools/test_render_startup_health.py": "8686764545f576a4e0976ece4888723264ccfc638e32a2b820a5881cb356f67d",
+    "game/tools/test_render_launch_guard.py": "17780c507cc69eede66a2aef1dfd3a047b3e95ea65c2098ed54ebc9bd5f3bd57",
+    "game/src/systems/render_startup_health.gd": "0c74f7c79dd0b102fef8e9aa5e67c3a6a5f25a66592da54bb9b32f255507090c",
+    "game/src/core/game_state.gd": "bfc6ddeff1cd222fcfbbd4999ea6c2ea576fdb0ab4aa2581f8ca9b73647c7870",
+    "loop/render.sh": "fbff7093b16ff351ef4c8649fcdfea3b3b866cedd745eddc2a29496ff3b99c9d",
+    "loop/singapore-fidelity/run_engine.sh": "b8b3c17f54b9a87bdf694b90e6d44dcda9aa56e9ccbacf7cab315a92f0fe727e"
+  },
+  "shared_flags_changed": false,
+  "test_pause_files": "Only private TemporaryDirectory test roots; never the real shared GPU state",
+  "first_frame_threshold": "120 seconds is a provisional declared2x60 second expectation, not2x a measured cold baseline",
+  "legacy_policy": "Source loop/render.sh now enables protocol. Rendered bounded commands without explicit protocol are refused before engine launch; old uninstrumented packages cannot be made compatible by merely appending a nonce."
+}

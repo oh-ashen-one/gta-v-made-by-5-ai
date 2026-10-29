@@ -1,0 +1,13 @@
+{
+  "outcome": "skipped-busy",
+  "exit_code": 75,
+  "wait_s": 820.6,
+  "contaminated": true,
+  "classification": "Shared capacity/headroom refusal before Godot launch; NOT a gameplay test failure.",
+  "launcher_exec": 79779,
+  "launcher_pid_at_start": 95471,
+  "actual_engine_log_present": false,
+  "actual_native_checks": 0,
+  "source_sidecar_sha256": "d3225029ee1cd68b14a865c75426ad510db46114bc4290944d4d103a1b433288",
+  "raw_sidecar_not_published": "Foreign workload command lines omitted."
+}

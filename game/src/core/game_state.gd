@@ -119,6 +119,12 @@ var settings := {
 func _ready() -> void:
 	seed(seed_value)
 	var args := OS.get_cmdline_user_args()
+	for startup_arg: String in args:
+		if startup_arg.begins_with("--qa-render-health=") and DisplayServer.get_name()!="headless":
+			var health=preload("res://src/systems/render_startup_health.gd").new()
+			health.nonce=startup_arg.trim_prefix("--qa-render-health=")
+			add_child(health)
+			break
 	var qa_session := "--test" in args or "--capture" in args or "--qa-session" in args
 	for arg in args:
 		if arg.begins_with("--save-probe="): qa_session = true
