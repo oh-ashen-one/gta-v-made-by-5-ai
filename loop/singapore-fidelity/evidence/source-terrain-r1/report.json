@@ -1,0 +1,161 @@
+{
+  "checks": 31,
+  "failures": [],
+  "metrics": {
+    "actual200queries_us": 7198,
+    "actual_metadata": {
+      "attribution": {
+        "credit": "Mapzen; SRTM/GMTED2010: U.S. Geological Survey; ETOPO1: U.S. National Oceanic and Atmospheric Administration.",
+        "modifications": "Reprojected/resampled to25mSVY21-derived grid; float32 quantized; no void fill, smoothing or ground/building removal.",
+        "source_terms": "Underlying USGS/global NOAA datasets are public-domain/open source products subject to their documented attribution/disclaimer terms; no blanket code/MIT claim.",
+        "urls": [
+          "https://registry.opendata.aws/terrain-tiles/",
+          "https://raw.githubusercontent.com/tilezen/joerd/master/docs/attribution.md",
+          "https://raw.githubusercontent.com/tilezen/joerd/master/docs/data-sources.md",
+          "https://raw.githubusercontent.com/tilezen/joerd/master/docs/formats.md"
+        ]
+      },
+      "bindings": {
+        "country_wgs84_sha256": "c25cce8de57f280b68bd1436deedc3eaa3eb8bebf50ec334f5d9dbfd826b9c45",
+        "georeference": {
+          "distance_compression": false,
+          "legacy_plan_alignment_applied": false,
+          "metres_per_unit": 1.0,
+          "origin_easting": 30000.0,
+          "origin_northing": 30000.0,
+          "source_crs": "EPSG:4326",
+          "survey_crs": "EPSG:3414",
+          "world_axes": {
+            "x": "south",
+            "y": "up",
+            "z": "west"
+          }
+        },
+        "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+        "projection_implementation_sha256": "6bc910000fca1b353112021453eb68437cb276968f36cae66e23c552c701ba29",
+        "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983"
+      },
+      "chunk_count": 1798,
+      "configured": true,
+      "current_survey_ground_verified": false,
+      "grid": {
+        "cells_per_chunk": 40.0,
+        "chunk_metres": 1000.0,
+        "core_samples": 41.0,
+        "derived_spacing_is_new_measurement_resolution": false,
+        "encoding": "float32_little_endian_row_z_ascending_column_x_ascending",
+        "global_node_identity": "[integerIndexX,integerIndexZ]*25metres; same indices across chunks",
+        "halo_samples": 1.0,
+        "native_posting_arcseconds": 1.0,
+        "spacing_metres": 25.0,
+        "stored_samples": 43.0,
+        "void_encoding": "canonical float32 NaN"
+      },
+      "identity_sha256": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841",
+      "limitations": [
+        "Older composite DEM, not current Singapore survey or current reclaimed ground; SRTM/radar/building/canopy/coastal merge artefacts possible.",
+        "Native posting1arcsecond (~31m here) is not effective per-pixel resolution; GMTED/ETOPO contributions may be coarser.25m interpolation creates no new detail.",
+        "EGM96 geoid elevation is not ellipsoid altitude and is not automatically aligned to the game frame/source architectural floor datum.",
+        "Numeric zero may be a real source DEM value; missing/void/version errors stay unknown and are never replaced by zero ground.",
+        "Not current MBSL1, physical support, dryland classification, tide/sea-surface/bottom or3D hydrology; not navigation-grade or full city acceptance."
+      ],
+      "manifest_sha256": "d3146cef6532abe6e6fe71a2122ae5189810a8e302c8de7e9bb25d2fa61a48c6",
+      "physical_support_verified": false,
+      "sources": [
+        {
+          "authentication": "Public anonymous ordinary HTTPS GET; no account/API key",
+          "completed_utc": "2026-10-28T23:46:11.354919+00:00",
+          "compressed_bytes": 5782563.0,
+          "compressed_sha256": "392aebffc6c7ce9ff33fe1153454557b5c377b13685a9782b97a3700092295af",
+          "format": "gzip SRTMGL1 big-endian signed int16; row0 north2deg/column0 west tile longitude",
+          "hgt_bytes": 25934402.0,
+          "hgt_sha256": "1624bdbddd68b01304d4092c05725e84b973a0148914be1c33118199d4201839",
+          "http_metadata": {
+            "Content-Length": "5782563",
+            "Content-Type": "application/x-gzip",
+            "ETag": "\"9fe41f48ebd8fb7eb509956621a38b80\"",
+            "Last-Modified": "Sat, 23 Apr 2016 01:26:19 GMT",
+            "x-amz-version-id": "null"
+          },
+          "http_status": 200.0,
+          "requested_utc": "2026-10-28T23:46:10.756884+00:00",
+          "samples": [
+            3601.0,
+            3601.0
+          ],
+          "source_age": "Download time is not measurement time; older composite, per-pixel acquisition date unverified",
+          "tile": "N01E103",
+          "url": "https://s3.amazonaws.com/elevation-tiles-prod/skadi/N01/N01E103.hgt.gz",
+          "vertical_reference": "EGM96 geoid metres",
+          "void_value": -32768.0
+        },
+        {
+          "authentication": "Public anonymous ordinary HTTPS GET; no account/API key",
+          "completed_utc": "2026-10-28T23:46:11.823344+00:00",
+          "compressed_bytes": 2369334.0,
+          "compressed_sha256": "af2f26391dd61989cdece483e70b431ce09622965cef5f07e63032c6e96e5112",
+          "format": "gzip SRTMGL1 big-endian signed int16; row0 north2deg/column0 west tile longitude",
+          "hgt_bytes": 25934402.0,
+          "hgt_sha256": "e6ff90a6db7d946a59acd3efabd2fb7de6d66d86e07daba6b362d66a397e1a80",
+          "http_metadata": {
+            "Content-Length": "2369334",
+            "Content-Type": "application/x-gzip",
+            "ETag": "\"fdcd3bf60013ef2e298d9c38db480575\"",
+            "Last-Modified": "Tue, 26 Apr 2016 20:04:57 GMT",
+            "x-amz-version-id": "null"
+          },
+          "http_status": 200.0,
+          "requested_utc": "2026-10-28T23:46:11.356461+00:00",
+          "samples": [
+            3601.0,
+            3601.0
+          ],
+          "source_age": "Download time is not measurement time; older composite, per-pixel acquisition date unverified",
+          "tile": "N01E104",
+          "url": "https://s3.amazonaws.com/elevation-tiles-prod/skadi/N01/N01E104.hgt.gz",
+          "vertical_reference": "EGM96 geoid metres",
+          "void_value": -32768.0
+        }
+      ],
+      "stats": {
+        "cache_hits": 200,
+        "evictions": 0,
+        "file_reads": 3,
+        "max_cached_chunks": 1,
+        "queries": 201,
+        "tile_loads": 1
+      },
+      "vertical_reference": "EGM96 geoid metres",
+      "world_y_alignment_verified": false
+    },
+    "actual_sample": {
+      "height_m_egm96": 5.98934936523438,
+      "normal_source_xyz": [
+        -0.0161237624465852,
+        0.997881725609256,
+        0.0630244871431637
+      ],
+      "normal_state": "derived_dem",
+      "ok": true,
+      "provenance": {
+        "chunk": "0_-1",
+        "chunk_sha256": "35d617a241b1190789bad37aefe874e1b3be2d4aeb2e68fdebfce6471580f99c",
+        "coverage": "compiled1kmDEM reference patch; territory/coast/inlandwater remain separate",
+        "grid_spacing_m": 25.0,
+        "hydrology": false,
+        "identity_sha256": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841",
+        "manifest_sha256": "d3146cef6532abe6e6fe71a2122ae5189810a8e302c8de7e9bb25d2fa61a48c6",
+        "native_posting_arcseconds": 1,
+        "new25mmeasurement_resolution": false,
+        "physical_support": false,
+        "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+        "surveyed_ground": false,
+        "world_y_alignment_verified": false
+      },
+      "reason": "Coarse/interpolated EGM96 DEM; not current surveyed ground or an architectural floor",
+      "state": "sampled_dem",
+      "vertical_reference": "EGM96 geoid metres"
+    },
+    "scope": "DEMdata decoding/interpolation/cache/normal only; not current surveyed ground, worldYalignment, terraincollision, MBSL1, hydrology or gameplay/renderperformance"
+  }
+}

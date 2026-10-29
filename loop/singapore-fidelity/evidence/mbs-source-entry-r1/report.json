@@ -1,0 +1,53 @@
+{
+  "checks": 30,
+  "failures": [],
+  "metrics": {
+    "actual_source_origin_xyz": [
+      461.805267208433,
+      0.0,
+      -1030.48251215889
+    ],
+    "actual_source_tower_ids": [
+      "way/172307471",
+      "way/172307472",
+      "way/116801004"
+    ],
+    "distance_m": 493.948750240379,
+    "max_step_m": 0.113723263144493,
+    "no_postbuild_module_translation": true,
+    "source_pose": {
+      "ok": true,
+      "pose": {
+        "floor_geometry_sha256": "20542d95ae93546b533926cf4cf9221beb0848761b57a180b3c71f1adb297615",
+        "geometry_manifest_sha256": "bda05b84a1bddfd27ce8b6a72cda0681bc24a7b106d3e41647b7a4b3904dd53d",
+        "schema": "singapore_source_restore_v1",
+        "source_pose": {
+          "elevation_reference": {
+            "reference": "MBS reconstructed L1=0; surveyed datum unresolved",
+            "source_reference": "Historical architectural form plus explicit metric assumptions",
+            "status": "staging"
+          },
+          "feature_id": "mbs-hotel/public-atrium-recreation",
+          "floor_id": "L1",
+          "frame_fingerprint": "6040270c1859302f7546d2c3a76b10917fba36578ab2ac27ddca66436bc86875",
+          "heading_rad": 2.72944177666584,
+          "room_id": "",
+          "schema": "singapore_source_pose_v1",
+          "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+          "source_xyz": [
+            532.655814998961,
+            -0.0241725482046604,
+            -966.016470593948
+          ]
+        },
+        "vertical_manifest_sha256": "dfd7f0ee2a7e08dbd23358a701253462b5dcf8ac2af7e3174924c330b497a408"
+      }
+    },
+    "source_spawn_xyz": [
+      532.680610531187,
+      -0.0248437635600567,
+      -966.07314936592
+    ]
+  },
+  "scope": "Actual national domain + common frame/context + source-positioned public loft and production Player; not full MBS/city/default bootstrap, exterior bridge, source terrain, rendered or performance acceptance."
+}

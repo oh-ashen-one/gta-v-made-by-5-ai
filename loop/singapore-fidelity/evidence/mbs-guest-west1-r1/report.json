@@ -1,0 +1,25 @@
+{
+  "all1850rooms_physically_tested": false,
+  "checks": 1006,
+  "current_private_asbuilt_verified": false,
+  "failures": [
+    "continuous productionPlayer walking"
+  ],
+  "fixtures": [],
+  "full_building_completed": false,
+  "full_suite_variant_matrix_exercised": false,
+  "native_e_doors": [
+    "R-T2-L41-02",
+    "R-T2-L41-02-bath",
+    "R-T2-L41-02-bedroom-1"
+  ],
+  "required_suite_variants": [
+    "east:1",
+    "west:1",
+    "east:2",
+    "west:2",
+    "east:3",
+    "west:3"
+  ],
+  "variants_exercised": []
+}

@@ -1,0 +1,945 @@
+{
+  "actual_native_program_doors": [
+    "T2-L5-water_garden",
+    "T2-L5-changing",
+    "T2-L5-relaxation_lounge",
+    "T2-L5-staff_pantry"
+  ],
+  "checks": 199,
+  "door_dispatch_events": [
+    {
+      "door_id": "T2-L5-water_garden",
+      "open": true,
+      "physics_frame": 190,
+      "process_frame": 46,
+      "stage": "native_open_T2-L5-water_garden"
+    },
+    {
+      "door_id": "T2-L5-changing",
+      "open": true,
+      "physics_frame": 871,
+      "process_frame": 218,
+      "stage": "native_open_T2-L5-changing"
+    },
+    {
+      "door_id": "T2-L5-relaxation_lounge",
+      "open": true,
+      "physics_frame": 1613,
+      "process_frame": 421,
+      "stage": "native_open_T2-L5-relaxation_lounge"
+    },
+    {
+      "door_id": "T2-L5-staff_pantry",
+      "open": true,
+      "physics_frame": 2310,
+      "process_frame": 592,
+      "stage": "native_open_T2-L5-staff_pantry"
+    },
+    {
+      "door_id": "T2-L5-water_garden",
+      "open": false,
+      "physics_frame": 2732,
+      "process_frame": 706,
+      "stage": "json_persistence_direct_state_test"
+    },
+    {
+      "door_id": "T2-L5-changing",
+      "open": true,
+      "physics_frame": 2800,
+      "process_frame": 725,
+      "stage": "json_persistence_direct_state_test"
+    },
+    {
+      "door_id": "T2-L5-east-linen-service",
+      "open": false,
+      "physics_frame": 2800,
+      "process_frame": 725,
+      "stage": "json_persistence_direct_state_test"
+    },
+    {
+      "door_id": "T2-L5-linen_store",
+      "open": false,
+      "physics_frame": 2800,
+      "process_frame": 725,
+      "stage": "json_persistence_direct_state_test"
+    },
+    {
+      "door_id": "T2-L5-reception",
+      "open": false,
+      "physics_frame": 2800,
+      "process_frame": 725,
+      "stage": "json_persistence_direct_state_test"
+    },
+    {
+      "door_id": "T2-L5-relaxation_lounge",
+      "open": true,
+      "physics_frame": 2800,
+      "process_frame": 725,
+      "stage": "json_persistence_direct_state_test"
+    },
+    {
+      "door_id": "T2-L5-staff_pantry",
+      "open": true,
+      "physics_frame": 2800,
+      "process_frame": 725,
+      "stage": "json_persistence_direct_state_test"
+    },
+    {
+      "door_id": "T2-L5-treatment_rooms",
+      "open": false,
+      "physics_frame": 2800,
+      "process_frame": 725,
+      "stage": "json_persistence_direct_state_test"
+    },
+    {
+      "door_id": "T2-L5-water_garden",
+      "open": true,
+      "physics_frame": 2800,
+      "process_frame": 725,
+      "stage": "json_persistence_direct_state_test"
+    },
+    {
+      "door_id": "T2-L5-west-linen-service",
+      "open": false,
+      "physics_frame": 2800,
+      "process_frame": 725,
+      "stage": "json_persistence_direct_state_test"
+    },
+    {
+      "door_id": "T2-L5-wet_treatment",
+      "open": false,
+      "physics_frame": 2800,
+      "process_frame": 725,
+      "stage": "json_persistence_direct_state_test"
+    }
+  ],
+  "elapsed_s": 77.116,
+  "failed": 0,
+  "failures": [],
+  "full_building_completed": false,
+  "held_input_observations": [
+    {
+      "armed": {
+        "fire": true,
+        "interact": true,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 132,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 32,
+      "queue": {},
+      "stage": "blocked_los_negative_control",
+      "target_id": "NONE",
+      "target_open": false
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 132,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 33,
+      "queue": {},
+      "stage": "blocked_los_negative_control",
+      "target_id": "NONE",
+      "target_open": false
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 140,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 34,
+      "queue": {},
+      "stage": "blocked_los_negative_control",
+      "target_id": "NONE",
+      "target_open": false
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": true,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 190,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 46,
+      "queue": {},
+      "stage": "native_open_T2-L5-water_garden",
+      "target_id": "T2-L5-water_garden",
+      "target_open": false
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 193,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 47,
+      "queue": {},
+      "stage": "native_open_T2-L5-water_garden",
+      "target_id": "T2-L5-water_garden",
+      "target_open": true
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 194,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 48,
+      "queue": {},
+      "stage": "native_open_T2-L5-water_garden",
+      "target_id": "T2-L5-water_garden",
+      "target_open": true
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 194,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 49,
+      "queue": {},
+      "stage": "native_open_T2-L5-water_garden",
+      "target_id": "T2-L5-water_garden",
+      "target_open": true
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 202,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 50,
+      "queue": {},
+      "stage": "native_open_T2-L5-water_garden",
+      "target_id": "T2-L5-water_garden",
+      "target_open": true
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": true,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 871,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 218,
+      "queue": {},
+      "stage": "native_open_T2-L5-changing",
+      "target_id": "T2-L5-changing",
+      "target_open": false
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 879,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 219,
+      "queue": {},
+      "stage": "native_open_T2-L5-changing",
+      "target_id": "T2-L5-changing",
+      "target_open": true
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": true,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 1613,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 421,
+      "queue": {},
+      "stage": "native_open_T2-L5-relaxation_lounge",
+      "target_id": "T2-L5-relaxation_lounge",
+      "target_open": false
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 1621,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 422,
+      "queue": {},
+      "stage": "native_open_T2-L5-relaxation_lounge",
+      "target_id": "T2-L5-relaxation_lounge",
+      "target_open": true
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": true,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 2310,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 592,
+      "queue": {},
+      "stage": "native_open_T2-L5-staff_pantry",
+      "target_id": "T2-L5-staff_pantry",
+      "target_open": false
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 2318,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 593,
+      "queue": {},
+      "stage": "native_open_T2-L5-staff_pantry",
+      "target_id": "T2-L5-staff_pantry",
+      "target_open": true
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": true,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 3205,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 823,
+      "queue": {},
+      "stage": "native_lift_request_T2-L5-west-guest_lift",
+      "target_id": "T2-L5-west-guest_lift",
+      "target_open": false
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 3213,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 824,
+      "queue": {},
+      "stage": "native_lift_request_T2-L5-west-guest_lift",
+      "target_id": "T2-L5-west-guest_lift",
+      "target_open": false
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": true,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 3419,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 878,
+      "queue": {},
+      "stage": "native_lift_request_T2-L5-west-service_lift",
+      "target_id": "T2-L5-west-service_lift",
+      "target_open": false
+    },
+    {
+      "armed": {
+        "fire": true,
+        "interact": false,
+        "reload": true,
+        "weapon_next": true
+      },
+      "busy": false,
+      "held": true,
+      "paused": false,
+      "physics_frame": 3427,
+      "player_can_process": true,
+      "player_processing": true,
+      "process_frame": 879,
+      "queue": {},
+      "stage": "native_lift_request_T2-L5-west-service_lift",
+      "target_id": "T2-L5-west-service_lift",
+      "target_open": false
+    }
+  ],
+  "planned_floor_coverage": [
+    {
+      "floor_id": "T1-B5",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 96,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T1-B4",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 96,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T1-B3",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 97,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T1-B2",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "T1-B2M",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "T1-B1",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "T1-L1",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "T1-L55",
+      "furnished_rooms": 7,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 96,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "T1-L56",
+      "furnished_rooms": 2,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 32,
+      "plan_only": true,
+      "program_spaces": 5
+    },
+    {
+      "floor_id": "T1-L57",
+      "furnished_rooms": 9,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 82,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T2-B5",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 69,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T2-B4",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 69,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T2-B3",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 72,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T2-B2",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 71,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "T2-B2M",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 71,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "T2-B1",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 71,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "T2-L1",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 70,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "T2-L5",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 31,
+      "plan_only": true,
+      "program_spaces": 10
+    },
+    {
+      "floor_id": "T2-L55",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 70,
+      "plan_only": true,
+      "program_spaces": 10
+    },
+    {
+      "floor_id": "T2-L56",
+      "furnished_rooms": 2,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 32,
+      "plan_only": true,
+      "program_spaces": 5
+    },
+    {
+      "floor_id": "T2-L57",
+      "furnished_rooms": 9,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 60,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T3-B5",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 37,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T3-B4",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 37,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T3-B3",
+      "furnished_rooms": 8,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 40,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "T3-B2",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 43,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "T3-B2M",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 43,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "T3-B1",
+      "furnished_rooms": 6,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 42,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "T3-L1",
+      "furnished_rooms": 5,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 43,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "T3-L56",
+      "furnished_rooms": 4,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 44,
+      "plan_only": true,
+      "program_spaces": 7
+    },
+    {
+      "floor_id": "T3-L57",
+      "furnished_rooms": 9,
+      "geometry_status": "RECONSTRUCTED_INVENTORY_DIMENSIONS",
+      "objects": 34,
+      "plan_only": true,
+      "program_spaces": 11
+    },
+    {
+      "floor_id": "SHOPPES-B5",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "SHOPPES-B4",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "SHOPPES-B3",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "SHOPPES-B2",
+      "furnished_rooms": 4,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 64,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "SHOPPES-B2M",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "SHOPPES-B1",
+      "furnished_rooms": 4,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 64,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "SHOPPES-L1",
+      "furnished_rooms": 4,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 64,
+      "plan_only": true,
+      "program_spaces": 8
+    },
+    {
+      "floor_id": "EXPO-B2",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "EXPO-B1",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "EXPO-L1",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "EXPO-L2",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "EXPO-L3",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "EXPO-L4",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "EXPO-L5",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "CASINO-B2M",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "CASINO-L1",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "CASINO-L2",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "CASINO-L3",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "CASINO-L4",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "THEATRE-B1",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 76,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "THEATRE-L1",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "THEATRE-L2",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "MUSEUM-B2",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "MUSEUM-B1",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "MUSEUM-L1",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "MUSEUM-L2",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    },
+    {
+      "floor_id": "MUSEUM-L3",
+      "furnished_rooms": 5,
+      "geometry_status": "EXPLICIT_RECONSTRUCTED_RESORT_PROFILE_NOT_SOURCE_FOOTPRINT",
+      "objects": 80,
+      "plan_only": true,
+      "program_spaces": 9
+    }
+  ],
+  "private_asbuilt_verified": false,
+  "rendered_fidelity_accepted": false,
+  "runtime_fixture": [
+    {
+      "floor_id": "T2-L5",
+      "max_step_m": 0.11363197863102,
+      "minimum_y_m": -0.0323991887271404,
+      "native_program_doors": [
+        "T2-L5-water_garden",
+        "T2-L5-changing",
+        "T2-L5-relaxation_lounge",
+        "T2-L5-staff_pantry"
+      ],
+      "pool_swimming_exercised": false,
+      "stairs_runtime_exercised": false,
+      "travel_m": 136.105419273139,
+      "whole_city_traversal_verified": false,
+      "whole_floor_other_wing_runtime_verified": false,
+      "wing": "west"
+    }
+  ],
+  "selected_floor": "T2-L5",
+  "selected_wing": "west"
+}

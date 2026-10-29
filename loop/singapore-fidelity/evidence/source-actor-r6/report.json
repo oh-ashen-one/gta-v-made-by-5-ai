@@ -1,0 +1,54 @@
+{
+  "checks": 56,
+  "failures": [],
+  "metrics": {
+    "actual_helicopter_used": true,
+    "actual_player_used": true,
+    "basement_walk_distance_m": 8.5625,
+    "idle_resting_clearance": {
+      "native": {
+        "contacts": [
+          {
+            "depth_m": 0.00123786926269531,
+            "normal_xyz": [
+              0.0,
+              1.0,
+              0.0
+            ],
+            "other_xyz": [
+              1495.0,
+              -20.0,
+              -6.0
+            ],
+            "query_xyz": [
+              1495.0,
+              -20.0012378692627,
+              -6.0
+            ]
+          }
+        ],
+        "local_float_roundoff_m": 0.0003564357757545,
+        "maximum_floor_contact_depth_m": 0.0023564358707494,
+        "overlap_shapes": 1,
+        "physics_tick": 94,
+        "query_center_xyz": [
+          1495.0,
+          -19.1262378692627,
+          -6.0
+        ],
+        "solver_safe_margin_m": 0.00100000004749745
+      },
+      "position_xyz": [
+        1495.0,
+        -20.026237487793,
+        -6.0
+      ],
+      "state": {
+        "state": "clear"
+      }
+    },
+    "owner_save_files_touched": false,
+    "qa_path_guard_scope": "Only this fresh QA session's scratch sentinels/links were created; no user file or external link target used"
+  },
+  "scope": "Actual production actors/native source adapter in a synthetic basement only; no normal world migration, whole-MBS, national terrain, file-save, rebase or visual acceptance."
+}

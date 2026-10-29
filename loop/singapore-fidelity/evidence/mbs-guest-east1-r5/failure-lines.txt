@@ -1,0 +1,2 @@
+[mbs-guest-floor] FAIL liftrequest never teleportsactor
+[mbs-guest-floor] FAIL continuous productionPlayer walking at(-25.22579, 3.255836, -12.16266) target(-25.62592, 3.45, -13.66932) contacts[{ "body": "GuestFloorSolidCollision", "shape": "eastCoreLanding-1_0Ceiling", "normal": (0.0, 1.0, 0.0), "position": (-25.22586, 3.28, -12.16291) }, { "body": "GuestFloorSolidCollision", "shape": "eastCoreLanding-1_0Ceiling", "normal": (0.0, 1.0, 0.0), "position": (-25.22579, 3.28, -12.16266) }]

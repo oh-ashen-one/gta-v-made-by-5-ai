@@ -2,6 +2,9 @@
 
 # Active Singapore fidelity goal — ongoing
 
+Latest verified checkpoint: read ACTIVE_HANDOFF_FACTS.json. SourceMBS entryR2 now30/30 clean with493.95m native walking; contextOBBox571; actorR656; programspaR2199; nationalDEMnative31 +Python12; coreR3298. These are distinct scopes. Defaultmain/nationalgeometry/fullMBSfloorstack/cabins/source-file-saves/live-rebases/renderfidelity remain ROOT integration, not complete. Cabinbuilderactive; guestmirror stopped-turn QA candidateR8 committed andwest1R2 running. Preserve every earlierfailure; donotpromoteall57programrecipes orall1850roomstoactualruntimepasses.
+
+
 ## Objective and branch
 
 Read `loop/singapore-fidelity/TASK.md` for the full owner objective: damageable grounded helicopter-area officers; stable free helicopter camera; ordinary-roof landing and exit; faster descent; an entire real Marina Bay Sands interior entered from outside; and one-to-one Singapore buildings, streets, names and layout. Bug fixes, a public lobby, or source data alone do not complete that objective. No new four-hour clock or extra relay wave applies. Keep the active goal open.

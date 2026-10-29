@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-10-28T23:20:53.747033+00:00",
+  "updated_utc": "2026-10-29T00:02:35.695608+00:00",
   "branch": "Astra-6-singapore-fidelity",
   "goal_status": "active; full source-world/bootstrap and full MBS assembly remain incomplete",
   "owner_decisions": "No private plans. Owner explicitly delegates all routine/creative decisions and prohibits more implementation questions. Complete coherent undocumented private interiors, match documented public facts and disclose reconstruction.",
@@ -13,22 +13,25 @@
     "police": "25 headless +27 rendered passed",
     "helicopter_fixture": "65 headless passed",
     "helicopter_world": "R2 rendered57/57, original one-shot postload walk3.1668m, reasserted3.1684m; old R1 failure retained, no human input claim",
-    "core": "CurrentrootadapterR1 297/298, Shoppes streetprobe at20m nowhitsthecorrectsupportedwaveroof18.34m. QA streetprobe movesinsideordinaryheadvolume3.5m retainingterrace1.3..1.7mthreshold; R2running, no passclaimed.",
+    "core": "Current core-source-adapter-R3 298/298 clean/reaped after narrowShoppes floorprobe and simulation-clockHelix QA corrections; priorR1/R2 failures retained. Headlessmechanics, notisolatedperformance.",
     "source_data_loader": "29/29",
     "public_atrium": "R5 rendered205/205 physical/writes clean. Fresh visual critique still FAILS tree morphology, floor response and occupied edges. Normal source-city/actual tower assembly pending.",
     "roof_support": "Downtown130/130 rendered +107/107 headless; independent source/frame +20image bounded approval. Source-mode actor changes later have separate fixture proof; background not exhaustive.",
     "source_frame": "R3 456/456 clean; independent review closed both cache-epoch and leaf-guard P2s. Pure component only.",
     "sky": "A/B40 acquisition checks, candidatepreferred in all3upward blindpairs, ground/horizon ties; overallsky not finished",
     "coast": "14 tests + independent full source audit; 64 coast-enclosed features; not dryland/elevation",
-    "source_context": "R3 478/478 clean; R1 andR2 failed runs retained. Context/native shape fixture only.",
-    "source_actor_adapter": "R5 52/52clean: actualPlayer8.5625m basement walk atY\u221220 outsideoldrectangle, realheli landing/boarding/exit, adjacent collision-union seam, sharedsupport lease transfer, profile/lost-runtime negatives, fresh source-pose restore, QApath guards. Synthetic native fixture; NOT default world/file saves/rebases/fullMBS.",
-    "source_domain": "Exactcountry/coastdomain Python9/9 with1003Shapelyparitypoints; native43/43clean. Territories/coast distinct, land/waterunknown, notterrain ordefaultgame."
+    "source_context": "OrientedR1 571/571clean/reaped; canonical OBoxes +AABBs, rotatednativefixture andstrictmetadata. R1/R2 earlierAPIkeyfailuresretained.",
+    "source_actor_adapter": "R6 56/56clean/reaped; immediate idle1.237869mm nativefloorcontact accepted atEXACTsavedY, realwall/same-bodyceiling/20mmdeepfloorblocked; allprevious52gatesretained. IndependentreviewclosedboundedP2s.",
+    "source_domain": "Exactcountry/coastdomain Python9/9 with1003Shapelyparitypoints; native43/43clean. Territories/coast distinct, land/waterunknown, notterrain ordefaultgame.",
+    "actual_source_MBS_entry": "R2 30/30clean/reaped; actualSingapore domain/commonframe, sourceanchor[461.8052672,0,-1030.4825122], native493.948750m publicdoor/atriumreturn,maxstep.113723m,no arbitrarypostbuildtranslation. R1failedonproviderlifetimeafter30gates; retained. No fullfloorstacks/defaultcity/renderacceptance.",
+    "program_floors": "All57records planned,323furnishedrooms; selectedT2-L5WEST spa nativeR2 199/199clean/reaped,136.11m/fourprogramdoors/twoliftinterlocks. Otherrecords/stairs/swimming/rendering/stack notruntimeverified.",
+    "source_terrain": "1798DEMchunks/13.298MB,12Python tests and31native cleanchecks;3435byteidenticalhalo seams. CoarsehistoricMapzenSkadi EGM96, no inferredcurrentground/worldY/collision/landwater."
   },
-  "current_work": "Guest native floor variants still fail later lift no-teleport and upper-stair route; builder diagnoses. Program-floor builder ownsnew program_floor/QA/docs; geography builder ownsnew source_domain/projectedderivative/QA/docs. Root alone engines/Git, actor/domain/save/bootstrap/fullsite integration.",
-  "next_primary_integration": "Install real territory/coast descriptors; implement runtime streaming/rebase/save-v2 and MBS site/exterior/floorstack/physical cabins/programs. Defaultmain remains fictional; do not relabel component native fixtures whole-source-world.",
+  "current_work": "Rootowns actualsourceMBSsite/floorstack/saves/rebases/nationalgeometrybootstrap andallengine/Git. GuestbuilderR8 QA-only stoppedturn/nativewalk candidate committedc5d1df8, west1R2running afterearliermirrorfailures. Cabinbuilderactive NEWcabins.gd/QA/docs, noengines. Terrainbuilderfrozen, native31pass; programbuilderfrozen native199pass. Sourcecritic reviewscompletedboundedpaths.",
+  "next_primary_integration": "Connect sourceplacedpublicloft to entire hotel+resort floorstack, actualmovingcabins andstair adjacency; sourceTerrain/national roads/buildings onegeometryauthority/defaultbootstrap; allcaches/FX/AI floatingorigin andsourcev2save/recovery preservingownerbytes; actualrendered/owner-route acceptance. Keepfullgoalactive.",
   "public_visual_next": "R5 realcaptures better butstillfails; broad branching trees, nonclipped pale stone and occupiededges plus towerassembly remain. Preserve collision/4mspine.",
   "safety": "Root runs one task engine at a time through current GPU slot, private lock, render_gate, capped60/30STREAMING; no main merge/public release/new purchases/permission bypass/foreign control.",
-  "publication_checkpoint": "744cd92 pushed; current context/runtime/public follow-up pending separatecommit.",
-  "live_or_queued_engine_handles": "No taskengine known at23:12:25Z; revalidateprocesses/handles beforelaunch. New completedsourceactorR5 andguestR5 terminal.",
-  "source_runtime_open_p2": "R5 initial idlePlayer floorcontact ~1.24mm overlap reportedclearanceblocked; postwalkrestore passed butimmediateidlepose notyet. Rootfixesnativegeometryawarecontact tolerance withoutsavedYrewrite orwholebodyexclusion."
+  "publication_checkpoint": "aa06956 pushed; laterdd4e373/5f54759/91c4230/fd33dd5/2d48cdd/aa78fca/c5d1df8 committed; verifycurrentrefs/push aftercheckpoint.",
+  "live_or_queued_engine_handles": "Atcheckpoint active/terminalstate mustrevalidate: west1R2 exec30598 viahelper, metadata/private/tmp/singapore-fidelity/mbs-guest-west1-r2. No otherknown taskengine; recentterrain31/Program199/core298/sourceentry30 terminalandreaped.",
+  "source_runtime_open_p2": "Previouslyreported idle-resting-contact P2 nowclosed by R6 nativeandindependentreview; fullsavefile/respawn/rebase/bootstrap/lifecycle acceptance stillpending."
 }

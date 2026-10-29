@@ -1,0 +1,52 @@
+{
+  "all1850rooms_physically_tested": false,
+  "checks": 1075,
+  "current_private_asbuilt_verified": false,
+  "failures": [
+    "continuous productionPlayer walking"
+  ],
+  "fixtures": [
+    {
+      "floor_id": "T3-L47",
+      "max_step_m": 0.134971395134926,
+      "maximum_y_m": 3.43105936050415,
+      "native_e_doors": [
+        "R-T3-L47-01",
+        "R-T3-L47-01-bath",
+        "R-T3-L47-01-bedroom-1",
+        "T3-L47-east-linen-service",
+        "T3-L47-east-guest_lift",
+        "T3-L47-east-service_lift"
+      ],
+      "private_asbuilt_verified": false,
+      "source_site_traversal": false,
+      "travel_m": 309.810292978713,
+      "unit_id": "R-T3-L47-01",
+      "variant": "east:1"
+    }
+  ],
+  "full_building_completed": false,
+  "full_suite_variant_matrix_exercised": false,
+  "native_e_doors": [
+    "R-T3-L47-01",
+    "R-T3-L47-01-bath",
+    "R-T3-L47-01-bedroom-1",
+    "T3-L47-east-linen-service",
+    "T3-L47-east-guest_lift",
+    "T3-L47-east-service_lift",
+    "R-T2-L41-02",
+    "R-T2-L41-02-bath",
+    "R-T2-L41-02-bedroom-1"
+  ],
+  "required_suite_variants": [
+    "east:1",
+    "west:1",
+    "east:2",
+    "west:2",
+    "east:3",
+    "west:3"
+  ],
+  "variants_exercised": [
+    "east:1"
+  ]
+}

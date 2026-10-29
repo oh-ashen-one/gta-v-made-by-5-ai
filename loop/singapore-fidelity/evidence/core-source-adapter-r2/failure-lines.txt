@@ -1,0 +1,2 @@
+FAIL landmarks: player climbs the Helix ramp onto the span (real controller) progressed=58.9 m end_y=3.28 min_y=0.35 idx=33
+297/298 checks passed, 1 failed; report=user://wave2_test_report.json

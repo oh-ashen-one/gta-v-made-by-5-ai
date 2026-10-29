@@ -1,0 +1,119 @@
+{
+  "identity_sha256": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841",
+  "manifest_sha256": "d3146cef6532abe6e6fe71a2122ae5189810a8e302c8de7e9bb25d2fa61a48c6",
+  "identity_bytes": 343,
+  "manifest_bytes": 547700,
+  "chunk_count": 1798,
+  "binary_bytes": 13298008,
+  "bindings": {
+    "country_wgs84_sha256": "c25cce8de57f280b68bd1436deedc3eaa3eb8bebf50ec334f5d9dbfd826b9c45",
+    "georeference": {
+      "distance_compression": false,
+      "legacy_plan_alignment_applied": false,
+      "metres_per_unit": 1.0,
+      "origin_easting": 30000.0,
+      "origin_northing": 30000.0,
+      "source_crs": "EPSG:4326",
+      "survey_crs": "EPSG:3414",
+      "world_axes": {
+        "x": "south",
+        "y": "up",
+        "z": "west"
+      }
+    },
+    "pbf_sha256": "5e598c8a82e5decfd0b4cf56ef57b9ff2012409657b373e4bc0abd3d0fc461cd",
+    "projection_implementation_sha256": "6bc910000fca1b353112021453eb68437cb276968f36cae66e23c552c701ba29",
+    "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983"
+  },
+  "grid": {
+    "cells_per_chunk": 40,
+    "chunk_metres": 1000,
+    "core_samples": 41,
+    "derived_spacing_is_new_measurement_resolution": false,
+    "encoding": "float32_little_endian_row_z_ascending_column_x_ascending",
+    "global_node_identity": "[integerIndexX,integerIndexZ]*25metres; same indices across chunks",
+    "halo_samples": 1,
+    "native_posting_arcseconds": 1,
+    "spacing_metres": 25,
+    "stored_samples": 43,
+    "void_encoding": "canonical float32 NaN"
+  },
+  "vertical_reference": "EGM96 geoid metres",
+  "integrity": {
+    "shared_halo_bytes_identical": true,
+    "shared_halo_edge_comparisons": 3435,
+    "source_seam_conflicts_become_void": true,
+    "source_tile_shared_column_conflict_posts": 0
+  },
+  "sources": [
+    {
+      "authentication": "Public anonymous ordinary HTTPS GET; no account/API key",
+      "completed_utc": "2026-10-28T23:46:11.354919+00:00",
+      "compressed_bytes": 5782563,
+      "compressed_sha256": "392aebffc6c7ce9ff33fe1153454557b5c377b13685a9782b97a3700092295af",
+      "format": "gzip SRTMGL1 big-endian signed int16; row0 north2deg/column0 west tile longitude",
+      "hgt_bytes": 25934402,
+      "hgt_sha256": "1624bdbddd68b01304d4092c05725e84b973a0148914be1c33118199d4201839",
+      "http_metadata": {
+        "Content-Length": "5782563",
+        "Content-Type": "application/x-gzip",
+        "ETag": "\"9fe41f48ebd8fb7eb509956621a38b80\"",
+        "Last-Modified": "Sat, 23 Apr 2016 01:26:19 GMT",
+        "x-amz-version-id": "null"
+      },
+      "http_status": 200,
+      "requested_utc": "2026-10-28T23:46:10.756884+00:00",
+      "samples": [
+        3601,
+        3601
+      ],
+      "source_age": "Download time is not measurement time; older composite, per-pixel acquisition date unverified",
+      "tile": "N01E103",
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/skadi/N01/N01E103.hgt.gz",
+      "vertical_reference": "EGM96 geoid metres",
+      "void_value": -32768
+    },
+    {
+      "authentication": "Public anonymous ordinary HTTPS GET; no account/API key",
+      "completed_utc": "2026-10-28T23:46:11.823344+00:00",
+      "compressed_bytes": 2369334,
+      "compressed_sha256": "af2f26391dd61989cdece483e70b431ce09622965cef5f07e63032c6e96e5112",
+      "format": "gzip SRTMGL1 big-endian signed int16; row0 north2deg/column0 west tile longitude",
+      "hgt_bytes": 25934402,
+      "hgt_sha256": "e6ff90a6db7d946a59acd3efabd2fb7de6d66d86e07daba6b362d66a397e1a80",
+      "http_metadata": {
+        "Content-Length": "2369334",
+        "Content-Type": "application/x-gzip",
+        "ETag": "\"fdcd3bf60013ef2e298d9c38db480575\"",
+        "Last-Modified": "Tue, 26 Apr 2016 20:04:57 GMT",
+        "x-amz-version-id": "null"
+      },
+      "http_status": 200,
+      "requested_utc": "2026-10-28T23:46:11.356461+00:00",
+      "samples": [
+        3601,
+        3601
+      ],
+      "source_age": "Download time is not measurement time; older composite, per-pixel acquisition date unverified",
+      "tile": "N01E104",
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/skadi/N01/N01E104.hgt.gz",
+      "vertical_reference": "EGM96 geoid metres",
+      "void_value": -32768
+    }
+  ],
+  "valid_posts_including_halo_duplicates": 3324502,
+  "void_posts_including_halo_duplicates": 0,
+  "python_tests": {
+    "checks": 12,
+    "failed": 0,
+    "actual_source_postings_independently_decoded": true
+  },
+  "godot_status": "PENDING_PARENT_RUN",
+  "source_compiler_sha256": "ac0e4edab7316ef94271ecc7e5c73b706688d46ef1dfff68f6080958a27e7258",
+  "source_python_tests_sha256": "cd7934348b0d255ee3f9b2ee7386ab1cd93c26877b9e1ca7622038e82fd2ef89",
+  "source_adapter_sha256": "606afc9bf3bf1be355e8df7b16f4cbfcb4079b22b37f258e18b29ad0df0d94ad",
+  "source_native_qa_sha256": "773cfa517c774b0b15a144654acc59b0aeefe6227cb77ab9a4a5f98e911643ac",
+  "current_survey_floor_worldY_hydrology_verified": false,
+  "source_terms_checked_before_acquisition": true,
+  "scope": "National DEMdata input only; source-world meshes/physicalsupport/currentterrain/MBSdatum integration remain root work"
+}
