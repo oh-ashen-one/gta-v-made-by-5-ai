@@ -5,9 +5,16 @@ Never starts the engine. Requires build_local_app.py to have completed first.
 import argparse,ast,hashlib,json,re,shutil,subprocess
 from datetime import datetime,timezone
 from pathlib import Path
-parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);a=parser.parse_args()
+from packaging_metadata import clean
+parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);parser.add_argument('--recover-assembled',action='store_true');a=parser.parse_args()
 repo=Path(__file__).resolve().parents[3];out=a.output.resolve();manifest_path=out/'BUILD_MANIFEST.json'
-manifest=json.loads(manifest_path.read_text());app=Path(manifest['app']);game=app/'Contents/Resources/game'
+if manifest_path.is_file():
+ manifest=json.loads(manifest_path.read_text())
+elif a.recover_assembled:
+ manifest={'app':str(out/'Orchard Reach — Fidelity Milestone.app'),'kind':'local Studio development snapshot using installed Godot4.7.1','engine_path':'/Applications/Godot.app/Contents/MacOS/Godot','self_contained_engine':False,'private_build_only':True,'recovery':'Initial assembly completed; signing failed on copied FinderInfo. No engine was launched.','included_preview_spaces':['public hotel lobby','reconstructed guest-floor layout','Tower2Level5 spa layout'],'unfinished':['complete source-coordinate city integration','complete hotel/resort interiors','native/rendered acceptance']}
+else:raise SystemExit('Missing completed manifest; use explicit assembled-package recovery only')
+app=Path(manifest['app']);game=app/'Contents/Resources/game'
+assert (app/'Contents/Info.plist').is_file() and (app/'Contents/MacOS/Orchard Reach').is_file(), 'Assembly is incomplete'
 assert app.parent==out and game.is_dir(), 'Unexpected delivery path'
 # The only source edit during the file snapshot was smoke-test audio teardown.
 # Refresh this exact task-owned file before final identity and signature.
@@ -32,10 +39,11 @@ for importer in (game/'assets').rglob('*.import'):
   if not (game/target[6:]).is_file():missing_remaps.append(target)
 if missing_remaps:issues.append('missing imported remaps '+repr(sorted(set(missing_remaps))))
 if issues:raise SystemExit(json.dumps(issues,indent=2))
+removed_metadata=clean(app)
 subprocess.run(['/usr/bin/codesign','--force','--sign','-',str(app)],check=True)
 subprocess.run(['/usr/bin/codesign','--verify','--strict','--verbose=2',str(app)],check=True)
 checkpoint=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
-manifest.update({'finalized_utc':datetime.now(timezone.utc).isoformat(),'source_checkpoint':checkpoint,'source_file_sha256':gd_hashes,'copy_verification':counts,'missing_import_remaps':[],'native_launch_verified':False,'runtime_check_status':'DEFERRED_BY_OWNER_NO_ENGINE_OR_GPU_LAUNCH','automatic_test_or_launch_scheduled':False,'signature_verification':'ad-hoc signature strict verification passed; not notarization or launch proof'})
+manifest.update({'finalized_utc':datetime.now(timezone.utc).isoformat(),'source_checkpoint':checkpoint,'source_file_sha256':gd_hashes,'copy_verification':counts,'missing_import_remaps':[],'native_launch_verified':False,'runtime_check_status':'DEFERRED_BY_OWNER_NO_ENGINE_OR_GPU_LAUNCH','automatic_test_or_launch_scheduled':False,'removed_packaging_metadata':removed_metadata,'signature_verification':'ad-hoc signature strict verification passed; not notarization or launch proof'})
 files=[p for p in app.rglob('*') if p.is_file()]
 manifest['file_count']=len(files);manifest['logical_bytes']=sum(p.stat().st_size for p in files)
 manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')

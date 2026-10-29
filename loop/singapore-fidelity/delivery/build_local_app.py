@@ -7,6 +7,7 @@ uses the owner's already installed, unmodified Godot app when launched.
 import argparse,hashlib,json,os,plistlib,shutil,subprocess,time
 from datetime import datetime,timezone
 from pathlib import Path
+from packaging_metadata import clean
 
 REPO=Path(__file__).resolve().parents[3]
 parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
@@ -39,11 +40,12 @@ launcher=mac/'Orchard Reach'
 subprocess.run(['/usr/bin/xcrun','clang','-O2',str(Path(__file__).with_name('launcher.c')),'-o',str(launcher)],check=True)
 plist={'CFBundleDevelopmentRegion':'en','CFBundleExecutable':'Orchard Reach','CFBundleIdentifier':'com.ashenone.orchardreach.fidelitymilestone','CFBundleName':'Orchard Reach — Fidelity Milestone','CFBundleDisplayName':'Orchard Reach — Fidelity Milestone','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.0','CFBundleVersion':'20261029.1','LSMinimumSystemVersion':'13.0','NSHighResolutionCapable':True}
 with (contents/'Info.plist').open('wb') as f:plistlib.dump(plist,f)
+removed_metadata=clean(app)
 subprocess.run(['/usr/bin/codesign','--force','--sign','-',str(app)],check=True)
 subprocess.run(['/usr/bin/codesign','--verify','--strict','--verbose=2',str(app)],check=True)
 checkpoint=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
 files=[p for p in app.rglob('*') if p.is_file()]
-manifest={'built_utc':datetime.now(timezone.utc).isoformat(),'source_checkpoint':checkpoint,'app':str(app),'kind':'local Studio development snapshot using installed Godot4.7.1','engine_path':str(engine),'engine_version_verified_before_task':'4.7.1.stable.official.a13da4feb','self_contained_engine':False,'native_launch_verified':False,'runtime_check_status':'DEFERRED_BY_OWNER_NO_ENGINE_OR_GPU_LAUNCH','private_build_only':True,'source_file_sha256':{str(p.relative_to(game)):hashlib.sha256(p.read_bytes()).hexdigest() for p in (game/'src').rglob('*.gd')},'file_count':len(files),'logical_bytes':sum(p.stat().st_size for p in files),'included_preview_spaces':['public hotel lobby','reconstructed guest-floor layout','Tower2Level5 spa layout'],'unfinished':['complete hotel and resort interiors','all1844source-catalogue keys physically allocated/furnished','full source-coordinate city integration','final native/rendered acceptance']}
+manifest={'built_utc':datetime.now(timezone.utc).isoformat(),'source_checkpoint':checkpoint,'app':str(app),'kind':'local Studio development snapshot using installed Godot4.7.1','engine_path':str(engine),'engine_version_verified_before_task':'4.7.1.stable.official.a13da4feb','self_contained_engine':False,'native_launch_verified':False,'runtime_check_status':'DEFERRED_BY_OWNER_NO_ENGINE_OR_GPU_LAUNCH','private_build_only':True,'removed_packaging_metadata':removed_metadata,'source_file_sha256':{str(p.relative_to(game)):hashlib.sha256(p.read_bytes()).hexdigest() for p in (game/'src').rglob('*.gd')},'file_count':len(files),'logical_bytes':sum(p.stat().st_size for p in files),'included_preview_spaces':['public hotel lobby','reconstructed guest-floor layout','Tower2Level5 spa layout'],'unfinished':['complete hotel and resort interiors','all1844source-catalogue keys physically allocated/furnished','full source-coordinate city integration','final native/rendered acceptance']}
 (out/'BUILD_MANIFEST.json').write_text(json.dumps(manifest,indent=2)+'\n')
 readme='''# Orchard Reach — Fidelity Milestone
 
