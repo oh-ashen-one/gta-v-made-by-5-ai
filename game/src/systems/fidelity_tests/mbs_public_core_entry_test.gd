@@ -238,7 +238,8 @@ func still(label: String) -> void:
 func finish() -> void:
 	if finished: return
 	finished=true;tracking=false
-	for action: String in ["move_forward","move_back","move_left","move_right","sprint","walk","jump","interact"]: Input.action_release(action)
+	for action: String in ["move_forward","move_back","move_left","move_right","sprint","walk","jump","interact"]:
+		if InputMap.has_action(action): Input.action_release(action)
 	var result: Dictionary={"checks":checks,"failed":failures.size(),"failures":failures,"elapsed_s":float(Time.get_ticks_msec()-_started_core)/1000.0,"metrics":_metrics,"native_actions":_native_core_actions,"whole_building_completed":false,"public_visual_fidelity_accepted":false,"owner_playtest":false}
 	print("[mbs-public-core-entry] RESULT ",JSON.stringify(result))
 	for arg: String in OS.get_cmdline_user_args():

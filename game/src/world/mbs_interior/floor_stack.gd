@@ -302,37 +302,151 @@ func _collect_bodies(root: Node,bodies: Array,statics: Array) -> void:
 		if _is_stable_floor_structure(root): statics.append(root)
 	for child: Node in root.get_children(): _collect_bodies(child,bodies,statics)
 
+func _vector_detail(value: Vector3) -> Array:
+	return [float(value.x),float(value.y),float(value.z)]
+
+func _transform_detail(value: Transform3D) -> Dictionary:
+	return {"origin_xyz":_vector_detail(value.origin),"basis_xyz":[_vector_detail(value.basis.x),_vector_detail(value.basis.y),_vector_detail(value.basis.z)]}
+
+func _shape_detail(owner: Variant) -> Dictionary:
+	if not is_instance_valid(owner): return {"owner_class":"FREED_OR_NONE"}
+	if not owner is CollisionShape3D: return {"owner_class":owner.get_class() if is_instance_valid(owner) else "NONE"}
+	var shape: Shape3D=owner.shape
+	var result: Dictionary={"owner_path":String(owner.get_path()) if owner.is_inside_tree() else String(owner.name),"disabled":owner.disabled,"local_transform":_transform_detail(owner.transform),"shape_class":shape.get_class() if shape!=null else "NONE"}
+	if shape is BoxShape3D: result["size_xyz"]=_vector_detail(shape.size)
+	elif shape is CapsuleShape3D: result.merge({"radius_m":shape.radius,"height_m":shape.height})
+	elif shape is CylinderShape3D: result.merge({"radius_m":shape.radius,"height_m":shape.height})
+	elif shape is ConvexPolygonShape3D:
+		result["point_count"]=shape.points.size()
+		var points: Array=[]
+		for index in mini(16,shape.points.size()): points.append(_vector_detail(shape.points[index]))
+		result["first_local_points_xyz"]=points
+	return result
+
+func _body_detail(body: Variant) -> Dictionary:
+	if not is_instance_valid(body): return {"exists":false}
+	var result: Dictionary={"exists":true,"native_class":body.get_class(),"path":String(body.get_path()) if body.is_inside_tree() else String(body.name),"inside_tree":body.is_inside_tree(),"collision_layer":body.collision_layer,"stable_owned_structure":_is_stable_floor_structure(body),"source_support_meta":body.get_meta(Context.COLLIDER_META,{}),"node_transform":_transform_detail(body.global_transform if body.is_inside_tree() else body.transform)}
+	if body.is_inside_tree(): result["node_space_id"]=body.get_world_3d().space.get_id()
+	if body is PhysicsBody3D:
+		var native_space: RID=PhysicsServer3D.body_get_space(body.get_rid())
+		result["native_space_id"]=native_space.get_id()
+		if native_space==get_world_3d().space:
+			var physical: Transform3D=PhysicsServer3D.body_get_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+			result["physical_transform"]=_transform_detail(physical)
+			result["physical_node_origin_error_m"]=physical.origin.distance_to(body.global_position)
+	var owners: Variant=body.get_shape_owners()
+	result["shape_owner_count"]=owners.size()
+	var shapes: Array=[]
+	for index in mini(8,owners.size()): shapes.append(_shape_detail(body.shape_owner_get_owner(owners[index])))
+	result["first_shape_owners"]=shapes
+	return result
+
+func _native_failure(entry: Dictionary,reason: String,details: Dictionary,capture: bool) -> bool:
+	if capture: entry["native_body_failure"]={"reason":reason,"physics_tick":Engine.get_physics_frames(),"origin_revision":_frame.metadata().origin_revision,"details":details}
+	return false
+
 func _native_bodies_valid(entry: Dictionary,check_doors: bool = false) -> bool:
-	if not is_instance_valid(entry.get("node")) or not entry.node.is_inside_tree() or entry.get("bodies",[]).is_empty(): return false
+	if not is_instance_valid(entry.get("node")) or not entry.node.is_inside_tree() or entry.get("bodies",[]).is_empty(): return _native_failure(entry,"missing_module_or_complete_body_list",{},check_doors)
 	var expected: Dictionary=_frame.to_local(entry.placement.anchor_xyz)
-	if not expected.ok or entry.node.global_position.distance_to(expected.position)>.002 or not entry.node.global_basis.is_equal_approx(_basis(entry.placement)): return false
+	if not expected.ok or entry.node.global_position.distance_to(expected.position)>.002 or not entry.node.global_basis.is_equal_approx(_basis(entry.placement)): return _native_failure(entry,"module_source_pose_mismatch",{"expected":expected,"actual":_transform_detail(entry.node.global_transform)},check_doors)
 	var space: RID=get_world_3d().space
 	for body: Variant in entry.bodies:
-		if not is_instance_valid(body) or not body is CollisionObject3D or not body.is_inside_tree() or body.get_world_3d()!=get_world_3d() or body.collision_layer==0: return false
+		if not is_instance_valid(body) or not body is CollisionObject3D: return _native_failure(entry,"dead_or_invalid_collision_object",{},check_doors)
+		if not body.is_inside_tree() or body.get_world_3d()!=get_world_3d() or body.collision_layer==0: return _native_failure(entry,"body_tree_world_or_layer_mismatch",_body_detail(body),check_doors)
 		if body is PhysicsBody3D:
-			if PhysicsServer3D.body_get_space(body.get_rid())!=space: return false
+			if PhysicsServer3D.body_get_space(body.get_rid())!=space: return _native_failure(entry,"native_body_space_mismatch",_body_detail(body),check_doors)
 			if _is_stable_floor_structure(body) or check_doors:
 				var physical: Transform3D=PhysicsServer3D.body_get_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
-				if not physical.is_equal_approx(body.global_transform): return false
-		elif body is Area3D and PhysicsServer3D.area_get_space(body.get_rid())!=space: return false
+				if not physical.is_equal_approx(body.global_transform): return _native_failure(entry,"native_node_pose_mismatch",_body_detail(body),check_doors)
+		elif body is Area3D and PhysicsServer3D.area_get_space(body.get_rid())!=space: return _native_failure(entry,"native_area_space_mismatch",_body_detail(body),check_doors)
 	if check_doors:
 		for door: Node3D in entry.node.doors.values():
 			var desired: float=float(door.base_angle)+(float(door.swing_delta) if door.opened else 0.0)
-			if absf(wrapf(float(door.motion_angle)-desired,-PI,PI))>.002: return false
+			if absf(wrapf(float(door.motion_angle)-desired,-PI,PI))>.002: return _native_failure(entry,"restored_door_not_settled",{"door":_body_detail(door),"motion_angle":door.motion_angle,"desired_angle":desired,"opened":door.opened},true)
+		entry["native_body_failure"]={}
 	return true
 
+func _shared_public_lofts() -> Array:
+	var lofts: Array=[];var seen: Dictionary={}
+	for marker: Node in get_tree().get_nodes_in_group("mbs_interior_public_nodes"):
+		var loft: Node=marker.get_parent()
+		if not loft is PublicL1 or seen.has(loft.get_instance_id()) or not loft.is_inside_tree() or loft.get_world_3d()!=get_world_3d() or not bool(loft.get("_built")): continue
+		var coordinate: Dictionary=loft.report().get("coordinate_context",{})
+		var snapshot: Dictionary=coordinate.get("frame",{})
+		if snapshot.get("frame_fingerprint","")!=_frame.metadata().frame_fingerprint or snapshot.get("origin_revision",-1)!=_frame.metadata().origin_revision or snapshot.get("source_origin_xyz",[])!=_frame.metadata().source_origin_xyz: continue
+		seen[loft.get_instance_id()]=true;lofts.append(loft)
+	return lofts
+
+func _public_surface_covers(loft: Node3D,world_point: Vector3) -> String:
+	var p: Vector3=loft.to_local(world_point)
+	if absf(p.y)<.10 and p.x>=float((loft.sections[0].center as Vector3).x)-.25 and p.x<=float((loft.sections[-1].center as Vector3).x)+.25:
+		var section: Dictionary=loft._section_at(p.x)
+		if p.z>=float(loft._edge(section,-1.0).z)-.25 and p.z<=float(loft._edge(section,1.0).z)+.25: return "actual_continuous_public_floor_or_edge"
+	var adapters: Array=loft.core_connections.duplicate()
+	if not loft.arrival_corridor.is_empty(): adapters.append(loft.arrival_corridor)
+	for adapter: Dictionary in adapters:
+		var a: Vector3=adapter.adapter_start_local;var b: Vector3=adapter.adapter_end_local
+		var adapter_width: float=adapter.get("adapter_width_m",adapter.width_m)
+		if absf(p.x-a.x)<=adapter_width*.5+.25 and p.z>=minf(a.z,b.z)-.25 and p.z<=maxf(a.z,b.z)+.25 and p.y>=minf(a.y,b.y)-.10 and p.y<=maxf(a.y,b.y)+.10: return "actual_public_adapter_"+String(adapter.id)
+	var entrance: Vector3=loft.portal_local.hotel_entrance
+	var sign: float=loft.get("_entrance_sign")
+	var entrance_width: float=loft.get("_door_width")
+	var outward: float=(p.z-entrance.z)*sign
+	if absf(p.y)<.10 and absf(p.x-entrance.x)<=(entrance_width+3.0)*.5+.25 and outward>=-.25 and outward<=8.25: return "actual_legacy_entrance_approach_floor"
+	return ""
+
+func _floor_probe_observation(entry: Dictionary,wing: Dictionary,x: float) -> Dictionary:
+	var local:=Vector3(x,0,wing.corridor_center_z)
+	var at: Vector3=entry.node.to_global(local)
+	var query:=PhysicsRayQueryParameters3D.create(at+Vector3.UP*.15,at-Vector3.UP*.35,1)
+	var hit: Dictionary=get_world_3d().direct_space_state.intersect_ray(query)
+	var observation: Dictionary={"wing":wing.id,"probe_local_xyz":_vector_detail(local),"probe_world_xyz":_vector_detail(at),"ray_from_xyz":_vector_detail(query.from),"ray_to_xyz":_vector_detail(query.to),"physics_tick":Engine.get_physics_frames(),"mask":1,"excluded_rids":0,"hit":not hit.is_empty(),"valid_owned_floor":false}
+	if hit.is_empty(): observation["reason"]="no_native_hit";return observation
+	var body: CollisionObject3D=hit.collider
+	var owner_id: int=body.shape_find_owner(int(hit.shape))
+	var owner: Object=body.shape_owner_get_owner(owner_id)
+	var canonical: Dictionary=_frame.to_source_current_live(hit.position)
+	var height_error: float=absf((hit.position as Vector3).y-at.y)
+	observation.merge({"actual_body_path":String(body.get_path()),"native_class":body.get_class(),"stable_floor_structure":_is_stable_floor_structure(body),"body_in_owned_complete_list":body in entry.bodies,"shape_index":int(hit.shape),"shape_owner":_shape_detail(owner),"contact_world_xyz":_vector_detail(hit.position),"contact_local_xyz":_vector_detail(entry.node.to_local(hit.position)),"contact_source_xyz":canonical.get("source_xyz",[]),"height_error_m":height_error,"normal_xyz":_vector_detail(hit.normal),"source_support_meta":body.get_meta(Context.COLLIDER_META,{})})
+	var valid: bool=_is_stable_floor_structure(body) and body in entry.bodies and height_error<=.015 and (hit.normal as Vector3).y>=.95 and canonical.ok
+	observation["valid_owned_floor"]=valid
+	observation["reason"]="owned_structure_supported" if valid else "wrong_owner_structure_height_or_normal"
+	return observation
+
 func _floor_probes_valid(entry: Dictionary,recipe: Dictionary) -> bool:
-	var observations: Array=[]
+	var adapted: bool=not recipe.record.geometry.get("atrium_core_openings",[]).is_empty() or not recipe.record.geometry.get("public_arrival_corridor",{}).is_empty()
+	var lofts: Array=_shared_public_lofts() if adapted else []
+	var observations: Array=[];var legacy_centres: Array=[];var selections: Array=[]
+	var corridor_half_run: float=float(recipe.record.geometry.length_m)*.5-float(recipe.record.geometry.core_bay_m)
+	var complete:=true
 	for wing: Dictionary in recipe.plan.wings:
-		var at: Vector3=entry.node.to_global(Vector3(0,0,wing.corridor_center_z))
-		var query:=PhysicsRayQueryParameters3D.create(at+Vector3.UP*.15,at-Vector3.UP*.35,1)
-		var hit: Dictionary=get_world_3d().direct_space_state.intersect_ray(query)
-		if hit.is_empty() or not _is_stable_floor_structure(hit.collider) or not hit.collider in entry.bodies or absf((hit.position as Vector3).y-at.y)>.015 or (hit.normal as Vector3).y<.95: return false
-		var canonical: Dictionary=_frame.to_source_current_live(hit.position)
-		if not canonical.ok: return false
-		observations.append({"wing":wing.id,"actual_body_path":String(entry.node.get_path_to(hit.collider)),"contact_source_xyz":canonical.source_xyz,"normal_y":(hit.normal as Vector3).y,"physics_tick":Engine.get_physics_frames()})
-	entry["native_floor_probes"]=observations
-	return observations.size()==2
+		# Retain the OLD fixed-centre observation even when a legitimate shared
+		# public overlay occupies it. It never substitutes for our own proof.
+		legacy_centres.append(_floor_probe_observation(entry,wing,0.0))
+		var xs: Array[float]=[0.0]
+		if adapted:
+			xs.clear()
+			for fraction: float in [-.25,-.5,.25,.5,-.75,.75]:
+				var candidate_x: float=corridor_half_run*fraction
+				var candidate_world: Vector3=entry.node.to_global(Vector3(candidate_x,0,wing.corridor_center_z))
+				var conflict:=""
+				for loft: Node3D in lofts:
+					conflict=_public_surface_covers(loft,candidate_world)
+					if not conflict.is_empty(): break
+				selections.append({"wing":wing.id,"candidate_x_m":candidate_x,"known_public_overlap":conflict,"chosen":conflict.is_empty() and xs.size()<2})
+				if conflict.is_empty() and xs.size()<2: xs.append(candidate_x)
+			if lofts.is_empty() or xs.size()!=2: complete=false
+		for x: float in xs:
+			var observation:=_floor_probe_observation(entry,wing,x)
+			observations.append(observation)
+			if not observation.valid_owned_floor: complete=false
+	entry["native_floor_probe_diagnostics"]={"adapted_l1":adapted,"shared_public_lofts":lofts.size(),"legacy_centre_observations":legacy_centres,"deterministic_geometry_selections":selections,"required_owned_probe_count":4 if adapted else 2,"actual_owned_probes":observations,"complete":complete,"reason":"all_owned_structure_probes_supported" if complete else ("missing_actual_shared_public_geometry" if adapted and lofts.is_empty() else "owned_probe_plan_or_native_support_failed"),"physics_tick":Engine.get_physics_frames()}
+	if not entry.get("probe_plan_logged",false):
+		entry["probe_plan_logged"]=true
+		print("[mbs-floor-stack] NATIVE_FLOOR_PROBE_PLAN ",JSON.stringify(entry.native_floor_probe_diagnostics))
+	if complete:
+		entry["native_floor_probes"]=observations
+	return complete and observations.size()==(4 if adapted else 2)
 
 func _local_committed(id: String) -> bool:
 	if not _configured or not _entries.has(id): return false
@@ -365,6 +479,7 @@ func floor_state(id: String) -> Dictionary:
 	var entry: Dictionary=_entries.get(id,{})
 	var result:=ready_for_floor(id)
 	result.merge({"status":entry.get("status","unloaded"),"local_collision_committed":_local_committed(id),"required_neighbors":adjacent_floor_ids(id),"source_id":entry.get("placement",{}).get("source_id",""),"canonical_anchor_xyz":entry.get("placement",{}).get("anchor_xyz",[]).duplicate(),"origin_revision":entry.get("origin_revision",-1),"region_id":entry.get("region_id",""),"body_count":entry.get("bodies",[]).size(),"static_support_count":entry.get("supports",[]).size(),"native_floor_probes":entry.get("native_floor_probes",[]).duplicate(true),"saved_doors":_saved_doors.get(id,{}).duplicate(true),"error":entry.get("error","")},true)
+	result["native_commit_diagnostics"]={"body_pose_failure":entry.get("native_body_failure",{}).duplicate(true),"floor_probes":entry.get("native_floor_probe_diagnostics",{}).duplicate(true)}
 	return result
 
 func pin_floor(id: String,owner: String) -> bool:
@@ -575,8 +690,10 @@ func _load_one(id: String,recipe: Dictionary) -> Dictionary:
 		if _native_bodies_valid(entry,true) and _floor_probes_valid(entry,recipe): committed=true;break
 		if Time.get_ticks_msec()>deadline: break
 	if not committed:
+		var diagnostics: Dictionary={"floor_id":id,"entry_origin_revision":entry.origin_revision,"current_origin_revision":_frame.metadata().origin_revision,"body_pose_failure":entry.get("native_body_failure",{}).duplicate(true),"floor_probe_failure":entry.get("native_floor_probe_diagnostics",{}).duplicate(true),"body_count":entry.bodies.size(),"static_support_count":entry.supports.size()}
+		print("[mbs-floor-stack] NATIVE_COMMIT_FAILURE ",JSON.stringify(diagnostics))
 		await _discard_failed(id,"Actual complete collision/door poses did not commit in the bounded current epoch")
-		return _not_ready(id,"physics_commit_pending",entry.error)
+		return _not_ready(id,"physics_commit_pending",entry.error,{"native_commit_diagnostics":diagnostics})
 	var g: Dictionary=recipe.record.geometry
 	var x: Array=recipe.placement.axis_x_xyz;var z: Array=recipe.placement.axis_z_xyz;var anchor: Array=recipe.placement.anchor_xyz
 	var extent_x: float=absf(float(x[0]))*float(g.length_m)*.5+absf(float(z[0]))*float(g.cross_m)*.5+2.5

@@ -1,5 +1,5 @@
 {
-  "created_utc": "2026-10-29T02:16:42.845945+00:00",
+  "created_utc": "2026-10-29T02:24:51.460010+00:00",
   "method": "PYTHON_DOUBLE_SCALAR_SOURCE_PLAN_ONLY_NOT_ENGINE_QA",
   "core_joins": [
     {
@@ -97,7 +97,7 @@
     "game/src/world/mbs_interior/public_l1.gd": "3454e63c5ef5c3d5716a98808ab81cf0acc7e52f36b45cdf67697b29ab0bad4e",
     "game/src/world/mbs_interior/program_floor.gd": "f835eddb2be6b23cd90f7110a38d49b880cdcf12fe5e8fc7d516653e73ffdc8e",
     "game/src/world/mbs_interior/floor_stack.gd": "da75a3ccfd518f8541e5c4f0256283833119823599986ecbfe204897880fab1e",
-    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "309d93802fa4a49ecc922393e5b4309ea2e659183ab680592d07908ad9122e21"
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "78e74cc927df7790eb78dcefa12b9c64f2e85791ee1ef593b60544c158a24d70"
   },
   "engine_compile_verified": false,
   "actual_runtime_verified": false,

@@ -1,0 +1,42 @@
+{
+  "observed_utc": "2026-10-29T02:56:46.201659+00:00",
+  "checkpoint": "fbf6be9e8f306aabcd3acfadf5dbe9b961c69b74",
+  "started_utc": "2026-10-29T02:35:19.898194+00:00",
+  "finished_utc": "2026-10-29T02:35:37.423148+00:00",
+  "checks": 17,
+  "failed": 1,
+  "failures": [
+    "source L2/full neighbours cold commit T1"
+  ],
+  "engine_exit_code": 1,
+  "supervisor_exit_code": 1,
+  "fatal_errors": [
+    "ERROR: The InputMap action \"walk\" doesn't exist."
+  ],
+  "timeout": false,
+  "child_reaped": true,
+  "native_actions": [],
+  "traversal_started": false,
+  "r2_and_r2b_prior_attempts": "Normal renderer-cap prelaunch denials, not gameplay/parser failures",
+  "observed_failure": "T1-L1 native physics commitment generic failure; old run did not record exact body/pose/probe cause. Separate teardown release of nonexistent walk action.",
+  "source_plan_candidate": "Centre west ray overlaps the actual Public arrival slab at+4mm; R3 retains this exact centre observation and adds precise diagnostics, with independent strict own-structure probes outside known shared geometry. Not yet a confirmed R3 native cause.",
+  "r3_runtime_verified": false,
+  "evidence": {
+    "run.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r2c/run.log",
+      "sha256": "0cceb76365a9c1b8d7e15b3c37f8b94fc5176bc4ff1fa383f29a73357f3a71cc"
+    },
+    "engine.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r2c/engine.log",
+      "sha256": "0cceb76365a9c1b8d7e15b3c37f8b94fc5176bc4ff1fa383f29a73357f3a71cc"
+    },
+    "report.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r2c/report.json",
+      "sha256": "3d1b34e408c52652172f9f07d5cd639922a66119691da16ed2ddf47ef811ebee"
+    },
+    "run.log.meta.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r2c/run.log.meta.json",
+      "sha256": "ba8f100e05ab93f433a96bc4d7e0dbf8c783c0c56961a5535fbfbf6411f9073c"
+    }
+  }
+}

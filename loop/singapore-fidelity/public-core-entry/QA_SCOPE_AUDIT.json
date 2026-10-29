@@ -1,7 +1,7 @@
 {
-  "created_utc": "2026-10-29T02:23:04.492536+00:00",
+  "created_utc": "2026-10-29T02:56:46.166085+00:00",
   "method": "LEXICAL_INDENTATION_NAME_AND_HELPER_PRESENCE_SCAN_NOT_GODOT_COMPILER",
-  "source_sha256": "78e74cc927df7790eb78dcefa12b9c64f2e85791ee1ef593b60544c158a24d70",
+  "source_sha256": "2dd3ee3acaf4d77c07f5171c324f414674ebbfb30d8c89d40daa366b83309f8c",
   "functions": {
     "_ready": 26,
     "check": 35,

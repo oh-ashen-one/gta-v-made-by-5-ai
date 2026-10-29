@@ -1,0 +1,12 @@
+{
+  "method": "STATIC_SOURCE_PROFILE_ARITHMETIC_NOT_NATIVE_COLLISION_PROOF",
+  "tower": "T3",
+  "east_corridor_z_m": -6.3,
+  "profile_east_edge_slope": -0.1538475425411338,
+  "predicted_straight_corridor_wall_crossing_x_m": 8.449923726616708,
+  "guest_lift_bank_x_m": 23.805919999999997,
+  "public_wall_z_at_bank_m": -8.662482289930828,
+  "lift_landing_z_m": -11.869325,
+  "resolved": false,
+  "no_wall_ignoring_or_fake_route_authorized": true
+}

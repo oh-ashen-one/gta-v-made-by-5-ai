@@ -1,0 +1,28 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[mbs-public-core-entry] PASS actual uncompressed source frame and staged datum
+[mbs-public-core-entry] PASS actual pinned Singapore domain loads
+[mbs-public-core-entry] PASS one live context binds public/perimeter/transport
+[mbs-public-core-entry] PASS actual domain provider territory
+[mbs-public-core-entry] PASS actual domain provider land
+[mbs-public-core-entry] PASS actual domain provider water
+[mbs-public-core-entry] PASS native physics provider explicit
+[mbs-public-core-entry] PASS runtime retains actual shared domain and common frame
+[mbs-public-core-entry] PASS nonfinite core rejects before geometry/state/transform mutation
+[mbs-public-core-entry] PASS unsupported arrival rejects transactionally
+[mbs-public-core-entry] PASS legacy default plan still has original entrance and no optional connections
+[mbs-public-core-entry] PASS arrival without matching physical guard opening rejects before construction
+[mbs-public-core-entry] PASS matched copied L1 geometry configures before source construction
+[mbs-public-core-entry] PASS actual source Site builds matched public/arrival apertures
+[mbs-public-core-entry] PASS actual public source collision commits with normalized dry volumes
+[mbs-public-core-entry] PASS three cores and actual exterior arrival are explicit
+[mbs-public-core-entry] FAIL source L2/full neighbours cold commit T1 { "ready": false, "floor_id": "T1-L1", "collision_generation": "", "travel_ready": false, "status": "physics_commit_pending", "error": "Actual complete collision/door poses did not commit in the bounded current epoch", "transient": true, "requested_floor_id": "T1-L2" }
+ERROR: The InputMap action "walk" doesn't exist.
+   at: action_release (core/input/input.cpp:1429)
+   GDScript backtrace (most recent call first):
+       [0] finish (res://src/systems/fidelity_tests/mbs_public_core_entry_test.gd:241)
+       [1] run (res://src/systems/fidelity_tests/mbs_public_core_entry_test.gd:128)
+       [2] ensure_floor (res://src/world/mbs_interior/floor_stack.gd:633)
+       [3] _load_one (res://src/world/mbs_interior/floor_stack.gd:579)
+       [4] _discard_failed (res://src/world/mbs_interior/floor_stack.gd:520)
+[mbs-public-core-entry] RESULT {"checks":17,"elapsed_s":13.42,"failed":1,"failures":["source L2/full neighbours cold commit T1"],"metrics":{},"native_actions":[],"owner_playtest":false,"public_visual_fidelity_accepted":false,"whole_building_completed":false}

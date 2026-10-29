@@ -1,17 +1,17 @@
 {
-  "created_utc": "2026-10-29T02:23:04.542397+00:00",
-  "phase": "R2_QA_VARIABLE_SCOPE_FIX_FROZEN_FOR_ROOT_COMMIT",
+  "created_utc": "2026-10-29T02:56:46.203131+00:00",
+  "phase": "R3_PRECISE_NATIVE_COMMIT_DIAGNOSTICS_AND_OWNED_PROBE_PLAN_FROZEN",
   "source_hashes": {
     "game/src/world/mbs_interior/public_l1.gd": "3454e63c5ef5c3d5716a98808ab81cf0acc7e52f36b45cdf67697b29ab0bad4e",
     "game/src/world/mbs_interior/program_floor.gd": "f835eddb2be6b23cd90f7110a38d49b880cdcf12fe5e8fc7d516653e73ffdc8e",
-    "game/src/world/mbs_interior/floor_stack.gd": "da75a3ccfd518f8541e5c4f0256283833119823599986ecbfe204897880fab1e",
-    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "78e74cc927df7790eb78dcefa12b9c64f2e85791ee1ef593b60544c158a24d70",
+    "game/src/world/mbs_interior/floor_stack.gd": "76f007624d0bf55ba22f2ffecce4c764f6cc1a91e92ab58f868dc6c12db42a20",
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "2dd3ee3acaf4d77c07f5171c324f414674ebbfb30d8c89d40daa366b83309f8c",
     "game/src/systems/fidelity_tests/mbs_public_core_entry_test.tscn": "13aa41323b8a2c235c37481de66d76d372cebdc6bc7d55365d9672d536a6eca0",
     "game/src/world/mbs_interior/site.gd": "a841d7bd0f80737f6d5574add878aa41b3ea1115921398cfeed5709c400536ab",
     "game/src/world/mbs_interior/hotel.gd": "6ef9bfec78183294b7baf93a1908c6de579965c24015d90dee94d71f421f95cc",
     "game/src/world/mbs_interior/stair_gates.gd": "bf7a5ca1156c8ee6d4d1cee6266685500a09d56cbb5134f3eeeabb2be78e38a5",
     "game/src/world/mbs_interior/guest_floor.gd": "46d1e71ff6870dab9efaf1c6f04ecc643d5ff761b556391aa61ef9dfebc37849",
-    "game/src/world/geography/source_runtime.gd": "7e70c9062aba58545c7cf3f635181ee39a80a96082e117dc269de586e18e94b3",
+    "game/src/world/geography/source_runtime.gd": "0fb3b50504ecd89cbd2512ca18a344b3700801bfa4c6b314fb8bf5d4c7fe7051",
     "game/data/mbs-interior/inventory.json": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819"
   },
   "protected_stack_apis": {
@@ -27,5 +27,9 @@
   "predecessor_parse_failure": [
     "SCRIPT ERROR: Parse Error: There is already a variable named \"geometry\" declared in this scope.",
     "ERROR: Failed to load script \"res://src/systems/fidelity_tests/mbs_public_core_entry_test.gd\" with error \"Parse error\"."
+  ],
+  "predecessor_actual_checkpoint": "fbf6be9e8f306aabcd3acfadf5dbe9b961c69b74",
+  "predecessor_failure": [
+    "source L2/full neighbours cold commit T1"
   ]
 }
