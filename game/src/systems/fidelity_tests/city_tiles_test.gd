@@ -3,8 +3,8 @@ extends Node3D
 ## the root World/Game authority or whole-city/gameplay/visual acceptance.
 const Tiles = preload("res://src/world/geography/runtimecity_tiles.gd")
 const Frame = preload("res://src/world/geography/source_frame.gd")
-const FIXTURE := "res://data/geography/compiled-country/osm-2026-10-27/qa-fixture-v1"
-const FIXTURE_ID := "055bc31a84c3d919907fce3020c1594e377b639f90dd1981b54f9beb166ba97e"
+const FIXTURE := "res://data/geography/compiled-country/osm-2026-10-27/qa-fixture-v2"
+const FIXTURE_ID := "4e8dcc308c104905c1d2b8c77ee6a37a6f6140d04da2ca9c9bd5ae10186dccc8"
 const SNAPSHOT := "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983"
 const DEM := "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841"
 var checks := 0

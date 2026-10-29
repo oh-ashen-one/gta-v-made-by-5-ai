@@ -1,0 +1,351 @@
+{
+  "identity_sha256": "2871b559368ecf5f999d84f82a008788eedfa4d8a03b2cff861d2ffe2a5e95ab",
+  "manifest_sha256": "0e68517ee60d29a38be46b0c7918e7271db89ce05aec703c3fcafd68b9b53683",
+  "counts": {
+    "building": 135415,
+    "excluded_root_special_complex": 119,
+    "game_extrusion_render_and_collision_candidate": 135100,
+    "game_story_height_from_source_levels_reconstruction": 41548,
+    "game_unknown_height_fallback_reconstruction": 89711,
+    "road": 257845,
+    "road_record": 257845,
+    "source_height_tag": 4156,
+    "unresolved_height_order_or_range": 196,
+    "unresolved_water_or_other_geometry_no_support_generated": 5193,
+    "water": 1549,
+    "waterway": 3644
+  },
+  "road_source_audit": {
+    "found": 257845,
+    "targets": 257845,
+    "vehicle_graph_or_mesh": false
+  },
+  "road_contract_issue_counts": {},
+  "unresolved_height_policy_counts": {
+    "game_story_height_from_source_levels_reconstruction": 172,
+    "game_unknown_height_fallback_reconstruction": 16,
+    "source_height_tag": 8
+  },
+  "unresolved_height_examples": [
+    {
+      "feature_key": "building|way/1162445400",
+      "owner": "-10_-11",
+      "source_tags": {
+        "building:levels": "1",
+        "building:min_level": "1",
+        "building:part": "yes",
+        "leisure": "park",
+        "name": "The Central Greenway",
+        "roof:levels": "1",
+        "roof:shape": "flat"
+      },
+      "height": {
+        "actual_roof_shape_reconstructed": false,
+        "bottom_policy": "game_story_height_from_source_min_level_reconstruction",
+        "game_bottom_height_m": 3.2,
+        "game_top_height_m": 3.2,
+        "height_is_source_fact": false,
+        "height_policy": "game_story_height_from_source_levels_reconstruction",
+        "roof_model": "flat game extrusion; source roof tags retained separately",
+        "source_height_m": null,
+        "source_height_status": "unknown",
+        "source_height_tag": null,
+        "source_levels_tag": "1",
+        "source_min_height_tag": null,
+        "source_min_level_tag": "1",
+        "story_height_game_estimate_m": 3.2,
+        "unknown_height_fallback_m": 9.6
+      }
+    },
+    {
+      "feature_key": "building|way/1122289602",
+      "owner": "-10_-3",
+      "source_tags": {
+        "building:levels": "1",
+        "building:min_level": "1",
+        "building:part": "roof",
+        "layer": "1"
+      },
+      "height": {
+        "actual_roof_shape_reconstructed": false,
+        "bottom_policy": "game_story_height_from_source_min_level_reconstruction",
+        "game_bottom_height_m": 3.2,
+        "game_top_height_m": 3.2,
+        "height_is_source_fact": false,
+        "height_policy": "game_story_height_from_source_levels_reconstruction",
+        "roof_model": "flat game extrusion; source roof tags retained separately",
+        "source_height_m": null,
+        "source_height_status": "unknown",
+        "source_height_tag": null,
+        "source_levels_tag": "1",
+        "source_min_height_tag": null,
+        "source_min_level_tag": "1",
+        "story_height_game_estimate_m": 3.2,
+        "unknown_height_fallback_m": 9.6
+      }
+    },
+    {
+      "feature_key": "building|way/173642868",
+      "owner": "-10_11",
+      "source_tags": {
+        "addr:housenumber": "1",
+        "addr:street": "Choa Chu Kang Grove",
+        "building": "school",
+        "building:min_level": "3",
+        "name": "Block 7"
+      },
+      "height": {
+        "actual_roof_shape_reconstructed": false,
+        "bottom_policy": "game_story_height_from_source_min_level_reconstruction",
+        "game_bottom_height_m": 9.600000000000001,
+        "game_top_height_m": 9.6,
+        "height_is_source_fact": false,
+        "height_policy": "game_unknown_height_fallback_reconstruction",
+        "roof_model": "flat game extrusion; source roof tags retained separately",
+        "source_height_m": null,
+        "source_height_status": "unknown",
+        "source_height_tag": null,
+        "source_levels_tag": null,
+        "source_min_height_tag": null,
+        "source_min_level_tag": "3",
+        "story_height_game_estimate_m": 3.2,
+        "unknown_height_fallback_m": 9.6
+      }
+    },
+    {
+      "feature_key": "building|way/789928257",
+      "owner": "-10_14",
+      "source_tags": {
+        "building": "roof",
+        "building:levels": "2",
+        "building:min_level": "2",
+        "roof:levels": "1"
+      },
+      "height": {
+        "actual_roof_shape_reconstructed": false,
+        "bottom_policy": "game_story_height_from_source_min_level_reconstruction",
+        "game_bottom_height_m": 6.4,
+        "game_top_height_m": 6.4,
+        "height_is_source_fact": false,
+        "height_policy": "game_story_height_from_source_levels_reconstruction",
+        "roof_model": "flat game extrusion; source roof tags retained separately",
+        "source_height_m": null,
+        "source_height_status": "unknown",
+        "source_height_tag": null,
+        "source_levels_tag": "2",
+        "source_min_height_tag": null,
+        "source_min_level_tag": "2",
+        "story_height_game_estimate_m": 3.2,
+        "unknown_height_fallback_m": 9.6
+      }
+    },
+    {
+      "feature_key": "building|way/789928258",
+      "owner": "-10_14",
+      "source_tags": {
+        "building": "roof",
+        "building:levels": "2",
+        "building:min_level": "2",
+        "roof:levels": "1"
+      },
+      "height": {
+        "actual_roof_shape_reconstructed": false,
+        "bottom_policy": "game_story_height_from_source_min_level_reconstruction",
+        "game_bottom_height_m": 6.4,
+        "game_top_height_m": 6.4,
+        "height_is_source_fact": false,
+        "height_policy": "game_story_height_from_source_levels_reconstruction",
+        "roof_model": "flat game extrusion; source roof tags retained separately",
+        "source_height_m": null,
+        "source_height_status": "unknown",
+        "source_height_tag": null,
+        "source_levels_tag": "2",
+        "source_min_height_tag": null,
+        "source_min_level_tag": "2",
+        "story_height_game_estimate_m": 3.2,
+        "unknown_height_fallback_m": 9.6
+      }
+    },
+    {
+      "feature_key": "building|way/507688112",
+      "owner": "-13_-4",
+      "source_tags": {
+        "building": "train_station",
+        "building:levels": "2",
+        "building:min_level": "2"
+      },
+      "height": {
+        "actual_roof_shape_reconstructed": false,
+        "bottom_policy": "game_story_height_from_source_min_level_reconstruction",
+        "game_bottom_height_m": 6.4,
+        "game_top_height_m": 6.4,
+        "height_is_source_fact": false,
+        "height_policy": "game_story_height_from_source_levels_reconstruction",
+        "roof_model": "flat game extrusion; source roof tags retained separately",
+        "source_height_m": null,
+        "source_height_status": "unknown",
+        "source_height_tag": null,
+        "source_levels_tag": "2",
+        "source_min_height_tag": null,
+        "source_min_level_tag": "2",
+        "story_height_game_estimate_m": 3.2,
+        "unknown_height_fallback_m": 9.6
+      }
+    },
+    {
+      "feature_key": "building|way/1098746129",
+      "owner": "-13_-5",
+      "source_tags": {
+        "building": "yes",
+        "building:levels": "11",
+        "building:min_level": "11",
+        "layer": "1"
+      },
+      "height": {
+        "actual_roof_shape_reconstructed": false,
+        "bottom_policy": "game_story_height_from_source_min_level_reconstruction",
+        "game_bottom_height_m": 35.2,
+        "game_top_height_m": 35.2,
+        "height_is_source_fact": false,
+        "height_policy": "game_story_height_from_source_levels_reconstruction",
+        "roof_model": "flat game extrusion; source roof tags retained separately",
+        "source_height_m": null,
+        "source_height_status": "unknown",
+        "source_height_tag": null,
+        "source_levels_tag": "11",
+        "source_min_height_tag": null,
+        "source_min_level_tag": "11",
+        "story_height_game_estimate_m": 3.2,
+        "unknown_height_fallback_m": 9.6
+      }
+    },
+    {
+      "feature_key": "building|way/1159408876",
+      "owner": "-15_-6",
+      "source_tags": {
+        "building": "bridge",
+        "building:levels": "1",
+        "building:min_level": "1",
+        "layer": "1"
+      },
+      "height": {
+        "actual_roof_shape_reconstructed": false,
+        "bottom_policy": "game_story_height_from_source_min_level_reconstruction",
+        "game_bottom_height_m": 3.2,
+        "game_top_height_m": 3.2,
+        "height_is_source_fact": false,
+        "height_policy": "game_story_height_from_source_levels_reconstruction",
+        "roof_model": "flat game extrusion; source roof tags retained separately",
+        "source_height_m": null,
+        "source_height_status": "unknown",
+        "source_height_tag": null,
+        "source_levels_tag": "1",
+        "source_min_height_tag": null,
+        "source_min_level_tag": "1",
+        "story_height_game_estimate_m": 3.2,
+        "unknown_height_fallback_m": 9.6
+      }
+    },
+    {
+      "feature_key": "building|way/380512075",
+      "owner": "-1_-1",
+      "source_tags": {
+        "building": "roof",
+        "building:levels": "3",
+        "building:min_level": "3",
+        "name": "South Beach Avenue",
+        "roof:levels": "0.5"
+      },
+      "height": {
+        "actual_roof_shape_reconstructed": false,
+        "bottom_policy": "game_story_height_from_source_min_level_reconstruction",
+        "game_bottom_height_m": 9.600000000000001,
+        "game_top_height_m": 9.600000000000001,
+        "height_is_source_fact": false,
+        "height_policy": "game_story_height_from_source_levels_reconstruction",
+        "roof_model": "flat game extrusion; source roof tags retained separately",
+        "source_height_m": null,
+        "source_height_status": "unknown",
+        "source_height_tag": null,
+        "source_levels_tag": "3",
+        "source_min_height_tag": null,
+        "source_min_level_tag": "3",
+        "story_height_game_estimate_m": 3.2,
+        "unknown_height_fallback_m": 9.6
+      }
+    },
+    {
+      "feature_key": "building|way/699194162",
+      "owner": "-1_-1",
+      "source_tags": {
+        "building:levels": "4",
+        "building:min_level": "4",
+        "building:part": "yes",
+        "roof:levels": "8",
+        "roof:shape": "pyramidal"
+      },
+      "height": {
+        "actual_roof_shape_reconstructed": false,
+        "bottom_policy": "game_story_height_from_source_min_level_reconstruction",
+        "game_bottom_height_m": 12.8,
+        "game_top_height_m": 12.8,
+        "height_is_source_fact": false,
+        "height_policy": "game_story_height_from_source_levels_reconstruction",
+        "roof_model": "flat game extrusion; source roof tags retained separately",
+        "source_height_m": null,
+        "source_height_status": "unknown",
+        "source_height_tag": null,
+        "source_levels_tag": "4",
+        "source_min_height_tag": null,
+        "source_min_level_tag": "4",
+        "story_height_game_estimate_m": 3.2,
+        "unknown_height_fallback_m": 9.6
+      }
+    }
+  ],
+  "catalog_pages": 906,
+  "mesh_tiles": 808,
+  "catalog_bytes": 570786889,
+  "mesh_metadata_bytes": 118362642,
+  "mesh_binary_bytes": 383151888,
+  "surface_count": 433950,
+  "vertex_count": 9746946,
+  "triangle_count": 5937468,
+  "all_published_catalog_and_mesh_hashes_checked": true,
+  "exclusion_count": 119,
+  "bindings": {
+    "country_sha": "c25cce8de57f280b68bd1436deedc3eaa3eb8bebf50ec334f5d9dbfd826b9c45",
+    "dem_identity": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841",
+    "skip_envelopes": [
+      [
+        151.124,
+        -1100.2107,
+        636.9596,
+        -653.2214
+      ]
+    ],
+    "skip_ids": [
+      "relation/2298319",
+      "way/116801004",
+      "way/172307471",
+      "way/172307472"
+    ],
+    "snapshot_sha": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+    "source_compiler_sha256": "9f23616fe64de138b9b6a8b152fd2213c4f9bef108f0cd2e286276ff01b9d202",
+    "story_height": 3.2,
+    "unknown_height": 9.6,
+    "verified_compiler_sha256": "6fe00cbbb5ee339f34c8824c408f3cec2d035674c4020dd5075f47da0bbad942",
+    "ymode": "EGM96_DEM_game_world_reference_not_current_survey",
+    "yoffset": 0.0
+  },
+  "world_y_policy": {
+    "architecture_datum_alignment_verified": false,
+    "mode": "EGM96_DEM_game_world_reference_not_current_survey",
+    "offset_m": 0.0
+  },
+  "resources": {
+    "cpu_seconds": 656.949,
+    "peak_rss_bytes": 426590208,
+    "wall_seconds": 1738.877
+  }
+}
