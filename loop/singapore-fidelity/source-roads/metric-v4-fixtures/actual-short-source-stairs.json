@@ -1,0 +1,930 @@
+{
+  "cases": [
+    {
+      "neighbors": [
+        {
+          "id": "way/894517547",
+          "points": [
+            [
+              -9360.7422,
+              12.369591575826645,
+              -11045.8995
+            ],
+            [
+              -9359.8023,
+              12.369591575826645,
+              -11046.9123
+            ]
+          ],
+          "policy": {
+            "grade": {
+              "connection_class": "surface",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"surface\",0,\"\"]",
+              "layer": 0,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": null,
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": false,
+              "status": "DEFAULT_STRUCTURE_ORDER_NOT_SOURCE_ELEVATION",
+              "structure": "surface",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "modes": {
+              "bicycle": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "car": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                },
+                "bits": 0,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                }
+              },
+              "foot": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              }
+            },
+            "multilingual_names": {},
+            "traffic_side": "left_GAME_policy",
+            "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+            "width": {
+              "footpath_game_m": 2.0,
+              "highway": "footway",
+              "lane_width_game_m": 3.2,
+              "metres": 2.0,
+              "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+              "unusable_width_tag": null
+            }
+          },
+          "radii": [
+            [
+              8122,
+              1.0003496919384958
+            ],
+            [
+              8342,
+              1.0
+            ]
+          ],
+          "raw": {
+            "id": "way/894517547",
+            "name": null,
+            "node_ids": [
+              8314356122,
+              8314356121
+            ],
+            "original_order_preserved": true,
+            "source_bounds_xz": [
+              -9360.7422,
+              -11046.9123,
+              -9359.8023,
+              -11045.8995
+            ],
+            "source_feature_sha256": "a640216a4722b4c0fcf35af7269eeee6fc8eac2f46d2151c8b7bb5d8195c5653",
+            "source_geometry_sha256": "c3208bafc4164a9b484ba08c381bb648657e6862da7d13cee368adfd4cc86b7a",
+            "source_version": 2,
+            "tags": {
+              "highway": "footway",
+              "surface": "concrete"
+            }
+          },
+          "vertices": [
+            8122,
+            8342
+          ]
+        },
+        {
+          "id": "way/894517545",
+          "points": [
+            [
+              -9358.774,
+              12.369591575826645,
+              -11048.2255
+            ],
+            [
+              -9357.8342,
+              12.369591575826645,
+              -11049.2828
+            ]
+          ],
+          "policy": {
+            "grade": {
+              "connection_class": "surface",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"surface\",0,\"\"]",
+              "layer": 0,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": null,
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": false,
+              "status": "DEFAULT_STRUCTURE_ORDER_NOT_SOURCE_ELEVATION",
+              "structure": "surface",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "modes": {
+              "bicycle": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "car": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                },
+                "bits": 0,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                }
+              },
+              "foot": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              }
+            },
+            "multilingual_names": {},
+            "traffic_side": "left_GAME_policy",
+            "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+            "width": {
+              "footpath_game_m": 2.0,
+              "highway": "footway",
+              "lane_width_game_m": 3.2,
+              "metres": 2.0,
+              "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+              "unusable_width_tag": null
+            }
+          },
+          "radii": [
+            [
+              8341,
+              1.0
+            ],
+            [
+              5338,
+              3.200013127313595
+            ]
+          ],
+          "raw": {
+            "id": "way/894517545",
+            "name": null,
+            "node_ids": [
+              8314356120,
+              8314356119
+            ],
+            "original_order_preserved": true,
+            "source_bounds_xz": [
+              -9358.774,
+              -11049.2828,
+              -9357.8342,
+              -11048.2255
+            ],
+            "source_feature_sha256": "229b500bc5699fcdec1c97a4f2b3bee8c8f48f1874da177eadcb5b27aa551a8f",
+            "source_geometry_sha256": "3e67f6b3c01b38f4b192a0e4102b58763dbc556fec16e1757a830016d77f3850",
+            "source_version": 2,
+            "tags": {
+              "highway": "footway",
+              "surface": "paving_stones"
+            }
+          },
+          "vertices": [
+            8341,
+            5338
+          ]
+        }
+      ],
+      "stair": {
+        "id": "way/894517546",
+        "points": [
+          [
+            -9359.8023,
+            12.369591575826645,
+            -11046.9123
+          ],
+          [
+            -9358.774,
+            12.369591575826645,
+            -11048.2255
+          ]
+        ],
+        "policy": {
+          "grade": {
+            "connection_class": "surface",
+            "covered_building_passage": false,
+            "explicit_underground_location": false,
+            "inference_policy": "source_road_vertical_semantics_v2",
+            "key": "[\"surface\",0,\"\"]",
+            "layer": 0,
+            "level": "",
+            "metric_layer_height_is_source_fact": false,
+            "raw_bridge": null,
+            "raw_layer": null,
+            "raw_tunnel": null,
+            "source_ele_datum": null,
+            "source_ele_tag": null,
+            "source_layer_explicit": false,
+            "status": "DEFAULT_STRUCTURE_ORDER_NOT_SOURCE_ELEVATION",
+            "structure": "surface",
+            "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+          },
+          "modes": {
+            "bicycle": {
+              "access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              },
+              "backward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              },
+              "bits": 0,
+              "direction": {
+                "bits": 3,
+                "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+              },
+              "forward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              }
+            },
+            "car": {
+              "access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              },
+              "backward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              },
+              "bits": 0,
+              "direction": {
+                "bits": 3,
+                "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+              },
+              "forward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              }
+            },
+            "foot": {
+              "access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "allowed"
+              },
+              "backward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "allowed"
+              },
+              "bits": 3,
+              "direction": {
+                "bits": 3,
+                "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+              },
+              "forward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "allowed"
+              }
+            }
+          },
+          "multilingual_names": {},
+          "traffic_side": "left_GAME_policy",
+          "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+          "width": {
+            "footpath_game_m": 2.0,
+            "highway": "steps",
+            "lane_width_game_m": 3.2,
+            "metres": 2.0,
+            "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+            "unusable_width_tag": null
+          }
+        },
+        "radii": [
+          [
+            8342,
+            1.0
+          ],
+          [
+            8341,
+            1.0
+          ]
+        ],
+        "raw": {
+          "id": "way/894517546",
+          "name": null,
+          "node_ids": [
+            8314356121,
+            8314356120
+          ],
+          "original_order_preserved": true,
+          "source_bounds_xz": [
+            -9359.8023,
+            -11048.2255,
+            -9358.774,
+            -11046.9123
+          ],
+          "source_feature_sha256": "601a287a5a36e0a711f7470b94949dac7231035f79462135b50cd8fe5fea466a",
+          "source_geometry_sha256": "9dab7daa1508a98d21c0383dcfea4559c2304d87a52c861a4dcfa9db120e3f97",
+          "source_version": 7,
+          "tags": {
+            "handrail": "yes",
+            "highway": "steps",
+            "incline": "up",
+            "ramp": "no",
+            "step_count": "4",
+            "surface": "concrete",
+            "tactile_paving": "no"
+          }
+        },
+        "vertices": [
+          8342,
+          8341
+        ]
+      }
+    },
+    {
+      "neighbors": [
+        {
+          "id": "way/877727866",
+          "points": [
+            [
+              -10869.3319,
+              18.83086488284232,
+              -4981.8922
+            ],
+            [
+              -10869.332,
+              18.83086488284232,
+              -4982.7825
+            ]
+          ],
+          "policy": {
+            "grade": {
+              "connection_class": "surface",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"surface\",0,\"\"]",
+              "layer": 0,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": null,
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": false,
+              "status": "DEFAULT_STRUCTURE_ORDER_NOT_SOURCE_ELEVATION",
+              "structure": "surface",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "modes": {
+              "bicycle": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "car": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                },
+                "bits": 0,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                }
+              },
+              "foot": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              }
+            },
+            "multilingual_names": {},
+            "traffic_side": "left_GAME_policy",
+            "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+            "width": {
+              "footpath_game_m": 2.0,
+              "highway": "footway",
+              "lane_width_game_m": 3.2,
+              "metres": 2.0,
+              "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+              "unusable_width_tag": null
+            }
+          },
+          "radii": [
+            [
+              58778,
+              1.0072824107134553
+            ],
+            [
+              58779,
+              1.0
+            ]
+          ],
+          "raw": {
+            "id": "way/877727866",
+            "name": null,
+            "node_ids": [
+              8166370696,
+              8169705119
+            ],
+            "original_order_preserved": true,
+            "source_bounds_xz": [
+              -10869.332,
+              -4982.7825,
+              -10869.3319,
+              -4981.8922
+            ],
+            "source_feature_sha256": "497b05b5ef3133bf73772d99c5d7ee75edfe58dc57a55730bc17910a4553f32f",
+            "source_geometry_sha256": "95faa13ab4f6ca0bb884e63a78db5952e1fae0db1b4665ed5e8e76aa863fb9d5",
+            "source_version": 3,
+            "tags": {
+              "highway": "footway",
+              "surface": "concrete"
+            }
+          },
+          "vertices": [
+            58778,
+            58779
+          ]
+        },
+        {
+          "id": "way/878098831",
+          "points": [
+            [
+              -10869.332,
+              18.83086488284232,
+              -4984.0512
+            ],
+            [
+              -10869.332,
+              18.83086488284232,
+              -4984.7634
+            ]
+          ],
+          "policy": {
+            "grade": {
+              "connection_class": "surface",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"surface\",0,\"\"]",
+              "layer": 0,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": null,
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": false,
+              "status": "DEFAULT_STRUCTURE_ORDER_NOT_SOURCE_ELEVATION",
+              "structure": "surface",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "modes": {
+              "bicycle": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "car": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                },
+                "bits": 0,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "unresolved"
+                }
+              },
+              "foot": {
+                "access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "footway",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              }
+            },
+            "multilingual_names": {},
+            "traffic_side": "left_GAME_policy",
+            "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+            "width": {
+              "footpath_game_m": 2.0,
+              "highway": "footway",
+              "lane_width_game_m": 3.2,
+              "metres": 2.0,
+              "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+              "unusable_width_tag": null
+            }
+          },
+          "radii": [
+            [
+              58800,
+              1.0
+            ],
+            [
+              58801,
+              3.2743267189401917
+            ]
+          ],
+          "raw": {
+            "id": "way/878098831",
+            "name": null,
+            "node_ids": [
+              8169705118,
+              8166370695
+            ],
+            "original_order_preserved": true,
+            "source_bounds_xz": [
+              -10869.332,
+              -4984.7634,
+              -10869.332,
+              -4984.0512
+            ],
+            "source_feature_sha256": "be812bc039180ee326a46cced926b2ba7b5cb91e1d5d5febba8907309ed02531",
+            "source_geometry_sha256": "64f629509c7e218238e1a3fdb3074a4673417f7cb037d1cb13ba5526b84f1be2",
+            "source_version": 2,
+            "tags": {
+              "highway": "footway",
+              "surface": "concrete"
+            }
+          },
+          "vertices": [
+            58800,
+            58801
+          ]
+        }
+      ],
+      "stair": {
+        "id": "way/878098832",
+        "points": [
+          [
+            -10869.332,
+            18.83086488284232,
+            -4982.7825
+          ],
+          [
+            -10869.332,
+            18.83086488284232,
+            -4984.0512
+          ]
+        ],
+        "policy": {
+          "grade": {
+            "connection_class": "surface",
+            "covered_building_passage": false,
+            "explicit_underground_location": false,
+            "inference_policy": "source_road_vertical_semantics_v2",
+            "key": "[\"surface\",0,\"\"]",
+            "layer": 0,
+            "level": "",
+            "metric_layer_height_is_source_fact": false,
+            "raw_bridge": null,
+            "raw_layer": null,
+            "raw_tunnel": null,
+            "source_ele_datum": null,
+            "source_ele_tag": null,
+            "source_layer_explicit": false,
+            "status": "DEFAULT_STRUCTURE_ORDER_NOT_SOURCE_ELEVATION",
+            "structure": "surface",
+            "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+          },
+          "modes": {
+            "bicycle": {
+              "access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              },
+              "backward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              },
+              "bits": 0,
+              "direction": {
+                "bits": 3,
+                "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+              },
+              "forward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              }
+            },
+            "car": {
+              "access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              },
+              "backward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              },
+              "bits": 0,
+              "direction": {
+                "bits": 3,
+                "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+              },
+              "forward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "unresolved"
+              }
+            },
+            "foot": {
+              "access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "allowed"
+              },
+              "backward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "allowed"
+              },
+              "bits": 3,
+              "direction": {
+                "bits": 3,
+                "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+              },
+              "forward_access": {
+                "highway": "steps",
+                "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                "state": "allowed"
+              }
+            }
+          },
+          "multilingual_names": {},
+          "traffic_side": "left_GAME_policy",
+          "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+          "width": {
+            "footpath_game_m": 2.0,
+            "highway": "steps",
+            "lane_width_game_m": 3.2,
+            "metres": 2.0,
+            "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+            "unusable_width_tag": null
+          }
+        },
+        "radii": [
+          [
+            58779,
+            1.0
+          ],
+          [
+            58800,
+            1.0
+          ]
+        ],
+        "raw": {
+          "id": "way/878098832",
+          "name": null,
+          "node_ids": [
+            8169705119,
+            8169705118
+          ],
+          "original_order_preserved": true,
+          "source_bounds_xz": [
+            -10869.332,
+            -4984.0512,
+            -10869.332,
+            -4982.7825
+          ],
+          "source_feature_sha256": "9a6c9c78e63e3c8737f4c3718d6da97323afe2e5230701adc5b55d6a656204c6",
+          "source_geometry_sha256": "0023a5ab3e066e5e749cc7d92b214a9e712394c925e200b85bd6ac64ad4168b5",
+          "source_version": 7,
+          "tags": {
+            "handrail": "yes",
+            "highway": "steps",
+            "incline": "up",
+            "ramp": "no",
+            "step_count": "1",
+            "surface": "concrete",
+            "tactile_paving": "yes"
+          }
+        },
+        "vertices": [
+          58779,
+          58800
+        ]
+      }
+    }
+  ],
+  "profile_identity": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+  "status": "ACTUAL_SOURCE_FACTS_WITH_REJECTED_FLAT_GAME_PROFILE_FOR_TARGETED_RECONSTRUCTION"
+}

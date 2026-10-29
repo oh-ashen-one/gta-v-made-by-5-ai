@@ -1,0 +1,6108 @@
+{
+  "schema": "mbs_public_building_bindings_v2",
+  "coordinate_frame": {
+    "source_crs": "EPSG:4326",
+    "survey_crs": "EPSG:3414",
+    "origin_easting": 30000.0,
+    "origin_northing": 30000.0,
+    "world_axes": {
+      "x": "south",
+      "y": "up",
+      "z": "west"
+    },
+    "metres_per_unit": 1.0,
+    "distance_compression": false,
+    "legacy_plan_alignment_applied": false
+  },
+  "frozen_country_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+  "frozen_source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+  "buildings": [
+    {
+      "building_key": "EXPO",
+      "relation_source_id": "relation/12633420",
+      "relation_version": 2,
+      "relation_timestamp_utc": "2022-05-03T11:16:47Z",
+      "relation_source_url": "https://api.openstreetmap.org/api/0.6/relation/12633420",
+      "relation_response_sha256": "a01adb2eb281387378b7c6f0377e2cbe860258bb39e6e7f9e8a488a3d084ba0e",
+      "relation_name": "Marina Bay Sands MICE Building",
+      "relation_observation_utc": "2026-10-29T19:43:58Z",
+      "metadata_scope": "New identity/member metadata only; retained2026-10-27 geometry is not replaced with current network geometry. Relation metadata is not asserted to have been independently present in original PBF.",
+      "parts": [
+        {
+          "source_id": "way/172014440",
+          "relation_role": "outline",
+          "feature_key": "building|way/172014440",
+          "source_tags": {
+            "addr:housenumber": "10",
+            "addr:street": "Bayfront Avenue",
+            "building": "commercial",
+            "height": "0"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    636.9596,
+                    -681.1336
+                  ],
+                  [
+                    642.5988,
+                    -687.6888
+                  ],
+                  [
+                    659.5608,
+                    -710.2366
+                  ],
+                  [
+                    674.2449,
+                    -730.0133
+                  ],
+                  [
+                    685.059,
+                    -747.9203
+                  ],
+                  [
+                    696.26,
+                    -775.4429
+                  ],
+                  [
+                    638.3403,
+                    -826.3361
+                  ],
+                  [
+                    630.1356,
+                    -834.4158
+                  ],
+                  [
+                    581.2612,
+                    -869.1717
+                  ],
+                  [
+                    554.8889,
+                    -889.5601
+                  ],
+                  [
+                    547.8563,
+                    -893.2995
+                  ],
+                  [
+                    526.5818,
+                    -880.4562
+                  ],
+                  [
+                    454.2663,
+                    -832.5666
+                  ],
+                  [
+                    504.4898,
+                    -798.6676
+                  ],
+                  [
+                    554.1493,
+                    -760.0165
+                  ],
+                  [
+                    597.7383,
+                    -721.0536
+                  ],
+                  [
+                    636.9596,
+                    -681.1336
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "7e5aa4445e6367e2a4997207309f1341bc8c255c209bb0bff3af56c607cfa505",
+          "source_record_sha256": "542d9c701039246a0bf0a431c615eef3c66581d942c9706ca2abf5a63bb0f9fb",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            454.2663,
+            -893.2995,
+            696.26,
+            -681.1336
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "893d97af85bd19a938938d3f4b35ec35d9592b51a03679ba1e00c928bbf97467",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847264",
+          "relation_role": "part",
+          "feature_key": "building|way/827847264",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "30",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    656.1551,
+                    -711.4386
+                  ],
+                  [
+                    668.296,
+                    -728.0212
+                  ],
+                  [
+                    682.3056,
+                    -752.9062
+                  ],
+                  [
+                    691.4831,
+                    -773.562
+                  ],
+                  [
+                    681.9515,
+                    -780.373
+                  ],
+                  [
+                    676.1686,
+                    -765.048
+                  ],
+                  [
+                    662.0042,
+                    -741.1202
+                  ],
+                  [
+                    649.5094,
+                    -722.2783
+                  ],
+                  [
+                    648.271,
+                    -723.1241
+                  ],
+                  [
+                    644.8432,
+                    -718.9284
+                  ],
+                  [
+                    656.1551,
+                    -711.4386
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "b57579708a9bbeaf10f17ddd41a530d832fc76c1492fe75e524b5ee95a229121",
+          "source_record_sha256": "a6f0b2d5456c1e3f6f95f11067bab8a4b6a6e12c94afb5aac933c32d8e1c8339",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            644.8432,
+            -780.373,
+            691.4831,
+            -711.4386
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "46a559ea4734f06b234853138644774850e0bfa433bec21d6b089e1cc016d55b",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827847265",
+          "relation_role": "part",
+          "feature_key": "building|way/827847265",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "31",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    649.5094,
+                    -722.2783
+                  ],
+                  [
+                    662.0042,
+                    -741.1202
+                  ],
+                  [
+                    676.1686,
+                    -765.048
+                  ],
+                  [
+                    681.9515,
+                    -780.373
+                  ],
+                  [
+                    682.239,
+                    -781.1186
+                  ],
+                  [
+                    673.9237,
+                    -786.6498
+                  ],
+                  [
+                    668.5831,
+                    -772.6826
+                  ],
+                  [
+                    655.0711,
+                    -749.7786
+                  ],
+                  [
+                    642.0676,
+                    -732.2834
+                  ],
+                  [
+                    640.7407,
+                    -733.2961
+                  ],
+                  [
+                    638.2197,
+                    -729.9907
+                  ],
+                  [
+                    648.271,
+                    -723.1241
+                  ],
+                  [
+                    649.5094,
+                    -722.2783
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "573b6f6abd326ea1d3005ee1de7efcfc5a90ce30ace0a0bea5a2becd6e6f94b6",
+          "source_record_sha256": "452768c7e44c68e03de0c6a7080ae3e9390c1242bf06dd5f41afd8e64223fa02",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            638.2197,
+            -786.6498,
+            682.239,
+            -722.2783
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "456b1708e1d3bbf05b08c5706b9e9639c6519dd5a3187ce121a0bd792b042c44",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827847266",
+          "relation_role": "part",
+          "feature_key": "building|way/827847266",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "32",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    642.0676,
+                    -732.2834
+                  ],
+                  [
+                    655.0711,
+                    -749.7786
+                  ],
+                  [
+                    668.5831,
+                    -772.6826
+                  ],
+                  [
+                    673.9237,
+                    -786.6498
+                  ],
+                  [
+                    674.4324,
+                    -787.9964
+                  ],
+                  [
+                    666.2055,
+                    -794.3845
+                  ],
+                  [
+                    659.7702,
+                    -779.527
+                  ],
+                  [
+                    647.9168,
+                    -760.0285
+                  ],
+                  [
+                    634.5485,
+                    -742.1326
+                  ],
+                  [
+                    633.2879,
+                    -743.0675
+                  ],
+                  [
+                    631.2976,
+                    -740.4966
+                  ],
+                  [
+                    640.7407,
+                    -733.2961
+                  ],
+                  [
+                    642.0676,
+                    -732.2834
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "716ea6545502b0ef719ba7a0b4ba109f26153abf4d9fc70cb9f88d9a722f84bb",
+          "source_record_sha256": "8058a7cdabde5aced1ead2137316a16f5154e3a4a9c4ccff41574a7f1feef856",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            631.2976,
+            -794.3845,
+            674.4324,
+            -732.2834
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "1e442bb2a2ef10f6891e6a6b38120f8bd5c053a6abae90c9607be2cec1f25d48",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847267",
+          "relation_role": "part",
+          "feature_key": "building|way/827847267",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "33",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    634.5485,
+                    -742.1326
+                  ],
+                  [
+                    647.9168,
+                    -760.0285
+                  ],
+                  [
+                    659.7702,
+                    -779.527
+                  ],
+                  [
+                    666.2055,
+                    -794.3845
+                  ],
+                  [
+                    666.8468,
+                    -795.8535
+                  ],
+                  [
+                    658.4431,
+                    -801.9968
+                  ],
+                  [
+                    652.251,
+                    -787.2283
+                  ],
+                  [
+                    638.0866,
+                    -766.0716
+                  ],
+                  [
+                    626.1668,
+                    -750.869
+                  ],
+                  [
+                    624.8952,
+                    -751.8817
+                  ],
+                  [
+                    623.5683,
+                    -750.2457
+                  ],
+                  [
+                    633.2879,
+                    -743.0675
+                  ],
+                  [
+                    634.5485,
+                    -742.1326
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "030d6ab2ec7a87e63a91b6de2c1efd07a624997ad26781c6fbf081d81920c1d1",
+          "source_record_sha256": "0249d6202c0fbd6a9e460bd3c86d220e48c3b813a1e918c7406e37f12a1f7136",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            623.5683,
+            -801.9968,
+            666.8468,
+            -742.1326
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "209eed8a7387598bb696ec11fb36e907a3f9951784b06d970c00e6426ffe8f85",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847268",
+          "relation_role": "part",
+          "feature_key": "building|way/827847268",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "34",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    626.1668,
+                    -750.869
+                  ],
+                  [
+                    638.0866,
+                    -766.0716
+                  ],
+                  [
+                    652.251,
+                    -787.2283
+                  ],
+                  [
+                    658.4431,
+                    -801.9968
+                  ],
+                  [
+                    658.8964,
+                    -803.0874
+                  ],
+                  [
+                    651.2225,
+                    -809.0303
+                  ],
+                  [
+                    643.5819,
+                    -793.7054
+                  ],
+                  [
+                    629.2074,
+                    -773.1941
+                  ],
+                  [
+                    617.3539,
+                    -759.2269
+                  ],
+                  [
+                    616.7015,
+                    -758.3922
+                  ],
+                  [
+                    624.8952,
+                    -751.8817
+                  ],
+                  [
+                    626.1668,
+                    -750.869
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "9fea21c6b6e44bd44feb5a038bb9ce6118e081f17c82bc315ec998f47a3e203b",
+          "source_record_sha256": "b7e9cead6f42a5a6756f8f419af779909b52b5030b7ca2bae186d2cdca829a0f",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            616.7015,
+            -809.0303,
+            658.8964,
+            -750.869
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "cb71a6ca0e6d2162c42d2d712b287c189b2f1fdd3333beab43c46b63645a5f66",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847269",
+          "relation_role": "part",
+          "feature_key": "building|way/827847269",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "35",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    617.3539,
+                    -759.2269
+                  ],
+                  [
+                    629.2074,
+                    -773.1941
+                  ],
+                  [
+                    643.5819,
+                    -793.7054
+                  ],
+                  [
+                    651.2225,
+                    -809.0303
+                  ],
+                  [
+                    651.8859,
+                    -810.3658
+                  ],
+                  [
+                    643.8581,
+                    -817.0321
+                  ],
+                  [
+                    634.1167,
+                    -799.6705
+                  ],
+                  [
+                    620.682,
+                    -781.1959
+                  ],
+                  [
+                    608.3973,
+                    -767.2287
+                  ],
+                  [
+                    617.3539,
+                    -759.2269
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "a6e67e00ce0e6a4806f2d11cfe6371ad16bf5a0bd00613ede6a81fbd0018ccf6",
+          "source_record_sha256": "936c3b711dd65377f3f2356204341873c13971ab5c77805d81f416272cd0fa05",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            608.3973,
+            -817.0321,
+            651.8859,
+            -759.2269
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "5d3d214f65c33b1a264ce574ffbe5ab57e49b33147b6d562e5e26b61f2c90ce3",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847270",
+          "relation_role": "part",
+          "feature_key": "building|way/827847270",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "36",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    608.3973,
+                    -767.2287
+                  ],
+                  [
+                    620.682,
+                    -781.1959
+                  ],
+                  [
+                    634.1167,
+                    -799.6705
+                  ],
+                  [
+                    643.8581,
+                    -817.0321
+                  ],
+                  [
+                    644.6653,
+                    -818.4678
+                  ],
+                  [
+                    635.8856,
+                    -826.3694
+                  ],
+                  [
+                    635.2,
+                    -824.9783
+                  ],
+                  [
+                    629.207,
+                    -814.1495
+                  ],
+                  [
+                    614.7551,
+                    -793.783
+                  ],
+                  [
+                    598.7108,
+                    -775.7424
+                  ],
+                  [
+                    599.5401,
+                    -775.2639
+                  ],
+                  [
+                    608.3973,
+                    -767.2287
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "beb7a08d650886a823119abf3353be82204c092a95bd1e9abf3f93774b9b4588",
+          "source_record_sha256": "b815e5ec7200d0d336b286be84beca6bb673926697f840c32ca8db14b0addd4d",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            598.7108,
+            -826.3694,
+            644.6653,
+            -767.2287
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "75f5d15a861c34a8d1cf33fc43a39e48277c420b858ebd31e0189ecc869d1b8d",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847271",
+          "relation_role": "part",
+          "feature_key": "building|way/827847271",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "35",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    598.3902,
+                    -773.9951
+                  ],
+                  [
+                    599.5401,
+                    -775.2639
+                  ],
+                  [
+                    598.7108,
+                    -775.7424
+                  ],
+                  [
+                    614.7551,
+                    -793.783
+                  ],
+                  [
+                    629.207,
+                    -814.1495
+                  ],
+                  [
+                    635.2,
+                    -824.9783
+                  ],
+                  [
+                    627.6809,
+                    -832.3346
+                  ],
+                  [
+                    626.7521,
+                    -830.5873
+                  ],
+                  [
+                    619.9518,
+                    -819.3802
+                  ],
+                  [
+                    606.2297,
+                    -801.4175
+                  ],
+                  [
+                    588.6042,
+                    -783.1544
+                  ],
+                  [
+                    589.2455,
+                    -782.6536
+                  ],
+                  [
+                    598.3902,
+                    -773.9951
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "aa19f65a642d493ff2db1b6fa239b0a88b42c67e08055d638bd3d7c242b02ea1",
+          "source_record_sha256": "084cd0e4455c395a6f930fb05ff06434bcf8fb731ada48669e534efdaf5a7595",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            588.6042,
+            -832.3346,
+            635.2,
+            -773.9951
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "55df3c615c8f00edf883b6fcd27e60b22e45d6eb3651de5e18e4763d0b8c35fc",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847272",
+          "relation_role": "part",
+          "feature_key": "building|way/827847272",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "34",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    587.7307,
+                    -780.9063
+                  ],
+                  [
+                    589.2455,
+                    -782.6536
+                  ],
+                  [
+                    588.6042,
+                    -783.1544
+                  ],
+                  [
+                    606.2297,
+                    -801.4175
+                  ],
+                  [
+                    619.9518,
+                    -819.3802
+                  ],
+                  [
+                    626.7521,
+                    -830.5873
+                  ],
+                  [
+                    619.0117,
+                    -838.144
+                  ],
+                  [
+                    617.5301,
+                    -836.4412
+                  ],
+                  [
+                    610.7077,
+                    -825.7794
+                  ],
+                  [
+                    595.3933,
+                    -807.1601
+                  ],
+                  [
+                    578.376,
+                    -790.4661
+                  ],
+                  [
+                    579.0947,
+                    -789.5647
+                  ],
+                  [
+                    587.7307,
+                    -780.9063
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "d9b2c49824a6bd387182c1ad0c5ac8f14a0d78ff66e493230ada5f61f11da80c",
+          "source_record_sha256": "a8df597cc89aec6b4c3d15fcf322d8d4435a1fbd54fd4c74daafe729b3f5b8f3",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            578.376,
+            -838.144,
+            626.7521,
+            -780.9063
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "26edb86365ea83563f65a0bc503ca7faa0ae27b144e660cb1dec410383aa6d40",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847273",
+          "relation_role": "part",
+          "feature_key": "building|way/827847273",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "33",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    576.5736,
+                    -787.1608
+                  ],
+                  [
+                    579.0947,
+                    -789.5647
+                  ],
+                  [
+                    578.376,
+                    -790.4661
+                  ],
+                  [
+                    595.3933,
+                    -807.1601
+                  ],
+                  [
+                    610.7077,
+                    -825.7794
+                  ],
+                  [
+                    617.5301,
+                    -836.4412
+                  ],
+                  [
+                    610.1325,
+                    -843.9644
+                  ],
+                  [
+                    608.6177,
+                    -842.0057
+                  ],
+                  [
+                    600.0151,
+                    -829.5632
+                  ],
+                  [
+                    593.9556,
+                    -823.2306
+                  ],
+                  [
+                    583.5396,
+                    -812.3239
+                  ],
+                  [
+                    567.5396,
+                    -796.8653
+                  ],
+                  [
+                    568.192,
+                    -796.32
+                  ],
+                  [
+                    576.5736,
+                    -787.1608
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "b88489dcad34a3fba87a5f4f747e10977b37766613912903d831a59202f82a5c",
+          "source_record_sha256": "2420993cf18cc993d0462fabebb53b59dfef694d7e0608b61db5d13211ae89bf",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            567.5396,
+            -843.9644,
+            617.5301,
+            -787.1608
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "98ed5f563091c78e47407084edcd81cf8e21ee950c737f72ea751e1498fe46b3",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847274",
+          "relation_role": "part",
+          "feature_key": "building|way/827847274",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "32",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    564.6536,
+                    -793.1927
+                  ],
+                  [
+                    568.192,
+                    -796.32
+                  ],
+                  [
+                    567.5396,
+                    -796.8653
+                  ],
+                  [
+                    583.5396,
+                    -812.3239
+                  ],
+                  [
+                    593.9556,
+                    -823.2306
+                  ],
+                  [
+                    600.0151,
+                    -829.5632
+                  ],
+                  [
+                    608.6177,
+                    -842.0057
+                  ],
+                  [
+                    601.2423,
+                    -849.7181
+                  ],
+                  [
+                    599.8711,
+                    -848.0376
+                  ],
+                  [
+                    591.9209,
+                    -837.4982
+                  ],
+                  [
+                    574.8041,
+                    -819.747
+                  ],
+                  [
+                    555.8739,
+                    -802.619
+                  ],
+                  [
+                    556.7032,
+                    -801.9624
+                  ],
+                  [
+                    564.6536,
+                    -793.1927
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "29ed7c882f175d70ddb4cf4b837405c67f2553974a4e828eb17b2c776256ec7e",
+          "source_record_sha256": "c6438b146b3d12595d3b1c9c3a754dab50ccd0eaa5bea40ccc53fd805e32459c",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            555.8739,
+            -849.7181,
+            608.6177,
+            -793.1927
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "3ffaf2f7e9eb88686637e581807bbd4001b22d4019ef96120dfb02656d747604",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847275",
+          "relation_role": "part",
+          "feature_key": "building|way/827847275",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "31",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    552.2249,
+                    -798.5791
+                  ],
+                  [
+                    556.7032,
+                    -801.9624
+                  ],
+                  [
+                    555.8739,
+                    -802.619
+                  ],
+                  [
+                    574.8041,
+                    -819.747
+                  ],
+                  [
+                    591.9209,
+                    -837.4982
+                  ],
+                  [
+                    599.8711,
+                    -848.0376
+                  ],
+                  [
+                    592.6395,
+                    -855.5275
+                  ],
+                  [
+                    591.2684,
+                    -853.6355
+                  ],
+                  [
+                    577.9774,
+                    -838.9448
+                  ],
+                  [
+                    560.562,
+                    -822.2175
+                  ],
+                  [
+                    543.987,
+                    -808.3949
+                  ],
+                  [
+                    544.4957,
+                    -807.7828
+                  ],
+                  [
+                    552.2249,
+                    -798.5791
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "b223ba7c18021ebcb9112bd4e36ee36814cc51eeda850a8befe860aba7556c80",
+          "source_record_sha256": "3f3f95375e4e51196084d4c08f22f45f8b3315e13eca3b90bc737e138f5fab15",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            543.987,
+            -855.5275,
+            599.8711,
+            -798.5791
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "07f6760ff7dbde9acc24dedb1a829d3b408c45309d9563f33ad4573b1903e132",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847276",
+          "relation_role": "part",
+          "feature_key": "building|way/827847276",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "30",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    539.1771,
+                    -803.3422
+                  ],
+                  [
+                    544.4957,
+                    -807.7828
+                  ],
+                  [
+                    543.987,
+                    -808.3949
+                  ],
+                  [
+                    560.562,
+                    -822.2175
+                  ],
+                  [
+                    577.9774,
+                    -838.9448
+                  ],
+                  [
+                    591.2684,
+                    -853.6355
+                  ],
+                  [
+                    584.0478,
+                    -861.2812
+                  ],
+                  [
+                    582.3117,
+                    -859.0553
+                  ],
+                  [
+                    573.2115,
+                    -849.4953
+                  ],
+                  [
+                    550.8093,
+                    -829.3512
+                  ],
+                  [
+                    530.5079,
+                    -813.6366
+                  ],
+                  [
+                    531.4478,
+                    -812.6907
+                  ],
+                  [
+                    539.1771,
+                    -803.3422
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "cca71c44ebcac0b4cb03fd16dc7b7a44940c31f0d760f6d4548d6efb3f219496",
+          "source_record_sha256": "5a7c773f6fd24c18c283ea16475bde2e98a68793c4f5cd5255458e8d7ffd72a4",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            530.5079,
+            -861.2812,
+            591.2684,
+            -803.3422
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "b1fdc60a554e5f4c891235dc7ee35d99f43919c71d99d772a7403827db282b95",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847277",
+          "relation_role": "part",
+          "feature_key": "building|way/827847277",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "29",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    524.8023,
+                    -807.7381
+                  ],
+                  [
+                    531.4478,
+                    -812.6907
+                  ],
+                  [
+                    530.5079,
+                    -813.6366
+                  ],
+                  [
+                    550.8093,
+                    -829.3512
+                  ],
+                  [
+                    573.2115,
+                    -849.4953
+                  ],
+                  [
+                    582.3117,
+                    -859.0553
+                  ],
+                  [
+                    575.5887,
+                    -867.135
+                  ],
+                  [
+                    573.0676,
+                    -865.1318
+                  ],
+                  [
+                    558.9031,
+                    -851.1645
+                  ],
+                  [
+                    536.3571,
+                    -832.3337
+                  ],
+                  [
+                    516.5644,
+                    -818.3664
+                  ],
+                  [
+                    517.2831,
+                    -817.2757
+                  ],
+                  [
+                    524.8023,
+                    -807.7381
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "6652010a18e981494a0c68e3963923774235d9ec0609c62ce75454d4e4345217",
+          "source_record_sha256": "8af8ae449841a6da53eb944343d2713ec90c10735bc23fe52a2ecfe801a99291",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            516.5644,
+            -867.135,
+            582.3117,
+            -807.7381
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "24b49e3b7598d9ffc265a13588c6fd6f45f9c74131295b7adc4f8e6a5ff67302",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847278",
+          "relation_role": "part",
+          "feature_key": "building|way/827847278",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "28",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    509.3439,
+                    -811.967
+                  ],
+                  [
+                    517.2831,
+                    -817.2757
+                  ],
+                  [
+                    516.5644,
+                    -818.3664
+                  ],
+                  [
+                    536.3571,
+                    -832.3337
+                  ],
+                  [
+                    558.9031,
+                    -851.1645
+                  ],
+                  [
+                    573.0676,
+                    -865.1318
+                  ],
+                  [
+                    566.997,
+                    -873.2115
+                  ],
+                  [
+                    564.1774,
+                    -870.9522
+                  ],
+                  [
+                    546.1206,
+                    -854.4364
+                  ],
+                  [
+                    521.1199,
+                    -835.4609
+                  ],
+                  [
+                    501.6146,
+                    -822.5063
+                  ],
+                  [
+                    502.2559,
+                    -821.271
+                  ],
+                  [
+                    509.3439,
+                    -811.967
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "7c2320f6adbd87992591f7648ff88db867bba3f91897f66156e45c883743a87d",
+          "source_record_sha256": "10ef97c1b586db9727f7725dc05b21fde52beeaa70a7ef001715a17f73150040",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            501.6146,
+            -873.2115,
+            573.0676,
+            -811.967
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "f9601ffcd932e17832cc45faad277e903ddd95e78a011e14da2059dd130b232a",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847279",
+          "relation_role": "part",
+          "feature_key": "building|way/827847279",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "27",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    492.5033,
+                    -814.8716
+                  ],
+                  [
+                    502.2559,
+                    -821.271
+                  ],
+                  [
+                    501.6146,
+                    -822.5063
+                  ],
+                  [
+                    521.1199,
+                    -835.4609
+                  ],
+                  [
+                    546.1206,
+                    -854.4364
+                  ],
+                  [
+                    564.1774,
+                    -870.9522
+                  ],
+                  [
+                    558.3942,
+                    -878.7315
+                  ],
+                  [
+                    555.8731,
+                    -876.4834
+                  ],
+                  [
+                    541.9298,
+                    -864.9868
+                  ],
+                  [
+                    510.571,
+                    -841.86
+                  ],
+                  [
+                    484.774,
+                    -825.3441
+                  ],
+                  [
+                    485.6476,
+                    -824.5428
+                  ],
+                  [
+                    492.5033,
+                    -814.8716
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "d259c348d55c10531d5c7795e9cae7f021678f11c0e17ba8a81f12a602bdb3ab",
+          "source_record_sha256": "79ec50886ee725f76e9e18ea44054c0e8186b76a0644c68f84e5851bb24bf793",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            484.774,
+            -878.7315,
+            564.1774,
+            -814.8716
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "2061a7bff1c2aae8b4e4eddc67cfd54cf835f3ea94b2edff3b8b88eb02f26a52",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827847280",
+          "relation_role": "part",
+          "feature_key": "building|way/827847280",
+          "source_tags": {
+            "building:min_level": "5",
+            "building:part": "yes",
+            "height": "26",
+            "roof:shape": "skillion"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    473.3628,
+                    -817.1306
+                  ],
+                  [
+                    485.6476,
+                    -824.5428
+                  ],
+                  [
+                    484.774,
+                    -825.3441
+                  ],
+                  [
+                    510.571,
+                    -841.86
+                  ],
+                  [
+                    541.9298,
+                    -864.9868
+                  ],
+                  [
+                    555.8731,
+                    -876.4834
+                  ],
+                  [
+                    549.8688,
+                    -884.7745
+                  ],
+                  [
+                    532.0996,
+                    -871.3859
+                  ],
+                  [
+                    503.8479,
+                    -851.8206
+                  ],
+                  [
+                    465.921,
+                    -828.1818
+                  ],
+                  [
+                    473.3628,
+                    -817.1306
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "550afaa0409a836a0b8c79763dff7681e556388cba524e5008b3e174f6b7125f",
+          "source_record_sha256": "a7fb30c107ace870b347fe44cb7a31fbe183f55629696dde8fb2f124b7eaa42a",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            465.921,
+            -884.7745,
+            555.8731,
+            -817.1306
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "ae9a929e2a7d6f3ab3eee7be6abc6cd6abd8940ba7a99e0ad3e4f21c85e8107f",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/1056849313",
+          "relation_role": "part",
+          "feature_key": "building|way/1056849313",
+          "source_tags": {
+            "building:levels": "5",
+            "building:part": "yes",
+            "height": "25",
+            "roof:levels": "1",
+            "roof:shape": "round"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    636.9596,
+                    -681.1336
+                  ],
+                  [
+                    642.5988,
+                    -687.6888
+                  ],
+                  [
+                    659.5608,
+                    -710.2366
+                  ],
+                  [
+                    674.2449,
+                    -730.0133
+                  ],
+                  [
+                    685.059,
+                    -747.9203
+                  ],
+                  [
+                    696.26,
+                    -775.4429
+                  ],
+                  [
+                    638.3403,
+                    -826.3361
+                  ],
+                  [
+                    630.1356,
+                    -834.4158
+                  ],
+                  [
+                    581.2612,
+                    -869.1717
+                  ],
+                  [
+                    554.8889,
+                    -889.5601
+                  ],
+                  [
+                    547.8563,
+                    -893.2995
+                  ],
+                  [
+                    526.5818,
+                    -880.4562
+                  ],
+                  [
+                    454.2663,
+                    -832.5666
+                  ],
+                  [
+                    504.4898,
+                    -798.6676
+                  ],
+                  [
+                    554.1493,
+                    -760.0165
+                  ],
+                  [
+                    597.7383,
+                    -721.0536
+                  ],
+                  [
+                    636.9596,
+                    -681.1336
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "7e5aa4445e6367e2a4997207309f1341bc8c255c209bb0bff3af56c607cfa505",
+          "source_record_sha256": "f94edb3018a29563c39bd1a1af4fd5a77f446b7541ab7924d4e331cc2feab401",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            454.2663,
+            -893.2995,
+            696.26,
+            -681.1336
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "a2c6ae39ae31a6743c35f2c2bebb1aaba2d909e990d724fec86e266086fe1b3a",
+          "frozen_city_mesh_tiles": []
+        }
+      ],
+      "generic_city_replacement_feature_keys": [
+        "building|way/172014440",
+        "building|way/827847264",
+        "building|way/827847265",
+        "building|way/827847266",
+        "building|way/827847267",
+        "building|way/827847268",
+        "building|way/827847269",
+        "building|way/827847270",
+        "building|way/827847271",
+        "building|way/827847272",
+        "building|way/827847273",
+        "building|way/827847274",
+        "building|way/827847275",
+        "building|way/827847276",
+        "building|way/827847277",
+        "building|way/827847278",
+        "building|way/827847279",
+        "building|way/827847280",
+        "building|way/1056849313"
+      ],
+      "already_excluded_source_keys": [
+        "building|way/172014440",
+        "building|way/827847266",
+        "building|way/827847267",
+        "building|way/827847268",
+        "building|way/827847269",
+        "building|way/827847270",
+        "building|way/827847271",
+        "building|way/827847272",
+        "building|way/827847273",
+        "building|way/827847274",
+        "building|way/827847275",
+        "building|way/827847276",
+        "building|way/827847277",
+        "building|way/827847278",
+        "building|way/827847279",
+        "building|way/827847280",
+        "building|way/1056849313"
+      ],
+      "replacement_policy": {
+        "replace_only_exact_source_ids": true,
+        "no_spatial_blanket_deletion": true,
+        "install_real_collision_before_removing_generic": true,
+        "preserve_unreplaced_roof_parts_and_adjacent_buildings": true,
+        "wait_for_readiness_and_physics_frame_before_entry": true,
+        "source_face_and_saved_identity_mapping_required": true
+      },
+      "planar_outline_is_not_every_floor_slab": true,
+      "terrain_basement_cutouts_verified": false
+    },
+    {
+      "building_key": "MUSEUM",
+      "relation_source_id": "relation/14314416",
+      "relation_version": 3,
+      "relation_timestamp_utc": "2023-09-17T08:24:34Z",
+      "relation_source_url": "https://api.openstreetmap.org/api/0.6/relation/14314416",
+      "relation_response_sha256": "addb034a0f2b86d23132bdee21a98aa7773e6e992346d5d3551515d88f637a3c",
+      "relation_name": "ArtScience Museum",
+      "relation_observation_utc": "2026-10-29T19:43:58Z",
+      "metadata_scope": "New identity/member metadata only; retained2026-10-27 geometry is not replaced with current network geometry. Relation metadata is not asserted to have been independently present in original PBF.",
+      "parts": [
+        {
+          "source_id": "way/261191086",
+          "relation_role": "outline",
+          "feature_key": "building|way/261191086",
+          "source_tags": {
+            "building:part": "yes"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    160.2809,
+                    -846.9871
+                  ],
+                  [
+                    172.7648,
+                    -847.0206
+                  ],
+                  [
+                    173.2513,
+                    -848.6788
+                  ],
+                  [
+                    173.5056,
+                    -850.2703
+                  ],
+                  [
+                    173.8152,
+                    -852.3403
+                  ],
+                  [
+                    175.507,
+                    -851.1161
+                  ],
+                  [
+                    177.2651,
+                    -849.8363
+                  ],
+                  [
+                    178.8574,
+                    -848.6678
+                  ],
+                  [
+                    189.9591,
+                    -856.2802
+                  ],
+                  [
+                    189.2071,
+                    -858.0164
+                  ],
+                  [
+                    188.411,
+                    -859.8749
+                  ],
+                  [
+                    187.5374,
+                    -861.9227
+                  ],
+                  [
+                    190.0032,
+                    -861.9895
+                  ],
+                  [
+                    191.7061,
+                    -862.0451
+                  ],
+                  [
+                    193.42,
+                    -862.0897
+                  ],
+                  [
+                    196.7814,
+                    -873.486
+                  ],
+                  [
+                    195.5208,
+                    -874.3095
+                  ],
+                  [
+                    194.1828,
+                    -875.4558
+                  ],
+                  [
+                    197.8318,
+                    -877.2254
+                  ],
+                  [
+                    202.487,
+                    -879.6293
+                  ],
+                  [
+                    211.4214,
+                    -884.0922
+                  ],
+                  [
+                    214.1747,
+                    -885.6281
+                  ],
+                  [
+                    210.0722,
+                    -897.0354
+                  ],
+                  [
+                    207.5953,
+                    -897.0131
+                  ],
+                  [
+                    197.4556,
+                    -896.49
+                  ],
+                  [
+                    192.6346,
+                    -896.2785
+                  ],
+                  [
+                    195.7748,
+                    -901.3534
+                  ],
+                  [
+                    198.7603,
+                    -906.1612
+                  ],
+                  [
+                    202.7409,
+                    -912.5717
+                  ],
+                  [
+                    203.8135,
+                    -914.9533
+                  ],
+                  [
+                    199.2688,
+                    -918.3254
+                  ],
+                  [
+                    194.2708,
+                    -921.6085
+                  ],
+                  [
+                    191.8161,
+                    -919.8612
+                  ],
+                  [
+                    185.7013,
+                    -916.1662
+                  ],
+                  [
+                    181.3668,
+                    -912.961
+                  ],
+                  [
+                    176.9881,
+                    -909.2994
+                  ],
+                  [
+                    177.0875,
+                    -918.2918
+                  ],
+                  [
+                    177.1427,
+                    -923.7006
+                  ],
+                  [
+                    177.1759,
+                    -926.7611
+                  ],
+                  [
+                    172.3216,
+                    -927.2062
+                  ],
+                  [
+                    168.5732,
+                    -927.1394
+                  ],
+                  [
+                    164.9795,
+                    -927.1394
+                  ],
+                  [
+                    164.504,
+                    -924.0009
+                  ],
+                  [
+                    160.1585,
+                    -918.6255
+                  ],
+                  [
+                    158.0466,
+                    -914.4075
+                  ],
+                  [
+                    156.7197,
+                    -909.7444
+                  ],
+                  [
+                    155.4149,
+                    -912.0592
+                  ],
+                  [
+                    153.9332,
+                    -914.2962
+                  ],
+                  [
+                    152.8606,
+                    -916.1325
+                  ],
+                  [
+                    150.5606,
+                    -917.9577
+                  ],
+                  [
+                    145.4079,
+                    -915.0084
+                  ],
+                  [
+                    142.4445,
+                    -912.3485
+                  ],
+                  [
+                    141.007,
+                    -911.0575
+                  ],
+                  [
+                    142.3008,
+                    -908.6981
+                  ],
+                  [
+                    139.5917,
+                    -904.8919
+                  ],
+                  [
+                    139.1163,
+                    -901.8759
+                  ],
+                  [
+                    139.7024,
+                    -898.1365
+                  ],
+                  [
+                    138.6298,
+                    -897.5021
+                  ],
+                  [
+                    138.1433,
+                    -896.7565
+                  ],
+                  [
+                    138.1875,
+                    -895.9774
+                  ],
+                  [
+                    139.0721,
+                    -894.7421
+                  ],
+                  [
+                    136.927,
+                    -895.4877
+                  ],
+                  [
+                    130.9559,
+                    -899.7056
+                  ],
+                  [
+                    126.2123,
+                    -889.4111
+                  ],
+                  [
+                    124.3216,
+                    -879.8177
+                  ],
+                  [
+                    128.9989,
+                    -882.9562
+                  ],
+                  [
+                    133.1786,
+                    -883.4348
+                  ],
+                  [
+                    135.4454,
+                    -882.1661
+                  ],
+                  [
+                    133.1455,
+                    -880.2296
+                  ],
+                  [
+                    132.9575,
+                    -878.9275
+                  ],
+                  [
+                    133.1787,
+                    -877.6143
+                  ],
+                  [
+                    135.1469,
+                    -876.0117
+                  ],
+                  [
+                    136.2305,
+                    -875.4441
+                  ],
+                  [
+                    138.1435,
+                    -874.4425
+                  ],
+                  [
+                    139.7026,
+                    -873.6301
+                  ],
+                  [
+                    145.342,
+                    -871.1261
+                  ],
+                  [
+                    147.266,
+                    -870.2692
+                  ],
+                  [
+                    143.1526,
+                    -871.1038
+                  ],
+                  [
+                    140.3993,
+                    -871.6714
+                  ],
+                  [
+                    137.281,
+                    -872.2834
+                  ],
+                  [
+                    134.6825,
+                    -872.4837
+                  ],
+                  [
+                    132.4379,
+                    -872.8844
+                  ],
+                  [
+                    136.0648,
+                    -860.3641
+                  ],
+                  [
+                    138.1105,
+                    -860.4086
+                  ],
+                  [
+                    140.333,
+                    -860.3975
+                  ],
+                  [
+                    143.5618,
+                    -860.3753
+                  ],
+                  [
+                    143.396,
+                    -858.5056
+                  ],
+                  [
+                    142.8542,
+                    -856.9475
+                  ],
+                  [
+                    142.3787,
+                    -855.2447
+                  ],
+                  [
+                    152.7949,
+                    -847.4544
+                  ],
+                  [
+                    154.4314,
+                    -848.9124
+                  ],
+                  [
+                    155.891,
+                    -850.2924
+                  ],
+                  [
+                    157.6049,
+                    -851.6168
+                  ],
+                  [
+                    158.4232,
+                    -849.9363
+                  ],
+                  [
+                    159.3078,
+                    -848.4227
+                  ],
+                  [
+                    160.2809,
+                    -846.9871
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "aa097315c2097af5f2b6c22e4e0ccfddf3b00cedc3c2f3e3d8d0f34ee53869d1",
+          "source_record_sha256": "435c906af7e7aa290c7f79af893b9dd28c1aec6a718de8661d7016b00aa7ddfb",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            124.3216,
+            -927.2062,
+            214.1747,
+            -846.9871
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "2597d1e0510fb2265e373aa9038403a6587ce135b370277a0967853f54ebf967",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855854",
+          "relation_role": "outline",
+          "feature_key": "building|way/827855854",
+          "source_tags": {
+            "building": "roof",
+            "building:levels": "1",
+            "building:part": "yes",
+            "height": "6",
+            "layer": "1"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    150.2293,
+                    -878.9611
+                  ],
+                  [
+                    154.9065,
+                    -889.634
+                  ],
+                  [
+                    158.091,
+                    -894.1079
+                  ],
+                  [
+                    142.4445,
+                    -912.3485
+                  ],
+                  [
+                    137.9219,
+                    -915.5314
+                  ],
+                  [
+                    132.7359,
+                    -920.9067
+                  ],
+                  [
+                    127.3952,
+                    -917.4232
+                  ],
+                  [
+                    122.0655,
+                    -912.8379
+                  ],
+                  [
+                    126.6544,
+                    -907.6184
+                  ],
+                  [
+                    128.9544,
+                    -903.2113
+                  ],
+                  [
+                    130.9559,
+                    -899.7056
+                  ],
+                  [
+                    126.2123,
+                    -889.4111
+                  ],
+                  [
+                    124.3216,
+                    -879.8177
+                  ],
+                  [
+                    128.9989,
+                    -882.9562
+                  ],
+                  [
+                    133.1786,
+                    -883.4348
+                  ],
+                  [
+                    135.4454,
+                    -882.1661
+                  ],
+                  [
+                    150.2293,
+                    -878.9611
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "07f0fabd26b8bcbb8c3770e6c4a3cd8ce1fe948ec4251d995ebc725039156c5f",
+          "source_record_sha256": "38e5211921194f699a7a7f5a5fa9c9324110f8c04755e72e56c3b70568ece162",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            122.0655,
+            -920.9067,
+            158.091,
+            -878.9611
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "215e8353e79cc6b6bab816fc7c5971cada6e57dcef8d5cf3a4b7fac29b85bcee",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855864",
+          "relation_role": "part",
+          "feature_key": "building|way/827855864",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "8"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    143.5618,
+                    -860.3753
+                  ],
+                  [
+                    144.8223,
+                    -864.482
+                  ],
+                  [
+                    143.1526,
+                    -871.1038
+                  ],
+                  [
+                    140.3993,
+                    -871.6714
+                  ],
+                  [
+                    143.5618,
+                    -860.3753
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "66c2c74214c17bbc4318b2a4f6d2308f097e5d454485df88e7dbddfc98d92f67",
+          "source_record_sha256": "b6b7338a557802cacd1af4337122ec99f91c6387eac1371efa32e845733ae694",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            140.3993,
+            -871.6714,
+            144.8223,
+            -860.3753
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "23d8139b846ec95ca49020afcbebbf5a736ebcec0aaf98c7153e619d24f56e3e",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827855865",
+          "relation_role": "part",
+          "feature_key": "building|way/827855865",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "10"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    143.5618,
+                    -860.3753
+                  ],
+                  [
+                    140.3993,
+                    -871.6714
+                  ],
+                  [
+                    137.281,
+                    -872.2834
+                  ],
+                  [
+                    140.333,
+                    -860.3975
+                  ],
+                  [
+                    143.5618,
+                    -860.3753
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "00039803fdf407e2a80df63e75375d2211e296ed9c5c8a2579d991496a38fe67",
+          "source_record_sha256": "dd6f5730179508484ba8e866441db1abd0943ffbc068eef21f24ab2df3412c86",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            137.281,
+            -872.2834,
+            143.5618,
+            -860.3753
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "db185243d1d916325c9755f9abfaa14a64c3e595807832caa8b03d2becd13472",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827855866",
+          "relation_role": "part",
+          "feature_key": "building|way/827855866",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "11"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    140.333,
+                    -860.3975
+                  ],
+                  [
+                    137.281,
+                    -872.2834
+                  ],
+                  [
+                    134.6825,
+                    -872.4837
+                  ],
+                  [
+                    138.1105,
+                    -860.4086
+                  ],
+                  [
+                    140.333,
+                    -860.3975
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "6c28a2b7bc3405d1beb0584aae18837a8a611e1aa75ab665c32730489ae3162e",
+          "source_record_sha256": "5ee0c5221fc6d9c5de66215b0a3ba945e74d437d71670120a3daf59606d6ab48",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            134.6825,
+            -872.4837,
+            140.333,
+            -860.3975
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "edf884fbc8589ff3385569420f6230d019c4d08a7342f733148724201b29b4cb",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827855867",
+          "relation_role": "part",
+          "feature_key": "building|way/827855867",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "13"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    136.0648,
+                    -860.3641
+                  ],
+                  [
+                    138.1105,
+                    -860.4086
+                  ],
+                  [
+                    134.6825,
+                    -872.4837
+                  ],
+                  [
+                    132.4379,
+                    -872.8844
+                  ],
+                  [
+                    136.0648,
+                    -860.3641
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "3c6a50700df91755e69a0dad356a10acfdfa997c5c3f47d2ad1d2dd2c57a1f1b",
+          "source_record_sha256": "6c130854e1eaf8b58c2339560bb59fff045b926d67d1886f295ce7684c065fe7",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            132.4379,
+            -872.8844,
+            138.1105,
+            -860.3641
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "69d103799d16cbb0518e259a7b89e53f4c84673a2f0eb90f20afb59167046201",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827855868",
+          "relation_role": "part",
+          "feature_key": "building|way/827855868",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "11"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    139.7026,
+                    -873.6301
+                  ],
+                  [
+                    146.0162,
+                    -895.9664
+                  ],
+                  [
+                    144.3576,
+                    -896.5339
+                  ],
+                  [
+                    138.1435,
+                    -874.4425
+                  ],
+                  [
+                    139.7026,
+                    -873.6301
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "a32da696685ce9d2deb7cc0833f68c6e19302246639f3e7685cbee4fd7c77153",
+          "source_record_sha256": "37540f2488d94d39c9a50ae3d5b7d8df272d5e803f65d784e114361d97a5861d",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            138.1435,
+            -896.5339,
+            146.0162,
+            -873.6301
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "bf1b9227737cf46be47995de06f373022fedb119085c9e5cc20b8ba2bc8201ad",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827855869",
+          "relation_role": "part",
+          "feature_key": "building|way/827855869",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "17",
+            "min_height": "13"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    138.1435,
+                    -874.4425
+                  ],
+                  [
+                    144.3576,
+                    -896.5339
+                  ],
+                  [
+                    141.9802,
+                    -897.3575
+                  ],
+                  [
+                    136.2305,
+                    -875.4441
+                  ],
+                  [
+                    138.1435,
+                    -874.4425
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "0815a5541f9a4c355cb2744b2162665eb5742b29c1a5a925e1b2ec9c38a624f0",
+          "source_record_sha256": "9c48e8e35c05a751f7f9dc9a71689d707385177cf13297bfd3a0c5de5701059c",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            136.2305,
+            -897.3575,
+            144.3576,
+            -874.4425
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "e84273f24de53d33a90a24b1bd123b6e5fb3dd90e258f1cad7969863e2ccb2b9",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827855870",
+          "relation_role": "part",
+          "feature_key": "building|way/827855870",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    171.9903,
+                    -887.0188
+                  ],
+                  [
+                    161.5409,
+                    -902.0653
+                  ],
+                  [
+                    155.1939,
+                    -899.9285
+                  ],
+                  [
+                    151.0473,
+                    -897.8473
+                  ],
+                  [
+                    147.8628,
+                    -895.332
+                  ],
+                  [
+                    153.1815,
+                    -893.4958
+                  ],
+                  [
+                    171.9903,
+                    -887.0188
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "ceb0ab46c8e9ff3dbdf57490ef2258950200f4e8f7fa40c42c811eceac53d88e",
+          "source_record_sha256": "e087f078230e88a086907e29e3e33a1f49a82b0764644366cee9425527951c2a",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            147.8628,
+            -902.0653,
+            171.9903,
+            -887.0188
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "167cb299e8e24caf95ad4d5fa6e9944e1fe94d98120078568bafefc7cd21fb4f",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855856",
+          "relation_role": "part",
+          "feature_key": "building|way/827855856",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    172.4438,
+                    -878.7498
+                  ],
+                  [
+                    172.9303,
+                    -879.0837
+                  ],
+                  [
+                    172.875,
+                    -879.6736
+                  ],
+                  [
+                    172.3442,
+                    -879.9295
+                  ],
+                  [
+                    171.8688,
+                    -879.5845
+                  ],
+                  [
+                    171.913,
+                    -879.0058
+                  ],
+                  [
+                    172.4438,
+                    -878.7498
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "de1ba9956079be07570df7ff4207a3a5cd7973c43620016a8b2636f7e283e1ee",
+          "source_record_sha256": "ec62a48016a7aa08116580e9eea88b5ef5745de2dee0c9951212c76766ab56e2",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            171.8688,
+            -879.9295,
+            172.9303,
+            -878.7498
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "d72a29648232f32769e0f30129b8dace807f98e7b47d715c2f3f0852c0d9dc0d",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855857",
+          "relation_role": "part",
+          "feature_key": "building|way/827855857",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    164.1395,
+                    -884.7929
+                  ],
+                  [
+                    164.6261,
+                    -885.1268
+                  ],
+                  [
+                    164.5708,
+                    -885.7166
+                  ],
+                  [
+                    164.04,
+                    -885.9726
+                  ],
+                  [
+                    163.5645,
+                    -885.6276
+                  ],
+                  [
+                    163.6088,
+                    -885.0488
+                  ],
+                  [
+                    164.1395,
+                    -884.7929
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "6f4ffff20f6c526542e707befadc90c7ce782d0c8f40ffcfb531a8732e2949e2",
+          "source_record_sha256": "5420d8372b51c6a3bc79689714f9a2dbc52b80d559aa2b59e3e1020c55776516",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            163.5645,
+            -885.9726,
+            164.6261,
+            -884.7929
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "a78464b5491ae82dcb4679fa7c71670c1af735678f2373a62955435ed0bdcbef",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855858",
+          "relation_role": "part",
+          "feature_key": "building|way/827855858",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    156.0566,
+                    -878.5271
+                  ],
+                  [
+                    156.5431,
+                    -878.861
+                  ],
+                  [
+                    156.4989,
+                    -879.4508
+                  ],
+                  [
+                    155.9681,
+                    -879.6956
+                  ],
+                  [
+                    155.4816,
+                    -879.3618
+                  ],
+                  [
+                    155.5258,
+                    -878.7719
+                  ],
+                  [
+                    156.0566,
+                    -878.5271
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "572b929b7e777207d0f6d052101ce970cbf281c748f876086aaebc105a8b49e7",
+          "source_record_sha256": "4da9ef242bb2c557f2167db9ef3743422d5d4b6d00727cd2ff1fb937f89dd52e",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            155.4816,
+            -879.6956,
+            156.5431,
+            -878.5271
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "7e93ed5398e5fa5c6408e9aaeeddae301fce6c31c44ae603b6d90baa90880648",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855859",
+          "relation_role": "part",
+          "feature_key": "building|way/827855859",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    169.3699,
+                    -869.0452
+                  ],
+                  [
+                    169.8454,
+                    -869.379
+                  ],
+                  [
+                    169.8011,
+                    -869.9689
+                  ],
+                  [
+                    169.2704,
+                    -870.2249
+                  ],
+                  [
+                    168.7838,
+                    -869.891
+                  ],
+                  [
+                    168.8391,
+                    -869.3011
+                  ],
+                  [
+                    169.3699,
+                    -869.0452
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "d5da05802dbd8ba8c7673072b4b118e49dcbdf38dc5b7656488969d528dbe46a",
+          "source_record_sha256": "bd73719750c72827d3d784c5c92376e12becf0c5cfaeaefcb77bb927e8dded32",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            168.7838,
+            -870.2249,
+            169.8454,
+            -869.0452
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "7a494d69dbd88fd1294be9f3a875dc122d0a03be145d10f8c43d3fdba8047b92",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855860",
+          "relation_role": "part",
+          "feature_key": "building|way/827855860",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    164.582,
+                    -867.6985
+                  ],
+                  [
+                    165.0685,
+                    -868.0435
+                  ],
+                  [
+                    165.0243,
+                    -868.6222
+                  ],
+                  [
+                    164.4935,
+                    -868.8782
+                  ],
+                  [
+                    164.007,
+                    -868.5443
+                  ],
+                  [
+                    164.0513,
+                    -867.9545
+                  ],
+                  [
+                    164.582,
+                    -867.6985
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "78207b3ea84d4d2647c0b63e7c7620a39d67cd32a388b6960c4b61489ee71bf5",
+          "source_record_sha256": "08599b2d281f5d1b4aa8f5dd5a637f82f09869f9c3cc6a5909207918513ee78f",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            164.007,
+            -868.8782,
+            165.0685,
+            -867.6985
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "1bd60b32e36561044bc934f6de9d471c2e530fc30b82d9332889be88cc1ad0c8",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855861",
+          "relation_role": "part",
+          "feature_key": "building|way/827855861",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    172.6318,
+                    -873.597
+                  ],
+                  [
+                    173.1073,
+                    -873.9309
+                  ],
+                  [
+                    173.063,
+                    -874.5208
+                  ],
+                  [
+                    172.5323,
+                    -874.7767
+                  ],
+                  [
+                    172.0457,
+                    -874.4428
+                  ],
+                  [
+                    172.101,
+                    -873.853
+                  ],
+                  [
+                    172.6318,
+                    -873.597
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "9370fc05da61be05685a327c14f397918c05810acf94c4ef0f54c974a2fde884",
+          "source_record_sha256": "8683cd23d37d7f59e0c20c55cae7d2e78a213ac309bb9ed99add13dc54caaa2b",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            172.0457,
+            -874.7767,
+            173.1073,
+            -873.597
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "4b7fa8f57e85dac90d41cd26e96d48a04a031aa3f512e81b0fcf82638311b392",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855862",
+          "relation_role": "part",
+          "feature_key": "building|way/827855862",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    159.2633,
+                    -869.2009
+                  ],
+                  [
+                    159.7499,
+                    -869.5348
+                  ],
+                  [
+                    159.7056,
+                    -870.1246
+                  ],
+                  [
+                    159.1749,
+                    -870.3694
+                  ],
+                  [
+                    158.6884,
+                    -870.0356
+                  ],
+                  [
+                    158.7326,
+                    -869.4457
+                  ],
+                  [
+                    159.2633,
+                    -869.2009
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "9d698c4fb9f6275db897d4300dda7a58622c8c3139799d8c6f831e7ed40e7f8d",
+          "source_record_sha256": "e067df59168eb9d987f45603e79c51eded5f15f761a41186c862fe764ac8d860",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            158.6884,
+            -870.3694,
+            159.7499,
+            -869.2009
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "6d5f4e1216ce8aed1956b58acf9b8840894a77edef1d07fd5e503cee0887a057",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855863",
+          "relation_role": "part",
+          "feature_key": "building|way/827855863",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "5"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    144.8223,
+                    -864.482
+                  ],
+                  [
+                    145.928,
+                    -866.8747
+                  ],
+                  [
+                    147.266,
+                    -870.2692
+                  ],
+                  [
+                    143.1526,
+                    -871.1038
+                  ],
+                  [
+                    144.8223,
+                    -864.482
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "faa3fbcb72203135ee24f31303f71941c82b4a809e6c6da82f137a04207aa8ae",
+          "source_record_sha256": "3d1cd0fc9e057a4da7d0290d890eccb2c11d859341bf1d829f8f12fbd5aa84b4",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            143.1526,
+            -871.1038,
+            147.266,
+            -864.482
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "973053e50c4046181454f0ca81011f1aaf46387f73945c8dee63bfae20034739",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827855896",
+          "relation_role": "part",
+          "feature_key": "building|way/827855896",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "17",
+            "min_height": "13"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    195.7748,
+                    -901.3534
+                  ],
+                  [
+                    198.7603,
+                    -906.1612
+                  ],
+                  [
+                    185.7013,
+                    -916.1662
+                  ],
+                  [
+                    181.3668,
+                    -912.961
+                  ],
+                  [
+                    195.7748,
+                    -901.3534
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "18eca0cfc25d8a6488fe770493a80b9b5fe3c5bd4bf3f364988c832fd9d20514",
+          "source_record_sha256": "0fab2de354a22d03f19ea9dfd0aef1e320a59e15fb4ea30a8deb8e0ee7dcb676",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            181.3668,
+            -916.1662,
+            198.7603,
+            -901.3534
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "4238637e3577e7a31616ab7819dc3db2d35029f989d9767e9d50448ad4c72695",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855897",
+          "relation_role": "part",
+          "feature_key": "building|way/827855897",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "18",
+            "min_height": "15"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    198.7603,
+                    -906.1612
+                  ],
+                  [
+                    202.7409,
+                    -912.5717
+                  ],
+                  [
+                    191.8161,
+                    -919.8612
+                  ],
+                  [
+                    185.7013,
+                    -916.1662
+                  ],
+                  [
+                    198.7603,
+                    -906.1612
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "a9f5b5e234073a4fa1913abeaa9052bc7c2b11bdee65bc8b07a7c3ffd6c8e69b",
+          "source_record_sha256": "8283565b654d9be5608002e062751416d415fdff8cb292658fae73d2ab813a36",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            185.7013,
+            -919.8612,
+            202.7409,
+            -906.1612
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "1df1c9e6d00eb6dc820e849a63f2f817e0e2496d57f5510c136dbad00b940f7f",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855898",
+          "relation_role": "part",
+          "feature_key": "building|way/827855898",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "20",
+            "min_height": "16"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    202.7409,
+                    -912.5717
+                  ],
+                  [
+                    203.8135,
+                    -914.9533
+                  ],
+                  [
+                    199.2688,
+                    -918.3254
+                  ],
+                  [
+                    194.2708,
+                    -921.6085
+                  ],
+                  [
+                    191.8161,
+                    -919.8612
+                  ],
+                  [
+                    202.7409,
+                    -912.5717
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "c7911293e14bf8416190475dbb1b2eef83f86b0dc9a6e862367a4b1048c16a61",
+          "source_record_sha256": "c106de257d422f85c4f63c286de769930e8ae7ae857f276912376f2ccf2cafe0",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            191.8161,
+            -921.6085,
+            203.8135,
+            -912.5717
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "d7bc90e178b927502ccc278a641be92ac5c9f5d761041d89d4974956e31a8930",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855899",
+          "relation_role": "part",
+          "feature_key": "building|way/827855899",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "11"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    197.8318,
+                    -877.2254
+                  ],
+                  [
+                    202.487,
+                    -879.6293
+                  ],
+                  [
+                    197.4556,
+                    -896.49
+                  ],
+                  [
+                    192.6346,
+                    -896.2785
+                  ],
+                  [
+                    197.8318,
+                    -877.2254
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "c5749661d2d01c1ed1b18036d40382d4ecd75d6ae43d3b94c8e8f793a73be1b6",
+          "source_record_sha256": "b571505788143307a268a5dfb410c0369f08e0ab9980b2f2cc9cbaafa455ce86",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            192.6346,
+            -896.49,
+            202.487,
+            -877.2254
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "f0a362655208c4f43b6f25aa329bd099a108061fee0567594df359f9c438f6ab",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855900",
+          "relation_role": "part",
+          "feature_key": "building|way/827855900",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "10"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    194.1828,
+                    -875.4558
+                  ],
+                  [
+                    197.8318,
+                    -877.2254
+                  ],
+                  [
+                    192.6346,
+                    -896.2785
+                  ],
+                  [
+                    188.0015,
+                    -889.2114
+                  ],
+                  [
+                    192.0377,
+                    -876.8469
+                  ],
+                  [
+                    194.1828,
+                    -875.4558
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "6e5efdaecf047f4e313f41555b89e9db3cad894422be381ff6413f340e148133",
+          "source_record_sha256": "03c932102429e574974b7ba266d44491e6c4c2d52d92d1a44074a7db53a37fb5",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            188.0015,
+            -896.2785,
+            197.8318,
+            -875.4558
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "f01841740c3d1ea8326353fd450e217f32bc47855afaa87284b4f5d311c6e842",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855901",
+          "relation_role": "part",
+          "feature_key": "building|way/827855901",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "8"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    192.0377,
+                    -876.8469
+                  ],
+                  [
+                    188.0015,
+                    -889.2114
+                  ],
+                  [
+                    183.2911,
+                    -882.0219
+                  ],
+                  [
+                    187.1502,
+                    -880.0076
+                  ],
+                  [
+                    192.0377,
+                    -876.8469
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "951d033c76c334ce986a8e62af48bf287207255277dabaee575f61c41c594d51",
+          "source_record_sha256": "e1324c27f11002272ad830cf2a4350d62ca5412bf6e0b5dc458aeae0b7032d77",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            183.2911,
+            -889.2114,
+            192.0377,
+            -876.8469
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "1fcf203f88d01659dc04b2556fa2ecf26d42a995a88ac2318c8aaae5a362e1dc",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855903",
+          "relation_role": "part",
+          "feature_key": "building|way/827855903",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "17",
+            "min_height": "13"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    202.487,
+                    -879.6293
+                  ],
+                  [
+                    211.4214,
+                    -884.0922
+                  ],
+                  [
+                    207.5953,
+                    -897.0131
+                  ],
+                  [
+                    197.4556,
+                    -896.49
+                  ],
+                  [
+                    202.487,
+                    -879.6293
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "8fc8599083486ce2987c6d380fc276157dfce5910cd93152bdf5c4a91af1c903",
+          "source_record_sha256": "a524f0e9dfa82cb72b551a954069b03e9e10fdb6675d88b4553a18b7d9081e0f",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            197.4556,
+            -897.0131,
+            211.4214,
+            -879.6293
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "6984afd45236a9e143a238913b73cd3b248c1b9932015b4e964e766a6d3e18c3",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855888",
+          "relation_role": "part",
+          "feature_key": "building|way/827855888",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "22",
+            "min_height": "16"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    177.1427,
+                    -923.7006
+                  ],
+                  [
+                    177.1759,
+                    -926.7611
+                  ],
+                  [
+                    172.3216,
+                    -927.2062
+                  ],
+                  [
+                    168.5732,
+                    -927.1394
+                  ],
+                  [
+                    164.9795,
+                    -927.1394
+                  ],
+                  [
+                    164.504,
+                    -924.0009
+                  ],
+                  [
+                    168.54,
+                    -924.001
+                  ],
+                  [
+                    172.6202,
+                    -924.1457
+                  ],
+                  [
+                    177.1427,
+                    -923.7006
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "f691ec75c649f7c9dfc2ec1b41a8513481235747c5a985536e8faaaa9ab264d9",
+          "source_record_sha256": "12c9732418290fdd1d2e6f1316e874fa6e50d34b56220101b54ce26a2ec91b80",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            164.504,
+            -927.2062,
+            177.1759,
+            -923.7006
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "4807b45ebcbc9dc156e735c1b5c48ddace236337366585dae0b9c85dcef1ef78",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855889",
+          "relation_role": "part",
+          "feature_key": "building|way/827855889",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "18",
+            "min_height": "15"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    177.0875,
+                    -918.2918
+                  ],
+                  [
+                    177.1427,
+                    -923.7006
+                  ],
+                  [
+                    172.6202,
+                    -924.1457
+                  ],
+                  [
+                    168.54,
+                    -924.001
+                  ],
+                  [
+                    164.504,
+                    -924.0009
+                  ],
+                  [
+                    160.1585,
+                    -918.6255
+                  ],
+                  [
+                    165.1675,
+                    -919.0039
+                  ],
+                  [
+                    171.8794,
+                    -919.004
+                  ],
+                  [
+                    177.0875,
+                    -918.2918
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "d9dfec7af214792fbf00f0a8b2f59fa0c01ad637725bd1e1222a6f42bb051ae9",
+          "source_record_sha256": "74ba642e344a0fcb8881205cf088c9d389938fd8c407781388261a6fb0afccc4",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            160.1585,
+            -924.1457,
+            177.1427,
+            -918.2918
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "251294fefde5e5311dfe66f1799ce6847ed203346729950fec96133a50a9afd2",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855890",
+          "relation_role": "part",
+          "feature_key": "building|way/827855890",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "17",
+            "min_height": "13"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    176.988,
+                    -913.74
+                  ],
+                  [
+                    177.0875,
+                    -918.2918
+                  ],
+                  [
+                    171.8794,
+                    -919.004
+                  ],
+                  [
+                    165.1675,
+                    -919.0039
+                  ],
+                  [
+                    160.1585,
+                    -918.6255
+                  ],
+                  [
+                    158.0466,
+                    -914.4075
+                  ],
+                  [
+                    164.095,
+                    -914.7081
+                  ],
+                  [
+                    171.4261,
+                    -914.864
+                  ],
+                  [
+                    176.988,
+                    -913.74
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "85339a7746875d1573d3830b8d486d0b982159ba28b8656553e959e267d48c2a",
+          "source_record_sha256": "2f57c41d911aa0fd24c23dab9feecf4fd56c9beb901fd560d8fecc9af58688e4",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            158.0466,
+            -919.004,
+            177.0875,
+            -913.74
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "ba4bb17b75f503bb8ce7f159291eb1d53fa5f9a907dde5f8283d68e995c9a141",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855891",
+          "relation_role": "part",
+          "feature_key": "building|way/827855891",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "11"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    176.9881,
+                    -909.2994
+                  ],
+                  [
+                    176.988,
+                    -913.74
+                  ],
+                  [
+                    171.4261,
+                    -914.864
+                  ],
+                  [
+                    164.095,
+                    -914.7081
+                  ],
+                  [
+                    158.0466,
+                    -914.4075
+                  ],
+                  [
+                    156.7197,
+                    -909.7444
+                  ],
+                  [
+                    164.3162,
+                    -910.7572
+                  ],
+                  [
+                    170.9175,
+                    -910.5347
+                  ],
+                  [
+                    176.9881,
+                    -909.2994
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "b1e01f50b42e0c62c445ad1c4beb4175720a952c96c8e5528d86aeff084fdc82",
+          "source_record_sha256": "238aa1c96f3a17b259d221e81cb46d129c37f31b1ee6bec8634bf170ff9ae589",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            156.7197,
+            -914.864,
+            176.9881,
+            -909.2994
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "44df1c6d578cafd86348e29f956e2c0d965ce005814195c2c00c472b5532e0ec",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855892",
+          "relation_role": "part",
+          "feature_key": "building|way/827855892",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "10"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    176.6343,
+                    -900.4517
+                  ],
+                  [
+                    176.9881,
+                    -909.2994
+                  ],
+                  [
+                    170.9175,
+                    -910.5347
+                  ],
+                  [
+                    164.3162,
+                    -910.7572
+                  ],
+                  [
+                    156.7197,
+                    -909.7444
+                  ],
+                  [
+                    161.5409,
+                    -902.0653
+                  ],
+                  [
+                    167.6556,
+                    -902.6997
+                  ],
+                  [
+                    172.8416,
+                    -901.943
+                  ],
+                  [
+                    176.6343,
+                    -900.4517
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "657e55f779f1e6eadd4c3c64660cd89f75457e372a25029ebad1ade0029ea95e",
+          "source_record_sha256": "5dcf2c22b836c1d6f4a51eaa3bfcec651d3b3fdb54701dad023864885c12f399",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            156.7197,
+            -910.7572,
+            176.9881,
+            -900.4517
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "416a6eb654c3660d8c2a8c93c322dfd3576abaa022846d1307ac3f9c55352c2f",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855893",
+          "relation_role": "part",
+          "feature_key": "building|way/827855893",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "8"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    183.2911,
+                    -882.0219
+                  ],
+                  [
+                    188.0015,
+                    -889.2114
+                  ],
+                  [
+                    176.6343,
+                    -900.4517
+                  ],
+                  [
+                    176.0263,
+                    -885.3828
+                  ],
+                  [
+                    183.2911,
+                    -882.0219
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "b801994edcbc906fa85a7b935e22838e370bc706c7e5c09a335d6c2ad48858b3",
+          "source_record_sha256": "f109696f9fe1881daca2b902c9defa3c6e7051078dfd7136db2e623eeae40b50",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            176.0263,
+            -900.4517,
+            188.0015,
+            -882.0219
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "46ef9195cb3b60184567bd6871c5a263f57c7a437dd74d6eb63fc6be0ae3bb25",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855894",
+          "relation_role": "part",
+          "feature_key": "building|way/827855894",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "10"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    188.0015,
+                    -889.2114
+                  ],
+                  [
+                    192.6346,
+                    -896.2785
+                  ],
+                  [
+                    176.9881,
+                    -909.2994
+                  ],
+                  [
+                    176.6343,
+                    -900.4517
+                  ],
+                  [
+                    188.0015,
+                    -889.2114
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "402a523d1647ce9acd4685f880029d89f42ada228375e8d772efef058f076d48",
+          "source_record_sha256": "702bb0c94f216995021fb7254c52d40b710d62fd972caaaae5fa346fffad5c3d",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            176.6343,
+            -909.2994,
+            192.6346,
+            -889.2114
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "2a2d3993bb56bff1408c73e950d847a624bee9725d59e160bdab894e6c6e8bc6",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855895",
+          "relation_role": "part",
+          "feature_key": "building|way/827855895",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "11"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    192.6346,
+                    -896.2785
+                  ],
+                  [
+                    195.7748,
+                    -901.3534
+                  ],
+                  [
+                    181.3668,
+                    -912.961
+                  ],
+                  [
+                    176.9881,
+                    -909.2994
+                  ],
+                  [
+                    192.6346,
+                    -896.2785
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "191e9ba58d5121ca609121c08d8973fe1e8bb335f4863e97b552d3a6fdbcac06",
+          "source_record_sha256": "4ee177fcbcd966c715f53a948eb582d5294dae28b40bae994aac642177e80f86",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            176.9881,
+            -912.961,
+            195.7748,
+            -896.2785
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "5ce9c904df585702bd94d8543dc210036b7fbfbf2a114d8fad1ad8d1d8fbdf7c",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855883",
+          "relation_role": "part",
+          "feature_key": "building|way/827855883",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "10"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    147.8628,
+                    -895.332
+                  ],
+                  [
+                    151.0473,
+                    -897.8473
+                  ],
+                  [
+                    155.1939,
+                    -899.9285
+                  ],
+                  [
+                    161.5409,
+                    -902.0653
+                  ],
+                  [
+                    156.7197,
+                    -909.7444
+                  ],
+                  [
+                    151.0804,
+                    -906.7617
+                  ],
+                  [
+                    146.1156,
+                    -903.7791
+                  ],
+                  [
+                    139.7024,
+                    -898.1365
+                  ],
+                  [
+                    141.9802,
+                    -897.3575
+                  ],
+                  [
+                    144.3576,
+                    -896.5339
+                  ],
+                  [
+                    146.0162,
+                    -895.9664
+                  ],
+                  [
+                    147.8628,
+                    -895.332
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "9e1c471c3824e874c11611efa09b1129faf8da17688776c933e6bc8a83d37205",
+          "source_record_sha256": "f4c5f4a868997bdde79dcac86d1a78e866c7bc2b57b22ed1437252875cc1963a",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            139.7024,
+            -909.7444,
+            161.5409,
+            -895.332
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "a21874a546f0f456b1331ca1b2f1e828f7a7e3e66f7746866c221ef205a556d3",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855884",
+          "relation_role": "part",
+          "feature_key": "building|way/827855884",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "11"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    139.7024,
+                    -898.1365
+                  ],
+                  [
+                    146.1156,
+                    -903.7791
+                  ],
+                  [
+                    151.0804,
+                    -906.7617
+                  ],
+                  [
+                    156.7197,
+                    -909.7444
+                  ],
+                  [
+                    155.4149,
+                    -912.0592
+                  ],
+                  [
+                    150.3064,
+                    -909.2658
+                  ],
+                  [
+                    145.1205,
+                    -905.9381
+                  ],
+                  [
+                    139.1163,
+                    -901.8759
+                  ],
+                  [
+                    139.7024,
+                    -898.1365
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "1f2b3776f1414437d29674f91cfcb22d67ab8cc34489be0dd1358d218a3af28e",
+          "source_record_sha256": "eac7bd8614934ea5dbea2da5c9e7470694c408fa9ff3e4e51576e190900a1761",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            139.1163,
+            -912.0592,
+            156.7197,
+            -898.1365
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "7234143da31773338a8710a5651d02dfc480e7edc64e3d9b4b928925f601fcfe",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855885",
+          "relation_role": "part",
+          "feature_key": "building|way/827855885",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "17",
+            "min_height": "13"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    139.1163,
+                    -901.8759
+                  ],
+                  [
+                    145.1205,
+                    -905.9381
+                  ],
+                  [
+                    150.3064,
+                    -909.2658
+                  ],
+                  [
+                    155.4149,
+                    -912.0592
+                  ],
+                  [
+                    153.9332,
+                    -914.2962
+                  ],
+                  [
+                    149.267,
+                    -911.4582
+                  ],
+                  [
+                    144.1142,
+                    -908.1083
+                  ],
+                  [
+                    139.5917,
+                    -904.8919
+                  ],
+                  [
+                    139.1163,
+                    -901.8759
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "583883e5d7437d840be21c0d7af951dcabb37fe9de70716c87b4097d3615b3c5",
+          "source_record_sha256": "93ec35fec724bca0acb5983cfc58faeada7c9d8cbfdcbcf8fd15602a80bc351f",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            139.1163,
+            -914.2962,
+            155.4149,
+            -901.8759
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "bc2c41f8623a0c7c9ac68b66c7b59ea23eda242a43e390682b51d11e5da16993",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855886",
+          "relation_role": "part",
+          "feature_key": "building|way/827855886",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "18",
+            "min_height": "15"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    139.5917,
+                    -904.8919
+                  ],
+                  [
+                    144.1142,
+                    -908.1083
+                  ],
+                  [
+                    149.267,
+                    -911.4582
+                  ],
+                  [
+                    153.9332,
+                    -914.2962
+                  ],
+                  [
+                    152.8606,
+                    -916.1325
+                  ],
+                  [
+                    149.5655,
+                    -914.452
+                  ],
+                  [
+                    145.2641,
+                    -911.3469
+                  ],
+                  [
+                    142.3008,
+                    -908.6981
+                  ],
+                  [
+                    139.5917,
+                    -904.8919
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "d7ca06e3a97d1dfb4845576d9985305d4d4e45966cf5355e8be0fe3464ac16f2",
+          "source_record_sha256": "6571819e632d9918465e35bc1cd04f4d8fa228107e08b8bcba349cde89bd1681",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            139.5917,
+            -916.1325,
+            153.9332,
+            -904.8919
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "75cb621d5c101bc037cd37c588e508ff2971e53c1957902e8aa06174a3454141",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855887",
+          "relation_role": "part",
+          "feature_key": "building|way/827855887",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "24",
+            "min_height": "16"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    142.3008,
+                    -908.6981
+                  ],
+                  [
+                    145.2641,
+                    -911.3469
+                  ],
+                  [
+                    149.5655,
+                    -914.452
+                  ],
+                  [
+                    152.8606,
+                    -916.1325
+                  ],
+                  [
+                    150.5606,
+                    -917.9577
+                  ],
+                  [
+                    145.4079,
+                    -915.0084
+                  ],
+                  [
+                    142.4445,
+                    -912.3485
+                  ],
+                  [
+                    141.007,
+                    -911.0575
+                  ],
+                  [
+                    142.3008,
+                    -908.6981
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "61c24e84f2358acdf7631ac6ab9482e052358d728ed8dac27ef97c7048017b2b",
+          "source_record_sha256": "1fdb8fbc928930841e94307cce14970d46e29359b5c8a2c33864d92bc184be51",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            141.007,
+            -917.9577,
+            152.8606,
+            -908.6981
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "912df5e6f8b79527aa31620856ca6c2b057e183bc486532ba0f36d1d90281f76",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855928",
+          "relation_role": "part",
+          "feature_key": "building|way/827855928",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "13"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    160.2809,
+                    -846.9871
+                  ],
+                  [
+                    172.7648,
+                    -847.0206
+                  ],
+                  [
+                    173.2513,
+                    -848.6788
+                  ],
+                  [
+                    159.3078,
+                    -848.4227
+                  ],
+                  [
+                    160.2809,
+                    -846.9871
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "ff9697266593ff090320597df7fb3ba6bd7b14dfff53c85c3afc82d27af8cee4",
+          "source_record_sha256": "0ab825cad016f492215f604904d377ef2a210731e1f790940b51fdb8b195482a",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            159.3078,
+            -848.6788,
+            173.2513,
+            -846.9871
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "0e333ef5e7929d408d642de97e1bce21ed8bc1a2637a151a68fc6c6b7636d287",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855929",
+          "relation_role": "part",
+          "feature_key": "building|way/827855929",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "5"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    177.6631,
+                    -862.1674
+                  ],
+                  [
+                    180.1067,
+                    -865.3059
+                  ],
+                  [
+                    182.5504,
+                    -869.5572
+                  ],
+                  [
+                    183.8883,
+                    -875.6004
+                  ],
+                  [
+                    183.2911,
+                    -882.0219
+                  ],
+                  [
+                    176.0263,
+                    -885.3828
+                  ],
+                  [
+                    171.9903,
+                    -887.0188
+                  ],
+                  [
+                    153.1815,
+                    -893.4958
+                  ],
+                  [
+                    149.5657,
+                    -889.9678
+                  ],
+                  [
+                    146.4918,
+                    -885.4159
+                  ],
+                  [
+                    145.1871,
+                    -879.2281
+                  ],
+                  [
+                    145.342,
+                    -871.1261
+                  ],
+                  [
+                    147.266,
+                    -870.2692
+                  ],
+                  [
+                    153.1265,
+                    -868.3661
+                  ],
+                  [
+                    157.9365,
+                    -867.0195
+                  ],
+                  [
+                    166.0195,
+                    -864.3375
+                  ],
+                  [
+                    177.6631,
+                    -862.1674
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "d0bd44d3f66d0f9b21ebd7bd29e864d1f17cc5041b6a821df43d4a44c1200a4b",
+          "source_record_sha256": "c482c1f033e6d5c2689c7a305ba1d893b5256dff35d308c02121b00b015cea79",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            145.1871,
+            -893.4958,
+            183.8883,
+            -862.1674
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "ab1dd79707afa1c907654c63a545c609c3e7b1d4db38479be49bf780c86c2b00",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855930",
+          "relation_role": "part",
+          "feature_key": "building|way/827855930",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    176.0263,
+                    -885.3828
+                  ],
+                  [
+                    176.6343,
+                    -900.4517
+                  ],
+                  [
+                    172.8416,
+                    -901.943
+                  ],
+                  [
+                    167.6556,
+                    -902.6997
+                  ],
+                  [
+                    161.5409,
+                    -902.0653
+                  ],
+                  [
+                    171.9903,
+                    -887.0188
+                  ],
+                  [
+                    176.0263,
+                    -885.3828
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "16445686340f96e51ef45f06000ad1eaa1b7081e180ee2b3614e546013d301ee",
+          "source_record_sha256": "19c6df7b745c3f201c78dff5decb711928c18e1b40dbd81fbb0f9215985ec43a",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            161.5409,
+            -902.6997,
+            176.6343,
+            -885.3828
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "340b81482e4245090625c8e7345775bded8bc2576135929c933b808281390a54",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855920",
+          "relation_role": "part",
+          "feature_key": "building|way/827855920",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    145.342,
+                    -871.1261
+                  ],
+                  [
+                    145.1871,
+                    -879.2281
+                  ],
+                  [
+                    146.4918,
+                    -885.4159
+                  ],
+                  [
+                    149.5657,
+                    -889.9678
+                  ],
+                  [
+                    153.1815,
+                    -893.4958
+                  ],
+                  [
+                    147.8628,
+                    -895.332
+                  ],
+                  [
+                    146.0162,
+                    -895.9664
+                  ],
+                  [
+                    139.7026,
+                    -873.6301
+                  ],
+                  [
+                    145.342,
+                    -871.1261
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "66508be85b53ad3e96edfdba55260cf6783882284e48a10e7063eb1b1bb0f53a",
+          "source_record_sha256": "f487bae33e516eff11fcce9ab3c0f3737409c2b36eb8661f12036ce8a4703431",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            139.7026,
+            -895.9664,
+            153.1815,
+            -871.1261
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "8e0d8e3f0e52952231d19d755dca66ac7886e31164ef21dbe614f45d80c3563b",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855921",
+          "relation_role": "part",
+          "feature_key": "building|way/827855921",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "18",
+            "min_height": "15"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    136.2305,
+                    -875.4441
+                  ],
+                  [
+                    141.9802,
+                    -897.3575
+                  ],
+                  [
+                    139.7024,
+                    -898.1365
+                  ],
+                  [
+                    138.6298,
+                    -897.5021
+                  ],
+                  [
+                    138.1433,
+                    -896.7565
+                  ],
+                  [
+                    138.1875,
+                    -895.9774
+                  ],
+                  [
+                    139.0721,
+                    -894.7421
+                  ],
+                  [
+                    137.6347,
+                    -891.459
+                  ],
+                  [
+                    136.0314,
+                    -886.2728
+                  ],
+                  [
+                    135.4454,
+                    -882.1661
+                  ],
+                  [
+                    133.1455,
+                    -880.2296
+                  ],
+                  [
+                    132.9575,
+                    -878.9275
+                  ],
+                  [
+                    133.1787,
+                    -877.6143
+                  ],
+                  [
+                    135.1469,
+                    -876.0117
+                  ],
+                  [
+                    136.2305,
+                    -875.4441
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "804794b777d903c79c8130901ad78b2ecaed0fe4c0da8eb17ec4d120884e8738",
+          "source_record_sha256": "c941b1106efe55801720ecc1e6da14710f2aa9b02f795717108679bbdd5a7acf",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            132.9575,
+            -898.1365,
+            141.9802,
+            -875.4441
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "92defd88e66bacb7d876c74f1465e11ac109860959b4240986d21dd121b6c3ac",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827855922",
+          "relation_role": "part",
+          "feature_key": "building|way/827855922",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "26",
+            "min_height": "15"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    135.4454,
+                    -882.1661
+                  ],
+                  [
+                    136.0314,
+                    -886.2728
+                  ],
+                  [
+                    137.6347,
+                    -891.459
+                  ],
+                  [
+                    139.0721,
+                    -894.7421
+                  ],
+                  [
+                    136.927,
+                    -895.4877
+                  ],
+                  [
+                    135.4785,
+                    -892.4717
+                  ],
+                  [
+                    133.9194,
+                    -886.985
+                  ],
+                  [
+                    133.1786,
+                    -883.4348
+                  ],
+                  [
+                    135.4454,
+                    -882.1661
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "f742dd1a154bc28b18169b7f208aa7c5444e72ecda78e4c206f54de648effb05",
+          "source_record_sha256": "e970d86e742a66711004d4897a3cc47af67e7455f65bcaf301f9932dba1afce5",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            133.1786,
+            -895.4877,
+            139.0721,
+            -882.1661
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "game_extrusion_render_and_collision_candidate",
+          "frozen_city_source_feature_sha256": "01fe9152436da567b413a3677cc44a583d187c111f261b8ab6cc689ba65f1611",
+          "frozen_city_mesh_tiles": [
+            "0_-1"
+          ]
+        },
+        {
+          "source_id": "way/827855923",
+          "relation_role": "part",
+          "feature_key": "building|way/827855923",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "5"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    155.6256,
+                    -857.2704
+                  ],
+                  [
+                    154.3097,
+                    -862.9907
+                  ],
+                  [
+                    153.1265,
+                    -868.3661
+                  ],
+                  [
+                    147.266,
+                    -870.2692
+                  ],
+                  [
+                    145.928,
+                    -866.8747
+                  ],
+                  [
+                    144.8223,
+                    -864.482
+                  ],
+                  [
+                    155.6256,
+                    -857.2704
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "39fa1a6de26780047cde4336b34e1df4fc4e54a90dc9f1d0538939ed6550dc31",
+          "source_record_sha256": "ef1c0ddb346d699846d0c99398702cb21f19b308a5eed8f45adf59bd49746a15",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            144.8223,
+            -870.2692,
+            155.6256,
+            -857.2704
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "c964726f09ffe6d813ab2d3825bf8862a58eea6a6bf727d09df4bb1788222f9b",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855924",
+          "relation_role": "part",
+          "feature_key": "building|way/827855924",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "8"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    157.6049,
+                    -851.6168
+                  ],
+                  [
+                    155.6256,
+                    -857.2704
+                  ],
+                  [
+                    144.8223,
+                    -864.482
+                  ],
+                  [
+                    143.5618,
+                    -860.3753
+                  ],
+                  [
+                    157.6049,
+                    -851.6168
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "0d3f13ec27be8ba68f5d59fd0b43a6ae5d6e20f475800f3f70a35fe8a2d2fdfc",
+          "source_record_sha256": "c4cd6a16cdd3a600c8a301588dc2c550a73786d0551fda1e18a35ed355224e30",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            143.5618,
+            -864.482,
+            157.6049,
+            -851.6168
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "c6c6c27b710bfe029e0147e31f80ab542ae30f1a616cbafcfd5f014e7fdfe37d",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855925",
+          "relation_role": "part",
+          "feature_key": "building|way/827855925",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "10"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    155.891,
+                    -850.2924
+                  ],
+                  [
+                    157.6049,
+                    -851.6168
+                  ],
+                  [
+                    143.5618,
+                    -860.3753
+                  ],
+                  [
+                    143.396,
+                    -858.5056
+                  ],
+                  [
+                    155.891,
+                    -850.2924
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "a0214c47cf53351a190cd50fccc0574d9ad3fba9e80b73533f3b60131777828c",
+          "source_record_sha256": "54e5b63019e14022af7aec73797a31fa435dc287ceee765b8efb24908b164125",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            143.396,
+            -860.3753,
+            157.6049,
+            -850.2924
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "73c6226a85ae14c9a4c1689c948f65f721f9021cb3662f9ab98ab81e7802cbe0",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855926",
+          "relation_role": "part",
+          "feature_key": "building|way/827855926",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "5"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    166.9816,
+                    -856.8698
+                  ],
+                  [
+                    161.0547,
+                    -862.6236
+                  ],
+                  [
+                    157.9365,
+                    -867.0195
+                  ],
+                  [
+                    153.1265,
+                    -868.3661
+                  ],
+                  [
+                    154.3097,
+                    -862.9907
+                  ],
+                  [
+                    155.6256,
+                    -857.2704
+                  ],
+                  [
+                    166.9816,
+                    -856.8698
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "677423a12d439996a229bec264beb17943c4ab902fea700dac5cd57b7105f222",
+          "source_record_sha256": "0093438e484ed36ba1d61c939974ebbfa4f0466641f6b557e27f30e0b038e61f",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            153.1265,
+            -868.3661,
+            166.9816,
+            -856.8698
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "36274dc2c3a69e8210ba5c7012aa4b2a68b61e2e90714cfb94f05aa7ca4fabbb",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855927",
+          "relation_role": "part",
+          "feature_key": "building|way/827855927",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "12",
+            "min_height": "8"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    157.6049,
+                    -851.6168
+                  ],
+                  [
+                    173.8152,
+                    -852.3403
+                  ],
+                  [
+                    166.9816,
+                    -856.8698
+                  ],
+                  [
+                    155.6256,
+                    -857.2704
+                  ],
+                  [
+                    157.6049,
+                    -851.6168
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "d5efe1e9bb4d503a79b26544f84851e29c1cbc0713cab6da61a0ef9d1c4900d0",
+          "source_record_sha256": "eea3e172e1ddfd0f6eb0b9893b23241cd29be4ee5c7e81105511108933010970",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            155.6256,
+            -857.2704,
+            173.8152,
+            -851.6168
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "95046c1a799015e2adb18ae235c4e64f24a830ab5804260fb7ba8d268da53fb3",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855912",
+          "relation_role": "part",
+          "feature_key": "building|way/827855912",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "10"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    175.507,
+                    -851.1161
+                  ],
+                  [
+                    188.411,
+                    -859.8749
+                  ],
+                  [
+                    187.5374,
+                    -861.9227
+                  ],
+                  [
+                    173.8152,
+                    -852.3403
+                  ],
+                  [
+                    175.507,
+                    -851.1161
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "02fc91f46d18095bde4b9c794fbf0d046cb5618073febb0a98c162d835c277c9",
+          "source_record_sha256": "6c1551232bfcc228def4f72f1c9f4bc647419d955e726c8266ef99b408e07671",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            173.8152,
+            -861.9227,
+            188.411,
+            -851.1161
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "3c2dc137c9f649a72143aa98e6bf027e87309910dd5b693f45db623012fcc988",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855913",
+          "relation_role": "part",
+          "feature_key": "building|way/827855913",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "11"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    177.2651,
+                    -849.8363
+                  ],
+                  [
+                    189.2071,
+                    -858.0164
+                  ],
+                  [
+                    188.411,
+                    -859.8749
+                  ],
+                  [
+                    175.507,
+                    -851.1161
+                  ],
+                  [
+                    177.2651,
+                    -849.8363
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "1e9a6924ea7dd64f09467bcebecb44b33348353c2c0c3dd3323b68b8f96cce09",
+          "source_record_sha256": "07c89dbbf4ccbd2e8821aa2958aa28ca9cb9f84289cceb70f3fad2eb897151b2",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            175.507,
+            -859.8749,
+            189.2071,
+            -849.8363
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "872c2bc547c761193317266d6be1dd501b2629755e4b4506791a974a3a04f4b4",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855914",
+          "relation_role": "part",
+          "feature_key": "building|way/827855914",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "13"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    178.8574,
+                    -848.6678
+                  ],
+                  [
+                    189.9591,
+                    -856.2802
+                  ],
+                  [
+                    189.2071,
+                    -858.0164
+                  ],
+                  [
+                    177.2651,
+                    -849.8363
+                  ],
+                  [
+                    178.8574,
+                    -848.6678
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "497b51531e2aa38b7e336a06775f8e661bab0c5e1daebda3e42764b016f51108",
+          "source_record_sha256": "cb406db187d29a508f87f3a340ed544a7dfa2db1c8b8c349df836631807af0a5",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            177.2651,
+            -858.0164,
+            189.9591,
+            -848.6678
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "adfcf829972d1661cd49f75bc171bb2ff87db164f3024d6726e8f165b16dbded",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855915",
+          "relation_role": "part",
+          "feature_key": "building|way/827855915",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "13",
+            "min_height": "6"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    164.8363,
+                    -866.7525
+                  ],
+                  [
+                    168.0762,
+                    -867.2422
+                  ],
+                  [
+                    171.0064,
+                    -868.7224
+                  ],
+                  [
+                    173.3395,
+                    -871.0373
+                  ],
+                  [
+                    174.8433,
+                    -873.9643
+                  ],
+                  [
+                    175.374,
+                    -877.214
+                  ],
+                  [
+                    174.8875,
+                    -880.4749
+                  ],
+                  [
+                    173.4168,
+                    -883.4241
+                  ],
+                  [
+                    171.1168,
+                    -885.7723
+                  ],
+                  [
+                    168.2087,
+                    -887.2859
+                  ],
+                  [
+                    164.9799,
+                    -887.82
+                  ],
+                  [
+                    161.74,
+                    -887.3303
+                  ],
+                  [
+                    158.8098,
+                    -885.8501
+                  ],
+                  [
+                    156.4767,
+                    -883.5352
+                  ],
+                  [
+                    154.9729,
+                    -880.6082
+                  ],
+                  [
+                    154.4422,
+                    -877.3474
+                  ],
+                  [
+                    154.9288,
+                    -874.0977
+                  ],
+                  [
+                    156.3994,
+                    -871.1484
+                  ],
+                  [
+                    158.6994,
+                    -868.8002
+                  ],
+                  [
+                    161.6076,
+                    -867.2867
+                  ],
+                  [
+                    164.8363,
+                    -866.7525
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "4cafb45fa5caa4acc8165252ccf39fb494bff4a063e1cf13cc5d805a42b28aef",
+          "source_record_sha256": "dad76d888a955c2950c2747b625f94027476d7a72d411ed2c33fbdc8a8ee80f5",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            154.4422,
+            -887.82,
+            175.374,
+            -866.7525
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "e0c2475e8fbf86f046a29fdddce8dde203ffff1cf5563821c1f29cd5f64cbc0a",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855916",
+          "relation_role": "part",
+          "feature_key": "building|way/827855916",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "11"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    159.3078,
+                    -848.4227
+                  ],
+                  [
+                    173.2513,
+                    -848.6788
+                  ],
+                  [
+                    173.5056,
+                    -850.2703
+                  ],
+                  [
+                    158.4232,
+                    -849.9363
+                  ],
+                  [
+                    159.3078,
+                    -848.4227
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "93be80ce337b0b21e09b10279f9ceccec8fc2747da3524adf4fefb76c5138842",
+          "source_record_sha256": "be4292ba3f3090fe84ddedd4f13a09708d80927ccb92f58b455c7dc98511c58a",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            158.4232,
+            -850.2703,
+            173.5056,
+            -848.4227
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "f70384bd309c9549c53384bf5a923af120597f9179cf3488ff1e69c4f3672d83",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855917",
+          "relation_role": "part",
+          "feature_key": "building|way/827855917",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "10"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    158.4232,
+                    -849.9363
+                  ],
+                  [
+                    173.5056,
+                    -850.2703
+                  ],
+                  [
+                    173.8152,
+                    -852.3403
+                  ],
+                  [
+                    157.6049,
+                    -851.6168
+                  ],
+                  [
+                    158.4232,
+                    -849.9363
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "2fbf850102bedeeb23ba8d0b843e483538cbef03377079ef9f5e846f23f89aac",
+          "source_record_sha256": "45348ad68f1db6bdf522e303a2008dbf296298d6a7d0900ce03da1734d5c55d2",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            157.6049,
+            -852.3403,
+            173.8152,
+            -849.9363
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "734ffe9f83258f373016f47cd7c2b7e7a31a9f2c1987ac2e0dd431af6a23aadf",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855918",
+          "relation_role": "part",
+          "feature_key": "building|way/827855918",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "13"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    152.7949,
+                    -847.4544
+                  ],
+                  [
+                    154.4314,
+                    -848.9124
+                  ],
+                  [
+                    142.8542,
+                    -856.9475
+                  ],
+                  [
+                    142.3787,
+                    -855.2447
+                  ],
+                  [
+                    152.7949,
+                    -847.4544
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "ff6fadc56edc9da69e5f61e6dc621eaa8c7aa4f0dfc3505dfeacc82de12f41b2",
+          "source_record_sha256": "ca99a53523333dd4eecae685d505030d8f543486289db7b49d22dabf8c773209",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            142.3787,
+            -856.9475,
+            154.4314,
+            -847.4544
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "205f8bb4bb29d5c7be6be514379a9621a5581d5f2110ca150128624aaf7b389e",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855919",
+          "relation_role": "part",
+          "feature_key": "building|way/827855919",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "11"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    154.4314,
+                    -848.9124
+                  ],
+                  [
+                    155.891,
+                    -850.2924
+                  ],
+                  [
+                    143.396,
+                    -858.5056
+                  ],
+                  [
+                    142.8542,
+                    -856.9475
+                  ],
+                  [
+                    154.4314,
+                    -848.9124
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "767d856a9f6d4e2342c454230936e69bfbd270a7e4caf532aed5221eb2604173",
+          "source_record_sha256": "ed4bcc9e7a1ad7eb2dcecdf7ae5141984607a4c1d895ac0051f022e70ac0f5e1",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            142.8542,
+            -858.5056,
+            155.891,
+            -848.9124
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "b01c210ed72ea2f7ba8f449500a7a6579b2f06e44524e51c0b33afe540b014fa",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855904",
+          "relation_role": "part",
+          "feature_key": "building|way/827855904",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "18",
+            "min_height": "15"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    211.4214,
+                    -884.0922
+                  ],
+                  [
+                    214.1747,
+                    -885.6281
+                  ],
+                  [
+                    210.0722,
+                    -897.0354
+                  ],
+                  [
+                    207.5953,
+                    -897.0131
+                  ],
+                  [
+                    211.4214,
+                    -884.0922
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "14e7d7ca484948740f72d6711640a556475feb662def4864c24c40af2a666bd1",
+          "source_record_sha256": "795cab32bde899ee063811f6f9fe31cccf9d34e05686d93021523d560ab0017a",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            207.5953,
+            -897.0354,
+            214.1747,
+            -884.0922
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "5e6269d30d65d89e173dbd85e069daf935d9e3ca89a9c0c0e944d2b7ccb1d5d6",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855905",
+          "relation_role": "part",
+          "feature_key": "building|way/827855905",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "8"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    187.5374,
+                    -861.9227
+                  ],
+                  [
+                    192.0377,
+                    -876.8469
+                  ],
+                  [
+                    187.1502,
+                    -880.0076
+                  ],
+                  [
+                    183.2911,
+                    -882.0219
+                  ],
+                  [
+                    183.8883,
+                    -875.6004
+                  ],
+                  [
+                    182.5504,
+                    -869.5572
+                  ],
+                  [
+                    180.1067,
+                    -865.3059
+                  ],
+                  [
+                    177.6631,
+                    -862.1674
+                  ],
+                  [
+                    187.5374,
+                    -861.9227
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "106c123318f2e7ef56b6aa1c7cdba4757a9efce0de25cbccebc1e739b479586b",
+          "source_record_sha256": "eda9e29ad4baf63f7b2d6e8d527e9cf3d18dcb69e7bab0503fb6fbb900b5c9e2",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            177.6631,
+            -882.0219,
+            192.0377,
+            -861.9227
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "9e865645a7a7510f1658012c8fafea361fbb6ba7e68cbad2c27a2d1f3b44023f",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855906",
+          "relation_role": "part",
+          "feature_key": "building|way/827855906",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "10"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    187.5374,
+                    -861.9227
+                  ],
+                  [
+                    190.0032,
+                    -861.9895
+                  ],
+                  [
+                    194.1828,
+                    -875.4558
+                  ],
+                  [
+                    192.0377,
+                    -876.8469
+                  ],
+                  [
+                    187.5374,
+                    -861.9227
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "dcf9930d277de834c7abc838b3c454c10dce3d87651760098f5277e5a55f0147",
+          "source_record_sha256": "dfbd4835b83153ce45dad5fab806a6a549a9883d7cc32b2d9fd08e6b95044b94",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            187.5374,
+            -876.8469,
+            194.1828,
+            -861.9227
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "03c207dbcd62d78be6573f810ba62fb30d26d82c5d6cea4da5dd8705d4036421",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855907",
+          "relation_role": "part",
+          "feature_key": "building|way/827855907",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "11"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    190.0032,
+                    -861.9895
+                  ],
+                  [
+                    191.7061,
+                    -862.0451
+                  ],
+                  [
+                    195.5208,
+                    -874.3095
+                  ],
+                  [
+                    194.1828,
+                    -875.4558
+                  ],
+                  [
+                    190.0032,
+                    -861.9895
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "fb6c81d82bf925e2b3d325cf2818afd497e1283495d6f92bec0c07c42d9dc16d",
+          "source_record_sha256": "8d27d1af35678433fd12cb1046e441b81307aae1a1c7c91b33f6492354dd3228",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            190.0032,
+            -875.4558,
+            195.5208,
+            -861.9895
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "17e49586af0bc7d48cac0a3a0cafb5c7aab001eafe50ab6cc0cc1397dee7885d",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855908",
+          "relation_role": "part",
+          "feature_key": "building|way/827855908",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "15",
+            "min_height": "13"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    191.7061,
+                    -862.0451
+                  ],
+                  [
+                    193.42,
+                    -862.0897
+                  ],
+                  [
+                    196.7814,
+                    -873.486
+                  ],
+                  [
+                    195.5208,
+                    -874.3095
+                  ],
+                  [
+                    191.7061,
+                    -862.0451
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "129477ccdd09560e94b81986c066450c71556daebd3a2ec1d0ae3f23234b4cbf",
+          "source_record_sha256": "50fe88cbef43f6b212f4fc6e88b59b86d972a9ba736d35fec85b4742d591db29",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            191.7061,
+            -874.3095,
+            196.7814,
+            -862.0451
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "3d49a596952325ff2927eece8e709e65ef0272a42d0daca98031fb91a8ac29bc",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855910",
+          "relation_role": "part",
+          "feature_key": "building|way/827855910",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "5"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    166.9816,
+                    -856.8698
+                  ],
+                  [
+                    177.6631,
+                    -862.1674
+                  ],
+                  [
+                    166.0195,
+                    -864.3375
+                  ],
+                  [
+                    157.9365,
+                    -867.0195
+                  ],
+                  [
+                    161.0547,
+                    -862.6236
+                  ],
+                  [
+                    166.9816,
+                    -856.8698
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "c510f483ce0a5ae399b5c5086338bc942103e3b8c66c7cec22a55ba66e52f9db",
+          "source_record_sha256": "0288ff40329cf61fb87fd0902184d4e506f876e886f631e0f215ede11f38c47a",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            157.9365,
+            -867.0195,
+            177.6631,
+            -856.8698
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "92d4add08a72f8da83a2bd2c4c885e653e120aea55d352aafa06518bec4e084f",
+          "frozen_city_mesh_tiles": []
+        },
+        {
+          "source_id": "way/827855911",
+          "relation_role": "part",
+          "feature_key": "building|way/827855911",
+          "source_tags": {
+            "building:part": "yes",
+            "height": "14",
+            "min_height": "8"
+          },
+          "geometry_world_xz": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    173.8152,
+                    -852.3403
+                  ],
+                  [
+                    187.5374,
+                    -861.9227
+                  ],
+                  [
+                    177.6631,
+                    -862.1674
+                  ],
+                  [
+                    166.9816,
+                    -856.8698
+                  ],
+                  [
+                    173.8152,
+                    -852.3403
+                  ]
+                ]
+              ]
+            ]
+          },
+          "source_geometry_sha256": "9d71cbe2f682ccc1eccec6b0bbac524af3f936848536eb97798950a13a3ed937",
+          "source_record_sha256": "4ddd779877a870bad608afa58942aa6f83028266a540d4d7706a8e92d7842aa4",
+          "source_tile": "game/data/geography/osm-2026-10-27/0_-1.json",
+          "source_tile_sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1",
+          "world_bounds_xz": [
+            166.9816,
+            -862.1674,
+            187.5374,
+            -852.3403
+          ],
+          "geometry_role": "outline_or_building_part_NOT_floor_slab",
+          "frozen_city_status": "excluded_root_special_complex",
+          "frozen_city_source_feature_sha256": "125143f0de645ef7ded940139df05302386e41d766335cee27da5484de7bb876",
+          "frozen_city_mesh_tiles": []
+        }
+      ],
+      "generic_city_replacement_feature_keys": [
+        "building|way/261191086",
+        "building|way/827855854",
+        "building|way/827855864",
+        "building|way/827855865",
+        "building|way/827855866",
+        "building|way/827855867",
+        "building|way/827855868",
+        "building|way/827855869",
+        "building|way/827855870",
+        "building|way/827855856",
+        "building|way/827855857",
+        "building|way/827855858",
+        "building|way/827855859",
+        "building|way/827855860",
+        "building|way/827855861",
+        "building|way/827855862",
+        "building|way/827855863",
+        "building|way/827855896",
+        "building|way/827855897",
+        "building|way/827855898",
+        "building|way/827855899",
+        "building|way/827855900",
+        "building|way/827855901",
+        "building|way/827855903",
+        "building|way/827855888",
+        "building|way/827855889",
+        "building|way/827855890",
+        "building|way/827855891",
+        "building|way/827855892",
+        "building|way/827855893",
+        "building|way/827855894",
+        "building|way/827855895",
+        "building|way/827855883",
+        "building|way/827855884",
+        "building|way/827855885",
+        "building|way/827855886",
+        "building|way/827855887",
+        "building|way/827855928",
+        "building|way/827855929",
+        "building|way/827855930",
+        "building|way/827855920",
+        "building|way/827855921",
+        "building|way/827855922",
+        "building|way/827855923",
+        "building|way/827855924",
+        "building|way/827855925",
+        "building|way/827855926",
+        "building|way/827855927",
+        "building|way/827855912",
+        "building|way/827855913",
+        "building|way/827855914",
+        "building|way/827855915",
+        "building|way/827855916",
+        "building|way/827855917",
+        "building|way/827855918",
+        "building|way/827855919",
+        "building|way/827855904",
+        "building|way/827855905",
+        "building|way/827855906",
+        "building|way/827855907",
+        "building|way/827855908",
+        "building|way/827855910",
+        "building|way/827855911"
+      ],
+      "already_excluded_source_keys": [
+        "building|way/261191086",
+        "building|way/827855854",
+        "building|way/827855870",
+        "building|way/827855856",
+        "building|way/827855857",
+        "building|way/827855858",
+        "building|way/827855859",
+        "building|way/827855860",
+        "building|way/827855861",
+        "building|way/827855862",
+        "building|way/827855896",
+        "building|way/827855897",
+        "building|way/827855898",
+        "building|way/827855899",
+        "building|way/827855900",
+        "building|way/827855901",
+        "building|way/827855903",
+        "building|way/827855888",
+        "building|way/827855889",
+        "building|way/827855890",
+        "building|way/827855891",
+        "building|way/827855892",
+        "building|way/827855893",
+        "building|way/827855894",
+        "building|way/827855895",
+        "building|way/827855883",
+        "building|way/827855884",
+        "building|way/827855885",
+        "building|way/827855886",
+        "building|way/827855887",
+        "building|way/827855928",
+        "building|way/827855929",
+        "building|way/827855930",
+        "building|way/827855920",
+        "building|way/827855923",
+        "building|way/827855924",
+        "building|way/827855925",
+        "building|way/827855926",
+        "building|way/827855927",
+        "building|way/827855912",
+        "building|way/827855913",
+        "building|way/827855914",
+        "building|way/827855915",
+        "building|way/827855916",
+        "building|way/827855917",
+        "building|way/827855918",
+        "building|way/827855919",
+        "building|way/827855904",
+        "building|way/827855905",
+        "building|way/827855906",
+        "building|way/827855907",
+        "building|way/827855908",
+        "building|way/827855910",
+        "building|way/827855911"
+      ],
+      "replacement_policy": {
+        "replace_only_exact_source_ids": true,
+        "no_spatial_blanket_deletion": true,
+        "install_real_collision_before_removing_generic": true,
+        "preserve_unreplaced_roof_parts_and_adjacent_buildings": true,
+        "wait_for_readiness_and_physics_frame_before_entry": true,
+        "source_face_and_saved_identity_mapping_required": true
+      },
+      "planar_outline_is_not_every_floor_slab": true,
+      "terrain_basement_cutouts_verified": false
+    }
+  ],
+  "source_attribution": "© OpenStreetMap contributors, ODbL-1.0",
+  "license_url": "https://www.openstreetmap.org/copyright",
+  "production_pin_changed": false
+}

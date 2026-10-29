@@ -1,0 +1,212 @@
+{
+  "artifacts": [
+    {
+      "directory": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/candidate-r5-recovery-r1",
+      "files": {
+        "identity.json": {
+          "bytes": 370,
+          "sha256": "4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802"
+        },
+        "manifest.json": {
+          "bytes": 128258,
+          "sha256": "5bca301f0469b25855dc420fdc8e81581ad46cb0bcdc70b5eb976b06d96ec192"
+        },
+        "supervisor.json": {
+          "bytes": 274,
+          "sha256": "1782506b7c03857b9c026a8ff7b93aeecf522bc9261b707c421bf38d88313236"
+        },
+        "work.sqlite": {
+          "bytes": 1406218240,
+          "sha256": "631780eecd99cec90de9dec536aee384e730b563f8e2ecd185ffd8cac23f209f"
+        }
+      },
+      "terminal_supervisor": {
+        "limits": {
+          "cpu_seconds": 3600,
+          "rss_bytes": 2147483648,
+          "wall_seconds": 7200
+        },
+        "reason": null,
+        "sampled_peak_rss_bytes": 810467328,
+        "status": "complete_compile_not_runtime_acceptance",
+        "wall_seconds": 777.8685345829999,
+        "worker_exit": 0,
+        "worker_log": "candidate-r5-recovery-r1.worker.log"
+      }
+    },
+    {
+      "directory": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/endpoint-metric-v3-r1",
+      "files": {
+        "identity.json": {
+          "bytes": 377,
+          "sha256": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619"
+        },
+        "manifest.json": {
+          "bytes": 127523,
+          "sha256": "200266eb522c9b3ab55eaece032bb830d50156557571bec5d8477b3ec7fe820d"
+        },
+        "result.json": {
+          "bytes": 1739,
+          "sha256": "875b21bbe17767072ca4d4ccf5c981847edadaaf38c1f930921886a865d1f8e4"
+        },
+        "supervisor.json": {
+          "bytes": 840,
+          "sha256": "47e7af3b0bc8d8d857547332c8b269fc6263abba0550032f34bc9fbc3397426d"
+        },
+        "work.sqlite": {
+          "bytes": 1415602176,
+          "sha256": "9f15cbc5bbe06b863e38dcab1dc61a17aa00515fa574ec2f24a6f2c3126caa66"
+        }
+      },
+      "terminal_supervisor": {
+        "created_utc": "2026-10-29T15:49:17.118668+00:00",
+        "kind": "source-endpoint-metric-v3",
+        "limits": {
+          "cpu_seconds": 3600,
+          "minimum_filesystem_free_bytes": 12884901888,
+          "output_logical_bytes": 8589934592,
+          "rss_bytes": 2147483648,
+          "wall_seconds": 7200
+        },
+        "reason": null,
+        "sampled_peak_output_logical_bytes": 2537020096,
+        "sampled_peak_rss_bytes": 568524800,
+        "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/semantic_endpoint_baseline.py",
+        "status": "COMPLETE",
+        "supervisor_pid": 74449,
+        "terminal_utc": "2026-10-29T15:54:51.382830+00:00",
+        "wall_seconds": 334.264614791,
+        "worker_exit": 0,
+        "worker_lstart": "Thu Oct 29 11:49:17 2026",
+        "worker_pid": 74458
+      }
+    },
+    {
+      "directory": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/typed-central20-v1",
+      "files": {
+        "identity.json": {
+          "bytes": 380,
+          "sha256": "02a15cbdd30852ecee696363ece14c6759037bbd9bf168bfcb19c18ce36f6f09"
+        },
+        "manifest.json": {
+          "bytes": 133709,
+          "sha256": "16c99749ce58c4735f24b2c0b87b13a30868a417268cf34a0cee94ec79cbf668"
+        },
+        "result.json": {
+          "bytes": 1085,
+          "sha256": "7cc829b19ed36744b44a147b1ec9f77b5ea5b85b3166ed9c808918067b1726b5"
+        },
+        "supervisor.json": {
+          "bytes": 840,
+          "sha256": "30eb821ca306135564ff7606d2a32d5302bce2cdfee6c83115cecca797947e3e"
+        },
+        "work.sqlite": {
+          "bytes": 1415602176,
+          "sha256": "9f15cbc5bbe06b863e38dcab1dc61a17aa00515fa574ec2f24a6f2c3126caa66"
+        }
+      },
+      "terminal_supervisor": {
+        "created_utc": "2026-10-29T16:38:01.854100+00:00",
+        "kind": "typed-physical-central20-v1",
+        "limits": {
+          "cpu_seconds": 3600,
+          "minimum_filesystem_free_bytes": 12884901888,
+          "output_logical_bytes": 8589934592,
+          "rss_bytes": 2147483648,
+          "wall_seconds": 7200
+        },
+        "reason": null,
+        "sampled_peak_output_logical_bytes": 2733118191,
+        "sampled_peak_rss_bytes": 522321920,
+        "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/build_typed_physical.py",
+        "status": "COMPLETE",
+        "supervisor_pid": 10685,
+        "terminal_utc": "2026-10-29T16:45:34.939112+00:00",
+        "wall_seconds": 453.0816159170008,
+        "worker_exit": 0,
+        "worker_lstart": "Thu Oct 29 12:38:01 2026",
+        "worker_pid": 10711
+      }
+    },
+    {
+      "directory": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/metric-v4-geometry-r1",
+      "files": {
+        "geometry-result.json": {
+          "bytes": 832,
+          "sha256": "5d09a0f67fc6f0e8b5b56b6e9dd727e4ff7665ba1e2890b278a7b85cde535d2b"
+        },
+        "result.json": {
+          "bytes": 1108,
+          "sha256": "b5c3ba0764f1c0c7f9af3e14496356039dfa1c51e7181624a07950533844ccba"
+        },
+        "source-after.json": {
+          "bytes": 412,
+          "sha256": "c1091f85d52df5767f6680fd5416b2ce7febbd08073965d32b21b00b0494d011"
+        },
+        "source-before.json": {
+          "bytes": 412,
+          "sha256": "c1091f85d52df5767f6680fd5416b2ce7febbd08073965d32b21b00b0494d011"
+        },
+        "supervisor.json": {
+          "bytes": 843,
+          "sha256": "339046371a625fdb797cbb045f24cb159e3253ef7dd82411b9d8d0e4620ef94a"
+        },
+        "work.sqlite": {
+          "bytes": 1606881280,
+          "sha256": "b7166530b6ccce382fda7b31c5ec1cbb6465ec6b69f9cb8b8d96bb209b200b19"
+        }
+      },
+      "terminal_supervisor": {
+        "created_utc": "2026-10-29T19:40:42.855708+00:00",
+        "kind": "source-metric-v4-geometry",
+        "limits": {
+          "cpu_seconds": 3600,
+          "minimum_filesystem_free_bytes": 12884901888,
+          "output_logical_bytes": 8589934592,
+          "rss_bytes": 2147483648,
+          "wall_seconds": 7200
+        },
+        "reason": null,
+        "sampled_peak_output_logical_bytes": 1608439187,
+        "sampled_peak_rss_bytes": 266305536,
+        "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/build_metric_geometry_v4.py",
+        "status": "COMPLETE",
+        "supervisor_pid": 42489,
+        "terminal_utc": "2026-10-29T19:43:13.935082+00:00",
+        "wall_seconds": 151.07726199999888,
+        "worker_exit": 0,
+        "worker_lstart": "Thu Oct 29 15:40:42 2026",
+        "worker_pid": 42548
+      }
+    }
+  ],
+  "observed_utc": "2026-10-29T19:52:56.907508+00:00",
+  "runtime": {
+    "dependency_scope": "Existing task-local CPU environment; no global configuration or billing change",
+    "packages": {
+      "numpy": {
+        "module_file": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/recovery/private/venv/lib/python3.12/site-packages/numpy/__init__.py",
+        "module_sha256": "8236a753805db34c29ef9cd03694e0af883b6325eb4fd246cc83d2be0b847e89",
+        "version": "2.3.4"
+      },
+      "osmium": {
+        "module_file": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/recovery/private/venv/lib/python3.12/site-packages/osmium/__init__.py",
+        "module_sha256": "f6fc40e6017f08d3da141144226eba7b4dd195cf0ee793c612a9442458842d79",
+        "version": "4.1.1"
+      },
+      "pyproj": {
+        "module_file": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/recovery/private/venv/lib/python3.12/site-packages/pyproj/__init__.py",
+        "module_sha256": "b080b99ec2cef0ebe9b17a28c5bc50df7a478efde0e32f0996db60448badfa72",
+        "version": "3.7.2"
+      },
+      "shapely": {
+        "module_file": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/recovery/private/venv/lib/python3.12/site-packages/shapely/__init__.py",
+        "module_sha256": "ec46944357e1207798213bf98e715cf862906ec317082494f9823f2370fd70e3",
+        "version": "2.1.2"
+      }
+    },
+    "python_executable": "/Users/midir/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+    "python_executable_sha256": "494f72dd95d0dc196169c5821219fc6cfa9c1ef582332b95b53874b10acea6e0",
+    "python_version": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema": "mbs_frozen_cpu_packet_reproduction_result_v1",
+  "all_passed": true,
+  "checks": [
+    {
+      "name": "premier1075-frozen-recipes",
+      "exit_code": 0,
+      "stdout": "rooms 1075 recipes 92 failed 0\n[]\n",
+      "stderr": "",
+      "semantic_comparisons": [
+        {
+          "reference": "loop/singapore-fidelity/exterior-shell/PREMIER_TYPED_FITOUT_COLLECTION_V3.json",
+          "equal": true,
+          "ignored_volatile_fields": [
+            "recorded_utc"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "facade1543-frozen-source-geometry",
+      "exit_code": 0,
+      "stdout": "{'schema': 'mbs_real_source_facade_reveals_v10', 'fixture_candidate_sha256': '055d1ec7d40ef0bc72c61f8b63629b7706064e122ec81dd14a05591812541f2d', 'candidate_status': 'HISTORICAL_INCOMPLETE_PERIMETER_FIXTURE_NOT_NEW_CATALOGUE_ALLOCATION', 'rooms_tested': 1543, 'rooms_with_minimum_candidate_frontage': 1543, 'rooms_without_candidate_frontage': 0, 'native_glazing_or_render_acceptance': False}\n",
+      "stderr": "",
+      "semantic_comparisons": [
+        {
+          "reference": "loop/singapore-fidelity/exterior-shell/SOURCE_FACADE_REVEAL_PROPOSAL_V10.json",
+          "equal": true,
+          "ignored_volatile_fields": []
+        }
+      ]
+    },
+    {
+      "name": "facade-six-bounded-tests",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.023s\n\nOK\n"
+    },
+    {
+      "name": "catalogueV9-frozen-proposal",
+      "exit_code": 0,
+      "stdout": "active 1844 suites 775 legacy 1850 superseded ['R-T1-L45-07', 'R-T1-L44-09', 'R-T2-L43-11', 'R-T2-L42-02', 'R-T3-L49-02', 'R-T3-L48-09']\ncollections {'Paiza': 370, 'Sands': 1474}\narea 151900\n",
+      "stderr": "",
+      "semantic_comparisons": [
+        {
+          "reference": "loop/singapore-fidelity/exterior-shell/OPERATOR_CATALOGUE_INVENTORY_PROPOSAL_V9.json",
+          "equal": true,
+          "ignored_volatile_fields": [
+            "recorded_utc"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "catalogueV9-5924-coverage",
+      "exit_code": 0,
+      "stdout": "{\n  \"schema\": \"mbs_catalogue_inventory_coverage_audit_v9\",\n  \"checks\": 5924,\n  \"failed\": 0,\n  \"failures\": [],\n  \"active_keys\": 1844,\n  \"suites\": 775,\n  \"legacy_ids_retained\": 1850,\n  \"retired_rounding_placeholders\": 6,\n  \"catalogue_variants\": 26,\n  \"collection_counts\": {\n    \"Paiza\": 370,\n    \"Sands\": 1474\n  },\n  \"required_reference_room_area_m2\": 151900,\n  \"independent_fact_critique_complete\": false,\n  \"physical_allocation_or_furnishing_verified\": false,\n  \"scope\": \"Exact key/suite/legacy coverage, source-binding schema, explicit reconstruction counts and complete selected programme propagation. Does not independently certify every website claim or any physical room.\",\n  \"proposal_sha256\": \"acaa970fd7e25a519118f8110a843a5d6d2c7896ec3a4da97e00709a8b425f54\"\n}\n",
+      "stderr": "",
+      "semantic_comparisons": [
+        {
+          "reference": "loop/singapore-fidelity/exterior-shell/CATALOGUE_INVENTORY_COVERAGE_AUDIT_V9.json",
+          "equal": true,
+          "ignored_volatile_fields": [
+            "proposal_sha256"
+          ]
+        }
+      ]
+    }
+  ],
+  "used_only_frozen_hash_closure": true,
+  "engines_network_or_live_outputs_touched": false
+}

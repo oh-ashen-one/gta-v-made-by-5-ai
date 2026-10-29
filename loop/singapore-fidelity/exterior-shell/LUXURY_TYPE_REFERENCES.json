@@ -1,0 +1,41 @@
+{
+  "schema": "mbs_current_type_area_targets_v2",
+  "metric_status": "Published category averages guide reconstructed type targets, not surveyed dimensions for every unit.",
+  "types": {
+    "premier": {
+      "target_area_m2": 45,
+      "url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-room.html",
+      "reference": "Current official Sands Premier room: average45sqm, king or two queens; bath and separate vanities."
+    },
+    "signature_suite": {
+      "target_area_m2": 140,
+      "url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-signature-suite.html",
+      "reference": "Current official Sands Signature suite: average140sqm, one bedroom, separate living, six-place dining, bar, wardrobe and entertainment variants."
+    },
+    "paiza_suite": {
+      "target_area_m2": 140,
+      "url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-signature-suite.html",
+      "reference": "Generic reconstructed Paiza units retain their Signature reference family. Current Paiza Signature one-bedroom average140sqm; two-bedroom210sqm. Do not silently substitute smaller Paiza Premier110sqm to make packing pass."
+    },
+    "family_suite": {
+      "target_area_m2": 175,
+      "url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-family-suite.html",
+      "reference": "Current detailed Tower3 family page: average175sqm, king bedroom plus children's bunk room, social kitchen and working desk. Normalized two sleeping-room IDs may remain; old two-king fitout is not faithful."
+    },
+    "presidential_suite": {
+      "target_area_m2": 360,
+      "url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-presidential-suite.html",
+      "reference": "Current detailed Presidential page: average360sqm, two bedrooms, entertainment variants, six-place dining, wardrobe and powder room; super-king240cm and queen160cm are listed. Old195cm mattresses are not a final fitout match."
+    },
+    "chairman_residence": {
+      "target_area_m2": 520,
+      "url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-chairman-suite.html",
+      "reference": "Current detailed Chairman page: average520sqm for3bedrooms and630sqm for4; the retained inventory has3. Includes private gym, massage/spa, pantry, large living/dining. Detailed per-bedroom count supersedes the collection's coarse600sqm average."
+    }
+  },
+  "all_original_room_ids_and_types_preserved": true,
+  "private_unit_placement_asbuilt_verified": false,
+  "source_page_images_or_drawings_committed": false,
+  "recorded_utc": "2026-10-29T15:45:54.228879+00:00",
+  "retrieval_scope": "Official webpages read this turn. Some English URLs redirected to the official Indonesian locale; detailed bedroom-specific figures take precedence over coarse collection summaries."
+}

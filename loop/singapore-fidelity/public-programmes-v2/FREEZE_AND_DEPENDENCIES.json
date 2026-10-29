@@ -1,0 +1,117 @@
+{
+  "schema": "public_programme_milestone_freeze_v2",
+  "created_utc": "2026-10-29T19:56:06.965141+00:00",
+  "status": "FROZEN_FOR_ROOT_INTEGRATION_NO_MORE_WORKER_EXPANSION",
+  "public_files": [
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/.gitignore",
+      "bytes": 24,
+      "sha256": "7fec0c903f3d7b39dc2ccbbb3e3724d758e6cfce527360063547e528c956b07d"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/CPU_CLOSURE_CHECK.json",
+      "bytes": 30770,
+      "sha256": "e69a6d3b60fab64991e45b2f61d08afb905f57c60410aafa1bd52f78118a9df2"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/GENERIC_COLLISION_REPLACEMENT.json",
+      "bytes": 4617,
+      "sha256": "c48c7d5c21b8a0c1a11a5ed52cf5dde56646cf59746fae1ec0999f6655e61ca7"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/INTEGRATION.md",
+      "bytes": 6574,
+      "sha256": "c52629d507cb0c080f1170d4d60ed5efcf4dd52998f797a548b47a6ac7a8615a"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/OPERATOR_PLAN_OBSERVATIONS.json",
+      "bytes": 11917,
+      "sha256": "628cff26fabf0c5dc4876904df0a10ab2923b57b73676128f8e22e54046814fa"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/PROGRAMME_SEEDS.json",
+      "bytes": 29613,
+      "sha256": "f733921bd444c4c2a8f49a0bcc3b0ce424870f99dbb65625bf21fad2767fe2d4"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/PUBLIC_PROGRAMME_CONTRACT_V2.json",
+      "bytes": 61761,
+      "sha256": "8911dd34d185553f1f970ffef98d8b780c2a1d12e3bca2214631fddb6b06b1a0"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/REFERENCE_ACCESS.json",
+      "bytes": 1855,
+      "sha256": "bae83b1fc260bcb53e26d39aeb174711ed8b23d29cbe598abac6f0f4b76a493c"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/RELATION_MEMBER_EVIDENCE.json",
+      "bytes": 8959,
+      "sha256": "81eaee9a2d0031528496c9169823325a4ec1818c6a210c6e184a4770bb970b99"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/SOURCE_BUILDING_BINDINGS.json",
+      "bytes": 193307,
+      "sha256": "3dfaf9aeafac0cf84b33bf67acbad174289e00299b801fc880dd7e6d3296ea26"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/build_contract.py",
+      "bytes": 7648,
+      "sha256": "4140af9e1c0769784dba4c8b182762dc3a9595187e31794e3a6d5b1c24a932ee"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/check_contract.py",
+      "bytes": 3798,
+      "sha256": "9d4f9f93d6db8149fe958e9c6fe4d642b173d2ae33986940130693036ec579a1"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/extract_plan_observations.py",
+      "bytes": 4957,
+      "sha256": "7601a3e45044b75aa043e2ef321fd34b8cf19e09a54c962289ba70d35f038be0"
+    }
+  ],
+  "authoring_inputs": [
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/PUBLIC_MIXED_USE_FLOOR_REGISTRY_PROPOSAL_V14.json",
+      "bytes": 2089751,
+      "sha256": "723e83814786ab877ae99470a86e364ef314b028a288db7e8e43983b554bd9f7"
+    },
+    {
+      "path": "game/data/geography/osm-2026-10-27/0_-1.json",
+      "bytes": 275573,
+      "sha256": "0e8469f69a80570e0577f632c56b074c2789ad1d11556ce106600c68028b00b1"
+    },
+    {
+      "path": "game/data/geography/osm-2026-10-27/manifest.json",
+      "bytes": 154268,
+      "sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983"
+    },
+    {
+      "path": "loop/singapore-fidelity/recovery/private/city-geometry/candidate-r2/catalogs/0_-1.json",
+      "bytes": 1105067,
+      "sha256": "25321f3184a55d0a5e3f248c0b22c6ac59f9c0ebb4e50c5b83424f155f2af5cb"
+    }
+  ],
+  "runtime_data_closure": [
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/PUBLIC_PROGRAMME_CONTRACT_V2.json",
+      "bytes": 61761,
+      "sha256": "8911dd34d185553f1f970ffef98d8b780c2a1d12e3bca2214631fddb6b06b1a0"
+    },
+    {
+      "path": "loop/singapore-fidelity/public-programmes-v2/SOURCE_BUILDING_BINDINGS.json",
+      "bytes": 193307,
+      "sha256": "3dfaf9aeafac0cf84b33bf67acbad174289e00299b801fc880dd7e6d3296ea26"
+    }
+  ],
+  "runtime_requires_private_pdf_or_city_cache": false,
+  "optional_private_reference": {
+    "pdf_sha256": "8f88a3e22fd560c202ea1dfbfa29beb5f50c461c381b1cc44092ac18f72bba0c",
+    "bytes": 10876793,
+    "path": "private/unique-spaces.pdf",
+    "purpose": "Source diagram/area review only; not needed by runtime; no redistribution permission established."
+  },
+  "runtime_data_closure_preserves_all_source_polygons": true,
+  "no_game_adoption_or_native_claim": true,
+  "cpu_checks": 342,
+  "cpu_failed": 0
+}

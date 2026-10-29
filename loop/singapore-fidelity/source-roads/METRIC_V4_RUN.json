@@ -1,0 +1,33 @@
+{
+  "all_own_cpu_jobs_terminal": true,
+  "exec_session": null,
+  "final_handoff": "OWNER_CUTOFF_HANDOFF/README.md",
+  "global_profile_or_native_adoption": false,
+  "observed_utc": "2026-10-29T19:56:30.744616+00:00",
+  "original_source_graph_facts_audited_before_after": true,
+  "output": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/metric-v4-geometry-r1",
+  "owned_lifecycle": {
+    "created_utc": "2026-10-29T19:40:42.855708+00:00",
+    "kind": "source-metric-v4-geometry",
+    "limits": {
+      "cpu_seconds": 3600,
+      "minimum_filesystem_free_bytes": 12884901888,
+      "output_logical_bytes": 8589934592,
+      "rss_bytes": 2147483648,
+      "wall_seconds": 7200
+    },
+    "reason": null,
+    "sampled_peak_output_logical_bytes": 1608439187,
+    "sampled_peak_rss_bytes": 266305536,
+    "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/build_metric_geometry_v4.py",
+    "status": "COMPLETE",
+    "supervisor_pid": 42489,
+    "terminal_utc": "2026-10-29T19:43:13.935082+00:00",
+    "wall_seconds": 151.07726199999888,
+    "worker_exit": 0,
+    "worker_lstart": "Thu Oct 29 15:40:42 2026",
+    "worker_pid": 42548
+  },
+  "status": "OWNER_CUTOFF_FROZEN_GEOMETRY_AUDIT_ONLY_NO_PROFILE_SOLVE",
+  "vehicle_junction_recipes_preserved": true
+}

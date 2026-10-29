@@ -1,0 +1,8 @@
+{
+  "observed_utc": "2026-10-29T19:52:56.907508+00:00",
+  "matched_live_owned_road_cpu_processes": [],
+  "status": "NO_OWNED_ROAD_CPU_JOBS_LIVE",
+  "terminal_job_receipts_recorded_in": "ARTIFACT_DEPENDENCIES.json",
+  "no_engines_started_by_child": true,
+  "owner_cutoff": "No further global solve, generation expansion, or research will be started"
+}

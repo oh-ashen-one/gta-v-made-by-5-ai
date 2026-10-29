@@ -1,0 +1,33 @@
+{
+  "schema": "mbs_luxury_v3_full_geometry_audit",
+  "geometry_checks": 16169,
+  "geometry_failed": 0,
+  "failures": [],
+  "all_room_ids": 1850,
+  "suites": 775,
+  "occupied_guest_floors": 159,
+  "exact_room_floor_patches": 1877,
+  "documented_physical_floor_relocations": 438,
+  "cross_tower_relocations": 53,
+  "type_area_averages_m2": {
+    "premier": 46.73041430297516,
+    "signature_suite": 136.14275932905622,
+    "family_suite": 175.0,
+    "paiza_suite": 134.70886882771313,
+    "presidential_suite": 360.0,
+    "chairman_residence": 520.0
+  },
+  "type_area_deficits_m2": {
+    "premier": 0,
+    "signature_suite": 1917.048613459061,
+    "family_suite": 0,
+    "paiza_suite": 1338.6561865885742,
+    "presidential_suite": 0,
+    "chairman_residence": 0
+  },
+  "area_reference_targets_met": false,
+  "all_rooms_furnished_or_traversable": false,
+  "native_or_rendered_verified": false,
+  "all57_additional_programme_geometry_complete": false,
+  "scope": "All source envelopes, full-height room patch containment, no core/void/public-corridor/room overlap, attached private annexes, original unit metadata and full-capsule public approaches. This is not furniture/door implementation or native room traversal."
+}

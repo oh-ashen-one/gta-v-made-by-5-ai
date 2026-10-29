@@ -1,0 +1,19 @@
+{
+  "actual_short_stair_geometry_tests_passed": 3,
+  "actual_sources": [
+    "way/894517546",
+    "way/878098832"
+  ],
+  "height_scope": "Proposedlocalfixtureheight.17mperstep,sourcecount/XZ/nodespreserved;notglobalv4orsurveyedY",
+  "observed_utc": "2026-10-29T18:10:55.203624+00:00",
+  "policy_tests_passed": 6,
+  "remaining": [
+    "Generalpolylineflight/landingandexplicitgrade-transitionbindings",
+    "Source-connectedmultiwayjunctionrepairwithoutcarcentreline/gradechanges",
+    "Globalgeometryallowanceandpositiveincline/countconstraintintegration",
+    "Unspecifiedstairdirection/heightinferencewithsourceconflictledger",
+    "Globalstrictsolveraudit/newmatchingtypedphysicalbatch",
+    "Nativebody/worldrays/productionactortraversal/rendercritique"
+  ],
+  "status": "V4_POLICY_AND_TARGETED_STAIR_APERTURE_PROTOTYPE_ONLY_GLOBAL_INTEGRATION_REMAINS"
+}

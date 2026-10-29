@@ -1,0 +1,808 @@
+{
+  "schema": "independent_mbs_operator_source_review_v1",
+  "reviewer": "source_dataset_recovery",
+  "observed_utc": "2026-10-29T19:34:57.300166+00:00",
+  "scope": "Independent source and JSON coverage review, read-only production. No engine, Git, asset acquisition or physical floorplan acceptance.",
+  "proposal_versions": {
+    "v9": {
+      "sha256": "05832bf84d0e52cb67113d15c54fb023e06a01f561daeb1fba8e99e28d0bec5f",
+      "verdict": "SOURCE_CORRECTIONS_REQUIRED_SUPERSEDED_BY_V11"
+    },
+    "v11": {
+      "sha256": "0671bd5f822970afd24a270f0307f8d3c5326110615018f7f49ca98cd1bfc1fc",
+      "verdict": "ACCEPT_SOURCE_BOUND_CATALOGUE_PROPOSAL_WITH_EXPLICIT_RECONSTRUCTION_LIMITS"
+    }
+  },
+  "count_basis": {
+    "primary_source": "https://s28.q4cdn.com/640198178/files/content_files/LVS-3Q-2026-Presentation-Deck.pdf",
+    "published_date": "2026-10-21",
+    "pdf_page_index": 24,
+    "slide_number": 25,
+    "active_keys": 1844,
+    "suites": 775,
+    "status": "CURRENT_OPERATOR_AGGREGATE_SUPPORTED",
+    "legacy1850": "All old game records retained exactly; six historical normalization placeholders are not a claim of six physical hotel-room closures.",
+    "collection_source": "https://www.marinabaysands.com/expo-and-convention/gallery/event-highlights/2025/06/hotel-room-renovations-and-jin-ting-wan.html",
+    "collection_limits": "June 2025 article uses approximate 1480 Sands and 370 Paiza, mostly suites. Exact proposal 1474/370 and 26 category counts are reconstructed, not operator inventory.",
+    "classification_limit": "Room/Studio/Club versus named Suite follows current marketing category names. The operator has not supplied a financial per-category key schedule; Studio non-suite classification and exact category counts are reconstruction, constrained to the sourced aggregate775."
+  },
+  "independent_coverage": {
+    "receipt": "COVERAGE_INDEPENDENT_V9_V11.json",
+    "predicates": 40,
+    "failed": 0,
+    "method": "Independent set/count/full-record JSON comparisons, not reliance on builder audit result.",
+    "builder_audit_separately_reported": {
+      "checks": 5930,
+      "failed": 0
+    }
+  },
+  "catalogue_corrections": [
+    {
+      "category": "paiza_club",
+      "field": "bed_options",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-club-room.html",
+      "source_section": "Room overview / beds; compare The Paiza Collection summary",
+      "finding": "Current detail page says1king; generic collection summary two-queen option is not used.",
+      "status": "CLOSED_IN_V11",
+      "before": [
+        "king",
+        "two_queen"
+      ],
+      "after": [
+        "king"
+      ]
+    },
+    {
+      "category": "paiza_club",
+      "field": "source_conflict_note",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-club-room.html",
+      "source_section": "Room overview / beds; compare The Paiza Collection summary",
+      "finding": "Preserve conflict rather than silently merge inconsistent options.",
+      "status": "CLOSED_IN_V11",
+      "before": null,
+      "after": "Collection summary offers king/two-queen; current category detail lists onlyking. Detail controls proposal."
+    },
+    {
+      "category": "harbour",
+      "field": "variant",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-harbour-suite.html",
+      "source_section": "Key Features / Type 1 and Type 2; Amenities / Bedroom",
+      "finding": "Current Harbour detail provides both named configurations.",
+      "status": "CLOSED_IN_V11",
+      "before": null,
+      "after": [
+        "social_kitchen",
+        "social_kitchen_and_media_room"
+      ]
+    },
+    {
+      "category": "harbour",
+      "field": "required_programs",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-harbour-suite.html",
+      "source_section": "Key Features / Type 1 and Type 2; Amenities / Bedroom",
+      "finding": "Retain kitchen in both variants and media in the combined variant.",
+      "status": "CLOSED_IN_V11",
+      "before": [
+        "sleeping",
+        "bath_with_two_person_tub",
+        "separate_vanities",
+        "rain_shower",
+        "walk_in_wardrobe",
+        "armoire_minibar",
+        "television",
+        "separate_living",
+        "dining",
+        "dressing_table",
+        "night_fridge",
+        "jacuzzi_bath",
+        "powder_room"
+      ],
+      "after": [
+        "sleeping",
+        "bath_with_two_person_tub",
+        "separate_vanities",
+        "rain_shower",
+        "walk_in_wardrobe",
+        "armoire_minibar",
+        "television",
+        "separate_living",
+        "dining",
+        "dressing_table",
+        "night_fridge",
+        "jacuzzi_bath",
+        "powder_room",
+        "selected_social_kitchen_or_kitchen_and_media"
+      ]
+    },
+    {
+      "category": "harbour",
+      "field": "published_mattress_width_m",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-harbour-suite.html",
+      "source_section": "Key Features / Type 1 and Type 2; Amenities / Bedroom",
+      "finding": "Current detail explicitly gives240cm mattress.",
+      "status": "CLOSED_IN_V11",
+      "before": null,
+      "after": 2.4
+    },
+    {
+      "category": "skyline",
+      "field": "published_mattress_width_m",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-skyline-suite.html",
+      "source_section": "Key Features / suite types; Amenities / Bedroom",
+      "finding": "Current detail explicitly gives240cm mattress.",
+      "status": "CLOSED_IN_V11",
+      "before": null,
+      "after": 2.4
+    },
+    {
+      "category": "merlion",
+      "field": "published_bed_widths_m",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-merlion-suite.html",
+      "source_section": "Amenities / Bedroom",
+      "finding": "Current detail gives240cm superking and140cm double-queen.",
+      "status": "CLOSED_IN_V11",
+      "before": null,
+      "after": {
+        "super_king": 2.4,
+        "queen": 1.4
+      }
+    },
+    {
+      "category": "skyline",
+      "field": "variant",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-skyline-suite.html",
+      "source_section": "Key Features / suite types; Amenities / Bedroom",
+      "finding": "Golf is paired with a Media Room; a golf-only identifier lost programme coverage.",
+      "status": "CLOSED_IN_V11",
+      "before": [
+        "private_karaoke",
+        "golf_simulator"
+      ],
+      "after": [
+        "private_karaoke",
+        "golf_and_media_room"
+      ]
+    },
+    {
+      "category": "chairman_3b",
+      "field": "required_programs",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-chairman-suite.html",
+      "source_section": "Key Features; Amenities / Entertainment, Massage & Gym",
+      "finding": "Distinctive current amenities retained without inventing an additional enclosed media room.",
+      "status": "CLOSED_IN_V11",
+      "before": [
+        "sleeping",
+        "bath_with_two_person_tub",
+        "separate_vanities",
+        "rain_shower",
+        "walk_in_wardrobe",
+        "armoire_minibar",
+        "television",
+        "separate_living",
+        "dining",
+        "dressing_table",
+        "night_fridge",
+        "two_living_rooms",
+        "eight_seat_dining",
+        "private_gym",
+        "massage_room_two_tables",
+        "sauna",
+        "ice_well",
+        "butler_pantry",
+        "grand_piano",
+        "humidor",
+        "jacuzzi_bath",
+        "powder_room"
+      ],
+      "after": [
+        "sleeping",
+        "bath_with_two_person_tub",
+        "separate_vanities",
+        "rain_shower",
+        "walk_in_wardrobe",
+        "armoire_minibar",
+        "television",
+        "separate_living",
+        "dining",
+        "dressing_table",
+        "night_fridge",
+        "two_living_rooms",
+        "eight_seat_dining",
+        "private_gym",
+        "massage_room_two_tables",
+        "sauna",
+        "ice_well",
+        "butler_pantry",
+        "grand_piano",
+        "humidor",
+        "jacuzzi_bath",
+        "powder_room",
+        "146_inch_karaoke_display",
+        "massage_chair"
+      ]
+    },
+    {
+      "category": "chairman_4b",
+      "field": "required_programs",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-chairman-suite.html",
+      "source_section": "Key Features; Amenities / Entertainment, Massage & Gym",
+      "finding": "Distinctive current amenities retained without inventing an additional enclosed media room.",
+      "status": "CLOSED_IN_V11",
+      "before": [
+        "sleeping",
+        "bath_with_two_person_tub",
+        "separate_vanities",
+        "rain_shower",
+        "walk_in_wardrobe",
+        "armoire_minibar",
+        "television",
+        "separate_living",
+        "dining",
+        "dressing_table",
+        "night_fridge",
+        "two_living_rooms",
+        "eight_seat_dining",
+        "private_gym",
+        "massage_room_two_tables",
+        "sauna",
+        "ice_well",
+        "butler_pantry",
+        "grand_piano",
+        "humidor",
+        "jacuzzi_bath",
+        "powder_room"
+      ],
+      "after": [
+        "sleeping",
+        "bath_with_two_person_tub",
+        "separate_vanities",
+        "rain_shower",
+        "walk_in_wardrobe",
+        "armoire_minibar",
+        "television",
+        "separate_living",
+        "dining",
+        "dressing_table",
+        "night_fridge",
+        "two_living_rooms",
+        "eight_seat_dining",
+        "private_gym",
+        "massage_room_two_tables",
+        "sauna",
+        "ice_well",
+        "butler_pantry",
+        "grand_piano",
+        "humidor",
+        "jacuzzi_bath",
+        "powder_room",
+        "146_inch_karaoke_display",
+        "massage_chair"
+      ]
+    },
+    {
+      "category": "sands_premier",
+      "field": "advertised_bedrooms",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-room.html",
+      "source_section": "Room overview / bed choices",
+      "finding": "Current page gives bed options, not a published separated-bedroom count.",
+      "status": "CLOSED_IN_V11",
+      "before": 1,
+      "after": null
+    },
+    {
+      "category": "sands_premier",
+      "field": "bedroom_count_interpretation",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-room.html",
+      "source_section": "Room overview / bed choices",
+      "finding": "Distinguish room/studio planning from a published suite bedroom count.",
+      "status": "CLOSED_IN_V11",
+      "before": "Published bedroom count",
+      "after": "One sleeping space is a reconstruction from the offered beds; no separate bedroom is asserted."
+    },
+    {
+      "category": "sands_studio",
+      "field": "advertised_bedrooms",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-studio.html",
+      "source_section": "Room overview / bed choices",
+      "finding": "Current page gives bed options, not a published separated-bedroom count.",
+      "status": "CLOSED_IN_V11",
+      "before": 1,
+      "after": null
+    },
+    {
+      "category": "sands_studio",
+      "field": "bedroom_count_interpretation",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-studio.html",
+      "source_section": "Room overview / bed choices",
+      "finding": "Distinguish room/studio planning from a published suite bedroom count.",
+      "status": "CLOSED_IN_V11",
+      "before": "Published bedroom count",
+      "after": "One sleeping space is a reconstruction from the offered beds; no separate bedroom is asserted."
+    },
+    {
+      "category": "paiza_club",
+      "field": "advertised_bedrooms",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-club-room.html",
+      "source_section": "Room overview / beds; compare The Paiza Collection summary",
+      "finding": "Current page gives bed options, not a published separated-bedroom count.",
+      "status": "CLOSED_IN_V11",
+      "before": 1,
+      "after": null
+    },
+    {
+      "category": "paiza_club",
+      "field": "bedroom_count_interpretation",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-club-room.html",
+      "source_section": "Room overview / beds; compare The Paiza Collection summary",
+      "finding": "Distinguish room/studio planning from a published suite bedroom count.",
+      "status": "CLOSED_IN_V11",
+      "before": "Published bedroom count",
+      "after": "One sleeping space is a reconstruction from the offered beds; no separate bedroom is asserted."
+    },
+    {
+      "category": "sands_premier_2b",
+      "field": "required_programs",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-suite.html",
+      "source_section": "Key Features / dining-table footnote by view",
+      "finding": "Remove duplicate dining entry without deleting any programme.",
+      "status": "CLOSED_IN_V11",
+      "before": [
+        "sleeping",
+        "bath_with_two_person_tub",
+        "separate_vanities",
+        "rain_shower",
+        "walk_in_wardrobe",
+        "armoire_minibar",
+        "television",
+        "separate_living",
+        "dining",
+        "dressing_table",
+        "dining"
+      ],
+      "after": [
+        "sleeping",
+        "bath_with_two_person_tub",
+        "separate_vanities",
+        "rain_shower",
+        "walk_in_wardrobe",
+        "armoire_minibar",
+        "television",
+        "separate_living",
+        "dining",
+        "dressing_table"
+      ]
+    },
+    {
+      "category": "sands_premier_2b",
+      "field": "dining_seat_rules",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-suite.html",
+      "source_section": "Key Features / dining-table footnote by view",
+      "finding": "Current detail page makes dining seats dependent on the actual view/configuration.",
+      "status": "CLOSED_IN_V11",
+      "before": null,
+      "after": {
+        "gardens_by_the_bay": 2,
+        "other_listed_configurations": 4
+      }
+    },
+    {
+      "category": "sands_premier_2b",
+      "field": "selected_dining_seats",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-suite.html",
+      "source_section": "Key Features / dining-table footnote by view",
+      "finding": "Physical view is not yet assigned; no dining variant can be selected silently.",
+      "status": "CLOSED_IN_V11",
+      "before": null,
+      "after": null
+    },
+    {
+      "category": "presidential",
+      "field": "source_variant_wording_issue",
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-presidential-suite.html",
+      "source_section": "Key Features / suite-type list",
+      "finding": "Do not turn the textual inconsistency into a verified five-layout claim.",
+      "status": "CLOSED_IN_V11",
+      "before": null,
+      "after": "Current page says four types while naming Golf, Media Room, Pool Table, Entertainment Show Kitchen, and Social Kitchen and Media Room. Named options retained; exact layout-count wording is inconsistent."
+    }
+  ],
+  "area_bedroom_tower_reference_matrix": [
+    {
+      "id": "sands_premier",
+      "label": "Sands Premier Room",
+      "published_average_area_m2": 45,
+      "advertised_bedrooms": null,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-room.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "sands_studio",
+      "label": "Sands Premier Studio",
+      "published_average_area_m2": 70,
+      "advertised_bedrooms": null,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-studio.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "paiza_club",
+      "label": "Paiza Club Room",
+      "published_average_area_m2": 55,
+      "advertised_bedrooms": null,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-club-room.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "sands_bay",
+      "label": "Sands Bay Suite",
+      "published_average_area_m2": 80,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [
+        "T3"
+      ],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-bay-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "sands_premier_1b",
+      "label": "Sands Premier Suite -1bedroom",
+      "published_average_area_m2": 95,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [
+        "T1",
+        "T2"
+      ],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "sands_premier_2b",
+      "label": "Sands Premier Suite -2bedroom",
+      "published_average_area_m2": 130,
+      "advertised_bedrooms": 2,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 2,
+      "tower_restriction_from_current_category_page": [
+        "T3"
+      ],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "sands_family_1b",
+      "label": "Sands Family Suite -1bedroom plus kids room",
+      "published_average_area_m2": 85,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": true,
+      "sleeping_spaces_for_game": 2,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-family-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "sands_family_2b",
+      "label": "Sands Family Suite -2bedrooms plus kids room",
+      "published_average_area_m2": 145,
+      "advertised_bedrooms": 2,
+      "separate_kids_room": true,
+      "sleeping_spaces_for_game": 3,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-family-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "sands_signature",
+      "label": "Sands Signature Suite",
+      "published_average_area_m2": 140,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-signature-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "paiza_bay",
+      "label": "Paiza Bay Suite",
+      "published_average_area_m2": 75,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [
+        "T3"
+      ],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-bay-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "paiza_premier_1b",
+      "label": "Paiza Premier Suite -1bedroom",
+      "published_average_area_m2": 110,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-premier-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "paiza_premier_2b",
+      "label": "Paiza Premier Suite -2bedroom",
+      "published_average_area_m2": 160,
+      "advertised_bedrooms": 2,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 2,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-premier-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "paiza_grand_1b",
+      "label": "Paiza Grand Suite -1bedroom",
+      "published_average_area_m2": 140,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-grand-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "paiza_grand_2b",
+      "label": "Paiza Grand Suite -2bedroom",
+      "published_average_area_m2": 210,
+      "advertised_bedrooms": 2,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 2,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-grand-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "paiza_signature_1b",
+      "label": "Paiza Signature Suite -1bedroom",
+      "published_average_area_m2": 140,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-signature-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "paiza_signature_2b",
+      "label": "Paiza Signature Suite -2bedroom",
+      "published_average_area_m2": 210,
+      "advertised_bedrooms": 2,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 2,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-signature-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "paiza_family",
+      "label": "Paiza Family Suite",
+      "published_average_area_m2": 175,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": true,
+      "sleeping_spaces_for_game": 2,
+      "tower_restriction_from_current_category_page": [
+        "T3"
+      ],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-family-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "harbour",
+      "label": "The Harbour Suite",
+      "published_average_area_m2": 160,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-harbour-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "marina",
+      "label": "The Marina Suite",
+      "published_average_area_m2": 160,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-marina-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "skyline",
+      "label": "The Skyline Suite",
+      "published_average_area_m2": 200,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-skyline-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "merlion",
+      "label": "The Merlion Suite",
+      "published_average_area_m2": 260,
+      "advertised_bedrooms": 2,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 2,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-merlion-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "straits",
+      "label": "The Straits Suite",
+      "published_average_area_m2": 300,
+      "advertised_bedrooms": 2,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 2,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-straits-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "horizon",
+      "label": "The Horizon Suite",
+      "published_average_area_m2": 330,
+      "advertised_bedrooms": 1,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 1,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-horizon-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "presidential",
+      "label": "The Presidential Suite",
+      "published_average_area_m2": 360,
+      "advertised_bedrooms": 2,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 2,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-presidential-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "chairman_3b",
+      "label": "The Chairman Suite -3bedroom",
+      "published_average_area_m2": 520,
+      "advertised_bedrooms": 3,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 3,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-chairman-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    },
+    {
+      "id": "chairman_4b",
+      "label": "The Chairman Suite -4bedroom",
+      "published_average_area_m2": 630,
+      "advertised_bedrooms": 4,
+      "separate_kids_room": false,
+      "sleeping_spaces_for_game": 4,
+      "tower_restriction_from_current_category_page": [],
+      "source_url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-chairman-suite.html",
+      "source_section": "Category overview / suite size and bedrooms; named tower lines where present",
+      "scope": "Published average/type facts checked against operator detail page; no as-built per-key geometry implied."
+    }
+  ],
+  "family_bedroom_interpretation": {
+    "status": "SUPPORTED_WITH_INTERPRETATION_LABEL",
+    "sources": [
+      "https://www.marinabaysands.com/hotel/rooms-suites/sands-family-suite.html",
+      "https://www.marinabaysands.com/hotel/rooms-suites/paiza-family-suite.html"
+    ],
+    "section": "Overview and Key Features / kids room",
+    "finding": "Advertised adult bedroom counts are retained separately from described kids bunk rooms. Two or three sleeping spaces in game is an interpretation of these programmes, not verification of every private partition."
+  },
+  "zoning_limits": {
+    "explicit_tower_facts": [
+      "Sands Bay T3",
+      "Sands Premier one-bedroom T1/T2 and two-bedroom T3",
+      "Paiza Bay T3",
+      "Paiza Family T3"
+    ],
+    "high_floor_guidance_source": "https://www.marinabaysands.com/hotel/the-paiza-collection.html",
+    "high_floor_guidance_section": "Above all expectation and Royal Collection introduction",
+    "finding": "Highest-floor positioning supports a planning preference, not exact floors or per-key tower assignments. Categories without tower facts remain unassigned. Do not preserve all159 old guest recipes as surveyed operator facts."
+  },
+  "public_floor_constraints": {
+    "receipt": "PUBLIC_FLOOR_CONSTRAINTS.json",
+    "documented_rows": 16,
+    "verdict": "OLD_PHYSICAL_SCHEDULE_REQUIRES_CORRECTION_BEFORE_REUSE",
+    "actionable_gaps": [
+      {
+        "priority": "P1",
+        "record": "MUSEUM-L4 missing",
+        "correction": "Include ArtScience Cinema, lift lobby and VR Gallery on L4; old schedule ending L3 omits documented public space."
+      },
+      {
+        "priority": "P1",
+        "record": "MUSEUM-B2 parking/loading only",
+        "correction": "Reserve public galleries, box office and ArtScience Laboratory. Back-of-house-only assignment contradicts operator sources."
+      },
+      {
+        "priority": "P1",
+        "record": "EXPO-L3 fitness-only",
+        "correction": "Retain fitness plus documented ballrooms, junior ballrooms and meeting rooms. A single venue location does not occupy the whole floor."
+      }
+    ],
+    "confirmed_locations": [
+      "Spa T2L5",
+      "Paiza Sky Residence T2L55",
+      "Jin Ting Wan T1L55",
+      "Observation Deck T3L56 with partial L57 mezzanine",
+      "LAVO T1L57",
+      "Spago T2L57",
+      "CE LA VI T3L57",
+      "The Club T1Lobby",
+      "SkyPark Box Office T3B1"
+    ],
+    "unresolved": [
+      "Current Museum B1 programme: undated B1 education guide versus new B2 laboratory; no verified2026 B1 schedule.",
+      "Exact level extents, private/service partitions, all159 guest-floor layout and metric vertical schedule.",
+      "Casino/theatre/service arrangements not certified by this bounded audit."
+    ]
+  },
+  "source_conflicts_preserved": [
+    "Paiza Club detailed page king-only versus broader collection summary two-queen option.",
+    "Presidential page says four types while naming five options.",
+    "Latest dedicated Expo page classifies Angsana/Angsana Junior as meeting rooms; earlier broad summary counted six main/junior ballrooms. Use current named detail and preserve coverage, do not fabricate exact partition count.",
+    "Undated Museum B1 school guide cannot override dated2025 B2 laboratory location."
+  ],
+  "temporal_scope": "Checked current operator pages on 2026-10-29. Future lobby works from 6 January2027 are not imposed on the2026 target.",
+  "still_required_before_physical_acceptance": [
+    "Solve all1844 active keys and public/mixed-use programmes into real source envelopes without losing categories or inflating unsupported tower heights.",
+    "Retain legacy mapping separately from new physical room IDs.",
+    "Validate real room areas, all required programme spaces, doors/circulation/vertical transport and neighboring occupancy.",
+    "Acquire or reuse licensed suitable furniture and validate native traversal and actual rendered appearance."
+  ],
+  "production_edited": false,
+  "native_or_visual_acceptance": false,
+  "whole_building_or_city_complete": false
+}

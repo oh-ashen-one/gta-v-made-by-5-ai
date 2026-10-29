@@ -1,0 +1,19 @@
+{
+  "created_utc": "2026-10-29T18:02:34.146734+00:00",
+  "kind": "source-metric-v4-plan",
+  "limits": {
+    "cpu_seconds": 3600,
+    "rss_bytes": 2147483648,
+    "wall_seconds": 7200
+  },
+  "reason": null,
+  "sampled_peak_rss_bytes": 154173440,
+  "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/plan_source_metric_v4.py",
+  "status": "COMPLETE",
+  "supervisor_pid": 73798,
+  "terminal_utc": "2026-10-29T18:02:55.794475+00:00",
+  "wall_seconds": 21.646053624999695,
+  "worker_exit": 0,
+  "worker_lstart": "Thu Oct 29 14:02:34 2026",
+  "worker_pid": 73806
+}

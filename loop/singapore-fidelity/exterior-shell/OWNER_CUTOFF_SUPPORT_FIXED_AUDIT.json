@@ -1,0 +1,1195 @@
+{
+  "schema": "mbs_owner_cutoff_support_fixed_audit",
+  "candidate_sha256": "9eb4eaf4253f7821e95baca6c409a4bf30363bd2a506955ea4d7717d279fb9e1",
+  "checks": 11981,
+  "failed": 225,
+  "failures": [
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "R-T1-L32-11 full capsule public approach",
+    "R-T1-L7-02 full capsule public approach",
+    "R-T1-L8-09 full capsule public approach",
+    "R-T1-L9-09 full capsule public approach",
+    "exact1844active partition",
+    "R-T2-L10-02 full capsule public approach",
+    "R-T2-L11-03 full capsule public approach",
+    "R-T2-L12-04 full capsule public approach",
+    "R-T2-L13-04 full capsule public approach",
+    "exact1844active partition",
+    "R-T2-L14-05 full capsule public approach",
+    "R-T2-L2-08 full capsule public approach",
+    "R-T2-L22-10 full capsule public approach",
+    "R-T2-L3-06 full capsule public approach",
+    "exact1844active partition",
+    "R-T2-L4-02 full capsule public approach",
+    "R-T2-L6-03 full capsule public approach",
+    "R-T2-L7-06 full capsule public approach",
+    "R-T2-L8-09 full capsule public approach",
+    "exact1844active partition",
+    "R-T2-L9-07 full capsule public approach",
+    "R-T3-L10-08 full capsule public approach",
+    "R-T3-L11-05 full capsule public approach",
+    "R-T3-L12-10 full capsule public approach",
+    "exact1844active partition",
+    "R-T3-L14-01 full capsule public approach",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "R-T1-L40-11 full capsule public approach",
+    "R-T3-L43-03 full capsule public approach",
+    "R-T1-L10-01 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L41-02 full capsule public approach",
+    "R-T3-L43-05 full capsule public approach",
+    "R-T1-L10-02 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L41-04 full capsule public approach",
+    "R-T3-L43-06 full capsule public approach",
+    "R-T1-L10-03 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L41-06 full capsule public approach",
+    "R-T3-L44-01 full capsule public approach",
+    "R-T1-L10-04 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L41-12 full capsule public approach",
+    "R-T3-L44-05 full capsule public approach",
+    "R-T1-L10-06 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L42-01 full capsule public approach",
+    "R-T3-L44-06 full capsule public approach",
+    "R-T1-L10-07 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L42-06 full capsule public approach",
+    "R-T3-L44-11 full capsule public approach",
+    "R-T1-L10-08 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L42-12 full capsule public approach",
+    "R-T3-L45-04 full capsule public approach",
+    "R-T1-L10-09 full capsule public approach",
+    "exact1844active partition",
+    "R-T3-L42-04 full capsule public approach",
+    "R-T3-L45-06 full capsule public approach",
+    "R-T1-L10-11 full capsule public approach",
+    "exact1844active partition",
+    "R-T3-L45-09 full capsule public approach",
+    "R-T1-L10-12 full capsule public approach",
+    "exact1844active partition",
+    "R-T3-L46-02 full capsule public approach",
+    "R-T1-L10-13 full capsule public approach",
+    "exact1844active partition",
+    "R-T3-L46-07 full capsule public approach",
+    "R-T1-L11-01 full capsule public approach",
+    "exact1844active partition",
+    "R-T3-L47-02 full capsule public approach",
+    "R-T1-L11-02 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L39-02 full capsule public approach",
+    "R-T3-L42-05 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L40-02 full capsule public approach",
+    "R-T3-L42-08 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L40-04 full capsule public approach",
+    "R-T3-L42-09 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L40-07 full capsule public approach",
+    "exact1844active partition",
+    "R-T3-L41-11 full capsule public approach",
+    "exact1844active partition",
+    "R-T1-L43-05 full capsule public approach",
+    "R-T3-L47-04 full capsule public approach",
+    "R-T1-L11-05 full capsule public approach",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition",
+    "exact1844active partition"
+  ],
+  "assigned_keys": 1544,
+  "unplaced_keys": 300,
+  "placed_suites": 775,
+  "floor_status": [
+    {
+      "floor_id": "T1-L2",
+      "placed_keys": 16,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L3",
+      "placed_keys": 16,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L4",
+      "placed_keys": 16,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L5",
+      "placed_keys": 14,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L6",
+      "placed_keys": 14,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L7",
+      "placed_keys": 14,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L8",
+      "placed_keys": 13,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L9",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L10",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L11",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L12",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L13",
+      "placed_keys": 11,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L14",
+      "placed_keys": 11,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L15",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L16",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L17",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L18",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L19",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L20",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L21",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L22",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L23",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L24",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L25",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L26",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L27",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L28",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L29",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L30",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L31",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L32",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L33",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L34",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L35",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L36",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L37",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L38",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L39",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L40",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L41",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L42",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L43",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L44",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L45",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L46",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L47",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L48",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L49",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L50",
+      "placed_keys": 9,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L51",
+      "placed_keys": 9,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L52",
+      "placed_keys": 9,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L53",
+      "placed_keys": 9,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T1-L54",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L2",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L3",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L4",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L6",
+      "placed_keys": 6,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L7",
+      "placed_keys": 6,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L8",
+      "placed_keys": 5,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L9",
+      "placed_keys": 5,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L10",
+      "placed_keys": 5,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L11",
+      "placed_keys": 5,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L12",
+      "placed_keys": 4,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L13",
+      "placed_keys": 4,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L14",
+      "placed_keys": 4,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L15",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L16",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L17",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L18",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L19",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L20",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L21",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L22",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L23",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L24",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L25",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L26",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L27",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L28",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L29",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L30",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L31",
+      "placed_keys": 9,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L32",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L33",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L34",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L35",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L36",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L37",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L38",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L39",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L40",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L41",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L42",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L43",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L44",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L45",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L46",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L47",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L48",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L49",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L50",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L51",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L52",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L53",
+      "placed_keys": 9,
+      "bounded_geometry_checks_passed": false,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T2-L54",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L2",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L3",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L4",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L5",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L6",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L7",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L8",
+      "placed_keys": 7,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L9",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L10",
+      "placed_keys": 11,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L11",
+      "placed_keys": 11,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L12",
+      "placed_keys": 11,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L13",
+      "placed_keys": 11,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L14",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L15",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L16",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L17",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L18",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L19",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L20",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L21",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L22",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L23",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L24",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L25",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L26",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L27",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L28",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L29",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L30",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L31",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L32",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L33",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L34",
+      "placed_keys": 12,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L35",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L36",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L37",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L38",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L39",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L40",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L41",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L42",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L43",
+      "placed_keys": 9,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L44",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L45",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L46",
+      "placed_keys": 8,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L47",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L48",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L49",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L50",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L51",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L52",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L53",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L54",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    },
+    {
+      "floor_id": "T3-L55",
+      "placed_keys": 10,
+      "bounded_geometry_checks_passed": true,
+      "source_schedule_status": "LEGACY_GEOMETRY_FIXTURE_ONLY_PENDING_CURRENT_PUBLIC_MIXED_USE_REVIEW"
+    }
+  ],
+  "complete_allocation": false,
+  "native_furnishing_or_glazing_verified": false,
+  "source_floor_schedule_not_adopted": true
+}

@@ -1,3 +1,5 @@
+> **LATEST OWNER CUTOFF — 2026-10-29:** Read `loop/singapore-fidelity/OWNER_CUTOFF.md` first. All remaining workers are stopped. Package the bounded milestone and stop expansion. The owner explicitly prohibits game/engine/GPU launches now. Full geographic city and complete hotel remain unfinished; older "keep active" instructions below are historical and superseded. No automatic new loop.
+
 > CURRENT CHECKPOINT: Read `loop/singapore-fidelity/ACTIVE_HANDOFF_FACTS.json` first. It supersedes older progress bullets below, especially owner-play terminal state, latest passed runs, creative delegation, and outstanding visual/integration gaps. Full goal remains active.
 
 ## Latest fidelity checkpoint — 2026-10-29 recovery and native repairs

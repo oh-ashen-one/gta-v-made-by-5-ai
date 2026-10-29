@@ -1,0 +1,359 @@
+{
+  "schema": "public_osm_relation_member_evidence_v1",
+  "attribution": "\u00a9 OpenStreetMap contributors, ODbL-1.0",
+  "scope": "Selective name/member/version facts only; contributor account metadata omitted. Current relation read does not replace frozen polygon geometry.",
+  "relations": [
+    {
+      "building_key": "EXPO",
+      "relation_id": "12633420",
+      "version": 2,
+      "timestamp_utc": "2022-05-03T11:16:47Z",
+      "name": "Marina Bay Sands MICE Building",
+      "members": [
+        {
+          "source_id": "way/172014440",
+          "relation_role": "outline"
+        },
+        {
+          "source_id": "way/827847264",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847265",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847266",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847267",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847268",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847269",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847270",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847271",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847272",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847273",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847274",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847275",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847276",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847277",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847278",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847279",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827847280",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/1056849313",
+          "relation_role": "part"
+        }
+      ],
+      "url": "https://api.openstreetmap.org/api/0.6/relation/12633420",
+      "raw_response_sha256": "a01adb2eb281387378b7c6f0377e2cbe860258bb39e6e7f9e8a488a3d084ba0e",
+      "observation_utc": "2026-10-29T19:43:58Z"
+    },
+    {
+      "building_key": "MUSEUM",
+      "relation_id": "14314416",
+      "version": 3,
+      "timestamp_utc": "2023-09-17T08:24:34Z",
+      "name": "ArtScience Museum",
+      "members": [
+        {
+          "source_id": "way/261191086",
+          "relation_role": "outline"
+        },
+        {
+          "source_id": "way/827855854",
+          "relation_role": "outline"
+        },
+        {
+          "source_id": "way/827855864",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855865",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855866",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855867",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855868",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855869",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855870",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855856",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855857",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855858",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855859",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855860",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855861",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855862",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855863",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855896",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855897",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855898",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855899",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855900",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855901",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855903",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855888",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855889",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855890",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855891",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855892",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855893",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855894",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855895",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855883",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855884",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855885",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855886",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855887",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855928",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855929",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855930",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855920",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855921",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855922",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855923",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855924",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855925",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855926",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855927",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855912",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855913",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855914",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855915",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855916",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855917",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855918",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855919",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855904",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855905",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855906",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855907",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855908",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855910",
+          "relation_role": "part"
+        },
+        {
+          "source_id": "way/827855911",
+          "relation_role": "part"
+        }
+      ],
+      "url": "https://api.openstreetmap.org/api/0.6/relation/14314416",
+      "raw_response_sha256": "addb034a0f2b86d23132bdee21a98aa7773e6e992346d5d3551515d88f637a3c",
+      "observation_utc": "2026-10-29T19:43:58Z"
+    }
+  ]
+}

@@ -1,0 +1,342 @@
+{
+  "created_utc": "2026-10-29T20:45:04.846906+00:00",
+  "status": "SUPERSEDED_OR_PARTIAL_RESEARCH_ARCHIVE_NOT_RUNTIME_ADOPTED",
+  "instruction": "Preserved at owner cutoff. No new solver/research run is requested. OWNER_CUTOFF_FREEZE and INTEGRATION_HANDOFF define the actual frozen candidate and unresolved scope.",
+  "files": [
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/ACTIVE_CONFORMANCE_HANDOFF.md",
+      "bytes": 8913,
+      "sha256": "3ef3d817c8b002aea5cf15eae7daa316d40669c3989446e89ea27c3c36ad4456"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/CATALOGUE_GLOBAL_BESTFIT_PROTOTYPE_V16.json",
+      "bytes": 8819305,
+      "sha256": "d8266f8b4b1d177d74cf319313412fb6347084a17e1fa7331d97d2ba2d40124a"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/CATALOGUE_INVENTORY_COVERAGE_AUDIT_V11.json",
+      "bytes": 770,
+      "sha256": "af2071d7c41d6ebc72460e9593308dbe0c2094a3da3edda47afd98a96b519fd9"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/CATALOGUE_PERIMETER_ALLOCATION_PROTOTYPE_V12.json",
+      "bytes": 8840002,
+      "sha256": "dce11b015b2d6a51508b86c4e2330f3d361ea4233885d6903a306c028d5f30f4"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/CATALOGUE_PERIMETER_FEASIBILITY_V15.json",
+      "bytes": 1165853,
+      "sha256": "b3e1985a506746007c7919f87c093984a5c34bbee9862cf14cd173c0a69be98d"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/CATALOGUE_PERIMETER_INTEGER_ASSIGNMENT_V13.json",
+      "bytes": 1165860,
+      "sha256": "e0f7166498f7ebd43098522178fe18a44020da8c23c5e910ae6910c88dbf54a5"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/LUXURY_EXPANSION_V2_AUDIT.json",
+      "bytes": 3695,
+      "sha256": "8471d5af695bcabd21db90676a0c5500b0268e31413980fd6d8158802cf585b2"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/LUXURY_V3_GEOMETRY_AUDIT.json",
+      "bytes": 1308,
+      "sha256": "01bed29874b88b7fe975ae35259ae42aeb093e7a115d6ca1dc6a28322a5920e9"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/LUXURY_V3_PIPELINE_R2.json",
+      "bytes": 15413,
+      "sha256": "86137191968525d73408a7f77fcaa1c60feea6aaa8303c6003c29307d0c4bbf0"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/LUXURY_V3_SEED_CAPACITY_SEARCH.json",
+      "bytes": 1703,
+      "sha256": "12525575de142a6834ff0b48b174a6eb58b8533a00532f3aea4ca5ccf8e6c841"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/LUXURY_V4_GALLERY_AUDIT.json",
+      "bytes": 1218,
+      "sha256": "f711e0b6ebf8170729ea62c2214323dd79d870609ded401259a728a7f3b5aa61"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/LUXURY_V4_GEOMETRY_AUDIT.json",
+      "bytes": 1309,
+      "sha256": "ac686384731a4236c131624f82f009484e4a7828a6820f6b47b937850286c1ab"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/LUXURY_V5_GEOMETRY_AUDIT.json",
+      "bytes": 1309,
+      "sha256": "0cce468acb38fb0b063818c955b1133ce35cb6fabd1056e03b3bdf6cc5246290"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/LUXURY_V6_GEOMETRY_AUDIT.json",
+      "bytes": 1309,
+      "sha256": "9b95a1f00c759a0cc96ab7eee4c2fb88871c87e8450ffae30795236bc6f13400"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/LUXURY_V7_FACADE_AUDIT.json",
+      "bytes": 1307784,
+      "sha256": "8729737889b281b0b707fc510ca143996cb25f917d6e31610166f1b229a99f88"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/OWNER_CUTOFF_SUPPORT_FIXED_AUDIT.json",
+      "bytes": 42978,
+      "sha256": "239b11b246b5b5a2aa2eea72e94c4924739b511403072701d848eb79b2b266a0"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/OWNER_CUTOFF_V17_AUDIT.json",
+      "bytes": 60522,
+      "sha256": "496e10a3900da62edd13281679c36ec8499a87b4b61ac1358698bf52ef3aa82f"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/OWNER_CUTOFF_V17_WINDOW_CONTRACTS.json",
+      "bytes": 5615386,
+      "sha256": "428c3d799f11e4b74273095cf4a696e4a4bc58d91f5b712eedcdc87ea46d39ab"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/PERIMETER_PATTERN_SOLVER_V8.json",
+      "bytes": 995837,
+      "sha256": "541410d39bc9ae17d0a31d43756e91a630da8083892f12e5e2e64be992f0569b"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/PERIMETER_V7_FACADE_AUDIT.json",
+      "bytes": 997517,
+      "sha256": "93f49909fed07bce413ccf1a2588e7b7b881878df3a8fdbf164cffb1907c6c72"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/PREMIER_FITOUT_V3_PROTOTYPE.json",
+      "bytes": 55040,
+      "sha256": "9e1ebdc9dadb2c267659beee283243cb5aa92d99397bf7459c25eb0cddee2deb"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/PREMIER_FITOUT_V3_R2_FAILURE.json",
+      "bytes": 55317,
+      "sha256": "05d761e9fca6b73d252fe6c994f324ce5b7d051b4ca4e9743f38e7fc8b9f4eb6"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/PREMIER_TYPED_FITOUT_V3_INITIAL_FAILURE.json.gz",
+      "bytes": 35561,
+      "sha256": "d349c16e8265402f6f5d9bcd67425935de36a3e17ac0f9617bc22c16e8e7fbce"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/PREMIER_TYPED_FITOUT_V3_R2_FAILURE.json.gz",
+      "bytes": 35354,
+      "sha256": "43cb91a61c27f40212bebe881eb716086662bbd4857de917b2bfc73d15bacfa7"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_ANNEX_V3.json",
+      "bytes": 8977874,
+      "sha256": "666157feafb48ccb3146b54affe651e7eb18243187abb0d814f7f2e49e291338"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_AREA_FIRST_V3.json",
+      "bytes": 5960485,
+      "sha256": "53220321c03cd56597f749dd44fc1314e6e7335b74a0e6769a418105e4190336"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_BALANCED_V3.json",
+      "bytes": 8954360,
+      "sha256": "f3f799adf2557880fef548935e584d2ea03d20ce5334e88c7c98b284ffbe1396"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_CANDIDATE_V4.json",
+      "bytes": 9588836,
+      "sha256": "0b62dff93263d516f377bdd553590028ebe15a975e61a4c2d79f0ec6a04e086f"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_CANDIDATE_V5.json",
+      "bytes": 9598760,
+      "sha256": "ce83679a59fec6e0884cd495fb7640980827596ceaa06b0b32415b49386668b0"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_CANDIDATE_V6.json",
+      "bytes": 9598921,
+      "sha256": "cdafaccd5cccedf32981485675053f30af03a0ba057ad8672d6ee01ae4e79524"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_EXPANSION_V2.json",
+      "bytes": 12756979,
+      "sha256": "e1f6067364d7f4eb2d72f0f12667304145e677dc2b9e33db7c5b9a23b311b8c5"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_EXPANSION_V3.json",
+      "bytes": 8491292,
+      "sha256": "1babfbac14b73c55f043548adc87e46625b9f4be92ece2d76e1b4e1d1ba0adcc"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_GALLERIES_V4.json",
+      "bytes": 9560730,
+      "sha256": "ae102d5b69417deb6e7ad47c663f463ffba2a1e0f648f51133ea3bf9c64de3da"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_REALLOCATED_V3.json",
+      "bytes": 9078842,
+      "sha256": "8c657e49639d0103d2ce192c8441b4e7f7131450eda8c042056efbccce9342cf"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_V3_INITIAL_CAPACITY_FAILURE.json",
+      "bytes": 4865130,
+      "sha256": "4896252907128b451ed4b6aa9907c2a131dce87473a1b9f517932a5b99d250f1"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_V3_RECTANGULAR_TARGET_FAILURE.json",
+      "bytes": 4912447,
+      "sha256": "1fd2154beb8d2b1a6414b55c2947f116e49dd482330d79bb0c4e644205835318"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_PERIMETER_CANDIDATE_V7.json",
+      "bytes": 4900685,
+      "sha256": "055d1ec7d40ef0bc72c61f8b63629b7706064e122ec81dd14a05591812541f2d"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_PERIMETER_V7_INITIAL_CAPACITY_FAILURE.json",
+      "bytes": 4761650,
+      "sha256": "7aee251db0507305a16e7744128cdcaf730c3ed698ced92d123315403fec124b"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/allocate_catalogue_bestfit_v16.py",
+      "bytes": 4271,
+      "sha256": "ef545a40c55938c5cbf6ccf0d64b723c71966e13605c93e5ec3c31bf49e8dbf0"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/allocate_catalogue_frontage_v17.py",
+      "bytes": 4806,
+      "sha256": "4dcca84c97583187b52d0ca4d1d84b6383382ea0dd95a13f5f2594cea6661c93"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/allocate_catalogue_perimeter_v12.py",
+      "bytes": 7371,
+      "sha256": "65dea5505901a59a8270bb7245298f22389c357aeed315b6a762b999e2945666"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/audit_guest_facade_frontage_v7.py",
+      "bytes": 3042,
+      "sha256": "1dafea2e97293dcb2e1551504aaa45dda6800c8fdac79d78a38dba4d6acb6708"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/audit_luxury_plan_v3.py",
+      "bytes": 5656,
+      "sha256": "d7445002b42e5fc718aba3be64c8c8ae5c848cc8eb8626cfae3a1eaca0767009"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/balance_luxury_type_areas_v3.py",
+      "bytes": 3701,
+      "sha256": "0ca7f2e3857337ad2cdf00ff2eb847b117ead206229dcf52f4e845db44cd06ab"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/catalogue-review/REVIEW.md",
+      "bytes": 6989,
+      "sha256": "36b5db84a0a687efc70b65a76c66c5bedebe72fb1659660bfc3d762aad2a598b"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/expand_luxury_rooms_v3.py",
+      "bytes": 743,
+      "sha256": "4a933f88eddf26e4ddf5bfe29be18de2726618685d7d18a5eaf84d67013f84e2"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/extend_connected_annexes_v5.py",
+      "bytes": 3706,
+      "sha256": "00eb0edcc6ac130e6e688fe15d8bf3e765cd8f3e38b0339d924fb04b2362bed8"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-premier-freeze/IDENTITY.json",
+      "bytes": 286,
+      "sha256": "fe9c27c1ec33fa8ea6f9562db9dbd85c1855571e3ecaa95cf438e108b5d6f43c"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-premier-freeze/LUXURY_V3_GEOMETRY_AUDIT.json.gz",
+      "bytes": 710,
+      "sha256": "115fbc66e1f10873f00ba4543578f2880f931fc31d854fc096efc32d8540b40f"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-public-link-conflict/GEOMETRY_FAILURE.json",
+      "bytes": 2905,
+      "sha256": "1743f70d96efa6c71abea691ab9c919862d02fd78303601ea661e05be55c261f"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-public-link-conflict/SOURCE_FLOOR_LUXURY_AREA_FIRST_V3.json.gz",
+      "bytes": 250479,
+      "sha256": "41ef8e87fc1a6e7d298582f6c05caa546f7ef8b6fe308e2581ef3e666ba02f6d"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-public-link-conflict/SOURCE_FLOOR_LUXURY_REALLOCATED_V3.json.gz",
+      "bytes": 483088,
+      "sha256": "015db10d44a850bc879297ba09987aef3d43fe7fa15b4ff98281c08944622908"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-seed87-trial/01-area-first.json",
+      "bytes": 5960410,
+      "sha256": "831095cca3ec1ee2fa80a0af0d17849fa0a89fcd2cac5058e53782aa745c55e9"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-seed87-trial/02-rectangle-expansion.json",
+      "bytes": 8492388,
+      "sha256": "17be1fc9bab02e0b7477b78fdfba8e31870fcffc5d7726ad73351dbfca747fd8"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-seed87-trial/03-category-balance.json",
+      "bytes": 8857535,
+      "sha256": "669e863a574269094cb290a5eceba1801343e5f61ab2568f532782c0b72a51be"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-seed87-trial/04-private-annexes.json",
+      "bytes": 8877286,
+      "sha256": "e14e5aa34ac1bcdf8a50c51a4b848e7215fe67193f27f1e9d0329742529e7c9f"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-seed87-trial/05-count-preserving-relocation.json",
+      "bytes": 8886422,
+      "sha256": "8bf434bc03a6eceadecde38640d916f67f47f87d5cf7cb6f219dd7ef1709870b"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-seed87-trial/06-independent-geometry-audit.json",
+      "bytes": 1218,
+      "sha256": "475df78228399e7fdf6ea8382e9fc85841347b91d95b8ef6a99223ea0d92fe11"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/luxury-v3-seed87-trial/RUN.json",
+      "bytes": 1009,
+      "sha256": "5772479016b4ba3cbe539d7984cc573d35969477846d9f5397cd19284f831107"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/perimeter_floor_plan_v7.py",
+      "bytes": 7608,
+      "sha256": "351354f9d54fe3e29ec36eef1c3b9cb837671fbdb293f2589683760d280537b4"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/plan_source_floors_luxury_v3.py",
+      "bytes": 10022,
+      "sha256": "7fceaea05dbd0471218098ff41aa8b5e8e2432d8a5b17da8c7c213e386c12343"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/reallocate_premier_annexes_v3.py",
+      "bytes": 8598,
+      "sha256": "68a41c1b94f87b549290f42bc21bdbfed0e212f9d90aa44ced78d6e1a6e41ffd"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/solve_catalogue_perimeter_v13.py",
+      "bytes": 4857,
+      "sha256": "bcfeae529010cf6bd3ec7f6de403ae0f726eb1d6459cfc571c6d0ee07c1b7901"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/solve_catalogue_perimeter_v15.py",
+      "bytes": 4846,
+      "sha256": "ef870ff31be34be08d853a7f0dbc2e13527b3b5db7a66b28d6f96a488faf3f0e"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/solve_perimeter_patterns_v8.py",
+      "bytes": 5463,
+      "sha256": "ddc22f86f9ad2ce08e7f82078d97ebded2e473cbdc6eba735def25c528c48efa"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/trim_unused_galleries_v4.py",
+      "bytes": 2763,
+      "sha256": "a867cf4787ba2d763abe39aeb56cc296d1bddad641aff1dc8986b16896ce83a5"
+    },
+    {
+      "path": "loop/singapore-fidelity/exterior-shell/usable_wardrobe_annexes_v6.py",
+      "bytes": 4467,
+      "sha256": "64771bff1298f1405c5f6eac2cb34d69df31cb4dc130242c510d7dc1b11e19fd"
+    }
+  ]
+}

@@ -1,0 +1,447 @@
+{
+  "schema": "mbs_public_operator_plan_observations_v2",
+  "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+  "source_pdf_sha256": "8f88a3e22fd560c202ea1dfbfa29beb5f50c461c381b1cc44092ac18f72bba0c",
+  "source_footer_date": "2025.7",
+  "raw_reference_redistribution_licensed": false,
+  "private_pdf_path": "private/unique-spaces.pdf",
+  "source_reference_coordinate_system": {
+    "units": "PDF points",
+    "origin": "top left of landscape spread",
+    "width": 1190.55,
+    "height": 841.89,
+    "metric_scale_verified": false,
+    "world_registration": null
+  },
+  "expo": {
+    "page_1_based": 5,
+    "source_group_locators": [
+      {
+        "name": "Jasmine",
+        "group": "main",
+        "drawing_reference_bounds_pt": [
+          766.073,
+          222.27300000000002,
+          883.706,
+          282.052
+        ],
+        "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+      },
+      {
+        "name": "Jasmine Junior",
+        "group": "junior",
+        "drawing_reference_bounds_pt": [
+          889.801,
+          220.0379999999999,
+          960.016,
+          281.679
+        ],
+        "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+      },
+      {
+        "name": "Hibiscus",
+        "group": "main",
+        "drawing_reference_bounds_pt": [
+          766.073,
+          289.288,
+          883.706,
+          349.068
+        ],
+        "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+      },
+      {
+        "name": "Hibiscus Junior",
+        "group": "junior",
+        "drawing_reference_bounds_pt": [
+          890.514,
+          290.83169999999996,
+          959.3137,
+          344.85669999999993
+        ],
+        "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+      },
+      {
+        "name": "Heliconia",
+        "group": "main",
+        "drawing_reference_bounds_pt": [
+          766.085,
+          355.102,
+          883.7199999999999,
+          414.882
+        ],
+        "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+      },
+      {
+        "name": "Heliconia Junior",
+        "group": "junior",
+        "drawing_reference_bounds_pt": [
+          890.933,
+          355.806,
+          960.1270000000001,
+          413.652
+        ],
+        "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+      },
+      {
+        "name": "Cassia",
+        "group": "main",
+        "drawing_reference_bounds_pt": [
+          766.088,
+          421.215,
+          883.724,
+          480.99399999999997
+        ],
+        "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+      },
+      {
+        "name": "Cassia Junior",
+        "group": "junior",
+        "drawing_reference_bounds_pt": [
+          903.8215,
+          423.4917,
+          940.6615,
+          477.5507
+        ],
+        "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+      },
+      {
+        "name": "Begonia",
+        "group": "main",
+        "drawing_reference_bounds_pt": [
+          805.409,
+          487.536,
+          883.706,
+          547.315
+        ],
+        "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+      },
+      {
+        "name": "Begonia Junior",
+        "group": "junior",
+        "drawing_reference_bounds_pt": [
+          889.586,
+          487.313,
+          942.149,
+          548.726
+        ],
+        "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+      }
+    ],
+    "source_topological_constraints": [
+      "Main groups in drawing order Jasmine,Hibiscus,Heliconia,Cassia,Begonia.",
+      "Corresponding junior groups across main foyer, with separate approach and reception/partition access.",
+      "Service corridor on opposite side of main groups; kitchen beside Begonia.",
+      "Bayview foyer and Shoppes glazing lie outside junior groups.",
+      "Fitness Centre at short end beside guest lift lobby; not the entire level.",
+      "Saraca meeting rooms drawn along angled Bayview side by Jasmine Junior.",
+      "Business and Mail Centre at short end opposite fitness, containing labels3A,3B,3D,3E,3F."
+    ],
+    "published_hall_height_m": 6.1,
+    "height_scope": "Clear hall-height statement, not finished-floor elevation or floor-to-floor height.",
+    "text_map_count_conflict": "Brochure heading/table still mentions six junior types including Angsana Junior; diagram labels five junior groups and current detail page says five. Preserve Angsana/meeting mapping as unresolved, never silently delete or duplicate space.",
+    "individual_meeting_room_mapping_status": "Five requirements retained. Angsana/Angsana Junior/Saraca names and drawing subdivisions are not a verified one-to-one mapping to the five count."
+  },
+  "museum": {
+    "page_1_based": 11,
+    "source_zone_references": [
+      {
+        "name": "ArtScience Cinema",
+        "source_plan_zone_code": "A.04.06.00",
+        "drawing_reference_bounds_pt": [
+          290.91728083812,
+          253.85014708069002,
+          389.88893781072,
+          340.50084916199
+        ],
+        "drawing_boundary_commands_pt": [
+          [
+            "m",
+            [
+              290.91728083812,
+              286.93914166199
+            ]
+          ],
+          [
+            "v",
+            [
+              303.83262712512,
+              298.50132892099
+            ],
+            [
+              305.79903711072,
+              337.40641078069
+            ]
+          ],
+          [
+            "l",
+            [
+              365.69188920502,
+              340.50084916199
+            ]
+          ],
+          [
+            "l",
+            [
+              364.25445500502,
+              315.50538566199
+            ]
+          ],
+          [
+            "v",
+            [
+              384.81335765052,
+              312.49664601269
+            ],
+            [
+              389.88893781072,
+              309.55432288068994
+            ]
+          ],
+          [
+            "l",
+            [
+              389.88893781072,
+              283.60617514329
+            ]
+          ],
+          [
+            "v",
+            [
+              369.91363345042,
+              277.86507425539
+            ],
+            [
+              354.19241560502,
+              276.22680016199
+            ]
+          ],
+          [
+            "l",
+            [
+              342.21355769932,
+              253.85014708069002
+            ]
+          ],
+          [
+            "h"
+          ]
+        ],
+        "reference_kind": "SOURCE_SCHEMATIC_CURVED_ZONE_NOT_WORLD_POLYGON",
+        "possible_exclusions": "Lobby drawing includes L-A01/02 lift cores. Outer coloured boundary must not be treated as net clear area or filled solid slab."
+      },
+      {
+        "name": "Level4 Lift Lobby",
+        "source_plan_zone_code": "A.04.05.00",
+        "drawing_reference_bounds_pt": [
+          283.62798013821,
+          341.80054184838,
+          377.30484823511,
+          422.23380092308
+        ],
+        "drawing_boundary_commands_pt": [
+          [
+            "m",
+            [
+              301.73318260431,
+              341.80054184838
+            ]
+          ],
+          [
+            "l",
+            [
+              377.30484823511,
+              345.83623796948
+            ]
+          ],
+          [
+            "v",
+            [
+              375.64317429991,
+              374.46604186238005
+            ],
+            [
+              366.53487249161003,
+              394.41385004758
+            ]
+          ],
+          [
+            "l",
+            [
+              344.42857192981,
+              385.76042058388003
+            ]
+          ],
+          [
+            "l",
+            [
+              328.51761277001003,
+              415.38075898748
+            ]
+          ],
+          [
+            "l",
+            [
+              329.85802016151,
+              416.71266011398
+            ]
+          ],
+          [
+            "l",
+            [
+              325.64705667261,
+              422.23380092308
+            ]
+          ],
+          [
+            "l",
+            [
+              283.62798013821,
+              388.59704861308
+            ]
+          ],
+          [
+            "v",
+            [
+              302.15363210781,
+              367.94722498158
+            ],
+            [
+              301.73318260431,
+              341.80054184838
+            ]
+          ]
+        ],
+        "reference_kind": "SOURCE_SCHEMATIC_CURVED_ZONE_NOT_WORLD_POLYGON",
+        "possible_exclusions": "Lobby drawing includes L-A01/02 lift cores. Outer coloured boundary must not be treated as net clear area or filled solid slab."
+      },
+      {
+        "name": "VR Gallery",
+        "source_plan_zone_code": "A.04.02.00",
+        "drawing_reference_bounds_pt": [
+          246.72559438213,
+          403.53598015971,
+          348.44346939383,
+          504.75618083711
+        ],
+        "drawing_boundary_commands_pt": [
+          [
+            "m",
+            [
+              295.91746757453,
+              403.53598015971
+            ]
+          ],
+          [
+            "v",
+            [
+              288.10932500013,
+              409.02569810041
+            ],
+            [
+              284.37630838273003,
+              410.97748672170997
+            ]
+          ],
+          [
+            "l",
+            [
+              288.83307311983003,
+              418.40042522511
+            ]
+          ],
+          [
+            "v",
+            [
+              294.61515218933,
+              414.82178900801
+            ],
+            [
+              297.51230081943,
+              412.89285338191
+            ]
+          ],
+          [
+            "l",
+            [
+              304.24524261223,
+              423.43022663741
+            ]
+          ],
+          [
+            "l",
+            [
+              258.46871307903,
+              452.64849515671
+            ]
+          ],
+          [
+            "l",
+            [
+              256.66042085543,
+              449.89328092291
+            ]
+          ],
+          [
+            "l",
+            [
+              246.72559438213,
+              452.57136629791
+            ]
+          ],
+          [
+            "l",
+            [
+              256.44768059383,
+              489.75890273710996
+            ]
+          ],
+          [
+            "l",
+            [
+              266.98910429953,
+              504.75618083711
+            ]
+          ],
+          [
+            "v",
+            [
+              309.51343895523,
+              495.53214064951
+            ],
+            [
+              348.44346939383,
+              452.62278553710996
+            ]
+          ],
+          [
+            "l",
+            [
+              342.21362957103,
+              441.19628793711
+            ]
+          ],
+          [
+            "h"
+          ]
+        ],
+        "reference_kind": "SOURCE_SCHEMATIC_CURVED_ZONE_NOT_WORLD_POLYGON",
+        "possible_exclusions": "Lobby drawing includes L-A01/02 lift cores. Outer coloured boundary must not be treated as net clear area or filled solid slab."
+      }
+    ],
+    "source_topological_constraints": [
+      "Cinema, lift lobby and VR occupy successive adjacent sectors around the central circular core.",
+      "Two lift labels L-A01 and L-A02 are within the lobby sector.",
+      "VR sector has adjacent support/toilet markings; do not erase them when reserving circulation.",
+      "Other lotus sectors are not empty by implication and not covered by the three rental areas."
+    ],
+    "current_detail_area_precedence": {
+      "cinema_m2": 236,
+      "lift_lobby_m2": 166,
+      "vr_gallery_m2": 184,
+      "source_url": "https://www.marinabaysands.com/museum/about-us/services/venue-rental/rate.html"
+    },
+    "rounded_brochure_total_m2": 600,
+    "areas_not_asbuilt_survey": true
+  },
+  "scope": "Factual relative programme geometry from visually reviewed operator pages. No georeferenced slab/zone, height schedule or engine acceptance is created."
+}

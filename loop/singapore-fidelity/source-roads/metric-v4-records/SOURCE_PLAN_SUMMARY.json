@@ -1,0 +1,28 @@
+{
+  "complete_private_plan": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/source-metric-v4-plan-r1/result.json",
+  "counts": {
+    "physical_construction_or_proposed_site": 4028,
+    "physical_foot_steps": 7501,
+    "physical_foot_surface": 75022,
+    "physical_source_area": 340,
+    "physical_unresolved": 48,
+    "physical_vehicle_road": 170875,
+    "physical_vertical_transport": 31,
+    "reliable_stairs_forced_flat_by_legacy_geometry": 125,
+    "stairs_COUNT_PRESERVED_DIRECTION_NEEDS_CONNECTED_SOURCE_HEIGHT_INFERENCE": 5470,
+    "stairs_SOURCE_SIGN_WITH_EXPLICIT_GAME_RISE_INTERVAL": 2024,
+    "stairs_UNRESOLVED_INCLINE_VALUE_PRESERVED_FOR_EXPLICIT_SEMANTIC_REVIEW": 6,
+    "stairs_UNRESOLVED_SOURCE_STEP_COUNT_SYNTAX_PRESERVED": 1
+  },
+  "original_source_access_XZ_tags_graph_modified": false,
+  "plan_sha256": "a0e4ae12f57dce7a3998f08368c6830cf8e6814ec047fe113bec587c2b46b2dd",
+  "policy_sha256": "e4cc3f9539e3677821fc4fc37fe9fb2a6f75b705fea86641e00add31bc7eb137",
+  "profile_or_native_adoption": false,
+  "requires": "Geometry-specific stair portals/landings and scoped junction repair before adding positive rise constraints; no blanket flat-equality deletion",
+  "seconds": 19.44668137500048,
+  "source_database_sha256": "9f15cbc5bbe06b863e38dcab1dc61a17aa00515fa574ec2f24a6f2c3126caa66",
+  "source_identity_sha256": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+  "status": "V4_SOURCE_CONSTRAINT_AND_JUNCTION_PLAN_ONLY_NO_PROFILE_OR_GEOMETRY_ADOPTION",
+  "targeted_junction_group_count": 120,
+  "vehicle_road_grade_tightening_count": 23516
+}

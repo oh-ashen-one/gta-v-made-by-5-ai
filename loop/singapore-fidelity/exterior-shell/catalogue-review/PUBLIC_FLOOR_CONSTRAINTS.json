@@ -1,0 +1,181 @@
+{
+  "schema": "mbs_publicly_documented_floor_constraints_v1",
+  "observed_utc": "2026-10-29T19:29:49.529794+00:00",
+  "sources": "Primary operator pages/factsheets only; external search snippets are discovery, not authority.",
+  "production_inventory_edited": false,
+  "interpretation": "Public means publicly documented; hotel guest-only facilities are not thereby open to real-world public admission. In-game exploration policy is Root-owned.",
+  "rows": [
+    {
+      "facility": "Banyan Tree Spa",
+      "existing_record": "T2-L5",
+      "supported_location": "Hotel Tower2, Level5",
+      "status": "LOCATION_CONFIRMED_FLOOR_EXTENT_UNKNOWN",
+      "source": "https://www.marinabaysands.com/hotel/amenities/banyan-tree-spa.html",
+      "section": "Details / Location",
+      "note": "Current page supersedes historical Tower1-L55 spa references. Location does not prove that the entire floor is exclusively spa."
+    },
+    {
+      "facility": "Paiza Sky Residence",
+      "existing_record": "T2-L55",
+      "supported_location": "Hotel Tower2, Level55",
+      "status": "LOCATION_CONFIRMED_FLOOR_EXTENT_UNKNOWN",
+      "source": "https://www.marinabaysands.com/world-of-paiza/paiza-sky-residence.html/",
+      "section": "Introduction",
+      "corroborating_source": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/company-information/media-centre/factsheets/restaurants/paiza-sky-residence.pdf",
+      "note": "Documented private guest lounge/check-in/conservatory/bar. Do not mistake published location for an exact surveyed floor plan."
+    },
+    {
+      "facility": "Jin Ting Wan",
+      "existing_record": "T1-L55",
+      "supported_location": "Hotel Tower1, Level55",
+      "status": "LOCATION_CONFIRMED",
+      "source": "https://www.marinabaysands.com/restaurants/jin-ting-wan.html",
+      "section": "Restaurant Details / Location"
+    },
+    {
+      "facility": "Fitness Centre",
+      "existing_record": "EXPO-L3",
+      "supported_location": "Marina Bay Sands Expo & Convention, Level3",
+      "status": "MIXED_USE_FLOOR_REQUIRED",
+      "source": "https://www.marinabaysands.com/hotel/amenities/fitness-centre.html",
+      "section": "Details / Location",
+      "note": "Gym, changing rooms and sauna are real uses, but they do not consume the entire convention floor."
+    },
+    {
+      "facility": "Expo Level3 ballrooms and meeting rooms",
+      "existing_record": "EXPO-L3 currently single fitness_centre programme",
+      "supported_location": "Expo & Convention Level3",
+      "status": "PUBLIC_PROGRAMMES_MISSING_FROM_OLD_SINGLE_PROGRAMME",
+      "source": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+      "section": "Ballrooms (Level 3): Main Ballrooms, Junior Ballrooms, Meeting Rooms",
+      "corroborating_source": "https://www.marinabaysands.com/expo-events-and-convention-centre/event-venues.html",
+      "note": "Latest direct detail-page read lists five main ballrooms, five junior ballrooms, and five meeting rooms including Angsana, Angsana Junior and Saraca. Earlier all-venues wording grouped Angsana with six ballrooms and six junior ballrooms; that page now returns only footer to the text reader. Current detail classifies Angsana as a meeting room. Preserve every named venue and the mixed-use programme; do not claim six junior ballrooms as verified or treat category counts as a surveyed partition plan.",
+      "earlier_review_correction": "Replaces the earlier erroneous statement that both pages listed six junior ballrooms; the dedicated page lists five.",
+      "current_detail_counts": {
+        "main_ballrooms": 5,
+        "junior_ballrooms": 5,
+        "meeting_rooms": 5
+      }
+    },
+    {
+      "facility": "SkyPark Observation Deck",
+      "existing_record": "T3-L56",
+      "supported_location": "Hotel Tower3, Level56; mezzanine reaches part ofLevel57",
+      "status": "LOCATION_AND_LEVEL_RELATION_CONFIRMED",
+      "source": "https://www.marinabaysands.com/attractions/skypark-observation-deck.html",
+      "section": "Details / Location and FAQ / difference between Sands SkyPark and Observation Deck",
+      "note": "Do not collapse Level56 deck into the Level57 pool or treat observation ticket access as all rooftop access."
+    },
+    {
+      "facility": "SkyPark rooftop facilities",
+      "existing_records": [
+        "T1-L57",
+        "T2-L57",
+        "T3-L57"
+      ],
+      "supported_location": "Level57 contains Infinity Pool, LAVO, Spago andCE LA VI",
+      "status": "COORDINATED_ROOF_COMPLEX_REQUIRED",
+      "source": "https://www.marinabaysands.com/attractions/skypark-observation-deck.html",
+      "section": "FAQ / difference between Sands SkyPark and Observation Deck",
+      "note": "Existing shared pool-segment labels are not a verified pool footprint, depth or three independent identical roof rooms. Couple actual roof/deck geometry and access."
+    },
+    {
+      "facility": "LAVO",
+      "existing_record": "T1-L57",
+      "supported_location": "Hotel Tower1, Level57, Sands SkyPark",
+      "status": "LOCATION_CONFIRMED",
+      "source": "https://www.marinabaysands.com/restaurants/lavo.html",
+      "section": "Restaurant Details / Location",
+      "locale_note": "Initial tool fetch redirected to Indonesian official site; location independently returned in English on subsequent find."
+    },
+    {
+      "facility": "Spago Dining Room",
+      "existing_record": "T2-L57",
+      "supported_location": "Hotel Tower2, Level57, Sands SkyPark",
+      "status": "LOCATION_CONFIRMED",
+      "source": "https://www.marinabaysands.com/restaurants/spago.html",
+      "section": "Restaurant Details / Location"
+    },
+    {
+      "facility": "CE LA VI",
+      "existing_record": "T3-L57",
+      "supported_location": "Hotel Tower3, Level57; reception is atTower3Level1",
+      "status": "LOCATION_CONFIRMED",
+      "source": "https://www.marinabaysands.com/restaurants/ce-la-vi.html",
+      "section": "Restaurant Details / Location",
+      "corroborating_source": "https://www.marinabaysands.com/attractions/skypark-observation-deck.html",
+      "note": "Reception relation from observation-deck FAQ; no precise internal lift/room plan inferred."
+    },
+    {
+      "facility": "The Club",
+      "existing_record": "T1-L1 restaurant_lounge generic programme",
+      "supported_location": "Hotel Tower1 Lobby",
+      "status": "NAMED_PUBLICLY_DOCUMENTED_PROGRAMME_TO_PRESERVE",
+      "source": "https://www.marinabaysands.com/restaurants/the-club.html",
+      "section": "Restaurant Details / Location",
+      "note": "Do not relocate current The Club to historical Club55 solely from old marketing."
+    },
+    {
+      "facility": "SkyPark Box Office",
+      "existing_record": "T3-B1 observation_deck_box_office",
+      "supported_location": "Hotel Tower3, B1",
+      "status": "LOCATION_CONFIRMED",
+      "source": "https://www.marinabaysands.com/faq.html",
+      "section": "Operating hours and locations of Ticketing Box Offices"
+    },
+    {
+      "facility": "ArtScience Museum Basement2",
+      "existing_record": "MUSEUM-B2 back_of_house_parking_loading",
+      "supported_location": "Basement2 public galleries, box office and ArtScience Laboratory",
+      "status": "OLD_BACK_OF_HOUSE_ONLY_ASSIGNMENT_CONTRADICTED",
+      "source": "https://www.marinabaysands.com/museum/exhibitions/future-world.html",
+      "section": "Exhibition Details / Basement2 Galleries",
+      "corroborating_sources": [
+        "https://www.marinabaysands.com/faq.html",
+        "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/company-information/media-centre/factsheets/amenities/artscience-museum.pdf"
+      ],
+      "note": "Current Future World page identifiesB2galleries; FAQ identifiesB2box office. Operator factsheet describes new320sqm ArtScience Laboratory openedFebruary2025 atB2. These facts require public zones, not an entire basement relabeled as parking/loading."
+    },
+    {
+      "facility": "ArtScience Museum Level4",
+      "existing_record": "MISSING: old museum schedule ends atL3",
+      "supported_location": "Level4 ArtScience Cinema, lift lobby and VR Gallery",
+      "status": "MISSING_PUBLIC_LEVEL_REQUIRES_ADDITION",
+      "source": "https://www.marinabaysands.com/museum/about-us/services/venue-rental/rate.html",
+      "section": "Event Spaces / Level4",
+      "corroborating_source": "https://www.marinabaysands.com/museum/programmes/talks/expanded-anatomies.html",
+      "note": "Venue listing describes cinema236sqm, lobby166sqm, VRgallery184sqm. Dated21March2026 event corroborates ArtScience CinemaL4. These are published venue areas, not a complete surveyed level envelope."
+    },
+    {
+      "facility": "ArtScience Museum Basement1",
+      "existing_record": "MUSEUM-B1 back_of_house_parking_loading",
+      "supported_location": "Undated school guide mentions Education SpaceB1; newer learning-centre factsheet specifiesB2",
+      "status": "CURRENT_B1_USE_UNRESOLVED",
+      "source": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/museum/school-activities/Pre-visit-resource-Architect-Adventure-for-Pre-Schools.pdf",
+      "section": "PDFpage2 / A Look at the Building: Outside",
+      "corroborating_source": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/company-information/media-centre/factsheets/amenities/artscience-museum.pdf",
+      "note": "Do not present the undatedB1education reference as a verified2026schedule or move the new2025laboratory out ofB2. Old parking-only use also remains unverified."
+    },
+    {
+      "facility": "Other guest, service, casino, theatre and museum floor partitions",
+      "existing_records": [
+        "all159legacyguestrecipes",
+        "T1-L56",
+        "T2-L56",
+        "CASINO-B2M/L1-L4",
+        "THEATRE-B1/L1/L2",
+        "MUSEUM-L2/L3"
+      ],
+      "status": "NOT_CERTIFIED_BY_THIS_AUDIT",
+      "note": "No exact private per-floor schedule is available here. Operator venue locations establish zones, not exclusive whole-floor use or metric floor heights. Retain programme coverage and labelled reconstruction; do not preserve all159guest-floor assignments as an operator fact or silently discard unverified areas."
+    }
+  ],
+  "temporal_note": "Current room pages announce lobby changes from6January2027; this is future work relative to the2026target and must not silently replace current routes.",
+  "source_access_limits": [
+    "The10.9MB unique-spaces brochure exceeded the web fetch size limit; mixed-use Expo evidence is independently available on primary HTML venue pages.",
+    "Several detail pages redirected to another official language locale. Tower/level/area facts were checked in returned content.",
+    "Direct Python HTTP requests timed out; fact verification used the web tool primary-page content instead. No raw third-party plan/image was committed."
+  ],
+  "rendered_native_or_full_building_acceptance": false,
+  "final_recheck_utc": "2026-10-29T19:34:57.299556+00:00"
+}

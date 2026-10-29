@@ -1,0 +1,85 @@
+{
+  "schema": "mbs_luxury_expansion_v2_geometry_audit",
+  "checks": 27350,
+  "failed": 0,
+  "failures": [],
+  "room_ids": 1850,
+  "entertainment_programs": {
+    "lounge": 1315,
+    "media": 267,
+    "billiards": 268
+  },
+  "explicit_relocations": 176,
+  "allocation_sha256": "e1f6067364d7f4eb2d72f0f12667304145e677dc2b9e33db7c5b9a23b311b8c5",
+  "program_geometry_planned": false,
+  "native_or_rendered_verified": false,
+  "scope": "All guest room identity and source/core/void/room/corridor geometry plus full furniture envelope and named entertainment program validation. Does not certify native furniture, door swings, public/resort/roof program construction or whole-building fidelity. Contiguous extensions are reserved geometry only; internal partitions/openings and added furnishing still need implementation and native validation. Published type area averages still unmet.",
+  "area_progress": {
+    "frozen_minimum_total_m2": 113390.76,
+    "new_reserved_total_m2": 128019.68091647366,
+    "type_statistics": {
+      "premier": {
+        "count": 1075,
+        "published_average_target_m2": 45,
+        "reserved_total_m2": 56412.94284807429,
+        "reserved_average_m2": 52.47715613774353,
+        "target_total_m2": 48375,
+        "sum_positive_per_room_deficits_m2": 33.13715192570554,
+        "rooms_reaching_target": 1007,
+        "url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-premier-room.html"
+      },
+      "signature_suite": {
+        "count": 497,
+        "published_average_target_m2": 140,
+        "reserved_total_m2": 45196.84160655182,
+        "reserved_average_m2": 90.93931912787086,
+        "target_total_m2": 69580,
+        "sum_positive_per_room_deficits_m2": 24383.15839344818,
+        "rooms_reaching_target": 56,
+        "url": "https://www.marinabaysands.com/hotel/rooms-suites/sands-signature-suite.html"
+      },
+      "paiza_suite": {
+        "count": 253,
+        "published_average_target_m2": 140,
+        "reserved_total_m2": 22719.136560364343,
+        "reserved_average_m2": 89.79895873661795,
+        "target_total_m2": 35420,
+        "sum_positive_per_room_deficits_m2": 12700.863439635656,
+        "rooms_reaching_target": 11,
+        "url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-signature-suite.html"
+      },
+      "family_suite": {
+        "count": 8,
+        "published_average_target_m2": 175,
+        "reserved_total_m2": 923.4679263414374,
+        "reserved_average_m2": 115.43349079267968,
+        "target_total_m2": 1400,
+        "sum_positive_per_room_deficits_m2": 476.5320736585626,
+        "rooms_reaching_target": 0,
+        "url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-family-suite.html"
+      },
+      "presidential_suite": {
+        "count": 13,
+        "published_average_target_m2": 360,
+        "reserved_total_m2": 2030.3917487732667,
+        "reserved_average_m2": 156.18398067486666,
+        "target_total_m2": 4680,
+        "sum_positive_per_room_deficits_m2": 2649.608251226733,
+        "rooms_reaching_target": 1,
+        "url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-presidential-suite.html"
+      },
+      "chairman_residence": {
+        "count": 4,
+        "published_average_target_m2": 520,
+        "reserved_total_m2": 736.9002263685056,
+        "reserved_average_m2": 184.2250565921264,
+        "target_total_m2": 2080,
+        "sum_positive_per_room_deficits_m2": 1343.0997736314944,
+        "rooms_reaching_target": 0,
+        "url": "https://www.marinabaysands.com/hotel/rooms-suites/paiza-chairman-suite.html"
+      }
+    },
+    "all_category_targets_met": false,
+    "actual_internal_annex_openings_or_furniture_verified": false
+  }
+}

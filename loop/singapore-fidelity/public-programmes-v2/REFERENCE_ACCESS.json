@@ -1,0 +1,41 @@
+[
+  {
+    "file": "private/museum-relation.xml",
+    "url": "https://api.openstreetmap.org/api/0.6/relation/14314416",
+    "resolved_url": "https://api.openstreetmap.org/api/0.6/relation/14314416",
+    "bytes": 4513,
+    "sha256": "addb034a0f2b86d23132bdee21a98aa7773e6e992346d5d3551515d88f637a3c",
+    "status": "read_only_reference_downloaded",
+    "observed_utc": "2026-10-29T19:43:58.516032+00:00"
+  },
+  {
+    "file": "private/expo-relation.xml",
+    "url": "https://api.openstreetmap.org/api/0.6/relation/12633420",
+    "resolved_url": "https://api.openstreetmap.org/api/0.6/relation/12633420",
+    "bytes": 1508,
+    "sha256": "a01adb2eb281387378b7c6f0377e2cbe860258bb39e6e7f9e8a488a3d084ba0e",
+    "status": "read_only_reference_downloaded",
+    "observed_utc": "2026-10-29T19:43:58.513664+00:00"
+  },
+  {
+    "file": "unique-spaces.pdf",
+    "url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+    "status": "failed",
+    "error": "The read operation timed out"
+  },
+  {
+    "file": "museum-venue-historical.pdf",
+    "url": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/museum/about/ArtScience%20Museum%20-%20Venue%20Sales%20Deck_LR.pdf",
+    "status": "failed",
+    "error": "The read operation timed out"
+  },
+  {
+    "file": "private/unique-spaces.pdf",
+    "url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+    "bytes": 10876793,
+    "sha256": "8f88a3e22fd560c202ea1dfbfa29beb5f50c461c381b1cc44092ac18f72bba0c",
+    "observed_utc": "2026-10-29T19:46:08.252602+00:00",
+    "method": "Native Chrome PDF download completed to Downloads; copied only named task file into ignored reference folder.",
+    "rights": "Reference only; no redistribution license established, raw PDF and renders ignored."
+  }
+]

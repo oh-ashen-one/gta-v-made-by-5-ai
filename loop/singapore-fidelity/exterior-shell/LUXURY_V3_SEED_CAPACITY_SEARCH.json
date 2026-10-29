@@ -1,0 +1,80 @@
+{
+  "recorded_utc": "2026-10-29T16:27:24.806510+00:00",
+  "script_sha256": "7fceaea05dbd0471218098ff41aa8b5e8e2432d8a5b17da8c7c213e386c12343",
+  "unchanged_published_category_average_target": 140,
+  "not_final_acceptance": true,
+  "results": [
+    {
+      "ratio": 0.82,
+      "assigned": 1850,
+      "unplaced": 0,
+      "suites": 775,
+      "area": 145055.31201773533,
+      "relocated": 404,
+      "cross_tower": 29
+    },
+    {
+      "ratio": 0.84,
+      "assigned": 1850,
+      "unplaced": 0,
+      "suites": 775,
+      "area": 147157.54770922827,
+      "relocated": 406,
+      "cross_tower": 31
+    },
+    {
+      "ratio": 0.85,
+      "assigned": 1850,
+      "unplaced": 0,
+      "suites": 775,
+      "area": 148234.11389908355,
+      "relocated": 429,
+      "cross_tower": 46
+    },
+    {
+      "ratio": 0.86,
+      "assigned": 1850,
+      "unplaced": 0,
+      "suites": 775,
+      "area": 149279.9494645352,
+      "relocated": 434,
+      "cross_tower": 59
+    },
+    {
+      "ratio": 0.87,
+      "assigned": 1850,
+      "unplaced": 0,
+      "suites": 775,
+      "area": 150392.2942632834,
+      "relocated": 436,
+      "cross_tower": 64
+    },
+    {
+      "ratio": 0.88,
+      "assigned": 1824,
+      "unplaced": 26,
+      "suites": 775,
+      "area": 150378.72539813488,
+      "relocated": 437,
+      "cross_tower": 72
+    },
+    {
+      "ratio": 0.89,
+      "assigned": 1819,
+      "unplaced": 31,
+      "suites": 775,
+      "area": 151133.6408493723,
+      "relocated": 434,
+      "cross_tower": 66
+    },
+    {
+      "ratio": 0.9,
+      "assigned": 1755,
+      "unplaced": 95,
+      "suites": 775,
+      "area": 149245.4329576994,
+      "relocated": 500,
+      "cross_tower": 73
+    }
+  ]
+}

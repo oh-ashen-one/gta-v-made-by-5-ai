@@ -1,0 +1,21 @@
+{
+  "schema": "mbs_catalogue_v11_independently_reviewed_freeze",
+  "frozen_utc": "2026-10-29T19:38:57.995541+00:00",
+  "files_sha256": {
+    "build_catalogue_inventory_v11.py": "e89cadbfba546a879e0698dc2885c968892a6a05b546233a000b1ac38ffe772c",
+    "audit_catalogue_inventory_v11.py": "a52f46d635132c67334fc0c6551c697d2c4ee711e6fc38d1e421c885d18e1eca",
+    "OPERATOR_CATALOGUE_INVENTORY_PROPOSAL_V11.json": "0671bd5f822970afd24a270f0307f8d3c5326110615018f7f49ca98cd1bfc1fc",
+    "CATALOGUE_INVENTORY_COVERAGE_AUDIT_V11.json": "af2071d7c41d6ebc72460e9593308dbe0c2094a3da3edda47afd98a96b519fd9",
+    "catalogue-review/SOURCE_REVIEW_V9_V11.json": "05f62e2fc6c06fd6f1f872484363cbdb2cb54ef002729cc513b3633b15ab5cbc",
+    "catalogue-review/COVERAGE_INDEPENDENT_V9_V11.json": "b37d16ff52218cbff0f8bdc32b78c6fb5378468a57a5b61c9173d5739e16b17f",
+    "catalogue-review/PUBLIC_FLOOR_CONSTRAINTS.json": "e5449c63acf8eedfd47ccad5a8e254ac00baf7b73b9b326cbc0322b84f66f9fb",
+    "catalogue-review/REVIEW.md": "36b5db84a0a687efc70b65a76c66c5bedebe72fb1659660bfc3d762aad2a598b"
+  },
+  "active_keys": 1844,
+  "suites": 775,
+  "legacy_ids_preserved": 1850,
+  "builder_coverage_checks_passed": 5930,
+  "independent_coverage_predicates_passed": 40,
+  "independent_source_verdict": "Acceptable as explicitly reconstructed source-bound proposal only.",
+  "game_adoption_physical_fit_native_or_visual_acceptance": false
+}

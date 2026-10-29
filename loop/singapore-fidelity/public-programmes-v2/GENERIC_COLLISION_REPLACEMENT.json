@@ -1,0 +1,173 @@
+{
+  "schema": "mbs_public_exact_generic_replacement_v2",
+  "all_member_feature_keys": {
+    "EXPO": [
+      "building|way/172014440",
+      "building|way/827847264",
+      "building|way/827847265",
+      "building|way/827847266",
+      "building|way/827847267",
+      "building|way/827847268",
+      "building|way/827847269",
+      "building|way/827847270",
+      "building|way/827847271",
+      "building|way/827847272",
+      "building|way/827847273",
+      "building|way/827847274",
+      "building|way/827847275",
+      "building|way/827847276",
+      "building|way/827847277",
+      "building|way/827847278",
+      "building|way/827847279",
+      "building|way/827847280",
+      "building|way/1056849313"
+    ],
+    "MUSEUM": [
+      "building|way/261191086",
+      "building|way/827855854",
+      "building|way/827855864",
+      "building|way/827855865",
+      "building|way/827855866",
+      "building|way/827855867",
+      "building|way/827855868",
+      "building|way/827855869",
+      "building|way/827855870",
+      "building|way/827855856",
+      "building|way/827855857",
+      "building|way/827855858",
+      "building|way/827855859",
+      "building|way/827855860",
+      "building|way/827855861",
+      "building|way/827855862",
+      "building|way/827855863",
+      "building|way/827855896",
+      "building|way/827855897",
+      "building|way/827855898",
+      "building|way/827855899",
+      "building|way/827855900",
+      "building|way/827855901",
+      "building|way/827855903",
+      "building|way/827855888",
+      "building|way/827855889",
+      "building|way/827855890",
+      "building|way/827855891",
+      "building|way/827855892",
+      "building|way/827855893",
+      "building|way/827855894",
+      "building|way/827855895",
+      "building|way/827855883",
+      "building|way/827855884",
+      "building|way/827855885",
+      "building|way/827855886",
+      "building|way/827855887",
+      "building|way/827855928",
+      "building|way/827855929",
+      "building|way/827855930",
+      "building|way/827855920",
+      "building|way/827855921",
+      "building|way/827855922",
+      "building|way/827855923",
+      "building|way/827855924",
+      "building|way/827855925",
+      "building|way/827855926",
+      "building|way/827855927",
+      "building|way/827855912",
+      "building|way/827855913",
+      "building|way/827855914",
+      "building|way/827855915",
+      "building|way/827855916",
+      "building|way/827855917",
+      "building|way/827855918",
+      "building|way/827855919",
+      "building|way/827855904",
+      "building|way/827855905",
+      "building|way/827855906",
+      "building|way/827855907",
+      "building|way/827855908",
+      "building|way/827855910",
+      "building|way/827855911"
+    ]
+  },
+  "currently_emitted_generic_members": [
+    {
+      "building": "EXPO",
+      "feature_key": "building|way/827847264",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    },
+    {
+      "building": "EXPO",
+      "feature_key": "building|way/827847265",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    },
+    {
+      "building": "MUSEUM",
+      "feature_key": "building|way/827855864",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    },
+    {
+      "building": "MUSEUM",
+      "feature_key": "building|way/827855865",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    },
+    {
+      "building": "MUSEUM",
+      "feature_key": "building|way/827855866",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    },
+    {
+      "building": "MUSEUM",
+      "feature_key": "building|way/827855867",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    },
+    {
+      "building": "MUSEUM",
+      "feature_key": "building|way/827855868",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    },
+    {
+      "building": "MUSEUM",
+      "feature_key": "building|way/827855869",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    },
+    {
+      "building": "MUSEUM",
+      "feature_key": "building|way/827855863",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    },
+    {
+      "building": "MUSEUM",
+      "feature_key": "building|way/827855921",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    },
+    {
+      "building": "MUSEUM",
+      "feature_key": "building|way/827855922",
+      "mesh_tiles": [
+        "0_-1"
+      ]
+    }
+  ],
+  "emitted_count": 11,
+  "already_root_excluded_count": 71,
+  "policy": "Do not remove on this contract alone. Install real bound interior/shell support and wait for native readiness before replacing only these exact IDs. Preserve adjacent buildings, unreplaced roof pieces, source-face mappings and save identities. Never clear a broad bounding box."
+}

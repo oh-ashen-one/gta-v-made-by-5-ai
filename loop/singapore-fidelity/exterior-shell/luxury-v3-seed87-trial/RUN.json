@@ -1,0 +1,32 @@
+{
+  "started_utc": "2026-10-29T16:28:21.904505+00:00",
+  "seed_ratio": 0.87,
+  "published_average_target_unchanged": 140,
+  "steps": [
+    {
+      "name": "01-area-first",
+      "sha256": "831095cca3ec1ee2fa80a0af0d17849fa0a89fcd2cac5058e53782aa745c55e9"
+    },
+    {
+      "name": "02-rectangle-expansion",
+      "sha256": "17be1fc9bab02e0b7477b78fdfba8e31870fcffc5d7726ad73351dbfca747fd8"
+    },
+    {
+      "name": "03-category-balance",
+      "sha256": "669e863a574269094cb290a5eceba1801343e5f61ab2568f532782c0b72a51be"
+    },
+    {
+      "name": "04-private-annexes",
+      "sha256": "e14e5aa34ac1bcdf8a50c51a4b848e7215fe67193f27f1e9d0329742529e7c9f"
+    },
+    {
+      "name": "05-count-preserving-relocation",
+      "sha256": "8bf434bc03a6eceadecde38640d916f67f47f87d5cf7cb6f219dd7ef1709870b"
+    },
+    {
+      "name": "06-independent-geometry-audit",
+      "sha256": "475df78228399e7fdf6ea8382e9fc85841347b91d95b8ef6a99223ea0d92fe11"
+    }
+  ],
+  "finished_utc": "2026-10-29T16:29:18.586283+00:00"
+}

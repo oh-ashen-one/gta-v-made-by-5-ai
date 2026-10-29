@@ -1,3 +1,5 @@
+> **2026-10-29 cutoff:** The owner requested closeout after the current worker milestone, then explicitly prohibited game/engine/GPU launches. Follow `OWNER_CUTOFF.md`; original full scope below is unfinished, not permission to continue an open-ended loop.
+
 # Singapore fidelity and owner playtest fixes — active goal
 
 The owner requested the full following end state; incremental fixes do not redefine completion:

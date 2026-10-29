@@ -151,4 +151,5 @@ func _run_smoke()->void:
 		checks.append({"space":kind,"built":built,"standing":built and player.is_on_floor(),"recoveries":_recoveries,"module_room_count":module.get("rooms").size() if module.get("rooms") is Array else 0})
 	var ok:bool=checks.all(func(row:Dictionary):return row.built and row.standing and row.recoveries==0)
 	print("[hotel-preview] SMOKE ",JSON.stringify({"ok":ok,"checks":checks,"scope":"Three scene builds, native floor support and teardown only; not whole-hotel traversal or rendered acceptance"}))
+	Sfx.shutdown_audio()
 	get_tree().quit(0 if ok else 1)

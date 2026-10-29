@@ -1,0 +1,24 @@
+{
+  "schema": "mbs_conformance_owner_cutoff_freeze",
+  "frozen_utc": "2026-10-29T19:58:41.302000+00:00",
+  "files_sha256": {
+    "OWNER_CUTOFF_INTEGRATION_HANDOFF.md": "eda756e5a1297f02fd3041300965f144e1b108df69bfd6725259fa920edcf606",
+    "OWNER_CUTOFF_PARTIAL_ALLOCATION_SUPPORT_FIXED.json": "9eb4eaf4253f7821e95baca6c409a4bf30363bd2a506955ea4d7717d279fb9e1",
+    "OWNER_CUTOFF_FINAL_AUDIT.json": "a2868d1f0b525f632c6de972aae7de1346be9f7fc7ee5c25b0a275d01c986891",
+    "OWNER_CUTOFF_WINDOW_CONTRACTS.json": "4cdfdd837b00770ab0b4a535f142ef90444e92b67206a0c3f5925cbc3868f3b6",
+    "OWNER_CUTOFF_DEPENDENCY_CLOSURE.json": "0a470a29260af7c42aa693d1013a66dd7001091967a0519fe8195489f59f0bdc",
+    "FROZEN_PACKET_REPRODUCTION_CLOSURE.json": "439d0b16a47acff35ead820f210efa91a972c79955c566c9f92ae7c25790a346",
+    "reproduce_frozen_packets.py": "f80de18701938c0053ec4afb8af1b472b587f1cea7b96aa4a348bcaf01e217e8",
+    "FROZEN_PACKET_REPRODUCTION_RESULT.json": "e594d6007ca5f6ec3c914f8a57d9ddf109bd5ac44be4c380d1f59bf355ad4e43",
+    "OPERATOR_CATALOGUE_V11_REVIEWED_FREEZE.json": "c38ebefcfe8fc23d2dc615fecc043c5e46394c7fbcf71696b948399d7ec1508b"
+  },
+  "assigned_active_keys": 1544,
+  "unresolved_active_keys": 300,
+  "placed_suites": 775,
+  "bounded_final_geometry_checks_passed": 11667,
+  "all_worker_jobs_terminal": true,
+  "worker_engines_started": 0,
+  "browser_tabs_left_open": 0,
+  "no_further_research_or_optimizer_scheduled": true,
+  "full_goal_or_native_room_completion_claim": false
+}

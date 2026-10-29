@@ -1,0 +1,1479 @@
+{
+  "schema": "mbs_public_programme_contract_v2",
+  "version": 2,
+  "state": "SOURCE_BOUND_PROGRAMME_CONTRACT_NOT_YET_NATIVE_FLOOR_GEOMETRY",
+  "target_epoch": "2026 current three-tower resort",
+  "registry_input": {
+    "path": "loop/singapore-fidelity/exterior-shell/PUBLIC_MIXED_USE_FLOOR_REGISTRY_PROPOSAL_V14.json",
+    "sha256": "723e83814786ab877ae99470a86e364ef314b028a288db7e8e43983b554bd9f7",
+    "retained_legacy_floor_count": 216,
+    "new_documented_level_ids": [
+      "MUSEUM-L4"
+    ]
+  },
+  "source_binding_artifact": {
+    "path": "SOURCE_BUILDING_BINDINGS.json",
+    "sha256": "3dfaf9aeafac0cf84b33bf67acbad174289e00299b801fc880dd7e6d3296ea26"
+  },
+  "programme_seed_sha256": "f733921bd444c4c2a8f49a0bcc3b0ce424870f99dbb65625bf21fad2767fe2d4",
+  "plan_observations_sha256": "628cff26fabf0c5dc4876904df0a10ab2923b57b73676128f8e22e54046814fa",
+  "levels": [
+    {
+      "floor_id": "EXPO-L3",
+      "building_key": "EXPO",
+      "label": "L3",
+      "registry_record": {
+        "id": "EXPO-L3",
+        "building": "EXPO",
+        "level": "L3",
+        "legacy_record": {
+          "building": "EXPO",
+          "elevation_m": 8.45,
+          "factory": "program_module",
+          "id": "EXPO-L3",
+          "level": "L3",
+          "permanent_empty_fallback": false,
+          "program": "fitness_centre",
+          "rooms_required": [
+            "public_circulation",
+            "service_circulation",
+            "toilets",
+            "staff_lift_landing",
+            "public_stairs_lift_landing"
+          ],
+          "source_facts": [
+            "MBS-FITNESS"
+          ],
+          "source_status": "PUBLIC_PROGRAM_WITH_RECONSTRUCTED_PRIVATE_LAYOUT"
+        },
+        "physical_floor_must_remain_built": true,
+        "metric_elevation_m": 8.45,
+        "metric_elevation_status": "LEGACY_RECONSTRUCTION_NOT_OPERATOR_SURVEY",
+        "documented_uses": [
+          {
+            "facility": "Fitness Centre",
+            "existing_record": "EXPO-L3",
+            "supported_location": "Marina Bay Sands Expo & Convention, Level3",
+            "status": "MIXED_USE_FLOOR_REQUIRED",
+            "source": "https://www.marinabaysands.com/hotel/amenities/fitness-centre.html",
+            "section": "Details / Location",
+            "note": "Gym, changing rooms and sauna are real uses, but they do not consume the entire convention floor.",
+            "source_fact_not_entire_floor_claim": true
+          },
+          {
+            "facility": "Expo Level3 ballrooms and meeting rooms",
+            "existing_record": "EXPO-L3 currently single fitness_centre programme",
+            "supported_location": "Expo & Convention Level3",
+            "status": "PUBLIC_PROGRAMMES_MISSING_FROM_OLD_SINGLE_PROGRAMME",
+            "source": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+            "section": "Ballrooms (Level 3): Main Ballrooms, Junior Ballrooms, Meeting Rooms",
+            "corroborating_source": "https://www.marinabaysands.com/expo-events-and-convention-centre/event-venues.html",
+            "note": "Latest direct detail-page read lists five main ballrooms, five junior ballrooms, and five meeting rooms including Angsana, Angsana Junior and Saraca. Earlier all-venues wording grouped Angsana with six ballrooms and six junior ballrooms; that page now returns only footer to the text reader. Current detail classifies Angsana as a meeting room. Preserve every named venue and the mixed-use programme; do not claim six junior ballrooms as verified or treat category counts as a surveyed partition plan.",
+            "earlier_review_correction": "Replaces the earlier erroneous statement that both pages listed six junior ballrooms; the dedicated page lists five.",
+            "current_detail_counts": {
+              "main_ballrooms": 5,
+              "junior_ballrooms": 5,
+              "meeting_rooms": 5
+            },
+            "source_fact_not_entire_floor_claim": true
+          }
+        ],
+        "legacy_programme_status": "UNVERIFIED_RECONSTRUCTION_UNLESS_CURRENT_SOURCE_CONFIRMS",
+        "guest_allocation_possible": false,
+        "guest_assignment_status": "DO_NOT_INFER_FROM_OLD_FACTORY_TYPE",
+        "public_reservation_polygons": [],
+        "public_reservation_geometry_verified": false,
+        "current_floor_use_exclusivity_verified": false,
+        "guest_placement_requires_completed_public_reservations": false,
+        "metric_allocation_ready": false,
+        "programme_policy": "Mixed fitness+convention level: preserve all named main/junior/meeting venues plus gym/changing/sauna; no whole-floor fitness-only fallback."
+      },
+      "zones": [
+        {
+          "id": "EXPO-L3-main-jasmine",
+          "name": "Jasmine Ballroom",
+          "group": "main_ballroom",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / table and matching labelled map",
+          "published_reference_area_m2": 1366,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "flexible_event_floor",
+            "movable_partitions",
+            "public_entry",
+            "service_access",
+            "AV_power_and_storage"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_status": "Published maximum configuration; entrance/set-in exclusions apply, not a surveyed clear polygon.",
+          "source_name_confirmed_by": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "clear_height_m": 6.1
+        },
+        {
+          "id": "EXPO-L3-main-hibiscus",
+          "name": "Hibiscus Ballroom",
+          "group": "main_ballroom",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / table and matching labelled map",
+          "published_reference_area_m2": 1366,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "flexible_event_floor",
+            "movable_partitions",
+            "public_entry",
+            "service_access",
+            "AV_power_and_storage"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_status": "Published maximum configuration; entrance/set-in exclusions apply, not a surveyed clear polygon.",
+          "source_name_confirmed_by": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "clear_height_m": 6.1
+        },
+        {
+          "id": "EXPO-L3-main-heliconia",
+          "name": "Heliconia Ballroom",
+          "group": "main_ballroom",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / table and matching labelled map",
+          "published_reference_area_m2": 1366,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "flexible_event_floor",
+            "movable_partitions",
+            "public_entry",
+            "service_access",
+            "AV_power_and_storage"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_status": "Published maximum configuration; entrance/set-in exclusions apply, not a surveyed clear polygon.",
+          "source_name_confirmed_by": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "clear_height_m": 6.1
+        },
+        {
+          "id": "EXPO-L3-main-cassia",
+          "name": "Cassia Ballroom",
+          "group": "main_ballroom",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / table and matching labelled map",
+          "published_reference_area_m2": 1366,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "flexible_event_floor",
+            "movable_partitions",
+            "public_entry",
+            "service_access",
+            "AV_power_and_storage"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_status": "Published maximum configuration; entrance/set-in exclusions apply, not a surveyed clear polygon.",
+          "source_name_confirmed_by": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "clear_height_m": 6.1
+        },
+        {
+          "id": "EXPO-L3-main-begonia",
+          "name": "Begonia Ballroom",
+          "group": "main_ballroom",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / table and matching labelled map",
+          "published_reference_area_m2": 920,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "flexible_event_floor",
+            "movable_partitions",
+            "public_entry",
+            "service_access",
+            "AV_power_and_storage"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_status": "Published maximum configuration; entrance/set-in exclusions apply, not a surveyed clear polygon.",
+          "source_name_confirmed_by": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "clear_height_m": 6.1
+        },
+        {
+          "id": "EXPO-L3-junior-jasmine",
+          "name": "Jasmine Junior Ballroom",
+          "group": "junior_ballroom",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / junior table and matching labelled map",
+          "published_reference_area_m2": 826,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "flexible_event_floor",
+            "movable_partitions",
+            "public_entry",
+            "service_access"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_status": "Published maximum configuration; current as-built partitioning unverified.",
+          "source_name_confirmed_by": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "clear_height_m": 6.1
+        },
+        {
+          "id": "EXPO-L3-junior-hibiscus",
+          "name": "Hibiscus Junior Ballroom",
+          "group": "junior_ballroom",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / junior table and matching labelled map",
+          "published_reference_area_m2": 776,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "flexible_event_floor",
+            "movable_partitions",
+            "public_entry",
+            "service_access"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_status": "Published maximum configuration; current as-built partitioning unverified.",
+          "source_name_confirmed_by": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "clear_height_m": 6.1
+        },
+        {
+          "id": "EXPO-L3-junior-heliconia",
+          "name": "Heliconia Junior Ballroom",
+          "group": "junior_ballroom",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / junior table and matching labelled map",
+          "published_reference_area_m2": 824,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "flexible_event_floor",
+            "movable_partitions",
+            "public_entry",
+            "service_access"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_status": "Published maximum configuration; current as-built partitioning unverified.",
+          "source_name_confirmed_by": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "clear_height_m": 6.1
+        },
+        {
+          "id": "EXPO-L3-junior-cassia",
+          "name": "Cassia Junior Ballroom",
+          "group": "junior_ballroom",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / junior table and matching labelled map",
+          "published_reference_area_m2": 448,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "flexible_event_floor",
+            "movable_partitions",
+            "public_entry",
+            "service_access"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_status": "Published maximum configuration; current as-built partitioning unverified.",
+          "source_name_confirmed_by": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "clear_height_m": 6.1
+        },
+        {
+          "id": "EXPO-L3-junior-begonia",
+          "name": "Begonia Junior Ballroom",
+          "group": "junior_ballroom",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / junior table and matching labelled map",
+          "published_reference_area_m2": 599,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "flexible_event_floor",
+            "movable_partitions",
+            "public_entry",
+            "service_access"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_status": "Published maximum configuration; current as-built partitioning unverified.",
+          "source_name_confirmed_by": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "clear_height_m": 6.1
+        },
+        {
+          "id": "EXPO-L3-meeting-requirement-1",
+          "name": "Meeting room requirement 1 (source name mapping unresolved)",
+          "group": "meeting_room_requirement",
+          "source_url": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "source_section": "Level3 / Meeting Rooms",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "meeting_tables",
+            "seating",
+            "AV",
+            "public_entry"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "individual_name_is_reconstruction": false,
+          "name_assignment_status": "UNRESOLVED_COUNT_MEMBER_NOT_AN_INVENTED_REAL_ROOM",
+          "candidate_named_groups": [
+            "Angsana",
+            "Angsana Junior",
+            "Saraca"
+          ],
+          "classification_conflict": "Current count5; older brochure subdivisions/name categories must not be treated as five separately verified families."
+        },
+        {
+          "id": "EXPO-L3-meeting-requirement-2",
+          "name": "Meeting room requirement 2 (source name mapping unresolved)",
+          "group": "meeting_room_requirement",
+          "source_url": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "source_section": "Level3 / Meeting Rooms",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "meeting_tables",
+            "seating",
+            "AV",
+            "public_entry"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "individual_name_is_reconstruction": false,
+          "name_assignment_status": "UNRESOLVED_COUNT_MEMBER_NOT_AN_INVENTED_REAL_ROOM",
+          "candidate_named_groups": [
+            "Angsana",
+            "Angsana Junior",
+            "Saraca"
+          ],
+          "classification_conflict": "Current count5; older brochure subdivisions/name categories must not be treated as five separately verified families."
+        },
+        {
+          "id": "EXPO-L3-meeting-requirement-3",
+          "name": "Meeting room requirement 3 (source name mapping unresolved)",
+          "group": "meeting_room_requirement",
+          "source_url": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "source_section": "Level3 / Meeting Rooms",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "meeting_tables",
+            "seating",
+            "AV",
+            "public_entry"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "individual_name_is_reconstruction": false,
+          "name_assignment_status": "UNRESOLVED_COUNT_MEMBER_NOT_AN_INVENTED_REAL_ROOM",
+          "candidate_named_groups": [
+            "Angsana",
+            "Angsana Junior",
+            "Saraca"
+          ],
+          "classification_conflict": "Current count5; older brochure subdivisions/name categories must not be treated as five separately verified families."
+        },
+        {
+          "id": "EXPO-L3-meeting-requirement-4",
+          "name": "Meeting room requirement 4 (source name mapping unresolved)",
+          "group": "meeting_room_requirement",
+          "source_url": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "source_section": "Level3 / Meeting Rooms",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "meeting_tables",
+            "seating",
+            "AV",
+            "public_entry"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "individual_name_is_reconstruction": false,
+          "name_assignment_status": "UNRESOLVED_COUNT_MEMBER_NOT_AN_INVENTED_REAL_ROOM",
+          "candidate_named_groups": [
+            "Angsana",
+            "Angsana Junior",
+            "Saraca"
+          ],
+          "classification_conflict": "Current count5; older brochure subdivisions/name categories must not be treated as five separately verified families."
+        },
+        {
+          "id": "EXPO-L3-meeting-requirement-5",
+          "name": "Meeting room requirement 5 (source name mapping unresolved)",
+          "group": "meeting_room_requirement",
+          "source_url": "https://www.marinabaysands.com/expo-and-convention/spaces/all-venues/ballrooms-meeting-rooms.html",
+          "source_section": "Level3 / Meeting Rooms",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "meeting_tables",
+            "seating",
+            "AV",
+            "public_entry"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "individual_name_is_reconstruction": false,
+          "name_assignment_status": "UNRESOLVED_COUNT_MEMBER_NOT_AN_INVENTED_REAL_ROOM",
+          "candidate_named_groups": [
+            "Angsana",
+            "Angsana Junior",
+            "Saraca"
+          ],
+          "classification_conflict": "Current count5; older brochure subdivisions/name categories must not be treated as five separately verified families."
+        },
+        {
+          "id": "EXPO-L3-fitness",
+          "name": "Fitness Centre",
+          "group": "fitness_centre",
+          "source_url": "https://www.marinabaysands.com/hotel/amenities/fitness-centre.html",
+          "source_section": "Details / Location and facilities",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "cardio_training",
+            "strength_training",
+            "changing_rooms",
+            "sauna",
+            "reception",
+            "accessible_circulation"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_plan_topology": "Page5 fitness label at short end next to guest lifts; exact net area and metric registration unknown."
+        },
+        {
+          "id": "EXPO-L3-public-circulation",
+          "name": "Main and Bayview foyers",
+          "group": "support",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / named map regions and legend",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "public_circulation",
+            "lift_landings",
+            "stair_and_escalator_approaches",
+            "glazed_shoppes_frontage"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_location_scope": "Topology only; no whole-floor allocation claimed."
+        },
+        {
+          "id": "EXPO-L3-service",
+          "name": "Service corridor and kitchen",
+          "group": "support",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / named map regions and legend",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "service_circulation",
+            "kitchen",
+            "freight_lift_approach",
+            "service_lift_approach",
+            "store"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_location_scope": "Topology only; no whole-floor allocation claimed."
+        },
+        {
+          "id": "EXPO-L3-business-mail",
+          "name": "Business and Mail Centre",
+          "group": "support",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / named map regions and legend",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "business_services",
+            "mail_collection",
+            "staff_workspace"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_location_scope": "Topology only; no whole-floor allocation claimed."
+        },
+        {
+          "id": "EXPO-L3-sanitary",
+          "name": "Public restrooms",
+          "group": "support",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page5 / named map regions and legend",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "accessible_toilet",
+            "toilets",
+            "maintenance_access"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_location_scope": "Topology only; no whole-floor allocation claimed."
+        }
+      ],
+      "source_building_binding": "EXPO",
+      "physical_floor_must_remain_built": true,
+      "legacy_elevation_m": 8.45,
+      "elevation_status": "LEGACY_RECONSTRUCTION_NOT_OPERATOR_SURVEY",
+      "world_slab_polygon": null,
+      "world_slab_status": "MISSING_SURVEY_OR_EXPLICIT_SOURCE_CONFORMING_RECONSTRUCTION_APPROVAL",
+      "world_zone_polygons": null,
+      "whole_floor_occupancy_claimed": false,
+      "native_build_ready": false,
+      "do_not_spawn_old_rectangle_fallback": true,
+      "completion_requirements": [
+        "A real level envelope tied to source body/outline, with holes and neighboring levels.",
+        "Explicit metric Y with provenance; legacy label or roof height is insufficient.",
+        "All zone programmes, service/public circulation, two independent exits and lift/stair landing ownership.",
+        "All programme polygons inside actual slab, non-overlapping usable areas, supported doors and unchanged full Player capsule.",
+        "Exact source-ID generic collision replacement and terrain holes installed atomically only after actual geometry readiness.",
+        "Native continuous entry/traversal and actual rendered review."
+      ]
+    },
+    {
+      "floor_id": "MUSEUM-B2",
+      "building_key": "MUSEUM",
+      "label": "B2",
+      "registry_record": {
+        "id": "MUSEUM-B2",
+        "building": "MUSEUM",
+        "level": "B2",
+        "legacy_record": {
+          "building": "MUSEUM",
+          "elevation_m": -10.0,
+          "factory": "program_module",
+          "id": "MUSEUM-B2",
+          "level": "B2",
+          "permanent_empty_fallback": false,
+          "program": "back_of_house_parking_loading",
+          "rooms_required": [
+            "public_circulation",
+            "service_circulation",
+            "toilets",
+            "staff_lift_landing",
+            "public_stairs_lift_landing"
+          ],
+          "source_facts": [],
+          "source_status": "PUBLIC_PROGRAM_WITH_RECONSTRUCTED_PRIVATE_LAYOUT"
+        },
+        "physical_floor_must_remain_built": true,
+        "metric_elevation_m": -10.0,
+        "metric_elevation_status": "LEGACY_RECONSTRUCTION_NOT_OPERATOR_SURVEY",
+        "documented_uses": [
+          {
+            "facility": "ArtScience Museum Basement2",
+            "existing_record": "MUSEUM-B2 back_of_house_parking_loading",
+            "supported_location": "Basement2 public galleries, box office and ArtScience Laboratory",
+            "status": "OLD_BACK_OF_HOUSE_ONLY_ASSIGNMENT_CONTRADICTED",
+            "source": "https://www.marinabaysands.com/museum/exhibitions/future-world.html",
+            "section": "Exhibition Details / Basement2 Galleries",
+            "corroborating_sources": [
+              "https://www.marinabaysands.com/faq.html",
+              "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/company-information/media-centre/factsheets/amenities/artscience-museum.pdf"
+            ],
+            "note": "Current Future World page identifiesB2galleries; FAQ identifiesB2box office. Operator factsheet describes new320sqm ArtScience Laboratory openedFebruary2025 atB2. These facts require public zones, not an entire basement relabeled as parking/loading.",
+            "source_fact_not_entire_floor_claim": true
+          }
+        ],
+        "legacy_programme_status": "UNVERIFIED_RECONSTRUCTION_UNLESS_CURRENT_SOURCE_CONFIRMS",
+        "guest_allocation_possible": false,
+        "guest_assignment_status": "DO_NOT_INFER_FROM_OLD_FACTORY_TYPE",
+        "public_reservation_polygons": [],
+        "public_reservation_geometry_verified": false,
+        "current_floor_use_exclusivity_verified": false,
+        "guest_placement_requires_completed_public_reservations": false,
+        "metric_allocation_ready": false,
+        "programme_policy": "Public galleries/boxoffice/ArtScience Laboratory320sqm are required; supersede parking/loading-only assignment while retaining old record as history."
+      },
+      "zones": [
+        {
+          "id": "MUSEUM-B2-city-in-nature",
+          "name": "City in Nature",
+          "group": "public_gallery_programme",
+          "source_url": "https://www.marinabaysands.com/museum/exhibitions/future-world.html",
+          "source_section": "Exhibition Details / Basement2 Galleries and named realms",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "interactive_exhibition",
+            "accessible_visitor_path",
+            "lighting_and_AV",
+            "emergency_exit_access"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "separate_enclosure_required": false,
+          "rights_note": "Programme identity only; no third-party artwork/image/software redistribution rights implied."
+        },
+        {
+          "id": "MUSEUM-B2-exploring-new-frontiers",
+          "name": "Exploring New Frontiers",
+          "group": "public_gallery_programme",
+          "source_url": "https://www.marinabaysands.com/museum/exhibitions/future-world.html",
+          "source_section": "Exhibition Details / Basement2 Galleries and named realms",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "interactive_exhibition",
+            "accessible_visitor_path",
+            "lighting_and_AV",
+            "emergency_exit_access"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "separate_enclosure_required": false,
+          "rights_note": "Programme identity only; no third-party artwork/image/software redistribution rights implied."
+        },
+        {
+          "id": "MUSEUM-B2-box-office",
+          "name": "Museum Box Office",
+          "group": "box_office",
+          "source_url": "https://www.marinabaysands.com/faq.html",
+          "source_section": "Ticketing Box Offices",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "ticket_counter",
+            "queue_space",
+            "visitor_information",
+            "accessible_counter"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false
+        },
+        {
+          "id": "MUSEUM-B2-laboratory",
+          "name": "ArtScience Laboratory",
+          "group": "learning_laboratory",
+          "source_url": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/company-information/media-centre/factsheets/amenities/artscience-museum.pdf",
+          "source_section": "New laboratory opened February2025 / Basement2",
+          "published_reference_area_m2": 320,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "workshop",
+            "learning_tables",
+            "maker_activity",
+            "store",
+            "washup",
+            "accessible_entry"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "internal_layout_status": "Functional reconstruction, published total area only."
+        },
+        {
+          "id": "MUSEUM-B2-circulation",
+          "name": "Circulation and Oculus approach",
+          "group": "support",
+          "source_url": "https://www.marinabaysands.com/museum/about-us/services/venue-rental/b2-circulation-and-oculus.html",
+          "source_section": "Size & Capacity / floorplan link",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "public_circulation",
+            "oculus_edge_guard",
+            "lift_landing",
+            "stairs",
+            "gallery_approaches"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "area_conflict": {
+            "dedicated_venue_page_m2": 830,
+            "comparison_rates_page_m2": 525,
+            "comparison_source": "https://www.marinabaysands.com/museum/about-us/services/venue-rental/rate.html",
+            "adopted_area_m2": null
+          },
+          "source_floor_plan": "View floor plan link loops to same page; no current basement slab shape verified."
+        },
+        {
+          "id": "MUSEUM-B2-support",
+          "name": "Museum public and service support",
+          "group": "support",
+          "source_url": "https://www.marinabaysands.com/museum/exhibitions/future-world.html",
+          "source_section": "Exhibition location; support is explicitly reconstructed",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "accessible_toilets",
+            "service_circulation",
+            "exhibition_storage",
+            "maintenance",
+            "two_independent_egress_routes"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_status": "FUNCTIONAL_RECONSTRUCTION_NOT_PRIVATE_ASBUILT"
+        }
+      ],
+      "source_building_binding": "MUSEUM",
+      "physical_floor_must_remain_built": true,
+      "legacy_elevation_m": -10.0,
+      "elevation_status": "LEGACY_RECONSTRUCTION_NOT_OPERATOR_SURVEY",
+      "world_slab_polygon": null,
+      "world_slab_status": "MISSING_SURVEY_OR_EXPLICIT_SOURCE_CONFORMING_RECONSTRUCTION_APPROVAL",
+      "world_zone_polygons": null,
+      "whole_floor_occupancy_claimed": false,
+      "native_build_ready": false,
+      "do_not_spawn_old_rectangle_fallback": true,
+      "completion_requirements": [
+        "A real level envelope tied to source body/outline, with holes and neighboring levels.",
+        "Explicit metric Y with provenance; legacy label or roof height is insufficient.",
+        "All zone programmes, service/public circulation, two independent exits and lift/stair landing ownership.",
+        "All programme polygons inside actual slab, non-overlapping usable areas, supported doors and unchanged full Player capsule.",
+        "Exact source-ID generic collision replacement and terrain holes installed atomically only after actual geometry readiness.",
+        "Native continuous entry/traversal and actual rendered review."
+      ]
+    },
+    {
+      "floor_id": "MUSEUM-L4",
+      "building_key": "MUSEUM",
+      "label": "L4",
+      "registry_record": {
+        "id": "MUSEUM-L4",
+        "building": "MUSEUM",
+        "level": "L4",
+        "legacy_record": null,
+        "physical_floor_must_remain_built": true,
+        "metric_elevation_m": null,
+        "metric_elevation_status": "NEW_SOURCE_SUPPORTED_LEVEL_NEEDS_METRIC_ARCHITECTURAL_PLAN",
+        "documented_uses": [
+          {
+            "facility": "ArtScience Museum Level4",
+            "existing_record": "MISSING: old museum schedule ends atL3",
+            "supported_location": "Level4 ArtScience Cinema, lift lobby and VR Gallery",
+            "status": "MISSING_PUBLIC_LEVEL_REQUIRES_ADDITION",
+            "source": "https://www.marinabaysands.com/museum/about-us/services/venue-rental/rate.html",
+            "section": "Event Spaces / Level4",
+            "corroborating_source": "https://www.marinabaysands.com/museum/programmes/talks/expanded-anatomies.html",
+            "note": "Venue listing describes cinema236sqm, lobby166sqm, VRgallery184sqm. Dated21March2026 event corroborates ArtScience CinemaL4. These are published venue areas, not a complete surveyed level envelope.",
+            "source_fact_not_entire_floor_claim": true
+          }
+        ],
+        "legacy_programme_status": "MISSING_FROM_OLD_SCHEDULE",
+        "guest_allocation_possible": false,
+        "guest_assignment_status": "MUSEUM_NOT_HOTEL_KEYS",
+        "public_reservation_polygons": [],
+        "public_reservation_geometry_verified": false,
+        "current_floor_use_exclusivity_verified": false,
+        "guest_placement_requires_completed_public_reservations": false,
+        "metric_allocation_ready": false,
+        "programme_policy": "Construct cinema236sqm, lift lobby166sqm and VRgallery184sqm zones; these published areas do not define the whole level envelope."
+      },
+      "zones": [
+        {
+          "id": "MUSEUM-L4-cinema",
+          "name": "ArtScience Cinema",
+          "group": "cinema",
+          "source_url": "https://www.marinabaysands.com/museum/about-us/services/venue-rental/rate.html",
+          "source_section": "Event Spaces / Level4",
+          "published_reference_area_m2": 236,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "screening_room",
+            "66_seats",
+            "projection_and_AV",
+            "accessible_seat_space",
+            "egress_aisles"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_plan_zone_code": "A.04.06.00",
+          "operator_plan_page": 11,
+          "geometry_reference": "OPERATOR_PLAN_OBSERVATIONS.json / museum source_zone_references",
+          "area_status": "Published rental venue area; must not sum into or fill the whole lotus slab."
+        },
+        {
+          "id": "MUSEUM-L4-lift-lobby",
+          "name": "Level4 Lift Lobby",
+          "group": "lift_lobby",
+          "source_url": "https://www.marinabaysands.com/museum/about-us/services/venue-rental/rate.html",
+          "source_section": "Event Spaces / Level4",
+          "published_reference_area_m2": 166,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "public_circulation",
+            "L-A01_lift",
+            "L-A02_lift",
+            "adjacent_sector_access",
+            "stair_access"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_plan_zone_code": "A.04.05.00",
+          "operator_plan_page": 11,
+          "geometry_reference": "OPERATOR_PLAN_OBSERVATIONS.json / museum source_zone_references",
+          "area_status": "Published rental venue area; must not sum into or fill the whole lotus slab."
+        },
+        {
+          "id": "MUSEUM-L4-vr",
+          "name": "VR Gallery",
+          "group": "vr_gallery",
+          "source_url": "https://www.marinabaysands.com/museum/about-us/services/venue-rental/rate.html",
+          "source_section": "Event Spaces / Level4",
+          "published_reference_area_m2": 184,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "15_VR_pods",
+            "visitor_circulation",
+            "AV_and_sanitation",
+            "accessible_entry"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_plan_zone_code": "A.04.02.00",
+          "operator_plan_page": 11,
+          "geometry_reference": "OPERATOR_PLAN_OBSERVATIONS.json / museum source_zone_references",
+          "area_status": "Published rental venue area; must not sum into or fill the whole lotus slab."
+        },
+        {
+          "id": "MUSEUM-L4-support",
+          "name": "Level4 support and remaining sectors",
+          "group": "support",
+          "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+          "source_section": "Page11 / other sectors, central core and support markings",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "toilets",
+            "two_independent_egress_routes",
+            "central_core_guards",
+            "maintenance_access",
+            "retained_other_sector_coverage"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_status": "REMAINING_SECTORS_NOT_ASSUMED_EMPTY_OR_GUESTROOMS"
+        }
+      ],
+      "source_building_binding": "MUSEUM",
+      "physical_floor_must_remain_built": true,
+      "legacy_elevation_m": null,
+      "elevation_status": "NEW_SOURCE_SUPPORTED_LEVEL_NEEDS_METRIC_ARCHITECTURAL_PLAN",
+      "world_slab_polygon": null,
+      "world_slab_status": "MISSING_SURVEY_OR_EXPLICIT_SOURCE_CONFORMING_RECONSTRUCTION_APPROVAL",
+      "world_zone_polygons": null,
+      "whole_floor_occupancy_claimed": false,
+      "native_build_ready": false,
+      "do_not_spawn_old_rectangle_fallback": true,
+      "completion_requirements": [
+        "A real level envelope tied to source body/outline, with holes and neighboring levels.",
+        "Explicit metric Y with provenance; legacy label or roof height is insufficient.",
+        "All zone programmes, service/public circulation, two independent exits and lift/stair landing ownership.",
+        "All programme polygons inside actual slab, non-overlapping usable areas, supported doors and unchanged full Player capsule.",
+        "Exact source-ID generic collision replacement and terrain holes installed atomically only after actual geometry readiness.",
+        "Native continuous entry/traversal and actual rendered review."
+      ]
+    },
+    {
+      "floor_id": "MUSEUM-B1",
+      "building_key": "MUSEUM",
+      "label": "B1",
+      "registry_record": {
+        "id": "MUSEUM-B1",
+        "building": "MUSEUM",
+        "level": "B1",
+        "legacy_record": {
+          "building": "MUSEUM",
+          "elevation_m": -5.0,
+          "factory": "program_module",
+          "id": "MUSEUM-B1",
+          "level": "B1",
+          "permanent_empty_fallback": false,
+          "program": "back_of_house_parking_loading",
+          "rooms_required": [
+            "public_circulation",
+            "service_circulation",
+            "toilets",
+            "staff_lift_landing",
+            "public_stairs_lift_landing"
+          ],
+          "source_facts": [],
+          "source_status": "PUBLIC_PROGRAM_WITH_RECONSTRUCTED_PRIVATE_LAYOUT"
+        },
+        "physical_floor_must_remain_built": true,
+        "metric_elevation_m": -5.0,
+        "metric_elevation_status": "LEGACY_RECONSTRUCTION_NOT_OPERATOR_SURVEY",
+        "documented_uses": [
+          {
+            "facility": "ArtScience Museum Basement1",
+            "existing_record": "MUSEUM-B1 back_of_house_parking_loading",
+            "supported_location": "Undated school guide mentions Education SpaceB1; newer learning-centre factsheet specifiesB2",
+            "status": "CURRENT_B1_USE_UNRESOLVED",
+            "source": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/museum/school-activities/Pre-visit-resource-Architect-Adventure-for-Pre-Schools.pdf",
+            "section": "PDFpage2 / A Look at the Building: Outside",
+            "corroborating_source": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/company-information/media-centre/factsheets/amenities/artscience-museum.pdf",
+            "note": "Do not present the undatedB1education reference as a verified2026schedule or move the new2025laboratory out ofB2. Old parking-only use also remains unverified.",
+            "source_fact_not_entire_floor_claim": true
+          }
+        ],
+        "legacy_programme_status": "UNVERIFIED_RECONSTRUCTION_UNLESS_CURRENT_SOURCE_CONFIRMS",
+        "guest_allocation_possible": false,
+        "guest_assignment_status": "DO_NOT_INFER_FROM_OLD_FACTORY_TYPE",
+        "public_reservation_polygons": [],
+        "public_reservation_geometry_verified": false,
+        "current_floor_use_exclusivity_verified": false,
+        "guest_placement_requires_completed_public_reservations": false,
+        "metric_allocation_ready": false,
+        "programme_policy": "Build a coherent labelled reconstruction; current2026use remains unresolved. Do not move the newB2laboratory here or call oldparking-only verified."
+      },
+      "zones": [
+        {
+          "id": "MUSEUM-B1-unresolved",
+          "name": "Basement1 retained unresolved programme",
+          "group": "unknown",
+          "source_url": "https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/museum/school-activities/Pre-visit-resource-Architect-Adventure-for-Pre-Schools.pdf",
+          "source_section": "Undated education guide / B1 reference",
+          "published_reference_area_m2": null,
+          "reference_area_is_whole_floor": false,
+          "required_programmes": [
+            "vertical_circulation",
+            "service_and_maintenance_access",
+            "coherent_explorable_reconstruction"
+          ],
+          "world_polygon": null,
+          "world_position_verified": false,
+          "runtime_furnished_or_accessible": false,
+          "source_status": "CURRENT_2026_PROGRAMME_UNRESOLVED",
+          "prohibited_claims": [
+            "verified_current_education_floor",
+            "verified_parking_only",
+            "new_B2_laboratory_relocated_here"
+          ]
+        }
+      ],
+      "source_building_binding": "MUSEUM",
+      "physical_floor_must_remain_built": true,
+      "legacy_elevation_m": -5.0,
+      "elevation_status": "LEGACY_RECONSTRUCTION_NOT_OPERATOR_SURVEY",
+      "world_slab_polygon": null,
+      "world_slab_status": "MISSING_SURVEY_OR_EXPLICIT_SOURCE_CONFORMING_RECONSTRUCTION_APPROVAL",
+      "world_zone_polygons": null,
+      "whole_floor_occupancy_claimed": false,
+      "native_build_ready": false,
+      "do_not_spawn_old_rectangle_fallback": true,
+      "completion_requirements": [
+        "A real level envelope tied to source body/outline, with holes and neighboring levels.",
+        "Explicit metric Y with provenance; legacy label or roof height is insufficient.",
+        "All zone programmes, service/public circulation, two independent exits and lift/stair landing ownership.",
+        "All programme polygons inside actual slab, non-overlapping usable areas, supported doors and unchanged full Player capsule.",
+        "Exact source-ID generic collision replacement and terrain holes installed atomically only after actual geometry readiness.",
+        "Native continuous entry/traversal and actual rendered review."
+      ]
+    }
+  ],
+  "operator_plan_observations": {
+    "schema": "mbs_public_operator_plan_observations_v2",
+    "source_url": "https://www.marinabaysands.com/content/dam/marinabaysands/mice/brochures/unique-spaces.pdf",
+    "source_pdf_sha256": "8f88a3e22fd560c202ea1dfbfa29beb5f50c461c381b1cc44092ac18f72bba0c",
+    "source_footer_date": "2025.7",
+    "raw_reference_redistribution_licensed": false,
+    "private_pdf_path": "private/unique-spaces.pdf",
+    "source_reference_coordinate_system": {
+      "units": "PDF points",
+      "origin": "top left of landscape spread",
+      "width": 1190.55,
+      "height": 841.89,
+      "metric_scale_verified": false,
+      "world_registration": null
+    },
+    "expo": {
+      "page_1_based": 5,
+      "source_group_locators": [
+        {
+          "name": "Jasmine",
+          "group": "main",
+          "drawing_reference_bounds_pt": [
+            766.073,
+            222.27300000000002,
+            883.706,
+            282.052
+          ],
+          "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+        },
+        {
+          "name": "Jasmine Junior",
+          "group": "junior",
+          "drawing_reference_bounds_pt": [
+            889.801,
+            220.0379999999999,
+            960.016,
+            281.679
+          ],
+          "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+        },
+        {
+          "name": "Hibiscus",
+          "group": "main",
+          "drawing_reference_bounds_pt": [
+            766.073,
+            289.288,
+            883.706,
+            349.068
+          ],
+          "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+        },
+        {
+          "name": "Hibiscus Junior",
+          "group": "junior",
+          "drawing_reference_bounds_pt": [
+            890.514,
+            290.83169999999996,
+            959.3137,
+            344.85669999999993
+          ],
+          "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+        },
+        {
+          "name": "Heliconia",
+          "group": "main",
+          "drawing_reference_bounds_pt": [
+            766.085,
+            355.102,
+            883.7199999999999,
+            414.882
+          ],
+          "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+        },
+        {
+          "name": "Heliconia Junior",
+          "group": "junior",
+          "drawing_reference_bounds_pt": [
+            890.933,
+            355.806,
+            960.1270000000001,
+            413.652
+          ],
+          "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+        },
+        {
+          "name": "Cassia",
+          "group": "main",
+          "drawing_reference_bounds_pt": [
+            766.088,
+            421.215,
+            883.724,
+            480.99399999999997
+          ],
+          "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+        },
+        {
+          "name": "Cassia Junior",
+          "group": "junior",
+          "drawing_reference_bounds_pt": [
+            903.8215,
+            423.4917,
+            940.6615,
+            477.5507
+          ],
+          "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+        },
+        {
+          "name": "Begonia",
+          "group": "main",
+          "drawing_reference_bounds_pt": [
+            805.409,
+            487.536,
+            883.706,
+            547.315
+          ],
+          "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+        },
+        {
+          "name": "Begonia Junior",
+          "group": "junior",
+          "drawing_reference_bounds_pt": [
+            889.586,
+            487.313,
+            942.149,
+            548.726
+          ],
+          "reference_kind": "LOCATOR_NOT_RESERVATION_GEOMETRY"
+        }
+      ],
+      "source_topological_constraints": [
+        "Main groups in drawing order Jasmine,Hibiscus,Heliconia,Cassia,Begonia.",
+        "Corresponding junior groups across main foyer, with separate approach and reception/partition access.",
+        "Service corridor on opposite side of main groups; kitchen beside Begonia.",
+        "Bayview foyer and Shoppes glazing lie outside junior groups.",
+        "Fitness Centre at short end beside guest lift lobby; not the entire level.",
+        "Saraca meeting rooms drawn along angled Bayview side by Jasmine Junior.",
+        "Business and Mail Centre at short end opposite fitness, containing labels3A,3B,3D,3E,3F."
+      ],
+      "published_hall_height_m": 6.1,
+      "height_scope": "Clear hall-height statement, not finished-floor elevation or floor-to-floor height.",
+      "text_map_count_conflict": "Brochure heading/table still mentions six junior types including Angsana Junior; diagram labels five junior groups and current detail page says five. Preserve Angsana/meeting mapping as unresolved, never silently delete or duplicate space.",
+      "individual_meeting_room_mapping_status": "Five requirements retained. Angsana/Angsana Junior/Saraca names and drawing subdivisions are not a verified one-to-one mapping to the five count."
+    },
+    "museum": {
+      "page_1_based": 11,
+      "source_zone_references": [
+        {
+          "name": "ArtScience Cinema",
+          "source_plan_zone_code": "A.04.06.00",
+          "drawing_reference_bounds_pt": [
+            290.91728083812,
+            253.85014708069002,
+            389.88893781072,
+            340.50084916199
+          ],
+          "drawing_boundary_commands_pt": [
+            [
+              "m",
+              [
+                290.91728083812,
+                286.93914166199
+              ]
+            ],
+            [
+              "v",
+              [
+                303.83262712512,
+                298.50132892099
+              ],
+              [
+                305.79903711072,
+                337.40641078069
+              ]
+            ],
+            [
+              "l",
+              [
+                365.69188920502,
+                340.50084916199
+              ]
+            ],
+            [
+              "l",
+              [
+                364.25445500502,
+                315.50538566199
+              ]
+            ],
+            [
+              "v",
+              [
+                384.81335765052,
+                312.49664601269
+              ],
+              [
+                389.88893781072,
+                309.55432288068994
+              ]
+            ],
+            [
+              "l",
+              [
+                389.88893781072,
+                283.60617514329
+              ]
+            ],
+            [
+              "v",
+              [
+                369.91363345042,
+                277.86507425539
+              ],
+              [
+                354.19241560502,
+                276.22680016199
+              ]
+            ],
+            [
+              "l",
+              [
+                342.21355769932,
+                253.85014708069002
+              ]
+            ],
+            [
+              "h"
+            ]
+          ],
+          "reference_kind": "SOURCE_SCHEMATIC_CURVED_ZONE_NOT_WORLD_POLYGON",
+          "possible_exclusions": "Lobby drawing includes L-A01/02 lift cores. Outer coloured boundary must not be treated as net clear area or filled solid slab."
+        },
+        {
+          "name": "Level4 Lift Lobby",
+          "source_plan_zone_code": "A.04.05.00",
+          "drawing_reference_bounds_pt": [
+            283.62798013821,
+            341.80054184838,
+            377.30484823511,
+            422.23380092308
+          ],
+          "drawing_boundary_commands_pt": [
+            [
+              "m",
+              [
+                301.73318260431,
+                341.80054184838
+              ]
+            ],
+            [
+              "l",
+              [
+                377.30484823511,
+                345.83623796948
+              ]
+            ],
+            [
+              "v",
+              [
+                375.64317429991,
+                374.46604186238005
+              ],
+              [
+                366.53487249161003,
+                394.41385004758
+              ]
+            ],
+            [
+              "l",
+              [
+                344.42857192981,
+                385.76042058388003
+              ]
+            ],
+            [
+              "l",
+              [
+                328.51761277001003,
+                415.38075898748
+              ]
+            ],
+            [
+              "l",
+              [
+                329.85802016151,
+                416.71266011398
+              ]
+            ],
+            [
+              "l",
+              [
+                325.64705667261,
+                422.23380092308
+              ]
+            ],
+            [
+              "l",
+              [
+                283.62798013821,
+                388.59704861308
+              ]
+            ],
+            [
+              "v",
+              [
+                302.15363210781,
+                367.94722498158
+              ],
+              [
+                301.73318260431,
+                341.80054184838
+              ]
+            ]
+          ],
+          "reference_kind": "SOURCE_SCHEMATIC_CURVED_ZONE_NOT_WORLD_POLYGON",
+          "possible_exclusions": "Lobby drawing includes L-A01/02 lift cores. Outer coloured boundary must not be treated as net clear area or filled solid slab."
+        },
+        {
+          "name": "VR Gallery",
+          "source_plan_zone_code": "A.04.02.00",
+          "drawing_reference_bounds_pt": [
+            246.72559438213,
+            403.53598015971,
+            348.44346939383,
+            504.75618083711
+          ],
+          "drawing_boundary_commands_pt": [
+            [
+              "m",
+              [
+                295.91746757453,
+                403.53598015971
+              ]
+            ],
+            [
+              "v",
+              [
+                288.10932500013,
+                409.02569810041
+              ],
+              [
+                284.37630838273003,
+                410.97748672170997
+              ]
+            ],
+            [
+              "l",
+              [
+                288.83307311983003,
+                418.40042522511
+              ]
+            ],
+            [
+              "v",
+              [
+                294.61515218933,
+                414.82178900801
+              ],
+              [
+                297.51230081943,
+                412.89285338191
+              ]
+            ],
+            [
+              "l",
+              [
+                304.24524261223,
+                423.43022663741
+              ]
+            ],
+            [
+              "l",
+              [
+                258.46871307903,
+                452.64849515671
+              ]
+            ],
+            [
+              "l",
+              [
+                256.66042085543,
+                449.89328092291
+              ]
+            ],
+            [
+              "l",
+              [
+                246.72559438213,
+                452.57136629791
+              ]
+            ],
+            [
+              "l",
+              [
+                256.44768059383,
+                489.75890273710996
+              ]
+            ],
+            [
+              "l",
+              [
+                266.98910429953,
+                504.75618083711
+              ]
+            ],
+            [
+              "v",
+              [
+                309.51343895523,
+                495.53214064951
+              ],
+              [
+                348.44346939383,
+                452.62278553710996
+              ]
+            ],
+            [
+              "l",
+              [
+                342.21362957103,
+                441.19628793711
+              ]
+            ],
+            [
+              "h"
+            ]
+          ],
+          "reference_kind": "SOURCE_SCHEMATIC_CURVED_ZONE_NOT_WORLD_POLYGON",
+          "possible_exclusions": "Lobby drawing includes L-A01/02 lift cores. Outer coloured boundary must not be treated as net clear area or filled solid slab."
+        }
+      ],
+      "source_topological_constraints": [
+        "Cinema, lift lobby and VR occupy successive adjacent sectors around the central circular core.",
+        "Two lift labels L-A01 and L-A02 are within the lobby sector.",
+        "VR sector has adjacent support/toilet markings; do not erase them when reserving circulation.",
+        "Other lotus sectors are not empty by implication and not covered by the three rental areas."
+      ],
+      "current_detail_area_precedence": {
+        "cinema_m2": 236,
+        "lift_lobby_m2": 166,
+        "vr_gallery_m2": 184,
+        "source_url": "https://www.marinabaysands.com/museum/about-us/services/venue-rental/rate.html"
+      },
+      "rounded_brochure_total_m2": 600,
+      "areas_not_asbuilt_survey": true
+    },
+    "scope": "Factual relative programme geometry from visually reviewed operator pages. No georeferenced slab/zone, height schedule or engine acceptance is created."
+  },
+  "required_programme_groups": {
+    "EXPO-L3": {
+      "main_ballroom": 5,
+      "junior_ballroom": 5,
+      "meeting_room_requirement": 5,
+      "fitness_centre": 1
+    },
+    "MUSEUM-B2": {
+      "public_gallery_programme": 2,
+      "box_office": 1,
+      "learning_laboratory": 1
+    },
+    "MUSEUM-L4": {
+      "cinema": 1,
+      "lift_lobby": 1,
+      "vr_gallery": 1
+    }
+  },
+  "hotel_coordination": {
+    "separate_registry_not_competing_schedule": true,
+    "guest_key_catalogue_target": 1844,
+    "guest_suite_catalogue_target": 775,
+    "existing_guest_inventory_mutated": false,
+    "tower_cores_or_axes_changed": false,
+    "T2_L5_T1_L55_T2_L55": "Keep mixed-use uncertainty; no whole-floor guest exclusions inferred from venue labels. Outside this contract concrete reservations."
+  },
+  "global_rules": {
+    "no_permanent_generic_rectangle": true,
+    "no_claim_outline_equals_slab": true,
+    "no_fabricated_private_asbuilt": true,
+    "museum_B1_not_relabelled_2026_education": true,
+    "no_existing_game_factories_modified": true,
+    "all_programmes_preserved_pending_metric_fit": true,
+    "plan_scale_or_georegistration_verified": false,
+    "engine_or_gameplay_acceptance": false,
+    "current_source_shell_not_replaced": true
+  }
+}

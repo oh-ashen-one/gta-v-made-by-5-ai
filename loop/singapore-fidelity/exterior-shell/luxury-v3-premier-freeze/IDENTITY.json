@@ -1,0 +1,5 @@
+{
+  "reason": "Exact allocation paired with frozen Premier1075-room recipe collection; preserve before further allocation search.",
+  "candidate_sha256": "676ee42598e890f528867d78591cd38b5aa000349ec784cf64769344ca7e2307",
+  "premier_recipe_freeze": "../PREMIER_FITOUT_V3_FREEZE.json"
+}

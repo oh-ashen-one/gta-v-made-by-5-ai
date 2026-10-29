@@ -1,0 +1,116 @@
+{
+  "schema": "mbs_owner_cutoff_audit_dependency_closure_v1",
+  "recorded_utc": "2026-10-29T19:58:41.281341+00:00",
+  "scope": "Inputs/dependencies for bounded final audit and reviewed proposal/registry generation. This does NOT claim the unaccepted optimizer can reconstruct a full allocation.",
+  "files": [
+    {
+      "repository_path": "game/data/mbs-interior/inventory.json",
+      "sha256": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819"
+    },
+    {
+      "repository_path": "game/src/world/mbs_interior/exterior_shell.gd",
+      "sha256": "52c5ea9489fcde981cf9e2d5a6369b6e291d4ef11f011f7c09451535ee1024df"
+    },
+    {
+      "repository_path": "game/src/world/mbs_interior/site_reference.gd",
+      "sha256": "0c4d3ad4a98e1b5810bd7b978871bd55431c27367bfce3baf2e866b9ce513d5f"
+    },
+    {
+      "repository_path": "game/src/world/mbs_interior/source_core_layout.gd",
+      "sha256": "212426ea1b27e4d1e612c64593975666c2a13475795ef090decc503ca295900d"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/CATALOGUE_FRONTAGE_EFFICIENT_PROTOTYPE_V17.json",
+      "sha256": "681d8e61c9a0cae711f81ad4d7d578fee69c60db709fbfca879d90b07642ca34"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/LUXURY_TYPE_REFERENCES.json",
+      "sha256": "e4bae387cb74c01fa92c4697d4e9ec0408d56fa1a4b084981208fcd807db64e5"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/OPERATOR_CATALOGUE_INVENTORY_PROPOSAL_V11.json",
+      "sha256": "0671bd5f822970afd24a270f0307f8d3c5326110615018f7f49ca98cd1bfc1fc"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/OPERATOR_CATALOGUE_INVENTORY_PROPOSAL_V9.json",
+      "sha256": "05832bf84d0e52cb67113d15c54fb023e06a01f561daeb1fba8e99e28d0bec5f"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/OWNER_CUTOFF_FINAL_AUDIT.json",
+      "sha256": "a2868d1f0b525f632c6de972aae7de1346be9f7fc7ee5c25b0a275d01c986891"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/OWNER_CUTOFF_PARTIAL_ALLOCATION_SUPPORT_FIXED.json",
+      "sha256": "9eb4eaf4253f7821e95baca6c409a4bf30363bd2a506955ea4d7717d279fb9e1"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/OWNER_CUTOFF_WINDOW_CONTRACTS.json",
+      "sha256": "4cdfdd837b00770ab0b4a535f142ef90444e92b67206a0c3f5925cbc3868f3b6"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/PUBLIC_MIXED_USE_FLOOR_REGISTRY_PROPOSAL_V14.json",
+      "sha256": "723e83814786ab877ae99470a86e364ef314b028a288db7e8e43983b554bd9f7"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/annex_luxury_type_areas_v3.py",
+      "sha256": "7843e1dc4e1b010673194997fa12d262e6e2c7669f16b302c35835429f381a4a"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/audit_catalogue_inventory_v11.py",
+      "sha256": "a52f46d635132c67334fc0c6551c697d2c4ee711e6fc38d1e421c885d18e1eca"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/audit_core_layout.py",
+      "sha256": "70de663355a23a193e2324ddae038eed6b3adbc6a8910943850e078d2e23dc2e"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/audit_owner_cutoff_contract.py",
+      "sha256": "ab1632c2ce687b67c7fb2e9f4a0bf2ba3403da83cf26c6d55efe0280409cd0af"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/audit_source_floor_allocation.py",
+      "sha256": "a5271dbf5248da5a11f78494ac325c2b2f9ec881c27dc26437c38cc82a813f70"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/build_catalogue_inventory_v11.py",
+      "sha256": "e89cadbfba546a879e0698dc2885c968892a6a05b546233a000b1ac38ffe772c"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/build_public_floor_registry_v14.py",
+      "sha256": "a7d167e87fcd7d61e008d2cbb487fdd08f66c86509cf955e4bfa33d7b846f82e"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/catalogue-review/COVERAGE_INDEPENDENT_V9_V11.json",
+      "sha256": "b37d16ff52218cbff0f8bdc32b78c6fb5378468a57a5b61c9173d5739e16b17f"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/catalogue-review/PUBLIC_FLOOR_CONSTRAINTS.json",
+      "sha256": "e5449c63acf8eedfd47ccad5a8e254ac00baf7b73b9b326cbc0322b84f66f9fb"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/catalogue-review/SOURCE_REVIEW_V9_V11.json",
+      "sha256": "05f62e2fc6c06fd6f1f872484363cbdb2cb54ef002729cc513b3633b15ab5cbc"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/close_cutoff_support_gap.py",
+      "sha256": "e76ed0c4211018351b739520a20609f3d5a4891d0261e2dee979185c9f699b20"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/expand_luxury_rooms_v2.py",
+      "sha256": "dc200f79c355104542fea9d9228242f6724c9ecb5a75038bfb12e0f0badef916"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/plan_source_floors.py",
+      "sha256": "ff3f7e6469817474b1889dab0c080f8a8ca1461e27e3f2820a5dcc69e412223b"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/source_facade_bays_v10.py",
+      "sha256": "01622a4c338def4d63443b78ec69bd3a72c10f98f5c9f2faeb3f9ac792f5ad09"
+    }
+  ],
+  "bounded_check": [
+    "python3",
+    "loop/singapore-fidelity/exterior-shell/audit_owner_cutoff_contract.py"
+  ],
+  "no_engine_network_or_extra_optimizer": true
+}

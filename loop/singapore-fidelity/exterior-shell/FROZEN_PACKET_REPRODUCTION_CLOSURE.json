@@ -1,0 +1,177 @@
+{
+  "schema": "mbs_frozen_cpu_packet_dependency_closure_v1",
+  "recorded_utc": "2026-10-29T19:35:30.900627+00:00",
+  "scope": "Exact bounded CPU checks for Premier/Fa\u00e7ade/CatalogueV9; not every unused function in imported modules, no engines or in-flightV11/V12.",
+  "runtime_requirement": "Python3 standard library only; noSciPy needed for these packets.",
+  "files": [
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/annex_luxury_type_areas_v3.py",
+      "sha256": "7843e1dc4e1b010673194997fa12d262e6e2c7669f16b302c35835429f381a4a"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/audit_catalogue_inventory_v9.py",
+      "sha256": "8d710e2ef3b0d587a77f5707906bb4633c1c3886fb745bbd865cb3114de98b23"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/audit_core_layout.py",
+      "sha256": "70de663355a23a193e2324ddae038eed6b3adbc6a8910943850e078d2e23dc2e"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/build_catalogue_inventory_v9.py",
+      "sha256": "87453ed54933f63626893f30efb649e800b5157021cbaf3d5e5dc8e4f91ae8d8"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/compile_premier_fitouts_v3.py",
+      "sha256": "429229dd35652976e87ea81226ecc1c2cd7003205dba4d96e5af5c3e07f437f7"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/expand_luxury_rooms_v2.py",
+      "sha256": "dc200f79c355104542fea9d9228242f6724c9ecb5a75038bfb12e0f0badef916"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/plan_source_floors.py",
+      "sha256": "ff3f7e6469817474b1889dab0c080f8a8ca1461e27e3f2820a5dcc69e412223b"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/premier_fitout_v3.py",
+      "sha256": "01b840a2068e0330cee1649eaac3bd28f6b0a467c879aeef16e65cb02d243a6f"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/source_facade_bays_v10.py",
+      "sha256": "01622a4c338def4d63443b78ec69bd3a72c10f98f5c9f2faeb3f9ac792f5ad09"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/test_source_facade_bays_v10.py",
+      "sha256": "36737996dc7b7e9b69bdc647020fac4abcdd10c6fdc3912f15550c1023ded00f"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/LUXURY_TYPE_REFERENCES.json",
+      "sha256": "e4bae387cb74c01fa92c4697d4e9ec0408d56fa1a4b084981208fcd807db64e5"
+    },
+    {
+      "repository_path": "game/data/mbs-interior/inventory.json",
+      "sha256": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819"
+    },
+    {
+      "repository_path": "game/src/world/mbs_interior/site_reference.gd",
+      "sha256": "0c4d3ad4a98e1b5810bd7b978871bd55431c27367bfce3baf2e866b9ce513d5f"
+    },
+    {
+      "repository_path": "game/src/world/mbs_interior/exterior_shell.gd",
+      "sha256": "52c5ea9489fcde981cf9e2d5a6369b6e291d4ef11f011f7c09451535ee1024df"
+    },
+    {
+      "repository_path": "game/src/world/mbs_interior/source_core_layout.gd",
+      "sha256": "212426ea1b27e4d1e612c64593975666c2a13475795ef090decc503ca295900d"
+    }
+  ],
+  "compressed_inputs": [
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/luxury-v3-premier-freeze/SOURCE_FLOOR_LUXURY_REALLOCATED_V3.json.gz",
+      "compressed_sha256": "c6a53b07ccfdd15b0b8dafd48b72ef11c60d6cbca24c8e9f5be301b3e8a608fe",
+      "payload_sha256": "676ee42598e890f528867d78591cd38b5aa000349ec784cf64769344ca7e2307",
+      "staging_path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_LUXURY_REALLOCATED_V3.json"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/frozen-packet-inputs/perimeter-1543-055d1ec7.json.gz",
+      "compressed_sha256": "161c53190d00db373b63348e710a9dc64e3d930b406933864aa10fb0208ee747",
+      "payload_sha256": "055d1ec7d40ef0bc72c61f8b63629b7706064e122ec81dd14a05591812541f2d",
+      "staging_path": "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_PERIMETER_CANDIDATE_V7.json"
+    }
+  ],
+  "checks": [
+    {
+      "name": "premier1075-frozen-recipes",
+      "python_args": [
+        "loop/singapore-fidelity/exterior-shell/compile_premier_fitouts_v3.py"
+      ],
+      "timeout_seconds": 120,
+      "compare_json": [
+        {
+          "generated_path": "loop/singapore-fidelity/exterior-shell/PREMIER_TYPED_FITOUT_COLLECTION_V3.json",
+          "frozen_reference_path": "loop/singapore-fidelity/exterior-shell/PREMIER_TYPED_FITOUT_COLLECTION_V3.json",
+          "ignore_top_level_fields": [
+            "recorded_utc"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "facade1543-frozen-source-geometry",
+      "python_args": [
+        "loop/singapore-fidelity/exterior-shell/source_facade_bays_v10.py"
+      ],
+      "timeout_seconds": 60,
+      "compare_json": [
+        {
+          "generated_path": "loop/singapore-fidelity/exterior-shell/SOURCE_FACADE_REVEAL_PROPOSAL_V10.json",
+          "frozen_reference_path": "loop/singapore-fidelity/exterior-shell/SOURCE_FACADE_REVEAL_PROPOSAL_V10.json"
+        }
+      ]
+    },
+    {
+      "name": "facade-six-bounded-tests",
+      "python_args": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "loop/singapore-fidelity/exterior-shell",
+        "-p",
+        "test_source_facade_bays_v10.py"
+      ],
+      "timeout_seconds": 60
+    },
+    {
+      "name": "catalogueV9-frozen-proposal",
+      "python_args": [
+        "loop/singapore-fidelity/exterior-shell/build_catalogue_inventory_v9.py"
+      ],
+      "timeout_seconds": 60,
+      "compare_json": [
+        {
+          "generated_path": "loop/singapore-fidelity/exterior-shell/OPERATOR_CATALOGUE_INVENTORY_PROPOSAL_V9.json",
+          "frozen_reference_path": "loop/singapore-fidelity/exterior-shell/OPERATOR_CATALOGUE_INVENTORY_PROPOSAL_V9.json",
+          "ignore_top_level_fields": [
+            "recorded_utc"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "catalogueV9-5924-coverage",
+      "python_args": [
+        "loop/singapore-fidelity/exterior-shell/audit_catalogue_inventory_v9.py"
+      ],
+      "timeout_seconds": 60,
+      "compare_json": [
+        {
+          "generated_path": "loop/singapore-fidelity/exterior-shell/CATALOGUE_INVENTORY_COVERAGE_AUDIT_V9.json",
+          "frozen_reference_path": "loop/singapore-fidelity/exterior-shell/CATALOGUE_INVENTORY_COVERAGE_AUDIT_V9.json",
+          "ignore_top_level_fields": [
+            "proposal_sha256"
+          ]
+        }
+      ]
+    }
+  ],
+  "volatile_comparison_explanation": "Only creation timestamp and the proposal file hash derived from that timestamp are excluded; every semantic field/recipe/candidate hash remains exact.",
+  "frozen_references": [
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/CATALOGUE_INVENTORY_COVERAGE_AUDIT_V9.json",
+      "sha256": "36beb1aeabb7120fde622960e80f46732bdb76f19f429a2ebad185fb3707f2e5"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/OPERATOR_CATALOGUE_INVENTORY_PROPOSAL_V9.json",
+      "sha256": "05832bf84d0e52cb67113d15c54fb023e06a01f561daeb1fba8e99e28d0bec5f"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/PREMIER_TYPED_FITOUT_COLLECTION_V3.json",
+      "sha256": "d583e4e7767f7dd2ce6094ea7246ed90df60e3840232f11e56e5f48918eb0ad8"
+    },
+    {
+      "repository_path": "loop/singapore-fidelity/exterior-shell/SOURCE_FACADE_REVEAL_PROPOSAL_V10.json",
+      "sha256": "6430ec1573378ff340f2621cc77900c3c7678b11e7147ca3ec88d19561caba71"
+    }
+  ]
+}

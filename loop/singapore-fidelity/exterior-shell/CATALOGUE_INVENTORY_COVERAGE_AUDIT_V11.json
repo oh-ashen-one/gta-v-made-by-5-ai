@@ -1,0 +1,20 @@
+{
+  "schema": "mbs_catalogue_inventory_coverage_audit_v11",
+  "checks": 5930,
+  "failed": 0,
+  "failures": [],
+  "active_keys": 1844,
+  "suites": 775,
+  "legacy_ids_retained": 1850,
+  "retired_rounding_placeholders": 6,
+  "catalogue_variants": 26,
+  "collection_counts": {
+    "Paiza": 370,
+    "Sands": 1474
+  },
+  "required_reference_room_area_m2": 151900,
+  "independent_fact_critique_complete": false,
+  "physical_allocation_or_furnishing_verified": false,
+  "scope": "Exact key/suite/legacy coverage, source-binding schema, explicit reconstruction counts and complete selected programme propagation. Does not independently certify every website claim or any physical room.",
+  "proposal_sha256": "0671bd5f822970afd24a270f0307f8d3c5326110615018f7f49ca98cd1bfc1fc"
+}

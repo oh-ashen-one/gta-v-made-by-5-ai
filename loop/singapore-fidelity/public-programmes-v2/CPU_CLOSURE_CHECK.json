@@ -1,0 +1,1378 @@
+{
+  "schema": "public_programme_cpu_closure_v2",
+  "checks": 342,
+  "failed": 0,
+  "failures": [],
+  "positive_contract": "82 exact frozen source members, four registry levels and31 programme/support requirements retained.",
+  "physical_geometry_or_native_acceptance": false,
+  "checks_detail": [
+    {
+      "name": "registry_hash_exact",
+      "passed": true
+    },
+    {
+      "name": "binding_artifact_hash_exact",
+      "passed": true
+    },
+    {
+      "name": "four_registry_floor_ids_only",
+      "passed": true
+    },
+    {
+      "name": "all_legacy_registry_floors_preserved",
+      "passed": true
+    },
+    {
+      "name": "MuseumL4_preserved_as_new",
+      "passed": true
+    },
+    {
+      "name": "EXPO_all_relation_members_present",
+      "passed": true
+    },
+    {
+      "name": "EXPO_exact_collision_replacement_set",
+      "passed": true
+    },
+    {
+      "name": "way/172014440_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/172014440_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/172014440_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847264_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847264_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847264_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847265_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847265_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847265_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847266_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847266_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847266_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847267_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847267_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847267_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847268_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847268_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847268_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847269_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847269_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847269_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847270_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847270_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847270_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847271_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847271_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847271_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847272_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847272_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847272_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847273_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847273_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847273_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847274_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847274_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847274_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847275_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847275_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847275_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847276_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847276_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847276_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847277_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847277_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847277_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847278_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847278_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847278_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847279_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847279_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847279_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827847280_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847280_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827847280_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/1056849313_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/1056849313_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/1056849313_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM_all_relation_members_present",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM_exact_collision_replacement_set",
+      "passed": true
+    },
+    {
+      "name": "way/261191086_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/261191086_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/261191086_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855854_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855854_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855854_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855864_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855864_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855864_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855865_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855865_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855865_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855866_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855866_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855866_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855867_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855867_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855867_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855868_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855868_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855868_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855869_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855869_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855869_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855870_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855870_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855870_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855856_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855856_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855856_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855857_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855857_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855857_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855858_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855858_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855858_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855859_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855859_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855859_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855860_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855860_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855860_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855861_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855861_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855861_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855862_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855862_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855862_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855863_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855863_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855863_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855896_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855896_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855896_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855897_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855897_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855897_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855898_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855898_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855898_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855899_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855899_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855899_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855900_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855900_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855900_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855901_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855901_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855901_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855903_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855903_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855903_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855888_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855888_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855888_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855889_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855889_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855889_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855890_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855890_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855890_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855891_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855891_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855891_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855892_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855892_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855892_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855893_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855893_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855893_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855894_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855894_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855894_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855895_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855895_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855895_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855883_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855883_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855883_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855884_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855884_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855884_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855885_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855885_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855885_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855886_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855886_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855886_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855887_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855887_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855887_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855928_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855928_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855928_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855929_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855929_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855929_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855930_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855930_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855930_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855920_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855920_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855920_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855921_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855921_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855921_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855922_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855922_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855922_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855923_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855923_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855923_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855924_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855924_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855924_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855925_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855925_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855925_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855926_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855926_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855926_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855927_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855927_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855927_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855912_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855912_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855912_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855913_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855913_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855913_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855914_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855914_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855914_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855915_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855915_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855915_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855916_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855916_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855916_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855917_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855917_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855917_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855918_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855918_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855918_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855919_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855919_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855919_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855904_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855904_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855904_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855905_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855905_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855905_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855906_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855906_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855906_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855907_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855907_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855907_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855908_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855908_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855908_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855910_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855910_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855910_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "way/827855911_exact_frozen_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855911_valid_metric_source_polygon",
+      "passed": true
+    },
+    {
+      "name": "way/827855911_not_promoted_to_slab",
+      "passed": true
+    },
+    {
+      "name": "82_unique_members",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3_not_claimed_native",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3_no_rectangle_fallback",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3_all_zone_ids_unique",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3_main_ballroom_count",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3_junior_ballroom_count",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3_meeting_room_requirement_count",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3_fitness_centre_count",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-main-jasmine_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-main-jasmine_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-main-hibiscus_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-main-hibiscus_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-main-heliconia_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-main-heliconia_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-main-cassia_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-main-cassia_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-main-begonia_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-main-begonia_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-junior-jasmine_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-junior-jasmine_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-junior-hibiscus_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-junior-hibiscus_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-junior-heliconia_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-junior-heliconia_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-junior-cassia_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-junior-cassia_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-junior-begonia_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-junior-begonia_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-meeting-requirement-1_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-meeting-requirement-1_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-meeting-requirement-2_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-meeting-requirement-2_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-meeting-requirement-3_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-meeting-requirement-3_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-meeting-requirement-4_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-meeting-requirement-4_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-meeting-requirement-5_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-meeting-requirement-5_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-fitness_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-fitness_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-public-circulation_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-public-circulation_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-service_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-service_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-business-mail_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-business-mail_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-sanitary_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "EXPO-L3-sanitary_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2_not_claimed_native",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2_no_rectangle_fallback",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2_all_zone_ids_unique",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2_public_gallery_programme_count",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2_box_office_count",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2_learning_laboratory_count",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-city-in-nature_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-city-in-nature_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-exploring-new-frontiers_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-exploring-new-frontiers_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-box-office_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-box-office_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-laboratory_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-laboratory_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-circulation_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-circulation_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-support_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B2-support_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4_not_claimed_native",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4_no_rectangle_fallback",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4_all_zone_ids_unique",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4_cinema_count",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4_lift_lobby_count",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4_vr_gallery_count",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4-cinema_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4-cinema_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4-lift-lobby_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4-lift-lobby_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4-vr_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4-vr_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4-support_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-L4-support_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B1_not_claimed_native",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B1_no_rectangle_fallback",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B1_all_zone_ids_unique",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B1-unresolved_source_and_programmes",
+      "passed": true
+    },
+    {
+      "name": "MUSEUM-B1-unresolved_unknown_position_honest",
+      "passed": true
+    },
+    {
+      "name": "B1_unknown_retained",
+      "passed": true
+    },
+    {
+      "name": "no_hotel_mutation",
+      "passed": true
+    }
+  ]
+}
