@@ -1,0 +1,1 @@
+SCRIPT ERROR: Parse Error: There is already a variable named "geometry" declared in this scope.

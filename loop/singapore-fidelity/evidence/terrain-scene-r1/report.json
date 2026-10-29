@@ -1,0 +1,34 @@
+{
+  "checks": 62,
+  "failures": [],
+  "metrics": {
+    "scope": "Actual sourced DEM/coast/canonicalwater/Rootmask9tileArrayMesh+collision/nativecapsule/guard fixture; not current survey/MBSfloor/hydrology/Rootnormalbootstrap or visual/performanceacceptance",
+    "terrain_metadata": {
+      "bindings": {
+        "canonical_water_registry_sha256": "a3032903576bd2cf60b915be4a50e84258447eeae234aa61fef50d22abccf196",
+        "compiler_sha256": "da5f04d8403d60d230cfbe4878bb4c7e104c36651a0453169729a56f9915a913",
+        "dem_identity": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841",
+        "domain_identity": "82e7c84c55f8f03ca9e646b2fa6f66e8921f23f072e961c533646ab414d12834",
+        "preparation_sha256": "f600036258c52ef978bed0f7c91846f7840a3467430d479f8186a91ec6a3a1d0",
+        "root_holes_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+        "snapshot_sha": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+        "world_y_mode": "EGM96_DEM_game_world_reference_not_current_survey",
+        "world_y_offset_m": 0.0
+      },
+      "configured": true,
+      "counts": {
+        "prepared_tiles": 9.0,
+        "requested_tiles": 9.0,
+        "triangles": 26178.0,
+        "unknown_grid_cells": 0.0,
+        "vertices": 15004.0
+      },
+      "older_coarse_DEM_not_current_ground": true,
+      "opened": true,
+      "root_masks_are_surveyed_basements": false,
+      "source_runtime_residency_registered": false,
+      "terrain_identity_sha256": "f8488742dd93726276b33ca12cda7c6d0a38b967123a0be0d574b9145b7f469c",
+      "water_columns_or_dryland_certified": false
+    }
+  }
+}

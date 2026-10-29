@@ -1,0 +1,191 @@
+{
+  "status": "FROZEN_PENDING_ROOT_NATIVE",
+  "terrain_identity_sha256": "f8488742dd93726276b33ca12cda7c6d0a38b967123a0be0d574b9145b7f469c",
+  "geometry_identity_sha256": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+  "manifest_sha256": "02678e05b5055daf488ad84ad9b9645fdefc00f0e3237a29410af78e25c8f9ac",
+  "bindings": {
+    "canonical_water_registry_sha256": "a3032903576bd2cf60b915be4a50e84258447eeae234aa61fef50d22abccf196",
+    "compiler_sha256": "da5f04d8403d60d230cfbe4878bb4c7e104c36651a0453169729a56f9915a913",
+    "dem_identity": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841",
+    "domain_identity": "82e7c84c55f8f03ca9e646b2fa6f66e8921f23f072e961c533646ab414d12834",
+    "preparation_sha256": "f600036258c52ef978bed0f7c91846f7840a3467430d479f8186a91ec6a3a1d0",
+    "root_holes_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+    "snapshot_sha": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+    "world_y_mode": "EGM96_DEM_game_world_reference_not_current_survey",
+    "world_y_offset_m": 0.0
+  },
+  "counts": {
+    "prepared_tiles": 9,
+    "requested_tiles": 9,
+    "triangles": 26178,
+    "unknown_grid_cells": 0,
+    "vertices": 15004
+  },
+  "root_mask_count": 5,
+  "water_policy": "exclude_canonical_water_horizontal_footprints_from_terrain_support_not_3d_hydrology",
+  "water_registry": {
+    "bytes": 1667277,
+    "file": "water-registry.json",
+    "sha256": "a3032903576bd2cf60b915be4a50e84258447eeae234aa61fef50d22abccf196"
+  },
+  "prepared_tile_details": [
+    {
+      "prepared_area_m2": 662177.1120545149,
+      "root_masks": [],
+      "source_coast_water_hole_area_m2": 662177.1120545152,
+      "status": "prepared",
+      "tile": "-1_-2",
+      "unknown_grid_cells": [],
+      "water_ids": [
+        "way/174718140",
+        "relation/9542146"
+      ]
+    },
+    {
+      "prepared_area_m2": 924383.1187920085,
+      "root_masks": [],
+      "source_coast_water_hole_area_m2": 924383.118792009,
+      "status": "prepared",
+      "tile": "-1_-1",
+      "unknown_grid_cells": [],
+      "water_ids": [
+        "relation/9542146",
+        "way/121874612",
+        "way/1228813828",
+        "way/688879275",
+        "way/166311286",
+        "relation/9646496",
+        "way/688830991",
+        "relation/9569901",
+        "way/688879280"
+      ]
+    },
+    {
+      "prepared_area_m2": 940402.0926202794,
+      "root_masks": [],
+      "source_coast_water_hole_area_m2": 940402.0926202787,
+      "status": "prepared",
+      "tile": "-1_0",
+      "unknown_grid_cells": [],
+      "water_ids": [
+        "relation/9569901",
+        "way/743763993"
+      ]
+    },
+    {
+      "prepared_area_m2": 650887.4656854364,
+      "root_masks": [
+        "source-foundation/way/116801004",
+        "source-foundation/relation/2298319",
+        "source-foundation/way/172307471",
+        "source-foundation/way/172307472",
+        "constructed-public-atrium-floor"
+      ],
+      "source_coast_water_hole_area_m2": 650887.4656854365,
+      "status": "prepared",
+      "tile": "0_-2",
+      "unknown_grid_cells": [],
+      "water_ids": [
+        "way/171981659",
+        "way/171981661",
+        "way/171981657",
+        "way/172299378",
+        "way/172288974",
+        "way/172299381",
+        "relation/9542146",
+        "way/171981655",
+        "way/171981664",
+        "way/172299382",
+        "relation/2295810",
+        "way/913028002"
+      ]
+    },
+    {
+      "prepared_area_m2": 597800.2486699804,
+      "root_masks": [
+        "source-foundation/way/116801004",
+        "source-foundation/relation/2298319",
+        "constructed-public-atrium-floor"
+      ],
+      "source_coast_water_hole_area_m2": 597800.24866998,
+      "status": "prepared",
+      "tile": "0_-1",
+      "unknown_grid_cells": [],
+      "water_ids": [
+        "relation/9542146",
+        "way/913028002",
+        "way/620580643",
+        "way/827855909",
+        "way/687668442",
+        "way/827855855",
+        "way/172307481",
+        "relation/9569901"
+      ]
+    },
+    {
+      "prepared_area_m2": 967482.1528764569,
+      "root_masks": [],
+      "source_coast_water_hole_area_m2": 967482.152876457,
+      "status": "prepared",
+      "tile": "0_0",
+      "unknown_grid_cells": [],
+      "water_ids": [
+        "way/1168513595",
+        "way/1015224188",
+        "way/886588582",
+        "way/886588583",
+        "relation/9569901"
+      ]
+    },
+    {
+      "prepared_area_m2": 746399.1591502555,
+      "root_masks": [],
+      "source_coast_water_hole_area_m2": 746399.1591502555,
+      "status": "prepared",
+      "tile": "1_-2",
+      "unknown_grid_cells": [],
+      "water_ids": [
+        "way/1253261870",
+        "way/171981664",
+        "way/171981650",
+        "relation/2295810",
+        "way/690204721",
+        "way/171981653"
+      ]
+    },
+    {
+      "prepared_area_m2": 833150.4609087728,
+      "root_masks": [],
+      "source_coast_water_hole_area_m2": 833150.4609087728,
+      "status": "prepared",
+      "tile": "1_-1",
+      "unknown_grid_cells": [],
+      "water_ids": [
+        "relation/2295810",
+        "way/171981653",
+        "way/1235435663",
+        "way/1235435664"
+      ]
+    },
+    {
+      "prepared_area_m2": 1000000.0,
+      "root_masks": [],
+      "source_coast_water_hole_area_m2": 1000000.0,
+      "status": "prepared",
+      "tile": "1_0",
+      "unknown_grid_cells": [],
+      "water_ids": []
+    }
+  ],
+  "python_tests": {
+    "checks": 7,
+    "failed": 0
+  },
+  "native_status": "PENDING_ROOT_RUN",
+  "source_terrain_scene_sha256": "9e864f745e42a6a09a57a0f5ee7677d925e84e05d2dcdd8ca2517a98e80c23d9",
+  "offline_helper_sha256": "da5f04d8403d60d230cfbe4878bb4c7e104c36651a0453169729a56f9915a913",
+  "python_tests_sha256": "1e1090f596463a0686c98b3e13954c061993182621497da23c4edaf62dc8ae1e",
+  "native_qa_sha256": "0a84c8bd9af8dc715cb6131a5a901da1c95e77c119a67e7d08864b15b0b63667",
+  "older_coarse_reference_not_current_survey_MBSL1_hydrology_or_wholecity": true,
+  "child_started_engine_GPU_Git": false
+}
