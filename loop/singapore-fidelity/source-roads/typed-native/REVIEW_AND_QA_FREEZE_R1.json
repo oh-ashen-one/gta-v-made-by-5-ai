@@ -1,0 +1,73 @@
+{
+  "schema": "typed_anchor_native_qa_freeze_v1",
+  "observed_utc": "2026-10-29T18:42:53.466109+00:00",
+  "status": "SOURCE_REVIEW_AND_QA_AUTHORING_COMPLETE_NATIVE_PARSE_AND_EXECUTION_PENDING",
+  "production_sha256": {
+    "game/src/world/geography/source_roads.gd": "213f854463023815ac7609cc3b259b398eab31c906c29e5d762ec7c4a784404a",
+    "game/src/world/geography/source_world.gd": "689da67550d49c34fdc64972e54ae75590cf4bcdc638675c19737350866db934"
+  },
+  "qa_sha256": {
+    "game/src/systems/fidelity_tests/source_road_batch_test.gd": "7e8580136b19e543c1aa5d078a892d348ebe3c673a2eee22f61c0093eb79dbcb",
+    "game/src/systems/fidelity_tests/source_road_typed_contract_test.gd": "899e40148aed945b9cdb17a67a2f469e6b4d53c5ca75c87b7fbad329cc4fc90f",
+    "game/src/systems/fidelity_tests/source_road_anchor_test.gd": "4413b36621337a7c8324887c7693466b1be2f9291bb497e65c1ab4f573c19b91",
+    "game/src/systems/fidelity_tests/source_road_step_player_test.gd": "b452f4decf236329745f2d5641952ec4c29eca23f7a479cb19d530df810035bf",
+    "game/src/systems/fidelity_tests/source_road_typed_contract_test.tscn": "81026a9877942bc024f53081e022e4c6f5082cf67cfd0461e937d252a4bc10c5",
+    "game/src/systems/fidelity_tests/source_road_anchor_test.tscn": "0463d9ed05b4a49ca63ab047d5008a03a9956fec8c921d5e2d7d8051a7b48623",
+    "game/src/systems/fidelity_tests/source_road_step_player_test.tscn": "c1c9ada3f5efc973ddc567506f8d477942e981ec8fd6c5974566cf0021e39a05"
+  },
+  "lexical_delimiters": "balanced, not a native parser result",
+  "findings": [
+    {
+      "id": "F1",
+      "status": "CLOSED_BY_NEW_METADATA_ONLY_FIXTURE",
+      "detail": "Original native-anchor-failures-r1 omitted spatial_tile_key on its .pNNN manifest entries, correctly refused by new loader. Road worker created r2 with explicit cell metadata; no loader validation weakened.",
+      "original_identity": "1dbfc18758eb6ccefd10b8ba5fa73bb452a00e54b7f3d3f7d50fdaa92ff39e54",
+      "replacement_fixture_identity": "fdd79d76c995496b1e7acfa7c7d6e64d7b5c48ebf7f1ab7b786f1e8cfec26d75"
+    }
+  ],
+  "fixture_geometry_and_cases_identity_comparison": [
+    {
+      "file": "1_0.p000.json",
+      "byte_identical": true,
+      "sha256": "99c0639fa8848f9e1f537052051af819003ad9862b33919fd35711546bf6ef13"
+    },
+    {
+      "file": "-2_0.p000.json",
+      "byte_identical": true,
+      "sha256": "cf18f232b52fdb1017833e55176707074265e9a3e31f29a19bcd46e6ee130b0c"
+    },
+    {
+      "file": "-1_0.p000.json",
+      "byte_identical": true,
+      "sha256": "48375f4f301744655e3350f3b580e8bd73879c9dd98e125536c9bab636202109"
+    },
+    {
+      "file": "-2_1.p000.json",
+      "byte_identical": true,
+      "sha256": "9b08adbd755ee118529bfa9a64630a48da92c99eb76a602dc11a1f5f4e53b1c6"
+    },
+    {
+      "file": "cases.json",
+      "byte_identical": true,
+      "sha256": "9018eb908ad1352cc7d4a58419645beb6fef238c68b058ffa99a70f2bf645500"
+    }
+  ],
+  "code_review": [
+    "Encoded local positions are retained; exact projected anchors translate native bodies and visual batches. Groups use identical source-anchor keys only.",
+    "Default per-feature path remains available; aggregate bodies split bounded native face counts without mixing anchors or dropping source-face range provenance.",
+    "Caps are selected in code by fixed source surface class, with mode-bit and original steps-type corroboration. Numeric file caps are checked for equality, not used as new permissions.",
+    "Visible steps use their separate declared arrays; walking collision keeps its inclined contract. Visible face winding is checked separately, while walking normals/triangles retain fixed class caps.",
+    "Part names must carry explicit cell identity and round-trip to exactly three digits; ordinals must be contiguous without unsplit/part mixtures. Native structural manifest negatives include signed zero.",
+    "SourceWorld iterates every requested cell part, collects every native body, then adds one cell group. It does not register just the first part. Production pin remains recovered R5; typed prototype is not adopted.",
+    "Existing resource.changed invalidation and native RID/shape/space/source-origin guards are preserved."
+  ],
+  "qa_scopes": {
+    "source_road_batch_test": "Same-anchor reduction preserved. Exact PhysicsServer local/transformed triangle bytes and body/shape transforms compared per original source face across default/batched/split modes; five distinct-anchor synthetic encoding retains exact canonical input coordinates and separate groups.",
+    "source_road_typed_contract_test": "Fake larger caps, car/foot misclassification, original mode/type disagreement, missing/reversed visible steps and part gaps/mixed/malformed ordinals; actual typed crossing rays/normals/source-face identity and40visible riser triangles across two10-step fixtures. Manifest-only complete-part accessor is not SourceWorld residency proof.",
+    "source_road_anchor_test": "All five recorded real-source failures; actual PhysicsServer shape data, projected native anchor transform, exact encoded worst-triangle bytes, <=1mm source-position encoding error, unchanged fixed grade cap and fresh ray hitting the recorded worst source face. Four predeclared interior barycentric probes, no easier-face substitution. World-reflattened triangle cross-products are diagnostic only because reflattening recreates the error under review.",
+    "source_road_step_player_test": "Separate up/down runs, one setup spawn each; production Player scripted input first-tread to last-tread and reverse, actual ray source identity, all10intervals, support/step/death checks. No fabricated link between disconnected fixtures or later fixture pose/velocity/reparent writes. No animation/OS-input/visual-quality acceptance."
+  },
+  "child_engine_gpu_git_actions": false,
+  "native_status": "NOT_RUN: obey Root shared GPU/streaming/health policies",
+  "full_goal_or_country_acceptance": false
+}

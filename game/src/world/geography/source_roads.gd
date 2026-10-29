@@ -82,8 +82,11 @@ func configure(root: Variant, expected_identity_sha256: Variant, frame: Variant)
 		last_error = "Missing road graph/physical descriptor arrays"
 		_root = ""
 		return false
+	if manifest.data.has("surface_contract") and (not manifest.data.surface_contract is String or manifest.data.surface_contract!="source_surface_types_v1"):
+		_root="";last_error="Unsupported typed surface manifest contract";return false
 	var graph: Dictionary = {}
 	var physical: Dictionary = {}
+	var cell_parts: Dictionary = {}
 	for row in manifest.data.graph_chunks:
 		if typeof(row) != TYPE_DICTIONARY or typeof(row.get("owner")) != TYPE_STRING or graph.has(row.owner):
 			_root = ""; last_error = "Invalid/duplicate graph owner"; return false
@@ -91,7 +94,24 @@ func configure(root: Variant, expected_identity_sha256: Variant, frame: Variant)
 	for row in manifest.data.physical_tiles:
 		if typeof(row) != TYPE_DICTIONARY or typeof(row.get("tile")) != TYPE_STRING or physical.has(row.tile):
 			_root = ""; last_error = "Invalid/duplicate physical tile"; return false
+		var cell:Variant=row.get("spatial_tile_key",row.tile)
+		if not cell is String or cell.is_empty() or (String(row.tile).contains(".p") and not row.has("spatial_tile_key")):
+			_root="";last_error="Explicit physical part/cell identity required";return false
+		var ordinal:=-1
+		if row.tile!=cell:
+			var prefix:String=cell+".p";var suffix:String=String(row.tile).trim_prefix(prefix)
+			if not String(row.tile).begins_with(prefix) or suffix.length()!=3 or not suffix.is_valid_int() or int(suffix)<0 or str(int(suffix)).pad_zeros(3)!=suffix:
+				_root="";last_error="Malformed physical part ordinal";return false
+			ordinal=int(suffix)
+		if not cell_parts.has(cell):cell_parts[cell]=[]
+		cell_parts[cell].append(ordinal)
 		physical[row.tile] = row.duplicate(true)
+	for cell:String in cell_parts:
+		var parts:Array=cell_parts[cell];parts.sort()
+		if parts==[-1]:continue
+		for index in parts.size():
+			if parts[index]!=index:
+				_root="";last_error="Incomplete or mixed physical parts for cell "+cell;return false
 	_manifest = manifest.data.duplicate(true)
 	_graphs = graph
 	_physical = physical
@@ -218,114 +238,170 @@ func release_graph(owner: String) -> bool:
 func way_record(original_way_id: String) -> Dictionary:
 	return {"ok": true, "way": _ways[original_way_id].duplicate(true)} if _ways.has(original_way_id) else {"ok": false, "requires_chunk": true, "error": "Original source way metadata is not loaded"}
 
-## Main thread ONLY. Parent must be the identity local-world root; the frame
-## already supplies source-origin subtraction. Validate all before scene edits.
-func build_physical(plan: Variant, parent: Node3D, material: Material = null, options: Dictionary = {}) -> Dictionary:
+## Class-specific bounds are code policy, never a file-supplied permission to
+## widen the car cap. This v1 prototype still separates access from geometry
+## imperfectly; the v4 producer must declare a separately reviewed contract.
+func _surface_spec(feature: Dictionary) -> Dictionary:
+	var typed: String = _manifest.get("surface_contract","")
+	if typed.is_empty():
+		if feature.has("physical_contract") or feature.has("visual_mesh"):return _fail("Typed feature needs an explicit manifest contract")
+		return {"ok":true,"surface_class":"car_ribbon","cap":.122,"emitted_cap":.121,"separate_visual":false}
+	if typed!="source_surface_types_v1":return _fail("Unsupported source surface contract")
+	var contract:Variant=feature.get("physical_contract");var policy:Variant=feature.get("policy");var tags:Variant=feature.get("source_tags")
+	if not contract is Dictionary or contract.get("schema")!=typed or not policy is Dictionary or not tags is Dictionary:return _fail("Typed road lacks its source policy/tags")
+	var modes:Variant=policy.get("modes")
+	if not modes is Dictionary or not modes.get("car") is Dictionary or not modes.get("foot") is Dictionary:return _fail("Typed road mode evidence missing")
+	var car:Variant=modes.car.get("bits");var foot:Variant=modes.foot.get("bits")
+	if not _integer(car,3) or not _integer(foot,3) or contract.get("source_car_direction_bits")!=car or contract.get("source_foot_direction_bits")!=foot:return _fail("Typed mode evidence disagrees")
+	var kind:Variant=contract.get("surface_class")
+	var caps:Dictionary={"car_ribbon":[.121,.122],"foot_ribbon":[.251,.252],"foot_steps":[.701,.702]}
+	if not kind is String or not caps.has(kind):return _fail("Unknown physical surface class")
+	if kind=="car_ribbon" and (int(car)==0 or tags.get("highway")=="steps"):return _fail("Car class contradicts its source modes/type")
+	if kind!="car_ribbon" and (int(car)!=0 or int(foot)==0):return _fail("Foot-only class cannot widen vehicle geometry")
+	if (kind=="foot_steps")!=(tags.get("highway")=="steps"):return _fail("Step geometry must match original source type")
+	for pair:Array in [["maximum_emitted_slope",caps[kind][0]],["required_native_slope_cap",caps[kind][1]]]:
+		if not _number(contract.get(pair[0])) or absf(float(contract[pair[0]])-float(pair[1]))>.0000001:return _fail("File cap contradicts the fixed class contract")
+	if (kind=="foot_steps")!=feature.has("visual_mesh"):return _fail("Steps require separately declared visible treads/risers")
+	return {"ok":true,"surface_class":kind,"cap":caps[kind][1],"emitted_cap":caps[kind][0],"separate_visual":kind=="foot_steps"}
+
+func _mesh_arrays(mesh: Variant, anchor: Array, walking: bool, slope_cap: float) -> Dictionary:
+	if not mesh is Dictionary or not mesh.get("vertices_local_xyz") is Array or not mesh.get("normals") is Array or not mesh.get("indices") is Array:return _fail("Missing road mesh arrays")
+	if mesh.vertices_local_xyz.size()<3 or mesh.vertices_local_xyz.size()>MAX_VERTICES or mesh.vertices_local_xyz.size()!=mesh.normals.size() or mesh.indices.size()<3 or mesh.indices.size()%3!=0 or mesh.indices.size()/3>MAX_COLLISION_FACES:return _fail("Invalid or over-budget road topology")
+	var positions:=PackedVector3Array();var normals:=PackedVector3Array();var indices:=PackedInt32Array();var uvs:=PackedVector2Array()
+	for index in mesh.vertices_local_xyz.size():
+		var vertex:Variant=mesh.vertices_local_xyz[index];var normal:Variant=mesh.normals[index]
+		if not _point(vertex) or not _point(normal):return _fail("Nonfinite source mesh component")
+		var canonical:Array=[float(anchor[0])+float(vertex[0]),float(anchor[1])+float(vertex[1]),float(anchor[2])+float(vertex[2])]
+		if not _frame.to_local(canonical).ok:return _fail("Source road vertex exceeds active frame; prefetch/rebase required")
+		var n:=Vector3(normal[0],normal[1],normal[2])
+		if absf(n.length_squared()-1.0)>.001 or (walking and n.y<=0.0):return _fail("Invalid source surface normal")
+		# Keep the already encoded local coordinates. Flattening anchor+vertex
+		# into ArrayMesh world vectors introduces a second Float32 quantization.
+		positions.append(Vector3(vertex[0],vertex[1],vertex[2]));normals.append(n)
+		uvs.append(Vector2(float(vertex[0])*.25+fposmod(float(anchor[0]),4.0)*.25,float(vertex[2])*.25+fposmod(float(anchor[2]),4.0)*.25))
+	for index:Variant in mesh.indices:
+		if not _integer(index,positions.size()-1):return _fail("Road index out of bounds")
+		indices.append(int(index))
+	var maximum_slope:=0.0
+	for start in range(0,indices.size(),3):
+		var a:Vector3=positions[indices[start]];var b:Vector3=positions[indices[start+1]];var c:Vector3=positions[indices[start+2]]
+		var cross:Vector3=(b-a).cross(c-a)
+		if cross.length_squared()<.000000000001:return _fail("Degenerate native local triangle")
+		if walking:
+			if cross.y>=0.0:return _fail("Reversed native walking triangle; no backface bypass")
+			var slope:float=Vector2(cross.x,cross.z).length()/-cross.y
+			maximum_slope=maxf(maximum_slope,slope)
+			if slope>slope_cap:return _fail("Actual native local surface exceeds its fixed class grade cap")
+		elif cross.dot(normals[indices[start]]+normals[indices[start+1]]+normals[indices[start+2]])>=-.000000000001:
+			return _fail("Visible source tread/riser winding disagrees with its normals")
+	return {"ok":true,"positions":positions,"normals":normals,"indices":indices,"uvs":uvs,"maximum_slope":maximum_slope}
+
+func _array_mesh(row: Dictionary) -> ArrayMesh:
+	var arrays:Array=[];arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX]=row.positions;arrays[Mesh.ARRAY_NORMAL]=row.normals;arrays[Mesh.ARRAY_INDEX]=row.indices;arrays[Mesh.ARRAY_TEX_UV]=row.uvs
+	var mesh:=ArrayMesh.new();mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
+	return mesh
+
+## Root must commit EVERY returned part before declaring a complete cell.
+## Empty cells and partial compiled coverage remain the world's responsibility.
+func physical_parts_for_cell(tx: int,tz: int) -> Array[String]:
+	var cell:="%d_%d"%[tx,tz];var result:Array[String]=[]
+	for key:String in _physical:
+		var descriptor:Dictionary=_physical[key]
+		if String(descriptor.get("spatial_tile_key",key))==cell:result.append(key)
+	result.sort();return result
+
+## Main-thread commit under the current frame. Native bodies and visual batches
+## translate their own exact source anchors; only identical anchors may batch.
+func build_physical(plan: Variant,parent: Node3D,material: Material=null,options: Dictionary={}) -> Dictionary:
 	for key in options:
-		if key not in ["collision_mode","faces_per_body"]: return _fail("Unknown road collision option")
-	var mode: Variant = options.get("collision_mode","per_feature")
-	var face_limit: Variant = options.get("faces_per_body",32768)
-	if not mode is String or mode not in ["per_feature","static_batches"] or not face_limit is int or face_limit<8 or face_limit>65536: return _fail("Invalid bounded road collision options")
-	var checked: Dictionary = _validate_plan(plan, "physical")
-	if not checked.ok: return checked
-	if not is_instance_valid(parent) or not parent.is_inside_tree() or not parent.global_transform.is_equal_approx(Transform3D.IDENTITY) or not _physical.has(plan.key): return _fail("Require identity local-world parent and bound physical tile")
-	var data: Dictionary = plan.data
-	if typeof(data.get("schema")) != TYPE_STRING or data.schema != SCHEMA or typeof(data.get("tile")) != TYPE_STRING or data.tile != plan.key or typeof(data.get("features")) != TYPE_ARRAY: return _fail("Invalid physical road tile")
-	var prepared: Array[Dictionary] = []
-	var total := 0
-	var collision_faces := 0
-	var maximum_native_slope := 0.0
-	for feature in data.features:
-		if typeof(feature) != TYPE_DICTIONARY or typeof(feature.get("id")) != TYPE_STRING or not _point(feature.get("anchor_source_xyz")) or typeof(feature.get("mesh")) != TYPE_DICTIONARY: return _fail("Invalid source road feature")
-		var mesh: Dictionary = feature.mesh
-		if typeof(mesh.get("vertices_local_xyz")) != TYPE_ARRAY or typeof(mesh.get("normals")) != TYPE_ARRAY or typeof(mesh.get("indices")) != TYPE_ARRAY or mesh.vertices_local_xyz.size() < 3 or mesh.indices.size() < 3 or mesh.vertices_local_xyz.size() != mesh.normals.size() or mesh.indices.size() % 3 != 0: return _fail("Invalid road render/collision topology")
-		collision_faces += mesh.indices.size()/3
-		if collision_faces>MAX_COLLISION_FACES: return _fail("Road collision face work budget exceeded")
-		total += mesh.vertices_local_xyz.size()
-		if total > MAX_VERTICES: return _fail("Physical tile vertex commit budget exceeded")
-		var positions := PackedVector3Array(); var normals := PackedVector3Array(); var indices := PackedInt32Array(); var uvs := PackedVector2Array()
-		for i in mesh.vertices_local_xyz.size():
-			var v: Variant = mesh.vertices_local_xyz[i]; var n: Variant = mesh.normals[i]
-			if not _point(v) or not _point(n): return _fail("Nonfinite or premature native source road point")
-			var projected: Dictionary = _frame.to_local([float(feature.anchor_source_xyz[0]) + float(v[0]), float(feature.anchor_source_xyz[1]) + float(v[1]), float(feature.anchor_source_xyz[2]) + float(v[2])])
-			if not projected.ok: return _fail("Road tile exceeds active frame; rebase/prefetch rather than create absolute vectors")
-			var normal := Vector3(float(n[0]), float(n[1]), float(n[2]))
-			if normal.y <= 0.0 or absf(normal.length_squared() - 1.0) > .001: return _fail("Invalid source road surface normal")
-			positions.append(projected.position); normals.append(normal)
-			# Tile-local UVs plus canonical anchor phase stay stable across source
-			# rebases without creating huge absolute float texture coordinates.
-			uvs.append(Vector2(float(v[0]) * .25 + fposmod(float(feature.anchor_source_xyz[0]), 4.0) * .25, float(v[2]) * .25 + fposmod(float(feature.anchor_source_xyz[2]), 4.0) * .25))
-		for index in mesh.indices:
-			if not _integer(index, positions.size() - 1): return _fail("Road index out of bounds")
-			indices.append(int(index))
-		for start in range(0, indices.size(), 3):
-			var a: Vector3 = positions[indices[start]]; var b: Vector3 = positions[indices[start + 1]]; var c: Vector3 = positions[indices[start + 2]]
-			var cross: Vector3 = (b - a).cross(c - a)
-			if cross.y >= 0.0 or cross.length_squared() < .000000000001: return _fail("Native float road triangle is degenerate/reversed; no culling bypass")
-			var slope := Vector2(cross.x, cross.z).length() / -cross.y
-			maximum_native_slope = maxf(maximum_native_slope, slope)
-			if slope > .122: return _fail("Actual native road surface exceeds grade cap; shader normals cannot certify driveability")
-		prepared.append({"id": feature.id, "name": feature.get("name"), "positions": positions, "normals": normals, "indices": indices, "uvs": uvs})
-	var root := Node3D.new()
-	root.name = ("SourceRoads_" + plan.key).validate_node_name()
-	if material == null:
-		var fallback := StandardMaterial3D.new(); fallback.albedo_color = Color(.17, .18, .18); fallback.roughness = .95; material = fallback
-	var batch_positions := PackedVector3Array(); var batch_normals := PackedVector3Array(); var batch_uvs := PackedVector2Array(); var batch_indices := PackedInt32Array()
-	var source_names: Dictionary = {}
-	var pending_faces := PackedVector3Array()
-	var pending_ranges: Array[Dictionary] = []
-	var new_batches: Array[Dictionary] = []
-	for row: Dictionary in prepared:
-		var arrays: Array = []; arrays.resize(Mesh.ARRAY_MAX); arrays[Mesh.ARRAY_VERTEX] = row.positions; arrays[Mesh.ARRAY_NORMAL] = row.normals; arrays[Mesh.ARRAY_INDEX] = row.indices; arrays[Mesh.ARRAY_TEX_UV] = row.uvs
-		var mesh := ArrayMesh.new(); mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-		var offset := batch_positions.size()
-		batch_positions.append_array(row.positions); batch_normals.append_array(row.normals); batch_uvs.append_array(row.uvs)
-		for index in row.indices: batch_indices.append(int(index) + offset)
-		source_names[row.id] = row.name
-		if mode=="per_feature":
-			var body := StaticBody3D.new(); body.name = (String(row.id) + "_SameTopologyCollision").validate_node_name(); body.collision_layer = 1
-			var collision := CollisionShape3D.new(); collision.shape = mesh.create_trimesh_shape(); body.add_child(collision); body.set_meta("source_way", row.id); root.add_child(body)
-		else:
-			# ArrayMesh stores canonical native vertices; expanding source JSON
-			# vectors directly can differ by its final storage precision. Use the
-			# same expansion as create_trimesh_shape for byte-identical collision.
-			var expanded:PackedVector3Array=mesh.get_faces()
-			var source_face := 0
-			while source_face<expanded.size()/3:
-				var first_face: int = pending_faces.size()/3
-				var take: int = mini(face_limit-first_face,expanded.size()/3-source_face)
-				pending_ranges.append({"first_face":first_face,"face_count":take,"source_first_face":source_face,"source_way":row.id,"name":row.name})
-				for index in range(source_face*3,(source_face+take)*3): pending_faces.append(expanded[index])
-				source_face+=take
-				if pending_faces.size()/3==face_limit:
-					new_batches.append(_create_collision_batch(root,plan.key,new_batches.size(),pending_faces,pending_ranges))
-					pending_faces=PackedVector3Array(); pending_ranges=[]
-	if not pending_faces.is_empty(): new_batches.append(_create_collision_batch(root,plan.key,new_batches.size(),pending_faces,pending_ranges))
-	if not batch_positions.is_empty():
-		var arrays: Array = []; arrays.resize(Mesh.ARRAY_MAX); arrays[Mesh.ARRAY_VERTEX] = batch_positions; arrays[Mesh.ARRAY_NORMAL] = batch_normals; arrays[Mesh.ARRAY_TEX_UV] = batch_uvs; arrays[Mesh.ARRAY_INDEX] = batch_indices
-		var mesh := ArrayMesh.new(); mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-		var visual := MeshInstance3D.new(); visual.name = "SourceAsphaltMaterialBatch"; visual.mesh = mesh; visual.material_override = material
-		visual.set_meta("actual_source_way_names", source_names); root.add_child(visual)
-	root.set_meta("source_roads_binding", {"artifact_identity_sha256": _identity_sha, "snapshot_manifest_sha256": _snapshot, "origin_revision": _frame.metadata().origin_revision})
+		if key not in ["collision_mode","faces_per_body"]:return _fail("Unknown road collision option")
+	var mode:Variant=options.get("collision_mode","per_feature");var face_limit:Variant=options.get("faces_per_body",32768)
+	if not mode is String or mode not in ["per_feature","static_batches"] or not face_limit is int or face_limit<8 or face_limit>65536:return _fail("Invalid bounded road collision options")
+	var checked:Dictionary=_validate_plan(plan,"physical")
+	if not checked.ok:return checked
+	if not is_instance_valid(parent) or not parent.is_inside_tree() or not parent.global_transform.is_equal_approx(Transform3D.IDENTITY) or not _physical.has(plan.key):return _fail("Require identity native parent and bound physical part")
+	var data:Dictionary=plan.data
+	if data.get("schema")!=SCHEMA or data.get("tile")!=plan.key or not data.get("features") is Array:return _fail("Invalid physical source part")
+	var descriptor:Dictionary=_physical[plan.key]
+	if descriptor.has("spatial_tile_key") and data.get("spatial_tile_key")!=descriptor.spatial_tile_key:return _fail("Physical part/cell identity disagrees")
+	var prepared:Array[Dictionary]=[];var vertices:=0;var faces:=0;var collision_face_count:=0;var visible_face_count:=0;var maximum_slope:=0.0;var slopes:Dictionary={};var groups:Dictionary={}
+	for feature:Variant in data.features:
+		if not feature is Dictionary or not feature.get("id") is String or not _point(feature.get("anchor_source_xyz")):return _fail("Invalid source feature identity/anchor")
+		var surface:Dictionary=_surface_spec(feature)
+		if not surface.ok:return surface
+		var anchor:Array=feature.anchor_source_xyz
+		var projected:Dictionary=_frame.to_local(anchor)
+		if not projected.ok:return _fail("Source feature anchor exceeds active frame")
+		var collision:Dictionary=_mesh_arrays(feature.get("mesh"),anchor,true,float(surface.cap))
+		if not collision.ok:return collision
+		var visible:Dictionary=collision
+		if surface.separate_visual:
+			visible=_mesh_arrays(feature.get("visual_mesh"),anchor,false,0.0)
+			if not visible.ok:return visible
+		vertices+=collision.positions.size()+(visible.positions.size() if surface.separate_visual else 0)
+		faces+=collision.indices.size()/3+(visible.indices.size()/3 if surface.separate_visual else 0)
+		collision_face_count+=collision.indices.size()/3;visible_face_count+=visible.indices.size()/3
+		if vertices>MAX_VERTICES or faces>MAX_COLLISION_FACES:return _fail("Combined visible/collision native work budget exceeded")
+		maximum_slope=maxf(maximum_slope,collision.maximum_slope)
+		slopes[surface.surface_class]=maxf(float(slopes.get(surface.surface_class,0.0)),collision.maximum_slope)
+		var anchor_key:String=JSON.stringify(anchor,"",true,true)
+		var row:Dictionary={"id":feature.id,"name":feature.get("name"),"surface_class":surface.surface_class,"collision":collision,"visible":visible,"anchor_source_xyz":anchor.duplicate(),"anchor_local":projected.position}
+		prepared.append(row)
+		if not groups.has(anchor_key):groups[anchor_key]=[]
+		groups[anchor_key].append(row)
+	var root:=Node3D.new();root.name=("SourceRoads_"+String(plan.key)).validate_node_name()
+	if material==null:
+		var fallback:=StandardMaterial3D.new();fallback.albedo_color=Color(.17,.18,.18);fallback.roughness=.95;material=fallback
+	var new_batches:Array[Dictionary]=[];var native_body_count:=0
+	for anchor_key:String in groups:
+		var rows:Array=groups[anchor_key];var anchor_local:Vector3=rows[0].anchor_local;var anchor_source:Array=rows[0].anchor_source_xyz
+		var pending_faces:=PackedVector3Array();var ranges:Array[Dictionary]=[]
+		var visual_arrays:Dictionary={"positions":PackedVector3Array(),"normals":PackedVector3Array(),"indices":PackedInt32Array(),"uvs":PackedVector2Array()};var names:Dictionary={}
+		for row:Dictionary in rows:
+			var mesh:ArrayMesh=_array_mesh(row.collision)
+			if mode=="per_feature":
+				var body:=StaticBody3D.new();body.name=(String(row.id)+"_SameTopologyCollision").validate_node_name();body.collision_layer=1;body.position=anchor_local
+				var shape:=CollisionShape3D.new();shape.shape=mesh.create_trimesh_shape();body.add_child(shape)
+				body.set_meta("source_way",row.id);body.set_meta("source_anchor_xyz",anchor_source.duplicate());body.set_meta("source_surface_class",row.surface_class);root.add_child(body);native_body_count+=1
+			else:
+				var expanded:PackedVector3Array=mesh.get_faces();var source_face:=0
+				while source_face<expanded.size()/3:
+					var first_face:int=pending_faces.size()/3;var take:int=mini(face_limit-first_face,expanded.size()/3-source_face)
+					ranges.append({"first_face":first_face,"face_count":take,"source_first_face":source_face,"source_way":row.id,"name":row.name,"surface_class":row.surface_class})
+					for index in range(source_face*3,(source_face+take)*3):pending_faces.append(expanded[index])
+					source_face+=take
+					if pending_faces.size()/3==face_limit:
+						new_batches.append(_create_collision_batch(root,plan.key,new_batches.size(),pending_faces,ranges,anchor_local,anchor_source))
+						pending_faces=PackedVector3Array();ranges=[];native_body_count+=1
+			var visual:Dictionary=row.visible;var offset:int=visual_arrays.positions.size()
+			visual_arrays.positions.append_array(visual.positions);visual_arrays.normals.append_array(visual.normals);visual_arrays.uvs.append_array(visual.uvs)
+			for index in visual.indices:visual_arrays.indices.append(int(index)+offset)
+			names[row.id]=row.name
+		if not pending_faces.is_empty():
+			new_batches.append(_create_collision_batch(root,plan.key,new_batches.size(),pending_faces,ranges,anchor_local,anchor_source));native_body_count+=1
+		if not visual_arrays.positions.is_empty():
+			var visual:=MeshInstance3D.new();visual.name="SourceMaterialAnchorBatch";visual.position=anchor_local;visual.mesh=_array_mesh(visual_arrays);visual.material_override=material
+			visual.set_meta("actual_source_way_names",names);visual.set_meta("source_anchor_xyz",anchor_source.duplicate());root.add_child(visual)
+	root.set_meta("source_roads_binding",{"artifact_identity_sha256":_identity_sha,"snapshot_manifest_sha256":_snapshot,"origin_revision":_frame.metadata().origin_revision,"collision_representation":"anchored_local_v2"})
 	parent.add_child(root)
 	for id in _collision_batches.keys():
-		if not is_instance_valid(_collision_batches[id].body.get_ref()): _collision_batches.erase(id)
-	for batch: Dictionary in new_batches:
-		batch.root=weakref(root);batch.origin_revision=_frame.metadata().origin_revision
-		_collision_batches[batch.body.get_ref().get_instance_id()]=batch
-	return {"ok": true, "node": root, "features": prepared.size(), "vertices": total, "collision_faces":collision_faces, "collision_mode":mode, "collision_body_count":new_batches.size() if mode=="static_batches" else prepared.size(), "maximum_native_surface_slope": maximum_native_slope, "origin_revision": _frame.metadata().origin_revision, "actual_support_and_drivability_unverified": true}
+		if not is_instance_valid(_collision_batches[id].body.get_ref()):_collision_batches.erase(id)
+	for batch:Dictionary in new_batches:
+		batch.root=weakref(root);batch.origin_revision=_frame.metadata().origin_revision;_collision_batches[batch.body.get_ref().get_instance_id()]=batch
+	return {"ok":true,"node":root,"features":prepared.size(),"vertices":vertices,"collision_faces":collision_face_count,"visible_faces":visible_face_count,"input_face_work":faces,"collision_mode":mode,"collision_body_count":native_body_count,"anchor_groups":groups.size(),"maximum_native_surface_slope":maximum_slope,"maximum_native_slope_by_class":slopes,"origin_revision":_frame.metadata().origin_revision,"actual_support_and_drivability_unverified":true}
 
 
 ## Exact triangle order and per-range original way metadata. Only the collision
 ## representation changes; render vertices, normals, UVs and indices do not.
-func _create_collision_batch(holder: Node3D, tile: String, index: int, faces: PackedVector3Array, ranges: Array[Dictionary]) -> Dictionary:
+func _create_collision_batch(holder: Node3D, tile: String, index: int, faces: PackedVector3Array, ranges: Array[Dictionary], anchor_local: Vector3, anchor_source: Array) -> Dictionary:
 	var body:=StaticBody3D.new();body.name="RoadCollisionBatch_%d"%index
-	body.collision_layer=1;body.collision_mask=1
+	body.collision_layer=1;body.collision_mask=1;body.position=anchor_local
 	var shape:=ConcavePolygonShape3D.new();shape.set_faces(faces)
 	var collision:=CollisionShape3D.new();collision.shape=shape;body.add_child(collision)
-	body.set_meta("source_road_batch",{"tile_key":tile,"batch_index":index,"face_count":faces.size()/3})
+	body.set_meta("source_road_batch",{"tile_key":tile,"batch_index":index,"face_count":faces.size()/3,"anchor_source_xyz":anchor_source.duplicate()})
 	holder.add_child(body)
-	var descriptor:Dictionary={"body":weakref(body),"collision":weakref(collision),"shape_id":shape.get_instance_id(),"tile_key":tile,"batch_index":index,"face_count":faces.size()/3,"ranges":ranges.duplicate(true),"source_mapping_valid":true}
+	var descriptor:Dictionary={"body":weakref(body),"collision":weakref(collision),"shape_id":shape.get_instance_id(),"tile_key":tile,"batch_index":index,"face_count":faces.size()/3,"ranges":ranges.duplicate(true),"anchor_source_xyz":anchor_source.duplicate(),"source_mapping_valid":true}
 	shape.changed.connect(func():descriptor.source_mapping_valid=false)
 	return descriptor
 
@@ -351,7 +427,7 @@ func resolve_source_hit(hit: Dictionary) -> Dictionary:
 		var middle:int=(low+high)/2;var row:Dictionary=batch.ranges[middle]
 		if face<row.first_face:high=middle-1
 		elif face>=row.first_face+row.face_count:low=middle+1
-		else:return {"ok":true,"source_way":row.source_way,"name":row.name,"tile_key":batch.tile_key,"artifact_identity_sha256":_identity_sha,"origin_revision":batch.origin_revision,"native_face_index":face,"source_face_index":row.source_first_face+face-row.first_face}
+		else:return {"ok":true,"source_way":row.source_way,"name":row.name,"tile_key":batch.tile_key,"artifact_identity_sha256":_identity_sha,"origin_revision":batch.origin_revision,"native_face_index":face,"anchor_source_xyz":batch.anchor_source_xyz.duplicate(),"surface_class":row.get("surface_class","car_ribbon"),"source_face_index":row.source_first_face+face-row.first_face}
 	return _fail("Native road face has no original source range")
 
 func metadata() -> Dictionary:

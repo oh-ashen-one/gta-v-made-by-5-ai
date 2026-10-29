@@ -156,7 +156,7 @@ func boot() -> Dictionary:
 	if not base.get("ok",false) or base.get("state") != "sampled_dem": return _fail("No declared DEM reference at actual hotel source anchor")
 	_datum = {"base_elevation_m":float(base.height_m_egm96),"base_elevation_provenance":"COARSE EGM96 DEM sampled at actual source hotel anchor; reconstructed level datum, NOT current surveyed L1","source_anchor_xyz":HOTEL_ANCHOR.duplicate(),"dem_identity_sha256":DEM_SHA,"dem_sample":base.duplicate(true)}
 	if not _prepare_architecture_inventory(): return _fail("MBS source/reconstruction inventory could not bind transition guard")
-	var geometry := {"schema":"singapore_source_world_assembly_v1","snapshot_sha256":SNAPSHOT,"city_sha256":CITY_SHA,"terrain_sha256":TERRAIN_SHA,"roads_sha256":ROADS_SHA,"root_masks_sha256":MASKS_SHA,"mbs_inventory_sha256":_architecture_inventory_sha,"mbs_reconstruction_base":_datum.base_elevation_m,"world_y_policy":Y_POLICY,"registry_policy":"non_dry_exterior_tile_support_ids_actual_native_triangles","city_collision_representation":"exact_static_batches_32768_v1","road_collision_representation":"exact_arraymesh_static_batches_32768_v1"}
+	var geometry := {"schema":"singapore_source_world_assembly_v1","snapshot_sha256":SNAPSHOT,"city_sha256":CITY_SHA,"terrain_sha256":TERRAIN_SHA,"roads_sha256":ROADS_SHA,"root_masks_sha256":MASKS_SHA,"mbs_inventory_sha256":_architecture_inventory_sha,"mbs_reconstruction_base":_datum.base_elevation_m,"world_y_policy":Y_POLICY,"registry_policy":"non_dry_exterior_tile_support_ids_actual_native_triangles","city_collision_representation":"exact_static_batches_32768_v1","road_collision_representation":"anchored_local_batches_32768_v2"}
 	var vertical := {"dem_identity_sha256":DEM_SHA,"world_y_policy":Y_POLICY,"mbs_reference":_datum}
 	source_context = Context.new()
 	if not source_context.configure(source_frame,_digest(geometry),_digest(vertical),PROFILE,get_world_3d()): return _fail(source_context.last_error)
@@ -182,12 +182,11 @@ func boot() -> Dictionary:
 	if not terrain_scene.open_prepared(terrain_data_directory,TERRAIN_SHA,SNAPSHOT,DEM_SHA,MASKS_SHA,Y_POLICY,2): return _fail(terrain_scene.last_error)
 	roads = Roads.new()
 	if not roads.configure(road_data_directory,ROADS_SHA,source_frame): return _fail("Source road artifact rejected")
-	var road_inventory: Array = roads.metadata().physical_tiles
 	for tx in range(-1,2):
 		for tz in range(-2,1):
 			var key := "%d_%d" % [tx,tz]
 			_show_loading("Preparing Singapore…\nNeighborhood %d of 9" % (_tile_rows.size()+1))
-			var row := {"key":key,"tx":tx,"tz":tz,"bodies":[],"groups":[],"road_node":null}
+			var row := {"key":key,"tx":tx,"tz":tz,"bodies":[],"groups":[],"road_node":null,"road_nodes":[]}
 			var terrain_data: Dictionary = terrain_scene.prepare_tile(tx,tz)
 			if not terrain_data.get("ok",false): return _fail("Required terrain tile unavailable: "+key)
 			var terrain_result: Dictionary = await terrain_scene.install_tile(terrain_data)
@@ -204,24 +203,29 @@ func boot() -> Dictionary:
 				var city_bodies: Array = city_scene.collision_bodies(key)
 				row.bodies.append_array(city_bodies)
 				row.groups.append({"kind":"building_shell","identity":CITY_SHA,"bodies":city_bodies})
-			if road_inventory.has(key):
-				var prepared: Dictionary = roads.prepare_physical(key)
-				if not prepared.get("ok",false): return _fail("Road tile integrity failed: "+key)
-				var built: Dictionary = roads.build_physical(prepared.plan,self,_materials.material_for("roads","road"),{"collision_mode":"static_batches"})
-				if not built.get("ok",false): return _fail("Road native preparation rejected: "+key+" "+str(built.get("error","")))
-				row.road_node = built.node
-				var road_bodies: Array = []
-				_collect_bodies(built.node,road_bodies)
+			var road_parts:Array[String]=roads.physical_parts_for_cell(tx,tz)
+			if not road_parts.is_empty():
+				var road_bodies:Array=[]
+				for part:String in road_parts:
+					var prepared:Dictionary=roads.prepare_physical(part)
+					if not prepared.get("ok",false):return _fail("Road part integrity failed: "+part)
+					var built:Dictionary=roads.build_physical(prepared.plan,self,_materials.material_for("roads","road"),{"collision_mode":"static_batches"})
+					if not built.get("ok",false):return _fail("Road native preparation rejected: "+part+" "+str(built.get("error","")))
+					if row.road_node==null:row.road_node=built.node
+					row.road_nodes.append(built.node)
+					_collect_bodies(built.node,road_bodies)
+					for feature:Dictionary in prepared.plan.data.features:
+						var points:Array=feature.source_points_xyz
+						if points.size()>1:
+							var bounds:Array=[INF,INF,-INF,-INF]
+							for point:Array in points:
+								bounds[0]=minf(bounds[0],float(point[0]));bounds[1]=minf(bounds[1],float(point[2]))
+								bounds[2]=maxf(bounds[2],float(point[0]));bounds[3]=maxf(bounds[3],float(point[2]))
+							minimap_lines.append({"source_id":feature.id,"points":points.duplicate(true),"bounds_xz":bounds})
+				# One complete cell group, never a partially committed first part
+				# nor duplicate floor-registry identities for later parts.
 				row.bodies.append_array(road_bodies)
 				row.groups.append({"kind":"road","identity":ROADS_SHA,"bodies":road_bodies})
-				for feature: Dictionary in prepared.plan.data.features:
-					var points: Array = feature.source_points_xyz
-					if points.size() > 1:
-						var bounds: Array = [INF,INF,-INF,-INF]
-						for point: Array in points:
-							bounds[0] = minf(bounds[0],float(point[0])); bounds[1] = minf(bounds[1],float(point[2]))
-							bounds[2] = maxf(bounds[2],float(point[0])); bounds[3] = maxf(bounds[3],float(point[2]))
-						minimap_lines.append({"source_id":feature.id,"points":points.duplicate(true),"bounds_xz":bounds})
 			_tile_rows[key] = row
 			await get_tree().process_frame
 	for tick in 3: await get_tree().physics_frame

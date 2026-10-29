@@ -1,0 +1,13 @@
+{
+  "observed_utc": "2026-10-29T18:39:21.868692+00:00",
+  "status": "SOURCE_CANDIDATE_UNDER_INDEPENDENT_REVIEW_NATIVE_PENDING",
+  "source_sha256": {
+    "game/src/world/geography/source_roads.gd": "213f854463023815ac7609cc3b259b398eab31c906c29e5d762ec7c4a784404a",
+    "game/src/world/geography/source_world.gd": "689da67550d49c34fdc64972e54ae75590cf4bcdc638675c19737350866db934"
+  },
+  "default_world_road_dataset_changed": false,
+  "source_world_road_identity": "4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802",
+  "typed_prototype_adopted_as_whole_city": false,
+  "native_parsing_or_physics_verified": false,
+  "prior_flattened_coordinate_failures_preserved": true
+}

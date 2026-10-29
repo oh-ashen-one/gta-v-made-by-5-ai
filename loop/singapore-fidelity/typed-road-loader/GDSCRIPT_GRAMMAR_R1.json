@@ -1,0 +1,24 @@
+{
+  "observed_utc": "2026-10-29T18:56:01.217626+00:00",
+  "tool": "gdtoolkit4.5.0 gdparse, separate CPU-only environment",
+  "command": [
+    "loop/singapore-fidelity/recovery/private/gdscript-lint/bin/gdparse",
+    "game/src/world/geography/source_roads.gd",
+    "game/src/world/geography/source_world.gd",
+    "game/src/systems/fidelity_tests/source_road_batch_test.gd",
+    "game/src/systems/fidelity_tests/source_road_typed_contract_test.gd",
+    "game/src/systems/fidelity_tests/source_road_anchor_test.gd",
+    "game/src/systems/fidelity_tests/source_road_step_player_test.gd"
+  ],
+  "exit_code": 0,
+  "source_sha256": {
+    "game/src/world/geography/source_roads.gd": "213f854463023815ac7609cc3b259b398eab31c906c29e5d762ec7c4a784404a",
+    "game/src/world/geography/source_world.gd": "689da67550d49c34fdc64972e54ae75590cf4bcdc638675c19737350866db934",
+    "game/src/systems/fidelity_tests/source_road_batch_test.gd": "7e8580136b19e543c1aa5d078a892d348ebe3c673a2eee22f61c0093eb79dbcb",
+    "game/src/systems/fidelity_tests/source_road_typed_contract_test.gd": "899e40148aed945b9cdb17a67a2f469e6b4d53c5ca75c87b7fbad329cc4fc90f",
+    "game/src/systems/fidelity_tests/source_road_anchor_test.gd": "4413b36621337a7c8324887c7693466b1be2f9291bb497e65c1ab4f573c19b91",
+    "game/src/systems/fidelity_tests/source_road_step_player_test.gd": "b452f4decf236329745f2d5641952ec4c29eca23f7a479cb19d530df810035bf"
+  },
+  "output": "",
+  "not_native_Godot_semantic_import_or_execution": true
+}
