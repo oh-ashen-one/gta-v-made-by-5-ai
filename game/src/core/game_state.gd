@@ -15,6 +15,52 @@ const SAVE_PATH := "user://orchard_reach_save.json"
 const QA_SAVE_PATH := "user://qa_session_save.json"
 const SAVE_VERSION := 1
 var _save_path: String = SAVE_PATH
+# Source geography has its own versioned slot and checked restore service.
+# Keeping this separate prevents legacy local XYZ from becoming map positions.
+var _source_session: Object
+
+func save_slot_path() -> String:
+	return _save_path
+
+func _source_player() -> Player:
+	var body := get_tree().get_first_node_in_group("player") as Player
+	return body if is_instance_valid(body) and body.uses_source_world else null
+
+func install_source_session(service: Object) -> bool:
+	var body := _source_player()
+	if body == null or not is_instance_valid(service) or not service.has_method("is_bound_to") or not service.is_bound_to(body.source_world_runtime, body): return false
+	if is_instance_valid(_source_session) and _source_session != service: return false
+	_source_session = service
+	return true
+
+func uninstall_source_session(expected: Object) -> bool:
+	if _source_session != expected: return false
+	_source_session = null
+	return true
+
+func _bound_source_session() -> Object:
+	var body := _source_player()
+	if body == null or not is_instance_valid(_source_session) or not _source_session.is_bound_to(body.source_world_runtime, body): return null
+	return _source_session
+
+func _source_slot_request(path: String, service: Object) -> bool:
+	if path.is_empty(): return true
+	var info: Dictionary = service.metadata()
+	return info.get("slot_path", "") != "" and ProjectSettings.globalize_path(path).simplify_path() == ProjectSettings.globalize_path(info.slot_path).simplify_path()
+
+func recover_disabled_aircraft() -> bool:
+	if _source_player() != null:
+		var service := _bound_source_session()
+		if service == null:
+			Events.notify.emit("Recovery is waiting for the source-world checkpoint service.", "warn")
+			return false
+		return service.request_recovery("disabled_aircraft")
+	var body := get_tree().get_first_node_in_group("player")
+	if body and body.has_method("respawn_at"):
+		body.respawn_at(last_safe_position, last_safe_rotation)
+		return true
+	return false
+
 
 var mode: int = MODE_FOOT
 var health: float = MAX_HEALTH
@@ -161,6 +207,13 @@ func damage_player(amount: float) -> void:
 		respawn()
 
 func respawn() -> void:
+	if _source_player() != null:
+		var service := _bound_source_session()
+		if service != null:
+			service.request_recovery("death")
+		else:
+			Events.notify.emit("Recovery is waiting for the source-world checkpoint service.", "warn")
+		return
 	death_count += 1
 	health = MAX_HEALTH
 	Events.health_changed.emit(health, MAX_HEALTH)
@@ -241,11 +294,18 @@ func switch_weapon(weapon_id: String) -> void:
 	Events.ammo_changed.emit(current_mag(), current_reserve())
 
 func mark_safe_position(pos: Vector3, rot: float) -> void:
+	if _source_player() != null:
+		var service := _bound_source_session()
+		if service != null: service.capture_anchor()
+		return
 	last_safe_position = pos
 	last_safe_rotation = rot
 
 # ------------------------------------------------------------------ save/load
 func save_game(path: String = "") -> bool:
+	if _source_player() != null:
+		var service := _bound_source_session()
+		return service != null and _source_slot_request(path, service) and service.save()
 	if path.is_empty(): path = _save_path
 	var data := {
 		"version": SAVE_VERSION,
@@ -294,6 +354,9 @@ func save_game(path: String = "") -> bool:
 	return replaced
 
 func load_game(path: String = "") -> bool:
+	if _source_player() != null:
+		var service := _bound_source_session()
+		return service != null and _source_slot_request(path, service) and service.load()
 	if path.is_empty(): path = _save_path
 	if not FileAccess.file_exists(path):
 		return false
@@ -426,6 +489,9 @@ func data_has_settings(data: Dictionary) -> bool:
 	return data.has("settings") and typeof(data["settings"]) == TYPE_DICTIONARY
 
 func has_save() -> bool:
+	if _source_player() != null:
+		var service := _bound_source_session()
+		return service != null and service.has_save()
 	return FileAccess.file_exists(_save_path)
 
 # --------------------------------------------------------------------- slots

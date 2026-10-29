@@ -626,8 +626,8 @@ func exit_vehicle(player: Node) -> void:
 		if disabled:
 			# A wreck cannot obey a reposition instruction. Preserve the
 			# explicit recovery path, independently of any pad/region rule.
-			player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
-			Events.notify.emit("Aircraft down with no safe exit - recovered to your last safe point.", "warn")
+			if Game.recover_disabled_aircraft():
+				Events.notify.emit("Aircraft down with no safe exit - recovered to your last safe point.", "warn")
 			return
 		Events.notify.emit("No clear landing-side exit. Reposition the helicopter.", "warn")
 		return

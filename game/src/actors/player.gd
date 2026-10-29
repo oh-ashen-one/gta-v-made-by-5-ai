@@ -1000,7 +1000,7 @@ func controlled_actor() -> Node3D:
 		return current_vehicle as Node3D
 	return self
 
-func reset_action_state() -> void:
+func reset_action_state(reset_weapon: bool = true) -> void:
 	_fire_cooldown=0.0
 	_reload_timer=0.0
 	_reloading=false
@@ -1008,7 +1008,9 @@ func reset_action_state() -> void:
 	busy=false
 	_press_queue.clear()
 	_press_armed.clear()
-	Game.carried_weapon="pistol"
+	# A source save restores the selected weapon before clearing transients.
+	# Existing fresh-game callers retain their pistol reset by default.
+	if reset_weapon: Game.carried_weapon="pistol"
 	_update_weapon_mesh()
 	if _visual!=null and _visual.loaded: _visual.reset_alive()
 	Events.ammo_changed.emit(Game.current_mag(),Game.current_reserve())
