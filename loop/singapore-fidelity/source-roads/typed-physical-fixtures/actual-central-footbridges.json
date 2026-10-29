@@ -1,0 +1,1201 @@
+{
+  "features": [
+    {
+      "id": "way/315739150",
+      "policy": {
+        "grade": {
+          "connection_class": "bridge",
+          "covered_building_passage": false,
+          "explicit_underground_location": false,
+          "inference_policy": "source_road_vertical_semantics_v2",
+          "key": "[\"bridge\",1,\"\"]",
+          "layer": 1,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_bridge": "yes",
+          "raw_layer": "1",
+          "raw_tunnel": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "source_layer_explicit": true,
+          "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+          "structure": "bridge",
+          "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "backward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            },
+            "backward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            },
+            "bits": 0,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "Jubilee Bridge",
+          "name:ms": "Jambatan Jubilee",
+          "name:th": "\u0e2a\u0e30\u0e1e\u0e32\u0e19\u0e08\u0e39\u0e1a\u0e34\u0e25\u0e35",
+          "name:zh": "\u91d1\u79a7\u6865"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "footpath_game_m": 2.0,
+          "highway": "pedestrian",
+          "lane_width_game_m": 3.2,
+          "metres": 2.0,
+          "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+          "unusable_width_tag": null
+        }
+      },
+      "raw": {
+        "id": "way/315739150",
+        "name": "Jubilee Bridge",
+        "node_ids": [
+          3980001248,
+          3218695777,
+          3218695778,
+          3218695785,
+          3218695779,
+          4593309780,
+          3218695780,
+          3218695781
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -92.92,
+          -355.7325,
+          65.5449,
+          -338.2605
+        ],
+        "source_feature_sha256": "54a837d6a49c64ae04d5b3f8e1a6669ee51a45fc89654126edd22b924e60b778",
+        "source_geometry_sha256": "4c5b2214b59fa9f26c1258b03bf10f181ac846a210a520164ee3794ede516050",
+        "source_version": 23,
+        "tags": {
+          "bicycle": "yes",
+          "bridge": "yes",
+          "highway": "pedestrian",
+          "layer": "1",
+          "lit": "yes",
+          "name": "Jubilee Bridge",
+          "name:ms": "Jambatan Jubilee",
+          "name:th": "\u0e2a\u0e30\u0e1e\u0e32\u0e19\u0e08\u0e39\u0e1a\u0e34\u0e25\u0e35",
+          "name:zh": "\u91d1\u79a7\u6865",
+          "surface": "paving_stones"
+        }
+      },
+      "render_hubs": [
+        [
+          256105,
+          1.0
+        ],
+        [
+          256106,
+          0
+        ],
+        [
+          256107,
+          0
+        ],
+        [
+          256108,
+          0
+        ],
+        [
+          256109,
+          0
+        ],
+        [
+          256110,
+          1.0020717483013641
+        ],
+        [
+          256111,
+          0
+        ],
+        [
+          256112,
+          1.0
+        ]
+      ],
+      "source_points_xyz": [
+        [
+          65.5449000000001,
+          43.07658542642254,
+          -348.9451
+        ],
+        [
+          46.11689999999999,
+          45.47894065742308,
+          -343.0131
+        ],
+        [
+          25.970199999999977,
+          48.000389361938794,
+          -340.0525
+        ],
+        [
+          -0.11440000000004602,
+          49.07658542642254,
+          -338.2605
+        ],
+        [
+          -22.948099999999954,
+          49.07658542642254,
+          -338.8613
+        ],
+        [
+          -41.10450000000003,
+          49.07658542642254,
+          -340.6863000000001
+        ],
+        [
+          -60.31140000000005,
+          44.45564028351834,
+          -344.45900000000006
+        ],
+        [
+          -92.91999999999996,
+          36.12593007000763,
+          -355.7325000000001
+        ]
+      ],
+      "source_vertex_ids": [
+        256105,
+        256106,
+        256107,
+        256108,
+        256109,
+        256110,
+        256111,
+        256112
+      ]
+    },
+    {
+      "id": "way/688879267",
+      "policy": {
+        "grade": {
+          "connection_class": "bridge",
+          "covered_building_passage": false,
+          "explicit_underground_location": false,
+          "inference_policy": "source_road_vertical_semantics_v2",
+          "key": "[\"bridge\",1,\"\"]",
+          "layer": 1,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_bridge": "yes",
+          "raw_layer": "1",
+          "raw_tunnel": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "source_layer_explicit": true,
+          "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+          "structure": "bridge",
+          "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "backward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            },
+            "backward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            },
+            "bits": 0,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "Jubilee Bridge",
+          "name:ms": "Jambatan Jubilee",
+          "name:th": "\u0e2a\u0e30\u0e1e\u0e32\u0e19\u0e08\u0e39\u0e1a\u0e34\u0e25\u0e35",
+          "name:zh": "\u91d1\u79a7\u6865"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "footpath_game_m": 2.0,
+          "highway": "pedestrian",
+          "lane_width_game_m": 3.2,
+          "metres": 2.0,
+          "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+          "unusable_width_tag": null
+        }
+      },
+      "raw": {
+        "id": "way/688879267",
+        "name": "Jubilee Bridge",
+        "node_ids": [
+          6461553973,
+          3218695783,
+          10796955398
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -142.8669,
+          -386.2928,
+          -124.7104,
+          -373.1605
+        ],
+        "source_feature_sha256": "8709cf370d6517383c62b68eba874b5b69b81b3a64a8ddcec1471da5a8814a99",
+        "source_geometry_sha256": "96466175aae76cda63300f2670b9957211aadc8623317490d52a77cce32885a3",
+        "source_version": 11,
+        "tags": {
+          "bicycle": "yes",
+          "bridge": "yes",
+          "highway": "pedestrian",
+          "layer": "1",
+          "lit": "yes",
+          "name": "Jubilee Bridge",
+          "name:ms": "Jambatan Jubilee",
+          "name:th": "\u0e2a\u0e30\u0e1e\u0e32\u0e19\u0e08\u0e39\u0e1a\u0e34\u0e25\u0e35",
+          "name:zh": "\u91d1\u79a7\u6865",
+          "surface": "paving_stones"
+        }
+      },
+      "render_hubs": [
+        [
+          257309,
+          1.0
+        ],
+        [
+          257310,
+          0
+        ],
+        [
+          257311,
+          1.0
+        ]
+      ],
+      "source_points_xyz": [
+        [
+          -124.71040000000005,
+          27.590543681486423,
+          -373.16049999999996
+        ],
+        [
+          -130.36080000000004,
+          26.176613299348826,
+          -376.7663
+        ],
+        [
+          -142.8669,
+          22.513511637928033,
+          -386.29279999999994
+        ]
+      ],
+      "source_vertex_ids": [
+        257309,
+        257310,
+        257311
+      ]
+    },
+    {
+      "id": "way/688879268",
+      "policy": {
+        "grade": {
+          "connection_class": "bridge",
+          "covered_building_passage": false,
+          "explicit_underground_location": false,
+          "inference_policy": "source_road_vertical_semantics_v2",
+          "key": "[\"bridge\",1,\"\"]",
+          "layer": 1,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_bridge": "yes",
+          "raw_layer": "1",
+          "raw_tunnel": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "source_layer_explicit": true,
+          "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+          "structure": "bridge",
+          "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "backward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            },
+            "backward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            },
+            "bits": 0,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "Jubilee Bridge",
+          "name:ms": "Jambatan Jubilee",
+          "name:th": "\u0e2a\u0e30\u0e1e\u0e32\u0e19\u0e08\u0e39\u0e1a\u0e34\u0e25\u0e35",
+          "name:zh": "\u91d1\u79a7\u6865"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "footpath_game_m": 2.0,
+          "highway": "pedestrian",
+          "lane_width_game_m": 3.2,
+          "metres": 2.0,
+          "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+          "unusable_width_tag": null
+        }
+      },
+      "raw": {
+        "id": "way/688879268",
+        "name": "Jubilee Bridge",
+        "node_ids": [
+          3218695781,
+          3218695782,
+          6461553973
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -124.7104,
+          -373.1605,
+          -92.92,
+          -355.7325
+        ],
+        "source_feature_sha256": "43c9de757493c761ff44f8cd3b223a3e1d55cc7cdeacc6f8db37d23a78eafe37",
+        "source_geometry_sha256": "f530b7b1580453b3b40707c2871b991bddf3fde3b081b9824fc045bd255cce0d",
+        "source_version": 12,
+        "tags": {
+          "bicycle": "yes",
+          "bridge": "yes",
+          "highway": "pedestrian",
+          "image": "https://images.mapillary.com/6fAHyGctDs57-HbkCdoUZQ/thumb-2048.jpg",
+          "layer": "1",
+          "lit": "yes",
+          "mapillary": "470994007347133",
+          "name": "Jubilee Bridge",
+          "name:ms": "Jambatan Jubilee",
+          "name:th": "\u0e2a\u0e30\u0e1e\u0e32\u0e19\u0e08\u0e39\u0e1a\u0e34\u0e25\u0e35",
+          "name:zh": "\u91d1\u79a7\u6865",
+          "surface": "paving_stones"
+        }
+      },
+      "render_hubs": [
+        [
+          256112,
+          1.0
+        ],
+        [
+          257312,
+          0
+        ],
+        [
+          257309,
+          1.0
+        ]
+      ],
+      "source_points_xyz": [
+        [
+          -92.91999999999996,
+          36.12593007000763,
+          -355.7325000000001
+        ],
+        [
+          -112.22640000000001,
+          31.01891695933661,
+          -365.2033
+        ],
+        [
+          -124.71040000000005,
+          27.590543681486423,
+          -373.16049999999996
+        ]
+      ],
+      "source_vertex_ids": [
+        256112,
+        257312,
+        257309
+      ]
+    },
+    {
+      "id": "way/164881537",
+      "policy": {
+        "grade": {
+          "connection_class": "bridge",
+          "covered_building_passage": false,
+          "explicit_underground_location": false,
+          "inference_policy": "source_road_vertical_semantics_v2",
+          "key": "[\"bridge\",2,\"\"]",
+          "layer": 2,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_bridge": "yes",
+          "raw_layer": "2",
+          "raw_tunnel": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "source_layer_explicit": true,
+          "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+          "structure": "bridge",
+          "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "backward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            },
+            "backward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            },
+            "bits": 0,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            }
+          },
+          "foot": {
+            "access": {
+              "key": "foot",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "backward_access": {
+              "key": "foot",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "key": "foot",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "The Helix",
+          "name:zh": "\u87ba\u65cb\u6865"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "footpath_game_m": 2.0,
+          "highway": "pedestrian",
+          "lane_width_game_m": 3.2,
+          "metres": 2.0,
+          "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+          "unusable_width_tag": null
+        }
+      },
+      "raw": {
+        "id": "way/164881537",
+        "name": "The Helix",
+        "node_ids": [
+          1726403342,
+          1188479729,
+          1764797208,
+          1726403323,
+          1188479725,
+          1764797210,
+          1726403321,
+          1188479711,
+          1743939388,
+          1726403319,
+          6449716760
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -118.6459,
+          -1038.5183,
+          66.0139,
+          -1016.1474
+        ],
+        "source_feature_sha256": "fd9f94038edfb8843c2f0931a550131802291a541f3bc3d2a4866a815c46aa99",
+        "source_geometry_sha256": "74013ddfe059e9cd0939211452d86af9b357aaf8cd41e41439a319a0522eabaf",
+        "source_version": 17,
+        "tags": {
+          "bicycle": "yes",
+          "bridge": "yes",
+          "foot": "yes",
+          "highway": "pedestrian",
+          "layer": "2",
+          "lit": "yes",
+          "name": "The Helix",
+          "name:zh": "\u87ba\u65cb\u6865",
+          "smoothness": "excellent",
+          "start_date": "2010",
+          "surface": "asphalt",
+          "wikipedia": "en:Helix Bridge"
+        }
+      },
+      "render_hubs": [
+        [
+          258332,
+          1.0
+        ],
+        [
+          258333,
+          0
+        ],
+        [
+          258334,
+          1.0138258258116195
+        ],
+        [
+          258335,
+          0
+        ],
+        [
+          258336,
+          0
+        ],
+        [
+          258337,
+          1.0000956090226985
+        ],
+        [
+          258338,
+          0
+        ],
+        [
+          258339,
+          0
+        ],
+        [
+          258340,
+          1.0067022370005632
+        ],
+        [
+          258341,
+          0
+        ],
+        [
+          258342,
+          1.0
+        ]
+      ],
+      "source_points_xyz": [
+        [
+          -118.64589999999998,
+          43.184278943210096,
+          -1016.1474
+        ],
+        [
+          -87.87310000000002,
+          45.41043934592145,
+          -1026.5424
+        ],
+        [
+          -82.87509999999997,
+          45.41043934592145,
+          -1027.8445
+        ],
+        [
+          -53.74969999999996,
+          45.41043934592145,
+          -1033.6209
+        ],
+        [
+          -32.80690000000004,
+          45.41043934592145,
+          -1037.0711
+        ],
+        [
+          -17.072099999999978,
+          45.41043934592145,
+          -1037.6945
+        ],
+        [
+          0.2218000000000302,
+          41.347089262039155,
+          -1038.5183
+        ],
+        [
+          32.88560000000007,
+          33.22195195888388,
+          -1037.2165
+        ],
+        [
+          47.85750000000007,
+          30.92325530737827,
+          -1034.1339
+        ],
+        [
+          62.67450000000008,
+          27.624326130248615,
+          -1031.1737
+        ],
+        [
+          66.01389999999992,
+          27.014655061697024,
+          -1030.1387
+        ]
+      ],
+      "source_vertex_ids": [
+        258332,
+        258333,
+        258334,
+        258335,
+        258336,
+        258337,
+        258338,
+        258339,
+        258340,
+        258341,
+        258342
+      ]
+    },
+    {
+      "id": "way/395120469",
+      "policy": {
+        "grade": {
+          "connection_class": "bridge",
+          "covered_building_passage": false,
+          "explicit_underground_location": false,
+          "inference_policy": "source_road_vertical_semantics_v2",
+          "key": "[\"bridge\",2,\"\"]",
+          "layer": 2,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_bridge": "yes",
+          "raw_layer": "2",
+          "raw_tunnel": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "source_layer_explicit": true,
+          "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+          "structure": "bridge",
+          "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "backward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            },
+            "backward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            },
+            "bits": 0,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "unresolved"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "pedestrian",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "The Helix"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "footpath_game_m": 2.0,
+          "highway": "pedestrian",
+          "lane_width_game_m": 3.2,
+          "metres": 2.0,
+          "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+          "unusable_width_tag": null
+        }
+      },
+      "raw": {
+        "id": "way/395120469",
+        "name": "The Helix",
+        "node_ids": [
+          1188479709,
+          1726403342
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -148.7332,
+          -1016.1474,
+          -118.6459,
+          -1004.6173
+        ],
+        "source_feature_sha256": "eb7cb4345486d93a5510bc5af29fabc5cf9564c6a2751437b804c1fc2ae72c9b",
+        "source_geometry_sha256": "ac1445db159354f14f4fa078d2c92af868f74680c4af5cefb91acc22ac9d7540",
+        "source_version": 8,
+        "tags": {
+          "bicycle": "yes",
+          "bridge": "yes",
+          "highway": "pedestrian",
+          "layer": "2",
+          "lit": "yes",
+          "name": "The Helix",
+          "smoothness": "excellent",
+          "surface": "asphalt"
+        }
+      },
+      "render_hubs": [
+        [
+          258640,
+          1.0
+        ],
+        [
+          258332,
+          1.0
+        ]
+      ],
+      "source_points_xyz": [
+        [
+          -148.7332,
+          39.41043934592145,
+          -1004.6173
+        ],
+        [
+          -118.64589999999998,
+          43.184278943210096,
+          -1016.1474
+        ]
+      ],
+      "source_vertex_ids": [
+        258640,
+        258332
+      ]
+    },
+    {
+      "id": "way/534684103",
+      "policy": {
+        "grade": {
+          "connection_class": "bridge",
+          "covered_building_passage": false,
+          "explicit_underground_location": false,
+          "inference_policy": "source_road_vertical_semantics_v2",
+          "key": "[\"bridge\",1,\"\"]",
+          "layer": 1,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_bridge": "yes",
+          "raw_layer": "1",
+          "raw_tunnel": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "source_layer_explicit": true,
+          "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+          "structure": "bridge",
+          "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "backward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "key": "bicycle",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            }
+          },
+          "car": {
+            "access": {
+              "key": "motor_vehicle",
+              "state": "blocked",
+              "value": "no"
+            },
+            "backward_access": {
+              "key": "motor_vehicle",
+              "state": "blocked",
+              "value": "no"
+            },
+            "bits": 0,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "key": "motor_vehicle",
+              "state": "blocked",
+              "value": "no"
+            }
+          },
+          "foot": {
+            "access": {
+              "key": "foot",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "backward_access": {
+              "key": "foot",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "key": "foot",
+              "reason": "explicit_mode_access",
+              "state": "allowed",
+              "value": "yes"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "Cavenagh Bridge",
+          "name:ms": "Jambatan Cavenagh",
+          "name:zh": "\u52a0\u6587\u7eb3\u6865"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "footpath_game_m": 2.0,
+          "highway": "pedestrian",
+          "lane_width_game_m": 3.2,
+          "metres": 2.0,
+          "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+          "unusable_width_tag": null
+        }
+      },
+      "raw": {
+        "id": "way/534684103",
+        "name": "Cavenagh Bridge",
+        "node_ids": [
+          5184912445,
+          5184912446
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          84.9969,
+          -133.2736,
+          138.9019,
+          -102.6012
+        ],
+        "source_feature_sha256": "c9aca36f19cb81cd933db564b4a632f700569841b92c6d8ab13a5a2f26ce75e9",
+        "source_geometry_sha256": "c2e54748d95f284452736ff134f4980ff5b817fcf3b045299372f8659449afcc",
+        "source_version": 8,
+        "tags": {
+          "bicycle": "yes",
+          "bridge": "yes",
+          "foot": "yes",
+          "highway": "pedestrian",
+          "horse": "designated",
+          "layer": "1",
+          "lit": "yes",
+          "motor_vehicle": "no",
+          "name": "Cavenagh Bridge",
+          "name:ms": "Jambatan Cavenagh",
+          "name:zh": "\u52a0\u6587\u7eb3\u6865",
+          "smoothness": "excellent",
+          "surface": "asphalt"
+        }
+      },
+      "render_hubs": [
+        [
+          747284,
+          1.0
+        ],
+        [
+          747285,
+          1.0
+        ]
+      ],
+      "source_points_xyz": [
+        [
+          84.9969,
+          45.049295521166606,
+          -102.60120000000006
+        ],
+        [
+          138.9019,
+          60.03942088584938,
+          -133.2736
+        ]
+      ],
+      "source_vertex_ids": [
+        747284,
+        747285
+      ]
+    }
+  ],
+  "profile_identity": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+  "schema": "actual_v3_source_footbridge_fixture_v1",
+  "source_city_identity": "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963"
+}

@@ -1,0 +1,70 @@
+{
+  "counts": {
+    "class_car_ribbon": 7290,
+    "class_foot_ribbon": 4460,
+    "class_foot_steps": 230,
+    "collision_faces": 601004,
+    "native_float_faces_checked": 1125162,
+    "physical_fragments": 11980,
+    "physical_parts": 20,
+    "visible_stair_faces": 25898
+  },
+  "distinct_original_ways": 11224,
+  "failure_count": 5,
+  "failures": [
+    {
+      "cap": 0.252,
+      "error": "NATIVE_FLOAT_TYPED_GRADE_CAP",
+      "frame": "cell-centred",
+      "maximum": 0.25201982259750366,
+      "part": "-2_0.p000",
+      "source_way": "way/475099485"
+    },
+    {
+      "cap": 0.252,
+      "error": "NATIVE_FLOAT_TYPED_GRADE_CAP",
+      "frame": "current-world",
+      "maximum": 0.26386287808418274,
+      "part": "-2_0.p000",
+      "source_way": "way/475099485"
+    },
+    {
+      "cap": 0.122,
+      "error": "NATIVE_FLOAT_TYPED_GRADE_CAP",
+      "frame": "current-world",
+      "maximum": 0.12379687279462814,
+      "part": "-2_1.p000",
+      "source_way": "way/758854786"
+    },
+    {
+      "cap": 0.252,
+      "error": "NATIVE_FLOAT_TYPED_GRADE_CAP",
+      "frame": "cell-centred",
+      "maximum": 0.25602421164512634,
+      "part": "-1_0.p000",
+      "source_way": "way/841679227"
+    },
+    {
+      "cap": 0.252,
+      "error": "NATIVE_FLOAT_TYPED_GRADE_CAP",
+      "frame": "current-world",
+      "maximum": 0.26304852962493896,
+      "part": "1_0.p000",
+      "source_way": "way/758612813"
+    }
+  ],
+  "frame_checks": {
+    "cell-centred": 11980,
+    "current-world": 10453,
+    "current-world_outside_active_frame_skipped": 1527
+  },
+  "identity_sha256": "02a15cbdd30852ecee696363ece14c6759037bbd9bf168bfcb19c18ce36f6f09",
+  "maximum_native_float_slope_by_class": {
+    "car_ribbon": 0.12113965302705765,
+    "foot_ribbon": 0.2515607178211212,
+    "foot_steps": 0.6994460225105286
+  },
+  "native_engine_or_traversal_terrain_cover_full_city_stairs_coverage": false,
+  "seconds": 42.81811654200101,
+  "status": "REVIEW_REQUIRED_NATIVE_FLOAT_FAILURES"
+}

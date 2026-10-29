@@ -1,0 +1,198 @@
+{
+  "all_own_cpu_processes_terminal": true,
+  "files": [
+    {
+      "bytes": 4312,
+      "path": "loop/singapore-fidelity/source-roads/TYPED_PHYSICAL_CONTRACT.md",
+      "sha256": "870ba63cedc7ea92b1b65ea84c8173ad8d28dcbe9af01fda0c01c7b67208bcae"
+    },
+    {
+      "bytes": 1216,
+      "path": "loop/singapore-fidelity/source-roads/TYPED_PHYSICAL_PRELAUNCH.json",
+      "sha256": "8096f11cb6a22d092942680220c6f45dae8ff9b7d7052abf8b7405aab113ad06"
+    },
+    {
+      "bytes": 1892,
+      "path": "loop/singapore-fidelity/source-roads/TYPED_PHYSICAL_RUN.json",
+      "sha256": "d33b1eb161a217afcb94ce74d39fcb9547e50c1b4fa7812a94e4adf5e55688b7"
+    },
+    {
+      "bytes": 3377,
+      "path": "loop/singapore-fidelity/source-roads/audit_anchored_typed_physical.py",
+      "sha256": "6fa9a77189ba5dd4e934a5bc81a24d70f37df4d1dce3785ef7e7d715016dd797"
+    },
+    {
+      "bytes": 10618,
+      "path": "loop/singapore-fidelity/source-roads/audit_typed_physical.py",
+      "sha256": "5a61cfe4f6b7d2c3eb4a66bf437461253a4a3d0ff76d9da9b734b3cee69b4518"
+    },
+    {
+      "bytes": 12580,
+      "path": "loop/singapore-fidelity/source-roads/build_typed_physical.py",
+      "sha256": "6a3fa61fb7a05f156298a1915bc62f25df8e70e950daa0b1c7777e2b76a92b2b"
+    },
+    {
+      "bytes": 2387,
+      "path": "loop/singapore-fidelity/source-roads/run_typed_seam_audit.py",
+      "sha256": "72f054dc1ceba319e8e6041a83fef880b4fb8229aba58976536e851e4f37e5d0"
+    },
+    {
+      "bytes": 4840,
+      "path": "loop/singapore-fidelity/source-roads/test_typed_physical_v1.py",
+      "sha256": "48d18de3fa7c9e6faf58ca75c353a99423aad043f757e633452ed624fc49e928"
+    },
+    {
+      "bytes": 35218,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/actual-central-footbridges.json",
+      "sha256": "5f41271c8823d44ffdbb6cc33da88229825449aa1161b4991b293c77658701e0"
+    },
+    {
+      "bytes": 2603583,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/central-source-step-profile-review.json",
+      "sha256": "c6f7807c45e600a2278ed6fe09630aec77836f863d51a91a90350e68a32f606c"
+    },
+    {
+      "bytes": 9664,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/native-anchor-failures-r1/-1_0.p000.json",
+      "sha256": "48375f4f301744655e3350f3b580e8bd73879c9dd98e125536c9bab636202109"
+    },
+    {
+      "bytes": 46000,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/native-anchor-failures-r1/-2_0.p000.json",
+      "sha256": "cf18f232b52fdb1017833e55176707074265e9a3e31f29a19bcd46e6ee130b0c"
+    },
+    {
+      "bytes": 17837,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/native-anchor-failures-r1/-2_1.p000.json",
+      "sha256": "9b08adbd755ee118529bfa9a64630a48da92c99eb76a602dc11a1f5f4e53b1c6"
+    },
+    {
+      "bytes": 12410,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/native-anchor-failures-r1/1_0.p000.json",
+      "sha256": "99c0639fa8848f9e1f537052051af819003ad9862b33919fd35711546bf6ef13"
+    },
+    {
+      "bytes": 7265,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/native-anchor-failures-r1/cases.json",
+      "sha256": "9018eb908ad1352cc7d4a58419645beb6fef238c68b058ffa99a70f2bf645500"
+    },
+    {
+      "bytes": 278,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/native-anchor-failures-r1/identity.json",
+      "sha256": "1dbfc18758eb6ccefd10b8ba5fa73bb452a00e54b7f3d3f7d50fdaa92ff39e54"
+    },
+    {
+      "bytes": 1097,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/native-anchor-failures-r1/manifest.json",
+      "sha256": "d88690cb49620fbf40960ce240d94489b0394425c1e0c6295d99b87b3b99b6b1"
+    },
+    {
+      "bytes": 277,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/native-contract-r1/identity.json",
+      "sha256": "db2ba665dc60d9cf3f839f9dc1f8b1191cbf6d13bcb3573b172a9979cdf1477b"
+    },
+    {
+      "bytes": 694,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/native-contract-r1/manifest.json",
+      "sha256": "2cdc4fefa1199212312485850b4df13a352a2a97c9f44354b793bd217a71c083"
+    },
+    {
+      "bytes": 32888,
+      "path": "loop/singapore-fidelity/source-roads/typed-physical-fixtures/native-contract-r1/physical.json",
+      "sha256": "95c41397c589c56285cb4efe4bd57042dcc78feb8e178c101fcaf2d3425b1384"
+    },
+    {
+      "bytes": 1131,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/ANCHORED_CPU_MODEL.json",
+      "sha256": "2324a0b1892c5bbbc5d3f47944bd32c01ad31258d4daa2ff590a89232862c016"
+    },
+    {
+      "bytes": 660,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/ANCHORED_CPU_MODEL_SUPERVISOR.json",
+      "sha256": "d02287de40ef4448db8403c7fa165d27e8b25c3f38494b514279c2755d8f8091"
+    },
+    {
+      "bytes": 732,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/CANONICAL_SEAMS.json",
+      "sha256": "b6bbd9f4acb32ec3a8b24c5859bdff9fa704670a14b06a09ae7adad96e6204c0"
+    },
+    {
+      "bytes": 647,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/CANONICAL_SEAMS_SUPERVISOR.json",
+      "sha256": "064f4e3ea069a727177c46018f16d25a667b3383d3b2f0d1611f8aa358ff2424"
+    },
+    {
+      "bytes": 1968,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/OLD_FLATTENED_AUDIT.json",
+      "sha256": "4e918317029775e2344c54f388294323d20ec60a0e92419ae409d170c57bb502"
+    },
+    {
+      "bytes": 655,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/OLD_FLATTENED_AUDIT_SUPERVISOR.json",
+      "sha256": "9f4d34fe47f1e6feae08a229bba0943ace04f7dfd62bf086b5adfc7f6873ffe3"
+    },
+    {
+      "bytes": 789,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/PRODUCER_SUPERVISOR.json",
+      "sha256": "fc520c0a3d1ec753d45327e3e40c0d0c55787a9925d72099815f322ec582ee17"
+    },
+    {
+      "bytes": 1000,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/REFERENCE.json",
+      "sha256": "9d0aedc4ab5f44c92b662e64fa530da3d5f3408e88dbdf442cdf899f7d352590"
+    },
+    {
+      "bytes": 665281,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/coverage.json",
+      "sha256": "2e4a2e5e121fe8093ebab4fe756781a893b914e64aee0c998a15c7d9f70a2b9f"
+    },
+    {
+      "bytes": 380,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/identity.json",
+      "sha256": "02a15cbdd30852ecee696363ece14c6759037bbd9bf168bfcb19c18ce36f6f09"
+    },
+    {
+      "bytes": 133709,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/manifest.json",
+      "sha256": "16c99749ce58c4735f24b2c0b87b13a30868a417268cf34a0cee94ec79cbf668"
+    },
+    {
+      "bytes": 1085,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/result.json",
+      "sha256": "7cc829b19ed36744b44a147b1ec9f77b5ea5b85b3166ed9c808918067b1726b5"
+    },
+    {
+      "bytes": 393453,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-records/selection.json",
+      "sha256": "9729aefa8bacea3cb15f1a3fcbccf79346ab587e75dc49a5f9af3fe306ef5b01"
+    },
+    {
+      "bytes": 10208,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-source/audit_typed_physical.py",
+      "sha256": "bee37e8369a9cf27e60425b646ce08a0a885a6f03856af7836f6c5660e2f1c51"
+    },
+    {
+      "bytes": 12580,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-source/build_typed_physical.py",
+      "sha256": "6a3fa61fb7a05f156298a1915bc62f25df8e70e950daa0b1c7777e2b76a92b2b"
+    },
+    {
+      "bytes": 10308,
+      "path": "loop/singapore-fidelity/source-roads/typed-prototype-v1-source/typed_physical_v1.py",
+      "sha256": "2505abac8754c201986e0c8f7c03b5fa307cbfc5b2092b4ab8c024ccd1a219d4"
+    },
+    {
+      "bytes": 10308,
+      "path": "loop/singapore-fidelity/source-roads/typed_physical_v1.py",
+      "sha256": "2505abac8754c201986e0c8f7c03b5fa307cbfc5b2092b4ab8c024ccd1a219d4"
+    }
+  ],
+  "no_child_native_or_git_actions": true,
+  "observed_utc": "2026-10-29T17:17:10.309254+00:00",
+  "old_native_failure_not_relabelled_as_pass": true,
+  "status": "QUALIFIED_TYPED_PROTOTYPE_FROZEN_NATIVE_AND_V4_WORK_REMAINS",
+  "tests": {
+    "actual_source_footbridge_cases": 6,
+    "typed_geometry": 6
+  }
+}

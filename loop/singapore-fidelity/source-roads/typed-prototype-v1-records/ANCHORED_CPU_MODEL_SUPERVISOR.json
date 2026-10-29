@@ -1,0 +1,19 @@
+{
+  "created_utc": "2026-10-29T17:04:59.595318+00:00",
+  "kind": "anchored-typed-cpu-model-audit",
+  "limits": {
+    "cpu_seconds": 3600,
+    "rss_bytes": 2147483648,
+    "wall_seconds": 7200
+  },
+  "reason": null,
+  "sampled_peak_rss_bytes": 505561088,
+  "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/audit_anchored_typed_physical.py",
+  "status": "COMPLETE",
+  "supervisor_pid": 33329,
+  "terminal_utc": "2026-10-29T17:05:48.099985+00:00",
+  "wall_seconds": 48.50341083400053,
+  "worker_exit": 0,
+  "worker_lstart": "Thu Oct 29 13:04:59 2026",
+  "worker_pid": 33351
+}

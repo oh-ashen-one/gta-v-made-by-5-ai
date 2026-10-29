@@ -1,0 +1,26 @@
+{
+  "actual_source_footbridge_cases": 6,
+  "bounds_xz": [
+    -2000,
+    -2500,
+    2000,
+    2000
+  ],
+  "cpu_test_cases": 6,
+  "direct_free_bytes": 65898807296,
+  "frozen_source_sha256": {
+    "build_typed_physical.py": "6a3fa61fb7a05f156298a1915bc62f25df8e70e950daa0b1c7777e2b76a92b2b",
+    "compile_roads_semantic_v2.py": "a8018b895f3039c2de20bddf7ef123684b3ce136acc54874f9db3cabe9429419",
+    "cpu_job.py": "2a7dea0c37db14708a5abd9a4ed1003c6c548350bb668e9c82aa3ce8025081b1",
+    "typed_physical_v1.py": "2505abac8754c201986e0c8f7c03b5fa307cbfc5b2092b4ab8c024ccd1a219d4"
+  },
+  "maximum_output_logical_bytes": 8589934592,
+  "minimum_free_bytes": 12884901888,
+  "native_acceptance": false,
+  "observed_utc": "2026-10-29T16:38:00.109860+00:00",
+  "permanent_target_does_not_omit_private_roads_or_stairs_or_pedestrian_areas": true,
+  "prototype_gaps": "Access-linked physicalselection,source-step metric conflicts,area/hole membership; all require next-version fixes,notreducedfinalscope",
+  "source_profile_database_sha256": "9f15cbc5bbe06b863e38dcab1dc61a17aa00515fa574ec2f24a6f2c3126caa66",
+  "source_profile_identity": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+  "spatial_cells": 20
+}

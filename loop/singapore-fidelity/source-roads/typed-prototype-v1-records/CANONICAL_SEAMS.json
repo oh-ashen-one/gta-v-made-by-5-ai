@@ -1,0 +1,15 @@
+{
+  "anchored_codec_tolerance_m": 0.00025,
+  "elapsed_seconds": 54.22621708299994,
+  "input_identity_sha256": "02a15cbdd30852ecee696363ece14c6759037bbd9bf168bfcb19c18ce36f6f09",
+  "junction_groups": 11435,
+  "maximum_height_mismatch_m": 7.319241376535501e-06,
+  "native_world_seam_or_traversal_acceptance": false,
+  "numeric_seam_tolerance_m": 0.005,
+  "outliers_over5mm": [],
+  "overlap_comparisons": 274877,
+  "representation": "CANONICAL_ENCODED_GEOMETRY_NOT_NATIVE_TRANSFORMED_WORLD_RAYS",
+  "samples": 237544,
+  "scope": "Source-connected emitted-way centreline overlap within largest incident halfwidth; not full-curve/all-area/native/vehicle/terrain/source-world acceptance",
+  "status": "PASS_EMITTED_NEAR_JUNCTION_SEAMS"
+}

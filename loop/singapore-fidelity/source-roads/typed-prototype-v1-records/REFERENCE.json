@@ -1,0 +1,19 @@
+{
+  "schema": "typed_physical_prototype_metadata_only",
+  "complete_runtime_dataset": false,
+  "metadata_only_DO_NOT_CONFIGURE": true,
+  "actual_private_artifact": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/typed-central20-v1",
+  "identity_sha256": "02a15cbdd30852ecee696363ece14c6759037bbd9bf168bfcb19c18ce36f6f09",
+  "parent_profile_identity_sha256": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+  "old_native_projection_status": "REJECTED_5_FAILURES_RETAINED",
+  "anchored_model_status": "CPU_MODEL_PASS_NOT_NATIVE_PROOF",
+  "remaining_gates": [
+    "Rootnativeanchoredshape/worldrays/perfaceidentity",
+    "ActualproductionPlayerandvehicletraversal",
+    "Sourceincline/step_count metricrevision",
+    "Physicalroadclass independentofaccess",
+    "Pedestrianareas/holemembership",
+    "Terraincut-fill/tunnelcover/deckundersides/edgeprotection",
+    "Renderedvisualquality"
+  ]
+}

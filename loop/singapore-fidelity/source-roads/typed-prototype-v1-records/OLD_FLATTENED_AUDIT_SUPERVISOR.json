@@ -1,0 +1,19 @@
+{
+  "created_utc": "2026-10-29T16:46:59.824735+00:00",
+  "kind": "typed-physical-independent-audit",
+  "limits": {
+    "cpu_seconds": 3600,
+    "rss_bytes": 2147483648,
+    "wall_seconds": 7200
+  },
+  "reason": null,
+  "sampled_peak_rss_bytes": 547241984,
+  "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/audit_typed_physical.py",
+  "status": "INCOMPLETE",
+  "supervisor_pid": 20389,
+  "terminal_utc": "2026-10-29T16:47:43.531515+00:00",
+  "wall_seconds": 43.70411558300111,
+  "worker_exit": 1,
+  "worker_lstart": "Thu Oct 29 12:46:59 2026",
+  "worker_pid": 20400
+}

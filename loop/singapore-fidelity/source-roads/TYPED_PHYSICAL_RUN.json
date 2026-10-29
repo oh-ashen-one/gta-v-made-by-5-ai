@@ -1,0 +1,36 @@
+{
+  "all_owned_cpu_jobs_terminal": true,
+  "audit_output": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/typed-central20-audit-r1",
+  "exec_session": 52678,
+  "identity_sha256": "02a15cbdd30852ecee696363ece14c6759037bbd9bf168bfcb19c18ce36f6f09",
+  "next_metric_recipe_required": true,
+  "observed_utc": "2026-10-29T17:17:10.298376+00:00",
+  "output": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/generated/typed-central20-v1",
+  "owned_lifecycle": {
+    "created_utc": "2026-10-29T16:38:01.854100+00:00",
+    "kind": "typed-physical-central20-v1",
+    "limits": {
+      "cpu_seconds": 3600,
+      "minimum_filesystem_free_bytes": 12884901888,
+      "output_logical_bytes": 8589934592,
+      "rss_bytes": 2147483648,
+      "wall_seconds": 7200
+    },
+    "reason": null,
+    "sampled_peak_output_logical_bytes": 2733118191,
+    "sampled_peak_rss_bytes": 522321920,
+    "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/build_typed_physical.py",
+    "status": "COMPLETE",
+    "supervisor_pid": 10685,
+    "terminal_utc": "2026-10-29T16:45:34.939112+00:00",
+    "wall_seconds": 453.0816159170008,
+    "worker_exit": 0,
+    "worker_lstart": "Thu Oct 29 12:38:01 2026",
+    "worker_pid": 10711
+  },
+  "records": "typed-prototype-v1-records",
+  "required_next_recipe": "Sourceincline/stepcount constraints and physical roadwayclass independentofaccess; plusarea/hole support",
+  "source_profile_identity": "efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619",
+  "status": "FIRST_PROTOTYPE_CANONICAL_AND_ANCHORED_CPU_MODEL_AUDITS_PASS_OLD_NATIVE_PROJECTION_FAILS_NO_ADOPTION",
+  "whole_city_or_complete_stair_coverage": false
+}

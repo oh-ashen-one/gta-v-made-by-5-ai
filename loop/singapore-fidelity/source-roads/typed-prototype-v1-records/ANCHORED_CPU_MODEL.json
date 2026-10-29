@@ -1,0 +1,33 @@
+{
+  "coordinate_model": "encoded_local_shapes_plus_translated_float32_anchor_CPU_MODEL_NOT_NATIVE_PROOF",
+  "counts": {
+    "class_car_ribbon": 7290,
+    "class_foot_ribbon": 4460,
+    "class_foot_steps": 230,
+    "collision_faces": 601004,
+    "native_float_faces_checked": 1125630,
+    "physical_fragments": 11980,
+    "physical_parts": 20,
+    "visible_stair_faces": 25898
+  },
+  "distinct_original_ways": 11224,
+  "failure_count": 0,
+  "failures": [],
+  "frame_checks": {
+    "cell-centred": 11980,
+    "current-world": 10453,
+    "current-world_outside_active_frame_skipped": 1527
+  },
+  "identity_sha256": "02a15cbdd30852ecee696363ece14c6759037bbd9bf168bfcb19c18ce36f6f09",
+  "maximum_native_float_slope_by_class": {
+    "car_ribbon": 0.12074839323759079,
+    "foot_ribbon": 0.2505355775356293,
+    "foot_steps": 0.6993449926376343
+  },
+  "native_engine_or_traversal_terrain_cover_full_city_stairs_coverage": false,
+  "representation_model_metrics": {
+    "maximum_anchored_world_axis_error_m": 9.012222290039062e-05
+  },
+  "seconds": 47.674318124998535,
+  "status": "PASS_BOUNDED_TYPED_SOURCE_AND_CPU_NATIVE_FLOAT_CHECKS"
+}
