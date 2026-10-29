@@ -1,5 +1,14 @@
 > CURRENT CHECKPOINT: Read `loop/singapore-fidelity/ACTIVE_HANDOFF_FACTS.json` first. It supersedes older progress bullets below, especially owner-play terminal state, latest passed runs, creative delegation, and outstanding visual/integration gaps. Full goal remains active.
 
+## Latest fidelity checkpoint — 2026-10-29 recovery and native repairs
+
+Active branch `Astra-6-singapore-fidelity`; verified pushed checkpoint `6eff502`. Full owner goal remains active. The current authoritative ledger is `loop/singapore-fidelity/ACTIVE_HANDOFF_FACTS.json`, with next actions in `NEXT_INTEGRATION.md`. Earlier sections below are historical and may describe superseded worker ownership.
+
+The Studio restart removed `/private/tmp` runtime artifacts; working source/private art survived. City and MBS terrain data were reconstructed with every original hash matched, now in ignored durable task storage. Frozen R5 roads are being reconstructed and independently audited; do not silently change their pin. Current owner streaming guard is active, all Root engine tests are reaped, and no new engine is queued. Background source/CPU work continues.
+
+Fresh native proofs: low stairs/lifts119/119 and99.017m continuous travel, normalstair147/147, exact roadcollision batching39/39, sourcecontroller98/98, and source-oriented corelayout33/33 plus29CPUgeometrychecks. These are bounded component proofs. FullMBS room/core/shell integration, whole source-city gameplay and rendered acceptance are incomplete. No new playable release or fullcompletion claim.
+
+
 # Active Singapore fidelity goal — ongoing
 
 Latest verified checkpoint: read ACTIVE_HANDOFF_FACTS.json. SourceMBS entryR2 now30/30 clean with493.95m native walking; contextOBBox571; actorR656; programspaR2199; nationalDEMnative31 +Python12; coreR3298. These are distinct scopes. Defaultmain/nationalgeometry/fullMBSfloorstack/cabins/source-file-saves/live-rebases/renderfidelity remain ROOT integration, not complete. Cabinbuilderactive; guestmirror stopped-turn QA candidateR8 committed andwest1R2 running. Preserve every earlierfailure; donotpromoteall57programrecipes orall1850roomstoactualruntimepasses.
