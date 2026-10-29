@@ -209,6 +209,187 @@ func _interaction_approach(vehicle: CharacterBody3D,label: String,maximum_distan
 	metrics[label+"_approach"] = failed
 	return failed
 
+func _route_native_state(point: Vector3) -> Dictionary:
+	var canonical: Dictionary = world.source_frame.to_source_current_live(point)
+	if not canonical.get("ok",false): return {"ok":false,"reason":"source_projection_failed"}
+	var floor_hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(point+Vector3.UP*.12,point-Vector3.UP*.35,1))
+	if floor_hit.is_empty() or floor_hit.normal.y<float(World.PROFILE.min_support_normal_y): return {"ok":false,"reason":"current_native_foot_support_missing"}
+	var shape_node: CollisionShape3D
+	for child: Node in world.player.get_children():
+		if child is CollisionShape3D and child.shape is CapsuleShape3D and not child.disabled: shape_node = child
+	if shape_node==null: return {"ok":false,"reason":"production_capsule_missing"}
+	var probe := PhysicsShapeQueryParameters3D.new()
+	probe.shape = shape_node.shape
+	probe.transform = Transform3D(world.player.global_basis,point)*shape_node.transform
+	probe.collision_mask = Player.COLLIDE_MASK
+	probe.exclude = [world.player.get_rid()]
+	# Reuse the exact existing native floor-contact policy, without rescanning
+	# the complete source inventory for every geometric visibility sample.
+	# Whole-segment source residency is checked once below, fresh per edge.
+	var clearance: String = world.source_runtime._player_clearance(probe,world.player,{"state":"supported"},floor_hit)
+	return {"ok":clearance=="clear","state":{"support":{"state":"supported","collider_instance_id":floor_hit.collider_id,"collider":_collider(floor_hit.collider),"contact_source_xyz":world.source_frame.to_source_current_live(floor_hit.position).source_xyz},"clearance":{"state":clearance},"scope":"native_geometry_only_not_domain_or_residency_claim"},"source_xyz":canonical.source_xyz}
+
+func _ground_route_point(point: Vector3) -> Dictionary:
+	var query := PhysicsRayQueryParameters3D.create(point+Vector3.UP*2.5,point-Vector3.UP*4.0,1)
+	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(query)
+	if hit.is_empty() or hit.normal.y<.65: return {"ok":false,"reason":"no_actual_walkable_support","requested":_v(point)}
+	var shape_node: CollisionShape3D
+	for child: Node in world.player.get_children():
+		if child is CollisionShape3D and child.shape is CapsuleShape3D and not child.disabled: shape_node = child
+	if shape_node==null: return {"ok":false,"reason":"actual_capsule_missing"}
+	var capsule := shape_node.shape as CapsuleShape3D
+	var bottom_offset: float = shape_node.position.y-capsule.height*.5
+	# Analytic upright-capsule support on the actual sampled plane. This is
+	# not a lifted shortcut over low obstacles: use the production shape,
+	# native normal and safe margin, then the unchanged native contact policy.
+	var slope_lift: float = capsule.radius*(1.0/float(hit.normal.y)-1.0)
+	var foot: Vector3 = hit.position+Vector3.UP*(-bottom_offset+slope_lift+world.player.safe_margin)
+	var state: Dictionary = _route_native_state(foot)
+	if not state.get("ok",false): return {"ok":false,"reason":"native_supported_clear_footpoint_refused","requested":_v(point),"detail":state}
+	var canonical: Dictionary = world.source_frame.to_source_current_live(foot)
+	if not canonical.get("ok",false): return {"ok":false,"reason":"source_projection_failed"}
+	var original: Dictionary = world.city_scene.resolve_source_hit(hit)
+	return {"ok":true,"point":foot,"point_xyz":_v(foot),"source_xyz":canonical.source_xyz,"support":_collider(hit.collider),"original_source_hit":original,"normal":_v(hit.normal),"native_state":state.state,"capsule_bottom_offset_m":bottom_offset,"analytic_slope_support_lift_m":slope_lift}
+
+func _native_ground_segment(a: Vector3,b: Vector3) -> Dictionary:
+	var length: float = Vector2(b.x-a.x,b.z-a.z).length()
+	var steps: int = maxi(1,ceili(length/.50))
+	if steps>64: return {"ok":false,"reason":"bounded_segment_over32m","length_m":length}
+	var actor: Player = world.player
+	var shape_node: CollisionShape3D
+	for child: Node in actor.get_children():
+		if child is CollisionShape3D and child.shape is CapsuleShape3D and not child.disabled: shape_node = child
+	if shape_node==null: return {"ok":false,"reason":"actual_capsule_missing"}
+	var samples: Array[Dictionary] = []
+	var previous := Vector3.ZERO
+	for step in range(steps+1):
+		var wanted: Vector3 = a.lerp(b,float(step)/float(steps))
+		var projected: Dictionary = _ground_route_point(wanted)
+		if not projected.get("ok",false): return {"ok":false,"reason":"unsupported_or_occupied_sample","sample":step,"detail":projected,"samples":samples}
+		var current: Vector3 = projected.point
+		if step==0: current = a
+		elif step==steps: current = b
+		var current_state: Dictionary = _route_native_state(current)
+		if not current_state.get("ok",false): return {"ok":false,"reason":"actual_segment_pose_has_no_native_clear_support","sample":step,"detail":current_state,"samples":samples}
+		var sweep := {"clear":true,"safe_fraction":1.0,"unsafe_fraction":1.0}
+		if step>0:
+			var query := PhysicsShapeQueryParameters3D.new()
+			query.shape = shape_node.shape
+			query.transform = Transform3D(actor.global_basis,previous)*shape_node.transform
+			query.margin = actor.safe_margin
+			query.collision_mask = Player.COLLIDE_MASK
+			query.exclude = [actor.get_rid()]
+			var initial: Array[Dictionary] = get_world_3d().direct_space_state.intersect_shape(query,16)
+			if not initial.is_empty():
+				var owners: Array[Dictionary] = []
+				var only_validated_support: bool = initial.size()<16
+				var previous_state: Dictionary = _route_native_state(previous)
+				for overlap: Dictionary in initial:
+					owners.append(_collider(overlap.collider))
+					only_validated_support = only_validated_support and previous_state.get("ok",false) and overlap.collider_id==previous_state.state.support.collider_instance_id
+				if not only_validated_support: return {"ok":false,"reason":"actual_margin_capsule_initial_overlap","sample":step,"owners":owners,"samples":samples}
+				# cast_motion natively ignores initial overlaps. Permit ONLY the
+				# same current support already clear under Runtime's unchanged
+				# floor-contact solver policy; never ignore car/heli/wall overlap.
+			query.motion = current-previous
+			var fractions: PackedFloat32Array = get_world_3d().direct_space_state.cast_motion(query)
+			var clear: bool = fractions.size()==2 and fractions[0]>=.999999
+			sweep = {"clear":clear,"safe_fraction":fractions[0] if fractions.size()==2 else -1.0,"unsafe_fraction":fractions[1] if fractions.size()==2 else -1.0}
+			if not clear: return {"ok":false,"reason":"actual_capsule_sweep_blocked","sample":step,"sweep":sweep,"from":_v(previous),"to":_v(current),"samples":samples}
+		# Ground ray is layer1only, but capsule overlap/sweep uses every actual
+		# player obstacle layer, INCLUDING the parked car and destination heli.
+		samples.append({"source_xyz":current_state.source_xyz,"point_xyz":_v(current),"support":current_state.state.support,"normal":projected.normal,"sweep":sweep})
+		previous = current
+	var start: Dictionary = world.source_frame.to_source_current_live(a)
+	var end: Dictionary = world.source_frame.to_source_current_live(b)
+	if not start.get("ok",false) or not end.get("ok",false): return {"ok":false,"reason":"source_endpoint_invalid","samples":samples}
+	var minimum: Array = start.source_xyz.duplicate(); var maximum: Array = start.source_xyz.duplicate()
+	for sample: Dictionary in samples:
+		for axis in 3:
+			minimum[axis] = minf(float(minimum[axis]),float(sample.source_xyz[axis]))
+			maximum[axis] = maxf(float(maximum[axis]),float(sample.source_xyz[axis]))
+	var center: Array = []; var half := Vector3(.8,2.2,.8)
+	for axis in 3:
+		center.append((float(minimum[axis])+float(maximum[axis]))*.5)
+		half[axis] += (float(maximum[axis])-float(minimum[axis]))*.5
+	if world.source_runtime._resident(center,half).is_empty(): return {"ok":false,"reason":"swept_source_residency_missing","samples":samples}
+	return {"ok":true,"length_m":length,"samples":samples,"source_start":start.source_xyz,"source_end":end.source_xyz,"self_RID_only_exclusion":true,"geometry_or_actor_modified":false}
+
+func _waypoint_approach(vehicle: CharacterBody3D,label: String,maximum_distance: float,direct: Dictionary) -> Dictionary:
+	metrics[label+"_direct_approach_failure"] = direct.duplicate(true)
+	var actor: Player = world.player
+	var nodes: Array[Dictionary] = [{"kind":"actual_start","point":actor.global_position,"source_xyz":world.source_frame.to_source_current_live(actor.global_position).source_xyz}]
+	var hulls: Array[Dictionary] = []
+	# Only the observed parked car supplies bounded detour vertices. It stays
+	# exactly where production braking left it; no collider/pose is changed.
+	for child: Node in world.car.get_children():
+		if not child is CollisionShape3D or not child.shape is BoxShape3D or child.disabled: continue
+		var native: Transform3D = PhysicsServer3D.body_get_state(world.car.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+		var pose: Transform3D = native*child.transform
+		var half: Vector3 = (child.shape as BoxShape3D).size*.5
+		for reserve in [1.25,2.0]:
+			# Reserve includes the unchanged.65m arrival radius, capsule radius,
+			# and turn clearance; every actual post-stop segment is reprobed.
+			for sx in [-1.0,1.0]:
+				for sz in [-1.0,1.0]:
+					var corner: Vector3 = pose*Vector3(sx*(half.x+reserve),0,sz*(half.z+reserve))
+					corner.y = world.car.global_position.y
+					var point: Dictionary = _ground_route_point(corner)
+					hulls.append({"reserve_m":reserve,"corner_sign":[sx,sz],"native_car_center":_v(pose.origin),"box_half":_v(half),"probe":point})
+					if point.get("ok",false): nodes.append({"kind":"native_car_expanded_corner","point":point.point,"source_xyz":point.source_xyz,"reserve_m":reserve})
+		break
+	var target_indices: Array[int] = []
+	for attempt: Dictionary in direct.get("attempts",[]):
+		if not attempt.has("capsule") or not attempt.capsule.clear or float(attempt.get("vehicle_distance_m",INF))>=maximum_distance: continue
+		var raw: Array = attempt.production_exit_candidate
+		var point := Vector3(float(raw[0]),float(raw[1]),float(raw[2]))
+		var probe: Dictionary = _ground_route_point(point)
+		if not probe.get("ok",false): continue
+		target_indices.append(nodes.size())
+		nodes.append({"kind":"production_vehicle_interaction_footpoint","point":probe.point,"source_xyz":probe.source_xyz})
+	if nodes.size()>16 or target_indices.is_empty(): return {"ok":false,"reason":"bounded_native_waypoint_nodes_unavailable","nodes":nodes,"hull_probes":hulls}
+	var edges: Dictionary = {}; var probes: Array[Dictionary] = []
+	for first in nodes.size():
+		for second in range(first+1,nodes.size()):
+			var segment: Dictionary = _native_ground_segment(nodes[first].point,nodes[second].point)
+			probes.append({"from":first,"to":second,"probe":segment})
+			if segment.get("ok",false):
+				if not edges.has(first): edges[first] = []
+				edges[first].append({"to":second,"distance":segment.length_m})
+			var reverse: Dictionary = _native_ground_segment(nodes[second].point,nodes[first].point)
+			probes.append({"from":second,"to":first,"probe":reverse})
+			if reverse.get("ok",false):
+				if not edges.has(second): edges[second] = []
+				edges[second].append({"to":first,"distance":reverse.length_m})
+	var distances: Dictionary = {0:0.0}; var previous: Dictionary = {}; var visited: Dictionary = {}
+	for iteration in nodes.size():
+		var selected := -1; var best := INF
+		for index in nodes.size():
+			if not visited.has(index) and float(distances.get(index,INF))<best: selected = index; best = distances[index]
+		if selected<0: break
+		visited[selected] = true
+		for edge: Dictionary in edges.get(selected,[]):
+			var candidate: float = best+float(edge.distance)
+			if candidate<float(distances.get(edge.to,INF)): distances[edge.to] = candidate; previous[edge.to] = selected
+	var endpoint := -1; var shortest := INF
+	for index: int in target_indices:
+		if float(distances.get(index,INF))<shortest: endpoint = index; shortest = distances[index]
+	var route: Array[int] = []
+	if endpoint>=0:
+		var current: int = endpoint
+		while current!=0 and route.size()<16: route.push_front(current); current = previous.get(current,-1)
+		if current!=0: route.clear()
+	var ok: bool = not route.is_empty() and route.size()<=6
+	var result := {"ok":ok,"reason":"" if ok else "no_bounded_actual_capsule_route","nodes":nodes,"hull_probes":hulls,"edge_probes":probes,"route_indices":route,"planned_distance_m":shortest if endpoint>=0 else -1.0,"method":"actual_ground_projected_capsule_swept_visibility_graph","fixture_car_pose_or_controls_modified":false,"direct_failure_retained":true}
+	if ok:
+		result["point"] = nodes[endpoint].point
+		var waypoints: Array[Vector3] = []
+		for index: int in route: waypoints.append(nodes[index].point)
+		result["waypoints"] = waypoints
+	metrics[label+"_waypoint_route"] = result.duplicate(true)
+	print("[source-world] NATIVE_WAYPOINT_ROUTE ",JSON.stringify({"ok":ok,"nodes":nodes,"route_indices":route,"planned_distance_m":result.planned_distance_m,"direct_failure_retained":true,"edge_probe_count":probes.size()},"",true,true))
+	return result
+
 func _press_interact() -> void:
 	Input.action_press("interact")
 	await get_tree().process_frame
@@ -257,7 +438,7 @@ func _source_world_save_load() -> bool:
 	metrics["real_world_F5_F6"] = {"save_source_pose":saved.context_pose,"restore_event":event,"elapsed_wall_s":float(Time.get_ticks_usec()-started)/1000000.0,"production_restore_outside_continuous_walks":true,"arbitrary_stats_geometry_or_actor_mutations":false,"legacy_existed_before":legacy_existed,"legacy_unchanged":FileAccess.file_exists(meta.legacy_path)==legacy_existed and (not legacy_existed or FileAccess.get_sha256(meta.legacy_path)==legacy_hash)}
 	return failures.is_empty()
 
-func _walk_to(target: Vector3,label: String) -> Dictionary:
+func _walk_to(target: Vector3,label: String,simulation_budget: float = WALK_SIM_BOUND_S) -> Dictionary:
 	_active_walk.clear()
 	_set_phase(label)
 	var start: Vector3 = world.player.global_position
@@ -280,7 +461,7 @@ func _walk_to(target: Vector3,label: String) -> Dictionary:
 		var now: int = Time.get_ticks_usec()
 		_active_walk = {"label":label,"target":_v(target),"distance_m":distance,"remaining_m":remaining,"best_remaining_m":best,"frames":frame_count,"simulation_elapsed_s":_simulation_s-start_sim,"wall_elapsed_s":float(now-started)/1000000.0,"since_progress_sim_s":_simulation_s-progress_sim,"since_progress_wall_s":float(now-progress_wall)/1000000.0,"termination_reason":"running"}
 		if remaining<ARRIVAL_RADIUS_M: reached = true; reason = "arrival"; break
-		if _simulation_s-start_sim>=WALK_SIM_BOUND_S: break
+		if _simulation_s-start_sim>=simulation_budget: break
 		if progress_distance-best>=.10:
 			progress_distance = best; progress_sim = _simulation_s; progress_wall = now
 		if _simulation_s-progress_sim>=2.5: reason = "no_approach_progress_over_2.5_simulation_seconds"; break
@@ -379,12 +560,35 @@ func _run() -> void:
 	var after_exit: Dictionary = world.source_runtime.inspect_player(world.player)
 	check("exited player has fresh native source support",after_exit.get("ok",false) and after_exit.support.state=="supported",after_exit)
 	_set_phase("probe_aircraft_interaction_approach")
+	var parked_car_before: Vector3 = world.car.global_position
 	var heli_approach: Dictionary = _interaction_approach(world.helicopter,"helicopter",Player.INTERACT_RANGE)
+	if not heli_approach.get("ok",false): heli_approach = _waypoint_approach(world.helicopter,"helicopter",Player.INTERACT_RANGE,heli_approach)
 	if not check("aircraft has a native clear physical interaction approach",heli_approach.get("ok",false),heli_approach): _finish(); return
-	var heli_walk: Dictionary = await _walk_to(heli_approach.point,"walk_to_aircraft")
-	if finished: return
+	var points: Array[Vector3] = []
+	if heli_approach.has("waypoints"): points.assign(heli_approach.waypoints)
+	else: points.append(heli_approach.point)
+	var legs: Array[Dictionary] = []
+	var walked := 0.0; var commanded := 0.0
+	var all_reached := true
+	for index in points.size():
+		var before: Dictionary = _native_ground_segment(world.player.global_position,points[index])
+		if not check("actual stopped pose has a fully swept next waypoint segment "+str(index),before.get("ok",false),before):
+			metrics["aircraft_waypoint_execution"] = legs
+			_finish(); return
+		var budget: float = WALK_SIM_BOUND_S-commanded
+		if not check("whole aircraft walk retains original15simulation-second command bound",budget>0.0,commanded): _finish(); return
+		var leg: Dictionary = await _walk_to(points[index],"walk_to_aircraft/leg-"+str(index),budget)
+		if finished: return
+		walked += float(leg.distance_m); commanded += float(leg.commanded_simulation_s)
+		all_reached = all_reached and leg.reached
+		legs.append({"waypoint_source_xyz":world.source_frame.to_source_current_live(points[index]),"actual_segment_revalidation":before,"movement":leg})
+		metrics["aircraft_waypoint_execution"] = legs.duplicate(true)
+		if not leg.reached: break
+	var car_displacement: float = world.car.global_position.distance_to(parked_car_before)
+	var heli_walk := {"reached":all_reached and legs.size()==points.size(),"distance_m":walked,"commanded_simulation_s":commanded,"teleports":0,"legs":legs,"native_stops_between_legs":true,"fixture_car_pose_or_controls_modified":false,"observed_parked_car_displacement_m":car_displacement,"destination_and_car_in_all_capsule_sweeps":true}
 	metrics["continuous_walk_to_aircraft"] = heli_walk
 	if not check("continuous source walk reaches real aircraft",heli_walk.reached and heli_walk.teleports==0,heli_walk): _finish(); return
+	if not check("parked car remains in place throughout native detour",car_displacement<.02,car_displacement): _finish(); return
 	if not check("native player interaction selection reaches intended aircraft",world.player._interaction_target()==world.helicopter): _finish(); return
 	_set_phase("native_aircraft_interact_input")
 	await _press_interact()

@@ -1,0 +1,42 @@
+{
+  "schema": "source_world_native_waypoint_qa_freeze_v1",
+  "created_utc": "2026-10-29T07:49:46.433068+00:00",
+  "retained_world_r3": {
+    "engine_exit_code": 1,
+    "exit_code": 1,
+    "fatal_errors": [],
+    "elapsed_sec": 115.09,
+    "child_reaped": true
+  },
+  "r3_result": {
+    "checks": 29,
+    "failed": 1,
+    "failures": [
+      "aircraft has a native clear physical interaction approach"
+    ],
+    "native_walk_to_car_m": 17.429170664167,
+    "native_drive_m": 11.2641501163598,
+    "flight_reached": false,
+    "observed_blocker": "SingaporePlayerCar in actual approach ray"
+  },
+  "repair": "bounded groundprojected actualcapsule swept directed waypoint graph; reallegreprobe+nativeinput+stops; faileddirectresult retained",
+  "bounds": {
+    "nodes": 16,
+    "selected_legs": 6,
+    "maximum_ground_sample_spacing_m": 0.5,
+    "arrival_radius_m": 0.65,
+    "whole_aircraft_walk_command_sim_s": 15,
+    "whole_test_internal_wall_s": 600,
+    "outer_wall_s": 660
+  },
+  "production_physics_or_geometry_changed": false,
+  "fixture_actor_or_car_pose_velocity_assigned": false,
+  "native_import_and_run": "pending_root",
+  "child_engine_gpu_git_actions": false,
+  "full_goal_or_visual_acceptance": false,
+  "file": {
+    "path": "game/src/systems/fidelity_tests/source_world_test.gd",
+    "bytes": 44495,
+    "sha256": "7a11a9e18fb8e752ec3bbfeb6ac8517daa942ea70b64fef3599ad8f1e4a4dd20"
+  }
+}
