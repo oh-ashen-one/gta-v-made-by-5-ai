@@ -43,11 +43,11 @@ subprocess.run(['/usr/bin/codesign','--force','--sign','-',str(app)],check=True)
 subprocess.run(['/usr/bin/codesign','--verify','--strict','--verbose=2',str(app)],check=True)
 checkpoint=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
 files=[p for p in app.rglob('*') if p.is_file()]
-manifest={'built_utc':datetime.now(timezone.utc).isoformat(),'source_checkpoint':checkpoint,'app':str(app),'kind':'local Studio development snapshot using installed Godot4.7.1','engine_path':str(engine),'engine_version_verified_before_task':'4.7.1.stable.official.a13da4feb','self_contained_engine':False,'native_launch_verified':False,'runtime_check_status':'PENDING_SHARED_GPU_CAPACITY','private_build_only':True,'source_file_sha256':{str(p.relative_to(game)):hashlib.sha256(p.read_bytes()).hexdigest() for p in (game/'src').rglob('*.gd')},'file_count':len(files),'logical_bytes':sum(p.stat().st_size for p in files),'included_preview_spaces':['public hotel lobby','reconstructed guest-floor layout','Tower2Level5 spa layout'],'unfinished':['complete hotel and resort interiors','all1844source-catalogue keys physically allocated/furnished','full source-coordinate city integration','final native/rendered acceptance']}
+manifest={'built_utc':datetime.now(timezone.utc).isoformat(),'source_checkpoint':checkpoint,'app':str(app),'kind':'local Studio development snapshot using installed Godot4.7.1','engine_path':str(engine),'engine_version_verified_before_task':'4.7.1.stable.official.a13da4feb','self_contained_engine':False,'native_launch_verified':False,'runtime_check_status':'DEFERRED_BY_OWNER_NO_ENGINE_OR_GPU_LAUNCH','private_build_only':True,'source_file_sha256':{str(p.relative_to(game)):hashlib.sha256(p.read_bytes()).hexdigest() for p in (game/'src').rglob('*.gd')},'file_count':len(files),'logical_bytes':sum(p.stat().st_size for p in files),'included_preview_spaces':['public hotel lobby','reconstructed guest-floor layout','Tower2Level5 spa layout'],'unfinished':['complete hotel and resort interiors','all1844source-catalogue keys physically allocated/furnished','full source-coordinate city integration','final native/rendered acceptance']}
 (out/'BUILD_MANIFEST.json').write_text(json.dumps(manifest,indent=2)+'\n')
 readme='''# Orchard Reach — Fidelity Milestone
 
-Open **Orchard Reach — Fidelity Milestone.app** on this Mac Studio. This is a private development snapshot using the installed Godot4.7.1 runtime; it is not a portable/notarized release. It runs the copied game content, not the live working tree.
+When you are ready to play after the GPU is free, open **Orchard Reach — Fidelity Milestone.app** on this Mac Studio. This is a private development snapshot using the installed Godot4.7.1 runtime; it is not a portable/notarized release. It runs the copied game content, not the live working tree.
 
 The main city retains its missions, driving and helicopter play. This branch includes the police-floor/damage, helicopter camera/descent and supported-roof fixes. Choose **MBS hotel interior · Preview** from the title menu to walk the lobby, a furnished guest floor and the Level5 spa layout. Press Esc in that preview to change area or return to the city menu. The preview does not write the city's save file.
 
@@ -55,7 +55,7 @@ Controls: WASD move, mouse look, Shift run, Space jump, E interact, right mouse 
 
 The entire source-accurate city and complete hotel are NOT included as finished work. Some interior floors are closed in this preview; the broader source data, room allocations and programme contracts remain preserved on the task branch. These selected interiors are reconstructions, not certified as-built plans.
 
-Native launch and final rendered checks remain pending while the shared GPU guard is occupied. The build manifest will be updated after actual checks; file packaging/signature verification alone is not gameplay proof.
+The owner explicitly deferred all game/engine/GPU launches at this milestone. Native launch and final rendered checks have not run on this snapshot. File packaging/signature verification alone is not gameplay proof; no automatic test or game launch is scheduled.
 '''
 (out/'START_HERE.md').write_text(readme)
 print(json.dumps({'app':str(app),'file_count':manifest['file_count'],'logical_bytes':manifest['logical_bytes'],'native_launch_verified':False}))

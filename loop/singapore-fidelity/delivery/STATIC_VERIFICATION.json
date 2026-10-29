@@ -1,0 +1,18 @@
+{
+  "gdscript_grammar": "PASS for hotel_preview.gd/main.gd/hud.gd using gdtoolkit4.5.0, not native semantic validation",
+  "launcher_clang_syntax_warnings": "PASS -fsyntax-only -Wall -Wextra",
+  "packager_python_compile": "PASS",
+  "literal_transitive_resource_existence": {
+    "examined": 22,
+    "missing": 0,
+    "scope": "literal preload/load/scene paths only"
+  },
+  "native_launch": "NOT_RUN_OWNER_DEFERRED",
+  "rendered_acceptance": "NOT_RUN_OWNER_DEFERRED",
+  "no_engine_or_gpu_launched": true,
+  "preview_state_restore_fields": {
+    "declared": 17,
+    "unknown_fields": 0
+  },
+  "events_signature_check": "notify(text:String,kind:String) and interaction_prompt(text:String) match"
+}
