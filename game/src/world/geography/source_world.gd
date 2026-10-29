@@ -156,7 +156,7 @@ func boot() -> Dictionary:
 	if not base.get("ok",false) or base.get("state") != "sampled_dem": return _fail("No declared DEM reference at actual hotel source anchor")
 	_datum = {"base_elevation_m":float(base.height_m_egm96),"base_elevation_provenance":"COARSE EGM96 DEM sampled at actual source hotel anchor; reconstructed level datum, NOT current surveyed L1","source_anchor_xyz":HOTEL_ANCHOR.duplicate(),"dem_identity_sha256":DEM_SHA,"dem_sample":base.duplicate(true)}
 	if not _prepare_architecture_inventory(): return _fail("MBS source/reconstruction inventory could not bind transition guard")
-	var geometry := {"schema":"singapore_source_world_assembly_v1","snapshot_sha256":SNAPSHOT,"city_sha256":CITY_SHA,"terrain_sha256":TERRAIN_SHA,"roads_sha256":ROADS_SHA,"root_masks_sha256":MASKS_SHA,"mbs_inventory_sha256":_architecture_inventory_sha,"mbs_reconstruction_base":_datum.base_elevation_m,"world_y_policy":Y_POLICY,"registry_policy":"non_dry_exterior_tile_support_ids_actual_native_triangles"}
+	var geometry := {"schema":"singapore_source_world_assembly_v1","snapshot_sha256":SNAPSHOT,"city_sha256":CITY_SHA,"terrain_sha256":TERRAIN_SHA,"roads_sha256":ROADS_SHA,"root_masks_sha256":MASKS_SHA,"mbs_inventory_sha256":_architecture_inventory_sha,"mbs_reconstruction_base":_datum.base_elevation_m,"world_y_policy":Y_POLICY,"registry_policy":"non_dry_exterior_tile_support_ids_actual_native_triangles","city_collision_representation":"exact_static_batches_32768_v1"}
 	var vertical := {"dem_identity_sha256":DEM_SHA,"world_y_policy":Y_POLICY,"mbs_reference":_datum}
 	source_context = Context.new()
 	if not source_context.configure(source_frame,_digest(geometry),_digest(vertical),PROFILE,get_world_3d()): return _fail(source_context.last_error)
@@ -174,7 +174,7 @@ func boot() -> Dictionary:
 	city_scene = City.new()
 	city_scene.name = "ActualSourceBuildings"
 	add_child(city_scene)
-	if not city_scene.configure(source_frame,_materials.material_for,_retain_tile,9,16,{"geometry_identity_sha256":CITY_SHA,"snapshot_manifest_sha256":SNAPSHOT}): return _fail("City scene authority rejected")
+	if not city_scene.configure(source_frame,_materials.material_for,_retain_tile,9,16,{"geometry_identity_sha256":CITY_SHA,"snapshot_manifest_sha256":SNAPSHOT},{"collision_mode":"static_batches"}): return _fail("City scene authority rejected")
 	terrain_scene = Terrain.new()
 	terrain_scene.name = "ActualSourceTerrain"
 	add_child(terrain_scene)
@@ -258,10 +258,14 @@ func _collect_bodies(node: Node, bodies: Array) -> void:
 	for child: Node in node.get_children(): _collect_bodies(child,bodies)
 
 func _source_body_id(body: StaticBody3D, index: int) -> String:
+	if body.has_meta("source_city_batch"):
+		var batch: Dictionary = body.get_meta("source_city_batch")
+		return "city-batch/"+String(batch.tile_key)+"/"+str(batch.batch_index)
 	return String(body.get_meta("source_fragment_id",body.get_meta("source_way",body.get_meta("source_feature_id","body-"+str(index)))))
 
 ## Envelopes identify a registry, never dry terrain or physical support. Only
-## stamped current native triangles can support a queried actor. Split rather
+## stamped current native triangles can support a queried actor. Original
+## feature IDs in collision batches resolve through the native face lookup. Split rather
 ## than discard source IDs when the context's4096support budget is reached.
 func _register_group(key: String, group: Dictionary) -> Dictionary:
 	var bodies: Array = group.bodies
@@ -278,7 +282,7 @@ func _register_group(key: String, group: Dictionary) -> Dictionary:
 			var id := _source_body_id(body,index)+"@"+key+"/"+str(index)
 			ids.append(id)
 			supports.append({"body":body,"feature_id":feature,"floor_id":"native_exterior_geometry","support_id":id})
-		var floor := {"feature_id":feature,"floor_id":"native_exterior_geometry","geometry_sha256":group.identity,"support_ids":ids,"volumes":[{"volume_id":"identity-envelope-not-land","min_xyz":[tx*1000.0-48.0,-512.0,tz*1000.0-48.0],"max_xyz":[(tx+1)*1000.0+48.0,2000.0,(tz+1)*1000.0+48.0],"dry":false}],"provenance":"Exact native source triangles and original per-body source IDs; nondry identity envelope does NOT certify ground footprint, water absence or current surveyed elevation"}
+		var floor := {"feature_id":feature,"floor_id":"native_exterior_geometry","geometry_sha256":group.identity,"support_ids":ids,"volumes":[{"volume_id":"identity-envelope-not-land","min_xyz":[tx*1000.0-48.0,-512.0,tz*1000.0-48.0],"max_xyz":[(tx+1)*1000.0+48.0,2000.0,(tz+1)*1000.0+48.0],"dry":false}],"provenance":"Native source triangles; original identities via body metadata or native shape/face lookup. Nondry envelope is not ground, hydrology or survey proof."}
 		if not source_context.register_floor(floor): return {"ok":false,"reason":source_context.last_error}
 	return {"ok":true,"supports":supports}
 
@@ -480,7 +484,12 @@ func _ray_surface(source_xz: Array, expected_y: float, allowance: float = 6.0) -
 	if hit.is_empty() or hit.normal.y < .8: return {"ok":false}
 	var canonical: Dictionary = source_frame.to_source_current_live(hit.position)
 	if not canonical.ok: return {"ok":false}
-	return {"ok":true,"position":hit.position,"source_xyz":canonical.source_xyz,"normal":hit.normal,"body":hit.collider,"source_id":hit.collider.get_meta("source_way",hit.collider.get_meta("source_feature_id",""))}
+	var source_id: String = hit.collider.get_meta("source_way",hit.collider.get_meta("source_feature_id",""))
+	var source_lookup: Dictionary = city_scene.resolve_source_hit(hit) if is_instance_valid(city_scene) else {}
+	if source_lookup.get("ok",false): source_id = source_lookup.feature_id
+	elif hit.collider.has_meta("source_city_batch"): return {"ok":false,"reason":"Native batch face source identity unresolved"}
+	return {"ok":true,"position":hit.position,"source_xyz":canonical.source_xyz,"normal":hit.normal,"body":hit.collider,"source_id":source_id,"native_source_lookup":source_lookup}
+
 
 func _clear_box(foot: Vector3, size: Vector3, center_y: float) -> bool:
 	var shape := BoxShape3D.new()
@@ -553,7 +562,7 @@ func _spawn_actors() -> Dictionary:
 	return {"ok":true}
 
 func _surface_receipt(hit: Dictionary) -> Dictionary:
-	return {"source_xyz":hit.source_xyz.duplicate(),"support_source_id":hit.source_id,"normal_xyz":[hit.normal.x,hit.normal.y,hit.normal.z],"native_collision_instance_id":hit.body.get_instance_id(),"surveyed_or_hydrology_verified":false}
+	return {"source_xyz":hit.source_xyz.duplicate(),"support_source_id":hit.source_id,"normal_xyz":[hit.normal.x,hit.normal.y,hit.normal.z],"native_collision_instance_id":hit.body.get_instance_id(),"native_source_lookup":hit.get("native_source_lookup",{}).duplicate(true),"surveyed_or_hydrology_verified":false}
 
 func _retain_tile(_key: String,_receipt: Dictionary) -> bool:
 	# Initial bounded assembly is pinned. Root will replace this with the atomic
