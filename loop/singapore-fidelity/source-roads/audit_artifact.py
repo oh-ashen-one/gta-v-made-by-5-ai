@@ -12,11 +12,15 @@ def read(root,descriptor):
     return json.loads(raw)
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--artifact',type=Path,default=Path('/private/tmp/singapore-fidelity/source-roads/candidate-r2'));parser.add_argument('--output',type=Path,default=Path(__file__).parent/'COUNTRY_AUDIT_R2.json');args=parser.parse_args()
-    source=Path('/private/tmp/singapore-fidelity/city-geometry/candidate-r2')
+    parser=argparse.ArgumentParser();parser.add_argument('--artifact',type=Path,default=Path('/private/tmp/singapore-fidelity/source-roads/candidate-r2'));parser.add_argument('--output',type=Path,default=Path(__file__).parent/'COUNTRY_AUDIT_R2.json')
+    parser.add_argument('--source',type=Path,default=Path('/private/tmp/singapore-fidelity/city-geometry/candidate-r2'),help='Complete pinned source-city artifact, including original catalogs; metadata-only archives are insufficient')
+    args=parser.parse_args()
+    source=args.source
     target=args.artifact
     source_identity=json.loads((source/'identity.json').read_bytes());sm=read(source,source_identity['manifest'])
     identity_raw=(target/'identity.json').read_bytes();identity=json.loads(identity_raw);manifest=read(target,identity['manifest'])
+    if digest((source/'identity.json').read_bytes())!=manifest['city_identity_sha256']:
+        raise ValueError('Audit source city does not match the artifact lineage')
     graphs={d['owner']:d for d in manifest['graph_chunks']};count=0;segments=0;max_axis_error=0.;max_node=0
     started=time.monotonic()
     for descriptor in sm['catalogs']:

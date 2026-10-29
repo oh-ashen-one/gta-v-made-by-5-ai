@@ -1,0 +1,387 @@
+{
+  "country_r3_generated": false,
+  "height_equalities_proposed": 13,
+  "mandai_minimum_interior_y": 36.691913492094244,
+  "mandai_tunnel_portal_heights": [
+    40.245397391602644,
+    40.245397391602644
+  ],
+  "maximum_repaired_delta_m": 0.0,
+  "native_or_scene_tested": false,
+  "original_edges_unchanged": true,
+  "original_fixture_source_unchanged": true,
+  "profile": {
+    "DEM_reference": "EGM96 metres; separate preferred terrain reference, not road survey",
+    "bridge_clearance_game_m_per_layer": 6.0,
+    "car_max_grade_game": 0.12,
+    "conflict_policy": "reject",
+    "conflicting_game_constraints": 0,
+    "foot_max_grade_game": 0.25,
+    "maximum_allowance_error_m": 3.552713678800501e-15,
+    "maximum_height_only_constraint_error_m": 0.0,
+    "status": "GAME_Lipschitz_cut_fill_bridge6m_tunnel5m_NOT_SURVEYED",
+    "steps_max_grade_game": 0.7,
+    "terrain_cut_fill_required_for_physical_integration": true,
+    "tunnel_depth_game_m_per_layer": 5.0,
+    "tunnel_depth_unresolved_where_bridge_priority_conflicts": false,
+    "vertices": 792668
+  },
+  "proposals": {
+    "way/1366486110": {
+      "equalities": [
+        [
+          144411,
+          144421
+        ],
+        [
+          144411,
+          144422
+        ]
+      ],
+      "protected": [],
+      "reasons": [
+        {
+          "hub_index": 0,
+          "kind": "SAME_WAY_FLAT_APRON_OVERLAP",
+          "overlap_m2": 27.690937195181007,
+          "source_indices": [
+            11
+          ]
+        },
+        {
+          "hub_index": 0,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 2.844598931401842,
+          "source_indices": [
+            10,
+            11
+          ],
+          "source_station_interval": [
+            451.3487929716842,
+            452.5053128472167
+          ]
+        }
+      ],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/1453057757": {
+      "equalities": [],
+      "protected": [],
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/1453057758": {
+      "equalities": [
+        [
+          396353,
+          396354
+        ]
+      ],
+      "protected": [
+        {
+          "continuation_grades": [
+            [
+              "[\"tunnel\",-1,\"\"]"
+            ],
+            [
+              "[\"surface\",1,\"\"]"
+            ]
+          ],
+          "inferred_height_difference_m": 4.968220851106032,
+          "kind": "DISTINCT_CONTINUATION_GRADES",
+          "overlap_m2": 5.589762071675039,
+          "source_indices": [
+            0,
+            13
+          ]
+        }
+      ],
+      "reasons": [
+        {
+          "hub_index": 13,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 0.21739388029098383,
+          "source_indices": [
+            12,
+            13
+          ],
+          "source_station_interval": [
+            55.86974370264574,
+            56.21151082073029
+          ]
+        }
+      ],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/1453057759": {
+      "equalities": [],
+      "protected": [],
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/1501294999": {
+      "equalities": [],
+      "protected": [],
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/28382569": {
+      "equalities": [
+        [
+          338649,
+          338650
+        ],
+        [
+          338649,
+          338651
+        ],
+        [
+          338649,
+          338652
+        ],
+        [
+          338650,
+          338652
+        ],
+        [
+          338651,
+          338652
+        ]
+      ],
+      "protected": [],
+      "reasons": [
+        {
+          "hub_index": 0,
+          "kind": "SAME_WAY_FLAT_APRON_OVERLAP",
+          "overlap_m2": 1.405904819793996,
+          "source_indices": [
+            3
+          ]
+        },
+        {
+          "hub_index": 0,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 13.880455506039674,
+          "source_indices": [
+            0,
+            1
+          ],
+          "source_station_interval": [
+            0.0,
+            2.544791490476207
+          ]
+        },
+        {
+          "hub_index": 3,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 0.3401535956680306,
+          "source_indices": [
+            0,
+            1
+          ],
+          "source_station_interval": [
+            1.83433806581336,
+            2.3788088907512153
+          ]
+        },
+        {
+          "hub_index": 0,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 0.10137399242402467,
+          "source_indices": [
+            1,
+            2
+          ],
+          "source_station_interval": [
+            3.199999999999914,
+            3.2498805823033505
+          ]
+        },
+        {
+          "hub_index": 3,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 0.17769751417550073,
+          "source_indices": [
+            1,
+            2
+          ],
+          "source_station_interval": [
+            3.1999999999999345,
+            3.249880582303338
+          ]
+        },
+        {
+          "hub_index": 3,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 9.048854485892349,
+          "source_indices": [
+            2,
+            3
+          ],
+          "source_station_interval": [
+            4.80163241530906,
+            6.449880582303324
+          ]
+        }
+      ],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/639421794": {
+      "equalities": [],
+      "protected": [],
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/677587600": {
+      "equalities": [],
+      "protected": [],
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/718704063": {
+      "equalities": [
+        [
+          791776,
+          791897
+        ]
+      ],
+      "protected": [],
+      "reasons": [
+        {
+          "hub_index": 0,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 35.26810512676842,
+          "source_indices": [
+            0,
+            1
+          ],
+          "source_station_interval": [
+            0.0,
+            4.784663783092891
+          ]
+        },
+        {
+          "hub_index": 1,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 35.26810512676842,
+          "source_indices": [
+            0,
+            1
+          ],
+          "source_station_interval": [
+            5.942209060378208,
+            10.7268728434711
+          ]
+        }
+      ],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/718704069": {
+      "equalities": [
+        [
+          791776,
+          792666
+        ],
+        [
+          791776,
+          792667
+        ],
+        [
+          791776,
+          792668
+        ],
+        [
+          792664,
+          792665
+        ]
+      ],
+      "protected": [],
+      "reasons": [
+        {
+          "hub_index": 0,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 35.268105126768276,
+          "source_indices": [
+            0,
+            1
+          ],
+          "source_station_interval": [
+            0.0,
+            4.719574892100872
+          ]
+        },
+        {
+          "hub_index": 5,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 0.15615881153460903,
+          "source_indices": [
+            2,
+            3
+          ],
+          "source_station_interval": [
+            27.39051291192451,
+            27.852508325916332
+          ]
+        },
+        {
+          "hub_index": 5,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 2.1386266303472903,
+          "source_indices": [
+            3,
+            4
+          ],
+          "source_station_interval": [
+            28.75807368687054,
+            29.502771438861103
+          ]
+        },
+        {
+          "hub_index": 5,
+          "kind": "LOCAL_STRUCTURED_CELL_INTRUDES_FLAT_APRON",
+          "overlap_m2": 32.18222316589414,
+          "source_indices": [
+            4,
+            5
+          ],
+          "source_station_interval": [
+            30.523629758703184,
+            34.72974281947562
+          ]
+        }
+      ],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    }
+  },
+  "protected_ramp_comparisons": 16,
+  "protected_ramp_mesh_multi_level_height_delta_m": 4.9682207107543945,
+  "protected_ramp_portal_heights": [
+    19.034393572962514,
+    14.066172721856482
+  ],
+  "recorded_at_utc": "2026-10-29T05:42:35.691016+00:00",
+  "repaired_measured_comparisons": 26,
+  "scope": "Exact measured outlier source records and selected source-edge subset; miniature solver uses existing inferred Y as preferred starting profile, not a complete country/global DEM solve",
+  "sources_sha256": {
+    "country-r2-records/targeted-profile-fixture.json": "50e23c4adf37791b8f7357e13264f58ed32aa1b2610a7a5e5ac44bc5e625a933",
+    "profile_overlap.py": "c0e4e04ae1bb8722fc398aaf421fe56d0b19343f20e683d236d0a696e2022bd3",
+    "test_profile_overlap.py": "987c6de157d7f014a527aa6724637a1531f82ac472f6279963bf05dee809353b"
+  },
+  "status": "PASS_TARGETED_CPU_PROTOTYPE_NOT_COUNTRY_OR_NATIVE_ACCEPTANCE",
+  "tests_observed": {
+    "command": "python -B -m unittest discover -s loop/singapore-fidelity/source-roads -p test_profile_overlap.py -v",
+    "failed": 0,
+    "passed": 10,
+    "seconds": 2.537
+  }
+}

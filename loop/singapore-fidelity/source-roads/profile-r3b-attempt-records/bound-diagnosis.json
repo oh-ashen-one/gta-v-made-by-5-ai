@@ -1,0 +1,752 @@
+{
+  "status": "GLOBAL_BOUND_REJECTION_RETAINED_NO_ARTIFACT",
+  "vertices": [
+    {
+      "after": [
+        792152,
+        7233002743,
+        "[\"tunnel\",-1,\"\"]",
+        1452.3068,
+        5550.1392,
+        16.61307896512951,
+        null,
+        11.61307896512951,
+        19.589464979434826
+      ],
+      "before": [
+        792152,
+        7233002743,
+        "[\"tunnel\",-1,\"\"]",
+        1452.3068,
+        5550.1392,
+        16.61307896512951,
+        null,
+        11.61307896512951,
+        19.574572319360524
+      ],
+      "v": 792152,
+      "ways": [
+        {
+          "id": "way/503919320",
+          "policy": {
+            "grade": {
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_layer": "-1",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "status": "source_layer_ordinal_NOT_metric_height",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED"
+            },
+            "modes": {
+              "bicycle": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "car": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "foot": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              }
+            },
+            "multilingual_names": {},
+            "traffic_side": "left_GAME_policy",
+            "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+            "width": {
+              "footpath_game_m": 2.0,
+              "highway": "service",
+              "lane_width_game_m": 3.2,
+              "metres": 3.2,
+              "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+              "unusable_width_tag": null
+            }
+          },
+          "raw": {
+            "id": "way/503919320",
+            "name": null,
+            "node_ids": [
+              7233002743,
+              1833925811,
+              10814755587,
+              1833925807
+            ],
+            "original_order_preserved": true,
+            "source_bounds_xz": [
+              1452.3068,
+              5519.3339,
+              1483.9316,
+              5550.1392
+            ],
+            "source_feature_sha256": "bd8da2947a48c3ad0153032fb823d8fbb15a5a7ecfaf228aed1226ea9638df75",
+            "source_geometry_sha256": "39891f8ed48a834226978abb1848f1ad9a951cba4ea21c3c331d1395b3dd810b",
+            "source_version": 5,
+            "tags": {
+              "highway": "service",
+              "layer": "-1",
+              "service": "driveway",
+              "surface": "asphalt",
+              "tunnel": "building_passage"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "after": [
+        792153,
+        1833925811,
+        "[\"tunnel\",-1,\"\"]",
+        1463.9948,
+        5535.5489,
+        17.148133295863158,
+        null,
+        12.148133295863158,
+        21.618378183120512
+      ],
+      "before": [
+        792153,
+        1833925811,
+        "[\"tunnel\",-1,\"\"]",
+        1463.9948,
+        5535.5489,
+        17.148133295863158,
+        null,
+        12.148133295863158,
+        21.60348552304621
+      ],
+      "v": 792153,
+      "ways": [
+        {
+          "id": "way/503919320",
+          "policy": {
+            "grade": {
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_layer": "-1",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "status": "source_layer_ordinal_NOT_metric_height",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED"
+            },
+            "modes": {
+              "bicycle": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "car": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "foot": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              }
+            },
+            "multilingual_names": {},
+            "traffic_side": "left_GAME_policy",
+            "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+            "width": {
+              "footpath_game_m": 2.0,
+              "highway": "service",
+              "lane_width_game_m": 3.2,
+              "metres": 3.2,
+              "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+              "unusable_width_tag": null
+            }
+          },
+          "raw": {
+            "id": "way/503919320",
+            "name": null,
+            "node_ids": [
+              7233002743,
+              1833925811,
+              10814755587,
+              1833925807
+            ],
+            "original_order_preserved": true,
+            "source_bounds_xz": [
+              1452.3068,
+              5519.3339,
+              1483.9316,
+              5550.1392
+            ],
+            "source_feature_sha256": "bd8da2947a48c3ad0153032fb823d8fbb15a5a7ecfaf228aed1226ea9638df75",
+            "source_geometry_sha256": "39891f8ed48a834226978abb1848f1ad9a951cba4ea21c3c331d1395b3dd810b",
+            "source_version": 5,
+            "tags": {
+              "highway": "service",
+              "layer": "-1",
+              "service": "driveway",
+              "surface": "asphalt",
+              "tunnel": "building_passage"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "after": [
+        792154,
+        10814755587,
+        "[\"tunnel\",-1,\"\"]",
+        1465.6202,
+        5534.2246,
+        17.273789171679617,
+        null,
+        12.273789171679617,
+        21.847953664365612
+      ],
+      "before": [
+        792154,
+        10814755587,
+        "[\"tunnel\",-1,\"\"]",
+        1465.6202,
+        5534.2246,
+        17.273789171679617,
+        null,
+        12.273789171679617,
+        21.83306100429131
+      ],
+      "v": 792154,
+      "ways": [
+        {
+          "id": "way/503919320",
+          "policy": {
+            "grade": {
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_layer": "-1",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "status": "source_layer_ordinal_NOT_metric_height",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED"
+            },
+            "modes": {
+              "bicycle": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "car": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "foot": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              }
+            },
+            "multilingual_names": {},
+            "traffic_side": "left_GAME_policy",
+            "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+            "width": {
+              "footpath_game_m": 2.0,
+              "highway": "service",
+              "lane_width_game_m": 3.2,
+              "metres": 3.2,
+              "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+              "unusable_width_tag": null
+            }
+          },
+          "raw": {
+            "id": "way/503919320",
+            "name": null,
+            "node_ids": [
+              7233002743,
+              1833925811,
+              10814755587,
+              1833925807
+            ],
+            "original_order_preserved": true,
+            "source_bounds_xz": [
+              1452.3068,
+              5519.3339,
+              1483.9316,
+              5550.1392
+            ],
+            "source_feature_sha256": "bd8da2947a48c3ad0153032fb823d8fbb15a5a7ecfaf228aed1226ea9638df75",
+            "source_geometry_sha256": "39891f8ed48a834226978abb1848f1ad9a951cba4ea21c3c331d1395b3dd810b",
+            "source_version": 5,
+            "tags": {
+              "highway": "service",
+              "layer": "-1",
+              "service": "driveway",
+              "surface": "asphalt",
+              "tunnel": "building_passage"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "after": [
+        792155,
+        1833925807,
+        "[\"tunnel\",-1,\"\"]",
+        1483.9316,
+        5519.3339,
+        16.641106030316898,
+        null,
+        11.641106030316898,
+        24.485427344388757
+      ],
+      "before": [
+        792155,
+        1833925807,
+        "[\"tunnel\",-1,\"\"]",
+        1483.9316,
+        5519.3339,
+        16.641106030316898,
+        null,
+        11.641106030316898,
+        24.470534684314455
+      ],
+      "v": 792155,
+      "ways": [
+        {
+          "id": "way/503919320",
+          "policy": {
+            "grade": {
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_layer": "-1",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "status": "source_layer_ordinal_NOT_metric_height",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED"
+            },
+            "modes": {
+              "bicycle": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "car": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "foot": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              }
+            },
+            "multilingual_names": {},
+            "traffic_side": "left_GAME_policy",
+            "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+            "width": {
+              "footpath_game_m": 2.0,
+              "highway": "service",
+              "lane_width_game_m": 3.2,
+              "metres": 3.2,
+              "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+              "unusable_width_tag": null
+            }
+          },
+          "raw": {
+            "id": "way/503919320",
+            "name": null,
+            "node_ids": [
+              7233002743,
+              1833925811,
+              10814755587,
+              1833925807
+            ],
+            "original_order_preserved": true,
+            "source_bounds_xz": [
+              1452.3068,
+              5519.3339,
+              1483.9316,
+              5550.1392
+            ],
+            "source_feature_sha256": "bd8da2947a48c3ad0153032fb823d8fbb15a5a7ecfaf228aed1226ea9638df75",
+            "source_geometry_sha256": "39891f8ed48a834226978abb1848f1ad9a951cba4ea21c3c331d1395b3dd810b",
+            "source_version": 5,
+            "tags": {
+              "highway": "service",
+              "layer": "-1",
+              "service": "driveway",
+              "surface": "asphalt",
+              "tunnel": "building_passage"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "after": [
+        792265,
+        5174992061,
+        "[\"tunnel\",-1,\"\"]",
+        1464.8777,
+        5670.7578,
+        15.411298028976116,
+        null,
+        10.411298028976116,
+        11.512138460572142
+      ],
+      "before": [
+        792265,
+        5174992061,
+        "[\"tunnel\",-1,\"\"]",
+        1464.8777,
+        5670.7578,
+        15.411298028976116,
+        null,
+        10.411298028976116,
+        11.49724580049784
+      ],
+      "v": 792265,
+      "ways": [
+        {
+          "id": "way/533408850",
+          "policy": {
+            "grade": {
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_layer": "-1",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "status": "source_layer_ordinal_NOT_metric_height",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED"
+            },
+            "modes": {
+              "bicycle": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "car": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              },
+              "foot": {
+                "access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "backward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                },
+                "bits": 3,
+                "direction": {
+                  "bits": 3,
+                  "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+                },
+                "forward_access": {
+                  "highway": "service",
+                  "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+                  "state": "allowed"
+                }
+              }
+            },
+            "multilingual_names": {},
+            "traffic_side": "left_GAME_policy",
+            "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+            "width": {
+              "footpath_game_m": 2.0,
+              "highway": "service",
+              "lane_width_game_m": 3.2,
+              "metres": 3.2,
+              "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+              "unusable_width_tag": null
+            }
+          },
+          "raw": {
+            "id": "way/533408850",
+            "name": null,
+            "node_ids": [
+              5174992061,
+              6189207386
+            ],
+            "original_order_preserved": true,
+            "source_bounds_xz": [
+              1453.0014,
+              5670.7578,
+              1464.8777,
+              5714.1838
+            ],
+            "source_feature_sha256": "8cd9cbc101d03132b390a087fae2b3d10fa5275c00e722a01cdd369dbff4104b",
+            "source_geometry_sha256": "77272249e3135b9e771c79b48f96afc6d6c3f099442fa8c5716e899920a56986",
+            "source_version": 2,
+            "tags": {
+              "highway": "service",
+              "layer": "-1",
+              "surface": "asphalt",
+              "tunnel": "yes"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

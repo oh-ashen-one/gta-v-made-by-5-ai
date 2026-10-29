@@ -1,0 +1,97 @@
+{
+  "status": "ESTIMATE_ONLY_NOT_PHYSICAL_COMPLETION",
+  "source_identity": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+  "counts": {
+    "source_ways": 257845,
+    "eligible_physical_ways": 147184,
+    "structure_surface": 143663,
+    "structure_bridge": 1672,
+    "same_R5_noncar_or_unresolved_access_direction_not_physically_selected": 110478,
+    "structure_tunnel": 1849,
+    "same_R5_level_requires_floor_registry_not_selected": 183
+  },
+  "candidate_1km_tiles_bbox_upper_estimate": 768,
+  "candidate_way_tile_pairs_bbox_upper_estimate": 160984,
+  "maximum_candidates_per_tile": 1013,
+  "maximum_bbox_tiles_for_one_way": 16,
+  "largest_tiles": [
+    [
+      "-3_-1",
+      1013
+    ],
+    [
+      "-2_-1",
+      829
+    ],
+    [
+      "-4_0",
+      828
+    ],
+    [
+      "-6_0",
+      776
+    ],
+    [
+      "-3_-4",
+      774
+    ],
+    [
+      "0_2",
+      723
+    ],
+    [
+      "-12_-5",
+      702
+    ],
+    [
+      "-8_-3",
+      699
+    ],
+    [
+      "-6_-1",
+      688
+    ],
+    [
+      "0_0",
+      687
+    ],
+    [
+      "-2_1",
+      658
+    ],
+    [
+      "-7_16",
+      653
+    ],
+    [
+      "-12_-6",
+      652
+    ],
+    [
+      "-5_0",
+      650
+    ],
+    [
+      "-4_-1",
+      647
+    ]
+  ],
+  "source_car_way_scale_over_core": 21.393023255813954,
+  "estimated_triangles_from_R5_mean": 7014173,
+  "rough_runtime_minutes": {
+    "physical_worker": 34,
+    "streamed_audits": 15
+  },
+  "proposed_limits": {
+    "rss_bytes": 2147483648,
+    "cpu_seconds_per_worker": 3600,
+    "wall_seconds_per_worker": 7200,
+    "one_physical_tile_in_memory": true,
+    "tile_file_bytes": 33554432,
+    "partition_vertices": 180000
+  },
+  "frozen_R5_compiler_change_required": false,
+  "new_wrapper_needed": "Existing export collects whole batch and scans all ways per tile; wrapper indexes segment envelopes then streams per tile, reusing exact frozen ribbon/profile",
+  "scope": "Same R5 car-permitted/no-indoor-level policy country-wide. Noncar/conditional/restricted/indoor paths remain fully in graph, not claimed physical. Whole original ways retained; cross-border extensions do not assert territory/land.",
+  "estimate_elapsed_seconds": 20.156039541994687
+}

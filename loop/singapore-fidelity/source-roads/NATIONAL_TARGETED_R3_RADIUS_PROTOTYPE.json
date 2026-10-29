@@ -1,0 +1,354 @@
+{
+  "corrected_measured_comparisons": 26,
+  "final_proposals": {
+    "way/1366486110": {
+      "construction_guard_m": 0.001,
+      "equalities": [
+        [
+          144411,
+          144422
+        ]
+      ],
+      "max_plateau_arc_radius_m": 128.0,
+      "protected": [],
+      "radius_overrides": {},
+      "reasons": [
+        {
+          "hub_index": 0,
+          "kind": "SAME_WAY_FLAT_APRON_OVERLAP",
+          "overlap_m2": 27.690937195181007,
+          "source_indices": [
+            11
+          ]
+        }
+      ],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/1453057757": {
+      "construction_guard_m": 0.001,
+      "equalities": [],
+      "max_plateau_arc_radius_m": 128.0,
+      "protected": [],
+      "radius_overrides": {},
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/1453057758": {
+      "construction_guard_m": 0.001,
+      "equalities": [],
+      "max_plateau_arc_radius_m": 128.0,
+      "protected": [
+        {
+          "continuation_grades": [
+            [
+              "[\"tunnel\",-1,\"\"]"
+            ],
+            [
+              "[\"surface\",1,\"\"]"
+            ]
+          ],
+          "inferred_height_difference_m": 4.968220851106032,
+          "kind": "DISTINCT_CONTINUATION_GRADES",
+          "overlap_m2": 5.589762071675039,
+          "source_indices": [
+            0,
+            13
+          ]
+        }
+      ],
+      "radius_overrides": {},
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/1453057759": {
+      "construction_guard_m": 0.001,
+      "equalities": [],
+      "max_plateau_arc_radius_m": 128.0,
+      "protected": [],
+      "radius_overrides": {},
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/1501294999": {
+      "construction_guard_m": 0.001,
+      "equalities": [],
+      "max_plateau_arc_radius_m": 128.0,
+      "protected": [],
+      "radius_overrides": {},
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/28382569": {
+      "construction_guard_m": 0.001,
+      "equalities": [
+        [
+          338649,
+          338652
+        ]
+      ],
+      "max_plateau_arc_radius_m": 128.0,
+      "protected": [],
+      "radius_overrides": {},
+      "reasons": [
+        {
+          "hub_index": 0,
+          "kind": "SAME_WAY_FLAT_APRON_OVERLAP",
+          "overlap_m2": 1.405904819793996,
+          "source_indices": [
+            3
+          ]
+        }
+      ],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/639421794": {
+      "construction_guard_m": 0.001,
+      "equalities": [],
+      "max_plateau_arc_radius_m": 128.0,
+      "protected": [],
+      "radius_overrides": {},
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/677587600": {
+      "construction_guard_m": 0.001,
+      "equalities": [],
+      "max_plateau_arc_radius_m": 128.0,
+      "protected": [],
+      "radius_overrides": {},
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/718704063": {
+      "construction_guard_m": 0.001,
+      "equalities": [],
+      "max_plateau_arc_radius_m": 128.0,
+      "protected": [],
+      "radius_overrides": {},
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    },
+    "way/718704069": {
+      "construction_guard_m": 0.001,
+      "equalities": [],
+      "max_plateau_arc_radius_m": 128.0,
+      "protected": [],
+      "radius_overrides": {},
+      "reasons": [],
+      "source_xz_tags_ids_navigation_mutated": false,
+      "status": "HEIGHT_ONLY_PROPOSALS_NOT_APPLIED"
+    }
+  },
+  "geometry_fixed_point_history": [
+    {
+      "changed_hubs": 3,
+      "iteration": 0
+    },
+    {
+      "changed_hubs": 0,
+      "iteration": 1
+    }
+  ],
+  "height_equalities": [
+    [
+      144411,
+      144422
+    ],
+    [
+      338649,
+      338652
+    ]
+  ],
+  "maximum_corrected_comparison_m": 8.454264539636824e-05,
+  "national_profile_or_country_r3_generated": false,
+  "native_or_world_acceptance": false,
+  "observed_utc": "2026-10-29T05:48:24.447826+00:00",
+  "prior_prototypes_retained": [
+    "prototype-r1-source",
+    "NATIONAL_TARGETED_R3_PROTOTYPE_R1_REVIEW.json",
+    "prototype-r2-source",
+    "NATIONAL_TARGETED_R3_PROTOTYPE_R2_FAILURE.json"
+  ],
+  "profile": {
+    "DEM_reference": "EGM96 metres; separate preferred terrain reference, not road survey",
+    "bridge_clearance_game_m_per_layer": 6.0,
+    "car_max_grade_game": 0.12,
+    "conflict_policy": "reject",
+    "conflicting_game_constraints": 0,
+    "foot_max_grade_game": 0.25,
+    "maximum_allowance_error_m": 3.4416913763379853e-15,
+    "maximum_height_only_constraint_error_m": 0.0,
+    "status": "GAME_Lipschitz_cut_fill_bridge6m_tunnel5m_NOT_SURVEYED",
+    "steps_max_grade_game": 0.7,
+    "terrain_cut_fill_required_for_physical_integration": true,
+    "tunnel_depth_game_m_per_layer": 5.0,
+    "tunnel_depth_unresolved_where_bridge_priority_conflicts": false,
+    "vertices": 792668
+  },
+  "protected_ramp_comparisons": 16,
+  "protected_ramp_multilevel_delta_m": 4.9682207107543945,
+  "scope": "Exact measured outlier source records and selected source-edge subset; miniature solver uses existing inferred Y as preferred starting profile, not a complete country/global DEM solve",
+  "source_identity_navigation_and_grade_limits_unchanged": true,
+  "source_sha256": {
+    "country-r2-records/targeted-profile-fixture.json": "50e23c4adf37791b8f7357e13264f58ed32aa1b2610a7a5e5ac44bc5e625a933",
+    "profile_overlap.py": "2bcb14310e572a35fa180955b26a548b28d1098fc67789db76a24a9854402f30",
+    "test_profile_overlap.py": "41670a48b764f4226ff76c878e1bb2f57e6975c06b5f3813bdcf2800eb46d3ba"
+  },
+  "status": "PASS_TARGETED_FOOTPRINT_RADIUS_PROTOTYPE_R3_NOT_COUNTRY_ACCEPTANCE",
+  "tests_observed": {
+    "failed": 0,
+    "passed": 10,
+    "seconds": 2.536
+  },
+  "ways": {
+    "way/1366486110": {
+      "maximum_source_y_shift_m": 0.06099452064410826,
+      "minimum_interior_y": 36.691913492094244,
+      "new_y": [
+        43.980595097784494,
+        43.273522629567104,
+        40.031452658343945,
+        38.17425535701855,
+        37.85882606374841,
+        36.96137483566369,
+        36.691913492094244,
+        37.072671036937386,
+        38.33074800621812,
+        39.183167099771026,
+        40.245397391602644,
+        43.980595097784494
+      ],
+      "plateau_radii_before_after": [
+        [
+          0,
+          4.800000000000001,
+          4.800000000000001
+        ],
+        [
+          3,
+          6.098947695897411,
+          6.098947695897411
+        ],
+        [
+          5,
+          5.7599450535180114,
+          5.7599450535180114
+        ],
+        [
+          11,
+          4.800000000000001,
+          5.95751987553282
+        ]
+      ],
+      "portal_y": [
+        43.980595097784494,
+        43.980595097784494
+      ]
+    },
+    "way/1453057758": {
+      "maximum_source_y_shift_m": 0.0,
+      "minimum_interior_y": 14.066172721856482,
+      "new_y": [
+        19.034393572962514,
+        18.882737168224693,
+        18.53681065781677,
+        17.951380524737118,
+        17.502510001396075,
+        17.07273506360237,
+        16.600011092399537,
+        16.19024045041647,
+        15.841852534954109,
+        15.490768967420083,
+        14.972398935272455,
+        14.42114946053127,
+        14.066172721856482,
+        14.066172721856482
+      ],
+      "plateau_radii_before_after": [
+        [
+          0,
+          1.6,
+          1.6
+        ],
+        [
+          13,
+          1.6,
+          1.6
+        ]
+      ],
+      "portal_y": [
+        19.034393572962514,
+        14.066172721856482
+      ]
+    },
+    "way/28382569": {
+      "maximum_source_y_shift_m": 0.005979684206522506,
+      "minimum_interior_y": 16.95239846544967,
+      "new_y": [
+        16.95239846544967,
+        16.95239846544967,
+        16.95239846544967,
+        16.95239846544967,
+        15.425745151922898
+      ],
+      "plateau_radii_before_after": [
+        [
+          0,
+          3.2,
+          3.2
+        ],
+        [
+          3,
+          3.2,
+          3.2
+        ],
+        [
+          4,
+          3.200417418645956,
+          3.200417418645956
+        ]
+      ],
+      "portal_y": [
+        16.95239846544967,
+        15.425745151922898
+      ]
+    },
+    "way/718704069": {
+      "maximum_source_y_shift_m": 0.03953727941120633,
+      "minimum_interior_y": 25.593066432369476,
+      "new_y": [
+        27.357774964190078,
+        27.357774964190078,
+        26.92429301795949,
+        25.593066432369476,
+        25.593066432369476,
+        25.593066432369476
+      ],
+      "plateau_radii_before_after": [
+        [
+          0,
+          10.116941437699545,
+          10.116941437699545
+        ],
+        [
+          5,
+          5.226971380614417,
+          7.340229907551108
+        ]
+      ],
+      "portal_y": [
+        27.357774964190078,
+        25.593066432369476
+      ]
+    }
+  }
+}

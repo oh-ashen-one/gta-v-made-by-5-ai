@@ -1,0 +1,16 @@
+{
+  "detailed_geometry_metrics_receipt_sha256": "2aa62132e46e6ab7962713935be58966699ae1c142d2c9dd14778378b467c5a4",
+  "frozen_R5_sources_unchanged": {
+    "game/src/systems/fidelity_tests/source_roads_test.gd": "06f8848e077c8fcfd3ebb7641f8d285787e3bdbd6eac2ff7abfac2657c712e68",
+    "game/src/world/geography/source_roads.gd": "c9ffb4ad34a25ce93b144809e12bf8424c46e908696d5ec3c6de6253f29acebb",
+    "game/tools/geography/compile_roads.py": "c203c52106c1caea2e473512533794259a3bc9d28dd01e80a43f91d6e63b59e5"
+  },
+  "national_country_r2": "REVIEW_REQUIRED_ALL42_OUTLIERS_CLASSIFIED",
+  "national_country_r3_generated": false,
+  "native_engine_or_scene_or_actual_car_validation": false,
+  "observed_utc": "2026-10-29T05:49:23.139740+00:00",
+  "profile_overlap_sha256": "2bcb14310e572a35fa180955b26a548b28d1098fc67789db76a24a9854402f30",
+  "status": "FROZEN_TARGETED_PROTOTYPE_FOR_ROOT_REVIEW_NOT_COUNTRY_ADOPTION",
+  "strict_portal_displacement_assertion_m": 0.061,
+  "test_profile_overlap_sha256": "ec89b7a5b6f403a3a626379776418518d3af29555f46909f3fcc0b57f7b58e04"
+}

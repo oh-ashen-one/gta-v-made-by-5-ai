@@ -1,0 +1,10 @@
+{
+  "status": "PASS_EARLY_COMPLETED_NATIONAL_TILE_SOURCE_AND_MESH_SAMPLE",
+  "spatial_tile": "-18_6",
+  "features": 509,
+  "triangles": 23421,
+  "source_centerline_samples": 2896,
+  "maximum_surface_slope": 0.11990863724428392,
+  "adaptive_anchor_fragments": 1,
+  "scope": "One completed national tile only; not country-complete/native/adoption"
+}

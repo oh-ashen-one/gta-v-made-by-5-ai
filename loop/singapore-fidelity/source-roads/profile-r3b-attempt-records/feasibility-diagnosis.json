@@ -1,0 +1,37 @@
+{
+  "peak_rss_bytes": 116080640,
+  "prior_diagnostic_serialization_error": "numpy bool was not JSON serializable; no data output from first attempt",
+  "status": "READ_ONLY_LOWER_ENVELOPE_DIAGNOSIS",
+  "vertices": [
+    {
+      "at_hard_lower_envelope": true,
+      "new_y": 19.589464979434826,
+      "required_lower_envelope_y": 19.589464979434826,
+      "vertex": 792152
+    },
+    {
+      "at_hard_lower_envelope": true,
+      "new_y": 21.618378183120512,
+      "required_lower_envelope_y": 21.618378183120512,
+      "vertex": 792153
+    },
+    {
+      "at_hard_lower_envelope": true,
+      "new_y": 21.847953664365612,
+      "required_lower_envelope_y": 21.847953664365612,
+      "vertex": 792154
+    },
+    {
+      "at_hard_lower_envelope": true,
+      "new_y": 24.485427344388757,
+      "required_lower_envelope_y": 24.485427344388757,
+      "vertex": 792155
+    },
+    {
+      "at_hard_lower_envelope": true,
+      "new_y": 11.512138460572142,
+      "required_lower_envelope_y": 11.512138460572142,
+      "vertex": 792265
+    }
+  ]
+}

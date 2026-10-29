@@ -1,0 +1,6 @@
+{
+  "correction": "Each apron must accept only its own nearest source-arc hub, not every member of a merged height group; add exact measured portal displacement regression.",
+  "observed_problem": "Using merged apron-height group in local approach eligibility treated Mandai opposite-portal cell as local to the other portal, lowering portals from43.98/44.04m to40.245m despite only60.993mm original measured disagreement. Initial10 tests passed but did not constrain this unwanted profile reach. No national artifact was produced.",
+  "original_receipt_sha256": "4007615eb5ed8f1dbb3fb10496cb0c0148730e58f3106a37392af1aac0f84784",
+  "status": "REVIEW_INITIAL_TARGETED_PROTOTYPE_UNINTENDED_HEIGHT_PROPAGATION"
+}

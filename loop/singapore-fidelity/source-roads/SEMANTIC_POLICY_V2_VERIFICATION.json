@@ -1,0 +1,19 @@
+{
+  "input_impact_sha256": "149f3f201bb18a102e0bec82010a26b1253bf0542df14a916370f050709b06d5",
+  "new_global_baseline_or_country_generated": false,
+  "observed_utc": "2026-10-29T07:20:57.493078+00:00",
+  "ordinary_tunnel_roles_not_removed": true,
+  "root_native_or_world_adoption": false,
+  "source_identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+  "source_sha256": {
+    "road_semantics_v2.py": "8f2eb8f206465f75e5b20cd0749639844156d79445f7231c26e387e29ec8f0df",
+    "test_road_semantics_v2.py": "86f35e7ce9b7b2e1a8a1ff5db9a88fb5c141d7b46e432b681bd582f8dc95cb05"
+  },
+  "status": "PASS_TARGETED_SOURCE_SEMANTICS_POLICY_ONLY_NOT_GLOBAL_PROFILE",
+  "tests": {
+    "command": "python -B -m unittest discover -s loop/singapore-fidelity/source-roads -p test_road_semantics_v2.py -v",
+    "failed": 0,
+    "passed": 13,
+    "seconds": 0.004
+  }
+}

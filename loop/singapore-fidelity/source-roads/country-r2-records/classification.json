@@ -1,0 +1,1991 @@
+{
+  "all_outlier_examples_retained": true,
+  "classifications": [
+    {
+      "comparisons": 24,
+      "decision": "REPAIR_CANDIDATE_HEIGHT_ONLY_NO_WHOLE_LOOP_FLATTEN",
+      "evidence": "457.305m tunnel loop, endpoint separation4.722m, apron radii4.8m; both portal continuation-grade signatures surface0.",
+      "maximum_mismatch_m": 0.060993194580078125,
+      "name": "Mandai same-way overlapping portal aprons",
+      "source_ways": [
+        "way/1366486110",
+        "way/1501294999",
+        "way/639421794"
+      ]
+    },
+    {
+      "comparisons": 16,
+      "decision": "DO_NOT_FLATTEN_DIFFERENT_CONTINUATION_GRADE_LEVELS",
+      "evidence": "57.464m ramp, ports0.718m apart; connects explicit layer1 parking aisle to building_passage tunnel grade. Local matching surfaces must be audited independently from the other level.",
+      "maximum_mismatch_m": 4.9682207107543945,
+      "name": "Protected multilevel parking ramp",
+      "source_ways": [
+        "way/1453057757",
+        "way/1453057758",
+        "way/1453057759"
+      ]
+    },
+    {
+      "comparisons": 1,
+      "decision": "REPAIR_CANDIDATE_HEIGHT_ONLY_APRON_OVERLAP",
+      "evidence": "Same-way hubs0 and3 are5.60m apart, radii3.2m; source-arc plateau gap0.04983m leaves different overlapping plateau heights.",
+      "maximum_mismatch_m": 0.0059795379638671875,
+      "name": "Hindoo curved same-way overlapping hub aprons",
+      "source_ways": [
+        "way/28382569",
+        "way/677587600"
+      ]
+    },
+    {
+      "comparisons": 1,
+      "decision": "REQUIRES_LOCAL_CELL_APRON_PROFILE_CONSTRAINT_BEYOND_APRON_PAIR_RULE",
+      "evidence": "Sloped mitered driveway cell reaches into the shared node apron despite being outside along-source plateau arc radius; no grade separation evidence.",
+      "maximum_mismatch_m": 0.032948858777189116,
+      "name": "Alexandra curved approach cell intrudes into hub",
+      "source_ways": [
+        "way/718704063",
+        "way/718704069"
+      ]
+    }
+  ],
+  "country_identity_sha256": "3b0afb19be2c7261e44cc121c804f690bb4bca439fc332e42860f46105812c8a",
+  "runtime_or_current_legal_or_survey_acceptance": false,
+  "seam_receipt_sha256": "dc378be7523c369367b6f524af0724f30814e9aa4aaf4e066e29fb9a7187328b",
+  "source_way_evidence": {
+    "way/1366486110": {
+      "canonical_source_points": [
+        [
+          -12889.9459,
+          43.980595097784494,
+          7044.0491
+        ],
+        [
+          -12900.516,
+          43.273522629567104,
+          7001.1035
+        ],
+        [
+          -12923.8787,
+          40.031452658343945,
+          6908.8912
+        ],
+        [
+          -12953.9543,
+          38.17425535701855,
+          6865.233
+        ],
+        [
+          -12956.2208,
+          37.85882606374841,
+          6850.7324
+        ],
+        [
+          -12949.774,
+          36.96137483566369,
+          6837.1111
+        ],
+        [
+          -12940.7732,
+          36.691913492094244,
+          6832.7822
+        ],
+        [
+          -12929.0412,
+          37.072671036937386,
+          6836.8555
+        ],
+        [
+          -12922.418,
+          38.33074800621812,
+          6848.9302
+        ],
+        [
+          -12918.7362,
+          39.183167099771026,
+          6865.345
+        ],
+        [
+          -12912.8765,
+          40.245397391602644,
+          6905.7532
+        ],
+        [
+          -12885.2354,
+          44.0415896184286,
+          7044.3831
+        ]
+      ],
+      "endpoint_separation_xz_m": 4.722326359963885,
+      "hubs": [
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [
+            "[\"surface\",0,\"\"]"
+          ],
+          "index": 0,
+          "plateau_arc_radius": 4.800000000000001,
+          "vertex_id": 144411
+        },
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [],
+          "index": 3,
+          "plateau_arc_radius": 6.098947695897411,
+          "vertex_id": 144414
+        },
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [],
+          "index": 5,
+          "plateau_arc_radius": 5.7599450535180114,
+          "vertex_id": 144416
+        },
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [
+            "[\"surface\",0,\"\"]"
+          ],
+          "index": 11,
+          "plateau_arc_radius": 4.800000000000001,
+          "vertex_id": 144422
+        }
+      ],
+      "policy": {
+        "grade": {
+          "key": "[\"tunnel\",-1,\"\"]",
+          "layer": -1,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_layer": "-1",
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "status": "source_layer_ordinal_NOT_metric_height",
+          "structure": "tunnel",
+          "vertical_profile_source": "UNRESOLVED"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "Mandai Lake Road"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "lane_width_game_m": 3.2,
+          "lanes": 3,
+          "metres": 9.600000000000001,
+          "status": "GAME_source_lane_count_times_3.2m_not_measured_width"
+        }
+      },
+      "raw_source": {
+        "id": "way/1366486110",
+        "name": "Mandai Lake Road",
+        "node_ids": [
+          4607145170,
+          13744494732,
+          13744494733,
+          12655481371,
+          13744494734,
+          12655481363,
+          13744494735,
+          13744494736,
+          13744494737,
+          13744494738,
+          13744494739,
+          5220627114
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -12956.2208,
+          6832.7822,
+          -12885.2354,
+          7044.3831
+        ],
+        "source_feature_sha256": "cce5745bf891107b48854999fe00a9153a33b4487486ffb01dc93c32ace3ad97",
+        "source_geometry_sha256": "d4eead8d927c1fadf8bd5297c81c94bf247da0ff3dbd7d8d2c9763960a3ce10a",
+        "source_version": 3,
+        "tags": {
+          "highway": "unclassified",
+          "lanes": "3",
+          "layer": "-1",
+          "maxspeed": "40",
+          "name": "Mandai Lake Road",
+          "oneway": "yes",
+          "source": "Yahoo aerial images",
+          "surface": "asphalt",
+          "tunnel": "yes"
+        }
+      },
+      "source_arc_length_m": 457.305312847217,
+      "vertex_ids": [
+        144411,
+        144412,
+        144413,
+        144414,
+        144415,
+        144416,
+        144417,
+        144418,
+        144419,
+        144420,
+        144421,
+        144422
+      ]
+    },
+    "way/1453057757": {
+      "canonical_source_points": [
+        [
+          -3853.694,
+          15.674546252304623,
+          -515.2686
+        ],
+        [
+          -3865.1496,
+          15.618132980165559,
+          -524.5389
+        ],
+        [
+          -3874.5817,
+          14.473045119599494,
+          -527.1096
+        ],
+        [
+          -3959.537,
+          19.034393572962514,
+          -598.5125
+        ]
+      ],
+      "endpoint_separation_xz_m": 134.6561826883934,
+      "hubs": [
+        {
+          "actual_apron_radius": 1.6,
+          "continuation_grades": [
+            "[\"surface\",0,\"\"]"
+          ],
+          "index": 0,
+          "plateau_arc_radius": 1.6,
+          "vertex_id": 396337
+        },
+        {
+          "actual_apron_radius": 1.6,
+          "continuation_grades": [
+            "[\"surface\",0,\"\"]"
+          ],
+          "index": 3,
+          "plateau_arc_radius": 1.6,
+          "vertex_id": 396340
+        }
+      ],
+      "policy": {
+        "grade": {
+          "key": "[\"surface\",1,\"\"]",
+          "layer": 1,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_layer": "1",
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "status": "source_layer_ordinal_NOT_metric_height",
+          "structure": "surface",
+          "vertical_profile_source": "UNRESOLVED"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {},
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "footpath_game_m": 2.0,
+          "highway": "service",
+          "lane_width_game_m": 3.2,
+          "metres": 3.2,
+          "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+          "unusable_width_tag": null
+        }
+      },
+      "raw_source": {
+        "id": "way/1453057757",
+        "name": null,
+        "node_ids": [
+          13325892473,
+          13325892474,
+          13325892475,
+          13325892476
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -3959.537,
+          -598.5125,
+          -3853.694,
+          -515.2686
+        ],
+        "source_feature_sha256": "027e5289e9675c3484e1d57acc2d69096740817606b015d417435ce726830b7c",
+        "source_geometry_sha256": "c74d161c398c37dc52186241d289c8fca1ca8a15e2b9305d11bf71013aca2310",
+        "source_version": 1,
+        "tags": {
+          "highway": "service",
+          "layer": "1",
+          "service": "parking_aisle"
+        }
+      },
+      "source_arc_length_m": 135.48927883926007,
+      "vertex_ids": [
+        396337,
+        396338,
+        396339,
+        396340
+      ]
+    },
+    "way/1453057758": {
+      "canonical_source_points": [
+        [
+          -3959.537,
+          19.034393572962514,
+          -598.5125
+        ],
+        [
+          -3963.2081,
+          18.882737168224693,
+          -599.7923
+        ],
+        [
+          -3968.0292,
+          18.53681065781677,
+          -599.7033
+        ],
+        [
+          -3973.5358,
+          17.951380524737118,
+          -601.6953
+        ],
+        [
+          -3976.0238,
+          17.502510001396075,
+          -606.1135
+        ],
+        [
+          -3975.6811,
+          17.07273506360237,
+          -610.7877
+        ],
+        [
+          -3972.7619,
+          16.600011092399537,
+          -614.7719
+        ],
+        [
+          -3968.8918,
+          16.19024045041647,
+          -616.764
+        ],
+        [
+          -3965.0107,
+          15.841852534954109,
+          -616.419
+        ],
+        [
+          -3961.7487,
+          15.490768967420083,
+          -614.2489
+        ],
+        [
+          -3959.6809,
+          14.972398935272455,
+          -609.2298
+        ],
+        [
+          -3960.289,
+          14.42114946053127,
+          -604.2106
+        ],
+        [
+          -3960.2005,
+          14.066172721856482,
+          -600.3933
+        ],
+        [
+          -3959.0837,
+          14.066172721856482,
+          -599.069
+        ]
+      ],
+      "endpoint_separation_xz_m": 0.7177556269369174,
+      "hubs": [
+        {
+          "actual_apron_radius": 1.6,
+          "continuation_grades": [
+            "[\"surface\",1,\"\"]"
+          ],
+          "index": 0,
+          "plateau_arc_radius": 1.6,
+          "vertex_id": 396341
+        },
+        {
+          "actual_apron_radius": 1.6,
+          "continuation_grades": [
+            "[\"tunnel\",-1,\"\"]"
+          ],
+          "index": 13,
+          "plateau_arc_radius": 1.6,
+          "vertex_id": 396354
+        }
+      ],
+      "policy": {
+        "grade": {
+          "key": "[\"surface\",0,\"\"]",
+          "layer": 0,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_layer": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "status": "GAME_structure_default_layer_NOT_source_metric_height",
+          "structure": "surface",
+          "vertical_profile_source": "UNRESOLVED"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {},
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "footpath_game_m": 2.0,
+          "highway": "service",
+          "lane_width_game_m": 3.2,
+          "metres": 3.2,
+          "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+          "unusable_width_tag": null
+        }
+      },
+      "raw_source": {
+        "id": "way/1453057758",
+        "name": null,
+        "node_ids": [
+          13325892476,
+          13325892477,
+          13325892478,
+          13325892479,
+          13325892480,
+          13325892481,
+          13325892482,
+          13325892483,
+          13325892484,
+          13325892485,
+          13325892486,
+          13325892487,
+          13325892488,
+          13325892489
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -3976.0238,
+          -616.764,
+          -3959.0837,
+          -598.5125
+        ],
+        "source_feature_sha256": "2793eacdaa14a5ba692c19c4926c7342b639131f795ef7651ba44568b5680dc3",
+        "source_geometry_sha256": "b6dbfa00be972c6e0719692978576c08c9a7cca0bc45a01a1d8e06cdcf17c405",
+        "source_version": 1,
+        "tags": {
+          "highway": "service",
+          "service": "driveway"
+        }
+      },
+      "source_arc_length_m": 57.46399447738249,
+      "vertex_ids": [
+        396341,
+        396342,
+        396343,
+        396344,
+        396345,
+        396346,
+        396347,
+        396348,
+        396349,
+        396350,
+        396351,
+        396352,
+        396353,
+        396354
+      ]
+    },
+    "way/1453057759": {
+      "canonical_source_points": [
+        [
+          -3959.0837,
+          14.066172721856482,
+          -599.069
+        ],
+        [
+          -3873.6308,
+          14.251789512476435,
+          -527.8664
+        ],
+        [
+          -3855.3637,
+          16.682735950307407,
+          -513.0984
+        ]
+      ],
+      "endpoint_separation_xz_m": 134.7174170787135,
+      "hubs": [
+        {
+          "actual_apron_radius": 1.6,
+          "continuation_grades": [
+            "[\"surface\",0,\"\"]"
+          ],
+          "index": 0,
+          "plateau_arc_radius": 1.6,
+          "vertex_id": 396355
+        },
+        {
+          "actual_apron_radius": 1.6,
+          "continuation_grades": [
+            "[\"surface\",0,\"\"]"
+          ],
+          "index": 2,
+          "plateau_arc_radius": 3.2,
+          "vertex_id": 396357
+        }
+      ],
+      "policy": {
+        "grade": {
+          "key": "[\"tunnel\",-1,\"\"]",
+          "layer": -1,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_layer": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "status": "GAME_structure_default_layer_NOT_source_metric_height",
+          "structure": "tunnel",
+          "vertical_profile_source": "UNRESOLVED"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {},
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "footpath_game_m": 2.0,
+          "highway": "service",
+          "lane_width_game_m": 3.2,
+          "metres": 3.2,
+          "status": "GAME_highway_class_width_fallback_NOT_SURVEYED",
+          "unusable_width_tag": null
+        }
+      },
+      "raw_source": {
+        "id": "way/1453057759",
+        "name": null,
+        "node_ids": [
+          13325892489,
+          13325892490,
+          5241348492
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -3959.0837,
+          -599.069,
+          -3855.3637,
+          -513.0984
+        ],
+        "source_feature_sha256": "d0ee50e570f65d743d3a8d0632e8878bbeefbe25a5080bc2d28752fd130ca31f",
+        "source_geometry_sha256": "3680946f80f299b3d6b8661e09a687a8048b02e935c5897fbab27a34f879530d",
+        "source_version": 1,
+        "tags": {
+          "highway": "service",
+          "service": "parking_aisle",
+          "tunnel": "building_passage"
+        }
+      },
+      "source_arc_length_m": 134.71954428003787,
+      "vertex_ids": [
+        396355,
+        396356,
+        396357
+      ]
+    },
+    "way/1501294999": {
+      "canonical_source_points": [
+        [
+          -13097.2355,
+          48.06970742051248,
+          7333.2224
+        ],
+        [
+          -13018.9803,
+          51.04762195597041,
+          7271.9164
+        ],
+        [
+          -12966.6001,
+          44.341858362646754,
+          7229.2948
+        ],
+        [
+          -12946.453,
+          42.305826033392,
+          7211.9123
+        ],
+        [
+          -12925.421,
+          43.34043417914078,
+          7180.7748
+        ],
+        [
+          -12919.0627,
+          44.28181424723826,
+          7169.624
+        ],
+        [
+          -12906.1692,
+          45.81760965515265,
+          7147.022
+        ],
+        [
+          -12900.3636,
+          46.524509652422786,
+          7126.7346
+        ],
+        [
+          -12890.7316,
+          47.67883165473353,
+          7080.1281
+        ],
+        [
+          -12889.9459,
+          43.980595097784494,
+          7044.0491
+        ]
+      ],
+      "endpoint_separation_xz_m": 355.79513164326704,
+      "hubs": [
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [],
+          "index": 0,
+          "plateau_arc_radius": 4.800000000000001,
+          "vertex_id": 145004
+        },
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [],
+          "index": 5,
+          "plateau_arc_radius": 4.801432325419142,
+          "vertex_id": 145009
+        },
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [],
+          "index": 7,
+          "plateau_arc_radius": 14.626974185116229,
+          "vertex_id": 144993
+        },
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [
+            "[\"tunnel\",-1,\"\"]"
+          ],
+          "index": 9,
+          "plateau_arc_radius": 4.800000000000001,
+          "vertex_id": 145012
+        }
+      ],
+      "policy": {
+        "grade": {
+          "key": "[\"surface\",0,\"\"]",
+          "layer": 0,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_layer": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "status": "GAME_structure_default_layer_NOT_source_metric_height",
+          "structure": "surface",
+          "vertical_profile_source": "UNRESOLVED"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "Mandai Lake Road"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "lane_width_game_m": 3.2,
+          "lanes": 3,
+          "metres": 9.600000000000001,
+          "status": "GAME_source_lane_count_times_3.2m_not_measured_width"
+        }
+      },
+      "raw_source": {
+        "id": "way/1501294999",
+        "name": "Mandai Lake Road",
+        "node_ids": [
+          12655481393,
+          12655481374,
+          12655481375,
+          12655481376,
+          12655481377,
+          13800902474,
+          12655481378,
+          12655481404,
+          13800902480,
+          4607145170
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -13097.2355,
+          7044.0491,
+          -12889.9459,
+          7333.2224
+        ],
+        "source_feature_sha256": "9db6036fda9e1362c569ce6c2264846e43c979a50b87a41620429a0951132e51",
+        "source_geometry_sha256": "63bd203d4d3a324824e9ab73cdfa11cfc56fd3fe1b12e515d87a9a1f869e8409",
+        "source_version": 2,
+        "tags": {
+          "highway": "unclassified",
+          "lanes": "3",
+          "maxspeed": "40",
+          "name": "Mandai Lake Road",
+          "oneway": "yes",
+          "source": "Yahoo aerial images",
+          "surface": "asphalt"
+        }
+      },
+      "source_arc_length_m": 374.7620227291938,
+      "vertex_ids": [
+        145004,
+        145005,
+        145006,
+        145007,
+        145008,
+        145009,
+        145010,
+        144993,
+        145011,
+        145012
+      ]
+    },
+    "way/28382569": {
+      "canonical_source_points": [
+        [
+          -2212.5191,
+          16.95239846544967,
+          -449.64419999999996
+        ],
+        [
+          -2213.9013,
+          16.95239846544967,
+          -451.7809
+        ],
+        [
+          -2214.1999,
+          16.946418781243146,
+          -454.01790000000005
+        ],
+        [
+          -2213.072,
+          16.946418781243146,
+          -455.2198000000001
+        ],
+        [
+          -2195.0486,
+          15.425745151922898,
+          -483.16509999999994
+        ]
+      ],
+      "endpoint_separation_xz_m": 37.80038501206033,
+      "hubs": [
+        {
+          "actual_apron_radius": 3.2,
+          "continuation_grades": [],
+          "index": 0,
+          "plateau_arc_radius": 3.2,
+          "vertex_id": 338649
+        },
+        {
+          "actual_apron_radius": 3.2,
+          "continuation_grades": [],
+          "index": 3,
+          "plateau_arc_radius": 3.2,
+          "vertex_id": 338652
+        },
+        {
+          "actual_apron_radius": 3.2,
+          "continuation_grades": [],
+          "index": 4,
+          "plateau_arc_radius": 3.200417418645956,
+          "vertex_id": 338653
+        }
+      ],
+      "policy": {
+        "grade": {
+          "key": "[\"surface\",0,\"\"]",
+          "layer": 0,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_layer": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "status": "GAME_structure_default_layer_NOT_source_metric_height",
+          "structure": "surface",
+          "vertical_profile_source": "UNRESOLVED"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "Hindoo Road"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "lane_width_game_m": 3.2,
+          "lanes": 2,
+          "metres": 6.4,
+          "status": "GAME_source_lane_count_times_3.2m_not_measured_width"
+        }
+      },
+      "raw_source": {
+        "id": "way/28382569",
+        "name": "Hindoo Road",
+        "node_ids": [
+          577489781,
+          6344441159,
+          13142520791,
+          8009396087,
+          6053963879
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -2214.1999,
+          -483.1651,
+          -2195.0486,
+          -449.6442
+        ],
+        "source_feature_sha256": "2d1b01914a5b240e4907af730acd83cac093490c13fa87bd1a8a7e91f54e116a",
+        "source_geometry_sha256": "a448800053fe20d4c07691968a6a1bdc283fe79f653e3dca23c790229c26969b",
+        "source_version": 13,
+        "tags": {
+          "highway": "service",
+          "lanes": "2",
+          "name": "Hindoo Road",
+          "oneway": "yes",
+          "service": "parking_aisle",
+          "sidewalk": "right"
+        }
+      },
+      "source_arc_length_m": 39.70319229181571,
+      "vertex_ids": [
+        338649,
+        338650,
+        338651,
+        338652,
+        338653
+      ]
+    },
+    "way/639421794": {
+      "canonical_source_points": [
+        [
+          -12885.2354,
+          44.0415896184286,
+          7044.3831
+        ],
+        [
+          -12885.7336,
+          47.53212493295192,
+          7078.5257
+        ],
+        [
+          -12890.0579,
+          48.0915984913848,
+          7117.6539
+        ]
+      ],
+      "endpoint_separation_xz_m": 73.4293309168076,
+      "hubs": [
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [
+            "[\"tunnel\",-1,\"\"]"
+          ],
+          "index": 0,
+          "plateau_arc_radius": 4.800000000000001,
+          "vertex_id": 144792
+        },
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [],
+          "index": 2,
+          "plateau_arc_radius": 10.42140224349598,
+          "vertex_id": 144794
+        }
+      ],
+      "policy": {
+        "grade": {
+          "key": "[\"surface\",0,\"\"]",
+          "layer": 0,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_layer": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "status": "GAME_structure_default_layer_NOT_source_metric_height",
+          "structure": "surface",
+          "vertical_profile_source": "UNRESOLVED"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "unclassified",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "Mandai Lake Road"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "lane_width_game_m": 3.2,
+          "lanes": 3,
+          "metres": 9.600000000000001,
+          "status": "GAME_source_lane_count_times_3.2m_not_measured_width"
+        }
+      },
+      "raw_source": {
+        "id": "way/639421794",
+        "name": "Mandai Lake Road",
+        "node_ids": [
+          5220627114,
+          13800902479,
+          12655481381
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -12890.0579,
+          7044.3831,
+          -12885.2354,
+          7117.6539
+        ],
+        "source_feature_sha256": "cda89b6091904fba0baf9561c75a2a7b1e9749bd281d39e3bf9e6cde99fca5e4",
+        "source_geometry_sha256": "d27ddd4f3e19615558b6352514c2e37d1514dd6110e8b4dc8ea76d39aca0c07d",
+        "source_version": 5,
+        "tags": {
+          "highway": "unclassified",
+          "lanes": "3",
+          "maxspeed": "40",
+          "name": "Mandai Lake Road",
+          "oneway": "yes",
+          "source": "Yahoo aerial images",
+          "surface": "asphalt"
+        }
+      },
+      "source_arc_length_m": 73.51266200292665,
+      "vertex_ids": [
+        144792,
+        144793,
+        144794
+      ]
+    },
+    "way/677587600": {
+      "canonical_source_points": [
+        [
+          -2182.9733,
+          16.265827627810015,
+          -427.7424
+        ],
+        [
+          -2194.5063,
+          16.571112980441367,
+          -435.5437999999999
+        ],
+        [
+          -2212.5191,
+          16.95239846544967,
+          -449.64419999999996
+        ]
+      ],
+      "endpoint_separation_xz_m": 36.77829714491947,
+      "hubs": [
+        {
+          "actual_apron_radius": 3.2,
+          "continuation_grades": [],
+          "index": 0,
+          "plateau_arc_radius": 4.276727779675295,
+          "vertex_id": 338648
+        },
+        {
+          "actual_apron_radius": 3.2,
+          "continuation_grades": [],
+          "index": 1,
+          "plateau_arc_radius": 3.200053323521484,
+          "vertex_id": 339974
+        },
+        {
+          "actual_apron_radius": 3.2,
+          "continuation_grades": [],
+          "index": 2,
+          "plateau_arc_radius": 3.2,
+          "vertex_id": 338649
+        }
+      ],
+      "policy": {
+        "grade": {
+          "key": "[\"surface\",0,\"\"]",
+          "layer": 0,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_layer": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "status": "GAME_structure_default_layer_NOT_source_metric_height",
+          "structure": "surface",
+          "vertical_profile_source": "UNRESOLVED"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "Hindoo Road"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "lane_width_game_m": 3.2,
+          "lanes": 2,
+          "metres": 6.4,
+          "status": "GAME_source_lane_count_times_3.2m_not_measured_width"
+        }
+      },
+      "raw_source": {
+        "id": "way/677587600",
+        "name": "Hindoo Road",
+        "node_ids": [
+          6344448374,
+          6332414489,
+          577489781
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          -2212.5191,
+          -449.6442,
+          -2182.9733,
+          -427.7424
+        ],
+        "source_feature_sha256": "8a2b7255b2f3c5b7ceaed013c5e30fa74928d01bb7b36537bf989060ad05e51a",
+        "source_geometry_sha256": "a7d497948647e100a4f4537610b83467902dbfe9187cf3c6c164fe79171635e9",
+        "source_version": 1,
+        "tags": {
+          "highway": "service",
+          "lanes": "2",
+          "name": "Hindoo Road",
+          "oneway": "yes",
+          "service": "parking_aisle",
+          "turn:lanes": "through|through"
+        }
+      },
+      "source_arc_length_m": 36.79915336152832,
+      "vertex_ids": [
+        338648,
+        339974,
+        338649
+      ]
+    },
+    "way/718704063": {
+      "canonical_source_points": [
+        [
+          1490.4559,
+          25.593066432369476,
+          5486.1244
+        ],
+        [
+          1479.7633,
+          25.593066432369476,
+          5486.9812
+        ]
+      ],
+      "endpoint_separation_xz_m": 10.7268728434711,
+      "hubs": [
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [],
+          "index": 0,
+          "plateau_arc_radius": 5.226971380614417,
+          "vertex_id": 791776
+        },
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [],
+          "index": 1,
+          "plateau_arc_radius": 8.981398366308758,
+          "vertex_id": 791897
+        }
+      ],
+      "policy": {
+        "grade": {
+          "key": "[\"surface\",0,\"\"]",
+          "layer": 0,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_layer": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "status": "GAME_structure_default_layer_NOT_source_metric_height",
+          "structure": "surface",
+          "vertical_profile_source": "UNRESOLVED"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "highway": "primary",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "primary",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "primary",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "primary",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "primary",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "primary",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "primary",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "primary",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "primary",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {
+          "name": "Alexandra Road",
+          "name:en": "Alexandra Road",
+          "name:zh": "\u4e9a\u5386\u5c71\u5927\u8def"
+        },
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "lane_width_game_m": 3.2,
+          "lanes": 3,
+          "metres": 9.600000000000001,
+          "status": "GAME_source_lane_count_times_3.2m_not_measured_width"
+        }
+      },
+      "raw_source": {
+        "id": "way/718704063",
+        "name": "Alexandra Road",
+        "node_ids": [
+          6748448250,
+          1363434679
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          1479.7633,
+          5486.1244,
+          1490.4559,
+          5486.9812
+        ],
+        "source_feature_sha256": "6ab232d0cf6c1a23358c337d2fa4cbaa9a022ccf986c3649f795cdbe7a3a27db",
+        "source_geometry_sha256": "a745d1910408794f6f3cbc73de1a3ff969a850c44471d534de54241e89afed88",
+        "source_version": 3,
+        "tags": {
+          "busway:left": "lane",
+          "highway": "primary",
+          "lanes": "3",
+          "lanes:bus": "1",
+          "lanes:bus:conditional": "1 @ (Mo-Fr 07:30-09:30,17:00-20:00)",
+          "maxheight": "4.5",
+          "maxspeed": "60",
+          "name": "Alexandra Road",
+          "name:en": "Alexandra Road",
+          "name:zh": "\u4e9a\u5386\u5c71\u5927\u8def",
+          "oneway": "yes",
+          "surface": "asphalt"
+        }
+      },
+      "source_arc_length_m": 10.7268728434711,
+      "vertex_ids": [
+        791776,
+        791897
+      ]
+    },
+    "way/718704069": {
+      "canonical_source_points": [
+        [
+          1460.1254,
+          27.357774964190078,
+          5475.0171
+        ],
+        [
+          1468.142,
+          27.357774964190078,
+          5480.5261
+        ],
+        [
+          1472.8856,
+          26.92429301795949,
+          5482.3291
+        ],
+        [
+          1486.3758,
+          25.55352915295827,
+          5481.7283
+        ],
+        [
+          1488.4877,
+          25.593066432369476,
+          5482.4072
+        ],
+        [
+          1490.4559,
+          25.593066432369476,
+          5486.1244
+        ]
+      ],
+      "endpoint_separation_xz_m": 32.300330393666165,
+      "hubs": [
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [],
+          "index": 0,
+          "plateau_arc_radius": 10.116941437699545,
+          "vertex_id": 792664
+        },
+        {
+          "actual_apron_radius": 4.800000000000001,
+          "continuation_grades": [],
+          "index": 5,
+          "plateau_arc_radius": 5.226971380614417,
+          "vertex_id": 791776
+        }
+      ],
+      "policy": {
+        "grade": {
+          "key": "[\"surface\",0,\"\"]",
+          "layer": 0,
+          "level": "",
+          "metric_layer_height_is_source_fact": false,
+          "raw_layer": null,
+          "source_ele_datum": null,
+          "source_ele_tag": null,
+          "status": "GAME_structure_default_layer_NOT_source_metric_height",
+          "structure": "surface",
+          "vertical_profile_source": "UNRESOLVED"
+        },
+        "modes": {
+          "bicycle": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "car": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 1,
+            "direction": {
+              "bits": 1,
+              "raw": "yes",
+              "status": "explicit_source_direction",
+              "tag": "oneway"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          },
+          "foot": {
+            "access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "backward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            },
+            "bits": 3,
+            "direction": {
+              "bits": 3,
+              "status": "OSM_documented_default_two_way_not_blanket_undirected_expansion_or_current_order_verification"
+            },
+            "forward_access": {
+              "highway": "service",
+              "reason": "GAME_highway_mode_default_NOT_current_legal_order",
+              "state": "allowed"
+            }
+          }
+        },
+        "multilingual_names": {},
+        "traffic_side": "left_GAME_policy",
+        "turn_restrictions": "UNRESOLVED_relation_restrictions_not_in_way_catalog",
+        "width": {
+          "lane_width_game_m": 3.2,
+          "lanes": 3,
+          "metres": 9.600000000000001,
+          "status": "GAME_source_lane_count_times_3.2m_not_measured_width"
+        }
+      },
+      "raw_source": {
+        "id": "way/718704069",
+        "name": null,
+        "node_ids": [
+          7334355730,
+          7334355729,
+          7233002736,
+          6804462183,
+          6804462184,
+          6748448250
+        ],
+        "original_order_preserved": true,
+        "source_bounds_xz": [
+          1460.1254,
+          5475.0171,
+          1490.4559,
+          5486.1244
+        ],
+        "source_feature_sha256": "005a74f22fc4ae3effca940439486c5f68dbbb8b5e082695c28d13d2a2476367",
+        "source_geometry_sha256": "be757596baa3468a9e94e4fe76a269b42335e93325cccf10910b141afc8f444d",
+        "source_version": 6,
+        "tags": {
+          "highway": "service",
+          "lanes": "3",
+          "oneway": "yes",
+          "service": "driveway",
+          "surface": "asphalt"
+        }
+      },
+      "source_arc_length_m": 34.72974281947562,
+      "vertex_ids": [
+        792664,
+        792665,
+        792666,
+        792667,
+        792668,
+        791776
+      ]
+    }
+  },
+  "status": "COMPLETE_R2_OUTLIER_CLASSIFICATION_NO_ADOPTION"
+}

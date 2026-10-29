@@ -1,0 +1,33 @@
+{
+  "active_owned_cpu_workers": [
+    {
+      "directory": "/private/tmp/singapore-fidelity/source-roads/semantic-v2-baseline-r1",
+      "exec_session": 83825,
+      "supervisor_pid": 80223,
+      "worker_lstart": "Thu Oct 29 03:43:17 2026",
+      "worker_pid": 80233
+    }
+  ],
+  "country_r2_identity_sha256": "3b0afb19be2c7261e44cc121c804f690bb4bca439fc332e42860f46105812c8a",
+  "country_r3_identity_sha256": null,
+  "durable_lifecycle": "loop/singapore-fidelity/source-roads/R3_LIFECYCLE.md",
+  "model_policy": "same inherited model and session; no substitution",
+  "next": "Inspect bounded fresh semantic baseline; do not modify its frozen source files or duplicate. On terminal success independently audit source facts/new derived grades, then emit all-country meshes and complete audits. No engine/Git/adoption.",
+  "r5_identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+  "status": "SEMANTIC_V2_FRESH_GLOBAL_BASELINE_RUNNING",
+  "terminal_attempts": [
+    {
+      "directory": "/private/tmp/singapore-fidelity/source-roads/profile-r3",
+      "status": "reaped exit1 plateau cap refused",
+      "supervisor_pid": 25729,
+      "worker_pid": 25744
+    },
+    {
+      "directory": "/private/tmp/singapore-fidelity/source-roads/profile-r3b",
+      "status": "reaped exit1 forced worsened bounds refused",
+      "supervisor_pid": 33264,
+      "worker_pid": 33280
+    }
+  ],
+  "updated_utc": "2026-10-29T07:44:00.159892+00:00"
+}

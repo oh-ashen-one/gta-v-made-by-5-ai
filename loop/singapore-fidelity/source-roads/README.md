@@ -1,5 +1,28 @@
 # Source-road graph and physical ribbon plan
 
+## Restart recovery, 2026-10-29
+
+The historical `/private/tmp/singapore-fidelity/` datasets and Python
+environment were absent after the Studio restart. Old metadata receipts remain
+evidence of their dated runs, not proof of a current complete dataset or a live
+worker. The full source city R1 and original DEM remain in the authoring
+checkout; the dataset-recovery worker regenerates the exact index-winding R2.
+
+New road CPU outputs use this directory's ignored `generated/` subtree, which
+survives a temporary-directory cleanup. They retain the same bounded
+supervisors and immutable per-run output discipline. `RECOVERY_2026_10_29.json`
+records current recovery status and the authoritative source hashes. The
+shared task-local Python runtime is `../recovery/private/venv/bin/python`.
+
+The frozen R5 compiler is unchanged. Fresh timings and ingest-cache provenance
+can legitimately change its top-level identity; `audit_recovery.py` checks the
+new manifest against the archived original and hashes every graph and physical
+payload before accepting exact payload reproduction. It permits only those
+two metadata fields to differ. Never copy old timings or claim a new run had
+the old identity. Semantic-v2 remains a separate new inference version, and
+recovered R5 content is not semantic-v2 acceptance. `audit_artifact.py --source`
+now takes the complete durable city dataset and verifies its exact lineage.
+
 The full owner goal remains whole Singapore at source placement plus a coherent explorable MBS. This component does not declare the source world playable or complete. It changes only new road compiler/tests, new source-road loader/QA, source-roads data and this directory. Root owns world/main/actor/traffic/terrain/support/save integration. This builder ran **no engine, GPU or Git**.
 
 ## Artifact and verification scope

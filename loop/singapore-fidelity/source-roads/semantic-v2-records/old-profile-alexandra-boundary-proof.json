@@ -1,0 +1,2609 @@
+{
+  "cases": [
+    {
+      "boundary": {
+        "boundary_event_sample_count": 70,
+        "boundary_pin_count": 45,
+        "conflicts": [
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.750842142732324
+            ],
+            "height_range_m": 0.15777497354287107,
+            "xz": [
+              1484.4559,
+              5481.789795731566
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.750735944716666
+            ],
+            "height_range_m": 0.15766877552721326,
+            "xz": [
+              1484.4559,
+              5481.797470832814
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.744283552038212
+            ],
+            "height_range_m": 0.1512163828487587,
+            "xz": [
+              1484.4559,
+              5482.2637956203325
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.74414970697535
+            ],
+            "height_range_m": 0.15108253778589642,
+            "xz": [
+              1484.4559,
+              5482.273468818108
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.73772496134407
+            ],
+            "height_range_m": 0.14465779215461794,
+            "xz": [
+              1484.4559,
+              5482.7377955091
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.737563469234004
+            ],
+            "height_range_m": 0.14449630004455116,
+            "xz": [
+              1484.4559,
+              5482.749466803403
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.73116637064996
+            ],
+            "height_range_m": 0.13809920146050558,
+            "xz": [
+              1484.4559,
+              5483.211795397866
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.730977231492687
+            ],
+            "height_range_m": 0.13791006230323433,
+            "xz": [
+              1484.4559,
+              5483.225464788698
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.724607779955818
+            ],
+            "height_range_m": 0.1315406107663648,
+            "xz": [
+              1484.4559,
+              5483.685795286633
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.72439099375137
+            ],
+            "height_range_m": 0.1313238245619175,
+            "xz": [
+              1484.4559,
+              5483.701462773993
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.718049189261706
+            ],
+            "height_range_m": 0.12498202007225245,
+            "xz": [
+              1484.4559,
+              5484.159795175399
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.717804756010025
+            ],
+            "height_range_m": 0.12473758682057223,
+            "xz": [
+              1484.4559,
+              5484.177460759288
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.711490598567593
+            ],
+            "height_range_m": 0.1184234293781401,
+            "xz": [
+              1484.4559,
+              5484.633795064166
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.71121851826871
+            ],
+            "height_range_m": 0.1181513490792554,
+            "xz": [
+              1484.4559,
+              5484.653458744583
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.704932007873452
+            ],
+            "height_range_m": 0.11186483868399932,
+            "xz": [
+              1484.4559,
+              5485.107794952933
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.70463228052739
+            ],
+            "height_range_m": 0.11156511133793856,
+            "xz": [
+              1484.4559,
+              5485.129456729877
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.69837341717931
+            ],
+            "height_range_m": 0.10530624798985855,
+            "xz": [
+              1484.4559,
+              5485.5817948417
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.698046042786075,
+              25.698046042786075
+            ],
+            "height_range_m": 0.10497887359662172,
+            "xz": [
+              1484.4559,
+              5485.6054547151725
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.692544088320375
+            ],
+            "height_range_m": 0.09947691913092171,
+            "xz": [
+              1484.4559,
+              5485.943157362206
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              25.69070896598197
+            ],
+            "height_range_m": 0.09764179679251583,
+            "xz": [
+              1484.4559,
+              5486.055794730466
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.687042133854646
+            ],
+            "height_range_m": 0.09397496466519328,
+            "xz": [
+              1484.4559,
+              5486.28086000924
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              25.68442877907694
+            ],
+            "height_range_m": 0.09136160988748543,
+            "xz": [
+              1484.4559,
+              5486.44126424951
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              25.682763102749192
+            ],
+            "height_range_m": 0.0896959335597387,
+            "xz": [
+              1484.4559,
+              5486.543501247014
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              25.681540179388946
+            ],
+            "height_range_m": 0.08847301019949327,
+            "xz": [
+              1484.4559,
+              5486.618562656274
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.58781515539303,
+              25.593067169189453,
+              25.593067169189453
+            ],
+            "height_range_m": 0.005252013796422261,
+            "xz": [
+              1487.8618122907392,
+              5480.1244
+            ]
+          }
+        ],
+        "maximum_old_boundary_disagreement_m": 0.15777497354287107,
+        "mesh_emitted": false,
+        "status": "INCONSISTENT_PATCH_BOUNDARY"
+      },
+      "canonical_and_boundary_pin_count": 48,
+      "preflight": null,
+      "radius_m": 6.0
+    },
+    {
+      "boundary": {
+        "boundary_event_sample_count": 79,
+        "boundary_pin_count": 49,
+        "conflicts": [
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.159268923485286
+            ],
+            "height_range_m": 0.5662017542958324,
+            "xz": [
+              1480.4559,
+              5482.110316394056
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.156381893648984
+            ],
+            "height_range_m": 0.5633147244595307,
+            "xz": [
+              1480.4559,
+              5482.318966679625
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.153012695670213
+            ],
+            "height_range_m": 0.5599455264807602,
+            "xz": [
+              1480.4559,
+              5482.562464031671
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.152527486012445,
+              26.152527486012502
+            ],
+            "height_range_m": 0.5594603168230492,
+            "xz": [
+              1480.4559,
+              5482.597530913342
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.14894653730545
+            ],
+            "height_range_m": 0.5558793681159955,
+            "xz": [
+              1480.4559,
+              5482.817324782009
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              25.593067169189453,
+              26.145732279199933
+            ],
+            "height_range_m": 0.55266511001048,
+            "xz": [
+              1480.4559,
+              5483.014611669287
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.14492590231714
+            ],
+            "height_range_m": 0.5518587331276876,
+            "xz": [
+              1480.4559,
+              5483.064106009801
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.140827135189397
+            ],
+            "height_range_m": 0.5477599659999441,
+            "xz": [
+              1480.4559,
+              5483.315682884391
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.137833701480105
+            ],
+            "height_range_m": 0.5447665322906516,
+            "xz": [
+              1480.4559,
+              5483.499415863944
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.137324318621836
+            ],
+            "height_range_m": 0.5442571494323829,
+            "xz": [
+              1480.4559,
+              5483.53068110626
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.132707733073318
+            ],
+            "height_range_m": 0.5396405638838644,
+            "xz": [
+              1480.4559,
+              5483.814040986775
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.129935123760276
+            ],
+            "height_range_m": 0.5368679545708233,
+            "xz": [
+              1480.4559,
+              5483.9842200586
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.12972273492653
+            ],
+            "height_range_m": 0.5366555657370782,
+            "xz": [
+              1480.4559,
+              5483.99725620272
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.124588330957238
+            ],
+            "height_range_m": 0.5315211617677846,
+            "xz": [
+              1480.4559,
+              5484.312399089158
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.122121151231227
+            ],
+            "height_range_m": 0.5290539820417735,
+            "xz": [
+              1480.4559,
+              5484.463831299178
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.122036546040448
+            ],
+            "height_range_m": 0.5289693768509949,
+            "xz": [
+              1480.4559,
+              5484.469024253257
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.116468928841186
+            ],
+            "height_range_m": 0.5234017596517333,
+            "xz": [
+              1480.4559,
+              5484.810757191541
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.114519567535922
+            ],
+            "height_range_m": 0.5214523983464687,
+            "xz": [
+              1480.4559,
+              5484.930406395638
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.11413796832062
+            ],
+            "height_range_m": 0.5210707991311665,
+            "xz": [
+              1480.4559,
+              5484.953828447913
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              25.593067169189453,
+              26.10834952672508
+            ],
+            "height_range_m": 0.5152823575356251,
+            "xz": [
+              1480.4559,
+              5485.309115293924
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.106917983840646
+            ],
+            "height_range_m": 0.5138508146511924,
+            "xz": [
+              1480.4559,
+              5485.3969814920965
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.10623939060082
+            ],
+            "height_range_m": 0.5131722214113665,
+            "xz": [
+              1480.4559,
+              5485.43863264257
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.10037049680227
+            ],
+            "height_range_m": 0.5073033276128172,
+            "xz": [
+              1480.4559,
+              5485.798857537791
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.099316400145312
+            ],
+            "height_range_m": 0.5062492309558593,
+            "xz": [
+              1480.4559,
+              5485.863556588556
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.09834081288099
+            ],
+            "height_range_m": 0.5052736436915382,
+            "xz": [
+              1480.4559,
+              5485.923436837226
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              25.593067169189453,
+              26.092391466879462
+            ],
+            "height_range_m": 0.4993242976900092,
+            "xz": [
+              1480.4559,
+              5486.288599781659
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.091714816450036
+            ],
+            "height_range_m": 0.49864764726058297,
+            "xz": [
+              1480.4559,
+              5486.330131685015
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.090442235161163
+            ],
+            "height_range_m": 0.4973750659717098,
+            "xz": [
+              1480.4559,
+              5486.408241031883
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              25.593067169189453,
+              26.08578142106711
+            ],
+            "height_range_m": 0.4927142518776577,
+            "xz": [
+              1480.4559,
+              5486.694315601692
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.084113232754703
+            ],
+            "height_range_m": 0.4910460635652498,
+            "xz": [
+              1480.4559,
+              5486.796706781474
+            ]
+          }
+        ],
+        "maximum_old_boundary_disagreement_m": 0.5662017542958324,
+        "mesh_emitted": false,
+        "status": "INCONSISTENT_PATCH_BOUNDARY"
+      },
+      "canonical_and_boundary_pin_count": 53,
+      "preflight": null,
+      "radius_m": 10.0
+    },
+    {
+      "boundary": {
+        "boundary_event_sample_count": 46,
+        "boundary_pin_count": 31,
+        "conflicts": [
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.542824731152564
+            ],
+            "height_range_m": 0.9497575619631107,
+            "xz": [
+              1476.4559,
+              5483.529147819556
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.540468008390178
+            ],
+            "height_range_m": 0.9474008392007249,
+            "xz": [
+              1476.4559,
+              5483.673800328067
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.534815343367853
+            ],
+            "height_range_m": 0.9417481741784002,
+            "xz": [
+              1476.4559,
+              5484.020753388609
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.532576708950927
+            ],
+            "height_range_m": 0.9395095397614739,
+            "xz": [
+              1476.4559,
+              5484.158157791544
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.526793833826616
+            ],
+            "height_range_m": 0.9337266646371631,
+            "xz": [
+              1476.4559,
+              5484.513102974953
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.524685409511648
+            ],
+            "height_range_m": 0.9316182403221944,
+            "xz": [
+              1476.4559,
+              5484.642515255021
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.518772324285408
+            ],
+            "height_range_m": 0.9257051550959545,
+            "xz": [
+              1476.4559,
+              5485.005452561297
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.516794110072397
+            ],
+            "height_range_m": 0.9237269408829434,
+            "xz": [
+              1476.4559,
+              5485.126872718498
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.5107508147442
+            ],
+            "height_range_m": 0.9176836455547459,
+            "xz": [
+              1476.4559,
+              5485.497802147641
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              25.593067169189453,
+              26.508902810633117
+            ],
+            "height_range_m": 0.9158356414436639,
+            "xz": [
+              1476.4559,
+              5485.611230181975
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.502729305202962
+            ],
+            "height_range_m": 0.9096621360135089,
+            "xz": [
+              1476.4559,
+              5485.990151733986
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.501462821900418
+            ],
+            "height_range_m": 0.9083956527109649,
+            "xz": [
+              1476.4559,
+              5486.0678867945635
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.494707795661725
+            ],
+            "height_range_m": 0.9016406264722718,
+            "xz": [
+              1476.4559,
+              5486.48250132033
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.494022833167747
+            ],
+            "height_range_m": 0.9009556639782943,
+            "xz": [
+              1476.4559,
+              5486.524543407152
+            ]
+          },
+          {
+            "actual_surface_heights": [
+              25.593067169189453,
+              26.486686286120516
+            ],
+            "height_range_m": 0.8936191169310632,
+            "xz": [
+              1476.4559,
+              5486.974850906674
+            ]
+          }
+        ],
+        "maximum_old_boundary_disagreement_m": 0.9497575619631107,
+        "mesh_emitted": false,
+        "status": "INCONSISTENT_PATCH_BOUNDARY"
+      },
+      "canonical_and_boundary_pin_count": 37,
+      "preflight": null,
+      "radius_m": 14.0
+    },
+    {
+      "boundary": {
+        "boundary_event_sample_count": 29,
+        "boundary_pin_count": 29,
+        "conflicts": [],
+        "maximum_old_boundary_disagreement_m": 0.0,
+        "mesh_emitted": false,
+        "status": "BOUNDARY_CONTROLS_AGREE"
+      },
+      "canonical_and_boundary_pin_count": 35,
+      "preflight": {
+        "covered_pin_pairs": 365,
+        "infeasible_pin_pairs": [
+          {
+            "covered_horizontal_distance_m": 9.933483769618874,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.233056727479898,
+            "minimum_shared_sheet_grade": 0.12413134767996985,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 3,
+              "source_xyz": [
+                1474.4559,
+                26.826123159849374,
+                5478.58443841941
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 9.515587168511978,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.224930236477185,
+            "minimum_shared_sheet_grade": 0.1287288125036152,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 4,
+              "source_xyz": [
+                1474.4559,
+                26.81799666884666,
+                5479.083231628226
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 9.105838119149361,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2168037454745004,
+            "minimum_shared_sheet_grade": 0.13362896743305716,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 5,
+              "source_xyz": [
+                1474.4559,
+                26.809870177843976,
+                5479.582024837041
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 8.705387175368196,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2086772544717874,
+            "minimum_shared_sheet_grade": 0.13884244665093443,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 6,
+              "source_xyz": [
+                1474.4559,
+                26.801743686841263,
+                5480.080818045857
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 8.315577744469133,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2005507634691028,
+            "minimum_shared_sheet_grade": 0.14437370443293787,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 7,
+              "source_xyz": [
+                1474.4559,
+                26.79361719583858,
+                5480.579611254672
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.937977696231952,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1924242724663898,
+            "minimum_shared_sheet_grade": 0.15021763956736955,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 8,
+              "source_xyz": [
+                1474.4559,
+                26.785490704835865,
+                5481.0784044634875
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.574413239172522,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1842977814636768,
+            "minimum_shared_sheet_grade": 0.15635505273713549,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 9,
+              "source_xyz": [
+                1474.4559,
+                26.777364213833152,
+                5481.577197672304
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.227002923754705,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1761712904609638,
+            "minimum_shared_sheet_grade": 0.16274675724773302,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 10,
+              "source_xyz": [
+                1474.4559,
+                26.76923772283044,
+                5482.075990881119
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 6.898187873092355,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1680447994582508,
+            "minimum_shared_sheet_grade": 0.16932632467353106,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 11,
+              "source_xyz": [
+                1474.4559,
+                26.761111231827726,
+                5482.574784089935
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 6.590751849017456,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1599183084555662,
+            "minimum_shared_sheet_grade": 0.17599180412603244,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 12,
+              "source_xyz": [
+                1474.4559,
+                26.752984740825042,
+                5483.07357729875
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 6.307821594536097,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1517918174528816,
+            "minimum_shared_sheet_grade": 0.18259739914815853,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 13,
+              "source_xyz": [
+                1474.4559,
+                26.744858249822357,
+                5483.572370507565
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 6.052834536973551,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1436653264501686,
+            "minimum_shared_sheet_grade": 0.188947065951353,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 14,
+              "source_xyz": [
+                1474.4559,
+                26.736731758819644,
+                5484.071163716381
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 5.829458630592572,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1355388354474556,
+            "minimum_shared_sheet_grade": 0.19479318876854723,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 15,
+              "source_xyz": [
+                1474.4559,
+                26.72860526781693,
+                5484.5699569251965
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 5.641450101695567,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1274123444447426,
+            "minimum_shared_sheet_grade": 0.1998444237069283,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 16,
+              "source_xyz": [
+                1474.4559,
+                26.72047877681422,
+                5485.068750134012
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 5.492442071098188,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1192858534420296,
+            "minimum_shared_sheet_grade": 0.20378655595328538,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 17,
+              "source_xyz": [
+                1474.4559,
+                26.712352285811505,
+                5485.567543342828
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 5.385672649645684,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1111593624393734,
+            "minimum_shared_sheet_grade": 0.20631765699916332,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 18,
+              "source_xyz": [
+                1474.4559,
+                26.70422579480885,
+                5486.066336551643
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 5.323683800173835,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.1030328714366604,
+            "minimum_shared_sheet_grade": 0.20719353606249924,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 19,
+              "source_xyz": [
+                1474.4559,
+                26.696099303806136,
+                5486.565129760459
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          }
+        ],
+        "maximum_required_straight_covered_grade": 0.20719353606249924,
+        "mesh_emitted": false,
+        "pin_count": 35,
+        "scope": "Necessary continuous-sheet bound on fully covered road segments; passing is not sufficient feasibility",
+        "source_profile_navigation_or_XZ_changed": false,
+        "status": "INFEASIBLE_FIXED_SOURCE_PINS_FOOTPRINT_AND_GRADE"
+      },
+      "radius_m": 16.0
+    },
+    {
+      "boundary": {
+        "boundary_event_sample_count": 29,
+        "boundary_pin_count": 29,
+        "conflicts": [],
+        "maximum_old_boundary_disagreement_m": 0.0,
+        "mesh_emitted": false,
+        "status": "BOUNDARY_CONTROLS_AGREE"
+      },
+      "canonical_and_boundary_pin_count": 35,
+      "preflight": {
+        "covered_pin_pairs": 362,
+        "infeasible_pin_pairs": [
+          {
+            "covered_horizontal_distance_m": 11.083469336539876,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.348600755591299,
+            "minimum_shared_sheet_grade": 0.12167677057085771,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 1,
+              "source_xyz": [
+                1473.4559,
+                26.941667187960775,
+                5477.867474210071
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 10.71113419057903,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3399139206441149,
+            "minimum_shared_sheet_grade": 0.12509542843956106,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 2,
+              "source_xyz": [
+                1473.4559,
+                26.93298035301359,
+                5478.324116144071
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 10.345556653700267,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3312270856969306,
+            "minimum_shared_sheet_grade": 0.1286762162982109,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 3,
+              "source_xyz": [
+                1473.4559,
+                26.924293518066406,
+                5478.780758078072
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 9.961741560981025,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3232460597015248,
+            "minimum_shared_sheet_grade": 0.13283280354155388,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 4,
+              "source_xyz": [
+                1473.4559,
+                26.916312492071,
+                5479.270622838219
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 9.587595232753285,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3152650337061473,
+            "minimum_shared_sheet_grade": 0.13718403851811758,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 5,
+              "source_xyz": [
+                1473.4559,
+                26.908331466075623,
+                5479.760487598366
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 9.224294267471377,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3072840077107415,
+            "minimum_shared_sheet_grade": 0.14172184557476206,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 6,
+              "source_xyz": [
+                1473.4559,
+                26.900350440080217,
+                5480.250352358514
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 8.873170914908458,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2993029817153925,
+            "minimum_shared_sheet_grade": 0.1464305144322577,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 7,
+              "source_xyz": [
+                1473.4559,
+                26.892369414084868,
+                5480.74021711866
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 8.535728112112416,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2913219557199866,
+            "minimum_shared_sheet_grade": 0.15128433553167747,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 8,
+              "source_xyz": [
+                1473.4559,
+                26.884388388089462,
+                5481.230081878808
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 8.213652152916724,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2833409297246092,
+            "minimum_shared_sheet_grade": 0.15624485987866993,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 9,
+              "source_xyz": [
+                1473.4559,
+                26.876407362094085,
+                5481.719946638955
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.9088206415861615,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2753599037292318,
+            "minimum_shared_sheet_grade": 0.16125791208655488,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 10,
+              "source_xyz": [
+                1473.4559,
+                26.868426336098707,
+                5482.209811399102
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.623302509996695,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2673788777338544,
+            "minimum_shared_sheet_grade": 0.1662506342981795,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 11,
+              "source_xyz": [
+                1473.4559,
+                26.86044531010333,
+                5482.699676159249
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.359345986127079,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.259397851738477,
+            "minimum_shared_sheet_grade": 0.17112904517772867,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 12,
+              "source_xyz": [
+                1473.4559,
+                26.852464284107953,
+                5483.189540919397
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.119349724139315,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2514168257430995,
+            "minimum_shared_sheet_grade": 0.17577684398618132,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 13,
+              "source_xyz": [
+                1473.4559,
+                26.844483258112575,
+                5483.679405679543
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 6.9058122340635935,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2434357997476937,
+            "minimum_shared_sheet_grade": 0.18005641590055477,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 14,
+              "source_xyz": [
+                1473.4559,
+                26.83650223211717,
+                5484.169270439691
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 6.721255812432333,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2354547737523447,
+            "minimum_shared_sheet_grade": 0.18381308615974995,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 15,
+              "source_xyz": [
+                1473.4559,
+                26.82852120612182,
+                5484.659135199838
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 6.5681239137696155,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2274737477569388,
+            "minimum_shared_sheet_grade": 0.18688346381279827,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 16,
+              "source_xyz": [
+                1473.4559,
+                26.820540180126414,
+                5485.148999959985
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 6.4486555779930255,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2194927217615614,
+            "minimum_shared_sheet_grade": 0.1891080562471436,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 17,
+              "source_xyz": [
+                1473.4559,
+                26.812559154131037,
+                5485.638864720132
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 6.364746715070007,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2115116957661556,
+            "minimum_shared_sheet_grade": 0.19034719683308401,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 18,
+              "source_xyz": [
+                1473.4559,
+                26.80457812813563,
+                5486.12872948028
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 6.317814313263562,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.2035306697707782,
+            "minimum_shared_sheet_grade": 0.19049794914739687,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 19,
+              "source_xyz": [
+                1473.4559,
+                26.796597102140254,
+                5486.618594240426
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          }
+        ],
+        "maximum_required_straight_covered_grade": 0.19049794914739687,
+        "mesh_emitted": false,
+        "pin_count": 35,
+        "scope": "Necessary continuous-sheet bound on fully covered road segments; passing is not sufficient feasibility",
+        "source_profile_navigation_or_XZ_changed": false,
+        "status": "INFEASIBLE_FIXED_SOURCE_PINS_FOOTPRINT_AND_GRADE"
+      },
+      "radius_m": 17.0
+    },
+    {
+      "boundary": {
+        "boundary_event_sample_count": 30,
+        "boundary_pin_count": 30,
+        "conflicts": [],
+        "maximum_old_boundary_disagreement_m": 0.0,
+        "mesh_emitted": false,
+        "status": "BOUNDARY_CONTROLS_AGREE"
+      },
+      "canonical_and_boundary_pin_count": 37,
+      "preflight": {
+        "covered_pin_pairs": 410,
+        "infeasible_pin_pairs": [
+          {
+            "covered_horizontal_distance_m": 8.30330004877593,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.331226585590013,
+            "minimum_shared_sheet_grade": 0.16032500063468888,
+            "second": {
+              "original_node_id": 7233002736,
+              "source_vertex_id": 792666,
+              "source_way": "way/718704069",
+              "source_xyz": [
+                1472.8856,
+                26.92429301795949,
+                5482.3291
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 12.345433418694522,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.482878953448683,
+            "minimum_shared_sheet_grade": 0.1201155846989689,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 0,
+              "source_xyz": [
+                1472.4559,
+                27.07594538581816,
+                5477.030741139454
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 11.947487692928261,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.4734007117141985,
+            "minimum_shared_sheet_grade": 0.1233230574982142,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 1,
+              "source_xyz": [
+                1472.4559,
+                27.066467144083674,
+                5477.528985052557
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 11.557322010043203,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.463922469979714,
+            "minimum_shared_sheet_grade": 0.12666623537075278,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 2,
+              "source_xyz": [
+                1472.4559,
+                27.05698890234919,
+                5478.027228965659
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 11.175751245838303,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.4544442282452295,
+            "minimum_shared_sheet_grade": 0.13014285986249421,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 3,
+              "source_xyz": [
+                1472.4559,
+                27.047510660614705,
+                5478.525472878761
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 10.80368611945809,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.444965986510745,
+            "minimum_shared_sheet_grade": 0.13374749789410062,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 4,
+              "source_xyz": [
+                1472.4559,
+                27.03803241888022,
+                5479.023716791864
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 10.442142769593517,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.4354877447762604,
+            "minimum_shared_sheet_grade": 0.13747061081718384,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 5,
+              "source_xyz": [
+                1472.4559,
+                27.028554177145736,
+                5479.521960704967
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 10.092252051314643,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.4260095030417759,
+            "minimum_shared_sheet_grade": 0.14129745232195426,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 6,
+              "source_xyz": [
+                1472.4559,
+                27.01907593541125,
+                5480.020204618069
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 9.755267874735914,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.4165312613072913,
+            "minimum_shared_sheet_grade": 0.14520680308285625,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 7,
+              "source_xyz": [
+                1472.4559,
+                27.009597693676767,
+                5480.518448531171
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 9.432573622417138,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.4070530195728068,
+            "minimum_shared_sheet_grade": 0.1491695772433572,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 8,
+              "source_xyz": [
+                1472.4559,
+                27.000119451942282,
+                5481.016692444274
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 9.125685342519338,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3975747778383223,
+            "minimum_shared_sheet_grade": 0.15314737747165105,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 9,
+              "source_xyz": [
+                1472.4559,
+                26.990641210207798,
+                5481.514936357376
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 8.836250041330983,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3880965361038378,
+            "minimum_shared_sheet_grade": 0.1570911336382636,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 10,
+              "source_xyz": [
+                1472.4559,
+                26.981162968473313,
+                5482.013180270478
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 8.56603704224124,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3786182943693532,
+            "minimum_shared_sheet_grade": 0.16094003418045552,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 11,
+              "source_xyz": [
+                1472.4559,
+                26.97168472673883,
+                5482.511424183581
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 8.316920128212368,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3691400526348687,
+            "minimum_shared_sheet_grade": 0.16462104138652472,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 12,
+              "source_xyz": [
+                1472.4559,
+                26.962206485004344,
+                5483.0096680966835
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 8.090848176981616,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3596618109003842,
+            "minimum_shared_sheet_grade": 0.1680493541787879,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 13,
+              "source_xyz": [
+                1472.4559,
+                26.95272824326986,
+                5483.507912009786
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.889802406952734,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3501835691658997,
+            "minimum_shared_sheet_grade": 0.17113021334679773,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 14,
+              "source_xyz": [
+                1472.4559,
+                26.943250001535375,
+                5484.006155922889
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.715739356175778,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3407053274314151,
+            "minimum_shared_sheet_grade": 0.1737623921106533,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 15,
+              "source_xyz": [
+                1472.4559,
+                26.93377175980089,
+                5484.504399835991
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.570520431119962,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3312270856969306,
+            "minimum_shared_sheet_grade": 0.17584353649250933,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 16,
+              "source_xyz": [
+                1472.4559,
+                26.924293518066406,
+                5485.002643749093
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.469665563778791,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.324220249980904,
+            "minimum_shared_sheet_grade": 0.17727972406183617,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 17,
+              "source_xyz": [
+                1472.4559,
+                26.91728668235038,
+                5485.432714005649
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.39249271372986,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3172134142648773,
+            "minimum_shared_sheet_grade": 0.1781825786339235,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 18,
+              "source_xyz": [
+                1472.4559,
+                26.910279846634353,
+                5485.862784262205
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.339748923603761,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3102065785488506,
+            "minimum_shared_sheet_grade": 0.1785083648209521,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 19,
+              "source_xyz": [
+                1472.4559,
+                26.903273010918326,
+                5486.292854518762
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          },
+          {
+            "covered_horizontal_distance_m": 7.311962859019901,
+            "first": {
+              "original_node_id": 1363434679,
+              "source_vertex_id": 791897,
+              "source_way": "way/718704063",
+              "source_xyz": [
+                1479.7633,
+                25.593066432369476,
+                5486.9812
+              ]
+            },
+            "hard_grade": 0.12,
+            "height_difference_m": 1.3031997428328523,
+            "minimum_shared_sheet_grade": 0.1782284412488843,
+            "second": {
+              "actual_source_ways": [
+                "way/718704069"
+              ],
+              "all_old_surfaces_agree_within_codec_m": 0.00025,
+              "boundary_control": 20,
+              "source_xyz": [
+                1472.4559,
+                26.896266175202328,
+                5486.7229247753185
+              ]
+            },
+            "uncovered_segment_length_m": 0.0
+          }
+        ],
+        "maximum_required_straight_covered_grade": 0.1785083648209521,
+        "mesh_emitted": false,
+        "pin_count": 37,
+        "scope": "Necessary continuous-sheet bound on fully covered road segments; passing is not sufficient feasibility",
+        "source_profile_navigation_or_XZ_changed": false,
+        "status": "INFEASIBLE_FIXED_SOURCE_PINS_FOOTPRINT_AND_GRADE"
+      },
+      "radius_m": 18.0
+    }
+  ],
+  "prior_diagnostic_error": "Empty Shapely Point intersection was not guarded; no receipt from failed first diagnostic",
+  "status": "ACTUAL_BOUNDARY_AND_FIXED_PIN_PREFLIGHT_NO_PATCH_EMITTED"
+}

@@ -1,0 +1,29 @@
+{
+  "active_output": "/private/tmp/singapore-fidelity/source-roads/semantic-v2-baseline-r1",
+  "country_or_native_or_world_acceptance": false,
+  "frozen_run_sources_sha256": {
+    "compile_roads_semantic_v2.py": "a8018b895f3039c2de20bddf7ef123684b3ce136acc54874f9db3cabe9429419",
+    "cpu_job.py": "1ccdd03a2a66dc62cdeb4fe3d9924145784905fd478d8c7b87171de6e51bac1f",
+    "road_semantics_v2.py": "8f2eb8f206465f75e5b20cd0749639844156d79445f7231c26e387e29ec8f0df",
+    "semantic_baseline.py": "eaf73e99879f69276bca8b1bd7cbc32d84d53aeb863a7db93018b02330226628"
+  },
+  "observed_utc": "2026-10-29T07:44:00.160337+00:00",
+  "status": "SOURCE_SEMANTIC_V2_23_TARGETED_CPU_TESTS_PASS_GLOBAL_BASELINE_IN_PROGRESS",
+  "tests": [
+    {
+      "failed": 0,
+      "file": "test_road_semantics_v2.py",
+      "passed": 13
+    },
+    {
+      "failed": 0,
+      "file": "test_semantic_kernel_v2.py",
+      "passed": 6
+    },
+    {
+      "failed": 0,
+      "file": "test_semantic_baseline.py",
+      "passed": 4
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "created_utc": "2026-10-29T06:31:38.644413+00:00",
+  "job_token": "a4d0d6d6bf0941ae8a1d2b9e085a982f",
+  "kind": "global-road-profile-r3",
+  "limits": {
+    "cpu_seconds": 3600,
+    "rss_bytes": 2147483648,
+    "wall_seconds": 7200
+  },
+  "reason": null,
+  "sampled_peak_rss_bytes": 437583872,
+  "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/reprofile_country.py",
+  "status": "INCOMPLETE",
+  "supervisor_pid": 33264,
+  "terminal_utc": "2026-10-29T06:33:43.599138+00:00",
+  "wall_seconds": 124.95311075000791,
+  "worker_exit": 1,
+  "worker_lstart": "Thu Oct 29 02:31:38 2026",
+  "worker_pid": 33280
+}

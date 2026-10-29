@@ -1,0 +1,45 @@
+{
+  "country_directory": "/private/tmp/singapore-fidelity/source-roads/country-r2",
+  "country_identity_sha256": "3b0afb19be2c7261e44cc121c804f690bb4bca439fc332e42860f46105812c8a",
+  "frozen_r5_identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+  "frozen_sources_unchanged": {
+    "game/src/systems/fidelity_tests/source_roads_test.gd": "06f8848e077c8fcfd3ebb7641f8d285787e3bdbd6eac2ff7abfac2657c712e68",
+    "game/src/world/geography/source_roads.gd": "c9ffb4ad34a25ce93b144809e12bf8424c46e908696d5ec3c6de6253f29acebb",
+    "game/tools/geography/compile_roads.py": "c203c52106c1caea2e473512533794259a3bc9d28dd01e80a43f91d6e63b59e5"
+  },
+  "native_engine_or_world_adoption": false,
+  "new_sources_sha256": {
+    "audit_national.py": "1dfc415ea8aaa4fc56e3918f65d1075c626423bcf0fc47545ae868632673b38d",
+    "diagnose_national_cell.py": "ee43ac4b463460e23f203a192360443b9c6fa610b6ccfa1ab7226e04b3feb282",
+    "expand_national.py": "7f4ef07893ca1595f566f6953f6d27cc4761177ca1acaaa5c40e652f61f8ccfc",
+    "test_audit_national.py": "91c69ce3e08552bc94154715a9cfee5574c6cb0f8e27d45b8758fc1683bfbbfd",
+    "test_expand_national.py": "bc8a363f0d234206b1d8441905081625e354664f873f150ee1a253da53295529"
+  },
+  "recorded_at_utc": "2026-10-29T05:24:49.100998+00:00",
+  "source_audit": {
+    "adaptive_anchor_fragments": 17,
+    "country_identity_sha256": "3b0afb19be2c7261e44cc121c804f690bb4bca439fc332e42860f46105812c8a",
+    "counts": {
+      "fragments": 158807,
+      "physical_centerline_samples": 739002,
+      "triangles": 7206586,
+      "vertices": 21619758
+    },
+    "eligible_source_ways": 147184,
+    "graph_catalogs_byteidentical": 906,
+    "maximum_part_vertices": 125868,
+    "maximum_surface_slope": 0.12098962984611059,
+    "native_or_scene_acceptance": false,
+    "physical_parts": 759,
+    "represented_unique_source_ways": 147184,
+    "source_identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+    "status": "PASS_ALL_ELIGIBLE_COUNTRY_SOURCE_MESH_AUDIT",
+    "wall_seconds": 320.856208000012
+  },
+  "status": "COUNTRY_R2_SOURCE_MESH_PASS_SEAM_AUDIT_PENDING_REVIEW_REQUIRED",
+  "unit_tests": {
+    "command": "python -B -m unittest discover -s loop/singapore-fidelity/source-roads -p test_*national.py -v",
+    "failed": 0,
+    "passed": 9
+  }
+}

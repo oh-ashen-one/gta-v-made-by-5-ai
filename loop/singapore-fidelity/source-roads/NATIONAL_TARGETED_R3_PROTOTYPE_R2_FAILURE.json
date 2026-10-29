@@ -1,0 +1,6 @@
+{
+  "failure": "After preventing opposite-portal cell coupling, measured Mandai approach still has7.79805868648964mm mismatch vs5mm gate. Exact-source-cell equality either overconstrains distant node or leaves a curved approach edge; use footprint-derived flat approach radius and existing grade allowances instead.",
+  "frozen_R5_unchanged": true,
+  "no_national_artifact_generated": true,
+  "status": "FAIL_TARGETED_PROTOTYPE_R2_9_OF_10"
+}

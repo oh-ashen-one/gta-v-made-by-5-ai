@@ -1,0 +1,72 @@
+{
+  "canonical_pin_count": 11,
+  "native_or_patch_built": false,
+  "original_emitted_footprint_area_m2": 535.4564365094412,
+  "peak_rss_bytes": 64454656,
+  "source_XZ_Y_IDs_or_navigation_mutated": false,
+  "source_identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+  "status": "ACTUAL_ALEXANDRA_SHARED_HEIGHTFIELD_PIN_FEASIBILITY_DIAGNOSIS",
+  "straight_line_covered_pin_grade_conflicts": [
+    {
+      "allowed_emitted_guard": 0.121,
+      "allowed_profile_grade": 0.12,
+      "first": {
+        "original_node_id": 1363434679,
+        "source_vertex_id": 791897,
+        "way": "way/718704063",
+        "xyz": [
+          1479.7633,
+          25.593066432369476,
+          5486.9812
+        ]
+      },
+      "height_delta_m": 1.7647085318206024,
+      "horizontal_length_m": 13.293717677910951,
+      "minimum_required_shared_surface_grade": 0.13274755599427762,
+      "second": {
+        "original_node_id": 7334355729,
+        "source_vertex_id": 792665,
+        "way": "way/718704069",
+        "xyz": [
+          1468.142,
+          27.357774964190078,
+          5480.5261
+        ]
+      },
+      "uncovered_segment_length_m": 0.0
+    },
+    {
+      "allowed_emitted_guard": 0.121,
+      "allowed_profile_grade": 0.12,
+      "first": {
+        "original_node_id": 1363434679,
+        "source_vertex_id": 791897,
+        "way": "way/718704063",
+        "xyz": [
+          1479.7633,
+          25.593066432369476,
+          5486.9812
+        ]
+      },
+      "height_delta_m": 1.331226585590013,
+      "horizontal_length_m": 8.30330004877593,
+      "minimum_required_shared_surface_grade": 0.16032500063468888,
+      "second": {
+        "original_node_id": 7233002736,
+        "source_vertex_id": 792666,
+        "way": "way/718704069",
+        "xyz": [
+          1472.8856,
+          26.92429301795949,
+          5482.3291
+        ]
+      },
+      "uncovered_segment_length_m": 0.0
+    }
+  ],
+  "ways": [
+    "way/718704063",
+    "way/718704068",
+    "way/718704069"
+  ]
+}

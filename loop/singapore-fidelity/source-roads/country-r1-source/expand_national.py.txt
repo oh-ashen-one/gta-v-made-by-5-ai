@@ -1,0 +1,233 @@
+#!/usr/bin/env python3
+"""Incremental national physical expansion using the FROZEN R5 road kernel.
+
+One tile/part at a time. Never rewrites R5 or recomputes graph/grade policies.
+No engine, scene, actor, Git, account or network operation.
+"""
+import argparse
+from collections import Counter
+import fcntl
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import resource
+import shutil
+import sqlite3
+import subprocess
+import sys
+import time
+import uuid
+
+ROOT=Path(__file__).resolve().parents[3]
+sys.path.insert(0,str(ROOT/'game/tools/geography'))
+import compile_roads as frozen
+
+EXPECTED_KERNEL='c203c52106c1caea2e473512533794259a3bc9d28dd01e80a43f91d6e63b59e5'
+MAX_PART_VERTICES=180000
+TARGET_PART_BYTES=24*1024*1024
+MAX_PART_BYTES=32*1024*1024
+MAX_RSS=2*1024**3
+
+def digest(path):
+    h=hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for part in iter(lambda:stream.read(1024*1024),b''):h.update(part)
+    return h.hexdigest()
+
+def immutable(path,raw):
+    path=Path(path)
+    if path.is_symlink():raise ValueError('Country output symlink refused')
+    if path.exists():
+        if path.read_bytes()!=raw:raise ValueError('Existing owned country output differs; no overwrite')
+        return {'file':path.name,'bytes':len(raw),'sha256':frozen.sha(raw)}
+    return frozen.write_new(path,raw)
+
+def put(path,data):return immutable(path,frozen.canonical(data))
+
+def source(args):
+    if digest(Path(frozen.__file__))!=EXPECTED_KERNEL:raise ValueError('Frozen R5 road kernel changed; Root must approve before continuing')
+    raw=(args.source/'identity.json').read_bytes()
+    if frozen.sha(raw)!=args.identity:raise ValueError('Pinned source R5 identity mismatch')
+    identity=json.loads(raw);manifest=frozen.read_bound(args.source,identity['manifest'])
+    receipt=json.loads((args.source/'supervisor.json').read_bytes())
+    if receipt.get('worker_exit')!=0 or receipt.get('status')!='complete_compile_not_runtime_acceptance':raise ValueError('Source R5 not a terminal completed owned artifact')
+    if digest(args.source/'work.sqlite')!=args.database_sha:raise ValueError('Pinned source profile database changed')
+    db=sqlite3.connect('file:'+str(args.source/'work.sqlite')+'?mode=ro',uri=True)
+    db.execute('pragma cache_size=-65536');db.execute('pragma temp_store=FILE');db.execute('pragma mmap_size=0')
+    return manifest,db
+
+def eligible(policy):
+    if not policy['modes']['car']['bits']:return 'noncar_or_access_direction_unresolved'
+    if policy['grade']['level']:return 'indoor_level_needs_floor_registry'
+    if policy['grade']['structure']=='conflicting_structure':return 'conflicting_structure'
+    return None
+
+def build_index(args,db):
+    path=args.output/'index.sqlite'
+    if path.exists():
+        marker=args.output/'index-ready.json'
+        if not marker.exists() or json.loads(marker.read_bytes()).get('source_identity')!=args.identity:raise ValueError('Partial/unverified source index cannot be used as a complete country index')
+        index=sqlite3.connect(path)
+        if index.execute("select value from counts where kind='source_ways'").fetchone()!=(257845,):raise ValueError('Country source index is incomplete')
+        return index
+    index=sqlite3.connect(path);index.executescript('''pragma cache_size=-32768;pragma temp_store=FILE;pragma mmap_size=0;
+      create table ways(id text primary key,data text);
+      create table links(tile text,way text,primary key(tile,way));
+      create index links_tile on links(tile);
+      create table tiles(tile text primary key,tx integer,tz integer,done integer default0,receipt text);
+      create table covered(way text primary key,fragments integer);
+      create table counts(kind text primary key,value integer);'''.replace('default0','default 0'))
+    counts=Counter()
+    for identifier,raw,policy,vertices in db.execute('select id,raw,policy,vertices from ways order by id'):
+        counts['source_ways']+=1;item=json.loads(raw);p=json.loads(policy);reason=eligible(p)
+        if reason:counts['excluded_'+reason]+=1;continue
+        ids=json.loads(vertices);points=[list(db.execute('select x,y,z from vertices where v=?',(v,)).fetchone()) for v in ids]
+        data={'id':identifier,'name':item['name'],'policy':p,'source_vertex_ids':ids,'source_points_xyz':points,
+              'source_feature_sha256':item['source_feature_sha256'],'source_geometry_sha256':item['source_geometry_sha256']}
+        index.execute('insert into ways values(?,?)',(identifier,frozen.canonical(data).decode()))
+        cells=set();pad=p['width']['metres'] # Encloses max2half miter and own-half apron.
+        for a,b in zip(points,points[1:]):
+            for tx in range(math.floor((min(a[0],b[0])-pad)/1000),math.floor((max(a[0],b[0])+pad)/1000)+1):
+                for tz in range(math.floor((min(a[2],b[2])-pad)/1000),math.floor((max(a[2],b[2])+pad)/1000)+1):cells.add((tx,tz))
+        if len(cells)>4096:raise ValueError('Single source way exceeds explicit country work-cell budget')
+        for tx,tz in cells:
+            key=f'{tx}_{tz}';index.execute('insert or ignore into tiles(tile,tx,tz) values(?,?,?)',(key,tx,tz));index.execute('insert into links values(?,?)',(key,identifier))
+        counts['eligible_ways']+=1;counts['candidate_way_tile_pairs']+=len(cells);counts['structure_'+p['grade']['structure']]+=1
+        if counts['eligible_ways']%5000==0:
+            index.commit();print(json.dumps({'stage':'index','counts':dict(counts)}),flush=True);frozen.budget()
+    if counts['source_ways']!=257845 or counts['eligible_ways']!=147184:raise ValueError('Same-R5 full source policy counts differ')
+    index.executemany('insert into counts values(?,?)',counts.items());index.commit()
+    put(args.output/'index-ready.json',{'source_identity':args.identity,'kernel_sha256':EXPECTED_KERNEL,'counts':dict(counts),'tiles':index.execute('select count(*) from tiles').fetchone()[0]})
+    return index
+
+def verify_mesh(mesh):
+    if mesh['maximum_emitted_surface_slope']>.121:raise ValueError('National emitted Float32 slope exceeds exact frozen policy')
+    positions=mesh['vertices_local_xyz'];normals=mesh['normals'];indices=mesh['indices']
+    if len(positions)!=len(normals) or len(indices)%3:raise ValueError('National mesh topology invalid')
+    for start in range(0,len(indices),3):
+        a,b,c=(positions[i] for i in indices[start:start+3]);u=[b[j]-a[j] for j in range(3)];v=[c[j]-a[j] for j in range(3)]
+        cross=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]]
+        n=normals[indices[start]]
+        if cross[1]>=0 or n[1]<=0 or sum(cross[j]*n[j] for j in range(3))>=0:raise ValueError('National winding/normal mismatch')
+
+def emit_tile(args,index,tile,tx,tz,radii):
+    part=[];part_vertices=0;estimated_bytes=0;parts=[];contributions=Counter();counts=Counter();maximum_slope=0.
+    def flush():
+        nonlocal part,part_vertices,estimated_bytes
+        if not part:return
+        key=f'{tile}.p{len(parts):03d}'
+        raw=frozen.canonical({'schema':frozen.SCHEMA,'tile':key,'spatial_tile_key':tile,'features':part,
+                              'physical_scope':'all_R5_eligible_country_source_ways_incremental_tile_PART_NOT_world_boundary'})
+        if len(raw)>MAX_PART_BYTES or part_vertices>MAX_PART_VERTICES:raise ValueError('National part exceeds frozen runtime bounded commit budget')
+        descriptor=immutable(args.output/'physical'/f'{key}.json',raw)
+        descriptor.update(file=f'physical/{key}.json',tile=key,spatial_tile_key=tile,source_bounds_xz=[tx*1000,tz*1000,(tx+1)*1000,(tz+1)*1000],vertices=part_vertices)
+        parts.append(descriptor);part=[];part_vertices=0;estimated_bytes=0
+    for (raw,) in index.execute('select w.data from links l join ways w on w.id=l.way where l.tile=? order by w.id',(tile,)):
+        item=json.loads(raw);ids=item['source_vertex_ids'];anchor=[tx*1000.,0.,tz*1000.]
+        mesh=frozen.ribbon(item['source_points_xyz'],item['policy']['width']['metres'],anchor,[tx*1000,tz*1000,(tx+1)*1000,(tz+1)*1000],[radii.get(v,0.) for v in ids])
+        if not mesh['indices']:counts['bbox_candidates_with_no_actual_fragment']+=1;continue
+        verify_mesh(mesh);maximum_slope=max(maximum_slope,mesh['maximum_emitted_surface_slope'])
+        feature={'id':item['id'],'name':item['name'],'tile':tile,'anchor_source_xyz':anchor,'source_vertex_ids':ids,
+                 'policy':item['policy'],'source_points_xyz':item['source_points_xyz'],'mesh':mesh}
+        size=len(frozen.canonical(feature));vertices=len(mesh['vertices_local_xyz'])
+        if size>MAX_PART_BYTES-65536 or vertices>MAX_PART_VERTICES:raise ValueError('Single national way fragment requires finer geographic work tiling; no truncation')
+        if part and (estimated_bytes+size>TARGET_PART_BYTES or part_vertices+vertices>MAX_PART_VERTICES):flush()
+        part.append(feature);part_vertices+=vertices;estimated_bytes+=size+1;contributions[item['id']]+=1
+        counts['fragments']+=1;counts['triangles']+=len(mesh['indices'])//3;counts['vertices']+=vertices;counts['holes']+=mesh['holes'];frozen.budget()
+    flush()
+    receipt={'spatial_tile_key':tile,'parts':parts,'counts':dict(counts),'maximum_surface_slope':maximum_slope,'per_way_fragments':dict(contributions)}
+    put(args.output/'tile-receipts'/f'{tile}.json',receipt)
+    return receipt
+
+def worker(args):
+    if args.output.is_symlink() or args.output.resolve()==args.source.resolve():raise ValueError('Worker cannot alias frozen source output')
+    started=time.monotonic();manifest,db=source(args)
+    state=args.output/'state.json'
+    if state.exists():
+        old=json.loads(state.read_bytes())
+        if old['source_identity']!=args.identity or old['kernel_sha256']!=EXPECTED_KERNEL or old['wrapper_sha256']!=digest(__file__):raise ValueError('Resume provenance mismatch')
+    else:put(state,{'source_identity':args.identity,'source_database_sha256':args.database_sha,'kernel_sha256':EXPECTED_KERNEL,'wrapper_sha256':digest(__file__)})
+    index=build_index(args,db);radii=dict(db.execute('select v,radius from render_hubs'));completed=0
+    tiles=index.execute('select tile,tx,tz,done from tiles order by tx,tz').fetchall()
+    for tile,tx,tz,done in tiles:
+        if done:completed+=1;continue
+        path=args.output/'tile-receipts'/f'{tile}.json'
+        if path.exists():receipt=json.loads(path.read_bytes())
+        else:receipt=emit_tile(args,index,tile,tx,tz,radii)
+        for descriptor in receipt['parts']:
+            raw=(args.output/descriptor['file']).read_bytes()
+            if len(raw)!=descriptor['bytes'] or frozen.sha(raw)!=descriptor['sha256']:raise ValueError('Completed tile part changed')
+        for way,count in receipt['per_way_fragments'].items():index.execute('insert into covered values(?,?) on conflict(way) do update set fragments=fragments+excluded.fragments',(way,count))
+        index.execute('update tiles set done=1,receipt=? where tile=?',(frozen.canonical(receipt).decode(),tile));index.commit();completed+=1
+        print(json.dumps({'stage':'physical_tiles','complete':completed,'total':len(tiles),'tile':tile,'parts':len(receipt['parts']),'triangles':receipt['counts'].get('triangles',0),'peak_rss':frozen.budget()}),flush=True)
+    missing=index.execute('select count(*) from ways w left join covered c on c.way=w.id where c.way is null').fetchone()[0]
+    if missing:raise ValueError(f'{missing} eligible source ways lack any physical fragment; no national-complete claim')
+    graph_descriptors=manifest['graph_chunks']
+    for descriptor in graph_descriptors:
+        source_file=args.source/descriptor['file'];target=args.output/descriptor['file']
+        if target.exists():
+            if target.stat().st_size!=descriptor['bytes'] or digest(target)!=descriptor['sha256']:raise ValueError('Copied graph changed')
+        else:
+            target.parent.mkdir(parents=True,exist_ok=True)
+            with source_file.open('rb') as stream,target.open('xb') as output:shutil.copyfileobj(stream,output,1024*1024)
+            if target.stat().st_size!=descriptor['bytes'] or digest(target)!=descriptor['sha256']:raise ValueError('R5 graph copy/hash failure')
+    physical=[];groups={};totals=Counter();maximum=0.
+    for tile,raw in index.execute('select tile,receipt from tiles order by tile'):
+        receipt=json.loads(raw);physical.extend(receipt['parts']);groups[tile]=[p['tile'] for p in receipt['parts']]
+        totals.update(receipt['counts']);maximum=max(maximum,receipt['maximum_surface_slope'])
+    counts=dict(index.execute('select kind,value from counts'));result=dict(manifest)
+    result.update({'version':2,'parent_road_identity_sha256':args.identity,'physical_tiles':physical,'physical_tile_groups':groups,
+                   'physical_scope':{'scope':'ALL_SAME_R5_ELIGIBLE_SOURCE_ROAD_FOOTPRINTS_country_work_index_not_rectangle_fence','source_ways':257845,'eligible_ways':counts['eligible_ways'],'spatial_candidate_tiles':len(tiles),'physical_parts':len(physical),'source_conservation_missing':missing,'counts':dict(totals),'maximum_actual_surface_slope':maximum,'graph_only_exclusions':{k:v for k,v in counts.items() if k.startswith('excluded_')},'whole_ways_cross_border_extensions_preserved_not_a_territory_or_land_claim':True},
+                   'national_builder':{'wrapper_sha256':digest(__file__),'frozen_kernel_sha256':EXPECTED_KERNEL,'source_database_sha256':args.database_sha,'profile_recomputed':False,'copied_graph_chunks_byteidentical':True},
+                   'national_validation':{'source_conservation_and_generation_winding_slope':'PASS','independent_source_winding_audit':'PENDING','streamed_seam_audit':'PENDING','native_or_world_adoption':'PENDING'},
+                   'national_resources':{'wall_seconds':time.monotonic()-started,'kernel_peak_rss_bytes':frozen.budget(),'one_spatial_tile_in_memory':True}})
+    if not (args.output/'manifest.json').exists():
+        descriptor=put(args.output/'manifest.json',result)
+        identity={'schema':frozen.IDENTITY,'version':2,'manifest':descriptor,'snapshot_manifest_sha256':manifest['snapshot_manifest_sha256'],'parent_road_identity_sha256':args.identity}
+        put(args.output/'identity.json',identity)
+    else:identity=json.loads((args.output/'identity.json').read_bytes())
+    db.close();index.close()
+    return {'status':'NATIONAL_COMPILE_CANDIDATE_COMPLETE_AUDITS_AND_NATIVE_PENDING','identity_sha256':digest(args.output/'identity.json'),'scope':result['physical_scope'],'resources':result['national_resources']}
+
+def supervise(args):
+    if args.output.is_symlink() or args.output.resolve()==args.source.resolve():raise ValueError('Country output cannot alias or modify frozen R5 source')
+    if args.output.exists() and not args.resume:raise ValueError('Fresh output required unless explicitly resuming owned country job')
+    if args.output.exists() and args.resume:
+        state=args.output/'state.json'
+        if not state.exists():raise ValueError('Existing directory is not this owned resumable country job')
+        old=json.loads(state.read_bytes())
+        if old.get('source_identity')!=args.identity or old.get('kernel_sha256')!=EXPECTED_KERNEL or old.get('wrapper_sha256')!=digest(__file__):raise ValueError('Owned country resume provenance differs')
+    args.output.mkdir(parents=True,exist_ok=True)
+    lock=(args.output/'worker.lock').open('a+b')
+    try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+    except BlockingIOError:raise ValueError('Owned country worker is already active; no duplicate')
+    run=uuid.uuid4().hex;log=args.output/f'worker-{run}.log';started=time.monotonic();peak=0;reason=None
+    with log.open('xb') as stream:
+        process=subprocess.Popen([sys.executable,str(Path(__file__).resolve()),*sys.argv[1:],'--worker'],stdout=stream,stderr=subprocess.STDOUT)
+        try:
+            while process.poll() is None:
+                text=subprocess.run(['/bin/ps','-o','rss=','-p',str(process.pid)],capture_output=True,text=True).stdout.strip()
+                if text:peak=max(peak,int(text)*1024)
+                if peak>MAX_RSS:reason='Owned national worker exceeded2GiB RSS';break
+                if time.monotonic()-started>7200:reason='Owned national worker exceeded bounded7200s wall';break
+                time.sleep(1)
+        finally:
+            if process.poll() is None:
+                process.terminate()
+                try:process.wait(timeout=30)
+                except subprocess.TimeoutExpired:process.kill();process.wait()
+    result={'status':'NATIONAL_WORKER_COMPLETE_AUDITS_PENDING' if process.returncode==0 and reason is None else 'INCOMPLETE','worker_exit':process.returncode,'reason':reason,'sampled_peak_rss_bytes':peak,'wall_seconds':time.monotonic()-started,'worker_log':log.name,'limits':{'rss_bytes':MAX_RSS,'cpu_seconds':3600,'wall_seconds':7200}}
+    put(args.output/f'supervisor-{run}.json',result);lock.close();return result
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--source',type=Path,required=True);parser.add_argument('--identity',required=True);parser.add_argument('--database-sha',required=True);parser.add_argument('--output',type=Path,required=True);parser.add_argument('--resume',action='store_true');parser.add_argument('--worker',action='store_true',help=argparse.SUPPRESS);args=parser.parse_args()
+    resource.setrlimit(resource.RLIMIT_CPU,(3600,3630))
+    try:
+        result=worker(args) if args.worker else supervise(args);print(json.dumps(result),flush=True)
+        if result['status']=='INCOMPLETE':raise SystemExit(1)
+    except Exception as error:
+        print(json.dumps({'status':'FAILED_OR_INCOMPLETE_NO_NATIONAL_ACCEPTANCE','error':str(error)}),flush=True);raise SystemExit(1)
+
+if __name__=='__main__':main()
