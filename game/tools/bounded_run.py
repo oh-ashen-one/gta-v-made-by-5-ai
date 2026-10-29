@@ -3,6 +3,7 @@
 import argparse, subprocess, signal, time, json, os, sys, hashlib, re, threading, resource
 from pathlib import Path
 from datetime import datetime, timezone
+from snapshot_hashes import snapshot
 p=argparse.ArgumentParser();p.add_argument('--seconds',type=float,default=180);p.add_argument('--log',required=True);p.add_argument('command',nargs=argparse.REMAINDER)
 a=p.parse_args();cmd=a.command[1:] if a.command and a.command[0]=='--' else a.command
 start=time.monotonic();timed=False;root=Path(__file__).resolve().parents[2];log=Path(a.log);log.parent.mkdir(parents=True,exist_ok=True)
@@ -11,13 +12,16 @@ files=list((root/'game'/'src').rglob('*.gd'))+[root/'game'/'project.godot']
 source_hashes={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in files}
 try:checkpoint=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
 except Exception:checkpoint='unknown'
-asset_hashes={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for folder in ['authored','providers'] for f in (root/'game'/'assets'/folder).glob('*.glb')}
-runtime_art_hashes={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for folder in ['authored','providers'] for f in (root/'game'/'assets'/folder).rglob('*') if f.is_file() and f.suffix.lower() in {'.glb','.png','.jpg','.jpeg','.gdshader','.tres','.tscn'}}
+runtime_art_files=[f for folder in ['authored','providers'] for f in (root/'game'/'assets'/folder).rglob('*') if f.is_file() and f.suffix.lower() in {'.glb','.png','.jpg','.jpeg','.gdshader','.tres','.tscn'}]
+cache_key=hashlib.sha256(str(root).encode()).hexdigest()[:20]
+art_snapshot,art_snapshot_validation=snapshot(runtime_art_files,Path('/private/tmp/orchard-build-hashes')/(cache_key+'.json'))
+runtime_art_hashes={str(f.relative_to(root)):value for f,value in art_snapshot.items()}
+asset_hashes={str(f.relative_to(root)):art_snapshot[f] for folder in ['authored','providers'] for f in (root/'game'/'assets'/folder).glob('*.glb')}
 try:
  patch=subprocess.check_output(['git','diff','HEAD','--','game/src','game/project.godot','game/assets/authored/shaders'],cwd=root,text=True)
  Path(a.log+'.source.patch').write_text(patch)
 except Exception:pass
-meta={'supervisor_pid':os.getpid(),'started_utc':utc(),'checkpoint':checkpoint,'source_hashes':source_hashes,'asset_hashes':asset_hashes,'runtime_art_hashes':runtime_art_hashes,'command':cmd}
+meta={'supervisor_pid':os.getpid(),'started_utc':utc(),'checkpoint':checkpoint,'source_hashes':source_hashes,'asset_hashes':asset_hashes,'runtime_art_hashes':runtime_art_hashes,'art_snapshot_validation':art_snapshot_validation,'command':cmd}
 samples=[];sampling_errors=[];stop=threading.Event();requested_stop=threading.Event()
 def sample_process(pid):
  with open(a.log+'.resources.jsonl','w') as out:
