@@ -175,7 +175,7 @@ func _register_native_shaft(key: String) -> bool:
 
 func _ready_for_cabin(key: String, id: String) -> Dictionary:
 	var observed: Dictionary = _stack.ready_for_floor(id)
-	var shaft_ready := _configured and _shafts.has(key) and _shafts[key].registered and is_instance_valid(_shafts[key].node) and _shafts[key].node.shaft_collision_ready()
+	var shaft_ready: bool = _configured and _shafts.has(key) and _shafts[key].registered and is_instance_valid(_shafts[key].node) and _shafts[key].node.shaft_collision_ready()
 	if shaft_ready:
 		var lease: Dictionary = _runtime.region_status(_shafts[key].region_id)
 		shaft_ready = lease.live and lease.residency_token == _shafts[key].residency_token and lease.origin_revision == _frame.metadata().origin_revision
@@ -241,7 +241,7 @@ func _before_floor_unload(id: String) -> bool:
 
 func _stair_readiness(lower: String, id: String) -> Dictionary:
 	var floor_state: Dictionary = _stack.ready_for_floor(id)
-	var inserted := _stair_entries.has(lower) and _stair_entries[lower].get("registered", false)
+	var inserted: bool = _stair_entries.has(lower) and _stair_entries[lower].get("registered", false)
 	return {"floor_id": id, "ready": bool(floor_state.ready) and (id == lower or inserted), "collision_generation": String(floor_state.collision_generation)}
 
 func _bind_stair_floor(id: String, floor_node: Node3D) -> void:
