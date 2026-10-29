@@ -364,11 +364,10 @@ func landing_exit_safe(local_position: Vector3) -> bool:
 	if not begun.ok: return false
 	var observations := _native_player_observations(begun.query, actor)
 	var state: Dictionary = context.evaluate(begun.query, observations)
-	if not state.get("ok", false) or state.support.state != "supported": return false
-	var pose: Dictionary = context.make_restore_pose(canonical.source_xyz, actor.yaw, state.support.feature_id, state.support.floor_id)
-	if not pose.ok: return false
-	var checked: Dictionary = context.preflight_restore(pose.pose, begun.query, observations)
-	return checked.get("ok", false) and checked.get("status") == "ready"
+	# A local, physically observed step out of a vehicle is separate from cold
+	# save restoration. Outdoor hydrology may be unresolved; do not relabel it
+	# dry, but allow an actual supported clear surface. Known immersion refuses.
+	return state.get("ok", false) and state.territory.state == "inside" and state.residency.state == "resident" and state.support.state == "supported" and state.clearance.state == "clear" and state.water.state != "submerged"
 
 func capture_player_pose(actor: Player) -> Dictionary:
 	var state := inspect_player(actor)

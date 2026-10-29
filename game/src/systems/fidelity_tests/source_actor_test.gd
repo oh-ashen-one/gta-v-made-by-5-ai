@@ -13,6 +13,7 @@ var runtime: Node3D
 var player: Player
 var metrics: Dictionary = {}
 var output := ""
+var unresolved_outdoor_water := false
 const REPORT_NAME := "source-actor-report.json"
 const BASE := [17384.7, 0.0, -80120.7]
 
@@ -53,6 +54,7 @@ func source(local: Vector3) -> Array:
 func domain(_point: Array) -> Dictionary:
 	# Deliberately synthetic domain provider. The real source bootstrap must
 	# supply country/coast/3D hydrology; this is not their runtime integration.
+	if unresolved_outdoor_water: return {"territory": {"state": "inside"}, "land": {"state": "unknown"}, "water": {"state": "unknown"}}
 	return {"territory": {"state": "inside"}, "land": {"state": "unknown"},
 		"water": {"state": "water_column", "payload": {"body_id": "qa-only/exterior-sea", "bottom_y": -100.0, "surface_y": 0.0}}}
 
@@ -168,16 +170,33 @@ func run() -> void:
 	add_child(car)
 	check("production car hull binds to common source runtime", runtime.bind_car(car))
 	car.has_ai = true; car.max_speed = 6.0; car.ai_target = Vector3(1506, -20, -14)
+	player.process_mode = Node.PROCESS_MODE_DISABLED
 	Game.player_position = Vector3(-10000, 0, 0) # exercise the former far-AI shortcut
 	car.process_mode = Node.PROCESS_MODE_INHERIT
 	var car_start := car.global_position
 	await frames(90)
 	check("source far AI car uses supported native motion below old sea plane", car.global_position.distance_to(car_start) > .25 and car.is_on_floor() and car.global_position.y < -19.8, car.global_position)
+	player.process_mode = Node.PROCESS_MODE_INHERIT
 	car.has_ai = false
 	car.shove(Vector3(4, 0, 0), car.global_position)
 	var shove_start := car.global_position
 	await frames(15)
 	check("source-bound car shove follows native motion", car.global_position.x > shove_start.x + .1 and car.is_on_floor(), car.global_position)
+	var outdoor := box("NativeOutdoorPlatform", Vector3(1460, -20.5, 0), Vector3(20, 1, 20))
+	var outdoor_definition := {"feature_id": "qa-only/outdoor", "floor_id": "OUT", "geometry_sha256": sha("explicit outdoor fixture"), "support_ids": ["slab"], "volumes": [{"volume_id": "support-query-only", "min_xyz": source(Vector3(1450, -20.5, -10)), "max_xyz": source(Vector3(1470, -17, 10)), "dry": false}], "provenance": "Synthetic NONDRY physical platform, not surveyed land"}
+	check("outdoor support registration does not assert dry volume", context.register_floor(outdoor_definition))
+	await frames(3)
+	check("outdoor native region commits", runtime.commit_region("qa-outdoor", source(Vector3(1450, -40, -10)), source(Vector3(1470, 50, 10)), [outdoor], [{"body": outdoor, "feature_id": "qa-only/outdoor", "floor_id": "OUT", "support_id": "slab"}]))
+	var outdoor_exit := Vector3(1460, -19.92, 0)
+	check("known submerged exit remains refused despite real support", not runtime.landing_exit_safe(outdoor_exit))
+	unresolved_outdoor_water = true
+	check("local physical vehicle exit allows unresolved outdoor hydrology", runtime.landing_exit_safe(outdoor_exit))
+	var outdoor_source: Dictionary = frame.to_source_current_live(outdoor_exit)
+	var outdoor_query: Dictionary = context.begin_query(outdoor_source.source_xyz)
+	var outdoor_state: Dictionary = context.evaluate(outdoor_query.query, runtime._native_player_observations(outdoor_query.query, player))
+	check("physical exit policy does not fabricate dryland or dry water state", outdoor_state.water.state == "unknown" and outdoor_state.land.state == "unknown")
+	unresolved_outdoor_water = false
+	runtime.retire_region("qa-outdoor")
 	runtime.retire_region("qa-basement")
 	var shared: Dictionary = runtime.inspect_player(player)
 	check("retiring west keeps shared live floor supported on east", shared.get("ok", false) and shared.support.state == "supported" and shared.residency.state == "resident", shared)

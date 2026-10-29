@@ -913,6 +913,9 @@ static func find_safe_exit(vehicle: CharacterBody3D, offsets: Array[Vector3]) ->
 		var floor_hit := space.intersect_ray(floor_query)
 		if floor_hit.is_empty() or floor_hit["normal"].y < 0.65: continue
 		candidate.y = float(floor_hit["position"].y) + 0.08
+		if bool(vehicle.get("uses_source_world")):
+			var source_runtime: Node = vehicle.get("source_world_runtime")
+			if not is_instance_valid(source_runtime) or not source_runtime.landing_exit_safe(candidate): continue
 		var query := PhysicsShapeQueryParameters3D.new()
 		query.shape = capsule
 		query.transform = Transform3D(Basis.IDENTITY, candidate + Vector3.UP * 0.9)
