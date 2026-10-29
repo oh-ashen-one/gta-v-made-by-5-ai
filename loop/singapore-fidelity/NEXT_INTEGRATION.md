@@ -1,33 +1,49 @@
-# Full Singapore/MBS goal remains active — current integration handoff
+# Singapore fidelity: active continuation
 
-Owner delegates routine choices/noquestions. No newtimebox, mainmerge, purchases orforeigntakeover. Root aloneengines/Git. Activeauthoringbranch Astra-6-singapore-fidelity.
+The full owner goal remains active. Make routine decisions autonomously; do not ask more implementation questions. Work on `Astra-6-singapore-fidelity`, never merge main. Root alone owns Git and engine launches. Preserve other sessions.
 
-## First next-turn action
+## Current process and safety state
 
-Inspectactualagents/git/sharedSTREAMING/PAUSED/processes. NoRootengineorqueuecurrently. Currentrules67f806f269f6 fromrelease6ff37c0394eb11ed1f49 verified. Sharedgpu_slot alreadyupdated withrecognizedGPUclients/headroom85percent10s/cooldown20s. BEFOREANYRENDER complete taskdriverfirst-real-framehealthproof/2xstartupdeadline->sharedPAUSED/noSIGKILL and updatedlastmomentinventory (packagedgames/MPS/MLX/simulators/encoders, notjustUnrealEditor). Verify onecleanrenderer/noGPUtraining recoveryhour before normalcap2. Do NOTbypassSTREAMING orlaunchanotherprobeat97-100GPU. Source/backgroundCPUcontinues.
+One **headless** core test is queued: exec **79779**, shared launcher **PID95471**, start **2026-10-29 12:21:06 EDT**. Its identity was positively verified at12:23:40. The launcher is waiting for capacity and reported three ML clients plus Blender; no Godot child or engine log existed at that observation. Do not duplicate it. Its durable output is `work/fidelity-runtime/runs/source-core-normal-r1`; QA output uses `/private/tmp/singapore-fidelity/source-core-normal-r1/session`.
 
-## Authoritative source data
+The latest observed STREAMING and PAUSED flags were absent, but utilization was98% and the new shared launcher correctly held the job. Keep its normal cap/headroom/cooldown checks. Never remove flags or change ignore patterns to get a slot.
 
-CityR2 andMBSterrain9tiles recoveredexactallpayloads,pinsunchanged,durable recovery/private. RecoveredR5 graph+20physicaltilepayloads equaloldarchivebyte-for-byte; explicitnewmetadataidentity4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802 nowSourceWorldpin anddurabledirectory. Olddiagnostic17865vsfresh3573historydifference documented; neverforgeoldidentity. ActualWorldwaypointwalk/drive/heli stillpendingnative.
+Rules revision67f806f269f6 is verified. The installed shared coordinator now includes broader GPU-client detection, utilization below85% for10seconds, and20seconds between cold launches. **Before any rendered run**, Root still needs a first-real-frame health marker and timeout that pauses launches machine-wide on a wedge, with no SIGKILL. Account for simulators, encoders and other Metal clients as well as recognized engines/trainers. Respect the single-renderer/no-training first clean recovery hour. CPU source work continues independently.
 
-Newendpointmetricv3 identityefa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619 hasfullsource/profile/graphindependentaudits andcriticapprovalfornextphysicalgeneration ONLY. ZEROphysicaltiles; nevercombineitsnewYwithR5oldmeshes. road_semantic_recovery nowownsboundedcentraltypedphysicalproducer (car .122unchanged,foot/steps explicitcontract) andactualsourceincline/step_countdiscrepancyfixes. Existingv3 sourcefacts preserved butstepYdirectionsnotallfaithful, nofullcountryacceptance.
+## Data ready for integration
 
-## MBS integration
+CityR2 and the nine-tile MBS terrain neighborhood were recovered with every original payload hash matched, in durable ignored `recovery/private` directories.
 
-Legacylowstairs/lift119nativepass99m +normalstair147pass; exactroadbatch39nativepass; sourcecontroller98pass. Source-orientedcorebank29CPU/33nativecabinfit.
+RecoveredR5 has new metadata identity `4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802`. Every906 graph chunk and20 physical tile matches the old archived payload byte for byte. Root explicitly adopted this new generation and durable path in SourceWorld at e2d2915. The historical diagnostic-count difference is documented; the old identity was never forged.
 
-Newsource_core_geometry/source_stair_gates (c10d6cf) andcontinuousnormal/lowQA(ecb2ebc) areSOURCECANDIDATES, nativepending. Theyuseeachownaxis, exactbankholes/rigidfullstairs, rearhole5.1m, eachfloorownsreceivinglanding. Rootmustintegrate withnewroomfactory/Hotel/Stack/SourceWorldafteractualnativeproof; notdefaultgameyet.
+Endpoint metricv3 identity `efa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619` has passed full source/profile/graph audits and independent code critique. It contains **zero physical tiles**. Do not combine its new heights with oldR5 meshes. The road worker is building a bounded typed physical producer, including pedestrian-only structures, and correcting source incline/step-count mismatches. Profile feasibility is not terrain cover, physical traversal or surveyed elevation proof.
 
-CorrectedminimumroomallocationR2(ec49dbb) preserves1850/775/all159guestfloors,27350CPUchecks,113390.76m2; itisNOTfinal luxuryacceptance/installedgamedata. mbs_conformance_builder owns separatearea-firstluxuryplanner, fullpublishedcategoryareatargets andfurnishing/circulationfit. Itsnewlayouts mayreconstructprivatefloorallocations; preservelogicalroomIDs anddocumentphysicalassignment. All57programfloor geometry and27resortmappings/roofintegrationstillneeded.
+## MBS source and native work
 
-Artledger source-floor-art isresearchonly. ExactofficialMarinaPDFpage2 says8ftpooltable1500x2620; badOCR1800x900discarded.9ftstandardwasOURreconstructionassumption, notownerrequirement. Useverifiedper-typepublicreference thenexplicitplausibleprivateinference. Noassetsdownloaded; freeCCBYcandidate metadata isnotimport/nativequalityproof.
+Existing bounded proofs remain distinct: low transport119 checks/99m continuous travel; normal stairs147 checks; exact road batching39 checks; source controller98 checks; packed source cores29 CPU and33 native cabin-fit checks.
 
-## Native work afterguard/safetypermits
+New `source_core_geometry.gd` and `source_stair_gates.gd` (c10d6cf) provide source-axis bank slabs, explicit full-sized rotated stairs and the guarded pose adapter. They leave complete5.10m incoming stair headroom, and the receiving floor owns its landing. Their new continuous walking fixtures are committed at ecb2ebc but have **not passed natively yet**. Run normal and low variants separately;720seconds internal,780seconds outer.
 
-- mbs_source_core_geometry_test.tscn with --source-core-variant normal andlow separately,720inner/780outer.
-- mbs_source_floor_plan_test.tscn withexplicitfrozencandidatepath; onlyparser/planproof, notluxury/runtimeacceptance.
-- source_stack_capacity_test.tscn960outer withfresh /private/tmp/singapore-fidelity/.../session; oldR1exit2waswrongRootQApath,zeroassertions. Persist supervisorlogoutside/tmp.
-- updatedmbs_floor_stack_test partialdependencies960outer.
-- SourceWorldactual9tilewaypointwalk/car/exit/detour/heli withrecoveredR5pin andbothcity/roadbatches. Thenfreshnative/rendercritique/performance; nolabelprototypecolorprobesasgameplay.
+The minimum room allocationR2 at ec49dbb preserves1850 IDs,775 suites and all159 guest floors, with27,350 CPU checks. Its113,390.76m2 area is **not final luxury acceptance** and it is not installed game data. The separate area-first luxury planner is moving toward published category areas and adequate furnishings. Latest v3 had24 lower-T2 corridor overlaps, caught by its independent audit; correction is in progress. Keep failed candidates and area deficits explicit.
 
-Fullsourcegamebootstrap/streaming/rebase/allAI/traffic/mission/doors/save/finalprivatepackage remain. No complete/blockedstatus justified; workisprogressing.
+All57 program-floor geometry plans,27 resort mappings, roof programs and the coupled FloorStack/Hotel/SourceWorld installation remain incomplete. The default game has not been replaced with a fully integrated source city.
+
+## Native work after capacity and safeguards permit
+
+1. Inspect the existing queued normal source-core test before any new launch. Run the low variant only after the normal result is understood.
+2. Run `mbs_source_floor_plan_test.tscn` with the exact frozen allocation path. This proves parsing/plan invariants only, not furnished-room quality.
+3. Run `source_stack_capacity_test.tscn` with a fresh `/private/tmp/singapore-fidelity/.../session` and960second outer bound. PriorR1 exited2 because Root supplied an unsupported persistent QA path; it performed zero assertions. Keep the ownership guard intact and store the supervisor output durably.
+4. Run the updated `mbs_floor_stack_test` partial-floor dependency fixture.
+5. Run actual SourceWorld walking, driving, exit, parked-car detour and helicopter checks against recoveredR5 and the city/road batches, then rendered critique and performance measurements.
+
+## Art and source fidelity
+
+The art ledger is research only; no new assets were downloaded or generated. The official Marina PDF visually labels an8-foot pool table with1500x2620; the earlier1800x900 OCR was wrong. Bed versus outer cabinet is not explicit. A9-foot table was our reconstruction assumption, not an owner requirement. Verified suite-specific references take precedence. Licensed table/balls/sofa candidates still need acquisition, dimensions, marks, import and native visual review.
+
+## Exclusive worker scopes
+
+- `mbs_conformance_builder`: separate luxury-area planner/helper/tests; do not overwrite its in-flight files.
+- `road_semantic_recovery`: bounded typed physical producer and source-step/profile corrections; CPU only.
+- `source_dataset_recovery`: completed independent reviews, currently idle.
+
+Root owns coupled production integration, launcher safety and Git. Full source-world streaming/rebase, AI/traffic/missions, complete saves/doors, actual rendered acceptance and final private package remain. No completion or blocked status is justified while this work is progressing.
