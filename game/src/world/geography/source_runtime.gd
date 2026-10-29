@@ -217,14 +217,29 @@ func _resident_impl(point: Array, half_extents: Vector3) -> Dictionary:
 	var tokens: Dictionary = {}
 	var ids: Array = _regions.keys()
 	ids.sort()
+	# Regions often share native walls/floors. Validate each unique body once
+	# within THIS synchronous query; never cache readiness across a frame or
+	# a mutation. Every live region token remains included, even where its
+	# stamped support body is also listed in the neighboring region.
+	var checked_bodies: Dictionary = {}
+	var current_origin: int = frame.metadata().origin_revision
+	var current_world := get_world_3d()
 	for id in ids:
 		var region: Dictionary = _regions[id]
-		if region.origin_revision != frame.metadata().origin_revision: continue
+		if region.origin_revision != current_origin: continue
 		var valid := true
-		if _profile_residency: _residency_cost.body_liveness_checks += region.bodies.size()
 		for reference: WeakRef in region.bodies:
 			var body: Variant = reference.get_ref()
-			if not is_instance_valid(body) or not body.is_inside_tree() or body.collision_layer == 0 or body.get_world_3d() != get_world_3d(): valid = false
+			if not is_instance_valid(body):
+				valid = false
+				break
+			var body_id: int = body.get_instance_id()
+			if not checked_bodies.has(body_id):
+				if _profile_residency: _residency_cost.body_liveness_checks += 1
+				checked_bodies[body_id] = body.is_inside_tree() and body.collision_layer != 0 and body.get_world_3d() == current_world
+			if not checked_bodies[body_id]:
+				valid = false
+				break
 		if not valid: continue
 		tokens[region.token] = true
 		var remaining: Array[Dictionary] = []
