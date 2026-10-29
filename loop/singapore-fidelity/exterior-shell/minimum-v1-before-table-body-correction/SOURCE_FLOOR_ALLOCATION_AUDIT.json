@@ -1,0 +1,17 @@
+{
+  "schema": "mbs_source_guest_allocation_audit_v1",
+  "checks": 27350,
+  "failed": 0,
+  "failures": [],
+  "room_ids": 1850,
+  "entertainment_programs": {
+    "lounge": 1315,
+    "media": 267,
+    "billiards": 268
+  },
+  "explicit_relocations": 176,
+  "allocation_sha256": "224afd7375be3acf04d0a6b594dfecd3fa2ac96c79325a673a93cad1936cf0ac",
+  "program_geometry_planned": false,
+  "native_or_rendered_verified": false,
+  "scope": "All guest room identity and source/core/void/room/corridor geometry plus full furniture envelope and named entertainment program validation. Does not certify native furniture, door swings, public/resort/roof program construction or whole-building fidelity."
+}

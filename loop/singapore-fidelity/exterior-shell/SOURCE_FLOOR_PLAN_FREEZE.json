@@ -1,0 +1,41 @@
+{
+  "schema": "mbs_source_floor_plan_freeze_r2_correct_table_body",
+  "frozen_utc": "2026-10-29T15:43:21.797495+00:00",
+  "files_sha256": {
+    "game/src/world/mbs_interior/source_floor_plan.gd": "d1ee87ace5b2971fc583a3372ee01baf1d84bee14e69ab3eef3746794fdfbe44",
+    "game/src/systems/fidelity_tests/mbs_source_floor_plan_test.gd": "a0fc7e3a1acb24104f5f98f48c2df828be30649e080d8044f857cbf2725f7a37",
+    "game/src/systems/fidelity_tests/mbs_source_floor_plan_test.tscn": "1b7e957543719116c4c7f0d72554e3ee96a90428075d41dcc517685327c3eed4",
+    "loop/singapore-fidelity/exterior-shell/plan_source_floors.py": "ff3f7e6469817474b1889dab0c080f8a8ca1461e27e3f2820a5dcc69e412223b",
+    "loop/singapore-fidelity/exterior-shell/audit_source_floor_allocation.py": "a5271dbf5248da5a11f78494ac325c2b2f9ec881c27dc26437c38cc82a813f70",
+    "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_ALLOCATION_CANDIDATE.json": "92f63676280190f48834651bf555474d431db8ac39b9fb83b8917f9343e5075d",
+    "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_ALLOCATION_AUDIT.json": "279c3fbb5d056dc82eb0a97aa9339ce866166fd2fc601c1cabde61f60578929e",
+    "loop/singapore-fidelity/exterior-shell/SOURCE_FLOOR_PLAN_INTEGRATION.md": "2680e839c4dbe5297428409bb7833b2c2c1f259c8250d9df256ac644c7f63815"
+  },
+  "cpu_checks": 27350,
+  "failed": 0,
+  "room_ids": 1850,
+  "suites": 775,
+  "billiards_suites": 268,
+  "media_suites": 267,
+  "billiards_playing_bed_m": [
+    2.54,
+    1.27
+  ],
+  "billiards_full_body_m": [
+    2.83,
+    1.56
+  ],
+  "billiards_cue_reservation_m": [
+    5.73,
+    4.46
+  ],
+  "physical_floor_relocations": 176,
+  "cross_tower_moves": 0,
+  "minimum_reserved_room_area_m2": 113390.76,
+  "program_floor_records_retained_but_not_geometry_planned": 57,
+  "native_or_gameplay_or_visual_claim": false,
+  "minimum_fit_not_final_luxury_acceptance": true,
+  "installed_game_data": false,
+  "engine_or_git_action": false,
+  "superseded_proof_archive": "minimum-v1-before-table-body-correction/"
+}
