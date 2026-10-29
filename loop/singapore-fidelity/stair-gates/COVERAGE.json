@@ -1,0 +1,49 @@
+{
+  "status": "FROZEN_SOURCE_ONLY_PENDING_PARENT_COMMIT_PARSE_NATIVE_TEST_AND_CRITIQUE",
+  "geometry_version": "mbs-stair-fire-door-v1",
+  "worker_engines": 0,
+  "worker_gpu": 0,
+  "worker_git_mutations": 0,
+  "existing_guest_or_program_or_actor_edits": false,
+  "source_sha256": {
+    "game/src/world/mbs_interior/stair_gates.gd": "3d78bfb09d316859a486e0a6eac3f79b29f6511ad6d8bc7ae5eb20c1d29aaf6a",
+    "game/src/systems/fidelity_tests/mbs_stair_gate_test.gd": "f8aa9d5a0655f37a1af7e6becb33c026763398cd0a46de66fbf18d410b65662e",
+    "game/src/systems/fidelity_tests/mbs_stair_gate_test.tscn": "8ec2ec53c691ff629b30d964b367631d1049f7fcb43606d4b5a3690a675c6edd"
+  },
+  "geometry": {
+    "landing_width_m": 3.2,
+    "opening_width_m": 1.3,
+    "door_height_m": 2.35,
+    "leaf_thickness_m": 0.075,
+    "edge_setback_m": 0.45,
+    "maximum_bound_streamed_floors": 32,
+    "asbuilt_verified": false
+  },
+  "contracts": [
+    "exact floor_id and collision_generation",
+    "upper readiness includes its own required neighbors from root FloorStack",
+    "pure synchronous read; deferred receiver requests",
+    "retirement guard BEFORE support removal",
+    "occupied leaf/threshold retains physical support",
+    "native E only; no readiness auto-open",
+    "root registers/stamps owned bodies"
+  ],
+  "fixture_targets": [
+    "production capsule/full physical U-stair ascent",
+    "closed-door native walking blocked before edge",
+    "both-wing full-capsule no-side-bypass sweeps",
+    "real delayed upper floor plus actual required upper neighbor native insertion",
+    "exact native E/LOS open after readiness",
+    "physical receiving support crossing",
+    "occupied generation/readiness revocation holds retirement",
+    "wrong ID and missing generation fail closed",
+    "physical U-stair descent",
+    "owned-only safe gate retirement"
+  ],
+  "runtime_verified": false,
+  "all_floor_pairs_verified": false,
+  "source_site_verified": false,
+  "full_building_completed": false,
+  "retirement_lease": "prior successful preflight must match bound generation; provider must show that generation retired before holder removal; stale notifications cannot remove rebound gates",
+  "native_readiness_poll_budget": "one atomic provider snapshot per physics/process pair; forced refresh for E/manual retirement transactions"
+}

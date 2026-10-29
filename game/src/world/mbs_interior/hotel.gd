@@ -4,6 +4,8 @@ extends Node3D
 const Cabins = preload("res://src/world/mbs_interior/cabins.gd")
 const Reference = preload("res://src/world/mbs_interior/site_reference.gd")
 const Context = preload("res://src/world/geography/source_world_context.gd")
+const Inventory = preload("res://src/world/mbs_interior/inventory.gd")
+const StairGates = preload("res://src/world/mbs_interior/stair_gates.gd")
 signal transport_ready(shaft_id: String)
 signal floor_request_finished(floor_id: String, ready: bool, detail: Dictionary)
 var _frame: RefCounted
@@ -18,6 +20,12 @@ var _draining := false
 var _pins: Dictionary = {}
 var _last_errors: Dictionary = {}
 var _retry_after: Dictionary = {}
+var _stairs: Node3D
+var _stair_entries: Dictionary = {}
+var _building := false
+var _previous_unload_guard: Callable
+var _previous_guard_set := false
+var _previous_guard_owner: RefCounted
 
 func _hash(value: String) -> String:
 	var hash := HashingContext.new()
@@ -44,8 +52,11 @@ func _source(placement: Dictionary, point: Array) -> Array:
 ## Root creates the context/domain/public site and configures its FloorStack
 ## first. The same datum/base and World3D must be used by every component.
 func build(frame: RefCounted, context: RefCounted, runtime: Node3D, stack: Node3D, base_elevation_m: float, shaft_specs: Array = []) -> Dictionary:
-	if _configured or not is_inside_tree() or not is_finite(base_elevation_m) or absf(base_elevation_m) > 1000.0: return {"built": false, "error": "Fresh in-tree source hotel and explicit base required"}
+	if _configured or _building or get_child_count() != 0 or not is_inside_tree() or not is_finite(base_elevation_m) or absf(base_elevation_m) > 1000.0: return {"built": false, "error": "Fresh in-tree source hotel and explicit base required"}
 	if not is_instance_valid(stack) or not is_instance_valid(runtime) or runtime.get("frame") != frame or runtime.get("context") != context or stack.get("_frame") != frame or stack.get("_context") != context or not is_equal_approx(float(stack.get("_base_elevation")), base_elevation_m): return {"built": false, "error": "Hotel/floor/actors must share source frame/context/base"}
+	if get_world_3d() != runtime.get_world_3d() or get_world_3d() != stack.get_world_3d() or context.metadata().physics_space_id != get_world_3d().space.get_id(): return {"built": false, "error": "Hotel construction requires the exact shared native World3D"}
+	for other: Node in get_tree().get_nodes_in_group("mbs_source_hotel"):
+		if other != self and other.get("_context") == context: return {"built": false, "error": "This source context already has a hotel transport authority"}
 	_frame = frame; _context = context; _runtime = runtime; _stack = stack; _base = base_elevation_m
 	var specs: Array = shaft_specs.duplicate(true)
 	if specs.is_empty():
@@ -64,6 +75,9 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D, stack: Node3
 		if seen.has(key): return {"built": false, "error": "Duplicate shaft identity"}
 		seen[key] = true
 		plans.append({"key": key, "descriptor": descriptor.descriptor, "placement": placement})
+	_building = true
+	add_to_group("mbs_source_hotel")
+	var build_revision: int = frame.metadata().origin_revision
 	for plan: Dictionary in plans:
 		var placement: Dictionary = plan.placement
 		var root := Node3D.new()
@@ -76,20 +90,44 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D, stack: Node3
 		var key: String = plan.key
 		_shafts[key] = {"node": cabin, "root": root, "descriptor": plan.descriptor, "placement": placement, "region_id": "", "registered": false}
 		var result: Dictionary = cabin.build(plan.descriptor, func(id: String) -> Dictionary: return _ready_for_cabin(key, id))
-		if not result.get("built", false): return {"built": false, "error": "Native shaft build failed", "shaft_id": key, "partial_owned_geometry_retained": true}
+		if not result.get("built", false): return await _rollback_build("Native shaft build failed: " + key)
 		cabin.floor_requested.connect(_on_floor_requested)
 		cabin.state_changed.connect(_on_transport_state)
-	_stack.floor_committed.connect(_on_floor_committed)
-	if not _stack.set_unload_guard(_before_floor_unload): return {"built": false, "error": "Floor unload guard unavailable"}
-	_configured = true
+	_stairs = StairGates.new()
+	add_child(_stairs)
+	_stairs.floor_requested.connect(func(id: String): _on_floor_requested("stair", id))
+	_stairs.protection_changed.connect(_on_stair_protection)
 	# Actual server insertion happens between physics boundaries; do not stamp
 	# an ahead-of-physics transform or advertise readiness from node existence.
 	for tick in 4: await get_tree().physics_frame
+	if frame.metadata().origin_revision != build_revision: return await _rollback_build("Source origin changed during native shaft construction")
 	for key: String in _shafts:
-		if not _register_native_shaft(key): return {"built": false, "error": "Source shaft collision registration failed", "shaft_id": key}
+		if not _register_native_shaft(key): return await _rollback_build("Source shaft collision registration failed: " + key)
 		transport_ready.emit(key)
+	_previous_guard_set = bool(_stack.get("_unload_guard_set"))
+	if _previous_guard_set:
+		_previous_unload_guard = _stack.get("_unload_guard")
+		if not _previous_unload_guard.is_valid(): return await _rollback_build("Existing floor guard is invalid; transport cannot replace it")
+		var owner: Object = _previous_unload_guard.get_object()
+		if owner is RefCounted: _previous_guard_owner = owner
+	if not _stack.set_unload_guard(_before_floor_unload): return await _rollback_build("Floor unload guard unavailable")
+	_stack.floor_committed.connect(_on_floor_committed)
+	_stack.floor_retired.connect(_on_floor_retired)
+	_configured = true; _building = false
 	_bind_loaded_floors()
 	return {"built": true, "shafts": _shafts.size(), "actor_pose_writes": 0, "full_MBS_completed": false}
+
+func _rollback_build(error: String) -> Dictionary:
+	# Context architecture records are immutable and deliberately retained.
+	# Exact recipe retry reuses them; no failed geometry or lease stays live.
+	for entry: Dictionary in _shafts.values():
+		if not String(entry.get("region_id", "")).is_empty(): _runtime.retire_region(entry.region_id)
+	for child: Node in get_children(): child.queue_free()
+	for tick in 3: await get_tree().physics_frame
+	_shafts.clear(); _stair_entries.clear(); _stairs = null
+	_building = false; _configured = false
+	remove_from_group("mbs_source_hotel")
+	return {"built": false, "error": error, "owned_geometry_reaped": get_child_count() == 0, "immutable_recipe_records_retained": true}
 
 func _collect(node: Node, bodies: Array) -> void:
 	if node is CollisionObject3D and node.collision_layer != 0: bodies.append(node)
@@ -114,7 +152,10 @@ func _register_native_shaft(key: String) -> bool:
 		"support_ids": ["moving-platform"], "volumes": [{"schema": Context.OBOX_SCHEMA, "volume_id": "enclosed-dry-shaft", "center_xyz": _source(placement, center),
 			"half_extents_xyz": half, "axis_x_xyz": placement.axis_x, "axis_z_xyz": placement.axis_z, "dry": true}],
 		"provenance": "Reconstructed enclosed shaft/cabin at actual tower source anchor; relative stop elevations not surveyed"}
-	if not _context.register_floor(definition): return false
+	var registered: Dictionary = _context.floor_record(feature, "CABIN")
+	if registered.ok:
+		if registered.floor.geometry_sha256 != definition.geometry_sha256: return false
+	elif not _context.register_floor(definition): return false
 	var minimum: Array = [INF, INF, INF]; var maximum: Array = [-INF, -INF, -INF]
 	for sx in [-1.0, 1.0]:
 		for sy in [-1.0, 1.0]:
@@ -126,12 +167,18 @@ func _register_native_shaft(key: String) -> bool:
 	_collect(cabin, bodies)
 	var region := "mbs-shaft/" + key
 	if not _runtime.commit_region(region, minimum, maximum, bodies, [{"body": cabin.cabin, "feature_id": feature, "floor_id": "CABIN", "support_id": "moving-platform"}]): return false
-	entry.region_id = region; entry.registered = true
+	entry.region_id = region
+	var lease: Dictionary = _runtime.region_status(region)
+	if not lease.live: return false
+	entry.region_id = region; entry.registered = true; entry.residency_token = lease.residency_token
 	return true
 
 func _ready_for_cabin(key: String, id: String) -> Dictionary:
 	var observed: Dictionary = _stack.ready_for_floor(id)
 	var shaft_ready := _configured and _shafts.has(key) and _shafts[key].registered and is_instance_valid(_shafts[key].node) and _shafts[key].node.shaft_collision_ready()
+	if shaft_ready:
+		var lease: Dictionary = _runtime.region_status(_shafts[key].region_id)
+		shaft_ready = lease.live and lease.residency_token == _shafts[key].residency_token and lease.origin_revision == _frame.metadata().origin_revision
 	return {"ready": bool(observed.ready), "floor_id": id, "collision_generation": String(observed.collision_generation), "travel_ready": shaft_ready and bool(observed.ready)}
 
 func _on_floor_requested(_key: String, id: String) -> void:
@@ -161,6 +208,7 @@ func _bind_loaded_floors() -> void:
 	for id: String in report.locally_committed_floors:
 		var floor_node: Node3D = _stack.get_floor(id)
 		if floor_node == null: continue
+		_bind_stair_floor(id, floor_node)
 		for entry: Dictionary in _shafts.values():
 			var cabin: Node3D = entry.node
 			if cabin.report().bound_floor_ids.has(id): continue
@@ -168,6 +216,11 @@ func _bind_loaded_floors() -> void:
 				if stop.floor_id == id: cabin.bind_floor(id, floor_node, stop.portal_id)
 
 func _before_floor_unload(id: String) -> bool:
+	if _previous_guard_set:
+		if not _previous_unload_guard.is_valid(): return false
+		var permitted: Variant = _previous_unload_guard.call(id)
+		if typeof(permitted) != TYPE_BOOL or not permitted: return false
+	if is_instance_valid(_stairs) and not _stairs.prepare_floor_retirement(id): return false
 	# Preflight every relevant controller before the non-yielding unbind pass.
 	var bound: Array[Node3D] = []
 	for entry: Dictionary in _shafts.values():
@@ -185,6 +238,57 @@ func _before_floor_unload(id: String) -> bool:
 			_bind_loaded_floors.call_deferred()
 			return false
 	return true
+
+func _stair_readiness(lower: String, id: String) -> Dictionary:
+	var floor_state: Dictionary = _stack.ready_for_floor(id)
+	var inserted := _stair_entries.has(lower) and _stair_entries[lower].get("registered", false)
+	return {"floor_id": id, "ready": bool(floor_state.ready) and (id == lower or inserted), "collision_generation": String(floor_state.collision_generation)}
+
+func _bind_stair_floor(id: String, floor_node: Node3D) -> void:
+	if not is_instance_valid(_stairs) or _stair_entries.has(id): return
+	var record: Dictionary = Inventory.floor_record(id)
+	var upper := ""
+	for neighbor: String in _stack.adjacent_floor_ids(id):
+		if float(Inventory.floor_record(neighbor).elevation_m) > float(record.elevation_m): upper = neighbor
+	if upper.is_empty(): return
+	var has_flight := false
+	for portal: Dictionary in floor_node.portals:
+		if portal.kind == "stair" and portal.get("physical_flights", false): has_flight = true
+	if not has_flight: return
+	_stair_entries[id] = {"upper": upper, "registered": false, "region_id": ""}
+	var result: Dictionary = _stairs.bind_floor(floor_node, id, upper, func(target: String): return _stair_readiness(id, target))
+	if not result.get("bound", false):
+		_stair_entries.erase(id)
+		_last_errors["stair/" + id] = result
+		return
+	_register_stair_region.call_deferred(id)
+
+func _register_stair_region(id: String) -> void:
+	for tick in 4: await get_tree().physics_frame
+	if not _stair_entries.has(id) or not _stack.floor_state(id).local_collision_committed: return
+	var state: Dictionary = _stack.floor_state(id)
+	var floor_region: Dictionary = _runtime.region_status(state.region_id)
+	if not floor_region.live: return
+	var bodies: Array = _stairs.owned_collision_bodies(id)
+	if bodies.is_empty(): return
+	for body: CollisionObject3D in bodies:
+		if not body.is_inside_tree() or PhysicsServer3D.body_get_space(body.get_rid()) != get_world_3d().space or not (PhysicsServer3D.body_get_state(body.get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM) as Transform3D).is_equal_approx(body.global_transform): return
+	var region := "mbs-stair-interlocks/" + id
+	if not _runtime.commit_region(region, floor_region.minimum_source_xyz, floor_region.maximum_source_xyz, bodies, []): return
+	_stair_entries[id].region_id = region
+	_stair_entries[id].registered = true
+	_stairs.refresh_now()
+
+func _on_stair_protection(id: String, protected: bool) -> void:
+	if protected: _stack.pin_floor(id, "source-stair-interlock")
+	else: _stack.unpin_floor(id, "source-stair-interlock")
+
+func _on_floor_retired(id: String, region: String) -> void:
+	if _stair_entries.has(id):
+		var owned: String = _stair_entries[id].region_id
+		if not owned.is_empty(): _runtime.retire_region(owned)
+	if is_instance_valid(_stairs): _stairs.floor_retired(id, region)
+	_stair_entries.erase(id)
 
 func retry_floor(id: String) -> void:
 	_retry_after.erase(id)
@@ -231,6 +335,17 @@ func report() -> Dictionary:
 		"actor_pose_writes": 0, "actor_reparents": 0, "full_MBS_completed": false, "default_city_migrated": false}
 
 func _exit_tree() -> void:
+	if is_instance_valid(_stack) and _stack.get("_unload_guard") == _before_floor_unload:
+		if _previous_guard_set and _previous_unload_guard.is_valid(): _stack.set_unload_guard(_previous_unload_guard)
+		else: _stack.release_unload_guard(_before_floor_unload)
+	if is_instance_valid(_stack):
+		for key: String in _pins:
+			for id: String in _pins[key]: _stack.unpin_floor(id, key)
+	_pins.clear()
+	if is_instance_valid(_stack) and is_instance_valid(_stairs):
+		for id: String in _stairs.protected_floor_ids(): _stack.unpin_floor(id, "source-stair-interlock")
 	if not is_instance_valid(_runtime): return
+	for entry: Dictionary in _stair_entries.values():
+		if not String(entry.get("region_id", "")).is_empty(): _runtime.retire_region(entry.region_id)
 	for entry: Dictionary in _shafts.values():
 		if not String(entry.get("region_id", "")).is_empty(): _runtime.retire_region(entry.region_id)

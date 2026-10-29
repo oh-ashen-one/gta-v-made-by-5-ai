@@ -129,6 +129,22 @@ func retire_region(id: String) -> void:
 		if is_instance_valid(body): body.remove_meta(Context.COLLIDER_META)
 		_supports.erase(key)
 
+func region_status(id: String) -> Dictionary:
+	var missing := {"live": false, "region_id": id, "residency_token": "", "origin_revision": -1}
+	if not _configured or not _regions.has(id): return missing
+	var region: Dictionary = _regions[id]
+	if region.origin_revision != frame.metadata().origin_revision: return missing
+	for reference: WeakRef in region.bodies:
+		var body: Variant = reference.get_ref()
+		if not is_instance_valid(body) or not body.is_inside_tree() or body.collision_layer == 0 or body.get_world_3d() != get_world_3d(): return missing
+		if body is PhysicsBody3D and (PhysicsServer3D.body_get_space(body.get_rid()) != get_world_3d().space or PhysicsServer3D.body_get_shape_count(body.get_rid()) == 0): return missing
+	for support: Dictionary in _supports.values():
+		if support.region != id: continue
+		var body: Variant = support.body.get_ref()
+		if not is_instance_valid(body) or not body.has_meta(Context.COLLIDER_META) or not context._same_stamp(body.get_meta(Context.COLLIDER_META), support.stamp): return missing
+	return {"live": true, "region_id": id, "residency_token": region.token, "origin_revision": region.origin_revision,
+		"minimum_source_xyz": region.minimum.duplicate(), "maximum_source_xyz": region.maximum.duplicate()}
+
 func _subtract_box(box: Dictionary, cut: Dictionary) -> Array[Dictionary]:
 	var low: Array = []
 	var high: Array = []
