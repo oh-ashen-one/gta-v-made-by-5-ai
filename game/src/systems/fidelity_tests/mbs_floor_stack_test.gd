@@ -20,6 +20,8 @@ var _retirement_observations: Array[Dictionary] = []
 var _known_bodies: Dictionary = {}
 var _commit_events: Array[Dictionary] = []
 var _guard_refuses := false
+var _watched_moving_door: Node3D
+var _moving_door_observations: Array[Dictionary] = []
 const LOWER := "T2-L24"
 const UPPER := "T2-L25"
 const REMOTE := "T3-L24"
@@ -50,14 +52,41 @@ func _collect_physical(node: Node,result: Array) -> void:
 	if node is CollisionObject3D and node.collision_layer!=0: result.append(node)
 	for child: Node in node.get_children(): _collect_physical(child,result)
 
+func _physics_process(delta: float) -> void:
+	super._physics_process(delta)
+	if not is_instance_valid(_watched_moving_door): return
+	var desired: float=float(_watched_moving_door.base_angle)+(float(_watched_moving_door.swing_delta) if _watched_moving_door.opened else 0.0)
+	if absf(wrapf(float(_watched_moving_door.motion_angle)-desired,-PI,PI))>.002:
+		_moving_door_observations.append({"physics_tick":Engine.get_physics_frames(),"door_id":_watched_moving_door.door_id,"native_class":_watched_moving_door.get_class(),"broad_static_type":_watched_moving_door is StaticBody3D,"motion_angle":_watched_moving_door.motion_angle,"has_floor_support_meta":_watched_moving_door.has_meta(SourceContext.COLLIDER_META),"floor_ready":stack.floor_ready(LOWER),"collision_generation":stack.ready_for_floor(LOWER).collision_generation})
+
+func _assert_actual_support_identity(module: Node3D,id: String) -> void:
+	var bodies: Array=[]
+	_collect_physical(module,bodies)
+	var structure: StaticBody3D=module.get_node_or_null("GuestFloorSolidCollision") as StaticBody3D
+	var stamped: Array[String]=[]
+	for body: CollisionObject3D in bodies:
+		if body.has_meta(SourceContext.COLLIDER_META): stamped.append(String(module.get_path_to(body)))
+	var stamp: Dictionary=structure.get_meta(SourceContext.COLLIDER_META,{}) if structure!=null else {}
+	check("actual plain floor structure is the sole source support "+id,structure!=null and not structure is AnimatableBody3D and structure.get_class()=="StaticBody3D" and structure.get_script()==null and stamped==["GuestFloorSolidCollision"] and stamp.get("feature_id","")==Stack.FEATURE and stamp.get("floor_id","")==id and stamp.get("support_id","")=="static/GuestFloorSolidCollision")
+	check("complete collision body list includes every moving door "+id,stack.floor_state(id).body_count==bodies.size() and stack.floor_state(id).static_support_count==1 and bodies.size()>1)
+	for door_id: String in module.doors:
+		var door: Node3D=module.doors[door_id]
+		check("moving native door remains colliding and never stamped "+door_id,door is AnimatableBody3D and door is StaticBody3D and door in bodies and (door as CollisionObject3D).collision_layer & 1!=0 and not door.has_meta(SourceContext.COLLIDER_META))
+
 func _on_committed(id: String,generation: String) -> void:
 	var module: Node3D=stack.get_floor(id)
 	var bodies: Array=[]
 	if is_instance_valid(module): _collect_physical(module,bodies)
 	var references: Array=[]
+	var moving_stamped: Array[String]=[]
+	var structure_stamps:=0
 	for body: CollisionObject3D in bodies: references.append(weakref(body))
+	for body: CollisionObject3D in bodies:
+		if not body.has_meta(SourceContext.COLLIDER_META): continue
+		if body.get_class()=="StaticBody3D" and body.get_script()==null: structure_stamps+=1
+		else: moving_stamped.append(String(module.get_path_to(body)))
 	_known_bodies[id]=references
-	_commit_events.append({"id":id,"generation":generation,"body_count":bodies.size(),"floor_ready_at_event":stack.floor_ready(id),"physics_tick":Engine.get_physics_frames()})
+	_commit_events.append({"id":id,"generation":generation,"body_count":bodies.size(),"plain_structure_stamps":structure_stamps,"moving_body_stamp_paths":moving_stamped,"floor_ready_at_event":stack.floor_ready(id),"physics_tick":Engine.get_physics_frames()})
 
 func _on_retired(id: String,region: String) -> void:
 	var alive:=0;var stamps_removed:=true
@@ -149,6 +178,7 @@ func run() -> void:
 		check("actual double source anchor preserved "+id,absf(float(actual.source_xyz[0])-float(tower.centroid_world_xz[0]))<.001 and absf(float(actual.source_xyz[2])-float(tower.centroid_world_xz[1]))<.001 and absf(float(actual.source_xyz[1])-float(rec.elevation_m))<.001)
 		check("real nonaxis source basis and metric scale "+id,node.global_basis.is_equal_approx(Basis(Vector3(Reference.DATA.axis_south_xz[0],0,Reference.DATA.axis_south_xz[1]),Vector3.UP,Vector3(Reference.DATA.axis_bayward_xz[0],0,Reference.DATA.axis_bayward_xz[1]))) and node.global_basis.get_scale().is_equal_approx(Vector3.ONE))
 		check("only stable static floor bodies are stamped "+id,stack.floor_state(id).static_support_count>0 and stack.floor_state(id).body_count>stack.floor_state(id).static_support_count)
+		_assert_actual_support_identity(node,id)
 	check("floor commits never imply cabin/shaft travel readiness",not stack.ready_for_floor(LOWER).travel_ready and not stack.ready_for_floor(UPPER).travel_ready)
 	if not prepare_player(): finish();return
 	_light_fixture()
@@ -171,7 +201,12 @@ func run() -> void:
 	denied=await stack.unload_floor(UPPER)
 	check("occupied floor stair neighbour cannot retire",not denied.ok and denied.status=="protected" and stack.get_floor(UPPER)!=null)
 	if not await blocked_e(cell.id): finish();return
-	if not await native_e(cell.id): finish();return
+	_watched_moving_door=candidate.doors[cell.id]
+	var floor_generation_before_open: String=stack.ready_for_floor(LOWER).collision_generation
+	var native_opened: bool=await native_e(cell.id)
+	_watched_moving_door=null
+	if not native_opened: finish();return
+	check("native door motion never becomes a floor or invalidates stable residency",not _moving_door_observations.is_empty() and _moving_door_observations.all(func(item: Dictionary): return item.native_class=="AnimatableBody3D" and item.broad_static_type and not item.has_floor_support_meta and item.floor_ready and item.collision_generation==floor_generation_before_open),str(_moving_door_observations))
 	if not await walk_to(candidate.to_global(cell.inside_local),.18): finish();return
 	if not await walk_to(candidate.to_global(cell.entry_local),.18): finish();return
 	var remote_loaded: Dictionary=await stack.ensure_floor(REMOTE)
@@ -218,8 +253,9 @@ func run() -> void:
 		if not await walk_to(candidate.to_global(stairs.walk_route[index]),.22): finish();return
 	check("continuous source stair/room walking has no actor relocation or death",max_step<.50 and minimum_y>-.20 and maximum_y>rise-.20 and Game.death_count==0,"travel%.2f maxstep%.4f minY%.3f maxY%.3f"%[travel,max_step,minimum_y,maximum_y])
 	check("retirement events observed actual native stamps removed before free",not _retirement_observations.is_empty() and _retirement_observations.all(func(item: Dictionary): return item.region_absent_before_free and item.bodies_still_alive>0 and item.static_stamps_removed))
+	check("all actual floor commits excluded moving-body support stamps",not _commit_events.is_empty() and _commit_events.all(func(item: Dictionary): return item.plain_structure_stamps==1 and item.moving_body_stamp_paths.is_empty()))
 	check("source frame epoch was never committed by streamer",source_frame.metadata().origin_revision==0 and stack.report().origin_commits_performed==0 and stack.report().actor_pose_mutations==0)
-	stack_metrics={"actual_source_origin_xyz":origin,"source_frame_revision":source_frame.metadata().origin_revision,"lower":LOWER,"upper":UPPER,"distance_m":travel,"max_step_m":max_step,"native_room_door":cell.id,"remote_state_seed":"EXPLICIT_EMPTY_FLOOR_API_NOT_NATIVE_REMOTE_E","stack_report":stack.report(),"commit_events":_commit_events,"retirements":_retirement_observations,"whole_building_completed":false,"cabin_travel_verified":false,"swimming_or_pool_ceiling_clearance_verified":false}
+	stack_metrics={"actual_source_origin_xyz":origin,"source_frame_revision":source_frame.metadata().origin_revision,"lower":LOWER,"upper":UPPER,"distance_m":travel,"max_step_m":max_step,"native_room_door":cell.id,"moving_door_observations":_moving_door_observations,"remote_state_seed":"EXPLICIT_EMPTY_FLOOR_API_NOT_NATIVE_REMOTE_E","stack_report":stack.report(),"commit_events":_commit_events,"retirements":_retirement_observations,"whole_building_completed":false,"cabin_travel_verified":false,"swimming_or_pool_ceiling_clearance_verified":false}
 	finish()
 
 func finish() -> void:

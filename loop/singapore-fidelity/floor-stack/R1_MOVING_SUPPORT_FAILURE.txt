@@ -1,0 +1,5 @@
+[mbs-floor-stack] FAIL only stable static floor bodies are stamped T2-L24
+[mbs-floor-stack] FAIL only stable static floor bodies are stamped T2-L25
+[mbs-floor-stack] PASS continuous source stair/room walking has no actor relocation or death travel53.43 maxstep0.1133 minY-0.032 maxY3.426
+[mbs-floor-stack] PASS retirement events observed actual native stamps removed before free
+[mbs-floor-stack] PASS source frame epoch was never committed by streamer

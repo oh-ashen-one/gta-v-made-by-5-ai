@@ -123,6 +123,11 @@ func set_unload_guard(callback: Callable) -> bool:
 	if owner is RefCounted: _unload_guard_owner=owner
 	return true
 
+func release_unload_guard(expected: Callable) -> bool:
+	if not _unload_guard_set or _unload_guard != expected: return false
+	_unload_guard = Callable(); _unload_guard_set = false; _unload_guard_owner = null
+	return true
+
 func adjacent_floor_ids(id: String) -> Array[String]:
 	id=Inventory.normalize_floor_id(id)
 	var result: Array[String]=[]
@@ -232,10 +237,22 @@ func _volumes(recipe: Dictionary,module: Node3D) -> Array:
 			result.append(_volume(placement,String(wing.id)+"-physical-U-stairwell",Vector3(-float(g.length_m)*.5+1.8,(rise+2.0+low)*.5,float(wing.core_z)+float(wing.side)*2.60),Vector3(1.60,(rise+2.0-low)*.5,2.60)))
 	return result
 
+func _is_stable_floor_structure(body: Variant) -> bool:
+	# AnimatableBody3D INHERITS StaticBody3D. A broad `is StaticBody3D`
+	# therefore includes the moving SwingDoors and is not a support policy.
+	if not body is StaticBody3D or body is AnimatableBody3D or body.get_class()!="StaticBody3D" or body.get_script()!=null: return false
+	if not body.constant_linear_velocity.is_zero_approx() or not body.constant_angular_velocity.is_zero_approx(): return false
+	var module: Node=body.get_parent()
+	if not module is GuestFloor: return false
+	var expected: String="ProgramFloorSolidCollision" if module is ProgramFloor else "GuestFloorSolidCollision"
+	return String(body.name)==expected
+
 func _collect_bodies(root: Node,bodies: Array,statics: Array) -> void:
 	if root is CollisionObject3D and root.collision_layer!=0:
 		bodies.append(root)
-		if root is StaticBody3D: statics.append(root)
+		# Moving doors remain in the COMPLETE collision neighbourhood, but may
+		# never acquire a persistent source floor/support identity.
+		if _is_stable_floor_structure(root): statics.append(root)
 	for child: Node in root.get_children(): _collect_bodies(child,bodies,statics)
 
 func _native_bodies_valid(entry: Dictionary,check_doors: bool = false) -> bool:
@@ -247,7 +264,7 @@ func _native_bodies_valid(entry: Dictionary,check_doors: bool = false) -> bool:
 		if not is_instance_valid(body) or not body is CollisionObject3D or not body.is_inside_tree() or body.get_world_3d()!=get_world_3d() or body.collision_layer==0: return false
 		if body is PhysicsBody3D:
 			if PhysicsServer3D.body_get_space(body.get_rid())!=space: return false
-			if body is StaticBody3D or check_doors:
+			if _is_stable_floor_structure(body) or check_doors:
 				var physical: Transform3D=PhysicsServer3D.body_get_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
 				if not physical.is_equal_approx(body.global_transform): return false
 		elif body is Area3D and PhysicsServer3D.area_get_space(body.get_rid())!=space: return false
@@ -263,7 +280,7 @@ func _floor_probes_valid(entry: Dictionary,recipe: Dictionary) -> bool:
 		var at: Vector3=entry.node.to_global(Vector3(0,0,wing.corridor_center_z))
 		var query:=PhysicsRayQueryParameters3D.create(at+Vector3.UP*.15,at-Vector3.UP*.35,1)
 		var hit: Dictionary=get_world_3d().direct_space_state.intersect_ray(query)
-		if hit.is_empty() or not hit.collider is StaticBody3D or not hit.collider in entry.bodies or absf((hit.position as Vector3).y-at.y)>.015 or (hit.normal as Vector3).y<.95: return false
+		if hit.is_empty() or not _is_stable_floor_structure(hit.collider) or not hit.collider in entry.bodies or absf((hit.position as Vector3).y-at.y)>.015 or (hit.normal as Vector3).y<.95: return false
 		var canonical: Dictionary=_frame.to_source_current_live(hit.position)
 		if not canonical.ok: return false
 		observations.append({"wing":wing.id,"actual_body_path":String(entry.node.get_path_to(hit.collider)),"contact_source_xyz":canonical.source_xyz,"normal_y":(hit.normal as Vector3).y,"physics_tick":Engine.get_physics_frames()})

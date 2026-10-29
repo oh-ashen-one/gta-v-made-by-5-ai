@@ -1,0 +1,46 @@
+{
+  "observed_utc": "2026-10-29T01:15:50.948477+00:00",
+  "checkpoint": "acf0f805ee4aa0183fc04385f2bfa2746b60b769",
+  "started_utc": "2026-10-29T01:08:09.219690+00:00",
+  "finished_utc": "2026-10-29T01:09:40.897463+00:00",
+  "checks": 94,
+  "passed": 92,
+  "failed": 2,
+  "failures": [
+    "only stable static floor bodies are stamped T2-L24",
+    "only stable static floor bodies are stamped T2-L25"
+  ],
+  "engine_exit_code": 1,
+  "supervisor_exit_code": 1,
+  "fatal_errors": [],
+  "timeout": false,
+  "child_reaped": true,
+  "native_distance_m": 53.4333615267642,
+  "max_step_m": 0.113334663212299,
+  "source_frame_revision": 0,
+  "r1_module_sha256": "c1d484dd61be229d37476b7aee4c2359b87250cbd6fa7941d509e2b013a0e526",
+  "r1_test_sha256": "ca87e108e4204c769c107d3483f88bbd816997a7dc1ba7b4ae1470c60b56d0a1",
+  "defect": "AnimatableBody3D inherits StaticBody3D; broad is-StaticBody3D collection incorrectly stamped moving SwingDoors as persistent floor supports.",
+  "official_class_hierarchy": "https://docs.godotengine.org/en/stable/classes/class_animatablebody3d.html",
+  "production_fix": "Exact plain unscripted zero-velocity structural StaticBody3D owned by the expected Guest/Program factory only; moving collision bodies remain fully present but unstamped. Native probes and stable-pose checks share this classification.",
+  "r2_runtime_verified": false,
+  "full_building_completed": false,
+  "evidence_files": {
+    "report.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-floor-stack-r1/report.json",
+      "sha256": "9207a5bbccf27e2a8f28cae1331690861af95cf610ff48847bf8bca0c67a4e25"
+    },
+    "run.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-floor-stack-r1/run.log",
+      "sha256": "8f13efab3ecbc5bf2d665195ea6dc0b489cb838c01b0c725e8488a4f4c71fec9"
+    },
+    "engine.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-floor-stack-r1/engine.log",
+      "sha256": "8f13efab3ecbc5bf2d665195ea6dc0b489cb838c01b0c725e8488a4f4c71fec9"
+    },
+    "run.log.meta.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-floor-stack-r1/run.log.meta.json",
+      "sha256": "a5303a424e4e37dc199083b1c69d699afaf5df28dc970ae7da312adeea821ebb"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
-  "created_utc": "2026-10-29T00:49:15.105431+00:00",
+  "created_utc": "2026-10-29T01:15:59.722860+00:00",
   "method": "PYTHON_DOUBLE_SOURCE_AND_INVENTORY_ARITHMETIC_ONLY_NOT_ENGINE_QA",
-  "module_sha256": "c1d484dd61be229d37476b7aee4c2359b87250cbd6fa7941d509e2b013a0e526",
+  "module_sha256": "b9f13864b3f887d7a99a478ac25170a4fb4cf63a80b821f93aef688fc9232795",
   "inventory_sha256": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
   "actual_tower_source_ids": [
     "way/172307471",

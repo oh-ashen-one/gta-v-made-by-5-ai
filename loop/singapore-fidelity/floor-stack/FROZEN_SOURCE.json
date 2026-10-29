@@ -1,14 +1,14 @@
 {
-  "created_utc": "2026-10-29T00:49:15.146782+00:00",
-  "phase": "FROZEN_FOR_ROOT_COMMIT_AND_NATIVE_GATE",
+  "created_utc": "2026-10-29T01:15:59.657896+00:00",
+  "phase": "R2_FROZEN_STATIC_STRUCTURE_CLASSIFICATION_FOR_ROOT_COMMIT",
   "source_hashes": {
-    "game/src/world/mbs_interior/floor_stack.gd": "c1d484dd61be229d37476b7aee4c2359b87250cbd6fa7941d509e2b013a0e526",
-    "game/src/systems/fidelity_tests/mbs_floor_stack_test.gd": "ca87e108e4204c769c107d3483f88bbd816997a7dc1ba7b4ae1470c60b56d0a1",
+    "game/src/world/mbs_interior/floor_stack.gd": "b9f13864b3f887d7a99a478ac25170a4fb4cf63a80b821f93aef688fc9232795",
+    "game/src/systems/fidelity_tests/mbs_floor_stack_test.gd": "cc707463cad2a5c9d4c2dc222ef84a43a3fa84612d52c9f6abeec3e095dcb38d",
     "game/src/systems/fidelity_tests/mbs_floor_stack_test.tscn": "88bc33eea6f18c9031a34f1562fc6ce8b56d665b1416f31611139c52eec520b3",
     "game/src/world/mbs_interior/guest_floor.gd": "46d1e71ff6870dab9efaf1c6f04ecc643d5ff761b556391aa61ef9dfebc37849",
     "game/src/world/mbs_interior/program_floor.gd": "3cb21c4ee9c2f67a8c34f62b3cf1b30a6e4ed8c2eafe518a7a7f8501440516d8",
-    "game/src/world/mbs_interior/site.gd": "6f158fa104bba57b64b853d99f2a074f13cf5d08f872ad4678cf5e19190ff349",
-    "game/src/world/geography/source_runtime.gd": "161186276d6b0a67996825929724b009b5e1999f89e1e8340b8ed380769e8e9f",
+    "game/src/world/mbs_interior/site.gd": "c25ebb6fd5293af98220404c02496a187585359a8144d1bc8710afe0df285d1b",
+    "game/src/world/geography/source_runtime.gd": "7e70c9062aba58545c7cf3f635181ee39a80a96082e117dc269de586e18e94b3",
     "game/src/world/geography/source_world_context.gd": "6a05351c725cd4d8c2eef985716d836a26aeb61016ef0cc5cb9456d823b940ff",
     "game/data/mbs-interior/inventory.json": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819"
   },
@@ -17,5 +17,11 @@
   "engine_compile_verified": false,
   "native_runtime_verified": false,
   "full_building_completed": false,
-  "freeze_note": "Actual guest R-prefixed source door namespaces validated; native gate pending"
+  "freeze_note": "Actual guest R-prefixed source door namespaces validated; native gate pending",
+  "predecessor_checkpoint": "acf0f805ee4aa0183fc04385f2bfa2746b60b769",
+  "predecessor_failures": [
+    "only stable static floor bodies are stamped T2-L24",
+    "only stable static floor bodies are stamped T2-L25"
+  ],
+  "root_release_unload_guard_preserved_sha256": "1b06877d1ee30243914918845fa04b9b55e5d2011df1879e71917055b9f883fa"
 }
