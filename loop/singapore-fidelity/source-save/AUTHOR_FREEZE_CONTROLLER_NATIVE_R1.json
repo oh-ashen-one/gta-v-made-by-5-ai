@@ -1,0 +1,38 @@
+{
+  "schema": "source_controller_native_fixture_author_freeze_v1",
+  "created_utc": "2026-10-29T04:29:45.669466+00:00",
+  "worker": "/root/public_lobby_builder",
+  "worker_owned_files": [
+    {
+      "path": "game/src/systems/fidelity_tests/source_session_controller_test.gd",
+      "sha256": "589884e00a50000b9dbf2b032770f44fba12463ac801986680b1a1f84a705468",
+      "bytes": 28507
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_session_controller_test.tscn",
+      "sha256": "68c5b1efe88a1024a3b34841b68ab773840f3448f5faac01a034d717888672c1",
+      "bytes": 233
+    }
+  ],
+  "root_owned_dependencies_observed_not_modified": {
+    "game/src/world/geography/source_session_controller.gd": "26471a478f9987982725347e62c86bde8ce4611c887144d6585122530d411a2d",
+    "game/src/world/geography/source_save_service.gd": "5ccf5e4b4fba09406c671ecc12c33bdcbb3aa3b603e5b3f184ee63b45c808766",
+    "game/src/world/geography/source_world.gd": "f7be18927fb29ab7990ddc2b4a98aac3291baccdea12feae8c654513bd427d6b",
+    "game/src/world/geography/source_runtime.gd": "c97e0d1d23ea3a72139d9eb9ad7c56574aba0d7b95ac74663b164dda63539fc8",
+    "game/src/world/geography/source_world_context.gd": "324393c9f3f78cb3359ee20bd5eed80f5292e18a45d2198742304d528c3e5cfb",
+    "game/src/core/game_state.gd": "cdfd6d97905f352283c1c90e1dca46a06353684ffcde22c64d0c32bcff60076a",
+    "game/src/actors/player.gd": "ba079b91a2b7645fbe1bd6eca1f166ee66a38fb4f25d2198c35de3a493f1b9e6",
+    "game/src/world/mbs_interior/floor_stack.gd": "76f007624d0bf55ba22f2ffecce4c764f6cc1a91e92ab58f868dc6c12db42a20",
+    "game/src/world/mbs_interior/guest_floor.gd": "46d1e71ff6870dab9efaf1c6f04ecc643d5ff761b556391aa61ef9dfebc37849",
+    "game/src/world/mbs_interior/program_floor.gd": "f835eddb2be6b23cd90f7110a38d49b880cdcf12fe5e8fc7d516653e73ffdc8e",
+    "game/data/mbs-interior/inventory.json": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819"
+  },
+  "engine_parse_verified": false,
+  "native_verified": false,
+  "root_commit_before_native_required": true,
+  "root_helper_cap_s": 1200,
+  "fixture_cap_s": 1100,
+  "full_national_boot_tested": false,
+  "continuous_travel_tested": false,
+  "worker_engine_gpu_git_actions": false
+}

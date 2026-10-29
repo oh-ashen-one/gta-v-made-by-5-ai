@@ -67,13 +67,13 @@ func _physics_process(delta: float) -> void:
 		service.capture_anchor()
 
 func save_game() -> bool:
-	if not is_instance_valid(service) or not Game.source_session_owns(service): return false
+	if not is_instance_valid(service) or not Game.source_session_owns(service) or service.metadata().get("transaction_busy",false): return false
 	var saved: bool = Game.save_game()
 	Events.toast("Progress saved." if saved else "Save after standing on a clear, supported surface.","good" if saved else "normal")
 	return saved
 
 func load_game() -> bool:
-	if not is_instance_valid(service) or not Game.source_session_owns(service): return false
+	if not is_instance_valid(service) or not Game.source_session_owns(service) or service.metadata().get("transaction_busy",false): return false
 	var applied: bool = Game.load_game()
 	_handle_failed_load()
 	if not applied and service.pending_token().is_empty(): Events.toast("No compatible source-world save is available.","normal")
@@ -98,8 +98,7 @@ func _on_restore_required(reason: String,pose: Dictionary,token: String) -> void
 	# A refused manual load leaves the current playable scene intact. Death
 	# recovery remains held until its actual checkpoint can be prepared.
 	if service.metadata().pending_kind == "load":
-		service.cancel_pending(token)
-		_release_pin(token)
+		if service.cancel_pending(token) or service.pending_token() != token: _release_pin(token)
 		_prepared_tokens.erase(token)
 
 func _prepare_floor(id: String,token: String) -> void:
@@ -115,7 +114,7 @@ func _prepare_floor(id: String,token: String) -> void:
 	var owner := "source-restore/"+token
 	if not stack.pin_floor(id,owner):
 		_preparing = ""
-		_on_restore_required("checkpoint_floor_pin_unavailable",{},token)
+		if not _schedule_floor_retry(id,token): _on_restore_required("checkpoint_floor_pin_unavailable",{},token)
 		return
 	_pinned[token] = {"stack":weakref(stack),"id":id,"owner":owner}
 	var result: Dictionary = await stack.ensure_floor(id)
@@ -124,17 +123,19 @@ func _prepare_floor(id: String,token: String) -> void:
 		_release_pin(token)
 		return
 	if result.get("ready",false): _retry = true
-	elif int(_attempts[token]) < 8:
-		_retry_floors[token] = {"id":id,"after":Time.get_ticks_msec()+int(minf(8.0,pow(2.0,int(_attempts[token])))*1000.0)}
-	else: _on_restore_required("checkpoint_floor_not_ready",{},token)
+	elif not _schedule_floor_retry(id,token): _on_restore_required("checkpoint_floor_not_ready",{},token)
+
+func _schedule_floor_retry(id: String,token: String) -> bool:
+	if int(_attempts.get(token,0)) >= 8: return false
+	_retry_floors[token] = {"id":id,"after":Time.get_ticks_msec()+int(minf(8.0,pow(2.0,int(_attempts.get(token,0)))))*1000}
+	return true
 
 func _handle_failed_load() -> void:
-	if not Game.source_session_owns(service): return
+	if not Game.source_session_owns(service) or service.metadata().get("transaction_busy",false): return
 	var token: String = service.pending_token()
 	if not token.is_empty() and service.metadata().pending_kind == "load" and service.last_result.get("status", "") in ["invalid","blocked"]:
 		if service.last_result.get("reason", "") != "source_slot_changed_during_pending_restore" and (_preparing == token or _queued_floor.get("token", "") == token or _retry_floors.has(token)): return
-		service.cancel_pending(token)
-		_release_pin(token)
+		if service.cancel_pending(token) or service.pending_token() != token: _release_pin(token)
 		Events.toast("That save could not be restored; your current position is unchanged.","warn")
 
 func _on_restored(reason: String,token: String) -> void:
