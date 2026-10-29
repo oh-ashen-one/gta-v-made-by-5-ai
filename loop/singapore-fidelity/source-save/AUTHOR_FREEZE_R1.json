@@ -1,0 +1,28 @@
+{
+  "schema": "source_save_service_author_freeze_v1",
+  "created_utc": "2026-10-29T03:49:31.879708+00:00",
+  "native_parse": "pending_root",
+  "native_fixture": "pending_root",
+  "independent_review": "pending_root",
+  "normal_source_world_integration": "root_owned_pending",
+  "legacy_migration_fallback": false,
+  "child_engine_gpu_git_actions": false,
+  "whole_goal_complete": false,
+  "files": [
+    {
+      "path": "game/src/world/geography/source_save_service.gd",
+      "bytes": 24721,
+      "sha256": "46da3407e30f3c0a293a075c8fde314fc838e839df74dab0b128a8d60bdd436d"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_save_test.gd",
+      "bytes": 19208,
+      "sha256": "efc84d092a6a70ae36a899c14f7a566a76c283b0c18a7395eeda0b5263e3caa8"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_save_test.tscn",
+      "bytes": 206,
+      "sha256": "89b2964f5d3af0d6996d4daeec3d1a9ef7a1190fda2a57736fc25ccfec24d1fd"
+    }
+  ]
+}
