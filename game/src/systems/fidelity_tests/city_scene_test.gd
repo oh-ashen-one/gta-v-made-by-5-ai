@@ -17,7 +17,13 @@ func _run() -> void:
 	var frame := Frame.new()
 	check("source frame configured at actual fixture origin", frame.configure(Frame.EXPECTED_FRAME, [80000, 0, 80000], "a".repeat(64)))
 	city = Scene.new(); add_child(city)
-	check("world supplies explicit materials and retirement authority", city.configure(frame, _material, _retire, 2, 1))
+	var identity := {"geometry_identity_sha256": provider.metadata().identity_sha256, "snapshot_manifest_sha256": provider.metadata().bindings.snapshot_sha}
+	var wrong := identity.duplicate(true); wrong.snapshot_manifest_sha256 = "c".repeat(64)
+	check("different source snapshot refuses before geometry construction", not city.configure(frame, _material, _retire, 2, 1, wrong) and city.get_child_count() == 0)
+	check("world supplies explicit materials and geometry identity", city.configure(frame, _material, _retire, 2, 1, identity))
+	var foreign: Dictionary = provider.tile(80, 80); foreign.identity_sha256 = "d".repeat(64)
+	var rejected: Dictionary = await city.install_tile(foreign)
+	check("foreign geometry tile refuses before construction", not rejected.ok and city.get_child_count() == 0)
 	for x in [80, 81]:
 		var result: Dictionary = await city.install_tile(provider.tile(x, 80))
 		if not check("production city scene commits native tile " + str(x), result.get("ok", false), str(result)): _finish(); return

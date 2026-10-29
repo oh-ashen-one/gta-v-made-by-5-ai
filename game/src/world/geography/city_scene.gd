@@ -14,10 +14,15 @@ var _busy := false
 var _configured := false
 var _maximum_tiles := 9
 var _feature_batch := 16
+var _identity: Dictionary = {}
 
-func configure(frame: RefCounted, material_for_surface: Callable, may_retire: Callable, maximum_tiles: int = 9, features_per_frame: int = 16) -> bool:
+func configure(frame: RefCounted, material_for_surface: Callable, may_retire: Callable, maximum_tiles: int = 9, features_per_frame: int = 16, identity: Dictionary = {}) -> bool:
 	if _configured or not is_inside_tree() or not frame is SourceFrame or not frame.metadata().configured: return false
 	if not material_for_surface.is_valid() or not may_retire.is_valid() or maximum_tiles < 1 or maximum_tiles > 25 or features_per_frame < 1 or features_per_frame > 64: return false
+	if identity.size() != 2 or identity.get("snapshot_manifest_sha256") != frame.metadata().snapshot_manifest_sha256: return false
+	var hash_pattern := RegEx.new(); hash_pattern.compile("^[0-9a-f]{64}$")
+	if not identity.get("geometry_identity_sha256") is String or hash_pattern.search(identity.geometry_identity_sha256) == null: return false
+	_identity = identity.duplicate(true)
 	_frame = frame; _materials = material_for_surface; _retire_guard = may_retire
 	if _materials.get_object() is RefCounted: _material_owner = _materials.get_object()
 	if _retire_guard.get_object() is RefCounted: _guard_owner = _retire_guard.get_object()
@@ -27,6 +32,7 @@ func configure(frame: RefCounted, material_for_surface: Callable, may_retire: Ca
 func install_tile(decoded: Dictionary) -> Dictionary:
 	if not _configured or _busy: return {"ok": false, "reason": "Scene installer unavailable/busy"}
 	if not decoded.get("ok", false) or not decoded.get("features") is Array or not decoded.get("tile_key") is String: return {"ok": false, "reason": "Require validated city-provider mesh data"}
+	if decoded.get("identity_sha256") != _identity.geometry_identity_sha256: return {"ok": false, "reason": "Decoded tile belongs to a different geometry authority"}
 	var key: String = decoded.tile_key
 	if _tiles.has(key): return {"ok": false, "reason": "Tile already installed; retire its owned generation first"}
 	if _tiles.size() >= _maximum_tiles or decoded.features.size() > 20000: return {"ok": false, "reason": "Bounded active scene budget reached"}

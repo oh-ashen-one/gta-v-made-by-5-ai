@@ -13,6 +13,7 @@ var _built := false
 var _committed := false
 var _floor_definition: Dictionary = {}
 var _report: Dictionary = {}
+var _base_elevation := 0.0
 const FEATURE := "mbs-hotel/public-atrium-recreation"
 const FLOOR := "L1"
 
@@ -27,7 +28,7 @@ func _canonical(local: Vector3) -> Array:
 	var south: Array = Reference.DATA.axis_south_xz
 	var bay: Array = Reference.DATA.axis_bayward_xz
 	return [float(origin[0]) + float(south[0]) * float(local.x) + float(bay[0]) * float(local.z),
-		float(local.y), float(origin[1]) + float(south[1]) * float(local.x) + float(bay[1]) * float(local.z)]
+		_base_elevation + float(local.y), float(origin[1]) + float(south[1]) * float(local.x) + float(bay[1]) * float(local.z)]
 
 func _volume(id: String, at: Vector3, half: Vector3) -> Dictionary:
 	var south: Array = Reference.DATA.axis_south_xz
@@ -47,16 +48,20 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D, config: Dict
 	if context.metadata().frame_instance_id != frame.get_instance_id() or runtime.context != context:
 		return {"built": false, "error": "Site, actors and domains require one geometry/frame authority."}
 	for key in config:
-		if key not in ["core_connections", "arrival_corridor"]: return {"built": false, "error": "Unknown source-site configuration"}
+		if key not in ["core_connections", "arrival_corridor", "base_elevation_m", "base_elevation_provenance"]: return {"built": false, "error": "Unknown source-site configuration"}
+	var base: Variant = config.get("base_elevation_m", 0.0)
+	if not typeof(base) in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(base)) or absf(float(base)) > 1000.0: return {"built": false, "error": "Finite explicit site base required"}
+	if config.has("base_elevation_m") and (not config.get("base_elevation_provenance") is String or config.base_elevation_provenance.is_empty()): return {"built": false, "error": "Site base needs an explicit source/assumption statement"}
 	if not config.get("core_connections", []) is Array: return {"built": false, "error": "Core connections require an explicit array"}
 	if not config.get("arrival_corridor", {}) is Dictionary: return {"built": false, "error": "Arrival corridor requires an explicit mapping"}
 	_frame = frame
 	_context = context
 	_runtime = runtime
+	_base_elevation = float(base)
 	public_l1 = PublicL1.new()
 	public_l1.name = "SourceMBSHotelPublicL1"
 	add_child(public_l1)
-	var public_config := {"source_frame": frame}
+	var public_config := {"source_frame": frame, "floor_elevation_m": _base_elevation}
 	if not config.get("core_connections", []).is_empty(): public_config["core_connections"] = config.core_connections.duplicate(true)
 	if not config.get("arrival_corridor", {}).is_empty(): public_config["arrival_corridor"] = config.arrival_corridor.duplicate(true)
 	var result: Dictionary = public_l1.build(public_config)
@@ -109,7 +114,8 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D, config: Dict
 	if not context.register_floor(_floor_definition): return {"built": false, "error": context.last_error}
 	_built = true
 	_report = {"built": true, "source_site": true, "legacy_layout_or_duplicate_hotel_used": false,
-		"canonical_origin_xyz": [Reference.DATA.origin_world_xz[0], 0.0, Reference.DATA.origin_world_xz[1]],
+		"canonical_origin_xyz": [Reference.DATA.origin_world_xz[0], _base_elevation, Reference.DATA.origin_world_xz[1]],
+		"base_elevation_provenance": config.get("base_elevation_provenance", "Legacy explicit test staging L1=0; not surveyed ground"),
 		"public": result, "native_collision_committed": false, "floor_volume_count": volumes.size(),
 		"core_connections": result.get("core_connections", []).duplicate(true),
 		"arrival_corridor": arrival.duplicate(true),
