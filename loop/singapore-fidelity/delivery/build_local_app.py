@@ -10,14 +10,16 @@ from pathlib import Path
 from packaging_metadata import clean
 
 REPO=Path(__file__).resolve().parents[3]
-parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
+parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);parser.add_argument('--app',type=Path)
 a=parser.parse_args();out=a.output.resolve()
 if out.exists():raise SystemExit('Refusing an existing delivery directory')
 if shutil.disk_usage(out.parent).free<12*1024**3:raise SystemExit('Less than12GiB direct free space; refusing packaging')
 engine=Path('/Applications/Godot.app/Contents/MacOS/Godot')
 if not engine.is_file():raise SystemExit('Verified installed Studio Godot runtime is unavailable')
 out.mkdir(parents=True)
-app=out/'Orchard Reach — Fidelity Milestone.app';contents=app/'Contents';mac=contents/'MacOS';res=contents/'Resources'
+app=a.app.resolve() if a.app else out/'Orchard Reach — Fidelity Milestone.app'
+if app.exists():raise SystemExit('Refusing existing app path')
+contents=app/'Contents';mac=contents/'MacOS';res=contents/'Resources'
 mac.mkdir(parents=True);res.mkdir();game=res/'game';game.mkdir()
 source=REPO/'game'
 # Preserve the ready imported resources; exclude editor histories, captures and
