@@ -6,7 +6,7 @@ extends Node3D
 ## or implicit origin rebase occurs here.
 const Frame = preload("res://src/world/geography/source_frame.gd")
 const Context = preload("res://src/world/geography/source_world_context.gd")
-const Runtime = preload("res://src/world/geography/source_runtime.gd")
+const Runtime = preload("res://src/world/geography/source_world_guard.gd")
 const Domain = preload("res://src/world/geography/source_domain.gd")
 const DEM = preload("res://src/world/geography/source_terrain.gd")
 const Tiles = preload("res://src/world/geography/runtimecity_tiles.gd")
@@ -15,17 +15,21 @@ const Terrain = preload("res://src/world/geography/terrain_scene.gd")
 const Roads = preload("res://src/world/geography/source_roads.gd")
 const Materials = preload("res://src/world/geography/source_world_materials.gd")
 const SourceHUD = preload("res://src/world/geography/source_world_hud.gd")
+const SessionController = preload("res://src/world/geography/source_session_controller.gd")
 const Site = preload("res://src/world/mbs_interior/site.gd")
 const Stack = preload("res://src/world/mbs_interior/floor_stack.gd")
 const Hotel = preload("res://src/world/mbs_interior/hotel.gd")
 const Public = preload("res://src/world/mbs_interior/public_l1.gd")
+const Inventory = preload("res://src/world/mbs_interior/inventory.gd")
+const SiteReference = preload("res://src/world/mbs_interior/site_reference.gd")
+const Cabins = preload("res://src/world/mbs_interior/cabins.gd")
 const SNAPSHOT := "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983"
 const DOMAIN_SHA := "82e7c84c55f8f03ca9e646b2fa6f66e8921f23f072e961c533646ab414d12834"
 const DEM_SHA := "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841"
 const CITY_SHA := "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963"
 const TERRAIN_SHA := "f8488742dd93726276b33ca12cda7c6d0a38b967123a0be0d574b9145b7f469c"
 const MASKS_SHA := "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625"
-const ROADS_SHA := "a70fedf48a0a3ab158dfc9e617ec828dfedbfa18d60d2e5b6f4871f6901dc190"
+const ROADS_SHA := "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7"
 const SOURCE_ORIGIN := [0.0,0.0,-500.0]
 const START := [436.9498,6.1851874,577.2218]
 ## Next original-node position on the pinned actual primary route. This is
@@ -47,7 +51,10 @@ signal source_consumers_ready(services: Dictionary)
 @export var build_mbs := true
 @export var city_data_directory := "/private/tmp/singapore-fidelity/city-geometry/candidate-r2"
 @export var terrain_data_directory := "/private/tmp/singapore-fidelity/terrain-scene/mbs-neighborhood-r1"
-@export var road_data_directory := "/private/tmp/singapore-fidelity/source-roads/candidate-r2"
+@export var road_data_directory := "/private/tmp/singapore-fidelity/source-roads/candidate-r5"
+## Root must explicitly approve a corrected, natively checked physical road
+## identity. A property toggle can NEVER make the known-rejectedR2 acceptable.
+@export var road_physical_candidate_approved := false
 var source_frame: RefCounted
 var source_context: RefCounted
 var source_runtime: Node3D
@@ -64,6 +71,7 @@ var player: Player
 var car: Car
 var helicopter: Helicopter
 var hud: CanvasLayer
+var session_controller: Node
 var minimap_lines: Array[Dictionary] = []
 var ready_for_play := false
 var boot_failed := false
@@ -79,8 +87,14 @@ var _spawn_receipts: Dictionary = {}
 var _rebase_notice_revision := -1
 var _region_notice := ""
 var _paused := false
+var _settings_return_to_pause := false
 var _booting := false
 var _datum: Dictionary = {}
+var _architecture_inventory: Dictionary = {}
+var _architecture_inventory_sha := ""
+var _pending_architecture: Dictionary = {}
+var _architecture_loading := false
+var _architecture_failures: Array[Dictionary] = []
 
 func _ready() -> void:
 	add_to_group("source_singapore_world")
@@ -123,6 +137,8 @@ func _digest(data: Dictionary) -> String:
 
 func boot() -> Dictionary:
 	if _booting or ready_for_play or boot_failed: return {"ok":false,"reason":"Source world can boot only once"}
+	if ROADS_SHA == "a70fedf48a0a3ab158dfc9e617ec828dfedbfa18d60d2e5b6f4871f6901dc190": return _fail("Known-rejected R2 physical road mesh remains pinned; wait for corrected explicit artifact identity")
+	if not road_physical_candidate_approved: return _fail("Corrected physical road candidate has not received Root native approval")
 	_booting = true
 	Game.simulation_paused = true
 	Game.mode = Game.MODE_FOOT
@@ -139,7 +155,8 @@ func boot() -> Dictionary:
 	var base: Dictionary = dem.sample(HOTEL_ANCHOR)
 	if not base.get("ok",false) or base.get("state") != "sampled_dem": return _fail("No declared DEM reference at actual hotel source anchor")
 	_datum = {"base_elevation_m":float(base.height_m_egm96),"base_elevation_provenance":"COARSE EGM96 DEM sampled at actual source hotel anchor; reconstructed level datum, NOT current surveyed L1","source_anchor_xyz":HOTEL_ANCHOR.duplicate(),"dem_identity_sha256":DEM_SHA,"dem_sample":base.duplicate(true)}
-	var geometry := {"schema":"singapore_source_world_assembly_v1","snapshot_sha256":SNAPSHOT,"city_sha256":CITY_SHA,"terrain_sha256":TERRAIN_SHA,"roads_sha256":ROADS_SHA,"root_masks_sha256":MASKS_SHA,"mbs_reconstruction_base":_datum.base_elevation_m,"world_y_policy":Y_POLICY,"registry_policy":"non_dry_exterior_tile_support_ids_actual_native_triangles"}
+	if not _prepare_architecture_inventory(): return _fail("MBS source/reconstruction inventory could not bind transition guard")
+	var geometry := {"schema":"singapore_source_world_assembly_v1","snapshot_sha256":SNAPSHOT,"city_sha256":CITY_SHA,"terrain_sha256":TERRAIN_SHA,"roads_sha256":ROADS_SHA,"root_masks_sha256":MASKS_SHA,"mbs_inventory_sha256":_architecture_inventory_sha,"mbs_reconstruction_base":_datum.base_elevation_m,"world_y_policy":Y_POLICY,"registry_policy":"non_dry_exterior_tile_support_ids_actual_native_triangles"}
 	var vertical := {"dem_identity_sha256":DEM_SHA,"world_y_policy":Y_POLICY,"mbs_reference":_datum}
 	source_context = Context.new()
 	if not source_context.configure(source_frame,_digest(geometry),_digest(vertical),PROFILE,get_world_3d()): return _fail(source_context.last_error)
@@ -150,6 +167,8 @@ func boot() -> Dictionary:
 	source_runtime.name = "SourceWorldRuntime"
 	add_child(source_runtime)
 	if not source_runtime.configure(source_frame,source_context,domain.observe): return _fail("Source runtime frame/context mismatch")
+	if not source_runtime.configure_architecture("res://data/geography/mbs-root-holes.json",MASKS_SHA,_architecture_assessment): return _fail("Source architecture guard rejected exact Root mask identity")
+	source_runtime.architecture_required.connect(_on_architecture_required)
 	city_provider = Tiles.new()
 	if not city_provider.configure(city_data_directory,CITY_SHA,SNAPSHOT,DEM_SHA,Y_POLICY,2): return _fail(city_provider.last_error)
 	city_scene = City.new()
@@ -214,6 +233,12 @@ func boot() -> Dictionary:
 	_show_loading("Preparing your arrival…")
 	var actors: Dictionary = await _spawn_actors()
 	if not actors.get("ok",false): return _fail(actors.get("reason","No safe actual source arrival"))
+	session_controller = SessionController.new()
+	session_controller.name = "SourceSessionController"
+	add_child(session_controller)
+	if not session_controller.configure(self): return _fail("Source save/recovery service could not bind this world")
+	await get_tree().physics_frame
+	if not session_controller.capture_initial_anchor(): return _fail("No natively restorable source checkpoint at initial arrival")
 	hud = SourceHUD.new()
 	hud.name = "SingaporeHUD"
 	add_child(hud)
@@ -296,7 +321,10 @@ func _build_mbs() -> Dictionary:
 	floor_stack = Stack.new()
 	floor_stack.name = "SourceMBSFloorStack"
 	add_child(floor_stack)
-	if not floor_stack.configure(source_frame,source_context,source_runtime,base,provenance,{"max_active_floors":6,"max_pending_requests":3,"auto_stream":true,"public_core_connections":connections,"public_arrival_corridor":arrival}): return {"ok":false,"reason":"MBS floor stack rejected shared datum/context"}
+	# All three pinned L1s protect their B1/L2neighbors: nine actual floors.
+	# Leave three additional slots for one actor's active neighboring floor
+	# range. Do not silently drop a tower or weaken floor_ready requirements.
+	if not floor_stack.configure(source_frame,source_context,source_runtime,base,provenance,{"max_active_floors":12,"max_pending_requests":3,"auto_stream":true,"public_core_connections":connections,"public_arrival_corridor":arrival}): return {"ok":false,"reason":"MBS floor stack rejected shared datum/context"}
 	for tower in ["T1","T2","T3"]:
 		var floor_result: Dictionary = await floor_stack.ensure_floor(tower+"-L1")
 		if not floor_result.get("ready",false): return {"ok":false,"reason":str(floor_result)}
@@ -308,6 +336,139 @@ func _build_mbs() -> Dictionary:
 	if not hotel_result.get("built",false): return {"ok":false,"reason":hotel_result.get("error","Hotel transport rejected")}
 	_receipts["mbs"] = {"site":site.report(),"stack":floor_stack.report(),"hotel":hotel.report(),"datum":_datum.duplicate(true)}
 	return {"ok":true}
+
+## Copy immutable source/reconstruction descriptors once, not all native floor
+## recipes each frame. These descriptors select expected lifecycle ONLY; they
+## never claim native support or surveyed/private as-built measurements.
+func _prepare_architecture_inventory() -> bool:
+	var inventory: Dictionary = Inventory.load_inventory()
+	if inventory.has("error") or not inventory.get("hotel_floors") is Array: return false
+	_architecture_inventory_sha = FileAccess.get_sha256(Inventory.PATH)
+	if _architecture_inventory_sha.length()!=64: return false
+	var towers: Dictionary = {}
+	for source: Dictionary in SiteReference.DATA.towers:
+		var records: Array[Dictionary] = []
+		for input: Dictionary in inventory.hotel_floors:
+			if input.get("tower")!=source.tower: continue
+			if not input.get("id") is String or not input.get("geometry") is Dictionary or not typeof(input.get("elevation_m")) in [TYPE_FLOAT,TYPE_INT]: return false
+			var row: Dictionary = input.duplicate(true)
+			if row.get("level")=="L1":
+				# Same explicit L1 adaptation as Root FloorStack: preserve public
+				# atrium width instead of silently creating a cross-atrium slab.
+				var width: float = SiteReference.ATRIUM_ENGINEERING.approx_width_m[source.tower]
+				row.geometry.atrium_void_active = true
+				row.geometry.void_min_z_m = -width*.5
+				row.geometry.void_max_z_m = width*.5
+			records.append(row)
+		records.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return float(a.elevation_m)<float(b.elevation_m))
+		if records.is_empty(): return false
+		towers[String(source.id)] = {"tower":source.tower,"source_id":source.id,"anchor_xz":source.centroid_world_xz.duplicate(),"records":records}
+	_architecture_inventory = {"towers":towers,"inventory_sha256":_architecture_inventory_sha,"source_site_reference_sha256":FileAccess.get_sha256("res://src/world/mbs_interior/site_reference.gd"),"root_masks_sha256":MASKS_SHA,"reconstructed_not_as_built":true}
+	return true
+
+func _public_architecture_ready() -> bool:
+	if not is_instance_valid(site) or not site.report().get("native_collision_committed",false): return false
+	var floor: Dictionary = source_context.floor_record(Site.FEATURE,Site.FLOOR)
+	return floor.get("ok",false) and source_runtime.region_status("mbs-public-site").get("live",false)
+
+func _registered_floor_contains(feature: String,id: String,point: Array) -> bool:
+	var record: Dictionary = source_context.floor_record(feature,id)
+	# Consume Root's exact registered source volumes, including rotated stair
+	# and door adapters. Do not substitute an absolute float AABB here.
+	return record.get("ok",false) and source_context._floor_contains(record.floor,point)
+
+func _floor_requirement(id: String,point: Array,mask_id: String) -> Dictionary:
+	var lifecycle := {"ready":false,"floor_id":id,"status":"source_stack_not_installed"}
+	if is_instance_valid(floor_stack): lifecycle = floor_stack.floor_state(id)
+	return {"state":"required","floor_ids":[id],"ready":bool(lifecycle.get("ready",false)),"provenance":"Pinned source hotel footprint plus versioned reconstructed inventory; actual same-context FloorStack.floor_state native/neighbor lifecycle","inventory_sha256":_architecture_inventory_sha,"root_masks_sha256":MASKS_SHA,"mask_id":mask_id,"source_xyz":point.duplicate(),"native_lifecycle":lifecycle}
+
+func _moving_cabin_assessment(point: Array,actor: CharacterBody3D) -> Dictionary:
+	if not actor is Player or not is_instance_valid(hotel): return {}
+	var state: Dictionary = source_runtime.inspect_player(actor)
+	if not state.get("ok",false) or state.support.state!="supported" or state.support.floor_id!="CABIN" or not String(state.support.feature_id).begins_with("mbs-hotel/physical-shaft/"): return {}
+	var shaft: String = String(state.support.feature_id).trim_prefix("mbs-hotel/physical-shaft/")
+	var module: Node3D = hotel.get_cabin(shaft)
+	if not is_instance_valid(module) or not is_instance_valid(module.cabin) or module.cabin.get_instance_id()!=state.support.collider_instance_id or not source_runtime.region_status("mbs-shaft/"+shaft).get("live",false): return {}
+	var local: Dictionary = source_frame.to_local(point)
+	if not local.get("ok",false): return {}
+	var native_pose: Transform3D = PhysicsServer3D.body_get_state(module.cabin.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+	var foot: Vector3 = native_pose.affine_inverse()*local.position
+	# Keep the entire production capsule footprint on the actual moving slab.
+	# The enclosing shaft volume alone cannot authorize stepping out of a
+	# closed cabin into a missing architectural landing.
+	var radius: float = PROFILE.radius_m
+	if absf(foot.x)>(Cabins.WIDTH-.12)*.5-radius or absf(foot.z)>(Cabins.DEPTH-.24)*.5-radius or foot.y<-.15 or foot.y>.45: return {}
+	return {"state":"required","floor_ids":["CABIN/"+shaft],"ready":true,"provenance":"Current native stamped moving-cabin support, live shaft lease and proposed full capsule footprint inside actual slab dimensions; not merely broad enclosed-shaft volume","collider_instance_id":module.cabin.get_instance_id(),"origin_revision":source_frame.metadata().origin_revision}
+
+func _architecture_assessment(mask_id: String,point: Array,actor: CharacterBody3D) -> Dictionary:
+	var base: float = _datum.base_elevation_m
+	var moving: Dictionary = _moving_cabin_assessment(point,actor)
+	if not moving.is_empty(): return moving
+	# The real constructed public floor/adapters take precedence over a tower
+	# mask's reconstructed central void. This preserves normal ground entry.
+	if _registered_floor_contains(Site.FEATURE,Site.FLOOR,point):
+		return {"state":"required","floor_ids":["public-L1"],"ready":_public_architecture_ready(),"provenance":"Exact Root registered public L1/portal/core source volumes and live same-World3D region","root_masks_sha256":MASKS_SHA}
+	if mask_id=="constructed-public-atrium-floor":
+		if float(point[1])>base+3.2:
+			return {"state":"known_physical_void","floor_ids":[],"ready":false,"provenance":"Airspace above reconstructed public L1 support band; no floor, dryland or water inferred"}
+		if float(point[1])<base-.35:
+			return {"state":"unknown","floor_ids":[],"ready":false,"provenance":"Public source mask below declared L1; basement/retail/terrain connection mapping is not prepared"}
+		return {"state":"required","floor_ids":["public-L1"],"ready":_public_architecture_ready(),"provenance":"Root-approved exact reconstructed public floor mask; actual site region must be natively committed","root_masks_sha256":MASKS_SHA}
+	var source_id: String = mask_id.trim_prefix("source-foundation/")
+	if not _architecture_inventory.towers.has(source_id):
+		return {"state":"unknown","floor_ids":[],"ready":false,"provenance":"Exact source retail foundation is planned architecture but no source-placed native retail program mapping is installed","source_feature_id":source_id,"root_masks_sha256":MASKS_SHA}
+	var tower: Dictionary = _architecture_inventory.towers[source_id]
+	var rows: Array = tower.records
+	var below: int = -1
+	for index in rows.size():
+		if base+float(rows[index].elevation_m)<=float(point[1])+.35: below = index
+	if below<0: return {"state":"unknown","floor_ids":[],"ready":false,"provenance":"Below the versioned reconstructed tower inventory; no basement extension or terrain support invented","source_feature_id":source_id}
+	var row: Dictionary = rows[below]
+	var plane_y: float = base+float(row.elevation_m)
+	if below==rows.size()-1 and float(point[1])>plane_y+maxf(float(row.geometry.clear_height_m),float(row.geometry.storey_height_m))+.5:
+		return {"state":"not_required","floor_ids":[],"ready":false,"provenance":"Above the reconstructed tower floor program; actual collision and source residency still apply"}
+	# Exact registered architectural source volumes include stairs/core joins
+	# crossing a nominal storey selection boundary. Test the copied adjacent
+	# inventory IDs before any simpler reconstructed void classification.
+	for index in range(maxi(0,below-1),mini(rows.size(),below+2)):
+		var candidate: Dictionary = rows[index]
+		if _registered_floor_contains(Stack.FEATURE,String(candidate.id),point): return _floor_requirement(String(candidate.id),point,mask_id)
+	var dx: float = float(point[0])-float(tower.anchor_xz[0])
+	var dz: float = float(point[2])-float(tower.anchor_xz[1])
+	var along: float = dx*float(SiteReference.DATA.axis_south_xz[0])+dz*float(SiteReference.DATA.axis_south_xz[1])
+	var across: float = dx*float(SiteReference.DATA.axis_bayward_xz[0])+dz*float(SiteReference.DATA.axis_bayward_xz[1])
+	var geometry: Dictionary = row.geometry
+	var end: float = float(geometry.length_m)*.5-float(geometry.core_bay_m)
+	if bool(geometry.atrium_void_active) and absf(along)<end and across>float(geometry.void_min_z_m) and across<float(geometry.void_max_z_m) and float(point[1])>plane_y+.35:
+		return {"state":"known_physical_void","floor_ids":[],"ready":false,"provenance":"Versioned reconstructed floor factory explicitly preserves this central atrium void; not a missing slab or inferred land","inventory_floor_id":row.id,"inventory_sha256":_architecture_inventory_sha}
+	var requirement: Dictionary = _floor_requirement(String(row.id),point,mask_id)
+	if requirement.ready:
+		# Native floor readiness is insufficient when this exact point is not
+		# inside its registered source volumes. Keep the layout mismatch visible
+		# instead of claiming the whole OSM footprint a completed floor.
+		requirement.state = "unknown"
+		requirement.ready = false
+		requirement.provenance = "Source footprint point is outside actual registered floor/stair volumes; Root needs source-layout adaptation before crossing"
+	return requirement
+
+func _on_architecture_required(requirement: Dictionary) -> void:
+	var assessment: Dictionary = requirement.get("assessment",{})
+	for value in assessment.get("floor_ids",[]):
+		if not value is String or Inventory.floor_record(value).is_empty(): continue
+		_pending_architecture[value] = true
+	if not _architecture_loading and ready_for_play: _load_required_architecture.call_deferred()
+
+func _load_required_architecture() -> void:
+	if _architecture_loading or not is_instance_valid(floor_stack): return
+	_architecture_loading = true
+	while not _pending_architecture.is_empty() and ready_for_play:
+		var id: String = _pending_architecture.keys()[0]
+		_pending_architecture.erase(id)
+		var prepared: Dictionary = await floor_stack.ensure_floor(id)
+		if not prepared.get("ready",false):
+			_architecture_failures.append({"floor_id":id,"result":prepared.duplicate(true),"origin_revision":source_frame.metadata().origin_revision})
+			while _architecture_failures.size()>16: _architecture_failures.pop_front()
+	_architecture_loading = false
 
 func _ray_surface(source_xz: Array, expected_y: float, allowance: float = 6.0) -> Dictionary:
 	var projected: Dictionary = source_frame.to_local([float(source_xz[0]),expected_y,float(source_xz[1])])
@@ -399,14 +560,14 @@ func _retain_tile(_key: String,_receipt: Dictionary) -> bool:
 	return false
 
 func services() -> Dictionary:
-	return {"frame":source_frame,"context":source_context,"runtime":source_runtime,"domain":domain,"roads":roads,"city_provider":city_provider,"city_scene":city_scene,"terrain_scene":terrain_scene,"player":player,"car":car,"helicopter":helicopter,"mbs_site":site,"mbs_floor_stack":floor_stack,"mbs_hotel":hotel,"source_consumers_require_explicit_migration":true}
+	return {"frame":source_frame,"context":source_context,"runtime":source_runtime,"domain":domain,"roads":roads,"city_provider":city_provider,"city_scene":city_scene,"terrain_scene":terrain_scene,"player":player,"car":car,"helicopter":helicopter,"mbs_site":site,"mbs_floor_stack":floor_stack,"mbs_hotel":hotel,"session_controller":session_controller,"source_consumers_require_explicit_migration":true}
 
 func canonical_actor_position() -> Dictionary:
 	if not ready_for_play or not is_instance_valid(player): return {"ok":false}
 	return source_frame.to_source_current_live(player.controlled_actor().global_position)
 
 func report() -> Dictionary:
-	return {"ok":ready_for_play,"boot_failed":boot_failed,"last_error":last_error,"schema":"singapore_source_world_entry_v1","snapshot_manifest_sha256":SNAPSHOT,"city_identity_sha256":CITY_SHA,"terrain_identity_sha256":TERRAIN_SHA,"roads_identity_sha256":ROADS_SHA,"frame":source_frame.metadata() if source_frame != null else {},"context":source_context.metadata() if source_context != null else {},"active_regions":_regions.duplicate(),"tile_count":_tile_rows.size(),"spawn_receipts":_spawn_receipts.duplicate(true),"mbs":_receipts.get("mbs",{}).duplicate(true),"datum":_datum.duplicate(true),"legacy_mission_traffic_save_consumers_migrated":false,"national_residency_and_rebase_implemented":false,"whole_requested_game_or_visual_acceptance":false}
+	return {"ok":ready_for_play,"boot_failed":boot_failed,"last_error":last_error,"schema":"singapore_source_world_entry_v1","snapshot_manifest_sha256":SNAPSHOT,"city_identity_sha256":CITY_SHA,"terrain_identity_sha256":TERRAIN_SHA,"roads_identity_sha256":ROADS_SHA,"road_physical_candidate_root_approved":road_physical_candidate_approved,"frame":source_frame.metadata() if source_frame != null else {},"context":source_context.metadata() if source_context != null else {},"architecture_guard":source_runtime.architecture_guard_metadata() if source_runtime!=null else {},"architecture_inventory_sha256":_architecture_inventory_sha,"architecture_load_failures":_architecture_failures.duplicate(true),"active_regions":_regions.duplicate(),"tile_count":_tile_rows.size(),"spawn_receipts":_spawn_receipts.duplicate(true),"mbs":_receipts.get("mbs",{}).duplicate(true),"datum":_datum.duplicate(true),"legacy_mission_traffic_save_consumers_migrated":false,"national_residency_and_rebase_implemented":false,"whole_requested_game_or_visual_acceptance":false}
 
 func _process(_delta: float) -> void:
 	if not ready_for_play or _paused: return
@@ -424,25 +585,46 @@ func _process(_delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not ready_for_play or not event is InputEventKey or not event.pressed or event.echo: return
+	if hud.settings_visible() and event.keycode in [KEY_1,KEY_2,KEY_3,KEY_4,KEY_5]:
+		_apply_setting_key(event.keycode)
+		get_viewport().set_input_as_handled()
+		return
 	if event.keycode == KEY_ESCAPE: _toggle_pause(); get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_F3: _toggle_settings(); get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_F5:
-		var pose: Dictionary = source_runtime.capture_player_pose(player)
-		if pose.get("ok",false) and source_save_requested.get_connections().size()>0:
-			source_save_requested.emit(pose.pose)
-		else: Events.toast("Saving this source-world journey is not available in this build yet.","normal")
+		session_controller.save_game()
+		get_viewport().set_input_as_handled()
+	elif event.keycode == KEY_F6:
+		session_controller.load_game()
 		get_viewport().set_input_as_handled()
 
 func _toggle_pause() -> void:
+	if hud.settings_visible(): _toggle_settings(); return
 	_paused = not _paused
 	Game.simulation_paused = _paused
 	hud.set_paused(_paused)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if _paused else Input.MOUSE_MODE_CAPTURED
 
 func _toggle_settings() -> void:
-	if not _paused: _toggle_pause()
+	var opening: bool = not hud.settings_visible()
+	if opening: _settings_return_to_pause = _paused
 	hud.toggle_settings()
+	_paused = true if opening else _settings_return_to_pause
+	Game.simulation_paused = _paused
+	hud.set_paused(not opening and _paused)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if _paused else Input.MOUSE_MODE_CAPTURED
+
+func _apply_setting_key(key: int) -> void:
+	match key:
+		KEY_1: Game.settings["mouse_sensitivity"] = clampf(float(Game.settings.get("mouse_sensitivity",1.0))-.1,.2,3.0)
+		KEY_2: Game.settings["mouse_sensitivity"] = clampf(float(Game.settings.get("mouse_sensitivity",1.0))+.1,.2,3.0)
+		KEY_3: Game.settings["invert_y"] = not bool(Game.settings.get("invert_y",false))
+		KEY_4: Game.settings["reduced_shake"] = not bool(Game.settings.get("reduced_shake",false))
+		KEY_5: Game.settings["hud_visible"] = not bool(Game.settings.get("hud_visible",true))
+	hud.set_gameplay_visible(bool(Game.settings.get("hud_visible",true)))
+	hud.refresh_settings()
 
 func _quit_game() -> void:
 	# No implicit legacy v1 save on quit. Root save service owns persisted poses.
+	Sfx.shutdown_audio()
 	get_tree().quit()

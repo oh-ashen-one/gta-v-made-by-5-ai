@@ -1,0 +1,69 @@
+{
+  "schema": "source_world_child_guard_integrated_freeze_v2",
+  "created_utc": "2026-10-29T03:18:27.373990+00:00",
+  "initial_entry_import_root_evidence": {
+    "started_utc": "2026-10-29T03:05:20.523456+00:00",
+    "finished_utc": "2026-10-29T03:05:25.690773+00:00",
+    "engine_exit_code": 0,
+    "exit_code": 0,
+    "fatal_errors": [],
+    "timeout": false,
+    "child_reaped": true
+  },
+  "initial_entry_import_does_not_verify_new_guard_revision": true,
+  "guard_integrated_import": "pending_root",
+  "native_guard": "pending_root",
+  "road_input": "HARD_REJECTED_R2_waiting_R3_identity_then_root_native",
+  "road_root_approved": false,
+  "native_world": "not_run",
+  "rendered_review": "not_run",
+  "child_engine_gpu_git_actions": false,
+  "whole_goal_complete": false,
+  "files": [
+    {
+      "path": "game/src/world/geography/source_world.gd",
+      "bytes": 40494,
+      "sha256": "cc8a0740a2e6fc2988d738e2c4ce08e82ca7e4574d6a3f74afd680d2adfebd2a"
+    },
+    {
+      "path": "game/src/world/geography/source_world.tscn",
+      "bytes": 190,
+      "sha256": "6280b9461b65cc87fcfec3daaea3d708192210ce4f2aed6fb6b76a57b77cf9c0"
+    },
+    {
+      "path": "game/src/world/geography/source_world_hud.gd",
+      "bytes": 3198,
+      "sha256": "298f0b72fd533772b4c703718591776b385c1b8600aeedbe48e2a338053dccc5"
+    },
+    {
+      "path": "game/src/world/geography/source_world_materials.gd",
+      "bytes": 1542,
+      "sha256": "fabcc2dd901383e74410697a21e2e2846b2040dc40ca3f074698087fb9de1d59"
+    },
+    {
+      "path": "game/src/world/geography/source_world_guard.gd",
+      "bytes": 8664,
+      "sha256": "ea7866dc77783bb893cf2aadb6497e369e871b9e919166e9882ff5e1a3d53910"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_test.gd",
+      "bytes": 9254,
+      "sha256": "383f62e7220302d7c48f74dbbc498897cb85ed1a4e3ceb0f731386ad422a7d1b"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_test.tscn",
+      "bytes": 208,
+      "sha256": "30f6eac09adcf1e2d0c5431cb332fd92fbc429611ac7b2d3fdb1fc080437573b"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_guard_test.gd",
+      "bytes": 10329,
+      "sha256": "92844e5d847e3ab5a2d8174055d0d2ec9cc3b9f4cb3d6472a61039f4ca89de83"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_guard_test.tscn",
+      "bytes": 213,
+      "sha256": "4f4121ab0a208a5775c6f20ebe2c847dfb7f34f3dcdfe910504f3ed587442feb"
+    }
+  ]
+}

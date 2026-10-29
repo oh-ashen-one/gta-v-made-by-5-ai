@@ -64,6 +64,9 @@ func _walk_to(target: Vector3, max_frames: int = 900) -> Dictionary:
 func _run() -> void:
 	world = World.new()
 	world.auto_boot = false
+	# Explicit Root operator acknowledgement, after the separate corrected-road
+	# native gate. This cannot override SourceWorld's hard rejectedR2hash.
+	world.road_physical_candidate_approved = OS.get_cmdline_user_args().has("--source-world-test-approved-roads")
 	# Separate initial integration fixture: full MBS has its own second entry
 	# run once Root's actual public-core joins are ready, never inferred here.
 	world.build_mbs = OS.get_cmdline_user_args().has("--source-world-test-with-mbs")

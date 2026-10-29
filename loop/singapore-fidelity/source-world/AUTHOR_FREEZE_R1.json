@@ -1,0 +1,58 @@
+{
+  "schema": "source_world_child_author_freeze_v1",
+  "created_utc": "2026-10-29T03:05:13.480055+00:00",
+  "native_parse": "pending_root",
+  "native_world_test": "pending_road_physical_r3",
+  "native_guard_test": "pending_root",
+  "rendered_visual_review": "not_run",
+  "child_engine_gpu_git_actions": false,
+  "whole_goal_complete": false,
+  "files": [
+    {
+      "path": "game/src/world/geography/source_world.gd",
+      "bytes": 26706,
+      "sha256": "9691595715235cc8a56eb10f89a21bb1932fbd29bff02e8403f1c97e08b78021"
+    },
+    {
+      "path": "game/src/world/geography/source_world.tscn",
+      "bytes": 190,
+      "sha256": "6280b9461b65cc87fcfec3daaea3d708192210ce4f2aed6fb6b76a57b77cf9c0"
+    },
+    {
+      "path": "game/src/world/geography/source_world_hud.gd",
+      "bytes": 3198,
+      "sha256": "298f0b72fd533772b4c703718591776b385c1b8600aeedbe48e2a338053dccc5"
+    },
+    {
+      "path": "game/src/world/geography/source_world_materials.gd",
+      "bytes": 1542,
+      "sha256": "fabcc2dd901383e74410697a21e2e2846b2040dc40ca3f074698087fb9de1d59"
+    },
+    {
+      "path": "game/src/world/geography/source_world_guard.gd",
+      "bytes": 8664,
+      "sha256": "ea7866dc77783bb893cf2aadb6497e369e871b9e919166e9882ff5e1a3d53910"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_test.gd",
+      "bytes": 8994,
+      "sha256": "230035fd4ea1aa76a35289a784d90547dd27a12ae708e1ca18b3b4ee1c4e53fd"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_test.tscn",
+      "bytes": 208,
+      "sha256": "30f6eac09adcf1e2d0c5431cb332fd92fbc429611ac7b2d3fdb1fc080437573b"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_guard_test.gd",
+      "bytes": 10329,
+      "sha256": "92844e5d847e3ab5a2d8174055d0d2ec9cc3b9f4cb3d6472a61039f4ca89de83"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_guard_test.tscn",
+      "bytes": 213,
+      "sha256": "4f4121ab0a208a5775c6f20ebe2c847dfb7f34f3dcdfe910504f3ed587442feb"
+    }
+  ],
+  "known_rejected_input": "Road R2 physical artifact; do not run/accept as drivable until R3 binding replaces it"
+}
