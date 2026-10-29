@@ -8,7 +8,7 @@ const GuestFloor=preload("res://src/world/mbs_interior/guest_floor.gd")
 const Inventory=preload("res://src/world/mbs_interior/inventory.gd")
 const Kit=preload("res://src/world/downtown/landmarks/kit.gd")
 const Looks=preload("res://src/world/downtown/landmarks/looks.gd")
-const GEOMETRY_VERSION="mbs-stair-fire-door-v3-paired-U-lanes"
+const GEOMETRY_VERSION="mbs-stair-fire-door-v4-destination-height"
 const WIDTH=1.30
 const HEIGHT=2.35
 const LEAF_THICKNESS=.075
@@ -23,7 +23,7 @@ class StairDoor extends GuestFloor.SwingDoor:
 		prompt_text="[E] Close stair door" if opened else "[E] Open stair door"
 	func _physics_process(delta:float)->void:
 		if not is_instance_valid(coordinator):return
-		if not coordinator._gate_motion_allowed(door_id):return
+		if not coordinator._gate_motion_allowed(door_id,delta):return
 		super._physics_process(delta)
 
 var doors:Dictionary={}
@@ -45,11 +45,16 @@ func _read(provider:Callable,id:String)->Dictionary:
 	if raw.get("floor_id","")!=id or typeof(raw.get("ready"))!=TYPE_BOOL or not raw.get("collision_generation","") is String:
 		return {"valid":false,"ready":false,"reason":"wrong_floor_or_readiness_schema"}
 	var generation:String=raw.collision_generation
-	return {"valid":not generation.is_empty(),"ready":bool(raw.ready) and not generation.is_empty(),"generation":generation,"reason":"ready" if bool(raw.ready) and not generation.is_empty() else "receiving_floor_not_ready"}
+	var result:Dictionary={"valid":not generation.is_empty(),"ready":bool(raw.ready) and not generation.is_empty(),"generation":generation,"reason":"ready" if bool(raw.ready) and not generation.is_empty() else "receiving_floor_not_ready"}
+	if raw.has("receiving_door_height_m") or raw.has("receiving_clear_height_m"):
+		for field:String in ["receiving_door_height_m","receiving_clear_height_m"]:
+			if not typeof(raw.get(field)) in [TYPE_INT,TYPE_FLOAT] or not is_finite(float(raw[field])):return {"valid":false,"ready":false,"reason":"invalid_receiving_geometry"}
+		result["receiving_door_height_m"]=float(raw.receiving_door_height_m);result["receiving_clear_height_m"]=float(raw.receiving_clear_height_m)
+	return result
 
-func bind_floor(module:Node3D,id:String,upper_id:String,provider:Callable)->Dictionary:
+func bind_floor(module:Node3D,id:String,upper_id:String,provider:Callable,receiving_record:Dictionary={})->Dictionary:
 	# Complete validation before creating any nodes or changing bound state.
-	if not is_inside_tree() or not is_instance_valid(module) or not _unit_upright(module) or not provider.is_valid():
+	if not is_inside_tree() or not is_instance_valid(module) or not _unit_upright(module) or module.get_world_3d()!=get_world_3d() or not provider.is_valid():
 		return {"bound":false,"error":"In-tree upright unit-scale module and valid exact-floor provider required"}
 	if _floors.has(id):return {"bound":false,"error":"Floor already bound"}
 	if _floors.size()>=MAX_BOUND_FLOORS:return {"bound":false,"error":"Bound streamed-floor gate budget exceeded"}
@@ -57,17 +62,29 @@ func bind_floor(module:Node3D,id:String,upper_id:String,provider:Callable)->Dict
 	var physical_portals:Variant=module.get("portals")
 	if not record is Dictionary or record.get("id","")!=id or not physical_portals is Array or not bool(module.get("_built")):
 		return {"bound":false,"error":"Exact completed factory floor identity/portals required"}
-	var upper:Dictionary=Inventory.floor_record(upper_id)
+	var upper:Dictionary=Inventory.floor_record(upper_id) if receiving_record.is_empty() else receiving_record.duplicate(true)
+	if upper.get("id","")!=upper_id:return {"bound":false,"error":"Exact receiving record identity required"}
 	var g:Dictionary=record.get("geometry",{})
 	if upper.is_empty() or upper.get("tower")!=record.get("tower") or upper_id==id:
 		return {"bound":false,"error":"Actual same-tower upper inventory floor required"}
 	for key:String in ["length_m","cross_m","storey_height_m","clear_height_m"]:
 		if not g.has(key) or not is_finite(float(g[key])):return {"bound":false,"error":"Missing bounded factory geometry"}
-	if float(g.length_m)<30 or float(g.length_m)>120 or float(g.cross_m)<20 or float(g.cross_m)>100 or float(g.storey_height_m)<2.9 or float(g.storey_height_m)>6.0:
+	if float(g.length_m)<30 or float(g.length_m)>120 or float(g.cross_m)<20 or float(g.cross_m)>100 or float(g.storey_height_m)<2.5 or float(g.storey_height_m)>6.0:
 		return {"bound":false,"error":"Unsupported stair geometry/member domain"}
 	var rise:float=float(g.storey_height_m)
 	if not is_equal_approx(float(upper.elevation_m)-float(record.elevation_m),rise):
 		return {"bound":false,"error":"Receiving inventory elevation does not match actual stair rise"}
+	if rise<2.9 and (g.get("partial_mezzanine_schema","")!="mbs_partial_mezzanine_v1" or not record.get("level","") in ["B2","B2M"]):return {"bound":false,"error":"Low stair rise needs explicit partial service factory"}
+	var receiving_g:Dictionary=upper.get("geometry",{})
+	var raw_height:Variant=receiving_g.get("core_door_height_m",HEIGHT)
+	var raw_clear:Variant=receiving_g.get("clear_height_m",0.0)
+	if not typeof(raw_height) in [TYPE_INT,TYPE_FLOAT] or not typeof(raw_clear) in [TYPE_INT,TYPE_FLOAT]:return {"bound":false,"error":"Typed numeric receiving geometry required"}
+	var receiving_height:float=raw_height
+	var receiving_clear:float=raw_clear
+	var low_receiver:bool=absf(receiving_height-2.10)<.001
+	var header_height:float=.10 if low_receiver else .20
+	if not is_finite(receiving_height) or not is_finite(receiving_clear) or (not low_receiver and absf(receiving_height-HEIGHT)>.001) or receiving_clear<receiving_height+header_height+.04:return {"bound":false,"error":"Receiving door/header cannot fit declared actual headroom"}
+	if low_receiver and receiving_g.get("partial_mezzanine_schema","")!="mbs_partial_mezzanine_v1":return {"bound":false,"error":"Low receiving doorway requires explicit partial factory contract"}
 	var lower_proof:=_read(provider,id)
 	if not lower_proof.valid:return {"bound":false,"error":"Bound floor needs exact current collision generation"}
 	var plans:Array[Dictionary]=[]
@@ -100,7 +117,7 @@ func bind_floor(module:Node3D,id:String,upper_id:String,provider:Callable)->Dict
 		for lane:String in ["upper_return","lower_departure"]:
 			var center_x:float=expected_x if lane=="upper_return" else expected_x-1.56
 			var leaf_id:String=gate_id if lane=="upper_return" else id+"-"+wing+"-stair-lower-entry-door"
-			plans.append({"id":leaf_id,"wing":wing,"lane":lane,"side":side,"x":center_x,"landing_x":expected_x-.78,"edge_z":core,"plane_z":core+side*GATE_EDGE_SETBACK,"rise":rise,"lower_id":id,"upper_id":upper_id,"lower_generation":lower_proof.generation,"base_angle":0.0,"hinge":Vector3(center_x-WIDTH*.5,rise,core+side*GATE_EDGE_SETBACK),"build_landing_frame":lane=="upper_return"})
+			plans.append({"id":leaf_id,"wing":wing,"lane":lane,"side":side,"x":center_x,"landing_x":expected_x-.78,"edge_z":core,"plane_z":core+side*GATE_EDGE_SETBACK,"rise":rise,"lower_id":id,"upper_id":upper_id,"lower_generation":lower_proof.generation,"base_angle":0.0,"hinge":Vector3(center_x-WIDTH*.5,rise,core+side*GATE_EDGE_SETBACK),"build_landing_frame":lane=="upper_return","height":receiving_height,"clear_height":receiving_clear,"header_height":header_height,"requires_receiving_geometry":low_receiver})
 	if plans.size()!=4:return {"bound":false,"error":"Both actual U-stair lanes in both wings are required"}
 	var holder:=Node3D.new()
 	holder.name="OwnedStairFireDoors"
@@ -130,12 +147,12 @@ func _build_gate(holder:Node3D,p:Dictionary)->void:
 		# pier/leaf has matching real collision; neither lane is an open bypass.
 		var intervals:Array[Vector2]=[Vector2(landing_x-LANDING_WIDTH*.5,landing_x-.78-WIDTH*.5),Vector2(landing_x-.78+WIDTH*.5,landing_x+.78-WIDTH*.5),Vector2(landing_x+.78+WIDTH*.5,landing_x+LANDING_WIDTH*.5)]
 		for bounds:Vector2 in intervals:
-			_box(kit,"StairFireDoorPier"+str(bounds.x),mat,Vector3((bounds.x+bounds.y)*.5,float(p.rise)+HEIGHT*.5,p.plane_z),Vector3(bounds.y-bounds.x,HEIGHT,FRAME_THICKNESS))
+			_box(kit,"StairFireDoorPier"+str(bounds.x),mat,Vector3((bounds.x+bounds.y)*.5,float(p.rise)+float(p.height)*.5,p.plane_z),Vector3(bounds.y-bounds.x,p.height,FRAME_THICKNESS))
 		for offset:float in [-.78,.78]:
-			_box(kit,"StairFireDoorLintel"+str(offset),mat,Vector3(landing_x+offset,float(p.rise)+HEIGHT+.10,p.plane_z),Vector3(WIDTH,.20,FRAME_THICKNESS))
+			_box(kit,"StairFireDoorLintel"+str(offset),mat,Vector3(landing_x+offset,float(p.rise)+float(p.height)+float(p.header_height)*.5,p.plane_z),Vector3(WIDTH,p.header_height,FRAME_THICKNESS))
 		# Existing tall returns still prevent going around the landing closure.
 		for end:float in [-1.0,1.0]:
-			_box(kit,"StairFireDoorSideReturn"+str(end),mat,Vector3(landing_x+end*1.48,float(p.rise)+HEIGHT*.5,float(p.edge_z)+float(p.side)*.5),Vector3(.12,HEIGHT,1.40))
+			_box(kit,"StairFireDoorSideReturn"+str(end),mat,Vector3(landing_x+end*1.48,float(p.rise)+float(p.height)*.5,float(p.edge_z)+float(p.side)*.5),Vector3(.12,p.height,1.40))
 		kit.commit(holder,"StairFireDoorFrameMaterials_"+String(p.wing),true)
 	var door:=StairDoor.new()
 	door.name=("StairFireDoor_"+String(p.wing)+"_"+String(p.lane)).validate_node_name()
@@ -147,12 +164,12 @@ func _build_gate(holder:Node3D,p:Dictionary)->void:
 	holder.add_child(door)
 	var leaf=Kit.new()
 	# The actual visible leaf and collision share exactly the same dimensions.
-	leaf.box(metal,Vector3(0,HEIGHT*.5,0),Vector3(WIDTH,HEIGHT,LEAF_THICKNESS),Basis.IDENTITY,false)
+	leaf.box(metal,Vector3(0,float(p.height)*.5,0),Vector3(WIDTH,p.height,LEAF_THICKNESS),Basis.IDENTITY,false)
 	leaf.box(Looks.get_mat("steel_bronze"),Vector3(WIDTH*.32,1.05,-float(p.side)*.055),Vector3(.14,.035,.05),Basis.IDENTITY,false)
 	leaf.commit(door,"StairFireDoorLeafMaterials",true)
 	var shape:=CollisionShape3D.new();shape.name="VisibleStairFireDoorLeaf"
-	var box:=BoxShape3D.new();box.size=Vector3(WIDTH,HEIGHT,LEAF_THICKNESS)
-	shape.shape=box;shape.position.y=HEIGHT*.5;door.add_child(shape)
+	var box:=BoxShape3D.new();box.size=Vector3(WIDTH,p.height,LEAF_THICKNESS)
+	shape.shape=box;shape.position.y=float(p.height)*.5;door.add_child(shape)
 	var label:=Label3D.new();label.name="StairDoorSign";label.text="STAIR";label.font_size=36;label.pixel_size=.0015
 	label.position=Vector3(0,1.7,-float(p.side)*.045)
 	if float(p.side)>0:label.rotation.y=PI
@@ -169,6 +186,14 @@ func _floor_snapshot(id:String,entry:Dictionary)->Dictionary:
 	var upper:=_read(entry.provider,entry.upper_id)
 	if not lower.valid or lower.get("generation","")!=entry.lower_generation:
 		return {"valid":false,"ready":false,"generation":"","reason":"stale_bound_floor_generation"}
+	if not bool(lower.ready):
+		return {"valid":true,"ready":false,"generation":upper.get("generation",""),"reason":"lower_complete_floor_group_not_ready","required_lower_floor_id":id}
+	for key:String in entry.gate_ids:
+		var plan:Dictionary=_gates[key]
+		if bool(plan.requires_receiving_geometry) and (not upper.has("receiving_door_height_m") or not upper.has("receiving_clear_height_m")):
+			return {"valid":false,"ready":false,"generation":"","reason":"low_receiving_geometry_not_observed"}
+		if upper.has("receiving_door_height_m") and (absf(float(upper.receiving_door_height_m)-float(plan.height))>.001 or absf(float(upper.receiving_clear_height_m)-float(plan.clear_height))>.001):
+			return {"valid":false,"ready":false,"generation":"","reason":"receiving_geometry_changed"}
 	return upper
 
 ## Non-yielding snapshot pass then commit pass for every bound wing.
@@ -207,9 +232,9 @@ func _occupants(state:Dictionary)->Array[Dictionary]:
 	var box:=BoxShape3D.new()
 	# Covers threshold AND entire opening-leaf sweep. Holding collision here
 	# pauses closing and pins support; the player is never pushed/repositioned.
-	box.size=Vector3(WIDTH+.80,2.60,WIDTH+.80)
+	box.size=Vector3(WIDTH+.80,float(state.height)+.25,WIDTH+.80)
 	query.shape=box
-	var local:=Vector3(state.x,float(state.rise)+1.20,float(state.plane_z)-float(state.side)*WIDTH*.35)
+	var local:=Vector3(state.x,float(state.rise)+float(state.height)*.5+.025,float(state.plane_z)-float(state.side)*WIDTH*.35)
 	query.transform=(state.holder as Node3D).global_transform*Transform3D(Basis.IDENTITY,local)
 	query.collision_mask=OCCUPANCY_MASK;query.margin=.01
 	return get_world_3d().direct_space_state.intersect_shape(query,32)
@@ -221,9 +246,9 @@ func _opening_occupants(state:Dictionary)->Array[Dictionary]:
 	# Conservative quarter-sweep envelope: hinge..tip in X and receiving-side
 	# plane..tip in Z. Unlike the closing/threshold volume it does not include
 	# the safe staircase side of a closed door. No actor is moved to clear it.
-	box.size=Vector3(WIDTH,HEIGHT,WIDTH)
+	box.size=Vector3(WIDTH,state.height,WIDTH)
 	query.shape=box
-	var local:=Vector3(float(state.hinge.x)+WIDTH*.5,float(state.rise)+HEIGHT*.5,float(state.plane_z)-float(state.side)*WIDTH*.5)
+	var local:=Vector3(float(state.hinge.x)+WIDTH*.5,float(state.rise)+float(state.height)*.5,float(state.plane_z)-float(state.side)*WIDTH*.5)
 	query.transform=(state.holder as Node3D).global_transform*Transform3D(Basis.IDENTITY,local)
 	query.collision_mask=OCCUPANCY_MASK;query.margin=.01
 	return get_world_3d().direct_space_state.intersect_shape(query,32)
@@ -242,7 +267,7 @@ func _physically_closed(state:Dictionary)->bool:
 	var expected:Transform3D=(state.holder as Node3D).global_transform*Transform3D(Basis(Vector3.UP,door.base_angle),door.hinge_origin+Basis(Vector3.UP,door.base_angle)*Vector3(WIDTH*.5,0,0))
 	return actual.is_equal_approx(expected)
 
-func _gate_motion_allowed(id:String)->bool:
+func _gate_motion_allowed(id:String,delta:float=1.0/60.0)->bool:
 	if not _gates.has(id):return false
 	refresh_now(false)
 	var state:Dictionary=_gates[id]
@@ -250,6 +275,9 @@ func _gate_motion_allowed(id:String)->bool:
 	if bool(state.close_requested):
 		if not _physically_closed(state) and not _occupants(state).is_empty():
 			_set_state(state,"HOLD_OCCUPIED")
+			return false
+		if not _physically_closed(state) and not _static_leaf_step_clear(state,door.base_angle,delta):
+			_set_state(state,"HOLD_BLOCKED_GEOMETRY")
 			return false
 		door.set_open(false)
 		if _physically_closed(state):
@@ -264,8 +292,33 @@ func _gate_motion_allowed(id:String)->bool:
 				state["opening_blocker_ids"]=_blocker_ids(opening_hits)
 				_set_state(state,"OPENING_HOLD_OCCUPIED")
 				return false
+			if not _static_leaf_step_clear(state,target,delta):
+				_set_state(state,"OPENING_HOLD_BLOCKED_GEOMETRY")
+				return false
 		else:_set_state(state,"OPEN")
 	return true
+
+func _static_leaf_step_clear(state:Dictionary,target:float,delta:float)->bool:
+	if not is_finite(delta) or delta<=0.0 or delta>.10:return false
+	var door:StairDoor=state.door
+	var next:float=move_toward(door.motion_angle,target,delta*2.8)
+	var shape:=BoxShape3D.new()
+	# Two millimetres mechanical edge contact tolerance, never a Player or
+	# doorway enlargement. Static frame/header/ceiling bodies remain queried.
+	shape.size=Vector3(WIDTH-.004,float(state.height)-.004,LEAF_THICKNESS-.002)
+	var hits:Array[Dictionary]=[]
+	var steps:int=maxi(2,int(ceil(absf(next-door.motion_angle)/.04)))
+	for index in steps+1:
+		var fraction:float=float(index)/steps
+		var angle:float=lerpf(door.motion_angle,next,fraction)
+		var basis:=Basis(Vector3.UP,angle)
+		var centre:Vector3=door.hinge_origin+basis*Vector3(WIDTH*.5,float(state.height)*.5,0)
+		var query:=PhysicsShapeQueryParameters3D.new();query.shape=shape
+		query.transform=(state.holder as Node3D).global_transform*Transform3D(basis,centre)
+		query.collision_mask=1;query.margin=.0001;query.exclude=[door.get_rid()]
+		hits.append_array(get_world_3d().direct_space_state.intersect_shape(query,16))
+	state["last_static_probe"]={"physics_tick":Engine.get_physics_frames(),"from_angle":door.motion_angle,"to_angle":next,"mechanical_edge_inset_m":.002,"angular_samples":steps+1,"only_own_leaf_excluded":true,"blocking_body_ids":_blocker_ids(hits)}
+	return hits.is_empty()
 
 func _set_state(state:Dictionary,value:String)->void:
 	if state.state==value:return
@@ -282,6 +335,8 @@ func request_interaction(id:String)->bool:
 		state.close_requested=true
 		return true
 	if not state.ready or state.close_requested or not _physically_closed(state):
+		var required_lower:String=state.last_observation.get("required_lower_floor_id","")
+		if not required_lower.is_empty():_emit_floor_request.call_deferred(required_lower)
 		_emit_floor_request.call_deferred(state.upper_id)
 		return false
 	var opening_hits:=_opening_occupants(state)
@@ -369,12 +424,12 @@ func geometry_descriptor(id:String)->Dictionary:
 	var geometry:Array[Dictionary]=[]
 	for key:String in _floors[id].gate_ids:
 		var state:Dictionary=_gates[key]
-		geometry.append({"gate_id":key,"wing":state.wing,"lane":state.lane,"hinge_local":state.hinge,"opening_center_x_local_m":state.x,"landing_center_x_local_m":state.landing_x,"receiving_approach_local":Vector3(state.x,state.rise,float(state.plane_z)-float(state.side)*(WIDTH+.75)),"opening_width_m":WIDTH,"height_m":HEIGHT,"thickness_m":LEAF_THICKNESS,"landing_width_m":LANDING_WIDTH,"edge_z_local_m":state.edge_z,"gate_plane_z_local_m":state.plane_z,"rise_m":state.rise,"side":state.side})
+		geometry.append({"gate_id":key,"wing":state.wing,"lane":state.lane,"hinge_local":state.hinge,"opening_center_x_local_m":state.x,"landing_center_x_local_m":state.landing_x,"receiving_approach_local":Vector3(state.x,state.rise,float(state.plane_z)-float(state.side)*(WIDTH+.75)),"opening_width_m":WIDTH,"height_m":state.height,"receiving_door_height_m":state.height,"receiving_clear_height_m":state.clear_height,"header_height_m":state.header_height,"thickness_m":LEAF_THICKNESS,"landing_width_m":LANDING_WIDTH,"edge_z_local_m":state.edge_z,"gate_plane_z_local_m":state.plane_z,"rise_m":state.rise,"side":state.side})
 	return {"version":GEOMETRY_VERSION,"floor_id":id,"upper_id":_floors[id].upper_id,"bound_collision_generation":_floors[id].lower_generation,"gates":geometry,"root_context_registration_required":true,"actor_pose_writes":0,"asbuilt_verified":false}
 
 func report()->Dictionary:
 	var statuses:Dictionary={}
 	for key:String in _gates:
 		var state:Dictionary=_gates[key]
-		statuses[key]={"lower_id":state.lower_id,"upper_id":state.upper_id,"state":state.state,"ready":state.ready,"ready_generation":state.ready_generation,"open_generation":state.open_generation,"close_requested":state.close_requested,"opened":state.door.opened if is_instance_valid(state.door) else false,"motion_angle":state.door.motion_angle if is_instance_valid(state.door) else null,"physically_closed":_physically_closed(state),"readiness_observation":state.last_observation.duplicate(true),"opening_blocker_ids":state.get("opening_blocker_ids",[]).duplicate()}
+		statuses[key]={"lower_id":state.lower_id,"upper_id":state.upper_id,"state":state.state,"ready":state.ready,"ready_generation":state.ready_generation,"open_generation":state.open_generation,"close_requested":state.close_requested,"opened":state.door.opened if is_instance_valid(state.door) else false,"motion_angle":state.door.motion_angle if is_instance_valid(state.door) else null,"physically_closed":_physically_closed(state),"readiness_observation":state.last_observation.duplicate(true),"opening_blocker_ids":state.get("opening_blocker_ids",[]).duplicate(),"last_static_probe":state.get("last_static_probe",{}).duplicate(true),"receiving_door_height_m":state.height,"receiving_clear_height_m":state.clear_height}
 	return {"geometry_version":GEOMETRY_VERSION,"bound_floors":_floors.keys(),"gates":statuses,"protected_floor_ids":_protected.duplicate(),"actor_pose_writes":0,"actor_velocity_writes":0,"actor_reparents":0,"context_registered_by_component":false,"full_building_completed":false}

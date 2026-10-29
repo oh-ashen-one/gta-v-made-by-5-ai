@@ -1,0 +1,12 @@
+{
+  "observed_utc": "2026-10-29T05:45:00.106478+00:00",
+  "scope_findings": {
+    "game/src/world/mbs_interior/stair_gates.gd": [],
+    "game/src/world/mbs_interior/cabins.gd": [],
+    "game/src/world/mbs_interior/hotel.gd": [],
+    "game/src/systems/fidelity_tests/mbs_low_transport_test.gd": []
+  },
+  "method": "LEXICAL_ONLY_NOT_GODOT_COMPILER",
+  "engine_parse_verified": false,
+  "native_verified": false
+}

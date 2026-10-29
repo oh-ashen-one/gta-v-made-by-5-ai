@@ -1,0 +1,54 @@
+{
+  "schema": "low_transport_author_freeze_v1",
+  "created_utc": "2026-10-29T05:45:00.107124+00:00",
+  "worker_owned_files": [
+    {
+      "path": "game/src/world/mbs_interior/stair_gates.gd",
+      "bytes": 27573,
+      "sha256": "a76f0b921f2d9dcb302c34da15bf91a8f0f67a9c8d783baab80028850977f1bb"
+    },
+    {
+      "path": "game/src/world/mbs_interior/cabins.gd",
+      "bytes": 39932,
+      "sha256": "51cf29891609c50f456b9a94ea4c6126dd85745f5b28c7ef56a06df93bc71122"
+    },
+    {
+      "path": "game/src/world/mbs_interior/hotel.gd",
+      "bytes": 21920,
+      "sha256": "1e7fb2dcc3ab22094847e874b2086250e19f18a6791e15046e8d2db220d2a7c4"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/mbs_low_transport_test.gd",
+      "bytes": 22300,
+      "sha256": "a4e2d10541b8a14f15833a244a512fbe9dda2be76662f8abae38283d173638ca"
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/mbs_low_transport_test.tscn",
+      "bytes": 217,
+      "sha256": "a00444d7615468c5c3759979d6e71459dd91c4684d2e332ced9bfe7f8ad6df00"
+    }
+  ],
+  "root_owned_dependencies_observed": {
+    "game/src/world/mbs_interior/floor_stack.gd": "5dbaac91108bb514245daa6908b0ba61389c9c9c213c1125c1850d15b12ed67a",
+    "game/src/world/mbs_interior/partial_mezzanine.gd": "02944515dc5097cd8e2adf098f903a1af75871d3b1b034c95794b91ea703aa45",
+    "game/src/world/mbs_interior/program_floor.gd": "f835eddb2be6b23cd90f7110a38d49b880cdcf12fe5e8fc7d516653e73ffdc8e",
+    "game/src/world/mbs_interior/guest_floor.gd": "46d1e71ff6870dab9efaf1c6f04ecc643d5ff761b556391aa61ef9dfebc37849",
+    "game/src/world/geography/source_runtime.gd": "b899f5fa757655cf77c855b92634cb4dd0388905075488b019663ed022e8ac64",
+    "game/src/systems/fidelity_tests/mbs_guest_floor_test.gd": "7ef87fbff3c5838cba3bc23c386f195a133b1bf7f07fd9ee47d61f31989274d7",
+    "game/data/mbs-interior/inventory.json": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819"
+  },
+  "planned_floor_record_API_required": true,
+  "receiving_stop_optional_fields": [
+    "receiving_door_height_m",
+    "receiving_clear_height_m"
+  ],
+  "normal_legacy_six_field_descriptors_supported": true,
+  "both_complete_floor_groups_required_for_stair": true,
+  "worker_engine_gpu_git_actions": false,
+  "root_commit_before_native_required": true,
+  "engine_parse_verified": false,
+  "native_verified": false,
+  "normal_legacy_native_suites_verified": false,
+  "render_verified": false,
+  "whole_MBS_complete": false
+}

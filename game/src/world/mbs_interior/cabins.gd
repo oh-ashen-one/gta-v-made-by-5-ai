@@ -10,6 +10,7 @@ const Inventory = preload("res://src/world/mbs_interior/inventory.gd")
 const SCHEMA := "mbs_physical_cabin_v1"
 const DESC_KEYS := ["schema", "shaft_id", "center_xz", "entry_sign", "initial_floor_id", "stops", "speed_mps", "acceleration_mps2"]
 const STOP_KEYS := ["floor_id", "elevation_m", "label", "portal_id", "kind", "height_status"]
+const OPTIONAL_STOP_KEYS := ["receiving_door_height_m", "receiving_clear_height_m"]
 const WIDTH := 2.20
 const DEPTH := 2.80
 const HEIGHT := 2.70
@@ -26,6 +27,8 @@ class CabinPanel extends Node3D:
 	func interact(actor: Node) -> void:
 		if can_interact(): coordinator.panel_interact(actor)
 
+var _has_low_receivers := false
+var _cabin_gate_setback := .10
 var _built := false
 var _descriptor: Dictionary = {}
 var _stops: Dictionary = {}
@@ -106,12 +109,30 @@ static func validate_descriptor(value: Variant) -> Dictionary:
 	var ids: Array[String] = []
 	var stops: Array[Dictionary] = []
 	for stop in value.stops:
-		if not _exact(stop, STOP_KEYS): return {"valid": false, "error": "Invalid cabin stop fields"}
+		if not stop is Dictionary: return {"valid":false,"error":"Invalid cabin stop type"}
+		for key:String in STOP_KEYS:
+			if not stop.has(key):return {"valid":false,"error":"Missing required cabin stop field"}
+		for key:Variant in stop:
+			if not key in STOP_KEYS and not key in OPTIONAL_STOP_KEYS:return {"valid":false,"error":"Unknown cabin stop field"}
 		for key in ["floor_id", "label", "portal_id", "kind", "height_status"]:
 			if not _text(stop[key]): return {"valid": false, "error": "Missing explicit stop identity/status"}
 		if not stop.kind in ["guest_lift", "service_lift"] or ids.has(stop.floor_id) or not _number(stop.elevation_m) or absf(float(stop.elevation_m)) > 2048.0: return {"valid": false, "error": "Invalid/duplicate stop or relative height"}
+		var opening:float=DOOR_H
+		var clear:float=0.0 # Explicit legacy normal descriptor, no claimed metric ceiling.
+		if stop.has("receiving_door_height_m"):
+			if not _number(stop.receiving_door_height_m):return {"valid":false,"error":"Invalid receiving door height"}
+			opening=float(stop.receiving_door_height_m)
+		if stop.has("receiving_clear_height_m"):
+			if not _number(stop.receiving_clear_height_m):return {"valid":false,"error":"Invalid receiving clear height"}
+			clear=float(stop.receiving_clear_height_m)
+		var low:bool=absf(opening-2.10)<.001
+		if not low and absf(opening-DOOR_H)>.001:return {"valid":false,"error":"Unsupported receiving door height"}
+		if low and (not stop.has("receiving_clear_height_m") or clear<2.30-.001):return {"valid":false,"error":"Low stop needs explicit adequate receiving headroom"}
+		if clear!=0.0 and (clear<opening+(.10 if low else .20)+.04 or clear>5.25):return {"valid":false,"error":"Receiving opening/header cannot fit floor"}
+		var normalized_stop:Dictionary=stop.duplicate(true)
+		normalized_stop["receiving_door_height_m"]=opening;normalized_stop["receiving_clear_height_m"]=clear
 		ids.append(stop.floor_id)
-		stops.append(stop.duplicate(true))
+		stops.append(normalized_stop)
 	if not ids.has(value.initial_floor_id): return {"valid": false, "error": "Initial floor is not a stop"}
 	stops.sort_custom(func(a: Dictionary, b: Dictionary): return float(a.elevation_m) < float(b.elevation_m))
 	for index in range(1, stops.size()):
@@ -133,6 +154,9 @@ func build(value: Variant, ready_for_floor: Callable) -> Dictionary:
 		_stops[stop.floor_id] = stop.duplicate(true)
 		_ordered.append(stop.floor_id)
 		_landing_fraction[stop.floor_id] = 0.0
+	for stop:Dictionary in _descriptor.stops:
+		if float(stop.receiving_door_height_m)<DOOR_H-.001:_has_low_receivers=true
+	_cabin_gate_setback=.24 if _has_low_receivers else .10
 	_at_floor = _descriptor.initial_floor_id
 	_motion_y = float(_stops[_at_floor].elevation_m)
 	_make_cabin()
@@ -185,11 +209,15 @@ func _make_cabin() -> void:
 	face.box(Looks.get_mat("steel_bronze"), Vector3.ZERO, Vector3(.22, .34, .05), Basis.IDENTITY, false)
 	face.commit(panel, "PanelFace", true)
 
-func _make_gate(label: String, y: float, side: float, landing: bool) -> AnimatableBody3D:
+func _make_gate(label: String, y: float, side: float, landing: bool, opening_height:float=DOOR_H) -> AnimatableBody3D:
 	var gate: AnimatableBody3D = _moving_body(label, _gate_center(y, side, 0.0, landing))
 	gate.collision_mask = 0
 	var kit = Kit.new()
-	_box(gate, kit, Looks.get_mat("steel_bronze"), Vector3(0, DOOR_H * .5, 0), Vector3(DOOR_W * .5, DOOR_H, .07))
+	# Mixed-height shafts keep a real20mm receiving-grille top gap beneath
+	# each explicit opening. Legacy all-normal geometry remains unchanged;
+	# visible mesh and native shape always share the same leaf dimensions.
+	var leaf_height:float=opening_height-.02 if _has_low_receivers and landing else opening_height
+	_box(gate, kit, Looks.get_mat("steel_bronze"), Vector3(0, leaf_height * .5, 0), Vector3(DOOR_W * .5, leaf_height, .07))
 	kit.commit(gate, "GateLeaf", true)
 	return gate
 
@@ -207,10 +235,11 @@ func _make_shaft() -> void:
 	var previous := bottom
 	for id: String in _ordered:
 		var y: float = float(_stops[id].elevation_m)
+		var receiving_height:float=_stops[id].receiving_door_height_m
 		if y > previous: _box(static_body, kit, Looks.get_mat("granite_light"), Vector3(_center.x, (previous + y) * .5, _center.y + _sign * (DEPTH * .5 + .07)), Vector3(WIDTH + .4, y - previous, .10))
-		for side in [-1.0, 1.0]: _box(static_body, kit, Looks.get_mat("granite_light"), Vector3(_center.x + side * ((WIDTH + .4 + DOOR_W) * .25), y + DOOR_H * .5, _center.y + _sign * (DEPTH * .5 + .07)), Vector3((WIDTH + .4 - DOOR_W) * .5, DOOR_H, .10))
-		previous = maxf(previous, y + DOOR_H)
-		_shaft_gates[id] = [_make_gate(id.validate_node_name() + "LandingGateLeft", y, -1.0, true), _make_gate(id.validate_node_name() + "LandingGateRight", y, 1.0, true)]
+		for side in [-1.0, 1.0]: _box(static_body, kit, Looks.get_mat("granite_light"), Vector3(_center.x + side * ((WIDTH + .4 + DOOR_W) * .25), y + receiving_height * .5, _center.y + _sign * (DEPTH * .5 + .07)), Vector3((WIDTH + .4 - DOOR_W) * .5, receiving_height, .10))
+		previous = maxf(previous, y + receiving_height)
+		_shaft_gates[id] = [_make_gate(id.validate_node_name() + "LandingGateLeft", y, -1.0, true,receiving_height), _make_gate(id.validate_node_name() + "LandingGateRight", y, 1.0, true,receiving_height)]
 	if top > previous: _box(static_body, kit, Looks.get_mat("granite_light"), Vector3(_center.x, (top + previous) * .5, _center.y + _sign * (DEPTH * .5 + .07)), Vector3(WIDTH + .4, top - previous, .10))
 	kit.commit(static_body, "ShaftMaterials", true)
 
@@ -231,6 +260,7 @@ func bind_floor(floor_id: String, floor_node: Node3D, portal_id: String) -> bool
 	if floor_node.to_global(found.cabin_expected_center).distance_to(expected) > .04: return false
 	var threshold := to_global(Vector3(_center.x, float(_stops[floor_id].elevation_m), _center.y + _sign * DEPTH * .5))
 	if floor_node.to_global(found.threshold).distance_to(threshold) > .04: return false
+	if not _receiving_geometry_ok(floor_id,floor_node,portal_id):return false
 	if not floor_node.confirm_transition_ready(portal_id, false): return false
 	_bindings[floor_id] = {"node": floor_node, "portal_id": portal_id}
 	_external_ready[floor_id] = false
@@ -259,11 +289,40 @@ func request_floor(floor_id: String) -> bool:
 	elif not _queue.has(floor_id) and floor_id != _target: _queue.append(floor_id)
 	return true
 
+func _receiving_geometry_ok(id:String,node:Node3D,portal_id:String)->bool:
+	if not _stops.has(id) or not is_instance_valid(node) or not bool(node.get("_built")):return false
+	var record:Variant=node.get("floor_record")
+	if not record is Dictionary or record.get("id","")!=id or not record.get("geometry") is Dictionary:return false
+	var g:Dictionary=record.geometry
+	var expected:float=_stops[id].receiving_door_height_m
+	var declared:Variant=g.get("core_door_height_m",DOOR_H)
+	var clear:Variant=g.get("clear_height_m")
+	if not _number(declared) or not _number(clear) or absf(float(declared)-expected)>.001:return false
+	var required_clear:float=_stops[id].receiving_clear_height_m
+	if float(clear)<expected+(.10 if expected<DOOR_H-.001 else .20)+.04 or (required_clear>0.0 and absf(float(clear)-required_clear)>.001):return false
+	if not node.get("doors") is Dictionary:return false
+	var door:Variant=node.get("doors").get(portal_id)
+	if not door is AnimatableBody3D or not door.is_inside_tree() or door.get_world_3d()!=get_world_3d():return false
+	var shapes:=0
+	for child:Node in door.get_children():
+		if child is CollisionShape3D and not child.disabled:
+			var actual_box:BoxShape3D=child.shape as BoxShape3D
+			if actual_box==null or absf(actual_box.size.y-expected)>.001:return false
+			shapes+=1
+	return shapes==1
+
 func _readiness(floor_id: String) -> Dictionary:
 	if not _bindings.has(floor_id) or not is_instance_valid(_bindings[floor_id].node) or not _bindings[floor_id].node.is_inside_tree(): return {"ready": false, "reason": "Floor and landing interlock are not bound/resident"}
 	if not shaft_collision_ready(): return {"ready": false, "reason": "Owned shaft collision has not committed"}
+	if not _receiving_geometry_ok(floor_id,_bindings[floor_id].node,_bindings[floor_id].portal_id):return {"ready":false,"reason":"Actual receiving geometry no longer matches planned opening"}
 	var value: Variant = _ready_callback.call(floor_id)
 	if not _exact(value, ["ready", "floor_id", "collision_generation", "travel_ready"]) or typeof(value.ready) != TYPE_BOOL or typeof(value.travel_ready) != TYPE_BOOL or typeof(value.floor_id) != TYPE_STRING or value.floor_id != floor_id or not _text(value.collision_generation): return {"ready": false, "reason": "Readiness callback is not a valid collision lease"}
+	var structure:Node=_bindings[floor_id].node.get_node_or_null("ProgramFloorSolidCollision")
+	if structure==null:structure=_bindings[floor_id].node.get_node_or_null("GuestFloorSolidCollision")
+	var stamp:Variant=structure.get_meta("singapore_source_support_v1",{}) if structure!=null else {}
+	var low:bool=float(_stops[floor_id].receiving_door_height_m)<DOOR_H-.001
+	if low and (not stamp is Dictionary or stamp.is_empty()):return {"ready":false,"reason":"Low receiving floor lacks actual source collision generation"}
+	if stamp is Dictionary and not stamp.is_empty() and (stamp.get("floor_id","")!=floor_id or stamp.get("residency_token","")!=value.collision_generation):return {"ready":false,"reason":"Readiness generation differs from actual receiving support"}
 	return value.duplicate(true)
 
 ## Parent combines this OWN-shaft proof with its floor/neighbor collision
@@ -299,7 +358,7 @@ func _native_aligned() -> bool:
 func _gate_center(y: float, side: float, fraction: float, landing: bool) -> Vector3:
 	# Landing safety grille stays BEHIND GuestFloor's native E door, so it
 	# cannot occlude that door's interaction ray while the lift is absent.
-	return Vector3(_center.x + side * (DOOR_W * .25 + fraction * .72), y, _center.y + _sign * (DEPTH * .5 + (-.07 if landing else -.10)))
+	return Vector3(_center.x + side * (DOOR_W * .25 + fraction * .72), y, _center.y + _sign * (DEPTH * .5 + (-.07 if landing else -_cabin_gate_setback)))
 
 func _publish_transforms() -> void:
 	# ONE complete transform per AnimatableBody setter, from commanded scalar
@@ -319,7 +378,7 @@ func _doors_physically_closed() -> bool:
 	for index in 2:
 		var side := -1.0 if index == 0 else 1.0
 		var pose: Transform3D = PhysicsServer3D.body_get_state(_cabin_gates[index].get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM)
-		if pose.origin.distance_to(physical_cabin * Vector3(side * DOOR_W * .25, 0, _sign * (DEPTH * .5 - .10))) > ALIGN_M: return false
+		if pose.origin.distance_to(physical_cabin * Vector3(side * DOOR_W * .25, 0, _sign * (DEPTH * .5 - _cabin_gate_setback))) > ALIGN_M: return false
 		for id: String in _ordered:
 			var landing_pose: Transform3D = PhysicsServer3D.body_get_state(_shaft_gates[id][index].get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM)
 			if landing_pose.origin.distance_to(to_global(_gate_center(float(_stops[id].elevation_m), side, 0.0, true))) > ALIGN_M: return false
@@ -365,14 +424,22 @@ func _door_hit_details(hits: Array[Dictionary]) -> Array[Dictionary]:
 		details.append(detail)
 	return details
 
+func _controlled_collision_rids()->Array[RID]:
+	var result:Array[RID]=[]
+	for child:Node in get_children():
+		if child is AnimatableBody3D:result.append(child.get_rid())
+	return result
+
 func _door_obstructed() -> bool:
+	if _has_low_receivers:return _door_obstructed_split()
 	var box := BoxShape3D.new()
 	box.size = Vector3(DOOR_W - .04, 2.10, .70)
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.shape = box
 	query.transform = global_transform * Transform3D(Basis.IDENTITY, Vector3(_center.x, _motion_y + 1.10, _center.y + _sign * DEPTH * .5))
 	query.collision_mask = 1 | 2 | 8
-	var exclusions: Array[RID] = _owned_rids.duplicate()
+	query.margin = .005
+	var exclusions: Array[RID] = _controlled_collision_rids()
 	var landing_doors: Array[Dictionary] = []
 	for id: String in _bindings:
 		if not is_instance_valid(_bindings[id].node): continue
@@ -384,15 +451,37 @@ func _door_obstructed() -> bool:
 	# then assign ONCE; query.exclude.append(...) never updated native filters.
 	# Paired same-tick diagnostic reproduces the previous effective filter so
 	# QA can identify the exact removed leaf without changing sensor geometry.
-	query.exclude = _owned_rids.duplicate()
+	query.exclude = _controlled_collision_rids()
 	var legacy_hits: Array[Dictionary] = get_world_3d().direct_space_state.intersect_shape(query, 16)
 	query.exclude = exclusions
 	var hits: Array[Dictionary] = get_world_3d().direct_space_state.intersect_shape(query, 16)
 	_last_door_probe = {"physics_tick": Engine.get_physics_frames(), "query_origin": query.transform.origin,
-		"query_size": box.size, "collision_mask": query.collision_mask, "owned_exclusion_count": _owned_rids.size(),
+		"query_size": box.size, "collision_mask": query.collision_mask, "owned_exclusion_count": _controlled_collision_rids().size(),"owned_static_enclosure_excluded":false,
 		"actual_exclusion_count": query.exclude.size(), "expected_exclusion_count": exclusions.size(),
 		"landing_doors": landing_doors, "legacy_owned_only_hits": _door_hit_details(legacy_hits),
 		"controlling_hits": _door_hit_details(hits)}
+	return not hits.is_empty()
+
+func _door_obstructed_split()->bool:
+	var receiving_height:float=_stops[_at_floor].receiving_door_height_m
+	var leaf_height:float=receiving_height-.02
+	var exclusions:Array[RID]=_controlled_collision_rids()
+	var landing_doors:Array[Dictionary]=[]
+	for id:String in _bindings:
+		if not is_instance_valid(_bindings[id].node):continue
+		var door:Variant=_bindings[id].node.doors.get(_bindings[id].portal_id)
+		if door is CollisionObject3D:exclusions.append(door.get_rid());landing_doors.append({"floor_id":id,"body":String(door.name),"rid_id":door.get_rid().get_id()})
+	var definitions:Array[Dictionary]=[
+		{"label":"cabin-side-tall-clearance","size":Vector3(DOOR_W-.04,DOOR_H-.04,.16),"center":Vector3(_center.x,_motion_y+DOOR_H*.5,_center.y+_sign*(DEPTH*.5-_cabin_gate_setback))},
+		{"label":"receiving-opening-clearance","size":Vector3(DOOR_W-.04,leaf_height-.02,.50),"center":Vector3(_center.x,_motion_y+(leaf_height+.02)*.5,_center.y+_sign*(DEPTH*.5+.08))}]
+	var hits:Array[Dictionary]=[];var segments:Array[Dictionary]=[]
+	for definition:Dictionary in definitions:
+		var box:=BoxShape3D.new();box.size=definition.size
+		var query:=PhysicsShapeQueryParameters3D.new();query.shape=box;query.transform=global_transform*Transform3D(Basis.IDENTITY,definition.center);query.collision_mask=1|2|8;query.margin=.005;query.exclude=exclusions
+		var observed:Array[Dictionary]=get_world_3d().direct_space_state.intersect_shape(query,32)
+		hits.append_array(observed)
+		segments.append({"label":definition.label,"query_origin":query.transform.origin,"query_size":box.size,"margin_m":query.margin,"hits":_door_hit_details(observed)})
+	_last_door_probe={"physics_tick":Engine.get_physics_frames(),"segmented_receiving_policy":true,"receiving_door_height_m":receiving_height,"receiver_grille_leaf_height_m":leaf_height,"cabin_internal_height_m":HEIGHT,"cabin_gate_setback_m":_cabin_gate_setback,"segments":segments,"actual_exclusion_count":exclusions.size(),"expected_exclusion_count":exclusions.size(),"owned_static_enclosure_excluded":false,"landing_doors":landing_doors,"controlling_hits":_door_hit_details(hits)}
 	return not hits.is_empty()
 
 func _can_move(dy: float) -> bool:
@@ -401,13 +490,17 @@ func _can_move(dy: float) -> bool:
 	parameters.motion = global_basis * Vector3(0, dy, 0)
 	parameters.margin = .001
 	parameters.recovery_as_collision = false
-	parameters.exclude_bodies = _owned_rids.duplicate()
+	parameters.exclude_bodies = _controlled_collision_rids()
 	var result := PhysicsTestMotionResult3D.new()
 	if not PhysicsServer3D.body_test_motion(cabin.get_rid(), parameters, result):
 		_last_blockage = {}
 		return true
 	var collider: Variant = result.get_collider(0) if result.get_collision_count() > 0 else null
-	_last_blockage = {"collider": String(collider.name) if collider is Node else "UNKNOWN", "motion_dy_m": dy,
+	var shape_name:="UNKNOWN"
+	if collider is CollisionObject3D and result.get_collision_count()>0:
+		var owner:Node=collider.shape_owner_get_owner(collider.shape_find_owner(result.get_collider_shape(0)))
+		if owner!=null:shape_name=String(owner.name)
+	_last_blockage = {"collider": String(collider.name) if collider is Node else "UNKNOWN","shape_name":shape_name,"owned_static_enclosure_excluded":false, "motion_dy_m": dy,
 		"position": result.get_collision_point(0) if result.get_collision_count() > 0 else Vector3.ZERO,
 		"normal": result.get_collision_normal(0) if result.get_collision_count() > 0 else Vector3.ZERO}
 	return false
@@ -568,7 +661,7 @@ func report() -> Dictionary:
 		"current_floor_id": _at_floor, "target_floor_id": _target, "commanded_y_m": _motion_y, "velocity_y_mps": _velocity_y,
 		"gate_fraction": _gate_fraction, "landing_fractions": _landing_fraction.duplicate(true), "queue": _queue.duplicate(), "bound_floor_ids": _bindings.keys(),
 		"last_blockage": _last_blockage.duplicate(true),
-		"last_door_probe": _last_door_probe.duplicate(true),
+		"last_door_probe": _last_door_probe.duplicate(true),"receiving_stop_geometry":_stops.duplicate(true),"mixed_low_receiving_policy":_has_low_receivers,"cabin_internal_height_m":HEIGHT,"cabin_gate_height_m":DOOR_H,"cabin_gate_setback_m":_cabin_gate_setback,
 		"actor_pose_assignments": 0, "actor_reparents": 0, "private_asbuilt_verified": false, "source_world_or_whole_MBS_completed": false}
 
 func _exit_tree() -> void:

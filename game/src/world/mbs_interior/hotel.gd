@@ -71,6 +71,15 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D, stack: Node3
 		var descriptor: Dictionary = Cabins.inventory_descriptor(spec.tower, spec.wing, spec.kind, spec.get("initial_floor_id", String(spec.tower) + "-L1"))
 		var placement := _placement(spec.tower)
 		if not descriptor.get("valid", false) or not placement.ok: return {"built": false, "error": "Invalid source shaft descriptor or active source window"}
+		for stop:Dictionary in descriptor.descriptor.stops:
+			var planned:Dictionary=_stack.planned_floor_record(stop.floor_id) if _stack.has_method("planned_floor_record") else Inventory.floor_record(stop.floor_id)
+			if planned.is_empty() or not planned.get("geometry") is Dictionary:return {"built":false,"error":"Explicit planned receiving floor unavailable: "+String(stop.floor_id)}
+			var g:Dictionary=planned.geometry
+			stop["receiving_door_height_m"]=g.get("core_door_height_m",Cabins.DOOR_H)
+			stop["receiving_clear_height_m"]=g.get("clear_height_m",0.0)
+		var normalized:Dictionary=Cabins.validate_descriptor(descriptor.descriptor)
+		if not normalized.valid:return {"built":false,"error":"Planned stop dimensions rejected: "+String(normalized.get("error",""))}
+		descriptor.descriptor=normalized.descriptor
 		var key: String = descriptor.descriptor.shaft_id
 		if seen.has(key): return {"built": false, "error": "Duplicate shaft identity"}
 		seen[key] = true
@@ -242,7 +251,13 @@ func _before_floor_unload(id: String) -> bool:
 func _stair_readiness(lower: String, id: String) -> Dictionary:
 	var floor_state: Dictionary = _stack.ready_for_floor(id)
 	var inserted: bool = _stair_entries.has(lower) and _stair_entries[lower].get("registered", false)
-	return {"floor_id": id, "ready": bool(floor_state.ready) and (id == lower or inserted), "collision_generation": String(floor_state.collision_generation)}
+	var observed:Dictionary={"floor_id": id, "ready": bool(floor_state.ready) and (id == lower or inserted), "collision_generation": String(floor_state.collision_generation)}
+	var actual:Node3D=_stack.get_floor(id)
+	if is_instance_valid(actual) and actual.get("floor_record") is Dictionary:
+		var g:Dictionary=actual.floor_record.get("geometry",{})
+		observed["receiving_door_height_m"]=g.get("core_door_height_m",Cabins.DOOR_H)
+		observed["receiving_clear_height_m"]=g.get("clear_height_m",0.0)
+	return observed
 
 func _bind_stair_floor(id: String, floor_node: Node3D) -> void:
 	if not is_instance_valid(_stairs) or _stair_entries.has(id): return
@@ -256,7 +271,8 @@ func _bind_stair_floor(id: String, floor_node: Node3D) -> void:
 		if portal.kind == "stair" and portal.get("physical_flights", false): has_flight = true
 	if not has_flight: return
 	_stair_entries[id] = {"upper": upper, "registered": false, "region_id": ""}
-	var result: Dictionary = _stairs.bind_floor(floor_node, id, upper, func(target: String): return _stair_readiness(id, target))
+	var receiving:Dictionary=_stack.planned_floor_record(upper) if _stack.has_method("planned_floor_record") else Inventory.floor_record(upper)
+	var result: Dictionary = _stairs.bind_floor(floor_node, id, upper, func(target: String): return _stair_readiness(id, target),receiving)
 	if not result.get("bound", false):
 		_stair_entries.erase(id)
 		_last_errors["stair/" + id] = result
