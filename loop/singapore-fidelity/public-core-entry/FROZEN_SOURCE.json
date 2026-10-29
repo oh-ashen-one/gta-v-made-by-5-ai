@@ -1,11 +1,11 @@
 {
-  "created_utc": "2026-10-29T02:13:56.988606+00:00",
-  "phase": "SOURCE_FROZEN_FOR_ROOT_COMMIT_BEFORE_NATIVE_OUTSIDE_CORE_GATE",
+  "created_utc": "2026-10-29T02:23:04.542397+00:00",
+  "phase": "R2_QA_VARIABLE_SCOPE_FIX_FROZEN_FOR_ROOT_COMMIT",
   "source_hashes": {
     "game/src/world/mbs_interior/public_l1.gd": "3454e63c5ef5c3d5716a98808ab81cf0acc7e52f36b45cdf67697b29ab0bad4e",
     "game/src/world/mbs_interior/program_floor.gd": "f835eddb2be6b23cd90f7110a38d49b880cdcf12fe5e8fc7d516653e73ffdc8e",
     "game/src/world/mbs_interior/floor_stack.gd": "da75a3ccfd518f8541e5c4f0256283833119823599986ecbfe204897880fab1e",
-    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "309d93802fa4a49ecc922393e5b4309ea2e659183ab680592d07908ad9122e21",
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "78e74cc927df7790eb78dcefa12b9c64f2e85791ee1ef593b60544c158a24d70",
     "game/src/systems/fidelity_tests/mbs_public_core_entry_test.tscn": "13aa41323b8a2c235c37481de66d76d372cebdc6bc7d55365d9672d536a6eca0",
     "game/src/world/mbs_interior/site.gd": "a841d7bd0f80737f6d5574add878aa41b3ea1115921398cfeed5709c400536ab",
     "game/src/world/mbs_interior/hotel.gd": "6ef9bfec78183294b7baf93a1908c6de579965c24015d90dee94d71f421f95cc",
@@ -22,5 +22,10 @@
   "native_runtime_verified": false,
   "public_visual_fidelity_accepted": false,
   "full_building_completed": false,
-  "worker_engine_git_runs": 0
+  "worker_engine_git_runs": 0,
+  "predecessor_checkpoint": "3df27fd8a277ec1b697b5545540dcd19e67fb9a3",
+  "predecessor_parse_failure": [
+    "SCRIPT ERROR: Parse Error: There is already a variable named \"geometry\" declared in this scope.",
+    "ERROR: Failed to load script \"res://src/systems/fidelity_tests/mbs_public_core_entry_test.gd\" with error \"Parse error\"."
+  ]
 }

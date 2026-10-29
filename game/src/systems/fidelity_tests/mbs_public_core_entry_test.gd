@@ -69,14 +69,14 @@ func _opening_queries(loft: Node3D,connection: Dictionary,arrival: bool) -> bool
 	var to: Vector3=connection.target_corridor_local
 	if arrival:
 		from=threshold+Vector3(0,.004,.85);to=threshold+Vector3(0,.004,-.85)
-	for xoff: float in [0.0,-(float(connection.width_m)*.5-.45),float(connection.width_m)*.5-.45]:
-		if not check("actual full capsule clears intended opening "+String(connection.id)+"/"+str(xoff),capsule_clear(loft.to_global(from+Vector3(xoff,0,0)),loft.to_global(to+Vector3(xoff,0,0)))): return false
+	for aperture_offset: float in [0.0,-(float(connection.width_m)*.5-.45),float(connection.width_m)*.5-.45]:
+		if not check("actual full capsule clears intended opening "+String(connection.id)+"/"+str(aperture_offset),capsule_clear(loft.to_global(from+Vector3(aperture_offset,0,0)),loft.to_global(to+Vector3(aperture_offset,0,0)))): return false
 	for direction: float in [-1.0,1.0]:
-		var xoff: float=direction*(float(connection.width_m)*.5+1.0)
-		var a: Vector3=threshold+Vector3(xoff,0,-side*.85)
-		var b: Vector3=threshold+Vector3(xoff,0,side*.85)
+		var outside_offset: float=direction*(float(connection.width_m)*.5+1.0)
+		var a: Vector3=threshold+Vector3(outside_offset,0,-side*.85)
+		var b: Vector3=threshold+Vector3(outside_offset,0,side*.85)
 		if arrival:
-			a=threshold+Vector3(xoff,0,.85);b=threshold+Vector3(xoff,0,-.85)
+			a=threshold+Vector3(outside_offset,0,.85);b=threshold+Vector3(outside_offset,0,-.85)
 		check("outside-cut wall blocks actual capsule "+String(connection.id)+"/"+str(direction),not capsule_clear(loft.to_global(a),loft.to_global(b)))
 		check("outside-cut full-height glass remains above low guard "+String(connection.id)+"/"+str(direction),not ray(loft.to_global(a+Vector3.UP*1.70),loft.to_global(b+Vector3.UP*1.70)).is_empty())
 	return failures.is_empty()
@@ -105,9 +105,9 @@ func run() -> void:
 	if not check("actual pinned Singapore domain loads",domain.configure("res://data/geography/domain/osm-2026-10-27","82e7c84c55f8f03ca9e646b2fa6f66e8921f23f072e961c533646ab414d12834",_digest(raw))): finish();return
 	context=Context.new()
 	var profile: Dictionary={"profile_id":"production-player-upright","radius_m":.36,"height_m":1.75,"center_offset_xyz":[0.0,.9,0.0],"min_support_normal_y":cos(deg_to_rad(52.0)),"max_support_drop_m":.35,"max_support_rise_m":.1,"max_support_lateral_m":.4}
-	var geometry:=_digest(FileAccess.get_file_as_string("res://src/world/mbs_interior/public_l1.gd")+FileAccess.get_file_as_string("res://src/world/mbs_interior/program_floor.gd")+FileAccess.get_file_as_string("res://src/world/mbs_interior/floor_stack.gd")+FileAccess.get_file_as_string("res://src/world/mbs_interior/hotel.gd")+FileAccess.get_file_as_string(Inventory.PATH))
-	if not check("one live context binds public/perimeter/transport",context.configure(frame,geometry,_digest("Explicit reconstructed L1=0; no surveyed elevation claim"),profile,get_world_3d())): finish();return
-	for descriptor: Dictionary in domain.provider_descriptors(): check("actual domain provider "+String(descriptor.kind),context.register_provider(descriptor.kind,descriptor.provider_id,descriptor.source_reference))
+	var geometry_manifest_hash: String=_digest(FileAccess.get_file_as_string("res://src/world/mbs_interior/public_l1.gd")+FileAccess.get_file_as_string("res://src/world/mbs_interior/program_floor.gd")+FileAccess.get_file_as_string("res://src/world/mbs_interior/floor_stack.gd")+FileAccess.get_file_as_string("res://src/world/mbs_interior/hotel.gd")+FileAccess.get_file_as_string(Inventory.PATH))
+	if not check("one live context binds public/perimeter/transport",context.configure(frame,geometry_manifest_hash,_digest("Explicit reconstructed L1=0; no surveyed elevation claim"),profile,get_world_3d())): finish();return
+	for provider_descriptor: Dictionary in domain.provider_descriptors(): check("actual domain provider "+String(provider_descriptor.kind),context.register_provider(provider_descriptor.kind,provider_descriptor.provider_id,provider_descriptor.source_reference))
 	check("native physics provider explicit",context.register_provider("physics","source-native-neighborhood/v1","Actual source public/core/arrival/floor/transport commitments"))
 	runtime=Runtime.new();add_child(runtime)
 	if not check("runtime retains actual shared domain and common frame",runtime.configure(frame,context,domain.observe)): finish();return
@@ -128,17 +128,17 @@ func run() -> void:
 		if not check("source L2/full neighbours cold commit "+tower,ready.ready,str(ready)): finish();return
 		ready=await stack.ensure_floor(tower+"-L1")
 		if not check("actual source L1/perimeter/upper/lower neighbours commit "+tower,ready.ready,str(ready)): finish();return
-		var floor: Node3D=stack.get_floor(tower+"-L1")
-		check("all named L1 programs remain furnished "+tower,floor.report().program_spaces_built==Inventory.floor_record(tower+"-L1").program_spaces.size() and not floor.rooms.is_empty())
-		check("paired physical guard aperture forwarded "+tower,not floor.floor_record.geometry.get("atrium_core_openings",[]).is_empty())
+		var l1_floor: Node3D=stack.get_floor(tower+"-L1")
+		check("all named L1 programs remain furnished "+tower,l1_floor.report().program_spaces_built==Inventory.floor_record(tower+"-L1").program_spaces.size() and not l1_floor.rooms.is_empty())
+		check("paired physical guard aperture forwarded "+tower,not l1_floor.floor_record.geometry.get("atrium_core_openings",[]).is_empty())
 	var arrival: Dictionary=report.arrival_corridor
 	var t1: Node3D=stack.get_floor("T1-L1")
 	var facade_expected: Vector3=t1.to_global(Vector3(0,0,float(t1.floor_record.geometry.cross_m)*.5))
 	check("arrival facade adapter matches actual source Program outer wall",facade_expected.distance_to(loft.to_global(arrival.outer_facade_local))<.002)
 	for connection: Dictionary in report.core_connections:
-		var floor: Node3D=stack.get_floor(connection.target_floor_id)
-		var actual_local: Vector3=floor.to_local(loft.to_global(connection.target_corridor_local))
-		var expected_z: float=float(floor.floor_record.geometry.void_min_z_m)-float(floor.floor_record.geometry.corridor_width_m)*.5
+		var join_floor: Node3D=stack.get_floor(connection.target_floor_id)
+		var actual_local: Vector3=join_floor.to_local(loft.to_global(connection.target_corridor_local))
+		var expected_z: float=float(join_floor.floor_record.geometry.void_min_z_m)-float(join_floor.floor_record.geometry.corridor_width_m)*.5
 		var canonical: Dictionary=frame.to_source_current_live(loft.to_global(connection.target_corridor_local))
 		var error:=0.0
 		for axis in 3: error=maxf(error,absf(float(canonical.source_xyz[axis])-float(connection.target_source_xyz[axis])))
@@ -197,17 +197,17 @@ func run() -> void:
 		if not await walk_public_to(stair.lower,"east"): finish();return
 		# Stop before the closed fire door on the REAL upper landing, matching
 		# its existing constrained native fixture; no gate/collider is bypassed.
-		for index in stair.walk_route.size()-1:
-			if not await walk_to(candidate.to_global(stair.walk_route[index]),.22): finish();return
+		for ascending_index in stair.walk_route.size()-1:
+			if not await walk_to(candidate.to_global(stair.walk_route[ascending_index]),.22): finish();return
 		var stairs: Node3D=hotel.get("_stairs")
 		var door_id: String=String(connection.target_floor_id)+"-east-stair-fire-door"
 		var door: Node3D=stairs.doors.get(door_id)
 		if not check("actual interlocked source stair door present "+String(connection.tower),door!=null): finish();return
-		var descriptor: Dictionary={}
-		for geometry: Dictionary in stairs.geometry_descriptor(connection.target_floor_id).gates:
-			if geometry.wing=="east": descriptor=geometry;break
-		if not check("exact east stair geometry descriptor present "+String(connection.tower),not descriptor.is_empty()): finish();return
-		var approach:=Vector3(stair.upper.x,float(candidate.floor_record.geometry.storey_height_m),float(descriptor.gate_plane_z_local_m)-.62)
+		var stair_descriptor: Dictionary={}
+		for gate_geometry: Dictionary in stairs.geometry_descriptor(connection.target_floor_id).gates:
+			if gate_geometry.wing=="east": stair_descriptor=gate_geometry;break
+		if not check("exact east stair geometry descriptor present "+String(connection.tower),not stair_descriptor.is_empty()): finish();return
+		var approach:=Vector3(stair.upper.x,float(candidate.floor_record.geometry.storey_height_m),float(stair_descriptor.gate_plane_z_local_m)-.62)
 		if not await walk_to(candidate.to_global(approach),.12): finish();return
 		var floor_node: Node3D=candidate;candidate=stairs
 		if not await native_e(door_id): finish();return
@@ -215,8 +215,8 @@ func run() -> void:
 		_native_core_actions.append({"tower":connection.tower,"kind":"stair_fire_door","id":door_id,"source_position":frame.to_source_current_live(player.global_position).source_xyz,"actual_E":true})
 		if not await walk_to(candidate.to_global(stair.upper),.18): finish();return
 		if not _support_gate("actual upper receiving floor "+String(connection.tower)): finish();return
-		for index in range(stair.walk_route.size()-1,-1,-1):
-			if not await walk_to(candidate.to_global(stair.walk_route[index]),.22): finish();return
+		for descending_index in range(stair.walk_route.size()-1,-1,-1):
+			if not await walk_to(candidate.to_global(stair.walk_route[descending_index]),.22): finish();return
 		if not await walk_public_to(candidate.to_local(loft.to_global(connection.target_corridor_local)),"east"): finish();return
 		var reverse: Array=connection.local_route.duplicate();reverse.reverse()
 		if not await _walk_public_route(loft,reverse,"return from "+String(connection.id)): finish();return

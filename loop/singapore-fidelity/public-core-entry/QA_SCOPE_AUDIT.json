@@ -1,0 +1,30 @@
+{
+  "created_utc": "2026-10-29T02:23:04.492536+00:00",
+  "method": "LEXICAL_INDENTATION_NAME_AND_HELPER_PRESENCE_SCAN_NOT_GODOT_COMPILER",
+  "source_sha256": "78e74cc927df7790eb78dcefa12b9c64f2e85791ee1ef593b60544c158a24d70",
+  "functions": {
+    "_ready": 26,
+    "check": 35,
+    "_digest": 41,
+    "_transaction_checks": 45,
+    "_opening_queries": 65,
+    "_support_gate": 84,
+    "_walk_public_route": 90,
+    "run": 97,
+    "still": 229,
+    "finish": 238
+  },
+  "scope_findings": [],
+  "required_inherited_helpers_present": {
+    "frames": true,
+    "prepare_player": true,
+    "capsule_clear": true,
+    "ray": true,
+    "walk_public_to": true,
+    "walk_to": true,
+    "native_e": true,
+    "_light_fixture": true
+  },
+  "engine_parse_verified": false,
+  "native_runtime_verified": false
+}

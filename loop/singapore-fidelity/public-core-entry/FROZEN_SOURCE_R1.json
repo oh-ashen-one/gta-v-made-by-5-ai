@@ -1,0 +1,26 @@
+{
+  "created_utc": "2026-10-29T02:13:56.988606+00:00",
+  "phase": "SOURCE_FROZEN_FOR_ROOT_COMMIT_BEFORE_NATIVE_OUTSIDE_CORE_GATE",
+  "source_hashes": {
+    "game/src/world/mbs_interior/public_l1.gd": "3454e63c5ef5c3d5716a98808ab81cf0acc7e52f36b45cdf67697b29ab0bad4e",
+    "game/src/world/mbs_interior/program_floor.gd": "f835eddb2be6b23cd90f7110a38d49b880cdcf12fe5e8fc7d516653e73ffdc8e",
+    "game/src/world/mbs_interior/floor_stack.gd": "da75a3ccfd518f8541e5c4f0256283833119823599986ecbfe204897880fab1e",
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "309d93802fa4a49ecc922393e5b4309ea2e659183ab680592d07908ad9122e21",
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.tscn": "13aa41323b8a2c235c37481de66d76d372cebdc6bc7d55365d9672d536a6eca0",
+    "game/src/world/mbs_interior/site.gd": "a841d7bd0f80737f6d5574add878aa41b3ea1115921398cfeed5709c400536ab",
+    "game/src/world/mbs_interior/hotel.gd": "6ef9bfec78183294b7baf93a1908c6de579965c24015d90dee94d71f421f95cc",
+    "game/src/world/mbs_interior/stair_gates.gd": "bf7a5ca1156c8ee6d4d1cee6266685500a09d56cbb5134f3eeeabb2be78e38a5",
+    "game/src/world/mbs_interior/guest_floor.gd": "46d1e71ff6870dab9efaf1c6f04ecc643d5ff761b556391aa61ef9dfebc37849",
+    "game/src/world/geography/source_runtime.gd": "7e70c9062aba58545c7cf3f635181ee39a80a96082e117dc269de586e18e94b3",
+    "game/data/mbs-interior/inventory.json": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819"
+  },
+  "protected_stack_apis": {
+    "release_unload_guard": "1b06877d1ee30243914918845fa04b9b55e5d2011df1879e71917055b9f883fa",
+    "_is_stable_floor_structure": "8c31676a09152a3dfaba08d7e9df1ec7501eefe57cac887281bd421a905d47ec"
+  },
+  "engine_compile_verified": false,
+  "native_runtime_verified": false,
+  "public_visual_fidelity_accepted": false,
+  "full_building_completed": false,
+  "worker_engine_git_runs": 0
+}

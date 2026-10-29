@@ -1,0 +1,40 @@
+{
+  "observed_utc": "2026-10-29T02:23:04.541203+00:00",
+  "checkpoint": "3df27fd8a277ec1b697b5545540dcd19e67fb9a3",
+  "started_utc": "2026-10-29T02:15:00.657342+00:00",
+  "finished_utc": "2026-10-29T02:17:55.749220+00:00",
+  "engine_exit_code": -15,
+  "supervisor_exit_code": -15,
+  "timeout": false,
+  "child_reaped": true,
+  "fatal_errors": [
+    "SCRIPT ERROR: Parse Error: There is already a variable named \"geometry\" declared in this scope.",
+    "ERROR: Failed to load script \"res://src/systems/fidelity_tests/mbs_public_core_entry_test.gd\" with error \"Parse error\"."
+  ],
+  "checks_executed": 0,
+  "gameplay_exercised": false,
+  "cause": "Duplicate local geometry identifier in the new QA run function and its nested stair descriptor loop. Root stopped/reaped the scriptless engine after parse failure.",
+  "fix_scope": "QA local-variable names only; production Public/Program/Stack bytes unchanged",
+  "r2_parse_verified": false,
+  "r2_runtime_verified": false,
+  "evidence": {
+    "run.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r1/run.log",
+      "sha256": "e7be732f584d7c0c50e38900146c055961eccd3eb50c95b196b5402bf9380f8b"
+    },
+    "engine.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r1/engine.log",
+      "sha256": "f1c94389d9a83c41c1e04f0b994f7b126dc3d464a1ea866ae1df922d2f324b93"
+    },
+    "run.log.meta.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r1/run.log.meta.json",
+      "sha256": "5d52d349e9ba4455f85b544e01bb0d5a66f4812a34103258121d831f313a2f89"
+    }
+  },
+  "r1_source_hashes": {
+    "game/src/world/mbs_interior/public_l1.gd": "3454e63c5ef5c3d5716a98808ab81cf0acc7e52f36b45cdf67697b29ab0bad4e",
+    "game/src/world/mbs_interior/program_floor.gd": "f835eddb2be6b23cd90f7110a38d49b880cdcf12fe5e8fc7d516653e73ffdc8e",
+    "game/src/world/mbs_interior/floor_stack.gd": "da75a3ccfd518f8541e5c4f0256283833119823599986ecbfe204897880fab1e",
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "309d93802fa4a49ecc922393e5b4309ea2e659183ab680592d07908ad9122e21"
+  }
+}
