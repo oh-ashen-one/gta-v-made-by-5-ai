@@ -377,7 +377,98 @@ def _supervise(args):
  if args.output_dir.is_dir():(args.output_dir/('supervisor-'+str(os.getpid())+'.json')).write_bytes(canonical(receipt))
  print(json.dumps(receipt),flush=True);return 0 if receipt['status']=='complete' else 1
 
+def repair_winding_dataset(source,target,expected_identity):
+ """Stream only index orientation into a NEW artifact; preserve R1 evidence."""
+ if target.exists():raise CityError('Winding repair refuses an existing target')
+ iraw=(source/'identity.json').read_bytes();identity=json.loads(iraw)
+ if sha(iraw)!=expected_identity or identity.get('schema')!=IDENTITY:raise CityError('Parent candidate identity mismatch')
+ mraw=(source/'manifest.json').read_bytes();manifest=json.loads(mraw)
+ if sha(mraw)!=identity['manifest']['sha256'] or len(mraw)!=identity['manifest']['bytes']:raise CityError('Parent manifest integrity mismatch')
+ target.mkdir(parents=True);(target/'meshes').mkdir();(target/'catalogs').mkdir()
+ checked=0;flipped=0
+ for item in manifest['catalogs']:
+  path=source/item['file']
+  if path.is_symlink() or path.stat().st_size!=item['bytes'] or digest(path)!=item['sha256']:raise CityError('Parent catalog integrity mismatch')
+  dest=target/item['file']
+  try:os.link(path,dest)
+  except OSError:
+   with path.open('rb') as inp,dest.open('xb') as out:
+    for block in iter(lambda:inp.read(1024*1024),b''):out.write(block)
+ for item in manifest['meshes']:
+  meta_path=source/item['file'];blob_path=source/item['binary_file']
+  meta_raw=meta_path.read_bytes();original=blob_path.read_bytes()
+  if sha(meta_raw)!=item['sha256'] or sha(original)!=item['binary_sha256'] or len(original)!=item['binary_bytes']:raise CityError('Parent mesh integrity mismatch')
+  meta=json.loads(meta_raw);blob=bytearray(original)
+  for feature in meta['features']:
+   for surface in feature['surfaces']:
+    vc=surface['vertex_count'];ic=surface['index_count'];vo=surface['vertex_offset_bytes'];io=surface['index_offset_bytes']
+    if io!=vo+vc*32 or io+ic*4>len(blob) or ic%3:raise CityError('Parent buffer bounds invalid')
+    if sha(original[vo:io+ic*4])!=surface['topology_sha256']:raise CityError('Parent surface topology mismatch')
+    vertices=np.ndarray((vc,8),dtype='<f4',buffer=blob,offset=vo)
+    indices=np.ndarray((ic//3,3),dtype='<u4',buffer=blob,offset=io)
+    if indices.size and int(indices.max())>=vc:raise CityError('Parent index outside vertices')
+    for start in range(0,len(indices),65536):
+     block=indices[start:start+65536];a=vertices[block[:,0],:3].astype(np.float64);b=vertices[block[:,1],:3].astype(np.float64);c=vertices[block[:,2],:3].astype(np.float64)
+     normals=vertices[block[:,0],3:6].astype(np.float64);dots=np.einsum('ij,ij->i',np.cross(b-a,c-a),normals)
+     if not np.isfinite(dots).all() or np.any(dots==0):raise CityError('Parent face degenerate/inconsistent; no invented repair')
+     flip=dots>0
+     old=block[flip,1].copy();block[flip,1]=block[flip,2];block[flip,2]=old
+     checked+=len(block);flipped+=int(np.count_nonzero(flip))
+     if not np.all(np.where(flip,-dots,dots)<0):raise CityError('Godot clockwise normalization failed')
+    # Explicitly prove the entire vertex/normal/UV bytes stayed unchanged.
+    if bytes(blob[vo:io])!=original[vo:io]:raise CityError('Repair changed source mesh vertex attributes')
+    surface['topology_sha256']=sha(bytes(blob[vo:io+ic*4]))
+  data=bytes(blob);meta['binary']['sha256']=sha(data)
+  raw=canonical(meta);exclusive_or_same(target/item['binary_file'],data);exclusive_or_same(target/item['file'],raw)
+  item['sha256']=sha(raw);item['bytes']=len(raw);item['binary_sha256']=sha(data)
+ manifest['mesh_format']['front_face_winding']='godot_clockwise_cross_opposite_outward_normal'
+ manifest['bindings']['parent_geometry_identity_sha256']=sha(iraw)
+ manifest['bindings']['parent_geometry_manifest_sha256']=sha(mraw)
+ manifest['bindings']['winding_repair_source_sha256']=digest(__file__)
+ manifest['winding_repair']={'method':'Godot clockwise index correction only; no culling/backface workaround',
+  'triangles_checked':checked,'triangles_index_order_changed':flipped,'vertex_normal_uv_bytes_unchanged':True,
+  'catalog_source_facts_height_and_exclusion_policies_unchanged':True,'root_native_fixture_approval_required_before_large_run':True}
+ raw=canonical(manifest);exclusive_or_same(target/'manifest.json',raw)
+ identity['manifest']={'file':'manifest.json','bytes':len(raw),'sha256':sha(raw)}
+ iraw=canonical(identity);exclusive_or_same(target/'identity.json',iraw)
+ return {'status':'complete','identity_sha256':sha(iraw),'manifest_sha256':sha(raw),'triangles_checked':checked,'flipped':flipped,
+  'source_metadata_and_vertex_attributes_unchanged':True,'native_actual_candidate_status':'PENDING_ROOT_VERIFICATION'}
+
+
+def supervise_winding_repair(source,target,expected):
+ if target.exists():raise CityError('Repair target already exists; no overwrite/takeover')
+ started=time.monotonic();peak=0;reason=None
+ proc=subprocess.Popen([sys.executable,str(Path(__file__).resolve()),'--repair-winding-worker',str(source),str(target),expected],stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True)
+ try:
+  while proc.poll() is None:
+   text=subprocess.run(['/bin/ps','-o','rss=','-p',str(proc.pid)],capture_output=True,text=True).stdout.strip()
+   if text:peak=max(peak,int(text)*1024)
+   if peak>2048*1024*1024:reason='Repair exceeded2GiB supervised RSS';break
+   if time.monotonic()-started>1800:reason='Repair exceeded bounded wall budget';break
+   time.sleep(1)
+ finally:
+  if proc.poll() is None:
+   proc.terminate()
+   try:proc.wait(timeout=30)
+   except subprocess.TimeoutExpired:proc.kill();proc.wait()
+ output=proc.stdout.read() if proc.stdout else ''
+ receipt={'status':'complete' if proc.returncode==0 and reason is None else 'incomplete','reason':reason,'worker_exit':proc.returncode,
+  'sampled_peak_rss_bytes':peak,'wall_seconds':round(time.monotonic()-started,3),'limits':{'rss_mib':2048,'cpu_seconds':600,'wall_seconds':1800}}
+ try:receipt['worker']=json.loads(output)
+ except Exception:receipt['worker_output_status']='No parseable bounded receipt'
+ if target.is_dir():exclusive_or_same(target/'winding-repair-receipt.json',canonical(receipt))
+ return receipt
+
+
 def main():
+ if len(sys.argv)==5 and sys.argv[1] in ('--repair-winding','--repair-winding-worker'):
+  try:
+   if sys.argv[1]=='--repair-winding-worker':
+    resource.setrlimit(resource.RLIMIT_CPU,(600,630))
+    result=repair_winding_dataset(Path(sys.argv[2]),Path(sys.argv[3]),sys.argv[4])
+   else:result=supervise_winding_repair(Path(sys.argv[2]),Path(sys.argv[3]),sys.argv[4])
+   print(json.dumps(result));return 0 if result.get('status')=='complete' else 1
+  except Exception as e:print(json.dumps({'status':'failed','reason':str(e) if isinstance(e,CityError) else 'Bounded winding repair failure'}));return 2
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--snapshot',type=Path,required=True);p.add_argument('--expected-snapshot-sha256',required=True)
  p.add_argument('--terrain',type=Path,required=True);p.add_argument('--expected-dem-identity',required=True);p.add_argument('--pbf',type=Path,required=True);p.add_argument('--output-dir',type=Path,required=True)
  p.add_argument('--world-y-mode',choices=[YMODE],required=True);p.add_argument('--world-y-offset',type=float,required=True);p.add_argument('--unknown-height',type=float,required=True);p.add_argument('--story-height',type=float,required=True)

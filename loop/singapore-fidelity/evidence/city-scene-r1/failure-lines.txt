@@ -1,0 +1,4 @@
+SCRIPT ERROR: Parse Error: Could not find type "SingaporeSourceFrame" in the current scope.
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+[city-tiles] FAIL bounded native city tile QA 75-second watchdog

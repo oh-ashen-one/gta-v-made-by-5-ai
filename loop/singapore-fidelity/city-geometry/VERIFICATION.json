@@ -1,0 +1,89 @@
+{
+  "status": "REPAIRED_DATA_FROZEN_PENDING_ROOT_ACTUAL_NATIVE_SAMPLE",
+  "identity_sha256": "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963",
+  "manifest_sha256": "654138afba82972c2cd27dee9ed3d1f2a3a1d86d100c8d68b1fc18f1d64945bb",
+  "parent_rejected_identity_sha256": "2871b559368ecf5f999d84f82a008788eedfa4d8a03b2cff861d2ffe2a5e95ab",
+  "source_snapshot_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+  "dem_identity_sha256": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841",
+  "native_fixture_v1": "REJECTED26checks3failures",
+  "native_fixture_v2": {
+    "checks": 26,
+    "failures": 0,
+    "parent_verified_clean_exit0_reaped": true,
+    "report_sha256": "4dce9b283d823cd44eba8885ee9209f211f50a92a4da0a622dca437e1efa9bbe"
+  },
+  "current_native_qa_extra_guards": "Three added positive exterior/courtyard/underside normal assertions await rootR3; original26 unchanged",
+  "actual_country_native_status": "PENDING_ROOT_RUN",
+  "python_tests": {
+    "checks": 11,
+    "failed": 0
+  },
+  "independent_repair_invariants": {
+    "all_Godot_clockwise_dot_outward_negative": true,
+    "all_indices_exactly_opposite_R1_order": true,
+    "catalog_pages_unchanged": 906,
+    "height_exclusion_road_source_policies_unchanged": true,
+    "mesh_tiles_checked": 808,
+    "new_identity_sha256": "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963",
+    "new_manifest_sha256": "654138afba82972c2cd27dee9ed3d1f2a3a1d86d100c8d68b1fc18f1d64945bb",
+    "only_allowed_mesh_metadata_hash_fields_changed": true,
+    "parent_identity_sha256": "2871b559368ecf5f999d84f82a008788eedfa4d8a03b2cff861d2ffe2a5e95ab",
+    "status": "PASS",
+    "surfaces_checked": 433950,
+    "triangles_checked": 5937468,
+    "vertex_normal_uv_bytes_unchanged": 311902272
+  },
+  "country_counts": {
+    "building": 135415,
+    "excluded_root_special_complex": 119,
+    "game_extrusion_render_and_collision_candidate": 135100,
+    "game_story_height_from_source_levels_reconstruction": 41548,
+    "game_unknown_height_fallback_reconstruction": 89711,
+    "road": 257845,
+    "road_record": 257845,
+    "source_height_tag": 4156,
+    "unresolved_height_order_or_range": 196,
+    "unresolved_water_or_other_geometry_no_support_generated": 5193,
+    "water": 1549,
+    "waterway": 3644
+  },
+  "road_source_audit": {
+    "found": 257845,
+    "targets": 257845,
+    "vehicle_graph_or_mesh": false
+  },
+  "root_special_exclusions": 119,
+  "world_y_policy": {
+    "architecture_datum_alignment_verified": false,
+    "mode": "EGM96_DEM_game_world_reference_not_current_survey",
+    "offset_m": 0.0
+  },
+  "repair_resources": {
+    "limits": {
+      "cpu_seconds": 600,
+      "rss_mib": 2048,
+      "wall_seconds": 1800
+    },
+    "reason": null,
+    "sampled_peak_rss_bytes": 111394816,
+    "status": "complete",
+    "wall_seconds": 639.566,
+    "worker": {
+      "flipped": 5937468,
+      "identity_sha256": "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963",
+      "manifest_sha256": "654138afba82972c2cd27dee9ed3d1f2a3a1d86d100c8d68b1fc18f1d64945bb",
+      "native_actual_candidate_status": "PENDING_ROOT_VERIFICATION",
+      "source_metadata_and_vertex_attributes_unchanged": true,
+      "status": "complete",
+      "triangles_checked": 5937468
+    },
+    "worker_exit": 0
+  },
+  "storage": "Large candidateR2 private/local; Gitbacked source/reproduction/smallfixtures/fullmanifest+identity+provenance only",
+  "source_compiler_sha256": "680b04e3b4a000021ad241c5191a7688b0598d91c7ab4e8be1818dc7ddcaee4e",
+  "source_provider_sha256": "4bfe966d3a9b430edd311dec60c40677abfdba631adb283888af145b8fd25ea6",
+  "source_python_tests_sha256": "a1c7ba1c63a5a06dab0d3dee5c8343e98d4e52a01b9bd0bb91c03ecce261e0de",
+  "source_native_qa_sha256": "1cfe445440909bad36e3a5203f1dd92a4435036e581765993a54b1df5566e724",
+  "verifier_sha256": "3f3e332892d3d1f0aa7d8624fca5f983cdae196db8e3bd4a483141fcf31a324e",
+  "full_city_gameplay_material_source_world_root_integration_complete": false
+}

@@ -1,0 +1,8 @@
+{
+  "checks": 3,
+  "failures": [
+    "bounded native city tile QA"
+  ],
+  "metrics": {},
+  "scope": "ActualgeneratedArrayMesh/trimesh nativefixture/support/holes/seams and optional boundednationaltile; notfullcitygame/visual/material/physicsresidency acceptance"
+}

@@ -1,0 +1,41 @@
+{
+	"checks": 26,
+	"failures": [
+		"generated courtyardroof has actual native support",
+		"spanningroof supports across canonical tileedge",
+		"actualcapsule settles oncompiledroof"
+	],
+	"metrics": {
+		"actual_country_status": "NOT_RUN; explicit trusted --city-identity required",
+		"fixture_provider": {
+			"bindings": {
+				"dem_identity": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+				"snapshot_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+			},
+			"catalog_page_count": 1,
+			"configured": true,
+			"counts": {
+				"SYNTHETIC_NOT_NATIONAL": 2.0
+			},
+			"exclusions": [],
+			"identity_sha256": "055bc31a84c3d919907fce3020c1594e377b639f90dd1981b54f9beb166ba97e",
+			"manifest_sha256": "1316076008a7c2d95b167d07c898f2e2dc8bbc22c5ab02e5924fd3c8392227e7",
+			"mesh_tile_count": 2,
+			"scene_or_physics_committed": false,
+			"stats": {
+				"cache_hits": 2,
+				"catalog_loads": 1,
+				"evictions": 2,
+				"file_reads": 8,
+				"max_cached_mesh_tiles": 1,
+				"mesh_loads": 3
+			},
+			"world_y_policy": {
+				"architecture_datum_alignment_verified": false,
+				"mode": "EGM96_DEM_game_world_reference_not_current_survey",
+				"offset_m": 0.0
+			}
+		}
+	},
+	"scope": "ActualgeneratedArrayMesh/trimesh nativefixture/support/holes/seams and optional boundednationaltile; notfullcitygame/visual/material/physicsresidency acceptance"
+}

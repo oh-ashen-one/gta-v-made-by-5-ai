@@ -347,5 +347,6 @@
     "cpu_seconds": 656.949,
     "peak_rss_bytes": 426590208,
     "wall_seconds": 1738.877
-  }
+  },
+  "native_status": "REJECTED_R1_WINDING; data hashes/counts are historical, not physics/visual approval"
 }

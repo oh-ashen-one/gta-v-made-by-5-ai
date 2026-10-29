@@ -5,7 +5,7 @@ import numpy as np
 import osmium
 from shapely.geometry import Polygon,box,Point
 from compile_city import (CityError,height_policy,building_fragments,_db,_road_record,RoadCollector,
- _mesh_blob,exclusive_or_same,TerrainGrid,sha,YMODE,canonical,SCHEMA,IDENTITY,FRAME)
+ _mesh_blob,exclusive_or_same,TerrainGrid,sha,YMODE,canonical,SCHEMA,IDENTITY,FRAME,repair_winding_dataset)
 
 ROOT=Path(__file__).resolve().parents[3]
 def feature(**values):return {'id':'way/1','kind':'building','tags':{},'height_m':None,'height_status':'unknown',**values}
@@ -105,6 +105,23 @@ class CityGeometryTests(unittest.TestCase):
       begin=surface['vertex_offset_bytes'];end=surface['index_offset_bytes']+surface['index_count']*4
       self.assertEqual(sha(raw[begin:end]),surface['topology_sha256'])
    with self.assertRaises(CityError):write_native_fixture(out)
+
+ def test_streaming_winding_repair_matches_fresh_fixed_fixture_without_geometry_change(self):
+  source=ROOT/'game/data/geography/compiled-country/osm-2026-10-27/qa-fixture-v1'
+  fresh=ROOT/'game/data/geography/compiled-country/osm-2026-10-27/qa-fixture-v2'
+  before=sha((source/'meshes/80_80.mesh').read_bytes())
+  with tempfile.TemporaryDirectory() as t:
+   out=Path(t)/'repaired'
+   r=repair_winding_dataset(source,out,'055bc31a84c3d919907fce3020c1594e377b639f90dd1981b54f9beb166ba97e')
+   self.assertGreater(r['flipped'],0)
+   for key in ('80_80','81_80'):
+    self.assertEqual((out/('meshes/'+key+'.mesh')).read_bytes(),(fresh/('meshes/'+key+'.mesh')).read_bytes())
+   self.assertEqual((out/'catalogs/80_80.json').read_bytes(),(source/'catalogs/80_80.json').read_bytes())
+   self.assertEqual(sha((source/'meshes/80_80.mesh').read_bytes()),before)
+   manifest=json.loads((out/'manifest.json').read_bytes())
+   self.assertEqual(manifest['mesh_format']['front_face_winding'],'godot_clockwise_cross_opposite_outward_normal')
+   self.assertTrue(manifest['winding_repair']['vertex_normal_uv_bytes_unchanged'])
+   with self.assertRaises(CityError):repair_winding_dataset(source,out,'0'*64)
 
  def test_actual_dem_is_separate_explicit_base_input(self):
   d=ROOT/'game/data/geography/terrain/mapzen-skadi-2026-10-28'

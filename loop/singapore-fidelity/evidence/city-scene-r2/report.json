@@ -1,0 +1,24 @@
+{
+  "checks": 11,
+  "failures": [],
+  "metrics": {
+    "scene_receipt": {
+      "anchor_source_xyz": [
+        81000.0,
+        0.0,
+        80000.0
+      ],
+      "feature_count": 1,
+      "native_collision_committed": true,
+      "origin_revision": 0,
+      "source_geometry_identity": "4e8dcc308c104905c1d2b8c77ee6a37a6f6140d04da2ca9c9bd5ae10186dccc8",
+      "source_runtime_residency_registered": false,
+      "surfaces": 3,
+      "tile_key": "81_80",
+      "triangles": 10,
+      "whole_city_or_visual_acceptance": false
+    },
+    "scope": "Production scene installer/native fixture only; no city material fidelity, terrain, actors, world streaming or full game acceptance."
+  },
+  "scope": "ActualgeneratedArrayMesh/trimesh nativefixture/support/holes/seams and optional boundednationaltile; notfullcitygame/visual/material/physicsresidency acceptance"
+}

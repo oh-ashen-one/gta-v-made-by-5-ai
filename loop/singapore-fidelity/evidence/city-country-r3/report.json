@@ -1,0 +1,1412 @@
+{
+  "checks": 34,
+  "failures": [],
+  "metrics": {
+    "actual_country_status": "Actualboundedtile source geometry instantiated; not normalbootstrap or visualacceptance",
+    "actual_provider": {
+      "bindings": {
+        "country_sha": "c25cce8de57f280b68bd1436deedc3eaa3eb8bebf50ec334f5d9dbfd826b9c45",
+        "dem_identity": "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e0097347841",
+        "parent_geometry_identity_sha256": "2871b559368ecf5f999d84f82a008788eedfa4d8a03b2cff861d2ffe2a5e95ab",
+        "parent_geometry_manifest_sha256": "0e68517ee60d29a38be46b0c7918e7271db89ce05aec703c3fcafd68b9b53683",
+        "skip_envelopes": [
+          [
+            151.124,
+            -1100.2107,
+            636.9596,
+            -653.2214
+          ]
+        ],
+        "skip_ids": [
+          "relation/2298319",
+          "way/116801004",
+          "way/172307471",
+          "way/172307472"
+        ],
+        "snapshot_sha": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+        "source_compiler_sha256": "9f23616fe64de138b9b6a8b152fd2213c4f9bef108f0cd2e286276ff01b9d202",
+        "story_height": 3.2,
+        "unknown_height": 9.6,
+        "verified_compiler_sha256": "6fe00cbbb5ee339f34c8824c408f3cec2d035674c4020dd5075f47da0bbad942",
+        "winding_repair_source_sha256": "680b04e3b4a000021ad241c5191a7688b0598d91c7ab4e8be1818dc7ddcaee4e",
+        "ymode": "EGM96_DEM_game_world_reference_not_current_survey",
+        "yoffset": 0.0
+      },
+      "catalog_page_count": 906,
+      "configured": true,
+      "counts": {
+        "building": 135415.0,
+        "excluded_root_special_complex": 119.0,
+        "game_extrusion_render_and_collision_candidate": 135100.0,
+        "game_story_height_from_source_levels_reconstruction": 41548.0,
+        "game_unknown_height_fallback_reconstruction": 89711.0,
+        "road": 257845.0,
+        "road_record": 257845.0,
+        "source_height_tag": 4156.0,
+        "unresolved_height_order_or_range": 196.0,
+        "unresolved_water_or_other_geometry_no_support_generated": 5193.0,
+        "water": 1549.0,
+        "waterway": 3644.0
+      },
+      "exclusions": [
+        {
+          "feature_key": "building|way/116801004",
+          "owner": "0_-1",
+          "reason": "explicit_source_id",
+          "source_bounds_xz": [
+            504.4989,
+            -1027.9958,
+            581.8681,
+            -951.7166
+          ]
+        },
+        {
+          "feature_key": "building|way/172013197",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            241.7086,
+            -831.7968,
+            298.9421,
+            -790.0958
+          ]
+        },
+        {
+          "feature_key": "building|way/172014438",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            195.8403,
+            -1036.9292,
+            361.625,
+            -908.9778
+          ]
+        },
+        {
+          "feature_key": "building|way/172014440",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            454.2663,
+            -893.2995,
+            696.26,
+            -681.1336
+          ]
+        },
+        {
+          "feature_key": "building|way/172014442",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            301.3959,
+            -999.1696,
+            507.8722,
+            -851.2187
+          ]
+        },
+        {
+          "feature_key": "building|relation/2298319",
+          "owner": "0_-1",
+          "reason": "explicit_source_id",
+          "source_bounds_xz": [
+            151.124,
+            -1039.0877,
+            636.9596,
+            -653.2214
+          ]
+        },
+        {
+          "feature_key": "building|way/261191086",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            124.3216,
+            -927.2062,
+            214.1747,
+            -846.9871
+          ]
+        },
+        {
+          "feature_key": "building|way/395907258",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            492.8231,
+            -904.1944,
+            500.4085,
+            -896.5598
+          ]
+        },
+        {
+          "feature_key": "building|way/679034072",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            169.9662,
+            -944.334,
+            182.3728,
+            -930.456
+          ]
+        },
+        {
+          "feature_key": "building|way/679034073",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            330.0796,
+            -855.7029,
+            345.8365,
+            -843.7392
+          ]
+        },
+        {
+          "feature_key": "building|way/679034074",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            300.7329,
+            -869.0799,
+            313.3494,
+            -859.2529
+          ]
+        },
+        {
+          "feature_key": "building|way/821764692",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            454.0576,
+            -715.4989,
+            486.5666,
+            -682.7458
+          ]
+        },
+        {
+          "feature_key": "building|way/827847266",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            631.2976,
+            -794.3845,
+            674.4324,
+            -732.2834
+          ]
+        },
+        {
+          "feature_key": "building|way/827847267",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            623.5683,
+            -801.9968,
+            666.8468,
+            -742.1326
+          ]
+        },
+        {
+          "feature_key": "building|way/827847268",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            616.7015,
+            -809.0303,
+            658.8964,
+            -750.869
+          ]
+        },
+        {
+          "feature_key": "building|way/827847269",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            608.3973,
+            -817.0321,
+            651.8859,
+            -759.2269
+          ]
+        },
+        {
+          "feature_key": "building|way/827847270",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            598.7108,
+            -826.3694,
+            644.6653,
+            -767.2287
+          ]
+        },
+        {
+          "feature_key": "building|way/827847271",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            588.6042,
+            -832.3346,
+            635.2,
+            -773.9951
+          ]
+        },
+        {
+          "feature_key": "building|way/827847272",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            578.376,
+            -838.144,
+            626.7521,
+            -780.9063
+          ]
+        },
+        {
+          "feature_key": "building|way/827847273",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            567.5396,
+            -843.9644,
+            617.5301,
+            -787.1608
+          ]
+        },
+        {
+          "feature_key": "building|way/827847274",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            555.8739,
+            -849.7181,
+            608.6177,
+            -793.1927
+          ]
+        },
+        {
+          "feature_key": "building|way/827847275",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            543.987,
+            -855.5275,
+            599.8711,
+            -798.5791
+          ]
+        },
+        {
+          "feature_key": "building|way/827847276",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            530.5079,
+            -861.2812,
+            591.2684,
+            -803.3422
+          ]
+        },
+        {
+          "feature_key": "building|way/827847277",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            516.5644,
+            -867.135,
+            582.3117,
+            -807.7381
+          ]
+        },
+        {
+          "feature_key": "building|way/827847278",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            501.6146,
+            -873.2115,
+            573.0676,
+            -811.967
+          ]
+        },
+        {
+          "feature_key": "building|way/827847279",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            484.774,
+            -878.7315,
+            564.1774,
+            -814.8716
+          ]
+        },
+        {
+          "feature_key": "building|way/827847280",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            465.921,
+            -884.7745,
+            555.8731,
+            -817.1306
+          ]
+        },
+        {
+          "feature_key": "building|way/827847281",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            440.831,
+            -905.652,
+            473.6716,
+            -875.5363
+          ]
+        },
+        {
+          "feature_key": "building|way/827847282",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            435.2469,
+            -913.7763,
+            469.2485,
+            -881.9577
+          ]
+        },
+        {
+          "feature_key": "building|way/827847283",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            429.309,
+            -923.3585,
+            466.4177,
+            -887.066
+          ]
+        },
+        {
+          "feature_key": "building|way/827847284",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            422.5639,
+            -931.505,
+            462.2821,
+            -891.8181
+          ]
+        },
+        {
+          "feature_key": "building|way/827847285",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            415.6971,
+            -940.386,
+            458.8099,
+            -896.4143
+          ]
+        },
+        {
+          "feature_key": "building|way/827847286",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            406.7516,
+            -949.6232,
+            453.8008,
+            -900.4653
+          ]
+        },
+        {
+          "feature_key": "building|way/827847287",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            397.1758,
+            -955.9779,
+            444.9548,
+            -903.6036
+          ]
+        },
+        {
+          "feature_key": "building|way/827847288",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            386.7043,
+            -961.4533,
+            436.1861,
+            -906.9979
+          ]
+        },
+        {
+          "feature_key": "building|way/827847289",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            375.2045,
+            -967.4296,
+            427.2627,
+            -909.1902
+          ]
+        },
+        {
+          "feature_key": "building|way/827847290",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            363.4614,
+            -972.8383,
+            417.9854,
+            -910.4255
+          ]
+        },
+        {
+          "feature_key": "building|way/827847291",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            350.9886,
+            -978.1691,
+            408.8518,
+            -910.8594
+          ]
+        },
+        {
+          "feature_key": "building|way/827847292",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            337.6533,
+            -983.4219,
+            399.9284,
+            -909.6907
+          ]
+        },
+        {
+          "feature_key": "building|way/827847293",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            323.3339,
+            -988.3854,
+            390.5737,
+            -907.064
+          ]
+        },
+        {
+          "feature_key": "building|way/827847294",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            307.2674,
+            -992.7591,
+            381.2964,
+            -903.714
+          ]
+        },
+        {
+          "feature_key": "building|way/827847295",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            296.8619,
+            -984.9014,
+            330.6532,
+            -937.758
+          ]
+        },
+        {
+          "feature_key": "building|way/827847296",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            291.8971,
+            -991.8237,
+            324.3836,
+            -941.9648
+          ]
+        },
+        {
+          "feature_key": "building|way/827847297",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            285.6828,
+            -998.1004,
+            317.4173,
+            -945.0475
+          ]
+        },
+        {
+          "feature_key": "building|way/827847298",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            279.6453,
+            -1004.4996,
+            310.5173,
+            -947.9967
+          ]
+        },
+        {
+          "feature_key": "building|way/827847299",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            271.2858,
+            -1011.4108,
+            302.8544,
+            -950.8345
+          ]
+        },
+        {
+          "feature_key": "building|way/827847300",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            263.7225,
+            -1013.3805,
+            291.9738,
+            -953.0158
+          ]
+        },
+        {
+          "feature_key": "building|way/827847301",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            255.6726,
+            -1014.9941,
+            282.1548,
+            -954.6628
+          ]
+        },
+        {
+          "feature_key": "building|way/827847302",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            247.2468,
+            -1016.7413,
+            271.9155,
+            -955.6421
+          ]
+        },
+        {
+          "feature_key": "building|way/827847303",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            239.1638,
+            -1017.4423,
+            261.8753,
+            -956.7994
+          ]
+        },
+        {
+          "feature_key": "building|way/827847304",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            230.3842,
+            -1018.5663,
+            251.9125,
+            -956.8995
+          ]
+        },
+        {
+          "feature_key": "building|way/827847305",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            222.1242,
+            -1019.4787,
+            241.4632,
+            -956.4877
+          ]
+        },
+        {
+          "feature_key": "building|way/827847306",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            214.4282,
+            -1019.0557,
+            231.1465,
+            -955.8532
+          ]
+        },
+        {
+          "feature_key": "building|way/827847307",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            206.2015,
+            -1018.4992,
+            220.9736,
+            -954.3062
+          ]
+        },
+        {
+          "feature_key": "building|way/827855854",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            122.0655,
+            -920.9067,
+            158.091,
+            -878.9611
+          ]
+        },
+        {
+          "feature_key": "building|way/827855856",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            171.8688,
+            -879.9295,
+            172.9303,
+            -878.7498
+          ]
+        },
+        {
+          "feature_key": "building|way/827855857",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            163.5645,
+            -885.9726,
+            164.6261,
+            -884.7929
+          ]
+        },
+        {
+          "feature_key": "building|way/827855858",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            155.4816,
+            -879.6956,
+            156.5431,
+            -878.5271
+          ]
+        },
+        {
+          "feature_key": "building|way/827855859",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            168.7838,
+            -870.2249,
+            169.8454,
+            -869.0452
+          ]
+        },
+        {
+          "feature_key": "building|way/827855860",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            164.007,
+            -868.8782,
+            165.0685,
+            -867.6985
+          ]
+        },
+        {
+          "feature_key": "building|way/827855861",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            172.0457,
+            -874.7767,
+            173.1073,
+            -873.597
+          ]
+        },
+        {
+          "feature_key": "building|way/827855862",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            158.6884,
+            -870.3694,
+            159.7499,
+            -869.2009
+          ]
+        },
+        {
+          "feature_key": "building|way/827855870",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            147.8628,
+            -902.0653,
+            171.9903,
+            -887.0188
+          ]
+        },
+        {
+          "feature_key": "building|way/827855883",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            139.7024,
+            -909.7444,
+            161.5409,
+            -895.332
+          ]
+        },
+        {
+          "feature_key": "building|way/827855884",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            139.1163,
+            -912.0592,
+            156.7197,
+            -898.1365
+          ]
+        },
+        {
+          "feature_key": "building|way/827855885",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            139.1163,
+            -914.2962,
+            155.4149,
+            -901.8759
+          ]
+        },
+        {
+          "feature_key": "building|way/827855886",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            139.5917,
+            -916.1325,
+            153.9332,
+            -904.8919
+          ]
+        },
+        {
+          "feature_key": "building|way/827855887",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            141.007,
+            -917.9577,
+            152.8606,
+            -908.6981
+          ]
+        },
+        {
+          "feature_key": "building|way/827855888",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            164.504,
+            -927.2062,
+            177.1759,
+            -923.7006
+          ]
+        },
+        {
+          "feature_key": "building|way/827855889",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            160.1585,
+            -924.1457,
+            177.1427,
+            -918.2918
+          ]
+        },
+        {
+          "feature_key": "building|way/827855890",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            158.0466,
+            -919.004,
+            177.0875,
+            -913.74
+          ]
+        },
+        {
+          "feature_key": "building|way/827855891",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            156.7197,
+            -914.864,
+            176.9881,
+            -909.2994
+          ]
+        },
+        {
+          "feature_key": "building|way/827855892",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            156.7197,
+            -910.7572,
+            176.9881,
+            -900.4517
+          ]
+        },
+        {
+          "feature_key": "building|way/827855893",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            176.0263,
+            -900.4517,
+            188.0015,
+            -882.0219
+          ]
+        },
+        {
+          "feature_key": "building|way/827855894",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            176.6343,
+            -909.2994,
+            192.6346,
+            -889.2114
+          ]
+        },
+        {
+          "feature_key": "building|way/827855895",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            176.9881,
+            -912.961,
+            195.7748,
+            -896.2785
+          ]
+        },
+        {
+          "feature_key": "building|way/827855896",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            181.3668,
+            -916.1662,
+            198.7603,
+            -901.3534
+          ]
+        },
+        {
+          "feature_key": "building|way/827855897",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            185.7013,
+            -919.8612,
+            202.7409,
+            -906.1612
+          ]
+        },
+        {
+          "feature_key": "building|way/827855898",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            191.8161,
+            -921.6085,
+            203.8135,
+            -912.5717
+          ]
+        },
+        {
+          "feature_key": "building|way/827855899",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            192.6346,
+            -896.49,
+            202.487,
+            -877.2254
+          ]
+        },
+        {
+          "feature_key": "building|way/827855900",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            188.0015,
+            -896.2785,
+            197.8318,
+            -875.4558
+          ]
+        },
+        {
+          "feature_key": "building|way/827855901",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            183.2911,
+            -889.2114,
+            192.0377,
+            -876.8469
+          ]
+        },
+        {
+          "feature_key": "building|way/827855903",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            197.4556,
+            -897.0131,
+            211.4214,
+            -879.6293
+          ]
+        },
+        {
+          "feature_key": "building|way/827855904",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            207.5953,
+            -897.0354,
+            214.1747,
+            -884.0922
+          ]
+        },
+        {
+          "feature_key": "building|way/827855905",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            177.6631,
+            -882.0219,
+            192.0377,
+            -861.9227
+          ]
+        },
+        {
+          "feature_key": "building|way/827855906",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            187.5374,
+            -876.8469,
+            194.1828,
+            -861.9227
+          ]
+        },
+        {
+          "feature_key": "building|way/827855907",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            190.0032,
+            -875.4558,
+            195.5208,
+            -861.9895
+          ]
+        },
+        {
+          "feature_key": "building|way/827855908",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            191.7061,
+            -874.3095,
+            196.7814,
+            -862.0451
+          ]
+        },
+        {
+          "feature_key": "building|way/827855910",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            157.9365,
+            -867.0195,
+            177.6631,
+            -856.8698
+          ]
+        },
+        {
+          "feature_key": "building|way/827855911",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            166.9816,
+            -862.1674,
+            187.5374,
+            -852.3403
+          ]
+        },
+        {
+          "feature_key": "building|way/827855912",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            173.8152,
+            -861.9227,
+            188.411,
+            -851.1161
+          ]
+        },
+        {
+          "feature_key": "building|way/827855913",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            175.507,
+            -859.8749,
+            189.2071,
+            -849.8363
+          ]
+        },
+        {
+          "feature_key": "building|way/827855914",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            177.2651,
+            -858.0164,
+            189.9591,
+            -848.6678
+          ]
+        },
+        {
+          "feature_key": "building|way/827855915",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            154.4422,
+            -887.82,
+            175.374,
+            -866.7525
+          ]
+        },
+        {
+          "feature_key": "building|way/827855916",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            158.4232,
+            -850.2703,
+            173.5056,
+            -848.4227
+          ]
+        },
+        {
+          "feature_key": "building|way/827855917",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            157.6049,
+            -852.3403,
+            173.8152,
+            -849.9363
+          ]
+        },
+        {
+          "feature_key": "building|way/827855918",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            142.3787,
+            -856.9475,
+            154.4314,
+            -847.4544
+          ]
+        },
+        {
+          "feature_key": "building|way/827855919",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            142.8542,
+            -858.5056,
+            155.891,
+            -848.9124
+          ]
+        },
+        {
+          "feature_key": "building|way/827855920",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            139.7026,
+            -895.9664,
+            153.1815,
+            -871.1261
+          ]
+        },
+        {
+          "feature_key": "building|way/827855923",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            144.8223,
+            -870.2692,
+            155.6256,
+            -857.2704
+          ]
+        },
+        {
+          "feature_key": "building|way/827855924",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            143.5618,
+            -864.482,
+            157.6049,
+            -851.6168
+          ]
+        },
+        {
+          "feature_key": "building|way/827855925",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            143.396,
+            -860.3753,
+            157.6049,
+            -850.2924
+          ]
+        },
+        {
+          "feature_key": "building|way/827855926",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            153.1265,
+            -868.3661,
+            166.9816,
+            -856.8698
+          ]
+        },
+        {
+          "feature_key": "building|way/827855927",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            155.6256,
+            -857.2704,
+            173.8152,
+            -851.6168
+          ]
+        },
+        {
+          "feature_key": "building|way/827855928",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            159.3078,
+            -848.6788,
+            173.2513,
+            -846.9871
+          ]
+        },
+        {
+          "feature_key": "building|way/827855929",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            145.1871,
+            -893.4958,
+            183.8883,
+            -862.1674
+          ]
+        },
+        {
+          "feature_key": "building|way/827855930",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            161.5409,
+            -902.6997,
+            176.6343,
+            -885.3828
+          ]
+        },
+        {
+          "feature_key": "building|way/1056849313",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            454.2663,
+            -893.2995,
+            696.26,
+            -681.1336
+          ]
+        },
+        {
+          "feature_key": "building|way/1056849314",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            301.3959,
+            -999.1696,
+            507.8722,
+            -851.2187
+          ]
+        },
+        {
+          "feature_key": "building|way/1056849315",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            195.8403,
+            -1036.9292,
+            361.625,
+            -908.9778
+          ]
+        },
+        {
+          "feature_key": "building|way/1229470019",
+          "owner": "0_-1",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            597.1061,
+            -1013.0729,
+            884.3799,
+            -767.1751
+          ]
+        },
+        {
+          "feature_key": "building|way/116800998",
+          "owner": "0_-2",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            268.2878,
+            -1109.303,
+            585.5061,
+            -949.8247
+          ]
+        },
+        {
+          "feature_key": "building|way/172307471",
+          "owner": "0_-2",
+          "reason": "explicit_source_id",
+          "source_bounds_xz": [
+            315.4812,
+            -1100.2107,
+            372.3499,
+            -1055.3495
+          ]
+        },
+        {
+          "feature_key": "building|way/172307472",
+          "owner": "0_-2",
+          "reason": "explicit_source_id",
+          "source_bounds_xz": [
+            403.7426,
+            -1082.305,
+            479.6852,
+            -1010.4888
+          ]
+        },
+        {
+          "feature_key": "building|way/172482919",
+          "owner": "0_-2",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            189.8569,
+            -1111.7728,
+            323.4979,
+            -1074.0126
+          ]
+        },
+        {
+          "feature_key": "building|way/173108758",
+          "owner": "0_-2",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            614.0002,
+            -1089.3852,
+            638.0613,
+            -1073.671
+          ]
+        },
+        {
+          "feature_key": "building|way/827847308",
+          "owner": "0_-2",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            458.5548,
+            -1056.3969,
+            530.5168,
+            -985.1593
+          ]
+        },
+        {
+          "feature_key": "building|way/827847309",
+          "owner": "0_-2",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            363.9355,
+            -1085.2648,
+            418.5151,
+            -1036.3969
+          ]
+        },
+        {
+          "feature_key": "building|way/862677194",
+          "owner": "0_-2",
+          "reason": "explicit_source_site_envelope",
+          "source_bounds_xz": [
+            616.8308,
+            -1157.9194,
+            702.183,
+            -1073.2262
+          ]
+        }
+      ],
+      "identity_sha256": "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963",
+      "manifest_sha256": "654138afba82972c2cd27dee9ed3d1f2a3a1d86d100c8d68b1fc18f1d64945bb",
+      "mesh_tile_count": 808,
+      "scene_or_physics_committed": false,
+      "stats": {
+        "cache_hits": 0,
+        "catalog_loads": 0,
+        "evictions": 0,
+        "file_reads": 3,
+        "max_cached_mesh_tiles": 1,
+        "mesh_loads": 1
+      },
+      "world_y_policy": {
+        "architecture_datum_alignment_verified": false,
+        "mode": "EGM96_DEM_game_world_reference_not_current_survey",
+        "offset_m": 0.0
+      }
+    },
+    "actual_tested_tile": "-10_-1",
+    "fixture_provider": {
+      "bindings": {
+        "dem_identity": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "snapshot_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "catalog_page_count": 1,
+      "configured": true,
+      "counts": {
+        "SYNTHETIC_NOT_NATIONAL": 2.0
+      },
+      "exclusions": [],
+      "identity_sha256": "4e8dcc308c104905c1d2b8c77ee6a37a6f6140d04da2ca9c9bd5ae10186dccc8",
+      "manifest_sha256": "22a9ee9634a904da67e65d81b7839ce921a468cc1f9e5443654fa1e692c2ea27",
+      "mesh_tile_count": 2,
+      "scene_or_physics_committed": false,
+      "stats": {
+        "cache_hits": 2,
+        "catalog_loads": 1,
+        "evictions": 2,
+        "file_reads": 8,
+        "max_cached_mesh_tiles": 1,
+        "mesh_loads": 3
+      },
+      "world_y_policy": {
+        "architecture_datum_alignment_verified": false,
+        "mode": "EGM96_DEM_game_world_reference_not_current_survey",
+        "offset_m": 0.0
+      }
+    }
+  },
+  "scope": "ActualgeneratedArrayMesh/trimesh nativefixture/support/holes/seams and optional boundednationaltile; notfullcitygame/visual/material/physicsresidency acceptance"
+}
