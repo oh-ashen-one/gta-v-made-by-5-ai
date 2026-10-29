@@ -1,0 +1,39 @@
+{
+  "schema": "source_city_collision_batch_author_freeze_v1",
+  "created_utc": "2026-10-29T06:34:17.917632+00:00",
+  "default_mode_unchanged": "per_feature",
+  "optional_mode": "static_batches",
+  "api": "configure optional7thoptions; resolve_source_hit(native_ray_dictionary)",
+  "geometry": "exact original indexed triangle triples, no approximation or backface bypass",
+  "native_parse_default_regression_and_batch_fixture": "pending_root",
+  "actual_backend_face_mapping": "pending_native_verification",
+  "diagnostic_bounds": {
+    "internal_wall_s": 180,
+    "outer_wall_s": 240
+  },
+  "primary_api_sources": [
+    "https://docs.godotengine.org/en/stable/classes/class_physicsdirectspacestate3d.html",
+    "https://docs.godotengine.org/en/stable/classes/class_collisionobject3d.html",
+    "https://docs.godotengine.org/en/stable/classes/class_concavepolygonshape3d.html"
+  ],
+  "child_engine_gpu_git_actions": false,
+  "runtime_world_roads_edits_for_batch_task": false,
+  "full_world_fps_or_visual_acceptance": false,
+  "files": [
+    {
+      "path": "game/src/world/geography/city_scene.gd",
+      "sha256": "42857df714164d08136f6208ed293dff69bcaedd1810392f173202c00146d0f6",
+      "bytes": 17164
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_city_batch_test.gd",
+      "sha256": "4b45c0cebeee7ff134bdc0a8a85ab0e0ddc7cdbf1f41296061f4cc95d77a9a8c",
+      "bytes": 17678
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_city_batch_test.tscn",
+      "sha256": "9125172c6bb02718ec1b8b948802e852291025038cc59c1628aea67a9438fa73",
+      "bytes": 217
+    }
+  ]
+}
