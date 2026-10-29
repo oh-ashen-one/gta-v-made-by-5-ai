@@ -205,18 +205,35 @@ func run() -> void:
 		_native_core_actions.append({"tower":connection.tower,"kind":"guest_lift","id":lift.id,"source_position":frame.to_source_current_live(player.global_position).source_xyz,"actual_E":true})
 		if not _support_gate("native L1 lift "+String(connection.tower)): finish();return
 		await still("core_"+String(connection.tower)+"_native_lift")
+		# The preceding floor's upper cross-landing is also this floor's lower
+		# flight entry. Use its real independent lower-lane interlock; R4 proved
+		# that the former solid pier permanently sealed this native approach.
+		var stairs: Node3D=hotel.get("_stairs")
+		var preceding_id: String=""
+		for adjacent_id: String in stack.adjacent_floor_ids(connection.target_floor_id):
+			if float(Inventory.floor_record(adjacent_id).elevation_m)<float(candidate.floor_record.elevation_m): preceding_id=adjacent_id
+		var entry_descriptor: Dictionary={}
+		for entry_geometry: Dictionary in stairs.geometry_descriptor(preceding_id).get("gates",[]):
+			if entry_geometry.wing=="east" and entry_geometry.get("lane","")=="lower_departure": entry_descriptor=entry_geometry;break
+		if not check("preceding floor provides real lower-flight entry interlock "+String(connection.tower),not entry_descriptor.is_empty() and stack.get_floor(preceding_id)!=null): finish();return
+		var preceding_floor: Node3D=stack.get_floor(preceding_id)
+		var entry_approach: Vector3=candidate.to_local(preceding_floor.to_global(entry_descriptor.receiving_approach_local))
+		if not await walk_public_to(entry_approach,"east"): finish();return
+		var floor_before_entry: Node3D=candidate;candidate=stairs
+		if not await native_e(String(entry_descriptor.gate_id)): finish();return
+		candidate=floor_before_entry
+		_native_core_actions.append({"tower":connection.tower,"kind":"lower_flight_entry_door","id":entry_descriptor.gate_id,"source_position":frame.to_source_current_live(player.global_position).source_xyz,"actual_E":true})
 		if not await walk_public_to(stair.lower,"east"): finish();return
 		# Stop before the closed fire door on the REAL upper landing, matching
 		# its existing constrained native fixture; no gate/collider is bypassed.
 		for ascending_index in stair.walk_route.size()-1:
 			if not await walk_to(candidate.to_global(stair.walk_route[ascending_index]),.22): finish();return
-		var stairs: Node3D=hotel.get("_stairs")
 		var door_id: String=String(connection.target_floor_id)+"-east-stair-fire-door"
 		var door: Node3D=stairs.doors.get(door_id)
 		if not check("actual interlocked source stair door present "+String(connection.tower),door!=null): finish();return
 		var stair_descriptor: Dictionary={}
 		for gate_geometry: Dictionary in stairs.geometry_descriptor(connection.target_floor_id).gates:
-			if gate_geometry.wing=="east": stair_descriptor=gate_geometry;break
+			if gate_geometry.wing=="east" and gate_geometry.get("lane","")=="upper_return": stair_descriptor=gate_geometry;break
 		if not check("exact east stair geometry descriptor present "+String(connection.tower),not stair_descriptor.is_empty()): finish();return
 		var approach:=Vector3(stair.upper.x,float(candidate.floor_record.geometry.storey_height_m),float(stair_descriptor.gate_plane_z_local_m)-.62)
 		if not await walk_to(candidate.to_global(approach),.12): finish();return
@@ -231,7 +248,7 @@ func run() -> void:
 		if not await walk_public_to(candidate.to_local(loft.to_global(connection.target_corridor_local)),"east"): finish();return
 		var reverse: Array=connection.local_route.duplicate();reverse.reverse()
 		if not await _walk_public_route(loft,reverse,"return from "+String(connection.id)): finish();return
-	check("three actual source cores reached with six native door actions",_native_core_actions.size()==6)
+	check("three actual source cores reached with nine native door actions",_native_core_actions.size()==9)
 	check("continuous exterior/loft/core route has no teleport jump or death",travel>250 and max_step<.50 and minimum_y>-.20 and Game.death_count==0,"travel%.2f maxstep%.4f minY%.3f"%[travel,max_step,minimum_y])
 	check("visual/source completion claims remain false",not report.architectural_identity_and_fitout_verified and not report.full_requested_interior_verified and frame.metadata().origin_revision==0 and hotel.report().actor_pose_writes==0)
 	_metrics={"distance_m":travel,"max_step_m":max_step,"source_support_gates":_source_support_gates,"native_core_actions":_native_core_actions,"actual_source_spawn_xyz":source_spawn,"arrival":arrival,"core_connections":report.core_connections,"public_visual_fidelity_accepted":false,"all_private_asbuilt_verified":false,"whole_building_completed":false,"one_initial_spawn_no_later_actor_pose_writes":true}

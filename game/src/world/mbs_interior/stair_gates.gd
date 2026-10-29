@@ -8,7 +8,7 @@ const GuestFloor=preload("res://src/world/mbs_interior/guest_floor.gd")
 const Inventory=preload("res://src/world/mbs_interior/inventory.gd")
 const Kit=preload("res://src/world/downtown/landmarks/kit.gd")
 const Looks=preload("res://src/world/downtown/landmarks/looks.gd")
-const GEOMETRY_VERSION="mbs-stair-fire-door-v2"
+const GEOMETRY_VERSION="mbs-stair-fire-door-v3-paired-U-lanes"
 const WIDTH=1.30
 const HEIGHT=2.35
 const LEAF_THICKNESS=.075
@@ -79,7 +79,7 @@ func bind_floor(module:Node3D,id:String,upper_id:String,provider:Callable)->Dict
 		seen[wing]=true
 		var side:float=-1.0 if wing=="east" else 1.0
 		var route:Variant=portal.get("walk_route",[])
-		if not route is Array or route.size()<9 or not portal.get("upper") is Vector3:return {"bound":false,"error":"Actual U-stair landing route required"}
+		if not route is Array or route.size()<9 or not portal.get("upper") is Vector3 or not portal.get("lower") is Vector3:return {"bound":false,"error":"Actual U-stair landing route required"}
 		var landing:Vector3=route[-1]
 		var endpoint:Vector3=route[-2]
 		var past_edge:Vector3=portal.upper
@@ -87,9 +87,21 @@ func bind_floor(module:Node3D,id:String,upper_id:String,provider:Callable)->Dict
 		var expected_x:float=-float(g.length_m)*.5+1.80+.78
 		if absf(landing.x-expected_x)>.001 or absf(endpoint.x-expected_x)>.001 or absf(landing.y-rise)>.001 or absf(endpoint.y-rise)>.001 or absf(landing.z-(core+side*.6))>.001 or absf(endpoint.z-(core+side*1.2))>.001 or absf(past_edge.z-(core-side*.6))>.001:
 			return {"bound":false,"error":"Factory stair landing changed: explicit integration revision needed"}
+		var lower_entry:Vector3=portal.lower
+		var lower_landing:Vector3=route[1]
+		if lower_entry.distance_to(Vector3(expected_x-1.56,0,core-side*.60))>.001 or lower_landing.distance_to(Vector3(expected_x-1.56,0,core+side*.60))>.001:
+			return {"bound":false,"error":"Factory lower-flight entry changed: explicit integration revision needed"}
 		var gate_id:=id+"-"+wing+"-stair-fire-door"
-		plans.append({"id":gate_id,"wing":wing,"side":side,"x":expected_x,"landing_x":expected_x-.78,"edge_z":core,"plane_z":core+side*GATE_EDGE_SETBACK,"rise":rise,"lower_id":id,"upper_id":upper_id,"lower_generation":lower_proof.generation,"base_angle":0.0,"hinge":Vector3(expected_x-WIDTH*.5,rise,core+side*GATE_EDGE_SETBACK)})
-	if plans.size()!=2:return {"bound":false,"error":"Both actual stair wings are required"}
+		# At every intermediate storey the previous flight's upper landing and
+		# the next flight's lower landing share this 3.2m cross-landing. A solid
+		# pier over the lower-flight lane seals that real next-floor entrance.
+		# Both lanes therefore have independent native interlocked leaves; the
+		# existing upper-return ID/position is retained for current integrations.
+		for lane:String in ["upper_return","lower_departure"]:
+			var center_x:float=expected_x if lane=="upper_return" else expected_x-1.56
+			var leaf_id:String=gate_id if lane=="upper_return" else id+"-"+wing+"-stair-lower-entry-door"
+			plans.append({"id":leaf_id,"wing":wing,"lane":lane,"side":side,"x":center_x,"landing_x":expected_x-.78,"edge_z":core,"plane_z":core+side*GATE_EDGE_SETBACK,"rise":rise,"lower_id":id,"upper_id":upper_id,"lower_generation":lower_proof.generation,"base_angle":0.0,"hinge":Vector3(center_x-WIDTH*.5,rise,core+side*GATE_EDGE_SETBACK),"build_landing_frame":lane=="upper_return"})
+	if plans.size()!=4:return {"bound":false,"error":"Both actual U-stair lanes in both wings are required"}
 	var holder:=Node3D.new()
 	holder.name="OwnedStairFireDoors"
 	module.add_child(holder)
@@ -108,23 +120,25 @@ func _box(kit,label:String,mat:Material,center:Vector3,size:Vector3)->void:
 	kit.body.get_child(kit.body.get_child_count()-1).name=label.validate_node_name()
 
 func _build_gate(holder:Node3D,p:Dictionary)->void:
-	var kit=Kit.new(holder,"StairFireDoorFrames_"+String(p.wing))
-	var mat:=Looks.get_mat("concrete_fair")
 	var metal:=Looks.get_mat("steel_satin")
-	var x0:float=float(p.landing_x)-LANDING_WIDTH*.5
-	var x1:float=float(p.landing_x)+LANDING_WIDTH*.5
-	var open0:float=float(p.x)-WIDTH*.5
-	var open1:float=float(p.x)+WIDTH*.5
-	for bounds:Vector2 in [Vector2(x0,open0),Vector2(open1,x1)]:
-		_box(kit,"StairFireDoorPier"+str(bounds.x),mat,Vector3((bounds.x+bounds.y)*.5,float(p.rise)+HEIGHT*.5,p.plane_z),Vector3(bounds.y-bounds.x,HEIGHT,FRAME_THICKNESS))
-	_box(kit,"StairFireDoorLintel",mat,Vector3(p.x,float(p.rise)+HEIGHT+.10,p.plane_z),Vector3(WIDTH,.20,FRAME_THICKNESS))
-	# Tall returns meet the existing stair guards; no side bypass goes around
-	# the 3.2m landing closure. All new geometry begins at the upper floor.
-	for end:float in [-1.0,1.0]:
-		_box(kit,"StairFireDoorSideReturn"+str(end),mat,Vector3(float(p.landing_x)+end*1.48,float(p.rise)+HEIGHT*.5,float(p.edge_z)+float(p.side)*.5),Vector3(.12,HEIGHT,1.40))
-	kit.commit(holder,"StairFireDoorFrameMaterials_"+String(p.wing),true)
+	if bool(p.build_landing_frame):
+		var kit=Kit.new(holder,"StairFireDoorFrames_"+String(p.wing))
+		var mat:=Looks.get_mat("concrete_fair")
+		var landing_x:float=p.landing_x
+		# Two 1.30m apertures, centered on the actual +/-0.78m U flights:
+		# outer piers0.17m / centre pier0.26m / outer piers0.17m. Every visible
+		# pier/leaf has matching real collision; neither lane is an open bypass.
+		var intervals:Array[Vector2]=[Vector2(landing_x-LANDING_WIDTH*.5,landing_x-.78-WIDTH*.5),Vector2(landing_x-.78+WIDTH*.5,landing_x+.78-WIDTH*.5),Vector2(landing_x+.78+WIDTH*.5,landing_x+LANDING_WIDTH*.5)]
+		for bounds:Vector2 in intervals:
+			_box(kit,"StairFireDoorPier"+str(bounds.x),mat,Vector3((bounds.x+bounds.y)*.5,float(p.rise)+HEIGHT*.5,p.plane_z),Vector3(bounds.y-bounds.x,HEIGHT,FRAME_THICKNESS))
+		for offset:float in [-.78,.78]:
+			_box(kit,"StairFireDoorLintel"+str(offset),mat,Vector3(landing_x+offset,float(p.rise)+HEIGHT+.10,p.plane_z),Vector3(WIDTH,.20,FRAME_THICKNESS))
+		# Existing tall returns still prevent going around the landing closure.
+		for end:float in [-1.0,1.0]:
+			_box(kit,"StairFireDoorSideReturn"+str(end),mat,Vector3(landing_x+end*1.48,float(p.rise)+HEIGHT*.5,float(p.edge_z)+float(p.side)*.5),Vector3(.12,HEIGHT,1.40))
+		kit.commit(holder,"StairFireDoorFrameMaterials_"+String(p.wing),true)
 	var door:=StairDoor.new()
-	door.name=("StairFireDoor_"+String(p.wing)).validate_node_name()
+	door.name=("StairFireDoor_"+String(p.wing)+"_"+String(p.lane)).validate_node_name()
 	door.door_id=p.id;door.base_angle=0.0;door.swing_delta=float(p.side)*PI*.5
 	door.hinge_origin=p.hinge;door.leaf_width=WIDTH;door.motion_angle=0.0
 	door.transition_kind="stair";door.coordinator=self
@@ -355,7 +369,7 @@ func geometry_descriptor(id:String)->Dictionary:
 	var geometry:Array[Dictionary]=[]
 	for key:String in _floors[id].gate_ids:
 		var state:Dictionary=_gates[key]
-		geometry.append({"gate_id":key,"wing":state.wing,"hinge_local":state.hinge,"opening_width_m":WIDTH,"height_m":HEIGHT,"thickness_m":LEAF_THICKNESS,"landing_width_m":LANDING_WIDTH,"edge_z_local_m":state.edge_z,"gate_plane_z_local_m":state.plane_z,"rise_m":state.rise,"side":state.side})
+		geometry.append({"gate_id":key,"wing":state.wing,"lane":state.lane,"hinge_local":state.hinge,"opening_center_x_local_m":state.x,"landing_center_x_local_m":state.landing_x,"receiving_approach_local":Vector3(state.x,state.rise,float(state.plane_z)-float(state.side)*(WIDTH+.75)),"opening_width_m":WIDTH,"height_m":HEIGHT,"thickness_m":LEAF_THICKNESS,"landing_width_m":LANDING_WIDTH,"edge_z_local_m":state.edge_z,"gate_plane_z_local_m":state.plane_z,"rise_m":state.rise,"side":state.side})
 	return {"version":GEOMETRY_VERSION,"floor_id":id,"upper_id":_floors[id].upper_id,"bound_collision_generation":_floors[id].lower_generation,"gates":geometry,"root_context_registration_required":true,"actor_pose_writes":0,"asbuilt_verified":false}
 
 func report()->Dictionary:

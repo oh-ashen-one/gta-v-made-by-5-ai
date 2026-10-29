@@ -1,0 +1,168 @@
+{
+  "observed_utc": "2026-10-29T03:34:53.262886+00:00",
+  "checkpoint": "74769184fb8f08862d4250017768fb5d8bab0507",
+  "valid_pass": false,
+  "checks": 110,
+  "failed": 1,
+  "failures": [
+    "continuous productionPlayer walking"
+  ],
+  "elapsed_s": 205.0,
+  "supervisor_exit_code": 1,
+  "engine_exit_code": 1,
+  "fatal_errors": [],
+  "timeout": false,
+  "child_reaped": true,
+  "failure_stage": "public/east/(-31.46984, 0.0, -24.50104)",
+  "failure_reason": "no_progress_6_sim_seconds",
+  "toward_target_native_motion": {
+    "actor_pose_unchanged": "[X: (0.917568, 0.0, 0.397573), Y: (0.0, 1.0, 0.0), Z: (-0.397573, 0.0, 0.917568), O: (62.74128, -0.025196, 4.939513)]",
+    "body_blocked": true,
+    "body_safe_margin_m": 0.00100000004749745,
+    "capsule_shape": "CapsuleShape3D",
+    "capsule_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (0.0, 0.9, 0.0)]",
+    "label": "actual failed walk toward target",
+    "motion": "(0.059636, 0.0, -0.137636)",
+    "native_contacts": [
+      {
+        "box_size": "(1.73, 2.35, 0.15)",
+        "collider_id": 384668027135,
+        "collider_shape_index": 0,
+        "depth_m": 0.00112338713370264,
+        "local_shape_index": 0,
+        "node": "StairFireDoorFrames_east",
+        "node_euler": "(0.0, -0.41587, 0.0)",
+        "node_origin": "(81.37898, -5.0, 40.62547)",
+        "normal": "(-0.403986, 0.0, 0.914765)",
+        "physics_euler": "(0.0, -0.41587, 0.0)",
+        "physics_origin": "(81.37898, -5.0, 40.62547)",
+        "point": "(62.88717, 1.390936, 4.609162)",
+        "shape_global_transform": "[X: (0.914765, 0.0, 0.403986), Y: (0.0, 1.0, 0.0), Z: (-0.403986, 0.0, 0.914765), O: (62.95488, 1.175, 4.557079)]",
+        "shape_name": "StairFireDoorPier-32_2898445129395"
+      },
+      {
+        "box_size": "(1.73, 2.35, 0.15)",
+        "collider_id": 384668027135,
+        "collider_shape_index": 0,
+        "depth_m": 0.00112338713370264,
+        "local_shape_index": 0,
+        "node": "StairFireDoorFrames_east",
+        "node_euler": "(0.0, -0.41587, 0.0)",
+        "node_origin": "(81.37898, -5.0, 40.62547)",
+        "normal": "(-0.403986, 0.0, 0.914765)",
+        "physics_euler": "(0.0, -0.41587, 0.0)",
+        "physics_origin": "(81.37898, -5.0, 40.62547)",
+        "point": "(62.88717, 0.360936, 4.609162)",
+        "shape_global_transform": "[X: (0.914765, 0.0, 0.403986), Y: (0.0, 1.0, 0.0), Z: (-0.403986, 0.0, 0.914765), O: (62.95488, 1.175, 4.557079)]",
+        "shape_name": "StairFireDoorPier-32_2898445129395"
+      },
+      {
+        "box_size": "(3.2, 0.2, 1.2)",
+        "collider_id": 132288352536,
+        "collider_shape_index": 17,
+        "depth_m": 6.45424006506801e-05,
+        "local_shape_index": 0,
+        "node": "ProgramFloorSolidCollision",
+        "node_euler": "(0.0, -0.41587, 0.0)",
+        "node_origin": "(81.37898, -5.0, 40.62547)",
+        "normal": "(0.0, 1.0, 0.0)",
+        "physics_euler": "(0.0, -0.41587, 0.0)",
+        "physics_origin": "(81.37898, -5.0, 40.62547)",
+        "point": "(62.74178, 0.0, 4.938364)",
+        "shape_global_transform": "[X: (0.914765, 0.0, 0.403986), Y: (0.0, 1.0, 0.0), Z: (-0.403986, 0.0, 0.914765), O: (63.68783, -0.1, 4.716793)]",
+        "shape_name": "eastStairUpperLanding"
+      }
+    ],
+    "overlap_shapes": [
+      {
+        "box_size": "(1.73, 2.35, 0.15)",
+        "node": "StairFireDoorFrames_east",
+        "node_euler": "(0.0, -0.41587, 0.0)",
+        "node_origin": "(81.37898, -5.0, 40.62547)",
+        "physics_euler": "(0.0, -0.41587, 0.0)",
+        "physics_origin": "(81.37898, -5.0, 40.62547)",
+        "shape_class": "BoxShape3D",
+        "shape_global_transform": "[X: (0.914765, 0.0, 0.403986), Y: (0.0, 1.0, 0.0), Z: (-0.403986, 0.0, 0.914765), O: (62.95488, 1.175, 4.557079)]",
+        "shape_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-31.42484, 6.175, -25.55103)]",
+        "shape_name": "StairFireDoorPier-32_2898445129395"
+      },
+      {
+        "box_size": "(3.2, 0.2, 1.2)",
+        "node": "ProgramFloorSolidCollision",
+        "node_euler": "(0.0, -0.41587, 0.0)",
+        "node_origin": "(81.37898, 0.0, 40.62547)",
+        "physics_euler": "(0.0, -0.41587, 0.0)",
+        "physics_origin": "(81.37898, 0.0, 40.62547)",
+        "shape_class": "BoxShape3D",
+        "shape_global_transform": "[X: (0.914765, 0.0, 0.403986), Y: (0.0, 1.0, 0.0), Z: (-0.403986, 0.0, 0.914765), O: (63.68783, -0.1, 4.716793)]",
+        "shape_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-30.68984, -0.1, -25.70103)]",
+        "shape_name": "eastStairLowerLanding"
+      },
+      {
+        "box_size": "(6.2, 0.2, 5.101035)",
+        "node": "ProgramFloorSolidCollision",
+        "node_euler": "(0.0, -0.41587, 0.0)",
+        "node_origin": "(81.37898, 0.0, 40.62547)",
+        "physics_euler": "(0.0, -0.41587, 0.0)",
+        "physics_origin": "(81.37898, 0.0, 40.62547)",
+        "shape_class": "BoxShape3D",
+        "shape_global_transform": "[X: (0.914765, 0.0, 0.403986), Y: (0.0, 1.0, 0.0), Z: (-0.403986, 0.0, 0.914765), O: (63.60426, -0.1, 8.123959)]",
+        "shape_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-29.38984, -0.1, -22.55052)]",
+        "shape_name": "eastCoreLanding-1_0Floor0"
+      },
+      {
+        "box_size": "(3.2, 0.2, 1.2)",
+        "node": "ProgramFloorSolidCollision",
+        "node_euler": "(0.0, -0.41587, 0.0)",
+        "node_origin": "(81.37898, -5.0, 40.62547)",
+        "physics_euler": "(0.0, -0.41587, 0.0)",
+        "physics_origin": "(81.37898, -5.0, 40.62547)",
+        "shape_class": "BoxShape3D",
+        "shape_global_transform": "[X: (0.914765, 0.0, 0.403986), Y: (0.0, 1.0, 0.0), Z: (-0.403986, 0.0, 0.914765), O: (63.68783, -0.1, 4.716793)]",
+        "shape_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-30.68984, 4.9, -25.70103)]",
+        "shape_name": "eastStairUpperLanding"
+      }
+    ],
+    "pose": "[X: (0.917568, 0.0, 0.397573), Y: (0.0, 1.0, 0.0), Z: (-0.397573, 0.0, 0.917568), O: (62.74128, -0.025196, 4.939513)]",
+    "remainder": "(0.059228, 0.0, -0.136695)",
+    "safe_fraction": 0.0068359375,
+    "strict_query_margin_m": 0.00999999977648258,
+    "travel": "(0.000411, 0.001132, -0.000947)",
+    "unsafe_fraction": 0.00830078125
+  },
+  "source_runtime_profile": {
+    "body_liveness_checks": 13473792,
+    "calls": 19584,
+    "enabled": true,
+    "max_us": 37373,
+    "physics_tick": 4975,
+    "registered_regions": 28,
+    "total_us": 41708689
+  },
+  "partial_evidence": {
+    "actual_outside_arrival_to_loft": true,
+    "T1_native_guest_lift_E": true,
+    "T1_lower_stair_lane_entered": false,
+    "T2_T3_full_route_tested": false,
+    "whole_building_completed": false,
+    "performance_accepted": false
+  },
+  "diagnosis": "Prior B1 upper-landing closure has only the right U-flight aperture; its full-height left pier intersects the next L1 lower-flight centreline. Horizontal native body test hits actual StairFireDoorPier. UP floor contacts are not the lateral blocker. No gait/radius/physics-mask relaxation is justified.",
+  "evidence": {
+    "run.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r4/run.log",
+      "sha256": "9b0ff485b980f26bbd6e8e0181fe2ae7de89ef4f13e3d67ac2019c86babfa409"
+    },
+    "run.log.meta.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r4/run.log.meta.json",
+      "sha256": "c2449c7cdce9b69cc42ad68b673fec6f1f570b402cae5ed1ff4c7f0632478f88"
+    }
+  },
+  "loaded_source_hashes": {
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "46997e4a9984fc8e92a91a0872ddf7aa9f4a455badd0aadee8e21d27df08f001",
+    "game/src/systems/fidelity_tests/mbs_guest_floor_test.gd": "e316d8b725a70dfccf1191f7309150baf6cec8b0867efaeb3c00a37aab989aa7",
+    "game/src/world/mbs_interior/guest_floor.gd": "46d1e71ff6870dab9efaf1c6f04ecc643d5ff761b556391aa61ef9dfebc37849",
+    "game/src/world/mbs_interior/floor_stack.gd": "76f007624d0bf55ba22f2ffecce4c764f6cc1a91e92ab58f868dc6c12db42a20",
+    "game/src/world/mbs_interior/stair_gates.gd": "bf7a5ca1156c8ee6d4d1cee6266685500a09d56cbb5134f3eeeabb2be78e38a5"
+  }
+}

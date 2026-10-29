@@ -96,7 +96,7 @@ func _closed_body_crossings()->bool:
 		var side:float=geometry.side
 		var plane:float=geometry.gate_plane_z_local_m
 		var hinge:Vector3=geometry.hinge_local
-		var landing_center:float=hinge.x+Gates.WIDTH*.5-.78
+		var landing_center:float=geometry.landing_center_x_local_m
 		# Sweep full capsule through door/pier/return positions. No endpoint is
 		# beyond existing guard bounds; all routes through the landing block.
 		for dx:float in [-1.05,-.70,-.35,0.0,.35,.70,1.05]:
@@ -124,6 +124,58 @@ func _attempt_unready_crossing()->bool:
 	print("[mbs-stair-gate] CLOSED_NATIVE_ATTEMPT ",JSON.stringify({"before":start,"after":player.global_position,"local":at,"plane_z":plane,"gate_opened":door.opened,"safe":safe}))
 	return check("production Player physically stopped before unloaded edge",safe and not door.opened)
 
+func _next_lower_flight_regression()->bool:
+	# The previous upper landing gate physically occupies this next floor's
+	# lower landing. R4's real source fixture was blocked by its left pier.
+	# Bind no fake facade or direct door calls: use the actual furnished upper
+	# GuestFloor and native E on the new guarded lower-flight aperture.
+	var original_candidate:Node3D=candidate
+	var original_id:String=gate_id
+	var lower_entry:Dictionary={}
+	for geometry:Dictionary in gates.geometry_descriptor(lower_id).gates:
+		if geometry.wing=="east" and geometry.lane=="lower_departure":lower_entry=geometry;break
+	if not check("preceding upper landing exposes distinct lower-flight aperture",not lower_entry.is_empty() and String(lower_entry.gate_id)!=original_id and absf(float(lower_entry.opening_center_x_local_m)-(stair.lower as Vector3).x)<.001):return false
+	var next_stair:Dictionary={}
+	for portal:Dictionary in upper_floor.portals:
+		if portal.kind=="stair" and portal.wing=="east":next_stair=portal;break
+	if not check("next real furnished floor has matching lower flight",not next_stair.is_empty()):return false
+	var side:float=lower_entry.side
+	var before:=Vector3(lower_entry.opening_center_x_local_m,3.45,float(lower_entry.gate_plane_z_local_m)-side*.62)
+	var after:=Vector3(before.x,3.45,float(lower_entry.gate_plane_z_local_m)+side*.62)
+	if not check("closed next-flight door remains a real barrier while return lane is open",not capsule_clear(site.to_global(before),site.to_global(after)) and gates.doors[original_id].opened and not gates.doors[lower_entry.gate_id].opened):return false
+	candidate=upper_floor
+	var approach:Vector3=upper_floor.to_local(site.to_global(lower_entry.receiving_approach_local))
+	if not await walk_public_to(approach,"east"):return false
+	# The physically open return leaf is nearer here than the still-closed
+	# departure leaf. Native interaction closes that actual nearest door first;
+	# no forced target or direct set_open call sidesteps production selection.
+	if not await _native_gate_e(false):return false
+	await frames(70)
+	if not check("return leaf is physically closed before native departure selection",gates.report().gates[original_id].physically_closed):return false
+	gate_id=lower_entry.gate_id
+	if not await _native_gate_e(true):return false
+	await frames(70)
+	if not check("opened lower-flight leaf clears full production capsule",capsule_clear(site.to_global(before),site.to_global(after))):return false
+	for index in 3:
+		walk_stage="next floor lower-flight entry/"+str(index)
+		if not await walk_to(upper_floor.to_global(next_stair.walk_route[index]),.22):return false
+	if not check("native capsule physically enters next lower flight without previous pier",player.is_on_floor() and player.global_position.y>3.35 and Game.death_count==0 and max_step<.50):return false
+	for index in range(2,-1,-1):
+		walk_stage="next floor lower-flight return/"+str(index)
+		if not await walk_to(upper_floor.to_global(next_stair.walk_route[index]),.22):return false
+	if not await walk_public_to(approach,"east"):return false
+	if not await _native_gate_e(false):return false
+	await frames(70)
+	if not check("departing leaf independently closes with both physical apertures guarded",gates.report().gates[gate_id].physically_closed and gates.report().gates[original_id].physically_closed):return false
+	gate_id=original_id
+	var return_approach:Vector3=upper_floor.to_local(site.to_global(Vector3(stair.upper.x,3.45,float(lower_entry.gate_plane_z_local_m)-side*(Gates.WIDTH+.75))))
+	if not await walk_public_to(return_approach,"east"):return false
+	if not await _native_gate_e(true):return false
+	await frames(70)
+	if not await walk_public_to(upper_floor.to_local(site.to_global(stair.upper)),"east"):return false
+	candidate=original_candidate;gate_id=original_id
+	return true
+
 func run()->void:
 	Game.simulation_paused=false;Game.mode=Game.MODE_FOOT;Game.health=Game.MAX_HEALTH;Game.death_count=0
 	if not prepare_player():finish();return
@@ -141,11 +193,11 @@ func run()->void:
 	var invalid:Dictionary=gates.bind_floor(candidate,lower_id,"T1-L48",_readiness)
 	check("invalid exact tower transition rejects transactionally",not invalid.get("bound",true) and gates.owned_collision_bodies().is_empty())
 	var bound:Dictionary=gates.bind_floor(candidate,lower_id,upper_id,_readiness)
-	if not check("both upper landing fire doors bind",bound.get("bound",false),str(bound)):finish();return
+	if not check("both U-lane leaves in both wings bind",bound.get("bound",false),str(bound)):finish();return
 	gates.floor_requested.connect(_on_requested)
 	gate_id=lower_id+"-east-stair-fire-door"
 	await frames(6)
-	check("owned registry bodies exposed without context stamp",gates.owned_collision_bodies(lower_id).size()==4 and not gates.report().context_registered_by_component)
+	check("owned registry bodies exposed without context stamp",gates.owned_collision_bodies(lower_id).size()==6 and not gates.report().context_registered_by_component)
 	check("translated rotated source parent preserves gate local geometry",gates.doors[gate_id].global_transform.origin.distance_to(candidate.to_global(Vector3(stair.upper.x,3.45,float(gates.geometry_descriptor(lower_id).gates[0].gate_plane_z_local_m))))<.001)
 	if not _closed_body_crossings():finish();return
 	# The ONE declared player setup relocation; never moved by the component.
@@ -177,6 +229,7 @@ func run()->void:
 	if not check("native physical leaf clears full production capsule",capsule_clear(site.to_global(before_gate),site.to_global(stair.upper))):finish();return
 	if not await walk_to(site.to_global(stair.upper),.14):finish();return
 	check("player crossed onto real receiving floor alive",absf(player.global_position.y-(3.45-.025))<.05 and player.is_on_floor() and Game.death_count==0)
+	if not await _next_lower_flight_regression():finish();return
 	# Return to the open threshold before revocation: support remains present.
 	var threshold:=Vector3(stair.upper.x,3.45,float(descriptor.gate_plane_z_local_m))
 	if not await walk_to(site.to_global(threshold),.10):finish();return
@@ -244,7 +297,7 @@ func run()->void:
 		all_foreign_intact=all_foreign_intact and is_instance_valid(child) and child.get_parent()==candidate
 	retirement_observation={"lower_owner_preflight":lower_id,"upper_receiving_preflight":upper_id,"owner_generation_retired":lower_generation.is_empty(),"live_generation_refusal":refused,"retirement_result":removed,"children_before":before_children,"children_after":candidate.get_child_count(),"owned_holder_instance_id":own_holder_id,"owned_body_ids_before":owned_body_ids,"owned_bodies_after":gates.owned_collision_bodies(lower_id).size(),"foreign_ids_before":foreign_ids,"actual_children_ids_after":actual_foreign_ids,"all_foreign_nodes_intact":all_foreign_intact,"remaining_gate_ids":gates.doors.keys(),"remaining_bound_floors":gates.report().bound_floors}
 	print("[mbs-stair-gate] RETIREMENT ",JSON.stringify(retirement_observation))
-	check("retire removes only its owned two gate assemblies",removed.get("removed",false) and removed.get("owned_gates_removed",0)==2 and candidate.get_child_count()==before_children-1 and candidate.get("_built") and all_foreign_intact and actual_foreign_ids==foreign_ids and gates.owned_collision_bodies(lower_id).is_empty() and gates.doors.is_empty() and not gates.report().bound_floors.has(lower_id))
+	check("retire removes only its owned four gate leaves and two frames",removed.get("removed",false) and removed.get("owned_gates_removed",0)==4 and candidate.get_child_count()==before_children-1 and candidate.get("_built") and all_foreign_intact and actual_foreign_ids==foreign_ids and gates.owned_collision_bodies(lower_id).is_empty() and gates.doors.is_empty() and not gates.report().bound_floors.has(lower_id))
 	fixture_results.append({"floor_id":lower_id,"upper_id":upper_id,"required_upper_neighbor":neighbor_id,"travel_m":travel,"max_step_m":max_step,"native_gate_actions":native_gate_actions,"source_site_tested":false,"all_floor_pairs_tested":false})
 	finish()
 

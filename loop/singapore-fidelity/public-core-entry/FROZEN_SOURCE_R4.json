@@ -1,0 +1,41 @@
+{
+  "created_utc": "2026-10-29T03:17:33.324660+00:00",
+  "phase": "R4_GAIT_SIMULATION_BUDGET_NULLSAFE_QA_AND_ROOT_RESIDENCY_PROFILE_FROZEN",
+  "source_hashes": {
+    "game/src/world/mbs_interior/public_l1.gd": "3454e63c5ef5c3d5716a98808ab81cf0acc7e52f36b45cdf67697b29ab0bad4e",
+    "game/src/world/mbs_interior/program_floor.gd": "f835eddb2be6b23cd90f7110a38d49b880cdcf12fe5e8fc7d516653e73ffdc8e",
+    "game/src/world/mbs_interior/floor_stack.gd": "76f007624d0bf55ba22f2ffecce4c764f6cc1a91e92ab58f868dc6c12db42a20",
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "46997e4a9984fc8e92a91a0872ddf7aa9f4a455badd0aadee8e21d27df08f001",
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.tscn": "13aa41323b8a2c235c37481de66d76d372cebdc6bc7d55365d9672d536a6eca0",
+    "game/src/world/mbs_interior/site.gd": "a841d7bd0f80737f6d5574add878aa41b3ea1115921398cfeed5709c400536ab",
+    "game/src/world/mbs_interior/hotel.gd": "6ef9bfec78183294b7baf93a1908c6de579965c24015d90dee94d71f421f95cc",
+    "game/src/world/mbs_interior/stair_gates.gd": "bf7a5ca1156c8ee6d4d1cee6266685500a09d56cbb5134f3eeeabb2be78e38a5",
+    "game/src/world/mbs_interior/guest_floor.gd": "46d1e71ff6870dab9efaf1c6f04ecc643d5ff761b556391aa61ef9dfebc37849",
+    "game/src/world/geography/source_runtime.gd": "ecb17d0f21f2cee61f256ea8018dcabdf0df37134423f720343475ba557bb100",
+    "game/data/mbs-interior/inventory.json": "80791f76fd2a2b50e6cd9f87dcba13666594ff12bfe906edd56b53b059675819",
+    "game/src/systems/fidelity_tests/mbs_guest_floor_test.gd": "e316d8b725a70dfccf1191f7309150baf6cec8b0867efaeb3c00a37aab989aa7"
+  },
+  "protected_stack_apis": {
+    "release_unload_guard": "1b06877d1ee30243914918845fa04b9b55e5d2011df1879e71917055b9f883fa",
+    "_is_stable_floor_structure": "8c31676a09152a3dfaba08d7e9df1ec7501eefe57cac887281bd421a905d47ec"
+  },
+  "engine_compile_verified": false,
+  "native_runtime_verified": false,
+  "public_visual_fidelity_accepted": false,
+  "full_building_completed": false,
+  "worker_engine_git_runs": 0,
+  "predecessor_checkpoint": "d5a1c09bea35df91468e11c29375682e66c77400",
+  "predecessor_parse_failure": [
+    "SCRIPT ERROR: Parse Error: There is already a variable named \"geometry\" declared in this scope.",
+    "ERROR: Failed to load script \"res://src/systems/fidelity_tests/mbs_public_core_entry_test.gd\" with error \"Parse error\"."
+  ],
+  "predecessor_actual_checkpoint": "fbf6be9e8f306aabcd3acfadf5dbe9b961c69b74",
+  "predecessor_failure": [
+    "source L2/full neighbours cold commit T1"
+  ],
+  "predecessor_not_pass_despite_assert_count": true,
+  "runtime_profile_flag": "--profile-source-runtime",
+  "production_geometry_unchanged": true,
+  "runtime_profile_required_for_diagnostic_fixture": true,
+  "outer_wall_watchdog_s": 900
+}
