@@ -22,6 +22,8 @@ var _started_core := 0
 var _source_support_gates: Array[Dictionary] = []
 var _native_core_actions: Array[Dictionary] = []
 var _metrics: Dictionary = {}
+var _last_profile_wall := 0
+var _runtime_profile_progress: Array[Dictionary] = []
 
 func _ready() -> void:
 	if not "--qa-session" in OS.get_cmdline_user_args(): get_tree().quit(2);return
@@ -37,6 +39,14 @@ func check(label: String,ok: bool,detail: String = "") -> bool:
 	print("[mbs-public-core-entry] %s %s %s"%["PASS" if ok else "FAIL",label,detail])
 	if not ok: failures.append(label)
 	return ok
+
+func _physics_process(delta: float) -> void:
+	super._physics_process(delta)
+	if not tracking or finished or not is_instance_valid(runtime) or not runtime.has_method("residency_profile") or Time.get_ticks_msec()-_last_profile_wall<10000: return
+	_last_profile_wall=Time.get_ticks_msec()
+	var sample: Dictionary={"stage":walk_stage,"phase":walk_phase,"elapsed_wall_s":float(Time.get_ticks_msec()-_started_core)/1000.0,"resolved_velocity":player.velocity,"physics_tick":Engine.get_physics_frames(),"source_runtime":runtime.residency_profile()}
+	_runtime_profile_progress.append(sample)
+	print("[mbs-public-core-entry] SOURCE_RUNTIME_PROFILE_PROGRESS ",JSON.stringify(sample))
 
 func _digest(text: String) -> String:
 	var hash:=HashingContext.new();hash.start(HashingContext.HASH_SHA256)
@@ -111,6 +121,7 @@ func run() -> void:
 	check("native physics provider explicit",context.register_provider("physics","source-native-neighborhood/v1","Actual source public/core/arrival/floor/transport commitments"))
 	runtime=Runtime.new();add_child(runtime)
 	if not check("runtime retains actual shared domain and common frame",runtime.configure(frame,context,domain.observe)): finish();return
+	if not check("source residency profiling enabled for measured diagnostic run",runtime.has_method("residency_profile") and runtime.residency_profile().get("enabled",false)): finish();return
 	var config: Dictionary={"core_connections":PublicL1.default_core_connection_requests(0.0),"arrival_corridor":PublicL1.default_arrival_request(0.0)}
 	if not await _transaction_checks(config): finish();return
 	stack=Stack.new();add_child(stack)
@@ -241,6 +252,10 @@ func finish() -> void:
 	for action: String in ["move_forward","move_back","move_left","move_right","sprint","walk","jump","interact"]:
 		if InputMap.has_action(action): Input.action_release(action)
 	var result: Dictionary={"checks":checks,"failed":failures.size(),"failures":failures,"elapsed_s":float(Time.get_ticks_msec()-_started_core)/1000.0,"metrics":_metrics,"native_actions":_native_core_actions,"whole_building_completed":false,"public_visual_fidelity_accepted":false,"owner_playtest":false}
+	result["source_runtime_profile"]=runtime.residency_profile() if is_instance_valid(runtime) and runtime.has_method("residency_profile") else {}
+	result["source_runtime_profile_progress"]=_runtime_profile_progress
+	result["gait_records"]=gait_records.duplicate(true)
+	result["performance_accepted"]=false
 	print("[mbs-public-core-entry] RESULT ",JSON.stringify(result))
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--mbs-public-core-report="):

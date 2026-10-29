@@ -532,11 +532,35 @@ func walk_to(target:Vector3,radius:float)->bool:
 	# Long public corridor legs may sprint; constrained room/stair legs use
 	# the real WALK action (1.5m/s), with the unchanged arrival radii.
 	var nominal_speed:float=Player.SPRINT_SPEED if allow_sprint else Player.WALK_SPEED
-	var deadline:=started_tick+int((initial/nominal_speed+12.0)*1000.0)
+	# A wall-second is not a simulated second when the heavy source scene is
+	# slower than real time. Budget the actual physics clock and intended gait;
+	# retain a separate finite monotonic cap and no-progress failure watchdog.
+	# Sprint legs still brake to WALK, so the slow gait is the conservative
+	# budget basis. None of these values changes the production actor speed.
+	var physics_started:int=Engine.get_physics_frames()
+	var physics_rate:int=Engine.physics_ticks_per_second
+	var time_scale:float=Engine.time_scale
+	var simulation_budget:float=initial/Player.WALK_SPEED*1.75+12.0
+	var wall_budget:float=clampf(simulation_budget*6.0+15.0,30.0,360.0)
+	var deadline:int=started_tick+int(wall_budget*1000.0)
+	var simulation_elapsed:=0.0
+	var best_remaining:float=initial
+	var last_progress_sim:=0.0
+	var termination_reason:="arrival"
 	var braking:=false
-	while player.global_position.distance_to(target)>radius and Time.get_ticks_msec()<deadline:
+	while player.global_position.distance_to(target)>radius and simulation_elapsed<simulation_budget and Time.get_ticks_msec()<deadline:
 		await get_tree().physics_frame
+		if Engine.physics_ticks_per_second!=physics_rate or not is_equal_approx(Engine.time_scale,time_scale):
+			termination_reason="physics_clock_changed"
+			break
+		simulation_elapsed=float(Engine.get_physics_frames()-physics_started)/float(physics_rate)*time_scale
 		var d:=target-player.global_position
+		var full_remaining:float=d.length()
+		if full_remaining<best_remaining-.025:
+			best_remaining=full_remaining;last_progress_sim=simulation_elapsed
+		if simulation_elapsed-last_progress_sim>6.0:
+			termination_reason="no_progress_6_sim_seconds"
+			break
 		var remaining:=Vector2(d.x,d.z).length()
 		var speed:=Vector2(player.velocity.x,player.velocity.z).length()
 		var stopping_distance:=speed*speed/(2.0*Player.DECEL)+speed/float(Engine.physics_ticks_per_second)
@@ -560,13 +584,14 @@ func walk_to(target:Vector3,radius:float)->bool:
 		else:
 			Input.action_release("sprint");Input.action_press("walk")
 			walk_phase="constrained-native-walk"
-	if player.global_position.distance_to(target)>radius and Time.get_ticks_msec()>=deadline:
+	if player.global_position.distance_to(target)>radius:
+		if termination_reason=="arrival": termination_reason="wall_watchdog" if Time.get_ticks_msec()>=deadline else "simulation_budget"
 		var requested_velocity:Vector3=player.get_meta("_qa_motion_state",{}).get("requested",player.velocity)
 		native_motion_diagnostic("timeout before releasing actual requested step",player.global_transform,requested_velocity/float(Engine.physics_ticks_per_second))
-		print("[mbs-guest-floor] PRE_SETTLE_TIMEOUT ",JSON.stringify({"stage":walk_stage,"phase":walk_phase,"pose":player.global_transform,"target":target,"velocity":player.velocity,"requested_velocity":requested_velocity,"controller":player.get_meta("_qa_motion_state",{}),"recent":motion_trace}))
+		print("[mbs-guest-floor] PRE_SETTLE_TIMEOUT ",JSON.stringify({"stage":walk_stage,"phase":walk_phase,"reason":termination_reason,"pose":player.global_transform,"target":target,"velocity":player.velocity,"requested_velocity":requested_velocity,"controller":player.get_meta("_qa_motion_state",{}),"elapsed_sim_s":simulation_elapsed,"simulation_budget_s":simulation_budget,"elapsed_wall_s":float(Time.get_ticks_msec()-started_tick)/1000.0,"wall_budget_s":wall_budget,"last_progress_sim_s":last_progress_sim,"recent":motion_trace}))
 	if not await settle_native_motion("at leg end"):return false
-	var ok:=player.global_position.distance_to(target)<=radius+.08
-	gait_records.append({"stage":walk_stage,"allow_public_sprint":allow_sprint,"nominal_speed_mps":nominal_speed,"start":start_position,"end":player.global_position,"target":target,"arrival_radius_m":radius,"distance_after_native_settle_m":player.global_position.distance_to(target),"elapsed_s":float(Time.get_ticks_msec()-started_tick)/1000.0,"actor_or_velocity_assigned":false})
+	var ok:=player.global_position.distance_to(target)<=radius+.08 and termination_reason!="physics_clock_changed"
+	gait_records.append({"stage":walk_stage,"allow_public_sprint":allow_sprint,"nominal_speed_mps":nominal_speed,"budget_gait_speed_mps":Player.WALK_SPEED,"start":start_position,"end":player.global_position,"target":target,"arrival_radius_m":radius,"distance_after_native_settle_m":player.global_position.distance_to(target),"elapsed_s":float(Time.get_ticks_msec()-started_tick)/1000.0,"elapsed_sim_s":simulation_elapsed,"simulation_budget_s":simulation_budget,"wall_budget_s":wall_budget,"termination_reason":termination_reason,"actor_or_velocity_assigned":false})
 	if not ok:
 		var probe_motion:=player.velocity/float(Engine.physics_ticks_per_second)
 		native_motion_diagnostic("actual failed walk requested step",player.global_transform,probe_motion)
@@ -581,9 +606,10 @@ func walk_to(target:Vector3,radius:float)->bool:
 			var owner:Node3D=body.shape_owner_get_owner(body.shape_find_owner(contact.get_collider_shape_index())) if body!=null else null
 			contacts.append({"body":String(body.name) if body!=null else "UNKNOWN","shape":String(owner.name) if owner!=null else "UNKNOWN","normal":contact.get_normal(),"position":contact.get_position()})
 		var nearby_doors:Array[Dictionary]=[]
-		for id:String in candidate.doors:
-			var door:Node3D=candidate.doors[id]
-			if door.global_position.distance_to(player.global_position)<3.0:nearby_doors.append(door_snapshot(door))
+		if is_instance_valid(candidate) and candidate.get("doors") is Dictionary:
+			for id:String in candidate.doors:
+				var door:Node3D=candidate.doors[id]
+				if door.global_position.distance_to(player.global_position)<3.0:nearby_doors.append(door_snapshot(door))
 		print("[mbs-guest-floor] MOTION_INPUT_TRACE ",JSON.stringify({"stage":walk_stage,"phase":walk_phase,"player":player.global_position,"target":target,"leg":{"initial_distance_m":initial,"remaining_distance_m":player.global_position.distance_to(target),"elapsed_s":float(Time.get_ticks_msec()-started_tick)/1000.0,"budget_s":float(deadline-started_tick)/1000.0,"displacement_m":player.global_position.distance_to(start_position)},"busy":player.busy,"alive":player.alive,"paused":Game.simulation_paused,"mode":Game.mode,"input":{"forward":Input.get_action_strength("move_forward"),"back":Input.get_action_strength("move_back"),"left":Input.get_action_strength("move_left"),"right":Input.get_action_strength("move_right"),"sprint":Input.get_action_strength("sprint")},"velocity":player.velocity,"controller":player.get_meta("_qa_motion_state",{}),"last_samples":motion_trace,"nearby_doors":nearby_doors}))
 		check("continuous productionPlayer walking",false,"at%s target%s contacts%s"%[player.global_position,target,contacts])
 	walk_phase="idle"

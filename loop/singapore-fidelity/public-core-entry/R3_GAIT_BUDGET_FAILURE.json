@@ -1,0 +1,229 @@
+{
+  "observed_utc": "2026-10-29T03:16:31.977536+00:00",
+  "checkpoint": "d5a1c09bea35df91468e11c29375682e66c77400",
+  "checks": 77,
+  "reported_assert_failures": 0,
+  "VALID_PASS": false,
+  "fatal_errors": [
+    "SCRIPT ERROR: Invalid access to property or key 'doors' on a base object of type 'Nil'."
+  ],
+  "engine_exit_code": 0,
+  "supervisor_exit_code": 2,
+  "timeout": false,
+  "child_reaped": true,
+  "failed_stage": "exterior arrival through real reserved corridor/5",
+  "actual_resolved_horizontal_speed_mps": 1.5000005482405665,
+  "recent_tick_span": 66,
+  "recent_displacement_m": 1.6500525303759255,
+  "recent_sim_seconds_at_60hz": 1.1,
+  "observed_recent_speed_mps": 1.5000477548872049,
+  "horizontal_target_step_native_diagnostic": {
+    "actor_pose_unchanged": "[X: (0.914813, 0.0, 0.403876), Y: (0.0, 1.0, 0.0), Z: (-0.403876, 0.0, 0.914813), O: (79.52443, -0.024064, 44.82622)]",
+    "body_blocked": false,
+    "body_safe_margin_m": 0.00100000004749745,
+    "capsule_shape": "CapsuleShape3D",
+    "capsule_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (0.0, 0.9, 0.0)]",
+    "label": "actual failed walk toward target",
+    "motion": "(0.060581, 0.0, -0.137222)",
+    "native_contacts": [],
+    "overlap_shapes": [
+      {
+        "node": "MBSPublicL1Collision",
+        "node_euler": "(0.0, -0.41587, 0.0)",
+        "node_origin": "(0.0, 0.0, 0.0)",
+        "physics_euler": "(0.0, -0.41587, 0.0)",
+        "physics_origin": "(0.0, 0.0, 0.0)",
+        "shape_class": "ConvexPolygonShape3D",
+        "shape_global_transform": "[X: (0.914765, 0.0, 0.403986), Y: (0.0, 1.0, 0.0), Z: (-0.403986, 0.0, 0.914765), O: (0.0, 0.0, 0.0)]",
+        "shape_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (0.0, 0.0, 0.0)]",
+        "shape_name": "@CollisionShape3D@65"
+      },
+      {
+        "node": "MBSPublicL1Collision",
+        "node_euler": "(0.0, -0.41587, 0.0)",
+        "node_origin": "(0.0, 0.0, 0.0)",
+        "physics_euler": "(0.0, -0.41587, 0.0)",
+        "physics_origin": "(0.0, 0.0, 0.0)",
+        "shape_class": "ConvexPolygonShape3D",
+        "shape_global_transform": "[X: (0.914765, 0.0, 0.403986), Y: (0.0, 1.0, 0.0), Z: (-0.403986, 0.0, 0.914765), O: (0.0, 0.0, 0.0)]",
+        "shape_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (0.0, 0.0, 0.0)]",
+        "shape_name": "@CollisionShape3D@57"
+      }
+    ],
+    "pose": "[X: (0.914813, 0.0, 0.403876), Y: (0.0, 1.0, 0.0), Z: (-0.403876, 0.0, 0.914813), O: (79.52443, -0.024064, 44.82622)]",
+    "remainder": "(0.0, 0.0, 0.0)",
+    "safe_fraction": 1.0,
+    "strict_query_margin_m": 0.00999999977648258,
+    "travel": "(0.060581, 0.000006, -0.137222)",
+    "unsafe_fraction": 1.0
+  },
+  "old_west_centre_actual_public_overlay_hit": {
+    "actual_body_path": "/root/MBSPublicCoreSourceEntryFixture/@Node3D@45/SourceMBSHotelPublicL1/MBSPublicL1Collision",
+    "body_in_owned_complete_list": false,
+    "contact_local_xyz": [
+      0.0,
+      0.00400002300739288,
+      21.3000030517578
+    ],
+    "contact_source_xyz": [
+      534.579353206968,
+      0.00400002300739288,
+      -970.372542066116
+    ],
+    "contact_world_xyz": [
+      72.7740859985352,
+      0.00400002300739288,
+      60.1099700927734
+    ],
+    "excluded_rids": 0,
+    "height_error_m": 0.00400002300739288,
+    "hit": true,
+    "mask": 1,
+    "native_class": "StaticBody3D",
+    "normal_xyz": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "physics_tick": 13,
+    "probe_local_xyz": [
+      0.0,
+      0.0,
+      21.2999992370605
+    ],
+    "probe_world_xyz": [
+      72.7740859985352,
+      0.0,
+      60.1099700927734
+    ],
+    "ray_from_xyz": [
+      72.7740859985352,
+      0.150000005960464,
+      60.1099700927734
+    ],
+    "ray_to_xyz": [
+      72.7740859985352,
+      -0.349999994039536,
+      60.1099700927734
+    ],
+    "reason": "wrong_owner_structure_height_or_normal",
+    "shape_index": 108,
+    "shape_owner": {
+      "disabled": false,
+      "first_local_points_xyz": [
+        [
+          89.0547714233398,
+          0.00400000018998981,
+          22.7868118286133
+        ],
+        [
+          92.6547775268555,
+          0.00400000018998981,
+          22.7868118286133
+        ],
+        [
+          92.6547775268555,
+          0.00400000018998981,
+          39.4878463745117
+        ],
+        [
+          89.0547714233398,
+          0.00400000018998981,
+          39.4878463745117
+        ],
+        [
+          89.0547714233398,
+          -0.236000001430511,
+          22.7868118286133
+        ],
+        [
+          92.6547775268555,
+          -0.236000001430511,
+          22.7868118286133
+        ],
+        [
+          92.6547775268555,
+          -0.236000001430511,
+          39.4878463745117
+        ],
+        [
+          89.0547714233398,
+          -0.236000001430511,
+          39.4878463745117
+        ]
+      ],
+      "local_transform": {
+        "basis_xyz": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "origin_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "owner_path": "/root/MBSPublicCoreSourceEntryFixture/@Node3D@45/SourceMBSHotelPublicL1/MBSPublicL1Collision/@CollisionShape3D@180",
+      "point_count": 8,
+      "shape_class": "ConvexPolygonShape3D"
+    },
+    "source_support_meta": {
+      "context_instance_id": -9223371955418167641,
+      "feature_id": "mbs-hotel/public-atrium-recreation",
+      "floor_geometry_sha256": "6509f8f143b002b98eaa221f88d1d632ff61da9e80f9b496bbfd5b367b7820e6",
+      "floor_id": "L1",
+      "frame_fingerprint": "292084e8dd7e6c7d2a936b825c1b922b5706bca765fb460ad2e1907079a3de39",
+      "frame_instance_id": -9223371955921484126,
+      "geometry_manifest_sha256": "2bdc4c1a64fb52e82d99ea044572f02a1e68cba1549505717ffb65a87951c0cb",
+      "origin_revision": 0,
+      "physics_space_id": 98784247808,
+      "profile_sha256": "929061b8229074749254d77db4e39657e717fcbc2c952bea17694f8a12e98b06",
+      "residency_token": "mbs-public-site/generation-1",
+      "snapshot_manifest_sha256": "d4c74b3968f07af6558192aa7831ed66eacfde861fae9b33ec14865aabbfc983",
+      "source_origin_xyz": [
+        461.805267208433,
+        0.0,
+        -1030.48251215889
+      ],
+      "support_id": "public-structure-0",
+      "vertical_manifest_sha256": "398842a82780ebcab674601996b9523c50d07a9d636803a2be965b264ad6b057"
+    },
+    "stable_floor_structure": false,
+    "valid_owned_floor": false,
+    "wing": "west"
+  },
+  "diagnosis": "Actual requested/resolved WALK remains1.5m/s and makes progress; toward-target horizontal body test is clear. Wall-clock leg expiry under heavy simulation rate, followed by nil candidate.doors diagnostic fatal. No geometry change justified by this run.",
+  "r4_runtime_verified": false,
+  "evidence": {
+    "run.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r3/run.log",
+      "sha256": "416b3e218f7ce2906b52dc6db6016375da47bc6939033ec3c718640cc0270c33"
+    },
+    "report.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r3/report.json",
+      "sha256": "4be4b3343da97832e5e3bbbc3832537d57961c1e6ee200dafefaffda863ffd67"
+    },
+    "run.log.meta.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-public-core-entry-r3/run.log.meta.json",
+      "sha256": "84d1a8b002afb25160dc68e9d0300e73941044d1a520935d06183929d8d0f6d9"
+    }
+  },
+  "loaded_source_hashes": {
+    "game/src/systems/fidelity_tests/mbs_guest_floor_test.gd": "feae3f82bd426d781e910092450f7e282fb9ef9509394048ec71b97c72dacb4b",
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "2dd3ee3acaf4d77c07f5171c324f414674ebbfb30d8c89d40daa366b83309f8c",
+    "game/src/world/mbs_interior/floor_stack.gd": "76f007624d0bf55ba22f2ffecce4c764f6cc1a91e92ab58f868dc6c12db42a20"
+  }
+}

@@ -1,18 +1,19 @@
 {
-  "created_utc": "2026-10-29T02:56:46.166085+00:00",
+  "created_utc": "2026-10-29T03:17:33.357615+00:00",
   "method": "LEXICAL_INDENTATION_NAME_AND_HELPER_PRESENCE_SCAN_NOT_GODOT_COMPILER",
-  "source_sha256": "2dd3ee3acaf4d77c07f5171c324f414674ebbfb30d8c89d40daa366b83309f8c",
+  "source_sha256": "46997e4a9984fc8e92a91a0872ddf7aa9f4a455badd0aadee8e21d27df08f001",
   "functions": {
-    "_ready": 26,
-    "check": 35,
-    "_digest": 41,
-    "_transaction_checks": 45,
-    "_opening_queries": 65,
-    "_support_gate": 84,
-    "_walk_public_route": 90,
-    "run": 97,
-    "still": 229,
-    "finish": 238
+    "_ready": 28,
+    "check": 37,
+    "_physics_process": 43,
+    "_digest": 51,
+    "_transaction_checks": 55,
+    "_opening_queries": 75,
+    "_support_gate": 94,
+    "_walk_public_route": 100,
+    "run": 107,
+    "still": 240,
+    "finish": 249
   },
   "scope_findings": [],
   "required_inherited_helpers_present": {
