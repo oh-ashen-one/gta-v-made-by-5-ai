@@ -498,16 +498,19 @@ func settle_native_motion(label:String)->bool:
 	release_motion_input()
 	walk_phase="settle/"+label
 	var started:=Time.get_ticks_msec()
+	var first_tick:=Engine.get_physics_frames()
 	var quiet_frames:=0
-	# Releasing native inputs invokes the production braking/stop animation.
-	# Never assign actor position/velocity, heading, speed or controller state.
-	while Time.get_ticks_msec()-started<2500:
+	# Native braking gets simulation time, with an independent finite wall
+	# watchdog. A slow shared Studio must still deliver three physics samples;
+	# an elapsed wall interval alone cannot prove motion failed to settle.
+	while float(Engine.get_physics_frames()-first_tick)/float(Engine.physics_ticks_per_second)<2.5 and Time.get_ticks_msec()-started<30000:
 		await get_tree().physics_frame
 		var horizontal:=Vector2(player.velocity.x,player.velocity.z).length()
 		if horizontal<.05:
 			quiet_frames+=1
 			if quiet_frames>=3:return true
 		else:quiet_frames=0
+	print("[mbs-guest-floor] SETTLE_TIMEOUT ",JSON.stringify({"label":label,"wall_ms":Time.get_ticks_msec()-started,"physics_ticks":Engine.get_physics_frames()-first_tick,"quiet_frames":quiet_frames,"velocity":player.velocity,"threshold_mps":.05,"required_quiet_ticks":3}))
 	return check("native locomotion settles with released input "+label,false,str(player.velocity))
 
 func walk_to(target:Vector3,radius:float)->bool:
