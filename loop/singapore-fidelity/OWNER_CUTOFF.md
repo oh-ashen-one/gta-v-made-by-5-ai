@@ -28,3 +28,7 @@ The component evidence in ACTIVE_HANDOFF_FACTS remains historical and scoped. Th
 - delivery/build_local_app.py — file-only Studio snapshot builder; no engine launch.
 
 Local artifacts belong under the chat's outputs/Singapore-fidelity-milestone-2026-10-29 directory. BUILD_MANIFEST.json and START_HERE.md there are the delivery identity and limitations. The installed Godot runtime is required; this is not a portable/notarized release. Source publication uses only origin/Astra-6-singapore-fidelity.
+
+## Final local artifact
+
+File-only assembly completed. Candidate: `/Users/midir/Builds/OrchardReach-Fidelity-Milestone-20261029.app`; its runtime source is pinned to `fb0c860548e27775a6188c21aabd9a5e2b2f0086`. All218GDScript hashes match;616asset and556import-cache files match relative paths/byte sizes; imported remaps are present; ad-hoc strict signature verification passed. These are file/signature checks, not a native launch. The app was not opened. Documents metadata initially blocked signing, so only the copied candidate was moved to local Builds; the output folder holds its actual location, README and manifest. No automatic retry or active worker remains.

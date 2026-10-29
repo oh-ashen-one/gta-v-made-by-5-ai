@@ -1,0 +1,34 @@
+{
+  "recorded_utc": "2026-10-29T21:04:17.311350+00:00",
+  "status": "CLOSED_OWNER_CUTOFF_CANDIDATE_NATIVE_QA_DEFERRED",
+  "app": "/Users/midir/Builds/OrchardReach-Fidelity-Milestone-20261029.app",
+  "output_folder": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/outputs/Singapore-fidelity-milestone-2026-10-29",
+  "source_checkpoint": "fb0c860548e27775a6188c21aabd9a5e2b2f0086",
+  "manifest_sha256": "dac5ef457e188eee90c800f4ecc397a2a01adbae0c6d260d0f03ad4e1f578393",
+  "app_files": 1594,
+  "app_logical_bytes": 1767064476,
+  "gd_source_hash_matches": 218,
+  "asset_copy_verification": {
+    "assets": {
+      "files": 616,
+      "logical_bytes": 945017528,
+      "verification": "relative paths and byte sizes; not independent asset content hashes"
+    },
+    ".godot/imported": {
+      "files": 556,
+      "logical_bytes": 815261004,
+      "verification": "relative paths and byte sizes; not independent asset content hashes"
+    }
+  },
+  "missing_import_remaps": [],
+  "signature": "ad-hoc signature strict verification passed; not notarization or launch proof",
+  "initial_packaging_issue": "Documents copy received FinderInfo metadata again after signing. Only owned candidate moved to local Builds; FinderInfo cleanup preserved security attributes. Final strict verify exited0.",
+  "self_contained_engine": false,
+  "native_game_launch": false,
+  "rendered_or_animation_acceptance": "DEFERRED_BY_OWNER",
+  "remaining_workers": 0,
+  "owned_engine_or_gpu_waiters": 0,
+  "new_or_automatic_research": false,
+  "full_geographic_city_or_complete_hotel": false,
+  "gameplay_scope": "Existing city plus menu-based preview of lobby, T3-L24 guest floor and T2-L5 spa; no continuous city-to-hotel doorway claim."
+}

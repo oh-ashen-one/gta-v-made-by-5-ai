@@ -52,5 +52,6 @@ manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')
 # Use the current reviewed README from the builder without executing it.
 tree=ast.parse(Path(__file__).with_name('build_local_app.py').read_text())
 readme=next(ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='readme' for t in n.targets))
+readme=readme.replace('open **Orchard Reach — Fidelity Milestone.app**',f'open [Orchard Reach — Fidelity Milestone](<{app}>)')
 (out/'START_HERE.md').write_text(readme)
 print(json.dumps({'app':str(app),'source_checkpoint':checkpoint,'gd_files_hash_matched':len(gd_hashes),'counts':counts,'signature':'verified','native_launch_verified':False}))

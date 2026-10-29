@@ -1,0 +1,16 @@
+{
+  "owner_instruction": "Do not run the game, an engine or GPU tests; finish only work that does not open the game.",
+  "observed_date": "2026-10-29",
+  "implementation_cutoff": "All current subagents completed and stopped; no additional research/optimizer pass.",
+  "active_engine_or_gpu_launches_for_closeout": 0,
+  "queued_engine_or_gpu_launches": 0,
+  "future_auto_retry": false,
+  "candidate_scope": "Existing city gameplay plus menu-based lobby/guest-floor/spa preview.",
+  "deferred_acceptance": [
+    "Native boot of final snapshot",
+    "New preview traversal and interactions",
+    "Rendered screenshots and visual critique",
+    "Animation/play feel acceptance"
+  ],
+  "original_full_scope_finished": false
+}

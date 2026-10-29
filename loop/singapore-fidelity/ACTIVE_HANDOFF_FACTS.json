@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-10-29T20:44:25.006166+00:00",
+  "updated_utc": "2026-10-29T21:04:17.312068+00:00",
   "branch": "Astra-6-singapore-fidelity",
   "goal_status": "OWNER_CUTOFF_MILESTONE; full original geographic city/hotel goal remains unfinished; no continuing implementation loop",
   "owner_decisions": "No private plans. Owner explicitly delegates all routine/creative decisions and prohibits more implementation questions. Complete coherent undocumented private interiors, match documented public facts and disclose reconstruction.",
@@ -52,11 +52,11 @@
     "source_floor_allocation": "ec49dbb correctedminimum-feasibilityR2:1850IDs/775suites/159occupiedfloors,27350CPUchecks,113390.76m2,176same-towerrelocations/0cross, NOTinstalled/native/luxuryaccepted. Separateluxuryv3 underway: latestworkerreportsallIDs148144.81m2 beforegrowth, categoryarea targetsstillnotaccepted. Do notrelabelminimumasfinal. All57programfloorrecordspreserved butsourcegeometrypending.",
     "luxury_layout_current": "Worker reports a v3 area-first candidate near160844m2 with Signature136.74/Paiza136.83 averages, below140 target. Independent audit found24 lower-T2 corridor overlaps; failed candidate retained and correction running. No final luxury acceptance, furniture integration or native proof. Do not replace the frozen minimum receipt with this in-flight result."
   },
-  "current_work": "All workers terminal. Root finishing file-only local candidate packaging, verification, handoff and branch push. No new research/optimizer/native run.",
+  "current_work": "CLOSED at owner milestone. All workers terminal; local candidate assembled and signature/file verified. No engine opened; no GPU test or automatic retry queued.",
   "next_primary_integration": "STOPPED at owner cutoff. Future full-source city/hotel integration needs a future task, not automatic continuation.",
   "public_visual_next": "R5 realcaptures better butstillfails; broad branching trees, nonclipped pale stone and occupiededges plus towerassembly remain. Preserve collision/4mspine.",
   "safety": "Current verified brain67f806f269f6. New render startup guard CPU reviewed; native first-frame proof absent. Owner prohibits all game/engine/GPU launches. Preserve foreign work and private art.",
-  "publication_checkpoint": "Pending final closeout push; query Git refs.",
+  "publication_checkpoint": "Final package source fb0c860548e27775a6188c21aabd9a5e2b2f0086; documentation-only final receipt commit follows. Query origin/Astra-6-singapore-fidelity.",
   "live_or_queued_engine_handles": "NONE. Prior source-core-normal-r1 exited75 skipped-busy after820.6s without Godot. No native test queued.",
   "source_runtime_open_p2": "Previouslyreported idle-resting-contact P2 nowclosed by R6 nativeandindependentreview; fullsavefile/respawn/rebase/bootstrap/lifecycle acceptance stillpending.",
   "floor_stack_decision": "Partial B2/B2M factory integrated with 2.5m intervals, precise void/support volumes, required floor groups. Runtime configurable max18, SourceWorld18. Low transport destination-height implementation22e8126 has no verified completed native run after restart. Stack/capacity QA6b90546 still pending. Do not claim entire MBS complete.",
@@ -78,5 +78,7 @@
   "source_art_references": "source-floor-art frozenread-onlyledger; noassetsacquired. OfficialMarinaPDF visuallylabels8ftpooltable1500x2620, notbadsearchOCR1800x900; bedvsouterextentunspecified. Our9ftcontractisreconstructionassumptionNOTownerrequirement. Suite/source-type references takeprecedence. FreeCCBYtable/balls/sofas candidateslicenseverifiedmetadataonly; import/marks/dimensions/nativequalitypending.",
   "new_rules_launch_requirements": "67f806f269f6 verified. Installed shared gpu_slot now counts packaged games, Godot/Unity/Blender and recognized ML clients, requires utilization below85 for10s and20s cooldown. Root must also account for simulators/encoders/other Metal clients before rendered capture and implement first-frame timeout => shared PAUSED, no SIGKILL. First recovery hour must use one renderer/no concurrent GPU training. Current queued test is explicitly headless; no rendered engine has launched in this turn.",
   "owner_cutoff": "2026-10-29: finish current worker passes and package working components; latest explicit instruction forbids opening game/engine or GPU tests.",
-  "cutoff_manifest": "OWNER_CUTOFF.md"
+  "cutoff_manifest": "OWNER_CUTOFF.md",
+  "delivery_receipt": "delivery/DELIVERY_RECEIPT.json",
+  "candidate_app": "/Users/midir/Builds/OrchardReach-Fidelity-Milestone-20261029.app"
 }
