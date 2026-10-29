@@ -122,6 +122,15 @@ func run() -> void:
 	var state: Dictionary = runtime.inspect_player(player)
 	check("actual Player remains alive below old death plane and outside old rectangle", Game.health == Game.MAX_HEALTH and start.y < -19.9 and start.x > 1494 and player.is_on_floor(), start)
 	check("native registered support distinguishes dry basement from exterior sea", state.get("ok", false) and state.support.state == "supported" and state.water.state == "dry_indoor" and state.residency.state == "resident", state)
+	var before_unbound := player.global_position
+	var before_deaths: int = Game.death_count
+	var old_local_safe: Vector3 = Game.last_safe_position
+	check("source mode cannot write or load the legacy slot without a source service", not Game.save_game() and not Game.load_game() and not Game.has_save())
+	Game.mark_safe_position(Vector3(900, 900, 900), 1.0)
+	check("source checkpoint never overwrites legacy local safe coordinates", Game.last_safe_position == old_local_safe)
+	Game.respawn()
+	check("missing source recovery service cannot teleport through legacy checkpoint", player.global_position == before_unbound and Game.death_count == before_deaths)
+	check("missing source aircraft recovery cannot use legacy checkpoint", not Game.recover_disabled_aircraft() and player.global_position == before_unbound)
 	var idle_saved: Dictionary = runtime.capture_player_pose(player)
 	var idle_position := player.global_position
 	var idle_restored: Dictionary = runtime.restore_player_pose(player, idle_saved.pose) if idle_saved.get("ok", false) else {}

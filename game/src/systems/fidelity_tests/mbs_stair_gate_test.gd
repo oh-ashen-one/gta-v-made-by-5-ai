@@ -2,6 +2,7 @@ extends "res://src/systems/fidelity_tests/mbs_guest_floor_test.gd"
 ## Scoped local native fixture. No source-site/full-building acceptance.
 const Gates=preload("res://src/world/mbs_interior/stair_gates.gd")
 var gates:Node3D
+var bound_lower_floor:Node3D
 var upper_floor:Node3D
 var upper_neighbor:Node3D
 var site:Node3D
@@ -38,10 +39,10 @@ func _native_floor_support(module:Node3D,elevation:float,local_point:Vector3)->b
 	return not hit.is_empty() and module.is_ancestor_of(hit.collider) and absf((hit.position as Vector3).y-point.y)<.015
 
 func _actual_upper_ready()->bool:
-	return _native_floor_support(candidate,0,stair.lower) and _native_floor_support(upper_floor,3.45,stair.upper) and _native_floor_support(upper_neighbor,6.90,stair.upper)
+	return _native_floor_support(bound_lower_floor,0,stair.lower) and _native_floor_support(upper_floor,3.45,stair.upper) and _native_floor_support(upper_neighbor,6.90,stair.upper)
 
 func _readiness(id:String)->Dictionary:
-	if id==lower_id:return {"floor_id":id,"ready":_native_floor_support(candidate,0,stair.lower),"collision_generation":lower_generation}
+	if id==lower_id:return {"floor_id":id,"ready":_native_floor_support(bound_lower_floor,0,stair.lower),"collision_generation":lower_generation}
 	if id==upper_id:
 		if readiness_override=="wrong_id":return {"floor_id":"T1-L48","ready":true,"collision_generation":upper_generation}
 		if readiness_override=="missing_generation":return {"floor_id":id,"ready":true,"collision_generation":""}
@@ -144,14 +145,22 @@ func _next_lower_flight_regression()->bool:
 	var after:=Vector3(before.x,3.45,float(lower_entry.gate_plane_z_local_m)+side*.62)
 	if not check("closed next-flight door remains a real barrier while return lane is open",not capsule_clear(site.to_global(before),site.to_global(after)) and gates.doors[original_id].opened and not gates.doors[lower_entry.gate_id].opened):return false
 	candidate=upper_floor
-	var approach:Vector3=upper_floor.to_local(site.to_global(lower_entry.receiving_approach_local))
-	if not await walk_public_to(approach,"east"):return false
-	# The physically open return leaf is nearer here than the still-closed
-	# departure leaf. Native interaction closes that actual nearest door first;
-	# no forced target or direct set_open call sidesteps production selection.
+	# The current receiving point is still beside the open return leaf.
+	# Diagonally crossing to the other lane intersects that real leaf (native
+	# R5 local failure). Walk straight along this lane beyond its sweep first.
+	var return_clear:=Vector3(stair.upper.x,3.45,float(lower_entry.gate_plane_z_local_m)-side*(Gates.WIDTH+.75))
+	var sweep_start:Vector3=site.to_local(player.global_position)
+	sweep_start.y=3.45 # Analytic floor reference only; never assign actor pose.
+	if not check("full capsule clears straight return-lane exit beside open leaf",capsule_clear(site.to_global(sweep_start),site.to_global(return_clear))):return false
+	walk_stage="clear open upper-return leaf in its own lane"
+	if not await walk_to(site.to_global(return_clear),.14):return false
+	# Close the actual nearest return leaf normally, before any cross-lane
+	# movement; no forced target or direct set_open bypasses native selection.
 	if not await _native_gate_e(false):return false
 	await frames(70)
 	if not check("return leaf is physically closed before native departure selection",gates.report().gates[original_id].physically_closed):return false
+	var approach:Vector3=upper_floor.to_local(site.to_global(lower_entry.receiving_approach_local))
+	if not await walk_public_to(approach,"east"):return false
 	gate_id=lower_entry.gate_id
 	if not await _native_gate_e(true):return false
 	await frames(70)
@@ -182,7 +191,7 @@ func run()->void:
 	_light_fixture()
 	site=Node3D.new();site.name="TranslatedRotatedUnitSite";add_child(site)
 	site.position=Vector3(41,0,-23);site.rotation.y=.37
-	candidate=GuestFloor.new();site.add_child(candidate)
+	candidate=GuestFloor.new();site.add_child(candidate);bound_lower_floor=candidate
 	if not check("real lower guest floor builds",candidate.build(Inventory.floor_record(lower_id)).get("built",false)):finish();return
 	for portal:Dictionary in candidate.portals:
 		if portal.kind=="stair" and portal.wing=="east":stair=portal

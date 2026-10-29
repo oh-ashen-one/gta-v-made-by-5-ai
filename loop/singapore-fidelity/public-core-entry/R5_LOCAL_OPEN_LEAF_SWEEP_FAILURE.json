@@ -1,0 +1,58 @@
+{
+  "observed_utc": "2026-10-29T03:39:11.007783+00:00",
+  "run_name": "mbs-stair-gates-r4",
+  "checkpoint": "8ff1bc22a96382a79a292e4b9c4fa732822b7aa7",
+  "checks": 71,
+  "failed": 1,
+  "failures": [
+    "full capsule clears public corridor segment"
+  ],
+  "supervisor_exit_code": 1,
+  "engine_exit_code": 1,
+  "fatal_errors": [],
+  "timeout": false,
+  "child_reaped": true,
+  "elapsed_wall_s": 62.39,
+  "actual_loaded_local_qa_sha256": "738799183fe08f4bf1d4c1e12f8091573bd97afe573d33cd1bb9efe4acdb82c6",
+  "source_floor_readiness_was_not_failure": true,
+  "blocked_sweep": {
+    "fraction": [
+      0.162109375,
+      0.16796875
+    ],
+    "from": "(12.76686, 3.45, -24.92614)",
+    "hits": [
+      {
+        "box_size": "(1.3, 2.35, 0.075)",
+        "node": "StairFireDoor_east_upper_return",
+        "node_euler": "(0.0, -1.200796, 0.0)",
+        "node_origin": "(12.06546, 3.45, -24.93725)",
+        "physics_euler": "(0.0, -1.200796, 0.0)",
+        "physics_origin": "(12.06546, 3.45, -24.93725)",
+        "shape_class": "BoxShape3D",
+        "shape_global_transform": "[X: (0.361615, 0.0, 0.932327), Y: (0.0, 1.0, 0.0), Z: (-0.932327, 0.0, 0.361615), O: (12.06546, 4.625, -24.93725)]",
+        "shape_local_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (0.0, 1.175, 0.0)]",
+        "shape_name": "VisibleStairFireDoorLeaf"
+      }
+    ],
+    "label": "public corridor/endbay",
+    "sample_transform": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (12.59053, 4.35, -24.65186)]",
+    "to": "(11.72331, 3.45, -23.30292)"
+  },
+  "diagnosis": "After real receiving-floor crossing, normal public route selected a diagonal from upper-return landing to lower-departure approach. The diagonal intersects the still-open upper-return leaf. Strict native full-capsule sweep correctly rejected it before walking. No collision exclusion or production-space edit is justified by this trace.",
+  "repair": "Straight native walk along the current return lane beyond the actual leaf sweep; close the exact nearest return leaf via native E from that clear point; then cross the landing and open the lower-departure leaf with native E. Preserve matching physical sweeps and all current gates.",
+  "source_freeze_coordination": "Original 738799 local QA ran. The post-freeze bound-lower reference correction was not part of that run. R6 freeze includes both that stable readiness reference and the separately diagnosed leaf-clear/close route. Worker leaves bytes untouched after R6 announcement until terminal result.",
+  "evidence": {
+    "run.log": {
+      "path": "/private/tmp/singapore-fidelity/mbs-stair-gates-r4/run.log",
+      "sha256": "92dc6b8233fa169e0e400bb42877f7885d6596142fda824fa33e63475fdea450"
+    },
+    "run.log.meta.json": {
+      "path": "/private/tmp/singapore-fidelity/mbs-stair-gates-r4/run.log.meta.json",
+      "sha256": "bd2578fc43ed2019d01be53931bdd3f24e479f374a405ada774088438cbd3393"
+    }
+  },
+  "native_r6_verified": false,
+  "full_source_route_verified": false,
+  "whole_building_completed": false
+}
