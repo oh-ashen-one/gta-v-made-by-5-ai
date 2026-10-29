@@ -77,3 +77,47 @@ Keep floor-stack native U-stair/door/LRU/retire gates and standalone CabinR2 mot
 Physical stair-gate composition, source public-envelope cuts/hollow source MBS exterior/guest/program assembly, actual city/terrain, whole-building file-save/checkpoint/recovery and atomic camera/actor/physics rebases are still root work. This vertical-system review does not certify a complete MBS, all1850 rooms, default Singapore city, visual quality, performance or owner play acceptance.
 
 Shared routing used cached published revision `a67557283f99`; no fresh cloud-policy verification/publication claim. Root owns source checkpoint/push and queued engine validation.
+
+## Native Hotel R2 follow-up: original findings repaired and exercised
+
+`mbs-hotel-integration-r2` completed2026-10-29T01:40:19.497697Z with **28/28, engine/supervisor0, no fatal errors, no timeout, child reaped**, elapsed25.03s. The following current source identities matched the supervisor at the start of re-review:
+
+| File | R2 SHA256 |
+| --- | --- |
+| `hotel.gd` | `16009eae0dd9136a3c492e6c1ece94ded0597309a35a2357ed578091fe4bfabb` |
+| `mbs_hotel_test.gd` | `647b48e4fb51bec9a44cc361e3e05cf2db1d02b161e865b9418b347c6ea61769` |
+| `floor_stack.gd` | `b9f13864b3f887d7a99a478ac25170a4fb4cf63a80b821f93aef688fc9232795` |
+| `cabins.gd` | `9b3a1694fbd5bba77a942709db4f713bc6e17fb6bfe845bdf6bd08afbd989ae6` |
+| `stair_gates.gd` | `bf7a5ca1156c8ee6d4d1cee6266685500a09d56cbb5134f3eeeabb2be78e38a5` |
+| `source_runtime.gd` | `7e70c9062aba58545c7cf3f635181ee39a80a96082e117dc269de586e18e94b3` |
+
+R1 remains failed: parser/class-resolution errors prevented the test from running; supervisor/engine ended-15 after66.19s and the child was reaped. Explicit bool typing repaired the two inferred boolean declarations. Do not relabel R1 as a clean runtime pass.
+
+### Original Hotel P2 disposition
+
+- **Authority/partial-build/retry P2 CLOSED for the exercised reproduction.** Hotel reserves one same-context authority before constructing/yielding, rejects duplicate controllers before children/context/guard mutation, remembers the build origin revision, and delays Stack guard takeover until native registrations have succeeded. Controlled failure after the first of two shaft registrations retires owned regions, frees owned children, releases its authority/configuration state and leaves Stack's previous guard unchanged. Immutable matching architectural definitions are reused for an exact retry. Native R2 exercises failure, verifies clean owned geometry and retained definitions, retries successfully, then refuses a second live authority without mutation.
+- **Wrong-World P2 CLOSED.** Native separate-World SubViewport construction is refused with zero children/context registrations.
+- **Historical registered-bool travel P2 CLOSED.** Travel now requires the actual current-origin Runtime region plus exact stored residency token and native shaft proof. R2 retires the shaft's source region while native bodies remain and requires travel readiness false.
+- **Leaked owned pins P2 CLOSED.** R2 tears down Hotel while retaining Stack and confirms its shaft owner keys are absent. Other owners' pins are not removed.
+- **Production script-text geometry-ID P2 source repair accepted; source-to-PCK gate remains pending.** Production Site/Hotel identities use explicit versioned manifest/recipe data. This headless source run is not release-PCK identity proof.
+
+### Actual native ride scope
+
+The production Player starts exactly once at the actual source-positioned T3-L5 landing, uses native E/LOS on the real landing door and panel, walks into the physical cabin and requests T3-L6. The manager actually loads the previously cold L7 neighbor before destination readiness. The actual platform carries the actor, then the actor walks onto the native upper floor.
+
+- Initial actor spawns1; maximum physics step **0.0600327m**; no death or QA post-spawn relocation/reparenting.
+- Native platform samples **258/258 supported**; peak actor-to-platform vertical offset **0.057501m**; measured native platform velocity reaches about2.00008m/s.
+- Source support samples **258/258 identify the actual CABIN as supported/dry** during travel, then native support changes to the exact upper inventory floor after exit.
+- Occupied destination unload, retired shaft lease, duplicate authority, failed-build rollback/retry, wrong-world refusal and owned-pin teardown all have passing actual checks.
+
+This earns bounded approval for that source-positioned integrated guest-lift ride and those original repairs. It does not prove the default twelve shafts, every inventory stop, service-lift travel, a public L1-to-upper route, all stair gates, source city, release package, owner controls/feel, visual fidelity or performance. The public-core/L1 worker's later disjoint configuration changes are not silently covered by the R2 hashes.
+
+### Narrow remaining P2: an invalid previous unload guard is released to no guard on Hotel teardown
+
+R2 Hotel `:337-340` restores a previous guard only if `_previous_guard_set` is true **and** that Callable is still valid. If a previously installed Node controller disappears during Hotel's lifetime, `_before_floor_unload` correctly refuses retirement because that prior guard is unavailable. But Hotel teardown takes the `else` branch and calls `release_unload_guard(own)`, leaving the retained Stack with no guard at all. That changes an explicit unknown/unavailable safety decision into permission to retire when ordinary occupancy/pin checks do not express that old controller's constraint.
+
+The native R2 fixture starts with no previous guard, so its passing teardown check does not cover this case. This issue does not invalidate the actual source ride or original owned-pin repair.
+
+**Required repair/gate:** distinguish no previous guard from a previous guard that has become invalid. Only the former may release to none. Preserve an explicit guard-unavailable/fail-closed state for the latter until root resolves ownership; leaving the owned callback to become invalid is safer than implicitly erasing the requirement. A valid previous guard should still be restored exactly. Add a focused Node-callback lifetime test: install a guard, build Hotel, free the original guard owner, confirm refusal while Hotel lives, then remove Hotel and confirm the same unavailable-guard refusal remains. Test ordinary no-prior-guard cleanup and valid-prior-guard restoration separately. No engine was launched by this reviewer for this new case.
+
+All other broad root assembly/save/rebase/render/package limitations above remain. Source readiness dictionaries, native source tests and whole-game acceptance remain distinct.

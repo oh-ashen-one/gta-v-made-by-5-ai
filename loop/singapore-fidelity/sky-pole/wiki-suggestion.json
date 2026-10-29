@@ -1,0 +1,9 @@
+[
+  {
+    "page": "gta-v-made-by-5-ai",
+    "type": "update",
+    "title": "Free overhead camera exposed legacy sky cloud-pole projection pinching",
+    "evidence": "2026-10-28: actual helicopter-world-rendered-r1/03_look_up.png inspected; game/assets/authored/shaders/golden_hour_sky.gdshader before daf5b419a7026eed3bd5b0e62ce1b3006a5b35b0e4cf15cce7ddb40a2d282c84, staged after 75e46d5f8fe9f303930b685fba49c8fd9a1fb4610c3ded91198e5471c0ac8b78; loop/singapore-fidelity/sky-pole/equation-study.json CPU study only",
+    "snippet": "2026-10-28: Free upward helicopter look exposed radial cloud spokes in the original procedural sky. A staged source correction tapers cloud coordinates, radial self-shadow offsets and azimuth lighting together near the overhead pole, with unchanged direct-sky equations outside the cap. CPU convergence is recorded, but Godot compilation and matched rendered views remain pending. Because the sky also supplies ambient/reflection convolution, direct-field invariance does not certify unchanged whole-ground illumination. This is separate from the unresolved rooftop reload-walking gate and the full Singapore/MBS scope."
+  }
+]

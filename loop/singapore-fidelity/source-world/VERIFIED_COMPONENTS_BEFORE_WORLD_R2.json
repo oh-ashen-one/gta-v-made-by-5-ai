@@ -1,0 +1,42 @@
+{
+  "schema": "verified_components_before_source_world_r2",
+  "created_utc": "2026-10-29T04:56:10.457296+00:00",
+  "components": {
+    "source-context-broadphase-r1": {
+      "engine_exit_code": 0,
+      "exit_code": 0,
+      "fatal_errors": [],
+      "child_reaped": true,
+      "elapsed_sec": 90.45,
+      "finished_utc": "2026-10-29T04:22:18.409937+00:00",
+      "checks": 670,
+      "failures": [],
+      "scope": "component native fixture, not full source-world or FPS acceptance",
+      "qualified_microbenchmark": {
+        "broadphase_us": 12283,
+        "canonical_Vector3_constructed": false,
+        "exact_candidate_volumes": 256,
+        "exhaustive_us": 323232,
+        "exhaustive_volume_checks": 48384,
+        "floor_count": 189,
+        "outputs_equal": true,
+        "public_schema_or_source_record_changed": false,
+        "queries": 32,
+        "timings_shared_CPU_microbenchmark_not_gameplay_fps": true,
+        "volumes_per_floor": 8
+      }
+    },
+    "source-save-r2": {
+      "engine_exit_code": 0,
+      "exit_code": 0,
+      "fatal_errors": [],
+      "child_reaped": true,
+      "elapsed_sec": 34.67,
+      "finished_utc": "2026-10-29T04:22:55.600427+00:00",
+      "checks": 82,
+      "failures": [],
+      "scope": "component native fixture, not full source-world or FPS acceptance"
+    }
+  },
+  "full_world_goals_still_pending": true
+}

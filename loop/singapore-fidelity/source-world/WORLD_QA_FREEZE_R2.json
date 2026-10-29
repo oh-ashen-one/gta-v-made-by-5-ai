@@ -1,0 +1,39 @@
+{
+  "schema": "source_world_incremental_native_qa_freeze_v2",
+  "created_utc": "2026-10-29T04:56:10.457296+00:00",
+  "retained_world_r1": {
+    "started_utc": "2026-10-29T04:23:06.900609+00:00",
+    "finished_utc": "2026-10-29T04:27:20.767656+00:00",
+    "engine_exit_code": 1,
+    "exit_code": 1,
+    "fatal_errors": [],
+    "timeout": false,
+    "elapsed_sec": 254.13,
+    "child_reaped": true
+  },
+  "r1_result": {
+    "checks": 9,
+    "failed": 1,
+    "failures": [
+      "bounded source world QA"
+    ],
+    "first8setup_passed": true,
+    "walk_progress_not_recorded": "cannot distinguish blocked target from slow simulation"
+  },
+  "revised_native_run": "pending_root",
+  "bounds": {
+    "internal_wall_s": 600,
+    "outer_driver_s": 660,
+    "walk_command_simulation_s": 15,
+    "arrival_radius_m": 0.65,
+    "car_interaction_distance_m": 4.0
+  },
+  "runtime_profiling_argument": "--profile-source-runtime",
+  "only_code_file_changed": {
+    "path": "game/src/systems/fidelity_tests/source_world_test.gd",
+    "sha256": "3b933e2752ecaff214ed92f1ee715daff33dd0e2f83e5ad3d621a5fc297f2cbe",
+    "bytes": 29504
+  },
+  "child_engine_gpu_git_actions": false,
+  "performance_or_whole_goal_acceptance": false
+}

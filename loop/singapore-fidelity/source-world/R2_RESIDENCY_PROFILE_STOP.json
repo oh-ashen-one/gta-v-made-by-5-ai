@@ -1,0 +1,847 @@
+{
+  "stopped_for": "measured repeated native body inventory validation, not a passing traversal",
+  "at_utc": "2026-10-29T05:03:28.214963+00:00",
+  "last_progress": {
+    "completed_tiles": 9,
+    "diagnostic_cost_us": 200436,
+    "observed_physics_hz_not_performance_acceptance": 1.2780579653604756,
+    "phase": "walk_to_car",
+    "phase_wall_s": 205.575804,
+    "physics_tick": 965,
+    "player": {
+      "alive": true,
+      "architecture_guard": {
+        "configuration_error": "",
+        "configured": true,
+        "geometry_is_land_or_dry_floor": false,
+        "last_transition": {},
+        "masks": 5,
+        "missing_floor_is_known_void": false,
+        "root_assessment_required": true,
+        "root_masks_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+        "schema": "singapore_source_world_architecture_guard_v1"
+      },
+      "busy": false,
+      "current_vehicle": "none",
+      "forward_input": 1.0,
+      "last_move_slide_contacts": [
+        {
+          "collider": {
+            "class": "StaticBody3D",
+            "instance_id": 699744139298,
+            "name": "Collision_terrain|0_0_0_0",
+            "source_feature_id": "terrain|0_0",
+            "source_fragment_id": "terrain|0_0@0_0",
+            "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+            "valid": true
+          },
+          "normal_local_world": [
+            -0.050714652985334396,
+            0.9987128973007202,
+            -0.0007470421260222793
+          ],
+          "position_local_world": [
+            450.1298522949219,
+            7.354353427886963,
+            1083.7705078125
+          ],
+          "remainder": [
+            0.04919964075088501,
+            -0.007619227282702923,
+            0.024266105145215988
+          ],
+          "travel": [
+            0.004611198790371418,
+            -0.0007141062524169683,
+            0.0022743220906704664
+          ]
+        },
+        {
+          "collider": {
+            "class": "StaticBody3D",
+            "instance_id": 699744139298,
+            "name": "Collision_terrain|0_0_0_0",
+            "source_feature_id": "terrain|0_0",
+            "source_fragment_id": "terrain|0_0@0_0",
+            "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+            "valid": true
+          },
+          "normal_local_world": [
+            -0.050714652985334396,
+            0.9987128973007202,
+            -0.0007470421260222793
+          ],
+          "position_local_world": [
+            450.13427734375,
+            7.354581356048584,
+            1083.772705078125
+          ],
+          "remainder": [
+            0.044683266431093216,
+            -0.006919805891811848,
+            0.022038552910089493
+          ],
+          "travel": [
+            0.004485855810344219,
+            0.00023231853265315294,
+            0.0022275527007877827
+          ]
+        },
+        {
+          "collider": {
+            "class": "StaticBody3D",
+            "instance_id": 699744139298,
+            "name": "Collision_terrain|0_0_0_0",
+            "source_feature_id": "terrain|0_0",
+            "source_fragment_id": "terrain|0_0@0_0",
+            "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+            "valid": true
+          },
+          "normal_local_world": [
+            -0.050714652985334396,
+            0.9987128973007202,
+            -0.0007470421260222793
+          ],
+          "position_local_world": [
+            450.1783447265625,
+            7.3568339347839355,
+            1083.79443359375
+          ],
+          "remainder": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "travel": [
+            0.0442751906812191,
+            0.0031969761475920677,
+            0.021852334961295128
+          ]
+        }
+      ],
+      "native_state": {
+        "clearance": {
+          "state": "clear"
+        },
+        "indoor": {
+          "dry_volume_matches": [],
+          "state": "unregistered"
+        },
+        "land": {
+          "provider_id": "singapore-source-domain/land/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+          "state": "unknown"
+        },
+        "ok": true,
+        "origin_revision": 0,
+        "physics_tick": 965,
+        "residency": {
+          "residency_token": "source-world/0_0/generation-6",
+          "state": "resident"
+        },
+        "source_xyz": [
+          450.1600341796875,
+          7.332180500030518,
+          583.794189453125
+        ],
+        "support": {
+          "collider_instance_id": 699744139298,
+          "contact_source_xyz": [
+            450.1600341796875,
+            7.355904579162598,
+            583.794189453125
+          ],
+          "feature_id": "source-terrain-registry|0_0|0",
+          "floor_id": "native_exterior_geometry",
+          "state": "supported",
+          "support_id": "terrain|0_0@0_0@0_0/0"
+        },
+        "territory": {
+          "provider_id": "singapore-source-domain/territory/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+          "state": "inside"
+        },
+        "unresolved": [],
+        "water": {
+          "provider_id": "singapore-source-domain/water/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+          "state": "unknown"
+        }
+      },
+      "on_floor": true,
+      "paused": false,
+      "position": [
+        450.1600341796875,
+        7.332180500030518,
+        1083.794189453125
+      ],
+      "source_controls_held": false,
+      "velocity": [
+        3.2286500930786133,
+        0.0,
+        1.5924254655838013
+      ],
+      "visible": true,
+      "yaw": -2.0290029671748866
+    },
+    "ready_for_play": true,
+    "simulation_s": 16.0833333333337,
+    "source_runtime": {
+      "body_liveness_checks": 15045375,
+      "calls": 2271,
+      "enabled": true,
+      "max_us": 856432,
+      "physics_tick": 965,
+      "registered_regions": 9,
+      "total_us": 245668614
+    },
+    "walk": {
+      "best_remaining_m": 3.2809433937072754,
+      "distance_m": 14.748030621325597,
+      "frames": 265,
+      "label": "walk_to_car",
+      "remaining_m": 3.2809433937072754,
+      "simulation_elapsed_s": 4.3833333333335425,
+      "since_progress_sim_s": 0.03333333333333144,
+      "since_progress_wall_s": 2.273871,
+      "target": [
+        453.0491638183594,
+        7.583680152893066,
+        1085.2191162109375
+      ],
+      "termination_reason": "running",
+      "wall_elapsed_s": 204.104055
+    },
+    "wall_s": 319.907872
+  },
+  "recent_progress": [
+    {
+      "completed_tiles": 9,
+      "diagnostic_cost_us": 103923,
+      "observed_physics_hz_not_performance_acceptance": 1.5929009184766252,
+      "phase": "walk_to_car",
+      "phase_wall_s": 182.985184,
+      "physics_tick": 933,
+      "player": {
+        "alive": true,
+        "architecture_guard": {
+          "configuration_error": "",
+          "configured": true,
+          "geometry_is_land_or_dry_floor": false,
+          "last_transition": {},
+          "masks": 5,
+          "missing_floor_is_known_void": false,
+          "root_assessment_required": true,
+          "root_masks_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+          "schema": "singapore_source_world_architecture_guard_v1"
+        },
+        "busy": false,
+        "current_vehicle": "none",
+        "forward_input": 1.0,
+        "last_move_slide_contacts": [
+          {
+            "collider": {
+              "class": "StaticBody3D",
+              "instance_id": 699744139298,
+              "name": "Collision_terrain|0_0_0_0",
+              "source_feature_id": "terrain|0_0",
+              "source_fragment_id": "terrain|0_0@0_0",
+              "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+              "valid": true
+            },
+            "normal_local_world": [
+              -0.09378479421138763,
+              0.9955922961235046,
+              -0.0007447071257047355
+            ],
+            "position_local_world": [
+              448.4537353515625,
+              7.201475620269775,
+              1082.9306640625
+            ],
+            "remainder": [
+              0.05043674632906914,
+              -0.007814512588083744,
+              0.02493646927177906
+            ],
+            "travel": [
+              0.003348595229908824,
+              -0.0005188209470361471,
+              0.001655581290833652
+            ]
+          },
+          {
+            "collider": {
+              "class": "StaticBody3D",
+              "instance_id": 699744139298,
+              "name": "Collision_terrain|0_0_0_0",
+              "source_feature_id": "terrain|0_0",
+              "source_fragment_id": "terrain|0_0@0_0",
+              "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+              "valid": true
+            },
+            "normal_local_world": [
+              -0.09378479421138763,
+              0.9955922961235046,
+              -0.0007447071257047355
+            ],
+            "position_local_world": [
+              448.4568176269531,
+              7.201765060424805,
+              1082.9322509765625
+            ],
+            "remainder": [
+              0.04728445038199425,
+              -0.007326105609536171,
+              0.02337794005870819
+            ],
+            "travel": [
+              0.003091261489316821,
+              0.00033699808409437537,
+              0.0015585293294861913
+            ]
+          },
+          {
+            "collider": {
+              "class": "StaticBody3D",
+              "instance_id": 699744139298,
+              "name": "Collision_terrain|0_0_0_0",
+              "source_feature_id": "terrain|0_0",
+              "source_fragment_id": "terrain|0_0@0_0",
+              "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+              "valid": true
+            },
+            "normal_local_world": [
+              -0.09378479421138763,
+              0.9955922961235046,
+              -0.0007447071257047355
+            ],
+            "position_local_world": [
+              448.5028991699219,
+              7.206125259399414,
+              1082.955078125
+            ],
+            "remainder": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "travel": [
+              0.04633524268865585,
+              0.005176376085728407,
+              0.022938815876841545
+            ]
+          }
+        ],
+        "native_state": {
+          "clearance": {
+            "state": "clear"
+          },
+          "indoor": {
+            "dry_volume_matches": [],
+            "state": "unregistered"
+          },
+          "land": {
+            "provider_id": "singapore-source-domain/land/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "unknown"
+          },
+          "ok": true,
+          "origin_revision": 0,
+          "physics_tick": 933,
+          "residency": {
+            "residency_token": "source-world/0_0/generation-6",
+            "state": "resident"
+          },
+          "source_xyz": [
+            448.4690856933594,
+            7.180370807647705,
+            582.954833984375
+          ],
+          "support": {
+            "collider_instance_id": 699744139298,
+            "contact_source_xyz": [
+              448.4690856933594,
+              7.202938079833984,
+              582.954833984375
+            ],
+            "feature_id": "source-terrain-registry|0_0|0",
+            "floor_id": "native_exterior_geometry",
+            "state": "supported",
+            "support_id": "terrain|0_0@0_0@0_0/0"
+          },
+          "territory": {
+            "provider_id": "singapore-source-domain/territory/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "inside"
+          },
+          "unresolved": [],
+          "water": {
+            "provider_id": "singapore-source-domain/water/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "unknown"
+          }
+        },
+        "on_floor": true,
+        "paused": false,
+        "position": [
+          448.4690856933594,
+          7.180370807647705,
+          1082.954833984375
+        ],
+        "source_controls_held": false,
+        "velocity": [
+          3.2271203994750977,
+          0.0,
+          1.5955228805541992
+        ],
+        "visible": true,
+        "yaw": -2.029962538499492
+      },
+      "ready_for_play": true,
+      "simulation_s": 15.550000000000352,
+      "source_runtime": {
+        "body_liveness_checks": 13528250,
+        "calls": 2042,
+        "enabled": true,
+        "max_us": 856432,
+        "physics_tick": 933,
+        "registered_regions": 9,
+        "total_us": 223534769
+      },
+      "walk": {
+        "best_remaining_m": 5.168147563934326,
+        "distance_m": 12.854404505109414,
+        "frames": 233,
+        "label": "walk_to_car",
+        "remaining_m": 5.168147563934326,
+        "simulation_elapsed_s": 3.8500000000001915,
+        "since_progress_sim_s": 0.03333333333333499,
+        "since_progress_wall_s": 1.146377,
+        "target": [
+          453.0491638183594,
+          7.583680152893066,
+          1085.2191162109375
+        ],
+        "termination_reason": "running",
+        "wall_elapsed_s": 182.267275
+      },
+      "wall_s": 297.317252
+    },
+    {
+      "completed_tiles": 9,
+      "diagnostic_cost_us": 93688,
+      "observed_physics_hz_not_performance_acceptance": 1.588621340784497,
+      "phase": "walk_to_car",
+      "phase_wall_s": 193.05681,
+      "physics_tick": 949,
+      "player": {
+        "alive": true,
+        "architecture_guard": {
+          "configuration_error": "",
+          "configured": true,
+          "geometry_is_land_or_dry_floor": false,
+          "last_transition": {},
+          "masks": 5,
+          "missing_floor_is_known_void": false,
+          "root_assessment_required": true,
+          "root_masks_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+          "schema": "singapore_source_world_architecture_guard_v1"
+        },
+        "busy": false,
+        "current_vehicle": "none",
+        "forward_input": 1.0,
+        "last_move_slide_contacts": [
+          {
+            "collider": {
+              "class": "StaticBody3D",
+              "instance_id": 699744139298,
+              "name": "Collision_terrain|0_0_0_0",
+              "source_feature_id": "terrain|0_0",
+              "source_fragment_id": "terrain|0_0@0_0",
+              "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+              "valid": true
+            },
+            "normal_local_world": [
+              -0.09378479421138763,
+              0.9955922961235046,
+              -0.0007447071257047355
+            ],
+            "position_local_world": [
+              449.2981872558594,
+              7.281338214874268,
+              1083.3504638671875
+            ],
+            "remainder": [
+              0.05044901371002197,
+              -0.00781452190130949,
+              0.024911781772971153
+            ],
+            "travel": [
+              0.0033493482042104006,
+              -0.0005188119830563664,
+              0.0016539120115339756
+            ]
+          },
+          {
+            "collider": {
+              "class": "StaticBody3D",
+              "instance_id": 699744139298,
+              "name": "Collision_terrain|0_0_0_0",
+              "source_feature_id": "terrain|0_0",
+              "source_fragment_id": "terrain|0_0@0_0",
+              "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+              "valid": true
+            },
+            "normal_local_world": [
+              -0.09378479421138763,
+              0.9955922961235046,
+              -0.0007447071257047355
+            ],
+            "position_local_world": [
+              449.3012390136719,
+              7.281627655029297,
+              1083.35205078125
+            ],
+            "remainder": [
+              0.0472959503531456,
+              -0.00732611445710063,
+              0.023354794830083847
+            ],
+            "travel": [
+              0.0030920282006263733,
+              0.00033747433917596936,
+              0.001556986360810697
+            ]
+          },
+          {
+            "collider": {
+              "class": "StaticBody3D",
+              "instance_id": 699744139298,
+              "name": "Collision_terrain|0_0_0_0",
+              "source_feature_id": "terrain|0_0",
+              "source_fragment_id": "terrain|0_0@0_0",
+              "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+              "valid": true
+            },
+            "normal_local_world": [
+              -0.09378479421138763,
+              0.9955922961235046,
+              -0.0007447071257047355
+            ],
+            "position_local_world": [
+              449.34735107421875,
+              7.285988807678223,
+              1083.3748779296875
+            ],
+            "remainder": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "travel": [
+              0.046346236020326614,
+              0.005177394952625036,
+              0.02291596494615078
+            ]
+          }
+        ],
+        "native_state": {
+          "clearance": {
+            "state": "clear"
+          },
+          "indoor": {
+            "dry_volume_matches": [],
+            "state": "unregistered"
+          },
+          "land": {
+            "provider_id": "singapore-source-domain/land/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "unknown"
+          },
+          "ok": true,
+          "origin_revision": 0,
+          "physics_tick": 949,
+          "residency": {
+            "residency_token": "source-world/0_0/generation-6",
+            "state": "resident"
+          },
+          "source_xyz": [
+            449.31353759765625,
+            7.260230541229248,
+            583.3746337890625
+          ],
+          "support": {
+            "collider_instance_id": 699744139298,
+            "contact_source_xyz": [
+              449.31353759765625,
+              7.282799243927002,
+              583.3746337890625
+            ],
+            "feature_id": "source-terrain-registry|0_0|0",
+            "floor_id": "native_exterior_geometry",
+            "state": "supported",
+            "support_id": "terrain|0_0@0_0@0_0/0"
+          },
+          "territory": {
+            "provider_id": "singapore-source-domain/territory/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "inside"
+          },
+          "unresolved": [],
+          "water": {
+            "provider_id": "singapore-source-domain/water/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "unknown"
+          }
+        },
+        "on_floor": true,
+        "paused": false,
+        "position": [
+          449.31353759765625,
+          7.260230541229248,
+          1083.3746337890625
+        ],
+        "source_controls_held": false,
+        "velocity": [
+          3.2279016971588135,
+          0.0,
+          1.593941569328308
+        ],
+        "visible": true,
+        "yaw": -2.029472693258828
+      },
+      "ready_for_play": true,
+      "simulation_s": 15.816666666667032,
+      "source_runtime": {
+        "body_liveness_checks": 14296750,
+        "calls": 2158,
+        "enabled": true,
+        "max_us": 856432,
+        "physics_tick": 949,
+        "registered_regions": 9,
+        "total_us": 233409445
+      },
+      "walk": {
+        "best_remaining_m": 4.225134372711182,
+        "distance_m": 13.80079599446617,
+        "frames": 249,
+        "label": "walk_to_car",
+        "remaining_m": 4.225134372711182,
+        "simulation_elapsed_s": 4.116666666666871,
+        "since_progress_sim_s": 0.03333333333333499,
+        "since_progress_wall_s": 1.123422,
+        "target": [
+          453.0491638183594,
+          7.583680152893066,
+          1085.2191162109375
+        ],
+        "termination_reason": "running",
+        "wall_elapsed_s": 192.032252
+      },
+      "wall_s": 307.388878
+    },
+    {
+      "completed_tiles": 9,
+      "diagnostic_cost_us": 200436,
+      "observed_physics_hz_not_performance_acceptance": 1.2780579653604756,
+      "phase": "walk_to_car",
+      "phase_wall_s": 205.575804,
+      "physics_tick": 965,
+      "player": {
+        "alive": true,
+        "architecture_guard": {
+          "configuration_error": "",
+          "configured": true,
+          "geometry_is_land_or_dry_floor": false,
+          "last_transition": {},
+          "masks": 5,
+          "missing_floor_is_known_void": false,
+          "root_assessment_required": true,
+          "root_masks_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+          "schema": "singapore_source_world_architecture_guard_v1"
+        },
+        "busy": false,
+        "current_vehicle": "none",
+        "forward_input": 1.0,
+        "last_move_slide_contacts": [
+          {
+            "collider": {
+              "class": "StaticBody3D",
+              "instance_id": 699744139298,
+              "name": "Collision_terrain|0_0_0_0",
+              "source_feature_id": "terrain|0_0",
+              "source_fragment_id": "terrain|0_0@0_0",
+              "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+              "valid": true
+            },
+            "normal_local_world": [
+              -0.050714652985334396,
+              0.9987128973007202,
+              -0.0007470421260222793
+            ],
+            "position_local_world": [
+              450.1298522949219,
+              7.354353427886963,
+              1083.7705078125
+            ],
+            "remainder": [
+              0.04919964075088501,
+              -0.007619227282702923,
+              0.024266105145215988
+            ],
+            "travel": [
+              0.004611198790371418,
+              -0.0007141062524169683,
+              0.0022743220906704664
+            ]
+          },
+          {
+            "collider": {
+              "class": "StaticBody3D",
+              "instance_id": 699744139298,
+              "name": "Collision_terrain|0_0_0_0",
+              "source_feature_id": "terrain|0_0",
+              "source_fragment_id": "terrain|0_0@0_0",
+              "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+              "valid": true
+            },
+            "normal_local_world": [
+              -0.050714652985334396,
+              0.9987128973007202,
+              -0.0007470421260222793
+            ],
+            "position_local_world": [
+              450.13427734375,
+              7.354581356048584,
+              1083.772705078125
+            ],
+            "remainder": [
+              0.044683266431093216,
+              -0.006919805891811848,
+              0.022038552910089493
+            ],
+            "travel": [
+              0.004485855810344219,
+              0.00023231853265315294,
+              0.0022275527007877827
+            ]
+          },
+          {
+            "collider": {
+              "class": "StaticBody3D",
+              "instance_id": 699744139298,
+              "name": "Collision_terrain|0_0_0_0",
+              "source_feature_id": "terrain|0_0",
+              "source_fragment_id": "terrain|0_0@0_0",
+              "source_geometry_identity": "76fe71d5d7260264d4f9318bfe48b73a6bca564578961f05fdecb2d0bf05058f",
+              "valid": true
+            },
+            "normal_local_world": [
+              -0.050714652985334396,
+              0.9987128973007202,
+              -0.0007470421260222793
+            ],
+            "position_local_world": [
+              450.1783447265625,
+              7.3568339347839355,
+              1083.79443359375
+            ],
+            "remainder": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "travel": [
+              0.0442751906812191,
+              0.0031969761475920677,
+              0.021852334961295128
+            ]
+          }
+        ],
+        "native_state": {
+          "clearance": {
+            "state": "clear"
+          },
+          "indoor": {
+            "dry_volume_matches": [],
+            "state": "unregistered"
+          },
+          "land": {
+            "provider_id": "singapore-source-domain/land/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "unknown"
+          },
+          "ok": true,
+          "origin_revision": 0,
+          "physics_tick": 965,
+          "residency": {
+            "residency_token": "source-world/0_0/generation-6",
+            "state": "resident"
+          },
+          "source_xyz": [
+            450.1600341796875,
+            7.332180500030518,
+            583.794189453125
+          ],
+          "support": {
+            "collider_instance_id": 699744139298,
+            "contact_source_xyz": [
+              450.1600341796875,
+              7.355904579162598,
+              583.794189453125
+            ],
+            "feature_id": "source-terrain-registry|0_0|0",
+            "floor_id": "native_exterior_geometry",
+            "state": "supported",
+            "support_id": "terrain|0_0@0_0@0_0/0"
+          },
+          "territory": {
+            "provider_id": "singapore-source-domain/territory/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "inside"
+          },
+          "unresolved": [],
+          "water": {
+            "provider_id": "singapore-source-domain/water/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "unknown"
+          }
+        },
+        "on_floor": true,
+        "paused": false,
+        "position": [
+          450.1600341796875,
+          7.332180500030518,
+          1083.794189453125
+        ],
+        "source_controls_held": false,
+        "velocity": [
+          3.2286500930786133,
+          0.0,
+          1.5924254655838013
+        ],
+        "visible": true,
+        "yaw": -2.0290029671748866
+      },
+      "ready_for_play": true,
+      "simulation_s": 16.0833333333337,
+      "source_runtime": {
+        "body_liveness_checks": 15045375,
+        "calls": 2271,
+        "enabled": true,
+        "max_us": 856432,
+        "physics_tick": 965,
+        "registered_regions": 9,
+        "total_us": 245668614
+      },
+      "walk": {
+        "best_remaining_m": 3.2809433937072754,
+        "distance_m": 14.748030621325597,
+        "frames": 265,
+        "label": "walk_to_car",
+        "remaining_m": 3.2809433937072754,
+        "simulation_elapsed_s": 4.3833333333335425,
+        "since_progress_sim_s": 0.03333333333333144,
+        "since_progress_wall_s": 2.273871,
+        "target": [
+          453.0491638183594,
+          7.583680152893066,
+          1085.2191162109375
+        ],
+        "termination_reason": "running",
+        "wall_elapsed_s": 204.104055
+      },
+      "wall_s": 319.907872
+    }
+  ],
+  "actor_or_collision_constraints_relaxed": false
+}

@@ -181,11 +181,17 @@
     "checks": 7,
     "failed": 0
   },
-  "native_status": "PENDING_ROOT_RUN",
+  "native_status": "ROOT_RUN_PASS62_OF62_CLEAN_EXIT0_REAPED",
   "source_terrain_scene_sha256": "9e864f745e42a6a09a57a0f5ee7677d925e84e05d2dcdd8ca2517a98e80c23d9",
   "offline_helper_sha256": "da5f04d8403d60d230cfbe4878bb4c7e104c36651a0453169729a56f9915a913",
   "python_tests_sha256": "1e1090f596463a0686c98b3e13954c061993182621497da23c4edaf62dc8ae1e",
   "native_qa_sha256": "0a84c8bd9af8dc715cb6131a5a901da1c95e77c119a67e7d08864b15b0b63667",
   "older_coarse_reference_not_current_survey_MBSL1_hydrology_or_wholecity": true,
-  "child_started_engine_GPU_Git": false
+  "child_started_engine_GPU_Git": false,
+  "native_qa": {
+    "checks": 62,
+    "failures": [],
+    "report_sha256": "a4738c783b7c970829425c889d55ffa00d01b33bdcf0c9ae53b7fa4389fd8b55",
+    "parent_verified_engine_supervisor0_no_fatal_reaped": true
+  }
 }

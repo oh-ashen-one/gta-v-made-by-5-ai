@@ -44,3 +44,24 @@ The root must compose cabin and stair unload guards, choose a bounded capacity s
 Full source public-envelope door cuts/hollow assembly, six low-rise mezzanine reconstructions, explicit resort mappings, actual source terrain/city, cabin motion, whole-building source save/recovery/rebase, rendered quality, performance and ordinary owner play remain pending. Reconstructed private geometry/elevations are not as-built survey evidence. Do not certify the full1850-unit or entire Singapore goal from this component.
 
 Shared routing used cached published revision `a67557283f99`; no fresh cloud-policy verification or publication claim was made. Root owns source checkpoint/push and the queued native tests.
+
+## Native R2 follow-up: bounded stack approval
+
+Root's `mbs-floor-stack-r2` is now actually verified: **168 checks, zero failures, engine/supervisor0, fatal/classified errors empty, no timeout, child reaped**, completed2026-10-29T01:31:41.419315Z. Supervisor wall time232.02s and the scene's own elapsed93.526s are separate measurements; neither is an isolated performance result.
+
+Verified native source identities:
+
+| File | R2 SHA256 |
+| --- | --- |
+| `floor_stack.gd` | `b9f13864b3f887d7a99a478ac25170a4fb4cf63a80b821f93aef688fc9232795` |
+| `mbs_floor_stack_test.gd` | `cc707463cad2a5c9d4c2dc222ef84a43a3fa84612d52c9f6abeec3e095dcb38d` |
+| `cabins.gd` | `9b3a1694fbd5bba77a942709db4f713bc6e17fb6bfe845bdf6bd08afbd989ae6` |
+| `source_runtime.gd` | `7e70c9062aba58545c7cf3f635181ee39a80a96082e117dc269de586e18e94b3` |
+
+Those files matched current source at the start of this follow-up. A separate public-core/L1 configuration worker was editing afterward; later bytes/behavior are not automatically covered by these hashes. The Hotel hash recorded in the stack run predates the later Hotel parser repair, so the stack run must not be treated as Hotel-native acceptance.
+
+R1 is retained as **failed94 checks/two failures**, engine/supervisor1, no fatal errors: moving Animatable doors were included by broad `is StaticBody3D` checks because AnimatableBody3D inherits StaticBody3D. The R2 source now recognizes only the expected unscripted, zero-constant-velocity plain structural StaticBody3D as persistent source support. Moving doors remain in complete collision residency, but acquire no floor-support stamp and are not required to have an idle static transform during ordinary motion. R2 logs34 successive native room-door motion observations with floor readiness retained and no support metadata on that AnimatableBody. This is a meaningful runtime repair, not a removed test.
+
+The native stack scene now supports bounded acceptance for the tested cases: actual source T2-L24/L25 placement, native room E/LOS, continuous room/U-stair/full receiving-floor/ascent/descent travel, neighboring collision, spa atrium and roof-pool dry exclusions, occupied/neighbor/pin/explicit unload guard refusal, bounded LRU, stable source door-state reload and fresh generation, and actual retire-before-free stamp removal. Recorded production-Player travel is53.500517m, maximum physics step0.113335m, frame revision0. The remote door state seed remains explicitly a remote empty-floor API fixture, not a native remote interaction claim.
+
+**Bounded approval:** no new concrete P1/P2 found in the tested stack repairs. This does not cover every floor/recipe, the later public-core changes, swimming/pool lower-ceiling clearance, full-package same-ID behavior, complete source-world saves/rebases, rendered quality or default city. Hotel transport has its own separate clean R2 evidence in the companion review. The active public-core worker and root's full assembly still require their own integration gates.

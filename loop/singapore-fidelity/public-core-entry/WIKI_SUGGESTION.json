@@ -5,5 +5,11 @@
     "title": "Public loft and perimeter cores need paired physical cuts and a real arrival aisle",
     "evidence": "2026-10-29 public-core-entry source freeze and STATIC_JOIN_AUDIT.json; current root native gate pending. See public-core-entry/INTEGRATION.md and REQUESTS.json.",
     "snippet": "Source public_l1 core connections require the same explicit request packet in Site and FloorStack. Public glass/trimesh cuts alone are insufficient: Program L1's1.24m guard/rail must have the matching validated cut. T1's old standalone outside point is actually inside the later west-program band; the paired arrival reserves a real2.6m aisle between coherently reflowed check-in/toilet rooms and cuts the outer facade, retaining program coverage. With arrival enabled the production public walking route starts4m outside the actual modeled outer facade. All source positions use actual centroids/common axes; private partitions/openings/L1=0 remain explicit reconstruction. Native/visual/whole-building verification was pending at worker freeze."
+  },
+  {
+    "topic": "Paired U-stair landing circulation",
+    "proposal": "Stacking complete adjacent floors exposes a previous upper landing closure across the next lower-flight lane. Native horizontal test_motion shape identity distinguishes a real pier from UP floor support. Preserve closed-edge interlocks while furnishing both lane apertures; exercise actual next-floor entry, not only isolated ascent.",
+    "status": "SOURCE_FROZEN_PENDING_ROOT_NATIVE_QA_NOT_VERIFIED",
+    "publication": "Root owns wiki-suggest filing/approval; this is an unfiled proposal only."
   }
 ]
