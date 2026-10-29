@@ -1,0 +1,8 @@
+{
+  "core_connections": [
+    {"tower":"T1","side":"east","along_offset_m":-3.0,"width_m":2.0,"height_m":2.45,"corridor_width_m":2.6,"target_floor_elevation_m":0.0},
+    {"tower":"T2","side":"east","along_offset_m":0.0,"width_m":2.0,"height_m":2.45,"corridor_width_m":2.6,"target_floor_elevation_m":0.0},
+    {"tower":"T3","side":"east","along_offset_m":0.0,"width_m":2.0,"height_m":2.45,"corridor_width_m":2.6,"target_floor_elevation_m":0.0}
+  ],
+  "arrival_corridor": {"tower":"T1","side":"west","along_offset_m":0.0,"width_m":2.6,"height_m":2.7,"corridor_width_m":2.6,"target_cross_m":61.40207,"target_floor_elevation_m":0.0,"outside_approach_m":4.5}
+}

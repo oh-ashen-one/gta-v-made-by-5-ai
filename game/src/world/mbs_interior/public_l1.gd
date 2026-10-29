@@ -71,6 +71,8 @@ var _entrance_x := 0.0
 var _door_width := 4.0
 var _door_height := 4.8
 var _east_inset_ratio := 0.14
+var core_connections: Array[Dictionary] = []
+var arrival_corridor: Dictionary = {}
 
 func build(config: Dictionary = {}) -> Dictionary:
 	if _built: return {"built": false, "error": "Already built; construct a new module for another plan."}
@@ -81,6 +83,8 @@ func build(config: Dictionary = {}) -> Dictionary:
 	zones.assign(plan.zones)
 	sections.assign(plan.sections)
 	furniture.assign(plan.furniture)
+	core_connections.assign(plan.get("core_connections",[]))
+	arrival_corridor=plan.get("arrival_corridor",{}).duplicate(true)
 	_assumptions.assign(plan.assumptions)
 	_source_position = plan.position
 	_source_basis = plan.basis
@@ -119,6 +123,8 @@ func build(config: Dictionary = {}) -> Dictionary:
 		if i + 1 < zones.size():
 			corridors.append({"from": zone.id, "to": zones[i + 1].id, "a": zone.center, "b": zones[i + 1].center, "kind": "CONTINUOUS_FULL_HEIGHT_ATRIUM", "metric_status": "HISTORICAL_APPROX_WIDTHS_UNVERIFIED_PRECISE_BOUNDARY"})
 	_build_approach(kit, glass)
+	for connection: Dictionary in core_connections: _build_connection_adapter(kit,glass,connection)
+	if not arrival_corridor.is_empty(): _build_arrival_adapter(kit,glass,arrival_corridor)
 	_build_path()
 	kit.commit(self, "MBSPublicL1Structure", true)
 	glass.commit(self, "MBSPublicL1Glazing", false)
@@ -129,6 +135,8 @@ func build(config: Dictionary = {}) -> Dictionary:
 		_report.public_nodes_built.append(zone.id)
 	_report["planting_visual_stage"] = {"generic_vessel_height_m": TREE_VESSEL_HEIGHT_M, "tree_layout": _tree_layout.duplicate(true), "source_fit": "HISTORICAL_TALL_PLANTED_COMPOSITION_ONLY", "artwork_replica": false, "current_fitout_verified": false}
 	_report["floor_finish_status"] = "ORIGINAL_PALE_STONE_STAGING_MATERIAL_NOT_VERIFIED_INSTALLED_STONE"
+	_report["core_connections"]=core_connections.duplicate(true)
+	_report["arrival_corridor"]=arrival_corridor.duplicate(true)
 	if plan.has("coordinate_context"): _report["coordinate_context"] = plan.coordinate_context.duplicate(true)
 	return report()
 
@@ -138,12 +146,17 @@ func _validated_plan(config: Dictionary) -> Dictionary:
 	if not String(config.get("entrance_side", "bayward")) in ["bayward", "landward"]: return {"valid": false, "error": "Unknown entrance facade."}
 	if not basis.get_scale().is_equal_approx(Vector3.ONE): return {"valid": false, "error": "Module must have unit scale."}
 	if get_parent() is Node3D and not (get_parent() as Node3D).global_basis.get_scale().is_equal_approx(Vector3.ONE): return {"valid": false, "error": "Parent scale would compress source metres."}
-	var door_width: float = float(config.get("entrance_width_m", 4.0))
-	var door_height: float = float(config.get("entrance_height_m", 4.8))
+	var arrival_request: Variant=config.get("arrival_corridor",{})
+	if not arrival_request is Dictionary: return {"valid":false,"error":"Arrival corridor must be an explicit dictionary."}
+	var arrival_on: bool=not arrival_request.is_empty()
+	if arrival_on and not validate_connection_request(arrival_request,true): return {"valid":false,"error":"Incomplete/nonfinite arrival corridor request."}
+	if arrival_on and (String(config.get("entrance_tower","T1"))!="T1" or String(config.get("entrance_side","bayward"))!="bayward"): return {"valid":false,"error":"Reconstructed arrival must join the existing T1 bayward entrance."}
+	var door_width: float = float(config.get("entrance_width_m", arrival_request.get("width_m",4.0) if arrival_on else 4.0))
+	var door_height: float = float(config.get("entrance_height_m", arrival_request.get("height_m",4.8) if arrival_on else 4.8))
 	var clearance: float = float(config.get("corridor_width_m", 6.0))
 	var inset: float = float(config.get("east_upper_wall_inset_ratio", 0.14))
 	var elevation: float = float(config.get("floor_elevation_m", 0.0))
-	var offset: float = float(config.get("entrance_along_offset_m", 0.0))
+	var offset: float = float(config.get("entrance_along_offset_m", arrival_request.get("along_offset_m",0.0) if arrival_on else 0.0))
 	if not is_finite(door_width) or not is_finite(door_height) or not is_finite(clearance) or not is_finite(inset) or not is_finite(elevation) or not is_finite(offset): return {"valid": false, "error": "Dimensions must be finite."}
 	if door_width > MAX_ZONE_LENGTH_M or door_height > MAX_ROOF_HEIGHT_M or clearance > MAX_ZONE_WIDTH_M or absf(offset) > MAX_ZONE_LENGTH_M or absf(elevation) > MAX_ABS_FLOOR_ELEVATION_M: return {"valid": false, "error": "Configuration exceeds supported metric construction domain."}
 	if door_width < 2.4 or door_height < 2.5 or clearance < 4.0 or inset < 0.0 or inset > 0.3: return {"valid": false, "error": "Invalid clear opening or staged wall inclination."}
@@ -202,6 +215,12 @@ func _validated_plan(config: Dictionary) -> Dictionary:
 	assumptions.append({"field": "entrance_and_floor_elevation", "status": "UNVERIFIED_STAGING_OPENING", "floor_elevation_m": elevation, "why": "No current surveyed hotel entrance/elevation was established."})
 	var furniture_plan: Dictionary = _planned_furniture(new_sections, new_zones, inset)
 	if not furniture_plan.get("valid", false): return furniture_plan
+	var connections: Dictionary=_planned_connections(config,new_sections,new_zones,furniture_plan.items,inset,elevation,door_width,door_height,entry_x)
+	if not connections.get("valid",false): return connections
+	if (not connections.core_connections.is_empty() or not connections.arrival_corridor.is_empty()) and not config.has("source_frame"): return {"valid":false,"error":"Integrated public/core/arrival openings require the actual common source frame."}
+	var adapter_budget: float=64.0*connections.core_connections.size()+(64.0 if not connections.arrival_corridor.is_empty() else 0.0)
+	if member_budget+adapter_budget>MAX_STRUCTURAL_MEMBER_BUDGET: return {"valid":false,"error":"Connection adapters exceed bounded member budget."}
+	construction_budget.estimated_member_upper_bound=member_budget+adapter_budget
 	var origin: Array = Reference.DATA.origin_world_xz
 	var south_axis: Array = Reference.DATA.axis_south_xz
 	var bay: Array = Reference.DATA.axis_bayward_xz
@@ -220,6 +239,8 @@ func _validated_plan(config: Dictionary) -> Dictionary:
 	else:
 		placement = Vector3(float(origin[0]), elevation, float(origin[1]))
 	var result := {"valid": true, "construction_budget": construction_budget, "furniture": furniture_plan.items, "zones": new_zones, "sections": new_sections, "assumptions": assumptions, "position": placement, "basis": Basis(Vector3(float(south_axis[0]), 0, float(south_axis[1])), Vector3.UP, Vector3(float(bay[0]), 0, float(bay[1]))), "entrance_tower": String(config.get("entrance_tower", "T1")), "entrance_offset": offset, "entrance_sign": -1.0 if config.get("entrance_side", "bayward") == "landward" else 1.0, "entrance_x": entry_x, "door_width": door_width, "door_height": door_height, "east_inset_ratio": inset}
+	result["core_connections"]=connections.core_connections
+	result["arrival_corridor"]=connections.arrival_corridor
 	if not coordinate_context.is_empty(): result["coordinate_context"] = coordinate_context
 	return result
 
@@ -295,6 +316,10 @@ func _build_side(kit, glass, a: Dictionary, b: Dictionary, side: float) -> void:
 	if side == _entrance_sign:
 		for x: float in [_entrance_x - _door_width * 0.5, _entrance_x + _door_width * 0.5]:
 			if x > ax and x < bx: cuts.append((x - ax) / (bx - ax))
+	for connection: Dictionary in core_connections:
+		if float(connection.side_sign)!=side: continue
+		for x: float in [float(connection.center_x)-float(connection.width_m)*.5,float(connection.center_x)+float(connection.width_m)*.5]:
+			if x>ax and x<bx: cuts.append((x-ax)/(bx-ax))
 	cuts.sort()
 	for j in cuts.size() - 1:
 		var u0: float = cuts[j]
@@ -302,14 +327,13 @@ func _build_side(kit, glass, a: Dictionary, b: Dictionary, side: float) -> void:
 		var lo := _section_at(lerpf(ax, bx, u0))
 		var hi := _section_at(lerpf(ax, bx, u1))
 		var mid_x := lerpf(ax, bx, (u0 + u1) * 0.5)
-		var gap: bool = side == _entrance_sign and absf(mid_x - _entrance_x) < _door_width * 0.5 - 0.0001
-		var bottom: float = _door_height if gap else 0.0
+		var bottom: float = _opening_height(side,mid_x)
 		_wall_patch(kit, glass, lo, hi, side, bottom)
 	# Side steelwork is staged RHS-like trusses/transoms, not room floors.
 	var divisions := maxi(1, int(ceil((bx - ax) / 5.0)))
 	for k in divisions + 1:
 		var x := lerpf(ax, bx, float(k) / divisions)
-		if side == _entrance_sign and absf(x - _entrance_x) < _door_width * 0.5 + 0.15: continue
+		if _opening_near(side,x,.15): continue
 		var section := _section_at(x)
 		var p0 := _edge(section, side)
 		var top := _edge(section, side, section.height_m)
@@ -365,7 +389,9 @@ func _build_approach(kit, glass) -> void:
 		# ninety degrees OUTSIDE its edges, rather than sealing a tested doorway.
 		var leaf_x := side * (_door_width * 0.5 + 0.12)
 		var hinge := at + Vector3(leaf_x, 0, 0)
-		var tip := hinge + Vector3(0, 0, _entrance_sign * 1.10)
+		# In a reconstructed arrival corridor, park leaves into the tall loft
+		# rather than blocking the perimeter corridor's parallel through-route.
+		var tip := hinge + Vector3(0, 0, _entrance_sign * (-1.10 if not arrival_corridor.is_empty() else 1.10))
 		var leaf_h := minf(3.40, _door_height - 0.24)
 		kit.box(frame, at + Vector3(side * (_door_width * 0.5 + 0.08), _door_height * 0.5, 0), Vector3(0.12, _door_height, 0.16))
 		glass.quad(Looks.get_mat("glass_clear"), hinge + Vector3.UP * 0.10, tip + Vector3.UP * 0.10, tip + Vector3.UP * leaf_h, hinge + Vector3.UP * leaf_h)
@@ -591,7 +617,8 @@ func _build_path() -> void:
 	var entry_index := 0
 	for i in zones.size():
 		if zones[i].tower == _entrance_tower: entry_index = i
-	public_path_local = [portal_local.outside, portal_local.inside, zones[entry_index].center]
+	if arrival_corridor.is_empty(): public_path_local = [portal_local.outside, portal_local.inside, zones[entry_index].center]
+	else: public_path_local.assign(arrival_corridor.local_route)
 	for i in range(entry_index + 1, zones.size()): public_path_local.append(zones[i].center)
 	for i in range(zones.size() - 2, -1, -1): public_path_local.append(zones[i].center)
 
@@ -604,7 +631,11 @@ func walking_route_world(include_return: bool = false) -> Array[Vector3]:
 
 func doorway_world() -> Dictionary:
 	if not _built: return {}
-	return {"center": to_global(portal_local.hotel_entrance), "outside": to_global(portal_local.outside), "inside": to_global(portal_local.inside), "normal": global_basis.z * _entrance_sign, "metric_verified": false}
+	var result: Dictionary={"center": to_global(portal_local.hotel_entrance), "outside": to_global(portal_local.outside), "inside": to_global(portal_local.inside), "normal": global_basis.z * _entrance_sign, "metric_verified": false}
+	if portal_local.has("actual_outer_facade"):
+		result["actual_outer_facade"]=to_global(portal_local.actual_outer_facade)
+		result["external_arrival"]=to_global(portal_local.external_arrival)
+	return result
 
 func join_probes_local(inset: float = 0.75) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -618,9 +649,13 @@ func join_probes_local(inset: float = 0.75) -> Array[Dictionary]:
 			var center := _edge(section, side)
 			var toward := Vector3(0, 0, -side)
 			var intentional_door: bool = side == _entrance_sign and absf(x - _entrance_x) < _door_width * 0.5 + 0.5
+			var opening_width: float=_door_width
+			for connection: Dictionary in core_connections:
+				if float(connection.side_sign)==side and absf(x-float(connection.center_x))<float(connection.width_m)*.5+.5:
+					intentional_door=true;opening_width=connection.width_m
 			var escape_pairs: Array[Dictionary] = []
 			var offsets: Array[float] = [-0.35, 0.0, 0.35]
-			if intentional_door: offsets = [-_door_width * 0.5 - 1.0, _door_width * 0.5 + 1.0]
+			if intentional_door: offsets = [-opening_width * 0.5 - 1.0, opening_width * 0.5 + 1.0]
 			for offset: float in offsets:
 				var at := _edge(_section_at(x + offset), side)
 				escape_pairs.append({"inside": at + toward * inset, "outside": at - toward, "x_offset": offset})
@@ -633,3 +668,168 @@ func report() -> Dictionary:
 	result["metres_per_unit_preserved"] = global_basis.get_scale().is_equal_approx(Vector3.ONE)
 	result["integration_requirements"] = ["Replace old solid MBS tower/podium collision with actual hollow floor/wall shells; do not insert this into solids.", "Migrate the entire complex into the uncompressed geography frame including Bayfront Avenue and separated retail; do not leave duplicate legacy MBS in its fictional frame.", "This is L1 stage only: current exact metric plans/elevations/doors and all room/service/upper/retail inventories remain incomplete.", "Expand source-world player/aircraft/save bounds consistently before traversing the full real site.", "Render against actual MBS reference photos and measure integrated source boundaries; standalone tests are not whole-world/fidelity acceptance."]
 	return result
+
+static func default_core_connection_requests(elevation_m: float = 0.0) -> Array[Dictionary]:
+	var result: Array[Dictionary]=[]
+	for tower: String in ["T1","T2","T3"]:
+		result.append({"tower":tower,"side":"east","along_offset_m":-3.0 if tower=="T1" else 0.0,"width_m":2.0,"height_m":2.45,"corridor_width_m":2.6,"target_floor_elevation_m":elevation_m})
+	return result
+
+static func default_arrival_request(elevation_m: float = 0.0) -> Dictionary:
+	return {"tower":"T1","side":"west","along_offset_m":0.0,"width_m":2.6,"height_m":2.7,"corridor_width_m":2.6,"target_cross_m":61.40207,"target_floor_elevation_m":elevation_m,"outside_approach_m":4.5}
+
+static func _connection_number(value: Variant) -> bool:
+	return typeof(value) in [TYPE_INT,TYPE_FLOAT] and is_finite(float(value))
+
+static func validate_connection_request(request: Variant,arrival: bool = false) -> bool:
+	if not request is Dictionary: return false
+	var keys: Array=["tower","side","along_offset_m","width_m","height_m","corridor_width_m","target_floor_elevation_m"]
+	if arrival: keys.append_array(["target_cross_m","outside_approach_m"])
+	if request.size()!=keys.size(): return false
+	for key: String in keys:
+		if not request.has(key): return false
+	if not request.tower is String or not request.tower in ["T1","T2","T3"] or not request.side is String or not request.side in ["east","west"]: return false
+	for key: String in keys:
+		if key in ["tower","side"]: continue
+		if not _connection_number(request[key]): return false
+	if absf(float(request.along_offset_m))>10 or float(request.width_m)<2.0 or float(request.width_m)>3.0 or float(request.height_m)<2.2 or float(request.height_m)>3.0 or float(request.corridor_width_m)<2.6 or float(request.corridor_width_m)>4.0 or absf(float(request.target_floor_elevation_m))>MAX_ABS_FLOOR_ELEVATION_M: return false
+	if arrival and (request.tower!="T1" or request.side!="west" or absf(float(request.along_offset_m))>.0001 or float(request.width_m)<2.4 or float(request.height_m)<2.5 or float(request.target_cross_m)<45 or float(request.target_cross_m)>90 or float(request.outside_approach_m)<2.0 or float(request.outside_approach_m)>7.0): return false
+	return true
+
+func _planning_edge(section: Dictionary,side: float,y: float,inset: float) -> Vector3:
+	var p: Vector3=section.center;p.y=y
+	p.z+=side*float(section.width_m)*.5
+	if side<0: p.z+=float(section.width_m)*inset*y/float(section.height_m)
+	return p
+
+func _connection_source(tower_id: String,delta: Array,elevation: float) -> Array:
+	for source: Dictionary in Reference.DATA.towers:
+		if source.tower!=tower_id: continue
+		var anchor: Array=source.centroid_world_xz
+		var x: Array=Reference.DATA.axis_south_xz;var z: Array=Reference.DATA.axis_bayward_xz
+		return [float(anchor[0])+float(x[0])*float(delta[0])+float(z[0])*float(delta[2]),elevation+float(delta[1]),float(anchor[1])+float(x[1])*float(delta[0])+float(z[1])*float(delta[2])]
+	return []
+
+func _connection_volume(tower: String,id: String,zone: Dictionary,start: Vector3,end: Vector3,width: float,elevation: float) -> Dictionary:
+	# Geometry is local and bounded; canonical centres use the original DOUBLE
+	# source tower anchor before any engine vector/global transform conversion.
+	var center: Vector3=(start+end)*.5
+	var lo: float=minf(start.y,end.y)-.30
+	var hi: float=maxf(start.y,end.y)+2.60
+	return {"schema":"singapore_upright_obox_v1","volume_id":id+"-adapter-dry","center_xyz":_connection_source(tower,[float(center.x-(zone.center as Vector3).x),(lo+hi)*.5,float(center.z-(zone.center as Vector3).z)],elevation),"half_extents_xyz":[width*.5,(hi-lo)*.5,absf(end.z-start.z)*.5],"axis_x_xyz":[Reference.DATA.axis_south_xz[0],0.0,Reference.DATA.axis_south_xz[1]],"axis_z_xyz":[Reference.DATA.axis_bayward_xz[0],0.0,Reference.DATA.axis_bayward_xz[1]],"dry":true}
+
+func _planned_connections(config: Dictionary,profile: Array[Dictionary],anchors: Array[Dictionary],items: Array,inset: float,elevation: float,entry_width: float,entry_height: float,entry_x: float) -> Dictionary:
+	var requests: Variant=config.get("core_connections",[])
+	if not requests is Array or requests.size()>6: return {"valid":false,"error":"Core connections require a bounded explicit array."}
+	var result: Array[Dictionary]=[];var seen: Dictionary={}
+	for request: Variant in requests:
+		if not validate_connection_request(request,false): return {"valid":false,"error":"Incomplete/nonfinite core aperture request."}
+		var zone: Dictionary={}
+		for anchor: Dictionary in anchors:
+			if anchor.tower==request.tower: zone=anchor;break
+		var side: float=-1.0 if request.side=="east" else 1.0
+		var id: String=String(request.tower)+"-L1-"+String(request.side)+"-core"
+		if seen.has(id): return {"valid":false,"error":"Duplicate core aperture."}
+		seen[id]=true
+		var x: float=(zone.center as Vector3).x+float(request.along_offset_m)
+		var width: float=request.width_m;var height: float=request.height_m
+		var delta: float=float(request.target_floor_elevation_m)-elevation
+		if absf(delta)>.20 or height-maxf(0,delta)<2.2 or absf(float(request.along_offset_m))+width*.5+.25>float(zone.length_m)*.5: return {"valid":false,"error":"Unsupported core height/footprint join."}
+		var entrance_side: float=-1.0 if config.get("entrance_side","bayward")=="landward" else 1.0
+		if side==entrance_side and absf(x-entry_x)<(width+entry_width)*.5+.30: return {"valid":false,"error":"Core aperture overlaps the public entrance."}
+		var sample:=_sample_sections(profile,x)
+		var wall:=_planning_edge(sample,side,0,inset)
+		var inward_edge: float=wall.z
+		for at: float in [x-width*.5,x+width*.5]:
+			var edge:=_planning_edge(_sample_sections(profile,at),side,0,inset)
+			inward_edge=maxf(inward_edge,edge.z) if side<0 else minf(inward_edge,edge.z)
+		var target_edge: float=(zone.center as Vector3).z+side*float(zone.width_m)*.5
+		var start:=Vector3(x,.004,inward_edge-side*1.50)
+		var end:=Vector3(x,delta+.004,target_edge+side*(float(request.corridor_width_m)*.5+.45))
+		var corridor:=Vector3(x,delta,target_edge+side*float(request.corridor_width_m)*.5)
+		var low_z:=minf((sample.center as Vector3).z,end.z)
+		var high_z:=maxf((sample.center as Vector3).z,end.z)
+		for item: Dictionary in items:
+			var p: Vector3=item.position;var size: Vector3=item.size
+			if absf(p.x-x)<size.x*.5+width*.5+.45 and p.z+size.z*.5>low_z and p.z-size.z*.5<high_z: return {"valid":false,"error":"Core approach intersects retained public furnishing: "+String(item.id)}
+		var data: Dictionary={"id":id,"tower":request.tower,"side":request.side,"side_sign":side,"target_floor_id":String(request.tower)+"-L1","center_x":x,"along_offset_m":request.along_offset_m,"width_m":width,"height_m":height,"corridor_width_m":request.corridor_width_m,"floor_delta_m":delta,"glass_threshold_local":wall,"adapter_start_local":start,"adapter_end_local":end,"target_corridor_local":corridor,"local_route":[sample.center,start,Vector3(x,.004,wall.z),corridor],"target_source_xyz":_connection_source(request.tower,[float(request.along_offset_m),0,side*(float(zone.width_m)*.5+float(request.corridor_width_m)*.5)],float(request.target_floor_elevation_m)),"source_dry_volumes":[_connection_volume(request.tower,id,zone,start,end,width,elevation)],"metric_status":"RECONSTRUCTED_APERTURE_AND_ADAPTER_NOT_SURVEYED_DOOR","opening_height_difference_m":delta}
+		result.append(data)
+	var arrival: Dictionary={}
+	var raw_arrival: Dictionary=config.get("arrival_corridor",{})
+	if not raw_arrival.is_empty():
+		if not validate_connection_request(raw_arrival,true): return {"valid":false,"error":"Incomplete/nonfinite arrival corridor request."}
+		if seen.has("T1-L1-west-core"): return {"valid":false,"error":"Arrival owns the one matched T1 west guard aperture."}
+		var zone: Dictionary=anchors[-1]
+		var x: float=(zone.center as Vector3).x
+		var delta: float=float(raw_arrival.target_floor_elevation_m)-elevation
+		if absf(delta)>.0001 or absf(entry_width-float(raw_arrival.width_m))>.0001 or absf(entry_height-float(raw_arrival.height_m))>.0001 or absf(entry_x-x)>.0001: return {"valid":false,"error":"Arrival and existing public entrance must share exact threshold/height/aperture."}
+		var outside_z: float=(zone.center as Vector3).z+float(raw_arrival.target_cross_m)*.5+float(raw_arrival.outside_approach_m)
+		var inside_z: float=(zone.center as Vector3).z+float(zone.width_m)*.5-1.50
+		var start:=Vector3(x,.004,inside_z)
+		var end:=Vector3(x,.004,outside_z)
+		var outer:=Vector3(x,0,(zone.center as Vector3).z+float(raw_arrival.target_cross_m)*.5)
+		var corridor:=Vector3(x,0,(zone.center as Vector3).z+float(zone.width_m)*.5+float(raw_arrival.corridor_width_m)*.5)
+		if outside_z<=inside_z+4.0: return {"valid":false,"error":"Arrival has no actual exterior-to-loft corridor length."}
+		var id:="T1-L1-west-arrival"
+		for item: Dictionary in items:
+			var p: Vector3=item.position;var size: Vector3=item.size
+			if absf(p.x-x)<size.x*.5+float(raw_arrival.width_m)*.5+.45 and p.z+size.z*.5>float((zone.center as Vector3).z) and p.z-size.z*.5<outside_z: return {"valid":false,"error":"Arrival approach intersects retained public furnishing: "+String(item.id)}
+		arrival={"id":id,"tower":"T1","side":"west","target_floor_id":"T1-L1","width_m":raw_arrival.width_m,"adapter_width_m":float(raw_arrival.width_m)+1.0,"height_m":raw_arrival.height_m,"center_x":x,"along_offset_m":0.0,"target_cross_m":raw_arrival.target_cross_m,"outer_facade_local":outer,"adapter_start_local":start,"adapter_end_local":end,"target_corridor_local":corridor,"local_route":[end-Vector3(0,0,.50),outer+Vector3(0,.004,.8),outer+Vector3(0,.004,-.8),corridor,Vector3(x,.004,(zone.center as Vector3).z+float(zone.width_m)*.5),Vector3(x,0,(zone.center as Vector3).z)],"target_source_xyz":_connection_source("T1",[0,0,float(zone.width_m)*.5+float(raw_arrival.corridor_width_m)*.5],float(raw_arrival.target_floor_elevation_m)),"outer_facade_source_xyz":_connection_source("T1",[0,0,float(raw_arrival.target_cross_m)*.5],float(raw_arrival.target_floor_elevation_m)),"source_dry_volumes":[_connection_volume("T1",id,zone,start,end,float(raw_arrival.width_m)+1.0,elevation)],"metric_status":"RECONSTRUCTED_EXTERIOR_ARRIVAL_AND_PERIMETER_PARTITIONS_NOT_AS_BUILT","floor_delta_m":0.0}
+	return {"valid":true,"core_connections":result,"arrival_corridor":arrival}
+
+func _opening_height(side: float,x: float) -> float:
+	if side==_entrance_sign and absf(x-_entrance_x)<_door_width*.5-.0001: return _door_height
+	for connection: Dictionary in core_connections:
+		if float(connection.side_sign)==side and absf(x-float(connection.center_x))<float(connection.width_m)*.5-.0001: return connection.height_m
+	return 0.0
+
+func _opening_near(side: float,x: float,margin: float) -> bool:
+	if side==_entrance_sign and absf(x-_entrance_x)<_door_width*.5+margin: return true
+	for connection: Dictionary in core_connections:
+		if float(connection.side_sign)==side and absf(x-float(connection.center_x))<float(connection.width_m)*.5+margin: return true
+	return false
+
+func _matched_beam(kit,material: Material,a: Vector3,b: Vector3,width: float,height: float) -> void:
+	kit.beam(material,a,b,width,height)
+	var z: Vector3=(b-a).normalized();var x: Vector3=Vector3.UP.cross(z)
+	if x.length_squared()<1e-6: x=Vector3.RIGHT.cross(z)
+	x=x.normalized();var y: Vector3=z.cross(x).normalized()
+	kit.col_box(Vector3(width,height,a.distance_to(b)),(a+b)*.5,Basis(x,y,z))
+
+func _adapter_slab(kit,connection: Dictionary) -> void:
+	var a: Vector3=connection.adapter_start_local;var b: Vector3=connection.adapter_end_local
+	var half: float=float(connection.get("adapter_width_m",connection.width_m))*.5
+	var low: Vector3=a if a.z<b.z else b;var high: Vector3=b if a.z<b.z else a
+	_floor_prism(kit,Vector3(a.x-half,low.y,low.z),Vector3(a.x+half,low.y,low.z),Vector3(a.x+half,high.y,high.z),Vector3(a.x-half,high.y,high.z))
+
+func _connection_frame(kit,glass,id: String,center: Vector3,width: float,height: float,outward: float,inclined: bool,park_outwards: bool = false) -> void:
+	var steel:=Looks.get_mat("steel_satin")
+	for side: float in [-1.0,1.0]:
+		var x: float=center.x+side*(width*.5+.07)
+		var base: Vector3=_edge(_section_at(x),outward,0) if inclined else Vector3(x,center.y,center.z)
+		var top: Vector3=_edge(_section_at(x),outward,height) if inclined else base+Vector3.UP*height
+		_matched_beam(kit,steel,base,top,.10,.12)
+		var hinge:=base+Vector3(side*.07,.08,0)
+		var tip:=hinge+Vector3(0,0,outward*(.95 if park_outwards else -.95))
+		var leaf_height: float=height-.22
+		glass.quad(Looks.get_mat("glass_clear"),hinge,tip,tip+Vector3.UP*leaf_height,hinge+Vector3.UP*leaf_height)
+		kit.col_box(Vector3(.05,leaf_height,.95),hinge.lerp(tip,.5)+Vector3.UP*leaf_height*.5)
+		for at: Vector3 in [hinge,tip]: _matched_beam(kit,steel,at,at+Vector3.UP*leaf_height,.035,.035)
+		for y: float in [0,leaf_height]: _matched_beam(kit,steel,hinge+Vector3.UP*y,tip+Vector3.UP*y,.035,.035)
+	var left: Vector3=_edge(_section_at(center.x-width*.5),outward,height+.07) if inclined else center+Vector3(-width*.5,height+.07,0)
+	var right: Vector3=_edge(_section_at(center.x+width*.5),outward,height+.07) if inclined else center+Vector3(width*.5,height+.07,0)
+	_matched_beam(kit,steel,left,right,.12,.12)
+	var marker:=Node3D.new();marker.name=id.validate_node_name();marker.position=center
+	marker.set_meta("reconstructed_public_connection",true);add_child(marker)
+
+func _build_connection_adapter(kit,glass,connection: Dictionary) -> void:
+	_adapter_slab(kit,connection)
+	_connection_frame(kit,glass,connection.id,connection.glass_threshold_local,connection.width_m,connection.height_m,connection.side_sign,true)
+	_assumptions.append({"field":connection.id,"status":"RECONSTRUCTED_PUBLIC_CORE_OPENING_NOT_SURVEYED","why":"Physical glass and matching perimeter guard are split only at the validated aperture; target is the source-positioned L1 corridor, never a teleported duplicate."})
+
+func _build_arrival_adapter(kit,glass,connection: Dictionary) -> void:
+	_adapter_slab(kit,connection)
+	_connection_frame(kit,glass,connection.id,connection.outer_facade_local,connection.width_m,connection.height_m,1.0,false,true)
+	portal_local["actual_outer_facade"]=connection.outer_facade_local
+	portal_local["external_arrival"]=connection.local_route[0]
+	_assumptions.append({"field":connection.id,"status":"RECONSTRUCTED_ACTUAL_SOURCE_FACADE_ARRIVAL_NOT_AS_BUILT_LAYOUT","why":"An explicit reserved corridor passes between coherently reflowed west programs and through matching facade/guard openings; no actor relocation or disabled wall."})

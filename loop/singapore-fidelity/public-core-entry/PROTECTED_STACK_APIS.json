@@ -1,0 +1,10 @@
+{
+  "release_unload_guard": {
+    "sha256": "1b06877d1ee30243914918845fa04b9b55e5d2011df1879e71917055b9f883fa",
+    "source": "func release_unload_guard(expected: Callable) -> bool:\n\tif not _unload_guard_set or _unload_guard != expected: return false\n\t_unload_guard = Callable(); _unload_guard_set = false; _unload_guard_owner = null\n\treturn true\n"
+  },
+  "_is_stable_floor_structure": {
+    "sha256": "8c31676a09152a3dfaba08d7e9df1ec7501eefe57cac887281bd421a905d47ec",
+    "source": "func _is_stable_floor_structure(body: Variant) -> bool:\n\t# AnimatableBody3D INHERITS StaticBody3D. A broad `is StaticBody3D`\n\t# therefore includes the moving SwingDoors and is not a support policy.\n\tif not body is StaticBody3D or body is AnimatableBody3D or body.get_class()!=\"StaticBody3D\" or body.get_script()!=null: return false\n\tif not body.constant_linear_velocity.is_zero_approx() or not body.constant_angular_velocity.is_zero_approx(): return false\n\tvar module: Node=body.get_parent()\n\tif not module is GuestFloor: return false\n\tvar expected: String=\"ProgramFloorSolidCollision\" if module is ProgramFloor else \"GuestFloorSolidCollision\"\n\treturn String(body.name)==expected\n"
+  }
+}

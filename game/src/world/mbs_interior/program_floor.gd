@@ -66,6 +66,8 @@ static func program_plan(record: Dictionary) -> Dictionary:
 	if length_m<30.0 or length_m>320.0 or cross_m<28.0 or cross_m>180.0 or height<2.7 or height>5.25 or float(geo.storey_height_m)<height+SLAB or float(geo.storey_height_m)>5.5 or bay<6.2 or bay>10.0 or corridor<2.6 or corridor>5.0: return {"valid":false,"error":"Unsupported bounded program-floor construction dimensions."}
 	if float(geo.void_min_z_m)>0 or float(geo.void_max_z_m)<0 or float(geo.void_min_z_m)<-cross_m*.5 or float(geo.void_max_z_m)>cross_m*.5: return {"valid":false,"error":"Atrium boundaries do not fit program floor."}
 	if not bool(geo.get("atrium_void_active",false)) and (absf(float(geo.void_min_z_m))>.001 or absf(float(geo.void_max_z_m))>.001): return {"valid":false,"error":"Inactive void requires zero boundaries."}
+	var public_adapters:=_validated_public_l1_adapters(record,geo)
+	if not public_adapters.get("valid",false): return public_adapters
 	var requested: Array[Dictionary] = []
 	if record.has("program_spaces"):
 		if not record.program_spaces is Array: return {"valid":false,"error":"Invalid program-space inventory."}
@@ -123,8 +125,25 @@ static func program_plan(record: Dictionary) -> Dictionary:
 			assigned.append(cells[index]);total_weight+=float(cells[index].weight)
 		var x := -length_m*.5+bay
 		var run := length_m-bay*2.0
-		for entry: Dictionary in assigned:
+		var reserve_arrival: bool=side>0 and not public_adapters.arrival.is_empty()
+		var split_index:=int(float(assigned.size())*.5)
+		var left_weight:=0.0;var right_weight:=0.0
+		var gap_left:=0.0;var gap_right:=0.0
+		if reserve_arrival:
+			if split_index<1 or split_index>=assigned.size(): return {"valid":false,"error":"Arrival needs coherent programs on both sides, not deleted spaces."}
+			gap_left=float(public_adapters.arrival.center_x)-float(public_adapters.arrival.width_m)*.5-WALL*.5
+			gap_right=float(public_adapters.arrival.center_x)+float(public_adapters.arrival.width_m)*.5+WALL*.5
+			for index in assigned.size():
+				if index<split_index: left_weight+=float(assigned[index].weight)
+				else: right_weight+=float(assigned[index].weight)
+		for entry_index in assigned.size():
+			var entry: Dictionary=assigned[entry_index]
 			var frontage := run*float(entry.weight)/total_weight
+			if reserve_arrival:
+				if entry_index<split_index: frontage=(gap_left-(-length_m*.5+bay))*float(entry.weight)/left_weight
+				else:
+					if entry_index==split_index: x=gap_right
+					frontage=(length_m*.5-bay-gap_right)*float(entry.weight)/right_weight
 			if frontage<7.0: return {"valid":false,"error":"Program cells cannot retain full furniture/entry aisle: "+String(entry.id)}
 			var cell := entry.duplicate(true)
 			cell.merge({"wing":wing_name,"center_x":x+frontage*.5,"frontage_m":frontage,"depth_m":depth,"inner_z":inside+side*corridor,"side":side,"entry_u":-frontage*.5+1.0,"private_asbuilt_verified":false},true)
@@ -144,7 +163,31 @@ static func program_plan(record: Dictionary) -> Dictionary:
 		else:
 			var terminal: Dictionary={"SHOPPES":"L1","EXPO":"L5","CASINO":"L4","THEATRE":"L2","MUSEUM":"L3"}
 			has_upper=String(record.level)!=String(terminal.get(String(record.get("building","")),""))
-	return {"valid":true,"rooms":planned,"wings":wings,"core_programs":cores,"geometry":geo,"geometry_status":geometry_status,"floor_id":String(record.id),"objects":all_objects,"object_count":all_objects.size(),"space_count":requested.size(),"open_roof":String(record.program) in ["roof_pool_dining","public_observation"],"has_upper_floor":has_upper,"private_asbuilt_verified":false}
+	return {"valid":true,"rooms":planned,"wings":wings,"core_programs":cores,"geometry":geo,"geometry_status":geometry_status,"floor_id":String(record.id),"objects":all_objects,"object_count":all_objects.size(),"space_count":requested.size(),"public_l1_adapters":public_adapters,"open_roof":String(record.program) in ["roof_pool_dining","public_observation"],"has_upper_floor":has_upper,"private_asbuilt_verified":false}
+
+static func _validated_public_l1_adapters(record: Dictionary,g: Dictionary) -> Dictionary:
+	var cuts: Variant=g.get("atrium_core_openings",[])
+	var arrival: Variant=g.get("public_arrival_corridor",{})
+	if not cuts is Array or cuts.size()>2 or not arrival is Dictionary: return {"valid":false,"error":"Bounded explicit L1 cuts/arrival dictionary required."}
+	if (not cuts.is_empty() or not arrival.is_empty()) and (record.get("level","")!="L1" or not bool(g.atrium_void_active)): return {"valid":false,"error":"Public apertures belong only to an actual L1 atrium edge."}
+	var seen: Dictionary={}
+	for cut: Variant in cuts:
+		if not cut is Dictionary or not cut.get("id") is String or not cut.get("wing") is String or not cut.wing in ["east","west"] or seen.has(cut.wing): return {"valid":false,"error":"Invalid/duplicate public guard cut."}
+		for key: String in ["center_x","width_m","height_m"]:
+			if not typeof(cut.get(key)) in [TYPE_INT,TYPE_FLOAT] or not is_finite(float(cut[key])): return {"valid":false,"error":"Nonfinite public guard aperture."}
+		if float(cut.width_m)<2.0 or float(cut.width_m)>3.0 or float(cut.height_m)<2.2 or float(cut.height_m)>float(g.clear_height_m)-.10 or absf(float(cut.center_x))+float(cut.width_m)*.5+.20>float(g.length_m)*.5-float(g.core_bay_m): return {"valid":false,"error":"Public aperture cannot fit real edge/corridor geometry."}
+		var regular: String=String(record.id)+"-"+String(cut.wing)+"-core"
+		var is_arrival: bool=record.id=="T1-L1" and cut.wing=="west" and not arrival.is_empty() and cut.id==arrival.get("id","")
+		if cut.id!=regular and not is_arrival: return {"valid":false,"error":"Public aperture identity does not match source floor."}
+		seen[cut.wing]=cut
+	if not arrival.is_empty():
+		if record.id!="T1-L1" or arrival.get("id","")!="T1-L1-west-arrival" or arrival.get("wing","")!="west": return {"valid":false,"error":"Explicit reconstructed T1 west arrival required."}
+		for key: String in ["center_x","width_m","height_m"]:
+			if not typeof(arrival.get(key)) in [TYPE_INT,TYPE_FLOAT] or not is_finite(float(arrival[key])): return {"valid":false,"error":"Nonfinite arrival reservation."}
+		if absf(float(arrival.center_x))>.0001 or float(arrival.width_m)<2.0 or float(arrival.width_m)>3.0 or float(arrival.height_m)<2.5 or float(arrival.height_m)>float(g.clear_height_m)-.10 or not seen.has("west"): return {"valid":false,"error":"Arrival aisle/headroom or matching guard cut missing."}
+		var west: Dictionary=seen.west
+		if west.id!=arrival.id or absf(float(west.center_x)-float(arrival.center_x))>.0001 or absf(float(west.width_m)-float(arrival.width_m))>.0001 or absf(float(west.height_m)-float(arrival.height_m))>.0001: return {"valid":false,"error":"Arrival and physical guard opening must match."}
+	return {"valid":true,"cuts":cuts.duplicate(true),"arrival":arrival.duplicate(true),"reconstructed_layout":true}
 
 static func _recipe_layout(cell: Dictionary) -> Dictionary:
 	var recipe := String(cell.recipe)
@@ -317,12 +360,33 @@ func _program_shell(kit,wing: Dictionary,g: Dictionary) -> void:
 		_solid(kit,String(wing.id)+"ExteriorRoofGuard",Looks.get_mat("glass_clear"),Vector3(0,.62,wing.outer_z),Vector3(length_m,1.24,.10))
 		kit.beam(Looks.get_mat("steel_satin"),Vector3(-length_m*.5,1.28,wing.outer_z),Vector3(length_m*.5,1.28,wing.outer_z),.07,.06)
 	else:
-		_solid(kit,String(wing.id)+"FacadeLower",_materials.wall,Vector3(0,.35,wing.outer_z),Vector3(length_m,.70,WALL))
-		_solid(kit,String(wing.id)+"FacadeUpper",_materials.wall if basement else Looks.get_mat("glass_clear"),Vector3(0,(_height+.70)*.5,wing.outer_z),Vector3(length_m,_height-.70,.10))
-		for x: float in [-length_m*.25,0,length_m*.25]: _solid(kit,String(wing.id)+"FacadePier"+str(x),_materials.wall,Vector3(x,_height*.5,wing.outer_z),Vector3(.22,_height,.24))
+		var arrival: Dictionary=g.get("public_arrival_corridor",{})
+		var arrival_side: bool=wing.id=="west" and not arrival.is_empty()
+		if arrival_side:
+			var left: float=float(arrival.center_x)-float(arrival.width_m)*.5
+			var right: float=float(arrival.center_x)+float(arrival.width_m)*.5
+			for bounds: Vector2 in [Vector2(-length_m*.5,left),Vector2(right,length_m*.5)]:
+				var cx: float=(bounds.x+bounds.y)*.5;var span: float=bounds.y-bounds.x
+				_solid(kit,"WestArrivalFacadeLower"+str(bounds.x),_materials.wall,Vector3(cx,.35,wing.outer_z),Vector3(span,.70,WALL))
+				_solid(kit,"WestArrivalFacadeUpper"+str(bounds.x),Looks.get_mat("glass_clear"),Vector3(cx,(_height+.70)*.5,wing.outer_z),Vector3(span,_height-.70,.10))
+			_solid(kit,"WestArrivalFacadeLintel",_materials.wall,Vector3(float(arrival.center_x),(_height+float(arrival.height_m))*.5,wing.outer_z),Vector3(arrival.width_m,_height-float(arrival.height_m),WALL))
+		else:
+			_solid(kit,String(wing.id)+"FacadeLower",_materials.wall,Vector3(0,.35,wing.outer_z),Vector3(length_m,.70,WALL))
+			_solid(kit,String(wing.id)+"FacadeUpper",_materials.wall if basement else Looks.get_mat("glass_clear"),Vector3(0,(_height+.70)*.5,wing.outer_z),Vector3(length_m,_height-.70,.10))
+		for x: float in [-length_m*.25,0,length_m*.25]:
+			if arrival_side and absf(x-float(arrival.center_x))<float(arrival.width_m)*.5+.15: continue
+			_solid(kit,String(wing.id)+"FacadePier"+str(x),_materials.wall,Vector3(x,_height*.5,wing.outer_z),Vector3(.22,_height,.24))
 	if bool(g.atrium_void_active):
-		_solid(kit,String(wing.id)+"AtriumGuard",Looks.get_mat("glass_clear"),Vector3(0,.62,wing.inner_z),Vector3(length_m,1.24,.10))
-		kit.beam(Looks.get_mat("steel_bronze"),Vector3(-length_m*.5,1.28,wing.inner_z),Vector3(length_m*.5,1.28,wing.inner_z),.08,.06)
+		var cut: Dictionary={}
+		for request: Dictionary in g.get("atrium_core_openings",[]):
+			if request.wing==wing.id: cut=request;break
+		if cut.is_empty():
+			_solid(kit,String(wing.id)+"AtriumGuard",Looks.get_mat("glass_clear"),Vector3(0,.62,wing.inner_z),Vector3(length_m,1.24,.10))
+			kit.beam(Looks.get_mat("steel_bronze"),Vector3(-length_m*.5,1.28,wing.inner_z),Vector3(length_m*.5,1.28,wing.inner_z),.08,.06)
+		else:
+			for bounds: Vector2 in [Vector2(-length_m*.5,float(cut.center_x)-float(cut.width_m)*.5),Vector2(float(cut.center_x)+float(cut.width_m)*.5,length_m*.5)]:
+				_solid(kit,String(wing.id)+"AtriumGuardSegment"+str(bounds.x),Looks.get_mat("glass_clear"),Vector3((bounds.x+bounds.y)*.5,.62,wing.inner_z),Vector3(bounds.y-bounds.x,1.24,.10))
+				kit.beam(Looks.get_mat("steel_bronze"),Vector3(bounds.x,1.28,wing.inner_z),Vector3(bounds.y,1.28,wing.inner_z),.08,.06)
 	if bool(_program_plan.has_upper_floor): _build_stair(kit,wing,g)
 	else:
 		# Terminal inventory levels receive the lower floor's actual U stair.

@@ -1,0 +1,106 @@
+{
+  "created_utc": "2026-10-29T02:09:50.012908+00:00",
+  "method": "PYTHON_DOUBLE_SCALAR_SOURCE_PLAN_ONLY_NOT_ENGINE_QA",
+  "core_joins": [
+    {
+      "tower": "T1",
+      "side": "east",
+      "public_local_x": 87.85477655755574,
+      "actual_glass_base_z": -15.73212846076448,
+      "copied_program_void_edge_z": -15.713188399073886,
+      "base_edge_difference_m": -0.01894006169059459,
+      "target_source_xyz": [
+        549.0448504241378,
+        0,
+        -1010.5535015504672
+      ],
+      "height_difference_m": 0.0,
+      "door_width_m": 2.0,
+      "capsule_offcentre_boundary_margin_m": 0.08,
+      "geometry_status": "RECONSTRUCTED_APERTURE_AND_PRIVATE_CORRIDOR_NOT_SURVEYED"
+    },
+    {
+      "tower": "T2",
+      "side": "east",
+      "public_local_x": -24.829446770623942,
+      "actual_glass_base_z": -16.443543841228603,
+      "copied_program_void_edge_z": -16.443543841228603,
+      "base_edge_difference_m": 0.0,
+      "target_source_xyz": [
+        446.26029235210655,
+        0,
+        -1056.7444338649832
+      ],
+      "height_difference_m": 0.0,
+      "door_width_m": 2.0,
+      "capsule_offcentre_boundary_margin_m": 0.08,
+      "geometry_status": "RECONSTRUCTED_APERTURE_AND_PRIVATE_CORRIDOR_NOT_SURVEYED"
+    },
+    {
+      "tower": "T3",
+      "side": "east",
+      "public_local_x": -127.0758342158373,
+      "actual_glass_base_z": -0.7131883990738928,
+      "copied_program_void_edge_z": -0.7131883990738928,
+      "base_edge_difference_m": 0.0,
+      "target_source_xyz": [
+        346.3740099830528,
+        0,
+        -1083.6609422273782
+      ],
+      "height_difference_m": 0.0,
+      "door_width_m": 2.0,
+      "capsule_offcentre_boundary_margin_m": 0.08,
+      "geometry_status": "RECONSTRUCTED_APERTURE_AND_PRIVATE_CORRIDOR_NOT_SURVEYED"
+    }
+  ],
+  "arrival": {
+    "source_outer_facade_xyz": [
+      530.7814653166109,
+      0,
+      -961.7728044922518
+    ],
+    "source_initial_outside_xyz": [
+      529.1655220303551,
+      0,
+      -958.1137435067523
+    ],
+    "actual_facade_to_spawn_distance_m": 4.0,
+    "actual_clear_aisle_width_m": 2.6,
+    "coherent_left_room_bounds_x": [
+      -26.289845000000003,
+      -1.375
+    ],
+    "coherent_right_room_bounds_x": [
+      1.375,
+      26.289845000000003
+    ],
+    "retained_program_ids": [
+      "T1-L1-connected_grand_atrium",
+      "T1-L1-arrival_concierge",
+      "T1-L1-checkin",
+      "T1-L1-luggage_store",
+      "T1-L1-guest_lifts",
+      "T1-L1-public_toilets",
+      "T1-L1-restaurant_lounge",
+      "T1-L1-service_corridor",
+      "T1-L1-public_stairs"
+    ],
+    "height_difference_m": 0.0,
+    "metric_status": "RECONSTRUCTED_FACADE_PARTITIONS_ELEVATIONS_NOT_AS_BUILT"
+  },
+  "protected_stack_api_hashes_preserved": {
+    "release_unload_guard": "1b06877d1ee30243914918845fa04b9b55e5d2011df1879e71917055b9f883fa",
+    "_is_stable_floor_structure": "8c31676a09152a3dfaba08d7e9df1ec7501eefe57cac887281bd421a905d47ec"
+  },
+  "source_hashes": {
+    "game/src/world/mbs_interior/public_l1.gd": "de9eca1a92316f76eb6fad80caf2ad628da296055c4cc6bdb1d2ac44df35e211",
+    "game/src/world/mbs_interior/program_floor.gd": "f835eddb2be6b23cd90f7110a38d49b880cdcf12fe5e8fc7d516653e73ffdc8e",
+    "game/src/world/mbs_interior/floor_stack.gd": "da75a3ccfd518f8541e5c4f0256283833119823599986ecbfe204897880fab1e",
+    "game/src/systems/fidelity_tests/mbs_public_core_entry_test.gd": "e6c7064a6434518234ab0e0e271db70e7a2d32b2af1ea53391ffb7911c6023ec"
+  },
+  "engine_compile_verified": false,
+  "actual_runtime_verified": false,
+  "public_visual_fidelity_accepted": false,
+  "whole_building_completed": false
+}

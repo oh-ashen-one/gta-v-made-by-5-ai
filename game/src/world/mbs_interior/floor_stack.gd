@@ -12,6 +12,7 @@ const Inventory = preload("res://src/world/mbs_interior/inventory.gd")
 const Reference = preload("res://src/world/mbs_interior/site_reference.gd")
 const GuestFloor = preload("res://src/world/mbs_interior/guest_floor.gd")
 const ProgramFloor = preload("res://src/world/mbs_interior/program_floor.gd")
+const PublicL1 = preload("res://src/world/mbs_interior/public_l1.gd")
 const FEATURE := "mbs-hotel/source-floor-stack-reconstruction"
 const SCHEMA := "mbs_floor_stack_doors_v1"
 var last_error := ""
@@ -42,6 +43,8 @@ var _unload_guard_set := false
 var _unload_guard_owner: RefCounted
 var _auto_pending := false
 var _auto_retry_after: Dictionary = {}
+var _public_core_connections: Array[Dictionary] = []
+var _public_arrival_corridor: Dictionary = {}
 
 func _sha(value: String) -> String:
 	var hash:=HashingContext.new();hash.start(HashingContext.HASH_SHA256)
@@ -68,12 +71,27 @@ func configure(frame: RefCounted,context: RefCounted,runtime: Node3D,base_elevat
 	for other: Node in get_tree().get_nodes_in_group("mbs_source_floor_stack"):
 		if other!=self and other.get("_context")==context: last_error="This context already has a source floor-stack geometry authority";return false
 	for key: Variant in options:
-		if not key in ["max_active_floors","max_pending_requests","auto_stream","geometry_overrides","resort_mappings","unload_guard"]: last_error="Unknown stack option";return false
+		if not key in ["max_active_floors","max_pending_requests","auto_stream","geometry_overrides","resort_mappings","unload_guard","public_core_connections","public_arrival_corridor"]: last_error="Unknown stack option";return false
 	var active: Variant=options.get("max_active_floors",6)
 	var pending: Variant=options.get("max_pending_requests",3)
 	if not typeof(active)==TYPE_INT or active<3 or active>12 or not typeof(pending)==TYPE_INT or pending<1 or pending>4 or typeof(options.get("auto_stream",true))!=TYPE_BOOL: last_error="Bounded active/pending floor limits required";return false
 	if not options.get("geometry_overrides",{}) is Dictionary or not options.get("resort_mappings",{}) is Dictionary: last_error="Mapping options must be dictionaries";return false
 	if options.has("unload_guard") and (not options.unload_guard is Callable or not options.unload_guard.is_valid()): last_error="Invalid explicit unload guard";return false
+	var public_requests: Variant=options.get("public_core_connections",[])
+	var public_arrival: Variant=options.get("public_arrival_corridor",{})
+	if not public_requests is Array or public_requests.size()>6 or not public_arrival is Dictionary: last_error="Explicit bounded public connection requests required";return false
+	var public_seen: Dictionary={}
+	for request: Variant in public_requests:
+		if not PublicL1.validate_connection_request(request,false): last_error="Invalid source public core request";return false
+		var target_record:=Inventory.floor_record(String(request.tower)+"-L1")
+		if target_record.is_empty() or absf(float(request.target_floor_elevation_m)-(float(base_elevation_m)+float(target_record.elevation_m)))>.0001: last_error="Core target elevation differs from actual copied L1 record";return false
+		var key: String=String(request.tower)+"-"+String(request.side)
+		if public_seen.has(key): last_error="Duplicate public core side";return false
+		public_seen[key]=true
+	if not public_arrival.is_empty():
+		if not PublicL1.validate_connection_request(public_arrival,true) or public_seen.has("T1-west"): last_error="Invalid/conflicting source arrival corridor";return false
+		var arrival_record:=Inventory.floor_record("T1-L1")
+		if arrival_record.is_empty() or absf(float(public_arrival.target_floor_elevation_m)-(float(base_elevation_m)+float(arrival_record.elevation_m)))>.0001: last_error="Arrival elevation differs from actual copied T1 L1 record";return false
 	var data:=Inventory.load_inventory()
 	if data.has("error"): last_error=data.error;return false
 	var records: Dictionary={}
@@ -98,6 +116,8 @@ func configure(frame: RefCounted,context: RefCounted,runtime: Node3D,base_elevat
 	_max_active=int(active);_max_pending=int(pending);_auto_stream=options.get("auto_stream",true)
 	_geometry_overrides=options.get("geometry_overrides",{}).duplicate(true)
 	_resort_mappings=options.get("resort_mappings",{}).duplicate(true)
+	_public_core_connections.assign(public_requests.duplicate(true))
+	_public_arrival_corridor=public_arrival.duplicate(true)
 	_inventory_sha=_sha(FileAccess.get_file_as_string(Inventory.PATH))
 	_configured=true
 	add_to_group("mbs_source_floor_stack")
@@ -163,6 +183,9 @@ func _recipe(id: String) -> Dictionary:
 		var mapping: Dictionary=_resort_mappings[id]
 		record["geometry"]=mapping.geometry.duplicate(true)
 		placement={"anchor_xyz":[float(mapping.source_anchor_xz[0]),_base_elevation+float(record.elevation_m),float(mapping.source_anchor_xz[1])],"axis_x_xyz":mapping.axis_x_xyz.duplicate(),"axis_z_xyz":mapping.axis_z_xyz.duplicate(),"source_id":String(record.building)+"/explicit-root-mapping","provenance":mapping.provenance}
+	if record.has("tower") and record.level=="L1":
+		var public_join: Dictionary=_forward_public_l1_adapters(record)
+		if not public_join.ok: return public_join
 	var building:=String(record.get("tower",record.get("building","")))
 	var order: Array=_orders[building]
 	var index:=order.find(id)
@@ -179,6 +202,30 @@ func _recipe(id: String) -> Dictionary:
 	var projected: Dictionary=_frame.to_local(placement.anchor_xyz)
 	if not projected.ok: return {"ok":false,"status":"pending_root_origin_transaction","error":projected.get("error","Outside active frame"),"requires_root_rebase":true}
 	return {"ok":true,"record":record,"plan":planned,"placement":placement,"projected":projected}
+
+func _forward_public_l1_adapters(record: Dictionary) -> Dictionary:
+	var matching: Array[Dictionary]=[]
+	for request: Dictionary in _public_core_connections:
+		if request.tower==record.tower: matching.append(request)
+	var arrival: Dictionary=_public_arrival_corridor if record.id=="T1-L1" else {}
+	if matching.is_empty() and arrival.is_empty(): return {"ok":true}
+	var g: Dictionary=record.geometry
+	for key: String in ["corridor_width_m","cross_m","clear_height_m","void_min_z_m","void_max_z_m"]:
+		if not _number(g.get(key)): return {"ok":false,"status":"pending_root_recipe_change","error":"Complete actual L1 geometry required for public joins","requires_root_recipe_change":true}
+	if not bool(g.get("atrium_void_active",false)) or not g.get("atrium_core_openings",[]) is Array or not (g.get("atrium_core_openings",[]) as Array).is_empty(): return {"ok":false,"status":"pending_root_recipe_change","error":"Public joins need one explicit uncapped L1 edge, not duplicate pre-existing cuts","requires_root_recipe_change":true}
+	var cuts: Array=[]
+	var half: float=float(Reference.ATRIUM_ENGINEERING.approx_width_m[record.tower])*.5
+	if absf(float(g.void_min_z_m)+half)>.001 or absf(float(g.void_max_z_m)-half)>.001: return {"ok":false,"status":"pending_root_recipe_change","error":"Public and perimeter atrium edges differ; explicit matched source adaptation required","requires_root_recipe_change":true}
+	for request: Dictionary in matching:
+		if absf(float(request.corridor_width_m)-float(g.corridor_width_m))>.001 or float(request.height_m)>float(g.clear_height_m)-.10: return {"ok":false,"status":"pending_root_recipe_change","error":"Core corridor/headroom differs from actual public request","requires_root_recipe_change":true}
+		cuts.append({"id":String(record.id)+"-"+String(request.side)+"-core","wing":request.side,"center_x":request.along_offset_m,"width_m":request.width_m,"height_m":request.height_m})
+	if not arrival.is_empty():
+		if absf(float(arrival.target_cross_m)-float(g.cross_m))>.001 or absf(float(arrival.corridor_width_m)-float(g.corridor_width_m))>.001 or float(arrival.height_m)>float(g.clear_height_m)-.10: return {"ok":false,"status":"pending_root_recipe_change","error":"Arrival facade/corridor dimensions differ from actual T1 source recipe","requires_root_recipe_change":true}
+		var reserved: Dictionary={"id":"T1-L1-west-arrival","wing":"west","center_x":arrival.along_offset_m,"width_m":arrival.width_m,"height_m":arrival.height_m}
+		g["public_arrival_corridor"]=reserved
+		cuts.append(reserved.duplicate(true))
+	g["atrium_core_openings"]=cuts
+	return {"ok":true}
 
 func _not_ready(id: String,status: String,error: String,detail: Dictionary = {}) -> Dictionary:
 	var result: Dictionary={"ready":false,"floor_id":id,"collision_generation":"","travel_ready":false,"status":status,"error":error,"transient":true}
