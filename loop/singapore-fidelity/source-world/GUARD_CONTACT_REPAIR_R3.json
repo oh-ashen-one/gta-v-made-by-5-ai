@@ -1,0 +1,65 @@
+{
+  "schema": "source_world_guard_contact_fixture_repair_v3",
+  "created_utc": "2026-10-29T03:28:33.163658+00:00",
+  "r2_retained": {
+    "started_utc": "2026-10-29T03:24:01.461623+00:00",
+    "finished_utc": "2026-10-29T03:24:14.574797+00:00",
+    "engine_exit_code": 1,
+    "exit_code": 1,
+    "fatal_errors": [],
+    "timeout": false,
+    "child_reaped": true
+  },
+  "r2_result": {
+    "checks": 20,
+    "failed": 2,
+    "failures": [
+      "missing planned floor is held rather than fallen through",
+      "same player continuously crosses after actual native commit"
+    ]
+  },
+  "diagnosis": "Fixture incorrectly equated Player rootY with actual capsule feet; actual bottom offset=0.9-1.75/2=0.025m",
+  "r2_observed": {
+    "held_edge_side_m": 0.00118729530368,
+    "held_root_y": -0.0241954643279314,
+    "held_approx_physical_bottom_y": 0.0008045356720686007,
+    "final_edge_side_m": -1.58718013763428,
+    "final_root_y": -0.0241559129208326,
+    "final_approx_physical_bottom_y": 0.0008440870791674021,
+    "final_support": {
+      "collider_instance_id": 263872055000,
+      "contact_source_xyz": [
+        565.783610548973,
+        0.0,
+        -974.03623053894
+      ],
+      "feature_id": "qa-only/interior",
+      "floor_id": "staged-ground",
+      "state": "supported",
+      "support_id": "interior"
+    },
+    "final_clearance": {
+      "state": "clear"
+    }
+  },
+  "correction": "Measure actual enabled capsule bottom against current native support; use production safe-margin-times2 plus local-float-roundoff envelope; add pre-approach settled baseline; retain boundary/cross/support/clearance/no-teleport gates",
+  "production_guard_actor_geometry_unchanged": true,
+  "new_native_gate": "pending_root",
+  "files": [
+    {
+      "path": "game/src/world/geography/source_world_guard.gd",
+      "sha256": "d31855e513455105e0b9e051aa472c23759770e5031ec0f3b43969749a3b8a7b",
+      "bytes": 9999
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_guard_test.gd",
+      "sha256": "1644211e16df141d39bca69d48740a2d12611e02dfd2b34145e670ed1187f2f5",
+      "bytes": 13193
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_world_guard_test.tscn",
+      "sha256": "4f4121ab0a208a5775c6f20ebe2c847dfb7f34f3dcdfe910504f3ed587442feb",
+      "bytes": 213
+    }
+  ]
+}

@@ -1,0 +1,317 @@
+{
+  "checks": 21,
+  "exact_root_masks_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+  "failed": 0,
+  "failures": [],
+  "metrics": {
+    "after_commit": {
+      "edge_side_m": -1.58718013763428,
+      "guard": {
+        "configuration_error": "",
+        "configured": true,
+        "geometry_is_land_or_dry_floor": false,
+        "last_transition": {
+          "assessment": {
+            "floor_ids": [
+              "qa-only-required-interior"
+            ],
+            "provenance": "QA lifecycle mapping on exact source mask; synthetic slab is NOT a real MBS floor",
+            "ready": true,
+            "state": "required"
+          },
+          "mask_id": "source-foundation/way/116801004",
+          "origin_revision": 0,
+          "root_masks_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+          "source_feature_ids": [
+            "way/116801004"
+          ],
+          "source_xyz": [
+            565.790012207031,
+            -0.028333306312561,
+            -974.031813506937
+          ]
+        },
+        "masks": 5,
+        "missing_floor_is_known_void": false,
+        "root_assessment_required": true,
+        "root_masks_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+        "schema": "singapore_source_world_architecture_guard_v1"
+      },
+      "native_foot_contact": {
+        "capsule_bottom_source_y": 0.000844063237309456,
+        "capsule_center_offset_y_m": 0.899999976158142,
+        "capsule_height_m": 1.75,
+        "local_float_roundoff_m": 1e-05,
+        "maximum_solver_contact_gap_m": 0.0020100000949949,
+        "native_capsule_gap_m": 0.000844063237309456,
+        "native_support_source_y": 0.0,
+        "ok": true,
+        "physical_bottom_offset_from_root_m": 0.0249999761581421,
+        "root_source_y": -0.0241559129208326,
+        "safe_margin_m": 0.00100000004749745,
+        "state": {
+          "clearance": {
+            "state": "clear"
+          },
+          "indoor": {
+            "dry_volume_matches": [],
+            "state": "unregistered"
+          },
+          "land": {
+            "provider_id": "singapore-source-domain/land/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "unknown"
+          },
+          "ok": true,
+          "origin_revision": 0,
+          "physics_tick": 278,
+          "residency": {
+            "residency_token": "qa-only/interior/generation-2",
+            "state": "resident"
+          },
+          "source_xyz": [
+            565.783610429764,
+            -0.0241559129208326,
+            -974.036230598545
+          ],
+          "support": {
+            "collider_instance_id": 264610252504,
+            "contact_source_xyz": [
+              565.783610548973,
+              0.0,
+              -974.03623053894
+            ],
+            "feature_id": "qa-only/interior",
+            "floor_id": "staged-ground",
+            "state": "supported",
+            "support_id": "interior"
+          },
+          "territory": {
+            "provider_id": "singapore-source-domain/territory/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "inside"
+          },
+          "unresolved": [],
+          "water": {
+            "provider_id": "singapore-source-domain/water/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "unknown"
+          }
+        }
+      },
+      "state": {
+        "clearance": {
+          "state": "clear"
+        },
+        "indoor": {
+          "dry_volume_matches": [],
+          "state": "unregistered"
+        },
+        "land": {
+          "provider_id": "singapore-source-domain/land/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+          "state": "unknown"
+        },
+        "ok": true,
+        "origin_revision": 0,
+        "physics_tick": 278,
+        "residency": {
+          "residency_token": "qa-only/interior/generation-2",
+          "state": "resident"
+        },
+        "source_xyz": [
+          565.783610429764,
+          -0.0241559129208326,
+          -974.036230598545
+        ],
+        "support": {
+          "collider_instance_id": 264610252504,
+          "contact_source_xyz": [
+            565.783610548973,
+            0.0,
+            -974.03623053894
+          ],
+          "feature_id": "qa-only/interior",
+          "floor_id": "staged-ground",
+          "state": "supported",
+          "support_id": "interior"
+        },
+        "territory": {
+          "provider_id": "singapore-source-domain/territory/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+          "state": "inside"
+        },
+        "unresolved": [],
+        "water": {
+          "provider_id": "singapore-source-domain/water/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+          "state": "unknown"
+        }
+      },
+      "teleports": 0,
+      "y": -0.0241559129208326
+    },
+    "before_commit": {
+      "edge_side_m": 0.00118729530368,
+      "guard": {
+        "configuration_error": "",
+        "configured": true,
+        "geometry_is_land_or_dry_floor": false,
+        "last_transition": {
+          "assessment": {
+            "floor_ids": [
+              "qa-only-required-interior"
+            ],
+            "provenance": "QA lifecycle mapping on exact source mask; synthetic slab is NOT a real MBS floor",
+            "ready": false,
+            "state": "required"
+          },
+          "mask_id": "source-foundation/way/116801004",
+          "origin_revision": 0,
+          "root_masks_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+          "source_feature_ids": [
+            "way/116801004"
+          ],
+          "source_xyz": [
+            567.090000263889,
+            -0.0310452459481431,
+            -973.13485038246
+          ]
+        },
+        "masks": 5,
+        "missing_floor_is_known_void": false,
+        "root_assessment_required": true,
+        "root_masks_sha256": "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625",
+        "schema": "singapore_source_world_architecture_guard_v1"
+      },
+      "native_foot_contact": {
+        "capsule_bottom_source_y": 0.000804511830210686,
+        "capsule_center_offset_y_m": 0.899999976158142,
+        "capsule_height_m": 1.75,
+        "local_float_roundoff_m": 1e-05,
+        "maximum_solver_contact_gap_m": 0.0020100000949949,
+        "native_capsule_gap_m": 0.000804511830210686,
+        "native_support_source_y": 0.0,
+        "ok": true,
+        "physical_bottom_offset_from_root_m": 0.0249999761581421,
+        "root_source_y": -0.0241954643279314,
+        "safe_margin_m": 0.00100000004749745,
+        "state": {
+          "clearance": {
+            "state": "clear"
+          },
+          "indoor": {
+            "dry_volume_matches": [],
+            "state": "unregistered"
+          },
+          "land": {
+            "provider_id": "singapore-source-domain/land/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "unknown"
+          },
+          "ok": true,
+          "origin_revision": 0,
+          "physics_tick": 230,
+          "residency": {
+            "residency_token": "qa-only/exterior/generation-1",
+            "state": "resident"
+          },
+          "source_xyz": [
+            567.090977513613,
+            -0.0241954643279314,
+            -973.134176102668
+          ],
+          "support": {
+            "collider_instance_id": 71017957013,
+            "contact_source_xyz": [
+              567.090977277756,
+              0.0,
+              -973.134176348305
+            ],
+            "feature_id": "qa-only/exterior",
+            "floor_id": "staged-ground",
+            "state": "supported",
+            "support_id": "exterior"
+          },
+          "territory": {
+            "provider_id": "singapore-source-domain/territory/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "inside"
+          },
+          "unresolved": [],
+          "water": {
+            "provider_id": "singapore-source-domain/water/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+            "state": "unknown"
+          }
+        }
+      },
+      "walked_m": 1.99881279468536,
+      "y": -0.0241954643279314
+    },
+    "settled_before_approach": {
+      "capsule_bottom_source_y": 0.000195281580090523,
+      "capsule_center_offset_y_m": 0.899999976158142,
+      "capsule_height_m": 1.75,
+      "local_float_roundoff_m": 1e-05,
+      "maximum_solver_contact_gap_m": 0.0020100000949949,
+      "native_capsule_gap_m": 0.000195281580090523,
+      "native_support_source_y": 0.0,
+      "ok": true,
+      "physical_bottom_offset_from_root_m": 0.0249999761581421,
+      "root_source_y": -0.0248046945780516,
+      "safe_margin_m": 0.00100000004749745,
+      "state": {
+        "clearance": {
+          "state": "clear"
+        },
+        "indoor": {
+          "dry_volume_matches": [],
+          "state": "unregistered"
+        },
+        "land": {
+          "provider_id": "singapore-source-domain/land/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+          "state": "unknown"
+        },
+        "ok": true,
+        "origin_revision": 0,
+        "physics_tick": 75,
+        "residency": {
+          "residency_token": "qa-only/exterior/generation-1",
+          "state": "resident"
+        },
+        "source_xyz": [
+          568.736177887917,
+          -0.0248046945780516,
+          -971.999025081253
+        ],
+        "support": {
+          "collider_instance_id": 71017957013,
+          "contact_source_xyz": [
+            568.736177887917,
+            0.0,
+            -971.999025081253
+          ],
+          "feature_id": "qa-only/exterior",
+          "floor_id": "staged-ground",
+          "state": "supported",
+          "support_id": "exterior"
+        },
+        "territory": {
+          "provider_id": "singapore-source-domain/territory/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+          "state": "inside"
+        },
+        "unresolved": [],
+        "water": {
+          "provider_id": "singapore-source-domain/water/v1/0607712bb5bcca43709cf62b30b50ef152a344d91ee760866098c42065b8cc9d",
+          "state": "unknown"
+        }
+      }
+    }
+  },
+  "schema": "source_world_guard_native_lifecycle_fixture_v1",
+  "synthetic_slabs_not_MBS_as_built": true,
+  "visual_or_whole_world_acceptance": false,
+  "supervision": {
+    "checkpoint": "1edc3b6732bfdaf493cc4745e52fa4d4055cb61b",
+    "started_utc": "2026-10-29T03:28:53.681073+00:00",
+    "finished_utc": "2026-10-29T03:29:06.934644+00:00",
+    "exit_code": 0,
+    "elapsed_sec": 13.44,
+    "child_reaped": true,
+    "fatal_errors": []
+  },
+  "raw_report_sha256": "1541c04570102bbcfd84eb4459ae86b0e437f3f943de7fa788b93c7d34f97e24",
+  "private_evidence_directory": "/private/tmp/singapore-fidelity/source-world-guard-r3"
+}
