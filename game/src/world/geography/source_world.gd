@@ -29,7 +29,7 @@ const DEM_SHA := "5498b502dd7955095d4cb28adf58c43b46a55223a7ece95140c72e00973478
 const CITY_SHA := "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963"
 const TERRAIN_SHA := "f8488742dd93726276b33ca12cda7c6d0a38b967123a0be0d574b9145b7f469c"
 const MASKS_SHA := "9d91185dab9c936316b1397a7faad778556b28fb29e44f01f03b4fe04d498625"
-const ROADS_SHA := "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7"
+const ROADS_SHA := "4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802"
 const SOURCE_ORIGIN := [0.0,0.0,-500.0]
 const START := [436.9498,6.1851874,577.2218]
 ## Next original-node position on the pinned actual primary route. This is
@@ -51,7 +51,7 @@ signal source_consumers_ready(services: Dictionary)
 @export var build_mbs := true
 @export var city_data_directory := ProjectSettings.globalize_path("res://").path_join("../loop/singapore-fidelity/recovery/private/city-geometry/candidate-r2").simplify_path()
 @export var terrain_data_directory := ProjectSettings.globalize_path("res://").path_join("../loop/singapore-fidelity/recovery/private/terrain-scene/mbs-neighborhood-r1").simplify_path()
-@export var road_data_directory := "/private/tmp/singapore-fidelity/source-roads/candidate-r5"
+@export var road_data_directory := ProjectSettings.globalize_path("res://").path_join("../loop/singapore-fidelity/source-roads/generated/candidate-r5-recovery-r1").simplify_path()
 ## Root must explicitly approve a corrected, natively checked physical road
 ## identity. A property toggle can NEVER make the known-rejectedR2 acceptable.
 @export var road_physical_candidate_approved := false

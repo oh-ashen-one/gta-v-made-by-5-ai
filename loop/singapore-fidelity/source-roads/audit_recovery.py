@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import sqlite3
 
 
 def digest(path):
@@ -28,13 +29,51 @@ def read(root, descriptor):
     return json.loads(path.read_bytes())
 
 
+def diagnostic_history(before, after, recovered):
+    old, new = before.get('diagnostics', {}), after.get('diagnostics', {})
+    if old == new:
+        return None
+    kind = 'incompatible_interior_grade_shared_node'
+    if {k: v for k, v in old.items() if k != kind} != {k: v for k, v in new.items() if k != kind}:
+        raise ValueError('A non-history diagnostic changed')
+    previous, current = old.get(kind), new.get(kind)
+    if not all(isinstance(n, int) and not isinstance(n, bool) and n > 0 for n in (previous, current)) or previous < current or previous % current:
+        raise ValueError('Diagnostic counts do not describe repeated legacy log rows')
+    if not before.get('owned_ingest_reuse') or after.get('owned_ingest_reuse') is not None:
+        raise ValueError('Diagnostic difference is not from a fresh ingest versus a reused history')
+    db = sqlite3.connect('file:' + str(Path(recovered) / 'work.sqlite') + '?mode=ro', uri=True)
+    expected = set()
+    for (node,) in db.execute('select node from occurrences group by node having count(distinct v)>1'):
+        groups = db.execute('select v,max(endpoint) from occurrences where node=? group by v order by v', (node,)).fetchall()
+        for index, (a, end_a) in enumerate(groups):
+            for b, end_b in groups[index + 1:]:
+                if not end_a or not end_b:
+                    expected.add((node, a, b))
+    observed = [tuple(json.loads(row[0])) for row in db.execute('select detail from diagnostics where kind=?', (kind,))]
+    db.close()
+    if len(observed) != current or len(set(observed)) != current or set(observed) != expected:
+        raise ValueError('Fresh diagnostic rows differ from independently reconstructed original-node incidence')
+    return {
+        'kind': kind, 'old_logged_rows': previous, 'fresh_logged_rows': current,
+        'fresh_unique_rows': len(expected), 'fresh_rows_exactly_match_original_node_incidence': True,
+        'old_total_to_fresh_unique_ratio': previous // current,
+        'explanation': 'Frozen add_endpoint_transitions appends these diagnostics during each ingest reuse without deleting prior rows. Old reuse and integer count ratio support duplicate-history inference.',
+        'old_sqlite_missing_after_restart': True,
+        'historical_per_row_multiplicity_independently_verified': False,
+        'source_and_geometry_equality_required_separately': True,
+    }
+
+
 def audit(reference, recovered):
     reference, recovered = Path(reference), Path(recovered)
     before_identity = json.loads((reference / 'identity.json').read_bytes())
     after_identity = json.loads((recovered / 'identity.json').read_bytes())
     before = read(reference, before_identity['manifest'])
     after = read(recovered, after_identity['manifest'])
+    diagnostics = diagnostic_history(before, after, recovered)
     allowed_changes = {'resources', 'owned_ingest_reuse'}
+    if diagnostics is not None:
+        allowed_changes.add('diagnostics')
     if {k: v for k, v in before.items() if k not in allowed_changes} != {k: v for k, v in after.items() if k not in allowed_changes}:
         differing = sorted(k for k in before.keys() | after.keys() if k not in allowed_changes and before.get(k) != after.get(k))
         raise ValueError('Recovered source/geometry contract differs: ' + ', '.join(differing))
@@ -55,6 +94,7 @@ def audit(reference, recovered):
         'graph_chunks_verified': len(after['graph_chunks']),
         'physical_tiles_verified': len(after['physical_tiles']),
         'legitimate_metadata_changes': {k: {'before': before.get(k), 'after': after.get(k)} for k in sorted(allowed_changes) if before.get(k) != after.get(k)},
+        'diagnostic_history_evidence_and_limit': diagnostics,
         'old_manifest_and_identity_unchanged': True,
         'native_or_semantic_v2_or_world_acceptance': False,
     }

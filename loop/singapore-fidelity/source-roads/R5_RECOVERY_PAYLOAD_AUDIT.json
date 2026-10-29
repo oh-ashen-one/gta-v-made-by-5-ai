@@ -1,0 +1,55 @@
+{
+  "diagnostic_history_evidence_and_limit": {
+    "explanation": "Frozen add_endpoint_transitions appends these diagnostics during each ingest reuse without deleting prior rows. Old reuse and integer count ratio support duplicate-history inference.",
+    "fresh_logged_rows": 3573,
+    "fresh_rows_exactly_match_original_node_incidence": true,
+    "fresh_unique_rows": 3573,
+    "historical_per_row_multiplicity_independently_verified": false,
+    "kind": "incompatible_interior_grade_shared_node",
+    "old_logged_rows": 17865,
+    "old_sqlite_missing_after_restart": true,
+    "old_total_to_fresh_unique_ratio": 5,
+    "source_and_geometry_equality_required_separately": true
+  },
+  "graph_chunks_verified": 906,
+  "legitimate_metadata_changes": {
+    "diagnostics": {
+      "after": {
+        "incompatible_bridge_tunnel_clearance_constraints": 9530,
+        "incompatible_interior_grade_shared_node": 3573
+      },
+      "before": {
+        "incompatible_bridge_tunnel_clearance_constraints": 9530,
+        "incompatible_interior_grade_shared_node": 17865
+      }
+    },
+    "owned_ingest_reuse": {
+      "after": null,
+      "before": {
+        "all_source_descriptors_matched": true,
+        "database_sha256": "da10fb8f847d6b5507a792f860cbfd1c62e2def3a3e834d3df4068db97ff66d6",
+        "new_policies_recomputed_from_preserved_exact_tags": true,
+        "source_directory": "/private/tmp/singapore-fidelity/source-roads/candidate-r4",
+        "source_geometry_reparsed_in_this_reuse": false
+      }
+    },
+    "resources": {
+      "after": {
+        "peak_rss_bytes": 810467328,
+        "worker_wall_seconds": 776.7491070829999
+      },
+      "before": {
+        "peak_rss_bytes": 817037312,
+        "worker_wall_seconds": 317.10958600000595
+      }
+    }
+  },
+  "native_or_semantic_v2_or_world_acceptance": false,
+  "old_manifest_and_identity_unchanged": true,
+  "original_identity_sha256": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+  "physical_tiles_verified": 20,
+  "recovered_database_sha256": "631780eecd99cec90de9dec536aee384e730b563f8e2ecd185ffd8cac23f209f",
+  "recovered_identity_sha256": "4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802",
+  "source_city_identity_sha256": "8b84896f8c9134b5933b2f6c3b036d025a1120d526ab12668e32181d4f148963",
+  "status": "PASS_EXACT_R5_GRAPH_AND_PHYSICAL_PAYLOAD_REPRODUCTION"
+}

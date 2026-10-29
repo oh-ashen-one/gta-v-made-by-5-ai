@@ -1,0 +1,15 @@
+{
+  "old_identity": "fc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7",
+  "new_identity": "4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802",
+  "decision": "Explicit new generation of recovered R5 playable payload, equivalent archived graph/physical bytes; NOT a rewrite of missing old artifact and NOT semantic-v2 adoption.",
+  "proof": [
+    "R5_RECOVERY_PAYLOAD_AUDIT.json",
+    "R5_RECOVERY_SOURCE_AUDIT.json"
+  ],
+  "known_metadata_changes": [
+    "fresh ingestion/resource timings",
+    "absence of historical owned-ingest-reuse entry",
+    "fresh canonical diagnostic3573 vs historical17865; historical per-row duplicate multiplicity cannot be independently recovered"
+  ],
+  "scope": "development SourceWorld. Datasetpath durable. Native actual world rerun pending shared streaming guard. Fullgame/defaultmain/visual/performance acceptance not implied."
+}

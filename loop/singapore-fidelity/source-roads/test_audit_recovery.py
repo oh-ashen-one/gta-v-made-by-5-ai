@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import sqlite3
 
 import audit_recovery as audit
 
@@ -57,6 +58,44 @@ class RecoveredPayloadProof(unittest.TestCase):
         put(self.recovered / 'supervisor.json', {'worker_exit': None, 'status': 'running'})
         with self.assertRaisesRegex(ValueError, 'did not terminate'):
             audit.audit(self.reference, self.recovered)
+
+    def diagnostic_fixture(self):
+        path = self.recovered / 'work.sqlite'
+        path.unlink()
+        db = sqlite3.connect(path)
+        db.execute('create table occurrences(node integer,v integer,endpoint integer)')
+        db.executemany('insert into occurrences values(?,?,?)', [(11, 1, 0), (11, 2, 1), (12, 3, 0), (12, 4, 1)])
+        db.execute('create table diagnostics(kind text,detail text)')
+        kind = 'incompatible_interior_grade_shared_node'
+        db.executemany('insert into diagnostics values(?,?)', [(kind, '[11,1,2]'), (kind, '[12,3,4]')])
+        db.commit()
+        before = {'diagnostics': {kind: 10}, 'owned_ingest_reuse': {'old_db_sha': 'historical'}}
+        after = {'diagnostics': {kind: 2}, 'owned_ingest_reuse': None}
+        return db, before, after
+
+    def test_fresh_diagnostics_reconstructed_but_missing_old_rows_not_claimed(self):
+        db, before, after = self.diagnostic_fixture()
+        result = audit.diagnostic_history(before, after, self.recovered)
+        self.assertEqual(result['fresh_unique_rows'], 2)
+        self.assertEqual(result['old_total_to_fresh_unique_ratio'], 5)
+        self.assertFalse(result['historical_per_row_multiplicity_independently_verified'])
+        db.close()
+
+    def test_matching_counts_cannot_hide_wrong_source_diagnostic_rows(self):
+        db, before, after = self.diagnostic_fixture()
+        db.execute("update diagnostics set detail='[99,1,2]' where detail='[11,1,2]'")
+        db.commit()
+        with self.assertRaisesRegex(ValueError, 'independently reconstructed'):
+            audit.diagnostic_history(before, after, self.recovered)
+        db.close()
+
+    def test_other_constraint_diagnostics_never_waived(self):
+        db, before, after = self.diagnostic_fixture()
+        before['diagnostics']['profile_conflict'] = 4
+        after['diagnostics']['profile_conflict'] = 1
+        with self.assertRaisesRegex(ValueError, 'non-history diagnostic'):
+            audit.diagnostic_history(before, after, self.recovered)
+        db.close()
 
 
 if __name__ == '__main__':

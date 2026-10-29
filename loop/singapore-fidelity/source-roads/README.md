@@ -17,9 +17,16 @@ shared task-local Python runtime is `../recovery/private/venv/bin/python`.
 The frozen R5 compiler is unchanged. Fresh timings and ingest-cache provenance
 can legitimately change its top-level identity; `audit_recovery.py` checks the
 new manifest against the archived original and hashes every graph and physical
-payload before accepting exact payload reproduction. It permits only those
-two metadata fields to differ. Never copy old timings or claim a new run had
-the old identity. Semantic-v2 remains a separate new inference version, and
+payload before accepting exact payload reproduction. The first strict audit
+also exposed a historical diagnostic-log count: 17,865 entries versus 3,573
+in the fresh ingest. All 3,573 fresh unique rows are independently rebuilt
+from the exact original-node incidence. The frozen reuse code appends these
+rows without clearing previous history, which supports the duplicate-history
+explanation; the deleted old database prevents proving its per-row
+multiplicities. This named diagnostic difference is explicitly reported,
+alongside fresh timings and cache provenance. Other diagnostics, source and
+geometry fields must remain identical. Never copy old timings or claim a new
+run had the old identity. Semantic-v2 remains a separate new inference version, and
 recovered R5 content is not semantic-v2 acceptance. `audit_artifact.py --source`
 now takes the complete durable city dataset and verifies its exact lineage.
 

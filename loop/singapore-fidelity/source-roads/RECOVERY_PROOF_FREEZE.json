@@ -1,0 +1,56 @@
+{
+  "files": [
+    {
+      "bytes": 6272,
+      "path": "loop/singapore-fidelity/source-roads/audit_recovery.py",
+      "sha256": "fc2755ab9556afd8700d0b31ff4657937967cd1043f398998b485bde2235e279"
+    },
+    {
+      "bytes": 5082,
+      "path": "loop/singapore-fidelity/source-roads/test_audit_recovery.py",
+      "sha256": "33f722d1962d68bf4ea1920c27f70bad72b57915b7c3aad094c3508a6ee7ddd7"
+    },
+    {
+      "bytes": 15334,
+      "path": "loop/singapore-fidelity/source-roads/README.md",
+      "sha256": "45f1a9dea4125bc127cafbd3e892fba5f4608cd5da096b9daafd71c879da3323"
+    },
+    {
+      "bytes": 5687,
+      "path": "loop/singapore-fidelity/source-roads/audit_artifact.py",
+      "sha256": "46f44d68c83cf71d57d0b732612f4462d221be3f0234064027874640469154f0"
+    },
+    {
+      "bytes": 690,
+      "path": "loop/singapore-fidelity/source-roads/R5_RECOVERY_INITIAL_STRICT_FAILURE.json",
+      "sha256": "b1e620958bd4921a5fb70f4123774b3151a4172909d4c6248c08c68b046177d4"
+    },
+    {
+      "bytes": 2369,
+      "path": "loop/singapore-fidelity/source-roads/R5_RECOVERY_PAYLOAD_AUDIT.json",
+      "sha256": "d377ac633633eacc944c54851a131603e1333a1cb1320b7cde39cc94041401e4"
+    },
+    {
+      "bytes": 804,
+      "path": "loop/singapore-fidelity/source-roads/R5_RECOVERY_SOURCE_AUDIT.json",
+      "sha256": "a0a0d3277c165e76bf0e67239d6c20630ae5f5a965e05094b97fb2f47a465d50"
+    }
+  ],
+  "live_semantic_run": "SEMANTIC_BASELINE_V2_RUN.json",
+  "mutable_state_excluded": [
+    "RECOVERY_2026_10_29.json",
+    "SEMANTIC_BASELINE_V2_RUN.json"
+  ],
+  "observed_utc": "2026-10-29T15:06:42.556086+00:00",
+  "status": "RECOVERED_R5_PAYLOAD_AND_SOURCE_PROOFS_FROZEN",
+  "tests": {
+    "audit_recovery": {
+      "failed": 0,
+      "passed": 7
+    },
+    "semantic_targeted": {
+      "failed": 0,
+      "passed": 23
+    }
+  }
+}

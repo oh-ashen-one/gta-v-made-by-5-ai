@@ -1,0 +1,17 @@
+{
+  "observed_utc": "2026-10-29T15:02:05.029309+00:00",
+  "status": "STRICT_ALL_NONRESOURCE_METADATA_COMPARISON_REJECTED_DIAGNOSTIC_LOG_COUNT",
+  "exit_code": 1,
+  "changed_field": "diagnostics",
+  "old": {
+    "incompatible_bridge_tunnel_clearance_constraints": 9530,
+    "incompatible_interior_grade_shared_node": 17865
+  },
+  "fresh": {
+    "incompatible_bridge_tunnel_clearance_constraints": 9530,
+    "incompatible_interior_grade_shared_node": 3573
+  },
+  "old_sqlite_absent": "/private/tmp/singapore-fidelity/source-roads/candidate-r5/work.sqlite",
+  "per_row_old_multiplicity_not_proved": true,
+  "graph_physical_profile_source_fields_equal_before_actual_payload_hash_audit": true
+}
