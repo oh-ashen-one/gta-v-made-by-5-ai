@@ -52,6 +52,10 @@ func _ready() -> void:
 
 func frames(count: int) -> void:
 	for i in count: await get_tree().physics_frame
+	# Production Player consumes held actions in _process. A physics catch-up
+	# batch must not contain the whole press/release before that poll occurs.
+	await get_tree().process_frame
+	await get_tree().process_frame
 
 func until(predicate: Callable, seconds: float, label: String) -> bool:
 	var end := Time.get_ticks_msec() + int(seconds * 1000)
@@ -102,10 +106,17 @@ func native_e(target: Node3D) -> bool:
 	Input.action_release("interact")
 	await frames(10)
 	if not check("native E selects exact " + String(target.name), player._interaction_target() == target and player._interaction_visible(target), str(player._interaction_target())): return false
+	var panel_before: bool = bool(lift.get("_ui_open")) if target == lift.panel else false
+	var before: Dictionary = lift.report()
 	Input.action_press("interact")
 	await frames(5)
 	Input.action_release("interact")
 	await frames(5)
+	if target == lift.panel:
+		var after: Dictionary = lift.report()
+		var open_now: bool = bool(lift.get("_ui_open"))
+		metrics["latest_native_panel_dispatch"] = {"before_open": panel_before, "after_open": open_now, "before_state": before, "after_state": after, "process_frame": Engine.get_process_frames(), "physics_frame": Engine.get_physics_frames(), "armed": player.get("_press_armed"), "queued": player.get("_press_queue")}
+		if not check("native E actually opens or confirms the cabin panel", open_now != panel_before, metrics.latest_native_panel_dispatch): return false
 	return true
 
 func walk(target: Vector3, label: String) -> bool:
@@ -172,6 +183,7 @@ func run() -> void:
 	await frames(4)
 	if not await native_e(lift.panel): finish(); return
 	if not await native_e(lift.panel): finish(); return
+	if not check("native panel confirmation actually requests upper stop", lift.report().target_floor_id == UPPER or lift.report().queue.has(UPPER), JSON.stringify(lift.report())): finish(); return
 	await frames(180)
 	check("obstructed threshold prevents departure and preserves open safe landing", absf(float(lift.report().commanded_y_m) - center.y) < .001 and lift.report().state == "OPEN" and _door(LOWER).get("opened"), JSON.stringify(lift.report()))
 	var obstructed_probe: Dictionary = lift.report().last_door_probe
