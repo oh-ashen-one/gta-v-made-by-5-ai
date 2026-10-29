@@ -1,30 +1,33 @@
-# Singapore fidelity goal remains active
+# Full Singapore/MBS goal remains active — current integration handoff
 
-Latest verified source pushed6eff502 on origin/Astra-6-singapore-fidelity. Root owns Git and every engine. Owner delegates routine decisions/no questions. No main merge/purchases/newtimebox.
+Owner delegates routine choices/noquestions. No newtimebox, mainmerge, purchases orforeigntakeover. Root aloneengines/Git. Activeauthoringbranch Astra-6-singapore-fidelity.
 
-## Current state 2026-10-29T14:56Z
+## First next-turn action
 
-All task engines terminal/reaped. STREAMING now present; no queued engine. Continue source/backgroundCPU; never bypass sharedguard. R5 CPU20962/20971 finishedexit0; newartifact exists. road_semantic_recovery isauditing exactarchived906graph/20physicalpayloads and freshcanonicaldiagnostics. Old17865vsnew3573diagnosticcounter discrepancy mustremainexplicit; oldrawDBwaslost, historicalmultiplicity explanation isonlyinference. Rootroadpinunchanged untilproof. Do notrerunfromoldlocks.
+Inspectactualagents/git/sharedSTREAMING/PAUSED/processes. NoRootengineorqueuecurrently. Currentrules67f806f269f6 fromrelease6ff37c0394eb11ed1f49 verified. Sharedgpu_slot alreadyupdated withrecognizedGPUclients/headroom85percent10s/cooldown20s. BEFOREANYRENDER complete taskdriverfirst-real-framehealthproof/2xstartupdeadline->sharedPAUSED/noSIGKILL and updatedlastmomentinventory (packagedgames/MPS/MLX/simulators/encoders, notjustUnrealEditor). Verify onecleanrenderer/noGPUtraining recoveryhour before normalcap2. Do NOTbypassSTREAMING orlaunchanotherprobeat97-100GPU. Source/backgroundCPUcontinues.
 
-Recovered cityR2 and terrain9tiles exactly match originalidentity/everypayload and now live persistently in ignored recovery/private. SourceWorld defaults updated accordingly; R5 road stillpending and oldpinunchanged. /tmp priorlogs were genuinely lost; oldcounts labelledhistorical, not recreatedproof.
+## Authoritative source data
 
-## New verified implementation
+CityR2 andMBSterrain9tiles recoveredexactallpayloads,pinsunchanged,durable recovery/private. RecoveredR5 graph+20physicaltilepayloads equaloldarchivebyte-for-byte; explicitnewmetadataidentity4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802 nowSourceWorldpin anddurabledirectory. Olddiagnostic17865vsfresh3573historydifference documented; neverforgeoldidentity. ActualWorldwaypointwalk/drive/heli stillpendingnative.
 
-- Native lowtransportR4 119/119,99.017m continuous stairs/lifts,614/614 platform-supportedframes. Guards nowfit3.2m landing, thickleafhinges clearjamb. Native realheaders stillblock. Freshnormalstairs147/147.
-- Optionalroads exactArrayMesh trianglebatches39/39native; same-resource mutation rejects, sourcefaceidentity retained. SourceWorld opted in; actualcountryperformance/route pending.
-- Corelayout29CPU/33native: real12cabins/252shapes/168hallcapsules across3actualtowerorientations. Fullstairs/receivingfloors/rooms/shell NOTintegrated.
-- Freshsourcecontroller98/98native passes currentRootclass.
+Newendpointmetricv3 identityefa0e6bb33e1835af3aa09af242dfd522d14408eee912cef13b522d75edd9619 hasfullsource/profile/graphindependentaudits andcriticapprovalfornextphysicalgeneration ONLY. ZEROphysicaltiles; nevercombineitsnewYwithR5oldmeshes. road_semantic_recovery nowownsboundedcentraltypedphysicalproducer (car .122unchanged,foot/steps explicitcontract) andactualsourceincline/step_countdiscrepancyfixes. Existingv3 sourcefacts preserved butstepYdirectionsnotallfaithful, nofullcountryacceptance.
 
-## Next native queue when guard clears
+## MBS integration
 
-1. source_stack_capacity_test.tscn960outer/900inner with fresh /private/tmp/singapore-fidelity/.../session; persistent supervisorlog. PreviousR1 exited2beforeassertions becauseRootprovidedunsupportedpersistentQApath, notgamefailure. Do notweakenpathguards.
-2. mbs_floor_stack_test updatedpartialgroupfixture960outer.
-3. ActualSourceWorld waypointwalk/drive/exit/detour/heli afterR5recovery audit/pin decision; keeprealcapsule/collider checks. Batchperformance needsactualmeasurement.
+Legacylowstairs/lift119nativepass99m +normalstair147pass; exactroadbatch39nativepass; sourcecontroller98pass. Source-orientedcorebank29CPU/33nativecabinfit.
 
-## Exclusive active children
+Newsource_core_geometry/source_stair_gates (c10d6cf) andcontinuousnormal/lowQA(ecb2ebc) areSOURCECANDIDATES, nativepending. Theyuseeachownaxis, exactbankholes/rigidfullstairs, rearhole5.1m, eachfloorownsreceivinglanding. Rootmustintegrate withnewroomfactory/Hotel/Stack/SourceWorldafteractualnativeproof; notdefaultgameyet.
 
-road_semantic_recovery: source-roads CPU immutableR5reproduction thennewsemanticv2/sourceconnectivity/profileaudits.
-mbs_conformance_builder: NEWsource_floor_plan/helper/tests/docs retaining allroom/programIDs inactualsourcepolygon/taper around explicitcorebank; noexistingfactoryedits.
-source_dataset_recovery: completedrecovery+independentcritique, idle; frozenreceiptscommitted.
+CorrectedminimumroomallocationR2(ec49dbb) preserves1850/775/all159guestfloors,27350CPUchecks,113390.76m2; itisNOTfinal luxuryacceptance/installedgamedata. mbs_conformance_builder owns separatearea-firstluxuryplanner, fullpublishedcategoryareatargets andfurnishing/circulationfit. Itsnewlayouts mayreconstructprivatefloorallocations; preservelogicalroomIDs anddocumentphysicalassignment. All57programfloor geometry and27resortmappings/roofintegrationstillneeded.
 
-Root nextcoupledwork: consume new own-axis profiles/coreposes infactories/Hotel/Stairs/Stack, retainallrooms/programs and coherent undocumentedprivate recreation. Fullresort/roof circulation, defaultsourcegame bootstrap/streaming/AI/traffic/mission/save migration, actualrendercritique andprivateplayablepackage remain. Never markcomplete fromcomponenttests.
+Artledger source-floor-art isresearchonly. ExactofficialMarinaPDFpage2 says8ftpooltable1500x2620; badOCR1800x900discarded.9ftstandardwasOURreconstructionassumption, notownerrequirement. Useverifiedper-typepublicreference thenexplicitplausibleprivateinference. Noassetsdownloaded; freeCCBYcandidate metadata isnotimport/nativequalityproof.
+
+## Native work afterguard/safetypermits
+
+- mbs_source_core_geometry_test.tscn with --source-core-variant normal andlow separately,720inner/780outer.
+- mbs_source_floor_plan_test.tscn withexplicitfrozencandidatepath; onlyparser/planproof, notluxury/runtimeacceptance.
+- source_stack_capacity_test.tscn960outer withfresh /private/tmp/singapore-fidelity/.../session; oldR1exit2waswrongRootQApath,zeroassertions. Persist supervisorlogoutside/tmp.
+- updatedmbs_floor_stack_test partialdependencies960outer.
+- SourceWorldactual9tilewaypointwalk/car/exit/detour/heli withrecoveredR5pin andbothcity/roadbatches. Thenfreshnative/rendercritique/performance; nolabelprototypecolorprobesasgameplay.
+
+Fullsourcegamebootstrap/streaming/rebase/allAI/traffic/mission/doors/save/finalprivatepackage remain. No complete/blockedstatus justified; workisprogressing.
