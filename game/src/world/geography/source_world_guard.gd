@@ -10,54 +10,64 @@ var _mask_identity := ""
 var _guard_configured := false
 var last_transition: Dictionary = {}
 var _last_request := ""
+var guard_configuration_error := ""
+
+func _guard_fail(reason: String) -> bool:
+	guard_configuration_error = reason
+	return false
 
 ## Callback(mask_id, canonical point, actor) returns a source-bound assessment:
 ## state required / known_physical_void / not_required / unknown;
 ## floor_ids, ready, provenance. Required.ready must represent actual same-
 ## epoch native floor+neighbor lifecycle, not a planned recipe or file presence.
 func configure_architecture(mask_path: String, expected_sha256: String, assessment: Callable) -> bool:
-	if _guard_configured or not _configured or not assessment.is_valid() or expected_sha256.length()!=64 or mask_path != mask_path.simplify_path(): return false
+	if _guard_configured or not _configured or not assessment.is_valid() or expected_sha256.length()!=64 or mask_path != mask_path.simplify_path(): return _guard_fail("Fresh source runtime, exact path/hash and assessment callback required")
 	var file := FileAccess.open(mask_path,FileAccess.READ)
-	if file==null or file.get_length()<2 or file.get_length()>262144: return false
+	if file==null or file.get_length()<2 or file.get_length()>262144: return _guard_fail("Mask file unavailable or outside byte bound")
 	var raw := file.get_buffer(file.get_length())
 	var hash := HashingContext.new()
 	hash.start(HashingContext.HASH_SHA256); hash.update(raw)
-	if hash.finish().hex_encode()!=expected_sha256: return false
+	if hash.finish().hex_encode()!=expected_sha256: return _guard_fail("Exact Root mask bytes differ from pinned SHA256")
 	var parsed: Variant = JSON.parse_string(raw.get_string_from_utf8())
-	if not parsed is Dictionary or not parsed.get("masks") is Array or parsed.masks.is_empty() or parsed.masks.size()>64: return false
+	if not parsed is Dictionary or parsed.get("schema")!="terrain_root_holes_v1" or parsed.get("snapshot_manifest_sha256")!=frame.metadata().snapshot_manifest_sha256 or not parsed.get("masks") is Array or parsed.masks.is_empty() or parsed.masks.size()>64: return _guard_fail("Root mask schema/snapshot/bounded inventory mismatch")
 	var masks: Array[Dictionary] = []
 	var seen: Dictionary = {}
 	var vertex_count := 0
 	for row in parsed.masks:
-		if not row is Dictionary or not row.get("mask_id") is String or seen.has(row.mask_id) or not row.get("geometry") is Dictionary or not row.get("provenance") is String: return false
+		if not row is Dictionary or not row.get("mask_id") is String or seen.has(row.mask_id) or not row.get("geometry") is Dictionary or not row.get("provenance") is String: return _guard_fail("Invalid or duplicate Root mask descriptor")
 		var geometry: Dictionary = row.geometry
-		if geometry.get("type")!="MultiPolygon" or not geometry.get("coordinates") is Array: return false
+		if not geometry.get("type") in ["Polygon","MultiPolygon"] or not geometry.get("coordinates") is Array or geometry.coordinates.is_empty(): return _guard_fail("Only nonempty source Polygon/MultiPolygon accepted")
+		# The four OSM masks are MultiPolygons, but Root's separately declared
+		# constructed public-loft footprint is a Polygon. Wrap its exact rings
+		# once for common iteration; no coordinate/ring/hash mutation occurs.
+		var input_polygons: Array = [geometry.coordinates] if geometry.type=="Polygon" else geometry.coordinates
 		var polygons: Array = []
-		for polygon in geometry.coordinates:
-			if not polygon is Array or polygon.is_empty(): return false
+		for polygon in input_polygons:
+			if not polygon is Array or polygon.is_empty(): return _guard_fail("Empty or malformed source polygon")
 			var rings: Array = []
 			for ring in polygon:
-				if not ring is Array or ring.size()<4 or ring[0]!=ring[-1]: return false
+				if not ring is Array or ring.size()<4 or ring[0]!=ring[-1]: return _guard_fail("Source ring must preserve its explicit closure")
 				var points: Array = []
 				for point in ring:
 					vertex_count += 1
-					if vertex_count>20000 or not point is Array or point.size()!=2: return false
+					if vertex_count>20000 or not point is Array or point.size()!=2: return _guard_fail("Source point shape or vertex work bound exceeded")
 					for value in point:
-						if not typeof(value) in [TYPE_FLOAT,TYPE_INT] or not is_finite(float(value)) or absf(float(value))>Frame.MAX_CANONICAL_COMPONENT_M: return false
+						if not typeof(value) in [TYPE_FLOAT,TYPE_INT] or not is_finite(float(value)) or absf(float(value))>Frame.MAX_CANONICAL_COMPONENT_M: return _guard_fail("Source point is nonfinite or outside canonical domain")
 					points.append([float(point[0]),float(point[1])])
 				rings.append(points)
 			polygons.append(rings)
-		masks.append({"mask_id":row.mask_id,"polygons":polygons,"source_feature_ids":row.get("source_feature_ids",[]).duplicate(),"provenance":row.provenance})
+		masks.append({"mask_id":row.mask_id,"polygons":polygons,"source_geometry_type":geometry.type,"source_feature_ids":row.get("source_feature_ids",[]).duplicate(),"provenance":row.provenance})
 		seen[row.mask_id] = true
 	_masks = masks
 	_mask_identity = expected_sha256
 	_architecture = assessment
 	if assessment.get_object() is RefCounted: _architecture_owner = assessment.get_object()
 	_guard_configured = true
+	guard_configuration_error = ""
 	return true
 
 func architecture_guard_metadata() -> Dictionary:
-	return {"schema":MASK_SCHEMA,"configured":_guard_configured,"root_masks_sha256":_mask_identity,"masks":_masks.size(),"geometry_is_land_or_dry_floor":false,"missing_floor_is_known_void":false,"root_assessment_required":true,"last_transition":last_transition.duplicate(true)}
+	return {"schema":MASK_SCHEMA,"configured":_guard_configured,"root_masks_sha256":_mask_identity,"masks":_masks.size(),"configuration_error":guard_configuration_error,"geometry_is_land_or_dry_floor":false,"missing_floor_is_known_void":false,"root_assessment_required":true,"last_transition":last_transition.duplicate(true)}
 
 func _side(a: Array,b: Array,x: float,z: float) -> float:
 	return (float(b[0])-float(a[0]))*(z-float(a[1]))-(float(b[1])-float(a[1]))*(x-float(a[0]))

@@ -96,7 +96,11 @@ func _run() -> void:
 	runtime = Guard.new(); add_child(runtime)
 	if not check("guard runtime configures actual common frame",runtime.configure(frame,context,domain.observe)): _finish(); return
 	check("wrong source-mask hash fails closed",not runtime.configure_architecture("res://data/geography/mbs-root-holes.json","0".repeat(64),assessment))
-	if not check("verified source mask guard configures",runtime.configure_architecture("res://data/geography/mbs-root-holes.json",MASKS,assessment)): _finish(); return
+	if not check("verified source mask guard configures",runtime.configure_architecture("res://data/geography/mbs-root-holes.json",MASKS,assessment),runtime.guard_configuration_error): _finish(); return
+	var source_types: Dictionary = {}
+	for actual_mask: Dictionary in runtime._masks:
+		source_types[actual_mask.source_geometry_type] = int(source_types.get(actual_mask.source_geometry_type,0))+1
+	check("all exact OSM and Root constructed mask geometry types retained",runtime._masks.size()==5 and source_types.get("MultiPolygon")==4 and source_types.get("Polygon")==1,source_types)
 	var mask: Dictionary = runtime._masks[0]
 	for candidate: Dictionary in runtime._masks:
 		if candidate.mask_id=="source-foundation/way/116801004": mask = candidate
