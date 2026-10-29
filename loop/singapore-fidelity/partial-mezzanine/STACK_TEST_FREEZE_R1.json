@@ -1,0 +1,35 @@
+{
+  "schema": "partial_stack_native_test_author_freeze_v1",
+  "created_utc": "2026-10-29T05:43:17.835887+00:00",
+  "production_edits_by_child": false,
+  "native_parse_and_tests": "pending_root",
+  "local_validation": "lexical bracket balance only, NOT Godot parse",
+  "bounds": {
+    "existing_floor_stack_internal_wall_s": 900,
+    "new_two_case_capacity_internal_wall_s": 900,
+    "new_capacity_outer_wall_s": 960
+  },
+  "capacity_cases": [
+    12,
+    18
+  ],
+  "whole_hotel_or_visual_acceptance": false,
+  "child_engine_gpu_git_actions": false,
+  "files": [
+    {
+      "path": "game/src/systems/fidelity_tests/mbs_floor_stack_test.gd",
+      "sha256": "c95ee782e7722c80e6bede87c1f2b50ccede5634028dda94191c94860b121afb",
+      "bytes": 29021
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_stack_capacity_test.gd",
+      "sha256": "ba7127ebc09a49ffa45bfe9c1b228f61e485867b1eec6bdb00516767d15a896a",
+      "bytes": 14846
+    },
+    {
+      "path": "game/src/systems/fidelity_tests/source_stack_capacity_test.tscn",
+      "sha256": "a86a3ec74e5a6c87e9bf46a9f947ec340fcc0d76fd9885fe18fbac8e1a64a872",
+      "bytes": 225
+    }
+  ]
+}

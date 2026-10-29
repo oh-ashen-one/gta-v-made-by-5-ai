@@ -8,6 +8,7 @@ const SourceDomain = preload("res://src/world/geography/source_domain.gd")
 const SourceSite = preload("res://src/world/mbs_interior/site.gd")
 const Reference = preload("res://src/world/mbs_interior/site_reference.gd")
 const Stack = preload("res://src/world/mbs_interior/floor_stack.gd")
+const Partial = preload("res://src/world/mbs_interior/partial_mezzanine.gd")
 var stack: Node3D
 var source_frame: RefCounted
 var source_context: RefCounted
@@ -22,6 +23,7 @@ var _commit_events: Array[Dictionary] = []
 var _guard_refuses := false
 var _watched_moving_door: Node3D
 var _moving_door_observations: Array[Dictionary] = []
+var _partial_group_metrics: Dictionary = {}
 const LOWER := "T2-L24"
 const UPPER := "T2-L25"
 const REMOTE := "T3-L24"
@@ -98,6 +100,68 @@ func _on_retired(id: String,region: String) -> void:
 	var regions: Dictionary=source_runtime.get("_regions")
 	_retirement_observations.append({"id":id,"region_absent_before_free":not regions.has(region),"bodies_still_alive":alive,"static_stamps_removed":stamps_removed,"physics_tick":Engine.get_physics_frames()})
 
+func _partial_group_checks() -> bool:
+	var adjacent: Array[String] = stack.adjacent_floor_ids("T2-B2")
+	var required: Array[String] = stack.required_floor_ids("T2-B2")
+	check("partial assembly dependencies do not alter immediate stair topology",adjacent.has("T2-B2M") and not adjacent.has("T2-B1") and required.has("T2-B1"))
+	var mezz: Dictionary = await stack.ensure_floor("T2-B2M")
+	if not check("actual source partial mezzanine group cold-loads",mezz.ready and stack.floor_ready("T2-B2M"),str(mezz)): return false
+	var group: Dictionary = {}
+	for id: String in ["T2-B2","T2-B2M","T2-B1"]:
+		var state: Dictionary = stack.floor_state(id)
+		var module: Node3D = stack.get_floor(id)
+		if not check("partial group member native collision committed "+id,is_instance_valid(module) and state.local_collision_committed and state.static_support_count==1,str(state)): return false
+		var partial: bool = id!="T2-B1"
+		if not check("partial factory dispatch matches source level "+id,(module is Partial)==partial): return false
+		var probes: Array = state.native_floor_probes
+		var owned: bool = probes.size()==(4 if partial else 2)
+		for probe: Dictionary in probes:
+			owned = owned and probe.valid_owned_floor and probe.stable_floor_structure and probe.body_in_owned_complete_list and probe.excluded_rids==0 and probe.height_error_m<=.015
+		if not check("all native probes hit actual owned group structure "+id,owned,str(probes)): return false
+		var source: Dictionary = source_frame.to_source_current_live(module.global_position)
+		check("partial group preserves actual inventory elevation "+id,source.ok and absf(float(source.source_xyz[1])-float(Inventory.floor_record(id).elevation_m))<.001)
+		group[id] = {"state":state,"source_anchor":source,"factory":module.get_script().resource_path}
+	var lower: Node3D = stack.get_floor("T2-B2")
+	var middle: Node3D = stack.get_floor("T2-B2M")
+	var upper: Node3D = stack.get_floor("T2-B1")
+	var descriptor: Dictionary = middle.geometry_descriptor()
+	check("partial plan retains true2.5m rise and low receiving doors",is_equal_approx(float(middle.floor_record.geometry.storey_height_m),2.5) and is_equal_approx(float(middle.floor_record.geometry.clear_height_m),2.30) and is_equal_approx(float(descriptor.core_door_height_m),2.10) and not descriptor.private_asbuilt_verified)
+	var hole: Vector3 = middle.to_global(Vector3(0,0,0))
+	var short_ray := PhysicsRayQueryParameters3D.create(hole+Vector3.UP*.15,hole-Vector3.UP*.35,1)
+	var hole_hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(short_ray)
+	check("mezzanine central void has no native slab at its level",hole_hit.is_empty(),str(hole_hit))
+	var lower_ray := PhysicsRayQueryParameters3D.create(hole+Vector3.UP*.05,lower.to_global(Vector3(0,-.35,0)),1)
+	var lower_hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(lower_ray)
+	var lower_stamp: Dictionary = lower_hit.collider.get_meta(SourceContext.COLLIDER_META,{}) if not lower_hit.is_empty() else {}
+	check("central void exposes real lower B2 base support",not lower_hit.is_empty() and lower_stamp.get("floor_id","")=="T2-B2" and absf((lower_hit.get("position",Vector3.ZERO) as Vector3).y-lower.global_position.y)<=.015 and lower_hit.normal.y>=.95,str(lower_hit))
+	var canonical: Dictionary = source_frame.to_source_current_live(hole+Vector3.UP*.5)
+	var begun: Dictionary = source_context.begin_query(canonical.source_xyz)
+	var evaluated: Dictionary = source_context.evaluate(begun.query,{})
+	var false_mezz_dry := false
+	var real_lower_dry := false
+	for match_record: Dictionary in evaluated.indoor.dry_volume_matches:
+		false_mezz_dry = false_mezz_dry or match_record.floor_id=="T2-B2M"
+		real_lower_dry = real_lower_dry or match_record.floor_id=="T2-B2"
+	check("precise upper dry volumes exclude central hole while lower hall remains declared",not false_mezz_dry and real_lower_dry,str(evaluated.indoor))
+	# Avoid the lower hall's real beams atX−6/0/+6. This ray verifies B1,
+	# rather than accepting a beam/furnishing as the group's upper ceiling.
+	var ceiling_ray := PhysicsRayQueryParameters3D.create(lower.to_global(Vector3(3,2,0)),upper.to_global(Vector3(3,.1,0)),1)
+	var ceiling: Dictionary = get_world_3d().direct_space_state.intersect_ray(ceiling_ray)
+	var ceiling_stamp: Dictionary = ceiling.collider.get_meta(SourceContext.COLLIDER_META,{}) if not ceiling.is_empty() else {}
+	check("double-height lower hall is capped by actual B1 underside",not ceiling.is_empty() and ceiling_stamp.get("floor_id","")=="T2-B1" and absf((ceiling.get("position",Vector3.ZERO) as Vector3).y-(upper.global_position.y-float(descriptor.slab_thickness_m)))<=.015 and ceiling.normal.y<=-.95,str(ceiling))
+	var generation: String = stack.floor_state("T2-B2M").collision_generation
+	check("partial mezzanine pin accepted",stack.pin_floor("T2-B2M","qa-partial-group"))
+	for id: String in ["T2-B2","T2-B1"]:
+		var refused: Dictionary = await stack.unload_floor(id)
+		check("partial group pin protects required base/ceiling "+id,not refused.ok and refused.status=="protected" and stack.floor_state(id).local_collision_committed,str(refused))
+	stack.unpin_floor("T2-B2M","qa-partial-group")
+	for id: String in ["T2-B2M","T2-B2","T2-B1"]:
+		var retired: Dictionary = await stack.unload_floor(id)
+		if not check("empty partial group retires actual owned geometry "+id,retired.ok and stack.get_floor(id)==null,str(retired)): return false
+	check("partial group unload leaves no fake nodes or ready floor",stack.get_child_count()==0 and not stack.floor_ready("T2-B2M"))
+	_partial_group_metrics = {"group":group,"mezzanine_geometry":descriptor,"central_native_hole_empty":hole_hit.is_empty(),"lower_support_floor_id":lower_stamp.get("floor_id",""),"ceiling_support_floor_id":ceiling_stamp.get("floor_id",""),"registered_central_dry_state":evaluated.indoor,"retired_generation":generation,"actual_stair_topology":adjacent,"assembly_dependencies":required,"no_actor_walking_or_cabin_claim":true}
+	return true
+
 func run() -> void:
 	Game.simulation_paused=false;Game.mode=Game.MODE_FOOT;Game.health=Game.MAX_HEALTH;Game.death_count=0
 	var raw:=FileAccess.get_file_as_string("res://data/geography/osm-2026-10-27/manifest.json")
@@ -138,8 +202,7 @@ func run() -> void:
 	duplicate.queue_free();await frames(3)
 	var missing: Dictionary=await stack.ensure_floor("SHOPPES-L1")
 	check("missing resort anchor remains transient without placeholder",not missing.ready and missing.status=="pending_root_source_mapping" and stack.get_child_count()==0)
-	var mezz: Dictionary=await stack.ensure_floor("T2-B2M")
-	check("incompatible actual mezzanine rise fails without flattening or empty floor",not mezz.ready and mezz.status=="pending_root_recipe_change" and mezz.get("actual_rise_m",0)==2.5 and stack.get_child_count()==0,str(mezz))
+	if not await _partial_group_checks(): finish();return
 	# Actual registrations exercise narrow spa voids and roof-pool exclusions,
 	# with NO actor in these local programs and no swimming/fit-out claim.
 	var spa: Dictionary=await stack.ensure_floor("T2-L5")
@@ -261,6 +324,7 @@ func run() -> void:
 func finish() -> void:
 	if finished: return
 	finished=true;tracking=false
+	stack_metrics["partial_group_native"] = _partial_group_metrics.duplicate(true)
 	for action: String in ["move_forward","move_back","move_left","move_right","sprint","walk","jump","interact"]: Input.action_release(action)
 	var result: Dictionary={"checks":checks,"failed":failures.size(),"failures":failures,"elapsed_s":float(Time.get_ticks_msec()-_started_stack)/1000.0,"metrics":stack_metrics,"whole_building_completed":false,"rendered_fidelity_accepted":false,"owner_playtest":false}
 	print("[mbs-floor-stack] RESULT ",JSON.stringify(result))
