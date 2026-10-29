@@ -1,0 +1,22 @@
+{
+  "APFS_source_only_clone": true,
+  "direct_filesystem_free_bytes": 79571165184,
+  "frozen_source_sha256": {
+    "compile_roads_semantic_v2.py": "a8018b895f3039c2de20bddf7ef123684b3ce136acc54874f9db3cabe9429419",
+    "cpu_job.py": "2a7dea0c37db14708a5abd9a4ed1003c6c548350bb668e9c82aa3ce8025081b1",
+    "endpoint_profiles_v3.py": "20dccd6b05824cc1f43d0cef142feaa59c4e9f47c9204fbd3e968c11ed0ace4e",
+    "road_semantics_v2.py": "8f2eb8f206465f75e5b20cd0749639844156d79445f7231c26e387e29ec8f0df",
+    "semantic_baseline.py": "e2906a9576a63ac277ee8313e1caef50e86030d343c3e0eb83419f0ccd9b11ad",
+    "semantic_endpoint_baseline.py": "bbd6e030232068782e96aa1195f90f1cdb86d45f752d18ad3373ac052e70f6ee"
+  },
+  "initial_cpu_lifecycle_fixture_failure": "TemporaryDirectory returned /var symlink path; helper correctlyrefused; testsresolvedownedpath andthenpassed",
+  "minimum_direct_free_reserve_bytes": 12884901888,
+  "new_country_physical_expansion": false,
+  "new_output_logical_budget_bytes": 8589934592,
+  "observed_utc": "2026-10-29T15:49:16.610504+00:00",
+  "tests": {
+    "cpu_lifecycle": 2,
+    "endpoint_metric": 5,
+    "source_semantic": 25
+  }
+}

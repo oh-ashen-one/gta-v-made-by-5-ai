@@ -1,0 +1,123 @@
+{
+  "active_job": "ENDPOINT_METRIC_V3_RUN.json",
+  "files": [
+    {
+      "bytes": 13027,
+      "path": "loop/singapore-fidelity/source-roads/endpoint_profiles_v3.py",
+      "sha256": "20dccd6b05824cc1f43d0cef142feaa59c4e9f47c9204fbd3e968c11ed0ace4e"
+    },
+    {
+      "bytes": 9199,
+      "path": "loop/singapore-fidelity/source-roads/semantic_endpoint_baseline.py",
+      "sha256": "bbd6e030232068782e96aa1195f90f1cdb86d45f752d18ad3373ac052e70f6ee"
+    },
+    {
+      "bytes": 15526,
+      "path": "loop/singapore-fidelity/source-roads/semantic_baseline.py",
+      "sha256": "e2906a9576a63ac277ee8313e1caef50e86030d343c3e0eb83419f0ccd9b11ad"
+    },
+    {
+      "bytes": 5615,
+      "path": "loop/singapore-fidelity/source-roads/test_semantic_baseline.py",
+      "sha256": "b3132ce78179834457b8b5da6784d20076f4f929826b081c661a3e386a454c7f"
+    },
+    {
+      "bytes": 5874,
+      "path": "loop/singapore-fidelity/source-roads/test_endpoint_profiles_v3.py",
+      "sha256": "c2cd8bba3c0bcff6ca6934a8d6c6130de4f317b75e40ea7a3d0fd129f843faa1"
+    },
+    {
+      "bytes": 6387,
+      "path": "loop/singapore-fidelity/source-roads/cpu_job.py",
+      "sha256": "2a7dea0c37db14708a5abd9a4ed1003c6c548350bb668e9c82aa3ce8025081b1"
+    },
+    {
+      "bytes": 2652,
+      "path": "loop/singapore-fidelity/source-roads/test_cpu_job_limits.py",
+      "sha256": "21f849ef1e810965720bfb03c2a4b461a235ebc7565e05a84479a764d5b2de26"
+    },
+    {
+      "bytes": 5194,
+      "path": "loop/singapore-fidelity/source-roads/ENDPOINT_METRIC_V3.md",
+      "sha256": "8db18882f04dca90c23d476c102c0259bb6731263f6ffbe5cb26621f370004ef"
+    },
+    {
+      "bytes": 1149,
+      "path": "loop/singapore-fidelity/source-roads/ENDPOINT_METRIC_V3_PRELAUNCH.json",
+      "sha256": "fd3b5d892f06d6b8c773e7d3d8c84dff53a5ea4631184deb8a933426ad736598"
+    },
+    {
+      "bytes": 1076,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/BASELINE_RECOVERY_R1_FAILURE.json",
+      "sha256": "87e81d25afefb8ebf6d534b8e06b22ced03e9283893ce8fe65ad0cd1ff0569f1"
+    },
+    {
+      "bytes": 774,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/BASELINE_RECOVERY_R1_ingest-counts.json",
+      "sha256": "77d2d1f5c210d18575d6e2ed383d4c5828e70e698dafbd022eb55dbbb74dacc4"
+    },
+    {
+      "bytes": 406,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/BASELINE_RECOVERY_R1_original-source-audit.json",
+      "sha256": "71ea8e916355c954fde2448239b75ec8c93986dc53a753bcd16145130aca7dc3"
+    },
+    {
+      "bytes": 647,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/BASELINE_RECOVERY_R1_supervisor.json",
+      "sha256": "dd093aa183eda6d8f62e5c37e7c1a81c1709980c3f752b82b635856b75140c3a"
+    },
+    {
+      "bytes": 494,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/BASELINE_RECOVERY_R2_FAILURE.json",
+      "sha256": "0108b6a6fe6be105e5c622041d5d20370e3b7f912c9c2193cbad0d1cc19dc3ff"
+    },
+    {
+      "bytes": 774,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/BASELINE_RECOVERY_R2_ingest-counts.json",
+      "sha256": "77d2d1f5c210d18575d6e2ed383d4c5828e70e698dafbd022eb55dbbb74dacc4"
+    },
+    {
+      "bytes": 406,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/BASELINE_RECOVERY_R2_original-source-audit.json",
+      "sha256": "71ea8e916355c954fde2448239b75ec8c93986dc53a753bcd16145130aca7dc3"
+    },
+    {
+      "bytes": 2280,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/BASELINE_RECOVERY_R2_ramp-orders.json",
+      "sha256": "6d38877d4d58458fd301ba5f52ccbd91f7d40054beade69fdce76e2122980ad1"
+    },
+    {
+      "bytes": 647,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/BASELINE_RECOVERY_R2_supervisor.json",
+      "sha256": "5d8cb2641dee34ff172708939d0a0ebe077beda75da39efc4398a28f96f2c170"
+    },
+    {
+      "bytes": 15437,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/local-portal-stub-fixture.json",
+      "sha256": "0cfb2b784eb92b0aec92729c8427bc9cf146126616ab024c0fcad578162cafef"
+    },
+    {
+      "bytes": 45977,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/DIRECT_GAME_BOUND_CONTRADICTIONS.json",
+      "sha256": "2ef1f2a72d9bf9a0f87799f9070273d90473464aab5befc2ff79450d5083a497"
+    },
+    {
+      "bytes": 120880,
+      "path": "loop/singapore-fidelity/source-roads/semantic-v2-records/ten-source-portal-fixture.json",
+      "sha256": "232a54cfc9396cb9d1ed5cb8427e9169b639745eaa3873525728b30e903aa0d1"
+    }
+  ],
+  "global_result_not_claimed": true,
+  "mutable_exclude": [
+    "RECOVERY_2026_10_29.json",
+    "ENDPOINT_METRIC_V3_RUN.json"
+  ],
+  "observed_utc": "2026-10-29T15:51:37.079657+00:00",
+  "prior_v2_RUN_terminal_and_can_be_staged": true,
+  "status": "SCOPED_V3_IMPLEMENTATION_FROZEN_GLOBAL_RUN_PENDING",
+  "tests": {
+    "endpoint_profiles": 5,
+    "owned_cpu_disk_and_signal_lifecycle": 2,
+    "source_semantics": 25
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "status": "STRICT_V2_PROFILE_REJECTED_BEFORE_Y_MUTATION",
+  "failed_constraints": 5328,
+  "ordinary_tunnel_and_bridge_roles_preserved": true,
+  "original_source_conservation": "BASELINE_RECOVERY_R2_original-source-audit.json",
+  "direct_source_witnesses": "DIRECT_GAME_BOUND_CONTRADICTIONS.json",
+  "actual_current_source_supported_ramp_relations": 1,
+  "profile_database_sha256": "63996fd67dfaaffd56cb4051e076d2d0cf18614af51c22f46f808c038b3b01e3",
+  "no_identity_or_graph_emitted": true
+}

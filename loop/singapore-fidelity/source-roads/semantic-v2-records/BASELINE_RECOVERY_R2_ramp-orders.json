@@ -1,0 +1,75 @@
+{
+  "classification_counts": {
+    "LOCAL_ADJACENT_CAPS_NOT_NONLOCAL_STACKED_PORTALS": 667,
+    "NO_DISTINCT_RESOLVED_SOURCE_ORDER": 7,
+    "SOURCE_ORDER_WITH_SEPARATE_RECONSTRUCTED_SITE_CLEARANCE": 1
+  },
+  "game_site_gap_m": 5.0,
+  "navigation_arcs_added": false,
+  "records": [
+    {
+      "constraint": {
+        "lower_endpoint": 1,
+        "minimum_game_separation_m": 5.0,
+        "upper_endpoint": 0
+      },
+      "generated_endpoint_vertices": [
+        394108,
+        394121
+      ],
+      "native_or_as_built_clearance_verified": false,
+      "neighbor_source_evidence": [
+        [
+          {
+            "effective_order": 1,
+            "order_status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+            "raw_source_tags": {
+              "highway": "service",
+              "layer": "1",
+              "service": "parking_aisle"
+            },
+            "shared_original_node_id": 13325892476,
+            "source_way": "way/1453057757"
+          }
+        ],
+        [
+          {
+            "effective_order": 0,
+            "order_status": "DEFAULT_STRUCTURE_ORDER_NOT_SOURCE_ELEVATION",
+            "raw_source_tags": {
+              "highway": "service",
+              "service": "parking_aisle",
+              "tunnel": "building_passage"
+            },
+            "shared_original_node_id": 13325892489,
+            "source_way": "way/1453057759"
+          }
+        ]
+      ],
+      "ordinal_difference_used_as_metric_storeys": false,
+      "original_source_nodes": [
+        13325892476,
+        13325892489
+      ],
+      "returning_source_geometry_evidence": {
+        "endpoint_footprint_overlap_m2": 5.589762071675039,
+        "has_nonlocal_returning_path": true,
+        "original_source_path_outside_endpoint_footprints_m": 54.30036419017589,
+        "surveyed_vertical_separation_proved": false
+      },
+      "source_original_endpoint_nodes": [
+        13325892476,
+        13325892489
+      ],
+      "source_way": "way/1453057758",
+      "source_way_path_m": 57.46399447738249,
+      "source_way_tags": {
+        "highway": "service",
+        "service": "driveway"
+      },
+      "status": "SOURCE_ORDER_WITH_SEPARATE_RECONSTRUCTED_SITE_CLEARANCE"
+    }
+  ],
+  "relative_constraints": 1,
+  "source_order_is_not_metric_storey": true
+}

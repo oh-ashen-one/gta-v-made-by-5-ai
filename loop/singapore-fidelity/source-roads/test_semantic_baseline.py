@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import unittest
 
 import semantic_baseline as baseline
@@ -56,6 +57,35 @@ class FreshSemanticBaseline(unittest.TestCase):
         self.new.execute('update vertices set base=base+.1 where v=(select min(v) from vertices)')
         with self.assertRaisesRegex(ValueError,'preferred DEM'):
             baseline.audit_original_source(self.original,self.new)
+
+    def test_actual_short_tunnel_portal_connector_is_not_two_stacked_decks(self):
+        data=json.loads((Path(__file__).resolve().parent/'semantic-v2-records/local-portal-stub-fixture.json').read_text())
+        db=baseline.K.database(':memory:')
+        db.executemany('insert into source_nodes values(?,?,?)',data['source_nodes'])
+        db.executemany('insert into vertices values(?,?,?,?,?,?,?,?,?)',data['vertices'])
+        db.executemany('insert into ways values(?,?,?,?,?,?)',data['ways'])
+        for row in data['ways']:
+            raw=json.loads(row[3]);ids=json.loads(row[5])
+            db.executemany('insert into occurrences values(?,?,?,?)',[(node,v,row[0],int(i in (0,len(ids)-1))) for i,(node,v) in enumerate(zip(raw['node_ids'],ids))])
+        before=db.execute('select id,raw,policy,vertices from ways order by id').fetchall()
+        result=baseline.install_ramp_orders(db)
+        self.assertFalse(any(r['source_way']=='way/1020734762' for r in result['records']))
+        self.assertGreaterEqual(result['classification_counts']['LOCAL_ADJACENT_CAPS_NOT_NONLOCAL_STACKED_PORTALS'],1)
+        self.assertEqual(db.execute('select id,raw,policy,vertices from ways order by id').fetchall(),before)
+        tunnel=json.loads(db.execute("select policy from ways where id='way/544583772'").fetchone()[0])['grade']
+        self.assertEqual(tunnel['structure'],'tunnel')
+        self.assertEqual(tunnel['raw_layer'],'-1')
+        self.assertTrue(any(r[7] is not None for r in data['vertices']))
+        db.close()
+
+    def test_two_local_caps_alone_do_not_prove_returning_source_path(self):
+        local=baseline.returning_portal_evidence([[0.,0.,0.],[6.295633,0.,0.]],6.4)
+        self.assertGreater(local['endpoint_footprint_overlap_m2'],0.)
+        self.assertFalse(local['has_nonlocal_returning_path'])
+        self.assertEqual(local['original_source_path_outside_endpoint_footprints_m'],0.)
+        loop=baseline.returning_portal_evidence([[0.,0.,0.],[0.,0.,10.],[10.,0.,10.],[1.,0.,0.]],6.4)
+        self.assertTrue(loop['has_nonlocal_returning_path'])
+        self.assertFalse(loop['surveyed_vertical_separation_proved'])
 
 
 if __name__=='__main__':unittest.main()

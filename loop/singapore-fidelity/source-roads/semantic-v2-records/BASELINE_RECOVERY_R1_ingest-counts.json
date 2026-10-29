@@ -1,0 +1,21 @@
+{
+  "counts": {
+    "source_ways": 257845,
+    "structure_bridge": 5262,
+    "structure_covered_passage": 1351,
+    "structure_surface": 248752,
+    "structure_tunnel": 2418,
+    "structure_unresolved_tunnel_value": 62
+  },
+  "derived_grade_transitions": 9870,
+  "geometry": {
+    "acute_merge_plateau_length_capped_groups": 94,
+    "junction_hub_radius": "common incident-width/angle flat approach length; drawn apron keeps each own halfwidth; capped128m",
+    "junction_hub_vertices": 321152,
+    "junction_plateau_height_only_constraints": 79133,
+    "max_surface_grade_margin": 0.999,
+    "navigation_connections_inferred_from_XY": false,
+    "source_segments_with_geometry_aware_height_constraints": 911877,
+    "zero_horizontal_original_segments_retained": true
+  }
+}

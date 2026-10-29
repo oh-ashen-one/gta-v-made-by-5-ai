@@ -13,7 +13,7 @@ from pathlib import Path
 import sqlite3
 import time
 
-from shapely.geometry import Polygon
+from shapely.geometry import LineString,Polygon
 
 import compile_roads_semantic_v2 as K
 import cpu_job
@@ -65,6 +65,22 @@ def ingest_original_facts(source,db):
     db.commit();return dict(counts)
 
 
+def returning_portal_evidence(points,width):
+    """Adjacent caps on a short connector are not separate stacked branches.
+
+    A candidate must actually leave the two endpoint footprint neighborhoods
+    and return, using its original ordered source polyline. This is evidence
+    for a reconstructed nonlocal portal rule, not surveyed deck separation.
+    """
+    def disk(point):return Polygon([(point[0]+width*.5*math.cos(i*math.tau/16),point[2]+width*.5*math.sin(i*math.tau/16)) for i in range(16)])
+    first,last=disk(points[0]),disk(points[-1])
+    area=first.intersection(last).area
+    outside=LineString([(p[0],p[2]) for p in points]).difference(first.union(last)).length
+    return {'endpoint_footprint_overlap_m2':area,'original_source_path_outside_endpoint_footprints_m':outside,
+            'has_nonlocal_returning_path':area>1e-8 and outside>1e-8,
+            'surveyed_vertical_separation_proved':False}
+
+
 def install_ramp_orders(db):
     db.execute('create table vertical_orders(id text primary key,lower_v integer,upper_v integer,clearance real,source_way text,evidence text)')
     records=[];diagnostics=Counter()
@@ -75,8 +91,11 @@ def install_ramp_orders(db):
         points=[list(db.execute('select x,y,z from vertices where v=?',(v,)).fetchone()) for v in ids]
         width=policy['width']['metres']
         if math.hypot(points[0][0]-points[-1][0],points[0][2]-points[-1][2])>=width:continue
-        def disk(point):return Polygon([(point[0]+width*.5*math.cos(i*math.tau/16),point[2]+width*.5*math.sin(i*math.tau/16)) for i in range(16)])
-        if disk(points[0]).intersection(disk(points[-1])).area<=1e-8:continue
+        geometry_evidence=returning_portal_evidence(points,width)
+        if geometry_evidence['endpoint_footprint_overlap_m2']<=1e-8:continue
+        if not geometry_evidence['has_nonlocal_returning_path']:
+            diagnostics['LOCAL_ADJACENT_CAPS_NOT_NONLOCAL_STACKED_PORTALS']+=1
+            continue
         neighbor_records=[];orders=[]
         for node in (raw['node_ids'][0],raw['node_ids'][-1]):
             candidates=[]
@@ -95,7 +114,8 @@ def install_ramp_orders(db):
         if proposal['constraint'] is None:continue
         c=proposal['constraint'];endpoints=[ids[0],ids[-1]];record=dict(proposal,source_way=identifier,
                 original_source_nodes=[raw['node_ids'][0],raw['node_ids'][-1]],generated_endpoint_vertices=endpoints,
-                neighbor_source_evidence=neighbor_records,source_way_tags=tags)
+                neighbor_source_evidence=neighbor_records,source_way_tags=tags,
+                returning_source_geometry_evidence=geometry_evidence)
         db.execute('insert into vertical_orders values(?,?,?,?,?,?)',('ramp-order/'+identifier,endpoints[c['lower_endpoint']],endpoints[c['upper_endpoint']],c['minimum_game_separation_m'],identifier,K.canonical(record).decode()))
         records.append(record)
     db.commit();return {'records':records,'classification_counts':dict(diagnostics),'relative_constraints':len(records),

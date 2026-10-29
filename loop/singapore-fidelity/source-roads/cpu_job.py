@@ -5,12 +5,25 @@ import json
 import os
 from pathlib import Path
 import resource
+import shutil
+import signal
 import subprocess
 import sys
 import time
 import uuid
 
 MAX_RSS = 2 * 1024**3
+
+
+def output_bytes(root):
+    total = 0
+    for path in root.rglob('*'):
+        try:
+            if path.is_file() and not path.is_symlink():
+                total += path.stat().st_size
+        except FileNotFoundError:
+            pass  # An owned atomic state-file rename raced this sample.
+    return total
 
 
 def stamp():
@@ -55,8 +68,19 @@ def supervise(args, script, kind, protected=()):
              'supervisor_pid': os.getpid(), 'worker_pid': None, 'job_token': token,
              'script': str(Path(script).resolve()),
              'limits': {'rss_bytes': MAX_RSS, 'cpu_seconds': 3600, 'wall_seconds': 7200}}
+    disk_budget = getattr(args, 'output_budget_bytes', None)
+    minimum_free = getattr(args, 'minimum_free_bytes', None)
+    if disk_budget is not None:
+        if disk_budget <= 0 or minimum_free is None or minimum_free <= 0:
+            raise ValueError('Positive explicit disk budget/free-space reserve required')
+        state['limits'].update(output_logical_bytes=disk_budget, minimum_filesystem_free_bytes=minimum_free)
+        if shutil.disk_usage(output).free < minimum_free:
+            raise ValueError('Direct filesystem free space below task reserve before launch')
     write_state(output / 'lifecycle.json', state)
     started, peak, reason = time.monotonic(), 0, None
+    stopped = []
+    prior_signals = {sig: signal.signal(sig, lambda number, _frame: stopped.append(number)) for sig in (signal.SIGTERM, signal.SIGINT)}
+    checked_disk_at, maximum_disk = started - 10, 0
     with (output / 'worker.log').open('xb') as log:
         process = subprocess.Popen([sys.executable, str(Path(script).resolve()), *sys.argv[1:],
                                     '--worker', '--job-token', token], stdout=log, stderr=subprocess.STDOUT)
@@ -65,6 +89,9 @@ def supervise(args, script, kind, protected=()):
         write_state(output / 'lifecycle.json', state)
         try:
             while process.poll() is None:
+                if stopped:
+                    reason = 'Owned supervisor received signal ' + str(stopped[0])
+                    break
                 text = subprocess.run(['/bin/ps', '-o', 'rss=', '-p', str(process.pid)], capture_output=True, text=True).stdout.strip()
                 if text:
                     peak = max(peak, int(text) * 1024)
@@ -74,6 +101,13 @@ def supervise(args, script, kind, protected=()):
                 if time.monotonic() - started > 7200:
                     reason = 'Owned CPU worker exceeded 7200s wall'
                     break
+                if disk_budget is not None and time.monotonic() - checked_disk_at >= 10:
+                    sizes = output_bytes(output)
+                    maximum_disk = max(maximum_disk, sizes)
+                    checked_disk_at = time.monotonic()
+                    if sizes > disk_budget or shutil.disk_usage(output).free < minimum_free:
+                        reason = 'Owned CPU output exceeded disk budget or direct free-space reserve'
+                        break
                 time.sleep(1)
         finally:
             if process.poll() is None:
@@ -83,9 +117,17 @@ def supervise(args, script, kind, protected=()):
                 except subprocess.TimeoutExpired:
                     process.kill()
                     process.wait()
+            for sig, handler in prior_signals.items():
+                signal.signal(sig, handler)
+    if disk_budget is not None:
+        maximum_disk = max(maximum_disk, output_bytes(output))
+        if reason is None and (maximum_disk > disk_budget or shutil.disk_usage(output).free < minimum_free):
+            reason = 'Owned CPU output exceeded disk budget or direct free-space reserve at completion'
     state.update(status='COMPLETE' if process.returncode == 0 and reason is None else 'INCOMPLETE',
                  terminal_utc=stamp(), worker_exit=process.returncode, reason=reason,
                  sampled_peak_rss_bytes=peak, wall_seconds=time.monotonic() - started)
+    if disk_budget is not None:
+        state['sampled_peak_output_logical_bytes'] = maximum_disk
     write_state(output / 'lifecycle.json', state)
     with (output / 'supervisor.json').open('x') as stream:
         json.dump(state, stream, sort_keys=True, indent=2)

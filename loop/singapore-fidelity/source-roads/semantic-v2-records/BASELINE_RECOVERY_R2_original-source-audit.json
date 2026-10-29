@@ -1,0 +1,12 @@
+{
+  "counts": {
+    "ordered_original_node_associations": 1169722,
+    "original_nodes": 805225,
+    "original_source_segments": 911877,
+    "source_owners": 906,
+    "source_ways": 257845
+  },
+  "generated_grade_vertex_ids_are_versioned": true,
+  "old_generated_grade_identity_is_not_an_immutable_source_fact": true,
+  "status": "PASS_ORIGINAL_OSM_IDS_ORDER_XY_MODES_AND_EXPLICIT_NODE_ONLY_CONNECTIONS"
+}

@@ -1,0 +1,19 @@
+{
+  "created_utc": "2026-10-29T15:16:18.596324+00:00",
+  "kind": "source-semantic-baseline-v2",
+  "limits": {
+    "cpu_seconds": 3600,
+    "rss_bytes": 2147483648,
+    "wall_seconds": 7200
+  },
+  "reason": null,
+  "sampled_peak_rss_bytes": 518799360,
+  "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/semantic_baseline.py",
+  "status": "INCOMPLETE",
+  "supervisor_pid": 55762,
+  "terminal_utc": "2026-10-29T15:21:56.769927+00:00",
+  "wall_seconds": 338.1698807500002,
+  "worker_exit": 1,
+  "worker_lstart": "Thu Oct 29 11:16:18 2026",
+  "worker_pid": 55773
+}

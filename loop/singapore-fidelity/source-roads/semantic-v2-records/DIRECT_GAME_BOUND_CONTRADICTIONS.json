@@ -1,0 +1,1279 @@
+{
+  "cases": [
+    {
+      "allowed_difference_m": 0.0,
+      "canonical_xz": [
+        -10470.8325,
+        -16650.147
+      ],
+      "impossible_margin_m": 11.0,
+      "lower_bound_vertex": 51221,
+      "lower_game_bound_m": 23.575153483524968,
+      "original_node_ids": [
+        1726940933,
+        1726940933
+      ],
+      "original_way_evidence": [
+        [
+          {
+            "grade": {
+              "connection_class": "bridge",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"bridge\",1,\"\"]",
+              "layer": 1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": "yes",
+              "raw_layer": "1",
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "bridge",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/516172389",
+            "raw_source": {
+              "id": "way/516172389",
+              "name": null,
+              "node_ids": [
+                1726940933,
+                1726940935,
+                1726940938,
+                1726940942,
+                1726940944,
+                1726940950,
+                1726940953,
+                1726940957,
+                1726940955,
+                1726940952,
+                1726940943,
+                1726940941,
+                1726940925,
+                1726940923
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -10505.1104,
+                -16670.7698,
+                -10453.0423,
+                -16628.8898
+              ],
+              "source_feature_sha256": "b2ea2add02d1f809420e5002f30f98482f5ff89e3c57e9b473f81314b0dae10a",
+              "source_geometry_sha256": "d4b791897c3fd8ddd9bd5ef735a5b048391261d32990224e635eb3666888ef98",
+              "source_version": 4,
+              "tags": {
+                "access": "private",
+                "bridge": "yes",
+                "highway": "service",
+                "layer": "1"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "grade": {
+              "connection_class": "tunnel",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": "-1",
+              "raw_tunnel": "yes",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/723839791",
+            "raw_source": {
+              "id": "way/723839791",
+              "name": null,
+              "node_ids": [
+                6479895795,
+                1726940939,
+                1726940933
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -10480.6535,
+                -16677.3339,
+                -10470.8325,
+                -16650.147
+              ],
+              "source_feature_sha256": "fc188e706b38ff82d223da439ac208cd64492c4d2a08086785b954de0b3ec880",
+              "source_geometry_sha256": "3d37a42a124892d36f6808746e2b44d3b642ecde0d22f46c98b05794a9a4f1e8",
+              "source_version": 2,
+              "tags": {
+                "access": "private",
+                "highway": "service",
+                "layer": "-1",
+                "tunnel": "yes"
+              }
+            }
+          }
+        ]
+      ],
+      "preferred_dem_game_reference_m": 17.575153483524968,
+      "source_transition_id": "node/1726940933@grade/51221-51388",
+      "upper_bound_vertex": 51388,
+      "upper_game_bound_m": 12.575153483524968
+    },
+    {
+      "allowed_difference_m": 0.0,
+      "canonical_xz": [
+        3309.7612,
+        3404.0795
+      ],
+      "impossible_margin_m": 10.999999999999998,
+      "lower_bound_vertex": 805600,
+      "lower_game_bound_m": 20.279330926594305,
+      "original_node_ids": [
+        1769151039,
+        1769151039
+      ],
+      "original_way_evidence": [
+        [
+          {
+            "grade": {
+              "connection_class": "bridge",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"bridge\",1,\"\"]",
+              "layer": 1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": "yes",
+              "raw_layer": "1",
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "bridge",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/165365222",
+            "raw_source": {
+              "id": "way/165365222",
+              "name": null,
+              "node_ids": [
+                1769151039,
+                1769151209
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                3309.7612,
+                3404.0795,
+                3312.8905,
+                3411.1466
+              ],
+              "source_feature_sha256": "b4573593954b14c3242cee802634d99bf4ab91d913baf2b357a17e3dd99a913d",
+              "source_geometry_sha256": "bcf04eba762a9226afc73f583437398d25acfe709c3caa4316de87a07b3d1610",
+              "source_version": 2,
+              "tags": {
+                "bridge": "yes",
+                "highway": "footway",
+                "layer": "1",
+                "lit": "yes"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "grade": {
+              "connection_class": "tunnel",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": "-1",
+              "raw_tunnel": "yes",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/689008593",
+            "raw_source": {
+              "id": "way/689008593",
+              "name": null,
+              "node_ids": [
+                6463090312,
+                1769151039
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                3299.7985,
+                3380.8304,
+                3309.7612,
+                3404.0795
+              ],
+              "source_feature_sha256": "0713180fef74ffaf30604bbbaf64b7e6d5e0c0a3d10a4f661687cfb921b9d4c2",
+              "source_geometry_sha256": "89eb1271ec0710797649c506eb91adad69eba01b3c2a240709194895fb82950f",
+              "source_version": 2,
+              "tags": {
+                "highway": "footway",
+                "layer": "-1",
+                "lit": "yes",
+                "tunnel": "yes"
+              }
+            }
+          }
+        ]
+      ],
+      "preferred_dem_game_reference_m": 14.279330926594307,
+      "source_transition_id": "node/1769151039@grade/805600-807280",
+      "upper_bound_vertex": 807280,
+      "upper_game_bound_m": 9.279330926594307
+    },
+    {
+      "allowed_difference_m": 0.0,
+      "canonical_xz": [
+        -17470.0936,
+        9259.1074
+      ],
+      "impossible_margin_m": 10.999999999999996,
+      "lower_bound_vertex": 244638,
+      "lower_game_bound_m": 35.77425420455769,
+      "original_node_ids": [
+        2014918482,
+        2014918482
+      ],
+      "original_way_evidence": [
+        [
+          {
+            "grade": {
+              "connection_class": "bridge",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"bridge\",1,\"\"]",
+              "layer": 1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": "yes",
+              "raw_layer": "1",
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "bridge",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/472649923",
+            "raw_source": {
+              "id": "way/472649923",
+              "name": "Woodlands train checkpoint - Woodlands bus checkpoint",
+              "node_ids": [
+                2014918482,
+                2014918484,
+                2014918486,
+                4474612168,
+                4474612167
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -17470.0936,
+                9089.5341,
+                -17265.7021,
+                9259.1074
+              ],
+              "source_feature_sha256": "093990433c5301ce338b8a54e314da34c7e78d8234df520955f332936ccdafb9",
+              "source_geometry_sha256": "e13ec4b8243b4395a4d0e776789393161a3a77dc9a0f6b15c56108e09dc6691b",
+              "source_version": 3,
+              "tags": {
+                "access": "yes",
+                "bridge": "yes",
+                "highway": "footway",
+                "layer": "1",
+                "name": "Woodlands train checkpoint - Woodlands bus checkpoint",
+                "name:en": "Woodlands train checkpoint - Woodlands bus checkpoint",
+                "name:ms": "Pemeriksaan kereta api Woodlands - Pemeriksaan bas Woodlands",
+                "name:pl": "Kolejowe przej\u015bcie graniczne Woodlands - Autobusowe przej\u015bcie graniczne Woodlands",
+                "name:ta": "\u0b89\u0b9f\u0bcd\u0bb2\u0bc7\u0ba3\u0bcd\u0b9f\u0bcd\u0bb8\u0bcd \u0bb0\u0baf\u0bbf\u0bb2\u0bcd \u0b9a\u0bcb\u0ba4\u0ba9\u0bc8\u0b9a\u0bcd \u0b9a\u0bbe\u0bb5\u0b9f\u0bbf - \u0b89\u0b9f\u0bcd\u0bb2\u0bc7\u0ba3\u0bcd\u0b9f\u0bcd\u0bb8\u0bcd \u0baa\u0bb8\u0bcd \u0b9a\u0bcb\u0ba4\u0ba9\u0bc8\u0b9a\u0bcd \u0b9a\u0bbe\u0bb5\u0b9f\u0bbf",
+                "name:zh": "\u5140\u862d\u706b\u8eca\u6aa2\u67e5\u7ad9-\u5140\u862d\u5df4\u58eb\u6aa2\u67e5\u7ad9",
+                "oneway": "-1"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "grade": {
+              "connection_class": "tunnel",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": "-1",
+              "raw_tunnel": "yes",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/472649925",
+            "raw_source": {
+              "id": "way/472649925",
+              "name": null,
+              "node_ids": [
+                2014918482,
+                4668477289,
+                2014918489
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -17486.7458,
+                9247.3664,
+                -17470.0936,
+                9259.1074
+              ],
+              "source_feature_sha256": "5e95ef79533a40f3c10752c9e3ff3d6e8d42a207d62b6ebc37e622a8ff71a7b6",
+              "source_geometry_sha256": "2c4d7542c905871e23cdc60c4fc1c6a530e2adf2c2cdc27f7be6c473bbe513d0",
+              "source_version": 2,
+              "tags": {
+                "access": "yes",
+                "covered": "building_arcade",
+                "foot": "yes",
+                "highway": "footway",
+                "layer": "-1",
+                "oneway": "yes",
+                "tunnel": "yes"
+              }
+            }
+          }
+        ]
+      ],
+      "preferred_dem_game_reference_m": 29.774254204557696,
+      "source_transition_id": "node/2014918482@grade/244638-244645",
+      "upper_bound_vertex": 244645,
+      "upper_game_bound_m": 24.774254204557696
+    },
+    {
+      "allowed_difference_m": 0.0,
+      "canonical_xz": [
+        -8153.4646,
+        -9691.2547
+      ],
+      "impossible_margin_m": 11.0,
+      "lower_bound_vertex": 704942,
+      "lower_game_bound_m": 23.37127712107899,
+      "original_node_ids": [
+        6730459778,
+        6730459778
+      ],
+      "original_way_evidence": [
+        [
+          {
+            "grade": {
+              "connection_class": "bridge",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"bridge\",1,\"\"]",
+              "layer": 1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": "yes",
+              "raw_layer": "1",
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "bridge",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/716398813",
+            "raw_source": {
+              "id": "way/716398813",
+              "name": null,
+              "node_ids": [
+                6730459763,
+                6730459776,
+                6730459777,
+                6730459778
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -8155.7416,
+                -9691.2547,
+                -8153.4646,
+                -9672.1909
+              ],
+              "source_feature_sha256": "feebd95c262fb6277d0120cd843e2da01699b50ca5fe8352d3b35de243917528",
+              "source_geometry_sha256": "c79b9a007b4c13d773ba50ad381d950042f12c9496806890077caaddc167d7c1",
+              "source_version": 1,
+              "tags": {
+                "bridge": "yes",
+                "highway": "footway",
+                "layer": "1"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "grade": {
+              "connection_class": "tunnel",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": "-1",
+              "raw_tunnel": "yes",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/716467919",
+            "raw_source": {
+              "id": "way/716467919",
+              "name": null,
+              "node_ids": [
+                6730459778,
+                6730730828,
+                6730730829,
+                6730730830,
+                6730730831,
+                6730730832
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -8171.8337,
+                -9762.9571,
+                -8153.4646,
+                -9691.2547
+              ],
+              "source_feature_sha256": "80bb40302065583594429e28c9797ef01f048ad2c50df4e35c1aacc0be050f9b",
+              "source_geometry_sha256": "9b8f68e3f2d94c0d879e29c911d28daf65064726d512fd2a7e8decb1ac1db718",
+              "source_version": 1,
+              "tags": {
+                "highway": "footway",
+                "layer": "-1",
+                "tunnel": "yes"
+              }
+            }
+          }
+        ]
+      ],
+      "preferred_dem_game_reference_m": 17.37127712107899,
+      "source_transition_id": "node/6730459778@grade/704942-704994",
+      "upper_bound_vertex": 704994,
+      "upper_game_bound_m": 12.37127712107899
+    },
+    {
+      "allowed_difference_m": 0.0,
+      "canonical_xz": [
+        -13523.26,
+        7897.4784
+      ],
+      "impossible_margin_m": 11.000000000000004,
+      "lower_bound_vertex": 164479,
+      "lower_game_bound_m": 34.79588667120895,
+      "original_node_ids": [
+        10839830686,
+        10839830686
+      ],
+      "original_way_evidence": [
+        [
+          {
+            "grade": {
+              "connection_class": "bridge",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"bridge\",1,\"\"]",
+              "layer": 1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": "boardwalk",
+              "raw_layer": "1",
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "bridge",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/1364036133",
+            "raw_source": {
+              "id": "way/1364036133",
+              "name": null,
+              "node_ids": [
+                10839830686,
+                12630449429,
+                12630449937,
+                13744439823,
+                13744439822,
+                12630449936,
+                12630449935,
+                12630449933,
+                12630449931,
+                12630449930,
+                12630449929,
+                12630449928,
+                13744439821,
+                12630449926,
+                12630449925,
+                12630449924,
+                12630449923,
+                12630449922,
+                12630449921,
+                12630449664,
+                12630449919,
+                12630449918,
+                12630449301,
+                12630449917,
+                12630449916,
+                12630449915,
+                12630449914,
+                12630449913,
+                12630449912,
+                12630449911,
+                12630449910,
+                12630449909,
+                12630449908,
+                12630449907,
+                12630449906,
+                12630449905
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -13564.2042,
+                7797.4441,
+                -13478.7076,
+                7897.4784
+              ],
+              "source_feature_sha256": "af4f7281aec2c6aea43366e837a1438005181b54989b4a02cd5276c6ba0e8bdc",
+              "source_geometry_sha256": "eeafb277947c9d454e11a84a1cda2ed39d03a50dd3da04b2056da2f90fcc860b",
+              "source_version": 2,
+              "tags": {
+                "bridge": "boardwalk",
+                "highway": "footway",
+                "layer": "1",
+                "man_made": "bridge"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "grade": {
+              "connection_class": "tunnel",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": "-1",
+              "raw_tunnel": "yes",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/1501287868",
+            "raw_source": {
+              "id": "way/1501287868",
+              "name": null,
+              "node_ids": [
+                13744439824,
+                10839830686
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -13523.26,
+                7897.4784,
+                -13517.0239,
+                7913.5928
+              ],
+              "source_feature_sha256": "0ecd3fb627b7961e9b51a47f9e9aef8b5e0fc2280a87310ce8bdbc8849022b90",
+              "source_geometry_sha256": "f010849e8e61347e50e74b9a6c497f9c795ed7a29b9c6c5eedb9d596f99748aa",
+              "source_version": 1,
+              "tags": {
+                "highway": "footway",
+                "layer": "-1",
+                "man_made": "bridge",
+                "tunnel": "yes"
+              }
+            }
+          }
+        ]
+      ],
+      "preferred_dem_game_reference_m": 28.795886671208944,
+      "source_transition_id": "node/10839830686@grade/164479-164598",
+      "upper_bound_vertex": 164598,
+      "upper_game_bound_m": 23.795886671208944
+    },
+    {
+      "allowed_difference_m": 0.0,
+      "canonical_xz": [
+        -13207.6358,
+        -5639.6093
+      ],
+      "impossible_margin_m": 10.999999999999998,
+      "lower_bound_vertex": 151707,
+      "lower_game_bound_m": 16.893610728768444,
+      "original_node_ids": [
+        12886611409,
+        12886611409
+      ],
+      "original_way_evidence": [
+        [
+          {
+            "grade": {
+              "connection_class": "bridge",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"bridge\",1,\"\"]",
+              "layer": 1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": "yes",
+              "raw_layer": "1",
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "bridge",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/1392109611",
+            "raw_source": {
+              "id": "way/1392109611",
+              "name": null,
+              "node_ids": [
+                12886611409,
+                12886611408,
+                13336390315,
+                12886611411,
+                8178715579
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -13254.5182,
+                -5639.6093,
+                -13207.6358,
+                -5593.1571
+              ],
+              "source_feature_sha256": "5ad11c38518c455f49bde5556904c53069d5cb1bca1cbc07e914dc91701aed76",
+              "source_geometry_sha256": "e2c2336f7ba478c54279b48e81d75b3ecc3b9b500df51e281f7ee3c4cee59f41",
+              "source_version": 2,
+              "tags": {
+                "bridge": "yes",
+                "highway": "footway",
+                "layer": "1"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "grade": {
+              "connection_class": "tunnel",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": "-1",
+              "raw_tunnel": "yes",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/1392109612",
+            "raw_source": {
+              "id": "way/1392109612",
+              "name": null,
+              "node_ids": [
+                12886611410,
+                12886611405,
+                12886611406,
+                12886611407,
+                12886611409
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -13207.6358,
+                -5681.1086,
+                -13183.9408,
+                -5639.6093
+              ],
+              "source_feature_sha256": "16983c58937dbf8e8814ddb818d086e96e0667ca72e34fb2206ee79e2d5de5b5",
+              "source_geometry_sha256": "b615550bba88e03ac05fee434958a7972cae8ddd674e7cc2cb5d4a4afa701d87",
+              "source_version": 1,
+              "tags": {
+                "highway": "footway",
+                "layer": "-1",
+                "tunnel": "yes"
+              }
+            }
+          }
+        ]
+      ],
+      "preferred_dem_game_reference_m": 10.893610728768445,
+      "source_transition_id": "node/12886611409@grade/151707-151716",
+      "upper_bound_vertex": 151716,
+      "upper_game_bound_m": 5.893610728768445
+    },
+    {
+      "allowed_difference_m": 0.0,
+      "canonical_xz": [
+        -13517.0239,
+        7913.5928
+      ],
+      "impossible_margin_m": 11.000000000000004,
+      "lower_bound_vertex": 164596,
+      "lower_game_bound_m": 33.93339857345434,
+      "original_node_ids": [
+        13744439824,
+        13744439824
+      ],
+      "original_way_evidence": [
+        [
+          {
+            "grade": {
+              "connection_class": "bridge",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"bridge\",1,\"\"]",
+              "layer": 1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": "boardwalk",
+              "raw_layer": "1",
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "bridge",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/1501287867",
+            "raw_source": {
+              "id": "way/1501287867",
+              "name": null,
+              "node_ids": [
+                12630449938,
+                12630449949,
+                13744439848,
+                12630449948,
+                12630449947,
+                12630449946,
+                12630449945,
+                13744439847,
+                12630449944,
+                12630449943,
+                13744439846,
+                12630449941,
+                12630449472,
+                13744439824
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -13517.0239,
+                7842.9941,
+                -13464.9415,
+                7929.863
+              ],
+              "source_feature_sha256": "4982a0665e27042ff124919ce8988fb30b0a2341d411ee028cdbf879d395aee9",
+              "source_geometry_sha256": "969396dafcfaeb28d474e4ea94e513755bd35c936046a7b1cdb18ac9640d614c",
+              "source_version": 1,
+              "tags": {
+                "bridge": "boardwalk",
+                "highway": "footway",
+                "layer": "1",
+                "man_made": "bridge"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "grade": {
+              "connection_class": "tunnel",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": "-1",
+              "raw_tunnel": "yes",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/1501287868",
+            "raw_source": {
+              "id": "way/1501287868",
+              "name": null,
+              "node_ids": [
+                13744439824,
+                10839830686
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -13523.26,
+                7897.4784,
+                -13517.0239,
+                7913.5928
+              ],
+              "source_feature_sha256": "0ecd3fb627b7961e9b51a47f9e9aef8b5e0fc2280a87310ce8bdbc8849022b90",
+              "source_geometry_sha256": "f010849e8e61347e50e74b9a6c497f9c795ed7a29b9c6c5eedb9d596f99748aa",
+              "source_version": 1,
+              "tags": {
+                "highway": "footway",
+                "layer": "-1",
+                "man_made": "bridge",
+                "tunnel": "yes"
+              }
+            }
+          }
+        ]
+      ],
+      "preferred_dem_game_reference_m": 27.933398573454337,
+      "source_transition_id": "node/13744439824@grade/164596-164597",
+      "upper_bound_vertex": 164597,
+      "upper_game_bound_m": 22.933398573454337
+    },
+    {
+      "allowed_difference_m": 0.0,
+      "canonical_xz": [
+        -272.212,
+        374.6415
+      ],
+      "impossible_margin_m": 10.999999999999998,
+      "lower_bound_vertex": 263500,
+      "lower_game_bound_m": 18.288584849175336,
+      "original_node_ids": [
+        1221408493,
+        1221408493
+      ],
+      "original_way_evidence": [
+        [
+          {
+            "grade": {
+              "connection_class": "bridge",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"bridge\",1,\"\"]",
+              "layer": 1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": "yes",
+              "raw_layer": "1",
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "bridge",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/841691683",
+            "raw_source": {
+              "id": "way/841691683",
+              "name": null,
+              "node_ids": [
+                1629037550,
+                8191538470,
+                8191538469,
+                1221408493
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -272.212,
+                374.6415,
+                -226.5223,
+                406.7266
+              ],
+              "source_feature_sha256": "7c9c5d718f8c1a01e6e31ffd31052343ec5a5d59312c0d58e02a82c838ba4f78",
+              "source_geometry_sha256": "f64abc41c32cfd3fbb27053065fe2d331ceabd2d4373a96ea2aad30f25c7421b",
+              "source_version": 3,
+              "tags": {
+                "bridge": "yes",
+                "highway": "footway",
+                "layer": "1",
+                "surface": "concrete"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "grade": {
+              "connection_class": "tunnel",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": "-1",
+              "raw_tunnel": "yes",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/106086882",
+            "raw_source": {
+              "id": "way/106086882",
+              "name": "North Boat Quay",
+              "node_ids": [
+                1221408511,
+                1221408493
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -272.212,
+                326.2185,
+                -255.7476,
+                374.6415
+              ],
+              "source_feature_sha256": "c0243a622efdeb7e0731f43d4a4f1a4cb08de13c1039a37898a1a4c9a2a5bb4b",
+              "source_geometry_sha256": "fa2c5d4c700dd399d538978e2756e5059be35c33a063e8fe2796fabf91886ead",
+              "source_version": 16,
+              "tags": {
+                "bicycle": "yes",
+                "highway": "pedestrian",
+                "image": "https://images.mapillary.com/_o1sGlhmq_vYahpH8GGzVA/thumb-2048.jpg",
+                "layer": "-1",
+                "lit": "yes",
+                "mapillary": "531931981302919",
+                "name": "North Boat Quay",
+                "name:zh": "\u99c1\u8239\u5317\u78bc\u982d",
+                "name:zh-Hans": "\u9a73\u8239\u5317\u7801\u5934",
+                "smoothness": "good",
+                "surface": "paving_stones",
+                "tunnel": "yes"
+              }
+            }
+          }
+        ]
+      ],
+      "preferred_dem_game_reference_m": 12.288584849175338,
+      "source_transition_id": "node/1221408493@grade/260911-263500",
+      "upper_bound_vertex": 260911,
+      "upper_game_bound_m": 7.288584849175338
+    },
+    {
+      "allowed_difference_m": 0.0,
+      "canonical_xz": [
+        -17693.361,
+        4273.9345
+      ],
+      "impossible_margin_m": 10.999999999999998,
+      "lower_bound_vertex": 237180,
+      "lower_game_bound_m": 20.07815781402627,
+      "original_node_ids": [
+        2383954638,
+        2383954638
+      ],
+      "original_way_evidence": [
+        [
+          {
+            "grade": {
+              "connection_class": "bridge",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"bridge\",1,\"\"]",
+              "layer": 1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": "yes",
+              "raw_layer": "1",
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "bridge",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/745167899",
+            "raw_source": {
+              "id": "way/745167899",
+              "name": null,
+              "node_ids": [
+                2383954637,
+                2383954638
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -17693.361,
+                4273.9345,
+                -17677.9806,
+                4337.2331
+              ],
+              "source_feature_sha256": "45dc6bd5ed069f539014aea7a299ca447109ee3842108df3f812785a8589b59d",
+              "source_geometry_sha256": "85ace18710deeff53660cb65b5b1f6d06424765af0fb40421646746ed888ec55",
+              "source_version": 4,
+              "tags": {
+                "bridge": "yes",
+                "highway": "footway",
+                "layer": "1",
+                "segregated": "no",
+                "surface": "concrete"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "grade": {
+              "connection_class": "tunnel",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": "-1",
+              "raw_tunnel": "culvert",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/1536224414",
+            "raw_source": {
+              "id": "way/1536224414",
+              "name": "Sembawang Park Connector",
+              "node_ids": [
+                7986857328,
+                2383954638
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                -17719.9985,
+                4271.4303,
+                -17693.361,
+                4273.9345
+              ],
+              "source_feature_sha256": "492dad3d867ee9b2a44408adf21794da1ca9dbdbba37be163ef479b1e7f46314",
+              "source_geometry_sha256": "64afa01622c76f47812fdec571481b74a8e2089b9beb3c7662f6facc889706fa",
+              "source_version": 1,
+              "tags": {
+                "bicycle": "designated",
+                "foot": "designated",
+                "highway": "cycleway",
+                "layer": "-1",
+                "name": "Sembawang Park Connector",
+                "name:ms": "Penghubung Taman Sembawang",
+                "name:zh": "\u4e09\u5df4\u65fa\u516c\u56ed\u8fde\u9053",
+                "oneway": "no",
+                "segregated": "no",
+                "surface": "asphalt",
+                "tunnel": "culvert",
+                "width": "2"
+              }
+            }
+          }
+        ]
+      ],
+      "preferred_dem_game_reference_m": 14.078157814026271,
+      "source_transition_id": "node/2383954638@grade/236171-237180",
+      "upper_bound_vertex": 236171,
+      "upper_game_bound_m": 9.078157814026271
+    },
+    {
+      "allowed_difference_m": 0.0,
+      "canonical_xz": [
+        3260.8687,
+        4507.5366
+      ],
+      "impossible_margin_m": 11.0,
+      "lower_bound_vertex": 808319,
+      "lower_game_bound_m": 29.504114673199922,
+      "original_node_ids": [
+        6464184406,
+        6464184406
+      ],
+      "original_way_evidence": [
+        [
+          {
+            "grade": {
+              "connection_class": "bridge",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"bridge\",1,\"\"]",
+              "layer": 1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": "yes",
+              "raw_layer": "1",
+              "raw_tunnel": null,
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "bridge",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/689102103",
+            "raw_source": {
+              "id": "way/689102103",
+              "name": "Fort Siloso Skywalk",
+              "node_ids": [
+                6464184406,
+                5134029809,
+                6464184407
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                3245.9186,
+                4507.5366,
+                3260.8687,
+                4552.1983
+              ],
+              "source_feature_sha256": "9640dbec89ded97ea4a5f31355a7869e4c765a631231c022a7f911b62ba62f3c",
+              "source_geometry_sha256": "288bc0e46bb83d794881e0da10190b2785d8e598e5c43cff739099769c0182a1",
+              "source_version": 5,
+              "tags": {
+                "bridge": "yes",
+                "highway": "footway",
+                "image": "https://images.mapillary.com/WbUlY1GJsi_V6km3sElXKw/thumb-2048.jpg",
+                "layer": "1",
+                "mapillary": "1080989125644325",
+                "name": "Fort Siloso Skywalk",
+                "name:zh": "\u897f\u4e50\u7d22\u70ae\u53f0\u5929\u7a7a\u6b65\u9053",
+                "smoothness": "excellent",
+                "surface": "concrete"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "grade": {
+              "connection_class": "tunnel",
+              "covered_building_passage": false,
+              "explicit_underground_location": false,
+              "inference_policy": "source_road_vertical_semantics_v2",
+              "key": "[\"tunnel\",-1,\"\"]",
+              "layer": -1,
+              "level": "",
+              "metric_layer_height_is_source_fact": false,
+              "raw_bridge": null,
+              "raw_layer": "-1",
+              "raw_tunnel": "yes",
+              "source_ele_datum": null,
+              "source_ele_tag": null,
+              "source_layer_explicit": true,
+              "status": "EXPLICIT_SOURCE_VERTICAL_ORDER_NOT_METRES",
+              "structure": "tunnel",
+              "vertical_profile_source": "UNRESOLVED_METRIC_SOURCE_ELEVATION"
+            },
+            "id": "way/595184267",
+            "raw_source": {
+              "id": "way/595184267",
+              "name": "Fort Siloso Skywalk",
+              "node_ids": [
+                5134030053,
+                6464184406
+              ],
+              "original_order_preserved": true,
+              "source_bounds_xz": [
+                3260.8687,
+                4504.376,
+                3263.9979,
+                4507.5366
+              ],
+              "source_feature_sha256": "19830d00090dc246d831ebd0e924e9a2dd54b17baf35257a76b98ce4ce182465",
+              "source_geometry_sha256": "60cd764ea8a44bac8eb15dd3b5fdcefde72fa642ab29e5296eb18ed9cf380d3a",
+              "source_version": 3,
+              "tags": {
+                "highway": "footway",
+                "layer": "-1",
+                "name": "Fort Siloso Skywalk",
+                "name:zh": "\u897f\u4e50\u7d22\u70ae\u53f0\u5929\u7a7a\u6b65\u9053",
+                "surface": "paved",
+                "tunnel": "yes"
+              }
+            }
+          }
+        ]
+      ],
+      "preferred_dem_game_reference_m": 23.504114673199922,
+      "source_transition_id": "node/6464184406@grade/808247-808319",
+      "upper_bound_vertex": 808247,
+      "upper_game_bound_m": 18.504114673199922
+    }
+  ],
+  "complete_global_profile_attempt_pending_R2": true,
+  "next_design_requirement": "Versioned endpoint-aware metric inference preserving every original source node/tag/direction and explicit multi-level source-order constraint; do not delete transitions or waive grade/collision limits.",
+  "observed_utc": "2026-10-29T15:19:37.002875+00:00",
+  "reason": "Opposed fixed metric game offsets to the same coarse DEM at a shared original source node are incompatible with native-continuous zero-length node transition. These offsets are declared game assumptions, not surveyed source elevations.",
+  "source_preserved": true,
+  "status": "READ_ONLY_DIRECT_CONTRADICTION_WITNESSES_NOT_REPAIRED_OR_ADOPTED",
+  "witness_count": 10
+}

@@ -1,0 +1,41 @@
+{
+  "active_output": null,
+  "continuation": "ENDPOINT_METRIC_V3_RUN.json",
+  "country_or_native_or_world_acceptance": false,
+  "exec_session": 36016,
+  "frozen_run_sources_sha256": {
+    "compile_roads_semantic_v2.py": "a8018b895f3039c2de20bddf7ef123684b3ce136acc54874f9db3cabe9429419",
+    "cpu_job.py": "1ccdd03a2a66dc62cdeb4fe3d9924145784905fd478d8c7b87171de6e51bac1f",
+    "road_semantics_v2.py": "8f2eb8f206465f75e5b20cd0749639844156d79445f7231c26e387e29ec8f0df",
+    "semantic_baseline.py": "e2906a9576a63ac277ee8313e1caef50e86030d343c3e0eb83419f0ccd9b11ad"
+  },
+  "observed_utc": "2026-10-29T15:17:10.317781+00:00",
+  "owned_lifecycle": {
+    "created_utc": "2026-10-29T15:16:18.596324+00:00",
+    "kind": "source-semantic-baseline-v2",
+    "limits": {
+      "cpu_seconds": 3600,
+      "rss_bytes": 2147483648,
+      "wall_seconds": 7200
+    },
+    "script": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus/loop/singapore-fidelity/source-roads/semantic_baseline.py",
+    "status": "RUNNING",
+    "supervisor_pid": 55762,
+    "worker_lstart": "Thu Oct 29 11:16:18 2026",
+    "worker_pid": 55773
+  },
+  "previous_failure": "semantic-v2-records/BASELINE_RECOVERY_R1_FAILURE.json",
+  "prior_interrupted_state": "semantic-v2-records/INTERRUPTED_BASELINE_RUN_2026_10_29.json",
+  "source_database_sha256": "631780eecd99cec90de9dec536aee384e730b563f8e2ecd185ffd8cac23f209f",
+  "source_identity_sha256": "4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802",
+  "source_reproduction_audits": [
+    "R5_RECOVERY_PAYLOAD_AUDIT.json",
+    "R5_RECOVERY_SOURCE_AUDIT.json"
+  ],
+  "status": "TERMINAL_R2_REJECTED_5328_METRIC_CONSTRAINTS_NO_Y_ADOPTION",
+  "targeted_tests": {
+    "failed": 0,
+    "passed": 25
+  },
+  "terminal_result": "semantic-v2-records/BASELINE_RECOVERY_R2_FAILURE.json"
+}

@@ -1,0 +1,16 @@
+{
+  "actual_fixture": "local-portal-stub-fixture.json",
+  "all_country_profile_or_native_acceptance": false,
+  "error": "Source-proven ramp cannot meet declared game clearance: way/1020734762",
+  "fix": "Require the original ordered source path to leave the union of endpoint footprint neighborhoods and return before proposing a reconstructed stacked-site clearance. Preserve source tags and ordinary tunnel role.",
+  "observed_utc": "2026-10-29T15:16:18.032579+00:00",
+  "problem": "Adjacent endpoint footprints overlap on a straight6.295633m connector with6.4m reconstructed width. Different neighbor source layer orders do not make those local adjacent caps two stacked decks.",
+  "semantic_wrapper_sha256": "e2906a9576a63ac277ee8313e1caef50e86030d343c3e0eb83419f0ccd9b11ad",
+  "source_fact_preservation": "BASELINE_RECOVERY_R1_original-source-audit.json",
+  "status": "REJECTED_FALSE_STACKED_PORTAL_CLASSIFICATION_NO_GRAPH_OR_IDENTITY_EMITTED",
+  "targeted_tests": {
+    "actual_known57m_ramp_order_and5m_game_gap_retained": true,
+    "failed": 0,
+    "passed": 25
+  }
+}
