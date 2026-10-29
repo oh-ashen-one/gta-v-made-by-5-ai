@@ -1,0 +1,19 @@
+{
+  "schema": "mbs_operator_catalogue_proposal_v9_freeze",
+  "frozen_utc": "2026-10-29T18:46:20.664215+00:00",
+  "files_sha256": {
+    "build_catalogue_inventory_v9.py": "87453ed54933f63626893f30efb649e800b5157021cbaf3d5e5dc8e4f91ae8d8",
+    "audit_catalogue_inventory_v9.py": "8d710e2ef3b0d587a77f5707906bb4633c1c3886fb745bbd865cb3114de98b23",
+    "OPERATOR_CATALOGUE_INVENTORY_PROPOSAL_V9.json": "05832bf84d0e52cb67113d15c54fb023e06a01f561daeb1fba8e99e28d0bec5f",
+    "CATALOGUE_INVENTORY_COVERAGE_AUDIT_V9.json": "36beb1aeabb7120fde622960e80f46732bdb76f19f429a2ebad185fb3707f2e5",
+    "OPERATOR_CATALOGUE_V9_REVIEW.md": "3192d6d94c52e192f594b9bbd3d4e48c6e5bff3e52dd564a7beb52197a8e2c2f"
+  },
+  "active_keys": 1844,
+  "suites": 775,
+  "legacy_ids_retained": 1850,
+  "superseded_placeholders": 6,
+  "catalogue_variants": 26,
+  "coverage_checks_passed": 5924,
+  "independent_fact_critique_complete": false,
+  "game_adoption_or_physical_allocation": false
+}

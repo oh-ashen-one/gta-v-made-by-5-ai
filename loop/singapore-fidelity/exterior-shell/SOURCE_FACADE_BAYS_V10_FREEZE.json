@@ -1,0 +1,15 @@
+{
+  "schema": "mbs_source_facade_bay_v10_freeze",
+  "frozen_utc": "2026-10-29T19:12:04.991009+00:00",
+  "files_sha256": {
+    "source_facade_bays_v10.py": "01622a4c338def4d63443b78ec69bd3a72c10f98f5c9f2faeb3f9ac792f5ad09",
+    "test_source_facade_bays_v10.py": "36737996dc7b7e9b69bdc647020fac4abcdd10c6fdc3912f15550c1023ded00f",
+    "SOURCE_FACADE_REVEAL_PROPOSAL_V10.json": "6430ec1573378ff340f2621cc77900c3c7678b11e7147ca3ec88d19561caba71",
+    "SOURCE_FACADE_BAYS_V10_INTEGRATION.md": "986d0caf828d29202239de3aa172c8562dd88e5fb8f9626f1dc0533269efd4b0"
+  },
+  "bounded_cpu_tests_passed": 6,
+  "historical_incomplete_fixture_rooms": 1543,
+  "fixture_rooms_with_minimum_frontage_candidates": 1543,
+  "new_catalogue_allocation": false,
+  "native_glazing_headroom_sightline_or_render_verified": false
+}

@@ -1,0 +1,20 @@
+{
+  "schema": "mbs_premier_typed_fitout_v3_freeze",
+  "frozen_utc": "2026-10-29T17:00:15.739364+00:00",
+  "source_sha256": {
+    "premier_fitout_v3.py": "01b840a2068e0330cee1649eaac3bd28f6b0a467c879aeef16e65cb02d243a6f",
+    "compile_premier_fitouts_v3.py": "429229dd35652976e87ea81226ecc1c2cd7003205dba4d96e5af5c3e07f437f7",
+    "PREMIER_TYPED_FITOUT_COLLECTION_V3.json": "d583e4e7767f7dd2ce6094ea7246ed90df60e3840232f11e56e5f48918eb0ad8"
+  },
+  "rooms": 1075,
+  "recipes": 92,
+  "failed_static_recipes": 0,
+  "capsule_radius_m": 0.36,
+  "additional_conservative_margin_m": 0.02,
+  "furniture_scale": 1,
+  "native_reachability": false,
+  "closed_door_motion_or_actor_occupancy": false,
+  "rendered_quality_or_mesh_fit": false,
+  "paired_pocket_motion_base": "existing project cabin paired linear gate; no new mocap or downloaded animation claim",
+  "factory_adoption_requires_independent_review": true
+}
