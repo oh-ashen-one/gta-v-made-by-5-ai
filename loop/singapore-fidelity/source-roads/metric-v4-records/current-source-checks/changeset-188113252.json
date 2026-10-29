@@ -1,0 +1,16 @@
+{
+  "closed_at": "2026-08-27T18:52:43Z",
+  "created_at": "2026-08-27T18:52:42Z",
+  "id": 188113252,
+  "no_OSM_mutation": true,
+  "retrieved_utc": "2026-10-29T19:00:55.672918+00:00",
+  "source_url": "https://api.openstreetmap.org/api/0.6/changeset/188113252.json",
+  "tags": {
+    "changesets_count": "2014",
+    "comment": "details in Singapore",
+    "created_by": "iD 2.42.2",
+    "host": "https://www.openstreetmap.org/edit",
+    "imagery_used": "Bing Maps Aerial",
+    "locale": "en"
+  }
+}

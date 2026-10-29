@@ -1,0 +1,58 @@
+{
+  "all_own_cpu_processes_terminal": true,
+  "current_OSM_checks": "Three current way records and one shared changeset read;no mutation,no inference that tags alone establish exact3Dgeometry",
+  "files": [
+    {
+      "bytes": 5176,
+      "path": "loop/singapore-fidelity/source-roads/source_physical_policy_v4.py",
+      "sha256": "c10fc259a90f90f66e5ff6e30b7dc462e56bdea6b3295f2c751bb74eb1fefca6"
+    },
+    {
+      "bytes": 3205,
+      "path": "loop/singapore-fidelity/source-roads/test_source_physical_policy_v4.py",
+      "sha256": "9f982439448238d5e417bd7c769ea445e787c045169c3ab79e93482756f4b792"
+    },
+    {
+      "bytes": 7113,
+      "path": "loop/singapore-fidelity/source-roads/stair_portal_geometry_v4.py",
+      "sha256": "68f657ac4a46d6c9dcdf838e2b0444f6670744c7010f1477d8f3cc8fa6561321"
+    },
+    {
+      "bytes": 3831,
+      "path": "loop/singapore-fidelity/source-roads/test_stair_portal_geometry_v4.py",
+      "sha256": "face6da59f9cc9cf38690e54f93d64abb9fb4fb4f6b4d4f7b804161a10d50dd0"
+    },
+    {
+      "bytes": 8225,
+      "path": "loop/singapore-fidelity/source-roads/metric-v4-records/NONSTEP_FLAT_WITNESSES.json",
+      "sha256": "6b2ca8be85cba173b5430e3329d72666b7fcce7eca99649d12567594ab783f56"
+    },
+    {
+      "bytes": 450,
+      "path": "loop/singapore-fidelity/source-roads/metric-v4-records/current-source-checks/167947926.json",
+      "sha256": "6d902f0ec9c27aefd146517d28f51d2e29b28cbd9d3d236750f9c461db04a559"
+    },
+    {
+      "bytes": 725,
+      "path": "loop/singapore-fidelity/source-roads/metric-v4-records/current-source-checks/169542799.json",
+      "sha256": "542d6527fedab63f1de9f9e28458d528748eedc2028feb359837e180dafce256"
+    },
+    {
+      "bytes": 479,
+      "path": "loop/singapore-fidelity/source-roads/metric-v4-records/current-source-checks/670553208.json",
+      "sha256": "547ae1e7597343fae57b7258e42b18a52d6870d53ed9dc549adf9a2ff9a96fcc"
+    },
+    {
+      "bytes": 493,
+      "path": "loop/singapore-fidelity/source-roads/metric-v4-records/current-source-checks/changeset-188113252.json",
+      "sha256": "78939460b9323cc7618dd45f9fcda84cc270f9baa30437358d8faeebb00e68f4"
+    }
+  ],
+  "historical_prior_freeze_preserved": "V4_TARGETED_FREEZE.json",
+  "observed_utc": "2026-10-29T19:13:50.533554+00:00",
+  "status": "CURRENT_POLICY_ELEVATOR_FIX_AND_TARGETED_GEOMETRY_SOURCE_CHECKPOINT_NOT_GLOBAL_V4_SUCCESS",
+  "tests": {
+    "source_policy": 7,
+    "targeted_stair_geometry": 3
+  }
+}

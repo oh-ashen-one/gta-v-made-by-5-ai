@@ -1,0 +1,33 @@
+{
+  "cases_json_bytes_unchanged": true,
+  "changes": [
+    {
+      "added_spatial_tile_key": "-2_0",
+      "descriptor_tile": "-2_0.p000",
+      "payload_sha256": "cf18f232b52fdb1017833e55176707074265e9a3e31f29a19bcd46e6ee130b0c",
+      "physical_payload_bytes_unchanged": true
+    },
+    {
+      "added_spatial_tile_key": "-2_1",
+      "descriptor_tile": "-2_1.p000",
+      "payload_sha256": "9b08adbd755ee118529bfa9a64630a48da92c99eb76a602dc11a1f5f4e53b1c6",
+      "physical_payload_bytes_unchanged": true
+    },
+    {
+      "added_spatial_tile_key": "-1_0",
+      "descriptor_tile": "-1_0.p000",
+      "payload_sha256": "48375f4f301744655e3350f3b580e8bd73879c9dd98e125536c9bab636202109",
+      "physical_payload_bytes_unchanged": true
+    },
+    {
+      "added_spatial_tile_key": "1_0",
+      "descriptor_tile": "1_0.p000",
+      "payload_sha256": "99c0639fa8848f9e1f537052051af819003ad9862b33919fd35711546bf6ef13",
+      "physical_payload_bytes_unchanged": true
+    }
+  ],
+  "new_identity_sha256": "fdd79d76c995496b1e7acfa7c7d6e64d7b5c48ebf7f1ab7b786f1e8cfec26d75",
+  "old_fixture_untouched": true,
+  "original_identity_sha256": "1dbfc18758eb6ccefd10b8ba5fa73bb452a00e54b7f3d3f7d50fdaa92ff39e54",
+  "status": "FIXTURE_METADATA_ONLY_REVISION_NO_GEOMETRY_OR_CASE_CHANGE"
+}

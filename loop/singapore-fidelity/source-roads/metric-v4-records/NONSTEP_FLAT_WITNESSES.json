@@ -1,0 +1,334 @@
+{
+  "cases": [
+    {
+      "component_vertices": 8,
+      "generated_endpoints": [
+        183148,
+        183150
+      ],
+      "nonstep_zero_path": [
+        {
+          "from": 183148,
+          "kind": "source_transition",
+          "source_tags": null,
+          "to": 182994,
+          "way": null
+        },
+        {
+          "from": 182994,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "bicycle": "dismount",
+            "covered": "yes",
+            "highway": "footway",
+            "incline": "up",
+            "lit": "yes",
+            "stroller": "yes",
+            "wheelchair": "yes"
+          },
+          "to": 182996,
+          "way": "way/1442968137"
+        },
+        {
+          "from": 182996,
+          "kind": "source_transition",
+          "source_tags": null,
+          "to": 182997,
+          "way": null
+        },
+        {
+          "from": 182997,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "bicycle": "dismount",
+            "bridge": "yes",
+            "covered": "yes",
+            "highway": "footway",
+            "layer": "1",
+            "lit": "yes",
+            "stroller": "yes",
+            "wheelchair": "yes"
+          },
+          "to": 182998,
+          "way": "way/1442968138"
+        },
+        {
+          "from": 182998,
+          "kind": "source_transition",
+          "source_tags": null,
+          "to": 183150,
+          "way": null
+        }
+      ],
+      "source_nodes": [
+        1994948875,
+        13240396531,
+        1994948629
+      ],
+      "source_tags": {
+        "access": "yes",
+        "covered": "yes",
+        "foot": "yes",
+        "handrail": "yes",
+        "highway": "steps",
+        "incline": "up",
+        "level": "0;1",
+        "stroller": "no",
+        "wheelchair": "no"
+      },
+      "source_way_ids": [
+        "way/1442968137",
+        "way/1442968138",
+        "way/188857589",
+        "way/188857629",
+        "way/188857639",
+        "way/865288193"
+      ],
+      "stair_way": "way/188857629"
+    },
+    {
+      "component_vertices": 10,
+      "generated_endpoints": [
+        227788,
+        227790
+      ],
+      "nonstep_zero_path": [
+        {
+          "from": 227788,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "highway": "footway"
+          },
+          "to": 227767,
+          "way": "way/1196246955"
+        },
+        {
+          "from": 227767,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "highway": "footway"
+          },
+          "to": 227790,
+          "way": "way/1196246955"
+        }
+      ],
+      "source_nodes": [
+        11100664765,
+        11100664770,
+        11100664774
+      ],
+      "source_tags": {
+        "highway": "steps",
+        "incline": "down"
+      },
+      "source_way_ids": [
+        "way/1112643411",
+        "way/1196246953",
+        "way/1196246955"
+      ],
+      "stair_way": "way/1196246953"
+    },
+    {
+      "component_vertices": 5,
+      "generated_endpoints": [
+        766724,
+        766570
+      ],
+      "nonstep_zero_path": [
+        {
+          "from": 766724,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "bicycle": "designated",
+            "foot": "designated",
+            "highway": "cycleway",
+            "name": "Alexandra-Queensway Park Connector",
+            "oneway": "no",
+            "segregated": "no",
+            "surface": "concrete"
+          },
+          "to": 766570,
+          "way": "way/169542799"
+        }
+      ],
+      "source_nodes": [
+        1792724016,
+        1792723988,
+        1792724019
+      ],
+      "source_tags": {
+        "covered": "yes",
+        "handrail": "yes",
+        "highway": "steps",
+        "incline": "up",
+        "ramp": "no"
+      },
+      "source_way_ids": [
+        "way/1553007270",
+        "way/167947926",
+        "way/169542799"
+      ],
+      "stair_way": "way/167947926"
+    },
+    {
+      "component_vertices": 11,
+      "generated_endpoints": [
+        770231,
+        770232
+      ],
+      "nonstep_zero_path": [
+        {
+          "from": 770231,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "highway": "footway",
+            "surface": "concrete"
+          },
+          "to": 770226,
+          "way": "way/1125200394"
+        },
+        {
+          "from": 770226,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "area": "yes",
+            "highway": "elevator"
+          },
+          "to": 770224,
+          "way": "way/1125200393"
+        },
+        {
+          "from": 770224,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "area": "yes",
+            "highway": "elevator"
+          },
+          "to": 770229,
+          "way": "way/1125200393"
+        },
+        {
+          "from": 770229,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "highway": "footway"
+          },
+          "to": 770233,
+          "way": "way/1125200396"
+        },
+        {
+          "from": 770233,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "highway": "footway"
+          },
+          "to": 770232,
+          "way": "way/1125200396"
+        }
+      ],
+      "source_nodes": [
+        10289613382,
+        10289613383
+      ],
+      "source_tags": {
+        "handrail": "yes",
+        "highway": "steps",
+        "incline": "up",
+        "surface": "concrete"
+      },
+      "source_way_ids": [
+        "way/1125200390",
+        "way/1125200393",
+        "way/1125200394",
+        "way/1125200395",
+        "way/1125200396",
+        "way/1125200397"
+      ],
+      "stair_way": "way/1125200395"
+    },
+    {
+      "component_vertices": 6,
+      "generated_endpoints": [
+        781442,
+        781036
+      ],
+      "nonstep_zero_path": [
+        {
+          "from": 781442,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "highway": "footway",
+            "lit": "yes",
+            "surface": "concrete"
+          },
+          "to": 781422,
+          "way": "way/492076323"
+        },
+        {
+          "from": 781422,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "highway": "primary",
+            "lanes": "4",
+            "lit": "yes",
+            "maxheight": "4.5",
+            "maxspeed": "60",
+            "name": "Jalan Bukit Merah",
+            "name:th": "\u0e16\u0e19\u0e19\u0e1a\u0e39\u0e01\u0e34\u0e15\u0e40\u0e21\u0e23\u0e32\u0e2b\u0e4c",
+            "name:zh": "\u60f9\u5170\u7ea2\u5c71",
+            "oneway": "yes",
+            "sidewalk": "left",
+            "source": "GPS & Yahoo aerial images",
+            "surface": "asphalt",
+            "turn:lanes": "through|through|through|right"
+          },
+          "to": 781114,
+          "way": "way/481623201"
+        },
+        {
+          "from": 781114,
+          "kind": "nonstep_flat_geometry_equality",
+          "source_tags": {
+            "highway": "service",
+            "lanes": "2",
+            "lanes:backward": "1",
+            "lanes:forward": "1",
+            "lit": "yes",
+            "name": "Silat Road",
+            "service": "parking_aisle",
+            "sidewalk": "right",
+            "surface": "asphalt",
+            "turn:lanes:backward": "left"
+          },
+          "to": 781036,
+          "way": "way/34915777"
+        }
+      ],
+      "source_nodes": [
+        1790057728,
+        1790057726,
+        1790057725
+      ],
+      "source_tags": {
+        "covered": "yes",
+        "handrail": "yes",
+        "highway": "steps",
+        "incline": "down",
+        "ramp": "no",
+        "surface": "concrete"
+      },
+      "source_way_ids": [
+        "way/230628073",
+        "way/34915777",
+        "way/481623201",
+        "way/481623205",
+        "way/492076323",
+        "way/670553208",
+        "way/679330400",
+        "way/679330402"
+      ],
+      "stair_way": "way/670553208"
+    }
+  ],
+  "status": "READ_ONLY_INFERENCE_CONTRADICTION_PATHS_NOT_SOURCE_MUTATION"
+}

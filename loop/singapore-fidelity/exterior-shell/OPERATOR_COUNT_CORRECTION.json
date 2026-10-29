@@ -1,0 +1,37 @@
+{
+  "observed_utc": "2026-10-29T18:28:54.326331+00:00",
+  "decision": "Use the precise current operator/investor total in the new catalogue-based reconstruction; preserve the normalized legacy inventory as history. This is a source correction, not deleting rooms to make a packing test pass.",
+  "active_hotel_keys": 1844,
+  "suite_keys": 775,
+  "non_suite_keys": 1069,
+  "legacy_normalized_keys": 1850,
+  "legacy_ids_to_retain_as_superseded_rounding_placeholders": 6,
+  "primary_source": {
+    "url": "https://s28.q4cdn.com/640198178/files/content_files/LVS-3Q-2026-Presentation-Deck.pdf",
+    "publication_date": "2026-10-21",
+    "slide": 25,
+    "pdf_page_index": 24,
+    "access_path": "Current presentation linked from https://www.investor.sands.com/home/default.aspx",
+    "factual_extract": "1,844 keys including 775 suites"
+  },
+  "corroboration": [
+    {
+      "url": "https://s28.q4cdn.com/640198178/files/doc_financials/2026/q1/LVS-1Q-2026-Presentation-Deck.pdf",
+      "publication_date": "2026-04-22",
+      "pdf_page_index": 23
+    },
+    {
+      "url": "https://www.marinabaysands.com/content/dam/revamp/company-information/media-centre/2024/jan/mbs-invests-additional-usd-750-million-in-next-phase-of-hotel-transformation.pdf",
+      "publication_date": "2024-01-18",
+      "pdf_page_index": 1,
+      "status": "Historical plan, not independently current room schedule"
+    }
+  ],
+  "source_limitations": [
+    "Exact per-category and per-floor operator counts remain unknown.",
+    "Legacy normalized suite type and amenity counts were reconstruction, not operator facts.",
+    "Current category pages distinguish variants; e.g Chairman3-bedroom520sqm and4-bedroom630sqm, rather than applying an old pooled average universally."
+  ],
+  "old_inventory_mutated": false,
+  "new_proposal_accepted_or_installed": false
+}

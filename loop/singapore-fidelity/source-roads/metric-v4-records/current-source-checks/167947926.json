@@ -1,0 +1,21 @@
+{
+  "changeset": 188113252,
+  "id": 167947926,
+  "no_OSM_mutation": true,
+  "nodes": [
+    1792724016,
+    1792723988,
+    1792724019
+  ],
+  "retrieved_utc": "2026-10-29T18:58:03.699364+00:00",
+  "source_url": "https://api.openstreetmap.org/api/0.6/way/167947926.json",
+  "tags": {
+    "covered": "yes",
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "up",
+    "ramp": "no"
+  },
+  "timestamp": "2026-08-27T18:52:42Z",
+  "version": 7
+}

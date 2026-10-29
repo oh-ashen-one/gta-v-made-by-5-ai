@@ -1,0 +1,34 @@
+{
+  "changeset": 188113252,
+  "id": 169542799,
+  "no_OSM_mutation": true,
+  "nodes": [
+    11649219735,
+    10270810713,
+    3688674324,
+    5128867732,
+    5128867721,
+    6994579882,
+    1808896008,
+    6758481525,
+    6994600199,
+    1808896009,
+    10982065809,
+    1792724016,
+    13671547100,
+    1792724019
+  ],
+  "retrieved_utc": "2026-10-29T18:58:04.992547+00:00",
+  "source_url": "https://api.openstreetmap.org/api/0.6/way/169542799.json",
+  "tags": {
+    "bicycle": "designated",
+    "foot": "designated",
+    "highway": "cycleway",
+    "name": "Alexandra-Queensway Park Connector",
+    "oneway": "no",
+    "segregated": "no",
+    "surface": "concrete"
+  },
+  "timestamp": "2026-08-27T18:52:42Z",
+  "version": 9
+}
