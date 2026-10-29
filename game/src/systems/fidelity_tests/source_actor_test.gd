@@ -142,6 +142,15 @@ func run() -> void:
 	Game.respawn()
 	check("missing source recovery service cannot teleport through legacy checkpoint", player.global_position == before_unbound and Game.death_count == before_deaths)
 	check("missing source aircraft recovery cannot use legacy checkpoint", not Game.recover_disabled_aircraft() and player.global_position == before_unbound)
+	var heading_before := player.rotation.y
+	var position_before_heading := player.global_position
+	# Exact native matrix recorded at the actual mezzanine freeze, not a
+	# relaxed capsule or changed profile tolerance.
+	player.basis = Basis(Vector3(-.10462122410535812,0,-.9945018887519836),Vector3.UP,Vector3(.9945018887519836,0,-.10462122410535812))
+	check("recorded production yaw scale drift remains rejected by strict profile", not runtime._valid_player_profile(player))
+	player._set_body_heading(player.rotation.y)
+	check("canonical physical heading restores intended unit basis without moving actor", runtime._valid_player_profile(player) and player.global_position == position_before_heading and player.basis.get_scale().distance_to(Vector3.ONE) < .000001)
+	player._set_body_heading(heading_before)
 	var idle_saved: Dictionary = runtime.capture_player_pose(player)
 	var idle_position := player.global_position
 	var idle_restored: Dictionary = runtime.restore_player_pose(player, idle_saved.pose) if idle_saved.get("ok", false) else {}

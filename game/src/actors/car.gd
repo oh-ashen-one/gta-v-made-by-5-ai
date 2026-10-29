@@ -269,6 +269,12 @@ func _body_color() -> Color:
 		"police": return Color(0.88, 0.90, 0.93)
 		_: return Color(0.30, 0.36, 0.42)
 
+## Physical bodies have a unit-scale upright yaw contract. Repeated Euler
+## property writes preserve tiny extracted scale errors and accumulate them;
+## rebuild the intended basis instead of carrying that drift into collision.
+func _set_body_heading(angle: float) -> void:
+	basis = Basis(Vector3.UP, angle)
+
 func _physics_process(delta: float) -> void:
 	if uses_source_world and driver_is_player and Game.source_controls_held():
 		velocity = Vector3.ZERO
@@ -690,7 +696,7 @@ func _player_control(delta: float) -> void:
 	_yaw_rate = lerpf(_yaw_rate, yaw_target, 1.0 - exp(-yaw_k * delta))
 	if absf(v_long) < 0.4 and absf(v_lat) < 0.4:
 		_yaw_rate = move_toward(_yaw_rate, 0.0, 6.0 * delta)
-	rotation.y += _yaw_rate * delta
+	_set_body_heading(rotation.y + _yaw_rate * delta)
 	# Momentum stays in world space; next tick's grip turns it.
 	v = fwd * v_long + right * v_lat
 	velocity.x = v.x
@@ -714,7 +720,7 @@ func _ai_control(delta: float) -> void:
 	var dist := to_target.length()
 	var desired_yaw := atan2(-to_target.x, -to_target.z) if dist > 0.01 else rotation.y
 	_ai_steer_visual = clampf(angle_difference(rotation.y, desired_yaw) * 2.0, -1.0, 1.0)
-	rotation.y = lerp_angle(rotation.y, desired_yaw, clampf(delta * 2.4, 0.0, 1.0))
+	_set_body_heading(lerp_angle(rotation.y, desired_yaw, clampf(delta * 2.4, 0.0, 1.0)))
 	var speed_limit := minf(max_speed, ai_speed_limit)
 	if dist < 12.0:
 		speed_limit = minf(speed_limit, maxf(4.0, dist * 1.1))
@@ -729,7 +735,7 @@ func _ai_control(delta: float) -> void:
 	if _reverse_time > 0.0:
 		_reverse_time -= delta
 		_forward = move_toward(_forward, -4.0, BRAKE * delta)
-		rotation.y += 0.9 * delta
+		_set_body_heading(rotation.y + 0.9 * delta)
 	else:
 		_forward = move_toward(_forward, speed_limit, (BRAKE if speed_limit < _forward else accel) * delta)
 		_stuck_check_time += delta
@@ -867,7 +873,7 @@ func exit_vehicle(player: Node) -> void:
 	if fx != null: fx.on_player_changed(false)
 	player.global_position = exit_pos
 	player.yaw = rotation.y
-	player.rotation.y = rotation.y
+	player.basis = Basis(Vector3.UP, rotation.y)
 	player.visible = true
 	player.current_vehicle = null
 	player.camera.current = true

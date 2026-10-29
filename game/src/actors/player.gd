@@ -354,6 +354,12 @@ func _apply_mouse_look(relative: Vector2) -> void:
 	var dy := relative.y * sens * (-1.0 if inverted else 1.0)
 	pitch = clampf(pitch - dy, -1.25, 0.85)
 
+## Physical bodies have a unit-scale upright yaw contract. Repeated Euler
+## property writes preserve tiny extracted scale errors and accumulate them;
+## rebuild the intended basis instead of carrying that drift into collision.
+func _set_body_heading(angle: float) -> void:
+	basis = Basis(Vector3.UP, angle)
+
 func _physics_process(delta: float) -> void:
 	if uses_source_world and Game.source_controls_held():
 		velocity = Vector3.ZERO
@@ -532,20 +538,19 @@ func _physics_process(delta: float) -> void:
 	# face the travel heading (or the camera direction when aiming/firing)
 	if aiming:
 		var aim_dir := -camera.global_transform.basis.z
-		rotation.y = lerp_angle(rotation.y, atan2(-aim_dir.x, -aim_dir.z), clampf(delta * 12.0, 0.0, 1.0))
+		_set_body_heading(lerp_angle(rotation.y, atan2(-aim_dir.x, -aim_dir.z), clampf(delta * 12.0, 0.0, 1.0)))
 		_heading = rotation.y if _speed < 0.25 else _heading
 	elif _skid_t >= 0.0:
 		# Skidding: the feet slide along the old line while the hips swing
 		# round over the dug-in heel toward the new direction.
 		if _skid_t > SKID_SWING_DELAY:
-			rotation.y = rotate_toward(rotation.y, _skid_heading, SKID_SWING_RATE * delta)
+			_set_body_heading(rotate_toward(rotation.y, _skid_heading, SKID_SWING_RATE * delta))
 	elif _speed > 0.05 or basis_dir.length() > 0.05:
 		var face := lerp_angle(rotation.y, _heading, clampf(delta * (26.0 if _pivot_t > 0.0 else 16.0), 0.0, 1.0))
-		rotation.y = rotate_toward(rotation.y, face, FACE_MAX_RATE * delta)
+		_set_body_heading(rotate_toward(rotation.y, face, FACE_MAX_RATE * delta))
 	else:
 		_heading = rotation.y
-	arm.rotation.y = yaw - rotation.y
-	arm.rotation.x = pitch
+	arm.basis = Basis.from_euler(Vector3(pitch, yaw - rotation.y, 0.0))
 	_update_body_motion(delta, sprinting)
 	_update_camera_follow(delta, sprinting)
 	_avoid.hide_near_camera(camera, global_position + Vector3.UP * 1.2)
@@ -979,7 +984,7 @@ func respawn_at(pos: Vector3, rot: float) -> void:
 	collision_mask = COLLIDE_MASK
 	global_position = pos
 	yaw = rot
-	rotation.y = rot
+	_set_body_heading(rot)
 	velocity = Vector3.ZERO
 	_speed = 0.0
 	_heading = rot

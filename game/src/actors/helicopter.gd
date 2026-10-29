@@ -289,6 +289,12 @@ func _paint_finish(node: Node) -> void:
 		if child != _provider_main_rotor and child != _provider_tail_rotor:
 			_paint_finish(child)
 
+## Physical bodies have a unit-scale upright yaw contract. Repeated Euler
+## property writes preserve tiny extracted scale errors and accumulate them;
+## rebuild the intended basis instead of carrying that drift into collision.
+func _set_body_heading(angle: float) -> void:
+	basis = Basis(Vector3.UP, angle)
+
 func _physics_process(delta: float) -> void:
 	if uses_source_world and pilot_is_player and Game.source_controls_held():
 		velocity = Vector3.ZERO
@@ -400,7 +406,7 @@ func _pilot_input(delta: float) -> void:
 	# (A node that faces -Z turns left when its yaw increases.)
 	var yaw_target := _yaw_input * lerpf(1.55, 1.15, speed_frac)
 	_yaw_rate = lerpf(_yaw_rate, yaw_target, clampf(delta * 3.2, 0.0, 1.0))
-	rotation.y += _yaw_rate * delta
+	_set_body_heading(rotation.y + _yaw_rate * delta)
 	# Ground proximity (skids / water) for the landing cushion and auto-level.
 	_agl = _probe_agl()
 	var near_ground := clampf(1.0 - (_agl - 0.6) / 4.0, 0.0, 1.0)
@@ -641,7 +647,7 @@ func exit_vehicle(player: Node) -> void:
 		(player as CollisionObject3D).collision_layer = 2
 		(player as CollisionObject3D).collision_mask = Player.COLLIDE_MASK
 	player.yaw = rotation.y
-	player.rotation.y = rotation.y
+	player.basis = Basis(Vector3.UP, rotation.y)
 	player.visible = true
 	player.current_vehicle = null
 	player.camera.current = true
