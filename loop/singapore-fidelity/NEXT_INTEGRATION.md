@@ -1,15 +1,24 @@
-# Full Singapore/MBS goal remains active
+# Active Singapore fidelity continuation
 
-Owner wants all fixes + full source-layout Singapore + fully built-out MBS, delegated routine decisions/no questions. No new4hdeadline/sixthrelaywave. Previous turn PROGRESS: native Context670, Save82, Controller98, Roads25passed; actual9tileboot achieved but firstsourcegame traversal timed out. Inspect ACTIVE_HANDOFF_FACTS +actualsource/git/processes; do not carry old queueIDs aslive.
+The full user goal remains active. No new time limit, routine owner questions, main merge or new spending. Root owns Git and all engines.
 
-Branch Astra-6-singapore-fidelity in main authoring wave-05-opus checkout. Root alone engines/Git. No mainmerge/purchases/newproviderbilling/foreignprocesscontrol. Normalrun_engine.sh(singleprivate lock/currentGPUlease/render_gate/bounded_run), globalmixedcap2.
+## Verified recovery state, 2026-10-29
 
-All owned engines reaped at this checkpoint. Nativequeues50945/27322 terminal needs_review; no duplicate oldhandles. Nationalroad CPU expansion is child-owned country-r2, inspect child's actuallive process/state. R5core immutable dataset identityfc5cb6cbaa19307597e412c779305c72fa373ba18d3e2470811042df3fab9db7 passedCPU +25nativefixture; countryartifact not yet complete/adopted.
+Studio restarted; all previous agents/engine/CPU handles are absent and `/private/tmp/singapore-fidelity` is gone. Source and private art in the authoring checkout survive. Historical native counts in ACTIVE_HANDOFF_FACTS are explicitly prior observations, not a current pass. Missing original logs must not be recreated as evidence. Prior low-transport R1 outcome is unknown.
 
-Current code: SourceWorld R5core pin + realSourceSessionController/Game/Service wiring/F5/F6/initialphysicsanchor, still explicitintegration entry (default road approvalfalse, no legacy mainreplacement). SourceSave exactowned v2sibling preserves v1; supported_native_surface optional gamepolicy permits ONLYsole unresolvedwater reason with actualsamefloor/clearance/residency/territory, while water/land remainUNKNOWN. Context strictdefaultunchanged. Controller actualnative98testedasyncfloor/pins/cancel/busycallbacks/no-loader/transientcapacity/ownership. Doesnotserialize unmigrated mission/traffic/NPC/doors/vehicle state.
+`6b90546` and its twelve predecessor commits were successfully pushed to origin/Astra-6-singapore-fidelity. New live QA uses persistent `work/fidelity-runtime/runs`. Current owned native low-transport R2 uses exec19106, supervisor11775; verify process/terminal before acting. It was still taking the initial art snapshot at14:32UTC, engine not launched then.
 
-SourceWorldR1 actual9tileterrain/city/road boot+nativegroundedactors+checkpoint succeeded, but240walltimeout during firstwalking-to-car before endmetric. geography_stream_builder owns only source_world_test.gd/notes forincremental movement/contact/profiling, realtargetvalidation andbounded600wall/660supervisor; no fabricatedroutepass/pointrelocation. Runfreeze next andinspect true blocker/cost. Fullcountry streaming/rebases/AI/caches/signs/minimap/mission/traffic stillRootwork. Nationalroad chunks building separately, noagent-dependent runtime generator.
+## Exclusive work scopes
 
-MBS outsideR5 failed184/1 atT2settle withvelocityZERO andtoo fewphysics samples under2.5wallguard. RootupdatedinheritedGuestQA to2.5SIM seconds +30wall, same3quietticks/.05mps; newfullroute stillpending. Local pairedstairfixture passed. Publicbuilder nowdesigns partialmezzanine at2.5m rises andmissingresortcontracts/newfactoryQA ONLY; Rootmustintegrate allinventory, realroutes/shafts/pools/roofs, not leave empty placeholders. Publicvisualcritique remainsFAIL; need actualproductionpixels/finalnativebridge→MBS→allinterior andprivatepackage/ownerplay.
+- Root: engine/Git/integration, low transport and subsequent native QA, handoff.
+- road_semantic_recovery: source-roads CPU recovery of immutable R5, new source-semantic-v2 pipeline and source/topology audit.
+- source_dataset_recovery: city R2 exact index repair from persistent R1, MBS terrain preparation, durable generated location; source_world_test waypoint repair review only.
+- mbs_conformance_builder: exterior_shell and NEW full-core-layout/profile helper/QA plus exterior-shell docs. No existing floor factory or transport edits.
 
-Nativeevidence committedpaths source-save/NATIVE_R2.json,CONTROLLER_NATIVE_R1.json; source-context/DRY_BROADPHASE_NATIVE_R1.json; source-roads/NATIVE_FIXTURE_R1.json; source-world/NATIVE_BOOT_R1_INCOMPLETE.json; public-core-entry/NATIVE_ROUTE_R5_SETTLE_FAILURE.json. No broad acceptance from these components.
+All three newly authorized child scopes replace absent prior workers; do not duplicate active recovery jobs. They use inherited actual model, no alternate-provider claim.
+
+## Next integration
+
+Read actual R2 low transport result, repair its genuine native geometry/readiness failures and run Stack/capacity/normal-transport regressions serially. Recover source artifacts without silent identity substitutions, then native World waypoint walk/drive/flight. Profile remaining road collision-body cost. Integrate feasible source-shaped hotel shell, core layout, all hotel/resort programs, roof circulation and actual exterior-to-interior continuous traversal; rendered critique and final standalone product are still incomplete.
+
+Unknown real private MBS plans are reconstructed coherently under owner delegation and documented honestly. No lobby-only or dataset-only completion. Default game bootstrap/whole-country streaming/mission/traffic/AI/save migration remain open.

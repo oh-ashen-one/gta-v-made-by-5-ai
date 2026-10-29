@@ -1,0 +1,82 @@
+{
+  "actual_run": "mbs-partial-mezzanine-r5",
+  "failure": [
+    "continuous productionPlayer walking"
+  ],
+  "captured_native_decision": {
+    "actor_id": 127674618069,
+    "actor_name": "@CharacterBody3D@1160",
+    "actor_shape_profile": [
+      {
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "class": "CapsuleShape3D",
+        "disabled": false,
+        "height": 1.75,
+        "name": "@CollisionShape3D@1161",
+        "position": [
+          0.0,
+          0.899999976158142,
+          0.0
+        ],
+        "radius": 0.360000014305115
+      }
+    ],
+    "actor_valid": true,
+    "allowed": false,
+    "basis": [
+      [
+        -0.104621224105358,
+        0.0,
+        -0.994501888751984
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.994501888751984,
+        0.0,
+        -0.104621224105358
+      ]
+    ],
+    "delta_s": 0.0166666666666667,
+    "detail": {},
+    "inside_tree": true,
+    "physics_tick": 9187,
+    "position": [
+      -12.5488052368164,
+      2.47583365440369,
+      -16.1944522857666
+    ],
+    "reason": "player_profile_or_actor_type",
+    "requested_velocity": [
+      0.0,
+      -0.5,
+      0.0
+    ],
+    "rotation_y": 1.67561042308807,
+    "wall_us": 173258400
+  },
+  "measured_x_axis_length": 0.9999898035803,
+  "strict_profile_tolerance_unchanged": true,
+  "fix_commit": "fa0c99e",
+  "fix": "Rebuild intended unit-yaw actor basis on heading writes; no actor-position or capsule dimension change",
+  "full_route_reverification": "pending"
+}
