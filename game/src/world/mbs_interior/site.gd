@@ -81,7 +81,7 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D) -> Dictionar
 	_collect(public_l1)
 	var ids: Array[String] = []
 	for index in _bodies.size(): ids.append("public-structure-" + str(index))
-	var geometry := _hash(FileAccess.get_file_as_string("res://src/world/mbs_interior/public_l1.gd") + JSON.stringify(Reference.DATA) + JSON.stringify(volumes))
+	var geometry := _hash(JSON.stringify({"schema": "mbs_source_public_geometry_v1", "geometry_manifest_sha256": context.metadata().geometry_manifest_sha256, "reference": Reference.DATA, "volumes": volumes}))
 	_floor_definition = {"feature_id": FEATURE, "floor_id": FLOOR, "geometry_sha256": geometry,
 		"support_ids": ids, "volumes": volumes, "provenance": "Actual OSM source site/axes; staged historical atrium form, reconstructed exact metrics/fitout"}
 	if not context.register_floor(_floor_definition): return {"built": false, "error": context.last_error}

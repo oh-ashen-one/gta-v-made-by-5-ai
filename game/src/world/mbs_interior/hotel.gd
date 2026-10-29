@@ -108,7 +108,9 @@ func _register_native_shaft(key: String) -> bool:
 	var center: Array = [descriptor.center_xz[0], (lower + upper) * 0.5, descriptor.center_xz[1]]
 	var half: Array = [Cabins.WIDTH * 0.5 + 0.8, (upper - lower) * 0.5, Cabins.DEPTH * 0.5 + 0.8]
 	var feature := "mbs-hotel/physical-shaft/" + key
-	var definition := {"feature_id": feature, "floor_id": "CABIN", "geometry_sha256": _hash(JSON.stringify(descriptor) + JSON.stringify(placement.anchor) + FileAccess.get_file_as_string("res://src/world/mbs_interior/cabins.gd")),
+	# Geometry identity is build data, never readable GDScript source. Release
+	# PCKs may strip/remap that source while retaining the same actual geometry.
+	var definition := {"feature_id": feature, "floor_id": "CABIN", "geometry_sha256": _hash(JSON.stringify({"schema": "mbs_source_shaft_geometry_v1", "geometry_manifest_sha256": _context.metadata().geometry_manifest_sha256, "descriptor": descriptor, "canonical_anchor": placement.anchor})),
 		"support_ids": ["moving-platform"], "volumes": [{"schema": Context.OBOX_SCHEMA, "volume_id": "enclosed-dry-shaft", "center_xyz": _source(placement, center),
 			"half_extents_xyz": half, "axis_x_xyz": placement.axis_x, "axis_z_xyz": placement.axis_z, "dry": true}],
 		"provenance": "Reconstructed enclosed shaft/cabin at actual tower source anchor; relative stop elevations not surveyed"}
@@ -187,6 +189,9 @@ func _before_floor_unload(id: String) -> bool:
 func retry_floor(id: String) -> void:
 	_retry_after.erase(id)
 	_on_floor_requested("root-retry", id)
+
+func get_cabin(shaft_id: String) -> Node3D:
+	return _shafts[shaft_id].node if _shafts.has(shaft_id) and is_instance_valid(_shafts[shaft_id].node) else null
 
 func _physics_process(_delta: float) -> void:
 	if not _configured or Engine.get_physics_frames() % 30 != 0: return

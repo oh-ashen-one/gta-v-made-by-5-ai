@@ -116,7 +116,7 @@ func native_e(target: Node3D) -> bool:
 		var after: Dictionary = lift.report()
 		var open_now: bool = bool(lift.get("_ui_open"))
 		metrics["latest_native_panel_dispatch"] = {"before_open": panel_before, "after_open": open_now, "before_state": before, "after_state": after, "process_frame": Engine.get_process_frames(), "physics_frame": Engine.get_physics_frames(), "armed": player.get("_press_armed"), "queued": player.get("_press_queue")}
-		if not check("native E actually opens or confirms the cabin panel", open_now != panel_before, metrics.latest_native_panel_dispatch): return false
+		if not check("native E actually opens or confirms the cabin panel", open_now != panel_before, JSON.stringify(metrics.latest_native_panel_dispatch)): return false
 	return true
 
 func walk(target: Vector3, label: String) -> bool:
