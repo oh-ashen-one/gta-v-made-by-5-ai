@@ -1,5 +1,5 @@
 {
-  "status": "FROZEN_PENDING_PARENT_COMMIT_AND_NATIVE_RUN",
+  "status": "FROZEN_QA_ONLY_PENDING_PARENT_COMMIT_AND_NATIVE_RUN",
   "geometry_version": "mbs-stair-fire-door-v2",
   "worker_engines": 0,
   "worker_gpu": 0,
@@ -7,7 +7,7 @@
   "existing_guest_or_program_or_actor_edits": false,
   "source_sha256": {
     "game/src/world/mbs_interior/stair_gates.gd": "bf7a5ca1156c8ee6d4d1cee6266685500a09d56cbb5134f3eeeabb2be78e38a5",
-    "game/src/systems/fidelity_tests/mbs_stair_gate_test.gd": "1656c8918152516495b0c29e1a6ae5314dfb2bea5bac2bace52f930214cc167f",
+    "game/src/systems/fidelity_tests/mbs_stair_gate_test.gd": "37ab43d576307d4143af2fd651d08919a424d55bdd2c99ff20de4973fd8416a3",
     "game/src/systems/fidelity_tests/mbs_stair_gate_test.tscn": "8ec2ec53c691ff629b30d964b367631d1049f7fcb43606d4b5a3690a675c6edd"
   },
   "geometry": {
@@ -55,7 +55,30 @@
       "opened_correctly": true,
       "actor_pushed_m": 0.37191978096962,
       "native_acceptance": false
+    },
+    {
+      "path": "/private/tmp/singapore-fidelity/mbs-stair-gate-r2/run.log",
+      "source_checkpoint": "506481aaf34701f15f8b09e1c7ad5ef050c0af4c",
+      "checks": 85,
+      "failed": 1,
+      "failure": "exact owner retirement lease omitted by QA",
+      "full_fixture_acceptance": false
     }
   ],
-  "opening_occupancy_interlock": "receiving-side quarter-sweep actor query before opening and during motion; never pushes actor to clear"
+  "opening_occupancy_interlock": "receiving-side quarter-sweep actor query before opening and during motion; never pushes actor to clear",
+  "R2_verified_partial": {
+    "native_walking_m": 30.755534883876,
+    "max_native_step_m": 0.0303847957402468,
+    "native_E_actions": 5,
+    "all_E_actor_movements_m": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "opening_occupancy_actual_Player_identified": true,
+    "all_other_84_checks_passed": true,
+    "retirement_acceptance": false
+  }
 }

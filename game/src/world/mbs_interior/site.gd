@@ -47,8 +47,9 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D, config: Dict
 	if context.metadata().frame_instance_id != frame.get_instance_id() or runtime.context != context:
 		return {"built": false, "error": "Site, actors and domains require one geometry/frame authority."}
 	for key in config:
-		if key != "core_connections": return {"built": false, "error": "Unknown source-site configuration"}
+		if key not in ["core_connections", "arrival_corridor"]: return {"built": false, "error": "Unknown source-site configuration"}
 	if not config.get("core_connections", []) is Array: return {"built": false, "error": "Core connections require an explicit array"}
+	if not config.get("arrival_corridor", {}) is Dictionary: return {"built": false, "error": "Arrival corridor requires an explicit mapping"}
 	_frame = frame
 	_context = context
 	_runtime = runtime
@@ -57,6 +58,7 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D, config: Dict
 	add_child(public_l1)
 	var public_config := {"source_frame": frame}
 	if not config.get("core_connections", []).is_empty(): public_config["core_connections"] = config.core_connections.duplicate(true)
+	if not config.get("arrival_corridor", {}).is_empty(): public_config["arrival_corridor"] = config.arrival_corridor.duplicate(true)
 	var result: Dictionary = public_l1.build(public_config)
 	if not result.get("built", false):
 		public_l1.queue_free()
@@ -64,6 +66,9 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D, config: Dict
 	if not config.get("core_connections", []).is_empty() and (not result.get("core_connections") is Array or result.core_connections.size() != config.core_connections.size()):
 		public_l1.queue_free()
 		return {"built": false, "error": "Requested source core joins were not constructed; no silent disconnected fallback"}
+	if not config.get("arrival_corridor", {}).is_empty() and (not result.get("arrival_corridor") is Dictionary or result.arrival_corridor.is_empty()):
+		public_l1.queue_free()
+		return {"built": false, "error": "Requested outside arrival was not constructed"}
 	var volumes: Array = []
 	var sections: Array = public_l1.sections
 	# Inscribed rotated boxes follow the bent continuous loft. Never turn its
@@ -91,6 +96,10 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D, config: Dict
 	for connection: Dictionary in result.get("core_connections", []):
 		if not connection.get("source_dry_volumes") is Array: return {"built": false, "error": "Core adapter omitted canonical dry geometry"}
 		volumes.append_array(connection.source_dry_volumes.duplicate(true))
+	var arrival: Dictionary = result.get("arrival_corridor", {})
+	if not arrival.is_empty():
+		if not arrival.get("source_dry_volumes") is Array: return {"built": false, "error": "Arrival omitted canonical dry geometry"}
+		volumes.append_array(arrival.source_dry_volumes.duplicate(true))
 	_collect(public_l1)
 	var ids: Array[String] = []
 	for index in _bodies.size(): ids.append("public-structure-" + str(index))
@@ -103,6 +112,7 @@ func build(frame: RefCounted, context: RefCounted, runtime: Node3D, config: Dict
 		"canonical_origin_xyz": [Reference.DATA.origin_world_xz[0], 0.0, Reference.DATA.origin_world_xz[1]],
 		"public": result, "native_collision_committed": false, "floor_volume_count": volumes.size(),
 		"core_connections": result.get("core_connections", []).duplicate(true),
+		"arrival_corridor": arrival.duplicate(true),
 		"full_MBS_assembly_completed": false, "default_city_bootstrap_migrated": false,
 		"pending": ["source exterior/guest/program floor stacks", "physical cabins and connected stairs", "retail/Bayfront Avenue/bridge/city integration", "integrated visual and normal-input acceptance"]}
 	return _report.duplicate(true)

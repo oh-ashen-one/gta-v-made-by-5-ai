@@ -1,0 +1,75 @@
+{
+  "revision": "R3_EXACT_OWNER_RETIREMENT_QA",
+  "status": "FROZEN_QA_ONLY_PENDING_PARENT_COMMIT_AND_NATIVE_RUN",
+  "retained_failure": "/private/tmp/singapore-fidelity/mbs-stair-gate-r2/run.log",
+  "source_checkpoint": "506481aaf34701f15f8b09e1c7ad5ef050c0af4c",
+  "checks": 85,
+  "failed": 1,
+  "native_fixture_walk_m": 30.755534883876,
+  "max_native_step_m": 0.0303847957402468,
+  "native_E_movement_m": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "actual_terminal_state": {
+    "actor_pose_writes": 0,
+    "actor_reparents": 0,
+    "actor_velocity_writes": 0,
+    "bound_floors": [
+      "T3-L47"
+    ],
+    "context_registered_by_component": false,
+    "full_building_completed": false,
+    "gates": {
+      "T3-L47-east-stair-fire-door": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": 0.0,
+        "open_generation": "",
+        "opened": false,
+        "opening_blocker_ids": [],
+        "physically_closed": true,
+        "readiness_observation": {
+          "generation": "",
+          "ready": false,
+          "reason": "stale_bound_floor_generation",
+          "valid": false
+        },
+        "ready": false,
+        "ready_generation": "",
+        "state": "CLOSED_UNREADY",
+        "upper_id": "T3-L48"
+      },
+      "T3-L47-west-stair-fire-door": {
+        "close_requested": false,
+        "lower_id": "T3-L47",
+        "motion_angle": 0.0,
+        "open_generation": "",
+        "opened": false,
+        "opening_blocker_ids": [],
+        "physically_closed": true,
+        "readiness_observation": {
+          "generation": "",
+          "ready": false,
+          "reason": "stale_bound_floor_generation",
+          "valid": false
+        },
+        "ready": false,
+        "ready_generation": "",
+        "state": "CLOSED_UNREADY",
+        "upper_id": "T3-L48"
+      }
+    },
+    "geometry_version": "mbs-stair-fire-door-v2",
+    "protected_floor_ids": []
+  },
+  "cause": "QA prepared receiving L48, then notified retirement of owner L47 without preparing its exact bound generation. Guard refuses missing owner lease before deleting any gates. Terminal state retains physically closed gates; raw return reason/counts were not logged in R2.",
+  "change": "Prepare exact lower owner L47. Require the exact live-generation refusal reason. Retire that fixture token only after its own safe preflight, then compare foreign node identities and all owned body/door/binding removals, logging full raw results.",
+  "production_component_changed": false,
+  "thresholds_changed": false,
+  "R3_runtime_verified": false,
+  "full_building_completed": false
+}

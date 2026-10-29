@@ -19,6 +19,7 @@ var upper_generation:="fixture-upper-48-v1"
 var neighbor_generation:="fixture-neighbor-49-v1"
 var _started:=0
 var native_gate_actions:Array[Dictionary]=[]
+var retirement_observation:Dictionary={}
 
 func _ready()->void:
 	if not "--qa-session" in OS.get_cmdline_user_args():
@@ -214,16 +215,36 @@ func run()->void:
 	gates.prepare_floor_retirement(upper_id);await frames(90)
 	check("closed clear gate permits root retirement preflight",gates.prepare_floor_retirement(upper_id))
 	check("lower flight retains full production headroom both directions",minimum_y>-.20 and maximum_y>3.3 and max_step<.5 and Game.death_count==0)
-	var foreign_children:=candidate.get_child_count()
-	check("live bound collision generation cannot lose gate ownership",not gates.floor_retired(lower_id).get("removed",true))
-	# Retire only this fixture's declared generation token after preflight.
-	# Floor geometry remains to prove foreign/support nodes are not deleted.
+	# The receiving-floor preflight above protects incoming gates, but it is
+	# NOT a retirement lease for their LOWER owner. Prepare the exact owner.
+	if not check("exact bound lower owner generation has safe preflight",gates.prepare_floor_retirement(lower_id)):finish();return
+	var before_children:=candidate.get_child_count()
+	var own_holder:Node=candidate.get_node("OwnedStairFireDoors")
+	var own_holder_id:=own_holder.get_instance_id()
+	var foreign_nodes:Array[Node]=[]
+	var foreign_ids:Array[int]=[]
+	for child:Node in candidate.get_children():
+		if child!=own_holder:
+			foreign_nodes.append(child);foreign_ids.append(child.get_instance_id())
+	var owned_body_ids:Array[int]=[]
+	for body:CollisionObject3D in gates.owned_collision_bodies(lower_id):owned_body_ids.append(body.get_instance_id())
+	var refused:Dictionary=gates.floor_retired(lower_id)
+	if not check("live bound collision generation cannot lose gate ownership",not refused.get("removed",true) and String(refused.get("error",""))=="Root must retire this collision generation before gate ownership removal",str(refused)):finish();return
+	# Retire only this fixture's declared generation token after exact-owner
+	# preflight. Full floor geometry stays; no source region is fabricated.
 	lower_generation=""
 	var removed:Dictionary=gates.floor_retired(lower_id)
 	await frames(4)
 	await get_tree().process_frame
 	await get_tree().process_frame
-	check("retire removes only its owned two gate assemblies",removed.get("removed",false) and removed.get("owned_gates_removed",0)==2 and candidate.get_child_count()==foreign_children-1 and candidate.get("_built"))
+	var actual_foreign_ids:Array[int]=[]
+	for child:Node in candidate.get_children():actual_foreign_ids.append(child.get_instance_id())
+	var all_foreign_intact:=true
+	for child:Node in foreign_nodes:
+		all_foreign_intact=all_foreign_intact and is_instance_valid(child) and child.get_parent()==candidate
+	retirement_observation={"lower_owner_preflight":lower_id,"upper_receiving_preflight":upper_id,"owner_generation_retired":lower_generation.is_empty(),"live_generation_refusal":refused,"retirement_result":removed,"children_before":before_children,"children_after":candidate.get_child_count(),"owned_holder_instance_id":own_holder_id,"owned_body_ids_before":owned_body_ids,"owned_bodies_after":gates.owned_collision_bodies(lower_id).size(),"foreign_ids_before":foreign_ids,"actual_children_ids_after":actual_foreign_ids,"all_foreign_nodes_intact":all_foreign_intact,"remaining_gate_ids":gates.doors.keys(),"remaining_bound_floors":gates.report().bound_floors}
+	print("[mbs-stair-gate] RETIREMENT ",JSON.stringify(retirement_observation))
+	check("retire removes only its owned two gate assemblies",removed.get("removed",false) and removed.get("owned_gates_removed",0)==2 and candidate.get_child_count()==before_children-1 and candidate.get("_built") and all_foreign_intact and actual_foreign_ids==foreign_ids and gates.owned_collision_bodies(lower_id).is_empty() and gates.doors.is_empty() and not gates.report().bound_floors.has(lower_id))
 	fixture_results.append({"floor_id":lower_id,"upper_id":upper_id,"required_upper_neighbor":neighbor_id,"travel_m":travel,"max_step_m":max_step,"native_gate_actions":native_gate_actions,"source_site_tested":false,"all_floor_pairs_tested":false})
 	finish()
 
@@ -231,5 +252,5 @@ func finish()->void:
 	if finished:return
 	finished=true;tracking=false
 	release_motion_input();Input.action_release("interact")
-	print("[mbs-stair-gate] RESULT ",JSON.stringify({"checks":checks,"failed":failures.size(),"failures":failures,"elapsed_s":float(Time.get_ticks_msec()-_started)/1000.0,"fixture":fixture_results,"gate_state":gates.report() if is_instance_valid(gates) else {},"native_E_actions":native_gate_actions,"actor_pose_writes_during_traversal":0,"source_site_tested":false,"all_floor_pairs_tested":false,"full_building_completed":false}))
+	print("[mbs-stair-gate] RESULT ",JSON.stringify({"checks":checks,"failed":failures.size(),"failures":failures,"elapsed_s":float(Time.get_ticks_msec()-_started)/1000.0,"fixture":fixture_results,"gate_state":gates.report() if is_instance_valid(gates) else {},"native_E_actions":native_gate_actions,"retirement_observation":retirement_observation,"actor_pose_writes_during_traversal":0,"source_site_tested":false,"all_floor_pairs_tested":false,"full_building_completed":false}))
 	Sfx.shutdown_audio();get_tree().quit(0 if failures.is_empty() else 1)
