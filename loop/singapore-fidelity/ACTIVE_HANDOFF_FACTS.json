@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-10-29T00:02:35.695608+00:00",
+  "updated_utc": "2026-10-29T00:34:55.278878+00:00",
   "branch": "Astra-6-singapore-fidelity",
   "goal_status": "active; full source-world/bootstrap and full MBS assembly remain incomplete",
   "owner_decisions": "No private plans. Owner explicitly delegates all routine/creative decisions and prohibits more implementation questions. Complete coherent undocumented private interiors, match documented public facts and disclose reconstruction.",
@@ -25,13 +25,15 @@
     "source_domain": "Exactcountry/coastdomain Python9/9 with1003Shapelyparitypoints; native43/43clean. Territories/coast distinct, land/waterunknown, notterrain ordefaultgame.",
     "actual_source_MBS_entry": "R2 30/30clean/reaped; actualSingapore domain/commonframe, sourceanchor[461.8052672,0,-1030.4825122], native493.948750m publicdoor/atriumreturn,maxstep.113723m,no arbitrarypostbuildtranslation. R1failedonproviderlifetimeafter30gates; retained. No fullfloorstacks/defaultcity/renderacceptance.",
     "program_floors": "All57records planned,323furnishedrooms; selectedT2-L5WEST spa nativeR2 199/199clean/reaped,136.11m/fourprogramdoors/twoliftinterlocks. Otherrecords/stairs/swimming/rendering/stack notruntimeverified.",
-    "source_terrain": "1798DEMchunks/13.298MB,12Python tests and31native cleanchecks;3435byteidenticalhalo seams. CoarsehistoricMapzenSkadi EGM96, no inferredcurrentground/worldY/collision/landwater."
+    "source_terrain": "Native31/31 +17Python tests after2sourcecompiler safetyrepairs, independentall1798chunk/3435halo/16182post auditapproved. HistoricalEGM96data only, notdefaultterrain/collision.",
+    "guest_floor_variants": "NewQA R8 west:1 1108/1108clean/reaped,337.991772m,6nativeEdoors,up/downstairs, actualW+walk/stoppedturns; no geometry/controller changesfromR7. OlderEastR6 1047passed309.81m butchangeddoor/QA means fullnew6variantmatrix stillrequired. PriorMatrixR1 failedwest, retained."
   },
-  "current_work": "Rootowns actualsourceMBSsite/floorstack/saves/rebases/nationalgeometrybootstrap andallengine/Git. GuestbuilderR8 QA-only stoppedturn/nativewalk candidate committedc5d1df8, west1R2running afterearliermirrorfailures. Cabinbuilderactive NEWcabins.gd/QA/docs, noengines. Terrainbuilderfrozen, native31pass; programbuilderfrozen native199pass. Sourcecritic reviewscompletedboundedpaths.",
-  "next_primary_integration": "Connect sourceplacedpublicloft to entire hotel+resort floorstack, actualmovingcabins andstair adjacency; sourceTerrain/national roads/buildings onegeometryauthority/defaultbootstrap; allcaches/FX/AI floatingorigin andsourcev2save/recovery preservingownerbytes; actualrendered/owner-route acceptance. Keepfullgoalactive.",
+  "current_work": "Rootintegrator. Activefloor_stack builder /root/public_lobby_builder ownsNEWfloor_stack/QA/docs. Activecabins builder /root/source_frame_builder ownsCabinsmodule/QA/docs, R2sourcecommitted butengineNOTLAUNCHED dueforeignmixedcap. Activecitygeometry /root/geography_stream_builder ownsNEWcompile_city/countrymeshes/provider/QA/docs. /root/area_source_critic completedterrainreview. No duplicateworkers.",
+  "next_primary_integration": "Nativefloor_stack/cabins then integrateallMBSsourcepositioned hotel/resort floors+physicalconnections. Hooknewnationalgeometry/DEM tosingledefaultbootstrap, actualroads/graph/direction/grade+reducedglobaltraffic, allactor/FX/UI rebases, sourceGamev2saves/recovery preservingoldbytes. Rendercritiqueandnormalbridge\u2192hotel\u2192wholeinterior route; fullgoalincomplete.",
   "public_visual_next": "R5 realcaptures better butstillfails; broad branching trees, nonclipped pale stone and occupiededges plus towerassembly remain. Preserve collision/4mspine.",
   "safety": "Root runs one task engine at a time through current GPU slot, private lock, render_gate, capped60/30STREAMING; no main merge/public release/new purchases/permission bypass/foreign control.",
-  "publication_checkpoint": "aa06956 pushed; laterdd4e373/5f54759/91c4230/fd33dd5/2d48cdd/aa78fca/c5d1df8 committed; verifycurrentrefs/push aftercheckpoint.",
-  "live_or_queued_engine_handles": "Atcheckpoint active/terminalstate mustrevalidate: west1R2 exec30598 viahelper, metadata/private/tmp/singapore-fidelity/mbs-guest-west1-r2. No otherknown taskengine; recentterrain31/Program199/core298/sourceentry30 terminalandreaped.",
-  "source_runtime_open_p2": "Previouslyreported idle-resting-contact P2 nowclosed by R6 nativeandindependentreview; fullsavefile/respawn/rebase/bootstrap/lifecycle acceptance stillpending."
+  "publication_checkpoint": "Allcommittedtaskworkincludingcompilerrepairs/docs willbepushednow onAstra-6-singapore-fidelity; liveuntrackedfloor_stack/citywork remainsitsbuilderowned work andmustbecommittedatfreeze. No main merge.",
+  "live_or_queued_engine_handles": "Atlatestcheckpoint NO ownengine orwaiter known: CabinR2 exec2226 isterminal1 PRELAUNCHDENIED, noEngine/meta; priorwest1108/terrain31/program199/core298/sourceentry30 terminalandreaped. CurrentforeignUnreal/Blenderoccupancy mustrevalidate; NEVERkillforeign orskipguard. CabinR2nextfreshprefixr2b whenpermits. RootcurrentlyCPU/sourcework.",
+  "source_runtime_open_p2": "Previouslyreported idle-resting-contact P2 nowclosed by R6 nativeandindependentreview; fullsavefile/respawn/rebase/bootstrap/lifecycle acceptance stillpending.",
+  "floor_stack_decision": "B2M2.5mheadroom conflicts with fullfloor recipe. Rootchosepartialmezzanine/verticalzones ratherthanfulloverlap orfakeheights. FloorStackreturns transientrequires-root-recipe fornow; Rootmustfinish, notpermanentemptyfallback. HotelL1sourcepublicloft remainsuncappedvoid; rootopensrealcoreconnections."
 }

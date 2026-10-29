@@ -55,6 +55,15 @@ def publish(part,target):
     os.link(part,target) # Atomic exclusive publication; never replace another file.
     part.unlink()
 
+def cleanup_owned_part(path,identity):
+    # Exclusive open may fail because another writer owns this path. Never
+    # remove that writer's part, including a dangling link or later generation.
+    if identity is None:return
+    try:
+        current=path.lstat()
+        if (current.st_dev,current.st_ino)==identity:path.unlink()
+    except FileNotFoundError:pass
+
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self,*args,**kwargs):raise TerrainError('Unexpected public-source redirect; not followed')
 
@@ -64,9 +73,10 @@ def decode_hgt(path,samples=SAMPLES):
 
 def bounded_gunzip(source,target,expected=HGT_BYTES):
     part=target.with_suffix(target.suffix+'.part')
-    written=0;h=hashlib.sha256()
+    written=0;h=hashlib.sha256();owned=None
     try:
         with gzip.open(source,'rb') as src,part.open('xb') as out:
+            created=os.fstat(out.fileno());owned=(created.st_dev,created.st_ino)
             while True:
                 block=src.read(65536)
                 if not block:break
@@ -77,7 +87,7 @@ def bounded_gunzip(source,target,expected=HGT_BYTES):
         if written!=expected:raise TerrainError('Gzip output does not match exact HGT byte count')
         publish(part,target)
     except Exception:
-        if part.exists():part.unlink()
+        cleanup_owned_part(part,owned)
         raise
     return h.hexdigest()
 
@@ -94,9 +104,11 @@ def download_sources(directory):
             receipts.append(r);continue
         if gz.exists() or hgt.exists():raise TerrainError('Unreceipted source file exists; refusing overwrite')
         part=gz.with_suffix(gz.suffix+'.part');size=0;digest=hashlib.sha256();started=now()
+        owned=None;receipt_part=receipt.with_suffix('.json.part');receipt_owned=None
         try:
             request=urllib.request.Request(url,method='GET',headers={'User-Agent':'OrchardReach-source-terrain/1.0','Accept-Encoding':'identity'})
             with opener.open(request,timeout=90) as response,part.open('xb') as out:
+                created=os.fstat(out.fileno());owned=(created.st_dev,created.st_ino)
                 if response.status!=200:raise TerrainError('Public source did not return HTTP200')
                 length=response.headers.get('Content-Length')
                 if length is not None and int(length)>MAX_GZIP_BYTES:raise TerrainError('Compressed source exceeds32MiB bound')
@@ -110,6 +122,7 @@ def download_sources(directory):
                 out.flush();os.fsync(out.fileno())
             if length is not None and size!=int(length):raise TerrainError('HTTP source byte count mismatch')
             publish(part,gz)
+            owned=None
             hgt_hash=bounded_gunzip(gz,hgt)
             r={'tile':tile,'url':url,'http_status':200,'requested_utc':started,'completed_utc':now(),
                 'http_metadata':metadata,'compressed_bytes':size,'compressed_sha256':digest.hexdigest(),
@@ -117,15 +130,20 @@ def download_sources(directory):
                 'format':'gzip SRTMGL1 big-endian signed int16; row0 north2deg/column0 west tile longitude',
                 'vertical_reference':'EGM96 geoid metres','void_value':VOID,'authentication':'Public anonymous ordinary HTTPS GET; no account/API key',
                 'source_age':'Download time is not measurement time; older composite, per-pixel acquisition date unverified'}
-            receipt_part=receipt.with_suffix('.json.part')
-            with receipt_part.open('xb') as f:f.write(canonical(r))
+            with receipt_part.open('xb') as f:
+                created=os.fstat(f.fileno());receipt_owned=(created.st_dev,created.st_ino)
+                f.write(canonical(r))
             publish(receipt_part,receipt)
+            receipt_owned=None
             receipts.append(r)
         except Exception as e:
-            if part.exists():part.unlink()
+            cleanup_owned_part(part,owned)
+            cleanup_owned_part(receipt_part,receipt_owned)
             failed=directory/(tile+'.failure.json')
-            if not failed.exists():failed.write_bytes(canonical({'tile':tile,'url':url,'status':'failed','failure_type':type(e).__name__,
-                'http_status':e.code if isinstance(e,urllib.error.HTTPError) else None,'scope':'No alternate endpoint/authentication/security bypass attempted'}))
+            try:
+                with failed.open('xb') as failure_file:failure_file.write(canonical({'tile':tile,'url':url,'status':'failed','failure_type':type(e).__name__,
+                    'http_status':e.code if isinstance(e,urllib.error.HTTPError) else None,'scope':'No alternate endpoint/authentication/security bypass attempted'}))
+            except FileExistsError:pass
             raise
     return receipts
 
@@ -172,12 +190,21 @@ def verify_shared_edge(a,b,axis):
 
 def compile_chunks(pair,country,output):
     if output.exists():raise TerrainError('Refusing to overwrite terrain dataset')
-    x0,z0,x1,z1=(math.floor(v/CHUNK_METRES) for v in country.bounds)
+    bounds=country.bounds
+    if len(bounds)!=4 or any(not math.isfinite(v) or abs(v)>10000000.0 for v in bounds):
+        raise TerrainError('Country bounds are nonfinite or outside the canonical source domain')
+    if bounds[0]>=bounds[2] or bounds[1]>=bounds[3]:raise TerrainError('Country extent must have positive area')
+    x0,z0,x1,z1=(math.floor(v/CHUNK_METRES) for v in bounds)
+    # Check candidate work BEFORE enumerating/intersecting/allocating. A thin
+    # or misprojected polygon cannot force enormous bounding-grid loops.
+    if (x1-x0+1)*(z1-z0+1)>MAX_CHUNKS*2:
+        raise TerrainError('Country bounding grid exceeds10000 candidate work budget')
     cells=[]
     for tx in range(x0,x1+1):
         for tz in range(z0,z1+1):
-            if country.intersects(box(tx*1000,tz*1000,(tx+1)*1000,(tz+1)*1000)):cells.append((tx,tz))
-    if len(cells)>MAX_CHUNKS:raise TerrainError('National terrain exceeds5000 chunk work budget')
+            if country.intersects(box(tx*1000,tz*1000,(tx+1)*1000,(tz+1)*1000)):
+                cells.append((tx,tz))
+                if len(cells)>MAX_CHUNKS:raise TerrainError('National terrain exceeds5000 chunk work budget')
     output.mkdir(parents=True);inventory=[];completed={};seams=0
     for tx,tz in cells:
         gx,gz=chunk_indices(tx,tz);values=pair.global_grid(gx,gz);raw=values.tobytes()

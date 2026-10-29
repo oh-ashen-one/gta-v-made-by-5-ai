@@ -1,10 +1,13 @@
 """Independent source encoding/interpolation/seams, not surveyed ground QA."""
 import gzip
+import io
 import json
 from pathlib import Path
 import struct
 import tempfile
 import unittest
+from unittest.mock import patch,Mock
+import compile_terrain
 import numpy as np
 from shapely.geometry import box
 from compile_terrain import (TerrainError,VOID,HgtPair,STORED,CHUNK_BYTES,TILES,
@@ -70,6 +73,65 @@ class TerrainTests(unittest.TestCase):
             self.assertEqual(struct.unpack('<f',(p/'0_0.f32').read_bytes()[:4])[0],99.25)
             for item in inventory:self.assertEqual(sha_file(p/item['file']),item['sha256'])
             with self.assertRaises(TerrainError):compile_chunks(FixturePair(),box(1,1,1999,1999),p)
+    def test_gzip_preserves_preexisting_regular_and_dangling_parts(self):
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t);source=root/'source.gz';source.write_bytes(gzip.compress(b'12345678'))
+            for dangling in [False,True]:
+                target=root/('dangling.hgt' if dangling else 'regular.hgt')
+                part=target.with_suffix('.hgt.part');missing=root/'never-created'
+                if dangling:part.symlink_to(missing)
+                else:part.write_bytes(b'FOREIGN_OWNED_PART_SENTINEL')
+                with self.assertRaises(FileExistsError):bounded_gunzip(source,target,expected=8)
+                self.assertTrue(part.is_symlink() if dangling else part.read_bytes()==b'FOREIGN_OWNED_PART_SENTINEL')
+                self.assertFalse(missing.exists());self.assertFalse(target.exists())
+    def test_download_preserves_foreign_part_and_failure_receipt_link(self):
+        class Response(io.BytesIO):
+            status=200
+            headers={}
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t);part=root/'N01E103.hgt.gz.part';part.write_bytes(b'FOREIGN_DOWNLOAD_PART')
+            sentinel=root/'owned-fixture-sentinel';sentinel.write_bytes(b'MUST_STAY_UNCHANGED')
+            failure=root/'N01E103.failure.json';failure.symlink_to(sentinel)
+            opener=Mock();opener.open.return_value=Response(b'not-read')
+            with patch.object(compile_terrain.urllib.request,'build_opener',return_value=opener):
+                with self.assertRaises(FileExistsError):compile_terrain.download_sources(root)
+            self.assertEqual(part.read_bytes(),b'FOREIGN_DOWNLOAD_PART')
+            self.assertTrue(failure.is_symlink());self.assertEqual(sentinel.read_bytes(),b'MUST_STAY_UNCHANGED')
+            self.assertFalse((root/'N01E103.hgt.gz').exists())
+    def test_download_preserves_foreign_receipt_part_after_owned_source_publication(self):
+        class Response(io.BytesIO):
+            status=200
+            headers={}
+        def fixture_gunzip(source,target):
+            with target.open('xb') as out:out.write(b'fixture decoded data')
+            return sha(b'fixture decoded data')
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t);part=root/'N01E103.download.json.part';part.write_bytes(b'FOREIGN_RECEIPT_PART')
+            opener=Mock();opener.open.return_value=Response(b'fixture compressed data')
+            with patch.object(compile_terrain.urllib.request,'build_opener',return_value=opener),patch.object(compile_terrain,'bounded_gunzip',side_effect=fixture_gunzip):
+                with self.assertRaises(FileExistsError):compile_terrain.download_sources(root)
+            self.assertEqual(part.read_bytes(),b'FOREIGN_RECEIPT_PART')
+            self.assertEqual((root/'N01E103.hgt.gz').read_bytes(),b'fixture compressed data')
+            self.assertEqual((root/'N01E103.hgt').read_bytes(),b'fixture decoded data')
+            self.assertFalse((root/'N01E103.download.json').exists())
+    def test_country_work_is_rejected_before_grid_enumeration(self):
+        with tempfile.TemporaryDirectory() as t:
+            for index,country in enumerate([box(0,0,1e12,1000),box(0,0,1e6,1e6)]):
+                output=Path(t)/str(index)
+                with patch.object(compile_terrain,'box',side_effect=AssertionError('must not enumerate')) as grid_box:
+                    with self.assertRaises(TerrainError):compile_chunks(None,country,output)
+                    grid_box.assert_not_called()
+                self.assertFalse(output.exists())
+    def test_selected_chunk_budget_stops_before_output_or_sampling(self):
+        country=box(1,1,1999,1999)
+        with tempfile.TemporaryDirectory() as t:
+            output=Path(t)/'not-created'
+            with patch.object(compile_terrain,'MAX_CHUNKS',2),patch.object(compile_terrain,'box',wraps=box) as grid_box:
+                #Four candidates fit the preflight, then the third selected
+                #chunk must stop enumeration before any output/sampling.
+                with self.assertRaises(TerrainError):compile_chunks(None,country,output)
+                self.assertEqual(grid_box.call_count,3)
+            self.assertFalse(output.exists())
     def test_nodata_nan_has_consistent_shared_edge_bits(self):
         a=np.zeros((43,43),dtype='<f4');b=a.copy();a[:,-3:]=np.nan;b[:,:3]=np.nan
         self.assertTrue(verify_shared_edge(a,b,'x'))

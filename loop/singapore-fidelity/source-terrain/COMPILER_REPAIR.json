@@ -1,0 +1,15 @@
+{
+  "recorded_utc": "2026-10-29T00:34:55.278878+00:00",
+  "compiler_sha256": "e63886204d4b85d5b5292b5e26d025873269ec4c87848845d47c71e759321fc3",
+  "test_sha256": "c3dc6fc310109946e7c24572bb70df6222a17f10c08fe99fd481f6c040e37f36",
+  "python_tests": 17,
+  "exit_code": 0,
+  "independent_review": "INDEPENDENT_REVIEW.md",
+  "repairs": [
+    "Finite/domain/candidate budgets before enumeration and selected count during enumeration",
+    "Clean only invocation-owned device/inode partial files; exclusive failure receipt publication"
+  ],
+  "real_HTTP_added_for_repairs": 0,
+  "actual_1798_chunk_artifact_unchanged": true,
+  "native_data_component": "31/31 clean, existing exact artifact; no terrain collision or full city acceptance"
+}

@@ -1,0 +1,9 @@
+{
+  "checks": 15,
+  "failures": [
+    "wait for truly absent upper floor"
+  ],
+  "initial_actor_spawns": 1,
+  "metrics": {},
+  "scope": "Isolated two-stop physical cabin and native GuestFloor/production Player fixture. No source city/site streaming, whole-MBS assembly, rebase/save integration, rendered/performance or private as-built acceptance."
+}

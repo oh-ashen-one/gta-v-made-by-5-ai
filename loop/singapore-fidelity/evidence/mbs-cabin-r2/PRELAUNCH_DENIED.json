@@ -1,0 +1,10 @@
+{
+  "recorded_utc": "2026-10-29T00:34:55.278878+00:00",
+  "engine_launched": false,
+  "normal_shared_lease_used": true,
+  "last_moment_gate": "Mixed renderer cap2 already occupied; no launch",
+  "foreign_renderers_at_preflight": 3,
+  "foreign_processes_untouched": true,
+  "game_test_result": "NOT RUN, not a gameplay/cabin failure",
+  "next_attempt": "Use fresh evidence prefix only after normal gate permits capacity; never bypass"
+}
