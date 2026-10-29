@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-10-29T14:58:11.653736+00:00",
+  "updated_utc": "2026-10-29T15:02:26.912233+00:00",
   "branch": "Astra-6-singapore-fidelity",
   "goal_status": "active; full source-world/bootstrap and full MBS assembly remain incomplete",
   "owner_decisions": "No private plans. Owner explicitly delegates all routine/creative decisions and prohibits more implementation questions. Complete coherent undocumented private interiors, match documented public facts and disclose reconstruction.",
@@ -52,8 +52,8 @@
   "next_primary_integration": "Nativefloor_stack/cabins then integrateallMBSsourcepositioned hotel/resort floors+physicalconnections. Hooknewnationalgeometry/DEM tosingledefaultbootstrap, actualroads/graph/direction/grade+reducedglobaltraffic, allactor/FX/UI rebases, sourceGamev2saves/recovery preservingoldbytes. Rendercritiqueandnormalbridge\u2192hotel\u2192wholeinterior route; fullgoalincomplete.",
   "public_visual_next": "R5 realcaptures better butstillfails; broad branching trees, nonclipped pale stone and occupiededges plus towerassembly remain. Preserve collision/4mspine.",
   "safety": "Root runs one task engine at a time through current GPU slot, private lock, render_gate, capped60/30STREAMING; no main merge/public release/new purchases/permission bypass/foreign control.",
-  "publication_checkpoint": "6eff502 verified pushed origin/Astra-6-singapore-fidelity; no main merge.",
-  "live_or_queued_engine_handles": "All Root engines verified terminal/reaped. No queued new engine. STREAMING flag exists since2026-10-29T14:55UTC; do not launch around it. Actual road CPU supervisor20962/worker20971 verified live14:55, continued background/nice10; inspect current PID signature before acting.",
+  "publication_checkpoint": "66a2733 verified pushed origin/Astra-6-singapore-fidelity; no main merge.",
+  "live_or_queued_engine_handles": "All Root engines terminal/reaped; no queued engine. STREAMING since14:55UTC, wait for normal clearance. R5 supervisor20962/worker20971 now absent; worker reported terminalexit0/777.87s and root sees completed artifact+supervisor. road_semantic_recovery auditing exact payload equivalence and diagnostic-history discrepancy before newidentity adoption. No engine launches around streamguard.",
   "source_runtime_open_p2": "Previouslyreported idle-resting-contact P2 nowclosed by R6 nativeandindependentreview; fullsavefile/respawn/rebase/bootstrap/lifecycle acceptance stillpending.",
   "floor_stack_decision": "Partial B2/B2M factory integrated with 2.5m intervals, precise void/support volumes, required floor groups. Runtime configurable max18, SourceWorld18. Low transport destination-height implementation22e8126 has no verified completed native run after restart. Stack/capacity QA6b90546 still pending. Do not claim entire MBS complete.",
   "new_integration_files": "Roothotel.gd +mbs_hotel_test coupledsource floor/cabin integration; sourceFloorStackrelease_unload_guard ownershipAPI; Runtime.region_status liveepoch/stamp/bodyproof. StairGates sourcefrozen3d78..., nativeR1running. CityRuntime+fixturecommitted90e91a1; wholecitycandidateinflightNOTcomplete/notstageallpartialoutput.",
@@ -68,7 +68,7 @@
     "new_storage": "work/fidelity-runtime/runs outside repo for live durable QA, loop/singapore-fidelity/recovery/private and source-roads/generated ignored generated data; recipes and compact receipts tracked.",
     "city": "ExactR2 all2524files1072753939bytes matchesoriginal8b84896f identity; durable recovery/private/city-geometry/candidate-r2.",
     "terrain": "ExactMBS9tile all31files2492224bytes originalf8488742outer/76fe71d5inner; durable recovery/private/terrain-scene/mbs-neighborhood-r1.",
-    "road": "R5 frozencompiler reingesting actual906owners257845ways; formerR5DB/artifactsgone. Must auditall originalpayloads andexplicitly recordany timing-only identitychange beforeRootpins. Newsemantic-v2notadopted."
+    "road": "NewR5 compilation complete with newidentity4e80cfc7f2d7ea898dc9479a7e91fb7670757522e6b09e03919187574bcf0802. Root pinunchanged until full byteaudit. Strictaudit initially reports historicaldiagnosticcount17865 vs fresh3573; possible repeatedoldDBingest inferredfromcode, oldrawDBgone so rowmultiplicity notprovable. Freshcanonicalfacts and archived906graph/20mesh exactpayload audits are required. Preserve initialfailure, never rewriteoldidentity."
   },
   "source_conformance_decision": "Exact source ground tower rings/each tower own axis; re-layout/taper rooms and real cores to fit source shell, never widen roof to hide wrong interior. Shell340m length38m deck/max40m, publicL56/L57 elevations referenced to Arup/operator; private layouts explicit reconstruction. Existing proposed core banks unresolved complete operational containment, worker resolving."
 }

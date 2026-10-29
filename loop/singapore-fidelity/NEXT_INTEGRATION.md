@@ -4,7 +4,7 @@ Latest verified source pushed6eff502 on origin/Astra-6-singapore-fidelity. Root 
 
 ## Current state 2026-10-29T14:56Z
 
-All task engines terminal/reaped. STREAMING now present; no queued engine. Continue source/backgroundCPU; never bypass sharedguard. R5 CPU recovery20962supervisor/20971worker lastpositivelylive14:55; verify signature/childstate, do notrestart fromoldlockfiles.
+All task engines terminal/reaped. STREAMING now present; no queued engine. Continue source/backgroundCPU; never bypass sharedguard. R5 CPU20962/20971 finishedexit0; newartifact exists. road_semantic_recovery isauditing exactarchived906graph/20physicalpayloads and freshcanonicaldiagnostics. Old17865vsnew3573diagnosticcounter discrepancy mustremainexplicit; oldrawDBwaslost, historicalmultiplicity explanation isonlyinference. Rootroadpinunchanged untilproof. Do notrerunfromoldlocks.
 
 Recovered cityR2 and terrain9tiles exactly match originalidentity/everypayload and now live persistently in ignored recovery/private. SourceWorld defaults updated accordingly; R5 road stillpending and oldpinunchanged. /tmp priorlogs were genuinely lost; oldcounts labelledhistorical, not recreatedproof.
 
