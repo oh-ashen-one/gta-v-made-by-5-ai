@@ -1,6 +1,6 @@
 # Physical MBS cabin component
 
-Status: sources and isolated QA are authored, **not engine-verified**. This builder ran no engine/GPU/UI/Git. All four agent slots were occupied during review, so no independent critic was spawned. Parent runtime/visual verification and independent review remain required before integration acceptance.
+Status: parent R1 parsed and ran without a script fatal, but **FAILED at15 checks** while waiting for the absent upper floor. The cabin correctly remained held open as obstructed after the fixture blocker was removed; no full ride was reached. Current R2 corrects the intended landing-door exclusion assignment and adds paired same-tick native overlap/shape/bounds diagnostics. It is **not yet run**. This builder ran no engine/GPU/UI/Git. All four agent slots were occupied during initial review, so no independent critic was spawned. Parent runtime/visual verification and independent review remain required before integration acceptance.
 
 Owned new files are `game/src/world/mbs_interior/cabins.gd`, `fidelity_tests/mbs_cabin_test.gd/.tscn`, and this directory. Existing context/runtime/public/guest/program/main/actor/save files are unchanged by this builder. The broader source Singapore/MBS goal remains open.
 
@@ -71,11 +71,21 @@ Root still owns source-world dynamic support/dry-volume registration for moving 
 The helper has not been executed by this builder:
 
 ```sh
-bash loop/singapore-fidelity/cabins/run.sh mbs-cabin-r1
+bash loop/singapore-fidelity/cabins/run.sh mbs-cabin-r2
 ```
 
-It invokes the existing sequential task driver with a180-second supervisor limit, headless scene `res://src/systems/fidelity_tests/mbs_cabin_test.tscn`, and fresh `/private/tmp/singapore-fidelity/mbs-cabin-r1/session`. The scene has a150-second watchdog and guarded fresh report path. Use another tag on rerun; never overwrite evidence.
+It invokes the existing sequential task driver with a180-second supervisor limit, headless scene `res://src/systems/fidelity_tests/mbs_cabin_test.tscn`, and fresh `/private/tmp/singapore-fidelity/mbs-cabin-r2/session`. The scene has a150-second watchdog and guarded fresh report path. Use another tag on rerun; never overwrite evidence.
 
 Prepared QA builds actual GuestFloor T3-L5 and initially leaves L6 genuinely absent, uses production Player with exactly one declared initial spawn, calls via native E, walks in/out, selects trips through the native E cabin panel, waits for missing floor collision, then builds/binds L6 and rides up/down through native platform motion. It measures incremental player steps, actual platform velocity, support fraction and cabin/player height offset. It also exercises a doorway obstruction, actual ceiling sweep stop, explicit safe resume and native E queued return. No actor pose assignment occurs after initial spawn. This is a local physical fixture, not actual source-site/city or basement Player recovery proof.
 
 Require the complete report plus clean engine/supervisor logs; a green partial count never overrides a script error, premature exit or uncompleted native gate. Root should independently review code and actual renders after the sequential native run. All present runtime/performance/visual gates remain **unverified**.
+
+## R1 failure and R2 native diagnostic
+
+R1 evidence remains `/private/tmp/singapore-fidelity/mbs-cabin-r1`: engine/supervisor exit1, no script fatal, child reaped,15 checks with the absent-floor wait failure. The production Player had walked to(23.80592,15.32585,−13.90717), about1.44m behind the threshold. The failed wait never established upward/downward platform carry. Selected facts are preserved in `R1_FAILURE.json`.
+
+The code assigned `query.exclude` to owned RIDs, then called `query.exclude.append(bound_door_rid)`. Godot documents that [PhysicsShapeQueryParameters3D.exclude returns a copy](https://docs.godotengine.org/en/stable/classes/class_physicsshapequeryparameters3d.html); modifying that returned array does not update the property. Thus the intended external landing-leaf exclusion was not installed. An open SwingDoor leaf can overlap the full doorway sensor at its edge. R1 did not record native hit IDs, so its exact overlapping body is not claimed as measured there.
+
+R2 builds the complete intended exclusion list locally and assigns the property once. It changes no sensor dimensions, collision mask, actor pose, residency gate or physical interlock. A same-tick paired query records both the previous effective owned-only filter and the intended filter, including body IDs/RIDs, collider shape IDs/names/classes, native and node origins, relative cabin poses, native box/capsule bounds and expected/actual exclusion counts. This identifies whether the removed false positive really is the bound external leaf or another object; it does not silently filter foreign floor geometry or actors.
+
+The positive blocker assertion now requires that the controlling query actually identifies `QaDoorwayObstruction`. After actual fixture removal, the controlling query must be empty while the paired legacy filter must identify the external leaf. The original cold-floor wait and every native platform/door/ceiling/lease/queue assertion remain unchanged. These R2 diagnostics and all uncompleted ride gates require the fresh parent run; no successful ride is inferred from the source repair.

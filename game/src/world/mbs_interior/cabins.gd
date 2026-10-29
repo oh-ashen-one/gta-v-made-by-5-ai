@@ -53,6 +53,7 @@ var _last_requested := ""
 var _dwell_elapsed := 0.0
 var _built_tick := -1
 var _last_blockage: Dictionary = {}
+var _last_door_probe: Dictionary = {}
 var _ui: CanvasLayer
 var _ui_label: Label
 var _selection := 0
@@ -324,6 +325,46 @@ func _doors_physically_closed() -> bool:
 			if landing_pose.origin.distance_to(to_global(_gate_center(float(_stops[id].elevation_m), side, 0.0, true))) > ALIGN_M: return false
 	return true
 
+func _door_hit_details(hits: Array[Dictionary]) -> Array[Dictionary]:
+	var details: Array[Dictionary] = []
+	for hit: Dictionary in hits:
+		var body: Variant = hit.get("collider")
+		if not is_instance_valid(body) or not body is CollisionObject3D:
+			details.append({"body": "INVALID_NATIVE_COLLIDER", "shape_index": hit.get("shape")})
+			continue
+		var physical: Transform3D = PhysicsServer3D.body_get_state(body.get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM)
+		var owner: Variant = body.shape_owner_get_owner(body.shape_find_owner(int(hit.shape)))
+		var detail := {"body": String(body.name), "path": String(body.get_path()), "collider_id": body.get_instance_id(),
+			"rid_id": body.get_rid().get_id(), "shape_index": int(hit.shape), "collision_layer": body.collision_layer,
+			"native_body_origin": physical.origin, "node_origin": body.global_position,
+			"relative_to_cabin": to_local(physical.origin) - Vector3(_center.x, _motion_y, _center.y)}
+		if owner is CollisionShape3D and owner.shape != null:
+			var shape: Variant = owner.shape
+			var physical_shape: Transform3D = physical * owner.transform
+			detail["shape_name"] = String(owner.name)
+			detail["shape_class"] = shape.get_class()
+			detail["native_shape_origin"] = physical_shape.origin
+			detail["native_shape_basis"] = [physical_shape.basis.x, physical_shape.basis.y, physical_shape.basis.z]
+			var half := Vector3.ZERO
+			if shape is BoxShape3D:
+				half = shape.size * .5
+				detail["box_size"] = shape.size
+			elif shape is CapsuleShape3D:
+				half = Vector3(shape.radius, shape.height * .5, shape.radius)
+				detail["capsule_radius"] = shape.radius
+				detail["capsule_height"] = shape.height
+			if half != Vector3.ZERO:
+				var lower := Vector3(INF, INF, INF)
+				var upper := Vector3(-INF, -INF, -INF)
+				for index in 8:
+					var corner: Vector3 = physical_shape * Vector3(half.x if index & 1 else -half.x, half.y if index & 2 else -half.y, half.z if index & 4 else -half.z)
+					lower = lower.min(corner)
+					upper = upper.max(corner)
+				detail["native_shape_aabb_min"] = lower
+				detail["native_shape_aabb_max"] = upper
+		details.append(detail)
+	return details
+
 func _door_obstructed() -> bool:
 	var box := BoxShape3D.new()
 	box.size = Vector3(DOOR_W - .04, 2.10, .70)
@@ -331,12 +372,28 @@ func _door_obstructed() -> bool:
 	query.shape = box
 	query.transform = global_transform * Transform3D(Basis.IDENTITY, Vector3(_center.x, _motion_y + 1.10, _center.y + _sign * DEPTH * .5))
 	query.collision_mask = 1 | 2 | 8
-	query.exclude = _owned_rids.duplicate()
+	var exclusions: Array[RID] = _owned_rids.duplicate()
+	var landing_doors: Array[Dictionary] = []
 	for id: String in _bindings:
 		if not is_instance_valid(_bindings[id].node): continue
 		var door: Variant = _bindings[id].node.get("doors").get(_bindings[id].portal_id)
-		if door is CollisionObject3D: query.exclude.append(door.get_rid())
-	return not get_world_3d().direct_space_state.intersect_shape(query, 8).is_empty()
+		if door is CollisionObject3D:
+			exclusions.append(door.get_rid())
+			landing_doors.append({"floor_id": id, "body": String(door.name), "rid_id": door.get_rid().get_id()})
+	# The exclude PROPERTY getter returns a copy. Append to the local array,
+	# then assign ONCE; query.exclude.append(...) never updated native filters.
+	# Paired same-tick diagnostic reproduces the previous effective filter so
+	# QA can identify the exact removed leaf without changing sensor geometry.
+	query.exclude = _owned_rids.duplicate()
+	var legacy_hits: Array[Dictionary] = get_world_3d().direct_space_state.intersect_shape(query, 16)
+	query.exclude = exclusions
+	var hits: Array[Dictionary] = get_world_3d().direct_space_state.intersect_shape(query, 16)
+	_last_door_probe = {"physics_tick": Engine.get_physics_frames(), "query_origin": query.transform.origin,
+		"query_size": box.size, "collision_mask": query.collision_mask, "owned_exclusion_count": _owned_rids.size(),
+		"actual_exclusion_count": query.exclude.size(), "expected_exclusion_count": exclusions.size(),
+		"landing_doors": landing_doors, "legacy_owned_only_hits": _door_hit_details(legacy_hits),
+		"controlling_hits": _door_hit_details(hits)}
+	return not hits.is_empty()
 
 func _can_move(dy: float) -> bool:
 	var parameters := PhysicsTestMotionParameters3D.new()
@@ -511,6 +568,7 @@ func report() -> Dictionary:
 		"current_floor_id": _at_floor, "target_floor_id": _target, "commanded_y_m": _motion_y, "velocity_y_mps": _velocity_y,
 		"gate_fraction": _gate_fraction, "landing_fractions": _landing_fraction.duplicate(true), "queue": _queue.duplicate(), "bound_floor_ids": _bindings.keys(),
 		"last_blockage": _last_blockage.duplicate(true),
+		"last_door_probe": _last_door_probe.duplicate(true),
 		"actor_pose_assignments": 0, "actor_reparents": 0, "private_asbuilt_verified": false, "source_world_or_whole_MBS_completed": false}
 
 func _exit_tree() -> void:

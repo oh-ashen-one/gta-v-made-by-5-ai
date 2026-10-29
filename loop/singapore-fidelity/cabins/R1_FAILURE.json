@@ -1,0 +1,40 @@
+{
+  "status": "FAILED",
+  "evidence_root": "/private/tmp/singapore-fidelity/mbs-cabin-r1",
+  "checkpoint": "f8965a7f119a12ff07d4a734bb1c3f62883e97e3",
+  "supervisor_exit_code": 1,
+  "engine_exit_code": 1,
+  "fatal_errors": [],
+  "child_reaped": true,
+  "checks": 15,
+  "failures": [
+    "wait for truly absent upper floor"
+  ],
+  "initial_actor_spawns": 1,
+  "last_logged_player_pose": [
+    23.80592,
+    15.32585,
+    -13.90717
+  ],
+  "last_cabin_state": "OPEN",
+  "last_cabin_detail": "Doorway obstructed; waiting for clear threshold",
+  "last_cabin_height_m": 15.35,
+  "bound_floors": [
+    "T3-L5"
+  ],
+  "queued_floors": [
+    "T3-L6"
+  ],
+  "native_overlap_ids_measured_in_R1": false,
+  "source_defect": "query.exclude.append modified a getter copy; intended external landing-door exclusion was absent",
+  "r2_policy": "Assign one complete local exclusion array. Retain identical sensor/mask/interlocks and add same-tick legacy/intended native overlap/body/shape/bounds diagnostics plus actual-blocker positive and removed-blocker clear negatives",
+  "uncompleted_gates": [
+    "truly absent upper-floor wait",
+    "native upward/downward platform ride",
+    "upper/lower step out",
+    "native ceiling stop",
+    "lost travel lease hold/resume",
+    "native queued return",
+    "incremental no-teleport path"
+  ]
+}

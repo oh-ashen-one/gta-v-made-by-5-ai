@@ -174,9 +174,20 @@ func run() -> void:
 	if not await native_e(lift.panel): finish(); return
 	await frames(180)
 	check("obstructed threshold prevents departure and preserves open safe landing", absf(float(lift.report().commanded_y_m) - center.y) < .001 and lift.report().state == "OPEN" and _door(LOWER).get("opened"), JSON.stringify(lift.report()))
+	var obstructed_probe: Dictionary = lift.report().last_door_probe
+	metrics["threshold_probe_with_blocker"] = obstructed_probe.duplicate(true)
+	check("positive doorway hold detects the actual fixture blocker", obstructed_probe.get("controlling_hits", []).any(func(hit: Dictionary): return hit.get("collider_id") == blocker.get_instance_id()), JSON.stringify(obstructed_probe))
+	check("native exclusion property contains bound landing door RID", obstructed_probe.get("actual_exclusion_count", 0) == obstructed_probe.get("expected_exclusion_count", -1) and int(obstructed_probe.get("actual_exclusion_count", 0)) > int(obstructed_probe.get("owned_exclusion_count", 0)), JSON.stringify(obstructed_probe))
 	blocker.queue_free()
 	await frames(4)
+	var native_player: Transform3D = PhysicsServer3D.body_get_state(player.get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM)
+	metrics["actual_poses_after_blocker_removal"] = {"player_node": player.global_position, "player_native": native_player.origin,
+		"relative_to_cabin": lift.to_local(native_player.origin) - Vector3(center.x, center.y, center.z), "blocker_removed": not is_instance_valid(blocker), "lift": lift.report()}
 	if not await until(func(): return lift.report().state == "WAIT_READY" and lift.report().target_floor_id == UPPER, 10.0, "wait for truly absent upper floor"): finish(); return
+	var clear_probe: Dictionary = lift.report().last_door_probe
+	metrics["threshold_probe_after_blocker_removed"] = clear_probe.duplicate(true)
+	check("removed blocker leaves actual controlling doorway query clear", clear_probe.get("controlling_hits", [{}]).is_empty(), JSON.stringify(clear_probe))
+	check("paired legacy filter identifies the external leaf false positive", clear_probe.get("legacy_owned_only_hits", []).any(func(hit: Dictionary): return hit.get("collider_id") == _door(LOWER).get_instance_id()), JSON.stringify(clear_probe))
 	var waiting_y: float = lift.report().commanded_y_m
 	await frames(90)
 	check("cold destination waits closed without passenger/cabin warp", requests.has(UPPER) and lift.report().state == "WAIT_READY" and absf(float(lift.report().commanded_y_m) - waiting_y) < .001 and absf(player.global_position.y - waiting_y) < .12 and lift.report().gate_fraction < .001 and not bool(_door(LOWER).get("opened")))
@@ -290,5 +301,3 @@ func _write_guarded_report(session: String, destination: String, content: String
 	var complete := file.get_error() == OK and file.get_length() == content.to_utf8_buffer().size()
 	file.close()
 	return {"ok": true} if complete else {"ok": false, "error": "Incomplete mbs-cabin report write"}
-
-
