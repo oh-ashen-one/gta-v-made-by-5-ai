@@ -14,6 +14,15 @@ var _supports: Dictionary = {}
 var _generation := 0
 var _configured := false
 var native_clearance_diagnostics: Dictionary = {}
+var _profile_residency := "--profile-source-runtime" in OS.get_cmdline_user_args()
+var _residency_cost := {"calls": 0, "total_us": 0, "max_us": 0, "body_liveness_checks": 0}
+
+func residency_profile() -> Dictionary:
+	var result := _residency_cost.duplicate(true)
+	result["enabled"] = _profile_residency
+	result["registered_regions"] = _regions.size()
+	result["physics_tick"] = Engine.get_physics_frames()
+	return result
 
 func configure(source_frame: RefCounted, source_context: RefCounted, domain_adapter: Callable) -> bool:
 	if _configured or not source_frame is Frame or not source_context is Context or not domain_adapter.is_valid(): return false
@@ -190,6 +199,15 @@ func _subtract_box(box: Dictionary, cut: Dictionary) -> Array[Dictionary]:
 	return remainder
 
 func _resident(point: Array, half_extents: Vector3) -> Dictionary:
+	if not _profile_residency: return _resident_impl(point, half_extents)
+	var started := Time.get_ticks_usec()
+	var result := _resident_impl(point, half_extents)
+	var elapsed := Time.get_ticks_usec() - started
+	_residency_cost.calls += 1; _residency_cost.total_us += elapsed
+	_residency_cost.max_us = maxi(_residency_cost.max_us, elapsed)
+	return result
+
+func _resident_impl(point: Array, half_extents: Vector3) -> Dictionary:
 	var low: Array = []
 	var high: Array = []
 	for axis in 3:
@@ -203,6 +221,7 @@ func _resident(point: Array, half_extents: Vector3) -> Dictionary:
 		var region: Dictionary = _regions[id]
 		if region.origin_revision != frame.metadata().origin_revision: continue
 		var valid := true
+		if _profile_residency: _residency_cost.body_liveness_checks += region.bodies.size()
 		for reference: WeakRef in region.bodies:
 			var body: Variant = reference.get_ref()
 			if not is_instance_valid(body) or not body.is_inside_tree() or body.collision_layer == 0 or body.get_world_3d() != get_world_3d(): valid = false
