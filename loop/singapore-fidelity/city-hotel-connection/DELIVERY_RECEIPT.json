@@ -1,0 +1,40 @@
+{
+  "updated_utc": "2026-10-30T02:53:20.227024+00:00",
+  "status": "CONNECTED_SOURCE_CANDIDATE_RUNTIME_DEFERRED_BY_OWNER",
+  "app": "/Users/midir/Builds/OrchardReach-MBS-Connected-20261029.app",
+  "output_folder": "/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/outputs/Singapore-MBS-connected-2026-10-29",
+  "source_commit": "a3d43afd4e34d3b928abbfbcd36b64a8b44a809c",
+  "manifest_sha256": "25f6907311a9d8762a16c58259498029ca56303cc57c8fdb49f4a4aca5a4ba97",
+  "signature": "ad-hoc signature strict verification passed; not notarization or launch proof",
+  "script_hash_matches": 219,
+  "assets": {
+    "assets": {
+      "files": 616,
+      "logical_bytes": 945017528,
+      "verification": "relative paths and byte sizes; not independent asset content hashes"
+    },
+    ".godot/imported": {
+      "files": 556,
+      "logical_bytes": 815261004,
+      "verification": "relative paths and byte sizes; not independent asset content hashes"
+    }
+  },
+  "preview_scene_present": false,
+  "main_game_controller_present": true,
+  "native_launch_verified": false,
+  "gpu_tests": 0,
+  "runtime_tests": 0,
+  "automated_retry_or_launch": false,
+  "transition_type": "in-game doorway/lift loading with retained city/player/vehicles/mission objects",
+  "reachable_space_intent": [
+    "lobby",
+    "T3-L24 guest floor",
+    "T2-L5 spa"
+  ],
+  "scope_limits": [
+    "native traversal/save-load/death/UI/render/animation tests deferred",
+    "full hotel/resort and national city replacement unfinished",
+    "room visit saves resume at landing, not exact room position",
+    "vehicle positions not newly persisted across application restarts"
+  ]
+}
