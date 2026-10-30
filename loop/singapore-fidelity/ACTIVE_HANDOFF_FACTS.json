@@ -52,8 +52,8 @@
     "source_floor_allocation": "ec49dbb correctedminimum-feasibilityR2:1850IDs/775suites/159occupiedfloors,27350CPUchecks,113390.76m2,176same-towerrelocations/0cross, NOTinstalled/native/luxuryaccepted. Separateluxuryv3 underway: latestworkerreportsallIDs148144.81m2 beforegrowth, categoryarea targetsstillnotaccepted. Do notrelabelminimumasfinal. All57programfloorrecordspreserved butsourcegeometrypending.",
     "luxury_layout_current": "Worker reports a v3 area-first candidate near160844m2 with Signature136.74/Paiza136.83 averages, below140 target. Independent audit found24 lower-T2 corridor overlaps; failed candidate retained and correction running. No final luxury acceptance, furniture integration or native proof. Do not replace the frozen minimum receipt with this in-flight result."
   },
-  "current_work": "CLOSED at owner milestone. All workers terminal; local candidate assembled and signature/file verified. No engine opened; no GPU test or automatic retry queued.",
-  "next_primary_integration": "STOPPED at owner cutoff. Future full-source city/hotel integration needs a future task, not automatic continuation.",
+  "current_work": "Owner-authorized bounded offline MBS city-doorway connection. Source implemented, 15 CPU/static-contract checks and 8 grammar parses passed; candidate file packaging follows. No engine or GPU launched.",
+  "next_primary_integration": "Finish this bounded source push and local candidate package. Native QA is deferred and must not auto-launch.",
   "public_visual_next": "R5 realcaptures better butstillfails; broad branching trees, nonclipped pale stone and occupiededges plus towerassembly remain. Preserve collision/4mspine.",
   "safety": "Current verified brain67f806f269f6. New render startup guard CPU reviewed; native first-frame proof absent. Owner prohibits all game/engine/GPU launches. Preserve foreign work and private art.",
   "publication_checkpoint": "Final package source fb0c860548e27775a6188c21aabd9a5e2b2f0086; documentation-only final receipt commit follows. Query origin/Astra-6-singapore-fidelity.",
@@ -77,8 +77,9 @@
   "source_conformance_decision": "Exact source ground tower rings/each tower own axis; re-layout/taper rooms and real cores to fit source shell, never widen roof to hide wrong interior. Shell340m length38m deck/max40m, publicL56/L57 elevations referenced to Arup/operator; private layouts explicit reconstruction. Existing proposed core banks unresolved complete operational containment, worker resolving.",
   "source_art_references": "source-floor-art frozenread-onlyledger; noassetsacquired. OfficialMarinaPDF visuallylabels8ftpooltable1500x2620, notbadsearchOCR1800x900; bedvsouterextentunspecified. Our9ftcontractisreconstructionassumptionNOTownerrequirement. Suite/source-type references takeprecedence. FreeCCBYtable/balls/sofas candidateslicenseverifiedmetadataonly; import/marks/dimensions/nativequalitypending.",
   "new_rules_launch_requirements": "67f806f269f6 verified. Installed shared gpu_slot now counts packaged games, Godot/Unity/Blender and recognized ML clients, requires utilization below85 for10s and20s cooldown. Root must also account for simulators/encoders/other Metal clients before rendered capture and implement first-frame timeout => shared PAUSED, no SIGKILL. First recovery hour must use one renderer/no concurrent GPU training. Current queued test is explicitly headless; no rendered engine has launched in this turn.",
-  "owner_cutoff": "2026-10-29: finish current worker passes and package working components; latest explicit instruction forbids opening game/engine or GPU tests.",
+  "owner_cutoff": "Original full city/hotel expansion frozen. Owner subsequently authorized connecting the existing interiors through normal city doorway/lifts, with no game/engine/GPU tests.",
   "cutoff_manifest": "OWNER_CUTOFF.md",
   "delivery_receipt": "delivery/DELIVERY_RECEIPT.json",
-  "candidate_app": "/Users/midir/Builds/OrchardReach-Fidelity-Milestone-20261029.app"
+  "candidate_app": "/Users/midir/Builds/OrchardReach-Fidelity-Milestone-20261029.app",
+  "connection_handoff": "city-hotel-connection/README.md"
 }

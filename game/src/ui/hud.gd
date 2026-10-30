@@ -8,6 +8,7 @@ var player: Player
 var mission: Mission
 
 var _objective_label: Label
+var _objective_tag: Label
 var _prompt_label: Label
 var _health_bar: Control
 var _health_label: Label
@@ -27,6 +28,7 @@ var _settings_rows: Array = []
 var _marker: Vector3 = Vector3.ZERO
 var _gameplay_controls: Array[CanvasItem] = []
 var _layout_root: Control
+var _hotel_status := ""
 
 const NOTIFICATION_LIFETIME := 4.0
 
@@ -58,7 +60,7 @@ func _build() -> void:
 	get_viewport().size_changed.connect(_fit_layout)
 	_panel(root,Vector2(24,24),Vector2(620,78),Color(.025,.055,.058,.88))
 	var tag := _mk_label(root,Vector2(40,34),11,Color(.57,.78,.70))
-	tag.text="HARBOUR RELAY"
+	tag.text="HARBOUR RELAY";_objective_tag=tag
 	_objective_label=_mk_label(root,Vector2(40,53),18,Color(.96,.94,.86))
 	_objective_label.size=Vector2(586,44)
 	_objective_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -132,7 +134,7 @@ func _build_pause_panel(root: Control) -> void:
 	_button(_pause_panel,"Resume   ·   Esc",Vector2(96,210),func():get_tree().current_scene._toggle_pause())
 	_button(_pause_panel,"Save progress   ·   F5",Vector2(96,265),func():
 		if Game.save_game(): Events.toast("Progress saved.","good"))
-	_button(_pause_panel,"Restart Harbour Relay   ·   F10",Vector2(96,320),func():mission.restart();get_tree().current_scene._toggle_pause())
+	_button(_pause_panel,"Restart Harbour Relay   ·   F10",Vector2(96,320),func():get_tree().current_scene._restart_mission();get_tree().current_scene._toggle_pause())
 	_button(_pause_panel,"Settings   ·   F3",Vector2(96,375),func():get_tree().current_scene._toggle_settings())
 	_button(_pause_panel,"Quit game",Vector2(96,430),func():get_tree().current_scene._quit_game())
 	var controls:=_mk_label(_pause_panel,Vector2(650,210),18,Color(.78,.85,.82))
@@ -150,8 +152,7 @@ func _build_title_panel(root: Control) -> void:
 	_button(_title_panel,"New game   ·   Enter",Vector2(96,310),func():get_tree().current_scene._new_game())
 	_button(_title_panel,"Continue   ·   F6",Vector2(96,365),func():get_tree().current_scene._continue_game())
 	_button(_title_panel,"Settings   ·   F3",Vector2(96,420),func():get_tree().current_scene._toggle_settings())
-	_button(_title_panel,"MBS hotel interior · Preview",Vector2(96,475),func():get_tree().current_scene._open_hotel_preview())
-	_button(_title_panel,"Quit game",Vector2(96,530),func():get_tree().current_scene._quit_game())
+	_button(_title_panel,"Quit game",Vector2(96,475),func():get_tree().current_scene._quit_game())
 	_panel(_title_panel,Vector2(712,438),Vector2(520,208),Color(.015,.04,.045,.58))
 	var controls:=_mk_label(_title_panel,Vector2(730,452),17,Color(.86,.92,.88))
 	controls.text="WALK THE ARCADES\nWASD move · Mouse look · Shift sprint\n\nTAKE THE WHEEL\nE enter/exit · W/S throttle · A/D steer\n\nTAKE TO THE AIR\nSpace climb · Shift descend · E land and exit"
@@ -257,6 +258,8 @@ func _process(_delta: float) -> void:
 		_stats_label.text += "   ALT %d m" % int(alt)
 	_update_wanted_label()
 	_crosshair.queue_redraw()
+	_minimap.visible=_hotel_status.is_empty() and bool(Game.settings.get("hud_visible",true)) and not _title_panel.visible
+	if not _hotel_status.is_empty():_objective_label.text=_hotel_status
 	_minimap.queue_redraw()
 	if _debug_label.visible:
 		_debug_label.text = "mode=%d stage=%d wanted=%d heat=%.0f hp=%.0f peds=%d" % [
@@ -345,3 +348,8 @@ func clear_notifications() -> void:
 	for notice in _notifications.get_children():
 		_notifications.remove_child(notice)
 		notice.queue_free()
+
+func set_hotel_status(text:String)->void:
+	_hotel_status=text
+	_objective_tag.text="HARBOUR RELAY" if text.is_empty() else "MARINA BAY SANDS"
+	if text.is_empty() and is_instance_valid(mission):_objective_label.text=mission.current_objective().replace("Harbour Relay — ","")

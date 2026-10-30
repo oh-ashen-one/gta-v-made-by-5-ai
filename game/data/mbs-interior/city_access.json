@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "entrance_offset": [98.0, 0.12, -47.0],
+  "exit_offset": [98.0, 0.12, -51.0],
+  "approach_rect_relative_xz": [93.0, -67.0, 10.0, 23.0],
+  "door_width": 4.4,
+  "trigger_depth": 1.5,
+  "stage_heights": {"lobby": 600.0, "guest": 760.0, "spa": 880.0},
+  "floor_ids": {"guest": "T3-L24", "spa": "T2-L5"},
+  "scope": "In-game doorway/lift transitions to existing reconstructed interiors; not continuous exterior/interior coordinates or a complete hotel."
+}

@@ -105,7 +105,7 @@ static func kerb_strips(m) -> void:
 				var l := Roads.left_of(f)
 				var off := hw + STRIP_IN + rng.randf_range(0.05, STRIP_W - 0.1)
 				var p := c + l * side * off
-				if not _strip_ok(p, key):
+				if not _strip_ok(p, key) or preload("res://src/world/mbs_interior/city_access_layout.gd").approach_contains(p):
 					continue
 				var near_shelter := false
 				for q: Vector3 in shelters:

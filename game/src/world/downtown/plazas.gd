@@ -165,6 +165,7 @@ static func _flag(colour: String) -> ArrayMesh:
 # ------------------------------------------------------------------ helpers
 ## Review routes and lanes kept clear (x, z, radius).
 static func _clear(p: Vector3) -> bool:
+	if preload("res://src/world/mbs_interior/city_access_layout.gd").approach_contains(p):return false
 	for hk: String in DowntownPlan.HELIPADS:
 		var hp: Vector3 = DowntownPlan.HELIPADS[hk]["pos"]
 		if Vector2(hp.x - p.x, hp.z - p.z).length() < float(DowntownPlan.HELIPADS[hk]["radius"]) + 9.0:

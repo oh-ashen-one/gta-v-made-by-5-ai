@@ -8,6 +8,7 @@ var traffic: TrafficManager
 var mission: Mission
 var downtown_activity: Node
 var skypark_access: Node
+var hotel_access: Node
 var hud: HUD
 var started := false
 var _settings_return_to_pause := false
@@ -79,6 +80,9 @@ func _ready() -> void:
 	skypark_access.name = "SkyParkAccess"
 	add_child(skypark_access)
 	skypark_access.setup(world, player)
+	hotel_access=load("res://src/world/mbs_interior/city_hotel_access.gd").new()
+	add_child(hotel_access)
+	hotel_access.setup(self)
 
 	# helicopter at the aviation compound, parked on the primary pad
 	var heli := Helicopter.new()
@@ -333,6 +337,7 @@ func _ready() -> void:
 			review.setup(self)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if is_instance_valid(hotel_access) and hotel_access.transitioning:return
 	if event is InputEventKey and event.pressed and hud.settings_visible():
 		if event.keycode in [KEY_1,KEY_2,KEY_3,KEY_4,KEY_5]:
 			_apply_setting_key(event.keycode)
@@ -366,14 +371,15 @@ func _unhandled_input(event: InputEvent) -> void:
 					# message must not claim a new game was started (wave-2 F6).
 					Events.toast("Save unreadable or incompatible - progress unchanged.", "bad")
 			KEY_F7:
+				hotel_access.leave_hotel(false)
 				player.respawn_at(Game.last_safe_position, Game.last_safe_rotation)
 			KEY_F10:
-				if mission:
-					mission.restart()
+				_restart_mission()
 			KEY_F8:
 				Game.settings["hud_visible"] = not bool(Game.settings["hud_visible"])
 				hud.set_gameplay_visible(bool(Game.settings["hud_visible"]))
 			KEY_F9:
+				if not hotel_access.leave_hotel():return
 				started = false
 				Game.simulation_paused = true
 				hud.show_title(true)
@@ -417,6 +423,7 @@ func _start_game() -> void:
 	Events.toast("The hawker centre is marked on your map.", "info")
 
 func _new_game() -> void:
+	hotel_access.leave_hotel(false)
 	mission.restart()
 	if is_instance_valid(downtown_activity):
 		downtown_activity.reset_state()
@@ -431,10 +438,9 @@ func _continue_game() -> void:
 	else:
 		Events.toast("No compatible save. Start a new game to begin.","warn")
 
-func _open_hotel_preview() -> void:
-	Game.simulation_paused=true
-	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
-	get_tree().change_scene_to_file("res://src/scenes/hotel_preview.tscn")
+func _restart_mission() -> void:
+	hotel_access.leave_hotel(false)
+	if mission:mission.restart()
 
 func _quit_game() -> void:
 	Sfx.shutdown_audio()

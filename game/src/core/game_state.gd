@@ -240,6 +240,8 @@ func damage_player(amount: float) -> void:
 		respawn()
 
 func respawn() -> void:
+	var hotel:=get_tree().get_first_node_in_group("city_hotel_access")
+	if hotel:hotel.leave_hotel(false)
 	if _source_player() != null:
 		var service := _bound_source_session()
 		if service != null:
@@ -336,6 +338,8 @@ func mark_safe_position(pos: Vector3, rot: float) -> void:
 
 # ------------------------------------------------------------------ save/load
 func save_game(path: String = "") -> bool:
+	var hotel:=get_tree().get_first_node_in_group("city_hotel_access")
+	if hotel and hotel.transitioning:return false
 	if _source_player() != null:
 		var service := _bound_source_session()
 		return service != null and _source_slot_request(path, service) and service.save()
@@ -361,6 +365,7 @@ func save_game(path: String = "") -> bool:
 	var activity := get_tree().get_first_node_in_group("downtown_activity")
 	if activity and activity.has_method("serialize_state"):
 		data["downtown_activity"] = activity.serialize_state()
+	if hotel:hotel.decorate_save(data)
 	if not _validate_save_data(data):
 		return false
 	var destination := ProjectSettings.globalize_path(path)
@@ -387,6 +392,8 @@ func save_game(path: String = "") -> bool:
 	return replaced
 
 func load_game(path: String = "") -> bool:
+	var hotel:=get_tree().get_first_node_in_group("city_hotel_access")
+	if hotel and hotel.transitioning:return false
 	if _source_player() != null:
 		var service := _bound_source_session()
 		return service != null and _source_slot_request(path, service) and service.load()
@@ -408,6 +415,7 @@ func load_game(path: String = "") -> bool:
 	# A well-formed JSON document is not necessarily a valid save.
 	if not _validate_save_data(parsed):
 		return false
+	if hotel:hotel.leave_hotel(false)
 	health = float(parsed.get("health", MAX_HEALTH))
 	_since_damage = 0.0
 	wanted_level = int(parsed.get("wanted_level", 0))
@@ -455,6 +463,7 @@ func load_game(path: String = "") -> bool:
 		else:
 			activity.reset_state()
 	Events.state_restored.emit()
+	if hotel and parsed.has("hotel_visit"):hotel.restore_visit(parsed.hotel_visit)
 	return true
 
 func _number_in_range(value: Variant, low: float, high: float) -> bool:
@@ -475,6 +484,7 @@ func _valid_saved_vector(value: Variant) -> bool:
 	return true
 
 func _validate_save_data(data: Dictionary) -> bool:
+	if data.has("hotel_visit") and not preload("res://src/world/mbs_interior/city_access_layout.gd").valid_visit(data.hotel_visit):return false
 	# Optional for legacy saves. Validate before touching player/story state;
 	# an invalid side activity must not partially load the rest of a save.
 	if data.has("downtown_activity"):

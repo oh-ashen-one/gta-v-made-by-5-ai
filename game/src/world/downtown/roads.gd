@@ -345,6 +345,7 @@ static func _street_dressing(m, key: String, road: Dictionary, rng: RandomNumber
 		i += 1
 		for side: float in [-1.0, 1.0]:
 			var lp := p + l * side * (hw + 0.55)
+			if preload("res://src/world/mbs_interior/city_access_layout.gd").approach_contains(lp):continue
 			if on_legacy_road(lp.x, lp.z, 6.0) or in_water(lp.x, lp.z) or on_road(lp.x, lp.z, key, 3.0) or Bridges.on_deck(lp.x, lp.z, 2.0):
 				continue
 			var h := Bridges.height_at(lp.x, lp.z)

@@ -11,16 +11,13 @@ repo=Path(__file__).resolve().parents[3];out=a.output.resolve();manifest_path=ou
 if manifest_path.is_file():
  manifest=json.loads(manifest_path.read_text())
 elif a.recover_assembled:
- manifest={'app':str(a.app.resolve() if a.app else out/'Orchard Reach — Fidelity Milestone.app'),'kind':'local Studio development snapshot using installed Godot4.7.1','engine_path':'/Applications/Godot.app/Contents/MacOS/Godot','self_contained_engine':False,'private_build_only':True,'recovery':'Initial assembly completed; signing failed on copied FinderInfo. No engine was launched.','included_preview_spaces':['public hotel lobby','reconstructed guest-floor layout','Tower2Level5 spa layout'],'unfinished':['complete source-coordinate city integration','complete hotel/resort interiors','native/rendered acceptance']}
+ manifest={'app':str(a.app.resolve() if a.app else out/'Orchard Reach — Fidelity Milestone.app'),'kind':'local Studio development snapshot using installed Godot4.7.1','engine_path':'/Applications/Godot.app/Contents/MacOS/Godot','self_contained_engine':False,'private_build_only':True,'recovery':'Initial assembly completed; signing failed on copied FinderInfo. No engine was launched.','included_interior_spaces':['public hotel lobby','reconstructed guest-floor layout','Tower2Level5 spa layout'],'unfinished':['complete source-coordinate city integration','complete hotel/resort interiors','native/rendered acceptance']}
 else:raise SystemExit('Missing completed manifest; use explicit assembled-package recovery only')
 app=Path(manifest['app']);game=app/'Contents/Resources/game'
 assert (app/'Contents/Info.plist').is_file() and (app/'Contents/MacOS/Orchard Reach').is_file(), 'Assembly is incomplete'
 assert (app.parent==out or (a.app and app==a.app.resolve())) and game.is_dir(), 'Unexpected delivery path'
 import plistlib
 assert plistlib.loads((app/'Contents/Info.plist').read_bytes()).get('CFBundleIdentifier')=='com.ashenone.orchardreach.fidelitymilestone', 'Not our milestone app'
-# The only source edit during the file snapshot was smoke-test audio teardown.
-# Refresh this exact task-owned file before final identity and signature.
-p=Path('src/scenes/hotel_preview.gd');shutil.copy2(repo/'game'/p,game/p)
 issues=[];gd_hashes={}
 for source in (repo/'game/src').rglob('*.gd'):
  rel=source.relative_to(repo/'game');target=game/rel
@@ -41,6 +38,9 @@ for importer in (game/'assets').rglob('*.import'):
   if not (game/target[6:]).is_file():missing_remaps.append(target)
 if missing_remaps:issues.append('missing imported remaps '+repr(sorted(set(missing_remaps))))
 if issues:raise SystemExit(json.dumps(issues,indent=2))
+for relative in ['project.godot','main.tscn','data/mbs-interior/inventory.json','data/mbs-interior/city_access.json']:
+ source=repo/'game'/relative;target=game/relative
+ if source.read_bytes()!=target.read_bytes():raise SystemExit('Resource copy mismatch '+relative)
 removed_metadata=clean(app)
 subprocess.run(['/usr/bin/codesign','--force','--sign','-',str(app)],check=True)
 subprocess.run(['/usr/bin/codesign','--verify','--strict','--verbose=2',str(app)],check=True)
@@ -52,6 +52,6 @@ manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')
 # Use the current reviewed README from the builder without executing it.
 tree=ast.parse(Path(__file__).with_name('build_local_app.py').read_text())
 readme=next(ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='readme' for t in n.targets))
-readme=readme.replace('open **Orchard Reach — Fidelity Milestone.app**',f'open [Orchard Reach — Fidelity Milestone](<{app}>)')
+readme=readme.replace('open **Orchard Reach — MBS Connected.app**',f'open [Orchard Reach — MBS Connected](<{app}>)')
 (out/'START_HERE.md').write_text(readme)
 print(json.dumps({'app':str(app),'source_checkpoint':checkpoint,'gd_files_hash_matched':len(gd_hashes),'counts':counts,'signature':'verified','native_launch_verified':False}))

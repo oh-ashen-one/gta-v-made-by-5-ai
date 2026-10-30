@@ -1,0 +1,25 @@
+{
+  "scope": "CPU-only numeric geometry, configuration and static source-contract checks; NOT native engine behavior, traversal, performance or rendering",
+  "tests": 15,
+  "failures": 0,
+  "errors": 0,
+  "engine_started": false,
+  "gpu_used": false,
+  "files_sha256": {
+    "game/data/mbs-interior/city_access.json": "cfe518e1ce8fe4ede2332d0d79e2580dedfb44fcacf6ee89c1975038a7093d9a",
+    "game/src/world/mbs_interior/city_hotel_access.gd": "33e2f22254f1bd0ab5762284e507609c4f054b66e149adb3c24f7ab14e513428",
+    "game/src/world/mbs_interior/city_access_layout.gd": "cf98216854c1c48ab23c3b68c8d63ac2bf5d1a89982f13e035d9f362b14a6826",
+    "game/src/main.gd": "466db4c5a403118e7abb522f8025ddb5e3dd2c3704a3c3c1377a5b8f4e5345ee",
+    "game/src/core/game_state.gd": "0d1cb3fc24eae19dd858bff0138914a4fac03a738e39a7a399508713b707e0e9"
+  },
+  "gdscript_grammar": {
+    "tool": "gdtoolkit4.5.0 gdparse",
+    "files": 8,
+    "passed": true,
+    "native_semantic_check": false
+  },
+  "literal_resource_paths": {
+    "checked": 22,
+    "missing": 0
+  }
+}

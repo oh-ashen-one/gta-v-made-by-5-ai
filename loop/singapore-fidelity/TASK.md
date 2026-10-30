@@ -1,3 +1,5 @@
+> **2026-10-29 follow-up:** Owner explicitly requests connecting the existing MBS interiors to normal city gameplay and removing the separate preview menu, without opening the game or using GPU. This authorizes only that bounded source/file-package pass; see `city-hotel-connection/README.md`. The broader city/hotel expansion remains frozen.
+
 > **2026-10-29 cutoff:** The owner requested closeout after the current worker milestone, then explicitly prohibited game/engine/GPU launches. Follow `OWNER_CUTOFF.md`; original full scope below is unfinished, not permission to continue an open-ended loop.
 
 # Singapore fidelity and owner playtest fixes — active goal
