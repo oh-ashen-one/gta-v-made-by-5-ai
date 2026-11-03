@@ -1,0 +1,23 @@
+{
+  "generator": "built-in image_gen",
+  "reference": "docs/ui-20261103/01-jade.png",
+  "transparent_background": true,
+  "date": "2026-11-03",
+  "assets": [
+    {
+      "path": "game/assets/ui/generated/weapons.png",
+      "sha256": "2bd5bbdf06a11dad6d78f700b9064bb816e92359374064020b035a2eab3dceb3",
+      "bytes": 882120
+    },
+    {
+      "path": "game/assets/ui/generated/panels.png",
+      "sha256": "360c2da0ebadffa46bae9e0876aa3fc4c62b54f387200e7eabc7835dc6a1a5ca",
+      "bytes": 583959
+    },
+    {
+      "path": "game/assets/ui/generated/wheel.png",
+      "sha256": "efb12e88eb4eca820e636b60a41dd4fc226ef3a4b4f447b29d7c7a7be9bb5705",
+      "bytes": 1279558
+    }
+  ]
+}

@@ -31,6 +31,12 @@ var _layout_root: Control
 var _hotel_status := ""
 const ThemeKit := preload("res://src/ui/jade_theme.gd")
 const Wheel := preload("res://src/ui/weapon_wheel.gd")
+const Art := preload("res://src/ui/hud_art.gd")
+const DetailedMap := preload("res://src/ui/detailed_minimap.gd")
+var _minimap_frame: TextureRect
+var _weapon_icon: TextureRect
+var _prompt_plate: Panel
+var _map_caption: Label
 var _wheel: Control
 var _wheel_open := false
 var _sensitivity: HSlider
@@ -45,7 +51,7 @@ func setup(w: WorldBuilder, p: Player, m: Mission) -> void:
 	mission = m
 	layer = 10
 	_build()
-	Events.objective_changed.connect(func(text): _objective_label.text = String(text).replace("Harbour Relay — ", ""))
+	Events.objective_changed.connect(func(text): _objective_label.text = _objective_sentence(String(text)))
 	Events.interaction_prompt.connect(func(text): _prompt_label.text = text)
 	Events.health_changed.connect(_on_health)
 	Events.ammo_changed.connect(_on_ammo)
@@ -55,7 +61,11 @@ func setup(w: WorldBuilder, p: Player, m: Mission) -> void:
 		refresh_settings()
 		set_gameplay_visible(bool(Game.settings.get("hud_visible",true))))
 	if mission:
-		_objective_label.text = mission.current_objective().replace("Harbour Relay — ", "")
+		_objective_label.text = _objective_sentence(mission.current_objective())
+
+func _objective_sentence(text: String) -> String:
+	var sentence:=text.replace("Harbour Relay — ","").strip_edges()
+	return sentence.substr(0,1).to_upper()+sentence.substr(1) if not sentence.is_empty() else ""
 
 func _build() -> void:
 	var root := Control.new()
@@ -65,33 +75,36 @@ func _build() -> void:
 	add_child(root)
 	_fit_layout()
 	get_viewport().size_changed.connect(_fit_layout)
-	_panel(root,Vector2(30,30),Vector2(370,94),ThemeKit.PANEL)
-	_panel(root,Vector2(30,42),Vector2(3,70),ThemeKit.JADE)
+	_panel(root,Vector2(26,26),Vector2(400,96),ThemeKit.PANEL)
 	_objective_tag = _mk_label(root,Vector2(48,43),11,ThemeKit.JADE)
 	_objective_tag.text = "HARBOUR RELAY"
 	_objective_label = _mk_label(root,Vector2(48,65),17,ThemeKit.TEXT)
-	_objective_label.size = Vector2(332,48)
+	_objective_label.size = Vector2(358,48)
 	_objective_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_prompt_label = _mk_label(root,Vector2(340,620),16,ThemeKit.TEXT)
+	_prompt_plate=_panel(root,Vector2(400,614),Vector2(480,42),ThemeKit.PANEL)
+	_prompt_label = _mk_label(root,Vector2(340,624),16,ThemeKit.TEXT)
 	_prompt_label.size = Vector2(600,34)
 	_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_health_bar = Control.new()
-	_health_bar.position=Vector2(30,668); _health_bar.size=Vector2(180,5)
+	_health_bar.position=Vector2(30,668); _health_bar.size=Vector2(238,5)
 	_health_bar.draw.connect(func():
-		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(180,5)),ThemeKit.PANEL)
-		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(180*Game.health_ratio(),5)),ThemeKit.JADE))
+		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(238,5)),ThemeKit.PANEL)
+		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(238*Game.health_ratio(),5)),ThemeKit.JADE))
 	root.add_child(_health_bar)
 	_health_label = _mk_label(root,Vector2(30,680),11,ThemeKit.MUTED)
 	_health_label.text = "HEALTH 100"
-	_panel(root,Vector2(1092,647),Vector2(158,57),ThemeKit.PANEL)
-	_weapon_label = _mk_label(root,Vector2(1108,653),10,ThemeKit.JADE)
+	_panel(root,Vector2(1038,647),Vector2(218,61),ThemeKit.PANEL)
+	_weapon_label = _mk_label(root,Vector2(1142,653),10,ThemeKit.JADE)
 	_weapon_label.text = "PISTOL"
-	_ammo_label = _mk_label(root,Vector2(1108,668),26,ThemeKit.TEXT)
+	_ammo_label = _mk_label(root,Vector2(1142,670),24,ThemeKit.TEXT)
 	_ammo_label.text = "12 / 96"
+	_weapon_icon=TextureRect.new();_weapon_icon.position=Vector2(1057,657);_weapon_icon.size=Vector2(72,42)
+	_weapon_icon.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;_weapon_icon.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_weapon_icon.texture=Art.texture("pistol");_weapon_icon.mouse_filter=Control.MOUSE_FILTER_IGNORE;root.add_child(_weapon_icon)
 	_wanted_label = _mk_label(root,Vector2(840,32),13,ThemeKit.AMBER)
 	_wanted_label.size=Vector2(410,34); _wanted_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
-	_stats_label = _mk_label(root,Vector2(985,419),21,ThemeKit.TEXT)
-	_stats_label.size=Vector2(265,36); _stats_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
+	_stats_label = _mk_label(root,Vector2(1057,661),21,ThemeKit.TEXT)
+	_stats_label.size=Vector2(180,36); _stats_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	_radio_label = _mk_label(root,Vector2(360,677),12,ThemeKit.MUTED)
 	_radio_label.size=Vector2(600,28); _radio_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	_debug_label = _mk_label(root,Vector2(30,134),13,ThemeKit.MUTED)
@@ -102,10 +115,13 @@ func _build() -> void:
 	root.add_child(_notifications)
 	_crosshair=Control.new(); _crosshair.size=Vector2(1280,720)
 	_crosshair.mouse_filter=Control.MOUSE_FILTER_IGNORE; _crosshair.draw.connect(_draw_crosshair); root.add_child(_crosshair)
-	_minimap=Control.new(); _minimap.position=Vector2(30,476); _minimap.size=Vector2(180,180)
-	_minimap.clip_contents=true; _minimap.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	_minimap.draw.connect(_draw_minimap); root.add_child(_minimap)
-	_wheel=Wheel.new(); _wheel.position=Vector2(1070,460); root.add_child(_wheel)
+	_minimap_frame=TextureRect.new();_minimap_frame.position=Vector2(26,416);_minimap_frame.size=Vector2(250,250)
+	_minimap_frame.texture=Art.texture("minimap");_minimap_frame.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+	_minimap_frame.mouse_filter=Control.MOUSE_FILTER_IGNORE;root.add_child(_minimap_frame)
+	_minimap=DetailedMap.new();_minimap.position=Vector2(37,427);_minimap.size=Vector2(228,228)
+	root.add_child(_minimap);_minimap.setup(world,player,mission)
+	_map_caption=_mk_label(root,Vector2(32,397),11,ThemeKit.TEXT);_map_caption.text="HERITAGE DISTRICT"
+	_wheel=Wheel.new(); _wheel.position=Vector2(1020,404); root.add_child(_wheel)
 	for child in root.get_children():
 		if child is CanvasItem: _gameplay_controls.append(child)
 	_build_pause_panel(root); _build_title_panel(root); _build_settings_panel(root)
@@ -120,7 +136,15 @@ func _fit_layout() -> void:
 func _panel(parent: Control, pos: Vector2, dimensions: Vector2, color: Color) -> Panel:
 	var panel:=Panel.new(); panel.position=pos; panel.size=dimensions
 	panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	panel.add_theme_stylebox_override("panel",ThemeKit.box(color))
+	if dimensions.x>=1200 and dimensions.y>=680:
+		var dim:=StyleBoxFlat.new();dim.bg_color=color
+		panel.add_theme_stylebox_override("panel",dim)
+	elif dimensions.x>=250 and dimensions.y>=40 and color.a>=.5:
+		panel.add_theme_stylebox_override("panel",Art.style("mission",Color(1,1,1,color.a)))
+	elif dimensions.x>=100 and color.a>=.5:
+		panel.add_theme_stylebox_override("panel",Art.style("ammo",Color(1,1,1,color.a)))
+	else:
+		panel.add_theme_stylebox_override("panel",ThemeKit.box(color))
 	parent.add_child(panel)
 	return panel
 
@@ -230,6 +254,7 @@ func _on_health(value: float, max_value: float) -> void:
 func _on_ammo(mag: int, reserve: int) -> void:
 	_ammo_label.text = "%d / %d" % [mag, reserve]
 	_weapon_label.text = Game.carried_weapon.to_upper()
+	_weapon_icon.texture=Art.texture(Game.carried_weapon)
 
 func _on_wanted(level: int) -> void:
 	_update_wanted_label()
@@ -249,7 +274,7 @@ func _on_notify(text: String, kind: String) -> void:
 	while _notifications.get_child_count()>=3:
 		var old:=_notifications.get_child(0); _notifications.remove_child(old); old.queue_free()
 	var notice:=PanelContainer.new(); notice.custom_minimum_size=Vector2(360,54)
-	var style:=ThemeKit.box(); style.border_color=ThemeKit.AMBER if kind in ["warn","bad"] else ThemeKit.LINE
+	var style:=Art.style("notification" if kind in ["warn","bad"] else "mission")
 	notice.add_theme_stylebox_override("panel",style); notice.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	_notifications.add_child(notice)
 	var label:=Label.new(); label.text=text; label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -286,6 +311,14 @@ func _process(_delta: float) -> void:
 	_update_wanted_label()
 	_crosshair.queue_redraw()
 	_minimap.visible=_hotel_status.is_empty() and bool(Game.settings.get("hud_visible",true)) and not _title_panel.visible and not _settings_panel.visible and not _pause_panel.visible
+	_minimap_frame.visible=_minimap.visible
+	_map_caption.visible=_minimap.visible
+	_map_caption.text="HERITAGE DISTRICT" if absf(player.global_position.x)<340 and player.global_position.z> -330 else "MARINA BAY"
+	var normal_hud:=not _title_panel.visible and not _pause_panel.visible and not _settings_panel.visible and bool(Game.settings.get("hud_visible",true))
+	_prompt_plate.visible=normal_hud and not _prompt_label.text.is_empty()
+	_weapon_icon.visible=normal_hud and Game.mode==Game.MODE_FOOT
+	_ammo_label.visible=_weapon_icon.visible
+	_weapon_label.visible=_weapon_icon.visible
 	if not _hotel_status.is_empty():_objective_label.text=_hotel_status
 	_minimap.queue_redraw()
 	if _debug_label.visible:
@@ -305,63 +338,6 @@ func _draw_crosshair() -> void:
 	_crosshair.draw_line(c + Vector2(0, -9), c + Vector2(0, -3), col, 2.0)
 	_crosshair.draw_line(c + Vector2(0, 3), c + Vector2(0, 9), col, 2.0)
 	_crosshair.draw_circle(c, 1.5, col)
-
-func _draw_minimap() -> void:
-	if world == null or player == null:
-		return
-	var rect := Rect2(Vector2.ZERO, _minimap.size)
-	_minimap.draw_rect(rect, Color(0.035, 0.06, 0.05, 0.92), true)
-	var centre: Vector3 = player.controlled_actor().global_position
-	var scale := 0.38
-	var to_map := func(p: Vector3) -> Vector2:
-		return Vector2((p.x - centre.x) * scale, (p.z - centre.z) * scale) + _minimap.size * 0.5
-	# Wave M (downtown-map): the Marina Bay downtown layer (land, water, plots,
-	# roads and bridges) under the district; the old bay/far-shore rects below
-	# are only drawn without it.
-	var downtown_layer := ResourceLoader.exists("res://src/world/downtown/map.gd")
-	if downtown_layer:
-		preload("res://src/world/downtown/minimap.gd").draw(_minimap, to_map, scale)
-	# roads
-	for x in WorldBuilder.X_LINES:
-		var p0: Vector2 = to_map.call(Vector3(x, 0, -340.0))
-		var p1: Vector2 = to_map.call(Vector3(x, 0, 340.0))
-		_minimap.draw_line(p0, p1, Color(0.40, 0.49, 0.44, 0.65), 2.0)
-	for z in WorldBuilder.Z_LINES:
-		var q0: Vector2 = to_map.call(Vector3(-340.0, 0, z))
-		var q1: Vector2 = to_map.call(Vector3(340.0, 0, z))
-		_minimap.draw_line(q0, q1, Color(0.40, 0.49, 0.44, 0.65), 2.0)
-	# block footprints
-	for bx in [-240.0, -80.0, 80.0, 240.0]:
-		for bz in [-240.0, -80.0, 80.0, 240.0]:
-			var centre_p := Vector3(bx, 0.0, bz)
-			var c0: Vector2 = to_map.call(centre_p - Vector3(72.0, 0.0, 72.0))
-			_minimap.draw_rect(Rect2(c0, Vector2(144.0 * scale, 144.0 * scale)), Color(0.09, 0.13, 0.11, 0.96), true)
-	# water: the whole bay out to the far shore (wave 5). A 30 m strip left the
-	# bay as bare background, so the waterfront map was half black.
-	if not downtown_layer:
-		var wrect := Rect2(to_map.call(Vector3(-900.0, 0, -633.0)), Vector2(1800.0 * scale, 284.0 * scale))
-		_minimap.draw_rect(wrect, Color(0.16, 0.31, 0.36, 0.85), true)
-		# far-shore ground (Marina Bay Sands, ArtScience, Flyer) and the promenade deck
-		_minimap.draw_rect(Rect2(to_map.call(Vector3(-480.0, 0, -863.0)), Vector2(920.0 * scale, 230.0 * scale)), Color(0.22, 0.26, 0.21, 0.9), true)
-	_minimap.draw_rect(Rect2(to_map.call(Vector3(-205.0, 0, -738.0)), Vector2(234.0 * scale, 66.0 * scale)), Color(0.55, 0.57, 0.58, 0.95), true)
-	_minimap.draw_rect(Rect2(to_map.call(Vector3(-350.0, 0, -349.0)), Vector2(700.0 * scale, 22.0 * scale)), Color(0.42, 0.42, 0.40, 0.9), true)
-	# objective marker
-	if mission:
-		var obj: Vector3 = mission.get_meta("marker", Vector3.ZERO)
-		var mp: Vector2 = to_map.call(obj)
-		_minimap.draw_circle(mp, 6.0, Color(0.35, 0.95, 0.75, 0.95))
-	# police
-	for p in get_tree().get_nodes_in_group("npcs"):
-		if p.is_police and p.state != NPC.State.DEAD:
-			_minimap.draw_circle(to_map.call(p.global_position), 3.5, Color(0.95, 0.35, 0.30, 0.95))
-	# player arrow
-	var c := _minimap.size * 0.5
-	var arrow:=PackedVector2Array()
-	for point in [Vector2(0,-7),Vector2(5,6),Vector2(0,3),Vector2(-5,6)]:
-		arrow.append(c+point.rotated(-player.controlled_actor().rotation.y))
-	_minimap.draw_colored_polygon(arrow,Color(.98,.94,.80,.98))
-	_minimap.draw_rect(rect, ThemeKit.LINE, false, 1.0)
-	_minimap.draw_string(ThemeDB.fallback_font,Vector2(9,17),"N",HORIZONTAL_ALIGNMENT_LEFT,-1,11,ThemeKit.TEXT)
 
 func set_marker(pos: Vector3) -> void:
 	_marker = pos

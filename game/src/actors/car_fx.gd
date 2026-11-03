@@ -902,15 +902,16 @@ func _update_camera(delta: float) -> void:
 	# above the road at top speed) for a lower, more cinematic chase angle
 	# with more grazing road in the lower third.
 	var height := (1.38 - 0.26 * smoothstep(0.25, 0.9, ratio)) * size_k
-	var fwd := Vector3(-sin(_cam_yaw), 0.0, -cos(_cam_yaw))
-	var cam_right := Vector3(cos(_cam_yaw), 0.0, -sin(_cam_yaw))
+	var orbit_yaw := _cam_yaw + car.camera_yaw_offset
+	var fwd := Vector3(-sin(orbit_yaw), 0.0, -cos(orbit_yaw))
+	var cam_right := Vector3(cos(orbit_yaw), 0.0, -sin(orbit_yaw))
 	# Weight swing: the camera is thrown outward in a corner and settles back.
 	var lat_target := clampf(_lat_acc * 0.022, -0.55, 0.55)
 	_cam_lat_v += ((lat_target - _cam_lat) * 18.0 - _cam_lat_v * 6.5) * delta
 	_cam_lat += _cam_lat_v * delta
 	var base := car.global_position
 	var pivot := base + Vector3(0.0, 1.25 * size_k, 0.0)
-	var desired := base - fwd * dist + cam_right * _cam_lat + Vector3(0.0, height + 0.55, 0.0)
+	var desired := base - fwd * dist * cos(car.camera_pitch_offset) + cam_right * _cam_lat + Vector3(0.0,maxf(0.45,height+0.55-sin(car.camera_pitch_offset)*dist),0.0)
 	# Keep the lens out of walls: pull in along the pivot ray.
 	var space := car.get_world_3d().direct_space_state
 	# integ-P seam: a sphere sweep instead of a thin ray, so a wall beside the
@@ -921,7 +922,7 @@ func _update_camera(delta: float) -> void:
 	sq.shape = sph
 	sq.transform = Transform3D(Basis.IDENTITY, pivot)
 	sq.motion = desired - pivot
-	sq.collision_mask = 1
+	sq.collision_mask = 1 | 8
 	sq.exclude = [car.get_rid()]
 	var frac: PackedFloat32Array = space.cast_motion(sq)
 	if frac.size() >= 1 and frac[0] < 1.0:

@@ -33,6 +33,10 @@ var _steer := 0.0
 var _wheels: Array[Node3D] = []
 var _camera: Camera3D
 var _arm: SpringArm3D
+var _collision_shape: CollisionShape3D
+var camera_yaw_offset := 0.0
+var camera_pitch_offset := 0.0
+const PedestrianSweep := preload("res://src/systems/vehicle_pedestrian_sweep.gd")
 var _body_mesh: MeshInstance3D
 var _driver: Node = null
 var _provider_root: Node3D = null
@@ -200,6 +204,7 @@ func _build() -> void:
 	shape.shape = bs
 	shape.position = Vector3(0.0, dims.y * 0.5, 0.0)
 	add_child(shape)
+	_collision_shape = shape
 
 	for child in get_children():
 		if child is MeshInstance3D:
@@ -327,9 +332,14 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.y = -0.6
 	if not _source_motion_allowed(delta): return
+	set_collision_mask_value(3,not driver_is_player)
 	_step_low_kerb(delta)
 	var before := velocity
+	var motion_start := global_transform
+	# Keep walls/cars solid. Player-driven pedestrian contacts use a damage
+	# sweep along actual travel, so an NPC cannot zero the drivetrain.
 	move_and_slide()
+	if driver_is_player: PedestrianSweep.apply(self,motion_start,before)
 	_check_impact(before)
 	_spin_wheels(delta)
 
@@ -477,6 +487,15 @@ var _crash_fx_ms := -100000
 
 func mass() -> float:
 	return float(KIND_MASS.get(kind, 1.0))
+
+func apply_look_motion(relative: Vector2, sensitivity: float, inverted: bool) -> void:
+	if not driver_is_player or Game.simulation_paused or not relative.is_finite() or not is_finite(sensitivity): return
+	camera_yaw_offset = wrapf(camera_yaw_offset-relative.x*sensitivity,-PI,PI)
+	camera_pitch_offset = clampf(camera_pitch_offset-relative.y*sensitivity*(-1.0 if inverted else 1.0),-0.95,0.32)
+
+func reset_camera_look() -> void:
+	camera_yaw_offset=0.0
+	camera_pitch_offset=0.0
 
 ## Planar velocity this car is actually moving with (shoved, driven or AI).
 func planar_velocity() -> Vector3:
@@ -829,6 +848,7 @@ func interact(player: Node) -> void:
 	player.global_position = global_position
 	_update_driver_bust()
 	_arm.rotation.y = 0.0
+	reset_camera_look()
 	_vel_yaw = rotation.y
 	_yaw_rate = 0.0
 	_grip_recover = 1.0
@@ -843,6 +863,7 @@ func interact(player: Node) -> void:
 	Events.vehicle_entered.emit(self)
 
 func force_exit() -> void:
+	set_collision_mask_value(3,true)
 	Sfx.stop_engine()
 	if driver_is_player:
 		driver_is_player = false
@@ -869,6 +890,7 @@ func exit_vehicle(player: Node) -> void:
 	driver_is_player = false
 	driver_player = null
 	_forward = 0.0
+	set_collision_mask_value(3,true)
 	velocity = Vector3.ZERO
 	if fx != null: fx.on_player_changed(false)
 	player.global_position = exit_pos

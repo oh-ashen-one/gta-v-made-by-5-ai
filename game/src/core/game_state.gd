@@ -193,6 +193,7 @@ func _setup_input_map() -> void:
 	_add_action("reload", [KEY_R])
 	_add_action("interact", [KEY_E])
 	_add_action("weapon_next", [KEY_Q])
+	_add_action("camera_recenter", [KEY_C])
 	_add_action("pause", [KEY_ESCAPE])
 	_add_action("camera_swap", [KEY_C])
 	_add_action("debug_panel", [KEY_F1])

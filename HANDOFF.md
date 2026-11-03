@@ -1,3 +1,15 @@
+## Latest playtest follow-up — generated HUD and driving, 2026-11-03
+
+Owner says the native running character looks much better; retain it. Owner rejected the code-drawn HUD weapon icons and requested production image-generated HUD art and a detailed live minimap. Mouse driving-camera movement was initially backlogged, then explicitly included. Pedestrian hits must register without stopping the player's car. Owner stopped playing and authorized immediate integration, verification and reopening when ready.
+
+Implemented: built-in image-generated weapon/wheel/panel texture atlases, live detailed north-up map with actual collider footprints/roads/bridges/trees/landmarks/vehicles/objective, mouse car-camera yaw/pitch with settings support and C recenter, and swept pedestrian contact damage along actual car travel while walls/vehicles stay solid. No change to the accepted native Mixamo runner or radio playlist.
+
+Validation: 38/38 rendered integration checks and 22/22 isolated native physics/control checks passed. Final HUD/settings/wheel/car-orbit captures were inspected. A large terrain slab initially hid map buildings; it is excluded and the corrected map was inspected. The headless fixture was corrected to initialize its input map and disable unrelated particle processing; the final log has no script errors. The game still has its historical texture-RID cleanup warning on test exit. This is targeted verification, not a new all-game regression or aesthetic acceptance claim.
+
+Read `docs/hud-driving-20261103/README.md` and its step-by-step playtest checklist. Published source remains on `codex/clear-streets-ui-radio-20261103` / draft PR #3; no main merge or public binary release is authorized.
+
+---
+
 ## Latest correction — owner rejected the runner, 2026-11-03
 
 The owner rejected the animation from `3e9356f` as non-human/melting and instructed: obtain a regular human running animation/character, adapt it for Godot, and do not open another game; notify when ready. The prior visual acceptance was wrong. The Quaternius-to-custom-rig installation is now disabled.

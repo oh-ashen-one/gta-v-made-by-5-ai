@@ -30,6 +30,10 @@ func run() -> void:
 	check("regular_traffic_one",main.traffic.cars.size()==1)
 	check("ambient_pool_four",main.traffic.ambient.vehicles.size()==4)
 	check("curbside_parking_preserved",int(main.traffic.parking_stats.road_spawned)>0)
+	check("map_has_actual_building_footprints",main.hud._minimap.footprints.size()>100)
+	check("map_excludes_terrain_slabs",main.hud._minimap.footprints.all(func(row):return row.bounds.get_area()<100000))
+	check("map_uses_large_detail_area",main.hud._minimap.size.x>=220)
+	check("generated_weapon_art_loaded",main.hud._weapon_icon.texture!=null and main.hud._weapon_icon.texture.get_width()>500)
 	await capture("02-hud-clear-streets")
 	Events.toast("Checkpoint reached. Package secured.","good")
 	await capture("03-notification")
@@ -76,6 +80,12 @@ func run() -> void:
 		await get_tree().create_timer(1.0).timeout
 		check("radio_starts_in_car",Game.mode==Game.MODE_CAR and radio.speaker.playing)
 		await capture("07-car-radio")
+		var camera_before: Vector3=car._camera.global_position
+		main.player._apply_mouse_look(Vector2(480,-110))
+		await get_tree().create_timer(.4).timeout
+		check("native_driving_camera_free_look",car._camera.global_position.distance_to(camera_before)>1.0)
+		await capture("07b-car-camera-orbit")
+		car.reset_camera_look()
 		main._toggle_pause()
 		await get_tree().create_timer(.15).timeout
 		check("radio_pauses_with_game",radio.speaker.stream_paused)

@@ -331,6 +331,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("walk_toggle"):
 		_walk_toggle = not _walk_toggle
+	if event.is_action_pressed("camera_recenter") and current_vehicle is Car:
+		(current_vehicle as Car).reset_camera_look()
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		_apply_mouse_look((event as InputEventMouseMotion).relative)
 	# Preserve rapid native press/release events even when a slow frame ends
@@ -347,6 +349,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func _apply_mouse_look(relative: Vector2) -> void:
 	var sens: float = MOUSE_SENS * float(Game.settings.get("mouse_sensitivity", 1.0))
 	var inverted := bool(Game.settings.get("invert_y", false))
+	if current_vehicle is Car:
+		(current_vehicle as Car).apply_look_motion(relative,sens,inverted)
+		return
 	if current_vehicle is Helicopter:
 		(current_vehicle as Helicopter).apply_look_motion(relative, sens, inverted)
 		return
