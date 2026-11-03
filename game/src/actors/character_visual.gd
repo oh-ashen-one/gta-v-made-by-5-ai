@@ -56,6 +56,8 @@ const START_PHASE := {"walk": 0.55, "aim_walk": 0.55, "run": 0.24, "aim_run": 0.
 var foot_lock: FootLockModifier
 const ASSET_VERSION := "_v2"
 var gait_v2 := false
+var native_human := false
+const NATIVE_HUMAN := "res://assets/providers/mixamo_josh/player_native.glb"
 var motion: CharacterMotionModifier
 var stride_amp := 1.0
 var walk_arm := 0.0
@@ -81,6 +83,7 @@ static func available(role: String = "player") -> bool:
 
 ## Locomotion v2 exports sit beside the v1 provider files (never overwrite them).
 static func asset_path(role: String) -> String:
+	if role == "player" and ResourceLoader.exists(NATIVE_HUMAN): return NATIVE_HUMAN
 	if role == "player" and ResourceLoader.exists(PROVIDER_DIR + role + "_rigged" + PLAYER_ASSET_VERSION + ".glb"):
 		return PROVIDER_DIR + role + "_rigged" + PLAYER_ASSET_VERSION + ".glb"
 	var v2 := PROVIDER_DIR + role + "_rigged" + ASSET_VERSION + ".glb"
@@ -107,6 +110,8 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		push_warning("Character import has no skeleton/animation player: " + role)
 		model.queue_free()
 		return false
+	if role == "player" and asset_path(role) == NATIVE_HUMAN:
+		return _configure_native_human()
 	for full_name in animator.get_animation_list():
 		var key := String(full_name).get_slice("/", String(full_name).get_slice_count("/") - 1)
 		key = key.get_slice("|", key.get_slice_count("|") - 1)
@@ -116,8 +121,8 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		var clip := animator.get_animation(full_name)
 		clip.loop_mode = Animation.LOOP_LINEAR if key in LOOP_CLIPS else Animation.LOOP_NONE
 	animator.animation_finished.connect(_on_animation_finished)
-	if role == "player" and not ("--legacy-locomotion" in OS.get_cmdline_user_args()):
-		_install_sourced_locomotion()
+	# The earlier custom-rig retarget was rejected by the owner. It is never
+	# installed automatically, including when private replacement media is absent.
 	# Characters T1: weight-shifted idle (baked once into the shared clip, plus
 	# a mirrored copy for half the crowd) and adult head proportions.
 	if not ("--legacy-idle" in OS.get_cmdline_user_args()): # QA A/B switch
@@ -191,13 +196,32 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		hands.setup(skeleton, Color(sc.x, sc.y, sc.z).linear_to_srgb())
 	return true
 
-func _install_sourced_locomotion() -> void:
-	var library := load("res://assets/animations/quaternius/player_locomotion.tres") as AnimationLibrary
-	if library == null: return
-	animator.add_animation_library("sourced",library)
-	for key in ["walk","run","sprint"]:
-		_clips[key]="sourced/"+key
-	gait_v2=true
+func _configure_native_human() -> bool:
+	# Keep the artist-authored mesh, skin weights and native motion together.
+	# Do not rebuild the mesh or stack the old custom-rig modifiers on it.
+	native_human = true
+	model.rotation.y = PI
+	for full_name in animator.get_animation_list():
+		var key := String(full_name).get_file().get_slice("|",String(full_name).get_slice_count("|")-1)
+		_clips[key] = String(full_name)
+		animator.get_animation(full_name).loop_mode = Animation.LOOP_LINEAR if key in LOOP_CLIPS else Animation.LOOP_NONE
+	for required in ["idle","walk","run","sprint"]:
+		if not _clips.has(required):
+			push_error("Native human is missing animation: "+required)
+			return false
+	gait_v2 = true
+	animator.animation_finished.connect(_on_animation_finished)
+	for mesh_node in model.find_children("*","MeshInstance3D",true,false):
+		(mesh_node as MeshInstance3D).layers = 1 | PLAYER_LIGHT_LAYER
+	weapon_socket = BoneAttachment3D.new()
+	weapon_socket.name = "WeaponSocket"
+	weapon_socket.bone_name = "hand.r"
+	_hand_bone = skeleton.find_bone("hand.r")
+	skeleton.add_child(weapon_socket)
+	_build_contact_shadows()
+	loaded = true
+	_play("idle",0.0)
+	return true
 
 func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloading: bool = false) -> void:
 	_last_speed = speed
@@ -393,7 +417,7 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 		weapon_socket.add_child(weapon)
 	_weapon_node = weapon
 	_weapon_kind = weapon_kind
-	AimIkLayer.ensure(self) # combat piece: aim/reload upper-body layer
+	if not native_human: AimIkLayer.ensure(self)
 	if asset_role != "player":
 		for mesh_node in weapon.find_children("*", "MeshInstance3D", true, false):
 			(mesh_node as MeshInstance3D).visibility_range_end = NPC_DRAW_RANGE
@@ -402,6 +426,12 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 	# on the body's forward axis while its grip follows the animated wrist.
 	weapon.position = Vector3(0.0, 0.055, -0.012)
 	weapon.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+	if native_human:
+		# FBX retains its centimetre armature node. Compensate attachments,
+		# without rescaling the skeleton or changing its animation channels.
+		var socket_scale := weapon_socket.global_transform.basis.get_scale().abs()
+		weapon.scale = Vector3.ONE / socket_scale
+		weapon.position /= socket_scale
 	if hands != null:
 		weapon.transform = CharacterHands.weapon_transform(weapon_kind)
 		hands.fit_weapon(weapon, weapon_kind)

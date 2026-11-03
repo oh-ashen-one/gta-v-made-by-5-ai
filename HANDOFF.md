@@ -1,3 +1,11 @@
+## Latest correction — owner rejected the runner, 2026-11-03
+
+The owner rejected the animation from `3e9356f` as non-human/melting and instructed: obtain a regular human running animation/character, adapt it for Godot, and do not open another game; notify when ready. The prior visual acceptance was wrong. The Quaternius-to-custom-rig installation is now disabled.
+
+Replacement: Adobe Mixamo Josh with original 65-bone rig, skin weights and native clips. Player-only initialization bypasses the old rebuilt look mesh and body/foot/hand/aim/skeleton-recoil deformation layers. Native GLB/media stay private in the ignored provider folder; reproducible conversion, acquisition/rights notes, asset-only checks and preview tooling are versioned. Read `docs/native-human-20261103/README.md` first. No new playable game was opened during this correction; only CPU conversion/import, an isolated headless asset check and a browser asset preview were used. Full gameplay/weapon-grip validation remains owner-led at the next requested launch.
+
+---
+
 ## Current owner playtest pass — 2026-11-03
 
 Branch: `codex/clear-streets-ui-radio-20261103`, from `Astra-6-singapore-fidelity` at `fa4cb224c550c6fd2f4925d8cb3b85e1028e156b`. This session restored source and 217 runtime-provider files from the private relay backup after the old checkout/build paths proved absent. Runtime uses installed Godot 4.7.1.

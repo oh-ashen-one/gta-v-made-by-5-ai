@@ -1,3 +1,5 @@
+> **Superseded animation finding, 2026-11-03:** The owner rejected the runner shown by this pass. See `../native-human-20261103/README.md` for the native Mixamo replacement. Prior UI/radio checks remain historical component evidence, not approval of the rejected motion or new full-game validation.
+
 # Clear streets and Jade UI — 2026-11-03
 
 Owner request: mostly empty streets with curbside parking and only a few moving cars; three generated UI variations, select the best and implement the HUD/settings/notifications and a bottom-right weapon wheel; source better running animations; five varied Suno songs shuffled automatically in cars.

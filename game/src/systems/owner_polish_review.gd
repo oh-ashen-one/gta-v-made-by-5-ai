@@ -95,7 +95,7 @@ func run() -> void:
 	main.hud.set_paused(false)
 	var visual: Node=main.player._visual
 	visual.ignore_simulation_pause=true
-	check("sourced_run_installed",String(visual._clips.get("run","")).begins_with("sourced/"))
+	check("native_human_installed",visual.native_human and visual.skeleton.get_bone_count()==65)
 	for gait in ["walk","run","sprint"]:
 		visual._play(gait,0.0)
 		visual.animator.seek(.18,true)

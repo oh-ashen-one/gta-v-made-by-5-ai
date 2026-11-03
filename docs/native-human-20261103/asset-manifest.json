@@ -1,0 +1,160 @@
+{
+  "character": "Adobe Mixamo Josh",
+  "asset_path": "game/assets/providers/mixamo_josh/player_native.glb",
+  "sha256": "90a570b2643019e4b94579fd1f1f92a3293044ce32d172aeb3d3489e41f06198",
+  "bytes": 48880648,
+  "bones": 65,
+  "mesh_vertices": 30535,
+  "source_hashes": {
+    "left strafe walking.fbx": "72a5be62e021596e7165b5b48a49b259c1f7f189d487ce73a213c8e8b88ea411",
+    "left turn 90.fbx": "45f40ddb6f655f9958cbad9a0f2a3a3dd27554ba2946774124d576f1e0d2725a",
+    "jump.fbx": "0260f18a553afe4100cf4b642a7215176cf0646bd5840c85883999b2621766da",
+    "right strafe walking.fbx": "b1ee1d26559e16366e9bbe131cba7d0fdf100bd6dc4737db4ad74e10073603b7",
+    "Sitting Idle.fbx": "61a2bc413d9e79369d9db9bf726acebd04892296461648d639d4b163b2780eb7",
+    "right turn 90.fbx": "43be53306abccd7bd2dd33b40276ce232a38deae59dda6feddea2013aa9c35d8",
+    "idle.fbx": "a7e01684394b861e29e5103bf7aad5a79d05eaaa8f76bd74826ab5ecb67f7af8",
+    "walking.fbx": "ab500b54ab9d5904c542c9c92038e5ac31b8f8c53c198c9f985dbe506806ecb1",
+    "run.fbx": "95102846df4a4b88a3adb1749e12fd7567c94e4380b81f974cf65b265753a731",
+    "right strafe.fbx": "fdc3c81bad6865474b92f286fa98834440e8ca29d8708e0f3efcf8a26c125c01",
+    "right turn.fbx": "82c2782f880da66c38fbfb4eda548a6dcebab0770d45e6bb4c3cc99162973354",
+    "left strafe.fbx": "801041bac2dbffe01a01432e04f4a9945615dcd58ded89dc6f78dca9866cd1ae",
+    "left turn.fbx": "cdf3568d610c30ae8856fa5c5d5a60afec5507dd323ef19add700dbbc334ea17",
+    "running.fbx": "0518c642279156a2e1cd6a5a995d7a7b2ef2769f107ff4edb7b7ee0153159e73",
+    "pistol/pistol walk arc.fbx": "cc2c9644a431ba41c016d8c0794a29ea71c08f37ec69f324a3b8c1be6ab1a5a3",
+    "pistol/pistol walk backward arc (2).fbx": "ab2123a55bac6a225d52dc32494f6644d95cddbefa99cc389768e2ebcf10b9de",
+    "pistol/pistol walk arc (2).fbx": "fd78629520cbfb83e3fde7f8ff10acc098204dacf95d89a51b9898e3ef29a630",
+    "pistol/pistol walk.fbx": "ba7a7c982972284438b1f515ce6671019ac4f6cb3cfb8f5458caf10b2dc9fd49",
+    "pistol/pistol run backward arc (2).fbx": "7f6e2e45f9d83df0155229113caab0de9c2d60d186eb16c17ca86e63de75aede",
+    "pistol/pistol stand to kneel.fbx": "13f3f7f5be24dce06cbb1e9f9807b46f599c148a7ad98c985b8e8c27d004b71a",
+    "pistol/pistol strafe (2).fbx": "998cd199f8e5db60052bc0bd2d7139584124a3ce8a9247162f19707f0673ce5e",
+    "pistol/pistol strafe.fbx": "8eb71609f1a78096653c9acb767b9c4e80f68c1f8cac2c90dec4cad80348271d",
+    "pistol/pistol walk backward.fbx": "b727081ca306db21b159b0208f6a62c36bc21da6246aae9aa687e50a747ad3d3",
+    "pistol/pistol run backward arc.fbx": "9ade10dd883c5292fccdefef74da0a2904938bf33c81c54e6032d440baf7dae0",
+    "pistol/pistol run.fbx": "25f9edc9548424e707445c8c51bfc318aa1881ed148637fe44da9c4406300154",
+    "pistol/pistol kneeling idle.fbx": "89d768c2524d6d0c9fe4d66ea4c9033b63e64360a0ca9603ba89ca5d075c3efe",
+    "pistol/pistol jump (2).fbx": "27539b4b80c2d2cad29769ab51d03b6488a53cdd7590a21e0055799e8c71d603",
+    "pistol/pistol run arc.fbx": "0bd2338c5d680a69ee06999fd60ae5c5d10af63ff84aebae470517570dbe1ad0",
+    "pistol/pistol jump.fbx": "6c753817f2235d2875a18a4e7441a2b7532f99db1214f00fe7e6520a37549db4",
+    "pistol/pistol run backward.fbx": "323326a2e86948d4832aca2fb4bc829626f5c81ad3f4a5ea334df700eb88b89a",
+    "pistol/pistol run arc (2).fbx": "02d31865a83b8329abb5b24f69b4d91138466c0f9d6b64c846c8760cd756d673",
+    "pistol/pistol walk backward arc.fbx": "f802438424280d6d45e15c04f2fd762cff20eb9f124b1226e36cb97dc4a648be",
+    "pistol/pistol idle.fbx": "20e5fce6afc68d01d80fd7112054629585566b9a29544f6c8a3df6428b60cf2a",
+    "pistol/pistol kneel to stand.fbx": "58604b2cff6a0841da14d1c0c11e2590ed97b5604afbfc2f15ebc50a45a327ac",
+    "shooter/strafe right.fbx": "36adc6445c4abc716c9253fe4037d8c514b6605295fbe8266d4df7ef8bb47ab5",
+    "shooter/hit reaction.fbx": "01d301ea10d087612452d4fd8ccd6a8fd97cb35dfb8a61c5978c63fb91763da4",
+    "shooter/run backwards.fbx": "c65450647f4d70140bc5e1fe0493e78483df42dd524165c012f0b0582119a29f",
+    "shooter/turn left.fbx": "a8af0aab630698d5ec0b5a10cf4547c950fdb66e9fa9ef59772443f355621d3e",
+    "shooter/rifle aiming idle.fbx": "a60226f5369091b2e072c7e24788c2881259a47670a06e3929797ac638270d9a",
+    "shooter/toss grenade.fbx": "9b7b6c5674d691bb64b474cbc73604e07eaafc80240512f6eb23b22eaa576376",
+    "shooter/reloading.fbx": "160f3ac55903a7fc2fe67d7e2918272b915ac7e9f88986e17dc4c48d545cf7a6",
+    "shooter/turning right 45 degrees.fbx": "bfdedc62ce2a376722308eed1d7e9ff0656dddee77ada4f1a221a13ab86791a4",
+    "shooter/walking backwards.fbx": "cfd57c22d1171b7ae705e2a6abac1d9916dd057fed137eb3d18e3b7e2fde43c2",
+    "shooter/strafe left.fbx": "d9231d4ec732b8f938a756762212dc4ec2b5cbc2b55fcd4bf191bcf987aa4701",
+    "shooter/firing rifle.fbx": "3fb1a1d8441f63b2bba11fecb13baf4cb4ed7b09a866f16cd6e9ea17235fc899",
+    "shooter/walking.fbx": "d9be63c5da5a76740f1ee29f9865aa9b64116665fda61b140b35566801dac183",
+    "shooter/strafe (2).fbx": "51ee9c6a2c7c4d3540643a74b9adf7067d79244d886d43bb41ded43497c689f1",
+    "shooter/strafe.fbx": "3605d0579d3c3e62ae0af751c3d7fc5200d490818db559e9e326b5802f703184",
+    "shooter/rifle run.fbx": "03dc6bc8271b160ba74400c622ae3cdd5878221b06eb8aa3f3b7d7da2d7330ae",
+    "shooter/rifle jump.fbx": "b77280641e7993f8f80dfe6da9f5f9022bf7597cc378228693df09ae18d4889a"
+  },
+  "clips": {
+    "run": {
+      "frames": [
+        1.0,
+        25.0
+      ],
+      "seconds": 0.8
+    },
+    "idle": {
+      "frames": [
+        1.0,
+        251.0
+      ],
+      "seconds": 8.333333333333334
+    },
+    "walk": {
+      "frames": [
+        1.0,
+        32.0
+      ],
+      "seconds": 1.0333333333333334
+    },
+    "sprint": {
+      "frames": [
+        1.0,
+        22.0
+      ],
+      "seconds": 0.7
+    },
+    "jump": {
+      "frames": [
+        1.0,
+        66.0
+      ],
+      "seconds": 2.1666666666666665
+    },
+    "seated": {
+      "frames": [
+        1.0,
+        193.0
+      ],
+      "seconds": 6.4
+    },
+    "drive": {
+      "frames": [
+        1.0,
+        193.0
+      ],
+      "seconds": 6.4
+    },
+    "reload": {
+      "frames": [
+        1.0,
+        100.0
+      ],
+      "seconds": 3.3
+    },
+    "hit": {
+      "frames": [
+        1.0,
+        14.0
+      ],
+      "seconds": 0.43333333333333335
+    },
+    "aim": {
+      "frames": [
+        1.0,
+        41.0
+      ],
+      "seconds": 1.3333333333333333
+    },
+    "aim_walk": {
+      "frames": [
+        1.0,
+        25.0
+      ],
+      "seconds": 0.8
+    },
+    "aim_run": {
+      "frames": [
+        1.0,
+        16.0
+      ],
+      "seconds": 0.5
+    },
+    "aim_back": {
+      "frames": [
+        1.0,
+        32.0
+      ],
+      "seconds": 1.0333333333333334
+    }
+  },
+  "raw_asset_redistribution": "not included in public source",
+  "validation": {
+    "headless_asset_checks": 100,
+    "passed": true,
+    "new_game_launched": false,
+    "visual_review": "actual exported run inspected in local asset viewer from front, side and rear; no full gameplay run"
+  }
+}
