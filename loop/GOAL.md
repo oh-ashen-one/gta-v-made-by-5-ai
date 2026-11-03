@@ -1,9 +1,11 @@
 # /loop goal — Singapore Open World: "Opus 5.5 enhancements"
 
+Privacy note: Machine-specific home-directory prefixes are shown as `$HOME`; use the appropriate configured paths on other machines.
+
 ## Baseline: continue, never restart
 Do NOT start a new project. Enhance the existing Godot game ("Orchard Reach") in this repository.
 - Working folder (Mac Studio `studio`, Mac15,14 M3 Ultra 256 GB):
-  `/Users/midir/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus`
+  `$HOME/Documents/Codex/2026-10-21/https-github-com-oh-ashen-one/work/wave-05-opus`
   It holds the full game, including the git-ignored private provider assets (`game/assets/providers/`,
   `art/source/characters/`, `art/source/helicopter/`, `art/provider-sources/`). Never delete or overwrite them.
 - Branch `Opus-5.5-enhancements`, cut from `main` @ `2c66caa` (all five relay waves). Commit often; push

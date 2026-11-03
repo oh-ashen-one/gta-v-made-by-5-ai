@@ -1,5 +1,7 @@
 # Orchard Reach — Opus 5.5 enhancement loop (rolling handoff)
 
+Privacy note: Machine-specific home-directory prefixes are shown as `$HOME`; use the appropriate configured paths on other machines.
+
 ## Milestones
 - **Week 1 DONE as of 2026-10-23T21:13:30Z** (owner, 2026-10-23). Final state: `main` @ `639ef5c` (git tag `week-1`), build
   `~/Builds/OrchardReach-639ef5c.zip` on the Studio. Covers the five-AI relay waves 1-5 and Opus 5.5 runs 1-2 (waves P-T,
@@ -119,7 +121,7 @@ bash loop/render.sh <label> 600 /private/tmp/opus55/<you>/route -- -- --capture 
 - **Wave-M integration** (2026-10-23 ~11:45Z, game code `996e35c`): street-life, nearfield R1+R2b, characters R2 (player look mesh); 234/234; route 13/13 headless and rendered; rendered p95 47.7 ms, load 13.6 s.
 - **Wave-M downtown pre-integration** (2026-10-23 ~10:40Z, game code `5c30e70`): downtown map, landmarks and blocks merged
   with seam fixes; 203/203; route 13/13 headless and rendered; owner asks (drive the loop, walk onto the Marina Bay side,
-  land downtown and get out) PASS headless, heli also rendered. Package `/Users/midir/Builds/OrchardReach-5c30e70.zip`.
+  land downtown and get out) PASS headless, heli also rendered. Package `$HOME/Builds/OrchardReach-5c30e70.zip`.
 - **Wave Q integration** (2026-10-23 ~02:50Z, `359fa91`): driving Q2, combat, locomotion merged; 164/164; rendered p95 20.5 ms.
 - **Wave P integration** (2026-10-22 ~20:50Z, `acffbe0`): locomotion, combat, driving, helicopter; rendered p95 19.9 ms.
 - **Run 1 final integration C** (2026-10-22 ~11:45Z, `32e08ba`): water, skyline, lighting, materials, on-foot, helicopter,

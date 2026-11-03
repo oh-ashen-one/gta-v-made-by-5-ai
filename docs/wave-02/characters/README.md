@@ -1,5 +1,7 @@
 # Wave 2 character rig work
 
+Privacy note: Machine-specific home-directory prefixes are shown as `$HOME`; use the appropriate configured paths on other machines.
+
 Author: current GPT-6 Astra subagent through the actual Codex tools. This is source and asset preparation evidence; gameplay acceptance is recorded by the main wave agent.
 
 ## Source and scope
@@ -57,6 +59,6 @@ visual.set_seated(false) # stand on panic / resume locomotion
 - **Still pending after the latest asset changes:** repeated rendered sleeve/shoe inspection, seated/driver placement, full locomotion transitions, hit/death/respawn during gameplay, camera occlusion and population performance. The root wave agent owns these checks.
 - **Open quality gaps:** procedural authored gait rather than mocap; no runtime foot-placement IK; no facial articulation and only one curl bone per hand; limited body/outfit diversity; grip and shoulder deformation still need actual engine inspection. These assets improve the primitive avatar but do not meet the GTA VI fidelity target.
 - **Rights remain unverified:** the source player has visible generated sneaker marks. The new player/civilian derivative replaces only low shoe surfaces with original charcoal textile and plain rubber materials, disconnecting their inherited logo normal map. The original meshes/UVs/source files remain intact. This cleanup needs repeated rendered inspection and does not certify the whole asset. The officer retains generated uniform/badge/text details. No public binary redistribution is authorized or claimed.
-- **Blender safety:** default sandboxed Blender 5.2 crashed once during Metal capability probing before Python. A controlled, escalated CPU-only run with installed `/Users/midir/Applications/Blender-4.5.11.app/Contents/MacOS/Blender` succeeded. No second 5.2 launch was attempted, and no renderer/listener was started by this lane.
+- **Blender safety:** default sandboxed Blender 5.2 crashed once during Metal capability probing before Python. A controlled, escalated CPU-only run with installed `$HOME/Applications/Blender-4.5.11.app/Contents/MacOS/Blender` succeeded. No second 5.2 launch was attempted, and no renderer/listener was started by this lane.
 
 The seated clips place the pelvis approximately 0.45 m above the visual origin. For a cushion at height h, place the visual origin at h minus 0.45 m. This is a visual pose; the NPC controller still owns its state and must call `set_seated(false)` before fleeing. Use `ignore_simulation_pause = true` only in explicit pose fixtures; ordinary character animation freezes with `Game.simulation_paused`.
