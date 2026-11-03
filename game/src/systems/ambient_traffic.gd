@@ -1,18 +1,9 @@
 class_name AmbientTraffic
 extends Node3D
-## Bounded, camera-centred civilian traffic with room for free driving.
-##
-## Critic 5: "In 06_driving the boulevard has zero traffic ... it reads as a
-## test map." Twenty-six physics cars spread over a 640 m grid leave any one
-## street empty. This system keeps a pool of lightweight AmbientVehicles on the
-## left-hand lane graph *around the active camera* (the way open-world games
-## stream traffic): two lanes each way, car following, red-light queues, left
-## and straight turns through junctions, braking for people and other cars.
-## Vehicles that fall far behind the camera are re-seeded ahead of it, out of
-## view, so the street the player is looking at is always busy.
-
-## Owner free-driving pass: 57% fewer lane cars than the 112-car wave-T pool.
-const POOL := 48
+## Sparse civilian traffic: four camera-area cars, in addition to the single
+## regular AI car. Curbside parking lives in TrafficManager and is preserved.
+## Owner 2026-11-03 prioritizes open driving lanes over a busy street lens.
+const POOL := 4
 const DtBridges := preload("res://src/world/downtown/bridges.gd")
 const Rules := preload("res://src/systems/traffic_rules.gd")
 const LANE_OFFSETS: Array[float] = [4.6, 2.3]   # kerb lane (slow), median lane
@@ -20,7 +11,7 @@ const ENTRY := 11.0      # lane starts this far past a junction centre
 const STOP := 12.0       # stop line this far before the next junction centre
 const SPAWN_RADIUS := 175.0
 const DESPAWN_RADIUS := 245.0
-const MIN_GAP := 8.0
+const MIN_GAP := 24.0
 const ACCEL := 2.6
 const DECEL := 6.5
 const CELL := 16.0
@@ -738,7 +729,7 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 			var hi2 := minf(hi, along + SPAWN_RADIUS)
 			if hi2 > lo2:
 				s = _rng.randf_range(lo2, hi2)
-		var lane := _lane_for(e, 0 if _rng.randf() < 0.55 else 1)
+		var lane := _lane_for(e, 0)
 		var p := lane_point(e, lane, s)
 		var dist := Vector2(p.x - _focus.x, p.z - _focus.z).length()
 		# Bias towards the near field and towards what the camera faces.
@@ -770,6 +761,14 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 			p = lane_point(e, lane, s)
 			if _in_player_path(p, lane_point(e, lane, s + 1.0) - p, 140.0) or not _gap_free(e, lane, s):
 				continue
+		# Free-driving brief: do not seed parallel rows on neighbouring lanes.
+		# This is a spatial check across edges/directions, not just one lane.
+		var crowded := false
+		for other in vehicles:
+			if other != v and other.active and other.global_position.distance_to(p) < 65.0:
+				crowded = true
+				break
+		if crowded: continue
 		_place(v, e, lane, s)
 		return true
 	return false
@@ -778,7 +777,7 @@ func _seed_vehicle(v: AmbientVehicle, hidden_only: bool) -> bool:
 ## time. Concentrating the pool near the focus (near-edge seeding) otherwise
 ## packed short downtown links and district approaches solid, and most of
 ## the street stood in queues instead of flowing.
-const LANE_SPACING := 26.0
+const LANE_SPACING := 80.0
 ## The same lane occupancy budget applies on camera cuts and during driving.
 ## A new view must not refill short streets with bumper-to-bumper queues.
 func _gap_free(e: int, lane: int, s: float) -> bool:

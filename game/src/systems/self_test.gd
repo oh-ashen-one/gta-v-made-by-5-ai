@@ -1410,7 +1410,7 @@ func _street_life_checks(player: Player, traffic: TrafficManager) -> void:
 		player.camera.current = true
 	await _ticks(12)
 	var near := amb.count_near(amb._focus, AmbientTraffic.SPAWN_RADIUS + 5.0)
-	_check("camera-centred lane traffic stays present within the free-driving budget", near >= 8 and near <= 48, "%d within %d m of %s" % [near, int(AmbientTraffic.SPAWN_RADIUS), amb._focus.round()])
+	_check("mostly empty streets retain at most four ambient cars", near >= 1 and near <= 4, "%d within %d m of %s" % [near, int(AmbientTraffic.SPAWN_RADIUS), amb._focus.round()])
 	var wrong := 0
 	var checked := 0
 	for v in amb.vehicles:
@@ -1421,7 +1421,7 @@ func _street_life_checks(player: Player, traffic: TrafficManager) -> void:
 		checked += 1
 		if lateral < 1.0 or lateral > 5.5:
 			wrong += 1
-	_check("ambient traffic keeps to the left-hand lanes", checked > 20 and wrong == 0, "%d/%d off-lane" % [wrong, checked])
+	_check("ambient traffic keeps to the left-hand lanes", checked >= 1 and wrong == 0, "%d/%d off-lane" % [wrong, checked])
 	var before := {}
 	for v in amb.vehicles:
 		if v.active:
@@ -1439,7 +1439,7 @@ func _street_life_checks(player: Player, traffic: TrafficManager) -> void:
 	for v in amb.vehicles:
 		if v.active and v.speed < 0.6 and v.s > AmbientTraffic.ENTRY:
 			held += 1
-	_check("ambient traffic flows and queues", total > 20 and moved >= int(total * 0.35) and held >= 1, "%d/%d moved, %d holding %s" % [moved, total, held, amb.hold_reasons()])
+	_check("sparse ambient traffic continues moving", total >= 1 and moved >= 1, "%d/%d moved, %d holding %s" % [moved, total, held, amb.hold_reasons()])
 	preload("res://src/systems/downtown_tests/traffic_flow_test.gd").run(self, amb)
 	var overlaps := 0
 	for i in amb.vehicles.size():

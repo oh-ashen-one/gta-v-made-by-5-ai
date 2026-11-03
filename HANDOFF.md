@@ -1,3 +1,17 @@
+## Current owner playtest pass — 2026-11-03
+
+Branch: `codex/clear-streets-ui-radio-20261103`, from `Astra-6-singapore-fidelity` at `fa4cb224c550c6fd2f4925d8cb3b85e1028e156b`. This session restored source and 217 runtime-provider files from the private relay backup after the old checkout/build paths proved absent. Runtime uses installed Godot 4.7.1.
+
+The owner explicitly requested simultaneous Orchard Reach and Markhor play on 2026-11-03; leave Markhor and other foreign processes alone. This supersedes the older October no-launch cutoff for this requested playtest, not for unattended loops. Keep the current shared GPU guard, 60 fps cap (30 for review), stream/pause/headroom checks and owned-process shutdown. The old project-specific recovery gate still encodes a one-renderer rule and counts resident encoder services; the owner explicitly authorized running both games. Current launches use the installed shared guard.
+
+Implemented: four ambient + one regular civilian moving car, curbside parking preserved; native Jade HUD/settings/notifications and bottom-right hold-Tab weapon wheel; CC0 Quaternius walk/jog/sprint retargeted to the player's existing rig; five original Suno instrumentals downloaded through the signed-in Pro account and installed for automatic shuffled car radio. Raw Suno/provider files remain private and ignored; restore the MP3s using `docs/RADIO.md` and the versioned track manifest. No main merge or public binary release.
+
+Evidence: all 32 checks in `docs/ui-20261103/verification.json` passed in a rendered 1280×720/30-fps run, including real car entry, radio pause/toggle/exit and preference load. Game-only HUD/settings/wheel/motion captures were inspected. This does not establish owner acceptance of running feel, music taste, full-city fidelity or the complete hotel. See `docs/OWNER_BACKLOG.md` for these boundaries and `docs/ui-20261103/README.md` for source/licensing/controls.
+
+Broader regression: **288/294 passed**, both with sourced motion enabled and with `--legacy-locomotion`; the same six checks fail in each run. These are the absent older jump/land/stop/backpedal/skid/idle features and offline player/civilian look bakes. See `docs/ui-20261103/regression-comparison.json`. Do not claim the whole suite or full game is accepted.
+
+---
+
 > **LATEST — MBS CITY CONNECTION, 2026-10-29:** The owner reauthorized a narrow offline integration: remove the preview menu and enter MBS from the actual city. Read `loop/singapore-fidelity/city-hotel-connection/README.md` and its delivery receipt. Main-game doorway/lift transitions are implemented in source; native validation remains explicitly prohibited/deferred. No game/engine/GPU launch or automatic retry. Older preview-only and stop-all-implementation notes below are superseded only for this bounded connection.
 
 > **LATEST OWNER CUTOFF — 2026-10-29:** Read `loop/singapore-fidelity/OWNER_CUTOFF.md` first. All remaining workers are stopped. Package the bounded milestone and stop expansion. The owner explicitly prohibits game/engine/GPU launches now. Full geographic city and complete hotel remain unfinished; older "keep active" instructions below are historical and superseded. No automatic new loop.

@@ -1,0 +1,28 @@
+{
+  "updated": {
+    "passed": 288,
+    "total": 294,
+    "timed_out": false,
+    "failures": [
+      "on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows",
+      "locomotion-Q: planted-foot lock (leg IK) on the player; aimed backpedal is its own clip played forward, plus a skid clip",
+      "locomotion-Q: a sharp 180 at a sprint plants a skid, then pivots",
+      "characters-R: player look mesh is baked offline and matches a fresh build (no runtime rebuild at load)",
+      "characters-S: the civilian look mesh is baked offline (crowd load needs no runtime rebuild)",
+      "characters-T: weight-shifted idle (pelvis over one leg, one soft knee, both soles planted, mirrored idle_b)"
+    ]
+  },
+  "legacy-motion": {
+    "passed": 288,
+    "total": 294,
+    "timed_out": false,
+    "failures": [
+      "on-foot gait: walk/run/sprint are distinct authored cycles at 0.85-1.2x rate, jump/land/stop clips exist; feet carry contact shadows",
+      "locomotion-Q: planted-foot lock (leg IK) on the player; aimed backpedal is its own clip played forward, plus a skid clip",
+      "locomotion-Q: a sharp 180 at a sprint plants a skid, then pivots",
+      "characters-R: player look mesh is baked offline and matches a fresh build (no runtime rebuild at load)",
+      "characters-S: the civilian look mesh is baked offline (crowd load needs no runtime rebuild)",
+      "characters-T: weight-shifted idle (pelvis over one leg, one soft knee, both soles planted, mirrored idle_b)"
+    ]
+  }
+}

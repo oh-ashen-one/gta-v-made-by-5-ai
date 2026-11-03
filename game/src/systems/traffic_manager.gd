@@ -7,7 +7,7 @@ const LANE_OFFSET := 4.6        # kerb-lane centre, 4.6 m LEFT of the road centr
 const PED_COUNT := 140
 const FOCUSED_PED_COUNT := 58
 const DINER_COUNT := 45
-const TRAFFIC_COUNT := 7
+const TRAFFIC_COUNT := 1
 const OPENING_PARKING_RADIUS := 45.0
 const POLICE_SPAWN_DISTANCE := 55.0
 

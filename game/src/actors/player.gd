@@ -910,8 +910,7 @@ func _process(_delta: float) -> void:
 	if _consume_press("reload"):
 		_start_reload()
 	if _consume_press("weapon_next"):
-		Game.switch_weapon("smg" if Game.carried_weapon == "pistol" else "pistol")
-		_update_weapon_mesh()
+		equip_weapon("smg" if Game.carried_weapon == "pistol" else "pistol")
 	if _consume_press("interact"):
 		_try_interact()
 	_update_prompt()
@@ -1038,3 +1037,11 @@ func _on_state_restored() -> void:
 	_press_armed.clear()
 	_update_weapon_mesh()
 	if _visual != null and _visual.loaded: _visual.reset_alive()
+
+func equip_weapon(weapon_id: String) -> void:
+	if not Game.ammo.has(weapon_id) or weapon_id==Game.carried_weapon: return
+	_reloading=false
+	_reload_timer=0.0
+	_press_queue.clear()
+	Game.switch_weapon(weapon_id)
+	_update_weapon_mesh()

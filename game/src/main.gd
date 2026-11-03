@@ -331,6 +331,10 @@ func _ready() -> void:
 		Game.simulation_paused = true
 		hud.show_title(true)
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		if "--owner-polish-review" in args:
+			var polish: Node = _qa_system("res://src/systems/owner_polish_review.gd")
+			add_child(polish)
+			polish.setup(self)
 		if "--ui-review" in args:
 			var review: Node = _qa_system("res://src/systems/ui_review.gd")
 			add_child(review)

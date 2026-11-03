@@ -116,6 +116,8 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		var clip := animator.get_animation(full_name)
 		clip.loop_mode = Animation.LOOP_LINEAR if key in LOOP_CLIPS else Animation.LOOP_NONE
 	animator.animation_finished.connect(_on_animation_finished)
+	if role == "player" and not ("--legacy-locomotion" in OS.get_cmdline_user_args()):
+		_install_sourced_locomotion()
 	# Characters T1: weight-shifted idle (baked once into the shared clip, plus
 	# a mirrored copy for half the crowd) and adult head proportions.
 	if not ("--legacy-idle" in OS.get_cmdline_user_args()): # QA A/B switch
@@ -188,6 +190,14 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		var sc: Vector4 = outfit.get("skin_col", Vector4(0.55, 0.33, 0.22, 0.0))
 		hands.setup(skeleton, Color(sc.x, sc.y, sc.z).linear_to_srgb())
 	return true
+
+func _install_sourced_locomotion() -> void:
+	var library := load("res://assets/animations/quaternius/player_locomotion.tres") as AnimationLibrary
+	if library == null: return
+	animator.add_animation_library("sourced",library)
+	for key in ["walk","run","sprint"]:
+		_clips[key]="sourced/"+key
+	gait_v2=true
 
 func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloading: bool = false) -> void:
 	_last_speed = speed

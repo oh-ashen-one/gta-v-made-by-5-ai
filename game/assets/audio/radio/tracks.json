@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Bayfront Afterglow",
+    "style": "nu-disco / tropical house",
+    "path": "res://assets/audio/radio/bayfront-afterglow.mp3",
+    "source": "https://suno.com/song/c0b43ac5-b7ec-481d-9b0b-4fc4d195438d",
+    "duration_seconds": 213.6,
+    "sha256": "3d58c34a73728f25d806e5cd319e5fb46939accf32713540f8764f40822c5796"
+  },
+  {
+    "title": "Expressway Blue",
+    "style": "liquid drum and bass",
+    "path": "res://assets/audio/radio/expressway-blue.mp3",
+    "source": "https://suno.com/song/48a1fdc1-ec22-4824-865d-0d33089187ef",
+    "duration_seconds": 194.76,
+    "sha256": "2b6523254f3b58d87d46b4ad6afbeae3c4b4b0a1bb4e49a03c22b77de378357f"
+  },
+  {
+    "title": "Kopi Cruise",
+    "style": "neo-soul / jazz-hop",
+    "path": "res://assets/audio/radio/kopi-cruise.mp3",
+    "source": "https://suno.com/song/7459c1c8-96b0-4166-b46a-e0d0dd40546d",
+    "duration_seconds": 205.6,
+    "sha256": "deb5e612ebbc32219cf413271a13eaa7d3b1b4a90e89983a39f3ba3a98521214"
+  },
+  {
+    "title": "Neon Causeway",
+    "style": "synthwave",
+    "path": "res://assets/audio/radio/neon-causeway.mp3",
+    "source": "https://suno.com/song/3cb2f4d8-773e-4e08-8531-7406e5524cef",
+    "duration_seconds": 203.08,
+    "sha256": "5edd3a127f5272f3df5ea7fa6e090f19ea21b54dd658c3fc9cde7ae2ea470262"
+  },
+  {
+    "title": "East Coast Run",
+    "style": "indie surf-funk rock",
+    "path": "res://assets/audio/radio/east-coast-run.mp3",
+    "source": "https://suno.com/song/1964d290-6e9a-44a0-be8b-0ef570c370a2",
+    "duration_seconds": 161.44,
+    "sha256": "5ccd6e7610c31ef7e5a50d2f33f7c463d25f859b1d144856b307b021a2c33d42"
+  }
+]

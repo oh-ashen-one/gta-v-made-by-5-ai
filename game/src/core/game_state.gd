@@ -114,6 +114,7 @@ var settings := {
 	"invert_y": false,
 	"reduced_shake": false,
 	"hud_visible": true,
+	"radio_enabled": true,
 }
 
 func _ready() -> void:
@@ -441,6 +442,7 @@ func load_game(path: String = "") -> bool:
 		var restored_settings: Dictionary = parsed["settings"]
 		for key in ["mouse_sensitivity", "invert_y", "reduced_shake", "hud_visible"]:
 			settings[key] = restored_settings[key]
+		settings["radio_enabled"] = bool(restored_settings.get("radio_enabled",true))
 	Events.health_changed.emit(health, MAX_HEALTH)
 	Events.wanted_changed.emit(wanted_level)
 	Events.ammo_changed.emit(current_mag(), current_reserve())
@@ -524,6 +526,7 @@ func _validate_save_data(data: Dictionary) -> bool:
 		if not data_has_settings(data): return false
 		var saved_settings: Dictionary = data["settings"]
 		if not _number_in_range(saved_settings.get("mouse_sensitivity"), 0.2, 3.0): return false
+		if saved_settings.has("radio_enabled") and typeof(saved_settings.radio_enabled)!=TYPE_BOOL: return false
 		for key in ["invert_y", "reduced_shake", "hud_visible"]:
 			if typeof(saved_settings.get(key)) != TYPE_BOOL: return false
 	return true
