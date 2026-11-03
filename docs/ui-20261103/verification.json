@@ -1,0 +1,141 @@
+{
+  "ambient_pool": 4,
+  "checks": [
+    {
+      "label": "capture_01-title",
+      "passed": true
+    },
+    {
+      "label": "regular_traffic_one",
+      "passed": true
+    },
+    {
+      "label": "ambient_pool_four",
+      "passed": true
+    },
+    {
+      "label": "curbside_parking_preserved",
+      "passed": true
+    },
+    {
+      "label": "capture_02-hud-clear-streets",
+      "passed": true
+    },
+    {
+      "label": "capture_03-notification",
+      "passed": true
+    },
+    {
+      "label": "capture_04-pause",
+      "passed": true
+    },
+    {
+      "label": "capture_05-settings",
+      "passed": true
+    },
+    {
+      "label": "sensitivity_slider",
+      "passed": true
+    },
+    {
+      "label": "invert_toggle",
+      "passed": true
+    },
+    {
+      "label": "radio_toggle",
+      "passed": true
+    },
+    {
+      "label": "settings_returns_to_pause",
+      "passed": true
+    },
+    {
+      "label": "wheel_pauses_input",
+      "passed": true
+    },
+    {
+      "label": "capture_06-weapon-wheel",
+      "passed": true
+    },
+    {
+      "label": "wheel_equips_smg",
+      "passed": true
+    },
+    {
+      "label": "wheel_cancel_preserves_weapon",
+      "passed": true
+    },
+    {
+      "label": "five_radio_tracks",
+      "passed": true
+    },
+    {
+      "label": "radio_shuffle_five_unique",
+      "passed": true
+    },
+    {
+      "label": "radio_no_adjacent_repeats",
+      "passed": true
+    },
+    {
+      "label": "parked_car_available",
+      "passed": true
+    },
+    {
+      "label": "radio_starts_in_car",
+      "passed": true
+    },
+    {
+      "label": "capture_07-car-radio",
+      "passed": true
+    },
+    {
+      "label": "radio_pauses_with_game",
+      "passed": true
+    },
+    {
+      "label": "radio_off_setting_stops_audio",
+      "passed": true
+    },
+    {
+      "label": "radio_on_setting_resumes_audio",
+      "passed": true
+    },
+    {
+      "label": "radio_stops_on_exit",
+      "passed": true
+    },
+    {
+      "label": "sourced_run_installed",
+      "passed": true
+    },
+    {
+      "label": "capture_08-motion-walk",
+      "passed": true
+    },
+    {
+      "label": "capture_08-motion-run",
+      "passed": true
+    },
+    {
+      "label": "capture_08-motion-sprint",
+      "passed": true
+    },
+    {
+      "label": "private_save",
+      "passed": true
+    },
+    {
+      "label": "radio_preference_load",
+      "passed": true
+    }
+  ],
+  "parking": {
+    "courtyard_spawned": 20,
+    "road_available": 97,
+    "road_spawned": 51
+  },
+  "passed": true,
+  "radio_tracks": 5,
+  "regular_cars": 1
+}

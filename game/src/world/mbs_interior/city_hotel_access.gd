@@ -28,6 +28,8 @@ var _overlay: CanvasLayer
 var _loading_label: Label
 var _outside_landing := Vector3.ZERO
 var _paused_before_transition := false
+var public_doors: Array[Dictionary] = []
+var _entry_return := Vector3.ZERO
 
 class DoorStation extends Node3D:
 	var access: Node
@@ -38,13 +40,16 @@ class DoorStation extends Node3D:
 	func interact(actor: Node) -> void:
 		if actor!=access.player or not can_interact(): return
 		if target=="city": access.leave_hotel()
-		else: access.enter_space(target)
+		else:
+			access._entry_return=global_position
+			access.enter_space(target)
 
 func setup(scene: Node3D) -> void:
 	main=scene;world=main.world;player=main.player
 	_outside_landing=Layout.exit_position()
 	add_to_group("city_hotel_access")
 	_build_entrance()
+	_build_public_doors()
 	_overlay=CanvasLayer.new();_overlay.layer=90;add_child(_overlay)
 	var shade:=ColorRect.new();shade.color=Color(.025,.035,.04,1);shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT);_overlay.add_child(shade)
 	_loading_label=Label.new();_loading_label.text="Entering Marina Bay Sands…";_loading_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER);_loading_label.position=Vector2(-220,-20);_loading_label.size=Vector2(440,40);_loading_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER;shade.add_child(_loading_label)
@@ -89,6 +94,11 @@ func _physics_process(_delta:float)->void:
 	var p:=player.global_position
 	if not transitioning and not Game.simulation_paused and main.started and player.alive and not player.busy and Game.health>0 and Game.mode==Game.MODE_FOOT and player.current_vehicle==null and Time.get_ticks_msec()>=_cooldown_ms:
 		if active_space.is_empty():
+			for entry in public_doors:
+				var d:Vector3=entry.position
+				if absf(p.x-d.x)<2.0 and absf(p.y-d.y)<.8 and absf(p.z-d.z)<.65:
+					_entry_return=d+Vector3(0,0,entry.side*2.5)
+					enter_space("lobby");break
 			var door:=Layout.entrance()
 			if absf(p.x-door.x)<float(Layout.data().door_width)*.5-.4 and absf(p.y-door.y)<.8 and _previous_z<door.z and p.z>=door.z and p.z<door.z+float(Layout.data().trigger_depth):
 				enter_space("lobby")
@@ -125,7 +135,7 @@ func enter_space(kind:String)->bool:
 		candidate.queue_free()
 		return _abort_transition(was_paused,"Hotel arrival is obstructed. Please try again later.")
 	if active_space.is_empty():
-		var outside:=_city_landing(Layout.exit_position())
+		var outside:=_city_landing(_entry_return if _entry_return!=Vector3.ZERO else Layout.exit_position())
 		if not outside.is_finite():
 			candidate.queue_free()
 			return _abort_transition(was_paused,"The hotel exit is obstructed. Please clear the doorway first.")
@@ -278,3 +288,18 @@ func decorate_save(data:Dictionary)->void:
 
 func restore_visit(value:Variant)->void:
 	if Layout.valid_visit(value):enter_space.call_deferred(String(value.space))
+
+func _build_public_doors() -> void:
+	var anchor:=DowntownPlan.anchor("marina_bay_sands")
+	var kit=Kit.new(_entrance,"PublicDoorFrames")
+	for dx:float in [-98,0,98]:
+		for side:float in [-1,1]:
+			var at:=anchor+Vector3(dx,.12 if side<0 else 1.54,-47 if side<0 else 43.0)
+			public_doors.append({"position":at,"side":side})
+			if side<0 and dx==98:continue # original doorway already has a frame
+			for x:float in [-2.6,2.6]:
+				kit.box(Looks.get_mat("steel_satin"),at+Vector3(x,1.8,0),Vector3(.18,3.6,.3))
+			kit.box(Looks.get_mat("steel_white"),at+Vector3(0,3.7,0),Vector3(5.5,.2,2.0))
+			_label(_entrance,at+Vector3(0,3.15,side*.3),"MBS  ·  LOBBY ENTRANCE",0 if side>0 else PI)
+			_station(_entrance,at+Vector3(0,0,side*1.3),"lobby","Press E to enter MBS",false)
+	kit.commit(_entrance,"PublicDoorMaterials",false,180)

@@ -56,7 +56,7 @@ func _process(delta: float) -> void:
 	if not show: return
 	var actor: Node3D = activity.player.controlled_actor()
 	var distance: float = actor.global_position.distance_to(activity.objective_position())
-	_panel.visible = activity.is_active() or distance < 100.0
+	_panel.visible = false
 	_refresh_time -= delta
 	if _refresh_time <= 0.0:
 		_refresh_time = 0.2
@@ -66,7 +66,7 @@ func _process(delta: float) -> void:
 		var hint := "Walk, drive or fly · step out and press E at the ring."
 		if activity.stage == activity.Stage.OUTBOUND: hint = "Return the parcel at Heritage Waterfront to cancel."
 		_body.text = "%s\n%d m · %s" % [activity.current_objective(), roundi(distance), hint]
-	_marker.visible = _panel.visible and not _near_prompt_available
+	_marker.visible = activity.is_active() and not _near_prompt_available
 	if not _marker.visible: return
 	var camera := get_viewport().get_camera_3d()
 	if camera == null: return

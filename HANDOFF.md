@@ -1,3 +1,45 @@
+## Latest owner pass — compact GPS, jump and driving, 2026-11-03 afternoon
+
+Latest owner instruction: **do not open the game for testing now; GPU is heavily loaded**. No owned rendered game/launch remains. Continue CPU/headless work only until owner changes this. Keep other sessions running. Changes are on `codex/clear-streets-ui-radio-20261103`, draft PR #3; no game-main merge authority.
+
+Read `docs/city-playtest-20261103/README.md` and `verification.json` for implemented features, evidence and exact visual limits. Ten private radio MP3s and the newly downloaded native Mixamo Unarmed Jump are installed locally. Full jump visual acceptance, corrected pause-guide/map-label visuals, window-hole appearance and owner gameplay/music feel remain unverified. Do not convert finite-bone, headless or partial-render checks into subjective acceptance. Large source-city and full-hotel plans remain unfinished.
+
+---
+
+## Latest playtest follow-up — generated HUD and driving, 2026-11-03
+
+Owner says the native running character looks much better; retain it. Owner rejected the code-drawn HUD weapon icons and requested production image-generated HUD art and a detailed live minimap. Mouse driving-camera movement was initially backlogged, then explicitly included. Pedestrian hits must register without stopping the player's car. Owner stopped playing and authorized immediate integration, verification and reopening when ready.
+
+Implemented: built-in image-generated weapon/wheel/panel texture atlases, live detailed north-up map with actual collider footprints/roads/bridges/trees/landmarks/vehicles/objective, mouse car-camera yaw/pitch with settings support and C recenter, and swept pedestrian contact damage along actual car travel while walls/vehicles stay solid. No change to the accepted native Mixamo runner or radio playlist.
+
+Validation: 38/38 rendered integration checks and 22/22 isolated native physics/control checks passed. Final HUD/settings/wheel/car-orbit captures were inspected. A large terrain slab initially hid map buildings; it is excluded and the corrected map was inspected. The headless fixture was corrected to initialize its input map and disable unrelated particle processing; the final log has no script errors. The game still has its historical texture-RID cleanup warning on test exit. This is targeted verification, not a new all-game regression or aesthetic acceptance claim.
+
+Read `docs/hud-driving-20261103/README.md` and its step-by-step playtest checklist. Published source remains on `codex/clear-streets-ui-radio-20261103` / draft PR #3; no main merge or public binary release is authorized.
+
+---
+
+## Latest correction — owner rejected the runner, 2026-11-03
+
+The owner rejected the animation from `3e9356f` as non-human/melting and instructed: obtain a regular human running animation/character, adapt it for Godot, and do not open another game; notify when ready. The prior visual acceptance was wrong. The Quaternius-to-custom-rig installation is now disabled.
+
+Replacement: Adobe Mixamo Josh with original 65-bone rig, skin weights and native clips. Player-only initialization bypasses the old rebuilt look mesh and body/foot/hand/aim/skeleton-recoil deformation layers. Native GLB/media stay private in the ignored provider folder; reproducible conversion, acquisition/rights notes, asset-only checks and preview tooling are versioned. Read `docs/native-human-20261103/README.md` first. No new playable game was opened during this correction; only CPU conversion/import, an isolated headless asset check and a browser asset preview were used. Full gameplay/weapon-grip validation remains owner-led at the next requested launch.
+
+---
+
+## Current owner playtest pass — 2026-11-03
+
+Branch: `codex/clear-streets-ui-radio-20261103`, from `Astra-6-singapore-fidelity` at `fa4cb224c550c6fd2f4925d8cb3b85e1028e156b`. This session restored source and 217 runtime-provider files from the private relay backup after the old checkout/build paths proved absent. Runtime uses installed Godot 4.7.1.
+
+The owner explicitly requested simultaneous Orchard Reach and Markhor play on 2026-11-03; leave Markhor and other foreign processes alone. This supersedes the older October no-launch cutoff for this requested playtest, not for unattended loops. Keep the current shared GPU guard, 60 fps cap (30 for review), stream/pause/headroom checks and owned-process shutdown. The old project-specific recovery gate still encodes a one-renderer rule and counts resident encoder services; the owner explicitly authorized running both games. Current launches use the installed shared guard.
+
+Implemented: four ambient + one regular civilian moving car, curbside parking preserved; native Jade HUD/settings/notifications and bottom-right hold-Tab weapon wheel; CC0 Quaternius walk/jog/sprint retargeted to the player's existing rig; five original Suno instrumentals downloaded through the signed-in Pro account and installed for automatic shuffled car radio. Raw Suno/provider files remain private and ignored; restore the MP3s using `docs/RADIO.md` and the versioned track manifest. No main merge or public binary release.
+
+Evidence: all 32 checks in `docs/ui-20261103/verification.json` passed in a rendered 1280×720/30-fps run, including real car entry, radio pause/toggle/exit and preference load. Game-only HUD/settings/wheel/motion captures were inspected. This does not establish owner acceptance of running feel, music taste, full-city fidelity or the complete hotel. See `docs/OWNER_BACKLOG.md` for these boundaries and `docs/ui-20261103/README.md` for source/licensing/controls.
+
+Broader regression: **288/294 passed**, both with sourced motion enabled and with `--legacy-locomotion`; the same six checks fail in each run. These are the absent older jump/land/stop/backpedal/skid/idle features and offline player/civilian look bakes. See `docs/ui-20261103/regression-comparison.json`. Do not claim the whole suite or full game is accepted.
+
+---
+
 > **LATEST — MBS CITY CONNECTION, 2026-10-29:** The owner reauthorized a narrow offline integration: remove the preview menu and enter MBS from the actual city. Read `loop/singapore-fidelity/city-hotel-connection/README.md` and its delivery receipt. Main-game doorway/lift transitions are implemented in source; native validation remains explicitly prohibited/deferred. No game/engine/GPU launch or automatic retry. Older preview-only and stop-all-implementation notes below are superseded only for this bounded connection.
 
 > **LATEST OWNER CUTOFF — 2026-10-29:** Read `loop/singapore-fidelity/OWNER_CUTOFF.md` first. All remaining workers are stopped. Package the bounded milestone and stop expansion. The owner explicitly prohibits game/engine/GPU launches now. Full geographic city and complete hotel remain unfinished; older "keep active" instructions below are historical and superseded. No automatic new loop.

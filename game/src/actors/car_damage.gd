@@ -444,3 +444,7 @@ static func ensure_sounds() -> void:
 			g[i] += sin(TAU * f * t) * exp(-t * 38.0) * amp
 	for i in n: g[i] = tanh(g[i] * 1.2) * 0.85
 	sfx._bank["glass_break"] = sfx._wav(g)
+
+func open_driver_window() -> void:
+	for mesh in _meshes:
+		if is_instance_valid(mesh):mesh.set_instance_shader_parameter("driver_window_open",1.0)

@@ -12,7 +12,7 @@ signal crosshair_hit(point: Vector3, hit_something: bool)
 const WALK_SPEED := 1.5
 const RUN_SPEED := 3.6
 const SPRINT_SPEED := 6.8
-const JUMP_WINDUP := 0.12      # standing-jump anticipation before take-off
+const JUMP_WINDUP := 0.20      # standing-jump anticipation before take-off
 const STOP_DECEL := 16.0       # m/s^2 braking when the stick is released from a run
 const ACCEL := 14.0
 const FRICTION := 12.0
@@ -331,6 +331,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("walk_toggle"):
 		_walk_toggle = not _walk_toggle
+	if event.is_action_pressed("camera_recenter") and current_vehicle is Car:
+		(current_vehicle as Car).reset_camera_look()
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		_apply_mouse_look((event as InputEventMouseMotion).relative)
 	# Preserve rapid native press/release events even when a slow frame ends
@@ -347,6 +349,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func _apply_mouse_look(relative: Vector2) -> void:
 	var sens: float = MOUSE_SENS * float(Game.settings.get("mouse_sensitivity", 1.0))
 	var inverted := bool(Game.settings.get("invert_y", false))
+	if current_vehicle is Car:
+		(current_vehicle as Car).apply_look_motion(relative,sens,inverted)
+		return
 	if current_vehicle is Helicopter:
 		(current_vehicle as Helicopter).apply_look_motion(relative, sens, inverted)
 		return
@@ -376,6 +381,14 @@ func _physics_process(delta: float) -> void:
 	if Game.simulation_paused:
 		velocity = Vector3.ZERO
 		return
+	_fire_cooldown = maxf(0.0, _fire_cooldown - delta)
+	_damage_flash = maxf(0.0, _damage_flash - delta)
+	if _reloading:
+		_reload_timer -= delta
+		if _reload_timer <= 0.0:
+			_reloading = false
+			Game.reload_ammo()
+			Events.notify.emit("Reloaded.", "info")
 	if current_vehicle != null and is_instance_valid(current_vehicle):
 		# Occupancy has one spatial authority. Keep the hidden foot proxy at
 		# the occupied vehicle so witnesses, saves and effects never target
@@ -392,14 +405,6 @@ func _physics_process(delta: float) -> void:
 	if busy:
 		velocity = Vector3.ZERO
 		return
-	_fire_cooldown = maxf(0.0, _fire_cooldown - delta)
-	_damage_flash = maxf(0.0, _damage_flash - delta)
-	if _reloading:
-		_reload_timer -= delta
-		if _reload_timer <= 0.0:
-			_reloading = false
-			Game.reload_ammo()
-			Events.notify.emit("Reloaded.", "info")
 	if aiming:
 		arm.spring_length = lerpf(arm.spring_length, AIM_DISTANCE, delta * 10.0)
 	else:
@@ -767,7 +772,7 @@ func _animate(delta: float, speed: float, sprinting: bool) -> void:
 			Sfx.play_at("footstep", global_position, -18.0, _rng.randf_range(0.9, 1.15))
 
 func _fire() -> void:
-	if current_vehicle != null or busy:
+	if busy or (current_vehicle != null and (not current_vehicle is Car or not aiming)):
 		return
 	if _reloading:
 		return
@@ -783,22 +788,24 @@ func _fire() -> void:
 	_muzzle_flash.position = _weapon_mesh.position + Vector3(0.0, 0.02, -0.35 if Game.carried_weapon == "smg" else -0.22)
 	if _visual != null and _visual.loaded:
 		_muzzle_flash.global_position = _visual.weapon_muzzle_position()
-	var cam_basis := camera.global_transform.basis
-	var origin := camera.global_position
+	var shot_camera: Camera3D = (current_vehicle as Car)._camera if current_vehicle is Car else camera
+	var cam_basis := shot_camera.global_transform.basis
+	var origin := shot_camera.global_position
 	var dir := -cam_basis.z
 	var params := PhysicsRayQueryParameters3D.create(origin, origin + dir * 120.0)
 	params.collision_mask = 1 | 4 | 8
 	params.exclude = [get_rid()]
+	if current_vehicle is Car: params.exclude = [get_rid(), current_vehicle.get_rid()]
 	var hit := get_world_3d().direct_space_state.intersect_ray(params)
 	var point := origin + dir * 120.0
 	# The camera chooses the aim point, but the muzzle must have a clear
 	# path to it. This prevents shooting through close walls/vehicle cover.
 	if not hit.is_empty():
 		point = hit["position"]
-	var muzzle := _muzzle_flash.global_position
+	var muzzle := (current_vehicle as Car).drive_by_muzzle() if current_vehicle is Car else _muzzle_flash.global_position
 	var muzzle_params := PhysicsRayQueryParameters3D.create(muzzle, point)
 	muzzle_params.collision_mask = 1 | 4 | 8
-	muzzle_params.exclude = [get_rid()]
+	muzzle_params.exclude = params.exclude
 	var muzzle_hit := get_world_3d().direct_space_state.intersect_ray(muzzle_params)
 	if not muzzle_hit.is_empty():
 		hit = muzzle_hit
@@ -812,7 +819,7 @@ func _fire() -> void:
 	CombatFx.get_fx(get_tree()).shot(muzzle, (point - muzzle).normalized(), point, hit_something,
 		hit.get("normal", -dir), hit.get("collider"), Game.carried_weapon, true)
 	var combat := get_node_or_null("PlayerCombat")
-	if combat != null:
+	if combat != null and current_vehicle == null:
 		combat.on_shot(Game.carried_weapon)
 	if hit_something:
 		var collider = hit["collider"]
@@ -841,7 +848,7 @@ func _spawn_impact(point: Vector3, normal: Vector3) -> void:
 			mesh.queue_free())
 
 func _start_reload() -> void:
-	if _reloading or current_vehicle != null:
+	if _reloading or (current_vehicle != null and not current_vehicle is Car):
 		return
 	if Game.current_mag() >= (12 if Game.carried_weapon == "pistol" else 30):
 		return
@@ -894,6 +901,7 @@ func _interaction_visible(target: Node3D) -> bool:
 	ray.exclude=excluded
 	return get_world_3d().direct_space_state.intersect_ray(ray).is_empty()
 
+var suppress_mouse_fire_until_release := false
 func _process(_delta: float) -> void:
 	if uses_source_world and Game.source_controls_held():
 		_press_queue.clear()
@@ -904,14 +912,18 @@ func _process(_delta: float) -> void:
 		# Hip fire keeps the gun raised for a moment (combat piece).
 		var combat := get_node_or_null("PlayerCombat")
 		aiming = Input.is_action_pressed("aim") or (combat != null and float(combat.hold) > 0.0)
+	if current_vehicle is Car:
+		aiming = Input.is_action_pressed("aim")
+		if aiming: (current_vehicle as Car).open_drive_by_window()
+	if suppress_mouse_fire_until_release and not Input.is_action_pressed("fire"):
+		suppress_mouse_fire_until_release=false
 	var fire_pressed := _consume_press("fire")
-	if fire_pressed or (Game.carried_weapon == "smg" and Input.is_action_pressed("fire")):
+	if not suppress_mouse_fire_until_release and (fire_pressed or (Game.carried_weapon == "smg" and Input.is_action_pressed("fire"))):
 		_fire()
 	if _consume_press("reload"):
 		_start_reload()
 	if _consume_press("weapon_next"):
-		Game.switch_weapon("smg" if Game.carried_weapon == "pistol" else "pistol")
-		_update_weapon_mesh()
+		equip_weapon("smg" if Game.carried_weapon == "pistol" else "pistol")
 	if _consume_press("interact"):
 		_try_interact()
 	_update_prompt()
@@ -951,7 +963,7 @@ func _update_prompt() -> void:
 		if target is Helicopter:
 			prompt="[E] Board helicopter"
 		elif target is Car:
-			prompt="[E] Take %s"%target.kind.capitalize()
+			prompt="Press E to drive"
 		else:
 			prompt=String(target.get("prompt_text")) if target.get("prompt_text") else "[E] Interact"
 	Events.interaction_prompt.emit(prompt)
@@ -1038,3 +1050,11 @@ func _on_state_restored() -> void:
 	_press_armed.clear()
 	_update_weapon_mesh()
 	if _visual != null and _visual.loaded: _visual.reset_alive()
+
+func equip_weapon(weapon_id: String) -> void:
+	if not Game.ammo.has(weapon_id) or weapon_id==Game.carried_weapon: return
+	_reloading=false
+	_reload_timer=0.0
+	_press_queue.clear()
+	Game.switch_weapon(weapon_id)
+	_update_weapon_mesh()

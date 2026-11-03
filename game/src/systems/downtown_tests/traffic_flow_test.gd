@@ -36,16 +36,16 @@ static func run(t: Node, amb: AmbientTraffic) -> void:
 			boxed += 1
 		elif amb._on_zebra(v.edge, v.s, v.dims.z * 0.5):
 			zebra += 1
-	t._check("no standing lane car on a zebra or in a junction box", near >= 8 and near <= 48 and zebra == 0 and boxed == 0, "%d on zebras, %d in boxes, %d cars near" % [zebra, boxed, near])
+	t._check("no standing lane car on a zebra or in a junction box", near >= 1 and near <= 4 and zebra == 0 and boxed == 0, "%d on zebras, %d in boxes, %d cars near" % [zebra, boxed, near])
 
 ## Owner density regression: occupancy has an upper bound as well as enough
 ## traffic to exercise the functional road rules. Do not require the old jam.
 static func _density_and_spawn_checks(t: Node, amb: AmbientTraffic) -> void:
 	t._check("ambient fleet stays within the free-driving budget",
-		amb.vehicles.size() > 0 and amb.vehicles.size() <= 48 and amb.count_active() <= 48,
+		amb.vehicles.size() > 0 and amb.vehicles.size() <= 4 and amb.count_active() <= 4,
 		"%d allocated, %d active (wave T: 112)" % [amb.vehicles.size(), amb.count_active()])
 	t._check("physical civilian traffic stays within the free-driving budget",
-		amb.traffic.cars.size() > 0 and amb.traffic.cars.size() <= 7,
+		amb.traffic.cars.size() > 0 and amb.traffic.cars.size() <= 1,
 		"%d physical traffic cars (wave T: 14)" % amb.traffic.cars.size())
 	var parking: Dictionary = amb.traffic.parking_stats
 	var available := int(parking.get("road_available", 0))
@@ -80,6 +80,10 @@ static func _density_and_spawn_checks(t: Node, amb: AmbientTraffic) -> void:
 	b.s = 30.0
 	fixture._keys[0] = [a, b]
 	t._check("short-lane budget rejects another seed at a distant gap", not fixture._gap_free(0, 0, 60.0))
+	# The 80 m fixture is now a single-car lane. A longer lane admits a
+	# separated second car but still rejects a local overlap.
+	fixture.edges[0]["len"] = 240.0
+	fixture.edges[0]["b"] = Vector3(240,0,0)
 	fixture._keys[0] = [a]
 	t._check("lane budget still admits separated cars and rejects overlaps", fixture._gap_free(0, 0, 60.0) and not fixture._gap_free(0, 0, 20.0))
 	a.free()
@@ -88,7 +92,7 @@ static func _density_and_spawn_checks(t: Node, amb: AmbientTraffic) -> void:
 	_camera_cut_checks(t)
 
 static func _camera_cut_checks(t: Node) -> void:
-	# An isolated one-lane street has room for two cars by the occupancy
+	# An isolated one-lane street has room for one car by the occupancy
 	# budget, but enough physical gaps for four. Exercise the complete cut
 	# path with eight pooled bodies, including failed-seed exhaustion.
 	# No live world state or RNG is changed by this fixture.
@@ -129,6 +133,6 @@ static func _camera_cut_checks(t: Node) -> void:
 			if other.active and absf(v.s - other.s) < AmbientTraffic.MIN_GAP + 3.0:
 				overlaps += 1
 	t._check("real camera cuts fill only the short-lane budget and exhaust safely",
-		first == 2 and second == 2 and overlaps == 0 and inactive_colliders == 0,
+		first == 1 and second == 1 and overlaps == 0 and inactive_colliders == 0,
 		"active %d then %d /8, overlaps %d, inactive colliders %d" % [first, second, overlaps, inactive_colliders])
 	fixture.free()

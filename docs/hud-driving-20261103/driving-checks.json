@@ -1,0 +1,94 @@
+{
+	"checks": [
+		{
+			"name": "crosses_multiple_pedestrians_without_stopping",
+			"passed": true
+		},
+		{
+			"name": "all_three_hits_register_once",
+			"passed": true
+		},
+		{
+			"name": "pedestrians_do_not_damage_car",
+			"passed": true
+		},
+		{
+			"name": "runover_uses_real_crime_damage_path",
+			"passed": true
+		},
+		{
+			"name": "grazing_contact_registers",
+			"passed": true
+		},
+		{
+			"name": "nearby_sidewalk_person_not_hit",
+			"passed": true
+		},
+		{
+			"name": "wall_remains_solid",
+			"passed": true
+		},
+		{
+			"name": "no_damage_through_wall",
+			"passed": true
+		},
+		{
+			"name": "reverse_contact_registers_without_stop",
+			"passed": true
+		},
+		{
+			"name": "sweep_catches_high_speed_crossing",
+			"passed": true
+		},
+		{
+			"name": "initial_overlap_detected_once",
+			"passed": true
+		},
+		{
+			"name": "mouse_routes_to_car_orbit",
+			"passed": true
+		},
+		{
+			"name": "driving_look_preserves_hidden_foot_camera",
+			"passed": true
+		},
+		{
+			"name": "car_look_honors_invert_y",
+			"passed": true
+		},
+		{
+			"name": "pitch_is_bounded",
+			"passed": true
+		},
+		{
+			"name": "pause_blocks_camera_input",
+			"passed": true
+		},
+		{
+			"name": "camera_recenter",
+			"passed": true
+		},
+		{
+			"name": "C_key_recenters_car_camera",
+			"passed": true
+		},
+		{
+			"name": "render_camera_actually_orbits",
+			"passed": true
+		},
+		{
+			"name": "orbit_does_not_steer_car",
+			"passed": true
+		},
+		{
+			"name": "orbit_camera_respects_wall_collision",
+			"passed": true
+		},
+		{
+			"name": "orbit_camera_respects_vehicle_collision",
+			"passed": true
+		}
+	],
+	"failed": 0,
+	"passed": true
+}

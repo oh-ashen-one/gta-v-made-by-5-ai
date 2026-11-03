@@ -1,0 +1,404 @@
+{
+  "headless": {
+    "ambient_pool": 4,
+    "checks": [
+      {
+        "label": "regular_traffic_one",
+        "passed": true
+      },
+      {
+        "label": "ambient_pool_four",
+        "passed": true
+      },
+      {
+        "label": "curbside_parking_preserved",
+        "passed": true
+      },
+      {
+        "label": "map_has_actual_building_footprints",
+        "passed": true
+      },
+      {
+        "label": "map_excludes_terrain_slabs",
+        "passed": true
+      },
+      {
+        "label": "map_uses_compact_detail_area",
+        "passed": true
+      },
+      {
+        "label": "generated_weapon_art_loaded",
+        "passed": true
+      },
+      {
+        "label": "visual_manual_fits_pause_screen",
+        "passed": true
+      },
+      {
+        "label": "sensitivity_slider",
+        "passed": true
+      },
+      {
+        "label": "invert_toggle",
+        "passed": true
+      },
+      {
+        "label": "radio_toggle",
+        "passed": true
+      },
+      {
+        "label": "settings_returns_to_pause",
+        "passed": true
+      },
+      {
+        "label": "map_pauses_input",
+        "passed": true
+      },
+      {
+        "label": "key_2_equips_smg",
+        "passed": true
+      },
+      {
+        "label": "key_1_equips_pistol",
+        "passed": true
+      },
+      {
+        "label": "ten_radio_tracks",
+        "passed": true
+      },
+      {
+        "label": "radio_shuffle_all_unique",
+        "passed": true
+      },
+      {
+        "label": "radio_no_adjacent_repeats",
+        "passed": true
+      },
+      {
+        "label": "parked_car_available",
+        "passed": true
+      },
+      {
+        "label": "camera_has_one_transform_owner",
+        "passed": true
+      },
+      {
+        "label": "window_breaks_once",
+        "passed": true
+      },
+      {
+        "label": "window_not_rebroken",
+        "passed": true
+      },
+      {
+        "label": "drive_by_consumes_ammo",
+        "passed": true
+      },
+      {
+        "label": "radio_starts_in_car",
+        "passed": false
+      },
+      {
+        "label": "native_driving_camera_free_look",
+        "passed": true
+      },
+      {
+        "label": "drivetrain_no_forward_backward_oscillation",
+        "passed": true
+      },
+      {
+        "label": "shift_turn_engages_drift",
+        "passed": true
+      },
+      {
+        "label": "radio_pauses_with_game",
+        "passed": false
+      },
+      {
+        "label": "radio_off_setting_stops_audio",
+        "passed": true
+      },
+      {
+        "label": "radio_on_setting_resumes_audio",
+        "passed": false
+      },
+      {
+        "label": "radio_stops_on_exit",
+        "passed": true
+      },
+      {
+        "label": "landmark_gps_routes_connected",
+        "passed": true
+      },
+      {
+        "label": "gps_includes_hotel_and_both_helicopters",
+        "passed": true
+      },
+      {
+        "label": "waterfront_helicopter_present",
+        "passed": true
+      },
+      {
+        "label": "all_boat_hulls_stay_in_water_entire_route",
+        "passed": true
+      },
+      {
+        "label": "six_mbs_door_approaches_clear",
+        "passed": true
+      },
+      {
+        "label": "mbs_walk_through_entry",
+        "passed": true
+      },
+      {
+        "label": "native_human_installed",
+        "passed": true
+      },
+      {
+        "label": "private_save",
+        "passed": true
+      },
+      {
+        "label": "radio_preference_load",
+        "passed": true
+      }
+    ],
+    "parking": {
+      "courtyard_spawned": 20,
+      "road_available": 97,
+      "road_spawned": 51
+    },
+    "passed": false,
+    "radio_tracks": 10,
+    "regular_cars": 1
+  },
+  "rendered_checks_before_owner_requested_game_closed": [
+    {
+      "label": "capture_01-title",
+      "passed": true
+    },
+    {
+      "label": "regular_traffic_one",
+      "passed": true
+    },
+    {
+      "label": "ambient_pool_four",
+      "passed": true
+    },
+    {
+      "label": "curbside_parking_preserved",
+      "passed": true
+    },
+    {
+      "label": "map_has_actual_building_footprints",
+      "passed": true
+    },
+    {
+      "label": "map_excludes_terrain_slabs",
+      "passed": true
+    },
+    {
+      "label": "map_uses_compact_detail_area",
+      "passed": true
+    },
+    {
+      "label": "generated_weapon_art_loaded",
+      "passed": true
+    },
+    {
+      "label": "capture_02-hud-clear-streets",
+      "passed": true
+    },
+    {
+      "label": "capture_03-notification",
+      "passed": true
+    },
+    {
+      "label": "capture_04-pause",
+      "passed": true
+    },
+    {
+      "label": "capture_05-settings",
+      "passed": true
+    },
+    {
+      "label": "sensitivity_slider",
+      "passed": true
+    },
+    {
+      "label": "invert_toggle",
+      "passed": true
+    },
+    {
+      "label": "radio_toggle",
+      "passed": true
+    },
+    {
+      "label": "settings_returns_to_pause",
+      "passed": true
+    },
+    {
+      "label": "map_pauses_input",
+      "passed": true
+    },
+    {
+      "label": "capture_06-full-map",
+      "passed": true
+    },
+    {
+      "label": "key_2_equips_smg",
+      "passed": true
+    },
+    {
+      "label": "key_1_equips_pistol",
+      "passed": true
+    },
+    {
+      "label": "ten_radio_tracks",
+      "passed": true
+    },
+    {
+      "label": "radio_shuffle_all_unique",
+      "passed": true
+    },
+    {
+      "label": "radio_no_adjacent_repeats",
+      "passed": true
+    },
+    {
+      "label": "parked_car_available",
+      "passed": true
+    },
+    {
+      "label": "camera_has_one_transform_owner",
+      "passed": true
+    },
+    {
+      "label": "window_breaks_once",
+      "passed": true
+    },
+    {
+      "label": "window_not_rebroken",
+      "passed": true
+    },
+    {
+      "label": "drive_by_consumes_ammo",
+      "passed": true
+    },
+    {
+      "label": "radio_starts_in_car",
+      "passed": true
+    },
+    {
+      "label": "capture_07-car-radio",
+      "passed": true
+    },
+    {
+      "label": "native_driving_camera_free_look",
+      "passed": true
+    },
+    {
+      "label": "capture_07b-car-camera-orbit",
+      "passed": true
+    },
+    {
+      "label": "drivetrain_no_forward_backward_oscillation",
+      "passed": true
+    },
+    {
+      "label": "shift_turn_engages_drift",
+      "passed": true
+    },
+    {
+      "label": "radio_pauses_with_game",
+      "passed": true
+    },
+    {
+      "label": "radio_off_setting_stops_audio",
+      "passed": true
+    },
+    {
+      "label": "radio_on_setting_resumes_audio",
+      "passed": true
+    },
+    {
+      "label": "radio_stops_on_exit",
+      "passed": true
+    },
+    {
+      "label": "landmark_gps_routes_connected",
+      "passed": true
+    },
+    {
+      "label": "gps_includes_hotel_and_both_helicopters",
+      "passed": true
+    },
+    {
+      "label": "waterfront_helicopter_present",
+      "passed": true
+    },
+    {
+      "label": "all_boat_hulls_stay_in_water_entire_route",
+      "passed": true
+    },
+    {
+      "label": "six_mbs_door_approaches_clear",
+      "passed": true
+    },
+    {
+      "label": "capture_09-mbs-entrance",
+      "passed": true
+    },
+    {
+      "label": "mbs_walk_through_entry",
+      "passed": false
+    },
+    {
+      "label": "capture_10-mbs-lobby",
+      "passed": true
+    },
+    {
+      "label": "capture_11-waterfront-helicopter",
+      "passed": true
+    },
+    {
+      "label": "native_human_installed",
+      "passed": true
+    },
+    {
+      "label": "capture_08-motion-walk",
+      "passed": true
+    },
+    {
+      "label": "capture_08-motion-run",
+      "passed": true
+    },
+    {
+      "label": "capture_08-motion-sprint",
+      "passed": true
+    },
+    {
+      "label": "capture_08-motion-jump_start",
+      "passed": true
+    },
+    {
+      "label": "capture_08-motion-jump",
+      "passed": true
+    },
+    {
+      "label": "capture_08-motion-land",
+      "passed": true
+    }
+  ],
+  "rendered_run_completed": false,
+  "owner_instruction": "Keep the game closed; no further GPU game tests this pass.",
+  "corrections_after_render": "Pause manual TextureRect sizing and overlapping full-map POI labels corrected. MBS walking fixture clears stale scripted aim before walking; headless physical doorway entry passes. Full jump playback visual acceptance remains pending.",
+  "native_human_checks": {
+    "passed": 116,
+    "failures": []
+  },
+  "prior_driving_physics_checks": {
+    "passed": 22,
+    "failures": []
+  }
+}

@@ -1,7 +1,7 @@
 extends Node
 ## Procedural sound bank (END_GOAL AUDIO-01 / AUDIO-02).
 ## Every sound is synthesised in code: original material, no sampled or
-## licensed audio, no music. One-shots are pooled; the engine and rotor are
+## licensed audio in this bank. Private Suno music is handled by CarRadio. One-shots are pooled; the engine and rotor are
 ## looping players whose pitch tracks the vehicle state.
 
 const MIX_RATE := 22050
@@ -22,10 +22,13 @@ var _ambient_started := false
 var _ambience_players: Array[AudioStreamPlayer3D] = []
 var _audio_shutdown := false
 var _headless_audio := false
+var _radio: Node
 
 
 func _ready() -> void:
 	_headless_audio = DisplayServer.get_name() == "headless"
+	_radio=preload("res://src/systems/car_radio.gd").new()
+	add_child(_radio)
 	_rng.seed = 90210
 	_bank["gunshot"] = _gunshot()
 	_bank["footstep"] = _footstep()
@@ -209,11 +212,15 @@ func loop_stream(id: String) -> AudioStream:
 
 func shutdown_audio() -> void:
 	_audio_shutdown=true
+	if is_instance_valid(_radio): _radio.set_process(false)
 	_stop_audio_recursive(self)
 	for record in _actor_loops.values():
 		for p in record.values():
 			if is_instance_valid(p): p.stop(); p.stream=null
 	_actor_loops.clear()
+
+func radio_title() -> String:
+	return _radio.title() if is_instance_valid(_radio) else "OFF"
 
 func _stop_audio_recursive(node: Node) -> void:
 	for child in node.get_children():

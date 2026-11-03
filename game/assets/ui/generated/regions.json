@@ -1,0 +1,74 @@
+{
+  "pistol": {
+    "file": "weapons.png",
+    "rect": [
+      111,
+      218,
+      683,
+      510
+    ]
+  },
+  "smg": {
+    "file": "weapons.png",
+    "rect": [
+      914,
+      227,
+      820,
+      471
+    ]
+  },
+  "wheel_pistol": {
+    "file": "wheel.png",
+    "rect": [
+      73,
+      79,
+      735,
+      731
+    ]
+  },
+  "wheel_smg": {
+    "file": "wheel.png",
+    "rect": [
+      959,
+      78,
+      736,
+      730
+    ]
+  },
+  "mission": {
+    "file": "panels.png",
+    "rect": [
+      24,
+      236,
+      626,
+      169
+    ]
+  },
+  "ammo": {
+    "file": "panels.png",
+    "rect": [
+      768,
+      250,
+      367,
+      141
+    ]
+  },
+  "notification": {
+    "file": "panels.png",
+    "rect": [
+      24,
+      861,
+      613,
+      152
+    ]
+  },
+  "minimap": {
+    "file": "panels.png",
+    "rect": [
+      705,
+      707,
+      471,
+      468
+    ]
+  }
+}

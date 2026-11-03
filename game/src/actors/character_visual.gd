@@ -56,6 +56,8 @@ const START_PHASE := {"walk": 0.55, "aim_walk": 0.55, "run": 0.24, "aim_run": 0.
 var foot_lock: FootLockModifier
 const ASSET_VERSION := "_v2"
 var gait_v2 := false
+var native_human := false
+const NATIVE_HUMAN := "res://assets/providers/mixamo_josh/player_native.glb"
 var motion: CharacterMotionModifier
 var stride_amp := 1.0
 var walk_arm := 0.0
@@ -81,6 +83,7 @@ static func available(role: String = "player") -> bool:
 
 ## Locomotion v2 exports sit beside the v1 provider files (never overwrite them).
 static func asset_path(role: String) -> String:
+	if role == "player" and ResourceLoader.exists(NATIVE_HUMAN): return NATIVE_HUMAN
 	if role == "player" and ResourceLoader.exists(PROVIDER_DIR + role + "_rigged" + PLAYER_ASSET_VERSION + ".glb"):
 		return PROVIDER_DIR + role + "_rigged" + PLAYER_ASSET_VERSION + ".glb"
 	var v2 := PROVIDER_DIR + role + "_rigged" + ASSET_VERSION + ".glb"
@@ -107,6 +110,8 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		push_warning("Character import has no skeleton/animation player: " + role)
 		model.queue_free()
 		return false
+	if role == "player" and asset_path(role) == NATIVE_HUMAN:
+		return _configure_native_human()
 	for full_name in animator.get_animation_list():
 		var key := String(full_name).get_slice("/", String(full_name).get_slice_count("/") - 1)
 		key = key.get_slice("|", key.get_slice_count("|") - 1)
@@ -116,6 +121,8 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		var clip := animator.get_animation(full_name)
 		clip.loop_mode = Animation.LOOP_LINEAR if key in LOOP_CLIPS else Animation.LOOP_NONE
 	animator.animation_finished.connect(_on_animation_finished)
+	# The earlier custom-rig retarget was rejected by the owner. It is never
+	# installed automatically, including when private replacement media is absent.
 	# Characters T1: weight-shifted idle (baked once into the shared clip, plus
 	# a mirrored copy for half the crowd) and adult head proportions.
 	if not ("--legacy-idle" in OS.get_cmdline_user_args()): # QA A/B switch
@@ -187,6 +194,34 @@ func configure(role: String = "player", wardrobe_variant: int = 0) -> bool:
 		grip_frames = CharacterHands.grip_frames()
 		var sc: Vector4 = outfit.get("skin_col", Vector4(0.55, 0.33, 0.22, 0.0))
 		hands.setup(skeleton, Color(sc.x, sc.y, sc.z).linear_to_srgb())
+	return true
+
+func _configure_native_human() -> bool:
+	# Keep the artist-authored mesh, skin weights and native motion together.
+	# Do not rebuild the mesh or stack the old custom-rig modifiers on it.
+	native_human = true
+	model.rotation.y = PI
+	for full_name in animator.get_animation_list():
+		var key := String(full_name).get_file().get_slice("|",String(full_name).get_slice_count("|")-1)
+		_clips[key] = String(full_name)
+		animator.get_animation(full_name).loop_mode = Animation.LOOP_LINEAR if key in LOOP_CLIPS else Animation.LOOP_NONE
+	for required in ["idle","walk","run","sprint"]:
+		if not _clips.has(required):
+			push_error("Native human is missing animation: "+required)
+			return false
+	_slice_native_jump()
+	gait_v2 = true
+	animator.animation_finished.connect(_on_animation_finished)
+	for mesh_node in model.find_children("*","MeshInstance3D",true,false):
+		(mesh_node as MeshInstance3D).layers = 1 | PLAYER_LIGHT_LAYER
+	weapon_socket = BoneAttachment3D.new()
+	weapon_socket.name = "WeaponSocket"
+	weapon_socket.bone_name = "hand.r"
+	_hand_bone = skeleton.find_bone("hand.r")
+	skeleton.add_child(weapon_socket)
+	_build_contact_shadows()
+	loaded = true
+	_play("idle",0.0)
 	return true
 
 func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloading: bool = false) -> void:
@@ -267,7 +302,7 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 		# crossfade by delta * speed_scale, so a zero rate froze the blend on
 		# the take-off pose (the run-cycle or jump_start pose) for the whole
 		# flight. The seek below overrides the clip position every frame.
-		_play(clip, crossfade, 1.0)
+		_play(clip, 0.04 if native_human else crossfade, 1.0)
 		var air_len := animator.get_animation(_clips["jump"]).length
 		animator.seek(clampf(_air_phase, 0.0, 0.999) * air_len, true)
 		return
@@ -383,7 +418,7 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 		weapon_socket.add_child(weapon)
 	_weapon_node = weapon
 	_weapon_kind = weapon_kind
-	AimIkLayer.ensure(self) # combat piece: aim/reload upper-body layer
+	if not native_human: AimIkLayer.ensure(self)
 	if asset_role != "player":
 		for mesh_node in weapon.find_children("*", "MeshInstance3D", true, false):
 			(mesh_node as MeshInstance3D).visibility_range_end = NPC_DRAW_RANGE
@@ -392,6 +427,12 @@ func attach_weapon(weapon: Node3D, weapon_kind: String = "pistol") -> void:
 	# on the body's forward axis while its grip follows the animated wrist.
 	weapon.position = Vector3(0.0, 0.055, -0.012)
 	weapon.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+	if native_human:
+		# FBX retains its centimetre armature node. Compensate attachments,
+		# without rescaling the skeleton or changing its animation channels.
+		var socket_scale := weapon_socket.global_transform.basis.get_scale().abs()
+		weapon.scale = Vector3.ONE / socket_scale
+		weapon.position /= socket_scale
 	if hands != null:
 		weapon.transform = CharacterHands.weapon_transform(weapon_kind)
 		hands.fit_weapon(weapon, weapon_kind)
@@ -595,13 +636,13 @@ func _play(clip: String, crossfade: float, rate: float = 1.0) -> void:
 	# Walk <-> run (and aim variants) keep the gait phase so the feet never
 	# jump to a different step during the blend.
 	var phase := -1.0
-	if _current in LOCOMOTION and clip in LOCOMOTION and animator.current_animation != "":
+	if not native_human and _current in LOCOMOTION and clip in LOCOMOTION and animator.current_animation != "":
 		var cur_len := animator.current_animation_length
 		if cur_len > 0.0:
 			phase = fmod(animator.current_animation_position, cur_len) / cur_len
 	_current = clip
 	animator.play(_clips[clip], crossfade)
-	if phase < 0.0 and asset_role == "player" and START_PHASE.has(clip) and _start_from_rest:
+	if not native_human and phase < 0.0 and asset_role == "player" and START_PHASE.has(clip) and _start_from_rest:
 		phase = START_PHASE[clip]
 	_start_from_rest = false
 	if phase >= 0.0:
@@ -878,3 +919,21 @@ func _update_contact_shadows() -> void:
 		var k := clampf(1.0 - lift / 0.25, 0.0, 1.0)
 		d.modulate.a = (0.85 if i < 2 else 0.3) * (0.25 + 0.75 * k)
 		d.global_transform = Transform3D(Basis(Vector3.UP, yaw), Vector3(p.x, ground + 0.05, p.z))
+
+func _slice_native_jump() -> void:
+	if not _clips.has("jump"): return
+	var source: Animation=animator.get_animation(_clips.jump)
+	var library:=AnimationLibrary.new()
+	# Mixamo Unarmed Jump, 30 fps: crouch 20-26, flight 26-46,
+	# landing absorption 46-64. Physics owns world translation.
+	for spec in [["jump_start",19.0/30.0,25.0/30.0],["jump",25.0/30.0,45.0/30.0],["land",45.0/30.0,63.0/30.0]]:
+		var clip: Animation=source.duplicate(true)
+		var begin:float=spec[1];var end:float=spec[2]
+		clip.length=end-begin;clip.loop_mode=Animation.LOOP_NONE
+		for track in clip.get_track_count():
+			for key in range(clip.track_get_key_count(track)-1,-1,-1):
+				var t:=clip.track_get_key_time(track,key)
+				if t<begin-.0001 or t>end+.0001:clip.track_remove_key(track,key)
+			for key in clip.track_get_key_count(track):clip.track_set_key_time(track,key,maxf(0,clip.track_get_key_time(track,key)-begin))
+		library.add_animation(spec[0],clip);_clips[spec[0]]="native_jump/"+spec[0]
+	animator.add_animation_library("native_jump",library)

@@ -1,0 +1,410 @@
+[
+  {
+    "check": "native_configure",
+    "passed": true
+  },
+  {
+    "check": "native_path_selected",
+    "passed": true
+  },
+  {
+    "check": "original_65_bone_rig",
+    "passed": true
+  },
+  {
+    "check": "no_rebuilt_look_mesh",
+    "passed": true
+  },
+  {
+    "check": "no_custom_body_or_foot_modifier",
+    "passed": true
+  },
+  {
+    "check": "clip_idle",
+    "passed": true
+  },
+  {
+    "check": "duration_idle",
+    "passed": true
+  },
+  {
+    "check": "finite_idle_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_idle_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_idle_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_idle_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_idle_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_walk",
+    "passed": true
+  },
+  {
+    "check": "duration_walk",
+    "passed": true
+  },
+  {
+    "check": "finite_walk_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_walk_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_walk_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_walk_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_walk_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_run",
+    "passed": true
+  },
+  {
+    "check": "duration_run",
+    "passed": true
+  },
+  {
+    "check": "finite_run_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_run_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_run_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_run_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_run_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_sprint",
+    "passed": true
+  },
+  {
+    "check": "duration_sprint",
+    "passed": true
+  },
+  {
+    "check": "finite_sprint_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_sprint_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_sprint_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_sprint_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_sprint_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_jump",
+    "passed": true
+  },
+  {
+    "check": "duration_jump",
+    "passed": true
+  },
+  {
+    "check": "finite_jump_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_jump_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_jump_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_jump_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_jump_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_aim",
+    "passed": true
+  },
+  {
+    "check": "duration_aim",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_aim_walk",
+    "passed": true
+  },
+  {
+    "check": "duration_aim_walk",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_walk_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_walk_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_walk_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_walk_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_walk_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_aim_run",
+    "passed": true
+  },
+  {
+    "check": "duration_aim_run",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_run_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_run_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_run_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_run_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_run_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_aim_back",
+    "passed": true
+  },
+  {
+    "check": "duration_aim_back",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_back_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_back_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_back_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_back_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_aim_back_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_seated",
+    "passed": true
+  },
+  {
+    "check": "duration_seated",
+    "passed": true
+  },
+  {
+    "check": "finite_seated_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_seated_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_seated_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_seated_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_seated_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_drive",
+    "passed": true
+  },
+  {
+    "check": "duration_drive",
+    "passed": true
+  },
+  {
+    "check": "finite_drive_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_drive_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_drive_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_drive_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_drive_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_reload",
+    "passed": true
+  },
+  {
+    "check": "duration_reload",
+    "passed": true
+  },
+  {
+    "check": "finite_reload_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_reload_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_reload_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_reload_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_reload_0.99",
+    "passed": true
+  },
+  {
+    "check": "clip_hit",
+    "passed": true
+  },
+  {
+    "check": "duration_hit",
+    "passed": true
+  },
+  {
+    "check": "finite_hit_0.0",
+    "passed": true
+  },
+  {
+    "check": "finite_hit_0.25",
+    "passed": true
+  },
+  {
+    "check": "finite_hit_0.5",
+    "passed": true
+  },
+  {
+    "check": "finite_hit_0.75",
+    "passed": true
+  },
+  {
+    "check": "finite_hit_0.99",
+    "passed": true
+  },
+  {
+    "check": "native_run_starts_at_source_beginning",
+    "passed": true
+  },
+  {
+    "check": "controller_chooses_run",
+    "passed": true
+  },
+  {
+    "check": "controller_chooses_sprint",
+    "passed": true
+  },
+  {
+    "check": "no_old_aim_deformer",
+    "passed": true
+  },
+  {
+    "check": "weapon_scale_preserved",
+    "passed": true
+  },
+  {
+    "check": "shooting_does_not_add_old_recoil_deformer",
+    "passed": true
+  }
+]

@@ -57,6 +57,8 @@ func _ensure_arm_mod() -> void:
 	var visual: Node = player.get("_visual")
 	if visual == null or not visual.get("loaded"):
 		return
+	if visual is CharacterVisual and visual.native_human:
+		return # Preserve the native human's authored motion; camera recoil remains.
 	var sk: Skeleton3D = visual.get("skeleton")
 	if sk == null:
 		return

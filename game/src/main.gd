@@ -89,6 +89,10 @@ func _ready() -> void:
 	heli.name = "Helicopter"
 	add_child(heli)
 	heli.global_position = world.locations["helipad_primary"] + Vector3(0.0, 0.6, 0.0)
+	var waterfront_heli := Helicopter.new()
+	waterfront_heli.name = "WaterfrontHelicopter"
+	add_child(waterfront_heli)
+	waterfront_heli.global_position = world.locations["helipad_secondary"] + Vector3(0, .6, 0)
 	var perf_director := PerfDirector.new()   # wave S: runtime render budgets
 	add_child(perf_director)
 	perf_director.setup(self)
@@ -331,6 +335,10 @@ func _ready() -> void:
 		Game.simulation_paused = true
 		hud.show_title(true)
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		if "--owner-polish-review" in args:
+			var polish: Node = _qa_system("res://src/systems/owner_polish_review.gd")
+			add_child(polish)
+			polish.setup(self)
 		if "--ui-review" in args:
 			var review: Node = _qa_system("res://src/systems/ui_review.gd")
 			add_child(review)
