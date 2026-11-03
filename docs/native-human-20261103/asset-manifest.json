@@ -152,7 +152,7 @@
   },
   "raw_asset_redistribution": "not included in public source",
   "validation": {
-    "headless_asset_checks": 100,
+    "headless_asset_checks": 102,
     "passed": true,
     "new_game_launched": false,
     "visual_review": "actual exported run inspected in local asset viewer from front, side and rear; no full gameplay run"

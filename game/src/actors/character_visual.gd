@@ -635,13 +635,13 @@ func _play(clip: String, crossfade: float, rate: float = 1.0) -> void:
 	# Walk <-> run (and aim variants) keep the gait phase so the feet never
 	# jump to a different step during the blend.
 	var phase := -1.0
-	if _current in LOCOMOTION and clip in LOCOMOTION and animator.current_animation != "":
+	if not native_human and _current in LOCOMOTION and clip in LOCOMOTION and animator.current_animation != "":
 		var cur_len := animator.current_animation_length
 		if cur_len > 0.0:
 			phase = fmod(animator.current_animation_position, cur_len) / cur_len
 	_current = clip
 	animator.play(_clips[clip], crossfade)
-	if phase < 0.0 and asset_role == "player" and START_PHASE.has(clip) and _start_from_rest:
+	if not native_human and phase < 0.0 and asset_role == "player" and START_PHASE.has(clip) and _start_from_rest:
 		phase = START_PHASE[clip]
 	_start_from_rest = false
 	if phase >= 0.0:

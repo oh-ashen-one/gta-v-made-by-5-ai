@@ -28,4 +28,6 @@ The asset checker exercises actual CharacterVisual selection, 65-bone skin, abse
 
 Start the optional asset-only viewer with `npm ci --prefix tools/native-human-viewer` and `python3 tools/native-human-viewer/serve.py`. It binds to loopback only. The game remains closed until the owner asks to play.
 
-Final asset-only result: 100/100 checks passed; 13 native clips loaded. The full game remains unopened under the latest owner instruction.
+Final asset-only result: 102/102 checks passed; 13 native clips loaded. The full game remains unopened under the latest owner instruction.
+
+Native clips use their own start timing and ordinary crossfades; the old custom gait phase offsets are not applied. The asset check also verifies that firing does not reattach the old skeleton recoil modifier.

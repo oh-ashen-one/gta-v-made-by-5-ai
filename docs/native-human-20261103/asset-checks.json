@@ -384,6 +384,10 @@
     "passed": true
   },
   {
+    "check": "native_run_starts_at_source_beginning",
+    "passed": true
+  },
+  {
     "check": "controller_chooses_run",
     "passed": true
   },
@@ -397,6 +401,10 @@
   },
   {
     "check": "weapon_scale_preserved",
+    "passed": true
+  },
+  {
+    "check": "shooting_does_not_add_old_recoil_deformer",
     "passed": true
   }
 ]
