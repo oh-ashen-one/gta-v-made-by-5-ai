@@ -2,11 +2,11 @@ extends RefCounted
 const Art := preload("res://src/ui/hud_art.gd")
 ## Native UI translation of the selected 01-jade concept.
 const INK := Color("101918")
-const PANEL := Color(0.045, 0.075, 0.069, 0.94)
+const PANEL := Color(0.07, 0.085, 0.11, 0.82)
 const TEXT := Color("f2f1e9")
-const MUTED := Color("9eafa7")
-const JADE := Color("99d8ae")
-const LINE := Color(0.61, 0.78, 0.68, 0.23)
+const MUTED := Color("c2ccd9")
+const JADE := Color("76b6ff")
+const LINE := Color(.8,.86,.95,.15)
 const AMBER := Color("edb85d")
 
 static func box(color: Color = PANEL, radius: int = 10) -> StyleBoxFlat:
@@ -22,9 +22,9 @@ static func box(color: Color = PANEL, radius: int = 10) -> StyleBoxFlat:
 	return s
 
 static func button(b: Button) -> void:
-	b.add_theme_stylebox_override("normal", Art.style("ammo"))
-	b.add_theme_stylebox_override("hover", Art.style("ammo",Color(1.15,1.25,1.15,1)))
-	b.add_theme_stylebox_override("pressed", Art.style("ammo",Color(.8,1.05,.85,1)))
+	b.add_theme_stylebox_override("normal", box())
+	b.add_theme_stylebox_override("hover", box(Color(.13,.22,.34,.96)))
+	b.add_theme_stylebox_override("pressed", box(Color(.08,.16,.26,.96)))
 	var focus := box(Color.TRANSPARENT)
 	focus.border_color = JADE
 	focus.set_border_width_all(2)

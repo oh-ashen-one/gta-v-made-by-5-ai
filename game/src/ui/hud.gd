@@ -33,7 +33,7 @@ const ThemeKit := preload("res://src/ui/jade_theme.gd")
 const Wheel := preload("res://src/ui/weapon_wheel.gd")
 const Art := preload("res://src/ui/hud_art.gd")
 const DetailedMap := preload("res://src/ui/detailed_minimap.gd")
-var _minimap_frame: TextureRect
+var _minimap_frame: Control
 var _weapon_icon: TextureRect
 var _prompt_plate: Panel
 var _map_caption: Label
@@ -75,56 +75,56 @@ func _build() -> void:
 	add_child(root)
 	_fit_layout()
 	get_viewport().size_changed.connect(_fit_layout)
-	_panel(root,Vector2(26,26),Vector2(400,96),ThemeKit.PANEL)
-	_objective_tag = _mk_label(root,Vector2(48,43),11,ThemeKit.JADE)
-	_objective_tag.text = "HARBOUR RELAY"
-	_objective_label = _mk_label(root,Vector2(48,65),17,ThemeKit.TEXT)
-	_objective_label.size = Vector2(358,48)
-	_objective_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_prompt_plate=_panel(root,Vector2(400,614),Vector2(480,42),ThemeKit.PANEL)
-	_prompt_label = _mk_label(root,Vector2(340,624),16,ThemeKit.TEXT)
+	_panel(root,Vector2(866,18),Vector2(396,40),ThemeKit.PANEL)
+	_objective_tag = _mk_label(root,Vector2(882,20),11,ThemeKit.JADE)
+	_objective_tag.text = ""; _objective_tag.hide()
+	_objective_label = _mk_label(root,Vector2(882,29),13,ThemeKit.TEXT)
+	_objective_label.size = Vector2(364,24)
+	_objective_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	_objective_label.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
+	_prompt_plate=_panel(root,Vector2(540,638),Vector2(200,28),ThemeKit.PANEL)
+	_prompt_label = _mk_label(root,Vector2(340,645),12,ThemeKit.TEXT)
 	_prompt_label.size = Vector2(600,34)
 	_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_health_bar = Control.new()
-	_health_bar.position=Vector2(30,668); _health_bar.size=Vector2(238,5)
+	_health_bar.position=Vector2(24,685); _health_bar.size=Vector2(176,3)
 	_health_bar.draw.connect(func():
-		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(238,5)),ThemeKit.PANEL)
-		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(238*Game.health_ratio(),5)),ThemeKit.JADE))
+		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(176,3)),ThemeKit.PANEL)
+		_health_bar.draw_rect(Rect2(Vector2.ZERO,Vector2(176*Game.health_ratio(),3)),ThemeKit.JADE))
 	root.add_child(_health_bar)
-	_health_label = _mk_label(root,Vector2(30,680),11,ThemeKit.MUTED)
+	_health_label = _mk_label(root,Vector2(24,695),11,ThemeKit.MUTED)
 	_health_label.text = "HEALTH 100"
-	_panel(root,Vector2(1038,647),Vector2(218,61),ThemeKit.PANEL)
-	_weapon_label = _mk_label(root,Vector2(1142,653),10,ThemeKit.JADE)
-	_weapon_label.text = "PISTOL"
-	_ammo_label = _mk_label(root,Vector2(1142,670),24,ThemeKit.TEXT)
+	_panel(root,Vector2(1094,651),Vector2(168,53),ThemeKit.PANEL)
+	_weapon_label = _mk_label(root,Vector2(1158,658),10,ThemeKit.JADE)
+	_weapon_label.text = "1  PISTOL"
+	_ammo_label = _mk_label(root,Vector2(1158,676),17,ThemeKit.TEXT)
 	_ammo_label.text = "12 / 96"
-	_weapon_icon=TextureRect.new();_weapon_icon.position=Vector2(1057,657);_weapon_icon.size=Vector2(72,42)
+	_weapon_icon=TextureRect.new();_weapon_icon.position=Vector2(1102,659);_weapon_icon.size=Vector2(48,30)
 	_weapon_icon.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;_weapon_icon.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_weapon_icon.texture=Art.texture("pistol");_weapon_icon.mouse_filter=Control.MOUSE_FILTER_IGNORE;root.add_child(_weapon_icon)
-	_wanted_label = _mk_label(root,Vector2(840,32),13,ThemeKit.AMBER)
+	_wanted_label = _mk_label(root,Vector2(840,67),13,ThemeKit.AMBER)
 	_wanted_label.size=Vector2(410,34); _wanted_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
-	_stats_label = _mk_label(root,Vector2(1057,661),21,ThemeKit.TEXT)
+	_stats_label = _mk_label(root,Vector2(1074,619),14,ThemeKit.TEXT)
 	_stats_label.size=Vector2(180,36); _stats_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	_radio_label = _mk_label(root,Vector2(360,677),12,ThemeKit.MUTED)
 	_radio_label.size=Vector2(600,28); _radio_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	_debug_label = _mk_label(root,Vector2(30,134),13,ThemeKit.MUTED)
 	_debug_label.visible=false
-	_notifications=VBoxContainer.new(); _notifications.position=Vector2(890,90); _notifications.size=Vector2(360,180)
+	_notifications=VBoxContainer.new(); _notifications.position=Vector2(966,102); _notifications.size=Vector2(296,160)
 	_notifications.add_theme_constant_override("separation",8)
 	_notifications.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	root.add_child(_notifications)
 	_crosshair=Control.new(); _crosshair.size=Vector2(1280,720)
 	_crosshair.mouse_filter=Control.MOUSE_FILTER_IGNORE; _crosshair.draw.connect(_draw_crosshair); root.add_child(_crosshair)
-	_minimap_frame=TextureRect.new();_minimap_frame.position=Vector2(26,416);_minimap_frame.size=Vector2(250,250)
-	_minimap_frame.texture=Art.texture("minimap");_minimap_frame.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
-	_minimap_frame.mouse_filter=Control.MOUSE_FILTER_IGNORE;root.add_child(_minimap_frame)
-	_minimap=DetailedMap.new();_minimap.position=Vector2(37,427);_minimap.size=Vector2(228,228)
+	_minimap_frame=_panel(root,Vector2(20,500),Vector2(184,184),Color(.97,.97,.97,.97))
+	_minimap=DetailedMap.new();_minimap.position=Vector2(24,504);_minimap.size=Vector2(176,176)
 	root.add_child(_minimap);_minimap.setup(world,player,mission)
-	_map_caption=_mk_label(root,Vector2(32,397),11,ThemeKit.TEXT);_map_caption.text="HERITAGE DISTRICT"
-	_wheel=Wheel.new(); _wheel.position=Vector2(1020,404); root.add_child(_wheel)
+	_map_caption=_mk_label(root,Vector2(24,484),11,ThemeKit.TEXT);_map_caption.text="HERITAGE DISTRICT"
+	_wheel=Wheel.new(); _wheel.hide(); root.add_child(_wheel)
 	for child in root.get_children():
 		if child is CanvasItem: _gameplay_controls.append(child)
 	_build_pause_panel(root); _build_title_panel(root); _build_settings_panel(root)
+	_build_map(root)
 
 func _fit_layout() -> void:
 	if _layout_root != null:
@@ -136,15 +136,7 @@ func _fit_layout() -> void:
 func _panel(parent: Control, pos: Vector2, dimensions: Vector2, color: Color) -> Panel:
 	var panel:=Panel.new(); panel.position=pos; panel.size=dimensions
 	panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	if dimensions.x>=1200 and dimensions.y>=680:
-		var dim:=StyleBoxFlat.new();dim.bg_color=color
-		panel.add_theme_stylebox_override("panel",dim)
-	elif dimensions.x>=250 and dimensions.y>=40 and color.a>=.5:
-		panel.add_theme_stylebox_override("panel",Art.style("mission",Color(1,1,1,color.a)))
-	elif dimensions.x>=100 and color.a>=.5:
-		panel.add_theme_stylebox_override("panel",Art.style("ammo",Color(1,1,1,color.a)))
-	else:
-		panel.add_theme_stylebox_override("panel",ThemeKit.box(color))
+	panel.add_theme_stylebox_override("panel",ThemeKit.box(color,6))
 	parent.add_child(panel)
 	return panel
 
@@ -170,24 +162,19 @@ func _build_pause_panel(root: Control) -> void:
 	_pause_panel=Control.new(); _pause_panel.size=Vector2(1280,720); _pause_panel.visible=false; root.add_child(_pause_panel)
 	_panel(_pause_panel,Vector2.ZERO,Vector2(1280,720),Color(0.025,0.045,0.038,0.94))
 	_mk_label(_pause_panel,Vector2(80,66),12,ThemeKit.JADE).text="ORCHARD REACH / PAUSED"
-	_mk_label(_pause_panel,Vector2(80,102),46,ThemeKit.TEXT).text="Take a breath."
+	_mk_label(_pause_panel,Vector2(80,102),46,ThemeKit.TEXT).text="PAUSED"
 	_button(_pause_panel,"Resume                                      Esc",Vector2(80,214),func():get_tree().current_scene._toggle_pause())
 	_button(_pause_panel,"Save progress                               F5",Vector2(80,272),func():
 		if Game.save_game(): Events.toast("Progress saved.","good"))
 	_button(_pause_panel,"Restart Harbour Relay                     F10",Vector2(80,330),func():get_tree().current_scene._restart_mission();get_tree().current_scene._toggle_pause())
 	_button(_pause_panel,"Settings                                      F3",Vector2(80,388),func():get_tree().current_scene._toggle_settings())
 	_button(_pause_panel,"Quit game",Vector2(80,446),func():get_tree().current_scene._quit_game())
-	_panel(_pause_panel,Vector2(570,206),Vector2(610,360),ThemeKit.PANEL)
-	_mk_label(_pause_panel,Vector2(598,234),12,ThemeKit.JADE).text="THE CITY IS YOURS"
-	_mk_label(_pause_panel,Vector2(598,270),16,ThemeKit.TEXT).text="ON FOOT
-WASD move · Shift sprint · Space jump
-Mouse look · Right mouse aim · Left mouse fire
-R reload · Q cycle weapon · Hold Tab for weapon wheel
-E interact / enter vehicle
-
-DRIVING   W/S throttle · A/D steer · Space brake
-FLIGHT     Space climb · Shift descend · A/D turn
-E exit a vehicle when safe"
+	var guide := TextureRect.new()
+	guide.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; guide.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	guide.texture = load("res://assets/ui/generated/controls-manual.png")
+	guide.position = Vector2(478,100); guide.size = Vector2(770,514)
+	guide.name="VisualControlsGuide"
+	_pause_panel.add_child(guide)
 
 func _build_title_panel(root: Control) -> void:
 	_title_panel=Control.new(); _title_panel.size=Vector2(1280,720); root.add_child(_title_panel)
@@ -253,7 +240,7 @@ func _on_health(value: float, max_value: float) -> void:
 
 func _on_ammo(mag: int, reserve: int) -> void:
 	_ammo_label.text = "%d / %d" % [mag, reserve]
-	_weapon_label.text = Game.carried_weapon.to_upper()
+	_weapon_label.text = ("1  " if Game.carried_weapon=="pistol" else "2  ")+Game.carried_weapon.to_upper()
 	_weapon_icon.texture=Art.texture(Game.carried_weapon)
 
 func _on_wanted(level: int) -> void:
@@ -273,12 +260,12 @@ func _on_notify(text: String, kind: String) -> void:
 	if text=="Civilian fleeing!": return
 	while _notifications.get_child_count()>=3:
 		var old:=_notifications.get_child(0); _notifications.remove_child(old); old.queue_free()
-	var notice:=PanelContainer.new(); notice.custom_minimum_size=Vector2(360,54)
-	var style:=Art.style("notification" if kind in ["warn","bad"] else "mission")
+	var notice:=PanelContainer.new(); notice.custom_minimum_size=Vector2(296,40)
+	var style:=ThemeKit.box(ThemeKit.PANEL,6)
 	notice.add_theme_stylebox_override("panel",style); notice.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	_notifications.add_child(notice)
 	var label:=Label.new(); label.text=text; label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	label.custom_minimum_size=Vector2(320,30); label.add_theme_font_size_override("font_size",14)
+	label.custom_minimum_size=Vector2(260,24); label.add_theme_font_size_override("font_size",14)
 	label.add_theme_color_override("font_color",ThemeKit.AMBER if kind in ["warn","bad"] else ThemeKit.TEXT)
 	label.mouse_filter=Control.MOUSE_FILTER_IGNORE; notice.add_child(label)
 	var tween:=create_tween(); notice.modulate.a=0
@@ -290,12 +277,16 @@ func _on_notify(text: String, kind: String) -> void:
 func _process(_delta: float) -> void:
 	if player == null:
 		return
+	if navigation:
+		navigation.update(player.controlled_actor().global_position)
+		_gps_label.text=("%s · %d m" % [navigation.title,navigation.distance_remaining(player.controlled_actor().global_position)]) if navigation.active else "M  Map"
+	if _full_map.visible:
+		set_gameplay_visible(false); _city_map.queue_redraw(); return
 	# Keep every gameplay element off modal screens.
 	set_gameplay_visible(bool(Game.settings.get("hud_visible",true)) and not _title_panel.visible and not _settings_panel.visible and not _pause_panel.visible)
 	# Gameplay messages must not draw over modal controls or settings values.
-	_wheel.visible = not _title_panel.visible and not _settings_panel.visible and not _pause_panel.visible and bool(Game.settings.get("hud_visible",true)) and Game.mode==Game.MODE_FOOT
-	if _wheel_open: _wheel.update_hover()
-	else: _wheel.queue_redraw()
+	_wheel.hide()
+	_objective_tag.hide()
 	_radio_label.text = "RADIO  /  " + String(Sfx.radio_title()) if Sfx.has_method("radio_title") and Game.mode==Game.MODE_CAR else ""
 	_notifications.visible = bool(Game.settings.get("hud_visible",true)) and not Game.simulation_paused and not _title_panel.visible and not _settings_panel.visible
 	var speed := 0.0
@@ -316,10 +307,13 @@ func _process(_delta: float) -> void:
 	_map_caption.text="HERITAGE DISTRICT" if absf(player.global_position.x)<340 and player.global_position.z> -330 else "MARINA BAY"
 	var normal_hud:=not _title_panel.visible and not _pause_panel.visible and not _settings_panel.visible and bool(Game.settings.get("hud_visible",true))
 	_prompt_plate.visible=normal_hud and not _prompt_label.text.is_empty()
-	_weapon_icon.visible=normal_hud and Game.mode==Game.MODE_FOOT
+	_weapon_icon.visible=normal_hud
 	_ammo_label.visible=_weapon_icon.visible
 	_weapon_label.visible=_weapon_icon.visible
 	if not _hotel_status.is_empty():_objective_label.text=_hotel_status
+	elif mission: _objective_label.text=_objective_sentence(mission.current_objective())
+	for activity in get_tree().get_nodes_in_group("downtown_activity"):
+		if activity.has_method("is_active") and activity.is_active(): _objective_label.text=activity.current_objective()
 	_minimap.queue_redraw()
 	if _debug_label.visible:
 		_debug_label.text = "mode=%d stage=%d wanted=%d heat=%.0f hp=%.0f peds=%d" % [
@@ -330,7 +324,7 @@ func _count_group(name: String) -> int:
 	return get_tree().get_nodes_in_group(name).size()
 
 func _draw_crosshair() -> void:
-	if player==null or not player.aiming or Game.mode!=Game.MODE_FOOT: return
+	if player==null or not player.aiming or Game.mode==Game.MODE_HELI: return
 	var c := _crosshair.size * 0.5
 	var col := Color(0.98, 0.96, 0.90, 0.9)
 	_crosshair.draw_line(c + Vector2(-9, 0), c + Vector2(-3, 0), col, 2.0)
@@ -359,28 +353,47 @@ func set_hotel_status(text:String)->void:
 	if text.is_empty() and is_instance_valid(mission):_objective_label.text=mission.current_objective().replace("Harbour Relay — ","")
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.keycode==KEY_TAB and not event.echo:
-		if event.pressed and not Game.simulation_paused and Game.mode==Game.MODE_FOOT and not _title_panel.visible:
-			open_weapon_wheel()
-		elif not event.pressed and _wheel_open:
-			close_weapon_wheel(true)
-		else: return
-		get_viewport().set_input_as_handled()
-	elif _wheel_open and event.is_action_pressed("pause"):
-		close_weapon_wheel(false)
-		get_viewport().set_input_as_handled()
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_M and not _title_panel.visible and not _settings_panel.visible and not _pause_panel.visible:
+			_toggle_map(); get_viewport().set_input_as_handled()
+		elif event.physical_keycode == KEY_ESCAPE and _full_map.visible:
+			_toggle_map(); get_viewport().set_input_as_handled()
+		elif _full_map.visible:
+			get_viewport().set_input_as_handled()
+		elif not Game.simulation_paused and event.physical_keycode in [KEY_1,KEY_2]:
+			player.equip_weapon("pistol" if event.physical_keycode==KEY_1 else "smg")
+			get_viewport().set_input_as_handled()
 
-func open_weapon_wheel() -> void:
-	if _wheel_open or Game.simulation_paused or Game.mode!=Game.MODE_FOOT: return
-	_wheel_open=true; _wheel.expanded=true; _wheel.selected=Game.carried_weapon
-	Game.simulation_paused=true
-	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
-	_wheel.queue_redraw()
-
-func close_weapon_wheel(equip: bool) -> void:
-	if not _wheel_open: return
-	if equip: player.equip_weapon(_wheel.selected)
-	_wheel_open=false; _wheel.expanded=false
-	Game.simulation_paused=false
-	Input.mouse_mode=Input.MOUSE_MODE_CAPTURED
-	_wheel.queue_redraw()
+var navigation: RefCounted
+var _full_map: Control
+var _city_map: Control
+var _gps_label: Label
+func _build_map(root: Control) -> void:
+	navigation=preload("res://src/systems/city_navigation.gd").new();navigation.setup(world)
+	_minimap.navigation=navigation
+	_gps_label=_mk_label(root,Vector2(24,460),11,ThemeKit.TEXT);_gps_label.size=Vector2(320,24)
+	_gameplay_controls.append(_gps_label)
+	_full_map=Control.new();_full_map.size=Vector2(1280,720);root.add_child(_full_map);_full_map.hide()
+	_panel(_full_map,Vector2.ZERO,Vector2(1280,720),Color(.94,.95,.96,1))
+	_city_map=DetailedMap.new();_city_map.position=Vector2(310,20);_city_map.size=Vector2(950,680)
+	_city_map.full_map=true;_city_map.navigation=navigation
+	_full_map.add_child(_city_map);_city_map.setup(world,player,mission)
+	_mk_label(_full_map,Vector2(24,24),25,Color("233348")).text="SINGAPORE"
+	_mk_label(_full_map,Vector2(24,64),12,Color("596979")).text="Choose a destination · M / Esc close"
+	var row:=0
+	for poi in navigation.points:
+		var button:=Button.new();button.text=poi.name;button.position=Vector2(20,104+row*46);button.size=Vector2(275,38)
+		ThemeKit.button(button);button.add_theme_font_size_override("font_size",13);_full_map.add_child(button)
+		button.pressed.connect(func():navigation.select(poi.position,poi.name);_toggle_map())
+		row+=1
+	var clear:=Button.new();clear.text="Clear waypoint";clear.position=Vector2(20,650);clear.size=Vector2(275,38);ThemeKit.button(clear);_full_map.add_child(clear)
+	clear.pressed.connect(func():navigation.clear();_city_map.queue_redraw())
+func _toggle_map() -> void:
+	if not _full_map.visible and Game.simulation_paused:return
+	_full_map.visible=not _full_map.visible
+	Game.simulation_paused=_full_map.visible
+	if not _full_map.visible:
+		player.suppress_mouse_fire_until_release=true
+		player._press_queue.clear()
+	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE if _full_map.visible else Input.MOUSE_MODE_CAPTURED
+	_city_map.queue_redraw()

@@ -1,3 +1,11 @@
+## Latest owner pass — compact GPS, jump and driving, 2026-11-03 afternoon
+
+Latest owner instruction: **do not open the game for testing now; GPU is heavily loaded**. No owned rendered game/launch remains. Continue CPU/headless work only until owner changes this. Keep other sessions running. Changes are on `codex/clear-streets-ui-radio-20261103`, draft PR #3; no game-main merge authority.
+
+Read `docs/city-playtest-20261103/README.md` and `verification.json` for implemented features, evidence and exact visual limits. Ten private radio MP3s and the newly downloaded native Mixamo Unarmed Jump are installed locally. Full jump visual acceptance, corrected pause-guide/map-label visuals, window-hole appearance and owner gameplay/music feel remain unverified. Do not convert finite-bone, headless or partial-render checks into subjective acceptance. Large source-city and full-hotel plans remain unfinished.
+
+---
+
 ## Latest playtest follow-up — generated HUD and driving, 2026-11-03
 
 Owner says the native running character looks much better; retain it. Owner rejected the code-drawn HUD weapon icons and requested production image-generated HUD art and a detailed live minimap. Mouse driving-camera movement was initially backlogged, then explicitly included. Pedestrian hits must register without stopping the player's car. Owner stopped playing and authorized immediate integration, verification and reopening when ready.

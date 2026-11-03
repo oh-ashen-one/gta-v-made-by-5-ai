@@ -31,3 +31,8 @@ Start the optional asset-only viewer with `npm ci --prefix tools/native-human-vi
 Final asset-only result: 102/102 checks passed; 13 native clips loaded. The full game remains unopened under the latest owner instruction.
 
 Native clips use their own start timing and ordinary crossfades; the old custom gait phase offsets are not applied. The asset check also verifies that firing does not reattach the old skeleton recoil modifier.
+
+
+### Afternoon jump correction
+
+The owner accepted the runner but rejected the jump. Downloaded **Unarmed Jump / Jumping And Landing In Place** from Adobe Mixamo on the same Josh rig, FBX Binary, Without Skin, 30 fps, no keyframe reduction. The previous locomotion-pack jump is retained only as historical raw source. The importer now selects `Unarmed Jump.fbx`. Runtime slices the authored 71-frame clip into anticipation (frames 20–26), airborne motion (26–46), and landing absorption (46–64), so vertical-velocity seeking only traverses the flight phase, never the preparation and recovery. Standing takeoff waits 0.20 seconds for the sourced anticipation; running jumps retain immediate input response. Original native skin weights and accepted run clips remain in use. Restricted FBX/GLB/Blender media remain ignored; current hashes and acquisition details are in the asset manifest.

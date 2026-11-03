@@ -438,6 +438,10 @@ func build_player_rig() -> void:
 	if _player_rig_built: return
 	_player_rig_built = true
 	camera = car._camera
+	# SpringArm writes child transforms on every physics tick, even top-level
+	# cameras. Give the chase solver exclusive ownership of this camera.
+	camera.reparent(car, true)
+	car._arm.set_physics_process(false)
 	camera.top_level = true
 	_cam_snap = true
 	# Moving reflection probe: the paint and glass mirror the real street and
@@ -893,8 +897,7 @@ func _update_camera(delta: float) -> void:
 	# integ-P seam: closing in under hard braking/reverse is capped (critic: the
 	# van's rear filled 60-70% of the frame).
 	var long_target := clampf(_long_acc * 0.05, -0.35, 0.55)
-	_cam_long_v += ((long_target - _cam_long) * 26.0 - _cam_long_v * 7.0) * delta
-	_cam_long += _cam_long_v * delta
+	_cam_long = lerpf(_cam_long, long_target, 1.0 - exp(-5.0 * delta))
 	# Framing scales with the body (van is taller/longer than a coupe).
 	var size_k: float = {"van": 1.38, "coupe": 0.96, "police": 1.03}.get(car.kind, 1.0)
 	var dist := (4.7 + ratio * 0.3) * size_k + _cam_long
@@ -907,8 +910,7 @@ func _update_camera(delta: float) -> void:
 	var cam_right := Vector3(cos(orbit_yaw), 0.0, -sin(orbit_yaw))
 	# Weight swing: the camera is thrown outward in a corner and settles back.
 	var lat_target := clampf(_lat_acc * 0.022, -0.55, 0.55)
-	_cam_lat_v += ((lat_target - _cam_lat) * 18.0 - _cam_lat_v * 6.5) * delta
-	_cam_lat += _cam_lat_v * delta
+	_cam_lat = lerpf(_cam_lat, lat_target, 1.0 - exp(-5.0 * delta))
 	var base := car.global_position
 	var pivot := base + Vector3(0.0, 1.25 * size_k, 0.0)
 	var desired := base - fwd * dist * cos(car.camera_pitch_offset) + cam_right * _cam_lat + Vector3(0.0,maxf(0.45,height+0.55-sin(car.camera_pitch_offset)*dist),0.0)
@@ -930,7 +932,7 @@ func _update_camera(delta: float) -> void:
 	if _cam_snap:
 		_cam_pos = desired
 	else:
-		_cam_pos = _cam_pos.lerp(desired, clampf(delta * 14.0, 0.0, 1.0))
+		_cam_pos = _cam_pos.lerp(desired, 1.0 - exp(-14.0 * delta))
 	var look := base + Vector3(0.0, 1.0 * size_k, 0.0) + fwd * (2.6 + ratio * 3.5)
 	var xf := Transform3D(Basis.IDENTITY, _cam_pos).looking_at(look, Vector3.UP)
 	# Collision kick only (LOOK_DEV: no default shake); decays in ~0.4 s.

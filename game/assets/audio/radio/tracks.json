@@ -38,5 +38,50 @@
     "source": "https://suno.com/song/1964d290-6e9a-44a0-be8b-0ef570c370a2",
     "duration_seconds": 161.44,
     "sha256": "5ccd6e7610c31ef7e5a50d2f33f7c463d25f859b1d144856b307b021a2c33d42"
+  },
+  {
+    "title": "Night Shift",
+    "style": "UK drill vocals",
+    "path": "res://assets/audio/radio/night-shift.mp3",
+    "source": "https://suno.com/song/8c4998fd-011d-4c68-98f1-69578d0b47bb",
+    "duration_seconds": 117.08,
+    "sha256": "c8733a52743cf788bec5eeeb733be29993e5bab426785234e865ad7e6771239f",
+    "vocals": true
+  },
+  {
+    "title": "Electric Blue",
+    "style": "vocal progressive house EDM",
+    "path": "res://assets/audio/radio/electric-blue.mp3",
+    "source": "https://suno.com/song/d4f9529f-2156-4106-984f-5b7758d49f82",
+    "duration_seconds": 201.48,
+    "sha256": "979e6c2133bf187307cb4f714ee41075ffb260eef5b38a1cd7a0ca9e158308d4",
+    "vocals": true
+  },
+  {
+    "title": "Gold in the Rain",
+    "style": "soulful gospel hip-hop vocals",
+    "path": "res://assets/audio/radio/gold-in-the-rain.mp3",
+    "source": "https://suno.com/song/1dd1b41b-8a20-4417-a69a-a1470cb46c91",
+    "duration_seconds": 168.64,
+    "sha256": "f05904378d3cca47cc89583dd74ee648d708ac5f3ca04e62dbeab73817468fe2",
+    "vocals": true
+  },
+  {
+    "title": "Starlight Taxi",
+    "style": "Korean-English K-pop vocals",
+    "path": "res://assets/audio/radio/starlight-taxi.mp3",
+    "source": "https://suno.com/song/b3b7a1a0-dd87-49f4-bea3-23d01078426b",
+    "duration_seconds": 103.6,
+    "sha256": "7671b8ab3bec2e217df7e40aa84a8b7d277e62390d78a32e18c47c99520aa428",
+    "vocals": true
+  },
+  {
+    "title": "Moonlight Darling",
+    "style": "1950s doo-wop vocals",
+    "path": "res://assets/audio/radio/moonlight-darling.mp3",
+    "source": "https://suno.com/song/75dc5e9f-2135-4cdb-96ff-7b6e2191fc04",
+    "duration_seconds": 142.08,
+    "sha256": "7c497d4c29b32ead1435329056caf7141448ccd8ebc58236dc1b13653bdfdf46",
+    "vocals": true
   }
 ]

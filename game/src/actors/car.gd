@@ -657,7 +657,7 @@ var _grip_recover := 1.0
 func _player_control(delta: float) -> void:
 	var throttle := Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
 	var steer_input := Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
-	_handbrake = Input.is_action_pressed("jump")
+	_handbrake = Input.is_action_pressed("jump") or (Input.is_action_pressed("sprint") and absf(steer_input) > 0.1)
 	var fwd := Vector3(-sin(rotation.y), 0.0, -cos(rotation.y))
 	var right := Vector3(cos(rotation.y), 0.0, -sin(rotation.y))
 	var v := Vector3(velocity.x, 0.0, velocity.z)
@@ -1192,3 +1192,16 @@ func _build_articulated_wheels() -> void:
 			brake.visibility_range_end = 45.0   # only ever read at close range
 			pivot.add_child(brake)
 			_articulated.append({"pivot": pivot, "spin": spin, "front": front})
+
+var driver_window_broken := false
+func open_drive_by_window() -> void:
+	if driver_window_broken: return
+	driver_window_broken = true
+	var at := drive_by_muzzle()
+	if damage != null:
+		damage.open_driver_window()
+		damage.glass_burst(at - Vector3.UP * .5, global_basis.x, .7, velocity)
+	Sfx.play_at("glass_break", at, -6.0)
+
+func drive_by_muzzle() -> Vector3:
+	return to_global(Vector3(1.16, 1.35 if kind != "van" else 1.85, -.25))

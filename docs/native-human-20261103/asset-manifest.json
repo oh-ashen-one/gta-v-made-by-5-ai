@@ -1,14 +1,15 @@
 {
   "character": "Adobe Mixamo Josh",
   "asset_path": "game/assets/providers/mixamo_josh/player_native.glb",
-  "sha256": "90a570b2643019e4b94579fd1f1f92a3293044ce32d172aeb3d3489e41f06198",
-  "bytes": 48880648,
+  "sha256": "7c8f19928f38459e1771fe84c5c962cdb1068bfb230433955959392bd76a2eb2",
+  "bytes": 48880036,
   "bones": 65,
   "mesh_vertices": 30535,
   "source_hashes": {
     "left strafe walking.fbx": "72a5be62e021596e7165b5b48a49b259c1f7f189d487ce73a213c8e8b88ea411",
     "left turn 90.fbx": "45f40ddb6f655f9958cbad9a0f2a3a3dd27554ba2946774124d576f1e0d2725a",
     "jump.fbx": "0260f18a553afe4100cf4b642a7215176cf0646bd5840c85883999b2621766da",
+    "Unarmed Jump.fbx": "927477b99c0b74b61591dea26cc904160f46c8d1b0351be42b6933497a7cbcaa",
     "right strafe walking.fbx": "b1ee1d26559e16366e9bbe131cba7d0fdf100bd6dc4737db4ad74e10073603b7",
     "Sitting Idle.fbx": "61a2bc413d9e79369d9db9bf726acebd04892296461648d639d4b163b2780eb7",
     "right turn 90.fbx": "43be53306abccd7bd2dd33b40276ce232a38deae59dda6feddea2013aa9c35d8",
@@ -156,5 +157,28 @@
     "passed": true,
     "new_game_launched": false,
     "visual_review": "actual exported run inspected in local asset viewer from front, side and rear; no full gameplay run"
+  },
+  "jump_revision": {
+    "source": "Adobe Mixamo Unarmed Jump on Josh",
+    "url": "https://www.mixamo.com/#/?page=1&query=jump&type=Motion%2CMotionPack",
+    "download": "Unarmed Jump.fbx",
+    "fps": 30,
+    "skin": "Without Skin",
+    "key_reduction": "none",
+    "runtime_sections_frames": {
+      "jump_start": [
+        20,
+        26
+      ],
+      "jump": [
+        26,
+        46
+      ],
+      "land": [
+        46,
+        64
+      ]
+    },
+    "modification": "Native world-space visual bake, horizontal root travel removed; runtime slices separate ground preparation, flight and landing. Original mesh and weights retained."
   }
 }

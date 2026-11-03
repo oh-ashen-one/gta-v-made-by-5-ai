@@ -16,7 +16,7 @@ rig=next(o for o in bpy.data.objects if o.type=='ARMATURE');rig.name='NativeHuma
 meshes=[o for o in bpy.data.objects if o.type=='MESH']
 clips={'run':rig.animation_data.action};slots={'run':rig.animation_data.action_slot}
 rig.animation_data.action=None
-mapping={'idle':'idle.fbx','walk':'walking.fbx','sprint':'running.fbx','jump':'jump.fbx','seated':'Sitting Idle.fbx','drive':'Sitting Idle.fbx','reload':'shooter/reloading.fbx','hit':'shooter/hit reaction.fbx'}
+mapping={'idle':'idle.fbx','walk':'walking.fbx','sprint':'running.fbx','jump':'Unarmed Jump.fbx','seated':'Sitting Idle.fbx','drive':'Sitting Idle.fbx','reload':'shooter/reloading.fbx','hit':'shooter/hit reaction.fbx'}
 # Optional native armed and seated clips acquired through the same character.
 extra=src/'pistol'
 if extra.exists():

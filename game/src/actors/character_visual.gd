@@ -209,6 +209,7 @@ func _configure_native_human() -> bool:
 		if not _clips.has(required):
 			push_error("Native human is missing animation: "+required)
 			return false
+	_slice_native_jump()
 	gait_v2 = true
 	animator.animation_finished.connect(_on_animation_finished)
 	for mesh_node in model.find_children("*","MeshInstance3D",true,false):
@@ -301,7 +302,7 @@ func set_motion(speed: float, aiming: bool = false, grounded: bool = true, reloa
 		# crossfade by delta * speed_scale, so a zero rate froze the blend on
 		# the take-off pose (the run-cycle or jump_start pose) for the whole
 		# flight. The seek below overrides the clip position every frame.
-		_play(clip, crossfade, 1.0)
+		_play(clip, 0.04 if native_human else crossfade, 1.0)
 		var air_len := animator.get_animation(_clips["jump"]).length
 		animator.seek(clampf(_air_phase, 0.0, 0.999) * air_len, true)
 		return
@@ -918,3 +919,21 @@ func _update_contact_shadows() -> void:
 		var k := clampf(1.0 - lift / 0.25, 0.0, 1.0)
 		d.modulate.a = (0.85 if i < 2 else 0.3) * (0.25 + 0.75 * k)
 		d.global_transform = Transform3D(Basis(Vector3.UP, yaw), Vector3(p.x, ground + 0.05, p.z))
+
+func _slice_native_jump() -> void:
+	if not _clips.has("jump"): return
+	var source: Animation=animator.get_animation(_clips.jump)
+	var library:=AnimationLibrary.new()
+	# Mixamo Unarmed Jump, 30 fps: crouch 20-26, flight 26-46,
+	# landing absorption 46-64. Physics owns world translation.
+	for spec in [["jump_start",19.0/30.0,25.0/30.0],["jump",25.0/30.0,45.0/30.0],["land",45.0/30.0,63.0/30.0]]:
+		var clip: Animation=source.duplicate(true)
+		var begin:float=spec[1];var end:float=spec[2]
+		clip.length=end-begin;clip.loop_mode=Animation.LOOP_NONE
+		for track in clip.get_track_count():
+			for key in range(clip.track_get_key_count(track)-1,-1,-1):
+				var t:=clip.track_get_key_time(track,key)
+				if t<begin-.0001 or t>end+.0001:clip.track_remove_key(track,key)
+			for key in clip.track_get_key_count(track):clip.track_set_key_time(track,key,maxf(0,clip.track_get_key_time(track,key)-begin))
+		library.add_animation(spec[0],clip);_clips[spec[0]]="native_jump/"+spec[0]
+	animator.add_animation_library("native_jump",library)

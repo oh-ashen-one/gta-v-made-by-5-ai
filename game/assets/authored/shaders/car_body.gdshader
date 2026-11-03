@@ -26,6 +26,7 @@ instance uniform vec4 car_row_y = vec4(0.0);
 instance uniform vec4 car_row_z = vec4(0.0);
 // x: brake (0..1), y: lamps on (0..1), z: overall wear (0..1), w: paint override strength
 instance uniform vec4 car_state = vec4(0.0, 0.0, 0.0, 0.0);
+instance uniform float driver_window_open = 0.0;
 instance uniform vec4 paint_color : source_color = vec4(0.8, 0.8, 0.8, 1.0);
 // Dents: centre (model space) + radius, push direction (model space) + depth.
 instance uniform vec4 dent0 = vec4(0.0);
@@ -103,6 +104,8 @@ void fragment() {
 	float upper = smoothstep(0.50, 0.60, v_car.y);
 	// Cabin glass: dark, unsaturated texels above the belt line.
 	float glass = (1.0 - smoothstep(0.09, 0.20, lum)) * (1.0 - smoothstep(0.35, 0.6, sat)) * upper;
+	// Open only the right-hand driver glass; keep pillars and body solid.
+	if (driver_window_open > 0.5 && glass > 0.35 && v_car.x > 0.48 && v_car.z > -0.48 && v_car.z < 0.22 && v_car.y < 0.94) { discard; }
 	// Paint: the main body colour family of this kind.
 	float paint = 0.0;
 	if (paint_kind < 0.5) {

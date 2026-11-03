@@ -13,7 +13,7 @@ func run() -> void:
 	check("original_65_bone_rig",visual.skeleton.get_bone_count()==65)
 	check("no_rebuilt_look_mesh",visual.look_mesh==null)
 	check("no_custom_body_or_foot_modifier",visual.motion==null and visual.foot_lock==null and visual.hands==null)
-	for gait in ["idle","walk","run","sprint","jump","aim","aim_walk","aim_run","aim_back","seated","drive","reload","hit"]:
+	for gait in ["idle","walk","run","sprint","jump_start","jump","land","aim","aim_walk","aim_run","aim_back","seated","drive","reload","hit"]:
 		check("clip_"+gait,visual._clips.has(gait))
 		if not visual._clips.has(gait):continue
 		var anim:=visual.animator.get_animation(visual._clips[gait])
